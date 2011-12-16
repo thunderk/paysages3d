@@ -403,6 +403,8 @@ static Color _applyLayerLighting(CloudsDefinition* definition, CloudsQuality* qu
     Color result;
 
     normal = _getNormal(definition, position, 0.5);
+    normal = v3Add(normal, _getNormal(definition, position, 0.2));
+    normal = v3Add(normal, _getNormal(definition, position, 0.1));
     result = lightingApply(position, normal, 0.0, base, 0.3, 0.1);
     
     direction = sun_direction_inv;
@@ -416,9 +418,9 @@ static Color _applyLayerLighting(CloudsDefinition* definition, CloudsQuality* qu
         inside_depth = 1.0;
     }
     
-    result.r = base.r * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.r * 0.2 * inside_depth + (0.1 - inside_depth * 0.1) * sun_color_lum;
-    result.g = base.g * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.g * 0.2 * inside_depth + (0.1 - inside_depth * 0.1) * sun_color_lum;
-    result.b = base.b * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.b * 0.2 * inside_depth + (0.1 - inside_depth * 0.1) * sun_color_lum;
+    result.r = base.r * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.r * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
+    result.g = base.g * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.g * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
+    result.b = base.b * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.b * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
 
     return result;
 }
