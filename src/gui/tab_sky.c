@@ -11,167 +11,123 @@ static SkyDefinition _definition;
 
 static Color _cbPreviewHorizon(SmallPreview* preview, double x, double y, double xoffset, double yoffset, double scaling)
 {
-    Color result;
-    double height;
+    Vector3 eye = {0.0, 0.0, 0.0};
+    Vector3 look;
 
-    height = terrainGetHeight(x, y);
-    if (height <= _definition.height)
-    {
-        return _definition.main_color;
-    }
-    else
-    {
-        result.r = result.g = result.b = terrainGetHeightNormalized(x, y);
-        result.a = 1.0;
-
-        return result;
-    }
-}
-
-static Color _cbPreviewRender(SmallPreview* preview, double x, double y, double xoffset, double yoffset, double scaling)
-{
-    Vector3 eye, look, location;
-    WaterDefinition definition;
-    WaterEnvironment environment;
-    WaterQuality quality;
-
-    eye.x = 0.0;
-    eye.y = scaling;
-    eye.z = -10.0 * scaling;
-    look.x = x * 0.01 / scaling;
-    look.y = -y * 0.01 / scaling - 0.3;
+    look.x = x;
+    look.y = -y;
     look.z = 1.0;
-    look = v3Normalize(look);
 
-    if (look.y > -0.0001)
+    return skyGetColorCustom(eye, look, &_definition, NULL, NULL);
+}
+
+static inline void _updatePreview()
+{
+    skyValidateDefinition(&_definition);
+    guiPreviewRedraw(_preview_horizon);
+}
+
+static void _redrawColorGradation(GtkImage* image, ColorGradation* gradation)
+{
+    GdkPixbuf* pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, 1, 8, 250, 20);
+    void* pixels = gdk_pixbuf_get_pixels(pixbuf);
+    int rowstride = gdk_pixbuf_get_rowstride(pixbuf);
+
+    int x, y;
+    guint32* pixel;
+    Color col;
+
+    for (x = 0; x < 250; x++)
     {
-        return _rayCastFromWater(eye, look).hit_color;
+        for (y = 0; y < 20; y++)
+        {
+            pixel = (guint32*)(pixels + y * rowstride + x * 4);
+            col = colorGradationGet(gradation, (double)x / 250.0);
+            *pixel = (guint32)colorTo32BitRGBA(&col);
+        }
     }
 
-    location.x = eye.x - look.x * eye.y / look.y;
-    location.y = 0.0;
-    location.z = eye.z - look.z * eye.y / look.y;
-
-    if (location.z > 0.0)
-    {
-        return _rayCastFromWater(eye, look).hit_color;
-    }
-
-    definition = _definition;
-    definition.height = 0.0;
-    environment.reflection_function = _rayCastFromWater;
-    environment.refraction_function = _rayCastFromWater;
-    environment.toggle_fog = 0;
-    environment.toggle_shadows = 0;
-    quality.force_detail = 0.0001;
-
-    return waterGetColorCustom(location, look, &definition, &quality, &environment).final;
+    gtk_image_set_from_pixbuf(image, pixbuf);
+    gdk_pixbuf_unref(pixbuf);
 }
 
-static void _cbEditNoiseDone(NoiseGenerator* generator)
+static void _cbDaytimeChanged(GtkRange* range, gpointer data)
 {
-    noiseCopy(generator, _definition.height_noise);
-    guiPreviewRedraw(_preview_render);
+    _definition.daytime = gtk_range_get_value(range);
+    _updatePreview();
 }
 
-static void _cbEditNoise(GtkWidget* widget, gpointer data)
+static void _cbSunSizeChanged(GtkRange* range, gpointer data)
 {
-    guiNoiseEdit(_definition.height_noise, _cbEditNoiseDone);
+    _definition.sun_radius = gtk_range_get_value(range);
+    _updatePreview();
 }
 
-static void _cbHeightChanged(GtkRange* range, gpointer data)
+static void _cbHazeHeightChanged(GtkRange* range, gpointer data)
 {
-    _definition.height = gtk_range_get_value(range);
-    guiPreviewRedraw(_preview_coverage);
+    _definition.haze_height = gtk_range_get_value(range);
+    _updatePreview();
 }
 
-static void _cbTransparencyChanged(GtkRange* range, gpointer data)
+static void _cbHazeSmoothingChanged(GtkRange* range, gpointer data)
 {
-    _definition.transparency = gtk_range_get_value(range);
-    guiPreviewRedraw(_preview_render);
-}
-
-static void _cbReflectionChanged(GtkRange* range, gpointer data)
-{
-    _definition.reflection = gtk_range_get_value(range);
-    guiPreviewRedraw(_preview_render);
-}
-
-static void _cbColorChanged(GtkColorButton* colorbutton, gpointer data)
-{
-    GdkRGBA col;
-
-    gtk_color_button_get_rgba(colorbutton, &col);
-    _definition.main_color.r = col.red;
-    _definition.main_color.g = col.green;
-    _definition.main_color.b = col.blue;
-    _definition.main_color.a = 1.0;
-
-    guiPreviewRedraw(_preview_render);
-    guiPreviewRedraw(_preview_coverage);
+    _definition.haze_smoothing = gtk_range_get_value(range);
+    _updatePreview();
 }
 
 static void _cbRevertConfig(GtkWidget* widget, gpointer data)
 {
-    GdkRGBA col;
+    skyCopyDefinition(skyGetDefinition(), &_definition);
 
-    waterCopyDefinition(waterGetDefinition(), &_definition);
+    gtk_range_set_value(GTK_RANGE(GET_WIDGET("sky_daytime")), _definition.daytime);
+    gtk_range_set_value(GTK_RANGE(GET_WIDGET("sky_sun_size")), _definition.sun_radius);
+    gtk_range_set_value(GTK_RANGE(GET_WIDGET("sky_haze_height")), _definition.haze_height);
+    gtk_range_set_value(GTK_RANGE(GET_WIDGET("sky_haze_smoothing")), _definition.haze_smoothing);
 
-    gtk_range_set_value(GTK_RANGE(GET_WIDGET("water_height")), _definition.height);
-    gtk_range_set_value(GTK_RANGE(GET_WIDGET("water_transparency")), _definition.transparency);
-    gtk_range_set_value(GTK_RANGE(GET_WIDGET("water_reflection")), _definition.reflection);
-    col.red = _definition.main_color.r;
-    col.green = _definition.main_color.g;
-    col.blue = _definition.main_color.b;
-    col.alpha = 1.0;
-    gtk_color_button_set_rgba(GTK_COLOR_BUTTON(GET_WIDGET("water_color")), &col);
+    _redrawColorGradation(GTK_IMAGE(GET_WIDGET("sky_colorgradient_sun")), &_definition.sun_color);
+    _redrawColorGradation(GTK_IMAGE(GET_WIDGET("sky_colorgradient_zenith")),& _definition.zenith_color);
+    _redrawColorGradation(GTK_IMAGE(GET_WIDGET("sky_colorgradient_haze")), &_definition.haze_color);
 
-    guiPreviewRedraw(_preview_render);
-    guiPreviewRedraw(_preview_coverage);
+    _updatePreview();
 }
 
 static void _cbApplyConfig(GtkWidget* widget, gpointer data)
 {
-    waterSetDefinition(_definition);
+    skySetDefinition(_definition);
     guiUpdate();
 }
 
-void guiWaterInit()
+void guiSkyInit()
 {
-    _definition = waterCreateDefinition();
+    _definition = skyCreateDefinition();
 
     /* Buttons */
-    g_signal_connect(GET_WIDGET("water_noise_edit"), "clicked", G_CALLBACK(_cbEditNoise), NULL);
-    g_signal_connect(GET_WIDGET("water_apply"), "clicked", G_CALLBACK(_cbApplyConfig), NULL);
-    g_signal_connect(GET_WIDGET("water_revert"), "clicked", G_CALLBACK(_cbRevertConfig), NULL);
+    g_signal_connect(GET_WIDGET("sky_apply"), "clicked", G_CALLBACK(_cbApplyConfig), NULL);
+    g_signal_connect(GET_WIDGET("sky_revert"), "clicked", G_CALLBACK(_cbRevertConfig), NULL);
 
     /* Configs */
-    gtk_range_set_range(GTK_RANGE(GET_WIDGET("water_height")), -20.0, 20.0);
-    gtk_range_set_range(GTK_RANGE(GET_WIDGET("water_transparency")), 0.0, 1.0);
-    gtk_range_set_range(GTK_RANGE(GET_WIDGET("water_reflection")), 0.0, 1.0);
+    gtk_range_set_range(GTK_RANGE(GET_WIDGET("sky_daytime")), 0.0, 1.0);
+    gtk_range_set_range(GTK_RANGE(GET_WIDGET("sky_sun_size")), 0.0, 1.0);
+    gtk_range_set_range(GTK_RANGE(GET_WIDGET("sky_haze_height")), 0.0, 1.0);
+    gtk_range_set_range(GTK_RANGE(GET_WIDGET("sky_haze_smoothing")), 0.0, 1.0);
 
     /* Config signals */
-    g_signal_connect(GET_WIDGET("water_height"), "value-changed", G_CALLBACK(_cbHeightChanged), NULL);
-    g_signal_connect(GET_WIDGET("water_transparency"), "value-changed", G_CALLBACK(_cbTransparencyChanged), NULL);
-    g_signal_connect(GET_WIDGET("water_reflection"), "value-changed", G_CALLBACK(_cbReflectionChanged), NULL);
-    g_signal_connect(GET_WIDGET("water_color"), "color-set", G_CALLBACK(_cbColorChanged), NULL);
+    g_signal_connect(GET_WIDGET("sky_daytime"), "value-changed", G_CALLBACK(_cbDaytimeChanged), NULL);
+    g_signal_connect(GET_WIDGET("sky_sun_size"), "value-changed", G_CALLBACK(_cbSunSizeChanged), NULL);
+    g_signal_connect(GET_WIDGET("sky_haze_height"), "value-changed", G_CALLBACK(_cbHazeHeightChanged), NULL);
+    g_signal_connect(GET_WIDGET("sky_haze_smoothing"), "value-changed", G_CALLBACK(_cbHazeSmoothingChanged), NULL);
 
     /* Previews */
-    _preview_coverage = guiPreviewNew(GTK_IMAGE(GET_WIDGET("water_preview_coverage")));
-    guiPreviewConfigScaling(_preview_coverage, 0.01, 1.0, 0.05);
-    guiPreviewConfigScrolling(_preview_coverage, -1000.0, 1000.0, -1000.0, 1000.0);
-    guiPreviewSetViewport(_preview_coverage, 0.0, 0.0, 0.2);
-    guiPreviewSetRenderer(_preview_coverage, _cbPreviewCoverage);
-    _preview_render = guiPreviewNew(GTK_IMAGE(GET_WIDGET("water_preview_render")));
-    guiPreviewConfigScaling(_preview_render, 0.1, 1.0, 0.1);
-    guiPreviewConfigScrolling(_preview_render, -10.0, 10.0, -10.0, 10.0);
-    guiPreviewSetViewport(_preview_render, 0.0, 0.0, 0.5);
-    guiPreviewSetRenderer(_preview_render, _cbPreviewRender);
+    _preview_horizon = guiPreviewNew(GTK_IMAGE(GET_WIDGET("sky_preview_horizon")));
+    guiPreviewConfigScaling(_preview_horizon, 0.01, 0.01, 0.0);
+    guiPreviewConfigScrolling(_preview_horizon, 0.0, 0.0, 0.0, 0.0);
+    guiPreviewSetViewport(_preview_horizon, 0.0, 0.0, 0.01);
+    guiPreviewSetRenderer(_preview_horizon, _cbPreviewHorizon);
 
-    guiWaterUpdate();
+    guiSkyUpdate();
 }
 
-void guiWaterUpdate()
+void guiSkyUpdate()
 {
     _cbRevertConfig(NULL, NULL);
 }

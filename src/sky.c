@@ -99,8 +99,21 @@ SkyDefinition skyGetDefinition()
 
 Color skyGetColorCustom(Vector3 eye, Vector3 look, SkyDefinition* definition, SkyQuality* quality, SkyEnvironment* environment)
 {
+    if (definition == NULL)
+    {
+        definition = &_definition;
+    }
+    if (quality == NULL)
+    {
+        quality = &_quality;
+    }
+    if (environment == NULL)
+    {
+        environment = &_environment;
+    }
+
     look = v3Normalize(look);
-    return colorGradationGet(&_definition._sky_gradation, look.y * 0.5 + 0.5);
+    return colorGradationGet(&definition->_sky_gradation, look.y * 0.5 + 0.5);
 }
 
 Color skyGetColor(Vector3 eye, Vector3 look)

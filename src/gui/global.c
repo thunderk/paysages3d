@@ -31,10 +31,10 @@ static void _cbLoad(GtkWidget* widget, gpointer data)
         autoLoad(filename);
         g_free(filename);
     }
-    
+
     /* Update all GUI */
     guiUpdate();
-    
+
     gtk_widget_destroy(dialog);
 }
 
@@ -85,6 +85,7 @@ void guiInit()
     guiTerrainInit();
     guiWaterInit();
     guiCloudsInit();
+    guiSkyInit();
 }
 
 void guiStart()
@@ -101,6 +102,7 @@ void guiUpdate()
 {
     guiWaterUpdate();
     guiCloudsUpdate();
-    
+    guiSkyUpdate();
+
     guiPreviewRedrawAll();
 }

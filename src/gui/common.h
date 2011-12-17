@@ -29,6 +29,9 @@ void guiTerrainInit();
 void guiWaterInit();
 void guiWaterUpdate();
 
+void guiSkyInit();
+void guiSkyUpdate();
+
 void guiCloudsInit();
 void guiCloudsUpdate();
 
