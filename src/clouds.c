@@ -23,7 +23,7 @@ typedef struct
 void cloudsInit()
 {
     _layers_count = 0;
-    
+
     _quality.precision = 0.5;
 }
 
@@ -31,7 +31,7 @@ void cloudsSave(FILE* f)
 {
     int i;
     CloudsDefinition* layer;
-    
+
     toolsSaveInt(f, _layers_count);
     for (i = 0; i < _layers_count; i++)
     {
@@ -50,7 +50,7 @@ void cloudsLoad(FILE* f)
 {
     int i;
     CloudsDefinition* layer;
-    
+
     _layers_count = toolsLoadInt(f);
     for (i = 0; i < _layers_count; i++)
     {
@@ -73,11 +73,11 @@ int cloudsGetLayerCount()
 int cloudsAddLayer()
 {
     CloudsDefinition* layer;
-    
+
     layer = _layers + _layers_count;
     layer->noise = noiseCreateGenerator();
     layer->coverage = 0.0;
-    
+
     return _layers_count++;
 }
 
@@ -89,7 +89,7 @@ void cloudsDeleteLayer(int layer)
 CloudsDefinition cloudsCreateDefinition()
 {
     CloudsDefinition result;
-    
+
     result.color = COLOR_WHITE;
     result.coverage = 0.0;
     result.noise = noiseCreateGenerator();
@@ -97,7 +97,7 @@ CloudsDefinition cloudsCreateDefinition()
     result.ymin = 0.0;
     result.ycenter = 0.0;
     result.ymax = 0.0;
-    
+
     return result;
 }
 
@@ -109,7 +109,7 @@ void cloudsDeleteDefinition(CloudsDefinition definition)
 void cloudsCopyDefinition(CloudsDefinition source, CloudsDefinition* destination)
 {
     NoiseGenerator* noise;
-    
+
     noise = destination->noise;
     *destination = source;
     destination->noise = noise;
@@ -119,7 +119,7 @@ void cloudsCopyDefinition(CloudsDefinition source, CloudsDefinition* destination
 void cloudsSetDefinition(int layer, CloudsDefinition definition)
 {
     CloudsDefinition* destination;
-    
+
     if (layer >= 0 && layer < _layers_count)
     {
         destination = _layers + layer;
@@ -149,45 +149,6 @@ CloudsQuality cloudsGetQuality()
 {
     return _quality;
 }
-
-/*int cloudsAddLayer(double ymin, double ycenter, double ymax, Color color, double scaling, double coverage)
-{
-    CloudsDefinition* layer = _layers + _layers_count;
-
-    layer->ycenter = ycenter;
-    layer->ymin = ymin;
-    layer->ymax = ymax;
-    layer->color = color;
-    layer->scaling = scaling;
-    layer->coverage = coverage;
-
-    layer->noise = noiseCreateGenerator();
-    noiseGenerateBaseNoise(layer->noise, 262144);
-    noiseAddLevelSimple(layer->noise, scaling, 0.3);
-    noiseAddLevelSimple(layer->noise, scaling / 2.0, 0.2);
-    noiseAddLevelSimple(layer->noise, scaling / 4.0, 0.1);
-    noiseAddLevelSimple(layer->noise, scaling / 10.0, 0.05);
-    noiseAddLevelSimple(layer->noise, scaling / 20.0, 0.03);
-    noiseAddLevelSimple(layer->noise, scaling / 40.0, 0.02);
-    noiseAddLevelSimple(layer->noise, scaling / 60.0, 0.01);
-    noiseAddLevelSimple(layer->noise, scaling / 80.0, 0.005);
-    noiseAddLevelSimple(layer->noise, scaling / 100.0, 0.02);
-    noiseAddLevelSimple(layer->noise, scaling / 150.0, 0.005);
-    noiseAddLevelSimple(layer->noise, scaling / 200.0, 0.003);
-    noiseAddLevelSimple(layer->noise, scaling / 400.0, 0.008);
-    noiseAddLevelSimple(layer->noise, scaling / 800.0, 0.001);
-    noiseAddLevelSimple(layer->noise, scaling / 1000.0, 0.0005);
-    if (coverage < 0.5)
-    {
-        noiseNormalizeHeight(layer->noise, -1.0, coverage * 2.0, 0);
-    }
-    else
-    {
-        noiseNormalizeHeight(layer->noise, -(1.0 - coverage) * 2.0, 1.0, 0);
-    }
-
-    return _layers_count++;
-}*/
 
 static inline double _getDistanceToBorder(CloudsDefinition* layer, Vector3 position, double detail)
 {
@@ -237,7 +198,7 @@ static inline Vector3 _getNormal(CloudsDefinition* layer, Vector3 position, doub
 
 /**
  * Optimize the search limits in a layer.
- * 
+ *
  * @param layer The cloud layer
  * @param start Start of the search to optimize
  * @param end End of the search to optimize
@@ -246,7 +207,7 @@ static inline Vector3 _getNormal(CloudsDefinition* layer, Vector3 position, doub
 static int _optimizeSearchLimits(CloudsDefinition* layer, Vector3* start, Vector3* end)
 {
     Vector3 diff;
-    
+
     if (start->y > layer->ymax)
     {
         if (end->y >= layer->ymax)
@@ -291,14 +252,14 @@ static int _optimizeSearchLimits(CloudsDefinition* layer, Vector3* start, Vector
             *end = v3Add(*start, v3Scale(diff, (layer->ymin - start->y) / diff.y));
         }
     }
-    
+
     /* TODO Limit the search length */
     return 1;
 }
 
 /**
  * Go through the cloud layer to find segments (parts of the lookup that are inside the cloud).
- * 
+ *
  * @param definition The cloud layer
  * @param quality Render quality
  * @param start Start position of the lookup (already optimized)
@@ -319,7 +280,7 @@ static int _findSegments(CloudsDefinition* definition, CloudsQuality* quality, V
     double step_length, segment_length, remaining_length;
     double noise_distance, last_noise_distance;
     Vector3 walker, step, segment_start;
-    
+
     if (max_segments <= 0)
     {
         return 0;
@@ -341,7 +302,7 @@ static int _findSegments(CloudsDefinition* definition, CloudsQuality* quality, V
         last_noise_distance = noise_distance;
         noise_distance = _getDistanceToBorder(definition, walker, detail) * quality->precision;
         current_total_length += step_length;
-        
+
         if (noise_distance > 0.0)
         {
             if (inside)
@@ -369,7 +330,7 @@ static int _findSegments(CloudsDefinition* definition, CloudsQuality* quality, V
                 remaining_length = step_length * last_noise_distance / (last_noise_distance - noise_distance);
                 segment_length += remaining_length;
                 current_inside_length += remaining_length;
-                
+
                 out_segments->start = segment_start;
                 out_segments->end = v3Add(walker, v3Scale(direction, remaining_length - step_length));
                 out_segments->length = segment_length;
@@ -378,7 +339,7 @@ static int _findSegments(CloudsDefinition* definition, CloudsQuality* quality, V
                 {
                     break;
                 }
-                
+
                 inside = 0;
                 step = v3Scale(direction, quality->precision);
             }
@@ -389,7 +350,7 @@ static int _findSegments(CloudsDefinition* definition, CloudsQuality* quality, V
             }
         }
     } while (inside || (walker.y <= definition->ymax + 0.001 && walker.y >= definition->ymin - 0.001 && current_total_length < max_total_length && current_inside_length < max_inside_length));
-    
+
     *total_length = current_total_length;
     *inside_length = current_inside_length;
     return segment_count;
@@ -406,7 +367,7 @@ static Color _applyLayerLighting(CloudsDefinition* definition, CloudsQuality* qu
     normal = v3Add(normal, _getNormal(definition, position, 0.2));
     normal = v3Add(normal, _getNormal(definition, position, 0.1));
     result = lightingApply(position, normal, 0.0, base, 0.3, 0.1);
-    
+
     direction = sun_direction_inv;
     detail = (detail < 0.1) ? 0.1 : detail;
     /* FIXME Dont hard-code max_total_length */
@@ -417,7 +378,7 @@ static Color _applyLayerLighting(CloudsDefinition* definition, CloudsQuality* qu
     {
         inside_depth = 1.0;
     }
-    
+
     result.r = base.r * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.r * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
     result.g = base.g * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.g * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
     result.b = base.b * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.b * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
@@ -441,12 +402,12 @@ Color cloudsGetColorCustom(Vector3 start, Vector3 end, CloudsDefinition* definit
     {
         environment = &_environment;
     }
-    
+
     if (!_optimizeSearchLimits(definition, &start, &end))
     {
         return COLOR_TRANSPARENT;
     }
-    
+
     direction = v3Sub(end, start);
     max_length = v3Norm(direction);
     direction = v3Normalize(direction);
@@ -454,7 +415,7 @@ Color cloudsGetColorCustom(Vector3 start, Vector3 end, CloudsDefinition* definit
 
     /* TODO Flexible precision */
     detail = renderGetPrecision(start) / definition->scaling;
-    
+
     segment_count = _findSegments(definition, quality, start, direction, detail, 20, 60.0, max_length, &inside_length, &total_length, segments);
     for (i = 0; i < segment_count; i++)
     {

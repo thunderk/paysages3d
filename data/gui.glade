@@ -679,6 +679,8 @@ A small entropy will make the noise repeat more often.</property>
                   <object class="GtkVBox" id="vbox12">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="border_width">5</property>
+                    <property name="spacing">5</property>
                     <child>
                       <object class="GtkLabel" id="label19">
                         <property name="visible">True</property>
@@ -716,7 +718,6 @@ A small entropy will make the noise repeat more often.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="padding">5</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -724,18 +725,19 @@ A small entropy will make the noise repeat more often.</property>
                   <object class="GtkVBox" id="vbox7">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="border_width">5</property>
                     <child>
                       <object class="GtkButton" id="terrain_noise_edit">
                         <property name="label" translatable="yes">Edit noise</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="border_width">5</property>
                         <property name="use_action_appearance">False</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="padding">5</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -746,7 +748,6 @@ A small entropy will make the noise repeat more often.</property>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="padding">5</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -853,6 +854,7 @@ A small entropy will make the noise repeat more often.</property>
                   <object class="GtkVBox" id="vbox13">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="border_width">5</property>
                     <child>
                       <object class="GtkButton" id="water_noise_edit">
                         <property name="label" translatable="yes">Edit noise (waves)</property>
@@ -1004,7 +1006,6 @@ A small entropy will make the noise repeat more often.</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">5</property>
-                        <property name="spacing">10</property>
                         <property name="layout_style">spread</property>
                         <child>
                           <object class="GtkButton" id="water_apply">
@@ -1172,21 +1173,6 @@ A small entropy will make the noise repeat more often.</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkImage" id="sky_colorgradient_sun">
-                            <property name="width_request">250</property>
-                            <property name="height_request">20</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="stock">gtk-missing-image</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">1</property>
-                            <property name="width">1</property>
-                            <property name="height">1</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkLabel" id="label30">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
@@ -1228,21 +1214,6 @@ A small entropy will make the noise repeat more often.</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkImage" id="sky_colorgradient_zenith">
-                            <property name="width_request">250</property>
-                            <property name="height_request">20</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="stock">gtk-missing-image</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">3</property>
-                            <property name="width">1</property>
-                            <property name="height">1</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkLabel" id="label33">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
@@ -1250,21 +1221,6 @@ A small entropy will make the noise repeat more often.</property>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
-                            <property name="top_attach">4</property>
-                            <property name="width">1</property>
-                            <property name="height">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkImage" id="sky_colorgradient_haze">
-                            <property name="width_request">250</property>
-                            <property name="height_request">20</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="stock">gtk-missing-image</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
                             <property name="top_attach">4</property>
                             <property name="width">1</property>
                             <property name="height">1</property>
@@ -1326,6 +1282,126 @@ A small entropy will make the noise repeat more often.</property>
                             <property name="height">1</property>
                           </packing>
                         </child>
+                        <child>
+                          <object class="GtkHBox" id="hbox1">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkImage" id="sky_colorgradient_sun">
+                                <property name="width_request">200</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="stock">gtk-missing-image</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="sky_colorgradient_sun_edit">
+                                <property name="label" translatable="yes">Edit</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="use_action_appearance">False</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">1</property>
+                            <property name="width">1</property>
+                            <property name="height">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHBox" id="hbox6">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkImage" id="sky_colorgradient_zenith">
+                                <property name="width_request">200</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="stock">gtk-missing-image</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="sky_colorgradient_zenith_edit">
+                                <property name="label" translatable="yes">Edit</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="use_action_appearance">False</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">3</property>
+                            <property name="width">1</property>
+                            <property name="height">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHBox" id="hbox8">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkImage" id="sky_colorgradient_haze">
+                                <property name="width_request">200</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="stock">gtk-missing-image</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="sky_colorgradient_haze_edit">
+                                <property name="label" translatable="yes">Edit</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="use_action_appearance">False</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">4</property>
+                            <property name="width">1</property>
+                            <property name="height">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1338,7 +1414,6 @@ A small entropy will make the noise repeat more often.</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">5</property>
-                        <property name="spacing">10</property>
                         <property name="layout_style">spread</property>
                         <child>
                           <object class="GtkButton" id="sky_apply">

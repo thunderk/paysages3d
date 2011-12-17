@@ -29,7 +29,7 @@ static inline void _updatePreview()
 
 static void _redrawColorGradation(GtkImage* image, ColorGradation* gradation)
 {
-    GdkPixbuf* pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, 1, 8, 250, 20);
+    GdkPixbuf* pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, 1, 8, 200, 30);
     void* pixels = gdk_pixbuf_get_pixels(pixbuf);
     int rowstride = gdk_pixbuf_get_rowstride(pixbuf);
 
@@ -37,12 +37,12 @@ static void _redrawColorGradation(GtkImage* image, ColorGradation* gradation)
     guint32* pixel;
     Color col;
 
-    for (x = 0; x < 250; x++)
+    for (x = 0; x < 200; x++)
     {
-        for (y = 0; y < 20; y++)
+        for (y = 0; y < 30; y++)
         {
             pixel = (guint32*)(pixels + y * rowstride + x * 4);
-            col = colorGradationGet(gradation, (double)x / 250.0);
+            col = colorGradationGet(gradation, (double)x / 200.0);
             *pixel = (guint32)colorTo32BitRGBA(&col);
         }
     }

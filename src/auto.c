@@ -185,6 +185,7 @@ void autoGenRealisticLandscape(int seed)
 
     /* Sky */
     sky.sun_color = colorGradationCreate();
+    colorGradationAddRgba(&sky.sun_color, 0.5, 1.0, 0.98, 0.95, 1.0);
     sky.zenith_color = colorGradationCreate();
     colorGradationAddRgba(&sky.zenith_color, 0.2, 0.03, 0.03, 0.05, 1.0);
     colorGradationAddRgba(&sky.zenith_color, 0.25, 0.25, 0.33, 0.37, 1.0);
