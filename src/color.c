@@ -58,7 +58,7 @@ void colorMask(Color* base, Color* mask)
     base->g = (mask->g * mask->a + base->g * base->a - base->g * base->a * mask->a) / new_a;
     base->b = (mask->b * mask->a + base->b * base->a - base->b * base->a * mask->a) / new_a;
     base->a = new_a;
-    
+
     /*double mask_weight = mask->a;
     double base_weight = 1.0 - mask_weight;
 
@@ -182,3 +182,28 @@ Color colorGradationGet(ColorGradation* gradation, double value)
     }
 }
 
+void colorGradationSave(FILE* f, ColorGradation gradation)
+{
+    int i;
+
+    toolsSaveInt(f, gradation.nbparts);
+    for (i = 0; i < gradation.nbparts; i++)
+    {
+        toolsSaveDouble(f, gradation.parts[i].start);
+        colorSave(gradation.parts[i].col, f);
+    }
+}
+
+ColorGradation colorGradationLoad(FILE* f)
+{
+    ColorGradation result;
+    int i;
+
+    result.nbparts = toolsLoadInt(f);
+    for (i = 0; i < result.nbparts; i++)
+    {
+        result.parts[i].start = toolsLoadDouble(f);
+        result.parts[i].col = colorLoad(f);
+    }
+
+}

@@ -11,6 +11,7 @@
 
 #include "water.h"
 #include "clouds.h"
+#include "sky.h"
 
 static int _cpu_count = 1;
 static int _is_rendering = 0;
@@ -19,7 +20,7 @@ void autoInit()
 {
     _cpu_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
     renderSetBackgroundColor(&COLOR_BLACK);
-    
+
     terrainInit();
     waterInit();
 }
@@ -67,14 +68,15 @@ void autoSetDaytime(int hour, int minute)
 
 void autoSetDaytimeFraction(double daytime)
 {
+    SkyDefinition sky;
+    ColorGradation grad_sun;
+    Color sun;
+
     daytime = fmod(daytime, 1.0);
     if (daytime < 0.0)
     {
         daytime += 1.0;
     }
-
-    ColorGradation grad_zenith, grad_haze, grad_sky, grad_sun;
-    Color sun, zenith, haze;
 
     lightingSetSunAngle(0.0, (daytime + 0.25) * M_PI * 2.0);
 
@@ -89,41 +91,18 @@ void autoSetDaytimeFraction(double daytime)
     sun = colorGradationGet(&grad_sun, daytime);
     lightingSetSunColor(sun);
 
-    grad_zenith = colorGradationCreate();
-    colorGradationAddRgba(&grad_zenith, 0.2, 0.03, 0.03, 0.05, 1.0);
-    colorGradationAddRgba(&grad_zenith, 0.25, 0.25, 0.33, 0.37, 1.0);
-    colorGradationAddRgba(&grad_zenith, 0.35, 0.52, 0.63, 0.8, 1.0);
-    colorGradationAddRgba(&grad_zenith, 0.65, 0.52, 0.63, 0.8, 1.0);
-    colorGradationAddRgba(&grad_zenith, 0.75, 0.25, 0.33, 0.37, 1.0);
-    colorGradationAddRgba(&grad_zenith, 0.8, 0.03, 0.03, 0.05, 1.0);
-    zenith = colorGradationGet(&grad_zenith, daytime);
+    sky = skyGetDefinition();
+    sky.daytime = daytime;
+    skySetDefinition(sky);
 
-    grad_haze = colorGradationCreate();
-    colorGradationAddRgba(&grad_haze, 0.2, 0.05, 0.05, 0.08, 1.0);
-    colorGradationAddRgba(&grad_haze, 0.25, 0.55, 0.42, 0.42, 1.0);
-    colorGradationAddRgba(&grad_haze, 0.3, 0.6, 0.6, 0.6, 1.0);
-    colorGradationAddRgba(&grad_haze, 0.4, 0.92, 0.93, 1.0, 1.0);
-    colorGradationAddRgba(&grad_haze, 0.6, 0.92, 0.93, 1.0, 1.0);
-    colorGradationAddRgba(&grad_haze, 0.7, 0.6, 0.6, 0.8, 1.0);
-    colorGradationAddRgba(&grad_haze, 0.75, 0.62, 0.50, 0.42, 1.0);
-    colorGradationAddRgba(&grad_haze, 0.8, 0.05, 0.05, 0.08, 1.0);
-    haze = colorGradationGet(&grad_haze, daytime);
-
-    grad_sky = colorGradationCreate();
-    colorGradationAdd(&grad_sky, 0.0, &haze);
-    colorGradationAdd(&grad_sky, 0.45, &haze);
-    colorGradationAdd(&grad_sky, 0.75, &zenith);
-    colorGradationAdd(&grad_sky, 1.0, &zenith);
-    skySetGradation(grad_sky);
-
-    fogSetColor(haze);
+    fogSetColor(colorGradationGet(&sky.haze_color, daytime));
 }
 
 void autoSetRenderQuality(int quality)
 {
     WaterQuality water;
     CloudsQuality clouds;
-    
+
     if (quality < 1)
     {
         quality = 1;
@@ -150,6 +129,7 @@ void autoGenRealisticLandscape(int seed)
     Texture* tex;
     WaterDefinition water;
     CloudsDefinition cloud;
+    SkyDefinition sky;
     int layer;
     HeightModifier* mod;
     Zone* zone;
@@ -187,7 +167,7 @@ void autoGenRealisticLandscape(int seed)
     noiseAddLevelSimple(cloud.noise, 50.0 / 1000.0, 0.0005);
     layer = cloudsAddLayer();
     cloudsSetDefinition(layer, cloud);
-    
+
     /* Water */
     water.height = 0.0;
     water.transparency = 0.4;
@@ -202,6 +182,28 @@ void autoGenRealisticLandscape(int seed)
     noiseAddLevelsSimple(water.height_noise, 3, 0.03, 0.003);
     waterSetDefinition(water);
     noiseDeleteGenerator(water.height_noise);
+
+    /* Sky */
+    sky.zenith_color = colorGradationCreate();
+    colorGradationAddRgba(&sky.zenith_color, 0.2, 0.03, 0.03, 0.05, 1.0);
+    colorGradationAddRgba(&sky.zenith_color, 0.25, 0.25, 0.33, 0.37, 1.0);
+    colorGradationAddRgba(&sky.zenith_color, 0.35, 0.52, 0.63, 0.8, 1.0);
+    colorGradationAddRgba(&sky.zenith_color, 0.65, 0.52, 0.63, 0.8, 1.0);
+    colorGradationAddRgba(&sky.zenith_color, 0.75, 0.25, 0.33, 0.37, 1.0);
+    colorGradationAddRgba(&sky.zenith_color, 0.8, 0.03, 0.03, 0.05, 1.0);
+    sky.haze_color = colorGradationCreate();
+    colorGradationAddRgba(&sky.haze_color, 0.2, 0.05, 0.05, 0.08, 1.0);
+    colorGradationAddRgba(&sky.haze_color, 0.25, 0.55, 0.42, 0.42, 1.0);
+    colorGradationAddRgba(&sky.haze_color, 0.3, 0.6, 0.6, 0.6, 1.0);
+    colorGradationAddRgba(&sky.haze_color, 0.4, 0.92, 0.93, 1.0, 1.0);
+    colorGradationAddRgba(&sky.haze_color, 0.6, 0.92, 0.93, 1.0, 1.0);
+    colorGradationAddRgba(&sky.haze_color, 0.7, 0.6, 0.6, 0.8, 1.0);
+    colorGradationAddRgba(&sky.haze_color, 0.75, 0.62, 0.50, 0.42, 1.0);
+    colorGradationAddRgba(&sky.haze_color, 0.8, 0.05, 0.05, 0.08, 1.0);
+    sky.daytime = 0.0;
+    sky.haze_height = 0.75;
+    sky.haze_smoothing = 0.3;
+    skySetDefinition(sky);
 
     noise = noiseCreateGenerator();
     noiseGenerateBaseNoise(noise, 1048576);
@@ -233,7 +235,7 @@ void autoGenRealisticLandscape(int seed)
     zone = zoneCreate(0.0);
     zoneAddHeightRange(zone, 1.0, 3.0, 4.0, 100.0, 100.0);
     terrainAddTexture(tex, 0.5, zone, 0.1);*/
-    
+
     /* DEBUG */
     mod = modifierCreate();
     zone = modifierGetZone(mod);
@@ -313,13 +315,13 @@ void autoRenderSceneTwoPass(int postonly)
 static int _postProcessRayTracingOverlay(RenderFragment* fragment)
 {
     Vector3 terrain_hit, look;
-    
+
     look = v3Sub(fragment->vertex.location, camera_location);
     if (!terrainProjectRay(camera_location, look, &terrain_hit, &fragment->vertex.color))
     {
         fragment->vertex.color = skyProjectRay(camera_location, look);
     }
-    
+
     return 1;
 }
 
@@ -328,7 +330,7 @@ void autoRenderSceneRayTracing()
     renderClear();
     cameraPushOverlay(COLOR_RED, _postProcessRayTracingOverlay);
     renderUpdate();
-    
+
     if (renderSetNextProgressStep(0.0, 1.0))
     {
         renderPostProcess(_cpu_count);

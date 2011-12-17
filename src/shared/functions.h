@@ -49,6 +49,8 @@ ColorGradation colorGradationCreate();
 void colorGradationAdd(ColorGradation* gradation, double value, Color* col);
 void colorGradationAddRgba(ColorGradation* gradation, double value, double r, double g, double b, double a);
 Color colorGradationGet(ColorGradation* gradation, double value);
+void colorGradationSave(FILE* f, ColorGradation gradation);
+ColorGradation colorGradationLoad(FILE* f);
 
 /* euclid.c */
 void v3Save(Vector3 v, FILE* f);

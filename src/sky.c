@@ -6,22 +6,106 @@
 #include "shared/globals.h"
 #include "shared/constants.h"
 #include "clouds.h"
+#include "sky.h"
 
-ColorGradation _gradation;
 #define SPHERE_SIZE 1000.0
+
+SkyDefinition _definition;
+SkyQuality _quality;
+SkyEnvironment _environment;
+
+void skyInit()
+{
+    skySetDefinition(skyCreateDefinition());
+}
 
 void skySave(FILE* f)
 {
+    toolsSaveDouble(f, _definition.daytime);
+    colorGradationSave(f, _definition.sun_color);
+    toolsSaveDouble(f, _definition.sun_radius);
+    colorGradationSave(f, _definition.zenith_color);
+    colorGradationSave(f, _definition.haze_color);
+    toolsSaveDouble(f, _definition.haze_height);
+    toolsSaveDouble(f, _definition.haze_smoothing);
 }
 
 void skyLoad(FILE* f)
 {
+
+    SkyDefinition def;
+
+    def.daytime = toolsLoadDouble(f);
+    def.sun_color = colorGradationLoad(f);
+    def.sun_radius = toolsLoadDouble(f);
+    def.zenith_color = colorGradationLoad(f);
+    def.haze_color = colorGradationLoad(f);
+    def.haze_height = toolsLoadDouble(f);
+    def.haze_smoothing = toolsLoadDouble(f);
+
+    skySetDefinition(def);
 }
 
-Color skyGetColor(Vector3 start, Vector3 direction)
+SkyDefinition skyCreateDefinition()
 {
-    direction = v3Normalize(direction);
-    return colorGradationGet(&_gradation, direction.y * 0.5 + 0.5);
+    SkyDefinition def;
+
+    def.daytime = 0.0;
+    def.sun_color = colorGradationCreate();
+    def.sun_radius = 1.0;
+    def.zenith_color = colorGradationCreate();
+    def.haze_color = colorGradationCreate();
+    def.haze_height = 0.0;
+    def.haze_smoothing = 0.0;
+
+    skyValidateDefinition(&def);
+
+    return def;
+}
+
+void skyDeleteDefinition(SkyDefinition definition)
+{
+}
+
+void skyCopyDefinition(SkyDefinition source, SkyDefinition* destination)
+{
+    *destination = source;
+}
+
+void skyValidateDefinition(SkyDefinition* definition)
+{
+    Color zenith, haze;
+
+    zenith = colorGradationGet(&definition->zenith_color, definition->daytime);
+    haze = colorGradationGet(&definition->haze_color, definition->daytime);
+
+    definition->_sky_gradation = colorGradationCreate();
+    colorGradationAdd(&definition->_sky_gradation, 0.0, &haze);
+    colorGradationAdd(&definition->_sky_gradation, definition->haze_height - definition->haze_smoothing, &haze);
+    colorGradationAdd(&definition->_sky_gradation, definition->haze_height, &zenith);
+    colorGradationAdd(&definition->_sky_gradation, 1.0, &zenith);
+}
+
+void skySetDefinition(SkyDefinition definition)
+{
+    skyValidateDefinition(&definition);
+    _definition = definition;
+}
+
+SkyDefinition skyGetDefinition()
+{
+    return _definition;
+}
+
+Color skyGetColorCustom(Vector3 eye, Vector3 look, SkyDefinition* definition, SkyQuality* quality, SkyEnvironment* environment)
+{
+    look = v3Normalize(look);
+    return colorGradationGet(&_definition._sky_gradation, look.y * 0.5 + 0.5);
+}
+
+Color skyGetColor(Vector3 eye, Vector3 look)
+{
+    return skyGetColorCustom(eye, look, &_definition, &_quality, &_environment);
 }
 
 Color skyProjectRay(Vector3 start, Vector3 direction)
@@ -29,18 +113,13 @@ Color skyProjectRay(Vector3 start, Vector3 direction)
     Color color_sky, color_clouds;
 
     direction = v3Normalize(direction);
-    
+
     color_sky = skyGetColor(start, direction);
     color_clouds = cloudsGetColor(start, v3Add(start, v3Scale(direction, SPHERE_SIZE)));
-    
+
     colorMask(&color_sky, &color_clouds);
 
     return color_sky;
-}
-
-void skySetGradation(ColorGradation grad)
-{
-    _gradation = grad;
 }
 
 static int _postProcessFragment(RenderFragment* fragment)
@@ -53,7 +132,7 @@ static int _postProcessFragment(RenderFragment* fragment)
 
     color_sky = skyGetColor(camera_location, v3Normalize(direction));
     color_clouds = cloudsGetColor(camera_location, v3Add(camera_location, v3Scale(direction, 10.0)));
-    
+
     colorMask(&color_sky, &color_clouds);
     fragment->vertex.color = color_sky;
 
@@ -85,7 +164,7 @@ void skyRender(RenderProgressCallback callback)
         {
             return;
         }
-        
+
         current_j = (double)(j - res_j / 2) * step_j;
 
         for (i = 0; i < res_i; i++)
