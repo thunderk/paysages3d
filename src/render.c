@@ -92,7 +92,7 @@ void renderSetSize(int width, int height)
     _dirty_down = render_height;
     _dirty_up = -1;
     _dirty_count = 0;
-    
+
     _pixel_count = render_width * render_height;
 
     for (y = 0; y < height; y++)
@@ -134,7 +134,7 @@ void renderClear()
 
     scanline_left = 0;
     scanline_right = render_width - 1;
-    
+
     _progress = 0.0;
     _interrupt = 0;
 
@@ -682,7 +682,7 @@ void renderPostProcess(int nbchunks)
                     chunks[i].interrupt = 1;
                 }
             }
-            
+
             if (y < ny && !chunks[i].thread && !_interrupt)
             {
                 chunks[i].finished = 0;

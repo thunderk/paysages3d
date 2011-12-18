@@ -99,6 +99,10 @@ SkyDefinition skyGetDefinition()
 
 Color skyGetColorCustom(Vector3 eye, Vector3 look, SkyDefinition* definition, SkyQuality* quality, SkyEnvironment* environment)
 {
+    double sun_angle, dist;
+    Vector3 sun_position;
+    Color sun_color, sky_color;
+
     if (definition == NULL)
     {
         definition = &_definition;
@@ -112,8 +116,34 @@ Color skyGetColorCustom(Vector3 eye, Vector3 look, SkyDefinition* definition, Sk
         environment = &_environment;
     }
 
+    sun_angle = (definition->daytime + 0.75) * M_PI * 2.0;
+    sun_position.x = cos(sun_angle);
+    sun_position.y = sin(sun_angle);
+    sun_position.z = 0.0;
+
     look = v3Normalize(look);
-    return colorGradationGet(&definition->_sky_gradation, look.y * 0.5 + 0.5);
+    dist = v3Norm(v3Sub(look, sun_position));
+
+    sky_color = colorGradationGet(&definition->_sky_gradation, look.y * 0.5 + 0.5);
+    if (dist < definition->sun_radius)
+    {
+        dist = dist / definition->sun_radius;
+        sun_color = colorGradationGet(&definition->sun_color, definition->daytime);
+        if (dist < 0.9)
+        {
+            return sun_color;
+        }
+        else
+        {
+            sun_color.a = (1.0 - dist) / 0.1;
+            colorMask(&sky_color, &sun_color);
+            return sky_color;
+        }
+    }
+    else
+    {
+        return sky_color;
+    }
 }
 
 Color skyGetColor(Vector3 eye, Vector3 look)

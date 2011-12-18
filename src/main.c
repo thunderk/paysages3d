@@ -103,12 +103,12 @@ int main(int argc, char** argv)
     ilInit();
     iluInit();
 
-    cameraSetLocation(2.0, 5.0, 10.0);
+    cameraSetLocation(-12.0, 5.0, 2.0);
     cameraSetTarget(0.0, 5.0, 0.0);
-    
+
     autoInit();
     guiInit();
-    
+
     autoSetRenderQuality(5);
     autoGenRealisticLandscape(0);
     autoSetDaytime(8, 30);

@@ -185,7 +185,9 @@ void autoGenRealisticLandscape(int seed)
 
     /* Sky */
     sky.sun_color = colorGradationCreate();
-    colorGradationAddRgba(&sky.sun_color, 0.5, 1.0, 0.98, 0.95, 1.0);
+    colorGradationAddRgba(&sky.sun_color, 0.3, 1.0, 0.91, 0.8, 1.0);
+    colorGradationAddRgba(&sky.sun_color, 0.5, 1.0, 0.95, 0.9, 1.0);
+    colorGradationAddRgba(&sky.sun_color, 0.7, 1.0, 0.91, 0.8, 1.0);
     sky.zenith_color = colorGradationCreate();
     colorGradationAddRgba(&sky.zenith_color, 0.2, 0.03, 0.03, 0.05, 1.0);
     colorGradationAddRgba(&sky.zenith_color, 0.25, 0.25, 0.33, 0.37, 1.0);
@@ -205,6 +207,7 @@ void autoGenRealisticLandscape(int seed)
     sky.daytime = 0.0;
     sky.haze_height = 0.75;
     sky.haze_smoothing = 0.3;
+    sky.sun_radius = 0.02;
     skySetDefinition(sky);
 
     noise = noiseCreateGenerator();

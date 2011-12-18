@@ -14,9 +14,9 @@ static Color _cbPreviewHorizon(SmallPreview* preview, double x, double y, double
     Vector3 eye = {0.0, 0.0, 0.0};
     Vector3 look;
 
-    look.x = x;
-    look.y = -y;
-    look.z = 1.0;
+    look.x = cos(M_PI * (x / 1.28 + 0.5)) * cos(M_PI * (y / 2.56));
+    look.y = -sin(M_PI * (y / 2.56));
+    look.z = sin(M_PI * (x / 1.28 + 0.5)) * cos(M_PI * (y / 2.56));
 
     return skyGetColorCustom(eye, look, &_definition, NULL, NULL);
 }
@@ -107,7 +107,7 @@ void guiSkyInit()
 
     /* Configs */
     gtk_range_set_range(GTK_RANGE(GET_WIDGET("sky_daytime")), 0.0, 1.0);
-    gtk_range_set_range(GTK_RANGE(GET_WIDGET("sky_sun_size")), 0.0, 1.0);
+    gtk_range_set_range(GTK_RANGE(GET_WIDGET("sky_sun_size")), 0.0, 0.3);
     gtk_range_set_range(GTK_RANGE(GET_WIDGET("sky_haze_height")), 0.0, 1.0);
     gtk_range_set_range(GTK_RANGE(GET_WIDGET("sky_haze_smoothing")), 0.0, 1.0);
 
