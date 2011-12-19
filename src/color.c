@@ -206,4 +206,5 @@ ColorGradation colorGradationLoad(FILE* f)
         result.parts[i].col = colorLoad(f);
     }
 
+    return result;
 }

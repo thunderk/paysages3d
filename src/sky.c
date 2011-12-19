@@ -192,8 +192,8 @@ void skyRender(RenderProgressCallback callback)
     Color col;
     Vector3 direction;
 
-    res_i = render_quality * 20;
-    res_j = render_quality * 10;
+    res_i = render_quality * 40;
+    res_j = render_quality * 20;
     step_i = M_PI * 2.0 / (double)res_i;
     step_j = M_PI / (double)res_j;
 

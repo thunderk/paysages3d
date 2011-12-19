@@ -13,13 +13,13 @@ static WaterEnvironment _environment;
 static RayCastingResult _reflectionFunction(Vector3 start, Vector3 direction)
 {
     RayCastingResult result;
-    
+
     if (!terrainProjectRay(start, direction, &result.hit_location, &result.hit_color))
     {
         result.hit_color = skyProjectRay(start, direction);
         /* TODO hit_location */
     }
-    
+
     result.hit = 1;
     return result;
 }
@@ -27,18 +27,18 @@ static RayCastingResult _reflectionFunction(Vector3 start, Vector3 direction)
 static RayCastingResult _refractionFunction(Vector3 start, Vector3 direction)
 {
     RayCastingResult result;
-    
+
     result.hit = terrainProjectRay(start, direction, &result.hit_location, &result.hit_color);
-    
+
     return result;
 }
 
 void waterInit()
 {
     _definition = waterCreateDefinition();
-    
+
     /* TODO quality */
-    
+
     _environment.reflection_function = _reflectionFunction;
     _environment.refraction_function = _refractionFunction;
     _environment.toggle_fog = 1;
@@ -49,6 +49,8 @@ void waterSave(FILE* f)
 {
     toolsSaveDouble(f, _definition.height);
     colorSave(_definition.main_color, f);
+    colorSave(_definition.depth_color, f);
+    toolsSaveDouble(f, _definition.transparency_depth);
     toolsSaveDouble(f, _definition.transparency);
     toolsSaveDouble(f, _definition.reflection);
     noiseSave(_definition.height_noise, f);
@@ -58,6 +60,8 @@ void waterLoad(FILE* f)
 {
     _definition.height = toolsLoadDouble(f);
     _definition.main_color = colorLoad(f);
+    _definition.depth_color = colorLoad(f);
+    _definition.transparency_depth = toolsLoadDouble(f);
     _definition.transparency = toolsLoadDouble(f);
     _definition.reflection = toolsLoadDouble(f);
     noiseLoad(_definition.height_noise, f);
@@ -66,10 +70,10 @@ void waterLoad(FILE* f)
 WaterDefinition waterCreateDefinition()
 {
     WaterDefinition result;
-    
+
     result.height = -1000.0;
     result.height_noise = noiseCreateGenerator();
-    
+
     return result;
 }
 
@@ -81,7 +85,7 @@ void waterDeleteDefinition(WaterDefinition definition)
 void waterCopyDefinition(WaterDefinition source, WaterDefinition* destination)
 {
     NoiseGenerator* noise;
-    
+
     noise = destination->height_noise;
     *destination = source;
     destination->height_noise = noise;
@@ -101,7 +105,7 @@ WaterDefinition waterGetDefinition()
 void waterSetQuality(WaterQuality quality)
 {
     _quality = quality;
-    
+
     _quality.detail_boost = (_quality.detail_boost < 0.1) ? 0.1 : _quality.detail_boost;
 }
 
@@ -139,7 +143,7 @@ static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, doub
 static inline Vector3 _reflectRay(Vector3 incoming, Vector3 normal)
 {
     double c;
-    
+
     c = v3Dot(normal, v3Scale(incoming, -1.0));
     return v3Add(incoming, v3Scale(normal, 2.0 * c));
 }
@@ -147,7 +151,7 @@ static inline Vector3 _reflectRay(Vector3 incoming, Vector3 normal)
 static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal)
 {
     double c1, c2, f;
-    
+
     f = 1.0 / 1.33;
     c1 = v3Dot(normal, v3Scale(incoming, -1.0));
     c2 = sqrt(1.0 - pow(f, 2.0) * (1.0 - pow(c1, 2.0)));
@@ -164,10 +168,11 @@ static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal)
 WaterResult waterGetColorCustom(Vector3 location, Vector3 look, WaterDefinition* definition, WaterQuality* quality, WaterEnvironment* environment)
 {
     WaterResult result;
+    RayCastingResult refracted;
     Vector3 normal;
     Color color;
-    double shadowed, detail;
-    
+    double shadowed, detail, depth;
+
     if (definition == NULL)
     {
         definition = &_definition;
@@ -196,13 +201,26 @@ WaterResult waterGetColorCustom(Vector3 location, Vector3 look, WaterDefinition*
     normal = _getNormal(definition, location, detail);
     look = v3Normalize(look);
     result.reflected = environment->reflection_function(location, _reflectRay(look, normal)).hit_color;
-    result.refracted = environment->refraction_function(location, _refractRay(look, normal)).hit_color;
+    refracted = environment->refraction_function(location, _refractRay(look, normal));
+    depth = v3Norm(v3Sub(location, refracted.hit_location));
+    if (depth > definition->transparency_depth)
+    {
+        result.refracted = definition->depth_color;
+    }
+    else
+    {
+        depth /= definition->transparency_depth;
+        result.refracted.r = refracted.hit_color.r * (1.0 - depth) + definition->depth_color.r * depth;
+        result.refracted.g = refracted.hit_color.g * (1.0 - depth) + definition->depth_color.g * depth;
+        result.refracted.b = refracted.hit_color.b * (1.0 - depth) + definition->depth_color.b * depth;
+        result.refracted.a = 1.0;
+    }
 
     color.r = definition->main_color.r * (1.0 - definition->transparency) + result.reflected.r * definition->reflection + result.refracted.r * definition->transparency;
     color.g = definition->main_color.g * (1.0 - definition->transparency) + result.reflected.g * definition->reflection + result.refracted.g * definition->transparency;
     color.b = definition->main_color.b * (1.0 - definition->transparency) + result.reflected.b * definition->reflection + result.refracted.b * definition->transparency;
     color.a = 1.0;
-    
+
     if (environment->toggle_shadows)
     {
         shadowed = terrainGetShadow(location, sun_direction_inv);
@@ -311,7 +329,7 @@ void waterRender(RenderProgressCallback callback)
         {
             return;
         }
-        
+
         for (i = 0; i < chunk_count - 1; i++)
         {
             _renderQuad(cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size);

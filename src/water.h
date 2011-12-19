@@ -10,6 +10,8 @@ typedef struct
     double transparency;
     double reflection;
     Color main_color;
+    Color depth_color;
+    double transparency_depth;
     NoiseGenerator* height_noise;
 } WaterDefinition;
 

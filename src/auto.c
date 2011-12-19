@@ -170,12 +170,17 @@ void autoGenRealisticLandscape(int seed)
 
     /* Water */
     water.height = 0.0;
-    water.transparency = 0.4;
-    water.reflection = 0.5;
+    water.transparency = 0.5;
+    water.reflection = 0.3;
+    water.transparency_depth = 6.0;
     water.main_color.r = 0.1;
     water.main_color.g = 0.3;
     water.main_color.b = 0.4;
     water.main_color.a = 1.0;
+    water.depth_color.r = 0.0;
+    water.depth_color.g = 0.2;
+    water.depth_color.b = 0.3;
+    water.depth_color.a = 1.0;
     water.height_noise = noiseCreateGenerator();
     noiseGenerateBaseNoise(water.height_noise, 262144);
     noiseAddLevelsSimple(water.height_noise, 2, 0.2, 0.015);
