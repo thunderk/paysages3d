@@ -4,6 +4,10 @@
 #include "shared/types.h"
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
     double ycenter;
@@ -44,5 +48,9 @@ CloudsQuality cloudsGetQuality();
 
 Color cloudsGetColorCustom(Vector3 start, Vector3 end, CloudsDefinition* definition, CloudsQuality* quality, CloudsEnvironment* environment);
 Color cloudsGetColor(Vector3 start, Vector3 end);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

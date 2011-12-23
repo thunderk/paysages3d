@@ -1,6 +1,10 @@
 #ifndef _PAYSAGES_TYPES_H_
 #define _PAYSAGES_TYPES_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
     double x;
@@ -104,7 +108,7 @@ struct NoiseLevel
 typedef struct NoiseLevel NoiseLevel;
 typedef struct NoiseGenerator NoiseGenerator;
 
-typedef struct Zone Zone; 
+typedef struct Zone Zone;
 
 typedef struct HeightModifier HeightModifier;
 
@@ -121,5 +125,9 @@ typedef struct
     Vector3 hit_location;
 } RayCastingResult;
 typedef RayCastingResult (*RayCastingFunction)(Vector3 start, Vector3 direction);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

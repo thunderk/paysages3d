@@ -4,6 +4,10 @@
 #include "shared/types.h"
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
     double daytime;
@@ -45,5 +49,9 @@ Color skyGetColor(Vector3 eye, Vector3 look);
 
 Color skyProjectRay(Vector3 start, Vector3 direction);
 void skyRender(RenderProgressCallback callback);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

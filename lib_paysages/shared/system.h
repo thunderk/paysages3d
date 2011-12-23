@@ -1,4 +1,11 @@
+#ifndef _PAYSAGES_SYSTEM_H_
+#define _PAYSAGES_SYSTEM_H_
+
 #include <glib.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef GThread Thread;
 typedef void*(*ThreadFunction)(void* data);
@@ -41,3 +48,8 @@ static inline void timeSleepMs(unsigned long ms)
     g_usleep(ms * 1000);
 }
 
+#ifdef __cplusplus
+}
+#endif
+
+#endif

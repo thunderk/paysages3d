@@ -4,6 +4,10 @@
 #include "shared/types.h"
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
     double height;
@@ -54,5 +58,9 @@ double waterGetLightFactor(Vector3 location);
 WaterResult waterGetColorCustom(Vector3 location, Vector3 look, WaterDefinition* definition, WaterQuality* quality, WaterEnvironment* environment);
 Color waterGetColor(Vector3 location, Vector3 look);
 void waterRender(RenderProgressCallback callback);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

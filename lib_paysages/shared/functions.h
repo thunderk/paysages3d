@@ -4,6 +4,10 @@
 #include "types.h"
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void paysagesInit();
 
 /* array.c */
@@ -210,5 +214,9 @@ void zoneExcludeCircleArea(Zone* zone, double centerx, double centerz, double so
 void zoneAddHeightRange(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax);
 void zoneAddSteepnessRange(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax);
 double zoneGetValue(Zone* zone, Vector3 location, Vector3 normal);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
