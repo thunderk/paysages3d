@@ -4,6 +4,8 @@
 #include "types.h"
 #include <stdio.h>
 
+void paysagesInit();
+
 /* array.c */
 void arrayCreate(Array* array, int item_size);
 void arrayDelete(Array* array);
@@ -90,11 +92,6 @@ void fogLoad(FILE* f);
 void fogSetColor(Color col);
 void fogSetDistance(double near, double far);
 Color fogApplyToLocation(Vector3 location, Color base);
-
-/* gui.c */
-void guiInit();
-void guiStart();
-void guiUpdate();
 
 /* lighting.c */
 void lightingSave(FILE* f);

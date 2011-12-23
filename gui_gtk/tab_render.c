@@ -1,10 +1,10 @@
 /* Terrain tab */
 
 #include "common.h"
-#include "../shared/functions.h"
-#include "../shared/constants.h"
-#include "../shared/globals.h"
-#include "../shared/system.h"
+#include "lib_paysages/shared/functions.h"
+#include "lib_paysages/shared/constants.h"
+#include "lib_paysages/shared/globals.h"
+#include "lib_paysages/shared/system.h"
 
 static GtkImage* _render_final;
 static GdkPixbuf* _render_buffer = NULL;
@@ -59,20 +59,20 @@ static void* _threadRender(void* data)
 static void _cbStartRender(GtkWidget* widget, gpointer data)
 {
     Thread* thread;
-    
+
     /* Prepare render */
     renderSetSize(gtk_spin_button_get_value(GTK_SPIN_BUTTON(GET_WIDGET("render_width"))), gtk_spin_button_get_value(GTK_SPIN_BUTTON(GET_WIDGET("render_height"))));
     autoSetRenderQuality((int)gtk_range_get_value(GTK_RANGE(GET_WIDGET("render_quality"))));
     gtk_widget_set_size_request(GET_WIDGET("render_preview"), render_width, render_height);
     gtk_image_clear(GTK_IMAGE(GET_WIDGET("render_preview")));
     renderSetPreviewCallbacks(_previewResize, _previewClear, _previewDraw, _previewUpdate);
-    
+
     /* Open render dialog */
     gtk_window_set_deletable(GTK_WINDOW(GET_WIDGET("dialog_render")), 0);
     gtk_widget_show(GET_WIDGET("dialog_render"));
     gtk_widget_set_sensitive(GET_WIDGET("render_stop"), 1);
     gtk_widget_set_sensitive(GET_WIDGET("render_close"), 0);
-    
+
     /* Do the render */
     _rendering = 1;
     thread = threadCreate(_threadRender, NULL);
@@ -85,7 +85,7 @@ static void _cbStartRender(GtkWidget* widget, gpointer data)
         }
     }
     threadJoin(thread);
-    
+
     /* Clean up */
     renderSetPreviewCallbacks(NULL, NULL, NULL, NULL);
     gtk_widget_set_sensitive(GET_WIDGET("render_stop"), 0);

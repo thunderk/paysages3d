@@ -1,9 +1,9 @@
 /* Terrain tab */
 
 #include "common.h"
-#include "../shared/functions.h"
-#include "../shared/constants.h"
-#include "../water.h"
+#include "lib_paysages/shared/functions.h"
+#include "lib_paysages/shared/constants.h"
+#include "lib_paysages/water.h"
 #include <math.h>
 
 static SmallPreview* _preview_coverage;

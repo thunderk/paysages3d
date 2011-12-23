@@ -1,8 +1,8 @@
 /* Noise editor dialog */
 
 #include "common.h"
-#include "../shared/functions.h"
-#include "../shared/constants.h"
+#include "lib_paysages/shared/functions.h"
+#include "lib_paysages/shared/constants.h"
 
 static GtkWidget* _dialog;
 static SmallPreview* _preview;
@@ -28,13 +28,13 @@ static Color _cbPreview2DRenderPixel(SmallPreview* preview, double x, double y, 
 {
     Color col;
     double max_value;
-    
+
     /* TODO Cache this value */
     max_value = noiseGetMaxValue(_generator);
 
     col.r = col.g = col.b = (noiseGet2DTotal(_generator, x, y) / max_value) * 0.5 + 0.5;
     col.a = 1.0;
-    
+
     return col;
 }
 
@@ -42,16 +42,16 @@ static void _setPreviewMode(int mode)
 {
     GtkButton* button;
     double max_value;
-    
+
     max_value = noiseGetMaxValue(_generator);
-    
+
     button = GTK_BUTTON(GET_WIDGET("noise_editor_preview_mode"));
     if (mode == 1)
     {
         _current_mode = 1;
         guiPreviewSetRenderer(_preview, _cbPreview1DRenderPixel);
         gtk_button_set_label(button, "1D");
-        
+
         guiPreviewConfigScrolling(_preview, -max_value * 100.0, max_value * 100.0, -max_value, max_value);
     }
     else if (mode == 2)
@@ -59,10 +59,10 @@ static void _setPreviewMode(int mode)
         _current_mode = 2;
         guiPreviewSetRenderer(_preview, _cbPreview2DRenderPixel);
         gtk_button_set_label(button, "2D");
-        
+
         guiPreviewConfigScrolling(_preview, -max_value * 100.0, max_value * 100.0, -max_value * 100.0, max_value * 100.0);
     }
-    
+
     guiPreviewConfigScaling(_preview, max_value * 0.001, max_value * 0.1, max_value * 0.001);
     guiPreviewSetViewport(_preview, 0.0, 0.0, max_value * 0.01);
 }
@@ -75,7 +75,7 @@ static void _redrawPreview()
 static void _resetPreview()
 {
     _setPreviewMode(_current_mode);
-    
+
     _redrawPreview();
 }
 

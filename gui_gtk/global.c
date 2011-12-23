@@ -2,8 +2,8 @@
 #include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#include "../shared/functions.h"
-#include "../shared/constants.h"
+#include "lib_paysages/shared/functions.h"
+#include "lib_paysages/shared/constants.h"
 #include "common.h"
 
 GtkBuilder* gui_definition;
@@ -105,4 +105,12 @@ void guiUpdate()
     guiSkyUpdate();
 
     guiPreviewRedrawAll();
+}
+
+int main(int argc, char** argv)
+{
+    paysagesInit();
+    guiInit();
+    guiStart();
+    return 0;
 }

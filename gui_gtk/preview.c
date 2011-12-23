@@ -3,11 +3,10 @@
 #include <string.h>
 #include <math.h>
 #include "common.h"
-#include "../shared/types.h"
-#include "../shared/functions.h"
-#include "../shared/constants.h"
-#include "../shared/system.h"
-#include "../water.h"
+#include "lib_paysages/shared/types.h"
+#include "lib_paysages/shared/functions.h"
+#include "lib_paysages/shared/constants.h"
+#include "lib_paysages/shared/system.h"
 
 #define MAX_PREVIEWS 30
 
@@ -17,7 +16,7 @@ struct SmallPreview
     double conf_scroll_xmax;
     double conf_scroll_ymin;
     double conf_scroll_ymax;
-    
+
     double conf_scale_min;
     double conf_scale_max;
     double conf_scale_step;
@@ -241,7 +240,7 @@ static inline int _fixScaling(SmallPreview* preview, double scaling, double* new
 static int _cbMouseScroll(GtkEventBox* image, GdkEventScroll* event, gpointer data)
 {
     SmallPreview* preview = (SmallPreview*)data;
-    
+
     /* TODO Center the zoom on the cursor */
 
     if (event->direction == GDK_SCROLL_UP)
@@ -262,7 +261,7 @@ static int _cbMouseScroll(GtkEventBox* image, GdkEventScroll* event, gpointer da
         }
         mutexRelease(preview->lock);
     }
-    
+
     return 1;
 }
 
@@ -287,18 +286,18 @@ static int _cbMouseMove(GtkEventBox* image, GdkEventMotion* event, gpointer data
     if (event->state & GDK_BUTTON1_MASK)
     {
         mutexAcquire(preview->lock);
-        
+
         dx = (int)event->x - preview->mousex;
         dy = (int)event->y - preview->mousey;
-        
+
         if (_fixScroll(preview, dx, dy, &dx, &dy))
         {
             _scrollPixbuf(preview, dx, dy);
         }
-        
+
         preview->mousex = (int)event->x;
         preview->mousey = (int)event->y;
-        
+
         mutexRelease(preview->lock);
     }
 

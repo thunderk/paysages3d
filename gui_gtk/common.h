@@ -1,7 +1,7 @@
 #include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#include "../shared/types.h"
+#include "lib_paysages/shared/types.h"
 
 #include <stdio.h>
 
@@ -23,6 +23,8 @@ static inline GtkWidget* _get_widget(const char* name, const char* file, int lin
     return result;
 }
 #define GET_WIDGET(_name_) (_get_widget(_name_, __FILE__, __LINE__))
+
+void guiUpdate();
 
 void guiTerrainInit();
 
