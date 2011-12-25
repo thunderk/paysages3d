@@ -6,6 +6,8 @@ FormWater::FormWater(QWidget *parent) :
     ui(new Ui::FormWater)
 {
     ui->setupUi(this);
+
+    this->findChild<QToolBox*>("water_configs")->setCurrentIndex(0);
 }
 
 FormWater::~FormWater()
