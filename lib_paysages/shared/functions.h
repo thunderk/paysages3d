@@ -1,12 +1,12 @@
 #ifndef _PAYSAGES_FUNCTIONS_H_
 #define _PAYSAGES_FUNCTIONS_H_
 
-#include "types.h"
-#include <stdio.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include "types.h"
+#include <stdio.h>
 
 void paysagesInit();
 
