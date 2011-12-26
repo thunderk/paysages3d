@@ -13,9 +13,11 @@ LIBS += -L../lib_paysages/ -lpaysages
 # Input
 HEADERS += ../lib_paysages/shared/functions.h ../lib_paysages/shared/types.h \
     mainwindow.h \
-    formwater.h
+    formwater.h \
+    preview.h
 FORMS += mainwindow.ui \
     formwater.ui
 SOURCES += main.cc \
     mainwindow.cpp \
-    formwater.cpp
+    formwater.cpp \
+    preview.cpp
