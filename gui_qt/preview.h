@@ -11,13 +11,13 @@ public:
     Preview(QWidget* parent);
     static void startUpdater();
     void doRender();
+    void redraw();
 
 protected:
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent* event);
     virtual QColor getColor(double x, double y) = 0;
 
-private:
     void renderPixbuf();
     void forceRender();
 

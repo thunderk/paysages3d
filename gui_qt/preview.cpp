@@ -15,9 +15,9 @@ public:
 protected:
     void run()
     {
-        QVectorIterator<Preview*> iter(_previews);
         while (true)
         {
+            QVectorIterator<Preview*> iter(_previews);
             while (iter.hasNext())
             {
                 iter.next()->doRender();
@@ -66,6 +66,13 @@ void Preview::doRender()
         this->need_render = 0;
         this->renderPixbuf();
     }
+}
+
+void Preview::redraw()
+{
+    lock->lock();
+    need_rerender = 1;
+    lock->unlock();
 }
 
 void Preview::resizeEvent(QResizeEvent* event)
@@ -305,13 +312,6 @@ void Preview::renderPixbuf()
 //    }
 
 //    return 1;
-//}
-
-//void guiPreviewRedraw(SmallPreview* preview)
-//{
-//    mutexAcquire(preview->lock);
-//    preview->need_rerender = 1;
-//    mutexRelease(preview->lock);
 //}
 
 //void guiPreviewRedrawAll()
