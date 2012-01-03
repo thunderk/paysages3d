@@ -48,7 +48,7 @@ Zone* zoneCreate()
     result->steepness_ranges_count = 0;
     result->circles_included_count = 0;
     result->circles_excluded_count = 0;
-    
+
     return result;
 }
 
@@ -60,7 +60,7 @@ void zoneDelete(Zone* zone)
 void zoneSave(Zone* zone, FILE* f)
 {
     int i;
-    
+
     toolsSaveInt(f, zone->height_ranges_count);
     for (i = 0; i < zone->height_ranges_count; i++)
     {
@@ -70,7 +70,7 @@ void zoneSave(Zone* zone, FILE* f)
         toolsSaveDouble(f, zone->height_ranges[i].softmax);
         toolsSaveDouble(f, zone->height_ranges[i].hardmax);
     }
-    
+
     toolsSaveInt(f, zone->steepness_ranges_count);
     for (i = 0; i < zone->steepness_ranges_count; i++)
     {
@@ -80,7 +80,7 @@ void zoneSave(Zone* zone, FILE* f)
         toolsSaveDouble(f, zone->steepness_ranges[i].softmax);
         toolsSaveDouble(f, zone->steepness_ranges[i].hardmax);
     }
-    
+
     toolsSaveInt(f, zone->circles_included_count);
     for (i = 0; i < zone->circles_included_count; i++)
     {
@@ -90,7 +90,7 @@ void zoneSave(Zone* zone, FILE* f)
         toolsSaveDouble(f, zone->circles_included[i].softradius);
         toolsSaveDouble(f, zone->circles_included[i].hardradius);
     }
-    
+
     toolsSaveInt(f, zone->circles_excluded_count);
     for (i = 0; i < zone->circles_excluded_count; i++)
     {
@@ -105,7 +105,7 @@ void zoneSave(Zone* zone, FILE* f)
 void zoneLoad(Zone* zone, FILE* f)
 {
     int i;
-    
+
     zone->height_ranges_count = toolsLoadInt(f);
     for (i = 0; i < zone->height_ranges_count; i++)
     {
@@ -115,7 +115,7 @@ void zoneLoad(Zone* zone, FILE* f)
         zone->height_ranges[i].softmax = toolsLoadDouble(f);
         zone->height_ranges[i].hardmax = toolsLoadDouble(f);
     }
-    
+
     zone->steepness_ranges_count = toolsLoadInt(f);
     for (i = 0; i < zone->steepness_ranges_count; i++)
     {
@@ -125,7 +125,7 @@ void zoneLoad(Zone* zone, FILE* f)
         zone->steepness_ranges[i].softmax = toolsLoadDouble(f);
         zone->steepness_ranges[i].hardmax = toolsLoadDouble(f);
     }
-    
+
     zone->circles_included_count = toolsLoadInt(f);
     for (i = 0; i < zone->circles_included_count; i++)
     {
@@ -135,7 +135,7 @@ void zoneLoad(Zone* zone, FILE* f)
         zone->circles_included[i].softradius = toolsLoadDouble(f);
         zone->circles_included[i].hardradius = toolsLoadDouble(f);
     }
-    
+
     zone->circles_excluded_count = toolsLoadInt(f);
     for (i = 0; i < zone->circles_excluded_count; i++)
     {
@@ -149,7 +149,7 @@ void zoneLoad(Zone* zone, FILE* f)
 
 void zoneCopy(Zone* source, Zone* destination)
 {
-    *source = *destination;
+    *destination = *source;
 }
 
 void zoneIncludeCircleArea(Zone* zone, double value, double centerx, double centerz, double softradius, double hardradius)
@@ -213,11 +213,11 @@ static inline double _getRangeInfluence(Range range, double position)
 static inline double _getCircleInfluence(Circle circle, Vector3 position)
 {
     double radius, dx, dz;
-    
+
     dx = position.x - circle.centerx;
     dz = position.z - circle.centerz;
     radius = sqrt(dx * dx + dz * dz);
-    
+
     if (radius > circle.hardradius)
     {
         return 0.0;
@@ -236,7 +236,7 @@ double zoneGetValue(Zone* zone, Vector3 location, Vector3 normal)
 {
     int i;
     double value, value_height, value_steepness, value_circle;
-    
+
     if (zone->circles_included_count > 0)
     {
         value_circle = 0.0;

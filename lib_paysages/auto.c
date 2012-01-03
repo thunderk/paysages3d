@@ -21,6 +21,7 @@ static int _is_rendering = 0;
 void autoInit()
 {
     _cpu_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
+    _cpu_count = 1;
     renderSetBackgroundColor(&COLOR_BLACK);
 
     terrainInit();
@@ -222,42 +223,43 @@ void autoGenRealisticLandscape(int seed)
 
     terrain = terrainCreateDefinition();
     noiseGenerateBaseNoise(terrain.height_noise, 1048576);
-    noiseAddLevelsSimple(terrain.height_noise, 8, 10.0, 1.0);
+    noiseAddLevelsSimple(terrain.height_noise, 10, 10.0, 1.0);
     noiseNormalizeHeight(terrain.height_noise, -12.0, 12.0, 0);
     terrainSetDefinition(terrain);
     terrainDeleteDefinition(terrain);
-    
+
     layer = texturesAddLayer();
     texture = texturesCreateDefinition();
     noiseGenerateBaseNoise(texture.bump_noise, 102400);
     noiseAddLevelsSimple(texture.bump_noise, 6, 0.01, 0.01);
-    texture.color = COLOR_WHITE;
+    texture.color.r = 0.6;
+    texture.color.g = 0.55;
+    texture.color.b = 0.57;
     texturesSetDefinition(layer, texture);
     texturesDeleteDefinition(texture);
-    
-    /*tex = textureCreateFromFile("./data/textures/rock3.jpg");
-    tex->scaling_x = 0.003;
-    tex->scaling_y = 0.003;
-    tex->scaling_z = 0.003;
-    zone = zoneCreate(1.0);
-    terrainAddTexture(tex, 0.05, zone, 1.0);
 
-    tex = textureCreateFromFile("./data/textures/grass1.jpg");
-    tex->scaling_x = 0.0004;
-    tex->scaling_y = 0.0004;
-    tex->scaling_z = 0.0004;
-    zone = zoneCreate(0.0);
-    zoneAddHeightRange(zone, 1.0, -1.0, 0.0, 3.0, 15.0);
-    zoneAddSteepnessRange(zone, 1.0, 0.0, 0.0, 0.3, 0.4);
-    terrainAddTexture(tex, 0.15, zone, 0.05);*/
+    layer = texturesAddLayer();
+    texture = texturesCreateDefinition();
+    zoneAddHeightRange(texture.zone, 1.0, -1.0, 0.0, 3.0, 15.0);
+    zoneAddSteepnessRange(texture.zone, 1.0, 0.0, 0.0, 0.3, 0.4);
+    noiseGenerateBaseNoise(texture.bump_noise, 102400);
+    noiseAddLevelsSimple(texture.bump_noise, 6, 0.02, 0.008);
+    texture.color.r = 0.2;
+    texture.color.g = 0.24;
+    texture.color.b = 0.05;
+    texturesSetDefinition(layer, texture);
+    texturesDeleteDefinition(texture);
 
-    /*tex = textureCreateFromFile("./data/textures/snow1.jpg");
-    tex->scaling_x = 0.001;
-    tex->scaling_y = 0.001;
-    tex->scaling_z = 0.001;
-    zone = zoneCreate(0.0);
-    zoneAddHeightRange(zone, 1.0, 3.0, 4.0, 100.0, 100.0);
-    terrainAddTexture(tex, 0.5, zone, 0.1);*/
+    /*layer = texturesAddLayer();
+    texture = texturesCreateDefinition();
+    zoneAddHeightRange(texture.zone, 1.0, 3.0, 4.0, 100.0, 100.0);
+    noiseGenerateBaseNoise(texture.bump_noise, 102400);
+    noiseAddLevelsSimple(texture.bump_noise, 6, 0.04, 0.003);
+    texture.color.r = 1.0;
+    texture.color.g = 1.0;
+    texture.color.b = 1.0;
+    texturesSetDefinition(layer, texture);
+    texturesDeleteDefinition(texture);*/
 
     /* DEBUG */
     /*mod = modifierCreate();

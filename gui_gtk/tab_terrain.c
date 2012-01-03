@@ -14,10 +14,7 @@ static Color _cbPreviewRenderPixel(SmallPreview* preview, double x, double y, do
 
     result.r = result.g = result.b = terrainGetHeightNormalized(x, y);
     result.a = 1.0;
-    
-    /* TEMP */
-    //result = terrainGetColor(x, y, 0.01);
-    
+
     return result;
 }
 
@@ -25,14 +22,14 @@ static void _cbEditNoiseDone(NoiseGenerator* generator)
 {
     noiseCopy(generator, _definition.height_noise);
     terrainSetDefinition(_definition);
-    
+
     /* TODO Redraw only affected by terrain */
     guiPreviewRedrawAll();
 }
 
 static void _cbEditNoise(GtkWidget* widget, gpointer data)
 {
-    guiNoiseEdit(texturesGetDefinition(0).bump_noise, _cbEditNoiseDone);
+    guiNoiseEdit(_definition.height_noise, _cbEditNoiseDone);
 }
 
 void guiTerrainInit()
