@@ -260,12 +260,12 @@ static void _renderQuad(double x, double z, double size)
 
 double terrainGetHeight(double x, double z)
 {
-    return _getHeight(&_definition, x, z, 0.01 / (double)render_quality);
+    return _getHeight(&_definition, x, z, 0.0);
 }
 
 double terrainGetHeightNormalized(double x, double z)
 {
-    return 0.5 + _getHeight(&_definition, x, z, 0.01 / (double)render_quality) / (_max_height * 2.0);
+    return 0.5 + _getHeight(&_definition, x, z, 0.0) / (_max_height * 2.0);
 }
 
 Color terrainGetColorCustom(double x, double z, double detail, TerrainDefinition* definition, TerrainQuality* quality, TerrainEnvironment* environment)

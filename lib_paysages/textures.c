@@ -123,6 +123,7 @@ static inline Vector3 _getNormal(TextureDefinition* definition, Vector3 point, d
 
     ref.x = 0.0;
     ref.y = 0.0;
+    point.y = terrainGetHeight(point.x, point.z) + noiseGet2DTotal(definition->bump_noise, point.x, point.z);
 
     dpoint.x = point.x - scale;
     dpoint.z = point.z;
