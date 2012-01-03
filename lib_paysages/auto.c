@@ -12,6 +12,8 @@
 #include "water.h"
 #include "clouds.h"
 #include "sky.h"
+#include "terrain.h"
+#include "textures.h"
 
 static int _cpu_count = 1;
 static int _is_rendering = 0;
@@ -100,6 +102,7 @@ void autoSetDaytimeFraction(double daytime)
 
 void autoSetRenderQuality(int quality)
 {
+    TerrainQuality terrain;
     WaterQuality water;
     CloudsQuality clouds;
 
@@ -114,7 +117,9 @@ void autoSetRenderQuality(int quality)
 
     renderSetQuality(quality);
 
-    terrainSetChunkSize(0.1 / (double)render_quality, 0.05 / (double)render_quality);
+    terrain.min_chunk_size = 0.1 / (double)render_quality;
+    terrain.visible_chunk_size = 0.05 / (double)render_quality;
+    terrainSetQuality(terrain);
 
     water.detail_boost = 5.0;
     water.force_detail = 0.0;
@@ -126,14 +131,14 @@ void autoSetRenderQuality(int quality)
 
 void autoGenRealisticLandscape(int seed)
 {
-    Texture* tex;
+    TerrainDefinition terrain;
     WaterDefinition water;
     CloudsDefinition cloud;
     SkyDefinition sky;
+    TextureDefinition texture;
     int layer;
     HeightModifier* mod;
     Zone* zone;
-    NoiseGenerator* noise;
 
     if (!seed)
     {
@@ -166,7 +171,7 @@ void autoGenRealisticLandscape(int seed)
     noiseAddLevelSimple(cloud.noise, 50.0 / 800.0, 0.001);
     noiseAddLevelSimple(cloud.noise, 50.0 / 1000.0, 0.0005);
     layer = cloudsAddLayer();
-    cloudsSetDefinition(layer, cloud);
+    //cloudsSetDefinition(layer, cloud);
 
     /* Water */
     water.height = 0.0;
@@ -215,14 +220,22 @@ void autoGenRealisticLandscape(int seed)
     sky.sun_radius = 0.02;
     skySetDefinition(sky);
 
-    noise = noiseCreateGenerator();
-    noiseGenerateBaseNoise(noise, 1048576);
-    noiseAddLevelsSimple(noise, 10, 10.0, 1.0);
-    noiseNormalizeHeight(noise, -12.0, 12.0, 0);
-    terrainSetNoiseGenerator(noise);
-    noiseDeleteGenerator(noise);
-
-    tex = textureCreateFromFile("./data/textures/rock3.jpg");
+    terrain = terrainCreateDefinition();
+    noiseGenerateBaseNoise(terrain.height_noise, 1048576);
+    noiseAddLevelsSimple(terrain.height_noise, 8, 10.0, 1.0);
+    noiseNormalizeHeight(terrain.height_noise, -12.0, 12.0, 0);
+    terrainSetDefinition(terrain);
+    terrainDeleteDefinition(terrain);
+    
+    layer = texturesAddLayer();
+    texture = texturesCreateDefinition();
+    noiseGenerateBaseNoise(texture.bump_noise, 102400);
+    noiseAddLevelsSimple(texture.bump_noise, 6, 0.01, 0.01);
+    texture.color = COLOR_WHITE;
+    texturesSetDefinition(layer, texture);
+    texturesDeleteDefinition(texture);
+    
+    /*tex = textureCreateFromFile("./data/textures/rock3.jpg");
     tex->scaling_x = 0.003;
     tex->scaling_y = 0.003;
     tex->scaling_z = 0.003;
@@ -236,7 +249,7 @@ void autoGenRealisticLandscape(int seed)
     zone = zoneCreate(0.0);
     zoneAddHeightRange(zone, 1.0, -1.0, 0.0, 3.0, 15.0);
     zoneAddSteepnessRange(zone, 1.0, 0.0, 0.0, 0.3, 0.4);
-    terrainAddTexture(tex, 0.15, zone, 0.05);
+    terrainAddTexture(tex, 0.15, zone, 0.05);*/
 
     /*tex = textureCreateFromFile("./data/textures/snow1.jpg");
     tex->scaling_x = 0.001;
@@ -247,7 +260,7 @@ void autoGenRealisticLandscape(int seed)
     terrainAddTexture(tex, 0.5, zone, 0.1);*/
 
     /* DEBUG */
-    mod = modifierCreate();
+    /*mod = modifierCreate();
     zone = modifierGetZone(mod);
     zoneIncludeCircleArea(zone, 0.4, 0.0, 0.0, 8.0, 20.0);
     modifierActionFixValue(mod, -2.0);
@@ -261,7 +274,7 @@ void autoGenRealisticLandscape(int seed)
     zone = modifierGetZone(mod);
     zoneIncludeCircleArea(zone, 0.8, 0.0, 0.0, 0.3, 4.0);
     modifierActionFixValue(mod, -8.0);
-    terrainAddModifier(mod);
+    terrainAddModifier(mod);*/
 
     fogSetDistance(20.0, 100.0);
 }

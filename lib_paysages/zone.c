@@ -39,14 +39,6 @@ struct Zone {
 #include "shared/types.h"
 #include "shared/functions.h"
 
-void zoneSave(Zone* zone, FILE* f)
-{
-}
-
-void zoneLoad(Zone* zone, FILE* f)
-{
-}
-
 Zone* zoneCreate()
 {
     Zone* result;
@@ -56,13 +48,108 @@ Zone* zoneCreate()
     result->steepness_ranges_count = 0;
     result->circles_included_count = 0;
     result->circles_excluded_count = 0;
-
+    
     return result;
 }
 
 void zoneDelete(Zone* zone)
 {
     free(zone);
+}
+
+void zoneSave(Zone* zone, FILE* f)
+{
+    int i;
+    
+    toolsSaveInt(f, zone->height_ranges_count);
+    for (i = 0; i < zone->height_ranges_count; i++)
+    {
+        toolsSaveDouble(f, zone->height_ranges[i].value);
+        toolsSaveDouble(f, zone->height_ranges[i].hardmin);
+        toolsSaveDouble(f, zone->height_ranges[i].softmin);
+        toolsSaveDouble(f, zone->height_ranges[i].softmax);
+        toolsSaveDouble(f, zone->height_ranges[i].hardmax);
+    }
+    
+    toolsSaveInt(f, zone->steepness_ranges_count);
+    for (i = 0; i < zone->steepness_ranges_count; i++)
+    {
+        toolsSaveDouble(f, zone->steepness_ranges[i].value);
+        toolsSaveDouble(f, zone->steepness_ranges[i].hardmin);
+        toolsSaveDouble(f, zone->steepness_ranges[i].softmin);
+        toolsSaveDouble(f, zone->steepness_ranges[i].softmax);
+        toolsSaveDouble(f, zone->steepness_ranges[i].hardmax);
+    }
+    
+    toolsSaveInt(f, zone->circles_included_count);
+    for (i = 0; i < zone->circles_included_count; i++)
+    {
+        toolsSaveDouble(f, zone->circles_included[i].value);
+        toolsSaveDouble(f, zone->circles_included[i].centerx);
+        toolsSaveDouble(f, zone->circles_included[i].centerz);
+        toolsSaveDouble(f, zone->circles_included[i].softradius);
+        toolsSaveDouble(f, zone->circles_included[i].hardradius);
+    }
+    
+    toolsSaveInt(f, zone->circles_excluded_count);
+    for (i = 0; i < zone->circles_excluded_count; i++)
+    {
+        toolsSaveDouble(f, zone->circles_excluded[i].value);
+        toolsSaveDouble(f, zone->circles_excluded[i].centerx);
+        toolsSaveDouble(f, zone->circles_excluded[i].centerz);
+        toolsSaveDouble(f, zone->circles_excluded[i].softradius);
+        toolsSaveDouble(f, zone->circles_excluded[i].hardradius);
+    }
+}
+
+void zoneLoad(Zone* zone, FILE* f)
+{
+    int i;
+    
+    zone->height_ranges_count = toolsLoadInt(f);
+    for (i = 0; i < zone->height_ranges_count; i++)
+    {
+        zone->height_ranges[i].value = toolsLoadDouble(f);
+        zone->height_ranges[i].hardmin = toolsLoadDouble(f);
+        zone->height_ranges[i].softmin = toolsLoadDouble(f);
+        zone->height_ranges[i].softmax = toolsLoadDouble(f);
+        zone->height_ranges[i].hardmax = toolsLoadDouble(f);
+    }
+    
+    zone->steepness_ranges_count = toolsLoadInt(f);
+    for (i = 0; i < zone->steepness_ranges_count; i++)
+    {
+        zone->steepness_ranges[i].value = toolsLoadDouble(f);
+        zone->steepness_ranges[i].hardmin = toolsLoadDouble(f);
+        zone->steepness_ranges[i].softmin = toolsLoadDouble(f);
+        zone->steepness_ranges[i].softmax = toolsLoadDouble(f);
+        zone->steepness_ranges[i].hardmax = toolsLoadDouble(f);
+    }
+    
+    zone->circles_included_count = toolsLoadInt(f);
+    for (i = 0; i < zone->circles_included_count; i++)
+    {
+        zone->circles_included[i].value = toolsLoadDouble(f);
+        zone->circles_included[i].centerx = toolsLoadDouble(f);
+        zone->circles_included[i].centerz = toolsLoadDouble(f);
+        zone->circles_included[i].softradius = toolsLoadDouble(f);
+        zone->circles_included[i].hardradius = toolsLoadDouble(f);
+    }
+    
+    zone->circles_excluded_count = toolsLoadInt(f);
+    for (i = 0; i < zone->circles_excluded_count; i++)
+    {
+        zone->circles_excluded[i].value = toolsLoadDouble(f);
+        zone->circles_excluded[i].centerx = toolsLoadDouble(f);
+        zone->circles_excluded[i].centerz = toolsLoadDouble(f);
+        zone->circles_excluded[i].softradius = toolsLoadDouble(f);
+        zone->circles_excluded[i].hardradius = toolsLoadDouble(f);
+    }
+}
+
+void zoneCopy(Zone* source, Zone* destination)
+{
+    *source = *destination;
 }
 
 void zoneIncludeCircleArea(Zone* zone, double value, double centerx, double centerz, double softradius, double hardradius)

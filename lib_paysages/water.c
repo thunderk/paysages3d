@@ -2,7 +2,9 @@
 #include "shared/functions.h"
 #include "shared/constants.h"
 #include "shared/globals.h"
+
 #include "water.h"
+#include "terrain.h"
 
 #include <math.h>
 

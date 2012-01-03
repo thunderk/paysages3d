@@ -2,8 +2,11 @@
 
 #include "common.h"
 #include "lib_paysages/shared/functions.h"
+#include "lib_paysages/terrain.h"
+#include "lib_paysages/textures.h"
 
 static SmallPreview* _preview;
+static TerrainDefinition _definition;
 
 static Color _cbPreviewRenderPixel(SmallPreview* preview, double x, double y, double xoffset, double yoffset, double scaling)
 {
@@ -11,20 +14,25 @@ static Color _cbPreviewRenderPixel(SmallPreview* preview, double x, double y, do
 
     result.r = result.g = result.b = terrainGetHeightNormalized(x, y);
     result.a = 1.0;
-
+    
+    /* TEMP */
+    //result = terrainGetColor(x, y, 0.01);
+    
     return result;
 }
 
 static void _cbEditNoiseDone(NoiseGenerator* generator)
 {
-    terrainSetNoiseGenerator(generator);
+    noiseCopy(generator, _definition.height_noise);
+    terrainSetDefinition(_definition);
+    
     /* TODO Redraw only affected by terrain */
     guiPreviewRedrawAll();
 }
 
 static void _cbEditNoise(GtkWidget* widget, gpointer data)
 {
-    guiNoiseEdit(terrainGetNoiseGenerator(), _cbEditNoiseDone);
+    guiNoiseEdit(texturesGetDefinition(0).bump_noise, _cbEditNoiseDone);
 }
 
 void guiTerrainInit()

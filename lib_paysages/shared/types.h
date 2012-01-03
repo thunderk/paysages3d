@@ -87,16 +87,6 @@ typedef struct
     void* data;
 } Array;
 
-typedef struct {
-    void* pixels;
-    int bytes_per_pixel;
-    int picture_width;
-    int picture_height;
-    double scaling_x;
-    double scaling_y;
-    double scaling_z;
-} Texture;
-
 struct NoiseLevel
 {
     double scaling;

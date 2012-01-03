@@ -1,137 +1,201 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "shared/types.h"
 #include "shared/functions.h"
 #include "shared/constants.h"
 #include "shared/globals.h"
 
-#include "IL/il.h"
-#include "IL/ilu.h"
+#include "textures.h"
+#include "terrain.h"
 
 #define TEXTURES_MAX 50
+static TextureQuality _quality;
+static TextureEnvironment _environment;
 static int _textures_count = 0;
-static Texture _textures[TEXTURES_MAX];
+static TextureDefinition _textures[TEXTURES_MAX];
+
+void texturesInit()
+{
+    _textures_count = 0;
+}
 
 void texturesSave(FILE* f)
 {
+    int i;
+    
+    toolsSaveInt(f, _textures_count);
+    for (i = 0; i < _textures_count; i++)
+    {
+        zoneSave(_textures[i].zone, f);
+        noiseSave(_textures[i].bump_noise, f);
+        colorSave(_textures[i].color, f);
+    }
 }
 
 void texturesLoad(FILE* f)
 {
+    // TODO
 }
 
-Texture* textureCreateFromFile(const char* filename)
+int texturesGetLayerCount()
 {
-    Texture* result;
-    ILuint imageid;
+    return _textures_count;
+}
 
-    if (_textures_count >= TEXTURES_MAX)
+int texturesAddLayer()
+{
+    if (_textures_count < TEXTURES_MAX)
     {
-        return _textures + (TEXTURES_MAX - 1);
+        _textures[_textures_count] = texturesCreateDefinition();
+        
+        return _textures_count++;
     }
     else
     {
-        result = _textures + _textures_count;
-        _textures_count++;
-
-        ilGenImages(1, &imageid);
-        ilBindImage(imageid);
-        ilLoadImage(filename);
-
-        result->bytes_per_pixel = ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL);
-        result->picture_width = ilGetInteger(IL_IMAGE_WIDTH);
-        result->picture_height = ilGetInteger(IL_IMAGE_HEIGHT);
-        result->pixels = malloc(result->bytes_per_pixel * result->picture_width * result->picture_height);
-        memcpy(result->pixels, ilGetData(), result->bytes_per_pixel * result->picture_width * result->picture_height);
-        result->scaling_x = 1.0;
-        result->scaling_y = 1.0;
-        result->scaling_z = 1.0;
-
-        ilDeleteImages(1, &imageid);
-
-        return result;
+        return -1;
     }
 }
 
-static inline Color _getRawValue(Texture* tex, int x, int y)
+void texturesDeleteLayer(int layer)
 {
-    Color result;
-    void* texdata;
+    // TODO
+}
 
-    x = x % tex->picture_width;
-    if (x < 0)
-    {
-        x += tex->picture_width;
-    }
-    y = y % tex->picture_height;
-    if (y < 0)
-    {
-        y += tex->picture_height;
-    }
+TextureDefinition texturesCreateDefinition()
+{
+    TextureDefinition result;
 
-    texdata = tex->pixels + (y * tex->picture_width + x) * tex->bytes_per_pixel;
-
-    result.r = ((double)(unsigned int)*((unsigned char*)texdata)) / 255.0;
-    result.g = ((double)(unsigned int)*((unsigned char*)(texdata + 1))) / 255.0;
-    result.b = ((double)(unsigned int)*((unsigned char*)(texdata + 2))) / 255.0;
+    result.zone = zoneCreate();
+    result.bump_noise = noiseCreateGenerator();
+    result.color = COLOR_GREEN;
 
     return result;
 }
 
-static inline Color _getInterpolatedValue(Texture* tex, double fx, double fy)
+void texturesDeleteDefinition(TextureDefinition definition)
+{
+    zoneDelete(definition.zone);
+    noiseDeleteGenerator(definition.bump_noise);
+}
+
+void texturesCopyDefinition(TextureDefinition source, TextureDefinition* destination)
+{
+    destination->color = source.color;
+    noiseCopy(source.bump_noise, destination->bump_noise);
+    zoneCopy(source.zone, destination->zone);
+}
+
+void texturesSetDefinition(int layer, TextureDefinition definition)
+{
+    TextureDefinition* destination;
+
+    if (layer >= 0 && layer < _textures_count)
+    {
+        destination = _textures + layer;
+        texturesCopyDefinition(definition, destination);
+    }
+}
+
+TextureDefinition texturesGetDefinition(int layer)
+{
+    assert(layer >= 0);
+    assert(layer < _textures_count);
+    
+    return _textures[layer];
+}
+
+void texturesSetQuality(TextureQuality quality)
+{
+    _quality = quality;
+}
+
+TextureQuality texturesGetQuality()
+{
+    return _quality;
+}
+
+static inline Vector3 _getNormal(TextureDefinition* definition, Vector3 point, double scale)
+{
+    Vector3 dpoint, ref, normal;
+
+    ref.x = 0.0;
+    ref.y = 0.0;
+
+    dpoint.x = point.x - scale;
+    dpoint.z = point.z;
+    dpoint.y = terrainGetHeight(dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
+    ref.z = -1.0;
+    normal = v3Normalize(v3Cross(ref, v3Sub(dpoint, point)));
+
+    dpoint.x = point.x + scale;
+    dpoint.z = point.z;
+    dpoint.y = terrainGetHeight(dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
+    ref.z = 1.0;
+    normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
+
+    ref.z = 0.0;
+
+    dpoint.x = point.x;
+    dpoint.z = point.z - scale;
+    dpoint.y = terrainGetHeight(dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
+    ref.x = 1.0;
+    normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
+
+    dpoint.x = point.x;
+    dpoint.z = point.z + scale;
+    dpoint.y = terrainGetHeight(dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
+    ref.x = -1.0;
+    normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
+
+    return v3Normalize(normal);
+}
+
+Color texturesGetLayerColorCustom(Vector3 location, double shadowing, double detail, TextureDefinition* definition, TextureQuality* quality, TextureEnvironment* environment)
 {
     Color result;
-    double r[16];
-    double g[16];
-    double b[16];
-    int ix, iy;
-    int sx, sy;
+    Vector3 normal;
+    double coverage;
+    
+    result.a = 0.0;
+    normal = _getNormal(definition, location, detail * 0.3);
 
-    ix = (int)floor(fx);
-    iy = (int)floor(fy);
-    fx -= (double)ix;
-    fy -= (double)iy;
-
-    for (sy = 0; sy < 4; sy++)
+    coverage = zoneGetValue(definition->zone, location, normal);
+    if (coverage > 0.0)
     {
-        for (sx = 0; sx < 4; sx++)
+        result = lightingApply(location, normal, shadowing, definition->color, 0.1, 0.1);
+        result.a = coverage;
+    }
+    return result;
+}
+
+Color texturesGetColorCustom(Vector3 location, double shadowing, double detail, TextureQuality* quality, TextureEnvironment* environment)
+{
+    Color result, tex_color;
+    int i;
+    
+    result = COLOR_GREEN;
+    for (i = 0; i < _textures_count; i++)
+    {
+        /* TODO Do not compute layers fully covered */
+        tex_color = texturesGetLayerColorCustom(location, shadowing, detail, _textures + i, quality, environment);
+        if (tex_color.a > 0.0001)
         {
-            result = _getRawValue(tex, ix + sx - 1, iy + sy - 1);
-            r[sy * 4 + sx] = result.r;
-            g[sy * 4 + sx] = result.g;
-            b[sy * 4 + sx] = result.b;
+            colorMask(&result, &tex_color);
         }
     }
-
-    result.r = toolsBicubicInterpolate(r, fx, fy);
-    result.g = toolsBicubicInterpolate(g, fx, fy);
-    result.b = toolsBicubicInterpolate(b, fx, fy);
-    result.a = 1.0;
+    
     return result;
 }
 
-Color textureApply(Texture* tex, Vector3 location, Vector3 normal)
+Color texturesGetColor(Vector3 location)
 {
-    Color col_x, col_y, col_z, result;
-    double x, y, z;
-    double distance;
-
-    distance = v3Norm(v3Sub(camera_location, location)) / 10.0;
-
-    x = location.x / (tex->scaling_x * distance);
-    y = location.y / (tex->scaling_y * distance);
-    z = location.z / (tex->scaling_z * distance);
-
-    col_x = _getInterpolatedValue(tex, y, z);
-    col_y = _getInterpolatedValue(tex, x, z);
-    col_z = _getInterpolatedValue(tex, x, y);
-
-    result.r = (col_x.r + col_y.r + col_z.r) / 3.0;
-    result.g = (col_x.g + col_y.g + col_z.g) / 3.0;
-    result.b = (col_x.b + col_y.b + col_z.b) / 3.0;
-    result.a = (col_x.a + col_y.a + col_z.a) / 3.0;
-    return result;
+    double shadowing;
+    
+    /* TODO Use environment to get lights to apply */
+    shadowing = terrainGetShadow(location, sun_direction_inv);
+    
+    return texturesGetColorCustom(location, shadowing, renderGetPrecision(location), &_quality, &_environment);
 }
-

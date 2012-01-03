@@ -172,28 +172,6 @@ Color skyProjectRay(Vector3 start, Vector3 direction);
 void skySetGradation(ColorGradation grad);
 void skyRender(RenderProgressCallback callback);
 
-/* terrain.c */
-void terrainSave(FILE* f);
-void terrainLoad(FILE* f);
-void terrainInit();
-NoiseGenerator* terrainGetNoiseGenerator();
-void terrainSetNoiseGenerator(NoiseGenerator* generator);
-void terrainAddTexture(Texture* tex, double subsurf_scale, Zone* zone, double border_scaling);
-void terrainAddModifier(HeightModifier* modifier);
-double terrainGetHeight(double x, double z);
-double terrainGetHeightNormalized(double x, double z);
-Color terrainGetColor(double x, double z, double precision);
-double terrainGetShadow(Vector3 start, Vector3 direction);
-int terrainProjectRay(Vector3 start, Vector3 direction, Vector3* hit_point, Color* hit_color);
-void terrainSetChunkSize(double min_size, double visible_size);
-void terrainRender(RenderProgressCallback callback);
-
-/* textures.c */
-void texturesSave(FILE* f);
-void texturesLoad(FILE* f);
-Texture* textureCreateFromFile(const char* filename);
-Color textureApply(Texture* tex, Vector3 location, Vector3 normal);
-
 /* tools.c */
 double toolsRandom();
 double toolsBicubicInterpolate(double stencil[16], double x, double y);
@@ -209,6 +187,7 @@ Zone* zoneCreate();
 void zoneDelete(Zone* zone);
 void zoneSave(Zone* zone, FILE* f);
 void zoneLoad(Zone* zone, FILE* f);
+void zoneCopy(Zone* source, Zone* destination);
 void zoneIncludeCircleArea(Zone* zone, double value, double centerx, double centerz, double softradius, double hardradius);
 void zoneExcludeCircleArea(Zone* zone, double centerx, double centerz, double softradius, double hardradius);
 void zoneAddHeightRange(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax);
