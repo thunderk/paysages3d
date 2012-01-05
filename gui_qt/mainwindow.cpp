@@ -1,20 +1,30 @@
+#include <QApplication>
 #include "mainwindow.h"
 #include "formwater.h"
-#include "ui_mainwindow.h"
+
+#include "../lib_paysages/shared/functions.h"
+
+int main(int argc, char** argv)
+{
+    paysagesInit();
+
+    QApplication app(argc, argv);
+    MainWindow window;
+
+    window.show();
+
+    Preview::startUpdater();
+
+    return app.exec();
+}
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    QMainWindow(parent)
 {
     QTabWidget* tabs;
 
-    ui->setupUi(this);
-
-    tabs = this->findChild<QTabWidget*>("tabWidget");
+    tabs = new QTabWidget(this);
     tabs->addTab(new FormWater(tabs), "Water");
-}
 
-MainWindow::~MainWindow()
-{
-    delete ui;
+    setCentralWidget(tabs);
 }

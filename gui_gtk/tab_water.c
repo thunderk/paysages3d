@@ -136,12 +136,12 @@ static void _cbTransparencyDepthChanged(GtkRange* range, gpointer data)
 
 static void _cbColorChanged(GtkColorButton* colorbutton, gpointer data)
 {
-    GdkRGBA col;
+    GdkColor col;
 
-    gtk_color_button_get_rgba(colorbutton, &col);
-    _definition.main_color.r = col.red;
-    _definition.main_color.g = col.green;
-    _definition.main_color.b = col.blue;
+    gtk_color_button_get_color(colorbutton, &col);
+    _definition.main_color.r = (double)col.red / 65535.0;
+    _definition.main_color.g = (double)col.green / 65535.0;
+    _definition.main_color.b = (double)col.blue / 65535.0;
     _definition.main_color.a = 1.0;
 
     guiPreviewRedraw(_preview_render);
@@ -150,12 +150,12 @@ static void _cbColorChanged(GtkColorButton* colorbutton, gpointer data)
 
 static void _cbColorDepthChanged(GtkColorButton* colorbutton, gpointer data)
 {
-    GdkRGBA col;
+    GdkColor col;
 
-    gtk_color_button_get_rgba(colorbutton, &col);
-    _definition.depth_color.r = col.red;
-    _definition.depth_color.g = col.green;
-    _definition.depth_color.b = col.blue;
+    gtk_color_button_get_color(colorbutton, &col);
+    _definition.depth_color.r = (double)col.red / 65535.0;
+    _definition.depth_color.g = (double)col.green / 65535.0;
+    _definition.depth_color.b = (double)col.blue / 65535.0;
     _definition.depth_color.a = 1.0;
 
     guiPreviewRedraw(_preview_render);
@@ -164,7 +164,7 @@ static void _cbColorDepthChanged(GtkColorButton* colorbutton, gpointer data)
 
 static void _cbRevertConfig(GtkWidget* widget, gpointer data)
 {
-    GdkRGBA col;
+    GdkColor col;
 
     waterCopyDefinition(waterGetDefinition(), &_definition);
 
@@ -172,16 +172,14 @@ static void _cbRevertConfig(GtkWidget* widget, gpointer data)
     gtk_range_set_value(GTK_RANGE(GET_WIDGET("water_transparency")), _definition.transparency);
     gtk_range_set_value(GTK_RANGE(GET_WIDGET("water_reflection")), _definition.reflection);
     gtk_range_set_value(GTK_RANGE(GET_WIDGET("water_transparency_depth")), _definition.transparency_depth);
-    col.red = _definition.main_color.r;
-    col.green = _definition.main_color.g;
-    col.blue = _definition.main_color.b;
-    col.alpha = 1.0;
-    gtk_color_button_set_rgba(GTK_COLOR_BUTTON(GET_WIDGET("water_color")), &col);
-    col.red = _definition.depth_color.r;
-    col.green = _definition.depth_color.g;
-    col.blue = _definition.depth_color.b;
-    col.alpha = 1.0;
-    gtk_color_button_set_rgba(GTK_COLOR_BUTTON(GET_WIDGET("water_color_depth")), &col);
+    col.red = _definition.main_color.r * 65535.0;
+    col.green = _definition.main_color.g * 65535.0;
+    col.blue = _definition.main_color.b * 65535.0;
+    gtk_color_button_set_color(GTK_COLOR_BUTTON(GET_WIDGET("water_color")), &col);
+    col.red = _definition.depth_color.r * 65535.0;
+    col.green = _definition.depth_color.g * 65535.0;
+    col.blue = _definition.depth_color.b * 65535.0;
+    gtk_color_button_set_color(GTK_COLOR_BUTTON(GET_WIDGET("water_color_depth")), &col);
 
     guiPreviewRedraw(_preview_render);
     guiPreviewRedraw(_preview_coverage);

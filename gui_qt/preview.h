@@ -7,6 +7,8 @@
 
 class Preview:public QWidget
 {
+    Q_OBJECT
+
 public:
     Preview(QWidget* parent);
     static void startUpdater();

@@ -131,29 +131,12 @@ FormWater::FormWater(QWidget *parent) :
     addPreview(previewCoverage, QString("Coverage preview"));
     addPreview(previewColor, QString("Color preview"));
 
-    addDoubleSlider("Height", &_definition.height, -20.0, 20.0, 0.1, 1.0);
-    addDoubleSlider("Transparency", &_definition.transparency, 0.0, 1.0, 0.001, 0.1);
-    addDoubleSlider("Reflection", &_definition.reflection, 0.0, 1.0, 0.001, 0.1);
-    addDoubleSlider("Depth filtering", &_definition.transparency_depth, 0.0, 100.0, 0.5, 5.0);
+    addInputDouble("Height", &_definition.height, -20.0, 20.0, 0.1, 1.0);
+    addInputDouble("Transparency", &_definition.transparency, 0.0, 1.0, 0.001, 0.1);
+    addInputDouble("Reflection", &_definition.reflection, 0.0, 1.0, 0.001, 0.1);
+    addInputDouble("Depth filtering", &_definition.transparency_depth, 0.0, 100.0, 0.5, 5.0);
 
     revertConfig();
-}
-
-void FormWater::configChange()
-{
-    /*_definition.height = (double)findChild<QSlider*>("water_height")->value() / 10.0;
-    _definition.transparency = (double)findChild<QSlider*>("water_transparency")->value() / 1000.0;
-    _definition.reflection = (double)findChild<QSlider*>("water_reflection")->value() / 1000.0;
-    _definition.transparency_depth = (double)findChild<QSlider*>("water_depth_limit")->value() / 10.0;
-
-    previewCoverage->redraw();
-    previewColor->redraw();*/
-}
-
-void FormWater::applyConfig()
-{
-    waterSetDefinition(_definition);
-    //guiUpdate();
 }
 
 void FormWater::revertConfig()
@@ -161,3 +144,9 @@ void FormWater::revertConfig()
     waterCopyDefinition(waterGetDefinition(), &_definition);
     BaseForm::revertConfig();
 }
+
+/*void FormWater::applyConfig()
+{
+    waterSetDefinition(_definition);
+    //guiUpdate();
+}*/

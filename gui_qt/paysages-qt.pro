@@ -15,10 +15,16 @@ HEADERS += ../lib_paysages/shared/functions.h ../lib_paysages/shared/types.h \
     mainwindow.h \
     formwater.h \
     preview.h \
-    baseform.h
-FORMS += mainwindow.ui
-SOURCES += main.cc \
+    baseform.h \
+    inputdouble.h \
+    baseinput.h \
+    inputcolor.h
+FORMS +=
+SOURCES += \
     mainwindow.cpp \
     formwater.cpp \
     preview.cpp \
-    baseform.cpp
+    baseform.cpp \
+    inputdouble.cpp \
+    baseinput.cpp \
+    inputcolor.cpp

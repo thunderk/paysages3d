@@ -3,18 +3,23 @@
 
 #include <QWidget>
 #include "preview.h"
+#include "baseinput.h"
 
 class BaseForm:public QWidget
 {
+    Q_OBJECT
+
 public:
     BaseForm(QWidget* parent);
 
 public slots:
     virtual void revertConfig();
+    virtual void applyConfigPreview();
 
 protected:
     void addPreview(Preview* preview, QString label);
-    void addDoubleSlider(QString label, double* value, double min, double max, double small_step, double large_step);
+    void addInput(BaseInput* input);
+    void addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step);
 
 private:
     QWidget* previews;
