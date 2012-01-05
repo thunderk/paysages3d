@@ -31,7 +31,8 @@ void InputDouble::applyValue()
 {
     *value = ((double)slider->value()) * small_step;
     ((QLabel*)_preview)->setText(QString("%1").arg(*value));
-    emit(valueChanged());
+
+    BaseInput::applyValue();
 }
 
 void InputDouble::revert()

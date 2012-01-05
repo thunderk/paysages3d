@@ -1,5 +1,7 @@
 #include "baseform.h"
+
 #include "inputdouble.h"
+#include "inputcolor.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -78,4 +80,9 @@ void BaseForm::addInput(BaseInput* input)
 void BaseForm::addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step)
 {
     addInput(new InputDouble(form, label, value, min, max, small_step, large_step));
+}
+
+void BaseForm::addInputColor(QString label, Color* value)
+{
+    addInput(new InputColor(form, label, value));
 }

@@ -7,3 +7,8 @@ BaseInput::BaseInput(QWidget* form, QString label):
 {
     _label = new QLabel(label);
 }
+
+void BaseInput::applyValue()
+{
+    emit(valueChanged());
+}

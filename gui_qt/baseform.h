@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "preview.h"
 #include "baseinput.h"
+#include "../lib_paysages/shared/types.h"
 
 class BaseForm:public QWidget
 {
@@ -20,6 +21,7 @@ protected:
     void addPreview(Preview* preview, QString label);
     void addInput(BaseInput* input);
     void addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step);
+    void addInputColor(QString label, Color* value);
 
 private:
     QWidget* previews;

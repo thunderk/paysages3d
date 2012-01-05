@@ -11,7 +11,7 @@ class InputColor:public BaseInput
     Q_OBJECT
 
 public:
-    InputColor(QWidget* form, QString label, Color value);
+    InputColor(QWidget* form, QString label, Color* value);
 
 public slots:
     virtual void revert();
@@ -20,7 +20,7 @@ protected slots:
     virtual void applyValue();
 
 private:
-    Color _color;
+    Color* _value;
 };
 
 #endif // _GUI_QT_INPUTCOLOR_H_

@@ -1,20 +1,21 @@
 #include "inputcolor.h"
 
 #include <QLabel>
+#include <QPushButton>
 
-InputColor::InputColor(QWidget* form, QString label, Color color):
+InputColor::InputColor(QWidget* form, QString label, Color* value):
     BaseInput(form, label),
-    _color(color)
+    _value(value)
 {
     setObjectName("_inputcolor_");
 
-    _preview = new QLabel(form);
-    _control = new QLabel(form);
+    _preview = new QWidget(form);
+    _control = new QPushButton("Edit", form);
 }
 
 void InputColor::applyValue()
 {
-    emit(valueChanged());
+    BaseInput::applyValue();
 }
 
 void InputColor::revert()

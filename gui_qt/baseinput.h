@@ -18,7 +18,7 @@ public slots:
     virtual void revert() = 0;
 
 protected slots:
-    virtual void applyValue() = 0;
+    virtual void applyValue();
 
 signals:
     void valueChanged();
