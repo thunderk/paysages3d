@@ -16,13 +16,37 @@
 #include "terrain.h"
 #include "textures.h"
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 static int _cpu_count = 1;
 static int _is_rendering = 0;
 
 void autoInit()
 {
+#ifdef WIN32
+    DWORD processAffinityMask;
+    DWORD systemAffinityMask;
+
+    if (GetProcessAffinityMask( GetCurrentProcess(),
+                                &processAffinityMask,
+                                &systemAffinityMask)){
+        processAffinityMask = (processAffinityMask & 0x55555555)
+            + (processAffinityMask >> 1 & 0x55555555);
+        processAffinityMask = (processAffinityMask & 0x33333333)
+            + (processAffinityMask >> 2 & 0x33333333);
+        processAffinityMask = (processAffinityMask & 0x0f0f0f0f)
+            + (processAffinityMask >> 4 & 0x0f0f0f0f);
+        processAffinityMask = (processAffinityMask & 0x00ff00ff)
+            + (processAffinityMask >> 8 & 0x00ff00ff);
+        _cpu_count          = (processAffinityMask & 0x0000ffff)
+            + (processAffinityMask >>16 & 0x0000ffff);
+    }
+#endif
+#ifdef _SC_NPROCESSORS_ONLN
     _cpu_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
-    _cpu_count = 1;
+#endif
     renderSetBackgroundColor(&COLOR_BLACK);
 
     terrainInit();
