@@ -105,17 +105,6 @@ void lightingSetSunAngle(double hor, double ver);
 void lightingSetSunColor(Color col);
 Color lightingApply(Vector3 location, Vector3 normal, double shadowing, Color base, double reflection, double shininess);
 
-/* modifiers.c */
-HeightModifier* modifierCreate();
-HeightModifier* modifierCreateCopy(HeightModifier* source);
-void modifierDelete(HeightModifier* modifier);
-void modifierSave(HeightModifier* modifier, FILE* f);
-void modifierLoad(HeightModifier* modifier, FILE* f);
-Zone* modifierGetZone(HeightModifier* modifier);
-void modifierActionAddValue(HeightModifier* modifier, double value);
-void modifierActionFixValue(HeightModifier* modifier, double value);
-Vector3 modifierApply(HeightModifier* modifier, Vector3 location);
-
 /* noise.c */
 NoiseGenerator* noiseCreateGenerator();
 void noiseDeleteGenerator(NoiseGenerator* generator);

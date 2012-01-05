@@ -47,7 +47,9 @@ Preview::Preview(QWidget* parent) :
     this->need_rerender = 0;
     this->need_render = 0;
 
-    this->resize(parent->size());
+    this->setMinimumSize(256, 256);
+    this->setMaximumSize(256, 256);
+    this->resize(256, 256);
 }
 
 void Preview::startUpdater()

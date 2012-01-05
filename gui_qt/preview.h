@@ -1,5 +1,5 @@
-#ifndef PREVIEW_H
-#define PREVIEW_H
+#ifndef _GUI_QT_PREVIEW_H_
+#define _GUI_QT_PREVIEW_H_
 
 #include <QMutex>
 #include <QImage>
@@ -45,4 +45,4 @@ protected:
     //SmallPreviewCallback renderer;
 };
 
-#endif // PREVIEW_H
+#endif // _GUI_QT_PREVIEW_H_

@@ -100,8 +100,6 @@ typedef struct NoiseGenerator NoiseGenerator;
 
 typedef struct Zone Zone;
 
-typedef struct HeightModifier HeightModifier;
-
 typedef void (*PreviewCallbackResize)(int width, int height);
 typedef void (*PreviewCallbackClear)(Color col);
 typedef void (*PreviewCallbackDraw)(int x, int y, Color col);

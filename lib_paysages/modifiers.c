@@ -1,5 +1,6 @@
 #include "shared/types.h"
 #include "shared/functions.h"
+#include "modifiers.h"
 
 #include <stdlib.h>
 

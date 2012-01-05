@@ -2,6 +2,7 @@
 #define _PAYSAGES_TERRAIN_H_
 
 #include "shared/types.h"
+#include "modifiers.h"
 #include <stdio.h>
 
 #ifdef __cplusplus

@@ -12,6 +12,7 @@
 #include "water.h"
 #include "clouds.h"
 #include "sky.h"
+#include "modifiers.h"
 #include "terrain.h"
 #include "textures.h"
 

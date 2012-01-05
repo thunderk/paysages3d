@@ -1,32 +1,25 @@
-#ifndef FORMWATER_H
-#define FORMWATER_H
+#ifndef _GUI_QT_FORMWATER_H_
+#define _GUI_QT_FORMWATER_H_
 
 #include <QWidget>
 #include "preview.h"
+#include "baseform.h"
 
-namespace Ui {
-    class FormWater;
-}
-
-class FormWater : public QWidget
+class FormWater : public BaseForm
 {
     Q_OBJECT
 
 public:
     explicit FormWater(QWidget *parent = 0);
-    ~FormWater();
-
-    void dataUpdated();
 
 public slots:
+    virtual void revertConfig();
     void configChange();
     void applyConfig();
-    void revertConfig();
 
 private:
-    Ui::FormWater *ui;
     Preview* previewCoverage;
     Preview* previewColor;
 };
 
-#endif // FORMWATER_H
+#endif // _GUI_QT_FORMWATER_H_
