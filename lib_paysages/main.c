@@ -28,7 +28,7 @@ void paysagesInit()
     autoSetDaytime(8, 30);
     
     // DEBUG
-    double last_height, height, x;
+    /*double last_height, height, x;
     last_height = height = 0.0;
     x = 0.0;
     while (height <= 1.0 || height >= last_height || last_height < 0.1)
@@ -38,5 +38,5 @@ void paysagesInit()
         x += 0.1;
     }
     cameraSetLocation(x - 2.0, height, 0.0);
-    cameraSetTarget(x - 1.0, height, 0.0);
+    cameraSetTarget(x - 1.0, height, 0.0);*/
 }

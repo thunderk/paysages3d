@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #include "shared/types.h"
 #include "shared/functions.h"
@@ -10,15 +11,10 @@
 #include "water.h"
 #include "terrain.h"
 
-#define MAX_MODIFIERS 50
-
 static TerrainDefinition _definition;
 static TerrainQuality _quality;
 static TerrainEnvironment _environment;
 static double _max_height = 1.0;
-
-static int _modifiers_count = 0;
-static HeightModifier* _modifiers[MAX_MODIFIERS];
 
 void terrainInit()
 {
@@ -28,15 +24,33 @@ void terrainInit()
 
 void terrainSave(FILE* f)
 {
+    int i;
+    
     noiseSave(_definition.height_noise, f);
-
-    /* TODO Modifiers */
+    toolsSaveInt(f, _definition.height_modifiers_count);
+    for (i = 0; i < _definition.height_modifiers_count; i++)
+    {
+        modifierSave(_definition.height_modifiers[i], f);
+    }
 }
 
 void terrainLoad(FILE* f)
 {
+    int i;
+    
     noiseLoad(_definition.height_noise, f);
     _max_height = noiseGetMaxValue(_definition.height_noise);
+
+    for (i = 0; i < _definition.height_modifiers_count; i++)
+    {
+        modifierDelete(_definition.height_modifiers[i]);
+    }
+    _definition.height_modifiers_count = toolsLoadInt(f);
+    for (i = 0; i < _definition.height_modifiers_count; i++)
+    {
+        _definition.height_modifiers[i] = modifierCreate();
+        modifierLoad(_definition.height_modifiers[i], f);
+    }
 }
 
 TerrainDefinition terrainCreateDefinition()
@@ -44,18 +58,37 @@ TerrainDefinition terrainCreateDefinition()
     TerrainDefinition definition;
     
     definition.height_noise = noiseCreateGenerator();
+    definition.height_modifiers_count = 0;
      
     return definition;
 }
 
 void terrainDeleteDefinition(TerrainDefinition definition)
 {
+    int i;
+    
     noiseDeleteGenerator(definition.height_noise);
+    for (i = 0; i < definition.height_modifiers_count; i++)
+    {
+        modifierDelete(definition.height_modifiers[i]);
+    }
 }
 
 void terrainCopyDefinition(TerrainDefinition source, TerrainDefinition* destination)
 {
+    int i;
+    
     noiseCopy(source.height_noise, destination->height_noise);
+    
+    for (i = 0; i < destination->height_modifiers_count; i++)
+    {
+        modifierDelete(destination->height_modifiers[i]);
+    }
+    destination->height_modifiers_count = source.height_modifiers_count;
+    for (i = 0; i < destination->height_modifiers_count; i++)
+    {
+        destination->height_modifiers[i] = modifierCreateCopy(source.height_modifiers[i]);
+    }
 }
 
 void terrainSetDefinition(TerrainDefinition definition)
@@ -68,6 +101,27 @@ void terrainSetDefinition(TerrainDefinition definition)
 TerrainDefinition terrainGetDefinition()
 {
     return _definition;
+}
+
+int terrainAddModifier(TerrainDefinition* definition, HeightModifier* modifier)
+{
+    if (definition->height_modifiers_count < MAX_HEIGHT_MODIFIER_COUNT)
+    {
+        definition->height_modifiers[definition->height_modifiers_count] = modifierCreateCopy(modifier);
+        return definition->height_modifiers_count++;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+void terrainDelModifier(TerrainDefinition* definition, int modifier_position)
+{
+    if (modifier_position >= 0 && modifier_position < definition->height_modifiers_count)
+    {
+        /* TODO */
+    }
 }
 
 void terrainSetQuality(TerrainQuality quality)
@@ -83,16 +137,16 @@ TerrainQuality terrainGetQuality()
 static inline double _getHeight(TerrainDefinition* definition, double x, double z, double detail)
 {
     Vector3 location;
-    /*int i;*/
+    int i;
     
     location.x = x;
     location.y = noiseGet2DDetail(definition->height_noise, x, z, detail);
     location.z = z;
     
-    /*for (i = 0; i < _modifiers_count; i++)
+    for (i = 0; i < definition->height_modifiers_count; i++)
     {
-        location = modifierApply(_modifiers[i], location);
-    }*/
+        location = modifierApply(definition->height_modifiers[i], location);
+    }
     
     return location.y;
 }

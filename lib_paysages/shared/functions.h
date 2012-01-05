@@ -107,9 +107,10 @@ Color lightingApply(Vector3 location, Vector3 normal, double shadowing, Color ba
 
 /* modifiers.c */
 HeightModifier* modifierCreate();
+HeightModifier* modifierCreateCopy(HeightModifier* source);
 void modifierDelete(HeightModifier* modifier);
-void modifierSave(HeightModifier* zone, FILE* f);
-void modifierLoad(HeightModifier* zone, FILE* f);
+void modifierSave(HeightModifier* modifier, FILE* f);
+void modifierLoad(HeightModifier* modifier, FILE* f);
 Zone* modifierGetZone(HeightModifier* modifier);
 void modifierActionAddValue(HeightModifier* modifier, double value);
 void modifierActionFixValue(HeightModifier* modifier, double value);

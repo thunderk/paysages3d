@@ -225,6 +225,25 @@ void autoGenRealisticLandscape(int seed)
     noiseGenerateBaseNoise(terrain.height_noise, 1048576);
     noiseAddLevelsSimple(terrain.height_noise, 10, 10.0, 1.0);
     noiseNormalizeHeight(terrain.height_noise, -12.0, 12.0, 0);
+    /* DEBUG */
+    mod = modifierCreate();
+    zone = modifierGetZone(mod);
+    zoneIncludeCircleArea(zone, 0.4, 0.0, 0.0, 8.0, 20.0);
+    modifierActionFixValue(mod, -2.0);
+    terrainAddModifier(&terrain, mod);
+    modifierDelete(mod);
+    mod = modifierCreate();
+    zone = modifierGetZone(mod);
+    zoneIncludeCircleArea(zone, 1.0, 0.0, 0.0, 0.3, 8.0);
+    modifierActionAddValue(mod, 8.0);
+    terrainAddModifier(&terrain, mod);
+    modifierDelete(mod);
+    mod = modifierCreate();
+    zone = modifierGetZone(mod);
+    zoneIncludeCircleArea(zone, 0.8, 0.0, 0.0, 0.3, 4.0);
+    modifierActionFixValue(mod, -8.0);
+    terrainAddModifier(&terrain, mod);
+    /* DEBUG */
     terrainSetDefinition(terrain);
     terrainDeleteDefinition(terrain);
 
@@ -260,23 +279,6 @@ void autoGenRealisticLandscape(int seed)
     texture.color.b = 1.0;
     texturesSetDefinition(layer, texture);
     texturesDeleteDefinition(texture);*/
-
-    /* DEBUG */
-    /*mod = modifierCreate();
-    zone = modifierGetZone(mod);
-    zoneIncludeCircleArea(zone, 0.4, 0.0, 0.0, 8.0, 20.0);
-    modifierActionFixValue(mod, -2.0);
-    terrainAddModifier(mod);
-    mod = modifierCreate();
-    zone = modifierGetZone(mod);
-    zoneIncludeCircleArea(zone, 1.0, 0.0, 0.0, 0.3, 8.0);
-    modifierActionAddValue(mod, 8.0);
-    terrainAddModifier(mod);
-    mod = modifierCreate();
-    zone = modifierGetZone(mod);
-    zoneIncludeCircleArea(zone, 0.8, 0.0, 0.0, 0.3, 4.0);
-    modifierActionFixValue(mod, -8.0);
-    terrainAddModifier(mod);*/
 
     fogSetDistance(20.0, 100.0);
 }

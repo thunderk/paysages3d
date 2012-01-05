@@ -8,9 +8,13 @@
 extern "C" {
 #endif
 
+#define MAX_HEIGHT_MODIFIER_COUNT 50
+
 typedef struct
 {
     NoiseGenerator* height_noise;
+    int height_modifiers_count;
+    HeightModifier* height_modifiers[MAX_HEIGHT_MODIFIER_COUNT];
 } TerrainDefinition;
 
 typedef struct
@@ -33,6 +37,9 @@ void terrainDeleteDefinition(TerrainDefinition definition);
 void terrainCopyDefinition(TerrainDefinition source, TerrainDefinition* destination);
 void terrainSetDefinition(TerrainDefinition definition);
 TerrainDefinition terrainGetDefinition();
+
+int terrainAddModifier(TerrainDefinition* definition, HeightModifier* modifier);
+void terrainDelModifier(TerrainDefinition* definition, int modifier_position);
 
 void terrainSetQuality(TerrainQuality quality);
 TerrainQuality terrainGetQuality();

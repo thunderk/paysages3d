@@ -28,10 +28,37 @@ HeightModifier* modifierCreate()
     return modifier;
 }
 
+HeightModifier* modifierCreateCopy(HeightModifier* source)
+{
+    HeightModifier* result;
+    
+    result = (HeightModifier*)malloc(sizeof(HeightModifier));
+    result->zone = zoneCreate();
+    zoneCopy(source->zone, result->zone);
+    result->mode = source->mode;
+    result->value = source->value;
+    
+    return result;
+}
+
 void modifierDelete(HeightModifier* modifier)
 {
     zoneDelete(modifier->zone);
     free(modifier);
+}
+
+void modifierSave(HeightModifier* modifier, FILE* f)
+{
+    toolsSaveInt(f, modifier->mode);
+    toolsSaveDouble(f, modifier->value);
+    zoneSave(modifier->zone, f);
+}
+
+void modifierLoad(HeightModifier* modifier, FILE* f)
+{
+    modifier->mode = toolsLoadInt(f);
+    modifier->value = toolsLoadDouble(f);
+    zoneLoad(modifier->zone, f);
 }
 
 Zone* modifierGetZone(HeightModifier* modifier)
