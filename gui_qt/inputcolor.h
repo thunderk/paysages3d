@@ -1,5 +1,5 @@
-#ifndef _GUI_QT_INPUTCOLOR_H_
-#define _GUI_QT_INPUTCOLOR_H_
+#ifndef _PAYSAGES_QT_INPUTCOLOR_H_
+#define _PAYSAGES_QT_INPUTCOLOR_H_
 
 #include <QWidget>
 #include "baseinput.h"
@@ -23,4 +23,4 @@ private:
     Color* _value;
 };
 
-#endif // _GUI_QT_INPUTCOLOR_H_
+#endif // _PAYSAGES_QT_INPUTCOLOR_H_

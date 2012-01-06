@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef _PAYSAGES_QT_MAINWINDOW_H_
+#define _PAYSAGES_QT_MAINWINDOW_H_
 
 #include <QMainWindow>
 
@@ -15,4 +15,4 @@ public:
     explicit MainWindow(QWidget *parent = 0);
 };
 
-#endif // MAINWINDOW_H
+#endif // _PAYSAGES_QT_MAINWINDOW_H_

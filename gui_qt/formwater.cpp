@@ -121,7 +121,7 @@ private:
 };
 
 /**************** Form ****************/
-FormWater::FormWater(QWidget *parent) :
+FormWater::FormWater(QWidget *parent):
     BaseForm(parent)
 {
     _definition = waterCreateDefinition();

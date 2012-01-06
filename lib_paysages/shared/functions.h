@@ -27,7 +27,7 @@ void autoSetDaytime(int hour, int minute);
 void autoSetDaytimeFraction(double daytime);
 void autoSetRenderQuality(int quality);
 void autoGenRealisticLandscape(int seed);
-void autoRenderSceneTwoPass();
+void autoRenderSceneTwoPass(int postonly);
 void autoRenderSceneRayTracing();
 
 /* camera.c */

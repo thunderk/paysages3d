@@ -18,7 +18,10 @@ HEADERS += ../lib_paysages/shared/functions.h ../lib_paysages/shared/types.h \
     baseform.h \
     inputdouble.h \
     baseinput.h \
-    inputcolor.h
+    inputcolor.h \
+    formrender.h \
+    inputint.h \
+    dialogrender.h
 FORMS +=
 SOURCES += \
     mainwindow.cpp \
@@ -27,4 +30,7 @@ SOURCES += \
     baseform.cpp \
     inputdouble.cpp \
     baseinput.cpp \
-    inputcolor.cpp
+    inputcolor.cpp \
+    formrender.cpp \
+    inputint.cpp \
+    dialogrender.cpp

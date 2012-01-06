@@ -1,6 +1,7 @@
 #include <QApplication>
 #include "mainwindow.h"
 #include "formwater.h"
+#include "formrender.h"
 
 #include "../lib_paysages/shared/functions.h"
 
@@ -24,7 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QTabWidget* tabs;
 
     tabs = new QTabWidget(this);
+    tabs->addTab(new BaseForm(tabs), "Temp");
     tabs->addTab(new FormWater(tabs), "Water");
+    tabs->addTab(new FormRender(tabs), "Render");
 
     setCentralWidget(tabs);
 }

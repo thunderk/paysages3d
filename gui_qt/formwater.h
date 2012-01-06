@@ -1,5 +1,5 @@
-#ifndef _GUI_QT_FORMWATER_H_
-#define _GUI_QT_FORMWATER_H_
+#ifndef _PAYSAGES_QT_FORMWATER_H_
+#define _PAYSAGES_QT_FORMWATER_H_
 
 #include <QWidget>
 #include "preview.h"
@@ -20,4 +20,4 @@ private:
     Preview* previewColor;
 };
 
-#endif // _GUI_QT_FORMWATER_H_
+#endif // _PAYSAGES_QT_FORMWATER_H_

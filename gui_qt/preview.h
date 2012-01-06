@@ -1,5 +1,5 @@
-#ifndef _GUI_QT_PREVIEW_H_
-#define _GUI_QT_PREVIEW_H_
+#ifndef _PAYSAGES_QT_PREVIEW_H_
+#define _PAYSAGES_QT_PREVIEW_H_
 
 #include <QMutex>
 #include <QImage>
@@ -47,4 +47,4 @@ protected:
     //SmallPreviewCallback renderer;
 };
 
-#endif // _GUI_QT_PREVIEW_H_
+#endif // _PAYSAGES_QT_PREVIEW_H_
