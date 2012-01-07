@@ -10,6 +10,11 @@ extern "C" {
 typedef GThread Thread;
 typedef void*(*ThreadFunction)(void* data);
 
+static inline void systemInit()
+{
+    g_thread_init(NULL);
+}
+
 static inline Thread* threadCreate(ThreadFunction function, void* data)
 {
     GError* error;

@@ -56,6 +56,7 @@ void waterSave(FILE* f)
     toolsSaveDouble(f, _definition.transparency);
     toolsSaveDouble(f, _definition.reflection);
     noiseSave(_definition.height_noise, f);
+    toolsSaveDouble(f, _definition.height_noise_factor);
 }
 
 void waterLoad(FILE* f)
@@ -67,6 +68,7 @@ void waterLoad(FILE* f)
     _definition.transparency = toolsLoadDouble(f);
     _definition.reflection = toolsLoadDouble(f);
     noiseLoad(_definition.height_noise, f);
+    _definition.height_noise_factor = toolsLoadDouble(f);
 }
 
 WaterDefinition waterCreateDefinition()
@@ -75,6 +77,7 @@ WaterDefinition waterCreateDefinition()
 
     result.height = -1000.0;
     result.height_noise = noiseCreateGenerator();
+    result.height_noise_factor = 1.0;
 
     return result;
 }
@@ -118,7 +121,7 @@ WaterQuality waterGetQuality()
 
 static inline double _getHeight(WaterDefinition* definition, double x, double z, double detail)
 {
-    return definition->height + noiseGet2DDetail(definition->height_noise, x, z, detail);
+    return definition->height + noiseGet2DDetail(definition->height_noise, x, z, detail) * definition->height_noise_factor;
 }
 
 static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, double detail)

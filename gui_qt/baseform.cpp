@@ -3,6 +3,8 @@
 #include "inputdouble.h"
 #include "inputint.h"
 #include "inputcolor.h"
+#include "inputcolorgradation.h"
+#include "inputnoise.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -27,12 +29,15 @@ BaseForm::BaseForm(QWidget* parent) :
 
     form = new QWidget(this);
     form->setLayout(new QGridLayout());
+    form->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     buttons = new QWidget(this);
     buttons->setLayout(new QHBoxLayout());
 
     hlayout->addWidget(previews);
     hlayout->addWidget(form);
+    hlayout->setAlignment(form, Qt::AlignTop);
+
     vlayout->addWidget(hwidget);
     vlayout->addWidget(buttons);
 
@@ -93,6 +98,10 @@ void BaseForm::addInput(BaseInput* input)
     layout->addWidget(input->preview(), row, 1);
     layout->addWidget(input->control(), row, 2);
 
+    input->label()->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    input->preview()->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    input->control()->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+
     connect(input, SIGNAL(valueChanged()), this, SLOT(applyConfigPreview()));
 
     input->setObjectName("_form_input_");
@@ -111,4 +120,14 @@ void BaseForm::addInputDouble(QString label, double* value, double min, double m
 void BaseForm::addInputColor(QString label, Color* value)
 {
     addInput(new InputColor(form, label, value));
+}
+
+void BaseForm::addInputColorGradation(QString label, ColorGradation* value)
+{
+    addInput(new InputColorGradation(form, label, value));
+}
+
+void BaseForm::addInputNoise(QString label, NoiseGenerator* value)
+{
+    addInput(new InputNoise(form, label, value));
 }

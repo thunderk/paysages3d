@@ -19,6 +19,9 @@ public slots:
 protected slots:
     virtual void applyValue();
 
+private slots:
+    void chooseColor();
+
 private:
     Color* _value;
 };

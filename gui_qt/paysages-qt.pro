@@ -6,9 +6,11 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += .
 INCLUDEPATH += .
-CONFIG += debug
+unix:CONFIG += debug
+win32:CONFIG += release
 
-LIBS += -L../lib_paysages/ -lpaysages
+unix:LIBS += -L../lib_paysages/ -lpaysages
+win32:LIBS += ../libpaysages.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-2.0
 
 # Input
 HEADERS += ../lib_paysages/shared/functions.h ../lib_paysages/shared/types.h \
@@ -21,7 +23,11 @@ HEADERS += ../lib_paysages/shared/functions.h ../lib_paysages/shared/types.h \
     inputcolor.h \
     formrender.h \
     inputint.h \
-    dialogrender.h
+    dialogrender.h \
+    inputcolorgradation.h \
+    formsky.h \
+    inputnoise.h \
+    tools.h
 FORMS +=
 SOURCES += \
     mainwindow.cpp \
@@ -33,4 +39,7 @@ SOURCES += \
     inputcolor.cpp \
     formrender.cpp \
     inputint.cpp \
-    dialogrender.cpp
+    dialogrender.cpp \
+    inputcolorgradation.cpp \
+    formsky.cpp \
+    inputnoise.cpp

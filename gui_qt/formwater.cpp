@@ -137,6 +137,8 @@ FormWater::FormWater(QWidget *parent):
     addInputDouble("Reflection", &_definition.reflection, 0.0, 1.0, 0.001, 0.1);
     addInputColor("Depth color", &_definition.depth_color);
     addInputDouble("Depth filtering", &_definition.transparency_depth, 0.0, 100.0, 0.5, 5.0);
+    addInputNoise("Wave noise", _definition.height_noise);
+    addInputDouble("Wave factor", &_definition.height_noise_factor, 0.0, 3.0, 0.1, 1.0);
 
     revertConfig();
 }
@@ -147,8 +149,8 @@ void FormWater::revertConfig()
     BaseForm::revertConfig();
 }
 
-/*void FormWater::applyConfig()
+void FormWater::applyConfig()
 {
     waterSetDefinition(_definition);
-    //guiUpdate();
-}*/
+    BaseForm::applyConfig();
+}

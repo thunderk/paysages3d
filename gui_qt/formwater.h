@@ -14,6 +14,7 @@ public:
 
 public slots:
     virtual void revertConfig();
+    virtual void applyConfig();
 
 private:
     Preview* previewCoverage;

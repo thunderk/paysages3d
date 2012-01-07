@@ -197,7 +197,7 @@ void autoGenRealisticLandscape(int seed)
     noiseAddLevelSimple(cloud.noise, 50.0 / 800.0, 0.001);
     noiseAddLevelSimple(cloud.noise, 50.0 / 1000.0, 0.0005);
     layer = cloudsAddLayer();
-    //cloudsSetDefinition(layer, cloud);
+    cloudsSetDefinition(layer, cloud);
 
     /* Water */
     water.height = 0.0;
@@ -213,6 +213,7 @@ void autoGenRealisticLandscape(int seed)
     water.depth_color.b = 0.3;
     water.depth_color.a = 1.0;
     water.height_noise = noiseCreateGenerator();
+    water.height_noise_factor = 1.0;
     noiseGenerateBaseNoise(water.height_noise, 262144);
     noiseAddLevelsSimple(water.height_noise, 2, 0.2, 0.015);
     noiseAddLevelsSimple(water.height_noise, 3, 0.03, 0.003);

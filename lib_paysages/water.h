@@ -17,6 +17,7 @@ typedef struct
     Color depth_color;
     double transparency_depth;
     NoiseGenerator* height_noise;
+    double height_noise_factor;
 } WaterDefinition;
 
 typedef struct

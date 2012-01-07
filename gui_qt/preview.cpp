@@ -72,9 +72,9 @@ void Preview::doRender()
 
 void Preview::redraw()
 {
-    lock->lock();
+    //lock->lock();
     need_rerender = 1;
-    lock->unlock();
+    //lock->unlock();
 }
 
 void Preview::resizeEvent(QResizeEvent* event)
@@ -134,7 +134,7 @@ void Preview::renderPixbuf()
                 done = true;
             }
         }
-        if (done)
+        if (done && (x == w - 1 || x % 10 == 0))
         {
             this->update();
         }

@@ -11,10 +11,12 @@
 #include "shared/constants.h"
 #include "shared/functions.h"
 #include "shared/globals.h"
+#include "shared/system.h"
 #include "terrain.h"
 
 void paysagesInit()
 {
+    systemInit();
     ilInit();
     iluInit();
 
