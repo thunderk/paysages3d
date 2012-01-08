@@ -15,9 +15,8 @@ public:
     inline QWidget* control() {return _control;}
 
 public slots:
-    virtual void revert() = 0;
-
-protected slots:
+    virtual void updatePreview();
+    virtual void revert();
     virtual void applyValue();
 
 signals:

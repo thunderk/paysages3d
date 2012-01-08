@@ -13,10 +13,9 @@ public:
     InputInt(QWidget* form, QString label, int* value, int min, int max, int small_step, int large_step);
 
 public slots:
-    virtual void revert();
-
-protected slots:
+    virtual void updatePreview();
     virtual void applyValue();
+    virtual void revert();
 
 private:
     QSlider* slider;

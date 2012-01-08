@@ -197,7 +197,7 @@ void autoGenRealisticLandscape(int seed)
     noiseAddLevelSimple(cloud.noise, 50.0 / 800.0, 0.001);
     noiseAddLevelSimple(cloud.noise, 50.0 / 1000.0, 0.0005);
     layer = cloudsAddLayer();
-    cloudsSetDefinition(layer, cloud);
+    //cloudsSetDefinition(layer, cloud);
 
     /* Water */
     water.height = 0.0;
@@ -311,19 +311,19 @@ void autoGenRealisticLandscape(int seed)
 
 void* _renderFirstPass(void* data)
 {
-    if (!renderSetNextProgressStep(0.0, 0.1))
+    if (!renderSetNextProgressStep(0.0, 0.01))
     {
         _is_rendering = 0;
         return NULL;
     }
     skyRender(renderTellProgress);
-    if (!renderSetNextProgressStep(0.1, 0.3))
+    if (!renderSetNextProgressStep(0.01, 0.085))
     {
         _is_rendering = 0;
         return NULL;
     }
     terrainRender(renderTellProgress);
-    if (!renderSetNextProgressStep(0.3, 0.4))
+    if (!renderSetNextProgressStep(0.085, 0.1))
     {
         _is_rendering = 0;
         return NULL;
@@ -359,7 +359,7 @@ void autoRenderSceneTwoPass(int postonly)
 
         threadJoin(thread);
     }
-    if (renderSetNextProgressStep(0.4, 1.0))
+    if (renderSetNextProgressStep(0.1, 1.0))
     {
         renderPostProcess(_cpu_count);
     }

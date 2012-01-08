@@ -50,7 +50,7 @@ void cloudsLoad(FILE* f)
 {
     int i;
     CloudsDefinition* layer;
-    
+
     /* FIXME Delete unused noise generators and add missing ones */
 
     _layers_count = toolsLoadInt(f);

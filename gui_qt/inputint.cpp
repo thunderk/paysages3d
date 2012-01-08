@@ -25,10 +25,16 @@ InputInt::InputInt(QWidget* form, QString label, int* value, int min, int max, i
     _control = slider;
 }
 
+void InputInt::updatePreview()
+{
+    ((QLabel*)_preview)->setText(QString("%1").arg(*value));
+
+    BaseInput::updatePreview();
+}
+
 void InputInt::applyValue()
 {
     *value = (int)slider->value();
-    ((QLabel*)_preview)->setText(QString("%1").arg(*value));
 
     BaseInput::applyValue();
 }
@@ -36,4 +42,6 @@ void InputInt::applyValue()
 void InputInt::revert()
 {
     slider->setValue(*value);
+
+   BaseInput::revert();
 }

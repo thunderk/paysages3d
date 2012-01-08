@@ -131,14 +131,14 @@ FormWater::FormWater(QWidget *parent):
     addPreview(previewCoverage, QString("Coverage preview"));
     addPreview(previewColor, QString("Color preview"));
 
-    addInputDouble("Height", &_definition.height, -20.0, 20.0, 0.1, 1.0);
+    addInputDouble("Height", &_definition.height, -10.0, 10.0, 0.1, 1.0);
     addInputColor("Surface color", &_definition.main_color);
     addInputDouble("Transparency", &_definition.transparency, 0.0, 1.0, 0.001, 0.1);
     addInputDouble("Reflection", &_definition.reflection, 0.0, 1.0, 0.001, 0.1);
     addInputColor("Depth color", &_definition.depth_color);
     addInputDouble("Depth filtering", &_definition.transparency_depth, 0.0, 100.0, 0.5, 5.0);
     addInputNoise("Wave noise", _definition.height_noise);
-    addInputDouble("Wave factor", &_definition.height_noise_factor, 0.0, 3.0, 0.1, 1.0);
+    addInputDouble("Wave factor", &_definition.height_noise_factor, 0.0, 2.0, 0.01, 0.2);
 
     revertConfig();
 }

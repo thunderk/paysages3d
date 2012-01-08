@@ -14,10 +14,9 @@ public:
     InputColor(QWidget* form, QString label, Color* value);
 
 public slots:
-    virtual void revert();
-
-protected slots:
+    virtual void updatePreview();
     virtual void applyValue();
+    virtual void revert();
 
 private slots:
     void chooseColor();

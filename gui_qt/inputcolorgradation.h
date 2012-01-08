@@ -14,10 +14,9 @@ public:
     InputColorGradation(QWidget* form, QString label, ColorGradation* value);
 
 public slots:
-    virtual void revert();
-
-protected slots:
+    virtual void updatePreview();
     virtual void applyValue();
+    virtual void revert();
 
 private slots:
     void editGradation();

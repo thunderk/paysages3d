@@ -8,7 +8,17 @@ BaseInput::BaseInput(QWidget* form, QString label):
     _label = new QLabel(label);
 }
 
+void BaseInput::updatePreview()
+{
+}
+
 void BaseInput::applyValue()
 {
+    updatePreview();
     emit(valueChanged());
+}
+
+void BaseInput::revert()
+{
+    updatePreview();
 }

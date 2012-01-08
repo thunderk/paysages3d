@@ -5,19 +5,32 @@
 #include <QPainter>
 #include <QColorDialog>
 
+#include "tools.h"
+
+#include "../lib_paysages/shared/functions.h"
+
 class ColorGradationPreview:public QWidget
 {
 public:
-    ColorGradationPreview(QWidget* parent):
-        QWidget(parent)
+    ColorGradationPreview(QWidget* parent, ColorGradation* gradation):
+        QWidget(parent),
+        gradation(gradation)
     {
     }
 
     void paintEvent(QPaintEvent* event)
     {
-        /*QPainter painter(this);
-        painter.fillRect(this->rect(), col);*/
+        QPainter painter(this);
+        int width = this->width();
+        int height = this->height();
+
+        for (int x = 0; x < width; x++)
+        {
+            painter.setPen(colorToQColor(colorGradationGet(gradation, (double)x / (double)width)));
+            painter.drawLine(x, 0, x, height - 1);
+        }
     }
+
     ColorGradation* gradation;
 };
 
@@ -25,12 +38,19 @@ InputColorGradation::InputColorGradation(QWidget* form, QString label, ColorGrad
     BaseInput(form, label),
     _value(value)
 {
-    _preview = new ColorGradationPreview(form);
+    _preview = new ColorGradationPreview(form, value);
     _preview->setMinimumSize(200, 20);
+
     _control = new QPushButton("Edit", form);
     _control->setMaximumWidth(150);
 
     connect((QPushButton*)_control, SIGNAL(clicked()), this, SLOT(editGradation()));
+}
+
+void InputColorGradation::updatePreview()
+{
+    _preview->update();
+    BaseInput::updatePreview();
 }
 
 void InputColorGradation::applyValue()
@@ -44,8 +64,7 @@ void InputColorGradation::applyValue()
 
 void InputColorGradation::revert()
 {
-    /*((ColorPreview*)_preview)->col = QColor::fromRgbF(_value->r, _value->g, _value->b);
-    _preview->update();*/
+    BaseInput::revert();
 }
 
 void InputColorGradation::editGradation()

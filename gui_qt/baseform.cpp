@@ -105,6 +105,7 @@ void BaseForm::addInput(BaseInput* input)
     connect(input, SIGNAL(valueChanged()), this, SLOT(applyConfigPreview()));
 
     input->setObjectName("_form_input_");
+    input->revert();
 }
 
 void BaseForm::addInputInt(QString label, int* value, int min, int max, int small_step, int large_step)

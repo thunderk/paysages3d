@@ -13,10 +13,9 @@ public:
     InputDouble(QWidget* form, QString label, double* value, double min, double max, double small_step, double large_step);
 
 public slots:
-    virtual void revert();
-
-protected slots:
+    virtual void updatePreview();
     virtual void applyValue();
+    virtual void revert();
 
 private:
     QSlider* slider;

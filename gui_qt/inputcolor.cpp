@@ -33,6 +33,12 @@ InputColor::InputColor(QWidget* form, QString label, Color* value):
     connect((QPushButton*)_control, SIGNAL(clicked()), this, SLOT(chooseColor()));
 }
 
+void InputColor::updatePreview()
+{
+    _preview->update();
+    BaseInput::updatePreview();
+}
+
 void InputColor::applyValue()
 {
     _value->r = ((ColorPreview*)_preview)->col.redF();
@@ -45,7 +51,7 @@ void InputColor::applyValue()
 void InputColor::revert()
 {
     ((ColorPreview*)_preview)->col = QColor::fromRgbF(_value->r, _value->g, _value->b);
-    _preview->update();
+    BaseInput::revert();
 }
 
 void InputColor::chooseColor()

@@ -14,10 +14,9 @@ public:
     InputNoise(QWidget* form, QString label, NoiseGenerator* value);
 
 public slots:
-    virtual void revert();
-
-protected slots:
+    virtual void updatePreview();
     virtual void applyValue();
+    virtual void revert();
 
 private slots:
     void editNoise();
