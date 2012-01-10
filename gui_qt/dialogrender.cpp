@@ -62,7 +62,7 @@ public:
     }
 };
 
-DialogRender::DialogRender(QWidget *parent) :
+DialogRender::DialogRender(QWidget *parent, int quality, int width, int height):
     QDialog(parent)
 {
     QScrollArea* scroll;
@@ -74,7 +74,7 @@ DialogRender::DialogRender(QWidget *parent) :
     setLayout(new QVBoxLayout());
 
     scroll = new QScrollArea(this);
-    scroll->setMinimumSize(850, 650);
+    scroll->setMinimumSize(width > 800 ? 850 : width + 50, height > 600 ? 650 : height + 50);
     scroll->setAlignment(Qt::AlignCenter);
     area = new RenderArea(scroll);
     scroll->setWidget(area);
@@ -83,13 +83,39 @@ DialogRender::DialogRender(QWidget *parent) :
     progress = new QProgressBar(this);
     progress->setMinimum(0);
     progress->setMaximum(1000);
+    progress->setValue(0);
     layout()->addWidget(progress);
     progress_value = 0;
 
-    renderSetSize(800, 600);
-    autoSetRenderQuality(5);
+    renderSetSize(width, height);
+    autoSetRenderQuality(quality);
+
     renderSetPreviewCallbacks(_renderResize, _renderClear, _renderDraw, _renderUpdate);
 
     render_thread = new RenderThread();
     render_thread->start();
+}
+
+void DialogRender::closeEvent(QCloseEvent* e)
+{
+    renderInterrupt();
+    render_thread->wait();
+
+    renderSetPreviewCallbacks(NULL, NULL, NULL, NULL);
+
+    delete render_thread;
+    delete pixbuf;
+}
+
+void DialogRender::reject()
+{
+    renderInterrupt();
+    render_thread->wait();
+
+    renderSetPreviewCallbacks(NULL, NULL, NULL, NULL);
+
+    delete render_thread;
+    delete pixbuf;
+
+    QDialog::reject();
 }

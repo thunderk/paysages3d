@@ -67,7 +67,7 @@ void guiInit()
     gtk_init(&argc, &argv);
 
     gui_definition = gtk_builder_new();
-    gtk_builder_add_from_file(gui_definition, "data/gui.glade", &p_err);
+    gtk_builder_add_from_file(gui_definition, "gui_gtk/gui.glade", &p_err);
 
     _main_window = GTK_WINDOW(GET_WIDGET("main_window"));
     g_signal_connect(_main_window, "delete_event", G_CALLBACK(_cbQuit), NULL);

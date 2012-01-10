@@ -75,6 +75,8 @@ WaterDefinition waterCreateDefinition()
 {
     WaterDefinition result;
 
+    result.main_color = COLOR_BLACK;
+    result.depth_color = COLOR_BLACK;
     result.height = -1000.0;
     result.height_noise = noiseCreateGenerator();
     result.height_noise_factor = 1.0;

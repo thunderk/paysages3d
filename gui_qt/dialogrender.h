@@ -9,15 +9,17 @@ class DialogRender : public QDialog
 {
     Q_OBJECT
 public:
-    explicit DialogRender(QWidget *parent = 0);
+    explicit DialogRender(QWidget *parent, int quality, int width, int height);
     QImage* pixbuf;
     QWidget* area;
     QProgressBar* progress;
     int progress_value;
 
-signals:
-
 public slots:
+    virtual void reject();
+
+protected:
+    virtual void closeEvent(QCloseEvent* e);
 
 private:
     QThread* render_thread;

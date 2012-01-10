@@ -35,6 +35,8 @@ private:
     QWidget* previews;
     QWidget* form;
     QWidget* buttons;
+    QPushButton* button_apply;
+    QPushButton* button_revert;
 };
 
 #endif // _PAYSAGES_QT_BASEFORM_H_

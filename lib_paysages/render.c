@@ -136,6 +136,8 @@ void renderClear()
     scanline_right = render_width - 1;
 
     _progress = 0.0;
+    _progress_step_start = 0.0;
+    _progress_step_length = 0.0;
     _interrupt = 0;
 
     _cb_preview_clear(background_color);

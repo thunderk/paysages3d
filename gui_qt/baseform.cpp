@@ -14,7 +14,6 @@
 BaseForm::BaseForm(QWidget* parent) :
     QWidget(parent)
 {
-    QPushButton* button;
     QWidget* hwidget;
     QVBoxLayout* vlayout;
     QHBoxLayout* hlayout;
@@ -43,11 +42,14 @@ BaseForm::BaseForm(QWidget* parent) :
 
     hwidget->setLayout(hlayout);
     this->setLayout(vlayout);
+    this->setObjectName("_base_form_");
 
-    button = addButton("Apply");
-    connect(button, SIGNAL(clicked()), this, SLOT(applyConfig()));
-    button = addButton("Revert");
-    connect(button, SIGNAL(clicked()), this, SLOT(revertConfig()));
+    button_apply = addButton("Apply");
+    button_apply->setEnabled(false);
+    connect(button_apply, SIGNAL(clicked()), this, SLOT(applyConfig()));
+    button_revert = addButton("Revert");
+    button_revert->setEnabled(false);
+    connect(button_revert, SIGNAL(clicked()), this, SLOT(revertConfig()));
 }
 
 void BaseForm::applyConfigPreview()
@@ -57,6 +59,9 @@ void BaseForm::applyConfigPreview()
     {
         list_previews[i]->redraw();
     }
+
+    button_apply->setEnabled(true);
+    button_revert->setEnabled(true);
 }
 
 void BaseForm::revertConfig()
@@ -68,6 +73,9 @@ void BaseForm::revertConfig()
     }
 
     BaseForm::applyConfigPreview();
+
+    button_apply->setEnabled(false);
+    button_revert->setEnabled(false);
 }
 
 void BaseForm::applyConfig()

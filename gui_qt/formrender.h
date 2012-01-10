@@ -17,6 +17,8 @@ private slots:
 
 private:
     int _quality;
+    int _width;
+    int _height;
 };
 
 #endif // _PAYSAGES_QT_FORMRENDER_H_

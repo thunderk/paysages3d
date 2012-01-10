@@ -15,9 +15,11 @@ public:
     explicit MainWindow(QWidget *parent = 0);
 
 public slots:
+    void refreshAll();
     void fileNew();
     void fileSave();
     void fileLoad();
+    void quickPreview();
 };
 
 #endif // _PAYSAGES_QT_MAINWINDOW_H_
