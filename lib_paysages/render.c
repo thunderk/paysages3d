@@ -53,6 +53,11 @@ void renderLoad(FILE* f)
 {
 }
 
+void renderInit()
+{
+    _lock = mutexCreate();
+}
+
 void renderSetSize(int width, int height)
 {
     int x;
@@ -71,11 +76,6 @@ void renderSetSize(int width, int height)
         free(render_zone);
         free(scanline_up);
         free(scanline_down);
-    }
-
-    if (_lock == NULL)
-    {
-        _lock = mutexCreate();
     }
 
     render_width = width;

@@ -135,6 +135,7 @@ double noiseGet3DTotal(NoiseGenerator* generator, double x, double y, double z);
 double noiseGet3DDetail(NoiseGenerator* generator, double x, double y, double z, double detail);
 
 /* render.c */
+void renderInit();
 void renderSave(FILE* f);
 void renderLoad(FILE* f);
 void renderSetSize(int width, int height);
