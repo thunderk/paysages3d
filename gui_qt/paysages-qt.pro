@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = 
+TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 unix:CONFIG += debug
@@ -24,8 +24,10 @@ HEADERS += ../lib_paysages/shared/functions.h ../lib_paysages/shared/types.h \
     formrender.h \
     inputint.h \
     dialogrender.h \
+    dialognoise.h \
     inputcolorgradation.h \
     formsky.h \
+    formnoise.h \
     inputnoise.h \
     tools.h
 FORMS +=
@@ -40,6 +42,8 @@ SOURCES += \
     formrender.cpp \
     inputint.cpp \
     dialogrender.cpp \
+    dialognoise.cpp \
     inputcolorgradation.cpp \
     formsky.cpp \
+    formnoise.cpp \
     inputnoise.cpp

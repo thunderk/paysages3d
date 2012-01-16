@@ -11,6 +11,8 @@ class Preview:public QWidget
 
 public:
     Preview(QWidget* parent);
+    ~Preview();
+
     static void startUpdater();
     void doRender();
     void redraw();
@@ -42,9 +44,9 @@ protected:
     int mousex;
     int mousey;
 
-    int need_rerender;
-    int need_render;
-    //SmallPreviewCallback renderer;
+    bool alive;
+    bool need_rerender;
+    bool need_render;
 };
 
-#endif // _PAYSAGES_QT_PREVIEW_H_
+#endif

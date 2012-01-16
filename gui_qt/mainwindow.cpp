@@ -47,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent) :
     menu->addAction("Quick render", this, SLOT(quickPreview()), QKeySequence("F2"));
 
     setCentralWidget(tabs);
+
+    setWindowTitle("Paysages 3D");
 }
 
 void MainWindow::refreshAll()

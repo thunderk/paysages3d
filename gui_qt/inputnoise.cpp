@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <QColorDialog>
 
+#include "dialognoise.h"
+
 #include "../lib_paysages/shared/functions.h"
 
 class NoiseSmallPreview:public QWidget
@@ -62,27 +64,18 @@ void InputNoise::updatePreview()
 
 void InputNoise::applyValue()
 {
-    /*_value->r = ((ColorPreview*)_preview)->col.redF();
-    _value->g = ((ColorPreview*)_preview)->col.greenF();
-    _value->b = ((ColorPreview*)_preview)->col.blueF();
-    _value->a = 1.0;*/
-
     BaseInput::applyValue();
 }
 
 void InputNoise::revert()
 {
-    /*((ColorPreview*)_preview)->col = QColor::fromRgbF(_value->r, _value->g, _value->b);*/
-
     BaseInput::revert();
 }
 
 void InputNoise::editNoise()
 {
-    /*QColor col = QColorDialog::getColor(((ColorPreview*)_preview)->col, _control);
-    if (col.isValid())
+    if (DialogNoise::getNoise(_control, _value))
     {
-        ((ColorPreview*)_preview)->col = col;
         applyValue();
-    }*/
+    }
 }

@@ -13,10 +13,10 @@
 static SkyDefinition _definition;
 
 /**************** Previews ****************/
-class PreviewHorizon:public Preview
+class PreviewEast:public Preview
 {
 public:
-    PreviewHorizon(QWidget* parent):
+    PreviewEast(QWidget* parent):
         Preview(parent)
     {
     }
@@ -26,9 +26,30 @@ protected:
         Vector3 eye = {0.0, 0.0, 0.0};
         Vector3 look;
 
-        look.x = cos(M_PI * (x / 128.0 + 0.5)) * cos(M_PI * (y / 256.0));
-        look.y = -sin(M_PI * (y / 256.0));
-        look.z = sin(M_PI * (x / 128.0 + 0.5)) * cos(M_PI * (y / 256.0));
+        look.x = 100.0;
+        look.y = -y;
+        look.z = x;
+
+        return colorToQColor(skyGetColorCustom(eye, look, &_definition, NULL, NULL));
+    }
+};
+
+class PreviewWest:public Preview
+{
+public:
+    PreviewWest(QWidget* parent):
+        Preview(parent)
+    {
+    }
+protected:
+    QColor getColor(double x, double y)
+    {
+        Vector3 eye = {0.0, 0.0, 0.0};
+        Vector3 look;
+
+        look.x = -100.0;
+        look.y = -y;
+        look.z = -x;
 
         return colorToQColor(skyGetColorCustom(eye, look, &_definition, NULL, NULL));
     }
@@ -40,8 +61,10 @@ FormSky::FormSky(QWidget *parent):
 {
     _definition = skyCreateDefinition();
 
-    previewHorizon = new PreviewHorizon(this);
-    addPreview(previewHorizon, QString("Horizon preview"));
+    previewWest = new PreviewWest(this);
+    addPreview(previewWest, QString("West preview"));
+    previewEast = new PreviewEast(this);
+    addPreview(previewEast, QString("East preview"));
 
     addInputDouble("Day time", &_definition.daytime, 0.0, 1.0, 0.01, 0.1);
     addInputColorGradation("Sun color", &_definition.sun_color);

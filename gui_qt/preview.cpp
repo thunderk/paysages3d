@@ -30,8 +30,6 @@ protected:
 Preview::Preview(QWidget* parent) :
     QWidget(parent)
 {
-    _previews.append(this);
-
     this->lock = new QMutex();
     this->conf_scroll_xmin = 0.0;
     this->conf_scroll_xmax = 0.0;
@@ -44,12 +42,26 @@ Preview::Preview(QWidget* parent) :
     this->xoffset = 0.0;
     this->yoffset = 0.0;
     this->pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
-    this->need_rerender = 0;
-    this->need_render = 0;
+
+    this->alive = true;
+    this->need_rerender = false;
+    this->need_render = false;
 
     this->setMinimumSize(256, 256);
     this->setMaximumSize(256, 256);
     this->resize(256, 256);
+
+    _previews.append(this);
+}
+
+Preview::~Preview()
+{
+    _previews.remove(_previews.indexOf(this));
+
+    lock->lock();
+    alive = true;
+    delete pixbuf;
+    lock->unlock();
 }
 
 void Preview::startUpdater()
@@ -59,14 +71,17 @@ void Preview::startUpdater()
 
 void Preview::doRender()
 {
-    if (this->need_rerender)
+    if (this->alive)
     {
-        this->forceRender();
-    }
-    if (this->need_render)
-    {
-        this->need_render = 0;
-        this->renderPixbuf();
+        if (this->need_rerender)
+        {
+            this->forceRender();
+        }
+        if (this->need_render)
+        {
+            this->need_render = 0;
+            this->renderPixbuf();
+        }
     }
 }
 
@@ -118,7 +133,7 @@ void Preview::renderPixbuf()
     {
         this->lock->lock();
 
-        if (this->need_rerender)
+        if (this->need_rerender || !this->alive)
         {
             this->lock->unlock();
             break;

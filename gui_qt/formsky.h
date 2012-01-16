@@ -20,7 +20,8 @@ protected slots:
     virtual void applyConfigPreview();
 
 private:
-    Preview* previewHorizon;
+    Preview* previewEast;
+    Preview* previewWest;
 };
 
 #endif // _PAYSAGES_QT_FORMSKY_H_
