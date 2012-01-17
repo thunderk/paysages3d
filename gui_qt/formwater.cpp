@@ -1,5 +1,6 @@
 #include "preview.h"
 #include "formwater.h"
+#include "tools.h"
 #include <QColor>
 #include <QSlider>
 #include <math.h>
@@ -32,7 +33,7 @@ protected:
         }
         else
         {
-            return QColor(_definition.main_color.r * 255.0, _definition.main_color.g * 255.0, _definition.main_color.b * 255.0);
+            return colorToQColor(_definition.main_color);
         }
     }
 };
@@ -64,7 +65,7 @@ protected:
         if (look.y > -0.0001)
         {
             result = this->rayCastFromWater(eye, look).hit_color;
-            return QColor(result.r * 255.0, result.g * 255.0, result.b * 255.0);
+            return colorToQColor(result);
         }
 
         location.x = eye.x - look.x * eye.y / look.y;
@@ -74,7 +75,7 @@ protected:
         if (location.z > 0.0)
         {
             result = this->rayCastFromWater(eye, look).hit_color;
-            return QColor(result.r * 255.0, result.g * 255.0, result.b * 255.0);
+            return colorToQColor(result);
         }
 
         definition = _definition;
@@ -86,7 +87,7 @@ protected:
         quality.force_detail = 0.0001;
 
         result = waterGetColorCustom(location, look, &definition, &quality, &environment).final;
-        return QColor(result.r * 255.0, result.g * 255.0, result.b * 255.0);
+        return colorToQColor(result);
     }
 
 private:
@@ -137,8 +138,9 @@ FormWater::FormWater(QWidget *parent):
     addInputDouble("Reflection", &_definition.reflection, 0.0, 1.0, 0.001, 0.1);
     addInputColor("Depth color", &_definition.depth_color);
     addInputDouble("Depth filtering", &_definition.transparency_depth, 0.0, 100.0, 0.5, 5.0);
-    addInputNoise("Wave noise", _definition.height_noise);
-    addInputDouble("Wave factor", &_definition.height_noise_factor, 0.0, 2.0, 0.01, 0.2);
+    addInputNoise("Waves noise", _definition.waves_noise);
+    addInputDouble("Waves height", &_definition.waves_noise_height, 0.0, 0.1, 0.001, 0.01);
+    addInputDouble("Waves scaling", &_definition.waves_noise_scale, 0.01, 1.0, 0.01, 0.1);
 
     revertConfig();
 }

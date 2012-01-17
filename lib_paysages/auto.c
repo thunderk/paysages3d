@@ -213,13 +213,14 @@ void autoGenRealisticLandscape(int seed)
     water.depth_color.g = 0.2;
     water.depth_color.b = 0.3;
     water.depth_color.a = 1.0;
-    water.height_noise = noiseCreateGenerator();
-    water.height_noise_factor = 1.0;
-    noiseGenerateBaseNoise(water.height_noise, 262144);
-    noiseAddLevelsSimple(water.height_noise, 2, 0.2, 0.015);
-    noiseAddLevelsSimple(water.height_noise, 3, 0.03, 0.003);
+    water.waves_noise = noiseCreateGenerator();
+    water.waves_noise_height = 0.015;
+    water.waves_noise_scale = 0.2;
+    noiseGenerateBaseNoise(water.waves_noise, 262144);
+    noiseAddLevelsSimple(water.waves_noise, 2, 1.0, 1.0);
+    noiseAddLevelsSimple(water.waves_noise, 3, 0.15, 0.1);
     waterSetDefinition(water);
-    noiseDeleteGenerator(water.height_noise);
+    noiseDeleteGenerator(water.waves_noise);
 
     /* Sky */
     sky.sun_color = colorGradationCreate();

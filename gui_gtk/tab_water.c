@@ -101,13 +101,13 @@ static Color _cbPreviewRender(SmallPreview* preview, double x, double y, double 
 
 static void _cbEditNoiseDone(NoiseGenerator* generator)
 {
-    noiseCopy(generator, _definition.height_noise);
+    noiseCopy(generator, _definition.waves_noise);
     guiPreviewRedraw(_preview_render);
 }
 
 static void _cbEditNoise(GtkWidget* widget, gpointer data)
 {
-    guiNoiseEdit(_definition.height_noise, _cbEditNoiseDone);
+    guiNoiseEdit(_definition.waves_noise, _cbEditNoiseDone);
 }
 
 static void _cbHeightChanged(GtkRange* range, gpointer data)

@@ -55,8 +55,9 @@ void waterSave(FILE* f)
     toolsSaveDouble(f, _definition.transparency_depth);
     toolsSaveDouble(f, _definition.transparency);
     toolsSaveDouble(f, _definition.reflection);
-    noiseSave(_definition.height_noise, f);
-    toolsSaveDouble(f, _definition.height_noise_factor);
+    noiseSave(_definition.waves_noise, f);
+    toolsSaveDouble(f, _definition.waves_noise_height);
+    toolsSaveDouble(f, _definition.waves_noise_scale);
 }
 
 void waterLoad(FILE* f)
@@ -67,8 +68,9 @@ void waterLoad(FILE* f)
     _definition.transparency_depth = toolsLoadDouble(f);
     _definition.transparency = toolsLoadDouble(f);
     _definition.reflection = toolsLoadDouble(f);
-    noiseLoad(_definition.height_noise, f);
-    _definition.height_noise_factor = toolsLoadDouble(f);
+    noiseLoad(_definition.waves_noise, f);
+    _definition.waves_noise_height = toolsLoadDouble(f);
+    _definition.waves_noise_scale = toolsLoadDouble(f);
 }
 
 WaterDefinition waterCreateDefinition()
@@ -78,25 +80,26 @@ WaterDefinition waterCreateDefinition()
     result.main_color = COLOR_BLACK;
     result.depth_color = COLOR_BLACK;
     result.height = -1000.0;
-    result.height_noise = noiseCreateGenerator();
-    result.height_noise_factor = 1.0;
+    result.waves_noise = noiseCreateGenerator();
+    result.waves_noise_height = 0.02;
+    result.waves_noise_scale = 0.2;
 
     return result;
 }
 
 void waterDeleteDefinition(WaterDefinition definition)
 {
-    noiseDeleteGenerator(definition.height_noise);
+    noiseDeleteGenerator(definition.waves_noise);
 }
 
 void waterCopyDefinition(WaterDefinition source, WaterDefinition* destination)
 {
     NoiseGenerator* noise;
 
-    noise = destination->height_noise;
+    noise = destination->waves_noise;
     *destination = source;
-    destination->height_noise = noise;
-    noiseCopy(source.height_noise, destination->height_noise);
+    destination->waves_noise = noise;
+    noiseCopy(source.waves_noise, destination->waves_noise);
 }
 
 void waterSetDefinition(WaterDefinition config)
@@ -123,7 +126,7 @@ WaterQuality waterGetQuality()
 
 static inline double _getHeight(WaterDefinition* definition, double x, double z, double detail)
 {
-    return definition->height + noiseGet2DDetail(definition->height_noise, x, z, detail) * definition->height_noise_factor;
+    return definition->height + noiseGet2DDetail(definition->waves_noise, x / definition->waves_noise_scale, z / definition->waves_noise_scale, detail) * definition->waves_noise_height;
 }
 
 static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, double detail)
