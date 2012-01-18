@@ -21,7 +21,7 @@ public:
 protected:
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent* event);
-    virtual QColor getColor(double x, double y) = 0;
+    virtual QColor getColor(double x, double y);
 
     void renderPixbuf();
     void forceRender();

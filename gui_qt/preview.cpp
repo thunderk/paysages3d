@@ -70,6 +70,11 @@ Preview::~Preview()
     delete pixbuf;
 }
 
+QColor Preview::getColor(double x, double y)
+{
+    return QColor(0, 0, 0);
+}
+
 void Preview::doRender()
 {
     if (this->alive)

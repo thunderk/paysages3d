@@ -87,6 +87,6 @@ void MainWindow::quickPreview()
 {
     DialogRender* dialog = new DialogRender(this);
     dialog->startRender(3, 400, 300);
-    
+
     delete dialog;
 }
