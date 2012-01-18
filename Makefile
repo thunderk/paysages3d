@@ -1,8 +1,8 @@
 all:
-	cd lib_paysages && make
-	cd cli && make
-	cd gui_gtk && make
-	cd gui_qt && qmake && make
+	@+cd lib_paysages && make
+	@+cd cli && make
+	@+cd gui_gtk && make
+	@+cd gui_qt && qmake && make
 
 clean:
 	cd lib_paysages && make clean

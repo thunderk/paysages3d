@@ -1,3 +1,4 @@
+#include <string.h>
 #include <math.h>
 
 #include "shared/types.h"
@@ -48,15 +49,19 @@ void cloudsSave(FILE* f)
 
 void cloudsLoad(FILE* f)
 {
-    int i;
+    int i, n;
     CloudsDefinition* layer;
 
-    /* FIXME Delete unused noise generators and add missing ones */
-
-    _layers_count = toolsLoadInt(f);
-    for (i = 0; i < _layers_count; i++)
+    while (_layers_count > 0)
     {
-        layer = _layers + i;
+        cloudsDeleteLayer(0);
+    }
+
+    n = toolsLoadInt(f);
+    for (i = 0; i < n; i++)
+    {
+        layer = _layers + cloudsAddLayer();
+
         layer->ycenter = toolsLoadDouble(f);
         layer->ymin = toolsLoadDouble(f);
         layer->ymax = toolsLoadDouble(f);
@@ -76,16 +81,31 @@ int cloudsAddLayer()
 {
     CloudsDefinition* layer;
 
-    layer = _layers + _layers_count;
-    layer->noise = noiseCreateGenerator();
-    layer->coverage = 0.0;
+    if (_layers_count < MAX_LAYERS)
+    {
+        layer = _layers + _layers_count;
+        layer->noise = noiseCreateGenerator();
+        layer->coverage = 0.0;
 
-    return _layers_count++;
+        return _layers_count++;
+    }
+    else
+    {
+        return _layers_count - 1;
+    }
 }
 
 void cloudsDeleteLayer(int layer)
 {
-    /* TODO */
+    if (layer >= 0 && layer < _layers_count)
+    {
+        noiseDeleteGenerator(_layers[layer].noise);
+        if (_layers_count > 1 && layer < _layers_count - 1)
+        {
+            memmove(_layers + layer, _layers + layer + 1, sizeof(CloudsDefinition) * (_layers_count - layer - 1));
+        }
+        _layers_count--;
+    }
 }
 
 CloudsDefinition cloudsCreateDefinition()

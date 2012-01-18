@@ -25,7 +25,7 @@ void texturesInit()
 void texturesSave(FILE* f)
 {
     int i;
-    
+
     toolsSaveInt(f, _textures_count);
     for (i = 0; i < _textures_count; i++)
     {
@@ -37,7 +37,23 @@ void texturesSave(FILE* f)
 
 void texturesLoad(FILE* f)
 {
-    // TODO
+    int i, n;
+    TextureDefinition* texture;
+
+    while (_textures_count > 0)
+    {
+        texturesDeleteLayer(0);
+    }
+
+    n = toolsLoadInt(f);
+    for (i = 0; i < n; i++)
+    {
+        texture = _textures + texturesAddLayer();
+
+        zoneLoad(texture->zone, f);
+        noiseLoad(texture->bump_noise, f);
+        texture->color = colorLoad(f);
+    }
 }
 
 int texturesGetLayerCount()
@@ -50,7 +66,7 @@ int texturesAddLayer()
     if (_textures_count < TEXTURES_MAX)
     {
         _textures[_textures_count] = texturesCreateDefinition();
-        
+
         return _textures_count++;
     }
     else
@@ -61,7 +77,16 @@ int texturesAddLayer()
 
 void texturesDeleteLayer(int layer)
 {
-    // TODO
+    if (layer >= 0 && layer < _textures_count)
+    {
+        zoneDelete(_textures[layer].zone);
+        noiseDeleteGenerator(_textures[layer].bump_noise);
+        if (_textures_count > 1 && layer < _textures_count - 1)
+        {
+            memmove(_textures + layer, _textures + layer + 1, sizeof(TextureDefinition) * (_textures_count - layer - 1));
+        }
+        _textures_count--;
+    }
 }
 
 TextureDefinition texturesCreateDefinition()
@@ -103,7 +128,7 @@ TextureDefinition texturesGetDefinition(int layer)
 {
     assert(layer >= 0);
     assert(layer < _textures_count);
-    
+
     return _textures[layer];
 }
 
@@ -159,7 +184,7 @@ Color texturesGetLayerColorCustom(Vector3 location, double shadowing, double det
     Color result;
     Vector3 normal;
     double coverage;
-    
+
     result.a = 0.0;
     normal = _getNormal(definition, location, detail * 0.3);
 
@@ -176,7 +201,7 @@ Color texturesGetColorCustom(Vector3 location, double shadowing, double detail, 
 {
     Color result, tex_color;
     int i;
-    
+
     result = COLOR_GREEN;
     for (i = 0; i < _textures_count; i++)
     {
@@ -187,16 +212,16 @@ Color texturesGetColorCustom(Vector3 location, double shadowing, double detail, 
             colorMask(&result, &tex_color);
         }
     }
-    
+
     return result;
 }
 
 Color texturesGetColor(Vector3 location)
 {
     double shadowing;
-    
+
     /* TODO Use environment to get lights to apply */
     shadowing = terrainGetShadow(location, sun_direction_inv);
-    
+
     return texturesGetColorCustom(location, shadowing, renderGetPrecision(location), &_quality, &_environment);
 }
