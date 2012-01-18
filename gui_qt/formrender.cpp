@@ -1,6 +1,10 @@
 #include "formrender.h"
 
+#include <QFileDialog>
+#include <QMessageBox>
+
 #include "dialogrender.h"
+#include "../lib_paysages/shared/functions.h"
 
 /**************** Form ****************/
 FormRender::FormRender(QWidget *parent) :
@@ -27,18 +31,28 @@ FormRender::FormRender(QWidget *parent) :
 
 void FormRender::startRender()
 {
-    DialogRender* dialog = new DialogRender(this, _quality, _width, _height);
-    dialog->exec();
-
+    DialogRender* dialog = new DialogRender(this);
+    dialog->startRender(_quality, _width, _height);
+ 
     delete dialog;
 }
 
 void FormRender::showRender()
 {
-
+    DialogRender* dialog = new DialogRender(this);
+    dialog->loadLastRender();
+    
+    delete dialog;
 }
 
 void FormRender::saveRender()
 {
-
+    QString filepath;
+    
+    filepath = QFileDialog::getSaveFileName(this, "Choose a filename to save the last render");
+    if (!filepath.isNull())
+    {
+        renderSaveToFile((char*)filepath.toStdString().c_str());
+        QMessageBox::information(this, "Message", "The picture " + filepath + " has been saved.");
+    }
 }

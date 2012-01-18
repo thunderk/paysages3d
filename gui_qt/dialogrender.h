@@ -4,22 +4,23 @@
 #include <QDialog>
 #include <QThread>
 #include <QProgressBar>
+#include <QScrollArea>
 
 class DialogRender : public QDialog
 {
     Q_OBJECT
 public:
-    explicit DialogRender(QWidget *parent, int quality, int width, int height);
+    explicit DialogRender(QWidget *parent);
+    ~DialogRender();
+    
+    void startRender(int quality, int width, int height);
+    void loadLastRender();
+    
     QImage* pixbuf;
     QWidget* area;
+    QScrollArea* scroll;
     QProgressBar* progress;
     int progress_value;
-
-public slots:
-    virtual void reject();
-
-protected:
-    virtual void closeEvent(QCloseEvent* e);
 
 private:
     QThread* render_thread;

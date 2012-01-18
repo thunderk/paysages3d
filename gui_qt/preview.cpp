@@ -1,7 +1,6 @@
 #include "preview.h"
 #include <QVector>
 #include <QPainter>
-#include <QThread>
 #include <QTimer>
 
 static QVector<Preview*> _previews;
@@ -9,22 +8,29 @@ static QVector<Preview*> _previews;
 class PreviewDrawer:public QThread
 {
 public:
-    PreviewDrawer()
+    PreviewDrawer(Preview* preview):
+        QThread(),
+        _preview(preview)
     {
+        _running = false;
+    }
+    void askStop()
+    {
+        _running = false;
     }
 protected:
     void run()
     {
-        while (true)
+        _running = true;
+        while (_running)
         {
-            QVectorIterator<Preview*> iter(_previews);
-            while (iter.hasNext())
-            {
-                iter.next()->doRender();
-            }
+            _preview->doRender();
             QThread::usleep(50000);
         }
     }
+private:
+    Preview* _preview;
+    bool _running;
 };
 
 Preview::Preview(QWidget* parent) :
@@ -51,22 +57,17 @@ Preview::Preview(QWidget* parent) :
     this->setMaximumSize(256, 256);
     this->resize(256, 256);
 
-    _previews.append(this);
+    this->updater = new PreviewDrawer(this);
+    this->updater->start();
 }
 
 Preview::~Preview()
 {
-    _previews.remove(_previews.indexOf(this));
-
-    lock->lock();
-    alive = true;
+    alive = false;
+    ((PreviewDrawer*)updater)->askStop();
+    updater->wait();
+    delete updater;
     delete pixbuf;
-    lock->unlock();
-}
-
-void Preview::startUpdater()
-{
-    (new PreviewDrawer())->start();
 }
 
 void Preview::doRender()

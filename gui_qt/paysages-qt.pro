@@ -27,7 +27,6 @@ HEADERS += ../lib_paysages/shared/functions.h ../lib_paysages/shared/types.h \
     dialognoise.h \
     inputcolorgradation.h \
     formsky.h \
-    formnoise.h \
     inputnoise.h \
     tools.h
 FORMS +=
@@ -45,5 +44,4 @@ SOURCES += \
     dialognoise.cpp \
     inputcolorgradation.cpp \
     formsky.cpp \
-    formnoise.cpp \
     inputnoise.cpp

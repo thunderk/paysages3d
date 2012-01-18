@@ -4,6 +4,7 @@
 #include <QMutex>
 #include <QImage>
 #include <QWidget>
+#include <QThread>
 
 class Preview:public QWidget
 {
@@ -47,6 +48,8 @@ protected:
     bool alive;
     bool need_rerender;
     bool need_render;
+private:
+    QThread* updater;
 };
 
 #endif

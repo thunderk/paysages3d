@@ -4,7 +4,6 @@
 #include <QImage>
 #include <QColor>
 #include <QPainter>
-#include <QScrollArea>
 
 #include "../lib_paysages/shared/functions.h"
 
@@ -26,6 +25,7 @@ static void _renderResize(int width, int height)
     _current_dialog->area->setMinimumSize(width, height);
     _current_dialog->area->setMaximumSize(width, height);
     _current_dialog->area->resize(width, height);
+    _current_dialog->scroll->setMinimumSize(width > 800 ? 850 : width + 50, height > 600 ? 650 : height + 50);
 }
 
 static void _renderClear(Color col)
@@ -62,20 +62,18 @@ public:
     }
 };
 
-DialogRender::DialogRender(QWidget *parent, int quality, int width, int height):
+DialogRender::DialogRender(QWidget *parent):
     QDialog(parent)
 {
-    QScrollArea* scroll;
-
     pixbuf = new QImage(1, 1, QImage::Format_ARGB32);
     _current_dialog = this;
+    render_thread = NULL;
 
     setModal(true);
     setWindowTitle("Paysages 3D - Render");
     setLayout(new QVBoxLayout());
 
     scroll = new QScrollArea(this);
-    scroll->setMinimumSize(width > 800 ? 850 : width + 50, height > 600 ? 650 : height + 50);
     scroll->setAlignment(Qt::AlignCenter);
     area = new RenderArea(scroll);
     scroll->setWidget(area);
@@ -87,7 +85,10 @@ DialogRender::DialogRender(QWidget *parent, int quality, int width, int height):
     progress->setValue(0);
     layout()->addWidget(progress);
     progress_value = 0;
+}
 
+void DialogRender::startRender(int quality, int width, int height)
+{
     renderSetSize(width, height);
     autoSetRenderQuality(quality);
 
@@ -95,28 +96,28 @@ DialogRender::DialogRender(QWidget *parent, int quality, int width, int height):
 
     render_thread = new RenderThread();
     render_thread->start();
+    
+    exec();
 }
 
-void DialogRender::closeEvent(QCloseEvent* e)
+void DialogRender::loadLastRender()
 {
-    renderInterrupt();
-    render_thread->wait();
-
-    renderSetPreviewCallbacks(NULL, NULL, NULL, NULL);
-
-    delete render_thread;
-    delete pixbuf;
+    progress->hide();
+    renderSetPreviewCallbacks(_renderResize, _renderClear, _renderDraw, _renderUpdate);
+    
+    exec();
 }
 
-void DialogRender::reject()
+DialogRender::~DialogRender()
 {
-    renderInterrupt();
-    render_thread->wait();
+    if (render_thread)
+    {
+        renderInterrupt();
+        render_thread->wait();
 
-    renderSetPreviewCallbacks(NULL, NULL, NULL, NULL);
+        renderSetPreviewCallbacks(NULL, NULL, NULL, NULL);
 
-    delete render_thread;
+        delete render_thread;
+    }
     delete pixbuf;
-
-    QDialog::reject();
 }

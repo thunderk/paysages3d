@@ -8,7 +8,7 @@ clean:
 	cd lib_paysages && make clean
 	cd cli && make clean
 	cd gui_gtk && make clean
-	cd gui_qt && make clean && rm -f Makefile paysages-qt
+	cd gui_qt && make clean && rm -f paysages-qt
 
 run_cli:
 	LD_LIBRARY_PATH=lib_paysages ./cli/paysages-cli

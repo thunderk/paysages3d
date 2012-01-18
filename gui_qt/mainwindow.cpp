@@ -20,8 +20,6 @@ int main(int argc, char** argv)
 
     window.show();
 
-    Preview::startUpdater();
-
     return app.exec();
 }
 
@@ -87,5 +85,8 @@ void MainWindow::fileLoad()
 
 void MainWindow::quickPreview()
 {
-    DialogRender(this, 3, 400, 300).exec();
+    DialogRender* dialog = new DialogRender(this);
+    dialog->startRender(3, 400, 300);
+    
+    delete dialog;
 }

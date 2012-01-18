@@ -260,6 +260,24 @@ static void _processDirtyPixels()
     _dirty_count = 0;
 }
 
+static void _setAllDirty()
+{
+    int x, y;
+    
+    _dirty_left = 0;
+    _dirty_right = render_width - 1;
+    _dirty_down = 0;
+    _dirty_up = render_height - 1;
+    
+    for (y = _dirty_down; y <= _dirty_up; y++)
+    {
+        for (x = _dirty_left; x <= _dirty_right; x++)
+        {
+            (render_zone + y * render_width + x)->dirty = 1;
+        }
+    }
+}
+
 void renderAddFragment(RenderFragment* fragment)
 {
     Array* pixel_data;
@@ -781,8 +799,14 @@ void renderSetPreviewCallbacks(PreviewCallbackResize resize, PreviewCallbackClea
     _cb_preview_clear = clear ? clear : _previewClear;
     _cb_preview_draw = draw ? draw : _previewDraw;
     _cb_preview_update = update ? update : _previewUpdate;
+    
     _cb_preview_resize(render_width, render_height);
-    /* TODO Send all pixels ? */
+    _cb_preview_clear(background_color);
+    
+    _setAllDirty();
+    _processDirtyPixels();
+
+    _cb_preview_update(1.0);
 }
 
 int renderSetNextProgressStep(double start, double end)
