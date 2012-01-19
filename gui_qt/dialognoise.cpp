@@ -5,7 +5,9 @@
 #include <QLabel>
 #include <QColor>
 #include <QPainter>
+#include <QSlider>
 #include <QScrollArea>
+#include <QPushButton>
 
 #include "../lib_paysages/shared/functions.h"
 
@@ -62,19 +64,72 @@ private:
 DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     QDialog(parent)
 {
+    QWidget* previews;
+    QWidget* form;
+    QWidget* buttons;
+    QSlider* slider;
+    QPushButton* button;
+    
     _base = value;
     _current = noiseCreateGenerator();
 
     noiseCopy(_base, _current);
 
-    setLayout(new QVBoxLayout());
+    setLayout(new QHBoxLayout());
 
-    previewLevel = new PreviewLevel(this, _current);
-    layout()->addWidget(new QLabel("Level preview"));
-    layout()->addWidget(previewLevel);
-    previewTotal = new PreviewTotal(this, _current);
-    layout()->addWidget(new QLabel("Total preview"));
-    layout()->addWidget(previewTotal);
+    previews = new QWidget(this);
+    previews->setLayout(new QVBoxLayout());
+    layout()->addWidget(previews);
+    
+    previewLevel = new PreviewLevel(previews, _current);
+    previews->layout()->addWidget(new QLabel("Level preview"));
+    previews->layout()->addWidget(previewLevel);
+    previewTotal = new PreviewTotal(previews, _current);
+    previews->layout()->addWidget(new QLabel("Total preview"));
+    previews->layout()->addWidget(previewTotal);
+
+    form = new QWidget(this);
+    form->setLayout(new QVBoxLayout());
+    layout()->addWidget(form);
+    
+    form->layout()->addWidget(new QLabel("Layers"));
+    levels = new QListWidget(form);
+    form->layout()->addWidget(levels);
+    
+    form->layout()->addWidget(new QLabel("Layer height"));
+    slider = new QSlider(form);
+    slider->setOrientation(Qt::Horizontal);
+    slider->setMinimumWidth(150);
+    slider->setMaximumWidth(400);
+    slider->setMinimum(0);
+    slider->setMaximum(1000);
+    slider->setTickInterval(100);
+    slider->setTickPosition(QSlider::TicksBelow);
+    form->layout()->addWidget(slider);
+
+    form->layout()->addWidget(new QLabel("Layer scaling"));
+    slider = new QSlider(form);
+    slider->setOrientation(Qt::Horizontal);
+    slider->setMinimumWidth(150);
+    slider->setMaximumWidth(400);
+    slider->setMinimum(0);
+    slider->setMaximum(1000);
+    slider->setTickInterval(100);
+    slider->setTickPosition(QSlider::TicksBelow);
+    form->layout()->addWidget(slider);
+    
+    buttons = new QWidget(form);
+    buttons->setLayout(new QHBoxLayout());
+    form->layout()->addWidget(buttons);
+    
+    button = new QPushButton("Validate", buttons);
+    buttons->layout()->addWidget(button);
+
+    button = new QPushButton("Reset", buttons);
+    buttons->layout()->addWidget(button);
+
+    button = new QPushButton("Cancel", buttons);
+    buttons->layout()->addWidget(button);
 
     setWindowTitle("Paysages 3D - Noise editor");
 }

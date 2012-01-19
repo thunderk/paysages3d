@@ -2,6 +2,7 @@
 #define _PAYSAGES_QT_DIALOGNOISE_H_
 
 #include <QDialog>
+#include <QListWidget>
 #include "preview.h"
 
 #include "../lib_paysages/shared/types.h"
@@ -21,12 +22,18 @@ public slots:
 protected:
     virtual void closeEvent(QCloseEvent* e);
 
+private slots:
+    void cancelClicked();
+    void revertClicked();
+    void applyClicked();
+    
 private:
     NoiseGenerator* _base;
     NoiseGenerator* _current;
     NoiseLevel _current_level;
     Preview* previewLevel;
     Preview* previewTotal;
+    QListWidget* levels;
 };
 
 #endif
