@@ -172,11 +172,6 @@ void noiseClearLevels(NoiseGenerator* generator)
 
 void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level)
 {
-    if (level.scaling < 0.0000001 || level.height < 0.0000001)
-    {
-        return;
-    }
-
     generator->levels = realloc(generator->levels, sizeof(NoiseLevel) * (generator->level_count + 1));
     generator->levels[generator->level_count] = level;
     generator->level_count++;

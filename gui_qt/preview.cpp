@@ -98,6 +98,13 @@ void Preview::redraw()
     //lock->unlock();
 }
 
+void Preview::setScaling(double scaling)
+{
+    // TODO Follow conf_scale
+    this->scaling = scaling;
+    redraw();
+}
+
 void Preview::resizeEvent(QResizeEvent* event)
 {
     QImage* image;

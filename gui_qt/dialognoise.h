@@ -18,22 +18,31 @@ public:
 
 public slots:
     virtual void accept();
+    void revert();
 
 protected:
     virtual void closeEvent(QCloseEvent* e);
 
+private:
+    void revertToCurrent();
+
 private slots:
-    void cancelClicked();
-    void revertClicked();
-    void applyClicked();
+    void addLevel();
+    void removeLevel();
+    void levelChanged(int row);
+    void heightChanged(int value);
+    void scalingChanged(int value);
     
 private:
     NoiseGenerator* _base;
     NoiseGenerator* _current;
-    NoiseLevel _current_level;
+    int _current_level;
+    NoiseLevel _current_level_params;
     Preview* previewLevel;
     Preview* previewTotal;
     QListWidget* levels;
+    QSlider* slider_height;
+    QSlider* slider_scaling;
 };
 
 #endif

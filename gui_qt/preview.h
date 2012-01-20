@@ -17,6 +17,8 @@ public:
     static void startUpdater();
     void doRender();
     void redraw();
+    
+    void setScaling(double scaling);
 
 protected:
     void resizeEvent(QResizeEvent* event);
