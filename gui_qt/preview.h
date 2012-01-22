@@ -17,7 +17,7 @@ public:
     static void startUpdater();
     void doRender();
     void redraw();
-    
+
     void setScaling(double scaling);
 
 protected:
@@ -50,8 +50,12 @@ protected:
     bool alive;
     bool need_rerender;
     bool need_render;
+
 private:
     QThread* updater;
+
+signals:
+    void contentChange();
 };
 
 #endif

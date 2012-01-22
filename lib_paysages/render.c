@@ -56,6 +56,7 @@ void renderLoad(FILE* f)
 void renderInit()
 {
     _lock = mutexCreate();
+    renderSetBackgroundColor(&COLOR_BLACK);
 }
 
 void renderSetSize(int width, int height)
@@ -263,12 +264,12 @@ static void _processDirtyPixels()
 static void _setAllDirty()
 {
     int x, y;
-    
+
     _dirty_left = 0;
     _dirty_right = render_width - 1;
     _dirty_down = 0;
     _dirty_up = render_height - 1;
-    
+
     for (y = _dirty_down; y <= _dirty_up; y++)
     {
         for (x = _dirty_left; x <= _dirty_right; x++)
@@ -799,10 +800,10 @@ void renderSetPreviewCallbacks(PreviewCallbackResize resize, PreviewCallbackClea
     _cb_preview_clear = clear ? clear : _previewClear;
     _cb_preview_draw = draw ? draw : _previewDraw;
     _cb_preview_update = update ? update : _previewUpdate;
-    
+
     _cb_preview_resize(render_width, render_height);
     _cb_preview_clear(background_color);
-    
+
     _setAllDirty();
     _processDirtyPixels();
 

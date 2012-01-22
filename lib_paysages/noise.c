@@ -180,13 +180,13 @@ void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level)
 void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double height)
 {
     NoiseLevel level;
-    
+
     level.scaling = scaling;
     level.height = height;
     level.xoffset = toolsRandom();
     level.yoffset = toolsRandom();
     level.zoffset = toolsRandom();
-    
+
     noiseAddLevel(generator, level);
 }
 
@@ -211,10 +211,22 @@ void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start
 void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double height)
 {
     NoiseLevel level;
-    
+
     level.scaling = scaling;
     level.height = height;
     noiseAddLevels(generator, level_count, level, 0.5, 0.5, 1);
+}
+
+void noiseRemoveLevel(NoiseGenerator* generator, int level)
+{
+    if (level >= 0 && level < generator->level_count)
+    {
+        if (generator->level_count > 1 && level < generator->level_count - 1)
+        {
+            memmove(generator->levels + level, generator->levels + level + 1, sizeof(NoiseLevel) * (generator->level_count - level - 1));
+        }
+        generator->level_count--;
+    }
 }
 
 int noiseGetLevel(NoiseGenerator* generator, int level, NoiseLevel* params)
@@ -241,13 +253,13 @@ void noiseSetLevel(NoiseGenerator* generator, int level, NoiseLevel params)
 void noiseSetLevelSimple(NoiseGenerator* generator, int level, double scaling, double height)
 {
     NoiseLevel params;
-    
+
     params.scaling = scaling;
     params.height = height;
     params.xoffset = toolsRandom();
     params.yoffset = toolsRandom();
     params.zoffset = toolsRandom();
-    
+
     noiseSetLevel(generator, level, params);
 }
 

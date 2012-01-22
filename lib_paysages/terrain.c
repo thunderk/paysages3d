@@ -20,12 +20,14 @@ void terrainInit()
 {
     _definition = terrainCreateDefinition();
     _max_height = noiseGetMaxValue(_definition.height_noise);
+
+    _environment.toggle_fog = 1;
 }
 
 void terrainSave(FILE* f)
 {
     int i;
-    
+
     noiseSave(_definition.height_noise, f);
     toolsSaveInt(f, _definition.height_modifiers_count);
     for (i = 0; i < _definition.height_modifiers_count; i++)
@@ -37,7 +39,7 @@ void terrainSave(FILE* f)
 void terrainLoad(FILE* f)
 {
     int i;
-    
+
     noiseLoad(_definition.height_noise, f);
     _max_height = noiseGetMaxValue(_definition.height_noise);
 
@@ -56,17 +58,17 @@ void terrainLoad(FILE* f)
 TerrainDefinition terrainCreateDefinition()
 {
     TerrainDefinition definition;
-    
+
     definition.height_noise = noiseCreateGenerator();
     definition.height_modifiers_count = 0;
-     
+
     return definition;
 }
 
 void terrainDeleteDefinition(TerrainDefinition definition)
 {
     int i;
-    
+
     noiseDeleteGenerator(definition.height_noise);
     for (i = 0; i < definition.height_modifiers_count; i++)
     {
@@ -77,9 +79,9 @@ void terrainDeleteDefinition(TerrainDefinition definition)
 void terrainCopyDefinition(TerrainDefinition source, TerrainDefinition* destination)
 {
     int i;
-    
+
     noiseCopy(source.height_noise, destination->height_noise);
-    
+
     for (i = 0; i < destination->height_modifiers_count; i++)
     {
         modifierDelete(destination->height_modifiers[i]);
@@ -138,16 +140,16 @@ static inline double _getHeight(TerrainDefinition* definition, double x, double 
 {
     Vector3 location;
     int i;
-    
+
     location.x = x;
     location.y = noiseGet2DDetail(definition->height_noise, x, z, detail);
     location.z = z;
-    
+
     for (i = 0; i < definition->height_modifiers_count; i++)
     {
         location = modifierApply(definition->height_modifiers[i], location);
     }
-    
+
     return location.y;
 }
 
@@ -214,13 +216,15 @@ double terrainGetShadow(Vector3 start, Vector3 direction)
     }
 }
 
-static Color _getColor(TerrainDefinition* definition, Vector3 point, double precision)
+static Color _getColor(TerrainDefinition* definition, TerrainEnvironment* environment, Vector3 point, double precision)
 {
     Color color;
 
-    /* FIXME Environment for textures should be customized */
     color = texturesGetColor(point);
-    color = fogApplyToLocation(point, color);
+    if (environment->toggle_fog)
+    {
+        color = fogApplyToLocation(point, color);
+    }
     //color = cloudsApplySegmentResult(color, camera_location, point);
 
     return color;
@@ -248,7 +252,7 @@ int terrainProjectRay(Vector3 start, Vector3 direction, Vector3* hit_point, Colo
         {
             start.y = height;
             *hit_point = start;
-            *hit_color = _getColor(&_definition, start, inc_value);
+            *hit_color = _getColor(&_definition, &_environment, start, inc_value);
             return 1;
         }
 
@@ -279,7 +283,7 @@ static int _postProcessFragment(RenderFragment* fragment)
 
     point = _getPoint(&_definition, point.x, point.z, precision);
 
-    fragment->vertex.color = _getColor(&_definition, point, precision);
+    fragment->vertex.color = _getColor(&_definition, &_environment, point, precision);
 
     return 1;
 }
@@ -324,7 +328,20 @@ double terrainGetHeightNormalized(double x, double z)
 
 Color terrainGetColorCustom(double x, double z, double detail, TerrainDefinition* definition, TerrainQuality* quality, TerrainEnvironment* environment)
 {
-    return _getColor(definition, _getPoint(definition, x, z, detail), detail);
+    if (!definition)
+    {
+        definition = &_definition;
+    }
+    if (!quality)
+    {
+        quality = &_quality;
+    }
+    if (!environment)
+    {
+        environment = &_environment;
+    }
+
+    return _getColor(definition, environment, _getPoint(definition, x, z, detail), detail);
 }
 
 Color terrainGetColor(double x, double z, double detail)
@@ -351,7 +368,7 @@ void terrainRender(RenderProgressCallback callback)
         {
             return;
         }
-        
+
         for (i = 0; i < chunk_count - 1; i++)
         {
             _renderQuad(cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size);

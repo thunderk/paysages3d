@@ -1,11 +1,13 @@
+#include "clouds.h"
+
 #include <string.h>
 #include <math.h>
 
+#include "lighting.h"
 #include "shared/types.h"
 #include "shared/functions.h"
 #include "shared/constants.h"
 #include "shared/globals.h"
-#include "clouds.h"
 
 #define MAX_LAYERS 10
 
@@ -378,22 +380,26 @@ static int _findSegments(CloudsDefinition* definition, CloudsQuality* quality, V
     return segment_count;
 }
 
-static Color _applyLayerLighting(CloudsDefinition* definition, CloudsQuality* quality, Vector3 position, Color base, double detail)
+typedef struct
 {
-    Vector3 direction, normal;
+    CloudsDefinition* definition;
+    CloudsQuality* quality;
+    Color base;
+    double detail;
+} LightFilterData;
+
+static Color _lightFilter(Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light, void* custom_data)
+{
     double inside_depth, total_depth;
     CloudSegment segments[20];
     Color result;
+    LightFilterData data;
 
-    normal = _getNormal(definition, position, 0.5);
-    normal = v3Add(normal, _getNormal(definition, position, 0.2));
-    normal = v3Add(normal, _getNormal(definition, position, 0.1));
-    result = lightingApply(position, normal, 0.0, base, 0.3, 0.1);
+    data = *((LightFilterData*)custom_data);
+    data.detail = (data.detail < 0.1) ? 0.1 : data.detail;
 
-    direction = sun_direction_inv;
-    detail = (detail < 0.1) ? 0.1 : detail;
     /* FIXME Dont hard-code max_total_length */
-    _findSegments(definition, quality, position, direction, detail, 20, 50.0, 300.0, &inside_depth, &total_depth, segments);
+    _findSegments(data.definition, data.quality, location, direction_to_light, data.detail, 20, 50.0, 300.0, &inside_depth, &total_depth, segments);
 
     inside_depth *= 0.02;
     if (inside_depth > 1.0)
@@ -401,11 +407,38 @@ static Color _applyLayerLighting(CloudsDefinition* definition, CloudsQuality* qu
         inside_depth = 1.0;
     }
 
-    result.r = base.r * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.r * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
-    result.g = base.g * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.g * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
-    result.b = base.b * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.b * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
+    result.r = data.base.r * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.r * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
+    result.g = data.base.g * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.g * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
+    result.b = data.base.b * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.b * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
 
     return result;
+}
+
+static Color _applyLayerLighting(CloudsDefinition* definition, CloudsQuality* quality, Vector3 position, Color base, double detail)
+{
+    Vector3 normal;
+    ReceiverMaterial material;
+    LightingEnvironment lighting_environment;
+    LightFilterData data;
+
+    normal = _getNormal(definition, position, 0.5);
+    normal = v3Add(normal, _getNormal(definition, position, 0.2));
+    normal = v3Add(normal, _getNormal(definition, position, 0.1));
+    //normal = v3Normalize(normal);
+
+    data.definition = definition;
+    data.quality = quality;
+    data.detail = detail;
+    data.base = base;
+
+    lighting_environment.filter = _lightFilter;
+    lighting_environment.custom_data = &data;
+
+    material.base = base;
+    material.reflection = 0.3;
+    material.shininess = 0.1;
+
+    return lightingApplyCustom(position, normal, material, NULL, NULL, &lighting_environment);
 }
 
 Color cloudsGetColorCustom(Vector3 start, Vector3 end, CloudsDefinition* definition, CloudsQuality* quality, CloudsEnvironment* environment)

@@ -13,10 +13,10 @@
 static WaterDefinition _definition;
 
 /**************** Previews ****************/
-class PreviewCoverage:public Preview
+class PreviewWaterCoverage:public Preview
 {
 public:
-    PreviewCoverage(QWidget* parent):
+    PreviewWaterCoverage(QWidget* parent):
         Preview(parent)
     {
     }
@@ -38,10 +38,10 @@ protected:
     }
 };
 
-class PreviewColor:public Preview
+class PreviewWaterColor:public Preview
 {
 public:
-    PreviewColor(QWidget* parent):
+    PreviewWaterColor(QWidget* parent):
         Preview(parent)
     {
     }
@@ -85,6 +85,7 @@ protected:
         environment.toggle_fog = 0;
         environment.toggle_shadows = 0;
         quality.force_detail = 0.0001;
+        quality.detail_boost = 1.0;
 
         result = waterGetColorCustom(location, look, &definition, &quality, &environment).final;
         return colorToQColor(result);
@@ -100,6 +101,7 @@ private:
         if (direction.z < 0.0001)
         {
             result.hit_color = COLOR_WHITE;
+            result.hit_location = start;
         }
         else
         {
@@ -114,8 +116,10 @@ private:
             {
                 result.hit_color = COLOR_GREY;
             }
+            result.hit_location.x = x;
+            result.hit_location.y = y;
+            result.hit_location.z = 0.0;
         }
-        /* TODO hit_location */
 
         return result;
     }
@@ -127,8 +131,8 @@ FormWater::FormWater(QWidget *parent):
 {
     _definition = waterCreateDefinition();
 
-    previewCoverage = new PreviewCoverage(this);
-    previewColor = new PreviewColor(this);
+    previewCoverage = new PreviewWaterCoverage(this);
+    previewColor = new PreviewWaterColor(this);
     addPreview(previewCoverage, QString("Coverage preview"));
     addPreview(previewColor, QString("Color preview"));
 

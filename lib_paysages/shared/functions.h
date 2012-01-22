@@ -9,6 +9,8 @@ extern "C" {
 #include <stdio.h>
 
 void paysagesInit();
+void paysagesSave(char* filepath);
+void paysagesLoad(char* filepath);
 
 /* array.c */
 void arrayCreate(Array* array, int item_size);
@@ -21,8 +23,6 @@ void arrayClear(Array* array);
 
 /* auto.c */
 void autoInit();
-void autoSave(char* filepath);
-void autoLoad(char* filepath);
 void autoSetDaytime(int hour, int minute);
 void autoSetDaytimeFraction(double daytime);
 void autoSetRenderQuality(int quality);
@@ -97,14 +97,6 @@ void fogSetColor(Color col);
 void fogSetDistance(double near, double far);
 Color fogApplyToLocation(Vector3 location, Color base);
 
-/* lighting.c */
-void lightingSave(FILE* f);
-void lightingLoad(FILE* f);
-void lightingSetSunDirection(double x, double y, double z);
-void lightingSetSunAngle(double hor, double ver);
-void lightingSetSunColor(Color col);
-Color lightingApply(Vector3 location, Vector3 normal, double shadowing, Color base, double reflection, double shininess);
-
 /* noise.c */
 NoiseGenerator* noiseCreateGenerator();
 void noiseDeleteGenerator(NoiseGenerator* generator);
@@ -120,6 +112,7 @@ void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level);
 void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double height);
 void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, double scaling_factor, double height_factor, int randomize_offset);
 void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double height);
+void noiseRemoveLevel(NoiseGenerator* generator, int level);
 int noiseGetLevel(NoiseGenerator* generator, int level, NoiseLevel* params);
 void noiseSetLevel(NoiseGenerator* generator, int level, NoiseLevel params);
 void noiseSetLevelSimple(NoiseGenerator* generator, int level, double scaling, double height);

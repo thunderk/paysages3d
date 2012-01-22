@@ -5,6 +5,7 @@
 
 #include "water.h"
 #include "terrain.h"
+#include "lighting.h"
 
 #include <math.h>
 
@@ -80,6 +81,9 @@ WaterDefinition waterCreateDefinition()
     result.main_color = COLOR_BLACK;
     result.depth_color = COLOR_BLACK;
     result.height = -1000.0;
+    result.reflection = 0.0;
+    result.transparency = 0.0;
+    result.transparency_depth = 0.0;
     result.waves_noise = noiseCreateGenerator();
     result.waves_noise_height = 0.02;
     result.waves_noise_scale = 0.2;
@@ -181,7 +185,8 @@ WaterResult waterGetColorCustom(Vector3 location, Vector3 look, WaterDefinition*
     RayCastingResult refracted;
     Vector3 normal;
     Color color;
-    double shadowed, detail, depth;
+    ReceiverMaterial material;
+    double detail, depth;
 
     if (definition == NULL)
     {
@@ -231,15 +236,10 @@ WaterResult waterGetColorCustom(Vector3 location, Vector3 look, WaterDefinition*
     color.b = definition->main_color.b * (1.0 - definition->transparency) + result.reflected.b * definition->reflection + result.refracted.b * definition->transparency;
     color.a = 1.0;
 
-    if (environment->toggle_shadows)
-    {
-        shadowed = terrainGetShadow(location, sun_direction_inv);
-    }
-    else
-    {
-        shadowed = 0.0;
-    }
-    color = lightingApply(location, normal, shadowed, color, 0.8, 0.6);
+    material.base = color;
+    material.reflection = 0.8;
+    material.shininess = 0.6;
+    color = lightingApplyCustom(location, normal, material, environment->lighting_definition, NULL, environment->lighting_environment);
     if (environment->toggle_fog)
     {
         color = fogApplyToLocation(location, color);

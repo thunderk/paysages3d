@@ -26,7 +26,7 @@ typedef struct
 
 typedef struct
 {
-    int unused;
+    int toggle_fog;
 } TerrainEnvironment;
 
 void terrainInit();

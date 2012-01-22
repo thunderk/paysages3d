@@ -15,6 +15,7 @@
 #include "modifiers.h"
 #include "terrain.h"
 #include "textures.h"
+#include "lighting.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -47,47 +48,6 @@ void autoInit()
 #ifdef _SC_NPROCESSORS_ONLN
     _cpu_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
 #endif
-    renderSetBackgroundColor(&COLOR_BLACK);
-
-    terrainInit();
-    waterInit();
-    renderInit();
-}
-
-void autoSave(char* filepath)
-{
-    FILE* f = fopen(filepath, "wb");
-
-    texturesSave(f);
-
-    cameraSave(f);
-    cloudsSave(f);
-    fogSave(f);
-    lightingSave(f);
-    renderSave(f);
-    skySave(f);
-    terrainSave(f);
-    waterSave(f);
-
-    fclose(f);
-}
-
-void autoLoad(char* filepath)
-{
-    FILE* f = fopen(filepath, "rb");
-
-    texturesLoad(f);
-
-    cameraLoad(f);
-    cloudsLoad(f);
-    fogLoad(f);
-    lightingLoad(f);
-    renderLoad(f);
-    skyLoad(f);
-    terrainLoad(f);
-    waterLoad(f);
-
-    fclose(f);
 }
 
 void autoSetDaytime(int hour, int minute)
@@ -98,8 +58,8 @@ void autoSetDaytime(int hour, int minute)
 void autoSetDaytimeFraction(double daytime)
 {
     SkyDefinition sky;
-    ColorGradation grad_sun;
-    Color sun;
+    /*ColorGradation grad_sun;
+    Color sun;*/
 
     daytime = fmod(daytime, 1.0);
     if (daytime < 0.0)
@@ -107,7 +67,7 @@ void autoSetDaytimeFraction(double daytime)
         daytime += 1.0;
     }
 
-    lightingSetSunAngle(0.0, (daytime + 0.25) * M_PI * 2.0);
+    /*lightingSetSunAngle(0.0, (daytime + 0.25) * M_PI * 2.0);
 
     grad_sun = colorGradationCreate();
     colorGradationAddRgba(&grad_sun, 0.2, 0.1, 0.1, 0.1, 1.0);
@@ -118,7 +78,7 @@ void autoSetDaytimeFraction(double daytime)
     colorGradationAddRgba(&grad_sun, 0.75, 0.7, 0.6, 0.5, 1.0);
     colorGradationAddRgba(&grad_sun, 0.8, 0.1, 0.1, 0.1, 1.0);
     sun = colorGradationGet(&grad_sun, daytime);
-    lightingSetSunColor(sun);
+    lightingSetSunColor(sun);*/
 
     sky = skyGetDefinition();
     sky.daytime = daytime;
@@ -163,6 +123,7 @@ void autoGenRealisticLandscape(int seed)
     CloudsDefinition cloud;
     SkyDefinition sky;
     TextureDefinition texture;
+    LightingDefinition lighting;
     int layer;
     HeightModifier* mod;
     Zone* zone;
@@ -249,6 +210,12 @@ void autoGenRealisticLandscape(int seed)
     sky.sun_radius = 0.02;
     skySetDefinition(sky);
 
+    /* Lighting */
+    lighting = lightingCreateDefinition();
+    lighting.autosetfromsky = 1;
+    lightingSetDefinition(lighting);
+
+    /* Terrain */
     terrain = terrainCreateDefinition();
     noiseGenerateBaseNoise(terrain.height_noise, 1048576);
     noiseAddLevelsSimple(terrain.height_noise, 10, 10.0, 1.0);
@@ -275,6 +242,7 @@ void autoGenRealisticLandscape(int seed)
     terrainSetDefinition(terrain);
     terrainDeleteDefinition(terrain);
 
+    /* Textures */
     layer = texturesAddLayer();
     texture = texturesCreateDefinition();
     noiseGenerateBaseNoise(texture.bump_noise, 102400);
@@ -308,6 +276,7 @@ void autoGenRealisticLandscape(int seed)
     texturesSetDefinition(layer, texture);
     texturesDeleteDefinition(texture);*/
 
+    /* Fog */
     fogSetDistance(20.0, 100.0);
 }
 

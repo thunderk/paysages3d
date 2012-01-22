@@ -4,6 +4,7 @@
 #include <QMenuBar>
 #include <QFileDialog>
 
+#include "formterrain.h"
 #include "formwater.h"
 #include "formsky.h"
 #include "formrender.h"
@@ -30,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMenu* menu;
 
     tabs = new QTabWidget(this);
-    tabs->addTab(new BaseForm(tabs), "Temp");
+    tabs->addTab(new FormTerrain(tabs), "Terrain");
     tabs->addTab(new FormWater(tabs), "Water");
     tabs->addTab(new FormSky(tabs), "Sky");
     tabs->addTab(new FormRender(tabs), "Render");

@@ -3,8 +3,6 @@
 #include <QPainter>
 #include <QTimer>
 
-static QVector<Preview*> _previews;
-
 class PreviewDrawer:public QThread
 {
 public:
@@ -48,14 +46,17 @@ Preview::Preview(QWidget* parent) :
     this->xoffset = 0.0;
     this->yoffset = 0.0;
     this->pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
+    this->pixbuf->fill(0x00000000);
 
     this->alive = true;
     this->need_rerender = false;
-    this->need_render = false;
+    this->need_render = true;
 
     this->setMinimumSize(256, 256);
     this->setMaximumSize(256, 256);
     this->resize(256, 256);
+
+    QObject::connect(this, SIGNAL(contentChange()), this, SLOT(update()));
 
     this->updater = new PreviewDrawer(this);
     this->updater->start();
@@ -85,7 +86,7 @@ void Preview::doRender()
         }
         if (this->need_render)
         {
-            this->need_render = 0;
+            this->need_render = false;
             this->renderPixbuf();
         }
     }
@@ -94,7 +95,7 @@ void Preview::doRender()
 void Preview::redraw()
 {
     //lock->lock();
-    need_rerender = 1;
+    need_rerender = true;
     //lock->unlock();
 }
 
@@ -110,12 +111,18 @@ void Preview::resizeEvent(QResizeEvent* event)
     QImage* image;
 
     this->lock->lock();
-    image = this->pixbuf;
-    this->pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
-    delete image;
-    this->lock->unlock();
 
-    this->forceRender();
+    image = this->pixbuf;
+
+    this->pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
+
+    this->pixbuf->fill(0x00000000);
+    this->need_rerender = false;
+    this->need_render = true;
+
+    delete image;
+
+    this->lock->unlock();
 }
 
 void Preview::paintEvent(QPaintEvent* event)
@@ -128,8 +135,8 @@ void Preview::forceRender()
 {
     this->lock->lock();
     this->pixbuf->fill(0x00000000);
-    this->need_rerender = 0;
-    this->need_render = 1;
+    this->need_rerender = false;
+    this->need_render = true;
     this->lock->unlock();
 }
 
@@ -164,13 +171,11 @@ void Preview::renderPixbuf()
         }
         if (done && (x == w - 1 || x % 10 == 0))
         {
-            this->update();
+            emit contentChange();
         }
-
         this->lock->unlock();
     }
 }
-
 
 //static void _scrollPixbuf(SmallPreview* preview, int dx, int dy)
 //{

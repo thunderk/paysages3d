@@ -21,7 +21,7 @@ public:
         _noise = noise;
         _level = -1;
     }
-        
+
     void setLevel(int row)
     {
         _level = row;
@@ -76,7 +76,7 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     QWidget* form;
     QWidget* buttons;
     QPushButton* button;
-    
+
     _base = value;
     _current = noiseCreateGenerator();
 
@@ -85,7 +85,7 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     previews = new QWidget(this);
     previews->setLayout(new QVBoxLayout());
     layout()->addWidget(previews);
-    
+
     previewLevel = new PreviewLevel(previews, _current);
     previews->layout()->addWidget(new QLabel("Level preview"));
     previews->layout()->addWidget(previewLevel);
@@ -98,16 +98,16 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     form = new QWidget(this);
     form->setLayout(new QVBoxLayout());
     layout()->addWidget(form);
-    
+
     form->layout()->addWidget(new QLabel("Noise components"));
     levels = new QListWidget(form);
     form->layout()->addWidget(levels);
     QObject::connect(levels, SIGNAL(currentRowChanged(int)), this, SLOT(levelChanged(int)));
-    
+
     buttons = new QWidget(form);
     buttons->setLayout(new QHBoxLayout());
     form->layout()->addWidget(buttons);
-    
+
     button = new QPushButton("Add component", buttons);
     buttons->layout()->addWidget(button);
     QObject::connect(button, SIGNAL(clicked()), this, SLOT(addLevel()));
@@ -139,11 +139,11 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     slider_scaling->setTickPosition(QSlider::TicksBelow);
     form->layout()->addWidget(slider_scaling);
     QObject::connect(slider_scaling, SIGNAL(valueChanged(int)), this, SLOT(scalingChanged(int)));
-    
+
     buttons = new QWidget(form);
     buttons->setLayout(new QHBoxLayout());
     form->layout()->addWidget(buttons);
-    
+
     button = new QPushButton("Validate", buttons);
     buttons->layout()->addWidget(button);
     QObject::connect(button, SIGNAL(clicked()), this, SLOT(accept()));
@@ -157,7 +157,7 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     QObject::connect(button, SIGNAL(clicked()), this, SLOT(reject()));
 
     setWindowTitle("Paysages 3D - Noise editor");
-    
+
     revert();
 }
 
@@ -165,7 +165,7 @@ DialogNoise::~DialogNoise()
 {
     delete previewLevel;
     delete previewTotal;
-    
+
     noiseDeleteGenerator(_current);
 }
 
@@ -202,14 +202,14 @@ void DialogNoise::revert()
 void DialogNoise::revertToCurrent()
 {
     int i, n;
-    
+
     levels->clear();
     n = noiseGetLevelCount(_current);
     for (i = 0; i < n; i++)
     {
-        levels->addItem("Level");
+        levels->addItem(QString("Component %1").arg(i + 1));
     }
-    
+
     previewLevel->redraw();
     previewTotal->redraw();
 }
@@ -217,20 +217,22 @@ void DialogNoise::revertToCurrent()
 void DialogNoise::addLevel()
 {
     NoiseLevel level;
-    
+
     level.height = 0.1;
     level.scaling = 0.1;
     level.xoffset = 0.0;
     level.yoffset = 0.0;
     level.zoffset = 0.0;
     noiseAddLevel(_current, level);
-    
+
     revertToCurrent();
 }
 
 void DialogNoise::removeLevel()
 {
-    // TODO
+    noiseRemoveLevel(_current, _current_level);
+
+    revertToCurrent();
 }
 
 void DialogNoise::levelChanged(int row)
@@ -239,7 +241,7 @@ void DialogNoise::levelChanged(int row)
     {
         _current_level = row;
         ((PreviewLevel*)previewLevel)->setLevel(row);
-        
+
         slider_height->setValue(_current_level_params.height * 1000.0);
         slider_scaling->setValue(_current_level_params.scaling * 1000.0);
     }

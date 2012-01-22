@@ -2,6 +2,7 @@
 #define _PAYSAGES_WATER_H_
 
 #include "shared/types.h"
+#include "lighting.h"
 #include <stdio.h>
 
 #ifdef __cplusplus
@@ -32,7 +33,8 @@ typedef struct
     RayCastingFunction reflection_function;
     RayCastingFunction refraction_function;
     int toggle_fog;
-    int toggle_shadows;
+    LightingDefinition* lighting_definition;
+    LightingEnvironment* lighting_environment;
 } WaterEnvironment;
 
 typedef struct

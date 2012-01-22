@@ -14,34 +14,36 @@ win32:LIBS += ../libpaysages.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-2.0
 
 # Input
 HEADERS += ../lib_paysages/shared/functions.h ../lib_paysages/shared/types.h \
-    mainwindow.h \
-    formwater.h \
-    preview.h \
     baseform.h \
-    inputdouble.h \
     baseinput.h \
-    inputcolor.h \
-    formrender.h \
-    inputint.h \
-    dialogrender.h \
     dialognoise.h \
-    inputcolorgradation.h \
+    dialogrender.h \
+    formrender.h \
     formsky.h \
+    formterrain.h \
+    formwater.h \
+    inputcolor.h \
+    inputcolorgradation.h \
+    inputdouble.h \
+    inputint.h \
     inputnoise.h \
+    mainwindow.h \
+    preview.h \
     tools.h
 FORMS +=
 SOURCES += \
-    mainwindow.cpp \
-    formwater.cpp \
-    preview.cpp \
     baseform.cpp \
-    inputdouble.cpp \
     baseinput.cpp \
-    inputcolor.cpp \
-    formrender.cpp \
-    inputint.cpp \
-    dialogrender.cpp \
     dialognoise.cpp \
-    inputcolorgradation.cpp \
+    dialogrender.cpp \
+    formrender.cpp \
     formsky.cpp \
-    inputnoise.cpp
+    formterrain.cpp \
+    formwater.cpp \
+    inputcolor.cpp \
+    inputcolorgradation.cpp \
+    inputdouble.cpp \
+    inputint.cpp \
+    inputnoise.cpp \
+    mainwindow.cpp \
+    preview.cpp
