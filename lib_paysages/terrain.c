@@ -22,6 +22,8 @@ void terrainInit()
     _max_height = noiseGetMaxValue(_definition.height_noise);
 
     _environment.toggle_fog = 1;
+    _environment.lighting_definition = NULL;
+    _environment.lighting_environment = NULL;
 }
 
 void terrainSave(FILE* f)
@@ -164,31 +166,29 @@ static inline Vector3 _getPoint(TerrainDefinition* definition, double x, double 
     return result;
 }
 
-double terrainGetShadow(Vector3 start, Vector3 direction)
+Color terrainLightFilter(Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light, void* custom_data)
 {
     Vector3 inc_vector;
-    double inc_value, inc_base, inc_factor, height, diff, light, smoothing, length, water;
+    double inc_value, inc_base, inc_factor, height, diff, light_factor, smoothing, length;
 
-    direction = v3Normalize(direction);
-    inc_factor = (double)render_quality;
+    direction_to_light = v3Normalize(direction_to_light);
+    inc_factor = (double)render_quality; // TODO Configurable
     inc_base = 1.0;
     inc_value = inc_base / inc_factor;
     smoothing = 0.03 * inc_factor;;
 
-    water = waterGetLightFactor(start);
-
-    light = 1.0;
+    light_factor = 1.0;
     length = 0.0;
     do
     {
-        inc_vector = v3Scale(direction, inc_value);
+        inc_vector = v3Scale(direction_to_light, inc_value);
         length += v3Norm(inc_vector);
-        start = v3Add(start, inc_vector);
-        height = _getHeight(&_definition, start.x, start.z, inc_value);
-        diff = start.y - height;
+        location = v3Add(location, inc_vector);
+        height = _getHeight(&_definition, location.x, location.z, inc_value);
+        diff = location.y - height;
         if (diff < 0.0)
         {
-            light += diff / smoothing;
+            light_factor += diff / smoothing;
         }
 
         if (diff < inc_base / inc_factor)
@@ -203,24 +203,31 @@ double terrainGetShadow(Vector3 start, Vector3 direction)
         {
             inc_value = diff;
         }
-    } while (light > 0.0 && length < 50.0 && start.y <= _max_height);
+    } while (light_factor > 0.0 && length < 50.0 && location.y <= _max_height);
 
-    light *= water;
-    if (light < 0.0)
+    if (light_factor <= 0.0)
     {
-        return 1.0;
+        return COLOR_BLACK;
     }
     else
     {
-        return 1.0 - light;
+        light.r *= light_factor;
+        light.g *= light_factor;
+        light.b *= light_factor;
+
+        return light;
     }
 }
 
 static Color _getColor(TerrainDefinition* definition, TerrainEnvironment* environment, Vector3 point, double precision)
 {
     Color color;
+    TextureEnvironment texenv;
 
-    color = texturesGetColor(point);
+    texenv.lighting_definition = environment->lighting_definition;
+    texenv.lighting_environment = environment->lighting_environment;
+
+    color = texturesGetColorCustom(point, precision, NULL, &texenv);
     if (environment->toggle_fog)
     {
         color = fogApplyToLocation(point, color);
@@ -341,7 +348,8 @@ Color terrainGetColorCustom(double x, double z, double detail, TerrainDefinition
         environment = &_environment;
     }
 
-    return _getColor(definition, environment, _getPoint(definition, x, z, detail), detail);
+    Vector3 point = _getPoint(definition, x, z, detail);
+    return _getColor(definition, environment, point, detail);
 }
 
 Color terrainGetColor(double x, double z, double detail)

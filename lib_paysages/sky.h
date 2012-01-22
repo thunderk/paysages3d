@@ -2,6 +2,7 @@
 #define _PAYSAGES_SKY_H_
 
 #include "shared/types.h"
+#include "lighting.h"
 #include <stdio.h>
 
 #ifdef __cplusplus
@@ -43,6 +44,8 @@ SkyDefinition skyGetDefinition();
 
 void skySetQuality(SkyQuality quality);
 SkyQuality skyGetQuality();
+
+int skyGetLights(LightDefinition* lights, int max_lights);
 
 Color skyGetColorCustom(Vector3 eye, Vector3 look, SkyDefinition* definition, SkyQuality* quality, SkyEnvironment* environment);
 Color skyGetColor(Vector3 eye, Vector3 look);

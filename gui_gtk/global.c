@@ -28,7 +28,7 @@ static void _cbLoad(GtkWidget* widget, gpointer data)
     {
         char *filename;
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-        autoLoad(filename);
+        paysagesLoad(filename);
         g_free(filename);
     }
 
@@ -52,7 +52,7 @@ static void _cbSaveAs(GtkWidget* widget, gpointer data)
     {
         char *filename;
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-        autoSave(filename);
+        paysagesSave(filename);
         g_free(filename);
     }
     gtk_widget_destroy(dialog);

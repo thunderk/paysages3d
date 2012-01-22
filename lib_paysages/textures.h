@@ -2,6 +2,7 @@
 #define _PAYSAGES_TEXTURES_H_
 
 #include "shared/types.h"
+#include "lighting.h"
 #include <stdio.h>
 
 #ifdef __cplusplus
@@ -22,7 +23,8 @@ typedef struct
 
 typedef struct
 {
-    int unused;
+    LightingDefinition* lighting_definition;
+    LightingEnvironment* lighting_environment;
 } TextureEnvironment;
 
 void texturesInit();
@@ -42,8 +44,8 @@ TextureDefinition texturesGetDefinition(int layer);
 void texturesSetQuality(TextureQuality quality);
 TextureQuality texturesGetQuality();
 
-Color texturesGetLayerColorCustom(Vector3 location, double shadowing, double detail, TextureDefinition* definition, TextureQuality* quality, TextureEnvironment* environment);
-Color texturesGetColorCustom(Vector3 location, double shadowing, double detail, TextureQuality* quality, TextureEnvironment* environment);
+Color texturesGetLayerColorCustom(Vector3 location, double detail, TextureDefinition* definition, TextureQuality* quality, TextureEnvironment* environment);
+Color texturesGetColorCustom(Vector3 location, double detail, TextureQuality* quality, TextureEnvironment* environment);
 Color texturesGetColor(Vector3 location);
 
 #ifdef __cplusplus

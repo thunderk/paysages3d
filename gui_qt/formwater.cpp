@@ -83,7 +83,8 @@ protected:
         environment.reflection_function = (RayCastingFunction)(&this->rayCastFromWater);
         environment.refraction_function = (RayCastingFunction)(&this->rayCastFromWater);
         environment.toggle_fog = 0;
-        environment.toggle_shadows = 0;
+        environment.lighting_definition = NULL;
+        environment.lighting_environment = NULL;
         quality.force_detail = 0.0001;
         quality.detail_boost = 1.0;
 

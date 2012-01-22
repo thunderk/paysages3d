@@ -3,6 +3,7 @@
 
 #include "shared/types.h"
 #include "modifiers.h"
+#include "lighting.h"
 #include <stdio.h>
 
 #ifdef __cplusplus
@@ -27,6 +28,8 @@ typedef struct
 typedef struct
 {
     int toggle_fog;
+    LightingDefinition* lighting_definition;
+    LightingEnvironment* lighting_environment;
 } TerrainEnvironment;
 
 void terrainInit();
@@ -45,7 +48,7 @@ void terrainDelModifier(TerrainDefinition* definition, int modifier_position);
 void terrainSetQuality(TerrainQuality quality);
 TerrainQuality terrainGetQuality();
 
-double terrainGetShadow(Vector3 start, Vector3 direction);
+Color terrainLightFilter(Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light, void* custom_data);
 int terrainProjectRay(Vector3 start, Vector3 direction, Vector3* hit_point, Color* hit_color);
 double terrainGetHeightCustom(double x, double z, TerrainDefinition* definition);
 double terrainGetHeight(double x, double z);

@@ -70,7 +70,7 @@ void MainWindow::fileSave()
     QString filepath = QFileDialog::getSaveFileName(this);
     if (!filepath.isNull())
     {
-        autoSave((char*)filepath.toStdString().c_str());
+        paysagesSave((char*)filepath.toStdString().c_str());
     }
 }
 
@@ -79,7 +79,7 @@ void MainWindow::fileLoad()
     QString filepath = QFileDialog::getOpenFileName(this);
     if (!filepath.isNull())
     {
-        autoLoad((char*)filepath.toStdString().c_str());
+        paysagesLoad((char*)filepath.toStdString().c_str());
         refreshAll();
     }
 }

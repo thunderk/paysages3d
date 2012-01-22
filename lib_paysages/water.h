@@ -58,7 +58,7 @@ WaterDefinition waterGetDefinition();
 void waterSetQuality(WaterQuality quality);
 WaterQuality waterGetQuality();
 
-double waterGetLightFactor(Vector3 location);
+Color waterLightFilter(Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light, void* custom_data);
 WaterResult waterGetColorCustom(Vector3 location, Vector3 look, WaterDefinition* definition, WaterQuality* quality, WaterEnvironment* environment);
 Color waterGetColor(Vector3 location, Vector3 look);
 void waterRender(RenderProgressCallback callback);

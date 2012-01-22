@@ -10,6 +10,7 @@
 
 #include "textures.h"
 #include "terrain.h"
+#include "lighting.h"
 
 #define TEXTURES_MAX 50
 static TextureQuality _quality;
@@ -20,6 +21,9 @@ static TextureDefinition _textures[TEXTURES_MAX];
 void texturesInit()
 {
     _textures_count = 0;
+
+    _environment.lighting_definition = NULL;
+    _environment.lighting_environment = NULL;
 }
 
 void texturesSave(FILE* f)
@@ -179,34 +183,48 @@ static inline Vector3 _getNormal(TextureDefinition* definition, Vector3 point, d
     return v3Normalize(normal);
 }
 
-Color texturesGetLayerColorCustom(Vector3 location, double shadowing, double detail, TextureDefinition* definition, TextureQuality* quality, TextureEnvironment* environment)
+Color texturesGetLayerColorCustom(Vector3 location, double detail, TextureDefinition* definition, TextureQuality* quality, TextureEnvironment* environment)
 {
     Color result;
     Vector3 normal;
     double coverage;
+    ReceiverMaterial material;
 
-    result.a = 0.0;
+    result = COLOR_TRANSPARENT;
     normal = _getNormal(definition, location, detail * 0.3);
 
     coverage = zoneGetValue(definition->zone, location, normal);
     if (coverage > 0.0)
     {
-        result = lightingApply(location, normal, shadowing, definition->color, 0.1, 0.1);
+        material.base = definition->color;
+        material.reflection = 0.1;
+        material.shininess = 0.1;
+
+        result = lightingApplyCustom(location, normal, material, environment->lighting_definition, NULL, environment->lighting_environment);
         result.a = coverage;
     }
     return result;
 }
 
-Color texturesGetColorCustom(Vector3 location, double shadowing, double detail, TextureQuality* quality, TextureEnvironment* environment)
+Color texturesGetColorCustom(Vector3 location, double detail, TextureQuality* quality, TextureEnvironment* environment)
 {
     Color result, tex_color;
     int i;
+
+    /*if (!quality)
+    {
+        quality = &_quality;
+    }
+    if (!environment)
+    {
+        environment = &_environment;
+    }*/
 
     result = COLOR_GREEN;
     for (i = 0; i < _textures_count; i++)
     {
         /* TODO Do not compute layers fully covered */
-        tex_color = texturesGetLayerColorCustom(location, shadowing, detail, _textures + i, quality, environment);
+        tex_color = texturesGetLayerColorCustom(location, detail, _textures + i, quality, environment);
         if (tex_color.a > 0.0001)
         {
             colorMask(&result, &tex_color);
@@ -218,10 +236,5 @@ Color texturesGetColorCustom(Vector3 location, double shadowing, double detail, 
 
 Color texturesGetColor(Vector3 location)
 {
-    double shadowing;
-
-    /* TODO Use environment to get lights to apply */
-    shadowing = terrainGetShadow(location, sun_direction_inv);
-
-    return texturesGetColorCustom(location, shadowing, renderGetPrecision(location), &_quality, &_environment);
+    return texturesGetColorCustom(location, renderGetPrecision(location), &_quality, &_environment);
 }

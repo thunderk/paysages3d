@@ -84,6 +84,8 @@ void autoSetDaytimeFraction(double daytime)
     sky.daytime = daytime;
     skySetDefinition(sky);
 
+    lightingValidateDefinition(NULL);
+
     fogSetColor(colorGradationGet(&sky.haze_color, daytime));
 }
 

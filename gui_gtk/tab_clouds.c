@@ -27,12 +27,10 @@ static void _revertCurrentLayer()
     guiPreviewRedraw(_preview);
 }
 
-static void _applyCurrentLayer()
+/*static void _applyCurrentLayer()
 {
-    /* TODO Apply layer config */
-
     guiUpdate();
-}
+}*/
 
 static void _revertAll()
 {

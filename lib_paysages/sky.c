@@ -7,12 +7,13 @@
 #include "shared/constants.h"
 #include "clouds.h"
 #include "sky.h"
+#include "lighting.h"
 
 #define SPHERE_SIZE 1000.0
 
-SkyDefinition _definition;
-SkyQuality _quality;
-SkyEnvironment _environment;
+static SkyDefinition _definition;
+static SkyQuality _quality;
+static SkyEnvironment _environment;
 
 void skyInit()
 {
@@ -95,6 +96,28 @@ void skySetDefinition(SkyDefinition definition)
 SkyDefinition skyGetDefinition()
 {
     return _definition;
+}
+
+int skyGetLights(LightDefinition* lights, int max_lights)
+{
+    double sun_angle;
+    Vector3 sun_direction;
+    int nblights = 0;
+
+    sun_angle = (_definition.daytime + 0.75) * M_PI * 2.0;
+    sun_direction.x = cos(sun_angle);
+    sun_direction.y = sin(sun_angle);
+    sun_direction.z = 0.0;
+
+    if (max_lights > 0)
+    {
+        lights[0].color = colorGradationGet(&_definition.sun_color, _definition.daytime);
+        lights[0].direction = v3Scale(sun_direction, -1.0);
+        lights[0].maxshadow = 1.0;
+        nblights = 1;
+    }
+
+    return nblights;
 }
 
 Color skyGetColorCustom(Vector3 eye, Vector3 look, SkyDefinition* definition, SkyQuality* quality, SkyEnvironment* environment)

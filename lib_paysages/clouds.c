@@ -407,9 +407,9 @@ static Color _lightFilter(Color light, Vector3 location, Vector3 light_location,
         inside_depth = 1.0;
     }
 
-    result.r = data.base.r * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.r * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
-    result.g = data.base.g * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.g * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
-    result.b = data.base.b * sun_color_lum * (0.9 - 0.2 * inside_depth) + result.b * (0.1 + 0.1 * inside_depth) + (0.1 - inside_depth * 0.1) * sun_color_lum;
+    result.r = data.base.r * - 0.2 * inside_depth;
+    result.g = data.base.g * - 0.2 * inside_depth;
+    result.b = data.base.b * - 0.2 * inside_depth;
 
     return result;
 }

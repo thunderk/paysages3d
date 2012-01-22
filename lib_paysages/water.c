@@ -45,7 +45,8 @@ void waterInit()
     _environment.reflection_function = _reflectionFunction;
     _environment.refraction_function = _refractionFunction;
     _environment.toggle_fog = 1;
-    _environment.toggle_shadows = 1;
+    _environment.lighting_definition = NULL;
+    _environment.lighting_environment = NULL;
 }
 
 void waterSave(FILE* f)
@@ -292,29 +293,35 @@ static void _renderQuad(double x, double z, double size)
     renderPushQuad(&v1, &v2, &v3, &v4);
 }
 
-double waterGetLightFactor(Vector3 location)
+Color waterLightFilter(Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light, void* custom_data)
 {
     double factor;
 
     if (location.y < _definition.height)
     {
-        if (sun_direction_inv.y > 0.00001)
+        if (direction_to_light.y > 0.00001)
         {
-            factor = (_definition.height - location.y) / (sun_direction_inv.y * 3.0);
+            factor = (_definition.height - location.y) / (direction_to_light.y * 5.0); // TODO Configurable
             if (factor > 1.0)
             {
                 factor = 1.0;
             }
-            return 1.0 - 0.8 * factor;
+            factor = 1.0 - 0.8 * factor;
+
+            light.r *= factor;
+            light.g *= factor;
+            light.b *= factor;
+
+            return light;
         }
         else
         {
-            return 0.0;
+            return COLOR_BLACK;
         }
     }
     else
     {
-        return 1.0;
+        return light;
     }
 }
 

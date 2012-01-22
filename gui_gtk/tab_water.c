@@ -93,7 +93,6 @@ static Color _cbPreviewRender(SmallPreview* preview, double x, double y, double 
     environment.reflection_function = _rayCastFromWater;
     environment.refraction_function = _rayCastFromWater;
     environment.toggle_fog = 0;
-    environment.toggle_shadows = 0;
     quality.force_detail = 0.0001;
 
     return waterGetColorCustom(location, look, &definition, &quality, &environment).final;

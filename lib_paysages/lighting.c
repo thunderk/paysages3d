@@ -9,6 +9,9 @@
 #include "shared/functions.h"
 #include "shared/constants.h"
 #include "shared/globals.h"
+#include "sky.h"
+#include "water.h"
+#include "terrain.h"
 
 static LightingDefinition _definition;
 static LightingQuality _quality;
@@ -18,8 +21,14 @@ static LightDefinition _LIGHT_NULL;
 
 static Color _standardFilter(Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light, void* custom_data)
 {
-    // TODO Find shadows
-    return light;
+    Color result;
+
+    result = waterLightFilter(light, location, light_location, direction_to_light, custom_data);
+    result = terrainLightFilter(result, location, light_location, direction_to_light, custom_data);
+    // TODO atmosphere filter
+    // TODO clouds filter
+
+    return result;
 }
 
 void lightingInit()
@@ -67,6 +76,7 @@ void lightingCopyDefinition(LightingDefinition source, LightingDefinition* desti
 
 void lightingSetDefinition(LightingDefinition definition)
 {
+    lightingValidateDefinition(&definition);
     lightingCopyDefinition(definition, &_definition);
 }
 
@@ -80,11 +90,13 @@ void lightingValidateDefinition(LightingDefinition* definition)
     if (!definition)
     {
         lightingValidateDefinition(&_definition);
+        return;
     }
 
     if (definition->autosetfromsky)
     {
         // TODO Get lights from sky
+        definition->_nbautolights = skyGetLights(definition->_autolights, MAX_LIGHTS);
     }
     else
     {
@@ -144,8 +156,53 @@ LightingQuality lightingGetQuality()
     return _quality;
 }
 
+static Color _applyLightCustom(Vector3 location, Vector3 normal, ReceiverMaterial material, LightDefinition* definition, LightingQuality* quality, LightingEnvironment* environment)
+{
+    Color result, light;
+    double diffuse, specular;
+    Vector3 view, reflect, direction_inv;
+
+    light = definition->color;
+
+    direction_inv = v3Scale(definition->direction, -1.0);
+    light = environment->filter(light, location, v3Add(location, direction_inv), direction_inv, environment->custom_data);
+
+    normal = v3Normalize(normal);
+    view = v3Normalize(v3Sub(location, camera_location)); // TODO Configurable
+    reflect = v3Sub(v3Scale(normal, 2.0 * v3Dot(direction_inv, normal)), direction_inv);
+
+    diffuse = v3Dot(direction_inv, normal);
+    //diffuse = pow(diffuse * 0.5 + 0.5, 2.0);
+    if (diffuse > 0.0)
+    {
+        if (material.shininess > 0.0)
+        {
+            specular = pow(v3Dot(reflect, view) * material.reflection, material.shininess * 10.0 + 1.0);
+        }
+        else
+        {
+            specular = 0.0;
+        }
+    }
+    else
+    {
+        diffuse = 0.0;
+        specular = 0.0;
+    }
+
+    result.r = material.base.r * diffuse * light.r + material.base.r * specular * light.r;
+    result.g = material.base.g * diffuse * light.g + material.base.g * specular * light.g;
+    result.b = material.base.b * diffuse * light.b + material.base.b * specular * light.b;
+    result.a = material.base.a;
+
+    return result;
+}
+
 Color lightingApplyCustom(Vector3 location, Vector3 normal, ReceiverMaterial material, LightingDefinition* definition, LightingQuality* quality, LightingEnvironment* environment)
 {
+    Color result;
+    int i;
+
     if (!definition)
     {
         definition = &_definition;
@@ -159,72 +216,20 @@ Color lightingApplyCustom(Vector3 location, Vector3 normal, ReceiverMaterial mat
         environment = &_environment;
     }
 
-    return COLOR_RED;
+    /* TODO Merge lights */
+    result = material.base;
+    for (i = 0; i < definition->nblights; i++)
+    {
+        result = _applyLightCustom(location, normal, material, definition->lights + i, quality, environment);
+    }
+    for (i = 0; i < definition->_nbautolights; i++)
+    {
+        result = _applyLightCustom(location, normal, material, definition->_autolights + i, quality, environment);
+    }
+    return result;
 }
 
 Color lightingApply(Vector3 location, Vector3 normal, ReceiverMaterial material)
 {
     return lightingApplyCustom(location, normal, material, &_definition, &_quality, &_environment);
 }
-
-/*void lightingSetSunDirection(double x, double y, double z)
-{
-    sun_direction.x = x;
-    sun_direction.y = y;
-    sun_direction.z = z;
-    sun_direction = v3Normalize(sun_direction);
-    sun_direction_inv = v3Scale(sun_direction, -1.0);
-}
-
-void lightingSetSunAngle(double hor, double ver)
-{
-    lightingSetSunDirection(cos(hor) * cos(ver), sin(ver), -sin(hor) * cos(ver));
-}
-
-void lightingSetSunColor(Color col)
-{
-    sun_color = col;
-    sun_color_lum = colorGetValue(&col);
-}
-
-Color lightingApply(Vector3 location, Vector3 normal, double shadowing, Color base, double reflection, double shininess)
-{
-    Color result, light;
-    double ambient, diffuse, specular;
-    Vector3 view, reflect;
-
-    light.r = sun_color.r * (1.0 - 0.4 * shadowing);
-    light.g = sun_color.g * (1.0 - 0.4 * shadowing);
-    light.b = sun_color.b * (1.0 - 0.4 * shadowing);
-
-    normal = v3Normalize(normal);
-    view = v3Normalize(v3Sub(location, camera_location));
-    reflect = v3Sub(v3Scale(normal, 2.0 * v3Dot(sun_direction_inv, normal)), sun_direction_inv);
-
-    ambient = 0.2;
-    diffuse = v3Dot(sun_direction_inv, normal);
-    diffuse = pow(diffuse * 0.5 + 0.5, 2.0) * (1.0 - shadowing) + (diffuse * 0.5 + 0.3) * shadowing;
-    if (diffuse > 0.0)
-    {
-        if (shininess > 0.0)
-        {
-            specular = pow(v3Dot(reflect, view) * reflection, shininess * 10.0 + 1.0);
-        }
-        else
-        {
-            specular = 0.0;
-        }
-    }
-    else
-    {
-        diffuse = 0.0;
-        specular = 0.0;
-    }
-
-    result.r = base.r * ambient + base.r * diffuse * light.r + base.r * specular * light.r;
-    result.g = base.g * ambient + base.g * diffuse * light.g + base.g * specular * light.g;
-    result.b = base.b * ambient + base.b * diffuse * light.b + base.b * specular * light.b;
-    result.a = base.a;
-
-    return result;
-}*/
