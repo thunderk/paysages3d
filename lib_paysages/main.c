@@ -23,16 +23,11 @@ void paysagesInit()
     ilInit();
     iluInit();
 
+    autoInit();
+    renderInit();
+
     cameraSetLocation(-12.0, 5.0, 2.0);
     cameraSetTarget(0.0, 5.0, 0.0);
-
-    autoInit();
-    skyInit();
-    terrainInit();
-    texturesInit();
-    waterInit();
-    lightingInit();
-    renderInit();
 
     autoSetRenderQuality(5);
     autoGenRealisticLandscape(0);
@@ -54,36 +49,10 @@ void paysagesInit()
 
 void paysagesSave(char* filepath)
 {
-    FILE* f = fopen(filepath, "wb");
-
-    cameraSave(f);
-    cloudsSave(f);
-    fogSave(f);
-    renderSave(f);
-    skySave(f);
-    terrainSave(f);
-    texturesSave(f);
-    waterSave(f);
-
-    lightingSave(f);
-
-    fclose(f);
+    scenerySaveToFile(filepath);
 }
 
 void paysagesLoad(char* filepath)
 {
-    FILE* f = fopen(filepath, "rb");
-
-    cameraLoad(f);
-    cloudsLoad(f);
-    fogLoad(f);
-    renderLoad(f);
-    skyLoad(f);
-    terrainLoad(f);
-    texturesLoad(f);
-    waterLoad(f);
-
-    lightingLoad(f);
-
-    fclose(f);
+    sceneryLoadFromFile(filepath);
 }

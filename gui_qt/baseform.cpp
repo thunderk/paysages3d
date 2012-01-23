@@ -80,6 +80,7 @@ void BaseForm::revertConfig()
 
 void BaseForm::applyConfig()
 {
+    revertConfig();
 }
 
 void BaseForm::addPreview(Preview* preview, QString label)

@@ -1,7 +1,6 @@
 #ifndef _PAYSAGES_MODIFIERS_H_
 #define _PAYSAGES_MODIFIERS_H_
 
-#include "shared/types.h"
 #include <stdio.h>
 
 #ifdef __cplusplus

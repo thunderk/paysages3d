@@ -2,7 +2,9 @@
 #define _PAYSAGES_WATER_H_
 
 #include "shared/types.h"
+#include "renderer.h"
 #include "lighting.h"
+#include "noise.h"
 #include <stdio.h>
 
 #ifdef __cplusplus
@@ -24,21 +26,6 @@ typedef struct
 
 typedef struct
 {
-    double detail_boost;
-    double force_detail;
-} WaterQuality;
-
-typedef struct
-{
-    RayCastingFunction reflection_function;
-    RayCastingFunction refraction_function;
-    int toggle_fog;
-    LightingDefinition* lighting_definition;
-    LightingEnvironment* lighting_environment;
-} WaterEnvironment;
-
-typedef struct
-{
     Vector3 location;
     Color base;
     Color reflected;
@@ -47,21 +34,18 @@ typedef struct
 } WaterResult;
 
 void waterInit();
-void waterSave(FILE* f);
-void waterLoad(FILE* f);
+void waterSave(FILE* f, WaterDefinition* definition);
+void waterLoad(FILE* f, WaterDefinition* definition);
 
 WaterDefinition waterCreateDefinition();
-void waterDeleteDefinition(WaterDefinition definition);
-void waterCopyDefinition(WaterDefinition source, WaterDefinition* destination);
-void waterSetDefinition(WaterDefinition definition);
-WaterDefinition waterGetDefinition();
-void waterSetQuality(WaterQuality quality);
-WaterQuality waterGetQuality();
+void waterDeleteDefinition(WaterDefinition* definition);
+void waterCopyDefinition(WaterDefinition* source, WaterDefinition* destination);
+void waterValidateDefinition(WaterDefinition* definition);
 
-Color waterLightFilter(Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light, void* custom_data);
-WaterResult waterGetColorCustom(Vector3 location, Vector3 look, WaterDefinition* definition, WaterQuality* quality, WaterEnvironment* environment);
-Color waterGetColor(Vector3 location, Vector3 look);
-void waterRender(RenderProgressCallback callback);
+Color waterLightFilter(WaterDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light);
+WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer, Vector3 location, Vector3 look);
+Color waterGetColor(WaterDefinition* definition, Renderer* renderer, Vector3 location, Vector3 look);
+void waterRender(WaterDefinition* definition, Renderer* renderer, RenderProgressCallback callback);
 
 #ifdef __cplusplus
 }

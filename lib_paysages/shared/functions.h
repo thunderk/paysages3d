@@ -25,21 +25,9 @@ void arrayClear(Array* array);
 void autoInit();
 void autoSetDaytime(int hour, int minute);
 void autoSetDaytimeFraction(double daytime);
-void autoSetRenderQuality(int quality);
 void autoGenRealisticLandscape(int seed);
 void autoRenderSceneTwoPass(int postonly);
 void autoRenderSceneRayTracing();
-
-/* camera.c */
-void cameraSave(FILE* f);
-void cameraLoad(FILE* f);
-void cameraSetLocation(double x, double y, double z);
-void cameraSetTarget(double x, double y, double z);
-void cameraSetAngle(double angle);
-Vector3 cameraProject(Vector3 point);
-Vector3 cameraUnproject(Vector3 point);
-void cameraProjectToFragment(double x, double y, double z, RenderFragment* result);
-void cameraPushOverlay(Color col, f_RenderFragmentCallback callback);
 
 /* color.c */
 void colorSave(Color col, FILE* f);
@@ -97,42 +85,12 @@ void fogSetColor(Color col);
 void fogSetDistance(double near, double far);
 Color fogApplyToLocation(Vector3 location, Color base);
 
-/* noise.c */
-NoiseGenerator* noiseCreateGenerator();
-void noiseDeleteGenerator(NoiseGenerator* generator);
-void noiseSave(NoiseGenerator* perlin, FILE* f);
-void noiseLoad(NoiseGenerator* perlin, FILE* f);
-void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination);
-void noiseGenerateBaseNoise(NoiseGenerator* generator, int size);
-int noiseGetBaseSize(NoiseGenerator* generator);
-double noiseGetMaxValue(NoiseGenerator* generator);
-int noiseGetLevelCount(NoiseGenerator* generator);
-void noiseClearLevels(NoiseGenerator* generator);
-void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level);
-void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double height);
-void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, double scaling_factor, double height_factor, int randomize_offset);
-void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double height);
-void noiseRemoveLevel(NoiseGenerator* generator, int level);
-int noiseGetLevel(NoiseGenerator* generator, int level, NoiseLevel* params);
-void noiseSetLevel(NoiseGenerator* generator, int level, NoiseLevel params);
-void noiseSetLevelSimple(NoiseGenerator* generator, int level, double scaling, double height);
-void noiseNormalizeHeight(NoiseGenerator* generator, double min_height, double max_height, int adjust_scaling);
-double noiseGet1DLevel(NoiseGenerator* generator, int level, double x);
-double noiseGet1DTotal(NoiseGenerator* generator, double x);
-double noiseGet1DDetail(NoiseGenerator* generator, double x, double detail);
-double noiseGet2DLevel(NoiseGenerator* generator, int level, double x, double y);
-double noiseGet2DTotal(NoiseGenerator* generator, double x, double y);
-double noiseGet2DDetail(NoiseGenerator* generator, double x, double y, double detail);
-double noiseGet3DLevel(NoiseGenerator* generator, int level, double x, double y, double z);
-double noiseGet3DTotal(NoiseGenerator* generator, double x, double y, double z);
-double noiseGet3DDetail(NoiseGenerator* generator, double x, double y, double z, double detail);
-
 /* render.c */
 void renderInit();
 void renderSave(FILE* f);
 void renderLoad(FILE* f);
 void renderSetSize(int width, int height);
-void renderSetQuality(int quality);
+int renderSetQuality(int quality);
 void renderClear();
 void renderUpdate();
 void renderInterrupt();
@@ -147,14 +105,6 @@ void renderSaveToFile(const char* path);
 void renderSetPreviewCallbacks(PreviewCallbackResize resize, PreviewCallbackClear clear, PreviewCallbackDraw draw, PreviewCallbackUpdate update);
 int renderSetNextProgressStep(double start, double end);
 int renderTellProgress(double progress);
-
-/* sky.c */
-void skySave(FILE* f);
-void skyLoad(FILE* f);
-Color skyGetColor(Vector3 start, Vector3 direction);
-Color skyProjectRay(Vector3 start, Vector3 direction);
-void skySetGradation(ColorGradation grad);
-void skyRender(RenderProgressCallback callback);
 
 /* tools.c */
 double toolsRandom();

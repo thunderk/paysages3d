@@ -5,7 +5,7 @@
 #include <QListWidget>
 #include "preview.h"
 
-#include "../lib_paysages/shared/types.h"
+#include "../lib_paysages/noise.h"
 
 class DialogNoise : public QDialog
 {
@@ -13,7 +13,7 @@ class DialogNoise : public QDialog
 public:
     explicit DialogNoise(QWidget* parent, NoiseGenerator* noise);
     ~DialogNoise();
-    
+
     static bool getNoise(QWidget* parent, NoiseGenerator* noise);
 
 public slots:
@@ -32,7 +32,7 @@ private slots:
     void levelChanged(int row);
     void heightChanged(int value);
     void scalingChanged(int value);
-    
+
 private:
     NoiseGenerator* _base;
     NoiseGenerator* _current;

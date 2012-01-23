@@ -1,6 +1,9 @@
+#include "terrain.h"
+
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <assert.h>
 
 #include "shared/types.h"
 #include "shared/functions.h"
@@ -9,52 +12,49 @@
 
 #include "textures.h"
 #include "water.h"
-#include "terrain.h"
-
-static TerrainDefinition _definition;
-static TerrainQuality _quality;
-static TerrainEnvironment _environment;
-static double _max_height = 1.0;
 
 void terrainInit()
 {
-    _definition = terrainCreateDefinition();
-    _max_height = noiseGetMaxValue(_definition.height_noise);
-
-    _environment.toggle_fog = 1;
-    _environment.lighting_definition = NULL;
-    _environment.lighting_environment = NULL;
 }
 
-void terrainSave(FILE* f)
+void terrainSave(FILE* f, TerrainDefinition* definition)
 {
     int i;
 
-    noiseSave(_definition.height_noise, f);
-    toolsSaveInt(f, _definition.height_modifiers_count);
-    for (i = 0; i < _definition.height_modifiers_count; i++)
+    noiseSave(definition->height_noise, f);
+    toolsSaveDouble(f, definition->height_factor);
+    toolsSaveDouble(f, definition->scaling);
+
+    toolsSaveInt(f, definition->height_modifiers_count);
+    for (i = 0; i < definition->height_modifiers_count; i++)
     {
-        modifierSave(_definition.height_modifiers[i], f);
+        modifierSave(definition->height_modifiers[i], f);
     }
 }
 
-void terrainLoad(FILE* f)
+void terrainLoad(FILE* f, TerrainDefinition* definition)
 {
-    int i;
+    int i, n;
+    HeightModifier* modifier;
 
-    noiseLoad(_definition.height_noise, f);
-    _max_height = noiseGetMaxValue(_definition.height_noise);
+    noiseLoad(definition->height_noise, f);
+    definition->height_factor = toolsLoadDouble(f);
+    definition->scaling = toolsLoadDouble(f);
 
-    for (i = 0; i < _definition.height_modifiers_count; i++)
+    while (definition->height_modifiers_count > 0)
     {
-        modifierDelete(_definition.height_modifiers[i]);
+        terrainDelModifier(definition, 0);
     }
-    _definition.height_modifiers_count = toolsLoadInt(f);
-    for (i = 0; i < _definition.height_modifiers_count; i++)
+    n = toolsLoadInt(f);
+    for (i = 0; i < n; i++)
     {
-        _definition.height_modifiers[i] = modifierCreate();
-        modifierLoad(_definition.height_modifiers[i], f);
+        modifier = modifierCreate();
+        modifierLoad(modifier, f);
+        terrainAddModifier(&definition, modifier);
+        modifierDelete(modifier);
     }
+
+    terrainValidateDefinition(definition);
 }
 
 TerrainDefinition terrainCreateDefinition()
@@ -62,54 +62,57 @@ TerrainDefinition terrainCreateDefinition()
     TerrainDefinition definition;
 
     definition.height_noise = noiseCreateGenerator();
+    definition.height_factor = 0.0;
+    definition.scaling = 1.0;
     definition.height_modifiers_count = 0;
+
+    terrainValidateDefinition(&definition);
 
     return definition;
 }
 
-void terrainDeleteDefinition(TerrainDefinition definition)
+void terrainDeleteDefinition(TerrainDefinition* definition)
 {
     int i;
 
-    noiseDeleteGenerator(definition.height_noise);
-    for (i = 0; i < definition.height_modifiers_count; i++)
+    noiseDeleteGenerator(definition->height_noise);
+    for (i = 0; i < definition->height_modifiers_count; i++)
     {
-        modifierDelete(definition.height_modifiers[i]);
+        modifierDelete(definition->height_modifiers[i]);
     }
 }
 
-void terrainCopyDefinition(TerrainDefinition source, TerrainDefinition* destination)
+void terrainCopyDefinition(TerrainDefinition* source, TerrainDefinition* destination)
 {
     int i;
 
     noiseCopy(source.height_noise, destination->height_noise);
+    destination->height_factor = source->height_factor;
+    destination->scaling = source->scaling;
 
     for (i = 0; i < destination->height_modifiers_count; i++)
     {
         modifierDelete(destination->height_modifiers[i]);
     }
-    destination->height_modifiers_count = source.height_modifiers_count;
-    for (i = 0; i < destination->height_modifiers_count; i++)
+    destination->height_modifiers_count = 0;
+
+    for (i = 0; i < source->height_modifiers_count; i++)
     {
-        destination->height_modifiers[i] = modifierCreateCopy(source.height_modifiers[i]);
+        terrainAddModifier(destination, source->height_modifiers[i]);
     }
+
+    terrainValidateDefinition(destination);
 }
 
-void terrainSetDefinition(TerrainDefinition definition)
+void terrainValidateDefinition(TerrainDefinition* definition)
 {
-    terrainCopyDefinition(definition, &_definition);
-    _max_height = noiseGetMaxValue(_definition.height_noise);
+    definition->_max_height = noiseGetMaxValue(definition->height_noise) * definition->height_factor;
     /* FIXME _max_height depends on modifiers */
-}
-
-TerrainDefinition terrainGetDefinition()
-{
-    return _definition;
 }
 
 int terrainAddModifier(TerrainDefinition* definition, HeightModifier* modifier)
 {
-    if (definition->height_modifiers_count < MAX_HEIGHT_MODIFIER_COUNT)
+    if (definition->height_modifiers_count < TERRAIN_MAX_MODIFIERS)
     {
         definition->height_modifiers[definition->height_modifiers_count] = modifierCreateCopy(modifier);
         return definition->height_modifiers_count++;
@@ -124,18 +127,13 @@ void terrainDelModifier(TerrainDefinition* definition, int modifier_position)
 {
     if (modifier_position >= 0 && modifier_position < definition->height_modifiers_count)
     {
-        /* TODO */
+        modifierDelete(definition->height_modifiers[modifier_position]);
+        if (definition->height_modifiers_count > 1 && modifier_position < definition->height_modifiers_count - 1)
+        {
+            memmove(definition->height_modifiers + modifier_position, definition->height_modifiers + modifier_position + 1, sizeof(HeightModifier*) * (definition->height_modifiers_count - modifier_position - 1));
+        }
+        definition->height_modifiers_count--;
     }
-}
-
-void terrainSetQuality(TerrainQuality quality)
-{
-    _quality = quality;
-}
-
-TerrainQuality terrainGetQuality()
-{
-    return _quality;
 }
 
 static inline double _getHeight(TerrainDefinition* definition, double x, double z, double detail)
@@ -144,7 +142,7 @@ static inline double _getHeight(TerrainDefinition* definition, double x, double 
     int i;
 
     location.x = x;
-    location.y = noiseGet2DDetail(definition->height_noise, x, z, detail);
+    location.y = noiseGet2DDetail(definition->height_noise, x / definition->scaling, z / definition->scaling, detail) * definition->height_factor;
     location.z = z;
 
     for (i = 0; i < definition->height_modifiers_count; i++)
@@ -166,16 +164,16 @@ static inline Vector3 _getPoint(TerrainDefinition* definition, double x, double 
     return result;
 }
 
-Color terrainLightFilter(Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light, void* custom_data)
+Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light)
 {
     Vector3 inc_vector;
     double inc_value, inc_base, inc_factor, height, diff, light_factor, smoothing, length;
 
     direction_to_light = v3Normalize(direction_to_light);
-    inc_factor = (double)render_quality; // TODO Configurable
+    inc_factor = (double)renderer->render_quality;
     inc_base = 1.0;
     inc_value = inc_base / inc_factor;
-    smoothing = 0.03 * inc_factor;;
+    smoothing = 0.03 * inc_factor;
 
     light_factor = 1.0;
     length = 0.0;
@@ -184,7 +182,7 @@ Color terrainLightFilter(Color light, Vector3 location, Vector3 light_location, 
         inc_vector = v3Scale(direction_to_light, inc_value);
         length += v3Norm(inc_vector);
         location = v3Add(location, inc_vector);
-        height = _getHeight(&_definition, location.x, location.z, inc_value);
+        height = _getHeight(definition, location.x, location.z, inc_value);
         diff = location.y - height;
         if (diff < 0.0)
         {
@@ -203,7 +201,7 @@ Color terrainLightFilter(Color light, Vector3 location, Vector3 light_location, 
         {
             inc_value = diff;
         }
-    } while (light_factor > 0.0 && length < 50.0 && location.y <= _max_height);
+    } while (light_factor > 0.0 && length < 50.0 && location.y <= definition._max_height);
 
     if (light_factor <= 0.0)
     {
@@ -219,31 +217,29 @@ Color terrainLightFilter(Color light, Vector3 location, Vector3 light_location, 
     }
 }
 
-static Color _getColor(TerrainDefinition* definition, TerrainEnvironment* environment, Vector3 point, double precision)
+static Color _getColor(TerrainDefinition* definition, Renderer* renderer, Vector3 point, double precision)
 {
     Color color;
     TextureEnvironment texenv;
 
-    texenv.lighting_definition = environment->lighting_definition;
-    texenv.lighting_environment = environment->lighting_environment;
-
-    color = texturesGetColorCustom(point, precision, NULL, &texenv);
-    if (environment->toggle_fog)
+    color = COLOR_RED;
+    //color = texturesGetColorCustom(point, precision, NULL, &texenv);
+    /*if (environment->toggle_fog)
     {
         color = fogApplyToLocation(point, color);
-    }
+    }*/
     //color = cloudsApplySegmentResult(color, camera_location, point);
 
     return color;
 }
 
-int terrainProjectRay(Vector3 start, Vector3 direction, Vector3* hit_point, Color* hit_color)
+int terrainProjectRay(TerrainDefinition* definition, Renderer* renderer, Vector3 start, Vector3 direction, Vector3* hit_point, Color* hit_color)
 {
     Vector3 inc_vector;
     double inc_value, inc_base, inc_factor, height, diff, length;
 
     direction = v3Normalize(direction);
-    inc_factor = (double)render_quality;
+    inc_factor = (double)renderer->render_quality;
     inc_base = 1.0;
     inc_value = inc_base / inc_factor;
 
@@ -253,13 +249,13 @@ int terrainProjectRay(Vector3 start, Vector3 direction, Vector3* hit_point, Colo
         inc_vector = v3Scale(direction, inc_value);
         length += v3Norm(inc_vector);
         start = v3Add(start, inc_vector);
-        height = _getHeight(&_definition, start.x, start.z, inc_value);
+        height = _getHeight(definition, start.x, start.z, inc_value);
         diff = start.y - height;
         if (diff < 0.0)
         {
             start.y = height;
             *hit_point = start;
-            *hit_color = _getColor(&_definition, &_environment, start, inc_value);
+            *hit_color = _getColor(definition, renderer, start, inc_value);
             return 1;
         }
 
@@ -275,14 +271,14 @@ int terrainProjectRay(Vector3 start, Vector3 direction, Vector3* hit_point, Colo
         {
             inc_value = diff;
         }
-    } while (length < 50.0 && start.y <= _max_height);
+    } while (length < 50.0 && start.y <= definition._max_height);
 
     return 0;
 }
 
 static int _postProcessFragment(RenderFragment* fragment)
 {
-    Vector3 point;
+    /*Vector3 point;
     double precision;
 
     point = fragment->vertex.location;
@@ -290,17 +286,17 @@ static int _postProcessFragment(RenderFragment* fragment)
 
     point = _getPoint(&_definition, point.x, point.z, precision);
 
-    fragment->vertex.color = _getColor(&_definition, &_environment, point, precision);
+    fragment->vertex.color = _getColor(&_definition, &_environment, point, precision);*/
 
     return 1;
 }
 
-static Vertex _getFirstPassVertex(double x, double z, double detail)
+static Vertex _getFirstPassVertex(TerrainDefinition* definition, double x, double z, double detail)
 {
     Vertex result;
     double value;
 
-    result.location = _getPoint(&_definition, x, z, 0.0);
+    result.location = _getPoint(definition, x, z, 0.0);
     value = sin(x) * sin(x) * cos(z) * cos(z);
     result.color.r = value;
     result.color.g = value;
@@ -312,63 +308,50 @@ static Vertex _getFirstPassVertex(double x, double z, double detail)
     return result;
 }
 
-static void _renderQuad(double x, double z, double size)
+static void _renderQuad(TerrainDefinition* definition, double x, double z, double size)
 {
     Vertex v1, v2, v3, v4;
 
-    v1 = _getFirstPassVertex(x, z, size);
-    v2 = _getFirstPassVertex(x, z + size, size);
-    v3 = _getFirstPassVertex(x + size, z + size, size);
-    v4 = _getFirstPassVertex(x + size, z, size);
+    v1 = _getFirstPassVertex(definition, x, z, size);
+    v2 = _getFirstPassVertex(definition, x, z + size, size);
+    v3 = _getFirstPassVertex(definition, x + size, z + size, size);
+    v4 = _getFirstPassVertex(definition, x + size, z, size);
     renderPushQuad(&v1, &v2, &v3, &v4);
 }
 
-double terrainGetHeight(double x, double z)
+double terrainGetHeight(TerrainDefinition* definition, double x, double z)
 {
-    return _getHeight(&_definition, x, z, 0.0);
+    return _getHeight(definition, x, z, 0.0);
 }
 
-double terrainGetHeightNormalized(double x, double z)
+double terrainGetHeightNormalized(TerrainDefinition* definition, double x, double z)
 {
-    return 0.5 + _getHeight(&_definition, x, z, 0.0) / (_max_height * 2.0);
+    return 0.5 + _getHeight(definition, x, z, 0.0) / (definition->_max_height * 2.0);
 }
 
-Color terrainGetColorCustom(double x, double z, double detail, TerrainDefinition* definition, TerrainQuality* quality, TerrainEnvironment* environment)
+Color terrainGetColor(TerrainDefinition* definition, Renderer* renderer, double x, double z, double detail)
 {
-    if (!definition)
-    {
-        definition = &_definition;
-    }
-    if (!quality)
-    {
-        quality = &_quality;
-    }
-    if (!environment)
-    {
-        environment = &_environment;
-    }
-
     Vector3 point = _getPoint(definition, x, z, detail);
-    return _getColor(definition, environment, point, detail);
+    return _getColor(definition, renderer, point, detail);
 }
 
-Color terrainGetColor(double x, double z, double detail)
-{
-    return terrainGetColorCustom(x, z, detail, &_definition, &_quality, &_environment);
-}
-
-void terrainRender(RenderProgressCallback callback)
+void terrainRender(TerrainDefinition* definition, Renderer* renderer, RenderProgressCallback callback)
 {
     int chunk_factor, chunk_count, i;
-    double cx = camera_location.x;
-    double cz = camera_location.z;
+    double cx = renderer->camera_location.x;
+    double cz = renderer->camera_location.z;
+    double min_chunk_size, visible_chunk_size;
     double radius_int, radius_ext, chunk_size;
+
+    min_chunk_size = 0.1 / (double)renderer->render_quality;
+    visible_chunk_size = 0.05 / (double)renderer->render_quality;
 
     chunk_factor = 1;
     chunk_count = 2;
     radius_int = 0.0;
-    radius_ext = _quality.min_chunk_size;
-    chunk_size = _quality.min_chunk_size;
+    radius_ext = min_chunk_size;
+    chunk_size = min_chunk_size;
+
 
     while (radius_ext < 1000.0)
     {
@@ -379,20 +362,20 @@ void terrainRender(RenderProgressCallback callback)
 
         for (i = 0; i < chunk_count - 1; i++)
         {
-            _renderQuad(cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size);
-            _renderQuad(cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size);
-            _renderQuad(cx + radius_int - chunk_size * i, cz + radius_int, chunk_size);
-            _renderQuad(cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size);
+            _renderQuad(definition, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size);
+            _renderQuad(definition, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size);
+            _renderQuad(definition, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size);
+            _renderQuad(definition, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size);
         }
 
-        if (chunk_count % 64 == 0 && chunk_size / radius_int < _quality.visible_chunk_size)
+        if (chunk_count % 64 == 0 && chunk_size / radius_int < visible_chunk_size)
         {
             chunk_count /= 2;
             chunk_factor *= 2;
             /* TODO Fill in gaps with triangles */
         }
         chunk_count += 2;
-        chunk_size = _quality.min_chunk_size * chunk_factor;
+        chunk_size = min_chunk_size * chunk_factor;
         radius_int = radius_ext;
         radius_ext += chunk_size;
     }

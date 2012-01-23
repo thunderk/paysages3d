@@ -1,0 +1,12 @@
+- Create a 'scenery' module that will, for each component :
+  - Hold definitions
+  - Setup standard Renderer
+  - Regroup load/save/render (from auto)
+- Merge all Quality and Environment, as one Renderer.
+- No more _definition, _quality, _environment in components.
+- All component methods become custom.
+- Refactor fog in a new 'atmosphere' module.
+- In GUI, revertConfig should lock the previews while reverting.
+- All Save and Load methods should have same signature : void ...Save(FILE*, ...*)
+- All noises should use the same entropy pool (saved separately), and avoid reallocs.
+- Remove all global variables (render_quality, render_width...), it should all be set in Renderer.

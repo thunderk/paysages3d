@@ -24,7 +24,7 @@ protected:
     {
         double height;
 
-        height = terrainGetHeightNormalized(x, y);
+        height = terrainGetHeightNormalizedCustom(x, y, &_definition);
         return QColor((int)(255.0 * height), (int)(255.0 * height), (int)(255.0 * height));
     }
 };
@@ -35,7 +35,11 @@ public:
     PreviewTerrainColor(QWidget* parent):
         Preview(parent)
     {
+        _lighting_environment.filter = NULL;
+
         _environment.toggle_fog = 0;
+        _environment.lighting_definition = NULL;
+        _environment.lighting_environment = &_lighting_environment;
     }
 protected:
     QColor getColor(double x, double y)
@@ -43,6 +47,7 @@ protected:
         return colorToQColor(terrainGetColorCustom(x, y, scaling, &_definition, NULL, &_environment));
     }
 private:
+    LightingEnvironment _lighting_environment;
     TerrainEnvironment _environment;
 };
 
@@ -54,10 +59,12 @@ FormTerrain::FormTerrain(QWidget *parent):
 
     previewHeight = new PreviewTerrainHeight(this);
     previewColor = new PreviewTerrainColor(this);
-    addPreview(previewHeight, QString("Height preview"));
-    addPreview(previewColor, QString("Color preview"));
+    addPreview(previewHeight, QString("Height preview (normalized)"));
+    addPreview(previewColor, QString("Textured preview (no shadow)"));
 
-    addInputNoise("Height", _definition.height_noise);
+    addInputNoise("Noise", _definition.height_noise);
+    addInputDouble("Height", &_definition.height_factor, 0.0, 20.0, 0.1, 1.0);
+    addInputDouble("Scaling", &_definition.scaling, 1.0, 20.0, 0.1, 1.0);
 
     revertConfig();
 }
@@ -72,4 +79,10 @@ void FormTerrain::applyConfig()
 {
     terrainSetDefinition(_definition);
     BaseForm::applyConfig();
+}
+
+void FormTerrain::applyConfigPreview()
+{
+    terrainValidateDefinition(&_definition);
+    BaseForm::applyConfigPreview();
 }

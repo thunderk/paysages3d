@@ -1,7 +1,3 @@
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-
 struct NoiseLevel;
 
 struct NoiseGenerator
@@ -15,14 +11,18 @@ struct NoiseGenerator
     struct NoiseLevel* levels;
 };
 
-#include "shared/types.h"
+#include "noise.h"
+
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+
 #include "shared/functions.h"
 
 static inline double _cubicInterpolate(double* p, double x)
 {
     return p[1] + 0.5 * x * (p[2] - p[0] + x * (2.0 * p[0] - 5.0 * p[1] + 4.0 * p[2] - p[3] + x * (3.0 * (p[1] - p[2]) + p[3] - p[0])));
 }
-
 
 NoiseGenerator* noiseCreateGenerator()
 {

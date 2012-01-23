@@ -1,78 +1,45 @@
+#include "water.h"
+
 #include "shared/types.h"
 #include "shared/functions.h"
 #include "shared/constants.h"
 #include "shared/globals.h"
 
-#include "water.h"
 #include "terrain.h"
 #include "lighting.h"
 
 #include <math.h>
 
-static WaterDefinition _definition;
-static WaterQuality _quality;
-static WaterEnvironment _environment;
-
-static RayCastingResult _reflectionFunction(Vector3 start, Vector3 direction)
-{
-    RayCastingResult result;
-
-    if (!terrainProjectRay(start, direction, &result.hit_location, &result.hit_color))
-    {
-        result.hit_color = skyProjectRay(start, direction);
-        /* TODO hit_location */
-    }
-
-    result.hit = 1;
-    return result;
-}
-
-static RayCastingResult _refractionFunction(Vector3 start, Vector3 direction)
-{
-    RayCastingResult result;
-
-    result.hit = terrainProjectRay(start, direction, &result.hit_location, &result.hit_color);
-
-    return result;
-}
-
 void waterInit()
 {
-    _definition = waterCreateDefinition();
-
-    /* TODO quality */
-
-    _environment.reflection_function = _reflectionFunction;
-    _environment.refraction_function = _refractionFunction;
-    _environment.toggle_fog = 1;
-    _environment.lighting_definition = NULL;
-    _environment.lighting_environment = NULL;
 }
 
-void waterSave(FILE* f)
+void waterSave(FILE* f, WaterDefinition* definition)
 {
-    toolsSaveDouble(f, _definition.height);
-    colorSave(_definition.main_color, f);
-    colorSave(_definition.depth_color, f);
-    toolsSaveDouble(f, _definition.transparency_depth);
-    toolsSaveDouble(f, _definition.transparency);
-    toolsSaveDouble(f, _definition.reflection);
-    noiseSave(_definition.waves_noise, f);
-    toolsSaveDouble(f, _definition.waves_noise_height);
-    toolsSaveDouble(f, _definition.waves_noise_scale);
+    toolsSaveDouble(f, definition.height);
+    colorSave(definition->main_color, f);
+    colorSave(definition->depth_color, f);
+    toolsSaveDouble(f, definition->transparency_depth);
+    toolsSaveDouble(f, definition->transparency);
+    toolsSaveDouble(f, definition->reflection);
+    noiseSave(definition->waves_noise, f);
+    toolsSaveDouble(f, definition->waves_noise_height);
+    toolsSaveDouble(f, definition->waves_noise_scale);
 }
 
-void waterLoad(FILE* f)
+void waterLoad(FILE* f, WaterDefinition* definition)
 {
-    _definition.height = toolsLoadDouble(f);
-    _definition.main_color = colorLoad(f);
-    _definition.depth_color = colorLoad(f);
-    _definition.transparency_depth = toolsLoadDouble(f);
-    _definition.transparency = toolsLoadDouble(f);
-    _definition.reflection = toolsLoadDouble(f);
-    noiseLoad(_definition.waves_noise, f);
-    _definition.waves_noise_height = toolsLoadDouble(f);
-    _definition.waves_noise_scale = toolsLoadDouble(f);
+    definition->height = toolsLoadDouble(f);
+    definition->main_color = colorLoad(f);
+    definition->depth_color = colorLoad(f);
+    definition->transparency_depth = toolsLoadDouble(f);
+    definition->transparency = toolsLoadDouble(f);
+    definition->reflection = toolsLoadDouble(f);
+    noiseLoad(definition->waves_noise, f);
+    definition->waves_noise_height = toolsLoadDouble(f);
+    definition->waves_noise_scale = toolsLoadDouble(f);
+
+    waterValidateDefinition(definition);
 }
 
 WaterDefinition waterCreateDefinition()
@@ -92,41 +59,23 @@ WaterDefinition waterCreateDefinition()
     return result;
 }
 
-void waterDeleteDefinition(WaterDefinition definition)
+void waterDeleteDefinition(WaterDefinition* definition)
 {
-    noiseDeleteGenerator(definition.waves_noise);
+    noiseDeleteGenerator(definition->waves_noise);
 }
 
-void waterCopyDefinition(WaterDefinition source, WaterDefinition* destination)
+void waterCopyDefinition(WaterDefinition* source, WaterDefinition* destination)
 {
     NoiseGenerator* noise;
 
     noise = destination->waves_noise;
     *destination = source;
     destination->waves_noise = noise;
-    noiseCopy(source.waves_noise, destination->waves_noise);
+    noiseCopy(source->waves_noise, destination->waves_noise);
 }
 
-void waterSetDefinition(WaterDefinition config)
+void waterValidateDefinition(WaterDefinition* definition)
 {
-    waterCopyDefinition(config, &_definition);
-}
-
-WaterDefinition waterGetDefinition()
-{
-    return _definition;
-}
-
-void waterSetQuality(WaterQuality quality)
-{
-    _quality = quality;
-
-    _quality.detail_boost = (_quality.detail_boost < 0.1) ? 0.1 : _quality.detail_boost;
-}
-
-WaterQuality waterGetQuality()
-{
-    return _quality;
 }
 
 static inline double _getHeight(WaterDefinition* definition, double x, double z, double detail)
@@ -180,44 +129,56 @@ static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal)
     }
 }
 
-WaterResult waterGetColorCustom(Vector3 location, Vector3 look, WaterDefinition* definition, WaterQuality* quality, WaterEnvironment* environment)
+Color waterLightFilter(WaterDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light)
+{
+    double factor;
+
+    if (location.y < definition->height)
+    {
+        if (direction_to_light.y > 0.00001)
+        {
+            factor = (definition->height - location.y) / (direction_to_light.y * 5.0); // TODO Configurable
+            if (factor > 1.0)
+            {
+                factor = 1.0;
+            }
+            factor = 1.0 - 0.8 * factor;
+
+            light.r *= factor;
+            light.g *= factor;
+            light.b *= factor;
+
+            return light;
+        }
+        else
+        {
+            return COLOR_BLACK;
+        }
+    }
+    else
+    {
+        return light;
+    }
+}
+
+WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer, Vector3 location, Vector3 look)
 {
     WaterResult result;
     RayCastingResult refracted;
     Vector3 normal;
     Color color;
-    ReceiverMaterial material;
+    SurfaceMaterial material;
     double detail, depth;
 
-    if (definition == NULL)
-    {
-        definition = &_definition;
-    }
-    if (quality == NULL)
-    {
-        quality = &_quality;
-    }
-    if (environment == NULL)
-    {
-        environment = &_environment;
-    }
-
-    if (quality->force_detail != 0.0)
-    {
-        detail = quality->force_detail;
-    }
-    else
-    {
-        detail = renderGetPrecision(location) / quality->detail_boost;
-    }
+    detail = renderer->getPrecision(renderer, location);
 
     location.y = _getHeight(definition, location.x, location.z, detail);
     result.location = location;
 
     normal = _getNormal(definition, location, detail);
     look = v3Normalize(look);
-    result.reflected = environment->reflection_function(location, _reflectRay(look, normal)).hit_color;
-    refracted = environment->refraction_function(location, _refractRay(look, normal));
+    result.reflected = renderer->rayWalking(renderer, location, _reflectRay(look, normal), 0).hit_color;
+    refracted = renderer->rayWalking(renderer, location, _refractRay(look, normal), 0);
     depth = v3Norm(v3Sub(location, refracted.hit_location));
     if (depth > definition->transparency_depth)
     {
@@ -240,11 +201,11 @@ WaterResult waterGetColorCustom(Vector3 location, Vector3 look, WaterDefinition*
     material.base = color;
     material.reflection = 0.8;
     material.shininess = 0.6;
-    color = lightingApplyCustom(location, normal, material, environment->lighting_definition, NULL, environment->lighting_environment);
-    if (environment->toggle_fog)
+    color = renderer->applyLightingToSurface(renderer, location, normal, material);
+    /*if (environment->toggle_fog)
     {
         color = fogApplyToLocation(location, color);
-    }
+    }*/
 
     result.base = definition->main_color;
     result.final = color;
@@ -252,14 +213,14 @@ WaterResult waterGetColorCustom(Vector3 location, Vector3 look, WaterDefinition*
     return result;
 }
 
-Color waterGetColor(Vector3 location, Vector3 look)
+Color waterGetColor(WaterDefinition* definition, Renderer* renderer, Vector3 location, Vector3 look)
 {
-    return waterGetColorCustom(location, look, &_definition, &_quality, &_environment).final;
+    return waterGetColorDetail(definition, renderer, location, look).final;
 }
 
 static int _postProcessFragment(RenderFragment* fragment)
 {
-    fragment->vertex.color = waterGetColor(fragment->vertex.location, v3Sub(fragment->vertex.location, camera_location));
+    /* fragment->vertex.color = waterGetColor(fragment->vertex.location, v3Sub(fragment->vertex.location, camera_location)); */
     return 1;
 }
 
@@ -293,46 +254,14 @@ static void _renderQuad(double x, double z, double size)
     renderPushQuad(&v1, &v2, &v3, &v4);
 }
 
-Color waterLightFilter(Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light, void* custom_data)
-{
-    double factor;
-
-    if (location.y < _definition.height)
-    {
-        if (direction_to_light.y > 0.00001)
-        {
-            factor = (_definition.height - location.y) / (direction_to_light.y * 5.0); // TODO Configurable
-            if (factor > 1.0)
-            {
-                factor = 1.0;
-            }
-            factor = 1.0 - 0.8 * factor;
-
-            light.r *= factor;
-            light.g *= factor;
-            light.b *= factor;
-
-            return light;
-        }
-        else
-        {
-            return COLOR_BLACK;
-        }
-    }
-    else
-    {
-        return light;
-    }
-}
-
-void waterRender(RenderProgressCallback callback)
+void waterRender(WaterDefinition* definition, Renderer* renderer, RenderProgressCallback callback)
 {
     int chunk_factor, chunk_count, i;
-    double cx = camera_location.x;
-    double cz = camera_location.z;
+    double cx = renderer->camera_location.x;
+    double cz = renderer->camera_location.z;
     double radius_int, radius_ext, base_chunk_size, chunk_size;
 
-    base_chunk_size = 2.0 / (double)render_quality;
+    base_chunk_size = 2.0 / (double)renderer->render_quality;
 
     chunk_factor = 1;
     chunk_count = 2;

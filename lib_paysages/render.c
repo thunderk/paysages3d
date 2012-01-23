@@ -108,16 +108,21 @@ void renderSetSize(int width, int height)
     _cb_preview_clear(background_color);
 }
 
-void renderSetQuality(int quality)
+int renderSetQuality(int quality)
 {
     if (quality < 1)
     {
         render_quality = 1;
     }
+    else if (quality > 10)
+    {
+        render_quality = 10;
+    }
     else
     {
         render_quality = quality;
     }
+    return render_quality;
 }
 
 void renderClear()

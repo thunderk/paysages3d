@@ -27,10 +27,11 @@ void fogSetDistance(double near, double far)
 
 Color fogApplyToLocation(Vector3 location, Color base)
 {
-    Color mask = _col;
+    // TODO Don't use camera_location
+    /*Color mask = _col;
     double distance = v3Norm(v3Sub(camera_location, location));
     double value;
-    
+
     if (distance < _near)
     {
         return base;
@@ -44,6 +45,6 @@ Color fogApplyToLocation(Vector3 location, Color base)
 
     mask.a *= value;
     colorMask(&base, &mask);
-    return base;
+    return base;*/
 }
 

@@ -51,6 +51,7 @@ protected:
         Vector3 eye, look, location;
         WaterDefinition definition;
         WaterEnvironment environment;
+        LightingEnvironment lighting_environment;
         WaterQuality quality;
         Color result;
 
@@ -80,11 +81,12 @@ protected:
 
         definition = _definition;
         definition.height = 0.0;
+        lighting_environment.filter = NULL;
         environment.reflection_function = (RayCastingFunction)(&this->rayCastFromWater);
         environment.refraction_function = (RayCastingFunction)(&this->rayCastFromWater);
         environment.toggle_fog = 0;
         environment.lighting_definition = NULL;
-        environment.lighting_environment = NULL;
+        environment.lighting_environment = &lighting_environment;
         quality.force_detail = 0.0001;
         quality.detail_boost = 1.0;
 

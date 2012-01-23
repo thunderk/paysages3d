@@ -16,6 +16,9 @@ public slots:
     virtual void revertConfig();
     virtual void applyConfig();
 
+protected slots:
+    virtual void applyConfigPreview();
+
 private:
     Preview* previewHeight;
     Preview* previewColor;

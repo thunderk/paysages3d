@@ -2,6 +2,7 @@
 #define _PAYSAGES_TEXTURES_H_
 
 #include "shared/types.h"
+#include "noise.h"
 #include "lighting.h"
 #include <stdio.h>
 
@@ -9,44 +10,42 @@
 extern "C" {
 #endif
 
+#define TEXTURES_MAX_LAYERS 50
+
 typedef struct
 {
     Zone* zone;
     NoiseGenerator* bump_noise;
     Color color;
-} TextureDefinition;
+} TextureLayerDefinition;
 
 typedef struct
 {
-    int unused;
-} TextureQuality;
-
-typedef struct
-{
-    LightingDefinition* lighting_definition;
-    LightingEnvironment* lighting_environment;
-} TextureEnvironment;
+    int nbtextures;
+    TextureLayerDefinition textures[TEXTURES_MAX_LAYERS];
+} TexturesDefinition;
 
 void texturesInit();
-void texturesSave(FILE* f);
-void texturesLoad(FILE* f);
+void texturesSave(FILE* f, TexturesDefinition* definition);
+void texturesLoad(FILE* f, TexturesDefinition* definition);
 
-int texturesGetLayerCount();
-int texturesAddLayer();
-void texturesDeleteLayer(int layer);
+TexturesDefinition texturesCreateDefinition();
+void texturesDeleteDefinition(TexturesDefinition* definition);
+void texturesCopyDefinition(TexturesDefinition* source, TexturesDefinition* destination);
+void texturesValidateDefinition(TexturesDefinition* definition);
 
-TextureDefinition texturesCreateDefinition();
-void texturesDeleteDefinition(TextureDefinition definition);
-void texturesCopyDefinition(TextureDefinition source, TextureDefinition* destination);
-void texturesSetDefinition(int layer, TextureDefinition definition);
-TextureDefinition texturesGetDefinition(int layer);
+TextureLayerDefinition texturesLayerCreateDefinition();
+void texturesLayerDeleteDefinition(TextureLayerDefinition* definition);
+void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDefinition* destination);
+void texturesLayerValidateDefinition(TextureLayerDefinition* definition);
 
-void texturesSetQuality(TextureQuality quality);
-TextureQuality texturesGetQuality();
+int texturesGetLayerCount(TexturesDefinition* definition);
+TextureLayerDefinition* texturesGetLayer(TexturesDefinition* definition, int layer);
+int texturesAddLayer(TexturesDefinition* definition);
+void texturesDeleteLayer(TexturesDefinition* definition, int layer);
 
-Color texturesGetLayerColorCustom(Vector3 location, double detail, TextureDefinition* definition, TextureQuality* quality, TextureEnvironment* environment);
-Color texturesGetColorCustom(Vector3 location, double detail, TextureQuality* quality, TextureEnvironment* environment);
-Color texturesGetColor(Vector3 location);
+Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);
+Color texturesGetColorCustom(TexturesDefinition* definition, Renderer* renderer, Vector3 location, double detail);
 
 #ifdef __cplusplus
 }

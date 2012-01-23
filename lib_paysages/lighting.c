@@ -12,32 +12,13 @@
 #include "sky.h"
 #include "water.h"
 #include "terrain.h"
-
-static LightingDefinition _definition;
-static LightingQuality _quality;
-static LightingEnvironment _environment;
+#include "renderer.h"
+#include "scenery.h"
 
 static LightDefinition _LIGHT_NULL;
 
-static Color _standardFilter(Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light, void* custom_data)
-{
-    Color result;
-
-    result = waterLightFilter(light, location, light_location, direction_to_light, custom_data);
-    result = terrainLightFilter(result, location, light_location, direction_to_light, custom_data);
-    // TODO atmosphere filter
-    // TODO clouds filter
-
-    return result;
-}
-
 void lightingInit()
 {
-    _definition = lightingCreateDefinition();
-
-    _environment.filter = _standardFilter;
-    _environment.custom_data = NULL;
-
     _LIGHT_NULL.color = COLOR_BLACK;
     _LIGHT_NULL.direction.x = 0.0;
     _LIGHT_NULL.direction.y = 1.0;
@@ -65,38 +46,25 @@ LightingDefinition lightingCreateDefinition()
     return definition;
 }
 
-void lightingDeleteDefinition(LightingDefinition definition)
+void lightingDeleteDefinition(LightingDefinition* definition)
 {
 }
 
-void lightingCopyDefinition(LightingDefinition source, LightingDefinition* destination)
+void lightingCopyDefinition(LightingDefinition* source, LightingDefinition* destination)
 {
-    *destination = source;
-}
-
-void lightingSetDefinition(LightingDefinition definition)
-{
-    lightingValidateDefinition(&definition);
-    lightingCopyDefinition(definition, &_definition);
-}
-
-LightingDefinition lightingGetDefinition()
-{
-    return _definition;
+    *destination = *source;
 }
 
 void lightingValidateDefinition(LightingDefinition* definition)
 {
-    if (!definition)
-    {
-        lightingValidateDefinition(&_definition);
-        return;
-    }
-
     if (definition->autosetfromsky)
     {
-        // TODO Get lights from sky
-        definition->_nbautolights = skyGetLights(definition->_autolights, MAX_LIGHTS);
+        SkyDefinition sky;
+
+        sky = skyCreateDefinition();
+        sceneryGetSky(&sky);
+        definition->_nbautolights = skyGetLights(&sky, definition->_autolights, LIGHTING_MAX_LIGHTS);
+        skyDeleteDefinition(&sky);
     }
     else
     {
@@ -123,7 +91,7 @@ LightDefinition lightingGetLight(LightingDefinition* definition, int light)
 
 int lightingAddLight(LightingDefinition* definition, LightDefinition light)
 {
-    if (definition->nblights < MAX_LIGHTS)
+    if (definition->nblights < LIGHTING_MAX_LIGHTS)
     {
         definition->lights[definition->nblights] = light;
         return definition->nblights++;
@@ -146,17 +114,7 @@ void lightingDeleteLight(LightingDefinition* definition, int light)
     }
 }
 
-void lightingSetQuality(LightingQuality quality)
-{
-    _quality = quality;
-}
-
-LightingQuality lightingGetQuality()
-{
-    return _quality;
-}
-
-static Color _applyLightCustom(Vector3 location, Vector3 normal, ReceiverMaterial material, LightDefinition* definition, LightingQuality* quality, LightingEnvironment* environment)
+static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
 {
     Color result, light;
     double diffuse, specular;
@@ -165,14 +123,15 @@ static Color _applyLightCustom(Vector3 location, Vector3 normal, ReceiverMateria
     light = definition->color;
 
     direction_inv = v3Scale(definition->direction, -1.0);
-    light = environment->filter(light, location, v3Add(location, direction_inv), direction_inv, environment->custom_data);
+    light = renderer->filterLight(renderer, light, location, v3Add(location, direction_inv), direction_inv);
 
     normal = v3Normalize(normal);
-    view = v3Normalize(v3Sub(location, camera_location)); // TODO Configurable
+    view = v3Normalize(v3Sub(location, renderer->camera_location));
     reflect = v3Sub(v3Scale(normal, 2.0 * v3Dot(direction_inv, normal)), direction_inv);
 
     diffuse = v3Dot(direction_inv, normal);
     //diffuse = pow(diffuse * 0.5 + 0.5, 2.0);
+    diffuse = diffuse * 0.5 + 0.5;
     if (diffuse > 0.0)
     {
         if (material.shininess > 0.0)
@@ -198,38 +157,20 @@ static Color _applyLightCustom(Vector3 location, Vector3 normal, ReceiverMateria
     return result;
 }
 
-Color lightingApplyCustom(Vector3 location, Vector3 normal, ReceiverMaterial material, LightingDefinition* definition, LightingQuality* quality, LightingEnvironment* environment)
+Color lightingApplyToSurface(LightingDefinition* definition, Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
 {
     Color result;
     int i;
-
-    if (!definition)
-    {
-        definition = &_definition;
-    }
-    if (!quality)
-    {
-        quality = &_quality;
-    }
-    if (!environment)
-    {
-        environment = &_environment;
-    }
 
     /* TODO Merge lights */
     result = material.base;
     for (i = 0; i < definition->nblights; i++)
     {
-        result = _applyLightCustom(location, normal, material, definition->lights + i, quality, environment);
+        result = _applyLightCustom(definition->lights + i, renderer, location, normal, material);
     }
     for (i = 0; i < definition->_nbautolights; i++)
     {
-        result = _applyLightCustom(location, normal, material, definition->_autolights + i, quality, environment);
+        result = _applyLightCustom(definition->_autolights + i, renderer, location, normal, material);
     }
     return result;
-}
-
-Color lightingApply(Vector3 location, Vector3 normal, ReceiverMaterial material)
-{
-    return lightingApplyCustom(location, normal, material, &_definition, &_quality, &_environment);
 }

@@ -21,37 +21,21 @@ typedef struct
     ColorGradation _sky_gradation;
 } SkyDefinition;
 
-typedef struct
-{
-    int unused;
-} SkyQuality;
-
-typedef struct
-{
-    int unused;
-} SkyEnvironment;
-
 void skyInit();
-void skySave(FILE* f);
-void skyLoad(FILE* f);
+void skySave(FILE* f, SkyDefinition* definition);
+void skyLoad(FILE* f, SkyDefinition* definition);
 
 SkyDefinition skyCreateDefinition();
-void skyDeleteDefinition(SkyDefinition definition);
-void skyCopyDefinition(SkyDefinition source, SkyDefinition* destination);
+void skyDeleteDefinition(SkyDefinition* definition);
+void skyCopyDefinition(SkyDefinition* source, SkyDefinition* destination);
 void skyValidateDefinition(SkyDefinition* definition);
-void skySetDefinition(SkyDefinition definition);
-SkyDefinition skyGetDefinition();
 
-void skySetQuality(SkyQuality quality);
-SkyQuality skyGetQuality();
+int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights);
 
-int skyGetLights(LightDefinition* lights, int max_lights);
+Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Vector3 look);
+Color skyProjectRay(SkyDefinition* definition, Renderer* renderer, Vector3 start, Vector3 direction);
 
-Color skyGetColorCustom(Vector3 eye, Vector3 look, SkyDefinition* definition, SkyQuality* quality, SkyEnvironment* environment);
-Color skyGetColor(Vector3 eye, Vector3 look);
-
-Color skyProjectRay(Vector3 start, Vector3 direction);
-void skyRender(RenderProgressCallback callback);
+void skyRender(SkyDefinition* definition, Renderer* renderer, RenderProgressCallback callback);
 
 #ifdef __cplusplus
 }

@@ -2,11 +2,15 @@
 #define _PAYSAGES_CLOUDS_H_
 
 #include "shared/types.h"
+#include "noise.h"
+#include "renderer.h"
 #include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define CLOUDS_MAX_LAYERS 6
 
 typedef struct
 {
@@ -17,37 +21,35 @@ typedef struct
     Color color;
     double scaling;
     double coverage;
+} CloudsLayerDefinition;
+
+typedef struct
+{
+    int nblayers;
+    CloudsLayerDefinition layers[CLOUDS_MAX_LAYERS];
 } CloudsDefinition;
 
-typedef struct
-{
-    double precision;
-} CloudsQuality;
-
-typedef struct
-{
-    int unused;
-} CloudsEnvironment;
-
 void cloudsInit();
-void cloudsSave(FILE* f);
-void cloudsLoad(FILE* f);
-
-int cloudsGetLayerCount();
-int cloudsAddLayer();
-void cloudsDeleteLayer(int layer);
+void cloudsSave(FILE* f, CloudsDefinition* definition);
+void cloudsLoad(FILE* f, CloudsDefinition* definition);
 
 CloudsDefinition cloudsCreateDefinition();
-void cloudsDeleteDefinition(CloudsDefinition definition);
-void cloudsCopyDefinition(CloudsDefinition source, CloudsDefinition* destination);
-void cloudsSetDefinition(int layer, CloudsDefinition definition);
-CloudsDefinition cloudsGetDefinition(int layer);
+void cloudsDeleteDefinition(CloudsDefinition* definition);
+void cloudsCopyDefinition(CloudsDefinition* source, CloudsDefinition* destination);
+void cloudsValidateDefinition(CloudsDefinition* definition);
 
-void cloudsSetQuality(CloudsQuality quality);
-CloudsQuality cloudsGetQuality();
+CloudsLayerDefinition cloudsLayerCreateDefinition();
+void cloudsLayerDeleteDefinition(CloudsLayerDefinition* definition);
+void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinition* destination);
+void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition);
 
-Color cloudsGetColorCustom(Vector3 start, Vector3 end, CloudsDefinition* definition, CloudsQuality* quality, CloudsEnvironment* environment);
-Color cloudsGetColor(Vector3 start, Vector3 end);
+int cloudsGetLayerCount(CloudsDefinition* definition);
+CloudsLayerDefinition* cloudsGetLayer(CloudsDefinition* definition, int layer);
+int cloudsAddLayer(CloudsDefinition* definition);
+void cloudsDeleteLayer(CloudsDefinition* definition, int layer);
+
+Color cloudsGetLayerColor(CloudsLayerDefinition* definition, Renderer* renderer, Vector3 start, Vector3 end);
+Color cloudsGetColor(CloudsDefinition* definition, Renderer* renderer, Vector3 start, Vector3 end);
 
 #ifdef __cplusplus
 }

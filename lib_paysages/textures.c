@@ -12,90 +12,94 @@
 #include "terrain.h"
 #include "lighting.h"
 
-#define TEXTURES_MAX 50
-static TextureQuality _quality;
-static TextureEnvironment _environment;
-static int _textures_count = 0;
-static TextureDefinition _textures[TEXTURES_MAX];
+static TextureLayerDefinition _NULL_LAYER;
 
 void texturesInit()
 {
-    _textures_count = 0;
-
-    _environment.lighting_definition = NULL;
-    _environment.lighting_environment = NULL;
+    _NULL_LAYER = texturesLayerCreateDefinition();
 }
 
-void texturesSave(FILE* f)
+void texturesSave(FILE* f, TexturesDefinition* definition)
 {
     int i;
 
-    toolsSaveInt(f, _textures_count);
-    for (i = 0; i < _textures_count; i++)
+    toolsSaveInt(f, definition->nbtextures);
+    for (i = 0; i < definition->nbtextures; i++)
     {
-        zoneSave(_textures[i].zone, f);
-        noiseSave(_textures[i].bump_noise, f);
-        colorSave(_textures[i].color, f);
+        zoneSave(definition->textures[i].zone, f);
+        noiseSave(definition->textures[i].bump_noise, f);
+        colorSave(definition->textures[i].color, f);
     }
 }
 
-void texturesLoad(FILE* f)
+void texturesLoad(FILE* f, TexturesDefinition* definition)
 {
+    TextureLayerDefinition* layer;
     int i, n;
-    TextureDefinition* texture;
 
-    while (_textures_count > 0)
+    while (definition->nbtextures > 0)
     {
-        texturesDeleteLayer(0);
+        texturesDeleteLayer(definition, 0);
     }
 
     n = toolsLoadInt(f);
     for (i = 0; i < n; i++)
     {
-        texture = _textures + texturesAddLayer();
+        layer = definition->nbtextures + texturesAddLayer(definition);
 
-        zoneLoad(texture->zone, f);
-        noiseLoad(texture->bump_noise, f);
-        texture->color = colorLoad(f);
+        zoneLoad(layer->zone, f);
+        noiseLoad(layer->bump_noise, f);
+        layer->color = colorLoad(f);
     }
+
+    texturesValidateDefinition(definition);
 }
 
-int texturesGetLayerCount()
+TexturesDefinition texturesCreateDefinition()
 {
-    return _textures_count;
+    TexturesDefinition result;
+
+    result.nbtextures = 0;
+
+    return result;
 }
 
-int texturesAddLayer()
+void texturesDeleteDefinition(TexturesDefinition* definition)
 {
-    if (_textures_count < TEXTURES_MAX)
+    while (definition->nbtextures > 0)
     {
-        _textures[_textures_count] = texturesCreateDefinition();
-
-        return _textures_count++;
-    }
-    else
-    {
-        return -1;
+        texturesDeleteLayer(definition, 0);
     }
 }
 
-void texturesDeleteLayer(int layer)
+void texturesCopyDefinition(TexturesDefinition* source, TexturesDefinition* destination)
 {
-    if (layer >= 0 && layer < _textures_count)
+    TextureLayerDefinition* layer;
+    int i;
+
+    while (destination->nbtextures > 0)
     {
-        zoneDelete(_textures[layer].zone);
-        noiseDeleteGenerator(_textures[layer].bump_noise);
-        if (_textures_count > 1 && layer < _textures_count - 1)
-        {
-            memmove(_textures + layer, _textures + layer + 1, sizeof(TextureDefinition) * (_textures_count - layer - 1));
-        }
-        _textures_count--;
+        texturesDeleteLayer(destination, 0);
+    }
+    for (i = 0; i < source->nbtextures; i++)
+    {
+        layer = texturesGetLayer(destination, texturesAddLayer(destination));
+        texturesLayerCopyDefinition(source->textures + i, layer);
     }
 }
 
-TextureDefinition texturesCreateDefinition()
+void texturesValidateDefinition(TexturesDefinition* definition)
 {
-    TextureDefinition result;
+    int i;
+    for (i = 0; i < definition->nbtextures; i++)
+    {
+        texturesLayerValidateDefinition(definition->textures + i);
+    }
+}
+
+TextureLayerDefinition texturesLayerCreateDefinition()
+{
+    TextureLayerDefinition result;
 
     result.zone = zoneCreate();
     result.bump_noise = noiseCreateGenerator();
@@ -104,49 +108,68 @@ TextureDefinition texturesCreateDefinition()
     return result;
 }
 
-void texturesDeleteDefinition(TextureDefinition definition)
+void texturesLayerDeleteDefinition(TextureLayerDefinition* definition)
 {
     zoneDelete(definition.zone);
     noiseDeleteGenerator(definition.bump_noise);
 }
 
-void texturesCopyDefinition(TextureDefinition source, TextureDefinition* destination)
+void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDefinition* destination)
 {
     destination->color = source.color;
     noiseCopy(source.bump_noise, destination->bump_noise);
     zoneCopy(source.zone, destination->zone);
 }
 
-void texturesSetDefinition(int layer, TextureDefinition definition)
+void texturesLayerValidateDefinition(TextureLayerDefinition* definition)
 {
-    TextureDefinition* destination;
+}
 
-    if (layer >= 0 && layer < _textures_count)
+int texturesGetLayerCount(TexturesDefinition* definition)
+{
+    return definition->nbtextures;
+}
+
+TextureLayerDefinition* texturesGetLayer(TexturesDefinition* definition, int layer)
+{
+    if (layer >= 0 && layer < definition->nbtextures)
     {
-        destination = _textures + layer;
-        texturesCopyDefinition(definition, destination);
+        return definition->textures + layer;
+    }
+    else
+    {
+        return &_NULL_LAYER;
     }
 }
 
-TextureDefinition texturesGetDefinition(int layer)
+int texturesAddLayer(TexturesDefinition* definition)
 {
-    assert(layer >= 0);
-    assert(layer < _textures_count);
+    if (definition->nbtextures < TEXTURES_MAX_LAYERS)
+    {
+        _textures[definition->nbtextures] = texturesCreateDefinition();
 
-    return _textures[layer];
+        return definition->nbtextures++;
+    }
+    else
+    {
+        return -1;
+    }
 }
 
-void texturesSetQuality(TextureQuality quality)
+void texturesDeleteLayer(TexturesDefinition* definition, int layer)
 {
-    _quality = quality;
+    if (layer >= 0 && layer < definition->nbtextures)
+    {
+        texturesLayerDeleteDefinition(definition->textures + layer);
+        if (definition->nbtextures > 1 && layer < definition->nbtextures - 1)
+        {
+            memmove(definition->textures + layer, definition->textures + layer + 1, sizeof(TextureLayerDefinition) * (definition->nbtextures - layer - 1));
+        }
+        definition->nbtextures--;
+    }
 }
 
-TextureQuality texturesGetQuality()
-{
-    return _quality;
-}
-
-static inline Vector3 _getNormal(TextureDefinition* definition, Vector3 point, double scale)
+static inline Vector3 _getNormal(TextureLayerDefinition* definition, Vector3 point, double scale)
 {
     Vector3 dpoint, ref, normal;
 
@@ -183,12 +206,12 @@ static inline Vector3 _getNormal(TextureDefinition* definition, Vector3 point, d
     return v3Normalize(normal);
 }
 
-Color texturesGetLayerColorCustom(Vector3 location, double detail, TextureDefinition* definition, TextureQuality* quality, TextureEnvironment* environment)
+Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
 {
     Color result;
     Vector3 normal;
     double coverage;
-    ReceiverMaterial material;
+    SurfaceMaterial material;
 
     result = COLOR_TRANSPARENT;
     normal = _getNormal(definition, location, detail * 0.3);
@@ -200,31 +223,22 @@ Color texturesGetLayerColorCustom(Vector3 location, double detail, TextureDefini
         material.reflection = 0.1;
         material.shininess = 0.1;
 
-        result = lightingApplyCustom(location, normal, material, environment->lighting_definition, NULL, environment->lighting_environment);
+        result = renderer->applyLightingToSurface(renderer, location, normal, material);
         result.a = coverage;
     }
     return result;
 }
 
-Color texturesGetColorCustom(Vector3 location, double detail, TextureQuality* quality, TextureEnvironment* environment)
+Color texturesGetColorCustom(TexturesDefinition* definition, Renderer* renderer, Vector3 location, double detail)
 {
     Color result, tex_color;
     int i;
 
-    /*if (!quality)
-    {
-        quality = &_quality;
-    }
-    if (!environment)
-    {
-        environment = &_environment;
-    }*/
-
     result = COLOR_GREEN;
-    for (i = 0; i < _textures_count; i++)
+    for (i = 0; i < definition->nbtextures; i++)
     {
         /* TODO Do not compute layers fully covered */
-        tex_color = texturesGetLayerColorCustom(location, detail, _textures + i, quality, environment);
+        tex_color = texturesGetLayerColor(_textures + i, renderer, location, detail);
         if (tex_color.a > 0.0001)
         {
             colorMask(&result, &tex_color);
@@ -232,9 +246,4 @@ Color texturesGetColorCustom(Vector3 location, double detail, TextureQuality* qu
     }
 
     return result;
-}
-
-Color texturesGetColor(Vector3 location)
-{
-    return texturesGetColorCustom(location, renderGetPrecision(location), &_quality, &_environment);
 }

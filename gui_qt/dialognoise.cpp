@@ -9,8 +9,6 @@
 #include <QScrollArea>
 #include <QPushButton>
 
-#include "../lib_paysages/shared/functions.h"
-
 /**************** Previews ****************/
 class PreviewLevel:public Preview
 {

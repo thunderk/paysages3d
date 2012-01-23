@@ -87,17 +87,6 @@ typedef struct
     void* data;
 } Array;
 
-struct NoiseLevel
-{
-    double scaling;
-    double height;
-    double xoffset;
-    double yoffset;
-    double zoffset;
-};
-typedef struct NoiseLevel NoiseLevel;
-typedef struct NoiseGenerator NoiseGenerator;
-
 typedef struct Zone Zone;
 
 typedef void (*PreviewCallbackResize)(int width, int height);

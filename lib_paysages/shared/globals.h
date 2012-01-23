@@ -7,8 +7,6 @@
 extern "C" {
 #endif
 
-extern Vector3 camera_location;
-
 extern int render_width;
 extern int render_height;
 extern int render_quality;

@@ -2,7 +2,9 @@
 
 #include <QApplication>
 #include <QMenuBar>
+#include <QMenu>
 #include <QFileDialog>
+#include <QTabWidget>
 
 #include "formterrain.h"
 #include "formwater.h"
