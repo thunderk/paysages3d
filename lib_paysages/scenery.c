@@ -1,6 +1,9 @@
 #include "scenery.h"
 
 #include <stdio.h>
+#include "shared/functions.h"
+#include "system.h"
+#include "render.h"
 
 CameraDefinition _camera;
 CloudsDefinition _clouds;
@@ -9,41 +12,6 @@ SkyDefinition _sky;
 TerrainDefinition _terrain;
 TexturesDefinition _textures;
 WaterDefinition _water;
-
-static Color _filterLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
-{
-    Color result;
-
-    result = waterLightFilter(&_water, renderer, light_color, at_location, light_location, direction_to_light);
-    result = terrainLightFilter(&_terrain, renderer, result, at_location, light_location, direction_to_light);
-    // TODO atmosphere filter
-    // TODO clouds filter
-
-    return result;
-}
-
-static RayCastingResult _reflectionFunction(Vector3 start, Vector3 direction)
-{
-    RayCastingResult result;
-
-    if (!terrainProjectRay(start, direction, &result.hit_location, &result.hit_color))
-    {
-        result.hit_color = skyProjectRay(start, direction);
-        /* TODO hit_location */
-    }
-
-    result.hit = 1;
-    return result;
-}
-
-static RayCastingResult _refractionFunction(Vector3 start, Vector3 direction)
-{
-    RayCastingResult result;
-
-    result.hit = terrainProjectRay(start, direction, &result.hit_location, &result.hit_color);
-
-    return result;
-}
 
 void sceneryInit()
 {
@@ -128,7 +96,7 @@ void scenerySetClouds(CloudsDefinition* clouds)
 
 void sceneryGetClouds(CloudsDefinition* clouds)
 {
-    cloudsCopyDefinition(_clouds, clouds);
+    cloudsCopyDefinition(&_clouds, clouds);
 }
 
 void scenerySetLighting(LightingDefinition* lighting)
@@ -188,10 +156,134 @@ void sceneryGetWater(WaterDefinition* water)
     waterCopyDefinition(&_water, water);
 }
 
-Renderer sceneryGetStandardRenderer()
+void sceneryRenderFirstPass(Renderer* renderer)
 {
+    if (!renderSetNextProgressStep(0.0, 0.01))
+    {
+        return;
+    }
+    skyRender(&_sky, renderer, renderTellProgress);
+    if (!renderSetNextProgressStep(0.01, 0.085))
+    {
+        return;
+    }
+    terrainRender(&_terrain, renderer, renderTellProgress);
+    if (!renderSetNextProgressStep(0.085, 0.1))
+    {
+        return;
+    }
+    waterRender(&_water, renderer, renderTellProgress);
 }
 
-void sceneryRender()
+void sceneryRenderSecondPass(Renderer* renderer)
 {
+    if (renderSetNextProgressStep(0.1, 1.0))
+    {
+        renderPostProcess(renderer, systemGetCoreCount());
+    }
 }
+
+
+
+
+
+
+/******* Standard renderer *********/
+static Color _filterLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
+{
+    Color result;
+
+    result = waterLightFilter(&_water, renderer, light_color, at_location, light_location, direction_to_light);
+    result = terrainLightFilter(&_terrain, renderer, result, at_location, light_location, direction_to_light);
+    // TODO atmosphere filter
+    // TODO clouds filter
+
+    return result;
+}
+
+static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+{
+    return lightingApplyToSurface(&_lighting, renderer, location, normal, material);
+}
+
+static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
+{
+    RayCastingResult result;
+
+    if (!terrainProjectRay(&_terrain, renderer, location, direction, &result.hit_location, &result.hit_color))
+    {
+        result.hit_color = skyGetColor(&_sky, renderer, location, direction);
+        /* TODO hit_location */
+    }
+
+    result.hit = 1;
+    return result;
+}
+
+static double _getTerrainHeight(Renderer* renderer, double x, double z)
+{
+    return terrainGetHeight(&_terrain, x, z);
+}
+
+static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
+{
+    return texturesGetColor(&_textures, renderer, location, precision);
+}
+
+static Color _applyAtmosphere(Renderer* renderer, Vector3 location, Color base)
+{
+    return base;
+}
+
+static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3 end)
+{
+    Color clouds;
+
+    clouds = cloudsGetColor(&_clouds, renderer, start, end);
+    colorMask(&base, &clouds);
+
+    return base;
+}
+
+static Vector3 _projectPoint(Renderer* renderer, Vector3 point)
+{
+    return cameraProject(&_camera, point);
+}
+
+static Vector3 _unprojectPoint(Renderer* renderer, Vector3 point)
+{
+    return cameraUnproject(&_camera, point);
+}
+
+static double _getPrecision(Renderer* renderer, Vector3 location)
+{
+    Vector3 projected;
+
+    projected = cameraProject(&_camera, location);
+    projected.x += 1.0;
+    //projected.y += 1.0;
+
+    return v3Norm(v3Sub(cameraUnproject(&_camera, projected), location)); // / (double)render_quality;
+}
+
+Renderer sceneryGetStandardRenderer(int quality)
+{
+    Renderer result;
+
+    result.camera_location = _camera.location;
+    result.render_quality = quality;
+
+    result.filterLight = _filterLight;
+    result.applyLightingToSurface = _applyLightingToSurface;
+    result.rayWalking = _rayWalking;
+    result.getTerrainHeight = _getTerrainHeight;
+    result.applyTextures = _applyTextures;
+    result.applyAtmosphere = _applyAtmosphere;
+    result.applyClouds = _applyClouds;
+    result.projectPoint = _projectPoint;
+    result.unprojectPoint = _unprojectPoint;
+    result.getPrecision = _getPrecision;
+
+    return result;
+}
+

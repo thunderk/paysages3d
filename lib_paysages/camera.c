@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "render.h"
 #include "shared/types.h"
 #include "shared/globals.h"
 #include "shared/constants.h"
@@ -118,7 +119,7 @@ void cameraProjectToFragment(CameraDefinition* camera, double x, double y, doubl
  */
 void cameraPushOverlay(CameraDefinition* camera, Color col, f_RenderFragmentCallback callback)
 {
-    Vertex v1, v2, v3, v4;
+    /*Vertex v1, v2, v3, v4;
     Vector3 v;
 
     v.x = 0.0;
@@ -149,5 +150,5 @@ void cameraPushOverlay(CameraDefinition* camera, Color col, f_RenderFragmentCall
     v4.color = col;
     v4.callback = callback;
 
-    renderPushQuad(&v1, &v2, &v3, &v4);
+    renderPushQuad(&v1, &v2, &v3, &v4);*/
 }

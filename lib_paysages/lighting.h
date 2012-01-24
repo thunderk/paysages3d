@@ -27,16 +27,9 @@ typedef struct
     LightDefinition _autolights[LIGHTING_MAX_LIGHTS];
 } LightingDefinition;
 
-typedef struct
-{
-    Color base;
-    double reflection;
-    double shininess;
-} SurfaceMaterial;
-
 void lightingInit();
-void lightingSave(FILE* f);
-void lightingLoad(FILE* f);
+void lightingSave(FILE* f, LightingDefinition* definition);
+void lightingLoad(FILE* f, LightingDefinition* definition);
 
 LightingDefinition lightingCreateDefinition();
 void lightingDeleteDefinition(LightingDefinition* definition);

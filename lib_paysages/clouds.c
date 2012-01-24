@@ -480,8 +480,7 @@ Color cloudsGetLayerColor(CloudsLayerDefinition* definition, Renderer* renderer,
     direction = v3Normalize(direction);
     result = COLOR_TRANSPARENT;
 
-    /* TODO Flexible precision */
-    detail = renderGetPrecision(start) / definition->scaling;
+    detail = renderer->getPrecision(renderer, start) / definition->scaling;
 
     segment_count = _findSegments(definition, renderer, start, direction, detail, 20, 60.0, max_length, &inside_length, &total_length, segments);
     for (i = 0; i < segment_count; i++)

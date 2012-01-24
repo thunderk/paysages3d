@@ -4,7 +4,7 @@
 #include "shared/functions.h"
 #include "shared/constants.h"
 #include "shared/globals.h"
-
+#include "render.h"
 #include "terrain.h"
 #include "lighting.h"
 
@@ -16,7 +16,7 @@ void waterInit()
 
 void waterSave(FILE* f, WaterDefinition* definition)
 {
-    toolsSaveDouble(f, definition.height);
+    toolsSaveDouble(f, definition->height);
     colorSave(definition->main_color, f);
     colorSave(definition->depth_color, f);
     toolsSaveDouble(f, definition->transparency_depth);
@@ -69,7 +69,7 @@ void waterCopyDefinition(WaterDefinition* source, WaterDefinition* destination)
     NoiseGenerator* noise;
 
     noise = destination->waves_noise;
-    *destination = source;
+    *destination = *source;
     destination->waves_noise = noise;
     noiseCopy(source->waves_noise, destination->waves_noise);
 }
@@ -177,8 +177,8 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
 
     normal = _getNormal(definition, location, detail);
     look = v3Normalize(look);
-    result.reflected = renderer->rayWalking(renderer, location, _reflectRay(look, normal), 0).hit_color;
-    refracted = renderer->rayWalking(renderer, location, _refractRay(look, normal), 0);
+    result.reflected = renderer->rayWalking(renderer, location, _reflectRay(look, normal), 1, 0, 1, 1).hit_color;
+    refracted = renderer->rayWalking(renderer, location, _refractRay(look, normal), 1, 0, 1, 1);
     depth = v3Norm(v3Sub(location, refracted.hit_location));
     if (depth > definition->transparency_depth)
     {
@@ -202,10 +202,7 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
     material.reflection = 0.8;
     material.shininess = 0.6;
     color = renderer->applyLightingToSurface(renderer, location, normal, material);
-    /*if (environment->toggle_fog)
-    {
-        color = fogApplyToLocation(location, color);
-    }*/
+    color = renderer->applyAtmosphere(renderer, location, color);
 
     result.base = definition->main_color;
     result.final = color;
@@ -218,19 +215,19 @@ Color waterGetColor(WaterDefinition* definition, Renderer* renderer, Vector3 loc
     return waterGetColorDetail(definition, renderer, location, look).final;
 }
 
-static int _postProcessFragment(RenderFragment* fragment)
+static int _postProcessFragment(RenderFragment* fragment, Renderer* renderer, void* data)
 {
-    /* fragment->vertex.color = waterGetColor(fragment->vertex.location, v3Sub(fragment->vertex.location, camera_location)); */
+    fragment->vertex.color = waterGetColor((WaterDefinition*)data, renderer, fragment->vertex.location, v3Sub(fragment->vertex.location, renderer->camera_location));
     return 1;
 }
 
-static Vertex _getFirstPassVertex(double x, double z, double precision)
+static Vertex _getFirstPassVertex(WaterDefinition* definition, double x, double z, double precision)
 {
     Vertex result;
     double value;
 
     result.location.x = x;
-    result.location.y = _getHeight(&_definition, x, z, 0.0);
+    result.location.y = _getHeight(definition, x, z, 0.0);
     result.location.z = z;
     value = sin(x) * sin(x) * cos(z) * cos(z);
     result.color.r = 0.0;
@@ -239,19 +236,20 @@ static Vertex _getFirstPassVertex(double x, double z, double precision)
     result.color.a = 1.0;
     result.normal.x = result.normal.y = result.normal.z = 0.0;
     result.callback = _postProcessFragment;
+    result.callback_data = definition;
 
     return result;
 }
 
-static void _renderQuad(double x, double z, double size)
+static void _renderQuad(WaterDefinition* definition, Renderer* renderer, double x, double z, double size)
 {
     Vertex v1, v2, v3, v4;
 
-    v1 = _getFirstPassVertex(x, z, size);
-    v2 = _getFirstPassVertex(x, z + size, size);
-    v3 = _getFirstPassVertex(x + size, z + size, size);
-    v4 = _getFirstPassVertex(x + size, z, size);
-    renderPushQuad(&v1, &v2, &v3, &v4);
+    v1 = _getFirstPassVertex(definition, x, z, size);
+    v2 = _getFirstPassVertex(definition, x, z + size, size);
+    v3 = _getFirstPassVertex(definition, x + size, z + size, size);
+    v4 = _getFirstPassVertex(definition, x + size, z, size);
+    renderPushQuad(renderer, &v1, &v2, &v3, &v4);
 }
 
 void waterRender(WaterDefinition* definition, Renderer* renderer, RenderProgressCallback callback)
@@ -278,10 +276,10 @@ void waterRender(WaterDefinition* definition, Renderer* renderer, RenderProgress
 
         for (i = 0; i < chunk_count - 1; i++)
         {
-            _renderQuad(cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size);
-            _renderQuad(cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size);
-            _renderQuad(cx + radius_int - chunk_size * i, cz + radius_int, chunk_size);
-            _renderQuad(cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size);
+            _renderQuad(definition, renderer, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size);
+            _renderQuad(definition, renderer, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size);
+            _renderQuad(definition, renderer, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size);
+            _renderQuad(definition, renderer, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size);
         }
 
         if (radius_int > 20.0 && chunk_count % 64 == 0 && (double)chunk_factor < radius_int / 20.0)

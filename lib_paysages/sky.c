@@ -5,6 +5,7 @@
 #include "shared/functions.h"
 #include "shared/globals.h"
 #include "shared/constants.h"
+#include "render.h"
 #include "clouds.h"
 #include "sky.h"
 #include "lighting.h"
@@ -92,7 +93,7 @@ int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
 
     if (max_lights > 0)
     {
-        lights[0].color = colorGradationGet(sky->sun_color, sky->daytime);
+        lights[0].color = colorGradationGet(&sky->sun_color, sky->daytime);
         lights[0].direction = v3Scale(sun_direction, -1.0);
         lights[0].maxshadow = 1.0;
         nblights = 1;
@@ -137,20 +138,21 @@ Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Ve
     }
 }
 
-static int _postProcessFragment(RenderFragment* fragment, Renderer* renderer)
+static int _postProcessFragment(RenderFragment* fragment, Renderer* renderer, void* data)
 {
-    // TODO
-    /*Vector3 location, direction;
-    Color color_sky, color_clouds;
+    Vector3 location, direction;
+    Color result;
+    SkyDefinition* definition;
+
+    definition = (SkyDefinition*)data;
 
     location = fragment->vertex.location;
-    direction = v3Sub(location, camera_location);
+    direction = v3Sub(location, renderer->camera_location);
 
-    color_sky = skyGetColor(camera_location, v3Normalize(direction));
-    color_clouds = cloudsGetColor(camera_location, v3Add(camera_location, v3Scale(direction, 10.0)));
+    result = skyGetColor(definition, renderer, renderer->camera_location, v3Normalize(direction));
+    result = renderer->applyClouds(renderer, result, renderer->camera_location, v3Add(renderer->camera_location, v3Scale(direction, 10.0)));
 
-    colorMask(&color_sky, &color_clouds);
-    fragment->vertex.color = color_sky;*/
+    fragment->vertex.color = result;
 
     return 1;
 }
@@ -194,6 +196,7 @@ void skyRender(SkyDefinition* definition, Renderer* renderer, RenderProgressCall
             col.b = sin(direction.x) * sin(direction.x) * cos(direction.z) * cos(direction.z);
             vertex1.color = col;
             vertex1.callback = _postProcessFragment;
+            vertex1.callback_data = definition;
 
             direction.x = SPHERE_SIZE * cos(current_i + step_i) * cos(current_j);
             direction.y = SPHERE_SIZE * sin(current_j);
@@ -202,6 +205,7 @@ void skyRender(SkyDefinition* definition, Renderer* renderer, RenderProgressCall
             col.b = sin(direction.x) * sin(direction.x) * cos(direction.z) * cos(direction.z);
             vertex2.color = col;
             vertex2.callback = _postProcessFragment;
+            vertex2.callback_data = definition;
 
             direction.x = SPHERE_SIZE * cos(current_i + step_i) * cos(current_j + step_j);
             direction.y = SPHERE_SIZE * sin(current_j + step_j);
@@ -210,6 +214,7 @@ void skyRender(SkyDefinition* definition, Renderer* renderer, RenderProgressCall
             col.b = sin(direction.x) * sin(direction.x) * cos(direction.z) * cos(direction.z);
             vertex3.color = col;
             vertex3.callback = _postProcessFragment;
+            vertex3.callback_data = definition;
 
             direction.x = SPHERE_SIZE * cos(current_i) * cos(current_j + step_j);
             direction.y = SPHERE_SIZE * sin(current_j + step_j);
@@ -218,9 +223,10 @@ void skyRender(SkyDefinition* definition, Renderer* renderer, RenderProgressCall
             col.b = sin(direction.x) * sin(direction.x) * cos(direction.z) * cos(direction.z);
             vertex4.color = col;
             vertex4.callback = _postProcessFragment;
+            vertex4.callback_data = definition;
 
             /* TODO Triangles at poles */
-            renderPushQuad(&vertex1, &vertex4, &vertex3, &vertex2);
+            renderPushQuad(renderer, &vertex1, &vertex4, &vertex3, &vertex2);
         }
     }
 }

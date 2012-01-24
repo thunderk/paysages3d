@@ -7,6 +7,8 @@
 #include <math.h>
 
 #include "../lib_paysages/sky.h"
+#include "../lib_paysages/scenery.h"
+#include "../lib_paysages/renderer.h"
 #include "../lib_paysages/shared/functions.h"
 #include "../lib_paysages/shared/constants.h"
 
@@ -19,6 +21,7 @@ public:
     PreviewEast(QWidget* parent):
         Preview(parent)
     {
+        _renderer = rendererGetFake();
     }
 protected:
     QColor getColor(double x, double y)
@@ -30,8 +33,10 @@ protected:
         look.y = -y;
         look.z = x;
 
-        return colorToQColor(skyGetColorCustom(eye, look, &_definition, NULL, NULL));
+        return colorToQColor(skyGetColor(&_definition, &_renderer, eye, look));
     }
+private:
+    Renderer _renderer;
 };
 
 class PreviewWest:public Preview
@@ -40,6 +45,7 @@ public:
     PreviewWest(QWidget* parent):
         Preview(parent)
     {
+        _renderer = rendererGetFake();
     }
 protected:
     QColor getColor(double x, double y)
@@ -51,8 +57,10 @@ protected:
         look.y = -y;
         look.z = -x;
 
-        return colorToQColor(skyGetColorCustom(eye, look, &_definition, NULL, NULL));
+        return colorToQColor(skyGetColor(&_definition, &_renderer, eye, look));
     }
+private:
+    Renderer _renderer;
 };
 
 /**************** Form ****************/
@@ -79,13 +87,13 @@ FormSky::FormSky(QWidget *parent):
 
 void FormSky::revertConfig()
 {
-    skyCopyDefinition(skyGetDefinition(), &_definition);
+    sceneryGetSky(&_definition);
     BaseForm::revertConfig();
 }
 
 void FormSky::applyConfig()
 {
-    skySetDefinition(_definition);
+    scenerySetSky(&_definition);
     BaseForm::applyConfig();
 }
 

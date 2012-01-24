@@ -21,14 +21,6 @@ void arrayReplace(Array* array, void* item, int position);
 void arrayLStrip(Array* array, int count);
 void arrayClear(Array* array);
 
-/* auto.c */
-void autoInit();
-void autoSetDaytime(int hour, int minute);
-void autoSetDaytimeFraction(double daytime);
-void autoGenRealisticLandscape(int seed);
-void autoRenderSceneTwoPass(int postonly);
-void autoRenderSceneRayTracing();
-
 /* color.c */
 void colorSave(Color col, FILE* f);
 Color colorLoad(FILE* f);
@@ -84,27 +76,6 @@ void fogLoad(FILE* f);
 void fogSetColor(Color col);
 void fogSetDistance(double near, double far);
 Color fogApplyToLocation(Vector3 location, Color base);
-
-/* render.c */
-void renderInit();
-void renderSave(FILE* f);
-void renderLoad(FILE* f);
-void renderSetSize(int width, int height);
-int renderSetQuality(int quality);
-void renderClear();
-void renderUpdate();
-void renderInterrupt();
-void renderSetBackgroundColor(Color* col);
-double renderGetPrecision(Vector3 location);
-void renderAddFragment(RenderFragment* fragment);
-void renderPushFragment(int x, int y, double z, Vertex* vertex);
-void renderPushTriangle(Vertex* v1, Vertex* v2, Vertex* v3);
-void renderPushQuad(Vertex* v1, Vertex* v2, Vertex* v3, Vertex* v4);
-void renderPostProcess(int nbchunks);
-void renderSaveToFile(const char* path);
-void renderSetPreviewCallbacks(PreviewCallbackResize resize, PreviewCallbackClear clear, PreviewCallbackDraw draw, PreviewCallbackUpdate update);
-int renderSetNextProgressStep(double start, double end);
-int renderTellProgress(double progress);
 
 /* tools.c */
 double toolsRandom();

@@ -45,7 +45,7 @@ void texturesLoad(FILE* f, TexturesDefinition* definition)
     n = toolsLoadInt(f);
     for (i = 0; i < n; i++)
     {
-        layer = definition->nbtextures + texturesAddLayer(definition);
+        layer = definition->textures + texturesAddLayer(definition);
 
         zoneLoad(layer->zone, f);
         noiseLoad(layer->bump_noise, f);
@@ -110,15 +110,15 @@ TextureLayerDefinition texturesLayerCreateDefinition()
 
 void texturesLayerDeleteDefinition(TextureLayerDefinition* definition)
 {
-    zoneDelete(definition.zone);
-    noiseDeleteGenerator(definition.bump_noise);
+    zoneDelete(definition->zone);
+    noiseDeleteGenerator(definition->bump_noise);
 }
 
 void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDefinition* destination)
 {
-    destination->color = source.color;
-    noiseCopy(source.bump_noise, destination->bump_noise);
-    zoneCopy(source.zone, destination->zone);
+    destination->color = source->color;
+    noiseCopy(source->bump_noise, destination->bump_noise);
+    zoneCopy(source->zone, destination->zone);
 }
 
 void texturesLayerValidateDefinition(TextureLayerDefinition* definition)
@@ -146,7 +146,7 @@ int texturesAddLayer(TexturesDefinition* definition)
 {
     if (definition->nbtextures < TEXTURES_MAX_LAYERS)
     {
-        _textures[definition->nbtextures] = texturesCreateDefinition();
+        definition->textures[definition->nbtextures] = texturesLayerCreateDefinition();
 
         return definition->nbtextures++;
     }
@@ -169,23 +169,23 @@ void texturesDeleteLayer(TexturesDefinition* definition, int layer)
     }
 }
 
-static inline Vector3 _getNormal(TextureLayerDefinition* definition, Vector3 point, double scale)
+static inline Vector3 _getNormal(TextureLayerDefinition* definition, Renderer* renderer, Vector3 point, double scale)
 {
     Vector3 dpoint, ref, normal;
 
     ref.x = 0.0;
     ref.y = 0.0;
-    point.y = terrainGetHeight(point.x, point.z) + noiseGet2DTotal(definition->bump_noise, point.x, point.z);
+    point.y = renderer->getTerrainHeight(renderer, point.x, point.z) + noiseGet2DTotal(definition->bump_noise, point.x, point.z);
 
     dpoint.x = point.x - scale;
     dpoint.z = point.z;
-    dpoint.y = terrainGetHeight(dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
+    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
     ref.z = -1.0;
     normal = v3Normalize(v3Cross(ref, v3Sub(dpoint, point)));
 
     dpoint.x = point.x + scale;
     dpoint.z = point.z;
-    dpoint.y = terrainGetHeight(dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
+    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
     ref.z = 1.0;
     normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
 
@@ -193,13 +193,13 @@ static inline Vector3 _getNormal(TextureLayerDefinition* definition, Vector3 poi
 
     dpoint.x = point.x;
     dpoint.z = point.z - scale;
-    dpoint.y = terrainGetHeight(dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
+    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
     ref.x = 1.0;
     normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
 
     dpoint.x = point.x;
     dpoint.z = point.z + scale;
-    dpoint.y = terrainGetHeight(dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
+    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
     ref.x = -1.0;
     normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
 
@@ -214,7 +214,7 @@ Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* render
     SurfaceMaterial material;
 
     result = COLOR_TRANSPARENT;
-    normal = _getNormal(definition, location, detail * 0.3);
+    normal = _getNormal(definition, renderer, location, detail * 0.3);
 
     coverage = zoneGetValue(definition->zone, location, normal);
     if (coverage > 0.0)
@@ -229,7 +229,7 @@ Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* render
     return result;
 }
 
-Color texturesGetColorCustom(TexturesDefinition* definition, Renderer* renderer, Vector3 location, double detail)
+Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, Vector3 location, double detail)
 {
     Color result, tex_color;
     int i;
@@ -238,7 +238,7 @@ Color texturesGetColorCustom(TexturesDefinition* definition, Renderer* renderer,
     for (i = 0; i < definition->nbtextures; i++)
     {
         /* TODO Do not compute layers fully covered */
-        tex_color = texturesGetLayerColor(_textures + i, renderer, location, detail);
+        tex_color = texturesGetLayerColor(definition->textures + i, renderer, location, detail);
         if (tex_color.a > 0.0001)
         {
             colorMask(&result, &tex_color);

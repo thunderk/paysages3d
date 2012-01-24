@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <assert.h>
 
 #include "shared/types.h"
 #include "shared/constants.h"
@@ -71,6 +72,11 @@ void colorMask(Color* base, Color* mask)
 double colorNormalize(Color* col)
 {
     double max = colorGetValue(col);
+
+    assert(col->r >= 0.0);
+    assert(col->g >= 0.0);
+    assert(col->b >= 0.0);
+    assert(col->a >= 0.0);
 
     if (max > 1.0)
     {

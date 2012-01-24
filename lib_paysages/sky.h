@@ -31,10 +31,7 @@ void skyCopyDefinition(SkyDefinition* source, SkyDefinition* destination);
 void skyValidateDefinition(SkyDefinition* definition);
 
 int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights);
-
 Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Vector3 look);
-Color skyProjectRay(SkyDefinition* definition, Renderer* renderer, Vector3 start, Vector3 direction);
-
 void skyRender(SkyDefinition* definition, Renderer* renderer, RenderProgressCallback callback);
 
 #ifdef __cplusplus

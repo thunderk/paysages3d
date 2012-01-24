@@ -15,8 +15,21 @@ struct Renderer
     int render_quality;
     Vector3 camera_location;
 
+    /* Render related */
+    double (*getPrecision)(Renderer* renderer, Vector3 location);
+    Vector3 (*projectPoint)(Renderer* renderer, Vector3 point);
+    Vector3 (*unprojectPoint)(Renderer* renderer, Vector3 point);
+
+    /* Scenery related */
+    RayCastingResult (*rayWalking)(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds);
+    double (*getTerrainHeight)(Renderer* renderer, double x, double z);
+    Color (*applyTextures)(Renderer* renderer, Vector3 location, double precision);
+    Color (*applyAtmosphere)(Renderer* renderer, Vector3 location, Color base);
+    Color (*applyClouds)(Renderer* renderer, Color base, Vector3 start, Vector3 end);
+
     /* Lighting related */
     Color (*filterLight)(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light);
+    Color (*applyLightingToSurface)(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material);
 
     /* Custom data */
     void* customData[10];

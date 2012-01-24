@@ -7,6 +7,8 @@
 
 #include "../lib_paysages/terrain.h"
 #include "../lib_paysages/water.h"
+#include "../lib_paysages/scenery.h"
+#include "../lib_paysages/renderer.h"
 #include "../lib_paysages/shared/functions.h"
 #include "../lib_paysages/shared/constants.h"
 
@@ -16,19 +18,20 @@ static WaterDefinition _definition;
 class PreviewWaterCoverage:public Preview
 {
 public:
-    PreviewWaterCoverage(QWidget* parent):
-        Preview(parent)
+    PreviewWaterCoverage(QWidget* parent):Preview(parent)
     {
+        _terrain = terrainCreateDefinition();
+        sceneryGetTerrain(&_terrain);
     }
 protected:
     QColor getColor(double x, double y)
     {
         double height;
 
-        height = terrainGetHeight(x, y);
+        height = terrainGetHeight(&_terrain, x, y);
         if (height > _definition.height)
         {
-            height = terrainGetHeightNormalized(x, y);
+            height = terrainGetHeightNormalized(&_terrain, x, y);
             return QColor((int)(255.0 * height), (int)(255.0 * height), (int)(255.0 * height));
         }
         else
@@ -36,24 +39,24 @@ protected:
             return colorToQColor(_definition.main_color);
         }
     }
+private:
+    TerrainDefinition _terrain;
 };
 
 class PreviewWaterColor:public Preview
 {
 public:
-    PreviewWaterColor(QWidget* parent):
-        Preview(parent)
+    PreviewWaterColor(QWidget* parent):Preview(parent)
     {
+        _water = waterCreateDefinition();
+        _renderer = rendererGetFake();
+        _renderer.rayWalking = _rayWalking;
+        // TODO Lighting
     }
 protected:
     QColor getColor(double x, double y)
     {
         Vector3 eye, look, location;
-        WaterDefinition definition;
-        WaterEnvironment environment;
-        LightingEnvironment lighting_environment;
-        WaterQuality quality;
-        Color result;
 
         eye.x = 0.0;
         eye.y = scaling;
@@ -65,8 +68,7 @@ protected:
 
         if (look.y > -0.0001)
         {
-            result = this->rayCastFromWater(eye, look).hit_color;
-            return colorToQColor(result);
+            return colorToQColor(_rayWalking(&_renderer, eye, look, 0, 0, 0, 0).hit_color);
         }
 
         location.x = eye.x - look.x * eye.y / look.y;
@@ -75,27 +77,17 @@ protected:
 
         if (location.z > 0.0)
         {
-            result = this->rayCastFromWater(eye, look).hit_color;
-            return colorToQColor(result);
+            return colorToQColor(_rayWalking(&_renderer, eye, look, 0, 0, 0, 0).hit_color);
         }
 
-        definition = _definition;
-        definition.height = 0.0;
-        lighting_environment.filter = NULL;
-        environment.reflection_function = (RayCastingFunction)(&this->rayCastFromWater);
-        environment.refraction_function = (RayCastingFunction)(&this->rayCastFromWater);
-        environment.toggle_fog = 0;
-        environment.lighting_definition = NULL;
-        environment.lighting_environment = &lighting_environment;
-        quality.force_detail = 0.0001;
-        quality.detail_boost = 1.0;
-
-        result = waterGetColorCustom(location, look, &definition, &quality, &environment).final;
-        return colorToQColor(result);
+        _water.height = 0.0;
+        return colorToQColor(waterGetColor(&_definition, &_renderer, location, look));
     }
 
 private:
-    static RayCastingResult rayCastFromWater(Vector3 start, Vector3 direction)
+    Renderer _renderer;
+    WaterDefinition _water;
+    static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
     {
         RayCastingResult result;
         double x, y;
@@ -104,12 +96,12 @@ private:
         if (direction.z < 0.0001)
         {
             result.hit_color = COLOR_WHITE;
-            result.hit_location = start;
+            result.hit_location = location;
         }
         else
         {
-            x = start.x + direction.x * (0.0 - start.z) / direction.z;
-            y = start.y + direction.y * (0.0 - start.z) / direction.z;
+            x = location.x + direction.x * (0.0 - location.z) / direction.z;
+            y = location.y + direction.y * (0.0 - location.z) / direction.z;
 
             if (((int)ceil(x * 0.2) % 2 == 0) ^ ((int)ceil(y * 0.2 - 0.5) % 2 == 0))
             {
@@ -154,12 +146,12 @@ FormWater::FormWater(QWidget *parent):
 
 void FormWater::revertConfig()
 {
-    waterCopyDefinition(waterGetDefinition(), &_definition);
+    sceneryGetWater(&_definition);
     BaseForm::revertConfig();
 }
 
 void FormWater::applyConfig()
 {
-    waterSetDefinition(_definition);
+    scenerySetWater(&_definition);
     BaseForm::applyConfig();
 }

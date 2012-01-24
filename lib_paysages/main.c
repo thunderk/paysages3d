@@ -8,28 +8,30 @@
 #include "shared/constants.h"
 #include "shared/functions.h"
 #include "shared/globals.h"
-#include "shared/system.h"
 
-#include "terrain.h"
-#include "water.h"
-#include "lighting.h"
-#include "textures.h"
-#include "sky.h"
-#include "clouds.h"
+#include "auto.h"
+#include "system.h"
+#include "camera.h"
+#include "scenery.h"
+#include "render.h"
 
 void paysagesInit()
 {
+    CameraDefinition camera;
+
     systemInit();
     ilInit();
     iluInit();
 
-    autoInit();
+    sceneryInit();
     renderInit();
 
-    cameraSetLocation(-12.0, 5.0, 2.0);
-    cameraSetTarget(0.0, 5.0, 0.0);
+    camera = cameraCreateDefinition();
+    cameraSetLocation(&camera, -12.0, 5.0, 2.0);
+    cameraSetTarget(&camera, 0.0, 5.0, 0.0);
+    scenerySetCamera(&camera);
+    cameraDeleteDefinition(&camera);
 
-    autoSetRenderQuality(5);
     autoGenRealisticLandscape(0);
     autoSetDaytime(8, 30);
 

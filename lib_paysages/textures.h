@@ -45,7 +45,7 @@ int texturesAddLayer(TexturesDefinition* definition);
 void texturesDeleteLayer(TexturesDefinition* definition, int layer);
 
 Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);
-Color texturesGetColorCustom(TexturesDefinition* definition, Renderer* renderer, Vector3 location, double detail);
+Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, Vector3 location, double detail);
 
 #ifdef __cplusplus
 }

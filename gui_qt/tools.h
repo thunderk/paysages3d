@@ -12,4 +12,4 @@ static inline QColor colorToQColor(Color color)
     return QColor(color.r * 255.0, color.g * 255.0, color.b * 255.0, color.a * 255.0);
 }
 
-#endif // _PAYSAGES_QT_TOOLS_H_
+#endif

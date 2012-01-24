@@ -4,6 +4,7 @@
 #include <QMessageBox>
 
 #include "dialogrender.h"
+#include "../lib_paysages/render.h"
 #include "../lib_paysages/shared/functions.h"
 
 /**************** Form ****************/
@@ -33,7 +34,7 @@ void FormRender::startRender()
 {
     DialogRender* dialog = new DialogRender(this);
     dialog->startRender(_quality, _width, _height);
- 
+
     delete dialog;
 }
 
@@ -41,14 +42,14 @@ void FormRender::showRender()
 {
     DialogRender* dialog = new DialogRender(this);
     dialog->loadLastRender();
-    
+
     delete dialog;
 }
 
 void FormRender::saveRender()
 {
     QString filepath;
-    
+
     filepath = QFileDialog::getSaveFileName(this, "Choose a filename to save the last render");
     if (!filepath.isNull())
     {

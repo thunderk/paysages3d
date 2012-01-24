@@ -47,8 +47,9 @@ void sceneryGetTextures(TexturesDefinition* textures);
 void scenerySetWater(WaterDefinition* water);
 void sceneryGetWater(WaterDefinition* water);
 
-Renderer sceneryGetStandardRenderer();
-void sceneryRender();
+Renderer sceneryGetStandardRenderer(int quality);
+void sceneryRenderFirstPass(Renderer* renderer);
+void sceneryRenderSecondPass(Renderer* renderer);
 
 #ifdef __cplusplus
 }

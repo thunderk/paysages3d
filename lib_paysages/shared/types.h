@@ -53,8 +53,9 @@ typedef struct
 } ColorGradation;
 
 struct RenderFragment;
+struct Renderer;
 
-typedef int(*f_RenderFragmentCallback)(struct RenderFragment*);
+typedef int(*f_RenderFragmentCallback)(struct RenderFragment*, struct Renderer* renderer, void* data);
 
 typedef struct
 {
@@ -62,6 +63,7 @@ typedef struct
     Vector3 normal;
     Color color;
     f_RenderFragmentCallback callback;
+    void* callback_data;
 } Vertex;
 
 typedef struct RenderFragment
@@ -86,6 +88,13 @@ typedef struct
     int dirty;
     void* data;
 } Array;
+
+typedef struct
+{
+    Color base;
+    double reflection;
+    double shininess;
+} SurfaceMaterial;
 
 typedef struct Zone Zone;
 

@@ -10,10 +10,8 @@ extern "C" {
 typedef GThread Thread;
 typedef void*(*ThreadFunction)(void* data);
 
-static inline void systemInit()
-{
-    g_thread_init(NULL);
-}
+void systemInit();
+int systemGetCoreCount();
 
 static inline Thread* threadCreate(ThreadFunction function, void* data)
 {

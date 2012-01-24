@@ -5,15 +5,25 @@
 #include <QColor>
 #include <QPainter>
 
+#include "../lib_paysages/render.h"
+#include "../lib_paysages/renderer.h"
+#include "../lib_paysages/scenery.h"
+#include "../lib_paysages/auto.h"
 #include "../lib_paysages/shared/functions.h"
 
 class RenderThread:public QThread
 {
 public:
+    RenderThread(Renderer* renderer):QThread()
+    {
+        _renderer = renderer;
+    }
     void run()
     {
-        autoRenderSceneTwoPass(0);
+        autoRenderSceneTwoPass(_renderer, 0);
     }
+private:
+    Renderer* _renderer;
 };
 
 static DialogRender* _current_dialog;
@@ -89,14 +99,15 @@ DialogRender::DialogRender(QWidget *parent):
 
 void DialogRender::startRender(int quality, int width, int height)
 {
-    renderSetSize(width, height);
-    autoSetRenderQuality(quality);
+    Renderer renderer;
 
+    renderer = sceneryGetStandardRenderer(quality);
+    renderSetSize(width, height);
     renderSetPreviewCallbacks(_renderResize, _renderClear, _renderDraw, _renderUpdate);
 
-    render_thread = new RenderThread();
+    render_thread = new RenderThread(&renderer);
     render_thread->start();
-    
+
     exec();
 }
 
@@ -104,7 +115,7 @@ void DialogRender::loadLastRender()
 {
     progress->hide();
     renderSetPreviewCallbacks(_renderResize, _renderClear, _renderDraw, _renderUpdate);
-    
+
     exec();
 }
 

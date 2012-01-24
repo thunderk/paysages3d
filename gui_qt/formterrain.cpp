@@ -6,6 +6,7 @@
 #include <math.h>
 
 #include "../lib_paysages/terrain.h"
+#include "../lib_paysages/scenery.h"
 #include "../lib_paysages/shared/functions.h"
 #include "../lib_paysages/shared/constants.h"
 
@@ -15,8 +16,7 @@ static TerrainDefinition _definition;
 class PreviewTerrainHeight:public Preview
 {
 public:
-    PreviewTerrainHeight(QWidget* parent):
-        Preview(parent)
+    PreviewTerrainHeight(QWidget* parent):Preview(parent)
     {
     }
 protected:
@@ -24,7 +24,7 @@ protected:
     {
         double height;
 
-        height = terrainGetHeightNormalizedCustom(x, y, &_definition);
+        height = terrainGetHeightNormalized(&_definition, x, y);
         return QColor((int)(255.0 * height), (int)(255.0 * height), (int)(255.0 * height));
     }
 };
@@ -32,23 +32,18 @@ protected:
 class PreviewTerrainColor:public Preview
 {
 public:
-    PreviewTerrainColor(QWidget* parent):
-        Preview(parent)
+    PreviewTerrainColor(QWidget* parent):Preview(parent)
     {
-        _lighting_environment.filter = NULL;
-
-        _environment.toggle_fog = 0;
-        _environment.lighting_definition = NULL;
-        _environment.lighting_environment = &_lighting_environment;
+        // TODO Use custom renderer
+        _renderer = sceneryGetStandardRenderer(3);
     }
 protected:
     QColor getColor(double x, double y)
     {
-        return colorToQColor(terrainGetColorCustom(x, y, scaling, &_definition, NULL, &_environment));
+        return colorToQColor(terrainGetColor(&_definition, &_renderer, x, y, scaling));
     }
 private:
-    LightingEnvironment _lighting_environment;
-    TerrainEnvironment _environment;
+    Renderer _renderer;
 };
 
 /**************** Form ****************/
@@ -71,13 +66,13 @@ FormTerrain::FormTerrain(QWidget *parent):
 
 void FormTerrain::revertConfig()
 {
-    terrainCopyDefinition(terrainGetDefinition(), &_definition);
+    sceneryGetTerrain(&_definition);
     BaseForm::revertConfig();
 }
 
 void FormTerrain::applyConfig()
 {
-    terrainSetDefinition(_definition);
+    scenerySetTerrain(&_definition);
     BaseForm::applyConfig();
 }
 

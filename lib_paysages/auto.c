@@ -1,4 +1,5 @@
-#include <unistd.h>
+#include "auto.h"
+
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
@@ -7,8 +8,8 @@
 #include "shared/functions.h"
 #include "shared/constants.h"
 #include "shared/globals.h"
-#include "shared/system.h"
 
+#include "system.h"
 #include "water.h"
 #include "clouds.h"
 #include "sky.h"
@@ -17,39 +18,9 @@
 #include "textures.h"
 #include "lighting.h"
 #include "scenery.h"
+#include "render.h"
 
-#ifdef WIN32
-#include <windows.h>
-#endif
-
-static int _cpu_count = 1;
 static int _is_rendering = 0;
-
-void autoInit()
-{
-#ifdef WIN32
-    DWORD processAffinityMask;
-    DWORD systemAffinityMask;
-
-    if (GetProcessAffinityMask( GetCurrentProcess(),
-                                &processAffinityMask,
-                                &systemAffinityMask)){
-        processAffinityMask = (processAffinityMask & 0x55555555)
-            + (processAffinityMask >> 1 & 0x55555555);
-        processAffinityMask = (processAffinityMask & 0x33333333)
-            + (processAffinityMask >> 2 & 0x33333333);
-        processAffinityMask = (processAffinityMask & 0x0f0f0f0f)
-            + (processAffinityMask >> 4 & 0x0f0f0f0f);
-        processAffinityMask = (processAffinityMask & 0x00ff00ff)
-            + (processAffinityMask >> 8 & 0x00ff00ff);
-        _cpu_count          = (processAffinityMask & 0x0000ffff)
-            + (processAffinityMask >>16 & 0x0000ffff);
-    }
-#endif
-#ifdef _SC_NPROCESSORS_ONLN
-    _cpu_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
-#endif
-}
 
 void autoSetDaytime(int hour, int minute)
 {
@@ -252,29 +223,12 @@ void autoGenRealisticLandscape(int seed)
 
 void* _renderFirstPass(void* data)
 {
-    if (!renderSetNextProgressStep(0.0, 0.01))
-    {
-        _is_rendering = 0;
-        return NULL;
-    }
-    skyRender(renderTellProgress);
-    if (!renderSetNextProgressStep(0.01, 0.085))
-    {
-        _is_rendering = 0;
-        return NULL;
-    }
-    terrainRender(renderTellProgress);
-    if (!renderSetNextProgressStep(0.085, 0.1))
-    {
-        _is_rendering = 0;
-        return NULL;
-    }
-    waterRender(renderTellProgress);
+    sceneryRenderFirstPass((Renderer*)data);
     _is_rendering = 0;
     return NULL;
 }
 
-void autoRenderSceneTwoPass(int postonly)
+void autoRenderSceneTwoPass(Renderer* renderer, int postonly)
 {
     Thread* thread;
     int loops;
@@ -284,7 +238,7 @@ void autoRenderSceneTwoPass(int postonly)
         renderClear();
 
         _is_rendering = 1;
-        thread = threadCreate(_renderFirstPass, NULL);
+        thread = threadCreate(_renderFirstPass, renderer);
         loops = 0;
 
         while (_is_rendering)
@@ -300,10 +254,7 @@ void autoRenderSceneTwoPass(int postonly)
 
         threadJoin(thread);
     }
-    if (renderSetNextProgressStep(0.1, 1.0))
-    {
-        renderPostProcess(_cpu_count);
-    }
+    sceneryRenderSecondPass(renderer);
 }
 
 static int _postProcessRayTracingOverlay(RenderFragment* fragment)

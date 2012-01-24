@@ -12,6 +12,7 @@
 #include "formrender.h"
 #include "dialogrender.h"
 
+#include "../lib_paysages/auto.h"
 #include "../lib_paysages/shared/functions.h"
 
 int main(int argc, char** argv)

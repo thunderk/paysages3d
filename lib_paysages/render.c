@@ -1,13 +1,15 @@
-#include "shared/types.h"
-#include "shared/constants.h"
-#include "shared/functions.h"
-#include "shared/system.h"
+#include "render.h"
 
 #include <stdlib.h>
 #include <math.h>
 
 #include "IL/il.h"
 #include "IL/ilu.h"
+
+#include "shared/types.h"
+#include "shared/constants.h"
+#include "shared/functions.h"
+#include "system.h"
 
 int render_width;
 int render_height;
@@ -164,17 +166,6 @@ void renderInterrupt()
 void renderSetBackgroundColor(Color* col)
 {
     background_color = *col;
-}
-
-double renderGetPrecision(Vector3 location)
-{
-    Vector3 projected;
-
-    projected = cameraProject(location);
-    projected.x += 1.0;
-    //projected.y += 1.0;
-
-    return v3Norm(v3Sub(cameraUnproject(projected), location)); // / (double)render_quality;
 }
 
 int _sortRenderFragment(void const* a, void const* b)
@@ -375,6 +366,7 @@ static void __vertexGetDiff(Vertex* v1, Vertex* v2, Vertex* result)
     result->color.b = v2->color.b - v1->color.b;
     result->color.a = v2->color.a - v1->color.a;
     result->callback = v1->callback;
+    result->callback_data = v1->callback_data;
 }
 
 static void __vertexInterpolate(Vertex* v1, Vertex* diff, double value, Vertex* result)
@@ -390,6 +382,7 @@ static void __vertexInterpolate(Vertex* v1, Vertex* diff, double value, Vertex* 
     result->color.b = v1->color.b + diff->color.b * value;
     result->color.a = v1->color.a + diff->color.a * value;
     result->callback = v1->callback;
+    result->callback_data = v1->callback_data;
 }
 
 static void __pushScanLinePoint(RenderFragment point)
@@ -567,15 +560,15 @@ static void __renderScanLines()
     }
 }
 
-void renderPushTriangle(Vertex* v1, Vertex* v2, Vertex* v3)
+void renderPushTriangle(Renderer* renderer, Vertex* v1, Vertex* v2, Vertex* v3)
 {
     Vector3 p1, p2, p3;
     double limit_width = (double)(render_width - 1);
     double limit_height = (double)(render_height - 1);
 
-    p1 = cameraProject(v1->location);
-    p2 = cameraProject(v2->location);
-    p3 = cameraProject(v3->location);
+    p1 = renderer->projectPoint(renderer, v1->location);
+    p2 = renderer->projectPoint(renderer, v2->location);
+    p3 = renderer->projectPoint(renderer, v3->location);
 
     /* Filter if outside screen */
     if (p1.z < 1.0 || p2.z < 1.0 || p3.z < 1.0 || (p1.x < 0.0 && p2.x < 0.0 && p3.x < 0.0) || (p1.y < 0.0 && p2.y < 0.0 && p3.y < 0.0) || (p1.x > limit_width && p2.x > limit_width && p3.x > limit_width) || (p1.y > limit_height && p2.y > limit_height && p3.y > limit_height))
@@ -592,10 +585,10 @@ void renderPushTriangle(Vertex* v1, Vertex* v2, Vertex* v3)
     mutexRelease(_lock);
 }
 
-void renderPushQuad(Vertex* v1, Vertex* v2, Vertex* v3, Vertex* v4)
+void renderPushQuad(Renderer* renderer, Vertex* v1, Vertex* v2, Vertex* v3, Vertex* v4)
 {
-    renderPushTriangle(v2, v3, v1);
-    renderPushTriangle(v4, v1, v3);
+    renderPushTriangle(renderer, v2, v3, v1);
+    renderPushTriangle(renderer, v4, v1, v3);
 }
 
 typedef struct {
@@ -606,6 +599,7 @@ typedef struct {
     int finished;
     int interrupt;
     Thread* thread;
+    Renderer* renderer;
 } RenderChunk;
 
 void* _renderPostProcessChunk(void* data)
@@ -631,7 +625,7 @@ void* _renderPostProcessChunk(void* data)
             {
                 if (fragments[i].vertex.callback)
                 {
-                    if (fragments[i].vertex.callback(fragments + i))
+                    if (fragments[i].vertex.callback(fragments + i, chunk->renderer, fragments[i].vertex.callback_data))
                     {
                         /* TODO Store over-exposure */
                         colorNormalize(&fragments[i].vertex.color);
@@ -658,7 +652,7 @@ void* _renderPostProcessChunk(void* data)
 }
 
 #define MAX_CHUNKS 8
-void renderPostProcess(int nbchunks)
+void renderPostProcess(Renderer* renderer, int nbchunks)
 {
     volatile RenderChunk chunks[MAX_CHUNKS];
     int i;
@@ -685,6 +679,7 @@ void renderPostProcess(int nbchunks)
     for (i = 0; i < nbchunks; i++)
     {
         chunks[i].thread = NULL;
+        chunks[i].renderer = renderer;
     }
 
     running = 0;

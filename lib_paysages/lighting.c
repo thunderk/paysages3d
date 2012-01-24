@@ -25,14 +25,34 @@ void lightingInit()
     _LIGHT_NULL.direction.z = 0.0;
 }
 
-void lightingSave(FILE* f)
+void lightingSave(FILE* f, LightingDefinition* definition)
 {
-    // TODO
+    int i;
+
+    toolsSaveInt(f, definition->autosetfromsky);
+    toolsSaveInt(f, definition->nblights);
+    for (i = 0; i < definition->nblights; i++)
+    {
+        colorSave(definition->lights[i].color, f);
+        v3Save(definition->lights[i].direction, f);
+        toolsSaveDouble(f, definition->lights[i].maxshadow);
+    }
 }
 
-void lightingLoad(FILE* f)
+void lightingLoad(FILE* f, LightingDefinition* definition)
 {
-    // TODO
+    int i;
+
+    definition->autosetfromsky = toolsLoadInt(f);
+    definition->nblights = toolsLoadInt(f);
+    for (i = 0; i < definition->nblights; i++)
+    {
+        definition->lights[i].color = colorLoad(f);
+        definition->lights[i].direction = v3Load(f);
+        definition->lights[i].maxshadow = toolsLoadDouble(f);
+    }
+
+    lightingValidateDefinition(definition);
 }
 
 LightingDefinition lightingCreateDefinition()
