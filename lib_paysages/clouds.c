@@ -409,57 +409,22 @@ static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, 
     return segment_count;
 }
 
-/*static Color _lightFilter(Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light, void* custom_data)
-{
-    double inside_depth, total_depth;
-    CloudSegment segments[20];
-    LightFilterData data;
-
-    data = *((LightFilterData*)custom_data);
-    data.detail = (data.detail < 0.1) ? 0.1 : data.detail;
-
-    // FIXME Dont hard-code max_total_length
-    _findSegments(data.definition, data.quality, location, direction_to_light, data.detail, 20, 50.0, 300.0, &inside_depth, &total_depth, segments);
-
-    inside_depth *= 0.02;
-    if (inside_depth > 1.0)
-    {
-        inside_depth = 1.0;
-    }
-
-    light.r = light.r * (1.0 - 0.2 * inside_depth);
-    light.g = light.g * (1.0 - 0.2 * inside_depth);
-    light.b = light.b * (1.0 - 0.2 * inside_depth);
-
-    return light;
-}*/
-
 static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* renderer, Vector3 position, Color base, double detail)
 {
-    return base;
-    /*Vector3 normal;
-    ReceiverMaterial material;
-    LightingEnvironment lighting_environment;
-    LightFilterData data;
+    Vector3 normal;
+    SurfaceMaterial material;
 
     normal = v3Scale(_getNormal(definition, position, 1.0), 0.25);
     normal = v3Add(normal, v3Scale(_getNormal(definition, position, 0.5), 0.25));
     normal = v3Add(normal, v3Scale(_getNormal(definition, position, 0.2), 0.25));
     normal = v3Add(normal, v3Scale(_getNormal(definition, position, 0.1), 0.25));
-    normal = v3Normalize(normal);
-
-    data.definition = definition;
-    data.quality = quality;
-    data.detail = detail;
-
-    lighting_environment.filter = _lightFilter;
-    lighting_environment.custom_data = &data;
+    normal = v3Scale(v3Normalize(normal), 0.1);
 
     material.base = base;
     material.reflection = 0.3;
     material.shininess = 0.1;
 
-    return lightingApplyCustom(position, normal, material, NULL, NULL, &lighting_environment);*/
+    return renderer->applyLightingToSurface(renderer, position, normal, material);
 }
 
 Color cloudsGetLayerColor(CloudsLayerDefinition* definition, Renderer* renderer, Vector3 start, Vector3 end)
@@ -518,4 +483,36 @@ Color cloudsGetColor(CloudsDefinition* definition, Renderer* renderer, Vector3 s
     }
 
     return result;
+}
+
+Color cloudsLayerFilterLight(CloudsLayerDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light)
+{
+    double inside_depth, total_depth;
+    CloudSegment segments[20];
+
+    _optimizeSearchLimits(definition, &location, &light_location);
+
+    _findSegments(definition, renderer, location, direction_to_light, 0.1, 20, 50.0, v3Norm(v3Sub(light_location, location)), &inside_depth, &total_depth, segments);
+
+    inside_depth *= 0.02;
+    if (inside_depth > 1.0)
+    {
+        inside_depth = 1.0;
+    }
+
+    light.r = light.r * (1.0 - 0.2 * inside_depth);
+    light.g = light.g * (1.0 - 0.2 * inside_depth);
+    light.b = light.b * (1.0 - 0.2 * inside_depth);
+
+    return light;
+}
+
+Color cloudsFilterLight(CloudsDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light)
+{
+    int i;
+    for (i = 0; i < definition->nblayers; i++)
+    {
+        light = cloudsLayerFilterLight(definition->layers + i, renderer, light, location, light_location, direction_to_light);
+    }
+    return light;
 }

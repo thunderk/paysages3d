@@ -137,21 +137,27 @@ void lightingDeleteLight(LightingDefinition* definition, int light)
 static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
 {
     Color result, light;
-    double diffuse, specular;
+    double diffuse, specular, normal_norm;
     Vector3 view, reflect, direction_inv;
 
     light = definition->color;
 
     direction_inv = v3Scale(definition->direction, -1.0);
-    light = renderer->filterLight(renderer, light, location, v3Add(location, direction_inv), direction_inv);
+    light = renderer->filterLight(renderer, light, location, v3Add(location, v3Scale(direction_inv, 1000.0)), direction_inv);
 
+    normal_norm = v3Norm(normal);
+    if (normal_norm > 1.0)
+    {
+        normal_norm = 1.0;
+    }
     normal = v3Normalize(normal);
+
     view = v3Normalize(v3Sub(location, renderer->camera_location));
     reflect = v3Sub(v3Scale(normal, 2.0 * v3Dot(direction_inv, normal)), direction_inv);
 
     diffuse = v3Dot(direction_inv, normal);
     //diffuse = pow(diffuse * 0.5 + 0.5, 2.0);
-    diffuse = diffuse * 0.5 + 0.5;
+    diffuse = (diffuse * 0.5 + 0.5);
     if (diffuse > 0.0)
     {
         if (material.shininess > 0.0)
@@ -168,6 +174,9 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
         diffuse = 0.0;
         specular = 0.0;
     }
+
+    specular *= normal_norm;
+    diffuse = 1.0 - normal_norm + diffuse * normal_norm;
 
     result.r = material.base.r * diffuse * light.r + material.base.r * specular * light.r;
     result.g = material.base.g * diffuse * light.g + material.base.g * specular * light.g;

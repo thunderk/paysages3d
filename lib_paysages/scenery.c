@@ -191,14 +191,12 @@ void sceneryRenderSecondPass(Renderer* renderer)
 /******* Standard renderer *********/
 static Color _filterLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
 {
-    Color result;
-
-    result = waterLightFilter(&_water, renderer, light_color, at_location, light_location, direction_to_light);
-    result = terrainLightFilter(&_terrain, renderer, result, at_location, light_location, direction_to_light);
+    light_color = waterLightFilter(&_water, renderer, light_color, at_location, light_location, direction_to_light);
+    light_color = terrainLightFilter(&_terrain, renderer, light_color, at_location, light_location, direction_to_light);
     // TODO atmosphere filter
-    // TODO clouds filter
+    light_color = cloudsFilterLight(&_clouds, renderer, light_color, at_location, light_location, direction_to_light);
 
-    return result;
+    return light_color;
 }
 
 static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
@@ -232,7 +230,7 @@ static Color _applyTextures(Renderer* renderer, Vector3 location, double precisi
 
 static Color _applyAtmosphere(Renderer* renderer, Vector3 location, Color base)
 {
-    return base;
+    return fogApplyToLocation(location, base);
 }
 
 static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3 end)
