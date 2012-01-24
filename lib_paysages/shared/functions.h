@@ -70,13 +70,6 @@ Matrix4 m4NewPerspective(double fov_y, double aspect, double near, double far);
 double m4Determinant(Matrix4 m);
 Matrix4 m4Inverse(Matrix4 m);
 
-/* fog.c */
-void fogSave(FILE* f);
-void fogLoad(FILE* f);
-void fogSetColor(Color col);
-void fogSetDistance(double near, double far);
-Color fogApplyToLocation(Vector3 location, Color base);
-
 /* tools.c */
 double toolsRandom();
 double toolsBicubicInterpolate(double stencil[16], double x, double y);

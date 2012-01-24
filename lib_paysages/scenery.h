@@ -8,6 +8,7 @@
  * a standard renderer.
  */
 
+#include "atmosphere.h"
 #include "camera.h"
 #include "clouds.h"
 #include "lighting.h"
@@ -25,6 +26,9 @@ extern "C" {
 void sceneryInit();
 void scenerySaveToFile(char* filepath);
 void sceneryLoadFromFile(char* filepath);
+
+void scenerySetAtmosphere(AtmosphereDefinition* atmosphere);
+void sceneryGetAtmosphere(AtmosphereDefinition* atmosphere);
 
 void scenerySetCamera(CameraDefinition* camera);
 void sceneryGetCamera(CameraDefinition* camera);

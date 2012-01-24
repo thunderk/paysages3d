@@ -5,6 +5,7 @@
 #include "system.h"
 #include "render.h"
 
+AtmosphereDefinition _atmosphere;
 CameraDefinition _camera;
 CloudsDefinition _clouds;
 LightingDefinition _lighting;
@@ -15,6 +16,7 @@ WaterDefinition _water;
 
 void sceneryInit()
 {
+    atmosphereInit();
     cameraInit();
     cloudsInit();
     lightingInit();
@@ -23,6 +25,7 @@ void sceneryInit()
     texturesInit();
     waterInit();
 
+    _atmosphere = atmosphereCreateDefinition();
     _camera = cameraCreateDefinition();
     _clouds = cloudsCreateDefinition();
     _lighting = lightingCreateDefinition();
@@ -36,6 +39,7 @@ void scenerySaveToFile(char* filepath)
 {
     FILE* f = fopen(filepath, "wb");
 
+    atmosphereSave(f, &_atmosphere);
     cameraSave(f, &_camera);
     cloudsSave(f, &_clouds);
     lightingSave(f, &_lighting);
@@ -52,6 +56,9 @@ void sceneryLoadFromFile(char* filepath)
     FILE* f = fopen(filepath, "rb");
 
     /* TODO Use intermediary definitions ? */
+
+    atmosphereLoad(f, &_atmosphere);
+    atmosphereValidateDefinition(&_atmosphere);
 
     cameraLoad(f, &_camera);
     cameraValidateDefinition(&_camera);
@@ -75,6 +82,17 @@ void sceneryLoadFromFile(char* filepath)
     waterValidateDefinition(&_water);
 
     fclose(f);
+}
+
+void scenerySetAtmosphere(AtmosphereDefinition* atmosphere)
+{
+    atmosphereCopyDefinition(atmosphere, &_atmosphere);
+    atmosphereValidateDefinition(&_atmosphere);
+}
+
+void sceneryGetAtmosphere(AtmosphereDefinition* atmosphere)
+{
+    atmosphereCopyDefinition(&_atmosphere, atmosphere);
 }
 
 void scenerySetCamera(CameraDefinition* camera)
@@ -115,6 +133,7 @@ void scenerySetSky(SkyDefinition* sky)
     skyCopyDefinition(sky, &_sky);
     skyValidateDefinition(&_sky);
 
+    atmosphereValidateDefinition(&_atmosphere);
     lightingValidateDefinition(&_lighting);
 }
 
@@ -230,7 +249,7 @@ static Color _applyTextures(Renderer* renderer, Vector3 location, double precisi
 
 static Color _applyAtmosphere(Renderer* renderer, Vector3 location, Color base)
 {
-    return fogApplyToLocation(location, base);
+    return atmosphereApply(&_atmosphere, renderer, location, base);
 }
 
 static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3 end)
@@ -267,6 +286,9 @@ static double _getPrecision(Renderer* renderer, Vector3 location)
 Renderer sceneryGetStandardRenderer(int quality)
 {
     Renderer result;
+
+    quality = (quality > 10) ? 10 : quality;
+    quality = (quality < 1) ? 1 : quality;
 
     result.camera_location = _camera.location;
     result.render_quality = quality;

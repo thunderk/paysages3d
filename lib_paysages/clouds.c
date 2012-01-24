@@ -454,6 +454,9 @@ Color cloudsGetLayerColor(CloudsLayerDefinition* definition, Renderer* renderer,
         col.a = (segments[i].length >= 50.0) ? 1.0 : (segments[i].length / 50.0);
         colorMask(&result, &col);
     }
+
+    result = renderer->applyAtmosphere(renderer, start, result);
+
     return result;
 }
 

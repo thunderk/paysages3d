@@ -1,3 +1,5 @@
+#include "sky.h"
+
 #include <stdlib.h>
 #include <math.h>
 
@@ -7,7 +9,6 @@
 #include "shared/constants.h"
 #include "render.h"
 #include "clouds.h"
-#include "sky.h"
 #include "lighting.h"
 
 #define SPHERE_SIZE 1000.0

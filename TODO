@@ -1,6 +1,6 @@
 - Refactor fog in a new 'atmosphere' module.
+- Make multi-lights work, to restore lighting from skydome.
 - In GUI, revertConfig should lock the previews while reverting.
 - All Save and Load methods should have same signature : void ...Save(FILE*, ...*)
 - All noises should use the same entropy pool (saved separately), and avoid reallocs.
 - Remove all global variables (render_quality, render_width...), it should all be set in Renderer.
-- Make multi-lights work, to restore lighting from skydome.

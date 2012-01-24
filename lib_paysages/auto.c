@@ -57,12 +57,11 @@ void autoSetDaytimeFraction(double daytime)
     sky.daytime = daytime;
     scenerySetSky(&sky);
     skyDeleteDefinition(&sky);
-
-    fogSetColor(colorGradationGet(&sky.haze_color, daytime));
 }
 
 void autoGenRealisticLandscape(int seed)
 {
+    AtmosphereDefinition atmosphere;
     TerrainDefinition terrain;
     WaterDefinition water;
     CloudsDefinition clouds;
@@ -217,8 +216,14 @@ void autoGenRealisticLandscape(int seed)
     scenerySetTextures(&textures);
     texturesDeleteDefinition(&textures);
 
-    /* Fog */
-    fogSetDistance(20.0, 100.0);
+    /* Atmosphere */
+    atmosphere = atmosphereCreateDefinition();
+    atmosphere.distance_near = 20.0;
+    atmosphere.distance_far = 100.0;
+    atmosphere.full_mask = 0.6;
+    atmosphere.auto_lock_on_haze = 1;
+    scenerySetAtmosphere(&atmosphere);
+    atmosphereDeleteDefinition(&atmosphere);
 }
 
 void* _renderFirstPass(void* data)
