@@ -34,7 +34,7 @@ static volatile double _progress = 0.0;
 static volatile double _progress_step_start = 0.0;
 static volatile double _progress_step_length = 1.0;
 
-#define RENDER_INVERSE 1
+/*#define RENDER_INVERSE 1*/
 #define RENDER_WIREFRAME 1
 
 static void _previewResize(int width, int height) {}

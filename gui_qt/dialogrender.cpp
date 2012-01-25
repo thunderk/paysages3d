@@ -6,7 +6,6 @@
 #include <QPainter>
 
 #include "../lib_paysages/render.h"
-#include "../lib_paysages/renderer.h"
 #include "../lib_paysages/scenery.h"
 #include "../lib_paysages/auto.h"
 #include "../lib_paysages/shared/functions.h"
@@ -97,10 +96,22 @@ DialogRender::DialogRender(QWidget *parent):
     progress_value = 0;
 }
 
+DialogRender::~DialogRender()
+{
+    if (render_thread)
+    {
+        renderInterrupt();
+        render_thread->wait();
+
+        renderSetPreviewCallbacks(NULL, NULL, NULL, NULL);
+
+        delete render_thread;
+    }
+    delete pixbuf;
+}
+
 void DialogRender::startRender(int quality, int width, int height)
 {
-    Renderer renderer;
-
     renderer = sceneryGetStandardRenderer(quality);
     renderSetSize(width, height);
     renderSetPreviewCallbacks(_renderResize, _renderClear, _renderDraw, _renderUpdate);
@@ -117,18 +128,4 @@ void DialogRender::loadLastRender()
     renderSetPreviewCallbacks(_renderResize, _renderClear, _renderDraw, _renderUpdate);
 
     exec();
-}
-
-DialogRender::~DialogRender()
-{
-    if (render_thread)
-    {
-        renderInterrupt();
-        render_thread->wait();
-
-        renderSetPreviewCallbacks(NULL, NULL, NULL, NULL);
-
-        delete render_thread;
-    }
-    delete pixbuf;
 }

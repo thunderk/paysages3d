@@ -85,8 +85,10 @@ void autoGenRealisticLandscape(int seed)
     cloud->ymin = 10.0;
     cloud->ycenter = 40.0;
     cloud->ymax = 100.0;
-    cloud->color = COLOR_WHITE;
-    cloud->color.a = 0.1;
+    cloud->color.r = 0.7;
+    cloud->color.g = 0.7;
+    cloud->color.b = 0.7;
+    cloud->color.a = 0.05;
     cloud->scaling = 50.0;
     cloud->coverage = 0.5;
     noiseGenerateBaseNoise(cloud->noise, 262144);

@@ -9,6 +9,11 @@ static Color _filterLight(Renderer* renderer, Color light_color, Vector3 at_loca
     return light_color;
 }
 
+static Color _maskLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
+{
+    return light_color;
+}
+
 static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
 {
     return material.base;
@@ -62,6 +67,7 @@ Renderer rendererGetFake()
     result.camera_location = VECTOR_ZERO;
 
     result.filterLight = _filterLight;
+    result.maskLight = _maskLight;
     result.applyLightingToSurface = _applyLightingToSurface;
     result.rayWalking = _rayWalking;
     result.getTerrainHeight = _getTerrainHeight;

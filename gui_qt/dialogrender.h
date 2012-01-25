@@ -5,6 +5,7 @@
 #include <QThread>
 #include <QProgressBar>
 #include <QScrollArea>
+#include "../lib_paysages/renderer.h"
 
 class DialogRender : public QDialog
 {
@@ -12,10 +13,10 @@ class DialogRender : public QDialog
 public:
     explicit DialogRender(QWidget *parent);
     ~DialogRender();
-    
+
     void startRender(int quality, int width, int height);
     void loadLastRender();
-    
+
     QImage* pixbuf;
     QWidget* area;
     QScrollArea* scroll;
@@ -24,6 +25,7 @@ public:
 
 private:
     QThread* render_thread;
+    Renderer renderer;
 };
 
 #endif // _PAYSAGES_QT_DIALOGRENDER_H_

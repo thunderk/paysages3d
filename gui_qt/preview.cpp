@@ -117,7 +117,7 @@ void Preview::resizeEvent(QResizeEvent* event)
     this->pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
 
     this->pixbuf->fill(0x00000000);
-    this->need_rerender = false;
+    this->need_rerender = true;
     this->need_render = true;
 
     delete image;

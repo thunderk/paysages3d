@@ -210,9 +210,15 @@ void sceneryRenderSecondPass(Renderer* renderer)
 /******* Standard renderer *********/
 static Color _filterLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
 {
-    light_color = waterLightFilter(&_water, renderer, light_color, at_location, light_location, direction_to_light);
-    light_color = terrainLightFilter(&_terrain, renderer, light_color, at_location, light_location, direction_to_light);
     // TODO atmosphere filter
+    light_color = waterLightFilter(&_water, renderer, light_color, at_location, light_location, direction_to_light);
+
+    return light_color;
+}
+
+static Color _maskLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
+{
+    light_color = terrainLightFilter(&_terrain, renderer, light_color, at_location, light_location, direction_to_light);
     light_color = cloudsFilterLight(&_clouds, renderer, light_color, at_location, light_location, direction_to_light);
 
     return light_color;
@@ -294,6 +300,7 @@ Renderer sceneryGetStandardRenderer(int quality)
     result.render_quality = quality;
 
     result.filterLight = _filterLight;
+    result.maskLight = _maskLight;
     result.applyLightingToSurface = _applyLightingToSurface;
     result.rayWalking = _rayWalking;
     result.getTerrainHeight = _getTerrainHeight;

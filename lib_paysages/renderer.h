@@ -29,6 +29,7 @@ struct Renderer
 
     /* Lighting related */
     Color (*filterLight)(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light);
+    Color (*maskLight)(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light);
     Color (*applyLightingToSurface)(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material);
 
     /* Custom data */

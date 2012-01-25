@@ -19,10 +19,13 @@ static LightDefinition _LIGHT_NULL;
 
 void lightingInit()
 {
-    _LIGHT_NULL.color = COLOR_BLACK;
     _LIGHT_NULL.direction.x = 0.0;
     _LIGHT_NULL.direction.y = 1.0;
     _LIGHT_NULL.direction.z = 0.0;
+    _LIGHT_NULL.color = COLOR_BLACK;
+    _LIGHT_NULL.filtered = 0;
+    _LIGHT_NULL.masked = 0;
+    _LIGHT_NULL.amplitude = 0.0;
 }
 
 void lightingSave(FILE* f, LightingDefinition* definition)
@@ -33,9 +36,11 @@ void lightingSave(FILE* f, LightingDefinition* definition)
     toolsSaveInt(f, definition->nblights);
     for (i = 0; i < definition->nblights; i++)
     {
-        colorSave(definition->lights[i].color, f);
         v3Save(definition->lights[i].direction, f);
-        toolsSaveDouble(f, definition->lights[i].maxshadow);
+        colorSave(definition->lights[i].color, f);
+        toolsSaveInt(f, definition->lights[i].filtered);
+        toolsSaveInt(f, definition->lights[i].masked);
+        toolsSaveDouble(f, definition->lights[i].amplitude);
     }
 }
 
@@ -47,9 +52,11 @@ void lightingLoad(FILE* f, LightingDefinition* definition)
     definition->nblights = toolsLoadInt(f);
     for (i = 0; i < definition->nblights; i++)
     {
-        definition->lights[i].color = colorLoad(f);
         definition->lights[i].direction = v3Load(f);
-        definition->lights[i].maxshadow = toolsLoadDouble(f);
+        definition->lights[i].color = colorLoad(f);
+        definition->lights[i].filtered = toolsLoadInt(f);
+        definition->lights[i].masked = toolsLoadInt(f);
+        definition->lights[i].amplitude = toolsLoadDouble(f);
     }
 
     lightingValidateDefinition(definition);
@@ -143,7 +150,14 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
     light = definition->color;
 
     direction_inv = v3Scale(definition->direction, -1.0);
-    light = renderer->filterLight(renderer, light, location, v3Add(location, v3Scale(direction_inv, 1000.0)), direction_inv);
+    if (definition->masked)
+    {
+        light = renderer->maskLight(renderer, light, location, v3Add(location, v3Scale(direction_inv, 1000.0)), direction_inv);
+    }
+    if (definition->filtered)
+    {
+        light = renderer->filterLight(renderer, light, location, v3Add(location, v3Scale(direction_inv, 1000.0)), direction_inv);
+    }
 
     normal_norm = v3Norm(normal);
     if (normal_norm > 1.0)
@@ -156,13 +170,21 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
     reflect = v3Sub(v3Scale(normal, 2.0 * v3Dot(direction_inv, normal)), direction_inv);
 
     diffuse = v3Dot(direction_inv, normal);
-    //diffuse = pow(diffuse * 0.5 + 0.5, 2.0);
-    diffuse = (diffuse * 0.5 + 0.5);
+    diffuse = pow(diffuse * 0.5 + 0.5, 2.0);
+    //diffuse = (diffuse * 0.5 + 0.5);
     if (diffuse > 0.0)
     {
         if (material.shininess > 0.0)
         {
-            specular = pow(v3Dot(reflect, view) * material.reflection, material.shininess * 10.0 + 1.0);
+            specular = v3Dot(reflect, view) * material.reflection;
+            if (specular > 0.0)
+            {
+                specular = pow(specular, material.shininess * 10.0 + 1.0);
+            }
+            else
+            {
+                specular = 0.0;
+            }
         }
         else
         {
@@ -188,18 +210,26 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
 
 Color lightingApplyToSurface(LightingDefinition* definition, Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
 {
-    Color result;
+    Color result, lighted;
     int i;
 
-    /* TODO Merge lights */
-    result = material.base;
+    result = COLOR_BLACK;
+    result.a = material.base.a;
+
     for (i = 0; i < definition->nblights; i++)
     {
-        result = _applyLightCustom(definition->lights + i, renderer, location, normal, material);
+        lighted = _applyLightCustom(definition->lights + i, renderer, location, normal, material);
+        result.r += lighted.r;
+        result.g += lighted.g;
+        result.b += lighted.b;
     }
     for (i = 0; i < definition->_nbautolights; i++)
     {
-        result = _applyLightCustom(definition->_autolights + i, renderer, location, normal, material);
+        lighted = _applyLightCustom(definition->_autolights + i, renderer, location, normal, material);
+        result.r += lighted.r;
+        result.g += lighted.g;
+        result.b += lighted.b;
     }
+
     return result;
 }

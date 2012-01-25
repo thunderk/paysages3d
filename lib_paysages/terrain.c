@@ -171,6 +171,11 @@ Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Colo
     double inc_value, inc_base, inc_factor, height, diff, light_factor, smoothing, length;
 
     direction_to_light = v3Normalize(direction_to_light);
+    if (fabs(direction_to_light.x) < 0.0001 && fabs(direction_to_light.z) < 0.0001)
+    {
+        return light;
+    }
+    
     inc_factor = (double)renderer->render_quality;
     inc_base = 1.0;
     inc_value = inc_base / inc_factor;

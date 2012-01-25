@@ -92,12 +92,32 @@ int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
     sun_direction.y = sin(sun_angle);
     sun_direction.z = 0.0;
 
+    /* TODO Night lights */
+
     if (max_lights > 0)
     {
-        lights[0].color = colorGradationGet(&sky->sun_color, sky->daytime);
+        /* Light from the sun */
         lights[0].direction = v3Scale(sun_direction, -1.0);
-        lights[0].maxshadow = 1.0;
+        lights[0].color = colorGradationGet(&sky->sun_color, sky->daytime);
+        lights[0].filtered = 1;
+        lights[0].masked = 1;
+        lights[0].amplitude = 0.0;
         nblights = 1;
+        if (max_lights > 1)
+        {
+            /* Skydome lighting */
+            lights[1].direction.x = 0.0;
+            lights[1].direction.y = -1.0;
+            lights[1].direction.z = 0.0;
+            lights[1].color = colorGradationGet(&sky->zenith_color, sky->daytime);
+            lights[1].color.r *= 0.4;
+            lights[1].color.g *= 0.4;
+            lights[1].color.b *= 0.4;
+            lights[1].filtered = 1;
+            lights[1].masked = 0;
+            lights[1].amplitude = M_PI / 2.0;
+            nblights = 2;
+        }
     }
 
     return nblights;

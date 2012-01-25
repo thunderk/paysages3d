@@ -137,7 +137,7 @@ Color waterLightFilter(WaterDefinition* definition, Renderer* renderer, Color li
     {
         if (direction_to_light.y > 0.00001)
         {
-            factor = (definition->height - location.y) / (direction_to_light.y * 5.0); // TODO Configurable
+            factor = (definition->height - location.y) / (direction_to_light.y * 3.0); // TODO Configurable
             if (factor > 1.0)
             {
                 factor = 1.0;
