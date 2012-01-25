@@ -20,7 +20,7 @@ public slots:
     virtual void applyConfig();
 
 protected slots:
-    virtual void applyConfigPreview();
+    virtual void configChangeEvent();
 
 protected:
     void addPreview(Preview* preview, QString label);

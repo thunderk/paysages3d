@@ -18,15 +18,22 @@ class PreviewTerrainHeight:public Preview
 public:
     PreviewTerrainHeight(QWidget* parent):Preview(parent)
     {
+        _preview_definition = terrainCreateDefinition();
     }
 protected:
     QColor getColor(double x, double y)
     {
         double height;
 
-        height = terrainGetHeightNormalized(&_definition, x, y);
+        height = terrainGetHeightNormalized(&_preview_definition, x, y);
         return QColor((int)(255.0 * height), (int)(255.0 * height), (int)(255.0 * height));
     }
+    void updateData()
+    {
+        terrainCopyDefinition(&_definition, &_preview_definition);
+    }
+private:
+    TerrainDefinition _preview_definition;
 };
 
 class PreviewTerrainColor:public Preview
@@ -36,14 +43,20 @@ public:
     {
         // TODO Use custom renderer
         _renderer = sceneryGetStandardRenderer(3);
+        _preview_definition = terrainCreateDefinition();
     }
 protected:
     QColor getColor(double x, double y)
     {
-        return colorToQColor(terrainGetColor(&_definition, &_renderer, x, y, scaling));
+        return colorToQColor(terrainGetColor(&_preview_definition, &_renderer, x, y, scaling));
+    }
+    void updateData()
+    {
+        terrainCopyDefinition(&_definition, &_preview_definition);
     }
 private:
     Renderer _renderer;
+    TerrainDefinition _preview_definition;
 };
 
 /**************** Form ****************/
@@ -76,8 +89,8 @@ void FormTerrain::applyConfig()
     BaseForm::applyConfig();
 }
 
-void FormTerrain::applyConfigPreview()
+void FormTerrain::configChangeEvent()
 {
     terrainValidateDefinition(&_definition);
-    BaseForm::applyConfigPreview();
+    BaseForm::configChangeEvent();
 }

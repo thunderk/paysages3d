@@ -17,7 +17,7 @@ public slots:
     virtual void applyConfig();
 
 protected slots:
-    virtual void applyConfigPreview();
+    virtual void configChangeEvent();
 
 private:
     Preview* previewHeight;

@@ -34,7 +34,8 @@ private:
 Preview::Preview(QWidget* parent) :
     QWidget(parent)
 {
-    this->lock = new QMutex();
+    this->lock_drawing = new QMutex();
+
     this->conf_scroll_xmin = 0.0;
     this->conf_scroll_xmax = 0.0;
     this->conf_scroll_ymin = 0.0;
@@ -57,6 +58,7 @@ Preview::Preview(QWidget* parent) :
     this->resize(256, 256);
 
     QObject::connect(this, SIGNAL(contentChange()), this, SLOT(update()));
+    QObject::connect(this, SIGNAL(redrawRequested()), this, SLOT(handleRedraw()));
 
     this->updater = new PreviewDrawer(this);
     this->updater->start();
@@ -65,10 +67,16 @@ Preview::Preview(QWidget* parent) :
 Preview::~Preview()
 {
     alive = false;
+
     ((PreviewDrawer*)updater)->askStop();
     updater->wait();
+
     delete updater;
     delete pixbuf;
+    delete lock_drawing;;}
+
+void Preview::updateData()
+{
 }
 
 QColor Preview::getColor(double x, double y)
@@ -94,9 +102,16 @@ void Preview::doRender()
 
 void Preview::redraw()
 {
-    //lock->lock();
+    emit(redrawRequested());
+}
+
+void Preview::handleRedraw()
+{
     need_rerender = true;
-    //lock->unlock();
+    lock_drawing->lock();
+    updateData();
+    need_rerender = true;
+    lock_drawing->unlock();
 }
 
 void Preview::setScaling(double scaling)
@@ -110,7 +125,7 @@ void Preview::resizeEvent(QResizeEvent* event)
 {
     QImage* image;
 
-    this->lock->lock();
+    this->lock_drawing->lock();
 
     image = this->pixbuf;
 
@@ -122,7 +137,7 @@ void Preview::resizeEvent(QResizeEvent* event)
 
     delete image;
 
-    this->lock->unlock();
+    this->lock_drawing->unlock();
 }
 
 void Preview::paintEvent(QPaintEvent* event)
@@ -133,11 +148,11 @@ void Preview::paintEvent(QPaintEvent* event)
 
 void Preview::forceRender()
 {
-    this->lock->lock();
+    this->lock_drawing->lock();
     this->pixbuf->fill(0x00000000);
     this->need_rerender = false;
     this->need_render = true;
-    this->lock->unlock();
+    this->lock_drawing->unlock();
 }
 
 void Preview::renderPixbuf()
@@ -151,17 +166,23 @@ void Preview::renderPixbuf()
 
     for (x = 0; x < w; x++)
     {
-        this->lock->lock();
+        this->lock_drawing->lock();
 
         if (this->need_rerender || !this->alive)
         {
-            this->lock->unlock();
-            break;
+            this->lock_drawing->unlock();
+            return;
         }
 
         done = false;
         for (y = 0; y < h; y++)
         {
+            if (this->need_rerender || !this->alive)
+            {
+                this->lock_drawing->unlock();
+                return;
+            }
+
             if (qAlpha(this->pixbuf->pixel(x, y)) == 0)
             {
                 col = this->getColor((double)(x - w / 2) * this->scaling + this->xoffset, (double)(y - h / 2) * this->scaling + this->yoffset);
@@ -173,7 +194,7 @@ void Preview::renderPixbuf()
         {
             emit contentChange();
         }
-        this->lock->unlock();
+        this->lock_drawing->unlock();
     }
 }
 

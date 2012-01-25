@@ -52,7 +52,7 @@ BaseForm::BaseForm(QWidget* parent) :
     connect(button_revert, SIGNAL(clicked()), this, SLOT(revertConfig()));
 }
 
-void BaseForm::applyConfigPreview()
+void BaseForm::configChangeEvent()
 {
     QList<Preview*> list_previews = previews->findChildren<Preview*>("_form_preview_");
     for (int i = 0; i < list_previews.size(); i++)
@@ -72,7 +72,7 @@ void BaseForm::revertConfig()
         inputs[i]->revert();
     }
 
-    BaseForm::applyConfigPreview();
+    BaseForm::configChangeEvent();
 
     button_apply->setEnabled(false);
     button_revert->setEnabled(false);
@@ -111,7 +111,7 @@ void BaseForm::addInput(BaseInput* input)
     input->preview()->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     input->control()->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
-    connect(input, SIGNAL(valueChanged()), this, SLOT(applyConfigPreview()));
+    connect(input, SIGNAL(valueChanged()), this, SLOT(configChangeEvent()));
 
     input->setObjectName("_form_input_");
     input->revert();

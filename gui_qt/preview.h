@@ -14,19 +14,38 @@ public:
     Preview(QWidget* parent);
     ~Preview();
 
-    static void startUpdater();
     void doRender();
     void redraw();
 
     void setScaling(double scaling);
 
 protected:
-    void resizeEvent(QResizeEvent* event);
-    void paintEvent(QPaintEvent* event);
+    virtual void updateData();
     virtual QColor getColor(double x, double y);
 
-    void renderPixbuf();
+    double xoffset;
+    double yoffset;
+    double scaling;
+
+private:
     void forceRender();
+    void renderPixbuf();
+    static void startUpdater();
+
+    void resizeEvent(QResizeEvent* event);
+    void paintEvent(QPaintEvent* event);
+
+    QThread* updater;
+
+    QMutex* lock_drawing;
+    QImage* pixbuf;
+
+    int mousex;
+    int mousey;
+
+    bool alive;
+    bool need_rerender;
+    bool need_render;
 
     double conf_scroll_xmin;
     double conf_scroll_xmax;
@@ -37,25 +56,12 @@ protected:
     double conf_scale_max;
     double conf_scale_step;
 
-    double xoffset;
-    double yoffset;
-    double scaling;
-
-    QMutex* lock;
-    QImage* pixbuf;
-
-    int mousex;
-    int mousey;
-
-    bool alive;
-    bool need_rerender;
-    bool need_render;
-
-private:
-    QThread* updater;
-
 signals:
     void contentChange();
+    void redrawRequested();
+
+private slots:
+    void handleRedraw();
 };
 
 #endif

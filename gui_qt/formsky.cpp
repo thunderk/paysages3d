@@ -22,6 +22,7 @@ public:
         Preview(parent)
     {
         _renderer = rendererGetFake();
+        _preview_definition = skyCreateDefinition();
     }
 protected:
     QColor getColor(double x, double y)
@@ -33,10 +34,15 @@ protected:
         look.y = -y;
         look.z = x;
 
-        return colorToQColor(skyGetColor(&_definition, &_renderer, eye, look));
+        return colorToQColor(skyGetColor(&_preview_definition, &_renderer, eye, look));
+    }
+    void updateData()
+    {
+        skyCopyDefinition(&_definition, &_preview_definition);
     }
 private:
     Renderer _renderer;
+    SkyDefinition _preview_definition;
 };
 
 class PreviewWest:public Preview
@@ -46,6 +52,7 @@ public:
         Preview(parent)
     {
         _renderer = rendererGetFake();
+        _preview_definition = skyCreateDefinition();
     }
 protected:
     QColor getColor(double x, double y)
@@ -57,10 +64,15 @@ protected:
         look.y = -y;
         look.z = -x;
 
-        return colorToQColor(skyGetColor(&_definition, &_renderer, eye, look));
+        return colorToQColor(skyGetColor(&_preview_definition, &_renderer, eye, look));
+    }
+    void updateData()
+    {
+        skyCopyDefinition(&_definition, &_preview_definition);
     }
 private:
     Renderer _renderer;
+    SkyDefinition _preview_definition;
 };
 
 /**************** Form ****************/
@@ -97,8 +109,8 @@ void FormSky::applyConfig()
     BaseForm::applyConfig();
 }
 
-void FormSky::applyConfigPreview()
+void FormSky::configChangeEvent()
 {
     skyValidateDefinition(&_definition);
-    BaseForm::applyConfigPreview();
+    BaseForm::configChangeEvent();
 }

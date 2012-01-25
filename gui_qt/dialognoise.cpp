@@ -13,10 +13,10 @@
 class PreviewLevel:public Preview
 {
 public:
-    PreviewLevel(QWidget* parent, NoiseGenerator* noise):
-        Preview(parent)
+    PreviewLevel(QWidget* parent, NoiseGenerator* noise): Preview(parent)
     {
-        _noise = noise;
+        _noise_original = noise;
+        _noise_preview = noiseCreateGenerator();
         _level = -1;
     }
 
@@ -26,9 +26,13 @@ public:
         redraw();
     }
 protected:
+    void updateData()
+    {
+        noiseCopy(_noise_original, _noise_preview);
+    }
     QColor getColor(double x, double y)
     {
-        if ((_level >= 0) && (y > noiseGet1DLevel(_noise, _level, x)))
+        if ((_level >= 0) && (y > noiseGet1DLevel(_noise_preview, _level, x)))
         {
             return QColor(255, 255, 255);
         }
@@ -38,22 +42,27 @@ protected:
         }
     }
 private:
-    NoiseGenerator* _noise;
+    NoiseGenerator* _noise_original;
+    NoiseGenerator* _noise_preview;
     int _level;
 };
 
 class PreviewTotal:public Preview
 {
 public:
-    PreviewTotal(QWidget* parent, NoiseGenerator* noise):
-        Preview(parent),
-        _noise(noise)
+    PreviewTotal(QWidget* parent, NoiseGenerator* noise): Preview(parent)
     {
+        _noise_original = noise;
+        _noise_preview = noiseCreateGenerator();
     }
 protected:
+    void updateData()
+    {
+        noiseCopy(_noise_original, _noise_preview);
+    }
     QColor getColor(double x, double y)
     {
-        if (y > noiseGet1DTotal(_noise, x))
+        if (y > noiseGet1DTotal(_noise_preview, x))
         {
             return QColor(255, 255, 255);
         }
@@ -63,7 +72,8 @@ protected:
         }
     }
 private:
-    NoiseGenerator* _noise;
+    NoiseGenerator* _noise_original;
+    NoiseGenerator* _noise_preview;
 };
 
 /**************** Dialog form ****************/
