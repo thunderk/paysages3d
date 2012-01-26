@@ -232,11 +232,13 @@ static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vecto
 static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
 {
     RayCastingResult result;
+    Color sky_color;
 
     if (!terrainProjectRay(&_terrain, renderer, location, direction, &result.hit_location, &result.hit_color))
     {
-        result.hit_color = skyGetColor(&_sky, renderer, location, direction);
-        /* TODO hit_location */
+        sky_color = skyGetColor(&_sky, renderer, location, direction);
+        result.hit_location = v3Add(location, v3Scale(direction, 1000.0));
+        result.hit_color = renderer->applyClouds(renderer, sky_color, location, result.hit_location);
     }
 
     result.hit = 1;

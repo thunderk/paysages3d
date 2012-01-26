@@ -15,6 +15,7 @@ typedef struct
 {
     Vector3 direction;  /* Global direction of the light */
     Color color;        /* Main color of the light */
+    double reflection;  /* Reflected factor of the light (for specular lighting) */
     int filtered;       /* Should the light be filtered (by atmosphere, water...) */
     int masked;         /* Should the light be masked (cast shadows..) */
     double amplitude;   /* Angle amplitude of the light source (for multi-sampling, pi / 2.0 for skydome) */

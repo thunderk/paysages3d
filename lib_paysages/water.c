@@ -199,8 +199,8 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
     color.a = 1.0;
 
     material.base = color;
-    material.reflection = 0.8;
-    material.shininess = 0.6;
+    material.reflection = 1.0;
+    material.shininess = 12.0;
     color = renderer->applyLightingToSurface(renderer, location, normal, material);
     color = renderer->applyAtmosphere(renderer, location, color);
 

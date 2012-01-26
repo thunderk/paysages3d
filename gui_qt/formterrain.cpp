@@ -41,8 +41,7 @@ class PreviewTerrainColor:public Preview
 public:
     PreviewTerrainColor(QWidget* parent):Preview(parent)
     {
-        // TODO Use custom renderer
-        _renderer = sceneryGetStandardRenderer(3);
+        _renderer = rendererGetFake();
         _preview_definition = terrainCreateDefinition();
     }
 protected:

@@ -107,6 +107,7 @@ void autoGenRealisticLandscape(int seed)
     noiseAddLevelSimple(cloud->noise, 50.0 / 800.0, 0.001);
     noiseAddLevelSimple(cloud->noise, 50.0 / 1000.0, 0.0005);
     scenerySetClouds(&clouds);
+    cloudsDeleteDefinition(&clouds);
 
     /* Water */
     water = waterCreateDefinition();

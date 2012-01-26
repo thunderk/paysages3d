@@ -23,6 +23,7 @@ void lightingInit()
     _LIGHT_NULL.direction.y = 1.0;
     _LIGHT_NULL.direction.z = 0.0;
     _LIGHT_NULL.color = COLOR_BLACK;
+    _LIGHT_NULL.reflection = 0.0;
     _LIGHT_NULL.filtered = 0;
     _LIGHT_NULL.masked = 0;
     _LIGHT_NULL.amplitude = 0.0;
@@ -38,6 +39,7 @@ void lightingSave(FILE* f, LightingDefinition* definition)
     {
         v3Save(definition->lights[i].direction, f);
         colorSave(definition->lights[i].color, f);
+        toolsSaveDouble(f, definition->lights[i].reflection);
         toolsSaveInt(f, definition->lights[i].filtered);
         toolsSaveInt(f, definition->lights[i].masked);
         toolsSaveDouble(f, definition->lights[i].amplitude);
@@ -54,6 +56,7 @@ void lightingLoad(FILE* f, LightingDefinition* definition)
     {
         definition->lights[i].direction = v3Load(f);
         definition->lights[i].color = colorLoad(f);
+        definition->lights[i].reflection = toolsLoadDouble(f);
         definition->lights[i].filtered = toolsLoadInt(f);
         definition->lights[i].masked = toolsLoadInt(f);
         definition->lights[i].amplitude = toolsLoadDouble(f);
@@ -166,20 +169,20 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
     }
     normal = v3Normalize(normal);
 
-    view = v3Normalize(v3Sub(location, renderer->camera_location));
-    reflect = v3Sub(v3Scale(normal, 2.0 * v3Dot(direction_inv, normal)), direction_inv);
-
     diffuse = v3Dot(direction_inv, normal);
-    diffuse = pow(diffuse * 0.5 + 0.5, 2.0);
-    //diffuse = (diffuse * 0.5 + 0.5);
+    //diffuse = pow(diffuse * 0.5 + 0.5, 2.0);
+    diffuse = diffuse * 0.5 + 0.5;
     if (diffuse > 0.0)
     {
-        if (material.shininess > 0.0)
+        if (material.shininess > 0.0 && definition->reflection > 0.0)
         {
+            view = v3Normalize(v3Sub(location, renderer->camera_location));
+            reflect = v3Sub(direction_inv, v3Scale(normal, 2.0 * v3Dot(direction_inv, normal)));
+
             specular = v3Dot(reflect, view) * material.reflection;
             if (specular > 0.0)
             {
-                specular = pow(specular, material.shininess * 10.0 + 1.0);
+                specular = pow(specular, material.shininess);
             }
             else
             {
@@ -197,12 +200,12 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
         specular = 0.0;
     }
 
-    specular *= normal_norm;
+    specular *= normal_norm * definition->reflection;
     diffuse = 1.0 - normal_norm + diffuse * normal_norm;
 
-    result.r = material.base.r * diffuse * light.r + material.base.r * specular * light.r;
-    result.g = material.base.g * diffuse * light.g + material.base.g * specular * light.g;
-    result.b = material.base.b * diffuse * light.b + material.base.b * specular * light.b;
+    result.r = material.base.r * diffuse * light.r + specular * light.r;
+    result.g = material.base.g * diffuse * light.g + specular * light.g;
+    result.b = material.base.b * diffuse * light.b + specular * light.b;
     result.a = material.base.a;
 
     return result;

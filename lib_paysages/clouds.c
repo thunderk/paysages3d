@@ -422,7 +422,7 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
 
     material.base = base;
     material.reflection = 0.3;
-    material.shininess = 0.1;
+    material.shininess = 2.0;
 
     return renderer->applyLightingToSurface(renderer, position, normal, material);
 }

@@ -72,7 +72,7 @@ public:
 };
 
 DialogRender::DialogRender(QWidget *parent):
-    QDialog(parent)
+    QDialog(parent, Qt::WindowTitleHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint)
 {
     pixbuf = new QImage(1, 1, QImage::Format_ARGB32);
     _current_dialog = this;

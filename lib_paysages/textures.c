@@ -221,7 +221,7 @@ Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* render
     {
         material.base = definition->color;
         material.reflection = 0.1;
-        material.shininess = 0.1;
+        material.shininess = 4.0;
 
         result = renderer->applyLightingToSurface(renderer, location, normal, material);
         result.a = coverage;
