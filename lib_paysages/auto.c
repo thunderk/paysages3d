@@ -201,7 +201,7 @@ void autoGenRealisticLandscape(int seed)
     texture->color.b = 0.57;
     texture = texturesGetLayer(&textures, texturesAddLayer(&textures));
     zoneAddHeightRange(texture->zone, 1.0, -1.0, 0.0, 3.0, 15.0);
-    zoneAddSteepnessRange(texture->zone, 1.0, 0.0, 0.0, 0.3, 0.4);
+    zoneAddSteepnessRange(texture->zone, 1.0, 0.0, 0.0, 0.2, 0.3);
     noiseGenerateBaseNoise(texture->bump_noise, 102400);
     noiseAddLevelsSimple(texture->bump_noise, 6, 0.02, 0.008);
     texture->color.r = 0.2;

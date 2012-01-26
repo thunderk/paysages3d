@@ -30,14 +30,26 @@ int main(int argc, char** argv)
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    BaseForm* form;
     QTabWidget* tabs;
     QMenu* menu;
 
     tabs = new QTabWidget(this);
-    tabs->addTab(new FormTerrain(tabs), "Terrain");
-    tabs->addTab(new FormWater(tabs), "Water");
-    tabs->addTab(new FormSky(tabs), "Sky");
-    tabs->addTab(new FormRender(tabs), "Render");
+
+    form = new FormTerrain(tabs);
+    tabs->addTab(form, "Terrain");
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+
+    form = new FormWater(tabs);
+    tabs->addTab(form, "Water");
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+
+    form = new FormSky(tabs);
+    tabs->addTab(form, "Sky");
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+
+    form = new FormRender(tabs);
+    tabs->addTab(form, "Render");
 
     menu = menuBar()->addMenu("Scene");
     menu->addAction("New", this, SLOT(fileNew()));

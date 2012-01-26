@@ -42,20 +42,40 @@ public:
     PreviewTerrainColor(QWidget* parent):Preview(parent)
     {
         _renderer = rendererGetFake();
-        _preview_definition = terrainCreateDefinition();
+        _renderer.applyTextures = _applyTextures;
+        _renderer.getTerrainHeight = _getTerrainHeight;
+        /*_renderer.applyLightingToSurface = _applyLightingToSurface;*/
+
+        _terrain = terrainCreateDefinition();
+        _textures = texturesCreateDefinition();
+
+        _renderer.customData[0] = &_terrain;
+        _renderer.customData[1] = &_textures;
     }
 protected:
     QColor getColor(double x, double y)
     {
-        return colorToQColor(terrainGetColor(&_preview_definition, &_renderer, x, y, scaling));
+        return colorToQColor(terrainGetColor(&_terrain, &_renderer, x, y, scaling));
     }
     void updateData()
     {
-        terrainCopyDefinition(&_definition, &_preview_definition);
+        terrainCopyDefinition(&_definition, &_terrain);
+        sceneryGetTextures(&_textures);
     }
 private:
     Renderer _renderer;
-    TerrainDefinition _preview_definition;
+    TerrainDefinition _terrain;
+    TexturesDefinition _textures;
+
+    static double _getTerrainHeight(Renderer* renderer, double x, double z)
+    {
+        return terrainGetHeight((TerrainDefinition*)(renderer->customData[0]), x, z);
+    }
+
+    static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
+    {
+        return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location, precision);
+    }
 };
 
 /**************** Form ****************/

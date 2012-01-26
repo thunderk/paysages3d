@@ -214,7 +214,7 @@ Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* render
     SurfaceMaterial material;
 
     result = COLOR_TRANSPARENT;
-    normal = _getNormal(definition, renderer, location, detail * 0.3);
+    normal = _getNormal(definition, renderer, location, detail);
 
     coverage = zoneGetValue(definition->zone, location, normal);
     if (coverage > 0.0)

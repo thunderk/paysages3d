@@ -20,8 +20,8 @@ class PreviewWaterCoverage:public Preview
 public:
     PreviewWaterCoverage(QWidget* parent):Preview(parent)
     {
+        _water = waterCreateDefinition();
         _terrain = terrainCreateDefinition();
-        sceneryGetTerrain(&_terrain);
     }
 protected:
     QColor getColor(double x, double y)
@@ -39,7 +39,13 @@ protected:
             return colorToQColor(_definition.main_color);
         }
     }
+    void updateData()
+    {
+        waterCopyDefinition(&_definition, &_water);
+        sceneryGetTerrain(&_terrain);
+    }
 private:
+    WaterDefinition _water;
     TerrainDefinition _terrain;
 };
 
@@ -49,6 +55,7 @@ public:
     PreviewWaterColor(QWidget* parent):Preview(parent)
     {
         _water = waterCreateDefinition();
+
         _renderer = rendererGetFake();
         _renderer.rayWalking = _rayWalking;
         // TODO Lighting
@@ -80,8 +87,12 @@ protected:
             return colorToQColor(_rayWalking(&_renderer, eye, look, 0, 0, 0, 0).hit_color);
         }
 
+        return colorToQColor(waterGetColor(&_water, &_renderer, location, look));
+    }
+    void updateData()
+    {
+        waterCopyDefinition(&_definition, &_water);
         _water.height = 0.0;
-        return colorToQColor(waterGetColor(&_definition, &_renderer, location, look));
     }
 
 private:

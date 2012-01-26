@@ -15,6 +15,9 @@ class BaseForm:public QWidget
 public:
     BaseForm(QWidget* parent);
 
+signals:
+    void configApplied();
+
 public slots:
     virtual void revertConfig();
     virtual void applyConfig();
