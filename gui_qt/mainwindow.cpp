@@ -6,11 +6,17 @@
 #include <QFileDialog>
 #include <QTabWidget>
 
-#include "formterrain.h"
-#include "formwater.h"
+#include "formatmosphere.h"
+#include "formclouds.h"
+#include "formlighting.h"
 #include "formsky.h"
+#include "formterrain.h"
+#include "formtextures.h"
+#include "formwater.h"
 #include "formrender.h"
+
 #include "dialogrender.h"
+#include "dialogwanderer.h"
 
 #include "../lib_paysages/auto.h"
 #include "../lib_paysages/shared/functions.h"
@@ -40,16 +46,33 @@ MainWindow::MainWindow(QWidget *parent) :
     tabs->addTab(form, "Terrain");
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
+    form = new FormTextures(tabs);
+    tabs->addTab(form, "Textures");
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+
     form = new FormWater(tabs);
     tabs->addTab(form, "Water");
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+
+    form = new FormAtmosphere(tabs);
+    tabs->addTab(form, "Atmosphere");
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
     form = new FormSky(tabs);
     tabs->addTab(form, "Sky");
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
+    form = new FormClouds(tabs);
+    tabs->addTab(form, "Clouds");
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+
+    form = new FormLighting(tabs);
+    tabs->addTab(form, "Lighting");
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+
     form = new FormRender(tabs);
     tabs->addTab(form, "Render");
+    //QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
     menu = menuBar()->addMenu("Scene");
     menu->addAction("New", this, SLOT(fileNew()));
@@ -57,8 +80,9 @@ MainWindow::MainWindow(QWidget *parent) :
     menu->addAction("Load", this, SLOT(fileLoad()));
     menu->addAction("Quit", this, SLOT(close()));
 
-    menu = menuBar()->addMenu("Render");
-    menu->addAction("Quick render", this, SLOT(quickPreview()), QKeySequence("F2"));
+    menu = menuBar()->addMenu("Actions");
+    menu->addAction("Explore in 3D", this, SLOT(explore3D()), QKeySequence("F2"));
+    menu->addAction("Quick render", this, SLOT(quickPreview()), QKeySequence("F5"));
 
     setCentralWidget(tabs);
 
@@ -103,6 +127,14 @@ void MainWindow::quickPreview()
 {
     DialogRender* dialog = new DialogRender(this);
     dialog->startRender(3, 400, 300);
+
+    delete dialog;
+}
+
+void MainWindow::explore3D()
+{
+    DialogWanderer* dialog = new DialogWanderer(this);
+    dialog->exec();
 
     delete dialog;
 }

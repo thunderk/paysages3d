@@ -3,6 +3,8 @@
 ######################################################################
 
 TEMPLATE = app
+CONFIG += qt
+QT += opengl
 TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
@@ -18,9 +20,14 @@ HEADERS += ../lib_paysages/shared/functions.h ../lib_paysages/shared/types.h \
     baseinput.h \
     dialognoise.h \
     dialogrender.h \
+    dialogwanderer.h \
+    formatmosphere.h \
+    formclouds.h \
+    formlighting.h \
     formrender.h \
     formsky.h \
     formterrain.h \
+    formtextures.h \
     formwater.h \
     inputcolor.h \
     inputcolorgradation.h \
@@ -36,9 +43,14 @@ SOURCES += \
     baseinput.cpp \
     dialognoise.cpp \
     dialogrender.cpp \
+    dialogwanderer.cpp \
+    formatmosphere.cpp \
+    formclouds.cpp \
+    formlighting.cpp \
     formrender.cpp \
     formsky.cpp \
     formterrain.cpp \
+    formtextures.cpp \
     formwater.cpp \
     inputcolor.cpp \
     inputcolorgradation.cpp \

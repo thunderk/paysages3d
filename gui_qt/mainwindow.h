@@ -16,10 +16,13 @@ public:
 
 public slots:
     void refreshAll();
+
     void fileNew();
     void fileSave();
     void fileLoad();
+
     void quickPreview();
+    void explore3D();
 };
 
 #endif // _PAYSAGES_QT_MAINWINDOW_H_
