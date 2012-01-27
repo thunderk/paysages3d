@@ -119,6 +119,20 @@ void cameraStrafeUp(CameraDefinition* camera, double value)
     cameraValidateDefinition(camera);
 }
 
+void cameraRotateYaw(CameraDefinition* camera, double value)
+{
+    Matrix4 m;
+    Vector3 v;
+
+    v = v3Sub(camera->target, camera->location);
+    m = m4NewRotateAxis(value, camera->up);
+    v = m4MultPoint(m, v);
+
+    camera->target = v3Add(camera->location, v);
+
+    cameraValidateDefinition(camera);
+}
+
 Vector3 cameraProject(CameraDefinition* camera, Vector3 point)
 {
     point = m4Transform(camera->project, v3Sub(point, camera->location));

@@ -11,6 +11,8 @@ DialogWanderer::DialogWanderer(QWidget* parent, CameraDefinition* camera):
     setLayout(new QVBoxLayout());
 
     layout()->addWidget(new WidgetWanderer(this, camera));
+
+    resize(700, 530);
 }
 
 DialogWanderer::~DialogWanderer()

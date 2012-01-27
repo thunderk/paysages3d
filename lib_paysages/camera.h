@@ -33,6 +33,7 @@ void cameraSetAngle(CameraDefinition* camera, double angle);
 void cameraStrafeForward(CameraDefinition* camera, double value);
 void cameraStrafeRight(CameraDefinition* camera, double value);
 void cameraStrafeUp(CameraDefinition* camera, double value);
+void cameraRotateYaw(CameraDefinition* camera, double value);
 
 Vector3 cameraProject(CameraDefinition* camera, Vector3 point);
 Vector3 cameraUnproject(CameraDefinition* camera, Vector3 point);

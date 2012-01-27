@@ -3,3 +3,4 @@
 - All Save and Load methods should have same signature : void ...Save(FILE*, ...*).
 - Remove all global variables (render_quality, render_width...), it should all be set in Renderer.
 - Implement scaling and scrolling on previews.
+- Water and terrain LOD moves with the camera, fix it like in the wanderer.
