@@ -13,14 +13,22 @@ public:
     WidgetWanderer(QWidget* parent, CameraDefinition* camera);
 
 protected:
+    void keyPressEvent(QKeyEvent* event);
+    void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
+    void wheelEvent(QWheelEvent* event);
+
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
 
 private:
-    CameraDefinition* camera;
+    CameraDefinition camera;
     TerrainDefinition terrain;
     WaterDefinition water;
+
+    int last_mouse_x;
+    int last_mouse_y;
 };
 
 #endif

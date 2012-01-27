@@ -86,6 +86,39 @@ void cameraSetAngle(CameraDefinition* camera, double angle)
     /* TODO */
 }
 
+void cameraStrafeForward(CameraDefinition* camera, double value)
+{
+    Vector3 move;
+
+    move = v3Scale(v3Normalize(v3Sub(camera->target, camera->location)), value);
+    camera->location = v3Add(camera->location, move);
+    camera->target = v3Add(camera->target, move);
+
+    cameraValidateDefinition(camera);
+}
+
+void cameraStrafeRight(CameraDefinition* camera, double value)
+{
+    Vector3 move;
+
+    move = v3Scale(v3Normalize(v3Cross(v3Sub(camera->target, camera->location), camera->up)), value);
+    camera->location = v3Add(camera->location, move);
+    camera->target = v3Add(camera->target, move);
+
+    cameraValidateDefinition(camera);
+}
+
+void cameraStrafeUp(CameraDefinition* camera, double value)
+{
+    Vector3 move;
+
+    move = v3Scale(v3Normalize(camera->up), value);
+    camera->location = v3Add(camera->location, move);
+    camera->target = v3Add(camera->target, move);
+
+    cameraValidateDefinition(camera);
+}
+
 Vector3 cameraProject(CameraDefinition* camera, Vector3 point)
 {
     point = m4Transform(camera->project, v3Sub(point, camera->location));
