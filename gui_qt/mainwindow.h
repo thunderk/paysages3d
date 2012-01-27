@@ -3,10 +3,6 @@
 
 #include <QMainWindow>
 
-namespace Ui {
-    class MainWindow;
-}
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -25,4 +21,4 @@ public slots:
     void explore3D();
 };
 
-#endif // _PAYSAGES_QT_MAINWINDOW_H_
+#endif

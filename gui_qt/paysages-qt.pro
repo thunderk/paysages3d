@@ -36,7 +36,8 @@ HEADERS += ../lib_paysages/shared/functions.h ../lib_paysages/shared/types.h \
     inputnoise.h \
     mainwindow.h \
     preview.h \
-    tools.h
+    tools.h \
+    widgetwanderer.h
 FORMS +=
 SOURCES += \
     baseform.cpp \
@@ -58,4 +59,5 @@ SOURCES += \
     inputint.cpp \
     inputnoise.cpp \
     mainwindow.cpp \
-    preview.cpp
+    preview.cpp \
+    widgetwanderer.cpp

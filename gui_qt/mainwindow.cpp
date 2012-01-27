@@ -19,6 +19,7 @@
 #include "dialogwanderer.h"
 
 #include "../lib_paysages/auto.h"
+#include "../lib_paysages/scenery.h"
 #include "../lib_paysages/shared/functions.h"
 
 int main(int argc, char** argv)
@@ -133,7 +134,11 @@ void MainWindow::quickPreview()
 
 void MainWindow::explore3D()
 {
-    DialogWanderer* dialog = new DialogWanderer(this);
+    CameraDefinition camera;
+
+    sceneryGetCamera(&camera);
+
+    DialogWanderer* dialog = new DialogWanderer(this, &camera);
     dialog->exec();
 
     delete dialog;
