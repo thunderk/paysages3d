@@ -11,12 +11,13 @@
 #include <QGridLayout>
 #include <QLabel>
 
-BaseForm::BaseForm(QWidget* parent) :
-    QWidget(parent)
+BaseForm::BaseForm(QWidget* parent, bool auto_apply) : QWidget(parent)
 {
     QWidget* hwidget;
     QVBoxLayout* vlayout;
     QHBoxLayout* hlayout;
+
+    this->auto_apply = auto_apply;
 
     vlayout = new QVBoxLayout();
     hlayout = new QHBoxLayout();
@@ -50,18 +51,31 @@ BaseForm::BaseForm(QWidget* parent) :
     button_revert = addButton("Revert");
     button_revert->setEnabled(false);
     connect(button_revert, SIGNAL(clicked()), this, SLOT(revertConfig()));
+
+    if (auto_apply)
+    {
+        button_apply->hide();
+        button_revert->hide();
+    }
 }
 
 void BaseForm::configChangeEvent()
 {
+    if (auto_apply)
+    {
+        applyConfig();
+    }
+    else
+    {
+        button_apply->setEnabled(true);
+        button_revert->setEnabled(true);
+    }
+
     QList<Preview*> list_previews = previews->findChildren<Preview*>("_form_preview_");
     for (int i = 0; i < list_previews.size(); i++)
     {
         list_previews[i]->redraw();
     }
-
-    button_apply->setEnabled(true);
-    button_revert->setEnabled(true);
 }
 
 void BaseForm::revertConfig()
@@ -80,7 +94,9 @@ void BaseForm::revertConfig()
 
 void BaseForm::applyConfig()
 {
-    revertConfig();
+    button_apply->setEnabled(false);
+    button_revert->setEnabled(false);
+
     emit(configApplied());
 }
 

@@ -13,7 +13,7 @@ class BaseForm:public QWidget
     Q_OBJECT
 
 public:
-    BaseForm(QWidget* parent);
+    BaseForm(QWidget* parent, bool auto_apply=false);
 
 signals:
     void configApplied();
@@ -36,6 +36,7 @@ protected:
     void addInputNoise(QString label, NoiseGenerator* value);
 
 private:
+    bool auto_apply;
     QWidget* previews;
     QWidget* form;
     QWidget* buttons;

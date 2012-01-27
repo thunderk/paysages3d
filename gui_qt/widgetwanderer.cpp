@@ -11,7 +11,8 @@ WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
     setMinimumSize(400, 300);
     setFocusPolicy(Qt::StrongFocus);
 
-    cameraCopyDefinition(camera, &this->camera);
+    _base_camera = camera;
+    cameraCopyDefinition(camera, &_current_camera);
 
     this->terrain = terrainCreateDefinition();
     sceneryGetTerrain(&terrain);
@@ -21,6 +22,17 @@ WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
 
     last_mouse_x = 0;
     last_mouse_y = 0;
+}
+
+void WidgetWanderer::resetCamera()
+{
+    cameraCopyDefinition(_base_camera, &_current_camera);
+    updateGL();
+}
+
+void WidgetWanderer::validateCamera()
+{
+    cameraCopyDefinition(&_current_camera, _base_camera);
 }
 
 void WidgetWanderer::keyPressEvent(QKeyEvent* event)
@@ -43,32 +55,32 @@ void WidgetWanderer::keyPressEvent(QKeyEvent* event)
 
     if (event->key() == Qt::Key_Up)
     {
-        cameraStrafeForward(&camera, 0.1 * factor);
+        cameraStrafeForward(&_current_camera, 0.1 * factor);
         updateGL();
     }
     else if (event->key() == Qt::Key_Down)
     {
-        cameraStrafeForward(&camera, -0.1 * factor);
+        cameraStrafeForward(&_current_camera, -0.1 * factor);
         updateGL();
     }
     else if (event->key() == Qt::Key_Right)
     {
-        cameraStrafeRight(&camera, 0.1 * factor);
+        cameraStrafeRight(&_current_camera, 0.1 * factor);
         updateGL();
     }
     else if (event->key() == Qt::Key_Left)
     {
-        cameraStrafeRight(&camera, -0.1 * factor);
+        cameraStrafeRight(&_current_camera, -0.1 * factor);
         updateGL();
     }
     else if (event->key() == Qt::Key_PageUp)
     {
-        cameraStrafeUp(&camera, 0.1 * factor);
+        cameraStrafeUp(&_current_camera, 0.1 * factor);
         updateGL();
     }
     else if (event->key() == Qt::Key_PageDown)
     {
-        cameraStrafeUp(&camera, -0.1 * factor);
+        cameraStrafeUp(&_current_camera, -0.1 * factor);
         updateGL();
     }
     else
@@ -105,14 +117,14 @@ void WidgetWanderer::mouseMoveEvent(QMouseEvent* event)
 
     if (event->buttons() & Qt::LeftButton)
     {
-        cameraStrafeRight(&camera, (double)(last_mouse_x - event->x()) * factor);
-        cameraStrafeUp(&camera, (double)(event->y() - last_mouse_y) * factor);
+        cameraStrafeRight(&_current_camera, (double)(last_mouse_x - event->x()) * factor);
+        cameraStrafeUp(&_current_camera, (double)(event->y() - last_mouse_y) * factor);
         updateGL();
         event->accept();
     }
     else if (event->buttons() & Qt::RightButton)
     {
-        cameraRotateYaw(&camera, (double)(event->x() - last_mouse_x) * factor * 0.1);
+        cameraRotateYaw(&_current_camera, (double)(event->x() - last_mouse_x) * factor * 0.1);
         updateGL();
         event->accept();
     }
@@ -145,7 +157,7 @@ void WidgetWanderer::wheelEvent(QWheelEvent* event)
 
     if (event->orientation() == Qt::Vertical)
     {
-        cameraStrafeForward(&camera, (double)event->delta() * factor);
+        cameraStrafeForward(&_current_camera, (double)event->delta() * factor);
         updateGL();
 
     }
@@ -255,7 +267,7 @@ void WidgetWanderer::paintGL()
 {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(camera.location.x, camera.location.y, camera.location.z, camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
+    gluLookAt(_current_camera.location.x, _current_camera.location.y, _current_camera.location.z, _current_camera.target.x, _current_camera.target.y, _current_camera.target.z, _current_camera.up.x, _current_camera.up.y, _current_camera.up.z);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -268,5 +280,5 @@ void WidgetWanderer::paintGL()
     glVertex3f(500.0, water.height, -500.0);
     glEnd();
 
-    _renderTerrain(&terrain, &camera, 3);
+    _renderTerrain(&terrain, &_current_camera, 3);
 }

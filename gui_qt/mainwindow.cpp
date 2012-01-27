@@ -138,7 +138,7 @@ void MainWindow::explore3D()
 
     sceneryGetCamera(&camera);
 
-    DialogWanderer* dialog = new DialogWanderer(this, &camera);
+    DialogWanderer* dialog = new DialogWanderer(this, &camera, false);
     dialog->exec();
 
     delete dialog;

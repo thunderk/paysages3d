@@ -12,6 +12,10 @@ class WidgetWanderer : public QGLWidget
 public:
     WidgetWanderer(QWidget* parent, CameraDefinition* camera);
 
+public slots:
+    void resetCamera();
+    void validateCamera();
+
 protected:
     void keyPressEvent(QKeyEvent* event);
     void mousePressEvent(QMouseEvent* event);
@@ -23,7 +27,9 @@ protected:
     void paintGL();
 
 private:
-    CameraDefinition camera;
+    CameraDefinition _current_camera;
+    CameraDefinition* _base_camera;
+
     TerrainDefinition terrain;
     WaterDefinition water;
 

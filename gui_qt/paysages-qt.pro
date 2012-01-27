@@ -29,6 +29,7 @@ HEADERS += ../lib_paysages/shared/functions.h ../lib_paysages/shared/types.h \
     formterrain.h \
     formtextures.h \
     formwater.h \
+    inputcamera.h \
     inputcolor.h \
     inputcolorgradation.h \
     inputdouble.h \
@@ -53,6 +54,7 @@ SOURCES += \
     formterrain.cpp \
     formtextures.cpp \
     formwater.cpp \
+    inputcamera.cpp \
     inputcolor.cpp \
     inputcolorgradation.cpp \
     inputdouble.cpp \
