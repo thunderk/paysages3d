@@ -76,10 +76,12 @@ MainWindow::MainWindow(QWidget *parent) :
     //QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
     menu = menuBar()->addMenu("Scene");
-    menu->addAction("New", this, SLOT(fileNew()));
-    menu->addAction("Save", this, SLOT(fileSave()));
-    menu->addAction("Load", this, SLOT(fileLoad()));
-    menu->addAction("Quit", this, SLOT(close()));
+    menu->addAction("New", this, SLOT(fileNew()), QKeySequence(Qt::CTRL + Qt::Key_N));
+    menu->addSeparator();
+    menu->addAction("Save", this, SLOT(fileSave()), QKeySequence(Qt::CTRL + Qt::Key_S));
+    menu->addAction("Open", this, SLOT(fileLoad()), QKeySequence(Qt::CTRL + Qt::Key_O));
+    menu->addSeparator();
+    menu->addAction("Quit", this, SLOT(close()), QKeySequence(Qt::CTRL + Qt::Key_Q));
 
     menu = menuBar()->addMenu("Actions");
     menu->addAction("Explore in 3D", this, SLOT(explore3D()), QKeySequence("F2"));

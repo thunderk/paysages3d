@@ -238,6 +238,7 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, Vecto
     for (i = 0; i < definition->nbtextures; i++)
     {
         /* TODO Do not compute layers fully covered */
+        /* TODO Optimize : each layer computes the same shadows */
         tex_color = texturesGetLayerColor(definition->textures + i, renderer, location, detail);
         if (tex_color.a > 0.0001)
         {

@@ -137,13 +137,13 @@ void terrainDelModifier(TerrainDefinition* definition, int modifier_position)
     }
 }
 
-static inline double _getHeight(TerrainDefinition* definition, double x, double z, double detail)
+static inline double _getHeight(TerrainDefinition* definition, double x, double z)
 {
     Vector3 location;
     int i;
 
     location.x = x;
-    location.y = noiseGet2DDetail(definition->height_noise, x / definition->scaling, z / definition->scaling, detail) * definition->height_factor;
+    location.y = noiseGet2DTotal(definition->height_noise, x / definition->scaling, z / definition->scaling) * definition->height_factor;
     location.z = z;
 
     for (i = 0; i < definition->height_modifiers_count; i++)
@@ -154,12 +154,12 @@ static inline double _getHeight(TerrainDefinition* definition, double x, double 
     return location.y;
 }
 
-static inline Vector3 _getPoint(TerrainDefinition* definition, double x, double z, double detail)
+static inline Vector3 _getPoint(TerrainDefinition* definition, double x, double z)
 {
     Vector3 result;
 
     result.x = x;
-    result.y = _getHeight(definition, x, z, detail);
+    result.y = _getHeight(definition, x, z);
     result.z = z;
 
     return result;
@@ -175,7 +175,7 @@ Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Colo
     {
         return light;
     }
-    
+
     inc_factor = (double)renderer->render_quality;
     inc_base = 1.0;
     inc_value = inc_base / inc_factor;
@@ -188,7 +188,7 @@ Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Colo
         inc_vector = v3Scale(direction_to_light, inc_value);
         length += v3Norm(inc_vector);
         location = v3Add(location, inc_vector);
-        height = _getHeight(definition, location.x, location.z, inc_value);
+        height = _getHeight(definition, location.x, location.z);
         diff = location.y - height;
         if (diff < 0.0)
         {
@@ -249,13 +249,13 @@ int terrainProjectRay(TerrainDefinition* definition, Renderer* renderer, Vector3
         inc_vector = v3Scale(direction, inc_value);
         length += v3Norm(inc_vector);
         start = v3Add(start, inc_vector);
-        height = _getHeight(definition, start.x, start.z, inc_value);
+        height = _getHeight(definition, start.x, start.z);
         diff = start.y - height;
         if (diff < 0.0)
         {
             start.y = height;
             *hit_point = start;
-            *hit_color = _getColor(definition, renderer, start, inc_value);
+            *hit_color = _getColor(definition, renderer, start, renderer->getPrecision(renderer, start));
             return 1;
         }
 
@@ -285,10 +285,9 @@ static int _postProcessFragment(RenderFragment* fragment, Renderer* renderer, vo
     definition = (TerrainDefinition*)data;
 
     point = fragment->vertex.location;
+    point = _getPoint(definition, point.x, point.z);
+
     precision = renderer->getPrecision(renderer, point);
-
-    point = _getPoint(definition, point.x, point.z, precision);
-
     fragment->vertex.color = _getColor(definition, renderer, point, precision);
 
     return 1;
@@ -299,7 +298,7 @@ static Vertex _getFirstPassVertex(TerrainDefinition* definition, double x, doubl
     Vertex result;
     double value;
 
-    result.location = _getPoint(definition, x, z, 0.0);
+    result.location = _getPoint(definition, x, z);
     value = sin(x) * sin(x) * cos(z) * cos(z);
     result.color.r = value;
     result.color.g = value;
@@ -325,7 +324,7 @@ static void _renderQuad(TerrainDefinition* definition, Renderer* renderer, doubl
 
 double terrainGetHeight(TerrainDefinition* definition, double x, double z)
 {
-    return _getHeight(definition, x, z, 0.0);
+    return _getHeight(definition, x, z);
 }
 
 double terrainGetHeightNormalized(TerrainDefinition* definition, double x, double z)
@@ -336,13 +335,13 @@ double terrainGetHeightNormalized(TerrainDefinition* definition, double x, doubl
     }
     else
     {
-        return 0.5 + _getHeight(definition, x, z, 0.0) / (definition->_max_height * 2.0);
+        return 0.5 + _getHeight(definition, x, z) / (definition->_max_height * 2.0);
     }
 }
 
 Color terrainGetColor(TerrainDefinition* definition, Renderer* renderer, double x, double z, double detail)
 {
-    Vector3 point = _getPoint(definition, x, z, detail);
+    Vector3 point = _getPoint(definition, x, z);
     return _getColor(definition, renderer, point, detail);
 }
 
