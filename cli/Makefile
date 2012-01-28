@@ -1,21 +1,27 @@
+BUILDMODE=debug
+BUILDPATH=../build/${BUILDMODE}
 SOURCES=$(wildcard *.c)
-OBJECTS=${SOURCES:.c=.o}
+OBJECTS=${SOURCES:%.c=obj/%.o}
 HEADERS=$(wildcard ../lib_paysages/shared/*.h ../lib_paysages/*.h *.h)
-RESULT=paysages-cli
+RESULT=${BUILDPATH}/paysages-cli
 CC_FLAGS=-g -pg -Wall
-CC_LDFLAGS=-L../lib_paysages/ -lpaysages
+CC_LDFLAGS=-L${BUILDPATH} -lpaysages
 
-all:${RESULT}
+all:prepare ${RESULT}
+
+prepare:
+	mkdir -p ./obj
+	mkdir -p ${BUILDPATH}
 
 clean:
 	rm -f ${OBJECTS}
 	rm -f ${RESULT}
 
-%.o:%.c ${HEADERS}
+obj/%.o:%.c ${HEADERS}
 	${CC} -c ${CC_FLAGS} $< -o $@
 
 ${RESULT}:${OBJECTS}
 	${CC} $^ ${CC_LDFLAGS} -o $@
 
-.PHONY:all clean
+.PHONY:all clean prepare
 

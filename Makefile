@@ -1,17 +1,26 @@
+BUILDMODE=debug
+BUILDPATH=./build/${BUILDMODE}
+
 all:
-	@+cd lib_paysages && make
-	@+cd cli && make
-	@+cd gui_qt && qmake && make
+	@+cd lib_paysages && make BUILDMODE=${BUILDMODE}
+	@+cd cli && make BUILDMODE=${BUILDMODE}
+	@+cd gui_qt && qmake "BUILDMODE=${BUILDMODE}" && make
 
 clean:
-	cd lib_paysages && make clean
-	cd cli && make clean
-	cd gui_qt && make clean && rm -f paysages-qt
+	cd lib_paysages && make clean BUILDMODE=${BUILDMODE}
+	cd cli && make clean BUILDMODE=${BUILDMODE}
+	cd gui_qt && qmake "BUILDMODE=${BUILDMODE}" && make clean
+	rm -f ${BUILDPATH}/paysages-qt
+	rm -f ${BUILDPATH}/paysages-cli
+	rm -f ${BUILDPATH}/libpaysages.so
+	
+release:
+	make BUILDMODE=release all
 
 run_cli:
-	LD_LIBRARY_PATH=lib_paysages ./cli/paysages-cli
+	LD_LIBRARY_PATH=${BUILDPATH} ${BUILDPATH}/paysages-cli
 
 run_qt:
-	LD_LIBRARY_PATH=lib_paysages ./gui_qt/paysages-qt
+	LD_LIBRARY_PATH=${BUILDPATH} ${BUILDPATH}/paysages-qt
 
-.PHONY:all clean
+.PHONY:all clean release
