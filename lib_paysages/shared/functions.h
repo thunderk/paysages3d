@@ -79,6 +79,8 @@ void toolsSaveDouble(FILE* f, double value);
 double toolsLoadDouble(FILE* f);
 void toolsSaveInt(FILE* f, int value);
 int toolsLoadInt(FILE* f);
+void materialSave(FILE* f, SurfaceMaterial* material);
+void materialLoad(FILE* f, SurfaceMaterial* material);
 
 /* zone.c */
 Zone* zoneCreate();

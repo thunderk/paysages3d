@@ -79,3 +79,16 @@ int toolsLoadInt(FILE* f)
     return value;
 }
 
+void materialSave(FILE* f, SurfaceMaterial* material)
+{
+    colorSave(material->base, f);
+    toolsSaveDouble(f, material->reflection);
+    toolsSaveDouble(f, material->shininess);
+}
+
+void materialLoad(FILE* f, SurfaceMaterial* material)
+{
+    material->base = colorLoad(f);
+    material->reflection = toolsLoadDouble(f);
+    material->shininess = toolsLoadDouble(f);
+}

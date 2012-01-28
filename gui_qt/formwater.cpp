@@ -7,6 +7,7 @@
 
 #include "../lib_paysages/terrain.h"
 #include "../lib_paysages/water.h"
+#include "../lib_paysages/lighting.h"
 #include "../lib_paysages/scenery.h"
 #include "../lib_paysages/renderer.h"
 #include "../lib_paysages/shared/functions.h"
@@ -36,7 +37,7 @@ protected:
         }
         else
         {
-            return colorToQColor(_definition.main_color);
+            return colorToQColor(_definition.material.base);
         }
     }
     void updateData()
@@ -54,11 +55,27 @@ class PreviewWaterColor:public Preview
 public:
     PreviewWaterColor(QWidget* parent):Preview(parent)
     {
+        LightDefinition light;
+        
         _water = waterCreateDefinition();
+        
+        _lighting = lightingCreateDefinition();
+        light.color = COLOR_WHITE;
+        light.amplitude = 0.0;
+        light.direction.x = 0.0;
+        light.direction.y = -0.4794;
+        light.direction.z = 0.8776;
+        light.filtered = 0;
+        light.masked = 0;
+        light.reflection = 1.0;
+        lightingAddLight(&_lighting, light);
+        lightingValidateDefinition(&_lighting);
 
         _renderer = rendererGetFake();
         _renderer.rayWalking = _rayWalking;
-        // TODO Lighting
+        _renderer.applyLightingToSurface = _applyLightingToSurface;
+        _renderer.customData[0] = &_water;
+        _renderer.customData[1] = &_lighting;
     }
 protected:
     QColor getColor(double x, double y)
@@ -98,6 +115,8 @@ protected:
 private:
     Renderer _renderer;
     WaterDefinition _water;
+    LightingDefinition _lighting;
+    
     static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
     {
         RayCastingResult result;
@@ -129,6 +148,17 @@ private:
 
         return result;
     }
+    static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+    {
+        if (location.x >= 0.0)
+        {
+            return lightingApplyToSurface((LightingDefinition*)renderer->customData[1], renderer, location, normal, material);
+        }
+        else
+        {
+            return material.base;
+        }
+    }
 };
 
 /**************** Form ****************/
@@ -140,14 +170,17 @@ FormWater::FormWater(QWidget *parent):
     previewCoverage = new PreviewWaterCoverage(this);
     previewColor = new PreviewWaterColor(this);
     addPreview(previewCoverage, QString("Coverage preview"));
-    addPreview(previewColor, QString("Color preview"));
+    addPreview(previewColor, QString("Rendered preview (without/with lighting)"));
 
     addInputDouble("Height", &_definition.height, -10.0, 10.0, 0.1, 1.0);
-    addInputColor("Surface color", &_definition.main_color);
+    addInputColor("Surface color", &_definition.material.base);
+    addInputDouble("Light reflection", &_definition.material.reflection, 0.0, 1.0, 0.01, 0.1);
+    addInputDouble("Shininess to light", &_definition.material.shininess, 0.0, 20.0, 0.1, 1.0);
     addInputDouble("Transparency", &_definition.transparency, 0.0, 1.0, 0.001, 0.1);
     addInputDouble("Reflection", &_definition.reflection, 0.0, 1.0, 0.001, 0.1);
+    addInputDouble("Transparency distance", &_definition.transparency_depth, 0.0, 20.0, 0.1, 1.0);
     addInputColor("Depth color", &_definition.depth_color);
-    addInputDouble("Depth filtering", &_definition.transparency_depth, 0.0, 100.0, 0.5, 5.0);
+    addInputDouble("Light-through distance", &_definition.lighting_depth, 0.0, 20.0, 0.1, 1.0);
     addInputNoise("Waves noise", _definition.waves_noise);
     addInputDouble("Waves height", &_definition.waves_noise_height, 0.0, 0.1, 0.001, 0.01);
     addInputDouble("Waves scaling", &_definition.waves_noise_scale, 0.01, 1.0, 0.01, 0.1);

@@ -17,11 +17,12 @@ void waterInit()
 void waterSave(FILE* f, WaterDefinition* definition)
 {
     toolsSaveDouble(f, definition->height);
-    colorSave(definition->main_color, f);
+    materialSave(f, &definition->material);
     colorSave(definition->depth_color, f);
     toolsSaveDouble(f, definition->transparency_depth);
     toolsSaveDouble(f, definition->transparency);
     toolsSaveDouble(f, definition->reflection);
+    toolsSaveDouble(f, definition->lighting_depth);
     noiseSave(definition->waves_noise, f);
     toolsSaveDouble(f, definition->waves_noise_height);
     toolsSaveDouble(f, definition->waves_noise_scale);
@@ -30,11 +31,12 @@ void waterSave(FILE* f, WaterDefinition* definition)
 void waterLoad(FILE* f, WaterDefinition* definition)
 {
     definition->height = toolsLoadDouble(f);
-    definition->main_color = colorLoad(f);
+    materialLoad(f, &definition->material);
     definition->depth_color = colorLoad(f);
     definition->transparency_depth = toolsLoadDouble(f);
     definition->transparency = toolsLoadDouble(f);
     definition->reflection = toolsLoadDouble(f);
+    definition->lighting_depth = toolsLoadDouble(f);
     noiseLoad(definition->waves_noise, f);
     definition->waves_noise_height = toolsLoadDouble(f);
     definition->waves_noise_scale = toolsLoadDouble(f);
@@ -46,12 +48,15 @@ WaterDefinition waterCreateDefinition()
 {
     WaterDefinition result;
 
-    result.main_color = COLOR_BLACK;
+    result.material.base = COLOR_BLACK;
+    result.material.reflection = 0.0;
+    result.material.shininess = 0.0;
     result.depth_color = COLOR_BLACK;
     result.height = -1000.0;
     result.reflection = 0.0;
     result.transparency = 0.0;
     result.transparency_depth = 0.0;
+    result.lighting_depth = 0.0;
     result.waves_noise = noiseCreateGenerator();
     result.waves_noise_height = 0.02;
     result.waves_noise_scale = 0.2;
@@ -137,7 +142,7 @@ Color waterLightFilter(WaterDefinition* definition, Renderer* renderer, Color li
     {
         if (direction_to_light.y > 0.00001)
         {
-            factor = (definition->height - location.y) / (direction_to_light.y * 3.0); // TODO Configurable
+            factor = (definition->height - location.y) / (direction_to_light.y * definition->lighting_depth);
             if (factor > 1.0)
             {
                 factor = 1.0;
@@ -193,18 +198,17 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
         result.refracted.a = 1.0;
     }
 
-    color.r = definition->main_color.r * (1.0 - definition->transparency) + result.reflected.r * definition->reflection + result.refracted.r * definition->transparency;
-    color.g = definition->main_color.g * (1.0 - definition->transparency) + result.reflected.g * definition->reflection + result.refracted.g * definition->transparency;
-    color.b = definition->main_color.b * (1.0 - definition->transparency) + result.reflected.b * definition->reflection + result.refracted.b * definition->transparency;
+    color.r = definition->material.base.r * (1.0 - definition->transparency) + result.reflected.r * definition->reflection + result.refracted.r * definition->transparency;
+    color.g = definition->material.base.g * (1.0 - definition->transparency) + result.reflected.g * definition->reflection + result.refracted.g * definition->transparency;
+    color.b = definition->material.base.b * (1.0 - definition->transparency) + result.reflected.b * definition->reflection + result.refracted.b * definition->transparency;
     color.a = 1.0;
 
+    material = definition->material;
     material.base = color;
-    material.reflection = 1.0;
-    material.shininess = 12.0;
     color = renderer->applyLightingToSurface(renderer, location, normal, material);
     color = renderer->applyAtmosphere(renderer, location, color);
 
-    result.base = definition->main_color;
+    result.base = definition->material.base;
     result.final = color;
 
     return result;

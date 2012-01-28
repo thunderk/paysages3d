@@ -16,9 +16,10 @@ typedef struct
     double height;
     double transparency;
     double reflection;
-    Color main_color;
+    SurfaceMaterial material;
     Color depth_color;
     double transparency_depth;
+    double lighting_depth;
     NoiseGenerator* waves_noise;
     double waves_noise_height;
     double waves_noise_scale;
