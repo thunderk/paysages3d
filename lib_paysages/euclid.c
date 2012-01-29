@@ -1,70 +1,23 @@
+#include "euclid.h"
+
 #include <math.h>
 
-#include "shared/functions.h"
-#include "shared/types.h"
+#include "tools.h"
 
 Vector3 VECTOR_ZERO = {0.0, 0.0, 0.0};
 
-void v3Save(Vector3 v, FILE* f)
+void v3Save(FILE* f, Vector3* v)
 {
-    toolsSaveDouble(f, v.x);
-    toolsSaveDouble(f, v.y);
-    toolsSaveDouble(f, v.z);
+    toolsSaveDouble(f, &v->x);
+    toolsSaveDouble(f, &v->y);
+    toolsSaveDouble(f, &v->z);
 }
 
-Vector3 v3Load(FILE* f)
+void v3Load(FILE* f, Vector3* v)
 {
-    Vector3 result;
-    
-    result.x = toolsLoadDouble(f);
-    result.y = toolsLoadDouble(f);
-    result.z = toolsLoadDouble(f);
-    
-    return result;
-}
-
-void m4Save(Matrix4 m, FILE* f)
-{
-    toolsSaveDouble(f, m.a);
-    toolsSaveDouble(f, m.b);
-    toolsSaveDouble(f, m.c);
-    toolsSaveDouble(f, m.d);
-    toolsSaveDouble(f, m.e);
-    toolsSaveDouble(f, m.f);
-    toolsSaveDouble(f, m.g);
-    toolsSaveDouble(f, m.h);
-    toolsSaveDouble(f, m.i);
-    toolsSaveDouble(f, m.j);
-    toolsSaveDouble(f, m.k);
-    toolsSaveDouble(f, m.l);
-    toolsSaveDouble(f, m.m);
-    toolsSaveDouble(f, m.n);
-    toolsSaveDouble(f, m.o);
-    toolsSaveDouble(f, m.p);
-}
-
-Matrix4 m4Load(FILE* f)
-{
-    Matrix4 result;
-
-    result.a = toolsLoadDouble(f);
-    result.b = toolsLoadDouble(f);
-    result.c = toolsLoadDouble(f);
-    result.d = toolsLoadDouble(f);
-    result.e = toolsLoadDouble(f);
-    result.f = toolsLoadDouble(f);
-    result.g = toolsLoadDouble(f);
-    result.h = toolsLoadDouble(f);
-    result.i = toolsLoadDouble(f);
-    result.j = toolsLoadDouble(f);
-    result.k = toolsLoadDouble(f);
-    result.l = toolsLoadDouble(f);
-    result.m = toolsLoadDouble(f);
-    result.n = toolsLoadDouble(f);
-    result.o = toolsLoadDouble(f);
-    result.p = toolsLoadDouble(f);
-
-    return result;
+    toolsLoadDouble(f, &v->x);
+    toolsLoadDouble(f, &v->y);
+    toolsLoadDouble(f, &v->z);
 }
 
 Vector3 v3Translate(Vector3 v1, double x, double y, double z)
@@ -142,6 +95,46 @@ Vector3 v3Cross(Vector3 v1, Vector3 v2)
     result.y = v1.z * v2.x - v1.x * v2.z;
     result.z = v1.x * v2.y - v1.y * v2.x;
     return result;
+}
+
+void m4Save(FILE* f, Matrix4* m)
+{
+    toolsSaveDouble(f, &m->a);
+    toolsSaveDouble(f, &m->b);
+    toolsSaveDouble(f, &m->c);
+    toolsSaveDouble(f, &m->d);
+    toolsSaveDouble(f, &m->e);
+    toolsSaveDouble(f, &m->f);
+    toolsSaveDouble(f, &m->g);
+    toolsSaveDouble(f, &m->h);
+    toolsSaveDouble(f, &m->i);
+    toolsSaveDouble(f, &m->j);
+    toolsSaveDouble(f, &m->k);
+    toolsSaveDouble(f, &m->l);
+    toolsSaveDouble(f, &m->m);
+    toolsSaveDouble(f, &m->n);
+    toolsSaveDouble(f, &m->o);
+    toolsSaveDouble(f, &m->p);
+}
+
+void m4Load(FILE* f, Matrix4* m)
+{
+    toolsLoadDouble(f, &m->a);
+    toolsLoadDouble(f, &m->b);
+    toolsLoadDouble(f, &m->c);
+    toolsLoadDouble(f, &m->d);
+    toolsLoadDouble(f, &m->e);
+    toolsLoadDouble(f, &m->f);
+    toolsLoadDouble(f, &m->g);
+    toolsLoadDouble(f, &m->h);
+    toolsLoadDouble(f, &m->i);
+    toolsLoadDouble(f, &m->j);
+    toolsLoadDouble(f, &m->k);
+    toolsLoadDouble(f, &m->l);
+    toolsLoadDouble(f, &m->m);
+    toolsLoadDouble(f, &m->n);
+    toolsLoadDouble(f, &m->o);
+    toolsLoadDouble(f, &m->p);
 }
 
 Matrix4 m4NewIdentity()

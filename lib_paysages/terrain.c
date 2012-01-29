@@ -6,13 +6,13 @@
 #include <assert.h>
 
 #include "shared/types.h"
-#include "shared/functions.h"
 #include "shared/globals.h"
 #include "shared/constants.h"
-
+#include "euclid.h"
 #include "render.h"
 #include "textures.h"
 #include "water.h"
+#include "tools.h"
 
 void terrainInit()
 {
@@ -22,14 +22,14 @@ void terrainSave(FILE* f, TerrainDefinition* definition)
 {
     int i;
 
-    noiseSave(definition->height_noise, f);
-    toolsSaveDouble(f, definition->height_factor);
-    toolsSaveDouble(f, definition->scaling);
+    noiseSave(f, definition->height_noise);
+    toolsSaveDouble(f, &definition->height_factor);
+    toolsSaveDouble(f, &definition->scaling);
 
-    toolsSaveInt(f, definition->height_modifiers_count);
+    toolsSaveInt(f, &definition->height_modifiers_count);
     for (i = 0; i < definition->height_modifiers_count; i++)
     {
-        modifierSave(definition->height_modifiers[i], f);
+        modifierSave(f, definition->height_modifiers[i]);
     }
 }
 
@@ -38,19 +38,19 @@ void terrainLoad(FILE* f, TerrainDefinition* definition)
     int i, n;
     HeightModifier* modifier;
 
-    noiseLoad(definition->height_noise, f);
-    definition->height_factor = toolsLoadDouble(f);
-    definition->scaling = toolsLoadDouble(f);
+    noiseLoad(f, definition->height_noise);
+    toolsLoadDouble(f, &definition->height_factor);
+    toolsLoadDouble(f, &definition->scaling);
 
     while (definition->height_modifiers_count > 0)
     {
         terrainDelModifier(definition, 0);
     }
-    n = toolsLoadInt(f);
+    toolsLoadInt(f, &n);
     for (i = 0; i < n; i++)
     {
         modifier = modifierCreate();
-        modifierLoad(modifier, f);
+        modifierLoad(f, modifier);
         terrainAddModifier(definition, modifier);
         modifierDelete(modifier);
     }

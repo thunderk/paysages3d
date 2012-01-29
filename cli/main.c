@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../lib_paysages/shared/functions.h"
 #include "../lib_paysages/auto.h"
 #include "../lib_paysages/render.h"
 #include "../lib_paysages/scenery.h"

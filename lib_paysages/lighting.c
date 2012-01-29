@@ -6,14 +6,16 @@
 #include <string.h>
 
 #include "shared/types.h"
-#include "shared/functions.h"
 #include "shared/constants.h"
 #include "shared/globals.h"
-#include "sky.h"
-#include "water.h"
-#include "terrain.h"
+#include "color.h"
+#include "euclid.h"
 #include "renderer.h"
 #include "scenery.h"
+#include "sky.h"
+#include "terrain.h"
+#include "tools.h"
+#include "water.h"
 
 static LightDefinition _LIGHT_NULL;
 
@@ -33,16 +35,16 @@ void lightingSave(FILE* f, LightingDefinition* definition)
 {
     int i;
 
-    toolsSaveInt(f, definition->autosetfromsky);
-    toolsSaveInt(f, definition->nblights);
+    toolsSaveInt(f, &definition->autosetfromsky);
+    toolsSaveInt(f, &definition->nblights);
     for (i = 0; i < definition->nblights; i++)
     {
-        v3Save(definition->lights[i].direction, f);
-        colorSave(definition->lights[i].color, f);
-        toolsSaveDouble(f, definition->lights[i].reflection);
-        toolsSaveInt(f, definition->lights[i].filtered);
-        toolsSaveInt(f, definition->lights[i].masked);
-        toolsSaveDouble(f, definition->lights[i].amplitude);
+        v3Save(f, &definition->lights[i].direction);
+        colorSave(f, &definition->lights[i].color);
+        toolsSaveDouble(f, &definition->lights[i].reflection);
+        toolsSaveInt(f, &definition->lights[i].filtered);
+        toolsSaveInt(f, &definition->lights[i].masked);
+        toolsSaveDouble(f, &definition->lights[i].amplitude);
     }
 }
 
@@ -50,16 +52,16 @@ void lightingLoad(FILE* f, LightingDefinition* definition)
 {
     int i;
 
-    definition->autosetfromsky = toolsLoadInt(f);
-    definition->nblights = toolsLoadInt(f);
+    toolsLoadInt(f, &definition->autosetfromsky);
+    toolsLoadInt(f, &definition->nblights);
     for (i = 0; i < definition->nblights; i++)
     {
-        definition->lights[i].direction = v3Load(f);
-        definition->lights[i].color = colorLoad(f);
-        definition->lights[i].reflection = toolsLoadDouble(f);
-        definition->lights[i].filtered = toolsLoadInt(f);
-        definition->lights[i].masked = toolsLoadInt(f);
-        definition->lights[i].amplitude = toolsLoadDouble(f);
+        v3Load(f, &definition->lights[i].direction);
+        colorLoad(f, &definition->lights[i].color);
+        toolsLoadDouble(f, &definition->lights[i].reflection);
+        toolsLoadInt(f, &definition->lights[i].filtered);
+        toolsLoadInt(f, &definition->lights[i].masked);
+        toolsLoadDouble(f, &definition->lights[i].amplitude);
     }
 
     lightingValidateDefinition(definition);

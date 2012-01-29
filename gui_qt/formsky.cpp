@@ -9,7 +9,6 @@
 #include "../lib_paysages/sky.h"
 #include "../lib_paysages/scenery.h"
 #include "../lib_paysages/renderer.h"
-#include "../lib_paysages/shared/functions.h"
 #include "../lib_paysages/shared/constants.h"
 
 static SkyDefinition _definition;

@@ -4,7 +4,7 @@
 #include <QColor>
 
 #include "../lib_paysages/shared/types.h"
-#include "../lib_paysages/shared/functions.h"
+#include "../lib_paysages/color.h"
 
 static inline QColor colorToQColor(Color color)
 {

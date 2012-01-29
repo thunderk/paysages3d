@@ -4,12 +4,14 @@
 #include <math.h>
 
 #include "shared/types.h"
-#include "shared/functions.h"
 #include "shared/globals.h"
 #include "shared/constants.h"
-#include "render.h"
+#include "color.h"
 #include "clouds.h"
+#include "euclid.h"
 #include "lighting.h"
+#include "render.h"
+#include "tools.h"
 
 #define SPHERE_SIZE 1000.0
 
@@ -19,24 +21,24 @@ void skyInit()
 
 void skySave(FILE* f, SkyDefinition* definition)
 {
-    toolsSaveDouble(f, definition->daytime);
-    colorGradationSave(f, definition->sun_color);
-    toolsSaveDouble(f, definition->sun_radius);
-    colorGradationSave(f, definition->zenith_color);
-    colorGradationSave(f, definition->haze_color);
-    toolsSaveDouble(f, definition->haze_height);
-    toolsSaveDouble(f, definition->haze_smoothing);
+    toolsSaveDouble(f, &definition->daytime);
+    colorGradationSave(f, &definition->sun_color);
+    toolsSaveDouble(f, &definition->sun_radius);
+    colorGradationSave(f, &definition->zenith_color);
+    colorGradationSave(f, &definition->haze_color);
+    toolsSaveDouble(f, &definition->haze_height);
+    toolsSaveDouble(f, &definition->haze_smoothing);
 }
 
 void skyLoad(FILE* f, SkyDefinition* definition)
 {
-    definition->daytime = toolsLoadDouble(f);
-    definition->sun_color = colorGradationLoad(f);
-    definition->sun_radius = toolsLoadDouble(f);
-    definition->zenith_color = colorGradationLoad(f);
-    definition->haze_color = colorGradationLoad(f);
-    definition->haze_height = toolsLoadDouble(f);
-    definition->haze_smoothing = toolsLoadDouble(f);
+    toolsLoadDouble(f, &definition->daytime);
+    colorGradationLoad(f, &definition->sun_color);
+    toolsLoadDouble(f, &definition->sun_radius);
+    colorGradationLoad(f, &definition->zenith_color);
+    colorGradationLoad(f, &definition->haze_color);
+    toolsLoadDouble(f, &definition->haze_height);
+    toolsLoadDouble(f, &definition->haze_smoothing);
 
     skyValidateDefinition(definition);
 }

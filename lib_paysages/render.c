@@ -2,13 +2,13 @@
 
 #include <stdlib.h>
 #include <math.h>
-
 #include "IL/il.h"
 #include "IL/ilu.h"
 
 #include "shared/types.h"
 #include "shared/constants.h"
-#include "shared/functions.h"
+#include "array.h"
+#include "color.h"
 #include "system.h"
 
 int render_width;

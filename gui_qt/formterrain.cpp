@@ -7,7 +7,6 @@
 
 #include "../lib_paysages/terrain.h"
 #include "../lib_paysages/scenery.h"
-#include "../lib_paysages/shared/functions.h"
 #include "../lib_paysages/shared/constants.h"
 
 static TerrainDefinition _definition;

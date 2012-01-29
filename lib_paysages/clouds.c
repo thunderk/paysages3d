@@ -2,10 +2,11 @@
 
 #include <string.h>
 #include <math.h>
-
+#include "color.h"
+#include "euclid.h"
 #include "lighting.h"
+#include "tools.h"
 #include "shared/types.h"
-#include "shared/functions.h"
 #include "shared/constants.h"
 #include "shared/globals.h"
 
@@ -29,17 +30,18 @@ void cloudsSave(FILE* f, CloudsDefinition* definition)
     int i;
     CloudsLayerDefinition* layer;
 
-    toolsSaveInt(f, definition->nblayers);
+    toolsSaveInt(f, &definition->nblayers);
     for (i = 0; i < definition->nblayers; i++)
     {
         layer = definition->layers + i;
-        toolsSaveDouble(f, layer->ycenter);
-        toolsSaveDouble(f, layer->ymin);
-        toolsSaveDouble(f, layer->ymax);
-        noiseSave(layer->noise, f);
-        colorSave(layer->color, f);
-        toolsSaveDouble(f, layer->scaling);
-        toolsSaveDouble(f, layer->coverage);
+        
+        toolsSaveDouble(f, &layer->ycenter);
+        toolsSaveDouble(f, &layer->ymin);
+        toolsSaveDouble(f, &layer->ymax);
+        noiseSave(f, layer->noise);
+        colorSave(f, &layer->color);
+        toolsSaveDouble(f, &layer->scaling);
+        toolsSaveDouble(f, &layer->coverage);
     }
 }
 
@@ -53,18 +55,18 @@ void cloudsLoad(FILE* f, CloudsDefinition* definition)
         cloudsDeleteLayer(definition, 0);
     }
 
-    n = toolsLoadInt(f);
+    toolsLoadInt(f, &n);
     for (i = 0; i < n; i++)
     {
         layer = definition->layers + cloudsAddLayer(definition);
 
-        layer->ycenter = toolsLoadDouble(f);
-        layer->ymin = toolsLoadDouble(f);
-        layer->ymax = toolsLoadDouble(f);
-        noiseLoad(layer->noise, f);
-        layer->color = colorLoad(f);
-        layer->scaling = toolsLoadDouble(f);
-        layer->coverage = toolsLoadDouble(f);
+        toolsLoadDouble(f, &layer->ycenter);
+        toolsLoadDouble(f, &layer->ymin);
+        toolsLoadDouble(f, &layer->ymax);
+        noiseLoad(f, layer->noise);
+        colorLoad(f, &layer->color);
+        toolsLoadDouble(f, &layer->scaling);
+        toolsLoadDouble(f, &layer->coverage);
     }
 }
 

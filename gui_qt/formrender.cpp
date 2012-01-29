@@ -6,7 +6,6 @@
 #include "inputcamera.h"
 #include "../lib_paysages/render.h"
 #include "../lib_paysages/scenery.h"
-#include "../lib_paysages/shared/functions.h"
 
 /**************** Form ****************/
 FormRender::FormRender(QWidget *parent) :

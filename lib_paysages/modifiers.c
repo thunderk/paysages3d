@@ -1,20 +1,18 @@
-#include "shared/types.h"
-#include "shared/functions.h"
 #include "modifiers.h"
 
 #include <stdlib.h>
 
-typedef enum
-{
-    MODE_NULL,
-    MODE_ADD_VALUE,
-    MODE_FIX_VALUE
-} _EnumMode;
+#include "shared/types.h"
+#include "tools.h"
+
+#define MODE_NULL 0
+#define MODE_ADD_VALUE 1
+#define MODE_FIX_VALUE 2
 
 struct HeightModifier
 {
     Zone* zone;
-    _EnumMode mode;
+    int mode;
     double value;
 };
 
@@ -48,18 +46,18 @@ void modifierDelete(HeightModifier* modifier)
     free(modifier);
 }
 
-void modifierSave(HeightModifier* modifier, FILE* f)
+void modifierSave(FILE* f, HeightModifier* modifier)
 {
-    toolsSaveInt(f, modifier->mode);
-    toolsSaveDouble(f, modifier->value);
-    zoneSave(modifier->zone, f);
+    toolsSaveInt(f, &modifier->mode);
+    toolsSaveDouble(f, &modifier->value);
+    zoneSave(f, modifier->zone);
 }
 
-void modifierLoad(HeightModifier* modifier, FILE* f)
+void modifierLoad(FILE* f, HeightModifier* modifier)
 {
-    modifier->mode = toolsLoadInt(f);
-    modifier->value = toolsLoadDouble(f);
-    zoneLoad(modifier->zone, f);
+    toolsLoadInt(f, &modifier->mode);
+    toolsLoadDouble(f, &modifier->value);
+    zoneLoad(f, modifier->zone);
 }
 
 Zone* modifierGetZone(HeightModifier* modifier)

@@ -1,5 +1,8 @@
+#include "zone.h"
+
 #include <stdlib.h>
 #include <math.h>
+#include "tools.h"
 
 #define MAX_RANGES 20
 #define MAX_CIRCLES 20
@@ -36,9 +39,6 @@ struct Zone {
     int circles_excluded_count;
 };
 
-#include "shared/types.h"
-#include "shared/functions.h"
-
 Zone* zoneCreate()
 {
     Zone* result;
@@ -57,93 +57,93 @@ void zoneDelete(Zone* zone)
     free(zone);
 }
 
-void zoneSave(Zone* zone, FILE* f)
+void zoneSave(FILE* f, Zone* zone)
 {
     int i;
 
-    toolsSaveInt(f, zone->height_ranges_count);
+    toolsSaveInt(f, &zone->height_ranges_count);
     for (i = 0; i < zone->height_ranges_count; i++)
     {
-        toolsSaveDouble(f, zone->height_ranges[i].value);
-        toolsSaveDouble(f, zone->height_ranges[i].hardmin);
-        toolsSaveDouble(f, zone->height_ranges[i].softmin);
-        toolsSaveDouble(f, zone->height_ranges[i].softmax);
-        toolsSaveDouble(f, zone->height_ranges[i].hardmax);
+        toolsSaveDouble(f, &zone->height_ranges[i].value);
+        toolsSaveDouble(f, &zone->height_ranges[i].hardmin);
+        toolsSaveDouble(f, &zone->height_ranges[i].softmin);
+        toolsSaveDouble(f, &zone->height_ranges[i].softmax);
+        toolsSaveDouble(f, &zone->height_ranges[i].hardmax);
     }
 
-    toolsSaveInt(f, zone->steepness_ranges_count);
+    toolsSaveInt(f, &zone->steepness_ranges_count);
     for (i = 0; i < zone->steepness_ranges_count; i++)
     {
-        toolsSaveDouble(f, zone->steepness_ranges[i].value);
-        toolsSaveDouble(f, zone->steepness_ranges[i].hardmin);
-        toolsSaveDouble(f, zone->steepness_ranges[i].softmin);
-        toolsSaveDouble(f, zone->steepness_ranges[i].softmax);
-        toolsSaveDouble(f, zone->steepness_ranges[i].hardmax);
+        toolsSaveDouble(f, &zone->steepness_ranges[i].value);
+        toolsSaveDouble(f, &zone->steepness_ranges[i].hardmin);
+        toolsSaveDouble(f, &zone->steepness_ranges[i].softmin);
+        toolsSaveDouble(f, &zone->steepness_ranges[i].softmax);
+        toolsSaveDouble(f, &zone->steepness_ranges[i].hardmax);
     }
 
-    toolsSaveInt(f, zone->circles_included_count);
+    toolsSaveInt(f, &zone->circles_included_count);
     for (i = 0; i < zone->circles_included_count; i++)
     {
-        toolsSaveDouble(f, zone->circles_included[i].value);
-        toolsSaveDouble(f, zone->circles_included[i].centerx);
-        toolsSaveDouble(f, zone->circles_included[i].centerz);
-        toolsSaveDouble(f, zone->circles_included[i].softradius);
-        toolsSaveDouble(f, zone->circles_included[i].hardradius);
+        toolsSaveDouble(f, &zone->circles_included[i].value);
+        toolsSaveDouble(f, &zone->circles_included[i].centerx);
+        toolsSaveDouble(f, &zone->circles_included[i].centerz);
+        toolsSaveDouble(f, &zone->circles_included[i].softradius);
+        toolsSaveDouble(f, &zone->circles_included[i].hardradius);
     }
 
-    toolsSaveInt(f, zone->circles_excluded_count);
+    toolsSaveInt(f, &zone->circles_excluded_count);
     for (i = 0; i < zone->circles_excluded_count; i++)
     {
-        toolsSaveDouble(f, zone->circles_excluded[i].value);
-        toolsSaveDouble(f, zone->circles_excluded[i].centerx);
-        toolsSaveDouble(f, zone->circles_excluded[i].centerz);
-        toolsSaveDouble(f, zone->circles_excluded[i].softradius);
-        toolsSaveDouble(f, zone->circles_excluded[i].hardradius);
+        toolsSaveDouble(f, &zone->circles_excluded[i].value);
+        toolsSaveDouble(f, &zone->circles_excluded[i].centerx);
+        toolsSaveDouble(f, &zone->circles_excluded[i].centerz);
+        toolsSaveDouble(f, &zone->circles_excluded[i].softradius);
+        toolsSaveDouble(f, &zone->circles_excluded[i].hardradius);
     }
 }
 
-void zoneLoad(Zone* zone, FILE* f)
+void zoneLoad(FILE* f, Zone* zone)
 {
     int i;
 
-    zone->height_ranges_count = toolsLoadInt(f);
+    toolsLoadInt(f, &zone->height_ranges_count);
     for (i = 0; i < zone->height_ranges_count; i++)
     {
-        zone->height_ranges[i].value = toolsLoadDouble(f);
-        zone->height_ranges[i].hardmin = toolsLoadDouble(f);
-        zone->height_ranges[i].softmin = toolsLoadDouble(f);
-        zone->height_ranges[i].softmax = toolsLoadDouble(f);
-        zone->height_ranges[i].hardmax = toolsLoadDouble(f);
+        toolsLoadDouble(f, &zone->height_ranges[i].value);
+        toolsLoadDouble(f, &zone->height_ranges[i].hardmin);
+        toolsLoadDouble(f, &zone->height_ranges[i].softmin);
+        toolsLoadDouble(f, &zone->height_ranges[i].softmax);
+        toolsLoadDouble(f, &zone->height_ranges[i].hardmax);
     }
 
-    zone->steepness_ranges_count = toolsLoadInt(f);
+    toolsLoadInt(f, &zone->steepness_ranges_count);
     for (i = 0; i < zone->steepness_ranges_count; i++)
     {
-        zone->steepness_ranges[i].value = toolsLoadDouble(f);
-        zone->steepness_ranges[i].hardmin = toolsLoadDouble(f);
-        zone->steepness_ranges[i].softmin = toolsLoadDouble(f);
-        zone->steepness_ranges[i].softmax = toolsLoadDouble(f);
-        zone->steepness_ranges[i].hardmax = toolsLoadDouble(f);
+        toolsLoadDouble(f, &zone->steepness_ranges[i].value);
+        toolsLoadDouble(f, &zone->steepness_ranges[i].hardmin);
+        toolsLoadDouble(f, &zone->steepness_ranges[i].softmin);
+        toolsLoadDouble(f, &zone->steepness_ranges[i].softmax);
+        toolsLoadDouble(f, &zone->steepness_ranges[i].hardmax);
     }
 
-    zone->circles_included_count = toolsLoadInt(f);
+    toolsLoadInt(f, &zone->circles_included_count);
     for (i = 0; i < zone->circles_included_count; i++)
     {
-        zone->circles_included[i].value = toolsLoadDouble(f);
-        zone->circles_included[i].centerx = toolsLoadDouble(f);
-        zone->circles_included[i].centerz = toolsLoadDouble(f);
-        zone->circles_included[i].softradius = toolsLoadDouble(f);
-        zone->circles_included[i].hardradius = toolsLoadDouble(f);
+        toolsLoadDouble(f, &zone->circles_included[i].value);
+        toolsLoadDouble(f, &zone->circles_included[i].centerx);
+        toolsLoadDouble(f, &zone->circles_included[i].centerz);
+        toolsLoadDouble(f, &zone->circles_included[i].softradius);
+        toolsLoadDouble(f, &zone->circles_included[i].hardradius);
     }
 
-    zone->circles_excluded_count = toolsLoadInt(f);
+    toolsLoadInt(f, &zone->circles_excluded_count);
     for (i = 0; i < zone->circles_excluded_count; i++)
     {
-        zone->circles_excluded[i].value = toolsLoadDouble(f);
-        zone->circles_excluded[i].centerx = toolsLoadDouble(f);
-        zone->circles_excluded[i].centerz = toolsLoadDouble(f);
-        zone->circles_excluded[i].softradius = toolsLoadDouble(f);
-        zone->circles_excluded[i].hardradius = toolsLoadDouble(f);
+        toolsLoadDouble(f, &zone->circles_excluded[i].value);
+        toolsLoadDouble(f, &zone->circles_excluded[i].centerx);
+        toolsLoadDouble(f, &zone->circles_excluded[i].centerz);
+        toolsLoadDouble(f, &zone->circles_excluded[i].softradius);
+        toolsLoadDouble(f, &zone->circles_excluded[i].hardradius);
     }
 }
 

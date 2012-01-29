@@ -1,7 +1,10 @@
+#include "tools.h"
+
+#include <assert.h>
 #include <stdlib.h>
 
-#include "shared/types.h"
-#include "shared/functions.h"
+#include "color.h"
+#include "euclid.h"
 
 double toolsRandom()
 {
@@ -55,40 +58,42 @@ Vector3 toolsGetNormalFromTriangle(Vector3 center, Vector3 bottom, Vector3 right
     return v3Normalize(v3Cross(dz, dx));
 }
 
-void toolsSaveDouble(FILE* f, double value)
+void toolsSaveDouble(FILE* f, double* value)
 {
-    fprintf(f, "%.20le;", value);
+    fprintf(f, "%.20le;", *value);
 }
 
-double toolsLoadDouble(FILE* f)
+void toolsLoadDouble(FILE* f, double* value)
 {
-    double value;
-    fscanf(f, "%le;", &value);
-    return value;
+    int read;
+    
+    read = fscanf(f, "%le;", value);
+    assert(read == 1);
 }
 
-void toolsSaveInt(FILE* f, int value)
+void toolsSaveInt(FILE* f, int* value)
 {
-    fprintf(f, "%d;", value);
+    fprintf(f, "%d;", *value);
 }
 
-int toolsLoadInt(FILE* f)
+void toolsLoadInt(FILE* f, int* value)
 {
-    int value;
-    fscanf(f, "%d;", &value);
-    return value;
+    int read;
+    
+    read = fscanf(f, "%d;", value);
+    assert(read == 1);
 }
 
 void materialSave(FILE* f, SurfaceMaterial* material)
 {
-    colorSave(material->base, f);
-    toolsSaveDouble(f, material->reflection);
-    toolsSaveDouble(f, material->shininess);
+    colorSave(f, &material->base);
+    toolsSaveDouble(f, &material->reflection);
+    toolsSaveDouble(f, &material->shininess);
 }
 
 void materialLoad(FILE* f, SurfaceMaterial* material)
 {
-    material->base = colorLoad(f);
-    material->reflection = toolsLoadDouble(f);
-    material->shininess = toolsLoadDouble(f);
+    colorLoad(f, &material->base);
+    toolsLoadDouble(f, &material->reflection);
+    toolsLoadDouble(f, &material->shininess);
 }

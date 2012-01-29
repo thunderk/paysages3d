@@ -1,16 +1,18 @@
+#include "textures.h"
+
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
 #include "shared/types.h"
-#include "shared/functions.h"
 #include "shared/constants.h"
 #include "shared/globals.h"
-
-#include "textures.h"
-#include "terrain.h"
+#include "color.h"
+#include "euclid.h"
 #include "lighting.h"
+#include "terrain.h"
+#include "tools.h"
 
 static TextureLayerDefinition _NULL_LAYER;
 
@@ -23,12 +25,12 @@ void texturesSave(FILE* f, TexturesDefinition* definition)
 {
     int i;
 
-    toolsSaveInt(f, definition->nbtextures);
+    toolsSaveInt(f, &definition->nbtextures);
     for (i = 0; i < definition->nbtextures; i++)
     {
-        zoneSave(definition->textures[i].zone, f);
-        noiseSave(definition->textures[i].bump_noise, f);
-        colorSave(definition->textures[i].color, f);
+        zoneSave(f, definition->textures[i].zone);
+        noiseSave(f, definition->textures[i].bump_noise);
+        colorSave(f, &definition->textures[i].color);
     }
 }
 
@@ -42,14 +44,14 @@ void texturesLoad(FILE* f, TexturesDefinition* definition)
         texturesDeleteLayer(definition, 0);
     }
 
-    n = toolsLoadInt(f);
+    toolsLoadInt(f, &n);
     for (i = 0; i < n; i++)
     {
         layer = definition->textures + texturesAddLayer(definition);
 
-        zoneLoad(layer->zone, f);
-        noiseLoad(layer->bump_noise, f);
-        layer->color = colorLoad(f);
+        zoneLoad(f, layer->zone);
+        noiseLoad(f, layer->bump_noise);
+        colorLoad(f, &layer->color);
     }
 
     texturesValidateDefinition(definition);

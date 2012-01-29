@@ -1,12 +1,14 @@
 #include "water.h"
 
 #include "shared/types.h"
-#include "shared/functions.h"
 #include "shared/constants.h"
 #include "shared/globals.h"
+#include "color.h"
+#include "euclid.h"
 #include "render.h"
 #include "terrain.h"
 #include "lighting.h"
+#include "tools.h"
 
 #include <math.h>
 
@@ -16,30 +18,30 @@ void waterInit()
 
 void waterSave(FILE* f, WaterDefinition* definition)
 {
-    toolsSaveDouble(f, definition->height);
+    toolsSaveDouble(f, &definition->height);
     materialSave(f, &definition->material);
-    colorSave(definition->depth_color, f);
-    toolsSaveDouble(f, definition->transparency_depth);
-    toolsSaveDouble(f, definition->transparency);
-    toolsSaveDouble(f, definition->reflection);
-    toolsSaveDouble(f, definition->lighting_depth);
-    noiseSave(definition->waves_noise, f);
-    toolsSaveDouble(f, definition->waves_noise_height);
-    toolsSaveDouble(f, definition->waves_noise_scale);
+    colorSave(f, &definition->depth_color);
+    toolsSaveDouble(f, &definition->transparency_depth);
+    toolsSaveDouble(f, &definition->transparency);
+    toolsSaveDouble(f, &definition->reflection);
+    toolsSaveDouble(f, &definition->lighting_depth);
+    noiseSave(f, definition->waves_noise);
+    toolsSaveDouble(f, &definition->waves_noise_height);
+    toolsSaveDouble(f, &definition->waves_noise_scale);
 }
 
 void waterLoad(FILE* f, WaterDefinition* definition)
 {
-    definition->height = toolsLoadDouble(f);
+    toolsLoadDouble(f, &definition->height);
     materialLoad(f, &definition->material);
-    definition->depth_color = colorLoad(f);
-    definition->transparency_depth = toolsLoadDouble(f);
-    definition->transparency = toolsLoadDouble(f);
-    definition->reflection = toolsLoadDouble(f);
-    definition->lighting_depth = toolsLoadDouble(f);
-    noiseLoad(definition->waves_noise, f);
-    definition->waves_noise_height = toolsLoadDouble(f);
-    definition->waves_noise_scale = toolsLoadDouble(f);
+    colorLoad(f, &definition->depth_color);
+    toolsLoadDouble(f, &definition->transparency_depth);
+    toolsLoadDouble(f, &definition->transparency);
+    toolsLoadDouble(f, &definition->reflection);
+    toolsLoadDouble(f, &definition->lighting_depth);
+    noiseLoad(f, definition->waves_noise);
+    toolsLoadDouble(f, &definition->waves_noise_height);
+    toolsLoadDouble(f, &definition->waves_noise_scale);
 
     waterValidateDefinition(definition);
 }

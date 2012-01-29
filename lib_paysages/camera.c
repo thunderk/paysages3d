@@ -2,13 +2,13 @@
 
 #include <stdlib.h>
 #include <math.h>
-
+#include "euclid.h"
 #include "render.h"
 #include "shared/types.h"
 #include "shared/globals.h"
 #include "shared/constants.h"
-#include "shared/functions.h"
 #include "scenery.h"
+#include "tools.h"
 
 void cameraInit()
 {
@@ -16,18 +16,18 @@ void cameraInit()
 
 void cameraSave(FILE* f, CameraDefinition* camera)
 {
-    v3Save(camera->location, f);
-    toolsSaveDouble(f, camera->yaw);
-    toolsSaveDouble(f, camera->pitch);
-    toolsSaveDouble(f, camera->roll);
+    v3Save(f, &camera->location);
+    toolsSaveDouble(f, &camera->yaw);
+    toolsSaveDouble(f, &camera->pitch);
+    toolsSaveDouble(f, &camera->roll);
 }
 
 void cameraLoad(FILE* f, CameraDefinition* camera)
 {
-    camera->location = v3Load(f);
-    camera->yaw = toolsLoadDouble(f);
-    camera->pitch = toolsLoadDouble(f);
-    camera->roll = toolsLoadDouble(f);
+    v3Load(f, &camera->location);
+    toolsLoadDouble(f, &camera->yaw);
+    toolsLoadDouble(f, &camera->pitch);
+    toolsLoadDouble(f, &camera->roll);
 
     cameraValidateDefinition(camera, 0);
 }

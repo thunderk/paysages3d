@@ -5,20 +5,20 @@
 #include <time.h>
 
 #include "shared/types.h"
-#include "shared/functions.h"
 #include "shared/constants.h"
 #include "shared/globals.h"
-
-#include "system.h"
-#include "water.h"
 #include "clouds.h"
-#include "sky.h"
+#include "color.h"
+#include "lighting.h"
 #include "modifiers.h"
+#include "render.h"
 #include "terrain.h"
 #include "textures.h"
-#include "lighting.h"
 #include "scenery.h"
-#include "render.h"
+#include "sky.h"
+#include "system.h"
+#include "water.h"
+#include "zone.h"
 
 static int _is_rendering = 0;
 

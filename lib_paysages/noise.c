@@ -1,3 +1,11 @@
+#include "noise.h"
+
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+
+#include "tools.h"
+
 struct NoiseLevel;
 
 struct NoiseGenerator
@@ -10,14 +18,6 @@ struct NoiseGenerator
     int level_count;
     struct NoiseLevel* levels;
 };
-
-#include "noise.h"
-
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-
-#include "shared/functions.h"
 
 static inline double _cubicInterpolate(double* p, double x)
 {
@@ -49,61 +49,63 @@ void noiseDeleteGenerator(NoiseGenerator* generator)
     free(generator);
 }
 
-void noiseSave(NoiseGenerator* perlin, FILE* f)
+void noiseSave(FILE* f, NoiseGenerator* perlin)
 {
     int x;
     double* it_noise;
 
-    toolsSaveInt(f, perlin->size1);
-    toolsSaveInt(f, perlin->size2);
-    toolsSaveInt(f, perlin->size3);
-    toolsSaveDouble(f, perlin->height_offset);
-    toolsSaveInt(f, perlin->level_count);
+    toolsSaveInt(f, &perlin->size1);
+    toolsSaveInt(f, &perlin->size2);
+    toolsSaveInt(f, &perlin->size3);
+    toolsSaveDouble(f, &perlin->height_offset);
+    toolsSaveInt(f, &perlin->level_count);
 
     it_noise = perlin->noise;
     for (x = 0; x < perlin->size1; x++)
     {
-        toolsSaveDouble(f, *(it_noise++));
+        toolsSaveDouble(f, it_noise++);
     }
 
     for (x = 0; x < perlin->level_count; x++)
     {
-        NoiseLevel level = perlin->levels[x];
-        toolsSaveDouble(f, level.scaling);
-        toolsSaveDouble(f, level.height);
-        toolsSaveDouble(f, level.xoffset);
-        toolsSaveDouble(f, level.yoffset);
-        toolsSaveDouble(f, level.zoffset);
+        NoiseLevel* level = perlin->levels + x;
+        
+        toolsSaveDouble(f, &level->scaling);
+        toolsSaveDouble(f, &level->height);
+        toolsSaveDouble(f, &level->xoffset);
+        toolsSaveDouble(f, &level->yoffset);
+        toolsSaveDouble(f, &level->zoffset);
     }
 }
 
-void noiseLoad(NoiseGenerator* perlin, FILE* f)
+void noiseLoad(FILE* f, NoiseGenerator* perlin)
 {
     int x;
     double* it_noise;
 
-    perlin->size1 = toolsLoadInt(f);
-    perlin->size2 = toolsLoadInt(f);
-    perlin->size3 = toolsLoadInt(f);
-    perlin->height_offset = toolsLoadDouble(f);
-    perlin->level_count = toolsLoadInt(f);
+    toolsLoadInt(f, &perlin->size1);
+    toolsLoadInt(f, &perlin->size2);
+    toolsLoadInt(f, &perlin->size3);
+    toolsLoadDouble(f, &perlin->height_offset);
+    toolsLoadInt(f, &perlin->level_count);
 
     perlin->noise = realloc(perlin->noise, sizeof(double) * perlin->size1);
     it_noise = perlin->noise;
     for (x = 0; x < perlin->size1; x++)
     {
-        *(it_noise++) = toolsLoadDouble(f);
+        toolsLoadDouble(f, it_noise++);
     }
 
     perlin->levels = realloc(perlin->levels, sizeof(NoiseLevel) * perlin->level_count);
     for (x = 0; x < perlin->level_count; x++)
     {
         NoiseLevel* level = perlin->levels + x;
-        level->scaling = toolsLoadDouble(f);
-        level->height = toolsLoadDouble(f);
-        level->xoffset = toolsLoadDouble(f);
-        level->yoffset = toolsLoadDouble(f);
-        level->zoffset = toolsLoadDouble(f);
+        
+        toolsLoadDouble(f, &level->scaling);
+        toolsLoadDouble(f, &level->height);
+        toolsLoadDouble(f, &level->xoffset);
+        toolsLoadDouble(f, &level->yoffset);
+        toolsLoadDouble(f, &level->zoffset);
     }
 }
 

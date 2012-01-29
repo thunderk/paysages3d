@@ -1,7 +1,10 @@
 #include "atmosphere.h"
-#include "shared/functions.h"
+
 #include "shared/constants.h"
 #include "scenery.h"
+#include "euclid.h"
+#include "color.h"
+#include "tools.h"
 
 void atmosphereInit()
 {
@@ -9,20 +12,20 @@ void atmosphereInit()
 
 void atmosphereSave(FILE* f, AtmosphereDefinition* definition)
 {
-    toolsSaveDouble(f, definition->distance_near);
-    toolsSaveDouble(f, definition->distance_far);
-    toolsSaveDouble(f, definition->full_mask);
-    toolsSaveInt(f, definition->auto_lock_on_haze);
-    colorSave(definition->color, f);
+    toolsSaveDouble(f, &definition->distance_near);
+    toolsSaveDouble(f, &definition->distance_far);
+    toolsSaveDouble(f, &definition->full_mask);
+    toolsSaveInt(f, &definition->auto_lock_on_haze);
+    colorSave(f, &definition->color);
 }
 
 void atmosphereLoad(FILE* f, AtmosphereDefinition* definition)
 {
-    definition->distance_near = toolsLoadDouble(f);
-    definition->distance_far = toolsLoadDouble(f);
-    definition->full_mask = toolsLoadDouble(f);
-    definition->auto_lock_on_haze = toolsLoadInt(f);
-    definition->color = colorLoad(f);
+    toolsLoadDouble(f, &definition->distance_near);
+    toolsLoadDouble(f, &definition->distance_far);
+    toolsLoadDouble(f, &definition->full_mask);
+    toolsLoadInt(f, &definition->auto_lock_on_haze);
+    colorLoad(f, &definition->color);
 
     atmosphereValidateDefinition(definition);
 }

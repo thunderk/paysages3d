@@ -7,8 +7,6 @@
 
 #include "dialognoise.h"
 
-#include "../lib_paysages/shared/functions.h"
-
 class NoiseSmallPreview:public QWidget
 {
 public:

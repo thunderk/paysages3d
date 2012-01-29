@@ -1,9 +1,9 @@
+#include "color.h"
+
 #include <stdlib.h>
 #include <assert.h>
-
-#include "shared/types.h"
 #include "shared/constants.h"
-#include "shared/functions.h"
+#include "tools.h"
 
 Color COLOR_TRANSPARENT = {0.0, 0.0, 0.0, 0.0};
 Color COLOR_BLACK = {0.0, 0.0, 0.0, 1.0};
@@ -13,22 +13,20 @@ Color COLOR_BLUE = {0.0, 0.0, 1.0, 1.0};
 Color COLOR_WHITE = {1.0, 1.0, 1.0, 1.0};
 Color COLOR_GREY = {0.5, 0.5, 0.5, 1.0};
 
-void colorSave(Color col, FILE* f)
+void colorSave(FILE* f, Color* col)
 {
-    toolsSaveDouble(f, col.r);
-    toolsSaveDouble(f, col.g);
-    toolsSaveDouble(f, col.b);
-    toolsSaveDouble(f, col.a);
+    toolsSaveDouble(f, &col->r);
+    toolsSaveDouble(f, &col->g);
+    toolsSaveDouble(f, &col->b);
+    toolsSaveDouble(f, &col->a);
 }
 
-Color colorLoad(FILE* f)
+void colorLoad(FILE* f, Color* col)
 {
-    Color col;
-    col.r = toolsLoadDouble(f);
-    col.g = toolsLoadDouble(f);
-    col.b = toolsLoadDouble(f);
-    col.a = toolsLoadDouble(f);
-    return col;
+    toolsLoadDouble(f, &col->r);
+    toolsLoadDouble(f, &col->g);
+    toolsLoadDouble(f, &col->b);
+    toolsLoadDouble(f, &col->a);
 }
 
 unsigned int colorTo32BitRGBA(Color* col)
@@ -124,6 +122,30 @@ int _part_compare(const void* part1, const void* part2)
     }
 }
 
+void colorGradationSave(FILE* f, ColorGradation* gradation)
+{
+    int i;
+
+    toolsSaveInt(f, &gradation->nbparts);
+    for (i = 0; i < gradation->nbparts; i++)
+    {
+        toolsSaveDouble(f, &gradation->parts[i].start);
+        colorSave(f, &gradation->parts[i].col);
+    }
+}
+
+void colorGradationLoad(FILE* f, ColorGradation* gradation)
+{
+    int i;
+
+    toolsLoadInt(f, &gradation->nbparts);
+    for (i = 0; i < gradation->nbparts; i++)
+    {
+        toolsLoadDouble(f, &gradation->parts[i].start);
+        colorLoad(f, &gradation->parts[i].col);
+    }
+}
+
 void colorGradationAdd(ColorGradation* gradation, double value, Color* col)
 {
     if (gradation->nbparts == MAX_COLORGRADATION_PARTS)
@@ -188,29 +210,3 @@ Color colorGradationGet(ColorGradation* gradation, double value)
     }
 }
 
-void colorGradationSave(FILE* f, ColorGradation gradation)
-{
-    int i;
-
-    toolsSaveInt(f, gradation.nbparts);
-    for (i = 0; i < gradation.nbparts; i++)
-    {
-        toolsSaveDouble(f, gradation.parts[i].start);
-        colorSave(gradation.parts[i].col, f);
-    }
-}
-
-ColorGradation colorGradationLoad(FILE* f)
-{
-    ColorGradation result;
-    int i;
-
-    result.nbparts = toolsLoadInt(f);
-    for (i = 0; i < result.nbparts; i++)
-    {
-        result.parts[i].start = toolsLoadDouble(f);
-        result.parts[i].col = colorLoad(f);
-    }
-
-    return result;
-}

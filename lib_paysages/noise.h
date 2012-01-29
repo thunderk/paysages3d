@@ -20,8 +20,8 @@ typedef struct NoiseGenerator NoiseGenerator;
 
 NoiseGenerator* noiseCreateGenerator();
 void noiseDeleteGenerator(NoiseGenerator* generator);
-void noiseSave(NoiseGenerator* perlin, FILE* f);
-void noiseLoad(NoiseGenerator* perlin, FILE* f);
+void noiseSave(FILE* f, NoiseGenerator* perlin);
+void noiseLoad(FILE* f, NoiseGenerator* perlin);
 void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination);
 void noiseGenerateBaseNoise(NoiseGenerator* generator, int size);
 int noiseGetBaseSize(NoiseGenerator* generator);

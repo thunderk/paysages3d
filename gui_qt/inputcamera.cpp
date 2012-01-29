@@ -7,8 +7,6 @@
 
 #include "dialogwanderer.h"
 
-#include "../lib_paysages/shared/functions.h"
-
 InputCamera::InputCamera(QWidget* form, QString label, CameraDefinition* value):BaseInput(form, label)
 {
     _value = value;

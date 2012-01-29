@@ -2,6 +2,7 @@
 #define _PAYSAGES_MODIFIERS_H_
 
 #include <stdio.h>
+#include "zone.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,8 +13,8 @@ typedef struct HeightModifier HeightModifier;
 HeightModifier* modifierCreate();
 HeightModifier* modifierCreateCopy(HeightModifier* source);
 void modifierDelete(HeightModifier* modifier);
-void modifierSave(HeightModifier* modifier, FILE* f);
-void modifierLoad(HeightModifier* modifier, FILE* f);
+void modifierSave(FILE* f, HeightModifier* modifier);
+void modifierLoad(FILE* f, HeightModifier* modifier);
 Zone* modifierGetZone(HeightModifier* modifier);
 void modifierActionAddValue(HeightModifier* modifier, double value);
 void modifierActionFixValue(HeightModifier* modifier, double value);

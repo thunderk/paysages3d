@@ -1,9 +1,10 @@
 #include "scenery.h"
 
 #include <stdio.h>
-#include "shared/functions.h"
-#include "system.h"
+#include "color.h"
+#include "euclid.h"
 #include "render.h"
+#include "system.h"
 
 AtmosphereDefinition _atmosphere;
 CameraDefinition _camera;
@@ -48,6 +49,7 @@ void scenerySaveToFile(char* filepath)
     texturesSave(f, &_textures);
     waterSave(f, &_water);
 
+    fflush(f);
     fclose(f);
 }
 

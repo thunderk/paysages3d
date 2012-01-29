@@ -1,5 +1,4 @@
-#include "shared/types.h"
-#include "shared/functions.h"
+#include "array.h"
 
 #include <stdlib.h>
 #include <string.h>

@@ -1,17 +1,18 @@
 #include "preview.h"
 #include "formwater.h"
-#include "tools.h"
+
 #include <QColor>
 #include <QSlider>
 #include <math.h>
 
+#include "../lib_paysages/shared/constants.h"
+#include "../lib_paysages/euclid.h"
+#include "../lib_paysages/lighting.h"
+#include "../lib_paysages/renderer.h"
+#include "../lib_paysages/scenery.h"
 #include "../lib_paysages/terrain.h"
 #include "../lib_paysages/water.h"
-#include "../lib_paysages/lighting.h"
-#include "../lib_paysages/scenery.h"
-#include "../lib_paysages/renderer.h"
-#include "../lib_paysages/shared/functions.h"
-#include "../lib_paysages/shared/constants.h"
+#include "tools.h"
 
 static WaterDefinition _definition;
 

@@ -7,8 +7,6 @@
 
 #include "tools.h"
 
-#include "../lib_paysages/shared/functions.h"
-
 class ColorGradationPreview:public QWidget
 {
 public:
