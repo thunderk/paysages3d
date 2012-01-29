@@ -189,7 +189,7 @@ void WidgetWanderer::resizeGL(int w, int h)
 {
     double ratio = (double)h / (double)w;
 
-    glViewport(0, 0, (GLint)w, (GLint)h);
+    glViewport(0, 0, w, h);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

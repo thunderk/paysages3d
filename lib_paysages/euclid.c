@@ -331,14 +331,14 @@ Matrix4 m4NewRotateTripleAxis(Vector3 x, Vector3 y, Vector3 z)
 
 Matrix4 m4NewLookAt(Vector3 eye, Vector3 at, Vector3 up)
 {
-    Vector3 z = v3Normalize(v3Sub(eye, at));
+    Vector3 z = v3Normalize(v3Sub(at, eye));
     Vector3 x = v3Normalize(v3Cross(up, z));
     Vector3 y = v3Cross(z, x);
-    Matrix4 result = m4NewRotateTripleAxis(x, y, v3Neg(z));
+    Matrix4 result = m4NewRotateTripleAxis(x, y, z);
     result.d = eye.x;
     result.h = eye.y;
     result.l = eye.z;
-    return result;
+    return m4Inverse(result);
 }
 
 Matrix4 m4NewPerspective(double fov_y, double aspect, double near, double far)

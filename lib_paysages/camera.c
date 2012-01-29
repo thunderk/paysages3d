@@ -114,7 +114,7 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
     
     definition->target = v3Add(definition->location, definition->forward);
 
-    definition->project = m4Mult(m4NewPerspective(1.57, 1.333333, 1.0, 1000.0), m4NewLookAt(VECTOR_ZERO, definition->forward, definition->up));
+    definition->project = m4Mult(m4NewPerspective(1.57, 1.333333, 1.0, 1000.0), m4NewLookAt(definition->location, definition->target, definition->up));
     definition->unproject = m4Inverse(definition->project);
 }
 
@@ -213,25 +213,25 @@ void cameraRotateRoll(CameraDefinition* camera, double value)
 
 Vector3 cameraProject(CameraDefinition* camera, Vector3 point)
 {
-    point = m4Transform(camera->project, v3Sub(point, camera->location));
-    point.x = (-point.x + 1.0) * 0.5 * (double)render_width;
+    point = m4Transform(camera->project, point);
+    point.x = (point.x + 1.0) * 0.5 * (double)render_width;
     point.y = (-point.y + 1.0) * 0.5 * (double)render_height;
     return point;
 }
 
 Vector3 cameraUnproject(CameraDefinition* camera, Vector3 point)
 {
-    point.x = -(point.x / (0.5 * (double)render_width) - 1.0);
+    point.x = (point.x / (0.5 * (double)render_width) - 1.0);
     point.y = -(point.y / (0.5 * (double)render_height) - 1.0);
-    return v3Add(m4Transform(camera->unproject, point), camera->location);
+    return m4Transform(camera->unproject, point);
 }
 
 void cameraProjectToFragment(CameraDefinition* camera, double x, double y, double z, RenderFragment* result)
 {
     Vector3 point = {x, y, z};
-    point = m4Transform(camera->project, v3Sub(point, camera->location));
-    result->x = lround((-point.x + 1.0) * 0.5 * (double)render_width);
-    result->y = lround((-point.y + 1.0) * 0.5 * (double)render_height);
+    point = cameraProject(camera, point);
+    result->x = lround(point.x);
+    result->y = lround(point.y);
     result->z = point.z;
 }
 
