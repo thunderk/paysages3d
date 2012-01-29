@@ -100,11 +100,11 @@ typedef struct
 
 typedef struct Zone Zone;
 
-typedef void (*PreviewCallbackResize)(int width, int height);
-typedef void (*PreviewCallbackClear)(Color col);
-typedef void (*PreviewCallbackDraw)(int x, int y, Color col);
-typedef void (*PreviewCallbackUpdate)(double progress);
-typedef int (*RenderProgressCallback)(double progress);
+typedef void (*RenderCallbackStart)(int width, int height, Color background);
+typedef void (*RenderCallbackDraw)(int x, int y, Color col);
+typedef void (*RenderCallbackUpdate)(double progress);
+
+typedef struct RenderArea RenderArea;
 
 typedef struct
 {

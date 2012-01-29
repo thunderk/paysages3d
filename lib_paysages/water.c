@@ -2,7 +2,6 @@
 
 #include "shared/types.h"
 #include "shared/constants.h"
-#include "shared/globals.h"
 #include "color.h"
 #include "euclid.h"
 #include "render.h"
@@ -266,10 +265,10 @@ static void _renderQuad(WaterDefinition* definition, Renderer* renderer, double 
     v2 = _getFirstPassVertex(definition, x, z + size, size);
     v3 = _getFirstPassVertex(definition, x + size, z + size, size);
     v4 = _getFirstPassVertex(definition, x + size, z, size);
-    renderPushQuad(renderer, &v1, &v2, &v3, &v4);
+    renderer->pushQuad(renderer, &v1, &v2, &v3, &v4);
 }
 
-void waterRender(WaterDefinition* definition, Renderer* renderer, RenderProgressCallback callback)
+void waterRender(WaterDefinition* definition, Renderer* renderer)
 {
     int chunk_factor, chunk_count, i;
     double cx = renderer->camera_location.x;
@@ -286,7 +285,7 @@ void waterRender(WaterDefinition* definition, Renderer* renderer, RenderProgress
 
     while (radius_ext < 1000.0)
     {
-        if (!callback(radius_ext / 1000.0))
+        if (!renderer->addRenderProgress(renderer, 0.0))
         {
             return;
         }

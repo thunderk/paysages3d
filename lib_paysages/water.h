@@ -47,7 +47,7 @@ HeightInfo waterGetHeightInfo(WaterDefinition* definition);
 Color waterLightFilter(WaterDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light);
 WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer, Vector3 location, Vector3 look);
 Color waterGetColor(WaterDefinition* definition, Renderer* renderer, Vector3 location, Vector3 look);
-void waterRender(WaterDefinition* definition, Renderer* renderer, RenderProgressCallback callback);
+void waterRender(WaterDefinition* definition, Renderer* renderer);
 
 #ifdef __cplusplus
 }

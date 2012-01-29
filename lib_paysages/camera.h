@@ -1,8 +1,9 @@
 #ifndef _PAYSAGES_CAMERA_H_
 #define _PAYSAGES_CAMERA_H_
 
-#include "shared/types.h"
 #include <stdio.h>
+#include "shared/types.h"
+#include "renderer.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,10 +49,10 @@ void cameraRotateYaw(CameraDefinition* camera, double value);
 void cameraRotatePitch(CameraDefinition* camera, double value);
 void cameraRotateRoll(CameraDefinition* camera, double value);
 
-Vector3 cameraProject(CameraDefinition* camera, Vector3 point);
-Vector3 cameraUnproject(CameraDefinition* camera, Vector3 point);
-void cameraProjectToFragment(CameraDefinition* camera, double x, double y, double z, RenderFragment* result);
-void cameraPushOverlay(CameraDefinition* camera, Color col, f_RenderFragmentCallback callback);
+Vector3 cameraProject(CameraDefinition* camera, Renderer* renderer, Vector3 point);
+Vector3 cameraUnproject(CameraDefinition* camera, Renderer* renderer, Vector3 point);
+void cameraProjectToFragment(CameraDefinition* camera, Renderer* renderer, double x, double y, double z, RenderFragment* result);
+/*void cameraPushOverlay(CameraDefinition* camera, Color col, f_RenderFragmentCallback callback);*/
 
 #ifdef __cplusplus
 }

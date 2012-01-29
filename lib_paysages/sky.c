@@ -4,7 +4,6 @@
 #include <math.h>
 
 #include "shared/types.h"
-#include "shared/globals.h"
 #include "shared/constants.h"
 #include "color.h"
 #include "clouds.h"
@@ -182,7 +181,7 @@ static int _postProcessFragment(RenderFragment* fragment, Renderer* renderer, vo
     return 1;
 }
 
-void skyRender(SkyDefinition* definition, Renderer* renderer, RenderProgressCallback callback)
+void skyRender(SkyDefinition* definition, Renderer* renderer)
 {
     int res_i, res_j;
     int i, j;
@@ -203,7 +202,7 @@ void skyRender(SkyDefinition* definition, Renderer* renderer, RenderProgressCall
 
     for (j = 0; j < res_j; j++)
     {
-        if (!callback((double)j / (double)(res_j - 1)))
+        if (!renderer->addRenderProgress(renderer, 0.0))
         {
             return;
         }
@@ -251,7 +250,7 @@ void skyRender(SkyDefinition* definition, Renderer* renderer, RenderProgressCall
             vertex4.callback_data = definition;
 
             /* TODO Triangles at poles */
-            renderPushQuad(renderer, &vertex1, &vertex4, &vertex3, &vertex2);
+            renderer->pushQuad(renderer, &vertex1, &vertex4, &vertex3, &vertex2);
         }
     }
 }

@@ -177,29 +177,21 @@ void sceneryGetWater(WaterDefinition* water)
 
 void sceneryRenderFirstPass(Renderer* renderer)
 {
-    if (!renderSetNextProgressStep(0.0, 0.01))
+    /*if (!renderSetNextProgressStep(0.0, 0.01))
     {
         return;
-    }
-    skyRender(&_sky, renderer, renderTellProgress);
-    if (!renderSetNextProgressStep(0.01, 0.085))
+    }*/
+    skyRender(&_sky, renderer);
+    /*if (!renderSetNextProgressStep(0.01, 0.085))
     {
         return;
-    }
-    terrainRender(&_terrain, renderer, renderTellProgress);
-    if (!renderSetNextProgressStep(0.085, 0.1))
+    }*/
+    terrainRender(&_terrain, renderer);
+    /*if (!renderSetNextProgressStep(0.085, 0.1))
     {
         return;
-    }
-    waterRender(&_water, renderer, renderTellProgress);
-}
-
-void sceneryRenderSecondPass(Renderer* renderer)
-{
-    if (renderSetNextProgressStep(0.1, 1.0))
-    {
-        renderPostProcess(renderer, systemGetCoreCount());
-    }
+    }*/
+    waterRender(&_water, renderer);
 }
 
 
@@ -277,34 +269,32 @@ static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3
 
 static Vector3 _projectPoint(Renderer* renderer, Vector3 point)
 {
-    return cameraProject(&_camera, point);
+    return cameraProject(&_camera, renderer, point);
 }
 
 static Vector3 _unprojectPoint(Renderer* renderer, Vector3 point)
 {
-    return cameraUnproject(&_camera, point);
+    return cameraUnproject(&_camera, renderer, point);
 }
 
 static double _getPrecision(Renderer* renderer, Vector3 location)
 {
     Vector3 projected;
 
-    projected = cameraProject(&_camera, location);
+    projected = cameraProject(&_camera, renderer, location);
     projected.x += 1.0;
     //projected.y += 1.0;
 
-    return v3Norm(v3Sub(cameraUnproject(&_camera, projected), location)); // / (double)render_quality;
+    return v3Norm(v3Sub(cameraUnproject(&_camera, renderer, projected), location)); // / (double)render_quality;
 }
 
-Renderer sceneryGetStandardRenderer(int quality)
+Renderer sceneryCreateStandardRenderer()
 {
     Renderer result;
-
-    quality = (quality > 10) ? 10 : quality;
-    quality = (quality < 1) ? 1 : quality;
+    
+    result = rendererCreate();
 
     result.camera_location = _camera.location;
-    result.render_quality = quality;
 
     result.filterLight = _filterLight;
     result.maskLight = _maskLight;

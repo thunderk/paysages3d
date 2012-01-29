@@ -5,7 +5,6 @@
 #include "euclid.h"
 #include "render.h"
 #include "shared/types.h"
-#include "shared/globals.h"
 #include "shared/constants.h"
 #include "scenery.h"
 #include "tools.h"
@@ -211,25 +210,25 @@ void cameraRotateRoll(CameraDefinition* camera, double value)
     cameraValidateDefinition(camera, 0);
 }
 
-Vector3 cameraProject(CameraDefinition* camera, Vector3 point)
+Vector3 cameraProject(CameraDefinition* camera, Renderer* renderer, Vector3 point)
 {
     point = m4Transform(camera->project, point);
-    point.x = (point.x + 1.0) * 0.5 * (double)render_width;
-    point.y = (-point.y + 1.0) * 0.5 * (double)render_height;
+    point.x = (point.x + 1.0) * 0.5 * (double)renderer->render_width;
+    point.y = (-point.y + 1.0) * 0.5 * (double)renderer->render_height;
     return point;
 }
 
-Vector3 cameraUnproject(CameraDefinition* camera, Vector3 point)
+Vector3 cameraUnproject(CameraDefinition* camera, Renderer* renderer, Vector3 point)
 {
-    point.x = (point.x / (0.5 * (double)render_width) - 1.0);
-    point.y = -(point.y / (0.5 * (double)render_height) - 1.0);
+    point.x = (point.x / (0.5 * (double)renderer->render_width) - 1.0);
+    point.y = -(point.y / (0.5 * (double)renderer->render_height) - 1.0);
     return m4Transform(camera->unproject, point);
 }
 
-void cameraProjectToFragment(CameraDefinition* camera, double x, double y, double z, RenderFragment* result)
+void cameraProjectToFragment(CameraDefinition* camera, Renderer* renderer, double x, double y, double z, RenderFragment* result)
 {
     Vector3 point = {x, y, z};
-    point = cameraProject(camera, point);
+    point = cameraProject(camera, renderer, point);
     result->x = lround(point.x);
     result->y = lround(point.y);
     result->z = point.z;
@@ -242,9 +241,9 @@ void cameraProjectToFragment(CameraDefinition* camera, double x, double y, doubl
  * @param col Color of the polygon.
  * @param callback Post-processing callback.
  */
-void cameraPushOverlay(CameraDefinition* camera, Color col, f_RenderFragmentCallback callback)
+/*void cameraPushOverlay(CameraDefinition* camera, Color col, f_RenderFragmentCallback callback)
 {
-    /*Vertex v1, v2, v3, v4;
+    Vertex v1, v2, v3, v4;
     Vector3 v;
 
     v.x = 0.0;
@@ -275,5 +274,5 @@ void cameraPushOverlay(CameraDefinition* camera, Color col, f_RenderFragmentCall
     v4.color = col;
     v4.callback = callback;
 
-    renderPushQuad(&v1, &v2, &v3, &v4);*/
-}
+    renderPushQuad(&v1, &v2, &v3, &v4);
+}*/

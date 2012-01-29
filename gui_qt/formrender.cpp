@@ -74,7 +74,7 @@ void FormRender::saveRender()
     filepath = QFileDialog::getSaveFileName(this, "Choose a filename to save the last render");
     if (!filepath.isNull())
     {
-        renderSaveToFile((char*)filepath.toStdString().c_str());
+        //renderSaveToFile((char*)filepath.toStdString().c_str());
         QMessageBox::information(this, "Message", "The picture " + filepath + " has been saved.");
     }
 }

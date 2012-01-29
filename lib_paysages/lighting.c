@@ -7,7 +7,6 @@
 
 #include "shared/types.h"
 #include "shared/constants.h"
-#include "shared/globals.h"
 #include "color.h"
 #include "euclid.h"
 #include "renderer.h"

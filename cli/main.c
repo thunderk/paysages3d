@@ -3,16 +3,17 @@
 #include <string.h>
 
 #include "../lib_paysages/auto.h"
+#include "../lib_paysages/main.h"
 #include "../lib_paysages/render.h"
 #include "../lib_paysages/scenery.h"
 
-void startRender(Renderer* renderer, char* outputpath)
+void startRender(Renderer* renderer, char* outputpath, int width, int height, int quality)
 {
     printf("\rRendering %s ...                   \n", outputpath);
-    autoRenderSceneTwoPass(renderer, 0);
+    rendererStart(renderer, width, height, quality);
     printf("\rSaving %s ...                      \n", outputpath);
     remove(outputpath);
-    renderSaveToFile(outputpath);
+    renderSaveToFile(renderer->render_area, outputpath);
 }
 
 void displayHelp()
@@ -97,19 +98,20 @@ int main(int argc, char** argv)
     printf("Initializing ...\n");
     paysagesInit();
 
-    renderer = sceneryGetStandardRenderer(conf_render_quality);
-    renderSetSize(conf_render_width, conf_render_height);
-    renderSetPreviewCallbacks(NULL, NULL, NULL, _previewUpdate);
+    renderer = sceneryCreateStandardRenderer();
+    rendererSetPreviewCallbacks(&renderer, NULL, NULL, _previewUpdate);
 
     for (outputcount = 0; outputcount < conf_nb_pictures; outputcount++)
     {
         autoSetDaytimeFraction(conf_daytime_start);
 
         sprintf(outputpath, "output/pic%05d.png", outputcount);
-        startRender(&renderer, outputpath);
+        startRender(&renderer, outputpath, conf_render_width, conf_render_height, conf_render_quality);
 
         conf_daytime_start += conf_daytime_step;
     }
+    
+    rendererDelete(&renderer);
 
     printf("\rDone.                         \n");
 

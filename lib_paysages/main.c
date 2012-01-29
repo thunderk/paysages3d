@@ -6,7 +6,6 @@
 
 #include "shared/types.h"
 #include "shared/constants.h"
-#include "shared/globals.h"
 
 #include "auto.h"
 #include "system.h"

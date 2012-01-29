@@ -41,7 +41,7 @@ int terrainProjectRay(TerrainDefinition* definition, Renderer* renderer, Vector3
 double terrainGetHeight(TerrainDefinition* definition, double x, double z);
 double terrainGetHeightNormalized(TerrainDefinition* definition, double x, double z);
 Color terrainGetColor(TerrainDefinition* definition, Renderer* renderer, double x, double z, double detail);
-void terrainRender(TerrainDefinition* definition, Renderer* renderer, RenderProgressCallback callback);
+void terrainRender(TerrainDefinition* definition, Renderer* renderer);
 
 #ifdef __cplusplus
 }

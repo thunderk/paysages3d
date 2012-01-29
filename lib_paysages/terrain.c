@@ -6,7 +6,6 @@
 #include <assert.h>
 
 #include "shared/types.h"
-#include "shared/globals.h"
 #include "shared/constants.h"
 #include "euclid.h"
 #include "render.h"
@@ -322,7 +321,7 @@ static void _renderQuad(TerrainDefinition* definition, Renderer* renderer, doubl
     
     if (v1.location.y > water_height || v2.location.y > water_height || v3.location.y > water_height || v4.location.y > water_height)
     {
-        renderPushQuad(renderer, &v1, &v2, &v3, &v4);
+        renderer->pushQuad(renderer, &v1, &v2, &v3, &v4);
     }
 }
 
@@ -349,7 +348,7 @@ Color terrainGetColor(TerrainDefinition* definition, Renderer* renderer, double 
     return _getColor(definition, renderer, point, detail);
 }
 
-void terrainRender(TerrainDefinition* definition, Renderer* renderer, RenderProgressCallback callback)
+void terrainRender(TerrainDefinition* definition, Renderer* renderer)
 {
     int chunk_factor, chunk_count, i;
     double cx = renderer->camera_location.x;
@@ -371,7 +370,7 @@ void terrainRender(TerrainDefinition* definition, Renderer* renderer, RenderProg
 
     while (radius_ext < 1000.0)
     {
-        if (!callback(radius_ext / 1000.0))
+        if (!renderer->addRenderProgress(renderer, 0.0))
         {
             return;
         }

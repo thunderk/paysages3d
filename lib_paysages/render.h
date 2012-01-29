@@ -10,23 +10,21 @@ extern "C" {
 #endif
 
 void renderInit();
-void renderSave(FILE* f);
-void renderLoad(FILE* f);
-void renderSetSize(int width, int height);
-int renderSetQuality(int quality);
-void renderClear();
-void renderUpdate();
-void renderInterrupt();
-void renderSetBackgroundColor(Color* col);
-void renderAddFragment(RenderFragment* fragment);
-void renderPushFragment(int x, int y, double z, Vertex* vertex);
-void renderPushTriangle(Renderer* renderer, Vertex* v1, Vertex* v2, Vertex* v3);
-void renderPushQuad(Renderer* renderer, Vertex* v1, Vertex* v2, Vertex* v3, Vertex* v4);
-void renderPostProcess(Renderer* renderer, int nbchunks);
-void renderSaveToFile(const char* path);
-void renderSetPreviewCallbacks(PreviewCallbackResize resize, PreviewCallbackClear clear, PreviewCallbackDraw draw, PreviewCallbackUpdate update);
-int renderSetNextProgressStep(double start, double end);
-int renderTellProgress(double progress);
+RenderArea* renderCreateArea();
+void renderDeleteArea(RenderArea* area);
+
+void renderSetSize(RenderArea* area, int width, int height);
+void renderSetBackgroundColor(RenderArea* area, Color* col);
+void renderClear(RenderArea* area);
+void renderUpdate(RenderArea* area);
+
+void renderAddFragment(RenderArea* area, RenderFragment* fragment);
+void renderPushFragment(RenderArea* area, int x, int y, double z, Vertex* vertex);
+void renderPushTriangle(RenderArea* area, Vertex* v1, Vertex* v2, Vertex* v3, Vector3 p1, Vector3 p2, Vector3 p3);
+
+void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks);
+void renderSaveToFile(RenderArea* area, const char* path);
+void renderSetPreviewCallbacks(RenderArea* area, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update);
 
 
 #ifdef __cplusplus

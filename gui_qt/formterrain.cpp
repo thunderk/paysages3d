@@ -40,7 +40,7 @@ class PreviewTerrainColor:public Preview
 public:
     PreviewTerrainColor(QWidget* parent):Preview(parent)
     {
-        _renderer = rendererGetFake();
+        _renderer = rendererCreate();
         _renderer.applyTextures = _applyTextures;
         _renderer.getTerrainHeight = _getTerrainHeight;
         /*_renderer.applyLightingToSurface = _applyLightingToSurface;*/

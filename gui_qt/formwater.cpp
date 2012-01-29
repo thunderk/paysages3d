@@ -72,7 +72,7 @@ public:
         lightingAddLight(&_lighting, light);
         lightingValidateDefinition(&_lighting);
 
-        _renderer = rendererGetFake();
+        _renderer = rendererCreate();
         _renderer.rayWalking = _rayWalking;
         _renderer.applyLightingToSurface = _applyLightingToSurface;
         _renderer.customData[0] = &_water;

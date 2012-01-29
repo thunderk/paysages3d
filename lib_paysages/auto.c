@@ -6,7 +6,6 @@
 
 #include "shared/types.h"
 #include "shared/constants.h"
-#include "shared/globals.h"
 #include "clouds.h"
 #include "color.h"
 #include "lighting.h"
@@ -19,8 +18,6 @@
 #include "system.h"
 #include "water.h"
 #include "zone.h"
-
-static int _is_rendering = 0;
 
 void autoSetDaytime(int hour, int minute)
 {
@@ -230,67 +227,4 @@ void autoGenRealisticLandscape(int seed)
     atmosphere.auto_lock_on_haze = 1;
     scenerySetAtmosphere(&atmosphere);
     atmosphereDeleteDefinition(&atmosphere);
-}
-
-void* _renderFirstPass(void* data)
-{
-    sceneryRenderFirstPass((Renderer*)data);
-    _is_rendering = 0;
-    return NULL;
-}
-
-void autoRenderSceneTwoPass(Renderer* renderer, int postonly)
-{
-    Thread* thread;
-    int loops;
-
-    if (!postonly)
-    {
-        renderClear();
-
-        _is_rendering = 1;
-        thread = threadCreate(_renderFirstPass, renderer);
-        loops = 0;
-
-        while (_is_rendering)
-        {
-            timeSleepMs(100);
-
-            if (++loops >= 10)
-            {
-                renderUpdate();
-                loops = 0;
-            }
-        }
-
-        threadJoin(thread);
-    }
-    sceneryRenderSecondPass(renderer);
-}
-
-static int _postProcessRayTracingOverlay(RenderFragment* fragment)
-{
-    Vector3 terrain_hit, look;
-
-    // TODO
-    /*look = v3Sub(fragment->vertex.location, camera_location);
-    if (!terrainProjectRay(camera_location, look, &terrain_hit, &fragment->vertex.color))
-    {
-        fragment->vertex.color = skyProjectRay(camera_location, look);
-    }*/
-
-    return 1;
-}
-
-void autoRenderSceneRayTracing()
-{
-    // TODO
-    /*renderClear();
-    cameraPushOverlay(COLOR_RED, _postProcessRayTracingOverlay);
-    renderUpdate();
-
-    if (renderSetNextProgressStep(0.0, 1.0))
-    {
-        renderPostProcess(_cpu_count);
-    }*/
 }

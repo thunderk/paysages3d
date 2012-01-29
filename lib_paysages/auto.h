@@ -10,8 +10,6 @@ extern "C" {
 void autoSetDaytime(int hour, int minute);
 void autoSetDaytimeFraction(double daytime);
 void autoGenRealisticLandscape(int seed);
-void autoRenderSceneTwoPass(Renderer* renderer, int postonly);
-void autoRenderSceneRayTracing();
 
 #ifdef __cplusplus
 }

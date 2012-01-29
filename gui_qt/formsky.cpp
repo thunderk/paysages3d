@@ -20,7 +20,7 @@ public:
     PreviewEast(QWidget* parent):
         Preview(parent)
     {
-        _renderer = rendererGetFake();
+        _renderer = rendererCreate();
         _preview_definition = skyCreateDefinition();
     }
 protected:
@@ -50,7 +50,7 @@ public:
     PreviewWest(QWidget* parent):
         Preview(parent)
     {
-        _renderer = rendererGetFake();
+        _renderer = rendererCreate();
         _preview_definition = skyCreateDefinition();
     }
 protected:
