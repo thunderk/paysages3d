@@ -1,3 +1,5 @@
+- Clouds are lighted without filtering from ground (clouds lighted at night !)
+- Camera should respect ratio aspect of render area.
 - All noises should use the same entropy pool (saved separately), and avoid reallocs.
 - Implement light multi-sampling (mainly for skydome).
 - All Save and Load methods should have same signature : void ...Save(FILE*, ...*).

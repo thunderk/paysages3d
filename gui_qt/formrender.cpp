@@ -48,7 +48,7 @@ void FormRender::applyConfig()
 
 void FormRender::configChangeEvent()
 {
-    cameraValidateDefinition(&_camera);
+    cameraValidateDefinition(&_camera, 1);
     BaseForm::configChangeEvent();
 }
 

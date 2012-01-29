@@ -125,6 +125,7 @@ void WidgetWanderer::mouseMoveEvent(QMouseEvent* event)
     else if (event->buttons() & Qt::RightButton)
     {
         cameraRotateYaw(&_current_camera, (double)(event->x() - last_mouse_x) * factor * 0.1);
+        cameraRotatePitch(&_current_camera, (double)(event->y() - last_mouse_y) * factor * 0.1);
         updateGL();
         event->accept();
     }
@@ -265,6 +266,8 @@ static void _renderTerrain(TerrainDefinition* terrain, CameraDefinition* camera,
 
 void WidgetWanderer::paintGL()
 {
+    cameraValidateDefinition(&_current_camera, 1);
+    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(_current_camera.location.x, _current_camera.location.y, _current_camera.location.z, _current_camera.target.x, _current_camera.target.y, _current_camera.target.z, _current_camera.up.x, _current_camera.up.y, _current_camera.up.z);

@@ -58,27 +58,21 @@ void sceneryLoadFromFile(char* filepath)
     /* TODO Use intermediary definitions ? */
 
     atmosphereLoad(f, &_atmosphere);
-    atmosphereValidateDefinition(&_atmosphere);
-
     cameraLoad(f, &_camera);
-    cameraValidateDefinition(&_camera);
-
     cloudsLoad(f, &_clouds);
-    cloudsValidateDefinition(&_clouds);
-
     lightingLoad(f, &_lighting);
-    lightingValidateDefinition(&_lighting);
-
     skyLoad(f, &_sky);
-    skyValidateDefinition(&_sky);
-
     terrainLoad(f, &_terrain);
-    terrainValidateDefinition(&_terrain);
-
     texturesLoad(f, &_textures);
-    texturesValidateDefinition(&_textures);
-
     waterLoad(f, &_water);
+    
+    atmosphereValidateDefinition(&_atmosphere);
+    cameraValidateDefinition(&_camera, 0);
+    cloudsValidateDefinition(&_clouds);
+    lightingValidateDefinition(&_lighting);
+    skyValidateDefinition(&_sky);
+    terrainValidateDefinition(&_terrain);
+    texturesValidateDefinition(&_textures);
     waterValidateDefinition(&_water);
 
     fclose(f);
@@ -98,7 +92,7 @@ void sceneryGetAtmosphere(AtmosphereDefinition* atmosphere)
 void scenerySetCamera(CameraDefinition* camera)
 {
     cameraCopyDefinition(camera, &_camera);
-    cameraValidateDefinition(&_camera);
+    cameraValidateDefinition(&_camera, 1);
 }
 
 void sceneryGetCamera(CameraDefinition* camera)
@@ -146,6 +140,8 @@ void scenerySetTerrain(TerrainDefinition* terrain)
 {
     terrainCopyDefinition(terrain, &_terrain);
     terrainValidateDefinition(&_terrain);
+    
+    cameraValidateDefinition(&_camera, 1);
 }
 
 void sceneryGetTerrain(TerrainDefinition* terrain)
@@ -168,6 +164,8 @@ void scenerySetWater(WaterDefinition* water)
 {
     waterCopyDefinition(water, &_water);
     waterValidateDefinition(&_water);
+
+    cameraValidateDefinition(&_camera, 1);
 }
 
 void sceneryGetWater(WaterDefinition* water)

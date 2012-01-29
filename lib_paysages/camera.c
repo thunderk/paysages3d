@@ -8,6 +8,7 @@
 #include "shared/globals.h"
 #include "shared/constants.h"
 #include "shared/functions.h"
+#include "scenery.h"
 
 void cameraInit()
 {
@@ -16,29 +17,33 @@ void cameraInit()
 void cameraSave(FILE* f, CameraDefinition* camera)
 {
     v3Save(camera->location, f);
-    v3Save(camera->target, f);
+    toolsSaveDouble(f, camera->yaw);
+    toolsSaveDouble(f, camera->pitch);
+    toolsSaveDouble(f, camera->roll);
 }
 
 void cameraLoad(FILE* f, CameraDefinition* camera)
 {
     camera->location = v3Load(f);
-    camera->target = v3Load(f);
+    camera->yaw = toolsLoadDouble(f);
+    camera->pitch = toolsLoadDouble(f);
+    camera->roll = toolsLoadDouble(f);
 
-    cameraValidateDefinition(camera);
+    cameraValidateDefinition(camera, 0);
 }
 
 CameraDefinition cameraCreateDefinition()
 {
     CameraDefinition definition;
 
-    definition.location.x = -1.0;
+    definition.location.x = 0.0;
     definition.location.y = 0.0;
     definition.location.z = 0.0;
-    definition.target.x = 0.0;
-    definition.target.y = 0.0;
-    definition.target.z = 0.0;
+    definition.yaw = 0.0;
+    definition.pitch = 0.0;
+    definition.roll = 0.0;
 
-    cameraValidateDefinition(&definition);
+    cameraValidateDefinition(&definition, 0);
 
     return definition;
 }
@@ -50,16 +55,66 @@ void cameraDeleteDefinition(CameraDefinition* definition)
 void cameraCopyDefinition(CameraDefinition* source, CameraDefinition* destination)
 {
     *destination = *source;
+    
+    cameraValidateDefinition(destination, 0);
 }
 
-void cameraValidateDefinition(CameraDefinition* definition)
+void cameraValidateDefinition(CameraDefinition* definition, int check_above)
 {
-    /* TODO Recompute up vector */
+    WaterDefinition water;
+    TerrainDefinition terrain;
+    double water_height, terrain_height, diff;
+    Vector3 move;
+    Matrix4 rotation;
+    
+    if (check_above)
+    {
+        water = waterCreateDefinition();
+        sceneryGetWater(&water);
+        water_height = water.height + 0.5;
+        waterDeleteDefinition(&water);
+
+        terrain = terrainCreateDefinition();
+        sceneryGetTerrain(&terrain);
+        terrain_height = terrainGetHeight(&terrain, definition->location.x, definition->location.z) + 0.5;
+        terrainDeleteDefinition(&terrain);
+        
+        if (definition->location.y < water_height || definition->location.y < terrain_height)
+        {
+            if (water_height > terrain_height)
+            {
+                diff = water_height - definition->location.y;
+            }
+            else
+            {
+                diff = terrain_height - definition->location.y;
+            }
+
+            move.x = move.z = 0.0;
+            move.y = diff;
+            definition->location = v3Add(definition->location, move);
+        }
+    }
+    
+    definition->forward.x = 1.0;
+    definition->forward.y = 0.0;
+    definition->forward.z = 0.0;
+    definition->right.x = 0.0;
+    definition->right.y = 0.0;
+    definition->right.z = 1.0;
     definition->up.x = 0.0;
     definition->up.y = 1.0;
     definition->up.z = 0.0;
+    
+    rotation = m4NewRotateEuler(definition->yaw, definition->pitch, definition->roll);
+    
+    definition->forward = m4MultPoint(rotation, definition->forward);
+    definition->right = m4MultPoint(rotation, definition->right);
+    definition->up = m4MultPoint(rotation, definition->up);
+    
+    definition->target = v3Add(definition->location, definition->forward);
 
-    definition->project = m4Mult(m4NewPerspective(1.57, 1.333333, 1.0, 1000.0), m4NewLookAt(VECTOR_ZERO, v3Sub(definition->target, definition->location), definition->up));
+    definition->project = m4Mult(m4NewPerspective(1.57, 1.333333, 1.0, 1000.0), m4NewLookAt(VECTOR_ZERO, definition->forward, definition->up));
     definition->unproject = m4Inverse(definition->project);
 }
 
@@ -69,68 +124,91 @@ void cameraSetLocation(CameraDefinition* camera, double x, double y, double z)
     camera->location.y = y;
     camera->location.z = z;
 
-    cameraValidateDefinition(camera);
+    cameraValidateDefinition(camera, 0);
 }
 
 void cameraSetTarget(CameraDefinition* camera, double x, double y, double z)
 {
-    camera->target.x = x;
-    camera->target.y = y;
-    camera->target.z = z;
+    Vector3 forward, target;
+    
+    target.x = x;
+    target.y = y;
+    target.z = z;
+    
+    forward = v3Sub(target, camera->location);
+    if (v3Norm(forward) < 0.0000001)
+    {
+        return;
+    }
+    forward = v3Normalize(forward);
+    
+    if (fabs(forward.x) < 0.0000001 && fabs(forward.z) < 0.0000001)
+    {
+        /* Forward vector is vertical */
+        if (forward.y > 0.0)
+        {
+            camera->pitch = M_PI_2;
+        }
+        else if (forward.y > 0.0)
+        {
+            camera->pitch = -M_PI_2;
+        }
+    }
+    else
+    {
+        /* TODO Guess angles */
+    }
 
-    cameraValidateDefinition(camera);
+    cameraValidateDefinition(camera, 0);
 }
 
-void cameraSetAngle(CameraDefinition* camera, double angle)
+void cameraSetRoll(CameraDefinition* camera, double angle)
 {
-    /* TODO */
+    camera->roll = angle;
+
+    cameraValidateDefinition(camera, 0);
 }
 
 void cameraStrafeForward(CameraDefinition* camera, double value)
 {
-    Vector3 move;
+    camera->location = v3Add(camera->location, v3Scale(camera->forward, value));
 
-    move = v3Scale(v3Normalize(v3Sub(camera->target, camera->location)), value);
-    camera->location = v3Add(camera->location, move);
-    camera->target = v3Add(camera->target, move);
-
-    cameraValidateDefinition(camera);
+    cameraValidateDefinition(camera, 0);
 }
 
 void cameraStrafeRight(CameraDefinition* camera, double value)
 {
-    Vector3 move;
+    camera->location = v3Add(camera->location, v3Scale(camera->right, value));
 
-    move = v3Scale(v3Normalize(v3Cross(v3Sub(camera->target, camera->location), camera->up)), value);
-    camera->location = v3Add(camera->location, move);
-    camera->target = v3Add(camera->target, move);
-
-    cameraValidateDefinition(camera);
+    cameraValidateDefinition(camera, 0);
 }
 
 void cameraStrafeUp(CameraDefinition* camera, double value)
 {
-    Vector3 move;
+    camera->location = v3Add(camera->location, v3Scale(camera->up, value));
 
-    move = v3Scale(v3Normalize(camera->up), value);
-    camera->location = v3Add(camera->location, move);
-    camera->target = v3Add(camera->target, move);
-
-    cameraValidateDefinition(camera);
+    cameraValidateDefinition(camera, 0);
 }
 
 void cameraRotateYaw(CameraDefinition* camera, double value)
 {
-    Matrix4 m;
-    Vector3 v;
+    camera->yaw += value;
 
-    v = v3Sub(camera->target, camera->location);
-    m = m4NewRotateAxis(value, camera->up);
-    v = m4MultPoint(m, v);
+    cameraValidateDefinition(camera, 0);
+}
 
-    camera->target = v3Add(camera->location, v);
+void cameraRotatePitch(CameraDefinition* camera, double value)
+{
+    camera->pitch += value;
 
-    cameraValidateDefinition(camera);
+    cameraValidateDefinition(camera, 0);
+}
+
+void cameraRotateRoll(CameraDefinition* camera, double value)
+{
+    camera->roll += value;
+
+    cameraValidateDefinition(camera, 0);
 }
 
 Vector3 cameraProject(CameraDefinition* camera, Vector3 point)
