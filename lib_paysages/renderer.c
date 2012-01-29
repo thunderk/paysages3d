@@ -3,6 +3,7 @@
 #include "lighting.h"
 
 RayCastingResult _RAYCASTING_NULL = {0};
+HeightInfo _WATER_HEIGHT_INFO = {-1000000.0, -1000000.0, -1000000.0};
 
 static Color _filterLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
 {
@@ -27,6 +28,11 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
 static double _getTerrainHeight(Renderer* renderer, double x, double z)
 {
     return 0.0;
+}
+
+static HeightInfo _getWaterHeightInfo(Renderer* renderer)
+{
+    return _WATER_HEIGHT_INFO;
 }
 
 static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
@@ -71,6 +77,7 @@ Renderer rendererGetFake()
     result.applyLightingToSurface = _applyLightingToSurface;
     result.rayWalking = _rayWalking;
     result.getTerrainHeight = _getTerrainHeight;
+    result.getWaterHeightInfo = _getWaterHeightInfo;
     result.applyTextures = _applyTextures;
     result.applyAtmosphere = _applyAtmosphere;
     result.applyClouds = _applyClouds;

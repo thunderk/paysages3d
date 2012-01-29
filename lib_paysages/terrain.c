@@ -311,7 +311,7 @@ static Vertex _getFirstPassVertex(TerrainDefinition* definition, double x, doubl
     return result;
 }
 
-static void _renderQuad(TerrainDefinition* definition, Renderer* renderer, double x, double z, double size)
+static void _renderQuad(TerrainDefinition* definition, Renderer* renderer, double x, double z, double size, double water_height)
 {
     Vertex v1, v2, v3, v4;
 
@@ -319,7 +319,11 @@ static void _renderQuad(TerrainDefinition* definition, Renderer* renderer, doubl
     v2 = _getFirstPassVertex(definition, x, z + size, size);
     v3 = _getFirstPassVertex(definition, x + size, z + size, size);
     v4 = _getFirstPassVertex(definition, x + size, z, size);
-    renderPushQuad(renderer, &v1, &v2, &v3, &v4);
+    
+    if (v1.location.y > water_height || v2.location.y > water_height || v3.location.y > water_height || v4.location.y > water_height)
+    {
+        renderPushQuad(renderer, &v1, &v2, &v3, &v4);
+    }
 }
 
 double terrainGetHeight(TerrainDefinition* definition, double x, double z)
@@ -352,6 +356,7 @@ void terrainRender(TerrainDefinition* definition, Renderer* renderer, RenderProg
     double cz = renderer->camera_location.z;
     double min_chunk_size, visible_chunk_size;
     double radius_int, radius_ext, chunk_size;
+    double water_height;
 
     min_chunk_size = 0.1 / (double)renderer->render_quality;
     visible_chunk_size = 0.05 / (double)renderer->render_quality;
@@ -361,7 +366,8 @@ void terrainRender(TerrainDefinition* definition, Renderer* renderer, RenderProg
     radius_int = 0.0;
     radius_ext = min_chunk_size;
     chunk_size = min_chunk_size;
-
+    
+    water_height = renderer->getWaterHeightInfo(renderer).max_height;
 
     while (radius_ext < 1000.0)
     {
@@ -372,10 +378,10 @@ void terrainRender(TerrainDefinition* definition, Renderer* renderer, RenderProg
 
         for (i = 0; i < chunk_count - 1; i++)
         {
-            _renderQuad(definition, renderer, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size);
-            _renderQuad(definition, renderer, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size);
-            _renderQuad(definition, renderer, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size);
-            _renderQuad(definition, renderer, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size);
+            _renderQuad(definition, renderer, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size, water_height);
+            _renderQuad(definition, renderer, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size, water_height);
+            _renderQuad(definition, renderer, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size, water_height);
+            _renderQuad(definition, renderer, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size, water_height);
         }
 
         if (chunk_count % 64 == 0 && chunk_size / radius_int < visible_chunk_size)

@@ -136,6 +136,17 @@ static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal)
     }
 }
 
+HeightInfo waterGetHeightInfo(WaterDefinition* definition)
+{
+    HeightInfo info;
+    
+    info.base_height = definition->height;
+    info.min_height = definition->height - noiseGetMaxValue(definition->waves_noise) * definition->waves_noise_height;
+    info.max_height = definition->height + noiseGetMaxValue(definition->waves_noise) * definition->waves_noise_height;
+    
+    return info;
+}
+
 Color waterLightFilter(WaterDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light)
 {
     double factor;

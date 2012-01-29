@@ -23,6 +23,7 @@ struct Renderer
     /* Scenery related */
     RayCastingResult (*rayWalking)(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds);
     double (*getTerrainHeight)(Renderer* renderer, double x, double z);
+    HeightInfo (*getWaterHeightInfo)(Renderer* renderer);
     Color (*applyTextures)(Renderer* renderer, Vector3 location, double precision);
     Color (*applyAtmosphere)(Renderer* renderer, Vector3 location, Color base);
     Color (*applyClouds)(Renderer* renderer, Color base, Vector3 start, Vector3 end);

@@ -250,6 +250,11 @@ static double _getTerrainHeight(Renderer* renderer, double x, double z)
     return terrainGetHeight(&_terrain, x, z);
 }
 
+static HeightInfo _getWaterHeightInfo(Renderer* renderer)
+{
+    return waterGetHeightInfo(&_water);
+}
+
 static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
 {
     return texturesGetColor(&_textures, renderer, location, precision);
@@ -306,6 +311,7 @@ Renderer sceneryGetStandardRenderer(int quality)
     result.applyLightingToSurface = _applyLightingToSurface;
     result.rayWalking = _rayWalking;
     result.getTerrainHeight = _getTerrainHeight;
+    result.getWaterHeightInfo = _getWaterHeightInfo;
     result.applyTextures = _applyTextures;
     result.applyAtmosphere = _applyAtmosphere;
     result.applyClouds = _applyClouds;
