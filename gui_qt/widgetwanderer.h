@@ -32,6 +32,9 @@ private:
 
     TerrainDefinition terrain;
     WaterDefinition water;
+    
+    double average_frame_time;
+    int quality;
 
     int last_mouse_x;
     int last_mouse_y;

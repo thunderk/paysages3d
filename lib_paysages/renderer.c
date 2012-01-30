@@ -19,7 +19,7 @@ static void* _renderFirstPass(void* data)
 
 static int _addRenderProgress(Renderer* renderer, double progress)
 {
-    return 1;
+    return !renderer->render_interrupt;
 }
 
 static double _getPrecision(Renderer* renderer, Vector3 location)
@@ -183,4 +183,5 @@ void rendererStart(Renderer* renderer, int width, int height, int quality)
 
 void rendererInterrupt(Renderer* renderer)
 {
+    renderer->render_interrupt = 1;
 }

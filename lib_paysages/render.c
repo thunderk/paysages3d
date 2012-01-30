@@ -634,7 +634,6 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
     int i;
     int x, y, dx, dy, nx, ny;
     int loops, running;
-    int _interrupt = 0; /* TEMP */
 
     if (nbchunks > MAX_CHUNKS)
     {
@@ -662,7 +661,7 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
 
     running = 0;
     loops = 0;
-    while ((y < ny && !_interrupt) || running > 0)
+    while ((y < ny && !renderer->render_interrupt) || running > 0)
     {
         timeSleepMs(100);
 
@@ -676,13 +675,13 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
                     chunks[i].thread = NULL;
                     running--;
                 }
-                else if (_interrupt)
+                else if (renderer->render_interrupt)
                 {
                     chunks[i].interrupt = 1;
                 }
             }
 
-            if (y < ny && !chunks[i].thread && !_interrupt)
+            if (y < ny && !chunks[i].thread && !renderer->render_interrupt)
             {
                 chunks[i].finished = 0;
                 chunks[i].interrupt = 0;

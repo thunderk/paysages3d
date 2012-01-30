@@ -2,6 +2,7 @@
 
 #include <QGLWidget>
 #include <QKeyEvent>
+#include <QTime>
 #include <math.h>
 #include "../lib_paysages/scenery.h"
 
@@ -19,7 +20,9 @@ WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
 
     this->water = waterCreateDefinition();
     sceneryGetWater(&water);
-
+    
+    average_frame_time = 0.05;
+    quality = 3;
     last_mouse_x = 0;
     last_mouse_y = 0;
 }
@@ -266,7 +269,12 @@ static void _renderTerrain(TerrainDefinition* terrain, CameraDefinition* camera,
 
 void WidgetWanderer::paintGL()
 {
+    QTime start_time;
+    double frame_time;
+    
     cameraValidateDefinition(&_current_camera, 1);
+    
+    start_time = QTime::currentTime();
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -283,5 +291,19 @@ void WidgetWanderer::paintGL()
     glVertex3f(500.0, water.height, -500.0);
     glEnd();
 
-    _renderTerrain(&terrain, &_current_camera, 3);
+    _renderTerrain(&terrain, &_current_camera, quality);
+    
+    frame_time = 0.001 * (double)start_time.msecsTo(QTime::currentTime());
+    
+    average_frame_time = average_frame_time * 0.8 + frame_time * 0.2;
+    //printf("%d %f\n", quality, average_frame_time);
+    
+    if (average_frame_time > 0.1 && quality > 1)
+    {
+        quality--;
+    }
+    if (average_frame_time < 0.04 && quality < 10)
+    {
+        quality++;
+    }
 }
