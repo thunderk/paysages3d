@@ -120,15 +120,15 @@ void WidgetWanderer::mouseMoveEvent(QMouseEvent* event)
 
     if (event->buttons() & Qt::LeftButton)
     {
-        cameraStrafeRight(&_current_camera, (double)(last_mouse_x - event->x()) * factor);
-        cameraStrafeUp(&_current_camera, (double)(event->y() - last_mouse_y) * factor);
+        cameraRotateYaw(&_current_camera, (double)(event->x() - last_mouse_x) * factor * 0.1);
+        cameraRotatePitch(&_current_camera, (double)(event->y() - last_mouse_y) * factor * 0.1);
         updateGL();
         event->accept();
     }
     else if (event->buttons() & Qt::RightButton)
     {
-        cameraRotateYaw(&_current_camera, (double)(event->x() - last_mouse_x) * factor * 0.1);
-        cameraRotatePitch(&_current_camera, (double)(event->y() - last_mouse_y) * factor * 0.1);
+        cameraStrafeRight(&_current_camera, (double)(last_mouse_x - event->x()) * factor);
+        cameraStrafeUp(&_current_camera, (double)(event->y() - last_mouse_y) * factor);
         updateGL();
         event->accept();
     }
@@ -179,7 +179,7 @@ void WidgetWanderer::initializeGL()
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
 
-    glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LESS);
     glDepthMask(true);
     glEnable(GL_DEPTH_TEST);
 
@@ -208,16 +208,16 @@ static inline void _renderTerrainQuad(TerrainDefinition* terrain, double x, doub
     y3 = terrainGetHeight(terrain, x + size, z + size);
     y4 = terrainGetHeight(terrain, x + size, z);
 
-    glColor3f(0.0, 0.5, 0.0);
-    glBegin(GL_QUADS);
+    glColor3f(0.0, 1.0, 0.0);
+    glBegin(GL_LINE_LOOP);
     glVertex3f(x, y1, z);
     glVertex3f(x, y2, z + size);
     glVertex3f(x + size, y3, z + size);
     glVertex3f(x + size, y4, z);
     glEnd();
 
-    glColor3f(0.0, 1.0, 0.0);
-    glBegin(GL_LINE_LOOP);
+    glColor3f(0.0, 0.5, 0.0);
+    glBegin(GL_QUADS);
     glVertex3f(x, y1, z);
     glVertex3f(x, y2, z + size);
     glVertex3f(x + size, y3, z + size);

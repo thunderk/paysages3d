@@ -180,7 +180,7 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
             view = v3Normalize(v3Sub(location, renderer->camera_location));
             reflect = v3Sub(direction_inv, v3Scale(normal, 2.0 * v3Dot(direction_inv, normal)));
 
-            specular = v3Dot(reflect, view) * material.reflection;
+            specular = v3Dot(reflect, view);
             if (specular > 0.0)
             {
                 specular = pow(specular, material.shininess);
@@ -189,6 +189,7 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
             {
                 specular = 0.0;
             }
+            specular *= material.reflection;
         }
         else
         {
