@@ -32,6 +32,9 @@ static int _getCoreCount()
 #ifdef _SC_NPROCESSORS_ONLN
     core_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
 #endif
+#ifdef DEBUG_ONETHREAD
+    core_count = 1;
+#endif
     return core_count;
 }
 

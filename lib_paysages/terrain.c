@@ -174,6 +174,16 @@ Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Colo
     {
         return light;
     }
+    else if (direction_to_light.y < 0.05)
+    {
+        return COLOR_BLACK;
+    }
+    else if (direction_to_light.y < 0.0000)
+    {
+        light.r *= (0.05 + direction_to_light.y) / 0.05;
+        light.g *= (0.05 + direction_to_light.y) / 0.05;
+        light.b *= (0.05 + direction_to_light.y) / 0.05;
+    }
 
     inc_factor = (double)renderer->render_quality;
     inc_base = 1.0;
@@ -228,6 +238,7 @@ static Color _getColor(TerrainDefinition* definition, Renderer* renderer, Vector
 
     color = renderer->applyTextures(renderer, point, precision);
     color = renderer->applyAtmosphere(renderer, point, color);
+    color = renderer->applyClouds(renderer, color, renderer->camera_location, point);
 
     return color;
 }

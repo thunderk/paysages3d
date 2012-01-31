@@ -219,6 +219,7 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
     material.base = color;
     color = renderer->applyLightingToSurface(renderer, location, normal, material);
     color = renderer->applyAtmosphere(renderer, location, color);
+    color = renderer->applyClouds(renderer, color, renderer->camera_location, location);
 
     result.base = definition->material.base;
     result.final = color;
