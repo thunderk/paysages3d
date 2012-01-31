@@ -41,7 +41,14 @@ CameraDefinition cameraCreateDefinition()
     definition.yaw = 0.0;
     definition.pitch = 0.0;
     definition.roll = 0.0;
-
+    
+    definition.width = 1.0;
+    definition.height = 1.0;
+    definition.yfov = 1.57;
+    definition.xratio = 1.0;
+    definition.znear = 1.0;
+    definition.zfar = 1000.0;
+    
     cameraValidateDefinition(&definition, 0);
 
     return definition;
@@ -113,7 +120,7 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
     
     definition->target = v3Add(definition->location, definition->forward);
 
-    definition->project = m4Mult(m4NewPerspective(1.57, 1.333333, 1.0, 1000.0), m4NewLookAt(definition->location, definition->target, definition->up));
+    definition->project = m4Mult(m4NewPerspective(definition->yfov, definition->xratio, definition->znear, definition->zfar), m4NewLookAt(definition->location, definition->target, definition->up));
     definition->unproject = m4Inverse(definition->project);
 }
 
@@ -210,18 +217,27 @@ void cameraRotateRoll(CameraDefinition* camera, double value)
     cameraValidateDefinition(camera, 0);
 }
 
+void cameraSetRenderSize(CameraDefinition* camera, int width, int height)
+{
+    camera->width = (double)width;
+    camera->height = (double)height;
+    camera->xratio = camera->width / camera->height;
+    
+    cameraValidateDefinition(camera, 0);
+}
+
 Vector3 cameraProject(CameraDefinition* camera, Renderer* renderer, Vector3 point)
 {
     point = m4Transform(camera->project, point);
-    point.x = (point.x + 1.0) * 0.5 * (double)renderer->render_width;
-    point.y = (-point.y + 1.0) * 0.5 * (double)renderer->render_height;
+    point.x = (point.x + 1.0) * 0.5 * camera->width;
+    point.y = (-point.y + 1.0) * 0.5 * camera->height;
     return point;
 }
 
 Vector3 cameraUnproject(CameraDefinition* camera, Renderer* renderer, Vector3 point)
 {
-    point.x = (point.x / (0.5 * (double)renderer->render_width) - 1.0);
-    point.y = -(point.y / (0.5 * (double)renderer->render_height) - 1.0);
+    point.x = (point.x / (0.5 * camera->width) - 1.0);
+    point.y = -(point.y / (0.5 * camera->height) - 1.0);
     return m4Transform(camera->unproject, point);
 }
 

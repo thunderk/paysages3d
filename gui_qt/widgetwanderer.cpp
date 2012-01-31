@@ -190,13 +190,13 @@ void WidgetWanderer::initializeGL()
 
 void WidgetWanderer::resizeGL(int w, int h)
 {
-    double ratio = (double)h / (double)w;
-
+    cameraSetRenderSize(&_current_camera, w, h);
+    
     glViewport(0, 0, w, h);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-2.5, 2.5, -2.5 * ratio, 2.5 * ratio, 2.0, 1000.0);
+    gluPerspective(_current_camera.yfov * 180.0 / M_PI, _current_camera.xratio, _current_camera.znear, _current_camera.zfar);
 }
 
 static inline void _renderTerrainQuad(TerrainDefinition* terrain, double x, double z, double size)

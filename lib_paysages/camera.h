@@ -9,26 +9,6 @@
 extern "C" {
 #endif
 
-/* Definition of a 3D scene camera.
- * 
- * Don't modify this structure directly, use the provided functions.
- */
-typedef struct
-{
-    Vector3 location;
-    double yaw;
-    double pitch;
-    double roll;
-    
-    Vector3 target;
-    Vector3 forward;
-    Vector3 right;
-    Vector3 up;
-    
-    Matrix4 project;
-    Matrix4 unproject;
-} CameraDefinition;
-
 void cameraInit();
 void cameraSave(FILE* f, CameraDefinition* camera);
 void cameraLoad(FILE* f, CameraDefinition* camera);
@@ -48,6 +28,8 @@ void cameraStrafeUp(CameraDefinition* camera, double value);
 void cameraRotateYaw(CameraDefinition* camera, double value);
 void cameraRotatePitch(CameraDefinition* camera, double value);
 void cameraRotateRoll(CameraDefinition* camera, double value);
+
+void cameraSetRenderSize(CameraDefinition* camera, int width, int height);
 
 Vector3 cameraProject(CameraDefinition* camera, Renderer* renderer, Vector3 point);
 Vector3 cameraUnproject(CameraDefinition* camera, Renderer* renderer, Vector3 point);

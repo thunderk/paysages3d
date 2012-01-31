@@ -109,7 +109,8 @@ Renderer rendererCreate()
     result.render_interrupt = 0;
     result.render_progress = 0.0;
     result.is_rendering = 0;
-    result.camera_location = VECTOR_ZERO;
+    result.render_camera = cameraCreateDefinition();
+    result.camera_location = result.render_camera.location;
     result.render_area = renderCreateArea();
     renderSetSize(result.render_area, 1, 1);
 
@@ -155,6 +156,9 @@ void rendererStart(Renderer* renderer, int width, int height, int quality)
     renderer->render_height = height;
     renderer->render_interrupt = 0;
     renderer->render_progress = 0.0;
+    
+    cameraSetRenderSize(&renderer->render_camera, width, height);
+    renderer->camera_location = renderer->render_camera.location;
 
     renderSetBackgroundColor(renderer->render_area, &COLOR_BLACK);
     renderSetSize(renderer->render_area, width, height);

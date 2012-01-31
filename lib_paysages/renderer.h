@@ -15,6 +15,7 @@ struct Renderer
     int render_quality;
     int render_width;
     int render_height;
+    CameraDefinition render_camera;
     Vector3 camera_location;
 
     /* Render related */

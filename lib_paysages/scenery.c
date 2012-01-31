@@ -269,23 +269,23 @@ static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3
 
 static Vector3 _projectPoint(Renderer* renderer, Vector3 point)
 {
-    return cameraProject(&_camera, renderer, point);
+    return cameraProject(&renderer->render_camera, renderer, point);
 }
 
 static Vector3 _unprojectPoint(Renderer* renderer, Vector3 point)
 {
-    return cameraUnproject(&_camera, renderer, point);
+    return cameraUnproject(&renderer->render_camera, renderer, point);
 }
 
 static double _getPrecision(Renderer* renderer, Vector3 location)
 {
     Vector3 projected;
 
-    projected = cameraProject(&_camera, renderer, location);
+    projected = cameraProject(&renderer->render_camera, renderer, location);
     projected.x += 1.0;
     //projected.y += 1.0;
 
-    return v3Norm(v3Sub(cameraUnproject(&_camera, renderer, projected), location)); // / (double)render_quality;
+    return v3Norm(v3Sub(cameraUnproject(&renderer->render_camera, renderer, projected), location)); // / (double)render_quality;
 }
 
 Renderer sceneryCreateStandardRenderer()
@@ -294,6 +294,7 @@ Renderer sceneryCreateStandardRenderer()
     
     result = rendererCreate();
 
+    cameraCopyDefinition(&_camera, &result.render_camera);
     result.camera_location = _camera.location;
 
     result.filterLight = _filterLight;
