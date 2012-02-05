@@ -98,10 +98,12 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     previews->layout()->addWidget(new QLabel("Level preview"));
     previews->layout()->addWidget(previewLevel);
     previewLevel->setScaling(1.0 / 127.0);
+    previewLevel->start();
     previewTotal = new PreviewTotal(previews, _current);
     previews->layout()->addWidget(new QLabel("Total preview"));
     previews->layout()->addWidget(previewTotal);
     previewTotal->setScaling(1.0 / 127.0);
+    previewTotal->start();
 
     form = new QWidget(this);
     form->setLayout(new QVBoxLayout());

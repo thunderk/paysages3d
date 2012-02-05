@@ -2,5 +2,4 @@
 - Implement light multi-sampling (mainly for skydome).
 - Implement scaling and scrolling on previews.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
-- Find the random segfault at start (in PreviewTerrainColor::getColor).
 - Restore render progress.

@@ -14,6 +14,7 @@ public:
     Preview(QWidget* parent);
     ~Preview();
 
+    void start();
     void doRender();
     void redraw();
 
@@ -30,7 +31,6 @@ protected:
 private:
     void forceRender();
     void renderPixbuf();
-    static void startUpdater();
 
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent* event);

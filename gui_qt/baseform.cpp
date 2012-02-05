@@ -151,7 +151,8 @@ void BaseForm::addPreview(Preview* preview, QString label)
 {
     previews->layout()->addWidget(new QLabel(label, previews));
     previews->layout()->addWidget(preview);
-
+    
+    preview->start();
     preview->setObjectName("_form_preview_");
 }
 

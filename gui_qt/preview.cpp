@@ -61,7 +61,6 @@ Preview::Preview(QWidget* parent) :
     QObject::connect(this, SIGNAL(redrawRequested()), this, SLOT(handleRedraw()));
 
     this->updater = new PreviewDrawer(this);
-    this->updater->start();
 }
 
 Preview::~Preview()
@@ -73,7 +72,8 @@ Preview::~Preview()
 
     delete updater;
     delete pixbuf;
-    delete lock_drawing;;}
+    delete lock_drawing;
+}
 
 void Preview::updateData()
 {
@@ -82,6 +82,11 @@ void Preview::updateData()
 QColor Preview::getColor(double x, double y)
 {
     return QColor(0, 0, 0);
+}
+
+void Preview::start()
+{
+    this->updater->start();
 }
 
 void Preview::doRender()
