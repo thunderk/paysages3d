@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QComboBox>
 #include "preview.h"
 #include "baseinput.h"
 #include "../lib_paysages/shared/types.h"
@@ -13,7 +14,7 @@ class BaseForm:public QWidget
     Q_OBJECT
 
 public:
-    BaseForm(QWidget* parent, bool auto_apply=false);
+    BaseForm(QWidget* parent, bool auto_apply=false, bool with_layers=false);
 
 signals:
     void configApplied();
@@ -24,6 +25,11 @@ public slots:
 
 protected slots:
     virtual void configChangeEvent();
+    
+private slots:
+    void layerAddClicked();
+    void layerDelClicked();
+    void layerListChanged();
 
 protected:
     void addPreview(Preview* preview, QString label);
@@ -35,8 +41,19 @@ protected:
     void addInputColorGradation(QString label, ColorGradation* value);
     void addInputNoise(QString label, NoiseGenerator* value);
 
+    int currentLayer();
+    void setLayerCount(int layer_count);
+    
+    virtual void layerAddedEvent();
+    virtual void layerDeletedEvent(int layer);
+    virtual void layerSelectedEvent(int layer);
+
 private:
     bool auto_apply;
+    bool with_layers;
+    QComboBox* layer_list;
+    QPushButton* layer_new;
+    QPushButton* layer_del;
     QWidget* previews;
     QWidget* form;
     QWidget* buttons;

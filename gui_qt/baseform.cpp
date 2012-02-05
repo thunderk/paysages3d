@@ -10,17 +10,41 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
+#include <qt4/QtGui/qboxlayout.h>
 
-BaseForm::BaseForm(QWidget* parent, bool auto_apply) : QWidget(parent)
+BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget(parent)
 {
     QWidget* hwidget;
     QVBoxLayout* vlayout;
     QHBoxLayout* hlayout;
 
     this->auto_apply = auto_apply;
+    this->with_layers = with_layers;
 
     vlayout = new QVBoxLayout();
     hlayout = new QHBoxLayout();
+    
+    if (with_layers)
+    {
+        hwidget = new QWidget(this);
+        hwidget->setLayout(new QHBoxLayout());
+
+        hwidget->layout()->addWidget(new QLabel("Layers : ", hwidget));
+        
+        layer_list = new QComboBox(hwidget);
+        hwidget->layout()->addWidget(layer_list);
+        QObject::connect(layer_list, SIGNAL(currentIndexChanged(int)), this, SLOT(layerListChanged()));
+
+        layer_new = new QPushButton("Add layer", hwidget);
+        hwidget->layout()->addWidget(layer_new);
+        QObject::connect(layer_new, SIGNAL(clicked()), this, SLOT(layerAddClicked()));
+        
+        layer_del = new QPushButton("Delete layer", hwidget);
+        hwidget->layout()->addWidget(layer_del);
+        QObject::connect(layer_del, SIGNAL(clicked()), this, SLOT(layerDelClicked()));
+        
+        vlayout->addWidget(hwidget);
+    }
 
     hwidget = new QWidget(this);
 
@@ -85,6 +109,14 @@ void BaseForm::revertConfig()
     {
         inputs[i]->revert();
     }
+    
+    if (with_layers)
+    {
+        if (layer_list->currentIndex() < 0 && layer_list->count() > 0)
+        {
+            layer_list->setCurrentIndex(0);
+        }
+    }
 
     BaseForm::configChangeEvent();
 
@@ -98,6 +130,21 @@ void BaseForm::applyConfig()
     button_revert->setEnabled(false);
 
     emit(configApplied());
+}
+
+void BaseForm::layerAddClicked()
+{
+    layerAddedEvent();
+}
+
+void BaseForm::layerDelClicked()
+{
+    layerDeletedEvent(layer_list->currentIndex());
+}
+
+void BaseForm::layerListChanged()
+{
+    layerSelectedEvent(layer_list->currentIndex());
 }
 
 void BaseForm::addPreview(Preview* preview, QString label)
@@ -157,4 +204,59 @@ void BaseForm::addInputColorGradation(QString label, ColorGradation* value)
 void BaseForm::addInputNoise(QString label, NoiseGenerator* value)
 {
     addInput(new InputNoise(form, label, value));
+}
+
+int BaseForm::currentLayer()
+{
+    if (with_layers)
+    {
+        return layer_list->currentIndex();
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+void BaseForm::setLayerCount(int layer_count)
+{
+    int i, selected;
+    
+    if (with_layers)
+    {
+        selected = layer_list->currentIndex();
+        layer_list->clear();
+
+        for (i = 0; i < layer_count; i++)
+        {
+            layer_list->addItem(QString("Layer %1").arg(i + 1));
+        }
+        layer_list->setCurrentIndex(selected);
+    }
+}
+    
+void BaseForm::layerAddedEvent()
+{
+    setLayerCount(layer_list->count() + 1);
+    layer_list->setCurrentIndex(layer_list->count() - 1);
+}
+
+void BaseForm::layerDeletedEvent(int layer)
+{
+    layer_list->removeItem(layer);
+}
+
+void BaseForm::layerSelectedEvent(int layer)
+{
+    QList<BaseInput*> inputs = form->findChildren<BaseInput*>("_form_input_");
+    for (int i = 0; i < inputs.size(); i++)
+    {
+        inputs[i]->revert();
+    }
+
+    QList<Preview*> list_previews = previews->findChildren<Preview*>("_form_preview_");
+    for (int i = 0; i < list_previews.size(); i++)
+    {
+        list_previews[i]->redraw();
+    }
 }

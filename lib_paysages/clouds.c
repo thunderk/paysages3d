@@ -466,17 +466,13 @@ Color cloudsGetColor(CloudsDefinition* definition, Renderer* renderer, Vector3 s
     int i;
     Color layer_color, result;
 
-    if (end.y < start.y)
-    {
-        return cloudsGetColor(definition, renderer, end, start);
-    }
-
-    if (definition->nblayers < 1 || end.y - start.y < 0.001)
+    if (definition->nblayers < 1)
     {
         return COLOR_TRANSPARENT;
     }
 
     result = COLOR_TRANSPARENT;
+    /* TODO Order layers */
     for (i = 0; i < definition->nblayers; i++)
     {
         layer_color = cloudsGetLayerColor(definition->layers + i, renderer, start, end);

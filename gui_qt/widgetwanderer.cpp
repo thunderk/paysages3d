@@ -285,10 +285,10 @@ void WidgetWanderer::paintGL()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColor3f(0.0, 0.0, 1.0);
     glBegin(GL_QUADS);
-    glVertex3f(-500.0, water.height, -500.0);
-    glVertex3f(-500.0, water.height, 500.0);
-    glVertex3f(500.0, water.height, 500.0);
-    glVertex3f(500.0, water.height, -500.0);
+    glVertex3f(_current_camera.location.x - 500.0, water.height, _current_camera.location.z - 500.0);
+    glVertex3f(_current_camera.location.x - 500.0, water.height, _current_camera.location.z + 500.0);
+    glVertex3f(_current_camera.location.x + 500.0, water.height, _current_camera.location.z + 500.0);
+    glVertex3f(_current_camera.location.x + 500.0, water.height, _current_camera.location.z - 500.0);
     glEnd();
 
     _renderTerrain(&terrain, &_current_camera, quality);

@@ -18,6 +18,11 @@ public slots:
 
 protected slots:
     virtual void configChangeEvent();
+    
+protected:
+    virtual void layerAddedEvent();
+    virtual void layerDeletedEvent(int layer);
+    virtual void layerSelectedEvent(int layer);
 
 private:
     Preview* previewCoverage;

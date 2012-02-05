@@ -588,7 +588,7 @@ void* _renderPostProcessChunk(void* data)
     RenderChunk* chunk = (RenderChunk*)data;
 
 #ifdef RENDER_INVERSE
-    for (y = render_height - 1 - chunk->starty; y >= render_height - 1 - chunk->endy; y--)
+    for (y = chunk->area->height - 1 - chunk->starty; y >= chunk->area->height - 1 - chunk->endy; y--)
 #else
     for (y = chunk->starty; y <= chunk->endy; y++)
 #endif
