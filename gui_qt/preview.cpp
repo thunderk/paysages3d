@@ -1,7 +1,9 @@
 #include "preview.h"
+
 #include <QVector>
 #include <QPainter>
 #include <QTimer>
+#include <QWheelEvent>
 
 class PreviewDrawer:public QThread
 {
@@ -200,6 +202,28 @@ void Preview::renderPixbuf()
             emit contentChange();
         }
         this->lock_drawing->unlock();
+    }
+}
+
+void Preview::wheelEvent(QWheelEvent* event)
+{
+    if (event->orientation() == Qt::Vertical)
+    {
+        if (event->delta() > 0  && scaling > 0.19)
+        {
+            scaling -= 0.1;
+            redraw();
+        }
+        else if (event->delta() < 0  && scaling < 10.0)
+        {
+            scaling += 0.1;
+            redraw();
+        }
+        event->accept();
+    }
+    else
+    {
+        event->ignore();
     }
 }
 

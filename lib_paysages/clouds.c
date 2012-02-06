@@ -143,14 +143,14 @@ void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinit
 
 void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
 {
-    if (definition->coverage < 0.5)
+    /*if (definition->coverage < 0.5)
     {
         noiseNormalizeHeight(definition->noise, -1.0, definition->coverage * 2.0, 0);
     }
     else
     {
         noiseNormalizeHeight(definition->noise, -(1.0 - definition->coverage) * 2.0, 1.0, 0);
-    }
+    }*/
 }
 
 int cloudsGetLayerCount(CloudsDefinition* definition)
@@ -201,7 +201,7 @@ void cloudsDeleteLayer(CloudsDefinition* definition, int layer)
     }
 }
 
-static inline double _getDistanceToBorder(CloudsLayerDefinition* layer, Vector3 position, double detail)
+static inline double _getDistanceToBorder(CloudsLayerDefinition* layer, Vector3 position)
 {
     double val, min;
 
@@ -214,34 +214,34 @@ static inline double _getDistanceToBorder(CloudsLayerDefinition* layer, Vector3 
         min = (layer->ycenter - position.y) / (layer->ycenter - layer->ymin);
     }
 
-    val = noiseGet3DDetail(layer->noise, position.x, position.y, position.z, detail);
+    val = 0.5 * noiseGet3DTotal(layer->noise, position.x / layer->scaling, position.y / layer->scaling, position.z / layer->scaling) / noiseGetMaxValue(layer->noise);
 
-    return (val - min) * layer->scaling;
+    return (val - 0.5 - min + layer->coverage) * layer->scaling;
 }
 
 static inline Vector3 _getNormal(CloudsLayerDefinition* layer, Vector3 position, double detail)
 {
     Vector3 result = {0.0, 0.0, 0.0};
     double val, dval;
+    
+    val = noiseGet3DDetail(layer->noise, position.x / layer->scaling, position.y / layer->scaling, position.z / layer->scaling, detail);
 
-    val = noiseGet3DDetail(layer->noise, position.x, position.y, position.z, detail);
-
-    dval = val - noiseGet3DDetail(layer->noise, position.x + detail, position.y, position.z, detail);
+    dval = val - noiseGet3DDetail(layer->noise, (position.x + detail) / layer->scaling, position.y / layer->scaling, position.z / layer->scaling, detail);
     result.x += dval;
 
-    dval = val - noiseGet3DDetail(layer->noise, position.x - detail, position.y, position.z, detail);
+    dval = val - noiseGet3DDetail(layer->noise, (position.x - detail) / layer->scaling, position.y / layer->scaling, position.z / layer->scaling, detail);
     result.x -= dval;
 
-    dval = val - noiseGet3DDetail(layer->noise, position.x, position.y + detail, position.z, detail);
+    dval = val - noiseGet3DDetail(layer->noise, position.x / layer->scaling, (position.y + detail) / layer->scaling, position.z / layer->scaling, detail);
     result.y += dval;
 
-    dval = val - noiseGet3DDetail(layer->noise, position.x, position.y - detail, position.z, detail);
+    dval = val - noiseGet3DDetail(layer->noise, position.x / layer->scaling, (position.y - detail) / layer->scaling, position.z / layer->scaling, detail);
     result.y -= dval;
 
-    dval = val - noiseGet3DDetail(layer->noise, position.x, position.y, position.z + detail, detail);
+    dval = val - noiseGet3DDetail(layer->noise, position.x / layer->scaling, position.y / layer->scaling, (position.z + detail) / layer->scaling, detail);
     result.z += dval;
 
-    dval = val - noiseGet3DDetail(layer->noise, position.x, position.y, position.z - detail, detail);
+    dval = val - noiseGet3DDetail(layer->noise, position.x / layer->scaling, position.y / layer->scaling, (position.z - detail) / layer->scaling, detail);
     result.z -= dval;
 
     return v3Normalize(result);
@@ -345,7 +345,7 @@ static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, 
     current_inside_length = 0.0;
     segment_length = 0.0;
     walker = start;
-    noise_distance = _getDistanceToBorder(definition, start, detail) * render_precision;
+    noise_distance = _getDistanceToBorder(definition, start) * render_precision;
     inside = (noise_distance > 0.0) ? 1 : 0;
     step = v3Scale(direction, render_precision);
 
@@ -354,7 +354,7 @@ static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, 
         walker = v3Add(walker, step);
         step_length = v3Norm(step);
         last_noise_distance = noise_distance;
-        noise_distance = _getDistanceToBorder(definition, walker, detail) * render_precision;
+        noise_distance = _getDistanceToBorder(definition, walker) * render_precision;
         current_total_length += step_length;
 
         if (noise_distance > 0.0)

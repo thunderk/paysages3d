@@ -34,6 +34,8 @@ private:
 
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent* event);
+    
+    void wheelEvent(QWheelEvent* event);
 
     QThread* updater;
 

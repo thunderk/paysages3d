@@ -227,7 +227,7 @@ void DialogNoise::revertToCurrent()
 void DialogNoise::addLevel()
 {
     NoiseLevel level;
-
+    
     level.height = 0.1;
     level.scaling = 0.1;
     level.xoffset = 0.0;
@@ -236,13 +236,25 @@ void DialogNoise::addLevel()
     noiseAddLevel(_current, level);
 
     revertToCurrent();
+    
+    levels->setCurrentRow(levels->count() - 1);
 }
 
 void DialogNoise::removeLevel()
 {
+    int row;
+    
+    row = levels->currentRow();
+    
     noiseRemoveLevel(_current, _current_level);
 
     revertToCurrent();
+    
+    if (row >= levels->count())
+    {
+        row--;
+    }
+    levels->setCurrentRow(row);
 }
 
 void DialogNoise::levelChanged(int row)
