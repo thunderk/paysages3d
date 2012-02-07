@@ -1,5 +1,3 @@
-- Camera looses its orientation when changing render quality.
-- Choosing New in Scene menu makes the daytime at 0.0.
 - All noises should use the same entropy pool (saved separately), and avoid reallocs.
 - Implement light multi-sampling (mainly for skydome).
 - Implement scaling and scrolling on previews.

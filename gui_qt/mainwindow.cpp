@@ -104,6 +104,7 @@ void MainWindow::refreshAll()
 void MainWindow::fileNew()
 {
     autoGenRealisticLandscape(0);
+    autoSetDaytime(8, 30);
     refreshAll();
 }
 
@@ -146,4 +147,6 @@ void MainWindow::explore3D()
     scenerySetCamera(&camera);
 
     delete dialog;
+    
+    refreshAll();
 }
