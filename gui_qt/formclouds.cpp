@@ -66,8 +66,12 @@ FormClouds::FormClouds(QWidget *parent):
     addInputNoise("Noise", _layer.noise);
     addInputDouble("Coverage", &_layer.coverage, 0.0, 1.0, 0.01, 0.1);
     addInputDouble("Scaling", &_layer.scaling, 1.0, 100.0, 0.5, 5.0);
-    addInputColor("Base color", &_layer.color);
-    addInputDouble("Opacity", &_layer.color.a, 0.0, 1.0, 0.01, 0.1);
+    addInputColor("Base color", &_layer.material.base);
+    addInputDouble("Light reflection", &_layer.material.reflection, 0.0, 1.0, 0.01, 0.1);
+    addInputDouble("Light reflection shininess", &_layer.material.shininess, 0.0, 20.0, 0.1, 1.0);
+    addInputDouble("Transparency depth", &_layer.transparencydepth, 0.0, 100.0, 0.5, 5.0);
+    addInputDouble("Light traversal depth", &_layer.lighttraversal, 0.0, 100.0, 0.5, 5.0);
+    addInputDouble("Minimum lighting", &_layer.minimumlight, 0.0, 1.0, 0.01, 0.1);
 
     revertConfig();
 }

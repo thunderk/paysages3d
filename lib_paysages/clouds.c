@@ -38,7 +38,10 @@ void cloudsSave(FILE* f, CloudsDefinition* definition)
         toolsSaveDouble(f, &layer->ymin);
         toolsSaveDouble(f, &layer->ymax);
         noiseSave(f, layer->noise);
-        colorSave(f, &layer->color);
+        materialSave(f, &layer->material);
+        toolsSaveDouble(f, &layer->transparencydepth);
+        toolsSaveDouble(f, &layer->lighttraversal);
+        toolsSaveDouble(f, &layer->minimumlight);
         toolsSaveDouble(f, &layer->scaling);
         toolsSaveDouble(f, &layer->coverage);
     }
@@ -63,7 +66,10 @@ void cloudsLoad(FILE* f, CloudsDefinition* definition)
         toolsLoadDouble(f, &layer->ymin);
         toolsLoadDouble(f, &layer->ymax);
         noiseLoad(f, layer->noise);
-        colorLoad(f, &layer->color);
+        materialLoad(f, &layer->material);
+        toolsLoadDouble(f, &layer->transparencydepth);
+        toolsLoadDouble(f, &layer->lighttraversal);
+        toolsLoadDouble(f, &layer->minimumlight);
         toolsLoadDouble(f, &layer->scaling);
         toolsLoadDouble(f, &layer->coverage);
     }
@@ -115,13 +121,18 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
 {
     CloudsLayerDefinition result;
 
-    result.color = COLOR_BLACK;
-    result.coverage = 0.0;
+    result.material.base = COLOR_WHITE;
+    result.material.reflection = 0.1;
+    result.material.shininess = 2.0;
+    result.transparencydepth = 50.0;
+    result.lighttraversal = 50.0;
+    result.minimumlight = 0.8;
+    result.coverage = 0.5;
     result.noise = noiseCreateGenerator();
-    result.scaling = 1.0;
-    result.ymin = 0.0;
-    result.ycenter = 0.5;
-    result.ymax = 1.0;
+    result.scaling = 50.0;
+    result.ymin = 50.0;
+    result.ycenter = 100.0;
+    result.ymax = 200.0;
 
     return result;
 }
@@ -410,10 +421,9 @@ static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, 
     return segment_count;
 }
 
-static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* renderer, Vector3 position, Color base, double detail)
+static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* renderer, Vector3 position, double detail)
 {
     Vector3 normal;
-    SurfaceMaterial material;
 
     normal = v3Scale(_getNormal(definition, position, 1.0), 0.25);
     normal = v3Add(normal, v3Scale(_getNormal(definition, position, 0.5), 0.25));
@@ -421,11 +431,7 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
     normal = v3Add(normal, v3Scale(_getNormal(definition, position, 0.1), 0.25));
     normal = v3Scale(v3Normalize(normal), 0.1);
 
-    material.base = base;
-    material.reflection = 0.3;
-    material.shininess = 2.0;
-
-    return renderer->applyLightingToSurface(renderer, position, normal, material);
+    return renderer->applyLightingToSurface(renderer, position, normal, definition->material);
 }
 
 Color cloudsGetLayerColor(CloudsLayerDefinition* definition, Renderer* renderer, Vector3 start, Vector3 end)
@@ -448,11 +454,11 @@ Color cloudsGetLayerColor(CloudsLayerDefinition* definition, Renderer* renderer,
 
     detail = renderer->getPrecision(renderer, start) / definition->scaling;
 
-    segment_count = _findSegments(definition, renderer, start, direction, detail, 20, 60.0, max_length, &inside_length, &total_length, segments);
+    segment_count = _findSegments(definition, renderer, start, direction, detail, 20, definition->transparencydepth, max_length, &inside_length, &total_length, segments);
     for (i = 0; i < segment_count; i++)
     {
-        col = _applyLayerLighting(definition, renderer, segments[i].start, definition->color, detail);
-        col.a = (segments[i].length >= 50.0) ? 1.0 : (segments[i].length / 50.0);
+        col = _applyLayerLighting(definition, renderer, segments[i].start, detail);
+        col.a = (segments[i].length >= definition->transparencydepth) ? 1.0 : (segments[i].length / definition->transparencydepth);
         colorMask(&result, &col);
     }
 
@@ -487,22 +493,31 @@ Color cloudsGetColor(CloudsDefinition* definition, Renderer* renderer, Vector3 s
 
 Color cloudsLayerFilterLight(CloudsLayerDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light)
 {
-    double inside_depth, total_depth;
+    double inside_depth, total_depth, factor;
     CloudSegment segments[20];
 
     _optimizeSearchLimits(definition, &location, &light_location);
 
-    _findSegments(definition, renderer, location, direction_to_light, 0.1, 20, 50.0, v3Norm(v3Sub(light_location, location)), &inside_depth, &total_depth, segments);
+    _findSegments(definition, renderer, location, direction_to_light, 0.1, 20, definition->lighttraversal, v3Norm(v3Sub(light_location, location)), &inside_depth, &total_depth, segments);
 
-    inside_depth *= 0.02;
-    if (inside_depth > 1.0)
+    if (definition->lighttraversal < 0.0001)
     {
-        inside_depth = 1.0;
+        factor = 0.0;
     }
+    else
+    {
+        factor = inside_depth / definition->lighttraversal;
+        if (factor > 1.0)
+        {
+            factor = 1.0;
+        }
+    }
+    
+    factor = 1.0 - (1.0 - definition->minimumlight) * factor;
 
-    light.r = light.r * (1.0 - 0.2 * inside_depth);
-    light.g = light.g * (1.0 - 0.2 * inside_depth);
-    light.b = light.b * (1.0 - 0.2 * inside_depth);
+    light.r = light.r * factor;
+    light.g = light.g * factor;
+    light.b = light.b * factor;
 
     return light;
 }

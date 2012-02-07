@@ -18,7 +18,10 @@ typedef struct
     double ymin;
     double ymax;
     NoiseGenerator* noise;
-    Color color;
+    SurfaceMaterial material;
+    double transparencydepth;
+    double lighttraversal;
+    double minimumlight;
     double scaling;
     double coverage;
 } CloudsLayerDefinition;
