@@ -51,6 +51,89 @@ private:
     CloudsLayerDefinition _preview_layer;
 };
 
+class PreviewCloudsColor:public Preview
+{
+public:
+    PreviewCloudsColor(QWidget* parent):Preview(parent)
+    {
+        LightDefinition light;
+        
+        _preview_layer = cloudsLayerCreateDefinition();
+
+        _lighting = lightingCreateDefinition();
+        light.color = COLOR_WHITE;
+        light.amplitude = 0.0;
+        light.direction.x = 0.0;
+        light.direction.y = -0.4794;
+        light.direction.z = 0.8776;
+        light.filtered = 0;
+        light.masked = 1;
+        light.reflection = 1.0;
+        lightingAddLight(&_lighting, light);
+        lightingValidateDefinition(&_lighting);
+        
+        _renderer = rendererCreate();
+        _renderer.render_quality = 3;
+        _renderer.applyLightingToSurface = _applyLightingToSurface;
+        _renderer.maskLight = _maskLight;
+        _renderer.customData[0] = &_preview_layer;
+        _renderer.customData[1] = &_lighting;
+    }
+protected:
+    QColor getColor(double x, double y)
+    {
+        Vector3 start, end;
+        Color color_layer, result;
+
+        start.x = x;
+        start.y = y;
+        start.z = -100.0;
+        
+        end.x = x;
+        end.y = y;
+        end.z = 100.0;
+
+        result = COLOR_BLUE;
+        color_layer = cloudsGetLayerColor(&_preview_layer, &_renderer, start, end);
+        colorMask(&result, &color_layer);
+        return colorToQColor(result);
+    }
+    void updateData()
+    {
+        cloudsLayerCopyDefinition(&_layer, &_preview_layer);
+        _preview_layer.ymin = -100.0;
+        _preview_layer.ycenter = 0.0;
+        _preview_layer.ymax = 100.0;
+        _preview_layer.customcoverage = _coverageFunc;
+    }
+private:
+    Renderer _renderer;
+    CloudsLayerDefinition _preview_layer;
+    LightingDefinition _lighting;
+
+    static double _coverageFunc(CloudsLayerDefinition* layer, Vector3 position)
+    {
+        double dist = v3Norm(position);
+        
+        if (dist >= 100.0)
+        {
+            return 0.0;
+        }
+        else
+        {
+            return 1.0 - dist / 100.0;
+        }
+    }
+    static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+    {
+        return lightingApplyToSurface((LightingDefinition*)renderer->customData[1], renderer, location, normal, material);
+    }
+    static Color _maskLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
+    {
+        return cloudsLayerFilterLight((CloudsLayerDefinition*)renderer->customData[0], renderer, light_color, at_location, light_location, direction_to_light);
+    }
+};
+
 /**************** Form ****************/
 FormClouds::FormClouds(QWidget *parent):
     BaseForm(parent, false, true)
@@ -59,6 +142,7 @@ FormClouds::FormClouds(QWidget *parent):
     _layer = cloudsLayerCreateDefinition();
     
     addPreview(new PreviewCloudsCoverage(parent), "Layer coverage (no lighting)");
+    addPreview(new PreviewCloudsColor(parent), "Color and lighting");
 
     addInputDouble("Start altitude", &_layer.ymin, -10.0, 250.0, 0.5, 5.0);
     addInputDouble("Max density altitude", &_layer.ycenter, -10.0, 250.0, 0.5, 5.0);

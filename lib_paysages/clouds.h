@@ -12,7 +12,11 @@ extern "C" {
 
 #define CLOUDS_MAX_LAYERS 6
 
-typedef struct
+typedef struct CloudsLayerDefinition CloudsLayerDefinition;
+    
+typedef double (*CloudCoverageFunc)(CloudsLayerDefinition* definition, Vector3 position);
+
+struct CloudsLayerDefinition
 {
     double ycenter;
     double ymin;
@@ -24,7 +28,8 @@ typedef struct
     double minimumlight;
     double scaling;
     double coverage;
-} CloudsLayerDefinition;
+    CloudCoverageFunc customcoverage;
+};
 
 typedef struct
 {

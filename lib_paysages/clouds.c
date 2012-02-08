@@ -117,6 +117,29 @@ void cloudsValidateDefinition(CloudsDefinition* definition)
     }
 }
 
+static double _standardCoverageFunc(CloudsLayerDefinition* layer, Vector3 position)
+{
+    double inside;
+    
+    if (position.y > layer->ycenter)
+    {
+        inside = 1.0 - (position.y - layer->ycenter) / (layer->ymax - layer->ycenter);
+    }
+    else
+    {
+        inside = 1.0 - (layer->ycenter - position.y) / (layer->ycenter - layer->ymin);
+    }
+    
+    if (inside <= 0.0)
+    {
+        return 0.0;
+    }
+    else
+    {    
+        return layer->coverage * inside;
+    }
+}
+
 CloudsLayerDefinition cloudsLayerCreateDefinition()
 {
     CloudsLayerDefinition result;
@@ -133,6 +156,8 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
     result.ymin = 50.0;
     result.ycenter = 100.0;
     result.ymax = 200.0;
+    
+    result.customcoverage = _standardCoverageFunc;
 
     return result;
 }
@@ -188,8 +213,7 @@ int cloudsAddLayer(CloudsDefinition* definition)
     if (definition->nblayers < CLOUDS_MAX_LAYERS)
     {
         layer = definition->layers + definition->nblayers;
-        layer->noise = noiseCreateGenerator();
-        layer->coverage = 0.0;
+        *layer = cloudsLayerCreateDefinition();
 
         return definition->nblayers++;
     }
@@ -214,45 +238,47 @@ void cloudsDeleteLayer(CloudsDefinition* definition, int layer)
 
 static inline double _getDistanceToBorder(CloudsLayerDefinition* layer, Vector3 position)
 {
-    double val, min;
-
-    if (position.y > layer->ycenter)
-    {
-        min = (position.y - layer->ycenter) / (layer->ymax - layer->ycenter);
-    }
-    else
-    {
-        min = (layer->ycenter - position.y) / (layer->ycenter - layer->ymin);
-    }
+    double val;
 
     val = 0.5 * noiseGet3DTotal(layer->noise, position.x / layer->scaling, position.y / layer->scaling, position.z / layer->scaling) / noiseGetMaxValue(layer->noise);
 
-    return (val - 0.5 - min + layer->coverage) * layer->scaling;
+    return (val - 0.5 + layer->customcoverage(layer, position)) * layer->scaling;
 }
 
 static inline Vector3 _getNormal(CloudsLayerDefinition* layer, Vector3 position, double detail)
 {
     Vector3 result = {0.0, 0.0, 0.0};
+    Vector3 dposition;
     double val, dval;
     
-    val = noiseGet3DDetail(layer->noise, position.x / layer->scaling, position.y / layer->scaling, position.z / layer->scaling, detail);
+    val = _getDistanceToBorder(layer, position);
 
-    dval = val - noiseGet3DDetail(layer->noise, (position.x + detail) / layer->scaling, position.y / layer->scaling, position.z / layer->scaling, detail);
+    dposition.x = position.x + detail;
+    dposition.y = position.y;
+    dposition.z = position.z;
+    dval = val - _getDistanceToBorder(layer, dposition);
     result.x += dval;
 
-    dval = val - noiseGet3DDetail(layer->noise, (position.x - detail) / layer->scaling, position.y / layer->scaling, position.z / layer->scaling, detail);
+    dposition.x = position.x - detail;
+    dval = val - _getDistanceToBorder(layer, dposition);
     result.x -= dval;
 
-    dval = val - noiseGet3DDetail(layer->noise, position.x / layer->scaling, (position.y + detail) / layer->scaling, position.z / layer->scaling, detail);
+    dposition.x = position.x;
+    dposition.y = position.y + detail;
+    dval = val - _getDistanceToBorder(layer, dposition);
     result.y += dval;
 
-    dval = val - noiseGet3DDetail(layer->noise, position.x / layer->scaling, (position.y - detail) / layer->scaling, position.z / layer->scaling, detail);
+    dposition.y = position.y - detail;
+    dval = val - _getDistanceToBorder(layer, dposition);
     result.y -= dval;
 
-    dval = val - noiseGet3DDetail(layer->noise, position.x / layer->scaling, position.y / layer->scaling, (position.z + detail) / layer->scaling, detail);
+    dposition.y = position.y;
+    dposition.z = position.z + detail;
+    dval = val - _getDistanceToBorder(layer, dposition);
     result.z += dval;
 
-    dval = val - noiseGet3DDetail(layer->noise, position.x / layer->scaling, position.y / layer->scaling, (position.z - detail) / layer->scaling, detail);
+    dposition.z = position.z - detail;
+    dval = val - _getDistanceToBorder(layer, dposition);
     result.z -= dval;
 
     return v3Normalize(result);
