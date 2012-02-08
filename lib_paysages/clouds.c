@@ -1,6 +1,7 @@
 #include "clouds.h"
 
 #include <string.h>
+#include <stdlib.h>
 #include <math.h>
 #include "color.h"
 #include "euclid.h"
@@ -22,6 +23,8 @@ void cloudsInit()
 {
     NULL_LAYER.noise = noiseCreateGenerator();
     NULL_LAYER.coverage = 0.0;
+    NULL_LAYER.customcoverage = NULL;
+    cloudsLayerValidateDefinition(&NULL_LAYER);
 }
 
 void cloudsSave(FILE* f, CloudsDefinition* definition)
@@ -144,18 +147,35 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
 {
     CloudsLayerDefinition result;
 
-    result.material.base = COLOR_WHITE;
+    result.ymin = 10.0;
+    result.ycenter = 40.0;
+    result.ymax = 100.0;
+    result.material.base.r = 0.7;
+    result.material.base.g = 0.7;
+    result.material.base.b = 0.7;
     result.material.reflection = 0.1;
     result.material.shininess = 2.0;
-    result.transparencydepth = 50.0;
+    result.transparencydepth = 20.0;
     result.lighttraversal = 50.0;
     result.minimumlight = 0.8;
+    result.scaling = 50.0;
     result.coverage = 0.5;
     result.noise = noiseCreateGenerator();
-    result.scaling = 50.0;
-    result.ymin = 50.0;
-    result.ycenter = 100.0;
-    result.ymax = 200.0;
+    noiseGenerateBaseNoise(result.noise, 262144);
+    noiseAddLevelSimple(result.noise, 1.0, 1.0);
+    noiseAddLevelSimple(result.noise, 1.0 / 2.0, 0.6);
+    noiseAddLevelSimple(result.noise, 1.0 / 4.0, 0.3);
+    noiseAddLevelSimple(result.noise, 1.0 / 10.0, 0.15);
+    noiseAddLevelSimple(result.noise, 1.0 / 20.0, 0.09);
+    noiseAddLevelSimple(result.noise, 1.0 / 40.0, 0.06);
+    noiseAddLevelSimple(result.noise, 1.0 / 60.0, 0.03);
+    noiseAddLevelSimple(result.noise, 1.0 / 80.0, 0.015);
+    noiseAddLevelSimple(result.noise, 1.0 / 100.0, 0.06);
+    noiseAddLevelSimple(result.noise, 1.0 / 150.0, 0.015);
+    noiseAddLevelSimple(result.noise, 1.0 / 200.0, 0.009);
+    noiseAddLevelSimple(result.noise, 1.0 / 400.0, 0.024);
+    noiseAddLevelSimple(result.noise, 1.0 / 800.0, 0.003);
+    noiseAddLevelSimple(result.noise, 1.0 / 1000.0, 0.0015);
     
     result.customcoverage = _standardCoverageFunc;
 
@@ -170,6 +190,11 @@ void cloudsLayerDeleteDefinition(CloudsLayerDefinition* definition)
 void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinition* destination)
 {
     NoiseGenerator* noise;
+    
+    if (destination == &NULL_LAYER)
+    {
+        return;
+    }
 
     noise = destination->noise;
     *destination = *source;
@@ -179,14 +204,14 @@ void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinit
 
 void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
 {
-    /*if (definition->coverage < 0.5)
+    if (definition->scaling < 0.0001)
     {
-        noiseNormalizeHeight(definition->noise, -1.0, definition->coverage * 2.0, 0);
+        definition->scaling = 0.00001;
     }
-    else
+    if (definition->customcoverage == NULL)
     {
-        noiseNormalizeHeight(definition->noise, -(1.0 - definition->coverage) * 2.0, 1.0, 0);
-    }*/
+        definition->customcoverage = _standardCoverageFunc;
+    }
 }
 
 int cloudsGetLayerCount(CloudsDefinition* definition)
@@ -493,10 +518,16 @@ Color cloudsGetLayerColor(CloudsLayerDefinition* definition, Renderer* renderer,
     return result;
 }
 
+static int _cmpLayer(const void* layer1, const void* layer2)
+{
+    return (((CloudsLayerDefinition*)layer1)->ymin > ((CloudsLayerDefinition*)layer2)->ymin) ? -1 : 1;
+}
+
 Color cloudsGetColor(CloudsDefinition* definition, Renderer* renderer, Vector3 start, Vector3 end)
 {
     int i;
     Color layer_color, result;
+    CloudsLayerDefinition layers[CLOUDS_MAX_LAYERS];
 
     if (definition->nblayers < 1)
     {
@@ -504,10 +535,11 @@ Color cloudsGetColor(CloudsDefinition* definition, Renderer* renderer, Vector3 s
     }
 
     result = COLOR_TRANSPARENT;
-    /* TODO Order layers */
+    memcpy(layers, definition->layers, sizeof(CloudsLayerDefinition) * definition->nblayers);
+    qsort(layers, definition->nblayers, sizeof(CloudsLayerDefinition), _cmpLayer);
     for (i = 0; i < definition->nblayers; i++)
     {
-        layer_color = cloudsGetLayerColor(definition->layers + i, renderer, start, end);
+        layer_color = cloudsGetLayerColor(layers + i, renderer, start, end);
         if (layer_color.a > 0.0)
         {
             colorMask(&result, &layer_color);
@@ -551,6 +583,7 @@ Color cloudsLayerFilterLight(CloudsLayerDefinition* definition, Renderer* render
 Color cloudsFilterLight(CloudsDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light)
 {
     int i;
+    /* TODO Order layers ? */
     for (i = 0; i < definition->nblayers; i++)
     {
         light = cloudsLayerFilterLight(definition->layers + i, renderer, light, location, light_location, direction_to_light);

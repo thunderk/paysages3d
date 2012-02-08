@@ -79,34 +79,6 @@ void autoGenRealisticLandscape(int seed)
     /* Cloud layer */
     clouds = cloudsCreateDefinition();
     cloud = cloudsGetLayer(&clouds, cloudsAddLayer(&clouds));
-    cloud->ymin = 10.0;
-    cloud->ycenter = 40.0;
-    cloud->ymax = 100.0;
-    cloud->material.base.r = 0.7;
-    cloud->material.base.g = 0.7;
-    cloud->material.base.b = 0.7;
-    cloud->material.reflection = 0.1;
-    cloud->material.shininess = 2.0;
-    cloud->transparencydepth = 20.0;
-    cloud->lighttraversal = 50.0;
-    cloud->minimumlight = 0.8;
-    cloud->scaling = 50.0;
-    cloud->coverage = 0.5;
-    noiseGenerateBaseNoise(cloud->noise, 262144);
-    noiseAddLevelSimple(cloud->noise, 1.0, 1.0);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 2.0, 0.6);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 4.0, 0.3);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 10.0, 0.15);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 20.0, 0.09);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 40.0, 0.06);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 60.0, 0.03);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 80.0, 0.015);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 100.0, 0.06);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 150.0, 0.015);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 200.0, 0.009);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 400.0, 0.024);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 800.0, 0.003);
-    noiseAddLevelSimple(cloud->noise, 1.0 / 1000.0, 0.0015);
     scenerySetClouds(&clouds);
     cloudsDeleteDefinition(&clouds);
 
