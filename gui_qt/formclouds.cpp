@@ -63,9 +63,10 @@ public:
         _lighting = lightingCreateDefinition();
         light.color = COLOR_WHITE;
         light.amplitude = 0.0;
-        light.direction.x = 0.0;
-        light.direction.y = -0.4794;
-        light.direction.z = 0.8776;
+        light.direction.x = -1.0;
+        light.direction.y = -1.0;
+        light.direction.z = 1.0;
+        light.direction = v3Normalize(light.direction);
         light.filtered = 0;
         light.masked = 1;
         light.reflection = 1.0;
@@ -86,12 +87,12 @@ protected:
         Color color_layer, result;
 
         start.x = x;
-        start.y = y;
-        start.z = -100.0;
+        start.y = -y;
+        start.z = 100.0;
         
         end.x = x;
-        end.y = y;
-        end.z = 100.0;
+        end.y = -y;
+        end.z = -100.0;
 
         result = COLOR_BLUE;
         color_layer = cloudsGetLayerColor(&_preview_layer, &_renderer, start, end);
@@ -182,7 +183,7 @@ void FormClouds::configChangeEvent()
 
 void FormClouds::layerAddedEvent()
 {
-    if (cloudsAddLayer(&_definition) > 0)
+    if (cloudsAddLayer(&_definition) >= 0)
     {
         BaseForm::layerAddedEvent();
     }
