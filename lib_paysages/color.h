@@ -2,6 +2,7 @@
 #define _PAYSAGES_COLOR_H_
 
 #include "shared/types.h"
+#include "shared/constants.h"
 
 #ifdef __cplusplus
 extern "C" {

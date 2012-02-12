@@ -2,6 +2,7 @@
 
 #include "inputdouble.h"
 #include "inputint.h"
+#include "inputboolean.h"
 #include "inputcolor.h"
 #include "inputcolorgradation.h"
 #include "inputnoise.h"
@@ -190,6 +191,11 @@ void BaseForm::addInputInt(QString label, int* value, int min, int max, int smal
 void BaseForm::addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step)
 {
     addInput(new InputDouble(form, label, value, min, max, small_step, large_step));
+}
+
+void BaseForm::addInputBoolean(QString label, int* value)
+{
+    addInput(new InputBoolean(form, label, value));
 }
 
 void BaseForm::addInputColor(QString label, Color* value)

@@ -14,10 +14,10 @@
 static SkyDefinition _definition;
 
 /**************** Previews ****************/
-class PreviewEast:public Preview
+class PreviewSkyEast:public Preview
 {
 public:
-    PreviewEast(QWidget* parent):
+    PreviewSkyEast(QWidget* parent):
         Preview(parent)
     {
         _renderer = rendererCreate();
@@ -44,10 +44,10 @@ private:
     SkyDefinition _preview_definition;
 };
 
-class PreviewWest:public Preview
+class PreviewSkyWest:public Preview
 {
 public:
-    PreviewWest(QWidget* parent):
+    PreviewSkyWest(QWidget* parent):
         Preview(parent)
     {
         _renderer = rendererCreate();
@@ -80,9 +80,9 @@ FormSky::FormSky(QWidget *parent):
 {
     _definition = skyCreateDefinition();
 
-    previewWest = new PreviewWest(this);
+    previewWest = new PreviewSkyWest(this);
     addPreview(previewWest, QString("West preview"));
-    previewEast = new PreviewEast(this);
+    previewEast = new PreviewSkyEast(this);
     addPreview(previewEast, QString("East preview"));
 
     addInputDouble("Day time", &_definition.daytime, 0.0, 1.0, 0.01, 0.1);

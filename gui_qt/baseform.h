@@ -37,6 +37,7 @@ protected:
     void addInput(BaseInput* input);
     void addInputInt(QString label, int* value, int min, int max, int small_step, int large_step);
     void addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step);
+    void addInputBoolean(QString label, int* value);
     void addInputColor(QString label, Color* value);
     void addInputColorGradation(QString label, ColorGradation* value);
     void addInputNoise(QString label, NoiseGenerator* value);
