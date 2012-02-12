@@ -3,3 +3,5 @@
 - Implement scaling and scrolling on previews.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - Restore render progress.
+- Find a licence and apply it.
+- Translate UI ?

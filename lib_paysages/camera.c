@@ -13,6 +13,10 @@ void cameraInit()
 {
 }
 
+void cameraQuit()
+{
+}
+
 void cameraSave(FILE* f, CameraDefinition* camera)
 {
     v3Save(f, &camera->location);

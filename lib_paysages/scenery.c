@@ -36,6 +36,27 @@ void sceneryInit()
     _water = waterCreateDefinition();
 }
 
+void sceneryQuit()
+{
+    atmosphereDeleteDefinition(&_atmosphere);
+    cameraDeleteDefinition(&_camera);
+    cloudsDeleteDefinition(&_clouds);
+    lightingDeleteDefinition(&_lighting);
+    skyDeleteDefinition(&_sky);
+    terrainDeleteDefinition(&_terrain);
+    texturesDeleteDefinition(&_textures);
+    waterDeleteDefinition(&_water);
+
+    atmosphereQuit();
+    cameraQuit();
+    cloudsQuit();
+    lightingQuit();
+    skyQuit();
+    terrainQuit();
+    texturesQuit();
+    waterQuit();
+}
+
 void scenerySaveToFile(char* filepath)
 {
     FILE* f = fopen(filepath, "wb");

@@ -44,6 +44,10 @@ void renderInit()
 {
 }
 
+void renderQuit()
+{
+}
+
 RenderArea* renderCreateArea()
 {
     RenderArea* result;
@@ -74,8 +78,19 @@ RenderArea* renderCreateArea()
 
 void renderDeleteArea(RenderArea* area)
 {
+    int x;
+    int y;
+
+    for (x = 0; x < area->width; x++)
+    {
+        for (y = 0; y < area->height; y++)
+        {
+            arrayDelete(area->pixels + (y * area->width + x));
+        }
+    }
+    
     mutexDestroy(area->lock);
-    arrayDelete(area->pixels);
+    free(area->pixels);
     free(area->scanline_up);
     free(area->scanline_down);
     free(area);

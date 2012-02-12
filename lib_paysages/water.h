@@ -35,6 +35,7 @@ typedef struct
 } WaterResult;
 
 void waterInit();
+void waterQuit();
 void waterSave(FILE* f, WaterDefinition* definition);
 void waterLoad(FILE* f, WaterDefinition* definition);
 

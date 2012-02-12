@@ -27,6 +27,11 @@ void cloudsInit()
     cloudsLayerValidateDefinition(&NULL_LAYER);
 }
 
+void cloudsQuit()
+{
+    cloudsLayerDeleteDefinition(&NULL_LAYER);
+}
+
 void cloudsSave(FILE* f, CloudsDefinition* definition)
 {
     int i;
@@ -476,10 +481,10 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
 {
     Vector3 normal;
 
-    normal = v3Scale(_getNormal(definition, position, 1.0), 0.25);
+    normal = v3Scale(_getNormal(definition, position, 3.0), 0.25);
+    normal = v3Add(normal, v3Scale(_getNormal(definition, position, 2.0), 0.25));
+    normal = v3Add(normal, v3Scale(_getNormal(definition, position, 1.0), 0.25));
     normal = v3Add(normal, v3Scale(_getNormal(definition, position, 0.5), 0.25));
-    normal = v3Add(normal, v3Scale(_getNormal(definition, position, 0.2), 0.25));
-    normal = v3Add(normal, v3Scale(_getNormal(definition, position, 0.1), 0.25));
     normal = v3Scale(v3Normalize(normal), 0.1);
 
     return renderer->applyLightingToSurface(renderer, position, normal, definition->material);

@@ -19,6 +19,7 @@ typedef struct
 } AtmosphereDefinition;
 
 void atmosphereInit();
+void atmosphereQuit();
 void atmosphereSave(FILE* f, AtmosphereDefinition* definition);
 void atmosphereLoad(FILE* f, AtmosphereDefinition* definition);
 

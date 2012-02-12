@@ -111,7 +111,9 @@ int main(int argc, char** argv)
         conf_daytime_start += conf_daytime_step;
     }
     
+    printf("Cleaning up ...\n");
     rendererDelete(&renderer);
+    paysagesQuit();
 
     printf("\rDone.                         \n");
 

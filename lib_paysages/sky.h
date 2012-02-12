@@ -22,6 +22,7 @@ typedef struct
 } SkyDefinition;
 
 void skyInit();
+void skyQuit();
 void skySave(FILE* f, SkyDefinition* definition);
 void skyLoad(FILE* f, SkyDefinition* definition);
 

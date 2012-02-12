@@ -30,6 +30,10 @@ void lightingInit()
     _LIGHT_NULL.amplitude = 0.0;
 }
 
+void lightingQuit()
+{
+}
+
 void lightingSave(FILE* f, LightingDefinition* definition)
 {
     int i;

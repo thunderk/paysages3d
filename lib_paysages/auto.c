@@ -62,7 +62,6 @@ void autoGenRealisticLandscape(int seed)
     TerrainDefinition terrain;
     WaterDefinition water;
     CloudsDefinition clouds;
-    CloudsLayerDefinition* cloud;
     SkyDefinition sky;
     TexturesDefinition textures;
     TextureLayerDefinition* texture;
@@ -78,7 +77,7 @@ void autoGenRealisticLandscape(int seed)
 
     /* Cloud layer */
     clouds = cloudsCreateDefinition();
-    cloud = cloudsGetLayer(&clouds, cloudsAddLayer(&clouds));
+    cloudsAddLayer(&clouds);
     scenerySetClouds(&clouds);
     cloudsDeleteDefinition(&clouds);
 
@@ -163,6 +162,7 @@ void autoGenRealisticLandscape(int seed)
     zoneIncludeCircleArea(zone, 0.8, 0.0, 0.0, 0.3, 4.0);
     modifierActionFixValue(mod, -8.0);
     terrainAddModifier(&terrain, mod);
+    modifierDelete(mod);
     /* DEBUG */
     scenerySetTerrain(&terrain);
     terrainDeleteDefinition(&terrain);

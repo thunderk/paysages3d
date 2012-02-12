@@ -9,7 +9,7 @@ void arrayCreate(Array* array, int item_size)
     array->alloc_length = 3;
     array->item_size = item_size;
     array->dirty = 1;
-    array->data = malloc((size_t)item_size * 3);
+    array->data = malloc((size_t)item_size * array->alloc_length);
 }
 
 void arrayDelete(Array* array)

@@ -10,6 +10,7 @@ extern "C" {
 #endif
 
 void cameraInit();
+void cameraQuit();
 void cameraSave(FILE* f, CameraDefinition* camera);
 void cameraLoad(FILE* f, CameraDefinition* camera);
 

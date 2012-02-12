@@ -10,6 +10,10 @@ void atmosphereInit()
 {
 }
 
+void atmosphereQuit()
+{
+}
+
 void atmosphereSave(FILE* f, AtmosphereDefinition* definition)
 {
     toolsSaveDouble(f, &definition->distance_near);

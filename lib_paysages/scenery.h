@@ -24,6 +24,8 @@ extern "C" {
 #endif
 
 void sceneryInit();
+void sceneryQuit();
+
 void scenerySaveToFile(char* filepath);
 void sceneryLoadFromFile(char* filepath);
 

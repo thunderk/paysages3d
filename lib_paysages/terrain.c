@@ -17,6 +17,10 @@ void terrainInit()
 {
 }
 
+void terrainQuit()
+{
+}
+
 void terrainSave(FILE* f, TerrainDefinition* definition)
 {
     int i;

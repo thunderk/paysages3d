@@ -25,6 +25,7 @@ typedef struct
 } TerrainDefinition;
 
 void terrainInit();
+void terrainQuit();
 void terrainSave(FILE* f, TerrainDefinition* definition);
 void terrainLoad(FILE* f, TerrainDefinition* definition);
 

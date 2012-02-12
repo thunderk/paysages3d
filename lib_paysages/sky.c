@@ -18,6 +18,10 @@ void skyInit()
 {
 }
 
+void skyQuit()
+{
+}
+
 void skySave(FILE* f, SkyDefinition* definition)
 {
     toolsSaveDouble(f, &definition->daytime);

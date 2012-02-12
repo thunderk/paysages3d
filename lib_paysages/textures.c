@@ -20,6 +20,11 @@ void texturesInit()
     _NULL_LAYER = texturesLayerCreateDefinition();
 }
 
+void texturesQuit()
+{
+    texturesLayerDeleteDefinition(&_NULL_LAYER);
+}
+
 void texturesSave(FILE* f, TexturesDefinition* definition)
 {
     int i;

@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 void paysagesInit();
+void paysagesQuit();
 void paysagesSave(char* filepath);
 void paysagesLoad(char* filepath);
 

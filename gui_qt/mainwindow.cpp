@@ -24,6 +24,8 @@
 
 int main(int argc, char** argv)
 {
+    int result;
+    
     paysagesInit();
 
     QApplication app(argc, argv);
@@ -31,7 +33,10 @@ int main(int argc, char** argv)
 
     window.show();
 
-    return app.exec();
+    result = app.exec();
+    
+    paysagesQuit();
+    return result;
 }
 
 MainWindow::MainWindow(QWidget *parent) :

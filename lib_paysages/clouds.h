@@ -38,6 +38,7 @@ typedef struct
 } CloudsDefinition;
 
 void cloudsInit();
+void cloudsQuit();
 void cloudsSave(FILE* f, CloudsDefinition* definition);
 void cloudsLoad(FILE* f, CloudsDefinition* definition);
 

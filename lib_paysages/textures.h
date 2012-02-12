@@ -26,6 +26,7 @@ typedef struct
 } TexturesDefinition;
 
 void texturesInit();
+void texturesQuit();
 void texturesSave(FILE* f, TexturesDefinition* definition);
 void texturesLoad(FILE* f, TexturesDefinition* definition);
 

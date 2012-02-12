@@ -31,6 +31,7 @@ typedef struct
 } LightingDefinition;
 
 void lightingInit();
+void lightingQuit();
 void lightingSave(FILE* f, LightingDefinition* definition);
 void lightingLoad(FILE* f, LightingDefinition* definition);
 

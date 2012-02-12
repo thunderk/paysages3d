@@ -47,6 +47,12 @@ void paysagesInit()
     cameraSetTarget(x - 1.0, height, 0.0);*/
 }
 
+void paysagesQuit()
+{
+    sceneryQuit();
+    renderQuit();
+}
+
 void paysagesSave(char* filepath)
 {
     scenerySaveToFile(filepath);

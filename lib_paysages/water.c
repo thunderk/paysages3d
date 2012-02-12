@@ -15,6 +15,10 @@ void waterInit()
 {
 }
 
+void waterQuit()
+{
+}
+
 void waterSave(FILE* f, WaterDefinition* definition)
 {
     toolsSaveDouble(f, &definition->height);

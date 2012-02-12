@@ -10,6 +10,8 @@ extern "C" {
 #endif
 
 void renderInit();
+void renderQuit();
+
 RenderArea* renderCreateArea();
 void renderDeleteArea(RenderArea* area);
 
