@@ -116,9 +116,9 @@ int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
             lights[1].direction.y = -1.0;
             lights[1].direction.z = 0.0;
             lights[1].color = colorGradationGet(&sky->zenith_color, sky->daytime);
-            lights[1].color.r *= 0.4;
-            lights[1].color.g *= 0.4;
-            lights[1].color.b *= 0.4;
+            lights[1].color.r *= 0.6;
+            lights[1].color.g *= 0.6;
+            lights[1].color.b *= 0.6;
             lights[1].reflection = 0.0;
             lights[1].filtered = 1;
             lights[1].masked = 0;

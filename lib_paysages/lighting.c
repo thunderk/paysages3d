@@ -157,6 +157,44 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
 
     light = definition->color;
 
+    if (definition->amplitude > 0.0)
+    {
+        // TODO Sampling around light direction
+        int xsamples, ysamples, samples, x, y;
+        double xstep, ystep, factor;
+        LightDefinition sublight;
+        
+        ysamples = renderer->render_quality / 4 + 1;
+        xsamples = renderer->render_quality / 2 + 1;
+        samples = xsamples * ysamples + 1;
+        factor = 1.0 / (double)samples;
+        
+        xstep = M_PI * 2.0 / (double)xsamples;
+        ystep = M_PI * 0.5 / (double)(ysamples - 1);
+        
+        sublight = *definition;
+        sublight.amplitude = 0.0;
+        sublight.color.r *= factor;
+        sublight.color.g *= factor;
+        sublight.color.b *= factor;
+
+        result = _applyLightCustom(&sublight, renderer, location, normal, material);
+        for (x = 0; x < xsamples; x++)
+        {
+            for (y = 0; y < ysamples; y++)
+            {
+                sublight.direction.x = cos(x * xstep) * cos(y * ystep);
+                sublight.direction.y = -sin(y * ystep);
+                sublight.direction.z = sin(x * xstep) * cos(y * ystep);
+                light = _applyLightCustom(&sublight, renderer, location, normal, material);
+                result.r += light.r;
+                result.g += light.g;
+                result.b += light.b;
+            }
+        }
+        return result;
+    }
+    
     direction_inv = v3Scale(definition->direction, -1.0);
     if (definition->masked)
     {
