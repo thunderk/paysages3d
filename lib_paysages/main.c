@@ -27,6 +27,7 @@ void paysagesInit()
     camera = cameraCreateDefinition();
     cameraSetLocation(&camera, -12.0, 5.0, 2.0);
     cameraSetTarget(&camera, 0.0, 5.0, 0.0);
+    cameraRotateYaw(&camera, 1.0);
     scenerySetCamera(&camera);
     cameraDeleteDefinition(&camera);
 
