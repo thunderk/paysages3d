@@ -47,11 +47,11 @@ typedef struct
 {
     double start;
     Color col;
-} _ColorGradationPart;
+} ColorGradationPart;
 typedef struct
 {
     int nbparts;
-    _ColorGradationPart parts[MAX_COLORGRADATION_PARTS];
+    ColorGradationPart parts[MAX_COLORGRADATION_PARTS];
 } ColorGradation;
 
 struct RenderFragment;

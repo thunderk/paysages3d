@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QMenuBar>
 #include <QMenu>
+#include <QIcon>
 #include <QFileDialog>
 #include <QTabWidget>
 
@@ -95,6 +96,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(tabs);
 
     setWindowTitle("Paysages 3D");
+    setWindowIcon(QIcon("images/logo_32.png"));
 }
 
 void MainWindow::refreshAll()

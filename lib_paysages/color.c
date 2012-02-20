@@ -112,7 +112,7 @@ ColorGradation colorGradationCreate()
 
 int _part_compare(const void* part1, const void* part2)
 {
-    if (((_ColorGradationPart*)part1)->start > ((_ColorGradationPart*)part2)->start)
+    if (((ColorGradationPart*)part1)->start > ((ColorGradationPart*)part2)->start)
     {
         return 1;
     }
@@ -159,7 +159,7 @@ void colorGradationAdd(ColorGradation* gradation, double value, Color* col)
 
         if (gradation->nbparts++ > 1)
         {
-            qsort(gradation->parts, gradation->nbparts, sizeof(_ColorGradationPart), _part_compare);
+            qsort(gradation->parts, gradation->nbparts, sizeof(ColorGradationPart), _part_compare);
         }
     }
 }

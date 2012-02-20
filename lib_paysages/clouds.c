@@ -162,7 +162,7 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
     result.material.shininess = 2.0;
     result.transparencydepth = 20.0;
     result.lighttraversal = 50.0;
-    result.minimumlight = 0.8;
+    result.minimumlight = 0.5;
     result.scaling = 50.0;
     result.coverage = 0.5;
     result.noise = noiseCreateGenerator();

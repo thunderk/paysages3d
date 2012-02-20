@@ -4,7 +4,7 @@
 #include <QPushButton>
 #include <QPainter>
 #include <QColorDialog>
-
+#include "dialogcolorgradation.h"
 #include "tools.h"
 
 class ColorGradationPreview:public QWidget
@@ -53,10 +53,6 @@ void InputColorGradation::updatePreview()
 
 void InputColorGradation::applyValue()
 {
-    /*_value->r = ((ColorPreview*)_preview)->col.redF();
-    _value->g = ((ColorPreview*)_preview)->col.greenF();
-    _value->b = ((ColorPreview*)_preview)->col.blueF();
-    _value->a = 1.0;*/
     BaseInput::applyValue();
 }
 
@@ -67,10 +63,12 @@ void InputColorGradation::revert()
 
 void InputColorGradation::editGradation()
 {
-    /*QColor col = QColorDialog::getColor(((ColorPreview*)_preview)->col, _control);
-    if (col.isValid())
+    ColorGradation gradation;
+    
+    gradation = *_value;
+    if (DialogColorGradation::getGradation(_preview, &gradation))
     {
-        ((ColorPreview*)_preview)->col = col;
+        *_value = gradation;
         applyValue();
-    }*/
+    }
 }
