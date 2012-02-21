@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 #include "shared/constants.h"
 #include "tools.h"
 
@@ -12,6 +13,14 @@ Color COLOR_GREEN = {0.0, 1.0, 0.0, 1.0};
 Color COLOR_BLUE = {0.0, 0.0, 1.0, 1.0};
 Color COLOR_WHITE = {1.0, 1.0, 1.0, 1.0};
 Color COLOR_GREY = {0.5, 0.5, 0.5, 1.0};
+
+ColorGradationPart COLORGRADATIONPART_NULL;
+
+void colorInit()
+{
+    COLORGRADATIONPART_NULL.col = COLOR_TRANSPARENT;
+    COLORGRADATIONPART_NULL.start = 0.0;
+}
 
 void colorSave(FILE* f, Color* col)
 {
@@ -146,7 +155,53 @@ void colorGradationLoad(FILE* f, ColorGradation* gradation)
     }
 }
 
-void colorGradationAdd(ColorGradation* gradation, double value, Color* col)
+int colorGradationGetPartCount(ColorGradation* gradation)
+{
+    return gradation->nbparts;
+}
+
+int colorGradationAddPart(ColorGradation* gradation)
+{
+    if (gradation->nbparts == MAX_COLORGRADATION_PARTS)
+    {
+        return -1;
+    }
+    else
+    {
+        return gradation->nbparts++;
+    }
+}
+
+void colorGradationDelPart(ColorGradation* gradation, int part)
+{
+    if (part >= 0 && part < gradation->nbparts)
+    {
+        memmove(gradation->parts + part, gradation->parts + part + 1, sizeof(ColorGradationPart) * (gradation->nbparts - part - 1));
+        gradation->nbparts--;
+    }
+}
+
+ColorGradationPart colorGradationGetPart(ColorGradation* gradation, int part)
+{
+    if (part >= 0 && part < gradation->nbparts)
+    {
+        return gradation->parts[part];
+    }
+    else
+    {
+        return COLORGRADATIONPART_NULL;
+    }
+}
+
+void colorGradationSetPart(ColorGradation* gradation, int part, ColorGradationPart value)
+{
+    if (part >= 0 && part < gradation->nbparts)
+    {
+        gradation->parts[part] = value;
+    }
+}
+
+void colorGradationQuickAdd(ColorGradation* gradation, double value, Color* col)
 {
     if (gradation->nbparts == MAX_COLORGRADATION_PARTS)
     {
@@ -164,14 +219,14 @@ void colorGradationAdd(ColorGradation* gradation, double value, Color* col)
     }
 }
 
-void colorGradationAddRgba(ColorGradation* gradation, double value, double r, double g, double b, double a)
+void colorGradationQuickAddRgba(ColorGradation* gradation, double value, double r, double g, double b, double a)
 {
     Color col;
     col.r = r;
     col.g = g;
     col.b = b;
     col.a = a;
-    colorGradationAdd(gradation, value, &col);
+    colorGradationQuickAdd(gradation, value, &col);
 }
 
 Color colorGradationGet(ColorGradation* gradation, double value)

@@ -10,10 +10,10 @@
 #include <QPushButton>
 
 /**************** Previews ****************/
-class PreviewLevel:public Preview
+class PreviewLevel:public BasePreview
 {
 public:
-    PreviewLevel(QWidget* parent, NoiseGenerator* noise): Preview(parent)
+    PreviewLevel(QWidget* parent, NoiseGenerator* noise): BasePreview(parent)
     {
         _noise_original = noise;
         _noise_preview = noiseCreateGenerator();
@@ -47,10 +47,10 @@ private:
     int _level;
 };
 
-class PreviewTotal:public Preview
+class PreviewTotal:public BasePreview
 {
 public:
-    PreviewTotal(QWidget* parent, NoiseGenerator* noise): Preview(parent)
+    PreviewTotal(QWidget* parent, NoiseGenerator* noise): BasePreview(parent)
     {
         _noise_original = noise;
         _noise_preview = noiseCreateGenerator();

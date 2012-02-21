@@ -12,10 +12,10 @@ static CloudsDefinition _definition;
 static CloudsLayerDefinition _layer;
 
 /**************** Previews ****************/
-class PreviewCloudsCoverage:public Preview
+class PreviewCloudsCoverage:public BasePreview
 {
 public:
-    PreviewCloudsCoverage(QWidget* parent):Preview(parent)
+    PreviewCloudsCoverage(QWidget* parent):BasePreview(parent)
     {
         _renderer = rendererCreate();
         _renderer.render_quality = 3;
@@ -51,10 +51,10 @@ private:
     CloudsLayerDefinition _preview_layer;
 };
 
-class PreviewCloudsColor:public Preview
+class PreviewCloudsColor:public BasePreview
 {
 public:
-    PreviewCloudsColor(QWidget* parent):Preview(parent)
+    PreviewCloudsColor(QWidget* parent):BasePreview(parent)
     {
         LightDefinition light;
         

@@ -1,18 +1,18 @@
-#ifndef _PAYSAGES_QT_PREVIEW_H_
-#define _PAYSAGES_QT_PREVIEW_H_
+#ifndef _PAYSAGES_QT_BASEPREVIEW_H_
+#define _PAYSAGES_QT_BASEPREVIEW_H_
 
 #include <QMutex>
 #include <QImage>
 #include <QWidget>
 #include <QThread>
 
-class Preview:public QWidget
+class BasePreview:public QWidget
 {
     Q_OBJECT
 
 public:
-    Preview(QWidget* parent);
-    ~Preview();
+    BasePreview(QWidget* parent);
+    ~BasePreview();
 
     void start();
     void doRender();

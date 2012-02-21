@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QComboBox>
-#include "preview.h"
+#include "basepreview.h"
 #include "baseinput.h"
 #include "../lib_paysages/shared/types.h"
 #include "../lib_paysages/noise.h"
@@ -32,7 +32,7 @@ private slots:
     void layerListChanged();
 
 protected:
-    void addPreview(Preview* preview, QString label);
+    void addPreview(BasePreview* preview, QString label);
     QPushButton* addButton(QString label);
     void addInput(BaseInput* input);
     void addInputInt(QString label, int* value, int min, int max, int small_step, int large_step);

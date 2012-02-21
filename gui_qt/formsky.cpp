@@ -14,11 +14,11 @@
 static SkyDefinition _definition;
 
 /**************** Previews ****************/
-class PreviewSkyEast:public Preview
+class PreviewSkyEast:public BasePreview
 {
 public:
     PreviewSkyEast(QWidget* parent):
-        Preview(parent)
+        BasePreview(parent)
     {
         _renderer = rendererCreate();
         _preview_definition = skyCreateDefinition();
@@ -44,11 +44,11 @@ private:
     SkyDefinition _preview_definition;
 };
 
-class PreviewSkyWest:public Preview
+class PreviewSkyWest:public BasePreview
 {
 public:
     PreviewSkyWest(QWidget* parent):
-        Preview(parent)
+        BasePreview(parent)
     {
         _renderer = rendererCreate();
         _preview_definition = skyCreateDefinition();

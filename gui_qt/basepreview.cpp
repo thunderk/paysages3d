@@ -1,4 +1,4 @@
-#include "preview.h"
+#include "basepreview.h"
 
 #include <QVector>
 #include <QPainter>
@@ -8,7 +8,7 @@
 class PreviewDrawer:public QThread
 {
 public:
-    PreviewDrawer(Preview* preview):
+    PreviewDrawer(BasePreview* preview):
         QThread(),
         _preview(preview)
     {
@@ -29,11 +29,11 @@ protected:
         }
     }
 private:
-    Preview* _preview;
+    BasePreview* _preview;
     bool _running;
 };
 
-Preview::Preview(QWidget* parent) :
+BasePreview::BasePreview(QWidget* parent) :
     QWidget(parent)
 {
     this->lock_drawing = new QMutex();
@@ -65,7 +65,7 @@ Preview::Preview(QWidget* parent) :
     this->updater = new PreviewDrawer(this);
 }
 
-Preview::~Preview()
+BasePreview::~BasePreview()
 {
     alive = false;
 
@@ -77,21 +77,21 @@ Preview::~Preview()
     delete lock_drawing;
 }
 
-void Preview::updateData()
+void BasePreview::updateData()
 {
 }
 
-QColor Preview::getColor(double x, double y)
+QColor BasePreview::getColor(double x, double y)
 {
     return QColor(0, 0, 0);
 }
 
-void Preview::start()
+void BasePreview::start()
 {
     this->updater->start();
 }
 
-void Preview::doRender()
+void BasePreview::doRender()
 {
     if (this->alive)
     {
@@ -107,12 +107,12 @@ void Preview::doRender()
     }
 }
 
-void Preview::redraw()
+void BasePreview::redraw()
 {
     emit(redrawRequested());
 }
 
-void Preview::handleRedraw()
+void BasePreview::handleRedraw()
 {
     need_rerender = true;
     lock_drawing->lock();
@@ -121,14 +121,14 @@ void Preview::handleRedraw()
     lock_drawing->unlock();
 }
 
-void Preview::setScaling(double scaling)
+void BasePreview::setScaling(double scaling)
 {
     // TODO Follow conf_scale
     this->scaling = scaling;
     redraw();
 }
 
-void Preview::resizeEvent(QResizeEvent* event)
+void BasePreview::resizeEvent(QResizeEvent* event)
 {
     QImage* image;
 
@@ -147,13 +147,13 @@ void Preview::resizeEvent(QResizeEvent* event)
     this->lock_drawing->unlock();
 }
 
-void Preview::paintEvent(QPaintEvent* event)
+void BasePreview::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.drawImage(0, 0, *this->pixbuf);
 }
 
-void Preview::forceRender()
+void BasePreview::forceRender()
 {
     this->lock_drawing->lock();
     this->pixbuf->fill(0x00000000);
@@ -162,7 +162,7 @@ void Preview::forceRender()
     this->lock_drawing->unlock();
 }
 
-void Preview::renderPixbuf()
+void BasePreview::renderPixbuf()
 {
     QColor col;
     bool done;
@@ -205,7 +205,7 @@ void Preview::renderPixbuf()
     }
 }
 
-void Preview::wheelEvent(QWheelEvent* event)
+void BasePreview::wheelEvent(QWheelEvent* event)
 {
     if (event->orientation() == Qt::Vertical)
     {

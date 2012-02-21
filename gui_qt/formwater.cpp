@@ -1,4 +1,4 @@
-#include "preview.h"
+#include "basepreview.h"
 #include "formwater.h"
 
 #include <QColor>
@@ -17,10 +17,10 @@
 static WaterDefinition _definition;
 
 /**************** Previews ****************/
-class PreviewWaterCoverage:public Preview
+class PreviewWaterCoverage:public BasePreview
 {
 public:
-    PreviewWaterCoverage(QWidget* parent):Preview(parent)
+    PreviewWaterCoverage(QWidget* parent):BasePreview(parent)
     {
         _water = waterCreateDefinition();
         _terrain = terrainCreateDefinition();
@@ -51,10 +51,10 @@ private:
     TerrainDefinition _terrain;
 };
 
-class PreviewWaterColor:public Preview
+class PreviewWaterColor:public BasePreview
 {
 public:
-    PreviewWaterColor(QWidget* parent):Preview(parent)
+    PreviewWaterColor(QWidget* parent):BasePreview(parent)
     {
         LightDefinition light;
         

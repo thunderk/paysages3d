@@ -2,7 +2,7 @@
 #define _PAYSAGES_QT_FORMTEXTURES_H_
 
 #include <QWidget>
-#include "preview.h"
+#include "basepreview.h"
 #include "baseform.h"
 
 class FormTextures : public BaseForm
@@ -20,8 +20,8 @@ protected slots:
     virtual void configChangeEvent();
 
 private:
-    Preview* previewCoverage;
-    Preview* previewColor;
+    BasePreview* previewCoverage;
+    BasePreview* previewColor;
 };
 
 #endif

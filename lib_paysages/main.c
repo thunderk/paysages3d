@@ -8,6 +8,7 @@
 #include "shared/constants.h"
 
 #include "auto.h"
+#include "color.h"
 #include "system.h"
 #include "camera.h"
 #include "scenery.h"
@@ -21,6 +22,7 @@ void paysagesInit()
     ilInit();
     iluInit();
 
+    colorInit();
     sceneryInit();
     renderInit();
 

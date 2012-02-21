@@ -2,7 +2,7 @@
 #define _PAYSAGES_QT_FORMLIGHTING_H_
 
 #include <QWidget>
-#include "preview.h"
+#include "basepreview.h"
 #include "baseform.h"
 
 class FormLighting : public BaseForm
@@ -20,7 +20,7 @@ protected slots:
     virtual void configChangeEvent();
 
 private:
-    Preview* previewColor;
+    BasePreview* previewColor;
 };
 
 #endif

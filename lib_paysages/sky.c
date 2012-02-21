@@ -80,10 +80,10 @@ void skyValidateDefinition(SkyDefinition* definition)
     haze = colorGradationGet(&definition->haze_color, definition->daytime);
 
     definition->_sky_gradation = colorGradationCreate();
-    colorGradationAdd(&definition->_sky_gradation, 0.0, &haze);
-    colorGradationAdd(&definition->_sky_gradation, definition->haze_height - definition->haze_smoothing, &haze);
-    colorGradationAdd(&definition->_sky_gradation, definition->haze_height, &zenith);
-    colorGradationAdd(&definition->_sky_gradation, 1.0, &zenith);
+    colorGradationQuickAdd(&definition->_sky_gradation, 0.0, &haze);
+    colorGradationQuickAdd(&definition->_sky_gradation, definition->haze_height - definition->haze_smoothing, &haze);
+    colorGradationQuickAdd(&definition->_sky_gradation, definition->haze_height, &zenith);
+    colorGradationQuickAdd(&definition->_sky_gradation, 1.0, &zenith);
 }
 
 int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)

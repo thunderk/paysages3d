@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include <QListWidget>
-#include "preview.h"
+#include "basepreview.h"
 
 #include "../lib_paysages/noise.h"
 
@@ -38,8 +38,8 @@ private:
     NoiseGenerator* _current;
     int _current_level;
     NoiseLevel _current_level_params;
-    Preview* previewLevel;
-    Preview* previewTotal;
+    BasePreview* previewLevel;
+    BasePreview* previewTotal;
     QListWidget* levels;
     QSlider* slider_height;
     QSlider* slider_scaling;

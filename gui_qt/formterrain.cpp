@@ -12,10 +12,10 @@
 static TerrainDefinition _definition;
 
 /**************** Previews ****************/
-class PreviewTerrainHeight:public Preview
+class PreviewTerrainHeight:public BasePreview
 {
 public:
-    PreviewTerrainHeight(QWidget* parent):Preview(parent)
+    PreviewTerrainHeight(QWidget* parent):BasePreview(parent)
     {
         _preview_definition = terrainCreateDefinition();
     }
@@ -35,10 +35,10 @@ private:
     TerrainDefinition _preview_definition;
 };
 
-class PreviewTerrainColor:public Preview
+class PreviewTerrainColor:public BasePreview
 {
 public:
-    PreviewTerrainColor(QWidget* parent):Preview(parent)
+    PreviewTerrainColor(QWidget* parent):BasePreview(parent)
     {
         _renderer = rendererCreate();
         _renderer.applyTextures = _applyTextures;

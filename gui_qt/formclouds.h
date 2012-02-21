@@ -2,7 +2,7 @@
 #define _PAYSAGES_QT_FORMCLOUDS_H_
 
 #include <QWidget>
-#include "preview.h"
+#include "basepreview.h"
 #include "baseform.h"
 
 class FormClouds : public BaseForm
@@ -25,8 +25,8 @@ protected:
     virtual void layerSelectedEvent(int layer);
 
 private:
-    Preview* previewCoverage;
-    Preview* previewColor;
+    BasePreview* previewCoverage;
+    BasePreview* previewColor;
 };
 
 #endif

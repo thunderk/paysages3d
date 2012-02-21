@@ -9,11 +9,11 @@
 static AtmosphereDefinition _definition;
 
 /**************** Previews ****************/
-class PreviewAtmosphereColor:public Preview
+class PreviewAtmosphereColor:public BasePreview
 {
 public:
     PreviewAtmosphereColor(QWidget* parent):
-        Preview(parent)
+        BasePreview(parent)
     {
         _renderer = rendererCreate();
         _preview_definition = atmosphereCreateDefinition();

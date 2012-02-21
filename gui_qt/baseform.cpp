@@ -96,7 +96,7 @@ void BaseForm::configChangeEvent()
         button_revert->setEnabled(true);
     }
 
-    QList<Preview*> list_previews = previews->findChildren<Preview*>("_form_preview_");
+    QList<BasePreview*> list_previews = previews->findChildren<BasePreview*>("_form_preview_");
     for (int i = 0; i < list_previews.size(); i++)
     {
         list_previews[i]->redraw();
@@ -148,7 +148,7 @@ void BaseForm::layerListChanged()
     layerSelectedEvent(layer_list->currentIndex());
 }
 
-void BaseForm::addPreview(Preview* preview, QString label)
+void BaseForm::addPreview(BasePreview* preview, QString label)
 {
     previews->layout()->addWidget(new QLabel(label, previews));
     previews->layout()->addWidget(preview);
@@ -238,7 +238,17 @@ void BaseForm::setLayerCount(int layer_count)
         {
             layer_list->addItem(QString("Layer %1").arg(i + 1));
         }
-        layer_list->setCurrentIndex(selected);
+        if (selected >= 0)
+        {
+            if (selected > layer_count)
+            {
+                layer_list->setCurrentIndex(layer_count - 1);
+            }
+            else
+            {
+                layer_list->setCurrentIndex(selected);
+            }
+        }
     }
 }
     
@@ -261,7 +271,7 @@ void BaseForm::layerSelectedEvent(int layer)
         inputs[i]->revert();
     }
 
-    QList<Preview*> list_previews = previews->findChildren<Preview*>("_form_preview_");
+    QList<BasePreview*> list_previews = previews->findChildren<BasePreview*>("_form_preview_");
     for (int i = 0; i < list_previews.size(); i++)
     {
         list_previews[i]->redraw();

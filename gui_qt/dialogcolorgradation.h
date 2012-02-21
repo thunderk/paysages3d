@@ -2,6 +2,7 @@
 #define _PAYSAGES_QT_DIALOGCOLORGRADATION_H_
 
 #include <QDialog>
+#include "baseform.h"
 
 #include "../lib_paysages/color.h"
 
@@ -27,6 +28,7 @@ private:
 private:
     ColorGradation* _base;
     ColorGradation _current;
+    BaseForm* _form;
 };
 
 #endif

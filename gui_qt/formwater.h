@@ -2,7 +2,7 @@
 #define _PAYSAGES_QT_FORMWATER_H_
 
 #include <QWidget>
-#include "preview.h"
+#include "basepreview.h"
 #include "baseform.h"
 
 class FormWater : public BaseForm
@@ -17,8 +17,8 @@ public slots:
     virtual void applyConfig();
 
 private:
-    Preview* previewCoverage;
-    Preview* previewColor;
+    BasePreview* previewCoverage;
+    BasePreview* previewColor;
 };
 
 #endif // _PAYSAGES_QT_FORMWATER_H_

@@ -2,7 +2,7 @@
 #define _PAYSAGES_QT_FORMTERRAIN_H_
 
 #include <QWidget>
-#include "preview.h"
+#include "basepreview.h"
 #include "baseform.h"
 
 class FormTerrain : public BaseForm
@@ -20,8 +20,8 @@ protected slots:
     virtual void configChangeEvent();
 
 private:
-    Preview* previewHeight;
-    Preview* previewColor;
+    BasePreview* previewHeight;
+    BasePreview* previewColor;
 };
 
 #endif

@@ -8,6 +8,8 @@
 extern "C" {
 #endif
 
+void colorInit();
+    
 void colorSave(FILE* f, Color* col);
 void colorLoad(FILE* f, Color* col);
 unsigned int colorTo32BitRGBA(Color* col);
@@ -21,8 +23,13 @@ double colorGetValue(Color* col);
 ColorGradation colorGradationCreate();
 void colorGradationSave(FILE* f, ColorGradation* gradation);
 void colorGradationLoad(FILE* f, ColorGradation* gradation);
-void colorGradationAdd(ColorGradation* gradation, double value, Color* col);
-void colorGradationAddRgba(ColorGradation* gradation, double value, double r, double g, double b, double a);
+int colorGradationGetPartCount(ColorGradation* gradation);
+int colorGradationAddPart(ColorGradation* gradation);
+void colorGradationDelPart(ColorGradation* gradation, int part);
+ColorGradationPart colorGradationGetPart(ColorGradation* gradation, int part);
+void colorGradationSetPart(ColorGradation* gradation, int part, ColorGradationPart value);
+void colorGradationQuickAdd(ColorGradation* gradation, double value, Color* col);
+void colorGradationQuickAddRgba(ColorGradation* gradation, double value, double r, double g, double b, double a);
 Color colorGradationGet(ColorGradation* gradation, double value);
 
 #ifdef __cplusplus
