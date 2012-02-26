@@ -18,7 +18,16 @@ void startRender(Renderer* renderer, char* outputpath, int width, int height, in
 
 void displayHelp()
 {
-    printf("Usage : TODO\n");
+    printf("Usage : paysages-cli [options]\n");
+    printf("Options :\n");
+    printf(" -h     Show this help\n");
+    printf(" -f x   Saved file to load (str)\n");
+    printf(" -n     Number of pictures in the sequence\n");
+    printf(" -rw x  Render width (int)\n");
+    printf(" -rh x  Render height (int)\n");
+    printf(" -rq x  Render quality (int, 1 to 10)\n");
+    printf(" -di x  Day start time (float, 0.0 to 1.0)\n");
+    printf(" -ds x  Day step time (float)\n");
 }
 
 void _previewUpdate(double progress)
@@ -30,6 +39,7 @@ void _previewUpdate(double progress)
 int main(int argc, char** argv)
 {
     Renderer renderer;
+    char* conf_file_path = NULL;
     int conf_render_width = 800;
     int conf_render_height = 600;
     int conf_render_quality = 5;
@@ -48,6 +58,13 @@ int main(int argc, char** argv)
         {
             displayHelp();
             return 0;
+        }
+        else if (strcmp(*argv, "-f") == 0 || strcmp(*argv, "--file") == 0)
+        {
+            if (argc--)
+            {
+                conf_file_path = *(++argv);
+            }
         }
         else if (strcmp(*argv, "-n") == 0 || strcmp(*argv, "--count") == 0)
         {
@@ -97,6 +114,11 @@ int main(int argc, char** argv)
 
     printf("Initializing ...\n");
     paysagesInit();
+    
+    if (conf_file_path)
+    {
+        paysagesLoad(conf_file_path);
+    }
 
     renderer = sceneryCreateStandardRenderer();
     rendererSetPreviewCallbacks(&renderer, NULL, NULL, _previewUpdate);

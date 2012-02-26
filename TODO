@@ -1,4 +1,3 @@
-- ColorGradation dialog.
 - All noises should use the same entropy pool (saved separately), and avoid reallocs.
 - Implement scaling and scrolling on previews.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
