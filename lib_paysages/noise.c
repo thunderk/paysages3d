@@ -13,15 +13,58 @@ struct NoiseGenerator
     int size1;
     int size2;
     int size3;
-    double* noise;
     double height_offset;
     int level_count;
     struct NoiseLevel* levels;
 };
 
+static int _noise_pool_size;
+static double* _noise_pool;
+
 static inline double _cubicInterpolate(double* p, double x)
 {
     return p[1] + 0.5 * x * (p[2] - p[0] + x * (2.0 * p[0] - 5.0 * p[1] + 4.0 * p[2] - p[3] + x * (3.0 * (p[1] - p[2]) + p[3] - p[0])));
+}
+
+void noiseInit()
+{
+    int i;
+    
+    _noise_pool_size = 1048576;
+    _noise_pool = malloc(sizeof(double) * _noise_pool_size);
+
+    for (i = 0; i < _noise_pool_size; i++)
+    {
+        _noise_pool[i] = toolsRandom() - 0.5;
+    }
+}
+
+void noiseQuit()
+{
+    free(_noise_pool);
+}
+
+void noiseSave(FILE* f)
+{
+    int i;
+    
+    toolsSaveInt(f, &_noise_pool_size);
+    for (i = 0; i < _noise_pool_size; i++)
+    {
+        toolsSaveDouble(f, _noise_pool + i);
+    }
+}
+
+void noiseLoad(FILE* f)
+{
+    int i;
+    
+    toolsLoadInt(f, &_noise_pool_size);
+    _noise_pool = realloc(_noise_pool, sizeof(double) * _noise_pool_size);
+    for (i = 0; i < _noise_pool_size; i++)
+    {
+        toolsLoadDouble(f, _noise_pool + i);
+    }
 }
 
 NoiseGenerator* noiseCreateGenerator()
@@ -33,8 +76,6 @@ NoiseGenerator* noiseCreateGenerator()
     result->size1 = 1;
     result->size2 = 1;
     result->size3 = 1;
-    result->noise = malloc(sizeof(double));
-    result->noise[0] = 0.0;
     result->level_count = 0;
     result->levels = malloc(sizeof(NoiseLevel));
     result->height_offset = 0.0;
@@ -44,27 +85,19 @@ NoiseGenerator* noiseCreateGenerator()
 
 void noiseDeleteGenerator(NoiseGenerator* generator)
 {
-    free(generator->noise);
     free(generator->levels);
     free(generator);
 }
 
-void noiseSave(FILE* f, NoiseGenerator* perlin)
+void noiseSaveGenerator(FILE* f, NoiseGenerator* perlin)
 {
     int x;
-    double* it_noise;
 
     toolsSaveInt(f, &perlin->size1);
     toolsSaveInt(f, &perlin->size2);
     toolsSaveInt(f, &perlin->size3);
     toolsSaveDouble(f, &perlin->height_offset);
     toolsSaveInt(f, &perlin->level_count);
-
-    it_noise = perlin->noise;
-    for (x = 0; x < perlin->size1; x++)
-    {
-        toolsSaveDouble(f, it_noise++);
-    }
 
     for (x = 0; x < perlin->level_count; x++)
     {
@@ -78,23 +111,15 @@ void noiseSave(FILE* f, NoiseGenerator* perlin)
     }
 }
 
-void noiseLoad(FILE* f, NoiseGenerator* perlin)
+void noiseLoadGenerator(FILE* f, NoiseGenerator* perlin)
 {
     int x;
-    double* it_noise;
 
     toolsLoadInt(f, &perlin->size1);
     toolsLoadInt(f, &perlin->size2);
     toolsLoadInt(f, &perlin->size3);
     toolsLoadDouble(f, &perlin->height_offset);
     toolsLoadInt(f, &perlin->level_count);
-
-    perlin->noise = realloc(perlin->noise, sizeof(double) * perlin->size1);
-    it_noise = perlin->noise;
-    for (x = 0; x < perlin->size1; x++)
-    {
-        toolsLoadDouble(f, it_noise++);
-    }
 
     perlin->levels = realloc(perlin->levels, sizeof(NoiseLevel) * perlin->level_count);
     for (x = 0; x < perlin->level_count; x++)
@@ -117,31 +142,18 @@ void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination)
     destination->height_offset = source->height_offset;
     destination->level_count = source->level_count;
 
-    destination->noise = realloc(destination->noise, sizeof(double) * destination->size1);
-    memcpy(destination->noise, source->noise, sizeof(double) * destination->size1);
-
     destination->levels = realloc(destination->levels, sizeof(NoiseLevel) * destination->level_count);
     memcpy(destination->levels, source->levels, sizeof(NoiseLevel) * destination->level_count);
 }
 
 void noiseGenerateBaseNoise(NoiseGenerator* generator, int size)
 {
-    int x;
-    double* it_noise;
-
     size = (size < 1) ? 1 : size;
     size = (size > 4000000) ? 4000000 : size;
 
     generator->size1 = size;
     generator->size2 = (int)floor(sqrt((float)size));
     generator->size3 = (int)floor(cbrt((float)size));
-    generator->noise = realloc(generator->noise, sizeof(double) * size);
-
-    it_noise = generator->noise;
-    for (x = 0; x < size; x++)
-    {
-        *(it_noise++) = toolsRandom() - 0.5;
-    }
 }
 
 int noiseGetBaseSize(NoiseGenerator* generator)
@@ -296,7 +308,6 @@ void noiseNormalizeHeight(NoiseGenerator* generator, double min_height, double m
 
 static inline double _get1DRawNoiseValue(NoiseGenerator* generator, double x)
 {
-    double* noise = generator->noise;
     int size = generator->size1;
 
     int xbase = (int)floor(x);
@@ -326,10 +337,10 @@ static inline double _get1DRawNoiseValue(NoiseGenerator* generator, double x)
 
     double buf_cubic_x[4];
 
-    buf_cubic_x[0] = noise[x0];
-    buf_cubic_x[1] = noise[x1];
-    buf_cubic_x[2] = noise[x2];
-    buf_cubic_x[3] = noise[x3];
+    buf_cubic_x[0] = _noise_pool[x0 % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[x1 % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[x2 % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[x3 % _noise_pool_size];
 
     return _cubicInterpolate(buf_cubic_x, xinternal);
 }
@@ -393,7 +404,6 @@ double noiseGet1DDetail(NoiseGenerator* generator, double x, double detail)
 
 static inline double _get2DRawNoiseValue(NoiseGenerator* generator, double x, double y)
 {
-    double* noise = generator->noise;
     int size = generator->size2;
 
     int xbase = (int)floor(x);
@@ -447,28 +457,28 @@ static inline double _get2DRawNoiseValue(NoiseGenerator* generator, double x, do
     double buf_cubic_x[4];
     double buf_cubic_y[4];
 
-    buf_cubic_x[0] = noise[y0 * size + x0];
-    buf_cubic_x[1] = noise[y0 * size + x1];
-    buf_cubic_x[2] = noise[y0 * size + x2];
-    buf_cubic_x[3] = noise[y0 * size + x3];
+    buf_cubic_x[0] = _noise_pool[(y0 * size + x0) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y0 * size + x1) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y0 * size + x2) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y0 * size + x3) % _noise_pool_size];
     buf_cubic_y[0] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y1 * size + x0];
-    buf_cubic_x[1] = noise[y1 * size + x1];
-    buf_cubic_x[2] = noise[y1 * size + x2];
-    buf_cubic_x[3] = noise[y1 * size + x3];
+    buf_cubic_x[0] = _noise_pool[(y1 * size + x0) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y1 * size + x1) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y1 * size + x2) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y1 * size + x3) % _noise_pool_size];
     buf_cubic_y[1] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y2 * size + x0];
-    buf_cubic_x[1] = noise[y2 * size + x1];
-    buf_cubic_x[2] = noise[y2 * size + x2];
-    buf_cubic_x[3] = noise[y2 * size + x3];
+    buf_cubic_x[0] = _noise_pool[(y2 * size + x0) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y2 * size + x1) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y2 * size + x2) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y2 * size + x3) % _noise_pool_size];
     buf_cubic_y[2] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y3 * size + x0];
-    buf_cubic_x[1] = noise[y3 * size + x1];
-    buf_cubic_x[2] = noise[y3 * size + x2];
-    buf_cubic_x[3] = noise[y3 * size + x3];
+    buf_cubic_x[0] = _noise_pool[(y3 * size + x0) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y3 * size + x1) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y3 * size + x2) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y3 * size + x3) % _noise_pool_size];
     buf_cubic_y[3] = _cubicInterpolate(buf_cubic_x, xinternal);
 
     return _cubicInterpolate(buf_cubic_y, yinternal);
@@ -533,7 +543,6 @@ double noiseGet2DDetail(NoiseGenerator* generator, double x, double y, double de
 
 static inline double _get3DRawNoiseValue(NoiseGenerator* generator, double x, double y, double z)
 {
-    double* noise = generator->noise;
     int size = generator->size3;
 
     int xbase = (int)floor(x);
@@ -611,106 +620,106 @@ static inline double _get3DRawNoiseValue(NoiseGenerator* generator, double x, do
     double buf_cubic_y[4];
     double buf_cubic_z[4];
 
-    buf_cubic_x[0] = noise[y0 * size * size + x0 * size + z0];
-    buf_cubic_x[1] = noise[y0 * size * size + x1 * size + z0];
-    buf_cubic_x[2] = noise[y0 * size * size + x2 * size + z0];
-    buf_cubic_x[3] = noise[y0 * size * size + x3 * size + z0];
+    buf_cubic_x[0] = _noise_pool[(y0 * size * size + x0 * size + z0) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y0 * size * size + x1 * size + z0) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y0 * size * size + x2 * size + z0) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y0 * size * size + x3 * size + z0) % _noise_pool_size];
     buf_cubic_y[0] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y1 * size * size + x0 * size + z0];
-    buf_cubic_x[1] = noise[y1 * size * size + x1 * size + z0];
-    buf_cubic_x[2] = noise[y1 * size * size + x2 * size + z0];
-    buf_cubic_x[3] = noise[y1 * size * size + x3 * size + z0];
+    buf_cubic_x[0] = _noise_pool[(y1 * size * size + x0 * size + z0) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y1 * size * size + x1 * size + z0) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y1 * size * size + x2 * size + z0) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y1 * size * size + x3 * size + z0) % _noise_pool_size];
     buf_cubic_y[1] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y2 * size * size + x0 * size + z0];
-    buf_cubic_x[1] = noise[y2 * size * size + x1 * size + z0];
-    buf_cubic_x[2] = noise[y2 * size * size + x2 * size + z0];
-    buf_cubic_x[3] = noise[y2 * size * size + x3 * size + z0];
+    buf_cubic_x[0] = _noise_pool[(y2 * size * size + x0 * size + z0) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y2 * size * size + x1 * size + z0) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y2 * size * size + x2 * size + z0) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y2 * size * size + x3 * size + z0) % _noise_pool_size];
     buf_cubic_y[2] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y3 * size * size + x0 * size + z0];
-    buf_cubic_x[1] = noise[y3 * size * size + x1 * size + z0];
-    buf_cubic_x[2] = noise[y3 * size * size + x2 * size + z0];
-    buf_cubic_x[3] = noise[y3 * size * size + x3 * size + z0];
+    buf_cubic_x[0] = _noise_pool[(y3 * size * size + x0 * size + z0) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y3 * size * size + x1 * size + z0) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y3 * size * size + x2 * size + z0) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y3 * size * size + x3 * size + z0) % _noise_pool_size];
     buf_cubic_y[3] = _cubicInterpolate(buf_cubic_x, xinternal);
 
     buf_cubic_z[0] =  _cubicInterpolate(buf_cubic_y, yinternal);
 
-    buf_cubic_x[0] = noise[y0 * size * size + x0 * size + z1];
-    buf_cubic_x[1] = noise[y0 * size * size + x1 * size + z1];
-    buf_cubic_x[2] = noise[y0 * size * size + x2 * size + z1];
-    buf_cubic_x[3] = noise[y0 * size * size + x3 * size + z1];
+    buf_cubic_x[0] = _noise_pool[(y0 * size * size + x0 * size + z1) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y0 * size * size + x1 * size + z1) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y0 * size * size + x2 * size + z1) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y0 * size * size + x3 * size + z1) % _noise_pool_size];
     buf_cubic_y[0] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y1 * size * size + x0 * size + z1];
-    buf_cubic_x[1] = noise[y1 * size * size + x1 * size + z1];
-    buf_cubic_x[2] = noise[y1 * size * size + x2 * size + z1];
-    buf_cubic_x[3] = noise[y1 * size * size + x3 * size + z1];
+    buf_cubic_x[0] = _noise_pool[(y1 * size * size + x0 * size + z1) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y1 * size * size + x1 * size + z1) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y1 * size * size + x2 * size + z1) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y1 * size * size + x3 * size + z1) % _noise_pool_size];
     buf_cubic_y[1] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y2 * size * size + x0 * size + z1];
-    buf_cubic_x[1] = noise[y2 * size * size + x1 * size + z1];
-    buf_cubic_x[2] = noise[y2 * size * size + x2 * size + z1];
-    buf_cubic_x[3] = noise[y2 * size * size + x3 * size + z1];
+    buf_cubic_x[0] = _noise_pool[(y2 * size * size + x0 * size + z1) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y2 * size * size + x1 * size + z1) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y2 * size * size + x2 * size + z1) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y2 * size * size + x3 * size + z1) % _noise_pool_size];
     buf_cubic_y[2] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y3 * size * size + x0 * size + z1];
-    buf_cubic_x[1] = noise[y3 * size * size + x1 * size + z1];
-    buf_cubic_x[2] = noise[y3 * size * size + x2 * size + z1];
-    buf_cubic_x[3] = noise[y3 * size * size + x3 * size + z1];
+    buf_cubic_x[0] = _noise_pool[(y3 * size * size + x0 * size + z1) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y3 * size * size + x1 * size + z1) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y3 * size * size + x2 * size + z1) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y3 * size * size + x3 * size + z1) % _noise_pool_size];
     buf_cubic_y[3] = _cubicInterpolate(buf_cubic_x, xinternal);
 
     buf_cubic_z[1] =  _cubicInterpolate(buf_cubic_y, yinternal);
 
-    buf_cubic_x[0] = noise[y0 * size * size + x0 * size + z2];
-    buf_cubic_x[1] = noise[y0 * size * size + x1 * size + z2];
-    buf_cubic_x[2] = noise[y0 * size * size + x2 * size + z2];
-    buf_cubic_x[3] = noise[y0 * size * size + x3 * size + z2];
+    buf_cubic_x[0] = _noise_pool[(y0 * size * size + x0 * size + z2) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y0 * size * size + x1 * size + z2) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y0 * size * size + x2 * size + z2) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y0 * size * size + x3 * size + z2) % _noise_pool_size];
     buf_cubic_y[0] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y1 * size * size + x0 * size + z2];
-    buf_cubic_x[1] = noise[y1 * size * size + x1 * size + z2];
-    buf_cubic_x[2] = noise[y1 * size * size + x2 * size + z2];
-    buf_cubic_x[3] = noise[y1 * size * size + x3 * size + z2];
+    buf_cubic_x[0] = _noise_pool[(y1 * size * size + x0 * size + z2) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y1 * size * size + x1 * size + z2) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y1 * size * size + x2 * size + z2) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y1 * size * size + x3 * size + z2) % _noise_pool_size];
     buf_cubic_y[1] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y2 * size * size + x0 * size + z2];
-    buf_cubic_x[1] = noise[y2 * size * size + x1 * size + z2];
-    buf_cubic_x[2] = noise[y2 * size * size + x2 * size + z2];
-    buf_cubic_x[3] = noise[y2 * size * size + x3 * size + z2];
+    buf_cubic_x[0] = _noise_pool[(y2 * size * size + x0 * size + z2) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y2 * size * size + x1 * size + z2) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y2 * size * size + x2 * size + z2) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y2 * size * size + x3 * size + z2) % _noise_pool_size];
     buf_cubic_y[2] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y3 * size * size + x0 * size + z2];
-    buf_cubic_x[1] = noise[y3 * size * size + x1 * size + z2];
-    buf_cubic_x[2] = noise[y3 * size * size + x2 * size + z2];
-    buf_cubic_x[3] = noise[y3 * size * size + x3 * size + z2];
+    buf_cubic_x[0] = _noise_pool[(y3 * size * size + x0 * size + z2) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y3 * size * size + x1 * size + z2) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y3 * size * size + x2 * size + z2) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y3 * size * size + x3 * size + z2) % _noise_pool_size];
     buf_cubic_y[3] = _cubicInterpolate(buf_cubic_x, xinternal);
 
     buf_cubic_z[2] =  _cubicInterpolate(buf_cubic_y, yinternal);
 
-    buf_cubic_x[0] = noise[y0 * size * size + x0 * size + z3];
-    buf_cubic_x[1] = noise[y0 * size * size + x1 * size + z3];
-    buf_cubic_x[2] = noise[y0 * size * size + x2 * size + z3];
-    buf_cubic_x[3] = noise[y0 * size * size + x3 * size + z3];
+    buf_cubic_x[0] = _noise_pool[(y0 * size * size + x0 * size + z3) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y0 * size * size + x1 * size + z3) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y0 * size * size + x2 * size + z3) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y0 * size * size + x3 * size + z3) % _noise_pool_size];
     buf_cubic_y[0] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y1 * size * size + x0 * size + z3];
-    buf_cubic_x[1] = noise[y1 * size * size + x1 * size + z3];
-    buf_cubic_x[2] = noise[y1 * size * size + x2 * size + z3];
-    buf_cubic_x[3] = noise[y1 * size * size + x3 * size + z3];
+    buf_cubic_x[0] = _noise_pool[(y1 * size * size + x0 * size + z3) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y1 * size * size + x1 * size + z3) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y1 * size * size + x2 * size + z3) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y1 * size * size + x3 * size + z3) % _noise_pool_size];
     buf_cubic_y[1] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y2 * size * size + x0 * size + z3];
-    buf_cubic_x[1] = noise[y2 * size * size + x1 * size + z3];
-    buf_cubic_x[2] = noise[y2 * size * size + x2 * size + z3];
-    buf_cubic_x[3] = noise[y2 * size * size + x3 * size + z3];
+    buf_cubic_x[0] = _noise_pool[(y2 * size * size + x0 * size + z3) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y2 * size * size + x1 * size + z3) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y2 * size * size + x2 * size + z3) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y2 * size * size + x3 * size + z3) % _noise_pool_size];
     buf_cubic_y[2] = _cubicInterpolate(buf_cubic_x, xinternal);
 
-    buf_cubic_x[0] = noise[y3 * size * size + x0 * size + z3];
-    buf_cubic_x[1] = noise[y3 * size * size + x1 * size + z3];
-    buf_cubic_x[2] = noise[y3 * size * size + x2 * size + z3];
-    buf_cubic_x[3] = noise[y3 * size * size + x3 * size + z3];
+    buf_cubic_x[0] = _noise_pool[(y3 * size * size + x0 * size + z3) % _noise_pool_size];
+    buf_cubic_x[1] = _noise_pool[(y3 * size * size + x1 * size + z3) % _noise_pool_size];
+    buf_cubic_x[2] = _noise_pool[(y3 * size * size + x2 * size + z3) % _noise_pool_size];
+    buf_cubic_x[3] = _noise_pool[(y3 * size * size + x3 * size + z3) % _noise_pool_size];
     buf_cubic_y[3] = _cubicInterpolate(buf_cubic_x, xinternal);
 
     buf_cubic_z[3] =  _cubicInterpolate(buf_cubic_y, yinternal);

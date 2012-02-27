@@ -33,7 +33,7 @@ void texturesSave(FILE* f, TexturesDefinition* definition)
     for (i = 0; i < definition->nbtextures; i++)
     {
         zoneSave(f, definition->textures[i].zone);
-        noiseSave(f, definition->textures[i].bump_noise);
+        noiseSaveGenerator(f, definition->textures[i].bump_noise);
         colorSave(f, &definition->textures[i].color);
     }
 }
@@ -54,7 +54,7 @@ void texturesLoad(FILE* f, TexturesDefinition* definition)
         layer = definition->textures + texturesAddLayer(definition);
 
         zoneLoad(f, layer->zone);
-        noiseLoad(f, layer->bump_noise);
+        noiseLoadGenerator(f, layer->bump_noise);
         colorLoad(f, &layer->color);
     }
 

@@ -25,7 +25,7 @@ void terrainSave(FILE* f, TerrainDefinition* definition)
 {
     int i;
 
-    noiseSave(f, definition->height_noise);
+    noiseSaveGenerator(f, definition->height_noise);
     toolsSaveDouble(f, &definition->height_factor);
     toolsSaveDouble(f, &definition->scaling);
 
@@ -41,7 +41,7 @@ void terrainLoad(FILE* f, TerrainDefinition* definition)
     int i, n;
     HeightModifier* modifier;
 
-    noiseLoad(f, definition->height_noise);
+    noiseLoadGenerator(f, definition->height_noise);
     toolsLoadDouble(f, &definition->height_factor);
     toolsLoadDouble(f, &definition->scaling);
 

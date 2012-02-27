@@ -45,7 +45,7 @@ void cloudsSave(FILE* f, CloudsDefinition* definition)
         toolsSaveDouble(f, &layer->ycenter);
         toolsSaveDouble(f, &layer->ymin);
         toolsSaveDouble(f, &layer->ymax);
-        noiseSave(f, layer->noise);
+        noiseSaveGenerator(f, layer->noise);
         materialSave(f, &layer->material);
         toolsSaveDouble(f, &layer->transparencydepth);
         toolsSaveDouble(f, &layer->lighttraversal);
@@ -73,7 +73,7 @@ void cloudsLoad(FILE* f, CloudsDefinition* definition)
         toolsLoadDouble(f, &layer->ycenter);
         toolsLoadDouble(f, &layer->ymin);
         toolsLoadDouble(f, &layer->ymax);
-        noiseLoad(f, layer->noise);
+        noiseLoadGenerator(f, layer->noise);
         materialLoad(f, &layer->material);
         toolsLoadDouble(f, &layer->transparencydepth);
         toolsLoadDouble(f, &layer->lighttraversal);

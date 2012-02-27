@@ -28,7 +28,7 @@ void waterSave(FILE* f, WaterDefinition* definition)
     toolsSaveDouble(f, &definition->transparency);
     toolsSaveDouble(f, &definition->reflection);
     toolsSaveDouble(f, &definition->lighting_depth);
-    noiseSave(f, definition->waves_noise);
+    noiseSaveGenerator(f, definition->waves_noise);
     toolsSaveDouble(f, &definition->waves_noise_height);
     toolsSaveDouble(f, &definition->waves_noise_scale);
 }
@@ -42,7 +42,7 @@ void waterLoad(FILE* f, WaterDefinition* definition)
     toolsLoadDouble(f, &definition->transparency);
     toolsLoadDouble(f, &definition->reflection);
     toolsLoadDouble(f, &definition->lighting_depth);
-    noiseLoad(f, definition->waves_noise);
+    noiseLoadGenerator(f, definition->waves_noise);
     toolsLoadDouble(f, &definition->waves_noise_height);
     toolsLoadDouble(f, &definition->waves_noise_scale);
 

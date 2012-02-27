@@ -17,6 +17,7 @@ WaterDefinition _water;
 
 void sceneryInit()
 {
+    noiseInit();
     atmosphereInit();
     cameraInit();
     cloudsInit();
@@ -55,12 +56,14 @@ void sceneryQuit()
     terrainQuit();
     texturesQuit();
     waterQuit();
+    noiseQuit();
 }
 
 void scenerySaveToFile(char* filepath)
 {
     FILE* f = fopen(filepath, "wb");
 
+    noiseSave(f);
     atmosphereSave(f, &_atmosphere);
     cameraSave(f, &_camera);
     cloudsSave(f, &_clouds);
@@ -80,6 +83,7 @@ void sceneryLoadFromFile(char* filepath)
 
     /* TODO Use intermediary definitions ? */
 
+    noiseLoad(f);
     atmosphereLoad(f, &_atmosphere);
     cameraLoad(f, &_camera);
     cloudsLoad(f, &_clouds);

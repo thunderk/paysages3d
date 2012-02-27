@@ -18,10 +18,15 @@ struct NoiseLevel
 typedef struct NoiseLevel NoiseLevel;
 typedef struct NoiseGenerator NoiseGenerator;
 
+void noiseInit();
+void noiseQuit();
+void noiseSave(FILE* f);
+void noiseLoad(FILE* f);
+
 NoiseGenerator* noiseCreateGenerator();
 void noiseDeleteGenerator(NoiseGenerator* generator);
-void noiseSave(FILE* f, NoiseGenerator* perlin);
-void noiseLoad(FILE* f, NoiseGenerator* perlin);
+void noiseSaveGenerator(FILE* f, NoiseGenerator* perlin);
+void noiseLoadGenerator(FILE* f, NoiseGenerator* perlin);
 void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination);
 void noiseGenerateBaseNoise(NoiseGenerator* generator, int size);
 int noiseGetBaseSize(NoiseGenerator* generator);
