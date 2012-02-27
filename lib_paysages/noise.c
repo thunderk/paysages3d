@@ -6,6 +6,8 @@
 
 #include "tools.h"
 
+#define MAX_LEVEL_COUNT 30
+
 struct NoiseLevel;
 
 struct NoiseGenerator
@@ -15,7 +17,7 @@ struct NoiseGenerator
     int size3;
     double height_offset;
     int level_count;
-    struct NoiseLevel* levels;
+    struct NoiseLevel levels[MAX_LEVEL_COUNT];
 };
 
 static int _noise_pool_size;
@@ -77,7 +79,6 @@ NoiseGenerator* noiseCreateGenerator()
     result->size2 = 1;
     result->size3 = 1;
     result->level_count = 0;
-    result->levels = malloc(sizeof(NoiseLevel));
     result->height_offset = 0.0;
 
     return result;
@@ -85,7 +86,6 @@ NoiseGenerator* noiseCreateGenerator()
 
 void noiseDeleteGenerator(NoiseGenerator* generator)
 {
-    free(generator->levels);
     free(generator);
 }
 
@@ -121,7 +121,6 @@ void noiseLoadGenerator(FILE* f, NoiseGenerator* perlin)
     toolsLoadDouble(f, &perlin->height_offset);
     toolsLoadInt(f, &perlin->level_count);
 
-    perlin->levels = realloc(perlin->levels, sizeof(NoiseLevel) * perlin->level_count);
     for (x = 0; x < perlin->level_count; x++)
     {
         NoiseLevel* level = perlin->levels + x;
@@ -142,14 +141,13 @@ void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination)
     destination->height_offset = source->height_offset;
     destination->level_count = source->level_count;
 
-    destination->levels = realloc(destination->levels, sizeof(NoiseLevel) * destination->level_count);
     memcpy(destination->levels, source->levels, sizeof(NoiseLevel) * destination->level_count);
 }
 
 void noiseGenerateBaseNoise(NoiseGenerator* generator, int size)
 {
     size = (size < 1) ? 1 : size;
-    size = (size > 4000000) ? 4000000 : size;
+    size = (size > _noise_pool_size) ? _noise_pool_size : size;
 
     generator->size1 = size;
     generator->size2 = (int)floor(sqrt((float)size));
@@ -186,9 +184,11 @@ void noiseClearLevels(NoiseGenerator* generator)
 
 void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level)
 {
-    generator->levels = realloc(generator->levels, sizeof(NoiseLevel) * (generator->level_count + 1));
-    generator->levels[generator->level_count] = level;
-    generator->level_count++;
+    if (generator->level_count < MAX_LEVEL_COUNT)
+    {
+        generator->levels[generator->level_count] = level;
+        generator->level_count++;
+    }
 }
 
 void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double height)
