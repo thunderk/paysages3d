@@ -13,7 +13,7 @@ InputCamera::InputCamera(QWidget* form, QString label, CameraDefinition* value):
 
     _preview = new QWidget(form);
 
-    _control = new QPushButton("Edit", form);
+    _control = new QPushButton(tr("Edit"), form);
     _control->setMaximumWidth(150);
 
     connect((QPushButton*)_control, SIGNAL(clicked()), this, SLOT(editCamera()));

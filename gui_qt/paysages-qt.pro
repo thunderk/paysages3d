@@ -13,3 +13,7 @@ win32:LIBS += $$DESTDIR/libpaysages.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-
 
 HEADERS += $$files(*.h) $$files(../lib_paysages/*.h) $$files(../lib_paysages/shared/*.h)
 SOURCES += $$files(*.cpp)
+TRANSLATIONS = ../i18n/paysages_fr.ts
+
+system(lupdate paysages-qt.pro)
+system(lrelease $$TRANSLATIONS)

@@ -170,21 +170,21 @@ FormWater::FormWater(QWidget *parent):
 
     previewCoverage = new PreviewWaterCoverage(this);
     previewColor = new PreviewWaterColor(this);
-    addPreview(previewCoverage, QString("Coverage preview"));
-    addPreview(previewColor, QString("Rendered preview (without/with lighting)"));
+    addPreview(previewCoverage, QString(tr("Coverage preview")));
+    addPreview(previewColor, QString(tr("Rendered preview (without/with lighting)")));
 
-    addInputDouble("Height", &_definition.height, -10.0, 10.0, 0.1, 1.0);
-    addInputColor("Surface color", &_definition.material.base);
-    addInputDouble("Light reflection", &_definition.material.reflection, 0.0, 1.0, 0.01, 0.1);
-    addInputDouble("Shininess to light", &_definition.material.shininess, 0.0, 20.0, 0.1, 1.0);
-    addInputDouble("Transparency", &_definition.transparency, 0.0, 1.0, 0.001, 0.1);
-    addInputDouble("Reflection", &_definition.reflection, 0.0, 1.0, 0.001, 0.1);
-    addInputDouble("Transparency distance", &_definition.transparency_depth, 0.0, 20.0, 0.1, 1.0);
-    addInputColor("Depth color", &_definition.depth_color);
-    addInputDouble("Light-through distance", &_definition.lighting_depth, 0.0, 20.0, 0.1, 1.0);
-    addInputNoise("Waves noise", _definition.waves_noise);
-    addInputDouble("Waves height", &_definition.waves_noise_height, 0.0, 0.1, 0.001, 0.01);
-    addInputDouble("Waves scaling", &_definition.waves_noise_scale, 0.01, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Height"), &_definition.height, -10.0, 10.0, 0.1, 1.0);
+    addInputColor(tr("Surface color"), &_definition.material.base);
+    addInputDouble(tr("Light reflection"), &_definition.material.reflection, 0.0, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Shininess to light"), &_definition.material.shininess, 0.0, 20.0, 0.1, 1.0);
+    addInputDouble(tr("Transparency"), &_definition.transparency, 0.0, 1.0, 0.001, 0.1);
+    addInputDouble(tr("Reflection"), &_definition.reflection, 0.0, 1.0, 0.001, 0.1);
+    addInputDouble(tr("Transparency distance"), &_definition.transparency_depth, 0.0, 20.0, 0.1, 1.0);
+    addInputColor(tr("Depth color"), &_definition.depth_color);
+    addInputDouble(tr("Light-through distance"), &_definition.lighting_depth, 0.0, 20.0, 0.1, 1.0);
+    addInputNoise(tr("Waves noise"), _definition.waves_noise);
+    addInputDouble(tr("Waves height"), &_definition.waves_noise_height, 0.0, 0.1, 0.001, 0.01);
+    addInputDouble(tr("Waves scaling"), &_definition.waves_noise_scale, 0.01, 1.0, 0.01, 0.1);
 
     revertConfig();
 }

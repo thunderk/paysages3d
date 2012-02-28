@@ -75,7 +75,7 @@ DialogRender::DialogRender(QWidget *parent):
     renderer = sceneryCreateStandardRenderer();
 
     setModal(true);
-    setWindowTitle("Paysages 3D - Render");
+    setWindowTitle(tr("Paysages 3D - Render"));
     setLayout(new QVBoxLayout());
 
     scroll = new QScrollArea(this);

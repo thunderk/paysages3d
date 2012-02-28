@@ -11,7 +11,7 @@ DialogWanderer::DialogWanderer(QWidget* parent, CameraDefinition* camera, bool c
     QPushButton* button;
 
     setModal(true);
-    setWindowTitle("Paysages 3D - Explore");
+    setWindowTitle(tr("Paysages 3D - Explore"));
     setLayout(new QHBoxLayout());
 
     _wanderer = new WidgetWanderer(this, camera);
@@ -21,18 +21,18 @@ DialogWanderer::DialogWanderer(QWidget* parent, CameraDefinition* camera, bool c
     panel->setLayout(new QVBoxLayout());
     panel->setMaximumWidth(200);
 
-    button = new QPushButton("Reset camera", panel);
+    button = new QPushButton(tr("Reset camera"), panel);
     panel->layout()->addWidget(button);
     QObject::connect(button, SIGNAL(clicked()), _wanderer, SLOT(resetCamera()));
 
     if (camera_validable)
     {
-        button = new QPushButton("Validate as render camera", panel);
+        button = new QPushButton(tr("Validate as render camera"), panel);
         panel->layout()->addWidget(button);
         QObject::connect(button, SIGNAL(clicked()), this, SLOT(validateCamera()));
     }
 
-    button = new QPushButton("Close", panel);
+    button = new QPushButton(tr("Close"), panel);
     panel->layout()->addWidget(button);
     QObject::connect(button, SIGNAL(clicked()), this, SLOT(reject()));
 

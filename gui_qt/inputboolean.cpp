@@ -19,11 +19,11 @@ void InputBoolean::updatePreview()
 {
     if (checkbox->checkState() == Qt::Checked)
     {
-        ((QLabel*)_preview)->setText("Yes");
+        ((QLabel*)_preview)->setText(tr("Yes"));
     }
     else
     {
-        ((QLabel*)_preview)->setText("No");
+        ((QLabel*)_preview)->setText(tr("No"));
     }
 
     BaseInput::updatePreview();

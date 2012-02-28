@@ -30,17 +30,17 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
         hwidget = new QWidget(this);
         hwidget->setLayout(new QHBoxLayout());
 
-        hwidget->layout()->addWidget(new QLabel("Layers : ", hwidget));
+        hwidget->layout()->addWidget(new QLabel(tr("Layers : "), hwidget));
         
         layer_list = new QComboBox(hwidget);
         hwidget->layout()->addWidget(layer_list);
         QObject::connect(layer_list, SIGNAL(currentIndexChanged(int)), this, SLOT(layerListChanged()));
 
-        layer_new = new QPushButton("Add layer", hwidget);
+        layer_new = new QPushButton(tr("Add layer"), hwidget);
         hwidget->layout()->addWidget(layer_new);
         QObject::connect(layer_new, SIGNAL(clicked()), this, SLOT(layerAddClicked()));
         
-        layer_del = new QPushButton("Delete layer", hwidget);
+        layer_del = new QPushButton(tr("Delete layer"), hwidget);
         hwidget->layout()->addWidget(layer_del);
         QObject::connect(layer_del, SIGNAL(clicked()), this, SLOT(layerDelClicked()));
         
@@ -70,10 +70,10 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
     this->setLayout(vlayout);
     this->setObjectName("_base_form_");
 
-    button_apply = addButton("Apply");
+    button_apply = addButton(tr("Apply"));
     button_apply->setEnabled(false);
     connect(button_apply, SIGNAL(clicked()), this, SLOT(applyConfig()));
-    button_revert = addButton("Revert");
+    button_revert = addButton(tr("Revert"));
     button_revert->setEnabled(false);
     connect(button_revert, SIGNAL(clicked()), this, SLOT(revertConfig()));
 
@@ -236,7 +236,7 @@ void BaseForm::setLayerCount(int layer_count)
 
         for (i = 0; i < layer_count; i++)
         {
-            layer_list->addItem(QString("Layer %1").arg(i + 1));
+            layer_list->addItem(QString(tr("Layer %1")).arg(i + 1));
         }
         if (selected >= 0)
         {

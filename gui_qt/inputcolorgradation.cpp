@@ -39,7 +39,7 @@ InputColorGradation::InputColorGradation(QWidget* form, QString label, ColorGrad
     _preview = new ColorGradationPreview(form, value);
     _preview->setMinimumSize(200, 20);
 
-    _control = new QPushButton("Edit", form);
+    _control = new QPushButton(tr("Edit"), form);
     _control->setMaximumWidth(150);
 
     connect((QPushButton*)_control, SIGNAL(clicked()), this, SLOT(editGradation()));

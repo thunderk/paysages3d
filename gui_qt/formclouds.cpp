@@ -142,21 +142,21 @@ FormClouds::FormClouds(QWidget *parent):
     _definition = cloudsCreateDefinition();
     _layer = cloudsLayerCreateDefinition();
     
-    addPreview(new PreviewCloudsCoverage(parent), "Layer coverage (no lighting)");
-    addPreview(new PreviewCloudsColor(parent), "Color and lighting");
+    addPreview(new PreviewCloudsCoverage(parent), tr("Layer coverage (no lighting)"));
+    addPreview(new PreviewCloudsColor(parent), tr("Color and lighting"));
 
-    addInputDouble("Start altitude", &_layer.ymin, -10.0, 250.0, 0.5, 5.0);
-    addInputDouble("Max density altitude", &_layer.ycenter, -10.0, 250.0, 0.5, 5.0);
-    addInputDouble("End altitude", &_layer.ymax, -10.0, 250.0, 0.5, 5.0);
-    addInputNoise("Noise", _layer.noise);
-    addInputDouble("Coverage", &_layer.coverage, 0.0, 1.0, 0.01, 0.1);
-    addInputDouble("Scaling", &_layer.scaling, 1.0, 100.0, 0.5, 5.0);
-    addInputColor("Base color", &_layer.material.base);
-    addInputDouble("Light reflection", &_layer.material.reflection, 0.0, 1.0, 0.01, 0.1);
-    addInputDouble("Light reflection shininess", &_layer.material.shininess, 0.0, 20.0, 0.1, 1.0);
-    addInputDouble("Transparency depth", &_layer.transparencydepth, 0.0, 100.0, 0.5, 5.0);
-    addInputDouble("Light traversal depth", &_layer.lighttraversal, 0.0, 100.0, 0.5, 5.0);
-    addInputDouble("Minimum lighting", &_layer.minimumlight, 0.0, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Start altitude"), &_layer.ymin, -10.0, 250.0, 0.5, 5.0);
+    addInputDouble(tr("Max density altitude"), &_layer.ycenter, -10.0, 250.0, 0.5, 5.0);
+    addInputDouble(tr("End altitude"), &_layer.ymax, -10.0, 250.0, 0.5, 5.0);
+    addInputNoise(tr("Noise"), _layer.noise);
+    addInputDouble(tr("Coverage"), &_layer.coverage, 0.0, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Scaling"), &_layer.scaling, 1.0, 100.0, 0.5, 5.0);
+    addInputColor(tr("Base color"), &_layer.material.base);
+    addInputDouble(tr("Light reflection"), &_layer.material.reflection, 0.0, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Light reflection shininess"), &_layer.material.shininess, 0.0, 20.0, 0.1, 1.0);
+    addInputDouble(tr("Transparency depth"), &_layer.transparencydepth, 0.0, 100.0, 0.5, 5.0);
+    addInputDouble(tr("Light traversal depth"), &_layer.lighttraversal, 0.0, 100.0, 0.5, 5.0);
+    addInputDouble(tr("Minimum lighting"), &_layer.minimumlight, 0.0, 1.0, 0.01, 0.1);
 
     revertConfig();
 }

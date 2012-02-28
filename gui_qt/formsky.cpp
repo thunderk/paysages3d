@@ -81,17 +81,17 @@ FormSky::FormSky(QWidget *parent):
     _definition = skyCreateDefinition();
 
     previewWest = new PreviewSkyWest(this);
-    addPreview(previewWest, QString("West preview"));
+    addPreview(previewWest, QString(tr("West preview")));
     previewEast = new PreviewSkyEast(this);
-    addPreview(previewEast, QString("East preview"));
+    addPreview(previewEast, QString(tr("East preview")));
 
-    addInputDouble("Day time", &_definition.daytime, 0.0, 1.0, 0.01, 0.1);
-    addInputColorGradation("Sun color", &_definition.sun_color);
-    addInputDouble("Sun radius", &_definition.sun_radius, 0.0, 0.3, 0.01, 0.03);
-    addInputColorGradation("Zenith color", &_definition.zenith_color);
-    addInputColorGradation("Haze color", &_definition.haze_color);
-    addInputDouble("Haze height", &_definition.haze_height, 0.0, 1.0, 0.01, 0.1);
-    addInputDouble("Haze smoothing", &_definition.haze_smoothing, 0.0, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Day time"), &_definition.daytime, 0.0, 1.0, 0.01, 0.1);
+    addInputColorGradation(tr("Sun color"), &_definition.sun_color);
+    addInputDouble(tr("Sun radius"), &_definition.sun_radius, 0.0, 0.3, 0.01, 0.03);
+    addInputColorGradation(tr("Zenith color"), &_definition.zenith_color);
+    addInputColorGradation(tr("Haze color"), &_definition.haze_color);
+    addInputDouble(tr("Haze height"), &_definition.haze_height, 0.0, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Haze smoothing"), &_definition.haze_smoothing, 0.0, 1.0, 0.01, 0.1);
 
     revertConfig();
 }

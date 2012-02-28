@@ -6,6 +6,8 @@
 #include <QIcon>
 #include <QFileDialog>
 #include <QTabWidget>
+#include <QTranslator>
+#include <QLocale>
 
 #include "formatmosphere.h"
 #include "formclouds.h"
@@ -25,16 +27,35 @@
 
 int main(int argc, char** argv)
 {
+    MainWindow* window;
     int result;
     
     paysagesInit();
 
     QApplication app(argc, argv);
-    MainWindow window;
+    
+    QTranslator qtTranslator;
+    QTranslator myTranslator;
+    
+    if (myTranslator.load("paysages_" + QLocale::system().name(), "./i18n"))
+    {
+        app.installTranslator(&myTranslator);
 
-    window.show();
+        qtTranslator.load("qt_" + QLocale::system().name());
+        app.installTranslator(&qtTranslator);
+    }
+    else
+    {
+        qtTranslator.load("qt_en");
+        app.installTranslator(&qtTranslator);
+    }
+
+    window = new MainWindow();
+    window->show();
 
     result = app.exec();
+    
+    delete window;
     
     paysagesQuit();
     return result;
@@ -50,48 +71,48 @@ MainWindow::MainWindow(QWidget *parent) :
     tabs = new QTabWidget(this);
 
     form = new FormTerrain(tabs);
-    tabs->addTab(form, "Terrain");
+    tabs->addTab(form, tr("Terrain"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
     form = new FormTextures(tabs);
-    tabs->addTab(form, "Textures");
+    tabs->addTab(form, tr("Textures"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
     form = new FormWater(tabs);
-    tabs->addTab(form, "Water");
+    tabs->addTab(form, tr("Water"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
     form = new FormAtmosphere(tabs);
-    tabs->addTab(form, "Atmosphere");
+    tabs->addTab(form, tr("Atmosphere"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
     form = new FormSky(tabs);
-    tabs->addTab(form, "Sky");
+    tabs->addTab(form, tr("Sky"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
     form = new FormClouds(tabs);
-    tabs->addTab(form, "Clouds");
+    tabs->addTab(form, tr("Clouds"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
     form = new FormLighting(tabs);
-    tabs->addTab(form, "Lighting");
+    tabs->addTab(form, tr("Lighting"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
     form = new FormRender(tabs);
-    tabs->addTab(form, "Render");
+    tabs->addTab(form, tr("Render"));
     //QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
-    menu = menuBar()->addMenu("Scene");
-    menu->addAction("New", this, SLOT(fileNew()), QKeySequence(Qt::CTRL + Qt::Key_N));
+    menu = menuBar()->addMenu(tr("&Scene"));
+    menu->addAction(tr("&New"), this, SLOT(fileNew()), QKeySequence(tr("Crtl+N")));
     menu->addSeparator();
-    menu->addAction("Save", this, SLOT(fileSave()), QKeySequence(Qt::CTRL + Qt::Key_S));
-    menu->addAction("Open", this, SLOT(fileLoad()), QKeySequence(Qt::CTRL + Qt::Key_O));
+    menu->addAction(tr("&Save"), this, SLOT(fileSave()), QKeySequence(tr("Crtl+S")));
+    menu->addAction(tr("&Open"), this, SLOT(fileLoad()), QKeySequence(tr("Crtl+O")));
     menu->addSeparator();
-    menu->addAction("Quit", this, SLOT(close()), QKeySequence(Qt::CTRL + Qt::Key_Q));
+    menu->addAction(tr("&Quit"), this, SLOT(close()), QKeySequence(tr("Crtl+Q")));
 
-    menu = menuBar()->addMenu("Actions");
-    menu->addAction("Explore in 3D", this, SLOT(explore3D()), QKeySequence("F2"));
-    menu->addAction("Quick render", this, SLOT(quickPreview()), QKeySequence("F5"));
+    menu = menuBar()->addMenu(tr("&Actions"));
+    menu->addAction(tr("&Explore in 3D"), this, SLOT(explore3D()), QKeySequence("F2"));
+    menu->addAction(tr("&Quick render"), this, SLOT(quickPreview()), QKeySequence("F5"));
 
     setCentralWidget(tabs);
 

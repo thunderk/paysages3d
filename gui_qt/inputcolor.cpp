@@ -27,7 +27,7 @@ InputColor::InputColor(QWidget* form, QString label, Color* value):
 {
     _preview = new ColorPreview(form);
     _preview->setMinimumSize(50, 20);
-    _control = new QPushButton("Edit", form);
+    _control = new QPushButton(tr("Edit"), form);
     _control->setMaximumWidth(150);
 
     connect((QPushButton*)_control, SIGNAL(clicked()), this, SLOT(chooseColor()));

@@ -47,7 +47,7 @@ InputNoise::InputNoise(QWidget* form, QString label, NoiseGenerator* value):
 {
     _preview = new NoiseSmallPreview(form, value);
     _preview->setMinimumSize(100, 40);
-    _control = new QPushButton("Edit", form);
+    _control = new QPushButton(tr("Edit"), form);
     _control->setMaximumWidth(150);
 
     connect((QPushButton*)_control, SIGNAL(clicked()), this, SLOT(editNoise()));

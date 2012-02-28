@@ -48,18 +48,18 @@ public:
         QPushButton* button;
         _gradation = gradation;
         
-        addPreview(new PreviewColorGradation(this, _gradation), "Preview");
+        addPreview(new PreviewColorGradation(this, _gradation), tr("Preview"));
         
-        addInputDouble("Position", &_layer.start, 0.0, 1.0, 0.01, 0.1);
-        addInputColor("Color", &_layer.col);
+        addInputDouble(tr("Position"), &_layer.start, 0.0, 1.0, 0.01, 0.1);
+        addInputColor(tr("Color"), &_layer.col);
         
-        button = addButton("Validate");
+        button = addButton(tr("Validate"));
         QObject::connect(button, SIGNAL(clicked()), parent, SLOT(accept()));
         
-        button = addButton("Revert");
+        button = addButton(tr("Revert"));
         QObject::connect(button, SIGNAL(clicked()), parent, SLOT(revert()));
         
-        button = addButton("Cancel");
+        button = addButton(tr("Cancel"));
         QObject::connect(button, SIGNAL(clicked()), parent, SLOT(reject()));
         
         revertConfig();
@@ -126,7 +126,7 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
     QObject::connect(button, SIGNAL(clicked()), this, SLOT(revert()));
     QObject::connect(button, SIGNAL(clicked()), this, SLOT(reject()));*/
 
-    setWindowTitle("Paysages 3D - Color gradation editor");
+    setWindowTitle(tr("Paysages 3D - Color gradation editor"));
 
     revert();
 }

@@ -59,13 +59,13 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
     _definition = atmosphereCreateDefinition();
 
     previewColor = new PreviewAtmosphereColor(this);
-    addPreview(previewColor, QString("Color preview"));
+    addPreview(previewColor, QString(tr("Color preview")));
 
-    addInputDouble("Start distance", &_definition.distance_near, -500.0, 500.0, 5.0, 50.0);
-    addInputDouble("End distance", &_definition.distance_far, -500.0, 500.0, 5.0, 50.0);
-    addInputDouble("Masking power", &_definition.full_mask, 0.0, 1.0, 0.01, 0.1);
-    addInputBoolean("Lock color on haze", &_definition.auto_lock_on_haze);
-    addInputColor("Color", &_definition.color);
+    addInputDouble(tr("Start distance"), &_definition.distance_near, -500.0, 500.0, 5.0, 50.0);
+    addInputDouble(tr("End distance"), &_definition.distance_far, -500.0, 500.0, 5.0, 50.0);
+    addInputDouble(tr("Masking power"), &_definition.full_mask, 0.0, 1.0, 0.01, 0.1);
+    addInputBoolean(tr("Lock color on haze"), &_definition.auto_lock_on_haze);
+    addInputColor(tr("Color"), &_definition.color);
 
     revertConfig();
 }
