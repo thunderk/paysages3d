@@ -15,8 +15,21 @@ WidgetCurveEditor::~WidgetCurveEditor()
     curveDelete(_curve);
 }
 
+void WidgetCurveEditor::setCurve(Curve* curve)
+{
+    curveCopy(curve, _curve);
+    update();
+}
+
+void WidgetCurveEditor::getCurve(Curve* curve)
+{
+    curveCopy(_curve, curve);
+}
+
 void WidgetCurveEditor::paintEvent(QPaintEvent* event)
 {
+    int i, n;
+    CurvePoint point;
     double position, value;
     
     QPainter painter(this);
@@ -28,5 +41,12 @@ void WidgetCurveEditor::paintEvent(QPaintEvent* event)
         position = ((double)x) / 499.0;
         value = curveGetValue(_curve, position);
         painter.drawPoint(x, 499 - (int)(value * 499.0));
+    }
+    
+    n = curveGetPointCount(_curve);
+    for (i = 0; i < n; i++)
+    {
+        curveGetPoint(_curve, i, &point);
+        painter.drawEllipse(QPoint((int)(point.position * 499.0), 499 - (int)(point.value * 499.0)), 4.0, 4.0);
     }
 }

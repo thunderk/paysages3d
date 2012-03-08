@@ -96,6 +96,14 @@ void curveGetPoint(Curve* curve, int number, CurvePoint* point)
     }
 }
 
+void curveSetPoint(Curve* curve, int number, CurvePoint* point)
+{
+    if (number >= 0 && number < curve->nbpoints)
+    {
+        curve->points[number] = *point;
+    }
+}
+
 int _point_compare(const void* part1, const void* part2)
 {
     if (((CurvePoint*)part1)->position > ((CurvePoint*)part2)->position)

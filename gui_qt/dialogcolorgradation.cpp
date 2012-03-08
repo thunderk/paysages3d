@@ -25,6 +25,8 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
     _curve_editor = new WidgetCurveEditor(this);
     layout()->addWidget(_curve_editor);
     
+    _curve = curveCreate();
+    
     /*QObject::connect(button, SIGNAL(clicked()), this, SLOT(accept()));
     QObject::connect(button, SIGNAL(clicked()), this, SLOT(revert()));
     QObject::connect(button, SIGNAL(clicked()), this, SLOT(reject()));*/
@@ -37,6 +39,7 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
 DialogColorGradation::~DialogColorGradation()
 {
     colorGradationDelete(_current);
+    curveDelete(_curve);
 }
 
 bool DialogColorGradation::getGradation(QWidget* parent, ColorGradation* gradation)
@@ -70,5 +73,6 @@ void DialogColorGradation::revert()
 
 void DialogColorGradation::revertToCurrent()
 {
-    // TODO
+    colorGradationGetRedCurve(_current, _curve);
+    _curve_editor->setCurve(_curve);
 }

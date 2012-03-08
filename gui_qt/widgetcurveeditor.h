@@ -12,6 +12,9 @@ public:
     WidgetCurveEditor(QWidget* parent);
     ~WidgetCurveEditor();
     
+    void setCurve(Curve* curve);
+    void getCurve(Curve* curve);
+    
 protected:
     void paintEvent(QPaintEvent* event);
     

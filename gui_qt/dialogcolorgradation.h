@@ -6,6 +6,7 @@
 #include "widgetcurveeditor.h"
 
 #include "../lib_paysages/color.h"
+#include "../lib_paysages/curve.h"
 
 class DialogColorGradation : public QDialog
 {
@@ -29,6 +30,7 @@ private:
 private:
     ColorGradation* _base;
     ColorGradation* _current;
+    Curve* _curve;
     WidgetCurveEditor* _curve_editor;
 };
 
