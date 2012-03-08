@@ -22,7 +22,6 @@ void paysagesInit()
     ilInit();
     iluInit();
 
-    colorInit();
     sceneryInit();
     renderInit();
 

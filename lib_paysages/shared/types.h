@@ -42,18 +42,6 @@ typedef struct
     double a;
 } Color;
 
-#define MAX_COLORGRADATION_PARTS 10
-typedef struct
-{
-    double start;
-    Color col;
-} ColorGradationPart;
-typedef struct
-{
-    int nbparts;
-    ColorGradationPart parts[MAX_COLORGRADATION_PARTS];
-} ColorGradation;
-
 struct RenderFragment;
 struct Renderer;
 

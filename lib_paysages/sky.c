@@ -25,10 +25,10 @@ void skyQuit()
 void skySave(FILE* f, SkyDefinition* definition)
 {
     toolsSaveDouble(f, &definition->daytime);
-    colorGradationSave(f, &definition->sun_color);
+    colorGradationSave(f, definition->sun_color);
     toolsSaveDouble(f, &definition->sun_radius);
-    colorGradationSave(f, &definition->zenith_color);
-    colorGradationSave(f, &definition->haze_color);
+    colorGradationSave(f, definition->zenith_color);
+    colorGradationSave(f, definition->haze_color);
     toolsSaveDouble(f, &definition->haze_height);
     toolsSaveDouble(f, &definition->haze_smoothing);
 }
@@ -36,10 +36,10 @@ void skySave(FILE* f, SkyDefinition* definition)
 void skyLoad(FILE* f, SkyDefinition* definition)
 {
     toolsLoadDouble(f, &definition->daytime);
-    colorGradationLoad(f, &definition->sun_color);
+    colorGradationLoad(f, definition->sun_color);
     toolsLoadDouble(f, &definition->sun_radius);
-    colorGradationLoad(f, &definition->zenith_color);
-    colorGradationLoad(f, &definition->haze_color);
+    colorGradationLoad(f, definition->zenith_color);
+    colorGradationLoad(f, definition->haze_color);
     toolsLoadDouble(f, &definition->haze_height);
     toolsLoadDouble(f, &definition->haze_smoothing);
 
@@ -65,25 +65,36 @@ SkyDefinition skyCreateDefinition()
 
 void skyDeleteDefinition(SkyDefinition* definition)
 {
+    colorGradationDelete(definition->sun_color);
+    colorGradationDelete(definition->zenith_color);
+    colorGradationDelete(definition->haze_color);
 }
 
 void skyCopyDefinition(SkyDefinition* source, SkyDefinition* destination)
 {
-    *destination = *source;
+    destination->daytime = source->daytime;
+    destination->sun_radius = source->sun_radius;
+    destination->haze_height = source->haze_height;
+    destination->haze_smoothing = source->haze_smoothing;
+    
+    colorGradationCopy(source->sun_color, destination->sun_color);
+    colorGradationCopy(source->zenith_color, destination->zenith_color);
+    colorGradationCopy(source->haze_color, destination->haze_color);
+    colorGradationCopy(source->_sky_gradation, destination->_sky_gradation);
 }
 
 void skyValidateDefinition(SkyDefinition* definition)
 {
     Color zenith, haze;
 
-    zenith = colorGradationGet(&definition->zenith_color, definition->daytime);
-    haze = colorGradationGet(&definition->haze_color, definition->daytime);
+    zenith = colorGradationGet(definition->zenith_color, definition->daytime);
+    haze = colorGradationGet(definition->haze_color, definition->daytime);
 
     definition->_sky_gradation = colorGradationCreate();
-    colorGradationQuickAdd(&definition->_sky_gradation, 0.0, &haze);
-    colorGradationQuickAdd(&definition->_sky_gradation, definition->haze_height - definition->haze_smoothing, &haze);
-    colorGradationQuickAdd(&definition->_sky_gradation, definition->haze_height, &zenith);
-    colorGradationQuickAdd(&definition->_sky_gradation, 1.0, &zenith);
+    colorGradationQuickAdd(definition->_sky_gradation, 0.0, &haze);
+    colorGradationQuickAdd(definition->_sky_gradation, definition->haze_height - definition->haze_smoothing, &haze);
+    colorGradationQuickAdd(definition->_sky_gradation, definition->haze_height, &zenith);
+    colorGradationQuickAdd(definition->_sky_gradation, 1.0, &zenith);
 }
 
 int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
@@ -103,7 +114,7 @@ int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
     {
         /* Light from the sun */
         lights[0].direction = v3Scale(sun_direction, -1.0);
-        lights[0].color = colorGradationGet(&sky->sun_color, sky->daytime);
+        lights[0].color = colorGradationGet(sky->sun_color, sky->daytime);
         lights[0].reflection = 1.0;
         lights[0].filtered = 1;
         lights[0].masked = 1;
@@ -115,7 +126,7 @@ int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
             lights[1].direction.x = 0.0;
             lights[1].direction.y = -1.0;
             lights[1].direction.z = 0.0;
-            lights[1].color = colorGradationGet(&sky->zenith_color, sky->daytime);
+            lights[1].color = colorGradationGet(sky->zenith_color, sky->daytime);
             lights[1].color.r *= 0.6;
             lights[1].color.g *= 0.6;
             lights[1].color.b *= 0.6;
@@ -144,11 +155,11 @@ Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Ve
     look = v3Normalize(look);
     dist = v3Norm(v3Sub(look, sun_position));
 
-    sky_color = colorGradationGet(&definition->_sky_gradation, look.y * 0.5 + 0.5);
+    sky_color = colorGradationGet(definition->_sky_gradation, look.y * 0.5 + 0.5);
     if (dist < definition->sun_radius)
     {
         dist = dist / definition->sun_radius;
-        sun_color = colorGradationGet(&definition->sun_color, definition->daytime);
+        sun_color = colorGradationGet(definition->sun_color, definition->daytime);
         if (dist < 0.9)
         {
             return sun_color;

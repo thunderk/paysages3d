@@ -2,6 +2,7 @@
 #define _PAYSAGES_SKY_H_
 
 #include "shared/types.h"
+#include "color.h"
 #include "lighting.h"
 #include <stdio.h>
 
@@ -12,13 +13,13 @@ extern "C" {
 typedef struct
 {
     double daytime;
-    ColorGradation sun_color;
+    ColorGradation* sun_color;
     double sun_radius;
-    ColorGradation zenith_color;
-    ColorGradation haze_color;
+    ColorGradation* zenith_color;
+    ColorGradation* haze_color;
     double haze_height;
     double haze_smoothing;
-    ColorGradation _sky_gradation;
+    ColorGradation* _sky_gradation;
 } SkyDefinition;
 
 void skyInit();

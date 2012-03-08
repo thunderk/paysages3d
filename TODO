@@ -1,5 +1,5 @@
 - Implement scaling and scrolling on previews.
+- Replace FILE* by a custom type for Save and Load.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - Restore render progress.
 - Find a licence and apply it.
-- Translate UI ?

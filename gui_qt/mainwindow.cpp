@@ -94,9 +94,9 @@ MainWindow::MainWindow(QWidget *parent) :
     tabs->addTab(form, tr("Clouds"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
-    form = new FormLighting(tabs);
+    /*form = new FormLighting(tabs);
     tabs->addTab(form, tr("Lighting"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));*/
 
     form = new FormRender(tabs);
     tabs->addTab(form, tr("Render"));

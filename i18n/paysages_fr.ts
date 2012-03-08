@@ -4,40 +4,34 @@
 <context>
     <name>BaseForm</name>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="33"/>
         <source>Layers : </source>
-        <translation>Niveaux :</translation>
+        <translation type="obsolete">Niveaux :</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="39"/>
         <source>Add layer</source>
-        <translation>Ajouter un niveau</translation>
+        <translation type="obsolete">Ajouter un niveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="43"/>
         <source>Delete layer</source>
-        <translation>Supprimer un niveau</translation>
+        <translation type="obsolete">Supprimer un niveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="73"/>
         <source>Apply</source>
-        <translation>Appliquer</translation>
+        <translation type="obsolete">Appliquer</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="76"/>
         <source>Revert</source>
-        <translation>Annuler les modifications</translation>
+        <translation type="obsolete">Annuler les modifications</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="239"/>
         <source>Layer %1</source>
-        <translation>Niveau %1</translation>
+        <translation type="obsolete">Niveau %1</translation>
     </message>
 </context>
 <context>
     <name>DialogColorGradation</name>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="129"/>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="34"/>
         <source>Paysages 3D - Color gradation editor</source>
         <translation>Paysages 3D - Editeur de gradients de couleur</translation>
     </message>
@@ -245,34 +239,28 @@
 <context>
     <name>FormColorGradation</name>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="51"/>
         <source>Preview</source>
-        <translation>Aperçu</translation>
+        <translation type="obsolete">Aperçu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="53"/>
         <source>Position</source>
-        <translation>Position</translation>
+        <translation type="obsolete">Position</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="54"/>
         <source>Color</source>
-        <translation>Couleur</translation>
+        <translation type="obsolete">Couleur</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="56"/>
         <source>Validate</source>
-        <translation>Valider</translation>
+        <translation type="obsolete">Valider</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="59"/>
         <source>Revert</source>
-        <translation>Recommencer</translation>
+        <translation type="obsolete">Recommencer</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="62"/>
         <source>Cancel</source>
-        <translation>Annuler</translation>
+        <translation type="obsolete">Annuler</translation>
     </message>
 </context>
 <context>
@@ -504,7 +492,7 @@
 <context>
     <name>InputColorGradation</name>
     <message>
-        <location filename="../gui_qt/inputcolorgradation.cpp" line="42"/>
+        <location filename="../gui_qt/inputcolorgradation.cpp" line="41"/>
         <source>Edit</source>
         <translation>Editer</translation>
     </message>
@@ -550,9 +538,8 @@
         <translation>Nuages</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="98"/>
         <source>Lighting</source>
-        <translation>Eclairage</translation>
+        <translation type="obsolete">Eclairage</translation>
     </message>
     <message>
         <location filename="../gui_qt/mainwindow.cpp" line="102"/>

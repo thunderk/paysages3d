@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "baseform.h"
+#include "widgetcurveeditor.h"
 
 #include "../lib_paysages/color.h"
 
@@ -27,8 +28,8 @@ private:
 
 private:
     ColorGradation* _base;
-    ColorGradation _current;
-    BaseForm* _form;
+    ColorGradation* _current;
+    WidgetCurveEditor* _curve_editor;
 };
 
 #endif

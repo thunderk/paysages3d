@@ -86,10 +86,10 @@ FormSky::FormSky(QWidget *parent):
     addPreview(previewEast, QString(tr("East preview")));
 
     addInputDouble(tr("Day time"), &_definition.daytime, 0.0, 1.0, 0.01, 0.1);
-    addInputColorGradation(tr("Sun color"), &_definition.sun_color);
+    addInputColorGradation(tr("Sun color"), _definition.sun_color);
     addInputDouble(tr("Sun radius"), &_definition.sun_radius, 0.0, 0.3, 0.01, 0.03);
-    addInputColorGradation(tr("Zenith color"), &_definition.zenith_color);
-    addInputColorGradation(tr("Haze color"), &_definition.haze_color);
+    addInputColorGradation(tr("Zenith color"), _definition.zenith_color);
+    addInputColorGradation(tr("Haze color"), _definition.haze_color);
     addInputDouble(tr("Haze height"), &_definition.haze_height, 0.0, 1.0, 0.01, 0.1);
     addInputDouble(tr("Haze smoothing"), &_definition.haze_smoothing, 0.0, 1.0, 0.01, 0.1);
 

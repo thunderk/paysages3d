@@ -8,6 +8,7 @@
 #include "baseinput.h"
 #include "../lib_paysages/shared/types.h"
 #include "../lib_paysages/noise.h"
+#include "../lib_paysages/color.h"
 
 class BaseForm:public QWidget
 {

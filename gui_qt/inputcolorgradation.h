@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "baseinput.h"
 
-#include "../lib_paysages/shared/types.h"
+#include "../lib_paysages/color.h"
 
 class InputColorGradation:public BaseInput
 {

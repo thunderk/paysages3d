@@ -10,12 +10,11 @@
 class ColorGradationPreview:public QWidget
 {
 public:
-    ColorGradationPreview(QWidget* parent, ColorGradation* gradation):
-        QWidget(parent),
-        gradation(gradation)
+    ColorGradationPreview(QWidget* parent, ColorGradation* gradation) : QWidget(parent)
     {
+        this->gradation = gradation;
     }
-
+    
     void paintEvent(QPaintEvent* event)
     {
         QPainter painter(this);
@@ -32,10 +31,10 @@ public:
     ColorGradation* gradation;
 };
 
-InputColorGradation::InputColorGradation(QWidget* form, QString label, ColorGradation* value):
-    BaseInput(form, label),
-    _value(value)
+InputColorGradation::InputColorGradation(QWidget* form, QString label, ColorGradation* value) : BaseInput(form, label)
 {
+    _value = value;
+            
     _preview = new ColorGradationPreview(form, value);
     _preview->setMinimumSize(200, 20);
 
@@ -63,12 +62,14 @@ void InputColorGradation::revert()
 
 void InputColorGradation::editGradation()
 {
-    ColorGradation gradation;
+    ColorGradation* gradation;
     
-    gradation = *_value;
-    if (DialogColorGradation::getGradation(_preview, &gradation))
+    gradation = colorGradationCreate();
+    colorGradationCopy(_value, gradation);
+    if (DialogColorGradation::getGradation(_preview, gradation))
     {
-        *_value = gradation;
+        colorGradationCopy(gradation, _value);
         applyValue();
     }
+    colorGradationDelete(gradation);
 }

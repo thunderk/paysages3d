@@ -78,7 +78,7 @@ void atmosphereValidateDefinition(AtmosphereDefinition* definition)
     {
         sky = skyCreateDefinition();
         sceneryGetSky(&sky);
-        definition->color = colorGradationGet(&sky.haze_color, sky.daytime);
+        definition->color = colorGradationGet(sky.haze_color, sky.daytime);
         skyDeleteDefinition(&sky);
     }
 }
