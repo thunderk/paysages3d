@@ -27,14 +27,17 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
     
     _preview_red = new PreviewColorGradation(this, gradation, COLORGRADATIONBAND_RED);
     _preview_red->setMinimumHeight(50);
+    connect(_preview_red, SIGNAL(clicked()), this, SLOT(selectRed()));
     layout()->addWidget(_preview_red);
 
     _preview_green = new PreviewColorGradation(this, gradation, COLORGRADATIONBAND_GREEN);
     _preview_green->setMinimumHeight(50);
+    connect(_preview_green, SIGNAL(clicked()), this, SLOT(selectGreen()));
     layout()->addWidget(_preview_green);
 
     _preview_blue = new PreviewColorGradation(this, gradation, COLORGRADATIONBAND_BLUE);
     _preview_blue->setMinimumHeight(50);
+    connect(_preview_blue, SIGNAL(clicked()), this, SLOT(selectBlue()));
     layout()->addWidget(_preview_blue);
 
     _preview_final = new PreviewColorGradation(this, gradation, COLORGRADATIONBAND_FINAL);
@@ -87,8 +90,25 @@ void DialogColorGradation::revert()
     revertToCurrent();
 }
 
-void DialogColorGradation::revertToCurrent()
+void DialogColorGradation::selectRed()
 {
     colorGradationGetRedCurve(_current, _curve);
     _curve_editor->setCurve(_curve);
+}
+
+void DialogColorGradation::selectGreen()
+{
+    colorGradationGetGreenCurve(_current, _curve);
+    _curve_editor->setCurve(_curve);
+}
+
+void DialogColorGradation::selectBlue()
+{
+    colorGradationGetBlueCurve(_current, _curve);
+    _curve_editor->setCurve(_curve);
+}
+
+void DialogColorGradation::revertToCurrent()
+{
+    selectRed();
 }

@@ -82,12 +82,12 @@ MainWindow::MainWindow(QWidget *parent) :
     tabs->addTab(form, tr("Water"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
-    form = new FormAtmosphere(tabs);
-    tabs->addTab(form, tr("Atmosphere"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
-
     form = new FormSky(tabs);
     tabs->addTab(form, tr("Sky"));
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+
+    form = new FormAtmosphere(tabs);
+    tabs->addTab(form, tr("Atmosphere"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
 
     form = new FormClouds(tabs);

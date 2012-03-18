@@ -66,3 +66,8 @@ void PreviewColorGradation::paintEvent(QPaintEvent* event)
 
     curveDelete(curve);
 }
+
+void PreviewColorGradation::mouseReleaseEvent(QMouseEvent* event)
+{
+    emit clicked();
+}

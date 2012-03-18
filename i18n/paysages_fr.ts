@@ -37,7 +37,7 @@
 <context>
     <name>DialogColorGradation</name>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="50"/>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="53"/>
         <source>Paysages 3D - Color gradation editor</source>
         <translation>Paysages 3D - Editeur de gradients de couleur</translation>
     </message>
@@ -529,12 +529,12 @@
         <translation>Eau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="86"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="90"/>
         <source>Atmosphere</source>
         <translation>Atmosphère</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="90"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="86"/>
         <source>Sky</source>
         <translation>Ciel</translation>
     </message>

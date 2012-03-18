@@ -19,6 +19,10 @@ class PreviewColorGradation:public QWidget
 public:
     PreviewColorGradation(QWidget* parent, ColorGradation* gradation, EnumColorGradationBand band);
     void paintEvent(QPaintEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
+    
+signals:
+    void clicked();
 
 private:
     ColorGradation* gradation;

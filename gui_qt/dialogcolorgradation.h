@@ -21,6 +21,9 @@ public:
 public slots:
     virtual void accept();
     void revert();
+    void selectRed();
+    void selectGreen();
+    void selectBlue();
 
 protected:
     virtual void closeEvent(QCloseEvent* e);
