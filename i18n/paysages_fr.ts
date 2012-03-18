@@ -4,34 +4,40 @@
 <context>
     <name>BaseForm</name>
     <message>
+        <location filename="../gui_qt/baseform.cpp" line="33"/>
         <source>Layers : </source>
-        <translation type="obsolete">Niveaux :</translation>
+        <translation>Niveaux :</translation>
     </message>
     <message>
+        <location filename="../gui_qt/baseform.cpp" line="39"/>
         <source>Add layer</source>
-        <translation type="obsolete">Ajouter un niveau</translation>
+        <translation>Ajouter un niveau</translation>
     </message>
     <message>
+        <location filename="../gui_qt/baseform.cpp" line="43"/>
         <source>Delete layer</source>
-        <translation type="obsolete">Supprimer un niveau</translation>
+        <translation>Supprimer un niveau</translation>
     </message>
     <message>
+        <location filename="../gui_qt/baseform.cpp" line="73"/>
         <source>Apply</source>
-        <translation type="obsolete">Appliquer</translation>
+        <translation>Appliquer</translation>
     </message>
     <message>
+        <location filename="../gui_qt/baseform.cpp" line="76"/>
         <source>Revert</source>
-        <translation type="obsolete">Annuler les modifications</translation>
+        <translation>Annuler les modifications</translation>
     </message>
     <message>
+        <location filename="../gui_qt/baseform.cpp" line="239"/>
         <source>Layer %1</source>
-        <translation type="obsolete">Niveau %1</translation>
+        <translation>Niveau %1</translation>
     </message>
 </context>
 <context>
     <name>DialogColorGradation</name>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="34"/>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="50"/>
         <source>Paysages 3D - Color gradation editor</source>
         <translation>Paysages 3D - Editeur de gradients de couleur</translation>
     </message>
@@ -492,7 +498,7 @@
 <context>
     <name>InputColorGradation</name>
     <message>
-        <location filename="../gui_qt/inputcolorgradation.cpp" line="41"/>
+        <location filename="../gui_qt/inputcolorgradation.cpp" line="18"/>
         <source>Edit</source>
         <translation>Editer</translation>
     </message>

@@ -4,6 +4,7 @@
 #include <QDialog>
 #include "baseform.h"
 #include "widgetcurveeditor.h"
+#include "previewcolorgradation.h"
 
 #include "../lib_paysages/color.h"
 #include "../lib_paysages/curve.h"
@@ -32,6 +33,10 @@ private:
     ColorGradation* _current;
     Curve* _curve;
     WidgetCurveEditor* _curve_editor;
+    PreviewColorGradation* _preview_red;
+    PreviewColorGradation* _preview_green;
+    PreviewColorGradation* _preview_blue;
+    PreviewColorGradation* _preview_final;
 };
 
 #endif

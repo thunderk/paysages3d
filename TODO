@@ -1,4 +1,5 @@
 - Implement scaling and scrolling on previews.
+- Improve color gradation dialog (with curve editor ?).
 - Replace FILE* by a custom type for Save and Load.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - Restore render progress.

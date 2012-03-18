@@ -20,10 +20,26 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
     _current = colorGradationCreate();
     colorGradationCopy(_base, _current);
 
-    setLayout(new QHBoxLayout());
+    setLayout(new QVBoxLayout());
     
     _curve_editor = new WidgetCurveEditor(this);
     layout()->addWidget(_curve_editor);
+    
+    _preview_red = new PreviewColorGradation(this, gradation, COLORGRADATIONBAND_RED);
+    _preview_red->setMinimumHeight(50);
+    layout()->addWidget(_preview_red);
+
+    _preview_green = new PreviewColorGradation(this, gradation, COLORGRADATIONBAND_GREEN);
+    _preview_green->setMinimumHeight(50);
+    layout()->addWidget(_preview_green);
+
+    _preview_blue = new PreviewColorGradation(this, gradation, COLORGRADATIONBAND_BLUE);
+    _preview_blue->setMinimumHeight(50);
+    layout()->addWidget(_preview_blue);
+
+    _preview_final = new PreviewColorGradation(this, gradation, COLORGRADATIONBAND_FINAL);
+    _preview_final->setMinimumHeight(50);
+    layout()->addWidget(_preview_final);
     
     _curve = curveCreate();
     
