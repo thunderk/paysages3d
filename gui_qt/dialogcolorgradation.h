@@ -2,6 +2,7 @@
 #define _PAYSAGES_QT_DIALOGCOLORGRADATION_H_
 
 #include <QDialog>
+#include <QPushButton>
 #include "baseform.h"
 #include "widgetcurveeditor.h"
 #include "previewcolorgradation.h"
@@ -24,6 +25,7 @@ public slots:
     void selectRed();
     void selectGreen();
     void selectBlue();
+    void updateColors();
 
 protected:
     virtual void closeEvent(QCloseEvent* e);
@@ -40,6 +42,10 @@ private:
     PreviewColorGradation* _preview_green;
     PreviewColorGradation* _preview_blue;
     PreviewColorGradation* _preview_final;
+    int _selected;
+    QPushButton* _button_accept;
+    QPushButton* _button_revert;
+    QPushButton* _button_cancel;
 };
 
 #endif

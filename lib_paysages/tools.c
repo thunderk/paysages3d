@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <inttypes.h>
+#include <math.h>
 
 #include "color.h"
 #include "euclid.h"
@@ -117,6 +118,13 @@ Vector3 toolsGetNormalFromTriangle(Vector3 center, Vector3 bottom, Vector3 right
     Vector3 dx = v3Sub(right, center);
     Vector3 dz = v3Sub(bottom, center);
     return v3Normalize(v3Cross(dz, dx));
+}
+
+double toolsGetDistance2D(double x1, double y1, double x2, double y2)
+{
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+    return sqrt(dx * dx + dy * dy);
 }
 
 void toolsSaveDouble(FILE* f, double* value)

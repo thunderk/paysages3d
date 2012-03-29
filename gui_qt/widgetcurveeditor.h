@@ -15,11 +15,18 @@ public:
     void setCurve(Curve* curve);
     void getCurve(Curve* curve);
     
+signals:
+    void liveChanged();
+    
 protected:
     void paintEvent(QPaintEvent* event);
+    void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
     
 private:
     Curve* _curve;
+    int _dragged;
 };
 
 #endif

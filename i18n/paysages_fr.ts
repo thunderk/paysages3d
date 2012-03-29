@@ -37,7 +37,22 @@
 <context>
     <name>DialogColorGradation</name>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="53"/>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="55"/>
+        <source>Validate</source>
+        <translation>Valider</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="59"/>
+        <source>Revert</source>
+        <translation>Recommencer</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="63"/>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="69"/>
         <source>Paysages 3D - Color gradation editor</source>
         <translation>Paysages 3D - Editeur de gradients de couleur</translation>
     </message>
