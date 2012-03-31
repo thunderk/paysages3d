@@ -2,6 +2,7 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QGridLayout>
 #include <QImage>
 #include <QLabel>
 #include <QColor>
@@ -18,6 +19,8 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
     QDialog(parent)
 {
     QWidget* buttons;
+    QWidget* form;
+    QGridLayout* form_layout;
     
     _base = gradation;
     _current = colorGradationCreate();
@@ -25,28 +28,38 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
 
     setLayout(new QVBoxLayout());
     
-    _curve_editor = new WidgetCurveEditor(this);
-    layout()->addWidget(_curve_editor);
+    form = new QWidget(this);
+    form_layout = new QGridLayout();
+    form->setLayout(form_layout);
+    layout()->addWidget(form);
+    
+    form_layout->addWidget(new QLabel(tr("This is the curve editor for color components.\nClick on a component preview below to edit it.\nClick on points and drag them to move them.\nDouble click to add a new point.\nRight click on a point to delete it."), form), 0, 0);
+    _curve_editor = new WidgetCurveEditor(form);
+    form_layout->addWidget(_curve_editor, 0, 1);
     connect(_curve_editor, SIGNAL(liveChanged()), this, SLOT(updateColors()));
     
-    _preview_red = new PreviewColorGradation(this, _current, COLORGRADATIONBAND_RED);
+    form_layout->addWidget(new QLabel(tr("Red preview, click to edit"), form), 1, 0);
+    _preview_red = new PreviewColorGradation(form, _current, COLORGRADATIONBAND_RED);
     _preview_red->setMinimumHeight(50);
     connect(_preview_red, SIGNAL(clicked()), this, SLOT(selectRed()));
-    layout()->addWidget(_preview_red);
+    form_layout->addWidget(_preview_red, 1, 1);
 
-    _preview_green = new PreviewColorGradation(this, _current, COLORGRADATIONBAND_GREEN);
+    form_layout->addWidget(new QLabel(tr("Green preview, click to edit"), form), 2, 0);
+    _preview_green = new PreviewColorGradation(form, _current, COLORGRADATIONBAND_GREEN);
     _preview_green->setMinimumHeight(50);
     connect(_preview_green, SIGNAL(clicked()), this, SLOT(selectGreen()));
-    layout()->addWidget(_preview_green);
+    form_layout->addWidget(_preview_green, 2, 1);
 
-    _preview_blue = new PreviewColorGradation(this, _current, COLORGRADATIONBAND_BLUE);
+    form_layout->addWidget(new QLabel(tr("Blue preview, click to edit"), form), 3, 0);
+    _preview_blue = new PreviewColorGradation(form, _current, COLORGRADATIONBAND_BLUE);
     _preview_blue->setMinimumHeight(50);
     connect(_preview_blue, SIGNAL(clicked()), this, SLOT(selectBlue()));
-    layout()->addWidget(_preview_blue);
+    form_layout->addWidget(_preview_blue, 3, 1);
 
-    _preview_final = new PreviewColorGradation(this, _current, COLORGRADATIONBAND_FINAL);
+    form_layout->addWidget(new QLabel(tr("Final preview"), form), 4, 0);
+    _preview_final = new PreviewColorGradation(form, _current, COLORGRADATIONBAND_FINAL);
     _preview_final->setMinimumHeight(50);
-    layout()->addWidget(_preview_final);
+    form_layout->addWidget(_preview_final, 4, 1);
     
     buttons = new QWidget(this);
     layout()->addWidget(buttons);
@@ -111,6 +124,7 @@ void DialogColorGradation::selectRed()
 {
     colorGradationGetRedCurve(_current, _curve);
     _curve_editor->setCurve(_curve);
+    _curve_editor->setPenColor(QColor(255, 0, 0));
     _selected = 1;
 }
 
@@ -118,6 +132,7 @@ void DialogColorGradation::selectGreen()
 {
     colorGradationGetGreenCurve(_current, _curve);
     _curve_editor->setCurve(_curve);
+    _curve_editor->setPenColor(QColor(0, 200, 0));
     _selected = 2;
 }
 
@@ -125,6 +140,7 @@ void DialogColorGradation::selectBlue()
 {
     colorGradationGetBlueCurve(_current, _curve);
     _curve_editor->setCurve(_curve);
+    _curve_editor->setPenColor(QColor(0, 0, 255));
     _selected = 3;
 }
 

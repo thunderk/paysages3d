@@ -19,7 +19,7 @@ DialogWanderer::DialogWanderer(QWidget* parent, CameraDefinition* camera, bool c
 
     panel = new QWidget(this);
     panel->setLayout(new QVBoxLayout());
-    panel->setMaximumWidth(200);
+    panel->setMaximumWidth(230);
 
     button = new QPushButton(tr("Reset camera"), panel);
     panel->layout()->addWidget(button);

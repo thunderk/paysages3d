@@ -2,6 +2,7 @@
 #define _PAYSAGES_QT_WIDGETCURVEEDITOR_H_
 
 #include <QWidget>
+#include <QColor>
 #include "../lib_paysages/curve.h"
 
 class WidgetCurveEditor : public QWidget
@@ -15,6 +16,8 @@ public:
     void setCurve(Curve* curve);
     void getCurve(Curve* curve);
     
+    void setPenColor(QColor color);
+    
 signals:
     void liveChanged();
     
@@ -23,10 +26,14 @@ protected:
     void mousePressEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
+    void mouseDoubleClickEvent(QMouseEvent* event);
     
 private:
+    int getPointAt(int x, int y);
+    
     Curve* _curve;
     int _dragged;
+    QColor _pen;
 };
 
 #endif

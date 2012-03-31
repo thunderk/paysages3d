@@ -1,6 +1,7 @@
 #include "curve.h"
 
 #include <stdlib.h>
+#include <string.h>
 #include "tools.h"
 
 #define MAX_NB_POINTS 40
@@ -101,6 +102,18 @@ void curveSetPoint(Curve* curve, int number, CurvePoint* point)
     if (number >= 0 && number < curve->nbpoints)
     {
         curve->points[number] = *point;
+    }
+}
+
+void curveRemovePoint(Curve* curve, int number)
+{
+    if (number >= 0 && number < curve->nbpoints)
+    {
+        if (curve->nbpoints > 0 && number < curve->nbpoints - 1)
+        {
+            memmove(curve->points + number, curve->points + number + 1, sizeof(CurvePoint) * (curve->nbpoints - number - 1));
+        }
+        curve->nbpoints--;
     }
 }
 

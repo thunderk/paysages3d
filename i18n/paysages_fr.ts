@@ -37,22 +37,55 @@
 <context>
     <name>DialogColorGradation</name>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="55"/>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="36"/>
+        <source>This is the curve editor for color components.
+Click on a component preview below to edit it.
+Click on points and drag them to move them.
+Double click to add a new point.
+Right click on a point to delete it.</source>
+        <translation>Ceci est l&apos;éditeur de courbes pour les couleurs.
+Cliquez sur une des couleurs ci-dessous pour l&apos;éditer.
+Cliquez sur les points pour les déplacer.
+Double cliquez sur le fond pour ajouter un point.
+Cliquez avec le bouton droit sur un point pour le supprimer.</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="41"/>
+        <source>Red preview, click to edit</source>
+        <translation>Aperçu du rouge, cliquer pour éditer</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="47"/>
+        <source>Green preview, click to edit</source>
+        <translation>Aperçu du vert, cliquer pour éditer</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="53"/>
+        <source>Blue preview, click to edit</source>
+        <translation>Aperçu du bleu, cliquez pour éditer</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="59"/>
+        <source>Final preview</source>
+        <translation>Aperçu du gradient final</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="68"/>
         <source>Validate</source>
         <translation>Valider</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="59"/>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="72"/>
         <source>Revert</source>
         <translation>Recommencer</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="63"/>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="76"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogcolorgradation.cpp" line="69"/>
+        <location filename="../gui_qt/dialogcolorgradation.cpp" line="82"/>
         <source>Paysages 3D - Color gradation editor</source>
         <translation>Paysages 3D - Editeur de gradients de couleur</translation>
     </message>
@@ -143,7 +176,7 @@
     <message>
         <location filename="../gui_qt/dialogwanderer.cpp" line="30"/>
         <source>Validate as render camera</source>
-        <translation>Valider comme caméra de rendu</translation>
+        <translation>Choisir comme caméra de rendu</translation>
     </message>
     <message>
         <location filename="../gui_qt/dialogwanderer.cpp" line="35"/>

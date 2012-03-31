@@ -26,6 +26,7 @@ int curveQuickAddPoint(Curve* curve, double position, double value);
 int curveGetPointCount(Curve* curve);
 void curveGetPoint(Curve* curve, int number, CurvePoint* point);
 void curveSetPoint(Curve* curve, int number, CurvePoint* point);
+void curveRemovePoint(Curve* curve, int number);
 void curveValidate(Curve* curve);
 
 double curveGetValue(Curve* curve, double position);

@@ -8,6 +8,7 @@ WidgetCurveEditor::WidgetCurveEditor(QWidget *parent) : QWidget(parent)
 {
     _curve = curveCreate();
     _dragged = -1;
+    _pen = QColor(0, 0, 0);
     
     setMinimumSize(500, 500);
     setMaximumSize(500, 500);
@@ -29,6 +30,12 @@ void WidgetCurveEditor::getCurve(Curve* curve)
     curveCopy(_curve, curve);
 }
 
+void WidgetCurveEditor::setPenColor(QColor color)
+{
+    _pen = color;
+    update();
+}
+
 void WidgetCurveEditor::paintEvent(QPaintEvent* event)
 {
     int i, n;
@@ -37,7 +44,7 @@ void WidgetCurveEditor::paintEvent(QPaintEvent* event)
     
     QPainter painter(this);
     painter.fillRect(0, 0, 500, 500, QColor(255, 255, 255));
-    painter.setPen(QColor(255, 0, 0));
+    painter.setPen(_pen);
     
     for (int x = 0; x < 500; x++)
     {
@@ -56,41 +63,9 @@ void WidgetCurveEditor::paintEvent(QPaintEvent* event)
 
 void WidgetCurveEditor::mousePressEvent(QMouseEvent* event)
 {
-    int i, n;
-    int nearest;
-    double mousex, mousey;
-    double distance, ndistance;
-    CurvePoint point;
-
-    n = curveGetPointCount(_curve);
-    if (n < 1)
+    if (event->button() == Qt::LeftButton && _dragged < 0)
     {
-        return;
-    }
-
-    mousex = ((double)event->x()) / 499.0;
-    mousey = 1.0 - ((double)event->y()) / 499.0;
-    nearest = -1;
-    
-    // Find nearest point
-    for (i = 0; i < n; i++)
-    {
-        curveGetPoint(_curve, i, &point);
-        ndistance = toolsGetDistance2D(point.position, point.value, mousex, mousey);
-        if (nearest < 0 || ndistance < distance)
-        {
-            distance = ndistance;
-            nearest = i;
-        }
-    }
-    
-    if (distance < 0.015)
-    {
-        _dragged = nearest;
-    }
-    else
-    {
-        _dragged = -1;
+        _dragged = getPointAt(event->x(), event->y());
     }
     
     event->accept();
@@ -100,7 +75,7 @@ void WidgetCurveEditor::mouseMoveEvent(QMouseEvent* event)
 {
     CurvePoint point;
     
-    if (_dragged >= 0)
+    if (_dragged >= 0 && (event->buttons() & Qt::LeftButton))
     {
         point.position = ((double)event->x()) / 499.0;
         point.value = 1.0 - ((double)event->y()) / 499.0;
@@ -122,13 +97,81 @@ void WidgetCurveEditor::mouseMoveEvent(QMouseEvent* event)
 
 void WidgetCurveEditor::mouseReleaseEvent(QMouseEvent* event)
 {
-    if (_dragged >= 0)
+    int clicked;
+    
+    if (event->button() == Qt::RightButton)
+    {
+        clicked = getPointAt(event->x(), event->y());
+        if (clicked >= 0)
+        {
+            curveRemovePoint(_curve, clicked);
+            update();
+            emit liveChanged();
+        }
+    }
+    else if (event->button() == Qt::LeftButton && _dragged >= 0)
     {
         _dragged = -1;
         curveValidate(_curve);
-        
         update();
     }
     
     event->accept();
+}
+
+void WidgetCurveEditor::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    CurvePoint point;
+    
+    if (event->button() == Qt::LeftButton && _dragged < 0)
+    {
+        if (getPointAt(event->x(), event->y()) < 0)
+        {
+            point.position = ((double)event->x()) / 499.0;
+            point.value = 1.0 - ((double)event->y()) / 499.0;
+
+            curveAddPoint(_curve, &point);
+            curveValidate(_curve);
+            update();
+            emit liveChanged();
+        }
+    }
+}
+
+int WidgetCurveEditor::getPointAt(int x, int y)
+{
+    int n;
+    int nearest;
+    double distance, ndistance;
+    CurvePoint point;
+    double dx = ((double)x) / 499.0;
+    double dy = 1.0 - ((double)y) / 499.0;
+
+    n = curveGetPointCount(_curve);
+    if (n < 1)
+    {
+        return -1;
+    }
+
+    // Find nearest point
+    nearest = -1;
+    for (int i = 0; i < n; i++)
+    {
+        curveGetPoint(_curve, i, &point);
+        ndistance = toolsGetDistance2D(point.position, point.value, dx, dy);
+        if (nearest < 0 || ndistance < distance)
+        {
+            distance = ndistance;
+            nearest = i;
+        }
+    }
+    
+    if (nearest >= 0 && distance < 0.015)
+    {
+        return nearest;
+    }
+    else
+    {
+        return -1;
+    }
 }
