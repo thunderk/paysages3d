@@ -25,7 +25,6 @@ public:
 
 private:
     QThread* render_thread;
-    Renderer renderer;
 };
 
 #endif // _PAYSAGES_QT_DIALOGRENDER_H_

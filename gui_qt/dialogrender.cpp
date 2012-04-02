@@ -10,6 +10,8 @@
 #include "../lib_paysages/auto.h"
 
 static DialogRender* _current_dialog;
+static Renderer _renderer;
+static bool _renderer_inited = false;
 
 static void _renderStart(int width, int height, Color background)
 {
@@ -72,7 +74,6 @@ DialogRender::DialogRender(QWidget *parent):
     pixbuf = new QImage(1, 1, QImage::Format_ARGB32);
     _current_dialog = this;
     render_thread = NULL;
-    renderer = sceneryCreateStandardRenderer();
 
     setModal(true);
     setWindowTitle(tr("Paysages 3D - Render"));
@@ -96,14 +97,11 @@ DialogRender::~DialogRender()
 {
     if (render_thread)
     {
-        rendererInterrupt(&renderer);
+        rendererInterrupt(&_renderer);
         render_thread->wait();
-
-        rendererSetPreviewCallbacks(&renderer, NULL, NULL, NULL);
 
         delete render_thread;
     }
-    rendererDelete(&renderer);
     delete pixbuf;
 }
 
@@ -115,10 +113,17 @@ void DialogRender::startRender(int quality, int width, int height)
     area->setMaximumSize(width, height);
     area->resize(width, height);
     scroll->setMinimumSize(width > 800 ? 850 : width + 50, height > 600 ? 650 : height + 50);
-    
-    rendererSetPreviewCallbacks(&renderer, _renderStart, _renderDraw, _renderUpdate);
 
-    render_thread = new RenderThread(&renderer, width, height, quality);
+    if (_renderer_inited)
+    {
+        rendererDelete(&_renderer);
+    }
+    _renderer = sceneryCreateStandardRenderer();
+    _renderer_inited = true;
+
+    rendererSetPreviewCallbacks(&_renderer, _renderStart, _renderDraw, _renderUpdate);
+
+    render_thread = new RenderThread(&_renderer, width, height, quality);
     render_thread->start();
 
     exec();
@@ -126,8 +131,23 @@ void DialogRender::startRender(int quality, int width, int height)
 
 void DialogRender::loadLastRender()
 {
+    int width, height;
+    
     progress->hide();
-    //renderSetPreviewCallbacks(_renderStart, _renderDraw, _renderUpdate);
+    if (_renderer_inited)
+    {
+        width = _renderer.render_width;
+        height = _renderer.render_height;
+        
+        delete pixbuf;
+        pixbuf = new QImage(width, height, QImage::Format_ARGB32);
+        area->setMinimumSize(width, height);
+        area->setMaximumSize(width, height);
+        area->resize(width, height);
+        scroll->setMinimumSize(width > 800 ? 850 : width + 50, height > 600 ? 650 : height + 50);
+        
+        rendererSetPreviewCallbacks(&_renderer, _renderStart, _renderDraw, _renderUpdate);
+    }
 
     exec();
 }

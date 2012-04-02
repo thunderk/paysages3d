@@ -156,7 +156,7 @@ Cliquez avec le bouton droit sur un point pour le supprimer.</translation>
 <context>
     <name>DialogRender</name>
     <message>
-        <location filename="../gui_qt/dialogrender.cpp" line="78"/>
+        <location filename="../gui_qt/dialogrender.cpp" line="79"/>
         <source>Paysages 3D - Render</source>
         <translation>Paysages 3D - Rendu</translation>
     </message>
