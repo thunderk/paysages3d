@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QLabel>
 #include "widgetwanderer.h"
 
 DialogWanderer::DialogWanderer(QWidget* parent, CameraDefinition* camera, bool camera_validable) : QDialog(parent)
@@ -20,6 +21,8 @@ DialogWanderer::DialogWanderer(QWidget* parent, CameraDefinition* camera, bool c
     panel = new QWidget(this);
     panel->setLayout(new QVBoxLayout());
     panel->setMaximumWidth(230);
+    
+    panel->layout()->addWidget(new QLabel(tr("COMMANDS\n\nLeft click : Look around\nRight click : Pan (adjust framing)\nWheel : Move forward/backward\nHold SHIFT : Slower\nHold CTRL : Faster"), panel));
 
     button = new QPushButton(tr("Reset camera"), panel);
     panel->layout()->addWidget(button);

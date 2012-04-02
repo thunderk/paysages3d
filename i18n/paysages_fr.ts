@@ -164,22 +164,55 @@ Cliquez avec le bouton droit sur un point pour le supprimer.</translation>
 <context>
     <name>DialogWanderer</name>
     <message>
-        <location filename="../gui_qt/dialogwanderer.cpp" line="14"/>
+        <location filename="../gui_qt/dialogwanderer.cpp" line="15"/>
         <source>Paysages 3D - Explore</source>
         <translation>Paysages 3D - Exploration</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogwanderer.cpp" line="24"/>
+        <source>COMMANDS
+
+Left click : Look around
+Right click : Pan (adjust framing)
+Wheel : Move forward/backward
+Hold SHIFT : Faster
+Hold CTRL : Slower</source>
+        <translation type="obsolete">COMMANDES
+
+Clic gauche : Regarder autour
+Clic droit : Déplacer le cadrage
+Molette : Avancer/reculer
+Maintenir MAJ : Plus rapide
+Maintenir Ctrl : Plus lent</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogwanderer.cpp" line="25"/>
+        <source>COMMANDS
+
+Left click : Look around
+Right click : Pan (adjust framing)
+Wheel : Move forward/backward
+Hold SHIFT : Slower
+Hold CTRL : Faster</source>
+        <translation>COMMANDES
+
+Clic gauche : Regarder autour
+Clic droit : Déplacer le cadrage
+Molette : Avancer/reculer
+Maintenir MAJ : Plus lent
+Maintenir Ctrl : Plus rapide</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogwanderer.cpp" line="27"/>
         <source>Reset camera</source>
         <translation>Revenir au point de vue initial</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogwanderer.cpp" line="30"/>
+        <location filename="../gui_qt/dialogwanderer.cpp" line="33"/>
         <source>Validate as render camera</source>
         <translation>Choisir comme caméra de rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogwanderer.cpp" line="35"/>
+        <location filename="../gui_qt/dialogwanderer.cpp" line="38"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
