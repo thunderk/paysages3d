@@ -3,6 +3,7 @@
 
 #include "baseform.h"
 #include "../lib_paysages/camera.h"
+#include "../lib_paysages/renderer.h"
 
 class FormRender : public BaseForm
 {
@@ -10,10 +11,12 @@ class FormRender : public BaseForm
 
 public:
     explicit FormRender(QWidget *parent = 0);
+    ~FormRender();
 
 public slots:
     virtual void revertConfig();
     virtual void applyConfig();
+    void startQuickRender();
 
 protected slots:
     virtual void configChangeEvent();
@@ -28,6 +31,8 @@ private:
     int _width;
     int _height;
     CameraDefinition _camera;
+    Renderer _renderer;
+    bool _renderer_inited;
 };
 
 #endif // _PAYSAGES_QT_FORMRENDER_H_

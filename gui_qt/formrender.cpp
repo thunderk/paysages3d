@@ -17,6 +17,8 @@ FormRender::FormRender(QWidget *parent) :
     _width = 800;
     _height = 600;
     _camera = cameraCreateDefinition();
+    
+    _renderer_inited = false;
 
     addInput(new InputCamera(this, tr("Camera"), &_camera));
     addInputInt(tr("Quality"), &_quality, 1, 10, 1, 1);
@@ -31,6 +33,14 @@ FormRender::FormRender(QWidget *parent) :
     connect(button, SIGNAL(clicked()), this, SLOT(saveRender()));
 
     revertConfig();
+}
+
+FormRender::~FormRender()
+{
+    if (_renderer_inited)
+    {
+        rendererDelete(&_renderer);
+    }
 }
 
 void FormRender::revertConfig()
@@ -51,9 +61,31 @@ void FormRender::configChangeEvent()
     BaseForm::configChangeEvent();
 }
 
+void FormRender::startQuickRender()
+{
+    if (_renderer_inited)
+    {
+        rendererDelete(&_renderer);
+    }
+    _renderer = sceneryCreateStandardRenderer();
+    _renderer_inited = true;
+    
+    DialogRender* dialog = new DialogRender(this, &_renderer);
+    dialog->startRender(3, 400, 300);
+
+    delete dialog;
+}
+
 void FormRender::startRender()
 {
-    DialogRender* dialog = new DialogRender(this);
+    if (_renderer_inited)
+    {
+        rendererDelete(&_renderer);
+    }
+    _renderer = sceneryCreateStandardRenderer();
+    _renderer_inited = true;
+    
+    DialogRender* dialog = new DialogRender(this, &_renderer);
     dialog->startRender(_quality, _width, _height);
 
     delete dialog;
@@ -61,20 +93,26 @@ void FormRender::startRender()
 
 void FormRender::showRender()
 {
-    DialogRender* dialog = new DialogRender(this);
-    dialog->loadLastRender();
+    if (_renderer_inited)
+    {
+        DialogRender* dialog = new DialogRender(this, &_renderer);
+        dialog->loadLastRender();
 
-    delete dialog;
+        delete dialog;
+    }
 }
 
 void FormRender::saveRender()
 {
-    QString filepath;
-
-    filepath = QFileDialog::getSaveFileName(this, tr("Choose a filename to save the last render"));
-    if (!filepath.isNull())
+    if (_renderer_inited)
     {
-        //renderSaveToFile((char*)filepath.toStdString().c_str());
-        QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
+        QString filepath;
+
+        filepath = QFileDialog::getSaveFileName(this, tr("Choose a filename to save the last render"));
+        if (!filepath.isNull())
+        {
+            renderSaveToFile(_renderer.render_area, (char*)filepath.toStdString().c_str());
+            QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
+        }
     }
 }

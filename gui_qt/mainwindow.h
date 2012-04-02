@@ -2,6 +2,7 @@
 #define _PAYSAGES_QT_MAINWINDOW_H_
 
 #include <QMainWindow>
+#include "formrender.h"
 
 class MainWindow : public QMainWindow
 {
@@ -19,6 +20,9 @@ public slots:
 
     void quickPreview();
     void explore3D();
+    
+private:
+    FormRender* _form_render;
 };
 
 #endif

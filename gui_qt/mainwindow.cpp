@@ -98,9 +98,8 @@ MainWindow::MainWindow(QWidget *parent) :
     tabs->addTab(form, tr("Lighting"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));*/
 
-    form = new FormRender(tabs);
-    tabs->addTab(form, tr("Render"));
-    //QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    _form_render = new FormRender(tabs);
+    tabs->addTab(_form_render, tr("Render"));
 
     menu = menuBar()->addMenu(tr("&Scene"));
     menu->addAction(tr("&New"), this, SLOT(fileNew()), QKeySequence(tr("Crtl+N")));
@@ -157,10 +156,7 @@ void MainWindow::fileLoad()
 
 void MainWindow::quickPreview()
 {
-    DialogRender* dialog = new DialogRender(this);
-    dialog->startRender(3, 400, 300);
-
-    delete dialog;
+    _form_render->startQuickRender();
 }
 
 void MainWindow::explore3D()

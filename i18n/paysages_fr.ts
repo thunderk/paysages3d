@@ -156,7 +156,7 @@ Cliquez avec le bouton droit sur un point pour le supprimer.</translation>
 <context>
     <name>DialogRender</name>
     <message>
-        <location filename="../gui_qt/dialogrender.cpp" line="79"/>
+        <location filename="../gui_qt/dialogrender.cpp" line="80"/>
         <source>Paysages 3D - Render</source>
         <translation>Paysages 3D - Rendu</translation>
     </message>
@@ -320,47 +320,47 @@ Cliquez avec le bouton droit sur un point pour le supprimer.</translation>
 <context>
     <name>FormRender</name>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="21"/>
+        <location filename="../gui_qt/formrender.cpp" line="23"/>
         <source>Camera</source>
         <translation>Caméra</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="22"/>
+        <location filename="../gui_qt/formrender.cpp" line="24"/>
         <source>Quality</source>
         <translation>Qualité de rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="23"/>
+        <location filename="../gui_qt/formrender.cpp" line="25"/>
         <source>Image width</source>
         <translation>Largeur de l&apos;image</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="24"/>
+        <location filename="../gui_qt/formrender.cpp" line="26"/>
         <source>Image height</source>
         <translation>Hauteur de l&apos;image</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="26"/>
+        <location filename="../gui_qt/formrender.cpp" line="28"/>
         <source>Start new render</source>
         <translation>Démarrer un rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="28"/>
+        <location filename="../gui_qt/formrender.cpp" line="30"/>
         <source>Show last render</source>
         <translation>Voir le dernier rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="30"/>
+        <location filename="../gui_qt/formrender.cpp" line="32"/>
         <source>Save last render</source>
         <translation>Sauvegarder le dernier rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="74"/>
+        <location filename="../gui_qt/formrender.cpp" line="111"/>
         <source>Choose a filename to save the last render</source>
         <translation>Choisissez un nom de fichier pour le rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="78"/>
+        <location filename="../gui_qt/formrender.cpp" line="115"/>
         <source>The picture %1 has been saved.</source>
         <translation>L&apos;image %1 a été sauvegardée.</translation>
     </message>
@@ -601,62 +601,62 @@ Cliquez avec le bouton droit sur un point pour le supprimer.</translation>
         <translation>Rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="105"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="104"/>
         <source>&amp;Scene</source>
         <translation>&amp;Scène</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="106"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="105"/>
         <source>&amp;New</source>
         <translation>&amp;Nouvelle</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="106"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="105"/>
         <source>Crtl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="108"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="107"/>
         <source>&amp;Save</source>
         <translation>&amp;Sauvegarder</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="108"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="107"/>
         <source>Crtl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="109"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="108"/>
         <source>&amp;Open</source>
         <translation>&amp;Ouvrir</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="109"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="108"/>
         <source>Crtl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="111"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="110"/>
         <source>&amp;Quit</source>
         <translation>&amp;Quitter</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="111"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="110"/>
         <source>Crtl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="113"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="112"/>
         <source>&amp;Actions</source>
         <translation>&amp;Actions</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="114"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="113"/>
         <source>&amp;Explore in 3D</source>
         <translation>&amp;Explorer en 3D</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="115"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="114"/>
         <source>&amp;Quick render</source>
         <translation>Rendu r&amp;apide</translation>
     </message>

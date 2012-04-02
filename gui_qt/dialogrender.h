@@ -11,7 +11,7 @@ class DialogRender : public QDialog
 {
     Q_OBJECT
 public:
-    explicit DialogRender(QWidget *parent);
+    explicit DialogRender(QWidget *parent, Renderer* renderer);
     ~DialogRender();
 
     void startRender(int quality, int width, int height);
@@ -19,12 +19,16 @@ public:
 
     QImage* pixbuf;
     QWidget* area;
-    QScrollArea* scroll;
     QProgressBar* progress;
     int progress_value;
+    
+public slots:
+    void applyRenderSize(int width, int height);
 
 private:
+    QScrollArea* scroll;
     QThread* render_thread;
+    Renderer* _renderer;
 };
 
 #endif // _PAYSAGES_QT_DIALOGRENDER_H_
