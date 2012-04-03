@@ -19,17 +19,17 @@
         <translation>Supprimer un niveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="73"/>
+        <location filename="../gui_qt/baseform.cpp" line="74"/>
         <source>Apply</source>
         <translation>Appliquer</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="76"/>
+        <location filename="../gui_qt/baseform.cpp" line="77"/>
         <source>Revert</source>
         <translation>Annuler les modifications</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="239"/>
+        <location filename="../gui_qt/baseform.cpp" line="245"/>
         <source>Layer %1</source>
         <translation>Niveau %1</translation>
     </message>
@@ -472,6 +472,39 @@ Maintenir Ctrl : Plus rapide</translation>
         <location filename="../gui_qt/formterrain.cpp" line="93"/>
         <source>Scaling</source>
         <translation>Echelle</translation>
+    </message>
+</context>
+<context>
+    <name>FormTextures</name>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="71"/>
+        <source>Surface noise</source>
+        <translation>Bruit de surface</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="72"/>
+        <source>Surface noise height</source>
+        <translation>Hauteur du bruit</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="73"/>
+        <source>Surface noise scaling</source>
+        <translation>Echelle du bruit</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="74"/>
+        <source>Base color</source>
+        <translation>Couleur de base</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="75"/>
+        <source>Light reflection</source>
+        <translation>Réflexion de lumière</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="76"/>
+        <source>Light reflection shininess</source>
+        <translation>Concentration de la réflexion de lumière</translation>
     </message>
 </context>
 <context>

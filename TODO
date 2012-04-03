@@ -1,5 +1,7 @@
 - Implement scaling and scrolling on previews.
+- Add a material editor dialog.
 - Replace FILE* by a custom type for Save and Load.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
+- Add a splash screen / about dialog.
 - Restore render progress.
 - Find a licence and apply it.

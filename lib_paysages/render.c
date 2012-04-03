@@ -33,7 +33,7 @@ struct RenderArea
     RenderCallbackUpdate callback_update;
 };
 
-#define RENDER_INVERSE 1
+/*#define RENDER_INVERSE 1*/
 #define RENDER_WIREFRAME 1
 
 static void _callbackStart(int width, int height, Color background) {}

@@ -51,6 +51,7 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
 
     previews = new QWidget(this);
     previews->setLayout(new QVBoxLayout());
+    previews->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     form = new QWidget(this);
     form->setLayout(new QGridLayout());
@@ -150,7 +151,12 @@ void BaseForm::layerListChanged()
 
 void BaseForm::addPreview(BasePreview* preview, QString label)
 {
-    previews->layout()->addWidget(new QLabel(label, previews));
+    QLabel* label_widget;
+    
+    label_widget = new QLabel(label, previews);
+    label_widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+    
+    previews->layout()->addWidget(label_widget);
     previews->layout()->addWidget(preview);
     
     preview->start();

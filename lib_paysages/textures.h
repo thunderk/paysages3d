@@ -16,7 +16,9 @@ typedef struct
 {
     Zone* zone;
     NoiseGenerator* bump_noise;
-    Color color;
+    double bump_scaling;
+    double bump_height;
+    SurfaceMaterial material;
 } TextureLayerDefinition;
 
 typedef struct

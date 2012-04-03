@@ -34,7 +34,9 @@ void texturesSave(FILE* f, TexturesDefinition* definition)
     {
         zoneSave(f, definition->textures[i].zone);
         noiseSaveGenerator(f, definition->textures[i].bump_noise);
-        colorSave(f, &definition->textures[i].color);
+        toolsSaveDouble(f, &definition->textures[i].bump_height);
+        toolsSaveDouble(f, &definition->textures[i].bump_scaling);
+        materialSave(f, &definition->textures[i].material);
     }
 }
 
@@ -55,7 +57,9 @@ void texturesLoad(FILE* f, TexturesDefinition* definition)
 
         zoneLoad(f, layer->zone);
         noiseLoadGenerator(f, layer->bump_noise);
-        colorLoad(f, &layer->color);
+        toolsLoadDouble(f, &layer->bump_height);
+        toolsLoadDouble(f, &layer->bump_scaling);
+        materialLoad(f, &layer->material);
     }
 
     texturesValidateDefinition(definition);
@@ -109,7 +113,11 @@ TextureLayerDefinition texturesLayerCreateDefinition()
 
     result.zone = zoneCreate();
     result.bump_noise = noiseCreateGenerator();
-    result.color = COLOR_GREEN;
+    result.bump_height = 0.0;
+    result.bump_scaling = 0.0;
+    result.material.base = COLOR_GREEN;
+    result.material.reflection = 0.0;
+    result.material.shininess = 0.0;
 
     return result;
 }
@@ -122,7 +130,9 @@ void texturesLayerDeleteDefinition(TextureLayerDefinition* definition)
 
 void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDefinition* destination)
 {
-    destination->color = source->color;
+    destination->material = source->material;
+    destination->bump_height = source->bump_height;
+    destination->bump_scaling = source->bump_scaling;
     noiseCopy(source->bump_noise, destination->bump_noise);
     zoneCopy(source->zone, destination->zone);
 }
@@ -181,17 +191,17 @@ static inline Vector3 _getNormal(TextureLayerDefinition* definition, Renderer* r
 
     ref.x = 0.0;
     ref.y = 0.0;
-    point.y = renderer->getTerrainHeight(renderer, point.x, point.z) + noiseGet2DTotal(definition->bump_noise, point.x, point.z);
+    point.y = renderer->getTerrainHeight(renderer, point.x, point.z) + noiseGet2DTotal(definition->bump_noise, point.x / definition->bump_scaling, point.z / definition->bump_scaling) * definition->bump_height;
 
     dpoint.x = point.x - scale;
     dpoint.z = point.z;
-    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
+    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x / definition->bump_scaling, dpoint.z / definition->bump_scaling) * definition->bump_height;
     ref.z = -1.0;
     normal = v3Normalize(v3Cross(ref, v3Sub(dpoint, point)));
 
     dpoint.x = point.x + scale;
     dpoint.z = point.z;
-    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
+    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x / definition->bump_scaling, dpoint.z / definition->bump_scaling) * definition->bump_height;
     ref.z = 1.0;
     normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
 
@@ -199,13 +209,13 @@ static inline Vector3 _getNormal(TextureLayerDefinition* definition, Renderer* r
 
     dpoint.x = point.x;
     dpoint.z = point.z - scale;
-    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
+    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x / definition->bump_scaling, dpoint.z / definition->bump_scaling) * definition->bump_height;
     ref.x = 1.0;
     normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
 
     dpoint.x = point.x;
     dpoint.z = point.z + scale;
-    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x, dpoint.z);
+    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x / definition->bump_scaling, dpoint.z / definition->bump_scaling) * definition->bump_height;
     ref.x = -1.0;
     normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
 
@@ -217,7 +227,6 @@ Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* render
     Color result;
     Vector3 normal;
     double coverage;
-    SurfaceMaterial material;
 
     result = COLOR_TRANSPARENT;
     normal = _getNormal(definition, renderer, location, detail * 0.1);
@@ -225,11 +234,7 @@ Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* render
     coverage = zoneGetValue(definition->zone, location, normal);
     if (coverage > 0.0)
     {
-        material.base = definition->color;
-        material.reflection = 0.1;
-        material.shininess = 4.0;
-
-        result = renderer->applyLightingToSurface(renderer, location, normal, material);
+        result = renderer->applyLightingToSurface(renderer, location, normal, definition->material);
         result.a = coverage;
     }
     return result;

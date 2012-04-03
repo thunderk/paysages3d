@@ -12,6 +12,11 @@ class FormTextures : public BaseForm
 public:
     explicit FormTextures(QWidget *parent = 0);
 
+protected:
+    virtual void layerAddedEvent();
+    virtual void layerDeletedEvent(int layer);
+    virtual void layerSelectedEvent(int layer);
+
 public slots:
     virtual void revertConfig();
     virtual void applyConfig();
