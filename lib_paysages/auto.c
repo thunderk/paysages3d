@@ -66,8 +66,6 @@ void autoGenRealisticLandscape(int seed)
     TexturesDefinition textures;
     TextureLayerDefinition* texture;
     LightingDefinition lighting;
-    HeightModifier* mod;
-    Zone* zone;
 
     if (!seed)
     {
@@ -144,32 +142,14 @@ void autoGenRealisticLandscape(int seed)
     noiseAddLevelsSimple(terrain.height_noise, 10, 1.0, 1.0);
     terrain.height_factor = 12.0 / noiseGetMaxValue(terrain.height_noise);
     terrain.scaling = 10.0;
-    /* DEBUG */
-    mod = modifierCreate();
-    zone = modifierGetZone(mod);
-    zoneIncludeCircleArea(zone, 0.4, 0.0, 0.0, 8.0, 20.0);
-    modifierActionFixValue(mod, -2.0);
-    terrainAddModifier(&terrain, mod);
-    modifierDelete(mod);
-    mod = modifierCreate();
-    zone = modifierGetZone(mod);
-    zoneIncludeCircleArea(zone, 1.0, 0.0, 0.0, 0.3, 8.0);
-    modifierActionAddValue(mod, 8.0);
-    terrainAddModifier(&terrain, mod);
-    modifierDelete(mod);
-    mod = modifierCreate();
-    zone = modifierGetZone(mod);
-    zoneIncludeCircleArea(zone, 0.8, 0.0, 0.0, 0.3, 4.0);
-    modifierActionFixValue(mod, -8.0);
-    terrainAddModifier(&terrain, mod);
-    modifierDelete(mod);
-    /* DEBUG */
     scenerySetTerrain(&terrain);
     terrainDeleteDefinition(&terrain);
 
     /* Textures */
     textures = texturesCreateDefinition();
     texture = texturesGetLayer(&textures, texturesAddLayer(&textures));
+    zoneAddHeightRangeQuick(texture->zone, 1.0, -20.0, -20.0, 20.0, 20.0);
+    zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 5.0, 5.0);
     noiseGenerateBaseNoise(texture->bump_noise, 102400);
     noiseAddLevelsSimple(texture->bump_noise, 6, 1.0, 1.0);
     texture->bump_height = 0.1;
@@ -180,8 +160,8 @@ void autoGenRealisticLandscape(int seed)
     texture->material.reflection = 0.2;
     texture->material.shininess = 3.0;
     texture = texturesGetLayer(&textures, texturesAddLayer(&textures));
-    zoneAddHeightRange(texture->zone, 1.0, -1.0, 0.0, 3.0, 15.0);
-    zoneAddSteepnessRange(texture->zone, 1.0, 0.0, 0.0, 0.2, 0.3);
+    zoneAddHeightRangeQuick(texture->zone, 1.0, -1.0, 0.0, 3.0, 15.0);
+    zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 0.2, 0.3);
     noiseGenerateBaseNoise(texture->bump_noise, 102400);
     noiseAddLevelsSimple(texture->bump_noise, 6, 1.0, 0.4);
     texture->bump_height = 0.02;

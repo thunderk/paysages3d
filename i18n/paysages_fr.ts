@@ -477,7 +477,7 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormTextures</name>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="112"/>
+        <location filename="../gui_qt/formtextures.cpp" line="125"/>
         <source>Coverage preview</source>
         <translation>Aperçu de la couverture</translation>
     </message>
@@ -486,39 +486,79 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Rendu en couleur</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="113"/>
+        <location filename="../gui_qt/formtextures.cpp" line="126"/>
         <source>Lighted sample</source>
         <translation>Echantillon éclairé</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="115"/>
+        <location filename="../gui_qt/formtextures.cpp" line="128"/>
         <source>Surface noise</source>
         <translation>Bruit de surface</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="116"/>
+        <location filename="../gui_qt/formtextures.cpp" line="129"/>
         <source>Surface noise height</source>
         <translation>Hauteur du bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="117"/>
+        <location filename="../gui_qt/formtextures.cpp" line="130"/>
         <source>Surface noise scaling</source>
         <translation>Echelle du bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="118"/>
+        <location filename="../gui_qt/formtextures.cpp" line="131"/>
         <source>Base color</source>
         <translation>Couleur de base</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="119"/>
+        <location filename="../gui_qt/formtextures.cpp" line="132"/>
         <source>Light reflection</source>
         <translation>Réflexion de lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="120"/>
+        <location filename="../gui_qt/formtextures.cpp" line="133"/>
         <source>Light reflection shininess</source>
         <translation>Concentration de la réflexion de lumière</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="136"/>
+        <source>Soft minimal height</source>
+        <translation>Altitude minimal (adoucie)</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="135"/>
+        <source>Hard minimal height</source>
+        <translation>Altitude minimale</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="138"/>
+        <source>Hard maximal height</source>
+        <translation>Altitude maximale</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="137"/>
+        <source>Soft maximal height</source>
+        <translation>Altitude maximale (adoucie)</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="140"/>
+        <source>Soft minimal slope</source>
+        <translation>Pente minimale (adoucie)</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="139"/>
+        <source>Hard minimal slope</source>
+        <translation>Pente minimale</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="142"/>
+        <source>Hard maximal slope</source>
+        <translation>Pente maximale</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="141"/>
+        <source>Soft maximal slope</source>
+        <translation>Pente maximale (adoucie)</translation>
     </message>
 </context>
 <context>
@@ -761,7 +801,7 @@ Maintenir Ctrl : Plus rapide</translation>
 
 Credits :
 Programming - Michael Lemaire</source>
-        <translation type="unfinished">Un logiciel d&apos;édition et rendu de décors naturels en 3D
+        <translation>Un logiciel d&apos;édition et rendu de décors naturels en 3D
 
 Crédits :
 Développement - Michaël LEMAIRE</translation>

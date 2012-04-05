@@ -10,7 +10,7 @@ InputDouble::InputDouble(QWidget* form, QString label, double* value, double min
     slider = new QSlider(form);
 
     slider->setOrientation(Qt::Horizontal);
-    slider->setMinimumWidth(150);
+    slider->setMinimumWidth(200);
     slider->setMaximumWidth(400);
 
     slider->setMinimum(0);

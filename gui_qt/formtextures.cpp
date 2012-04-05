@@ -7,6 +7,19 @@
 static TexturesDefinition _definition;
 static TextureLayerDefinition _layer;
 
+typedef struct
+{
+    double height_soft_min;
+    double height_hard_min;
+    double height_hard_max;
+    double height_soft_max;
+    double slope_soft_min;
+    double slope_hard_min;
+    double slope_hard_max;
+    double slope_soft_max;
+} TextureSupp;
+static TextureSupp _supp;
+
 /**************** Previews ****************/
 class PreviewTexturesCoverage:public BasePreview
 {
@@ -119,6 +132,15 @@ FormTextures::FormTextures(QWidget *parent):
     addInputDouble(tr("Light reflection"), &_layer.material.reflection, 0.0, 1.0, 0.01, 0.1);
     addInputDouble(tr("Light reflection shininess"), &_layer.material.shininess, 0.0, 20.0, 0.1, 1.0);
 
+    addInputDouble(tr("Hard minimal height"), &_supp.height_hard_min, -20.0, 20.0, 0.1, 1.0);
+    addInputDouble(tr("Soft minimal height"), &_supp.height_soft_min, -20.0, 20.0, 0.1, 1.0);
+    addInputDouble(tr("Soft maximal height"), &_supp.height_soft_max, -20.0, 20.0, 0.1, 1.0);
+    addInputDouble(tr("Hard maximal height"), &_supp.height_hard_max, -20.0, 20.0, 0.1, 1.0);
+    addInputDouble(tr("Hard minimal slope"), &_supp.slope_hard_min, 0.0, 5.0, 0.05, 0.5);
+    addInputDouble(tr("Soft minimal slope"), &_supp.slope_soft_min, 0.0, 5.0, 0.05, 0.5);
+    addInputDouble(tr("Soft maximal slope"), &_supp.slope_soft_max, 0.0, 5.0, 0.05, 0.5);
+    addInputDouble(tr("Hard maximal slope"), &_supp.slope_hard_max, 0.0, 5.0, 0.05, 0.5);
+
     revertConfig();
 }
 
@@ -137,7 +159,29 @@ void FormTextures::applyConfig()
 
 void FormTextures::configChangeEvent()
 {
+    ZoneRangeCondition range;
+    
     texturesLayerCopyDefinition(&_layer, texturesGetLayer(&_definition, currentLayer()));
+    
+    if (zoneGetHeightRangeCount(_layer.zone) > 0)
+    {
+        range.value = 1.0;
+        range.softmin = _supp.height_soft_min;
+        range.hardmin = _supp.height_hard_min;
+        range.hardmax = _supp.height_hard_max;
+        range.softmax = _supp.height_soft_max;
+        zoneSetHeightRange(_layer.zone, 0, &range);
+    }
+    if (zoneGetSlopeRangeCount(_layer.zone) > 0)
+    {
+        range.value = 1.0;
+        range.softmin = _supp.slope_soft_min;
+        range.hardmin = _supp.slope_hard_min;
+        range.hardmax = _supp.slope_hard_max;
+        range.softmax = _supp.slope_soft_max;
+        zoneSetSlopeRange(_layer.zone, 0, &range);
+    }
+    
     texturesValidateDefinition(&_definition);
     BaseForm::configChangeEvent();
 }
@@ -159,7 +203,29 @@ void FormTextures::layerDeletedEvent(int layer)
 
 void FormTextures::layerSelectedEvent(int layer)
 {
+    ZoneRangeCondition range;
+    
     texturesLayerCopyDefinition(texturesGetLayer(&_definition, layer), &_layer);
+    
+    if (zoneGetHeightRangeCount(_layer.zone) == 0)
+    {
+        zoneAddHeightRange(_layer.zone);
+    }
+    zoneGetHeightRange(_layer.zone, 0, &range);
+    _supp.height_soft_min = range.softmin;
+    _supp.height_hard_min = range.hardmin;
+    _supp.height_hard_max = range.hardmax;
+    _supp.height_soft_max = range.softmax;
+    
+    if (zoneGetSlopeRangeCount(_layer.zone) == 0)
+    {
+        zoneAddSlopeRange(_layer.zone);
+    }
+    zoneGetSlopeRange(_layer.zone, 0, &range);
+    _supp.slope_soft_min = range.softmin;
+    _supp.slope_hard_min = range.hardmin;
+    _supp.slope_hard_max = range.hardmax;
+    _supp.slope_soft_max = range.softmax;
     
     BaseForm::layerSelectedEvent(layer);
 }

@@ -10,15 +10,6 @@
 typedef struct
 {
     double value;
-    double hardmin;
-    double softmin;
-    double softmax;
-    double hardmax;
-} Range;
-
-typedef struct
-{
-    double value;
     double centerx;
     double centerz;
     double softradius;
@@ -26,11 +17,11 @@ typedef struct
 } Circle;
 
 struct Zone {
-    Range height_ranges[MAX_RANGES];
+    ZoneRangeCondition height_ranges[MAX_RANGES];
     int height_ranges_count;
 
-    Range steepness_ranges[MAX_RANGES];
-    int steepness_ranges_count;
+    ZoneRangeCondition slope_ranges[MAX_RANGES];
+    int slope_ranges_count;
 
     Circle circles_included[MAX_CIRCLES];
     int circles_included_count;
@@ -45,7 +36,7 @@ Zone* zoneCreate()
 
     result = (Zone*)malloc(sizeof(Zone));
     result->height_ranges_count = 0;
-    result->steepness_ranges_count = 0;
+    result->slope_ranges_count = 0;
     result->circles_included_count = 0;
     result->circles_excluded_count = 0;
 
@@ -71,14 +62,14 @@ void zoneSave(FILE* f, Zone* zone)
         toolsSaveDouble(f, &zone->height_ranges[i].hardmax);
     }
 
-    toolsSaveInt(f, &zone->steepness_ranges_count);
-    for (i = 0; i < zone->steepness_ranges_count; i++)
+    toolsSaveInt(f, &zone->slope_ranges_count);
+    for (i = 0; i < zone->slope_ranges_count; i++)
     {
-        toolsSaveDouble(f, &zone->steepness_ranges[i].value);
-        toolsSaveDouble(f, &zone->steepness_ranges[i].hardmin);
-        toolsSaveDouble(f, &zone->steepness_ranges[i].softmin);
-        toolsSaveDouble(f, &zone->steepness_ranges[i].softmax);
-        toolsSaveDouble(f, &zone->steepness_ranges[i].hardmax);
+        toolsSaveDouble(f, &zone->slope_ranges[i].value);
+        toolsSaveDouble(f, &zone->slope_ranges[i].hardmin);
+        toolsSaveDouble(f, &zone->slope_ranges[i].softmin);
+        toolsSaveDouble(f, &zone->slope_ranges[i].softmax);
+        toolsSaveDouble(f, &zone->slope_ranges[i].hardmax);
     }
 
     toolsSaveInt(f, &zone->circles_included_count);
@@ -116,14 +107,14 @@ void zoneLoad(FILE* f, Zone* zone)
         toolsLoadDouble(f, &zone->height_ranges[i].hardmax);
     }
 
-    toolsLoadInt(f, &zone->steepness_ranges_count);
-    for (i = 0; i < zone->steepness_ranges_count; i++)
+    toolsLoadInt(f, &zone->slope_ranges_count);
+    for (i = 0; i < zone->slope_ranges_count; i++)
     {
-        toolsLoadDouble(f, &zone->steepness_ranges[i].value);
-        toolsLoadDouble(f, &zone->steepness_ranges[i].hardmin);
-        toolsLoadDouble(f, &zone->steepness_ranges[i].softmin);
-        toolsLoadDouble(f, &zone->steepness_ranges[i].softmax);
-        toolsLoadDouble(f, &zone->steepness_ranges[i].hardmax);
+        toolsLoadDouble(f, &zone->slope_ranges[i].value);
+        toolsLoadDouble(f, &zone->slope_ranges[i].hardmin);
+        toolsLoadDouble(f, &zone->slope_ranges[i].softmin);
+        toolsLoadDouble(f, &zone->slope_ranges[i].softmax);
+        toolsLoadDouble(f, &zone->slope_ranges[i].hardmax);
     }
 
     toolsLoadInt(f, &zone->circles_included_count);
@@ -167,27 +158,129 @@ void zoneExcludeCircleArea(Zone* zone, double centerx, double centerz, double so
     /* TODO */
 }
 
-void zoneAddHeightRange(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax)
+int zoneAddHeightRange(Zone* zone)
 {
-    Range range = {value, hardmin, softmin, softmax, hardmax};
-
     if (zone->height_ranges_count < MAX_RANGES)
     {
-        zone->height_ranges[zone->height_ranges_count++] = range;
+        zone->height_ranges[zone->height_ranges_count].value = 0.0;
+        zone->height_ranges[zone->height_ranges_count].softmin = 0.0;
+        zone->height_ranges[zone->height_ranges_count].hardmin = 0.0;
+        zone->height_ranges[zone->height_ranges_count].hardmax = 0.0;
+        zone->height_ranges[zone->height_ranges_count].softmax = 0.0;
+        return zone->height_ranges_count++;
     }
-}
-
-void zoneAddSteepnessRange(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax)
-{
-    Range range = {value, hardmin, softmin, softmax, hardmax};
-
-    if (zone->steepness_ranges_count < MAX_RANGES)
+    else
     {
-        zone->steepness_ranges[zone->steepness_ranges_count++] = range;
+        return -1;
     }
 }
 
-static inline double _getRangeInfluence(Range range, double position)
+int zoneGetHeightRangeCount(Zone* zone)
+{
+    return zone->height_ranges_count;
+}
+
+int zoneGetHeightRange(Zone* zone, int position, ZoneRangeCondition* range)
+{
+    if (position >= 0 && position < zone->height_ranges_count)
+    {
+        *range = zone->height_ranges[position];
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+int zoneSetHeightRange(Zone* zone, int position, ZoneRangeCondition* range)
+{
+    if (position >= 0 && position < zone->height_ranges_count)
+    {
+        zone->height_ranges[position] = *range;
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+int zoneAddHeightRangeQuick(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax)
+{
+    ZoneRangeCondition range = {value, hardmin, softmin, softmax, hardmax};
+    int position;
+    
+    position = zoneAddHeightRange(zone);
+    if (position >= 0)
+    {
+        zoneSetHeightRange(zone, position, &range);
+    }
+    return position;
+}
+
+int zoneAddSlopeRange(Zone* zone)
+{
+    if (zone->slope_ranges_count < MAX_RANGES)
+    {
+        zone->slope_ranges[zone->slope_ranges_count].value = 0.0;
+        zone->slope_ranges[zone->slope_ranges_count].softmin = 0.0;
+        zone->slope_ranges[zone->slope_ranges_count].hardmin = 0.0;
+        zone->slope_ranges[zone->slope_ranges_count].hardmax = 0.0;
+        zone->slope_ranges[zone->slope_ranges_count].softmax = 0.0;
+        return zone->slope_ranges_count++;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+int zoneGetSlopeRangeCount(Zone* zone)
+{
+    return zone->slope_ranges_count;
+}
+
+int zoneGetSlopeRange(Zone* zone, int position, ZoneRangeCondition* range)
+{
+    if (position >= 0 && position < zone->slope_ranges_count)
+    {
+        *range = zone->slope_ranges[position];
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+int zoneSetSlopeRange(Zone* zone, int position, ZoneRangeCondition* range)
+{
+    if (position >= 0 && position < zone->slope_ranges_count)
+    {
+        zone->slope_ranges[position] = *range;
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+int zoneAddSlopeRangeQuick(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax)
+{
+    ZoneRangeCondition range = {value, hardmin, softmin, softmax, hardmax};
+    int position;
+    
+    position = zoneAddSlopeRange(zone);
+    if (position >= 0)
+    {
+        zoneSetSlopeRange(zone, position, &range);
+    }
+    return position;
+}
+
+static inline double _getRangeInfluence(ZoneRangeCondition range, double position)
 {
     if (position >= range.hardmin && position <= range.hardmax)
     {
@@ -271,12 +364,12 @@ double zoneGetValue(Zone* zone, Vector3 location, Vector3 normal)
         value_height = 1.0;
     }
 
-    if (zone->steepness_ranges_count > 0)
+    if (zone->slope_ranges_count > 0)
     {
         value_steepness = 0.0;
-        for (i = 0; i < zone->steepness_ranges_count; i++)
+        for (i = 0; i < zone->slope_ranges_count; i++)
         {
-            value = _getRangeInfluence(zone->steepness_ranges[i], (1.0 - normal.y));
+            value = _getRangeInfluence(zone->slope_ranges[i], (1.0 - normal.y));
             if (value > value_steepness)
             {
                 value_steepness = value;
