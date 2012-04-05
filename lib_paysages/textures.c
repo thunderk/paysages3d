@@ -222,6 +222,15 @@ static inline Vector3 _getNormal(TextureLayerDefinition* definition, Renderer* r
     return v3Normalize(normal);
 }
 
+double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
+{
+    Vector3 normal;
+
+    normal = _getNormal(definition, renderer, location, detail * 0.1);
+
+    return zoneGetValue(definition->zone, location, normal);
+}
+
 Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
 {
     Color result;

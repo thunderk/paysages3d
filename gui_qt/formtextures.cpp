@@ -13,24 +13,41 @@ class PreviewTexturesCoverage:public BasePreview
 public:
     PreviewTexturesCoverage(QWidget* parent):BasePreview(parent)
     {
+        _terrain = terrainCreateDefinition();
+        
         _renderer = rendererCreate();
         _renderer.render_quality = 3;
+        _renderer.getTerrainHeight = _getTerrainHeight;
+        _renderer.customData[0] = &_terrain;
         
         _preview_layer = texturesLayerCreateDefinition();
     }
 protected:
     QColor getColor(double x, double y)
     {
-        return QColor(0, 0, 0);
+        Vector3 location;
+        double coverage;
+        location.x = x;
+        location.y = terrainGetHeight(&_terrain, x, y);
+        location.z = y;
+        coverage = texturesGetLayerCoverage(&_preview_layer, &_renderer, location, this->scaling);
+        return QColor::fromRgbF(coverage, coverage, coverage, 1.0);
     }
     void updateData()
     {
+        sceneryGetTerrain(&_terrain);
         texturesLayerCopyDefinition(&_layer, &_preview_layer);
     }
 
 private:
+    static double _getTerrainHeight(Renderer* renderer, double x, double z)
+    {
+        return terrainGetHeight((TerrainDefinition*)(renderer->customData[0]), x, z);
+    }
+
     Renderer _renderer;
     TextureLayerDefinition _preview_layer;
+    TerrainDefinition _terrain;
 };
 
 class PreviewTexturesColor:public BasePreview
@@ -92,8 +109,8 @@ FormTextures::FormTextures(QWidget *parent):
 
     previewCoverage = new PreviewTexturesCoverage(this);
     previewColor = new PreviewTexturesColor(this);
-    addPreview(previewCoverage, QString("Coverage preview"));
-    addPreview(previewColor, QString("Colored preview"));
+    addPreview(previewCoverage, tr("Coverage preview"));
+    addPreview(previewColor, tr("Lighted sample"));
 
     addInputNoise(tr("Surface noise"), _layer.bump_noise);
     addInputDouble(tr("Surface noise height"), &_layer.bump_height, 0.0, 0.5, 0.001, 0.05);

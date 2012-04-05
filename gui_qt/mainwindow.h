@@ -17,6 +17,8 @@ public slots:
     void fileNew();
     void fileSave();
     void fileLoad();
+    
+    void showAboutDialog();
 
     void quickPreview();
     void explore3D();

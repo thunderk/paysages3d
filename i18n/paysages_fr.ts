@@ -477,32 +477,46 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormTextures</name>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="98"/>
+        <location filename="../gui_qt/formtextures.cpp" line="112"/>
+        <source>Coverage preview</source>
+        <translation>Aperçu de la couverture</translation>
+    </message>
+    <message>
+        <source>Colored preview</source>
+        <translation type="obsolete">Rendu en couleur</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="113"/>
+        <source>Lighted sample</source>
+        <translation>Echantillon éclairé</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="115"/>
         <source>Surface noise</source>
         <translation>Bruit de surface</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="99"/>
+        <location filename="../gui_qt/formtextures.cpp" line="116"/>
         <source>Surface noise height</source>
         <translation>Hauteur du bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="100"/>
+        <location filename="../gui_qt/formtextures.cpp" line="117"/>
         <source>Surface noise scaling</source>
         <translation>Echelle du bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="101"/>
+        <location filename="../gui_qt/formtextures.cpp" line="118"/>
         <source>Base color</source>
         <translation>Couleur de base</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="102"/>
+        <location filename="../gui_qt/formtextures.cpp" line="119"/>
         <source>Light reflection</source>
         <translation>Réflexion de lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="103"/>
+        <location filename="../gui_qt/formtextures.cpp" line="120"/>
         <source>Light reflection shininess</source>
         <translation>Concentration de la réflexion de lumière</translation>
     </message>
@@ -628,32 +642,32 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="74"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="75"/>
         <source>Terrain</source>
         <translation>Terrain</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="78"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="79"/>
         <source>Textures</source>
         <translation>Textures</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="82"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="83"/>
         <source>Water</source>
         <translation>Eau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="90"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="91"/>
         <source>Atmosphere</source>
         <translation>Atmosphère</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="86"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="87"/>
         <source>Sky</source>
         <translation>Ciel</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="94"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="95"/>
         <source>Clouds</source>
         <translation>Nuages</translation>
     </message>
@@ -662,69 +676,95 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Eclairage</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="102"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="103"/>
         <source>Render</source>
         <translation>Rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="104"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="105"/>
         <source>&amp;Scene</source>
         <translation>&amp;Scène</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="105"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="106"/>
         <source>&amp;New</source>
         <translation>&amp;Nouvelle</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="105"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="106"/>
         <source>Crtl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="107"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="108"/>
         <source>&amp;Save</source>
         <translation>&amp;Sauvegarder</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="107"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="108"/>
         <source>Crtl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="108"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="109"/>
         <source>&amp;Open</source>
         <translation>&amp;Ouvrir</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="108"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="109"/>
         <source>Crtl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="110"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="111"/>
         <source>&amp;Quit</source>
         <translation>&amp;Quitter</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="110"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="111"/>
         <source>Crtl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="112"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="113"/>
         <source>&amp;Actions</source>
         <translation>&amp;Actions</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="113"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="114"/>
         <source>&amp;Explore in 3D</source>
         <translation>&amp;Explorer en 3D</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="114"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="115"/>
         <source>&amp;Quick render</source>
         <translation>Rendu r&amp;apide</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="117"/>
+        <source>&amp;Help</source>
+        <translation>Ai&amp;de</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="118"/>
+        <source>&amp;About</source>
+        <translation>&amp;A propos</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="163"/>
+        <source>Paysages 3D</source>
+        <translation>Paysages 3D</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="163"/>
+        <source>A 3D landscape editing and rendering software.
+
+Credits :
+Programming - Michael Lemaire</source>
+        <translation type="unfinished">Un logiciel d&apos;édition et rendu de décors naturels en 3D
+
+Crédits :
+Développement - Michaël LEMAIRE</translation>
     </message>
 </context>
 </TS>

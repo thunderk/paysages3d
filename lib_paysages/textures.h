@@ -47,6 +47,7 @@ TextureLayerDefinition* texturesGetLayer(TexturesDefinition* definition, int lay
 int texturesAddLayer(TexturesDefinition* definition);
 void texturesDeleteLayer(TexturesDefinition* definition, int layer);
 
+double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);
 Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);
 Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, Vector3 location, double detail);
 

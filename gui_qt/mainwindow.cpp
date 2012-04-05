@@ -8,6 +8,7 @@
 #include <QTabWidget>
 #include <QTranslator>
 #include <QLocale>
+#include <qt4/QtGui/qmessagebox.h>
 
 #include "formatmosphere.h"
 #include "formclouds.h"
@@ -113,6 +114,9 @@ MainWindow::MainWindow(QWidget *parent) :
     menu->addAction(tr("&Explore in 3D"), this, SLOT(explore3D()), QKeySequence("F2"));
     menu->addAction(tr("&Quick render"), this, SLOT(quickPreview()), QKeySequence("F5"));
 
+    menu = menuBar()->addMenu(tr("&Help"));
+    menu->addAction(tr("&About"), this, SLOT(showAboutDialog()));
+
     setCentralWidget(tabs);
 
     setWindowTitle("Paysages 3D");
@@ -152,6 +156,11 @@ void MainWindow::fileLoad()
         paysagesLoad((char*)filepath.toStdString().c_str());
         refreshAll();
     }
+}
+
+void MainWindow::showAboutDialog()
+{
+    QMessageBox::about(this, tr("Paysages 3D"), tr("A 3D landscape editing and rendering software.\n\nCredits :\nProgramming - Michael Lemaire"));
 }
 
 void MainWindow::quickPreview()
