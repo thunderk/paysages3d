@@ -477,32 +477,32 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormTextures</name>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="71"/>
+        <location filename="../gui_qt/formtextures.cpp" line="98"/>
         <source>Surface noise</source>
         <translation>Bruit de surface</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="72"/>
+        <location filename="../gui_qt/formtextures.cpp" line="99"/>
         <source>Surface noise height</source>
         <translation>Hauteur du bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="73"/>
+        <location filename="../gui_qt/formtextures.cpp" line="100"/>
         <source>Surface noise scaling</source>
         <translation>Echelle du bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="74"/>
+        <location filename="../gui_qt/formtextures.cpp" line="101"/>
         <source>Base color</source>
         <translation>Couleur de base</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="75"/>
+        <location filename="../gui_qt/formtextures.cpp" line="102"/>
         <source>Light reflection</source>
         <translation>Réflexion de lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="76"/>
+        <location filename="../gui_qt/formtextures.cpp" line="103"/>
         <source>Light reflection shininess</source>
         <translation>Concentration de la réflexion de lumière</translation>
     </message>

@@ -2,6 +2,7 @@
 
 #include "../lib_paysages/textures.h"
 #include "../lib_paysages/scenery.h"
+#include "tools.h"
 
 static TexturesDefinition _definition;
 static TextureLayerDefinition _layer;
@@ -37,23 +38,49 @@ class PreviewTexturesColor:public BasePreview
 public:
     PreviewTexturesColor(QWidget* parent):BasePreview(parent)
     {
+        LightDefinition light;
+
+        _preview_layer = texturesLayerCreateDefinition();
+        
+        _lighting = lightingCreateDefinition();
+        light.color = COLOR_WHITE;
+        light.amplitude = 0.0;
+        light.direction.x = 0.0;
+        light.direction.y = -0.4794;
+        light.direction.z = 0.8776;
+        light.filtered = 0;
+        light.masked = 0;
+        light.reflection = 1.0;
+        lightingAddLight(&_lighting, light);
+        lightingValidateDefinition(&_lighting);
+        
         _renderer = rendererCreate();
         _renderer.render_quality = 3;
-        
-        _preview_layer = texturesLayerCreateDefinition();
+        _renderer.applyLightingToSurface = _applyLightingToSurface;
+        _renderer.customData[0] = &_lighting;
     }
 protected:
     QColor getColor(double x, double y)
     {
-        return QColor(0, 0, 0);
+        Vector3 location;
+        location.x = x * 0.01;
+        location.y = 0.0;
+        location.z = y * 0.01;
+        return colorToQColor(texturesGetLayerColor(&_preview_layer, &_renderer, location, this->scaling * 0.01));
     }
     void updateData()
     {
         texturesLayerCopyDefinition(&_layer, &_preview_layer);
     }
 private:
+    static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+    {
+        return lightingApplyToSurface((LightingDefinition*)renderer->customData[0], renderer, location, normal, material);
+    }
+    
     Renderer _renderer;
     TextureLayerDefinition _preview_layer;
+    LightingDefinition _lighting;
 };
 
 /**************** Form ****************/
