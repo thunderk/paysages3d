@@ -8,7 +8,7 @@
 #include <QTabWidget>
 #include <QTranslator>
 #include <QLocale>
-#include <qt4/QtGui/qmessagebox.h>
+#include <QMessageBox>
 
 #include "formatmosphere.h"
 #include "formclouds.h"

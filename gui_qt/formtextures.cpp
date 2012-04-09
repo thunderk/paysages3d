@@ -88,6 +88,9 @@ public:
         _renderer.render_quality = 3;
         _renderer.applyLightingToSurface = _applyLightingToSurface;
         _renderer.customData[0] = &_lighting;
+        _renderer.camera_location.x = 0.0;
+        _renderer.camera_location.y = 20.0;
+        _renderer.camera_location.z = 0.0;
     }
 protected:
     QColor getColor(double x, double y)

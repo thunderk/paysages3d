@@ -11,7 +11,6 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
-#include <qt4/QtGui/qboxlayout.h>
 
 BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget(parent)
 {

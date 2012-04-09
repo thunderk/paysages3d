@@ -250,12 +250,13 @@ static Color _getColor(TerrainDefinition* definition, Renderer* renderer, Vector
 int terrainProjectRay(TerrainDefinition* definition, Renderer* renderer, Vector3 start, Vector3 direction, Vector3* hit_point, Color* hit_color)
 {
     Vector3 inc_vector;
-    double inc_value, inc_base, inc_factor, height, diff, length;
+    double inc_value, inc_base, inc_factor, height, diff, lastdiff, length;
 
     direction = v3Normalize(direction);
     inc_factor = (double)renderer->render_quality;
     inc_base = 1.0;
     inc_value = inc_base / inc_factor;
+    lastdiff = start.y - _getHeight(definition, start.x, start.z);
 
     length = 0.0;
     do
@@ -267,7 +268,15 @@ int terrainProjectRay(TerrainDefinition* definition, Renderer* renderer, Vector3
         diff = start.y - height;
         if (diff < 0.0)
         {
-            start.y = height;
+            if (fabs(diff - lastdiff) > 0.00001)
+            {
+                start = v3Add(start, v3Scale(inc_vector, -diff / (diff - lastdiff)));
+                start.y = _getHeight(definition, start.x, start.z);
+            }
+            else
+            {
+                start.y = height;
+            }
             *hit_point = start;
             *hit_color = _getColor(definition, renderer, start, renderer->getPrecision(renderer, start));
             return 1;
@@ -285,6 +294,7 @@ int terrainProjectRay(TerrainDefinition* definition, Renderer* renderer, Vector3
         {
             inc_value = diff;
         }
+        lastdiff = diff;
     } while (length < 50.0 && start.y <= definition->_max_height);
 
     return 0;

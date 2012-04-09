@@ -4,32 +4,32 @@
 <context>
     <name>BaseForm</name>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="33"/>
+        <location filename="../gui_qt/baseform.cpp" line="32"/>
         <source>Layers : </source>
         <translation>Niveaux :</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="39"/>
+        <location filename="../gui_qt/baseform.cpp" line="38"/>
         <source>Add layer</source>
         <translation>Ajouter un niveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="43"/>
+        <location filename="../gui_qt/baseform.cpp" line="42"/>
         <source>Delete layer</source>
         <translation>Supprimer un niveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="74"/>
+        <location filename="../gui_qt/baseform.cpp" line="73"/>
         <source>Apply</source>
         <translation>Appliquer</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="77"/>
+        <location filename="../gui_qt/baseform.cpp" line="76"/>
         <source>Revert</source>
         <translation>Annuler les modifications</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="245"/>
+        <location filename="../gui_qt/baseform.cpp" line="244"/>
         <source>Layer %1</source>
         <translation>Niveau %1</translation>
     </message>
@@ -477,7 +477,7 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormTextures</name>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="125"/>
+        <location filename="../gui_qt/formtextures.cpp" line="128"/>
         <source>Coverage preview</source>
         <translation>Aperçu de la couverture</translation>
     </message>
@@ -486,77 +486,77 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Rendu en couleur</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="126"/>
+        <location filename="../gui_qt/formtextures.cpp" line="129"/>
         <source>Lighted sample</source>
         <translation>Echantillon éclairé</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="128"/>
+        <location filename="../gui_qt/formtextures.cpp" line="131"/>
         <source>Surface noise</source>
         <translation>Bruit de surface</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="129"/>
+        <location filename="../gui_qt/formtextures.cpp" line="132"/>
         <source>Surface noise height</source>
         <translation>Hauteur du bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="130"/>
+        <location filename="../gui_qt/formtextures.cpp" line="133"/>
         <source>Surface noise scaling</source>
         <translation>Echelle du bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="131"/>
+        <location filename="../gui_qt/formtextures.cpp" line="134"/>
         <source>Base color</source>
         <translation>Couleur de base</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="132"/>
+        <location filename="../gui_qt/formtextures.cpp" line="135"/>
         <source>Light reflection</source>
         <translation>Réflexion de lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="133"/>
+        <location filename="../gui_qt/formtextures.cpp" line="136"/>
         <source>Light reflection shininess</source>
         <translation>Concentration de la réflexion de lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="136"/>
+        <location filename="../gui_qt/formtextures.cpp" line="139"/>
         <source>Soft minimal height</source>
         <translation>Altitude minimal (adoucie)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="135"/>
+        <location filename="../gui_qt/formtextures.cpp" line="138"/>
         <source>Hard minimal height</source>
         <translation>Altitude minimale</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="138"/>
+        <location filename="../gui_qt/formtextures.cpp" line="141"/>
         <source>Hard maximal height</source>
         <translation>Altitude maximale</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="137"/>
+        <location filename="../gui_qt/formtextures.cpp" line="140"/>
         <source>Soft maximal height</source>
         <translation>Altitude maximale (adoucie)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="140"/>
+        <location filename="../gui_qt/formtextures.cpp" line="143"/>
         <source>Soft minimal slope</source>
         <translation>Pente minimale (adoucie)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="139"/>
+        <location filename="../gui_qt/formtextures.cpp" line="142"/>
         <source>Hard minimal slope</source>
         <translation>Pente minimale</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="142"/>
+        <location filename="../gui_qt/formtextures.cpp" line="145"/>
         <source>Hard maximal slope</source>
         <translation>Pente maximale</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="141"/>
+        <location filename="../gui_qt/formtextures.cpp" line="144"/>
         <source>Soft maximal slope</source>
         <translation>Pente maximale (adoucie)</translation>
     </message>
