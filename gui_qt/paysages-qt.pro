@@ -8,6 +8,9 @@ MOC_DIR = ./moc/$$BUILDMODE/
 DESTDIR = ../build/$$BUILDMODE/
 CONFIG += $$BUILDMODE
 
+QMAKE_CXXFLAGS_DEBUG += -pg
+QMAKE_LFLAGS_DEBUG += -pg
+
 unix:LIBS += -L$$DESTDIR -lpaysages
 win32:LIBS += $$DESTDIR/libpaysages.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-2.0
 

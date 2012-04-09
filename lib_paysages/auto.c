@@ -163,12 +163,13 @@ void autoGenRealisticLandscape(int seed)
     zoneAddHeightRangeQuick(texture->zone, 1.0, -1.0, 0.0, 3.0, 15.0);
     zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 0.2, 0.3);
     noiseGenerateBaseNoise(texture->bump_noise, 102400);
-    noiseAddLevelsSimple(texture->bump_noise, 8, 1.0, 0.4);
+    noiseAddLevelsSimple(texture->bump_noise, 5, 1.0, 0.4);
+    noiseAddLevelsSimple(texture->bump_noise, 2, 0.03, 0.08);
     texture->bump_height = 0.02;
     texture->bump_scaling = 0.1;
-    texture->material.base.r = 0.2;
-    texture->material.base.g = 0.24;
-    texture->material.base.b = 0.05;
+    texture->material.base.r = 0.12;
+    texture->material.base.g = 0.19;
+    texture->material.base.b = 0.035;
     texture->material.reflection = 0.1;
     texture->material.shininess = 2.0;
     /*texture = texturesGetLayer(&textures, texturesAddLayer(&textures));

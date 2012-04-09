@@ -9,10 +9,11 @@ CC_FLAGS = -Wall -fPIC $(shell pkg-config --cflags glib-2.0 gthread-2.0)
 CC_LDFLAGS = $(shell pkg-config --libs glib-2.0 gthread-2.0) -lIL -lILU
 
 ifeq ($(BUILDMODE),debug)
-     CC_FLAGS += -g -pg
+	CC_FLAGS += -g -pg
+	CC_LDFLAGS += -g -pg
 endif
 ifeq ($(BUILDMODE),release)
-     CC_FLAGS += -O3 -DNDEBUG
+	CC_FLAGS += -O3 -DNDEBUG
 endif
 
 all:prepare ${RESULT}
