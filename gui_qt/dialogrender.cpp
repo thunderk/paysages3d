@@ -92,6 +92,9 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     progress->setValue(0);
     layout()->addWidget(progress);
     progress_value = 0;
+    
+    // TEMP
+    progress->hide();
 }
 
 DialogRender::~DialogRender()
@@ -131,5 +134,5 @@ void DialogRender::applyRenderSize(int width, int height)
     area->setMinimumSize(width, height);
     area->setMaximumSize(width, height);
     area->resize(width, height);
-    scroll->setMinimumSize(width > 800 ? 850 : width + 50, height > 600 ? 650 : height + 50);
+    scroll->setMinimumSize(width > 800 ? 820 : width + 20, height > 600 ? 620 : height + 20);
 }

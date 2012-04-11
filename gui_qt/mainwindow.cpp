@@ -4,6 +4,7 @@
 #include <QMenuBar>
 #include <QMenu>
 #include <QIcon>
+#include <QToolBar>
 #include <QFileDialog>
 #include <QTabWidget>
 #include <QTranslator>
@@ -67,8 +68,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     BaseForm* form;
     QTabWidget* tabs;
-    QMenu* menu;
-
+    QToolBar* toolbar;
+    
     tabs = new QTabWidget(this);
 
     form = new FormTerrain(tabs);
@@ -102,20 +103,22 @@ MainWindow::MainWindow(QWidget *parent) :
     _form_render = new FormRender(tabs);
     tabs->addTab(_form_render, tr("Render"));
 
-    menu = menuBar()->addMenu(tr("&Scene"));
-    menu->addAction(tr("&New"), this, SLOT(fileNew()), QKeySequence(tr("Crtl+N")));
-    menu->addSeparator();
-    menu->addAction(tr("&Save"), this, SLOT(fileSave()), QKeySequence(tr("Crtl+S")));
-    menu->addAction(tr("&Open"), this, SLOT(fileLoad()), QKeySequence(tr("Crtl+O")));
-    menu->addSeparator();
-    menu->addAction(tr("&Quit"), this, SLOT(close()), QKeySequence(tr("Crtl+Q")));
-
-    menu = menuBar()->addMenu(tr("&Actions"));
-    menu->addAction(tr("&Explore in 3D"), this, SLOT(explore3D()), QKeySequence("F2"));
-    menu->addAction(tr("&Quick render"), this, SLOT(quickPreview()), QKeySequence("F5"));
-
-    menu = menuBar()->addMenu(tr("&Help"));
-    menu->addAction(tr("&About"), this, SLOT(showAboutDialog()));
+    toolbar = new QToolBar(this);
+    toolbar->setOrientation(Qt::Vertical);
+    toolbar->setAllowedAreas(Qt::LeftToolBarArea);
+    toolbar->setMovable(false);
+    toolbar->setFloatable(false);
+    toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    toolbar->toggleViewAction()->setEnabled(false);
+    toolbar->setIconSize(QSize(32, 32));
+    addToolBar(Qt::LeftToolBarArea, toolbar);
+    
+    toolbar->addAction(QIcon("images/new.png"), tr("&New"), this, SLOT(fileNew()))->setShortcut(QKeySequence(tr("Crtl+N")));
+    toolbar->addAction(QIcon("images/save.png"), tr("&Save"), this, SLOT(fileSave()))->setShortcut(QKeySequence(tr("Crtl+S")));
+    toolbar->addAction(QIcon("images/load.png"), tr("&Load"), this, SLOT(fileLoad()))->setShortcut(QKeySequence(tr("Crtl+L")));
+    toolbar->addAction(QIcon("images/explore.png"), tr("&Explore (F2)"), this, SLOT(explore3D()))->setShortcut(QKeySequence(tr("F2")));
+    toolbar->addAction(QIcon("images/render.png"), tr("&Quick\nrender (F5)"), this, SLOT(quickPreview()))->setShortcut(QKeySequence(tr("F5")));
+    toolbar->addAction(QIcon("images/about.png"), tr("&About"), this, SLOT(showAboutDialog()));
 
     setCentralWidget(tabs);
 

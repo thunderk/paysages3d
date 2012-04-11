@@ -12,18 +12,18 @@ InputColorGradation::InputColorGradation(QWidget* form, QString label, ColorGrad
 {
     _value = value;
             
-    _preview = new PreviewColorGradation(form, value, COLORGRADATIONBAND_FINAL);
-    _preview->setMinimumSize(200, 20);
+    _control = new PreviewColorGradation(form, value, COLORGRADATIONBAND_FINAL);
+    _control->setMinimumSize(200, 20);
 
-    _control = new QPushButton(tr("Edit"), form);
-    _control->setMaximumWidth(150);
+    _preview = new QPushButton(tr("Edit"), form);
+    _preview->setMaximumWidth(150);
 
-    connect((QPushButton*)_control, SIGNAL(clicked()), this, SLOT(editGradation()));
+    connect((QPushButton*)_preview, SIGNAL(clicked()), this, SLOT(editGradation()));
 }
 
 void InputColorGradation::updatePreview()
 {
-    _preview->update();
+    _control->update();
     BaseInput::updatePreview();
 }
 
@@ -43,7 +43,7 @@ void InputColorGradation::editGradation()
     
     gradation = colorGradationCreate();
     colorGradationCopy(_value, gradation);
-    if (DialogColorGradation::getGradation(_preview, gradation))
+    if (DialogColorGradation::getGradation(_control, gradation))
     {
         colorGradationCopy(gradation, _value);
         applyValue();

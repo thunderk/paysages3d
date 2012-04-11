@@ -14,61 +14,62 @@
 
 BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget(parent)
 {
-    QWidget* hwidget;
-    QVBoxLayout* vlayout;
-    QHBoxLayout* hlayout;
+    QWidget* control;
+    QWidget* layers;
+    QLabel* label;
 
     this->auto_apply = auto_apply;
     this->with_layers = with_layers;
 
-    vlayout = new QVBoxLayout();
-    hlayout = new QHBoxLayout();
+    setLayout(new QHBoxLayout());
+    setObjectName("_base_form_");
+
+    control = new QWidget(this);
+    control->setLayout(new QVBoxLayout());
+    layout()->addWidget(control);
     
     if (with_layers)
     {
-        hwidget = new QWidget(this);
-        hwidget->setLayout(new QHBoxLayout());
+        layers = new QWidget(this);
+        layers->setLayout(new QHBoxLayout());
+        layers->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-        hwidget->layout()->addWidget(new QLabel(tr("Layers : "), hwidget));
+        label = new QLabel(tr("Layers : "), layers);
+        label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        layers->layout()->addWidget(label);
         
-        layer_list = new QComboBox(hwidget);
-        hwidget->layout()->addWidget(layer_list);
+        layer_list = new QComboBox(layers);
+        layers->layout()->addWidget(layer_list);
         QObject::connect(layer_list, SIGNAL(currentIndexChanged(int)), this, SLOT(layerListChanged()));
 
-        layer_new = new QPushButton(tr("Add layer"), hwidget);
-        hwidget->layout()->addWidget(layer_new);
+        layer_new = new QPushButton(tr("Add layer"), layers);
+        layers->layout()->addWidget(layer_new);
         QObject::connect(layer_new, SIGNAL(clicked()), this, SLOT(layerAddClicked()));
         
-        layer_del = new QPushButton(tr("Delete layer"), hwidget);
-        hwidget->layout()->addWidget(layer_del);
+        layer_del = new QPushButton(tr("Delete layer"), layers);
+        layers->layout()->addWidget(layer_del);
         QObject::connect(layer_del, SIGNAL(clicked()), this, SLOT(layerDelClicked()));
         
-        vlayout->addWidget(hwidget);
+        control->layout()->addWidget(layers);
+        control->layout()->setAlignment(buttons, Qt::AlignTop);
     }
-
-    hwidget = new QWidget(this);
 
     previews = new QWidget(this);
     previews->setLayout(new QVBoxLayout());
     previews->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-
+    layout()->addWidget(previews);
+    layout()->setAlignment(previews, Qt::AlignTop);
+    
     form = new QWidget(this);
     form->setLayout(new QGridLayout());
-    form->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    form->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    control->layout()->addWidget(form);
+    control->layout()->setAlignment(form, Qt::AlignTop | Qt::AlignLeft);
 
     buttons = new QWidget(this);
     buttons->setLayout(new QHBoxLayout());
-
-    hlayout->addWidget(previews);
-    hlayout->addWidget(form);
-    hlayout->setAlignment(form, Qt::AlignTop);
-
-    vlayout->addWidget(hwidget);
-    vlayout->addWidget(buttons);
-
-    hwidget->setLayout(hlayout);
-    this->setLayout(vlayout);
-    this->setObjectName("_base_form_");
+    control->layout()->addWidget(buttons);
+    control->layout()->setAlignment(buttons, Qt::AlignBottom);
 
     button_apply = addButton(tr("Apply"));
     button_apply->setEnabled(false);

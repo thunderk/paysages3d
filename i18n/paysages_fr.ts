@@ -4,32 +4,32 @@
 <context>
     <name>BaseForm</name>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="32"/>
+        <location filename="../gui_qt/baseform.cpp" line="37"/>
         <source>Layers : </source>
         <translation>Niveaux :</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="38"/>
+        <location filename="../gui_qt/baseform.cpp" line="45"/>
         <source>Add layer</source>
         <translation>Ajouter un niveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="42"/>
+        <location filename="../gui_qt/baseform.cpp" line="49"/>
         <source>Delete layer</source>
         <translation>Supprimer un niveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="73"/>
+        <location filename="../gui_qt/baseform.cpp" line="74"/>
         <source>Apply</source>
         <translation>Appliquer</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="76"/>
+        <location filename="../gui_qt/baseform.cpp" line="77"/>
         <source>Revert</source>
         <translation>Annuler les modifications</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="244"/>
+        <location filename="../gui_qt/baseform.cpp" line="245"/>
         <source>Layer %1</source>
         <translation>Niveau %1</translation>
     </message>
@@ -682,32 +682,64 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="75"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="76"/>
         <source>Terrain</source>
         <translation>Terrain</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="79"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="80"/>
         <source>Textures</source>
         <translation>Textures</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="83"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="84"/>
         <source>Water</source>
         <translation>Eau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="91"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="92"/>
         <source>Atmosphere</source>
         <translation>Atmosphère</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="87"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="118"/>
+        <source>&amp;Load</source>
+        <translation>&amp;Ouvrir</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="118"/>
+        <source>Crtl+L</source>
+        <translation>Ctrl+O</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="119"/>
+        <source>&amp;Explore (F2)</source>
+        <translation>&amp;Explorer (F2)</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="119"/>
+        <source>F2</source>
+        <translation>F2</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="120"/>
+        <source>&amp;Quick
+render (F5)</source>
+        <translation>&amp;Rendu
+rapide (F5)</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="120"/>
+        <source>F5</source>
+        <translation>F5</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="88"/>
         <source>Sky</source>
         <translation>Ciel</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="95"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="96"/>
         <source>Clouds</source>
         <translation>Nuages</translation>
     </message>
@@ -716,87 +748,78 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Eclairage</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="103"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="104"/>
         <source>Render</source>
         <translation>Rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="105"/>
         <source>&amp;Scene</source>
-        <translation>&amp;Scène</translation>
+        <translation type="obsolete">&amp;Scène</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="106"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="116"/>
         <source>&amp;New</source>
-        <translation>&amp;Nouvelle</translation>
+        <translation>&amp;Nouveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="106"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="116"/>
         <source>Crtl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="108"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="117"/>
         <source>&amp;Save</source>
         <translation>&amp;Sauvegarder</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="108"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="117"/>
         <source>Crtl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="109"/>
         <source>&amp;Open</source>
-        <translation>&amp;Ouvrir</translation>
+        <translation type="obsolete">&amp;Ouvrir</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="109"/>
         <source>Crtl+O</source>
-        <translation>Ctrl+O</translation>
+        <translation type="obsolete">Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="111"/>
         <source>&amp;Quit</source>
-        <translation>&amp;Quitter</translation>
+        <translation type="obsolete">&amp;Quitter</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="111"/>
         <source>Crtl+Q</source>
-        <translation>Ctrl+Q</translation>
+        <translation type="obsolete">Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="113"/>
         <source>&amp;Actions</source>
-        <translation>&amp;Actions</translation>
+        <translation type="obsolete">&amp;Actions</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="114"/>
         <source>&amp;Explore in 3D</source>
-        <translation>&amp;Explorer en 3D</translation>
+        <translation type="obsolete">&amp;Explorer en 3D</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="115"/>
         <source>&amp;Quick render</source>
-        <translation>Rendu r&amp;apide</translation>
+        <translation type="obsolete">Rendu r&amp;apide</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="117"/>
         <source>&amp;Help</source>
-        <translation>Ai&amp;de</translation>
+        <translation type="obsolete">Ai&amp;de</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="118"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="121"/>
         <source>&amp;About</source>
         <translation>&amp;A propos</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="163"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="166"/>
         <source>Paysages 3D</source>
         <translation>Paysages 3D</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="163"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="166"/>
         <source>A 3D landscape editing and rendering software.
 
 Credits :
