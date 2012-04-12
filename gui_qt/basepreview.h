@@ -18,11 +18,11 @@ public:
     void doRender();
     void redraw();
 
-    void setScaling(double scaling);
-
 protected:
     virtual void updateData();
     virtual QColor getColor(double x, double y);
+    
+    void configScaling(double min, double max, double step, double init);
 
     double xoffset;
     double yoffset;
@@ -56,6 +56,7 @@ private:
 
     double conf_scale_min;
     double conf_scale_max;
+    double conf_scale_init;
     double conf_scale_step;
 
 signals:

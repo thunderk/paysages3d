@@ -44,6 +44,7 @@ BasePreview::BasePreview(QWidget* parent) :
     this->conf_scroll_ymax = 0.0;
     this->conf_scale_min = 1.0;
     this->conf_scale_max = 1.0;
+    this->conf_scale_init = 1.0;
     this->conf_scale_step = 0.0;
     this->scaling = 1.0;
     this->xoffset = 0.0;
@@ -86,6 +87,21 @@ QColor BasePreview::getColor(double x, double y)
     return QColor(0, 0, 0);
 }
 
+void BasePreview::configScaling(double min, double max, double step, double init)
+{
+    double size = (double)width();
+    
+    if (size >= 1.0)
+    {
+        conf_scale_min = min / size;
+        conf_scale_max = max / size;
+        conf_scale_step = step / size;
+        conf_scale_init = init / size;
+        scaling = init / size;
+        redraw();
+    }
+}
+
 void BasePreview::start()
 {
     this->updater->start();
@@ -119,13 +135,6 @@ void BasePreview::handleRedraw()
     updateData();
     need_rerender = true;
     lock_drawing->unlock();
-}
-
-void BasePreview::setScaling(double scaling)
-{
-    // TODO Follow conf_scale
-    this->scaling = scaling;
-    redraw();
 }
 
 void BasePreview::resizeEvent(QResizeEvent* event)
@@ -207,16 +216,39 @@ void BasePreview::renderPixbuf()
 
 void BasePreview::wheelEvent(QWheelEvent* event)
 {
+    double factor;
+    
+    if (event->modifiers() & Qt::ShiftModifier)
+    {
+        factor = 5.0;
+    }
+    else if (event->modifiers() & Qt::ControlModifier)
+    {
+        factor = 0.2;
+    }
+    else
+    {
+        factor = 1.0;
+    }
+
     if (event->orientation() == Qt::Vertical)
     {
-        if (event->delta() > 0  && scaling > 0.19)
+        if (event->delta() > 0  && scaling > conf_scale_min)
         {
-            scaling -= 0.1;
+            scaling -= conf_scale_step * factor;
+            if (scaling < conf_scale_min)
+            {
+                scaling = conf_scale_min;
+            }
             redraw();
         }
-        else if (event->delta() < 0  && scaling < 10.0)
+        else if (event->delta() < 0  && scaling < conf_scale_max)
         {
-            scaling += 0.1;
+            scaling += conf_scale_step * factor;
+            if (scaling > conf_scale_max)
+            {
+                scaling = conf_scale_max;
+            }
             redraw();
         }
         event->accept();

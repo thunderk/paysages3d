@@ -1,6 +1,6 @@
 - Make colorgradation dialog sizable (and reduce minimum size).
 - Make all UI more sizable.
-- Implement scaling and scrolling on previews.
+- Implement scrolling on previews.
 - Add a material editor dialog.
 - Replace FILE* by a custom type for Save and Load.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.

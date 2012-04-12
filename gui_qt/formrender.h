@@ -33,6 +33,7 @@ private:
     CameraDefinition _camera;
     Renderer _renderer;
     bool _renderer_inited;
+    BasePreview* _preview_landscape;
 };
 
 #endif // _PAYSAGES_QT_FORMRENDER_H_

@@ -4,8 +4,90 @@
 #include <QMessageBox>
 #include "dialogrender.h"
 #include "inputcamera.h"
+#include "tools.h"
 #include "../lib_paysages/render.h"
 #include "../lib_paysages/scenery.h"
+
+/**************** Previews ****************/
+class PreviewRenderLandscape:public BasePreview
+{
+public:
+    PreviewRenderLandscape(QWidget* parent):BasePreview(parent)
+    {
+        _renderer = rendererCreate();
+        _renderer.applyTextures = _applyTextures;
+        _renderer.getTerrainHeight = _getTerrainHeight;
+        _renderer.applyLightingToSurface = _applyLightingToSurface;
+        _renderer.maskLight = _maskLight;
+        _renderer.camera_location.x = 0.0;
+        _renderer.camera_location.y = 50.0;
+        _renderer.camera_location.z = 0.0;
+
+        _terrain = terrainCreateDefinition();
+        _textures = texturesCreateDefinition();
+        _lighting = lightingCreateDefinition();
+        _water = waterCreateDefinition();
+
+        _renderer.customData[0] = &_terrain;
+        _renderer.customData[1] = &_textures;
+        _renderer.customData[2] = &_lighting;
+        _renderer.customData[3] = &_water;
+        
+        configScaling(0.5, 200.0, 1.0, 50.0);
+    }
+protected:
+    QColor getColor(double x, double y)
+    {
+        Vector3 down = {0.0, -1.0, 0.0};
+        Vector3 location;
+        double height = terrainGetHeight(&_terrain, x, y);
+        
+        if (height < _water.height)
+        {
+            location.x = x;
+            location.y = _water.height;
+            location.z = y;
+            return colorToQColor(waterGetColor(&_water, &_renderer, location, down));
+        }
+        else
+        {
+            return colorToQColor(terrainGetColor(&_terrain, &_renderer, x, y, scaling));
+        }
+    }
+    void updateData()
+    {
+        sceneryGetTerrain(&_terrain);
+        sceneryGetLighting(&_lighting);
+        sceneryGetTextures(&_textures);
+        sceneryGetWater(&_water);
+    }
+private:
+    Renderer _renderer;
+    TerrainDefinition _terrain;
+    WaterDefinition _water;
+    TexturesDefinition _textures;
+    LightingDefinition _lighting;
+
+    static double _getTerrainHeight(Renderer* renderer, double x, double z)
+    {
+        return terrainGetHeight((TerrainDefinition*)(renderer->customData[0]), x, z);
+    }
+
+    static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
+    {
+        return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location, precision);
+    }
+    
+    static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+    {
+        return lightingApplyToSurface((LightingDefinition*)renderer->customData[2], renderer, location, normal, material);
+    }
+    
+    static Color _maskLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
+    {
+        return terrainLightFilter((TerrainDefinition*)(renderer->customData[0]), renderer, light_color, at_location, light_location, direction_to_light);
+    }
+};
 
 /**************** Form ****************/
 FormRender::FormRender(QWidget *parent) :
@@ -20,6 +102,9 @@ FormRender::FormRender(QWidget *parent) :
     
     _renderer_inited = false;
 
+    _preview_landscape = new PreviewRenderLandscape(this);
+    addPreview(_preview_landscape, QString(tr("Top-down preview")));
+    
     addInput(new InputCamera(this, tr("Camera"), &_camera));
     addInputInt(tr("Quality"), &_quality, 1, 10, 1, 1);
     addInputInt(tr("Image width"), &_width, 100, 2000, 10, 100);

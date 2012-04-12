@@ -34,6 +34,8 @@ public:
         _renderer.customData[0] = &_terrain;
         
         _preview_layer = texturesLayerCreateDefinition();
+        
+        configScaling(0.5, 200.0, 1.0, 50.0);
     }
 protected:
     QColor getColor(double x, double y)
@@ -91,15 +93,17 @@ public:
         _renderer.camera_location.x = 0.0;
         _renderer.camera_location.y = 20.0;
         _renderer.camera_location.z = 0.0;
+        
+        configScaling(0.1, 10.0, 0.1, 1.0);
     }
 protected:
     QColor getColor(double x, double y)
     {
         Vector3 location;
-        location.x = x * 0.01;
+        location.x = x;
         location.y = 0.0;
-        location.z = y * 0.01;
-        return colorToQColor(texturesGetLayerColor(&_preview_layer, &_renderer, location, this->scaling * 0.01));
+        location.z = y;
+        return colorToQColor(texturesGetLayerColor(&_preview_layer, &_renderer, location, this->scaling));
     }
     void updateData()
     {

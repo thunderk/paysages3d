@@ -17,6 +17,8 @@ public:
     {
         _renderer = rendererCreate();
         _preview_definition = atmosphereCreateDefinition();
+        
+        configScaling(100.0, 1000.0, 20.0, 200.0);
     }
 protected:
     QColor getColor(double x, double y)

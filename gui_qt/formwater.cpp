@@ -24,6 +24,8 @@ public:
     {
         _water = waterCreateDefinition();
         _terrain = terrainCreateDefinition();
+        
+        configScaling(0.5, 200.0, 1.0, 50.0);
     }
 protected:
     QColor getColor(double x, double y)
@@ -77,6 +79,8 @@ public:
         _renderer.applyLightingToSurface = _applyLightingToSurface;
         _renderer.customData[0] = &_water;
         _renderer.customData[1] = &_lighting;
+        
+        configScaling(10.0, 1000.0, 10.0, 250.0);
     }
 protected:
     QColor getColor(double x, double y)

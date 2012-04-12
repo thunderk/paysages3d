@@ -18,6 +18,8 @@ public:
     PreviewTerrainHeight(QWidget* parent):BasePreview(parent)
     {
         _preview_definition = terrainCreateDefinition();
+        
+        configScaling(0.5, 200.0, 1.0, 50.0);
     }
 protected:
     QColor getColor(double x, double y)
@@ -40,16 +42,54 @@ class PreviewTerrainColor:public BasePreview
 public:
     PreviewTerrainColor(QWidget* parent):BasePreview(parent)
     {
+        LightDefinition light;
+        TextureLayerDefinition* texture;
+
         _renderer = rendererCreate();
         _renderer.applyTextures = _applyTextures;
         _renderer.getTerrainHeight = _getTerrainHeight;
-        /*_renderer.applyLightingToSurface = _applyLightingToSurface;*/
+        _renderer.applyLightingToSurface = _applyLightingToSurface;
+        _renderer.maskLight = _maskLight;
+
+        _lighting = lightingCreateDefinition();
+        light.color.r = 0.7;
+        light.color.g = 0.7;
+        light.color.b = 0.7;
+        light.amplitude = 0.0;
+        light.direction.x = -0.5;
+        light.direction.y = -0.7071;
+        light.direction.z = 0.5;
+        light.filtered = 0;
+        light.masked = 1;
+        light.reflection = 0.0;
+        lightingAddLight(&_lighting, light);
+        light.color.r = 0.3;
+        light.color.g = 0.3;
+        light.color.b = 0.3;
+        light.amplitude = 0.0;
+        light.direction.x = 0.5;
+        light.direction.y = -0.7071;
+        light.direction.z = -0.5;
+        light.filtered = 0;
+        light.masked = 0;
+        light.reflection = 0.0;
+        lightingAddLight(&_lighting, light);
+        lightingValidateDefinition(&_lighting);
 
         _terrain = terrainCreateDefinition();
         _textures = texturesCreateDefinition();
+        texturesAddLayer(&_textures);
+        texture = texturesGetLayer(&_textures, 0);
+        texture->material.base = COLOR_WHITE;
+        texture->material.reflection = 0.0;
+        texture->bump_height = 0.0;
+        texturesLayerValidateDefinition(texture);
 
         _renderer.customData[0] = &_terrain;
         _renderer.customData[1] = &_textures;
+        _renderer.customData[2] = &_lighting;
+        
+        configScaling(0.5, 200.0, 1.0, 50.0);
     }
 protected:
     QColor getColor(double x, double y)
@@ -59,12 +99,13 @@ protected:
     void updateData()
     {
         terrainCopyDefinition(&_definition, &_terrain);
-        sceneryGetTextures(&_textures);
+        //sceneryGetTextures(&_textures);
     }
 private:
     Renderer _renderer;
     TerrainDefinition _terrain;
     TexturesDefinition _textures;
+    LightingDefinition _lighting;
 
     static double _getTerrainHeight(Renderer* renderer, double x, double z)
     {
@@ -74,6 +115,16 @@ private:
     static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
     {
         return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location, precision);
+    }
+    
+    static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+    {
+        return lightingApplyToSurface((LightingDefinition*)renderer->customData[2], renderer, location, normal, material);
+    }
+    
+    static Color _maskLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
+    {
+        return terrainLightFilter((TerrainDefinition*)(renderer->customData[0]), renderer, light_color, at_location, light_location, direction_to_light);
     }
 };
 
@@ -86,7 +137,7 @@ FormTerrain::FormTerrain(QWidget *parent):
     previewHeight = new PreviewTerrainHeight(this);
     previewColor = new PreviewTerrainColor(this);
     addPreview(previewHeight, QString(tr("Height preview (normalized)")));
-    addPreview(previewColor, QString(tr("Textured preview (no shadow)")));
+    addPreview(previewColor, QString(tr("Lighted preview (no texture)")));
 
     addInputNoise(tr("Noise"), _definition.height_noise);
     addInputDouble(tr("Height"), &_definition.height_factor, 0.0, 20.0, 0.1, 1.0);

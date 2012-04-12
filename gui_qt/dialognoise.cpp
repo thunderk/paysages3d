@@ -18,6 +18,8 @@ public:
         _noise_original = noise;
         _noise_preview = noiseCreateGenerator();
         _level = -1;
+        
+        configScaling(0.05, 2.0, 0.05, 2.0);
     }
 
     void setLevel(int row)
@@ -54,6 +56,8 @@ public:
     {
         _noise_original = noise;
         _noise_preview = noiseCreateGenerator();
+        
+        configScaling(0.05, 2.0, 0.03, 2.0);
     }
 protected:
     void updateData()
@@ -97,12 +101,10 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     previewLevel = new PreviewLevel(previews, _current);
     previews->layout()->addWidget(new QLabel(tr("Level preview")));
     previews->layout()->addWidget(previewLevel);
-    previewLevel->setScaling(1.0 / 127.0);
     previewLevel->start();
     previewTotal = new PreviewTotal(previews, _current);
     previews->layout()->addWidget(new QLabel(tr("Total preview")));
     previews->layout()->addWidget(previewTotal);
-    previewTotal->setScaling(1.0 / 127.0);
     previewTotal->start();
 
     form = new QWidget(this);

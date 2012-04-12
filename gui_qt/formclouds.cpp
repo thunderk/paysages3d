@@ -21,6 +21,8 @@ public:
         _renderer.render_quality = 3;
         
         _preview_layer = cloudsLayerCreateDefinition();
+        
+        configScaling(100.0, 1000.0, 20.0, 200.0);
     }
 protected:
     QColor getColor(double x, double y)
@@ -79,6 +81,8 @@ public:
         _renderer.maskLight = _maskLight;
         _renderer.customData[0] = &_preview_layer;
         _renderer.customData[1] = &_lighting;
+        
+        configScaling(100.0, 400.0, 20.0, 200.0);
     }
 protected:
     QColor getColor(double x, double y)

@@ -22,6 +22,8 @@ public:
     {
         _renderer = rendererCreate();
         _preview_definition = skyCreateDefinition();
+        
+        configScaling(0.5, 5.0, 0.5, 2.5);
     }
 protected:
     QColor getColor(double x, double y)
@@ -29,7 +31,7 @@ protected:
         Vector3 eye = {0.0, 0.0, 0.0};
         Vector3 look;
 
-        look.x = 100.0;
+        look.x = 1.0;
         look.y = -y;
         look.z = x;
 
@@ -52,6 +54,8 @@ public:
     {
         _renderer = rendererCreate();
         _preview_definition = skyCreateDefinition();
+        
+        configScaling(0.5, 5.0, 0.5, 2.5);
     }
 protected:
     QColor getColor(double x, double y)
@@ -59,7 +63,7 @@ protected:
         Vector3 eye = {0.0, 0.0, 0.0};
         Vector3 look;
 
-        look.x = -100.0;
+        look.x = -1.0;
         look.y = -y;
         look.z = -x;
 
