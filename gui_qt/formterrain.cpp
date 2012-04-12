@@ -50,25 +50,28 @@ public:
         _renderer.getTerrainHeight = _getTerrainHeight;
         _renderer.applyLightingToSurface = _applyLightingToSurface;
         _renderer.maskLight = _maskLight;
+        _renderer.camera_location.x = 0.0;
+        _renderer.camera_location.y = 50.0;
+        _renderer.camera_location.z = 0.0;
 
         _lighting = lightingCreateDefinition();
-        light.color.r = 0.7;
-        light.color.g = 0.7;
-        light.color.b = 0.7;
+        light.color.r = 0.6;
+        light.color.g = 0.6;
+        light.color.b = 0.6;
         light.amplitude = 0.0;
         light.direction.x = -0.5;
         light.direction.y = -0.7071;
         light.direction.z = 0.5;
         light.filtered = 0;
         light.masked = 1;
-        light.reflection = 0.0;
+        light.reflection = 1.0;
         lightingAddLight(&_lighting, light);
         light.color.r = 0.3;
         light.color.g = 0.3;
         light.color.b = 0.3;
         light.amplitude = 0.0;
         light.direction.x = 0.5;
-        light.direction.y = -0.7071;
+        light.direction.y = 0.7071;
         light.direction.z = -0.5;
         light.filtered = 0;
         light.masked = 0;
@@ -81,7 +84,8 @@ public:
         texturesAddLayer(&_textures);
         texture = texturesGetLayer(&_textures, 0);
         texture->material.base = COLOR_WHITE;
-        texture->material.reflection = 0.0;
+        texture->material.reflection = 0.3;
+        texture->material.shininess = 2.0;
         texture->bump_height = 0.0;
         texturesLayerValidateDefinition(texture);
 

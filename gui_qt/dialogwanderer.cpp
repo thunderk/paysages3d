@@ -51,6 +51,6 @@ DialogWanderer::~DialogWanderer()
 void DialogWanderer::validateCamera()
 {
     _wanderer->validateCamera();
-    reject();
+    accept();
 }
 

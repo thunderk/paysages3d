@@ -174,15 +174,18 @@ void MainWindow::quickPreview()
 void MainWindow::explore3D()
 {
     CameraDefinition camera;
+    int result;
 
     sceneryGetCamera(&camera);
 
     DialogWanderer* dialog = new DialogWanderer(this, &camera, true);
-    dialog->exec();
+    result = dialog->exec();
     
-    scenerySetCamera(&camera);
-
     delete dialog;
     
-    refreshAll();
+    if (result == QDialog::Accepted)
+    {
+        scenerySetCamera(&camera);
+        refreshAll();
+    }
 }

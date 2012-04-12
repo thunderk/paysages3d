@@ -38,11 +38,15 @@ void InputCamera::revert()
 
 void InputCamera::editCamera()
 {
+    int result;
+    
     DialogWanderer* dialog = new DialogWanderer(_control, _value, true);
-    dialog->exec();
+    result = dialog->exec();
 
     delete dialog;
 
-    // TODO Only if camera was edited
-    applyValue();
+    if (result == QDialog::Accepted)
+    {
+        applyValue();
+    }
 }
