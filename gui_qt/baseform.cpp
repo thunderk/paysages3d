@@ -9,7 +9,6 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QGridLayout>
 #include <QLabel>
 
 BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget(parent)
@@ -23,9 +22,10 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
 
     setLayout(new QHBoxLayout());
     setObjectName("_base_form_");
-
+    
     control = new QWidget(this);
     control->setLayout(new QVBoxLayout());
+    control->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     layout()->addWidget(control);
     
     if (with_layers)
@@ -61,11 +61,22 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
     layout()->setAlignment(previews, Qt::AlignTop);
     
     form = new QWidget(this);
-    form->setLayout(new QGridLayout());
-    form->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    form->setLayout(new QHBoxLayout());
     control->layout()->addWidget(form);
-    control->layout()->setAlignment(form, Qt::AlignTop | Qt::AlignLeft);
+    control->layout()->setAlignment(form, Qt::AlignTop);
+    
+    form_labels = new QWidget(form);
+    form_labels->setLayout(new QVBoxLayout());
+    form->layout()->addWidget(form_labels);
 
+    form_previews = new QWidget(form);
+    form_previews->setLayout(new QVBoxLayout());
+    form->layout()->addWidget(form_previews);
+
+    form_controls = new QWidget(form);
+    form_controls->setLayout(new QVBoxLayout());
+    form->layout()->addWidget(form_controls);
+    
     buttons = new QWidget(this);
     buttons->setLayout(new QHBoxLayout());
     control->layout()->addWidget(buttons);
@@ -172,16 +183,23 @@ QPushButton* BaseForm::addButton(QString label)
 
 void BaseForm::addInput(BaseInput* input)
 {
-    QGridLayout* layout = (QGridLayout*)form->layout();
-    int row = layout->rowCount();
-
-    layout->addWidget(input->label(), row, 0);
-    layout->addWidget(input->preview(), row, 1);
-    layout->addWidget(input->control(), row, 2);
-
-    input->label()->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    int row_height = 30;
+    
+    form_labels->layout()->addWidget(input->label());
+    form_previews->layout()->addWidget(input->preview());
+    form_controls->layout()->addWidget(input->control());
+    
+    input->label()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+    input->label()->setMinimumSize(150, row_height);
+    input->label()->setMaximumSize(250, row_height);
+    
     input->preview()->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    input->preview()->setMinimumSize(100, row_height);
+    input->preview()->setMaximumSize(250, row_height);
+    
     input->control()->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    input->control()->setMinimumSize(280, row_height);
+    input->control()->setMaximumSize(700, row_height);
 
     connect(input, SIGNAL(valueChanged()), this, SLOT(configChangeEvent()));
 

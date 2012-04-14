@@ -1,11 +1,12 @@
 #include "baseinput.h"
 
-#include <QLabel>
-
 BaseInput::BaseInput(QWidget* form, QString label):
     QObject(form)
 {
     _label = new QLabel(label);
+    
+    _label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    _label->setWordWrap(true);
 }
 
 void BaseInput::updatePreview()

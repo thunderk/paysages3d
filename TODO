@@ -1,12 +1,13 @@
 Technology Preview 1 :
-- Make all UI more sizable.
 - Implement scrolling on previews.
 - Find a licence and apply it.
 
 Technology Preview 2 :
+- Add an OSD ability on previews and use it for camera location and user landmarks.
 - Add a material editor dialog.
 - Add a zone editor dialog for localized textures.
 - Add a terrain modifier dialog with zones.
+- Add a noise filler (and maybe noise intervals ?).
 - Improve curve editor.
 - Replace FILE* by a custom type for Save and Load.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.

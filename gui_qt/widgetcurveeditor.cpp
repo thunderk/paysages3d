@@ -161,6 +161,7 @@ int WidgetCurveEditor::getPointAt(int x, int y)
 
     // Find nearest point
     nearest = -1;
+    distance = 0.0;
     for (int i = 0; i < n; i++)
     {
         curveGetPoint(_curve, i, &point);

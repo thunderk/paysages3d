@@ -2,7 +2,7 @@
 #define _PAYSAGES_QT_BASEINPUT_H_
 
 #include <QWidget>
-#include <QSlider>
+#include <QLabel>
 
 class BaseInput:public QObject
 {
@@ -23,9 +23,9 @@ signals:
     void valueChanged();
 
 protected:
-    QWidget* _label;
+    QLabel* _label;
     QWidget* _preview;
     QWidget* _control;
 };
 
-#endif // _PAYSAGES_QT_BASEINPUT_H_
+#endif

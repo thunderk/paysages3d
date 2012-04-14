@@ -88,6 +88,7 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     QWidget* form;
     QWidget* buttons;
     QPushButton* button;
+    QLabel* label;
 
     _base = value;
     _current = noiseCreateGenerator();
@@ -97,13 +98,19 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     previews = new QWidget(this);
     previews->setLayout(new QVBoxLayout());
     layout()->addWidget(previews);
+    layout()->setAlignment(previews, Qt::AlignTop);
 
     previewLevel = new PreviewLevel(previews, _current);
-    previews->layout()->addWidget(new QLabel(tr("Level preview")));
+    label = new QLabel(tr("Level preview"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    previews->layout()->addWidget(label);
     previews->layout()->addWidget(previewLevel);
     previewLevel->start();
+    
     previewTotal = new PreviewTotal(previews, _current);
-    previews->layout()->addWidget(new QLabel(tr("Total preview")));
+    label = new QLabel(tr("Total preview"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    previews->layout()->addWidget(label);
     previews->layout()->addWidget(previewTotal);
     previewTotal->start();
 
@@ -132,7 +139,7 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     slider_height = new QSlider(form);
     slider_height->setOrientation(Qt::Horizontal);
     slider_height->setMinimumWidth(150);
-    slider_height->setMaximumWidth(400);
+    //slider_height->setMaximumWidth(400);
     slider_height->setMinimum(0);
     slider_height->setMaximum(1000);
     slider_height->setTickInterval(100);
@@ -144,7 +151,7 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     slider_scaling = new QSlider(form);
     slider_scaling->setOrientation(Qt::Horizontal);
     slider_scaling->setMinimumWidth(150);
-    slider_scaling->setMaximumWidth(400);
+    //slider_scaling->setMaximumWidth(400);
     slider_scaling->setMinimum(1);
     slider_scaling->setMaximum(1000);
     slider_scaling->setTickInterval(100);
@@ -214,12 +221,28 @@ void DialogNoise::revert()
 void DialogNoise::revertToCurrent()
 {
     int i, n;
+    int selected;
+    
+    selected = levels->currentRow();
 
     levels->clear();
     n = noiseGetLevelCount(_current);
     for (i = 0; i < n; i++)
     {
         levels->addItem(QString(tr("Component %1")).arg(i + 1));
+    }
+    
+    if (n > 0)
+    {
+        if (selected < 0)
+        {
+            selected = 0;
+        }
+        if (selected >= n)
+        {
+            selected = n - 1;
+        }
+        levels->setCurrentRow(selected);
     }
 
     previewLevel->redraw();

@@ -19,17 +19,17 @@
         <translation>Supprimer un niveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="74"/>
+        <location filename="../gui_qt/baseform.cpp" line="85"/>
         <source>Apply</source>
         <translation>Appliquer</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="77"/>
+        <location filename="../gui_qt/baseform.cpp" line="88"/>
         <source>Revert</source>
         <translation>Annuler les modifications</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="245"/>
+        <location filename="../gui_qt/baseform.cpp" line="263"/>
         <source>Layer %1</source>
         <translation>Niveau %1</translation>
     </message>
@@ -93,62 +93,62 @@ Cliquez avec le bouton droit sur un point pour le supprimer.</translation>
 <context>
     <name>DialogNoise</name>
     <message>
-        <location filename="../gui_qt/dialognoise.cpp" line="102"/>
+        <location filename="../gui_qt/dialognoise.cpp" line="104"/>
         <source>Level preview</source>
         <translation>Aperçu du composant</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialognoise.cpp" line="106"/>
+        <location filename="../gui_qt/dialognoise.cpp" line="111"/>
         <source>Total preview</source>
         <translation>Aperçu du total</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialognoise.cpp" line="114"/>
+        <location filename="../gui_qt/dialognoise.cpp" line="121"/>
         <source>Noise components</source>
         <translation>Composants du bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialognoise.cpp" line="123"/>
+        <location filename="../gui_qt/dialognoise.cpp" line="130"/>
         <source>Add component</source>
         <translation>Ajouter un composant</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialognoise.cpp" line="127"/>
+        <location filename="../gui_qt/dialognoise.cpp" line="134"/>
         <source>Remove component</source>
         <translation>Supprimer un composant</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialognoise.cpp" line="131"/>
+        <location filename="../gui_qt/dialognoise.cpp" line="138"/>
         <source>Component height</source>
         <translation>Hauteur du composant</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialognoise.cpp" line="143"/>
+        <location filename="../gui_qt/dialognoise.cpp" line="150"/>
         <source>Component scaling</source>
         <translation>Echelle du composant</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialognoise.cpp" line="159"/>
+        <location filename="../gui_qt/dialognoise.cpp" line="166"/>
         <source>Validate</source>
         <translation>Valider</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialognoise.cpp" line="163"/>
+        <location filename="../gui_qt/dialognoise.cpp" line="170"/>
         <source>Reset</source>
         <translation>Recommencer</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialognoise.cpp" line="167"/>
+        <location filename="../gui_qt/dialognoise.cpp" line="174"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialognoise.cpp" line="171"/>
+        <location filename="../gui_qt/dialognoise.cpp" line="178"/>
         <source>Paysages 3D - Noise editor</source>
         <translation>Paysages 3D - Editeur de bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialognoise.cpp" line="222"/>
+        <location filename="../gui_qt/dialognoise.cpp" line="232"/>
         <source>Component %1</source>
         <translation>Composant %1</translation>
     </message>

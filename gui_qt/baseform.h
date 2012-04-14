@@ -58,6 +58,9 @@ private:
     QPushButton* layer_del;
     QWidget* previews;
     QWidget* form;
+    QWidget* form_labels;
+    QWidget* form_previews;
+    QWidget* form_controls;
     QWidget* buttons;
     QPushButton* button_apply;
     QPushButton* button_revert;
