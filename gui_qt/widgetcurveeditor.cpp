@@ -10,8 +10,7 @@ WidgetCurveEditor::WidgetCurveEditor(QWidget *parent) : QWidget(parent)
     _dragged = -1;
     _pen = QColor(0, 0, 0);
     
-    setMinimumSize(500, 500);
-    setMaximumSize(500, 500);
+    setMinimumSize(300, 300);
 }
 
 WidgetCurveEditor::~WidgetCurveEditor()
@@ -39,25 +38,32 @@ void WidgetCurveEditor::setPenColor(QColor color)
 void WidgetCurveEditor::paintEvent(QPaintEvent* event)
 {
     int i, n;
+    int width, height;
+    double dwidth, dheight;
     CurvePoint point;
     double position, value;
     
+    width = this->width();
+    height = this->height();
+    dheight = (double)(height - 1);
+    dwidth = (double)(width - 1);
+    
     QPainter painter(this);
-    painter.fillRect(0, 0, 500, 500, QColor(255, 255, 255));
+    painter.fillRect(0, 0, width, height, QColor(255, 255, 255));
     painter.setPen(_pen);
     
-    for (int x = 0; x < 500; x++)
+    for (int x = 0; x < width; x++)
     {
-        position = ((double)x) / 499.0;
+        position = ((double)x) / dwidth;
         value = curveGetValue(_curve, position);
-        painter.drawPoint(x, 499 - (int)(value * 499.0));
+        painter.drawPoint(x, height - 1 - (int)(value * dheight));
     }
     
     n = curveGetPointCount(_curve);
     for (i = 0; i < n; i++)
     {
         curveGetPoint(_curve, i, &point);
-        painter.drawEllipse(QPointF((int)(point.position * 499.0), 499 - (int)(point.value * 499.0)), 4.0, 4.0);
+        painter.drawEllipse(QPointF((int)(point.position * dwidth), height - 1 - (int)(point.value * dheight)), 4.0, 4.0);
     }
 }
 
@@ -77,8 +83,8 @@ void WidgetCurveEditor::mouseMoveEvent(QMouseEvent* event)
     
     if (_dragged >= 0 && (event->buttons() & Qt::LeftButton))
     {
-        point.position = ((double)event->x()) / 499.0;
-        point.value = 1.0 - ((double)event->y()) / 499.0;
+        point.position = ((double)event->x()) / (double)(width() - 1);
+        point.value = 1.0 - ((double)event->y()) / (double)(height() - 1);
         
         point.position = (point.position < 0.0) ? 0.0 : point.position;
         point.position = (point.position > 1.0) ? 1.0 : point.position;
@@ -127,8 +133,8 @@ void WidgetCurveEditor::mouseDoubleClickEvent(QMouseEvent* event)
     {
         if (getPointAt(event->x(), event->y()) < 0)
         {
-            point.position = ((double)event->x()) / 499.0;
-            point.value = 1.0 - ((double)event->y()) / 499.0;
+            point.position = ((double)event->x()) / (double)(width() - 1);
+            point.value = 1.0 - ((double)event->y()) / (double)(height() - 1);
 
             curveAddPoint(_curve, &point);
             curveValidate(_curve);
@@ -144,8 +150,8 @@ int WidgetCurveEditor::getPointAt(int x, int y)
     int nearest;
     double distance, ndistance;
     CurvePoint point;
-    double dx = ((double)x) / 499.0;
-    double dy = 1.0 - ((double)y) / 499.0;
+    double dx = ((double)x) / (double)(width() - 1);
+    double dy = 1.0 - ((double)y) / (double)(height() - 1);
 
     n = curveGetPointCount(_curve);
     if (n < 1)

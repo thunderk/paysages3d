@@ -1,9 +1,23 @@
-- Make colorgradation dialog sizable (and reduce minimum size).
+Technology Preview 1 :
 - Make all UI more sizable.
 - Implement scrolling on previews.
+- Find a licence and apply it.
+
+Technology Preview 2 :
 - Add a material editor dialog.
+- Add a zone editor dialog for localized textures.
+- Add a terrain modifier dialog with zones.
+- Improve curve editor.
 - Replace FILE* by a custom type for Save and Load.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - Implement a file header/versioning.
+
+Technology Preview 3 :
 - Restore render progress.
-- Find a licence and apply it.
+- Add basic vegetation system (not sure).
+- Improve sky rendering (colors and light halo).
+- Add rendering steps in small previews (not sure).
+
+Release Candidate :
+- Polish all features and UI.
+- More translations.

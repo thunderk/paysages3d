@@ -21,6 +21,7 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
     QWidget* buttons;
     QWidget* form;
     QGridLayout* form_layout;
+    QLabel* label;
     
     _base = gradation;
     _current = colorGradationCreate();
@@ -33,33 +34,67 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
     form->setLayout(form_layout);
     layout()->addWidget(form);
     
-    form_layout->addWidget(new QLabel(tr("This is the curve editor for color components.\nClick on a component preview below to edit it.\nClick on points and drag them to move them.\nDouble click to add a new point.\nRight click on a point to delete it."), form), 0, 0);
+    label = new QLabel(tr("This is the curve editor for color components.\nClick on a component preview below to edit it.\nClick on points and drag them to move them.\nDouble click to add a new point.\nRight click on a point to delete it."), form);
+    label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    label->setMinimumWidth(150);
+    label->setMaximumWidth(200);
+    label->setWordWrap(true);
+    form_layout->addWidget(label, 0, 1);
     _curve_editor = new WidgetCurveEditor(form);
-    form_layout->addWidget(_curve_editor, 0, 1);
+    _curve_editor->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    form_layout->addWidget(_curve_editor, 0, 0);
     connect(_curve_editor, SIGNAL(liveChanged()), this, SLOT(updateColors()));
-    
-    form_layout->addWidget(new QLabel(tr("Red preview, click to edit"), form), 1, 0);
+
+    label = new QLabel(tr("Red preview, click to edit"), form);
+    label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    label->setMinimumWidth(150);
+    label->setMaximumWidth(200);
+    label->setWordWrap(true);
+    form_layout->addWidget(label, 1, 1);
     _preview_red = new PreviewColorGradation(form, _current, COLORGRADATIONBAND_RED);
-    _preview_red->setMinimumHeight(50);
+    _preview_red->setMinimumHeight(30);
+    _preview_red->setMaximumHeight(60);
+    _preview_red->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     connect(_preview_red, SIGNAL(clicked()), this, SLOT(selectRed()));
-    form_layout->addWidget(_preview_red, 1, 1);
+    form_layout->addWidget(_preview_red, 1, 0);
 
-    form_layout->addWidget(new QLabel(tr("Green preview, click to edit"), form), 2, 0);
+    label = new QLabel(tr("Green preview, click to edit"), form);
+    label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    label->setMinimumWidth(150);
+    label->setMaximumWidth(200);
+    label->setWordWrap(true);
+    form_layout->addWidget(label, 2, 1);
     _preview_green = new PreviewColorGradation(form, _current, COLORGRADATIONBAND_GREEN);
-    _preview_green->setMinimumHeight(50);
+    _preview_green->setMinimumHeight(30);
+    _preview_green->setMaximumHeight(60);
+    _preview_green->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     connect(_preview_green, SIGNAL(clicked()), this, SLOT(selectGreen()));
-    form_layout->addWidget(_preview_green, 2, 1);
+    form_layout->addWidget(_preview_green, 2, 0);
 
-    form_layout->addWidget(new QLabel(tr("Blue preview, click to edit"), form), 3, 0);
+    label = new QLabel(tr("Blue preview, click to edit"), form);
+    label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    label->setMinimumWidth(150);
+    label->setMaximumWidth(200);
+    label->setWordWrap(true);
+    form_layout->addWidget(label, 3, 1);
     _preview_blue = new PreviewColorGradation(form, _current, COLORGRADATIONBAND_BLUE);
-    _preview_blue->setMinimumHeight(50);
+    _preview_blue->setMinimumHeight(30);
+    _preview_blue->setMaximumHeight(60);
+    _preview_blue->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     connect(_preview_blue, SIGNAL(clicked()), this, SLOT(selectBlue()));
-    form_layout->addWidget(_preview_blue, 3, 1);
+    form_layout->addWidget(_preview_blue, 3, 0);
 
-    form_layout->addWidget(new QLabel(tr("Final preview"), form), 4, 0);
+    label = new QLabel(tr("Final preview"), form);
+    label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    label->setMinimumWidth(150);
+    label->setMaximumWidth(200);
+    label->setWordWrap(true);
+    form_layout->addWidget(label, 4, 1);
     _preview_final = new PreviewColorGradation(form, _current, COLORGRADATIONBAND_FINAL);
-    _preview_final->setMinimumHeight(50);
-    form_layout->addWidget(_preview_final, 4, 1);
+    _preview_final->setMinimumHeight(30);
+    _preview_final->setMaximumHeight(60);
+    _preview_final->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    form_layout->addWidget(_preview_final, 4, 0);
     
     buttons = new QWidget(this);
     layout()->addWidget(buttons);
@@ -80,6 +115,7 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
     _curve = curveCreate();
 
     setWindowTitle(tr("Paysages 3D - Color gradation editor"));
+    resize(900, 600);
 
     revert();
 }
