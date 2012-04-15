@@ -1,5 +1,6 @@
 #include "basepreview.h"
 
+#include <math.h>
 #include <QVector>
 #include <QPainter>
 #include <QTimer>
@@ -40,8 +41,10 @@ BasePreview::BasePreview(QWidget* parent) :
 
     this->conf_scroll_xmin = 0.0;
     this->conf_scroll_xmax = 0.0;
+    this->conf_scroll_xinit = 0.0;
     this->conf_scroll_ymin = 0.0;
     this->conf_scroll_ymax = 0.0;
+    this->conf_scroll_yinit = 0.0;
     this->conf_scale_min = 1.0;
     this->conf_scale_max = 1.0;
     this->conf_scale_init = 1.0;
@@ -100,6 +103,19 @@ void BasePreview::configScaling(double min, double max, double step, double init
         scaling = init / size;
         redraw();
     }
+}
+
+void BasePreview::configScrolling(double xmin, double xmax, double xinit, double ymin, double ymax, double yinit)
+{
+    conf_scroll_xmin = xmin;
+    conf_scroll_xmax = xmax;
+    conf_scroll_xinit = xinit;
+    conf_scroll_ymin = ymin;
+    conf_scroll_ymax = ymax;
+    conf_scroll_yinit = yinit;
+    xoffset = xinit;
+    yoffset = yinit;
+    redraw();
 }
 
 void BasePreview::start()
@@ -199,9 +215,10 @@ void BasePreview::renderPixbuf()
                 return;
             }
 
-            if (qAlpha(this->pixbuf->pixel(x, y)) == 0)
+            if (qAlpha(this->pixbuf->pixel(x, y)) < 255)
             {
                 col = this->getColor((double)(x - w / 2) * this->scaling + this->xoffset, (double)(y - h / 2) * this->scaling + this->yoffset);
+                col.setAlpha(255);
                 this->pixbuf->setPixel(x, y, col.rgb());
                 done = true;
             }
@@ -214,9 +231,107 @@ void BasePreview::renderPixbuf()
     }
 }
 
+void BasePreview::mousePressEvent(QMouseEvent* event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        mousex = event->x();
+        mousey = event->y();
+    }
+}
+
+void BasePreview::mouseMoveEvent(QMouseEvent* event)
+{
+    int dx, dy;
+    int ndx, ndy;
+    int width, height;
+    
+    if (event->buttons() & Qt::LeftButton)
+    {
+        dx = event->x() - mousex;
+        dy = event->y() - mousey;
+
+        ndx = dx;
+        ndy = dy;
+        if (xoffset - dx * scaling > conf_scroll_xmax)
+        {
+            ndx = (int)floor((conf_scroll_xmax - xoffset) / scaling);
+        }
+        if (xoffset - dx * scaling < conf_scroll_xmin)
+        {
+            ndx = (int)floor((conf_scroll_xmin - xoffset) / scaling);
+        }
+        if (yoffset - dy * scaling > conf_scroll_ymax)
+        {
+            ndy = (int)floor((conf_scroll_ymax - yoffset) / scaling);
+        }
+        if (yoffset - dy * scaling < conf_scroll_ymin)
+        {
+            ndy = (int)floor((conf_scroll_ymin - yoffset) / scaling);
+        }
+        if (ndx != 0 || ndy != 0)
+        {
+            width = this->width();
+            height = this->height();
+            
+            if (ndx <= -width || ndx >= width || ndy <= -height || ndy >= height)
+            {
+                xoffset -= (double)ndx * scaling;
+                yoffset -= (double)ndy * scaling;
+            
+                forceRender();
+            }
+            else
+            {
+                int xstart, xsize, ystart, ysize;
+                
+                lock_drawing->lock();
+
+                xoffset -= (double)ndx * scaling;
+                yoffset -= (double)ndy * scaling;
+            
+                if (ndx < 0)
+                {
+                    xstart = -ndx;
+                    xsize = width + ndx;
+                }
+                else
+                {
+                    xstart = 0;
+                    xsize = width - ndx;
+                }
+                if (ndy < 0)
+                {
+                    ystart = -ndy;
+                    ysize = height + ndy;
+                }
+                else
+                {
+                    ystart = 0;
+                    ysize = height - ndy;
+                }
+                
+                QImage part = pixbuf->copy(xstart, ystart, xsize, ysize);
+                QPainter painter(pixbuf);
+                pixbuf->fill(0x00000000);
+                painter.drawImage(xstart + ndx, ystart + ndy, part);
+                
+                need_render = true;
+                lock_drawing->unlock();
+            }
+        }
+
+        mousex = event->x();
+        mousey = event->y();
+    }
+}
+
 void BasePreview::wheelEvent(QWheelEvent* event)
 {
     double factor;
+    double old_scaling;
+    int width, height;
+    int new_width, new_height;
     
     if (event->modifiers() & Qt::ShiftModifier)
     {
@@ -231,6 +346,10 @@ void BasePreview::wheelEvent(QWheelEvent* event)
         factor = 1.0;
     }
 
+    old_scaling = scaling;
+    width = pixbuf->width();
+    height = pixbuf->height();
+    
     if (event->orientation() == Qt::Vertical)
     {
         if (event->delta() > 0  && scaling > conf_scale_min)
@@ -240,7 +359,17 @@ void BasePreview::wheelEvent(QWheelEvent* event)
             {
                 scaling = conf_scale_min;
             }
-            redraw();
+            
+            lock_drawing->lock();
+            new_width = (int)floor(((double)width) * scaling / old_scaling);
+            new_height = (int)floor(((double)height) * scaling / old_scaling);
+            QImage part = pixbuf->copy((width - new_width) / 2, (height - new_height) / 2, new_width, new_height).scaled(width, height);
+            QPainter painter(pixbuf);
+            pixbuf->fill(0x00000000);
+            painter.setOpacity(0.99);
+            painter.drawImage(0, 0, part);
+            need_render = true;
+            lock_drawing->unlock();
         }
         else if (event->delta() < 0  && scaling < conf_scale_max)
         {
@@ -249,7 +378,15 @@ void BasePreview::wheelEvent(QWheelEvent* event)
             {
                 scaling = conf_scale_max;
             }
-            redraw();
+            
+            lock_drawing->lock();
+            QImage part = pixbuf->scaled((int)floor(((double)width) * old_scaling / scaling), (int)floor(((double)height) * old_scaling / scaling));
+            QPainter painter(pixbuf);
+            pixbuf->fill(0x00000000);
+            painter.setOpacity(0.99);
+            painter.drawImage((width - part.width()) / 2, (height - part.height()) / 2, part);
+            need_render = true;
+            lock_drawing->unlock();
         }
         event->accept();
     }
@@ -324,172 +461,4 @@ void BasePreview::wheelEvent(QWheelEvent* event)
 //        }
 //        preview->need_render = 1;
 //    }
-//}
-
-//static inline int _fixScroll(SmallPreview* preview, int dx, int dy, int* new_dx, int* new_dy)
-//{
-//    *new_dx = dx;
-//    *new_dy = dy;
-//    if (preview->xoffset - dx * preview->scaling > preview->conf_scroll_xmax)
-//    {
-//        *new_dx = (int)floor((preview->conf_scroll_xmax - preview->xoffset) / preview->scaling);
-//    }
-//    if (preview->xoffset - dx * preview->scaling < preview->conf_scroll_xmin)
-//    {
-//        *new_dx = (int)floor((preview->conf_scroll_xmin - preview->xoffset) / preview->scaling);
-//    }
-//    if (preview->yoffset - dy * preview->scaling > preview->conf_scroll_ymax)
-//    {
-//        *new_dy = (int)floor((preview->conf_scroll_ymax - preview->yoffset) / preview->scaling);
-//    }
-//    if (preview->yoffset - dy * preview->scaling < preview->conf_scroll_ymin)
-//    {
-//        *new_dy = (int)floor((preview->conf_scroll_ymin - preview->yoffset) / preview->scaling);
-//    }
-//    return (*new_dx == 0 && *new_dy == 0) ? 0 : 1;
-//}
-
-//static inline int _fixScaling(SmallPreview* preview, double scaling, double* new_scaling)
-//{
-//    double old_scaling = preview->scaling;
-//    *new_scaling = scaling;
-//    if (scaling < preview->conf_scale_min)
-//    {
-//        *new_scaling = preview->conf_scale_min;
-//    }
-//    if (scaling > preview->conf_scale_max)
-//    {
-//        *new_scaling = preview->conf_scale_max;
-//    }
-//    return (old_scaling == *new_scaling) ? 0 : 1;
-//}
-
-//static int _cbMouseScroll(GtkEventBox* image, GdkEventScroll* event, gpointer data)
-//{
-//    SmallPreview* preview = (SmallPreview*)data;
-
-//    /* TODO Center the zoom on the cursor */
-
-//    if (event->direction == GDK_SCROLL_UP)
-//    {
-//        mutexAcquire(preview->lock);
-//        if (_fixScaling(preview, preview->scaling - preview->conf_scale_step, &preview->scaling))
-//        {
-//            preview->need_rerender = 1;
-//        }
-//        mutexRelease(preview->lock);
-//    }
-//    else if (event->direction == GDK_SCROLL_DOWN)
-//    {
-//        mutexAcquire(preview->lock);
-//        if (_fixScaling(preview, preview->scaling + preview->conf_scale_step, &preview->scaling))
-//        {
-//            preview->need_rerender = 1;
-//        }
-//        mutexRelease(preview->lock);
-//    }
-
-//    return 1;
-//}
-
-//static int _cbMouseButtonPressed(GtkEventBox* image, GdkEventButton* event, gpointer data)
-//{
-//    SmallPreview* preview = (SmallPreview*)data;
-
-//    if (event->button == 1)
-//    {
-//        preview->mousex = (int)event->x;
-//        preview->mousey = (int)event->y;
-//    }
-
-//    return 1;
-//}
-
-//static int _cbMouseMove(GtkEventBox* image, GdkEventMotion* event, gpointer data)
-//{
-//    SmallPreview* preview = (SmallPreview*)data;
-//    int dx, dy;
-
-//    if (event->state & GDK_BUTTON1_MASK)
-//    {
-//        mutexAcquire(preview->lock);
-
-//        dx = (int)event->x - preview->mousex;
-//        dy = (int)event->y - preview->mousey;
-
-//        if (_fixScroll(preview, dx, dy, &dx, &dy))
-//        {
-//            _scrollPixbuf(preview, dx, dy);
-//        }
-
-//        preview->mousex = (int)event->x;
-//        preview->mousey = (int)event->y;
-
-//        mutexRelease(preview->lock);
-//    }
-
-//    return 1;
-//}
-
-//void guiPreviewRedrawAll()
-//{
-//    int i;
-
-//    for (i = 0; i < _previews_count; i++)
-//    {
-//        guiPreviewRedraw(_preview + i);
-//    }
-//}
-
-//void guiPreviewConfigScrolling(SmallPreview* preview, double xmin, double xmax, double ymin, double ymax)
-//{
-//    mutexAcquire(preview->lock);
-//    preview->conf_scroll_xmin = xmin;
-//    preview->conf_scroll_xmax = xmax;
-//    preview->conf_scroll_ymin = ymin;
-//    preview->conf_scroll_ymax = ymax;
-//    preview->need_rerender = 1;
-//    mutexRelease(preview->lock);
-//}
-
-//void guiPreviewConfigScaling(SmallPreview* preview, double min, double max, double step)
-//{
-//    mutexAcquire(preview->lock);
-//    preview->conf_scale_min = min;
-//    preview->conf_scale_max = max;
-//    preview->conf_scale_step = step;
-//    preview->need_rerender = 1;
-//    mutexRelease(preview->lock);
-//}
-
-//void guiPreviewSetRenderer(SmallPreview* preview, SmallPreviewCallback renderer)
-//{
-//    mutexAcquire(preview->lock);
-//    preview->renderer = renderer;
-//    preview->need_rerender = 1;
-//    mutexRelease(preview->lock);
-//}
-
-//void guiPreviewSetViewport(SmallPreview* preview, double xoffset, double yoffset, double scaling)
-//{
-//    mutexAcquire(preview->lock);
-//    preview->xoffset = xoffset;
-//    preview->yoffset = yoffset;
-//    preview->scaling = scaling;
-//    preview->need_rerender = 1;
-//    mutexRelease(preview->lock);
-//}
-
-//void guiPreviewSetTerrainHeight(SmallPreview* preview)
-//{
-//    /*preview->conf_scroll_x = 1;
-//    preview->conf_scroll_y = 1;
-//    preview->conf_zoom = 1;
-//    preview->init_scaling = preview->scaling = 0.1;
-//    preview->init_xoffset = preview->xoffset = 0.0;
-//    preview->init_yoffset = preview->yoffset = 0.0;
-
-//    preview->renderer = _renderTopDownHeight;*/
-
-//    guiPreviewRedraw(preview);
 //}

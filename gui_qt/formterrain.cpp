@@ -20,6 +20,7 @@ public:
         _preview_definition = terrainCreateDefinition();
         
         configScaling(0.5, 200.0, 1.0, 50.0);
+        configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
     QColor getColor(double x, double y)
@@ -94,6 +95,7 @@ public:
         _renderer.customData[2] = &_lighting;
         
         configScaling(0.5, 200.0, 1.0, 50.0);
+        configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
     QColor getColor(double x, double y)

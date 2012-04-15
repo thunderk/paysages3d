@@ -23,6 +23,7 @@ protected:
     virtual QColor getColor(double x, double y);
     
     void configScaling(double min, double max, double step, double init);
+    void configScrolling(double xmin, double xmax, double xinit, double ymin, double ymax, double yinit);
 
     double xoffset;
     double yoffset;
@@ -35,6 +36,8 @@ private:
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent* event);
     
+    void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
     void wheelEvent(QWheelEvent* event);
 
     QThread* updater;
@@ -51,8 +54,10 @@ private:
 
     double conf_scroll_xmin;
     double conf_scroll_xmax;
+    double conf_scroll_xinit;
     double conf_scroll_ymin;
     double conf_scroll_ymax;
+    double conf_scroll_yinit;
 
     double conf_scale_min;
     double conf_scale_max;
