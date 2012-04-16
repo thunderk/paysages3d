@@ -19,6 +19,10 @@ public:
     {
         _running = false;
     }
+    static inline void usleep(int us)
+    {
+        QThread::usleep(us);
+    }
 protected:
     void run()
     {
@@ -56,15 +60,14 @@ BasePreview::BasePreview(QWidget* parent) :
     this->pixbuf->fill(0x00000000);
 
     this->alive = true;
-    this->need_rerender = false;
     this->need_render = true;
+
+    QObject::connect(this, SIGNAL(contentChange()), this, SLOT(update()));
+    QObject::connect(this, SIGNAL(redrawRequested()), this, SLOT(handleRedraw()));
 
     this->setMinimumSize(256, 256);
     this->setMaximumSize(256, 256);
     this->resize(256, 256);
-
-    QObject::connect(this, SIGNAL(contentChange()), this, SLOT(update()));
-    QObject::connect(this, SIGNAL(redrawRequested()), this, SLOT(handleRedraw()));
 
     this->updater = new PreviewDrawer(this);
 }
@@ -127,10 +130,6 @@ void BasePreview::doRender()
 {
     if (this->alive)
     {
-        if (this->need_rerender)
-        {
-            this->forceRender();
-        }
         if (this->need_render)
         {
             this->need_render = false;
@@ -147,10 +146,16 @@ void BasePreview::redraw()
 
 void BasePreview::handleRedraw()
 {
-    need_rerender = true;
     lock_drawing->lock();
+    
     updateData();
-    need_rerender = true;
+    
+    QImage part = pixbuf->copy();
+    pixbuf->fill(0x00000000);
+    QPainter painter(pixbuf);
+    painter.setOpacity(0.99);
+    painter.drawImage(0, 0, part);
+    
     lock_drawing->unlock();
 }
 
@@ -165,7 +170,6 @@ void BasePreview::resizeEvent(QResizeEvent* event)
     this->pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
 
     this->pixbuf->fill(0x00000000);
-    this->need_rerender = true;
     this->need_render = true;
 
     delete image;
@@ -179,36 +183,22 @@ void BasePreview::paintEvent(QPaintEvent* event)
     painter.drawImage(0, 0, *this->pixbuf);
 }
 
-void BasePreview::forceRender()
-{
-    this->lock_drawing->lock();
-    
-    QImage part = pixbuf->copy();
-    pixbuf->fill(0x00000000);
-    QPainter painter(pixbuf);
-    painter.setOpacity(0.99);
-    painter.drawImage(0, 0, part);
-            
-    this->need_rerender = false;
-    this->need_render = true;
-    
-    this->lock_drawing->unlock();
-}
-
 void BasePreview::renderPixbuf()
 {
     QColor col;
     bool done;
     int x, y, w, h;
+    QImage* current_pixbuf;
 
     w = this->pixbuf->width();
     h = this->pixbuf->height();
+    current_pixbuf = this->pixbuf;
 
     for (x = 0; x < w; x++)
     {
         this->lock_drawing->lock();
 
-        if (this->need_rerender || !this->alive)
+        if (!this->alive || this->pixbuf != current_pixbuf)
         {
             this->lock_drawing->unlock();
             return;
@@ -217,7 +207,7 @@ void BasePreview::renderPixbuf()
         done = false;
         for (y = 0; y < h; y++)
         {
-            if (this->need_rerender || !this->alive)
+            if (!this->alive || this->pixbuf != current_pixbuf)
             {
                 this->lock_drawing->unlock();
                 return;
@@ -236,7 +226,7 @@ void BasePreview::renderPixbuf()
             emit contentChange();
         }
         this->lock_drawing->unlock();
-        usleep(1);
+        PreviewDrawer::usleep(100);
     }
 }
 
@@ -288,7 +278,10 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
                 xoffset -= (double)ndx * scaling;
                 yoffset -= (double)ndy * scaling;
             
-                forceRender();
+                lock_drawing->lock();
+                pixbuf->fill(0x00000000);
+                need_render = true;
+                lock_drawing->unlock();
             }
             else
             {

@@ -30,7 +30,6 @@ protected:
     double scaling;
 
 private:
-    void forceRender();
     void renderPixbuf();
 
     void resizeEvent(QResizeEvent* event);
@@ -49,7 +48,6 @@ private:
     int mousey;
 
     bool alive;
-    bool need_rerender;
     bool need_render;
 
     double conf_scroll_xmin;
