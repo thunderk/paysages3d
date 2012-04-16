@@ -182,9 +182,16 @@ void BasePreview::paintEvent(QPaintEvent* event)
 void BasePreview::forceRender()
 {
     this->lock_drawing->lock();
-    this->pixbuf->fill(0x00000000);
+    
+    QImage part = pixbuf->copy();
+    pixbuf->fill(0x00000000);
+    QPainter painter(pixbuf);
+    painter.setOpacity(0.99);
+    painter.drawImage(0, 0, part);
+            
     this->need_rerender = false;
     this->need_render = true;
+    
     this->lock_drawing->unlock();
 }
 
@@ -367,7 +374,7 @@ void BasePreview::wheelEvent(QWheelEvent* event)
             lock_drawing->lock();
             new_width = (int)floor(((double)width) * scaling / old_scaling);
             new_height = (int)floor(((double)height) * scaling / old_scaling);
-            QImage part = pixbuf->copy((width - new_width) / 2, (height - new_height) / 2, new_width, new_height).scaled(width, height);
+            QImage part = pixbuf->copy((width - new_width) / 2, (height - new_height) / 2, new_width, new_height).scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
             QPainter painter(pixbuf);
             pixbuf->fill(0x00000000);
             painter.setOpacity(0.99);
@@ -386,7 +393,7 @@ void BasePreview::wheelEvent(QWheelEvent* event)
             }
             
             lock_drawing->lock();
-            QImage part = pixbuf->scaled((int)floor(((double)width) * old_scaling / scaling), (int)floor(((double)height) * old_scaling / scaling));
+            QImage part = pixbuf->scaled((int)floor(((double)width) * old_scaling / scaling), (int)floor(((double)height) * old_scaling / scaling), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
             QPainter painter(pixbuf);
             pixbuf->fill(0x00000000);
             painter.setOpacity(0.99);
@@ -403,70 +410,3 @@ void BasePreview::wheelEvent(QWheelEvent* event)
         event->ignore();
     }
 }
-
-//static void _scrollPixbuf(SmallPreview* preview, int dx, int dy)
-//{
-//    int xstart, ystart, xsize, ysize, y;
-//    void* pixels = gdk_pixbuf_get_pixels(preview->pixbuf);
-//    int rowstride = gdk_pixbuf_get_rowstride(preview->pixbuf);
-
-//    preview->xoffset -= (double)dx * preview->scaling;
-//    preview->yoffset -= (double)dy * preview->scaling;
-
-//    /* TODO Use pixbuf size */
-//    if (dx == 0 && dy == 0)
-//    {
-//        return;
-//    }
-//    else if (dx <= -256 || dx >= 256 || dy <= -256 || dy >= 256)
-//    {
-//        _forceRender(preview);
-//    }
-//    else
-//    {
-//        if (dx < 0)
-//        {
-//            xstart = -dx;
-//            xsize = 256 + dx;
-//        }
-//        else
-//        {
-//            xstart = 0;
-//            xsize = 256 - dx;
-//        }
-//        if (dy < 0)
-//        {
-//            ystart = -dy;
-//            ysize = 256 + dy;
-//        }
-//        else
-//        {
-//            ystart = 0;
-//            ysize = 256 - dy;
-//        }
-//        memmove(pixels + (ystart + dy) * rowstride + (xstart + dx) * 4, pixels + ystart * rowstride + xstart * 4, (ysize - 1) * rowstride + xsize * 4);
-//        if (dy < 0)
-//        {
-//            memset(pixels + (256 + dy) * rowstride, 0, (-dy - 1) * rowstride + 256 * 4);
-//        }
-//        else if (dy > 0)
-//        {
-//            memset(pixels, 0, (dy - 1) * rowstride + 256 * 4);
-//        }
-//        if (dx < 0)
-//        {
-//            for (y = ystart + dy; y < ystart + dy + ysize; y++)
-//            {
-//                memset(pixels + y * rowstride + xsize * 4, 0, -dx * 4);
-//            }
-//        }
-//        else if (dx > 0)
-//        {
-//            for (y = ystart + dy; y < ystart + dy + ysize; y++)
-//            {
-//                memset(pixels + y * rowstride, 0, dx * 4);
-//            }
-//        }
-//        preview->need_render = 1;
-//    }
-//}

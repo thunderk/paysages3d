@@ -823,12 +823,32 @@ rapide (F5)</translation>
         <translation>&amp;A propos</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="166"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="140"/>
+        <source>New lanscape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="140"/>
+        <source>Do you want to start a new landscape ? Any unsaved changes will be lost.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="159"/>
+        <source>Load lanscape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="159"/>
+        <source>Do you want to load a landscape ? Any unsaved changes will be lost.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="172"/>
         <source>Paysages 3D</source>
         <translation>Paysages 3D</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="166"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="172"/>
         <source>A 3D landscape editing and rendering software.
 
 Credits :

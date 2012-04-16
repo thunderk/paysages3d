@@ -137,9 +137,12 @@ void MainWindow::refreshAll()
 
 void MainWindow::fileNew()
 {
-    autoGenRealisticLandscape(0);
-    autoSetDaytime(8, 30);
-    refreshAll();
+    if (QMessageBox::question(this, tr("New lanscape"), tr("Do you want to start a new landscape ? Any unsaved changes will be lost."), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+    {
+        autoGenRealisticLandscape(0);
+        autoSetDaytime(8, 30);
+        refreshAll();
+    }
 }
 
 void MainWindow::fileSave()
@@ -153,11 +156,14 @@ void MainWindow::fileSave()
 
 void MainWindow::fileLoad()
 {
-    QString filepath = QFileDialog::getOpenFileName(this);
-    if (!filepath.isNull())
+    if (QMessageBox::question(this, tr("Load lanscape"), tr("Do you want to load a landscape ? Any unsaved changes will be lost."), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
-        paysagesLoad((char*)filepath.toStdString().c_str());
-        refreshAll();
+        QString filepath = QFileDialog::getOpenFileName(this);
+        if (!filepath.isNull())
+        {
+            paysagesLoad((char*)filepath.toStdString().c_str());
+            refreshAll();
+        }
     }
 }
 
