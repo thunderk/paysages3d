@@ -48,6 +48,7 @@ private:
     int mousey;
 
     bool alive;
+    bool need_restart;
     bool need_render;
 
     double conf_scroll_xmin;

@@ -60,6 +60,7 @@ BasePreview::BasePreview(QWidget* parent) :
     this->pixbuf->fill(0x00000000);
 
     this->alive = true;
+    this->need_restart = false;
     this->need_render = true;
 
     QObject::connect(this, SIGNAL(contentChange()), this, SLOT(update()));
@@ -157,6 +158,7 @@ void BasePreview::handleRedraw()
     painter.drawImage(0, 0, part);
     
     need_render = true;
+    need_restart = true;
     
     lock_drawing->unlock();
 }
@@ -173,6 +175,7 @@ void BasePreview::resizeEvent(QResizeEvent* event)
 
     this->pixbuf->fill(0x00000000);
     this->need_render = true;
+    this->need_restart = true;
 
     delete image;
 
@@ -190,17 +193,17 @@ void BasePreview::renderPixbuf()
     QColor col;
     bool done;
     int x, y, w, h;
-    QImage* current_pixbuf;
 
     w = this->pixbuf->width();
     h = this->pixbuf->height();
-    current_pixbuf = this->pixbuf;
+    
+    this->need_restart = false;
 
     for (x = 0; x < w; x++)
     {
         this->lock_drawing->lock();
 
-        if (!this->alive || this->pixbuf != current_pixbuf)
+        if (this->need_restart || !this->alive)
         {
             this->lock_drawing->unlock();
             return;
@@ -209,7 +212,7 @@ void BasePreview::renderPixbuf()
         done = false;
         for (y = 0; y < h; y++)
         {
-            if (!this->alive || this->pixbuf != current_pixbuf)
+            if (this->need_restart || !this->alive)
             {
                 this->lock_drawing->unlock();
                 return;
