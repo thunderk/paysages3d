@@ -194,9 +194,13 @@ void FormRender::saveRender()
     {
         QString filepath;
 
-        filepath = QFileDialog::getSaveFileName(this, tr("Choose a filename to save the last render"));
+        filepath = QFileDialog::getSaveFileName(this, tr("Paysages 3D - Choose a filename to save the last render"), QString(), tr("Images (*.png *.jpg)"));
         if (!filepath.isNull())
         {
+            if (!filepath.toLower().endsWith(".jpg") && !filepath.toLower().endsWith(".jpeg") && !filepath.toLower().endsWith(".png"))
+            {
+                filepath = filepath.append(".png");
+            }
             renderSaveToFile(_renderer.render_area, (char*)filepath.toStdString().c_str());
             QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
         }

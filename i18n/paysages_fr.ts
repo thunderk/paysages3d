@@ -394,11 +394,24 @@ Maintenir Ctrl : Plus rapide</translation>
     </message>
     <message>
         <location filename="../gui_qt/formrender.cpp" line="197"/>
-        <source>Choose a filename to save the last render</source>
-        <translation>Choisissez un nom de fichier pour le rendu</translation>
+        <source>Paysages 3D - Choose a filename to save the last render</source>
+        <translation>Paysages 3D - Choisissez un nom de fichier pour le rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="201"/>
+        <location filename="../gui_qt/formrender.cpp" line="197"/>
+        <source>Images (*.png *.jpg)</source>
+        <translation>Images (*.png *.jpg)</translation>
+    </message>
+    <message>
+        <source>Images (*.png, *.jpg)</source>
+        <translation type="obsolete">Images (*.png *.jpg)</translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the last render</source>
+        <translation type="obsolete">Choisissez un nom de fichier pour le rendu</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formrender.cpp" line="205"/>
         <source>The picture %1 has been saved.</source>
         <translation>L&apos;image %1 a été sauvegardée.</translation>
     </message>
@@ -743,6 +756,42 @@ rapide (F5)</translation>
         <translation>F5</translation>
     </message>
     <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="140"/>
+        <source>Do you want to start a new scenery ? Any unsaved changes will be lost.</source>
+        <translation>Voulez-vous commencer un nouveau paysage ? Les modifications non sauvegardées seront perdues.</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="140"/>
+        <source>Paysages 3D - New scenery</source>
+        <translation>Paysages 3D - Nouvelle scène</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="150"/>
+        <source>Paysages 3D - Choose a file to save the scenery</source>
+        <translation>Paysages 3D - Choisissez un fichier pour enregistrer la scène</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="150"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="165"/>
+        <source>Paysages 3D Scenery (*.p3d)</source>
+        <translation>Scène Paysages 3D</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="163"/>
+        <source>Do you want to load a scenery from file ? Any unsaved changes will be lost.</source>
+        <translation>Voulez-vous charger une scène ? Les modifications nons sauvegardées seront perdues.</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="163"/>
+        <source>Paysages 3D - Load scenery</source>
+        <translation>Paysages 3D - Charger une scène</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="165"/>
+        <source>Paysages 3D - Choose a scenery file to load</source>
+        <translation>Paysages 3D - Choisissez un fichier de scène à charger</translation>
+    </message>
+    <message>
         <location filename="../gui_qt/mainwindow.cpp" line="88"/>
         <source>Sky</source>
         <translation>Ciel</translation>
@@ -823,32 +872,28 @@ rapide (F5)</translation>
         <translation>&amp;A propos</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="140"/>
         <source>New lanscape</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Nouveau paysage</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="140"/>
         <source>Do you want to start a new landscape ? Any unsaved changes will be lost.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Voulez-vous commencer un nouveau paysage ? Les modifications non sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="159"/>
         <source>Load lanscape</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Charger un paysage</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="159"/>
         <source>Do you want to load a landscape ? Any unsaved changes will be lost.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Voulez-vous charger un paysage ? Les modifications nons sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="172"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="176"/>
         <source>Paysages 3D</source>
         <translation>Paysages 3D</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="172"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="176"/>
         <source>A 3D landscape editing and rendering software.
 
 Credits :

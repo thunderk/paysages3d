@@ -137,7 +137,7 @@ void MainWindow::refreshAll()
 
 void MainWindow::fileNew()
 {
-    if (QMessageBox::question(this, tr("New lanscape"), tr("Do you want to start a new landscape ? Any unsaved changes will be lost."), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+    if (QMessageBox::question(this, tr("Paysages 3D - New scenery"), tr("Do you want to start a new scenery ? Any unsaved changes will be lost."), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
         autoGenRealisticLandscape(0);
         autoSetDaytime(8, 30);
@@ -147,18 +147,22 @@ void MainWindow::fileNew()
 
 void MainWindow::fileSave()
 {
-    QString filepath = QFileDialog::getSaveFileName(this);
+    QString filepath = QFileDialog::getSaveFileName(this, tr("Paysages 3D - Choose a file to save the scenery"), QString(), tr("Paysages 3D Scenery (*.p3d)"));
     if (!filepath.isNull())
     {
+        if (!filepath.toLower().endsWith(".p3d"))
+        {
+            filepath = filepath.append(".p3d");
+        }
         paysagesSave((char*)filepath.toStdString().c_str());
     }
 }
 
 void MainWindow::fileLoad()
 {
-    if (QMessageBox::question(this, tr("Load lanscape"), tr("Do you want to load a landscape ? Any unsaved changes will be lost."), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+    if (QMessageBox::question(this, tr("Paysages 3D - Load scenery"), tr("Do you want to load a scenery from file ? Any unsaved changes will be lost."), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
-        QString filepath = QFileDialog::getOpenFileName(this);
+        QString filepath = QFileDialog::getOpenFileName(this, tr("Paysages 3D - Choose a scenery file to load"), QString(), tr("Paysages 3D Scenery (*.p3d)"));
         if (!filepath.isNull())
         {
             paysagesLoad((char*)filepath.toStdString().c_str());
