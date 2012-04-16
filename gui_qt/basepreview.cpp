@@ -135,6 +135,7 @@ void BasePreview::doRender()
         {
             this->need_render = false;
             this->renderPixbuf();
+            emit contentChange();
         }
     }
 }
@@ -228,6 +229,7 @@ void BasePreview::renderPixbuf()
             emit contentChange();
         }
         this->lock_drawing->unlock();
+        usleep(1);
     }
 }
 
@@ -318,6 +320,8 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
                 
                 need_render = true;
                 lock_drawing->unlock();
+                
+                emit contentChange();
             }
         }
 
@@ -370,6 +374,8 @@ void BasePreview::wheelEvent(QWheelEvent* event)
             painter.drawImage(0, 0, part);
             need_render = true;
             lock_drawing->unlock();
+            
+            emit contentChange();
         }
         else if (event->delta() < 0  && scaling < conf_scale_max)
         {
@@ -387,6 +393,8 @@ void BasePreview::wheelEvent(QWheelEvent* event)
             painter.drawImage((width - part.width()) / 2, (height - part.height()) / 2, part);
             need_render = true;
             lock_drawing->unlock();
+            
+            emit contentChange();
         }
         event->accept();
     }
