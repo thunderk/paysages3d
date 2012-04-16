@@ -156,6 +156,8 @@ void BasePreview::handleRedraw()
     painter.setOpacity(0.99);
     painter.drawImage(0, 0, part);
     
+    need_render = true;
+    
     lock_drawing->unlock();
 }
 
