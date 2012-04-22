@@ -4,7 +4,7 @@
 #include "shared/types.h"
 #include "noise.h"
 #include "lighting.h"
-#include <stdio.h>
+#include "pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,8 +29,8 @@ typedef struct
 
 void texturesInit();
 void texturesQuit();
-void texturesSave(FILE* f, TexturesDefinition* definition);
-void texturesLoad(FILE* f, TexturesDefinition* definition);
+void texturesSave(PackStream* stream, TexturesDefinition* definition);
+void texturesLoad(PackStream* stream, TexturesDefinition* definition);
 
 TexturesDefinition texturesCreateDefinition();
 void texturesDeleteDefinition(TexturesDefinition* definition);

@@ -3,7 +3,7 @@
 
 #include "shared/types.h"
 #include "renderer.h"
-#include <stdio.h>
+#include "pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,8 +32,8 @@ typedef struct
 
 void lightingInit();
 void lightingQuit();
-void lightingSave(FILE* f, LightingDefinition* definition);
-void lightingLoad(FILE* f, LightingDefinition* definition);
+void lightingSave(PackStream* stream, LightingDefinition* definition);
+void lightingLoad(PackStream* stream, LightingDefinition* definition);
 
 LightingDefinition lightingCreateDefinition();
 void lightingDeleteDefinition(LightingDefinition* definition);

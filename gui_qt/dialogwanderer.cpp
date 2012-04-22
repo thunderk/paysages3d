@@ -22,7 +22,7 @@ DialogWanderer::DialogWanderer(QWidget* parent, CameraDefinition* camera, bool c
     panel->setLayout(new QVBoxLayout());
     panel->setMaximumWidth(230);
     
-    panel->layout()->addWidget(new QLabel(tr("COMMANDS\n\nLeft click : Look around\nRight click : Pan (adjust framing)\nWheel : Move forward/backward\nHold SHIFT : Slower\nHold CTRL : Faster"), panel));
+    panel->layout()->addWidget(new QLabel(tr("COMMANDS\n\nLeft click : Look around\nRight click : Pan (adjust framing)\nWheel : Move forward/backward\nHold SHIFT : Faster\nHold CTRL : Slower"), panel));
 
     button = new QPushButton(tr("Reset camera"), panel);
     panel->layout()->addWidget(button);

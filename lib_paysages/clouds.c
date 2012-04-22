@@ -32,30 +32,30 @@ void cloudsQuit()
     cloudsLayerDeleteDefinition(&NULL_LAYER);
 }
 
-void cloudsSave(FILE* f, CloudsDefinition* definition)
+void cloudsSave(PackStream* stream, CloudsDefinition* definition)
 {
     int i;
     CloudsLayerDefinition* layer;
 
-    toolsSaveInt(f, &definition->nblayers);
+    packWriteInt(stream, &definition->nblayers);
     for (i = 0; i < definition->nblayers; i++)
     {
         layer = definition->layers + i;
         
-        toolsSaveDouble(f, &layer->ycenter);
-        toolsSaveDouble(f, &layer->ymin);
-        toolsSaveDouble(f, &layer->ymax);
-        noiseSaveGenerator(f, layer->noise);
-        materialSave(f, &layer->material);
-        toolsSaveDouble(f, &layer->transparencydepth);
-        toolsSaveDouble(f, &layer->lighttraversal);
-        toolsSaveDouble(f, &layer->minimumlight);
-        toolsSaveDouble(f, &layer->scaling);
-        toolsSaveDouble(f, &layer->coverage);
+        packWriteDouble(stream, &layer->ycenter);
+        packWriteDouble(stream, &layer->ymin);
+        packWriteDouble(stream, &layer->ymax);
+        noiseSaveGenerator(stream, layer->noise);
+        materialSave(stream, &layer->material);
+        packWriteDouble(stream, &layer->transparencydepth);
+        packWriteDouble(stream, &layer->lighttraversal);
+        packWriteDouble(stream, &layer->minimumlight);
+        packWriteDouble(stream, &layer->scaling);
+        packWriteDouble(stream, &layer->coverage);
     }
 }
 
-void cloudsLoad(FILE* f, CloudsDefinition* definition)
+void cloudsLoad(PackStream* stream, CloudsDefinition* definition)
 {
     int i, n;
     CloudsLayerDefinition* layer;
@@ -65,21 +65,21 @@ void cloudsLoad(FILE* f, CloudsDefinition* definition)
         cloudsDeleteLayer(definition, 0);
     }
 
-    toolsLoadInt(f, &n);
+    packReadInt(stream, &n);
     for (i = 0; i < n; i++)
     {
         layer = definition->layers + cloudsAddLayer(definition);
 
-        toolsLoadDouble(f, &layer->ycenter);
-        toolsLoadDouble(f, &layer->ymin);
-        toolsLoadDouble(f, &layer->ymax);
-        noiseLoadGenerator(f, layer->noise);
-        materialLoad(f, &layer->material);
-        toolsLoadDouble(f, &layer->transparencydepth);
-        toolsLoadDouble(f, &layer->lighttraversal);
-        toolsLoadDouble(f, &layer->minimumlight);
-        toolsLoadDouble(f, &layer->scaling);
-        toolsLoadDouble(f, &layer->coverage);
+        packReadDouble(stream, &layer->ycenter);
+        packReadDouble(stream, &layer->ymin);
+        packReadDouble(stream, &layer->ymax);
+        noiseLoadGenerator(stream, layer->noise);
+        materialLoad(stream, &layer->material);
+        packReadDouble(stream, &layer->transparencydepth);
+        packReadDouble(stream, &layer->lighttraversal);
+        packReadDouble(stream, &layer->minimumlight);
+        packReadDouble(stream, &layer->scaling);
+        packReadDouble(stream, &layer->coverage);
     }
 }
 

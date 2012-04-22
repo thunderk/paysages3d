@@ -22,20 +22,20 @@ struct ColorGradation
     Curve* blue;
 };
 
-void colorSave(FILE* f, Color* col)
+void colorSave(PackStream* stream, Color* col)
 {
-    toolsSaveDouble(f, &col->r);
-    toolsSaveDouble(f, &col->g);
-    toolsSaveDouble(f, &col->b);
-    toolsSaveDouble(f, &col->a);
+    packWriteDouble(stream, &col->r);
+    packWriteDouble(stream, &col->g);
+    packWriteDouble(stream, &col->b);
+    packWriteDouble(stream, &col->a);
 }
 
-void colorLoad(FILE* f, Color* col)
+void colorLoad(PackStream* stream, Color* col)
 {
-    toolsLoadDouble(f, &col->r);
-    toolsLoadDouble(f, &col->g);
-    toolsLoadDouble(f, &col->b);
-    toolsLoadDouble(f, &col->a);
+    packReadDouble(stream, &col->r);
+    packReadDouble(stream, &col->g);
+    packReadDouble(stream, &col->b);
+    packReadDouble(stream, &col->a);
 }
 
 unsigned int colorTo32BitRGBA(Color* col)
@@ -137,18 +137,18 @@ void colorGradationCopy(ColorGradation* source, ColorGradation* destination)
     curveCopy(source->blue, destination->blue);
 }
 
-void colorGradationSave(FILE* f, ColorGradation* gradation)
+void colorGradationSave(PackStream* stream, ColorGradation* gradation)
 {
-    curveSave(f, gradation->red);
-    curveSave(f, gradation->green);
-    curveSave(f, gradation->blue);
+    curveSave(stream, gradation->red);
+    curveSave(stream, gradation->green);
+    curveSave(stream, gradation->blue);
 }
 
-void colorGradationLoad(FILE* f, ColorGradation* gradation)
+void colorGradationLoad(PackStream* stream, ColorGradation* gradation)
 {
-    curveLoad(f, gradation->red);
-    curveLoad(f, gradation->green);
-    curveLoad(f, gradation->blue);
+    curveLoad(stream, gradation->red);
+    curveLoad(stream, gradation->green);
+    curveLoad(stream, gradation->blue);
 }
 
 void colorGradationGetRedCurve(ColorGradation* gradation, Curve* curve)

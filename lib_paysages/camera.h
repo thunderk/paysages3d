@@ -1,9 +1,9 @@
 #ifndef _PAYSAGES_CAMERA_H_
 #define _PAYSAGES_CAMERA_H_
 
-#include <stdio.h>
 #include "shared/types.h"
 #include "renderer.h"
+#include "pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -11,8 +11,8 @@ extern "C" {
 
 void cameraInit();
 void cameraQuit();
-void cameraSave(FILE* f, CameraDefinition* camera);
-void cameraLoad(FILE* f, CameraDefinition* camera);
+void cameraSave(PackStream* stream, CameraDefinition* camera);
+void cameraLoad(PackStream* stream, CameraDefinition* camera);
 
 CameraDefinition cameraCreateDefinition();
 void cameraDeleteDefinition(CameraDefinition* definition);

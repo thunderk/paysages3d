@@ -1,7 +1,7 @@
 #ifndef _PAYSAGES_CURVE_H_
 #define _PAYSAGES_CURVE_H_
 
-#include <stdio.h>
+#include "pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,8 +17,8 @@ Curve* curveCreate();
 void curveDelete(Curve* curve);
 void curveCopy(Curve* source, Curve* destination);
 
-void curveSave(FILE* f, Curve* curve);
-void curveLoad(FILE* f, Curve* curve);
+void curveSave(PackStream* stream, Curve* curve);
+void curveLoad(PackStream* stream, Curve* curve);
 
 void curveClear(Curve* curve);
 int curveAddPoint(Curve* curve, CurvePoint* point);

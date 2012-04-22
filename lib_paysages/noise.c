@@ -46,26 +46,26 @@ void noiseQuit()
     free(_noise_pool);
 }
 
-void noiseSave(FILE* f)
+void noiseSave(PackStream* stream)
 {
     int i;
     
-    toolsSaveInt(f, &_noise_pool_size);
+    packWriteInt(stream, &_noise_pool_size);
     for (i = 0; i < _noise_pool_size; i++)
     {
-        toolsSaveDouble(f, _noise_pool + i);
+        packWriteDouble(stream, _noise_pool + i);
     }
 }
 
-void noiseLoad(FILE* f)
+void noiseLoad(PackStream* stream)
 {
     int i;
     
-    toolsLoadInt(f, &_noise_pool_size);
+    packReadInt(stream, &_noise_pool_size);
     _noise_pool = realloc(_noise_pool, sizeof(double) * _noise_pool_size);
     for (i = 0; i < _noise_pool_size; i++)
     {
-        toolsLoadDouble(f, _noise_pool + i);
+        packReadDouble(stream, _noise_pool + i);
     }
 }
 
@@ -89,47 +89,47 @@ void noiseDeleteGenerator(NoiseGenerator* generator)
     free(generator);
 }
 
-void noiseSaveGenerator(FILE* f, NoiseGenerator* perlin)
+void noiseSaveGenerator(PackStream* stream, NoiseGenerator* perlin)
 {
     int x;
 
-    toolsSaveInt(f, &perlin->size1);
-    toolsSaveInt(f, &perlin->size2);
-    toolsSaveInt(f, &perlin->size3);
-    toolsSaveDouble(f, &perlin->height_offset);
-    toolsSaveInt(f, &perlin->level_count);
+    packWriteInt(stream, &perlin->size1);
+    packWriteInt(stream, &perlin->size2);
+    packWriteInt(stream, &perlin->size3);
+    packWriteDouble(stream, &perlin->height_offset);
+    packWriteInt(stream, &perlin->level_count);
 
     for (x = 0; x < perlin->level_count; x++)
     {
         NoiseLevel* level = perlin->levels + x;
         
-        toolsSaveDouble(f, &level->scaling);
-        toolsSaveDouble(f, &level->height);
-        toolsSaveDouble(f, &level->xoffset);
-        toolsSaveDouble(f, &level->yoffset);
-        toolsSaveDouble(f, &level->zoffset);
+        packWriteDouble(stream, &level->scaling);
+        packWriteDouble(stream, &level->height);
+        packWriteDouble(stream, &level->xoffset);
+        packWriteDouble(stream, &level->yoffset);
+        packWriteDouble(stream, &level->zoffset);
     }
 }
 
-void noiseLoadGenerator(FILE* f, NoiseGenerator* perlin)
+void noiseLoadGenerator(PackStream* stream, NoiseGenerator* perlin)
 {
     int x;
 
-    toolsLoadInt(f, &perlin->size1);
-    toolsLoadInt(f, &perlin->size2);
-    toolsLoadInt(f, &perlin->size3);
-    toolsLoadDouble(f, &perlin->height_offset);
-    toolsLoadInt(f, &perlin->level_count);
+    packReadInt(stream, &perlin->size1);
+    packReadInt(stream, &perlin->size2);
+    packReadInt(stream, &perlin->size3);
+    packReadDouble(stream, &perlin->height_offset);
+    packReadInt(stream, &perlin->level_count);
 
     for (x = 0; x < perlin->level_count; x++)
     {
         NoiseLevel* level = perlin->levels + x;
         
-        toolsLoadDouble(f, &level->scaling);
-        toolsLoadDouble(f, &level->height);
-        toolsLoadDouble(f, &level->xoffset);
-        toolsLoadDouble(f, &level->yoffset);
-        toolsLoadDouble(f, &level->zoffset);
+        packReadDouble(stream, &level->scaling);
+        packReadDouble(stream, &level->height);
+        packReadDouble(stream, &level->xoffset);
+        packReadDouble(stream, &level->yoffset);
+        packReadDouble(stream, &level->zoffset);
     }
 }
 

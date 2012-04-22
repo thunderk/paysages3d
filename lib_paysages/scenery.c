@@ -67,39 +67,38 @@ void sceneryQuit()
 
 void scenerySaveToFile(char* filepath)
 {
-    FILE* f = fopen(filepath, "wb");
+    PackStream* stream = packWriteFile(filepath);
 
-    noiseSave(f);
-    atmosphereSave(f, &_atmosphere);
-    cameraSave(f, &_camera);
-    cloudsSave(f, &_clouds);
-    lightingSave(f, &_lighting);
-    skySave(f, &_sky);
-    terrainSave(f, &_terrain);
-    texturesSave(f, &_textures);
-    vegetationSave(f, _vegetation);
-    waterSave(f, &_water);
+    noiseSave(stream);
+    atmosphereSave(stream, &_atmosphere);
+    cameraSave(stream, &_camera);
+    cloudsSave(stream, &_clouds);
+    lightingSave(stream, &_lighting);
+    skySave(stream, &_sky);
+    terrainSave(stream, &_terrain);
+    texturesSave(stream, &_textures);
+    vegetationSave(stream, _vegetation);
+    waterSave(stream, &_water);
 
-    fflush(f);
-    fclose(f);
+    packCloseStream(stream);
 }
 
 void sceneryLoadFromFile(char* filepath)
 {
-    FILE* f = fopen(filepath, "rb");
+    PackStream* stream = packReadFile(filepath);
 
     /* TODO Use intermediary definitions ? */
 
-    noiseLoad(f);
-    atmosphereLoad(f, &_atmosphere);
-    cameraLoad(f, &_camera);
-    cloudsLoad(f, &_clouds);
-    lightingLoad(f, &_lighting);
-    skyLoad(f, &_sky);
-    terrainLoad(f, &_terrain);
-    texturesLoad(f, &_textures);
-    vegetationLoad(f, _vegetation);
-    waterLoad(f, &_water);
+    noiseLoad(stream);
+    atmosphereLoad(stream, &_atmosphere);
+    cameraLoad(stream, &_camera);
+    cloudsLoad(stream, &_clouds);
+    lightingLoad(stream, &_lighting);
+    skyLoad(stream, &_sky);
+    terrainLoad(stream, &_terrain);
+    texturesLoad(stream, &_textures);
+    vegetationLoad(stream, _vegetation);
+    waterLoad(stream, &_water);
     
     atmosphereValidateDefinition(&_atmosphere);
     cameraValidateDefinition(&_camera, 0);
@@ -111,7 +110,7 @@ void sceneryLoadFromFile(char* filepath)
     vegetationValidateDefinition(_vegetation);
     waterValidateDefinition(&_water);
 
-    fclose(f);
+    packCloseStream(stream);
 }
 
 void scenerySetAtmosphere(AtmosphereDefinition* atmosphere)

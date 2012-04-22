@@ -21,39 +21,39 @@ void terrainQuit()
 {
 }
 
-void terrainSave(FILE* f, TerrainDefinition* definition)
+void terrainSave(PackStream* stream, TerrainDefinition* definition)
 {
     int i;
 
-    noiseSaveGenerator(f, definition->height_noise);
-    toolsSaveDouble(f, &definition->height_factor);
-    toolsSaveDouble(f, &definition->scaling);
+    noiseSaveGenerator(stream, definition->height_noise);
+    packWriteDouble(stream, &definition->height_factor);
+    packWriteDouble(stream, &definition->scaling);
 
-    toolsSaveInt(f, &definition->height_modifiers_count);
+    packWriteInt(stream, &definition->height_modifiers_count);
     for (i = 0; i < definition->height_modifiers_count; i++)
     {
-        modifierSave(f, definition->height_modifiers[i]);
+        modifierSave(stream, definition->height_modifiers[i]);
     }
 }
 
-void terrainLoad(FILE* f, TerrainDefinition* definition)
+void terrainLoad(PackStream* stream, TerrainDefinition* definition)
 {
     int i, n;
     HeightModifier* modifier;
 
-    noiseLoadGenerator(f, definition->height_noise);
-    toolsLoadDouble(f, &definition->height_factor);
-    toolsLoadDouble(f, &definition->scaling);
+    noiseLoadGenerator(stream, definition->height_noise);
+    packReadDouble(stream, &definition->height_factor);
+    packReadDouble(stream, &definition->scaling);
 
     while (definition->height_modifiers_count > 0)
     {
         terrainDelModifier(definition, 0);
     }
-    toolsLoadInt(f, &n);
+    packReadInt(stream, &n);
     for (i = 0; i < n; i++)
     {
         modifier = modifierCreate();
-        modifierLoad(f, modifier);
+        modifierLoad(stream, modifier);
         terrainAddModifier(definition, modifier);
         modifierDelete(modifier);
     }

@@ -32,27 +32,27 @@ void curveCopy(Curve* source, Curve* destination)
     *destination = *source;
 }
 
-void curveSave(FILE* f, Curve* curve)
+void curveSave(PackStream* stream, Curve* curve)
 {
     int i;
     
-    toolsSaveInt(f, &curve->nbpoints);
+    packWriteInt(stream, &curve->nbpoints);
     for (i = 0; i < curve->nbpoints; i++)
     {
-        toolsSaveDouble(f, &curve->points[i].position);
-        toolsSaveDouble(f, &curve->points[i].value);
+        packWriteDouble(stream, &curve->points[i].position);
+        packWriteDouble(stream, &curve->points[i].value);
     }
 }
 
-void curveLoad(FILE* f, Curve* curve)
+void curveLoad(PackStream* stream, Curve* curve)
 {
     int i;
     
-    toolsLoadInt(f, &curve->nbpoints);
+    packReadInt(stream, &curve->nbpoints);
     for (i = 0; i < curve->nbpoints; i++)
     {
-        toolsLoadDouble(f, &curve->points[i].position);
-        toolsLoadDouble(f, &curve->points[i].value);
+        packReadDouble(stream, &curve->points[i].position);
+        packReadDouble(stream, &curve->points[i].value);
     }
 }
 

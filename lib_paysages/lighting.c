@@ -34,37 +34,37 @@ void lightingQuit()
 {
 }
 
-void lightingSave(FILE* f, LightingDefinition* definition)
+void lightingSave(PackStream* stream, LightingDefinition* definition)
 {
     int i;
 
-    toolsSaveInt(f, &definition->autosetfromsky);
-    toolsSaveInt(f, &definition->nblights);
+    packWriteInt(stream, &definition->autosetfromsky);
+    packWriteInt(stream, &definition->nblights);
     for (i = 0; i < definition->nblights; i++)
     {
-        v3Save(f, &definition->lights[i].direction);
-        colorSave(f, &definition->lights[i].color);
-        toolsSaveDouble(f, &definition->lights[i].reflection);
-        toolsSaveInt(f, &definition->lights[i].filtered);
-        toolsSaveInt(f, &definition->lights[i].masked);
-        toolsSaveDouble(f, &definition->lights[i].amplitude);
+        v3Save(stream, &definition->lights[i].direction);
+        colorSave(stream, &definition->lights[i].color);
+        packWriteDouble(stream, &definition->lights[i].reflection);
+        packWriteInt(stream, &definition->lights[i].filtered);
+        packWriteInt(stream, &definition->lights[i].masked);
+        packWriteDouble(stream, &definition->lights[i].amplitude);
     }
 }
 
-void lightingLoad(FILE* f, LightingDefinition* definition)
+void lightingLoad(PackStream* stream, LightingDefinition* definition)
 {
     int i;
 
-    toolsLoadInt(f, &definition->autosetfromsky);
-    toolsLoadInt(f, &definition->nblights);
+    packReadInt(stream, &definition->autosetfromsky);
+    packReadInt(stream, &definition->nblights);
     for (i = 0; i < definition->nblights; i++)
     {
-        v3Load(f, &definition->lights[i].direction);
-        colorLoad(f, &definition->lights[i].color);
-        toolsLoadDouble(f, &definition->lights[i].reflection);
-        toolsLoadInt(f, &definition->lights[i].filtered);
-        toolsLoadInt(f, &definition->lights[i].masked);
-        toolsLoadDouble(f, &definition->lights[i].amplitude);
+        v3Load(stream, &definition->lights[i].direction);
+        colorLoad(stream, &definition->lights[i].color);
+        packReadDouble(stream, &definition->lights[i].reflection);
+        packReadInt(stream, &definition->lights[i].filtered);
+        packReadInt(stream, &definition->lights[i].masked);
+        packReadDouble(stream, &definition->lights[i].amplitude);
     }
 
     lightingValidateDefinition(definition);

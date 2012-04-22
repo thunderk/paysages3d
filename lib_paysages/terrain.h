@@ -5,7 +5,7 @@
 #include "modifiers.h"
 #include "noise.h"
 #include "lighting.h"
-#include <stdio.h>
+#include "pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,8 +26,8 @@ typedef struct
 
 void terrainInit();
 void terrainQuit();
-void terrainSave(FILE* f, TerrainDefinition* definition);
-void terrainLoad(FILE* f, TerrainDefinition* definition);
+void terrainSave(PackStream* stream, TerrainDefinition* definition);
+void terrainLoad(PackStream* stream, TerrainDefinition* definition);
 
 TerrainDefinition terrainCreateDefinition();
 void terrainDeleteDefinition(TerrainDefinition* definition);

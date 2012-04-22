@@ -2,6 +2,7 @@
 #define _PAYSAGES_ATMOSPHERE_H_
 
 #include "shared/types.h"
+#include "pack.h"
 #include "lighting.h"
 #include <stdio.h>
 
@@ -20,8 +21,8 @@ typedef struct
 
 void atmosphereInit();
 void atmosphereQuit();
-void atmosphereSave(FILE* f, AtmosphereDefinition* definition);
-void atmosphereLoad(FILE* f, AtmosphereDefinition* definition);
+void atmosphereSave(PackStream* stream, AtmosphereDefinition* definition);
+void atmosphereLoad(PackStream* stream, AtmosphereDefinition* definition);
 
 AtmosphereDefinition atmosphereCreateDefinition();
 void atmosphereDeleteDefinition(AtmosphereDefinition* definition);

@@ -14,22 +14,22 @@ void atmosphereQuit()
 {
 }
 
-void atmosphereSave(FILE* f, AtmosphereDefinition* definition)
+void atmosphereSave(PackStream* stream, AtmosphereDefinition* definition)
 {
-    toolsSaveDouble(f, &definition->distance_near);
-    toolsSaveDouble(f, &definition->distance_far);
-    toolsSaveDouble(f, &definition->full_mask);
-    toolsSaveInt(f, &definition->auto_lock_on_haze);
-    colorSave(f, &definition->color);
+    packWriteDouble(stream, &definition->distance_near);
+    packWriteDouble(stream, &definition->distance_far);
+    packWriteDouble(stream, &definition->full_mask);
+    packWriteInt(stream, &definition->auto_lock_on_haze);
+    colorSave(stream, &definition->color);
 }
 
-void atmosphereLoad(FILE* f, AtmosphereDefinition* definition)
+void atmosphereLoad(PackStream* stream, AtmosphereDefinition* definition)
 {
-    toolsLoadDouble(f, &definition->distance_near);
-    toolsLoadDouble(f, &definition->distance_far);
-    toolsLoadDouble(f, &definition->full_mask);
-    toolsLoadInt(f, &definition->auto_lock_on_haze);
-    colorLoad(f, &definition->color);
+    packReadDouble(stream, &definition->distance_near);
+    packReadDouble(stream, &definition->distance_far);
+    packReadDouble(stream, &definition->full_mask);
+    packReadInt(stream, &definition->auto_lock_on_haze);
+    colorLoad(stream, &definition->color);
 
     atmosphereValidateDefinition(definition);
 }

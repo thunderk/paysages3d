@@ -15,11 +15,11 @@ void vegetationQuit()
 {
 }
 
-void vegetationSave(FILE* f, VegetationDefinition* definition)
+void vegetationSave(PackStream* stream, VegetationDefinition* definition)
 {
 }
 
-void vegetationLoad(FILE* f, VegetationDefinition* definition)
+void vegetationLoad(PackStream* stream, VegetationDefinition* definition)
 {
 }
 

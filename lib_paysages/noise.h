@@ -1,7 +1,7 @@
 #ifndef _PAYSAGES_NOISE_H_
 #define _PAYSAGES_NOISE_H_
 
-#include <stdio.h>
+#include "pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,13 +20,13 @@ typedef struct NoiseGenerator NoiseGenerator;
 
 void noiseInit();
 void noiseQuit();
-void noiseSave(FILE* f);
-void noiseLoad(FILE* f);
+void noiseSave(PackStream* stream);
+void noiseLoad(PackStream* stream);
 
 NoiseGenerator* noiseCreateGenerator();
 void noiseDeleteGenerator(NoiseGenerator* generator);
-void noiseSaveGenerator(FILE* f, NoiseGenerator* perlin);
-void noiseLoadGenerator(FILE* f, NoiseGenerator* perlin);
+void noiseSaveGenerator(PackStream* stream, NoiseGenerator* perlin);
+void noiseLoadGenerator(PackStream* stream, NoiseGenerator* perlin);
 void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination);
 void noiseGenerateBaseNoise(NoiseGenerator* generator, int size);
 int noiseGetBaseSize(NoiseGenerator* generator);

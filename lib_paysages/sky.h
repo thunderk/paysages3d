@@ -4,7 +4,7 @@
 #include "shared/types.h"
 #include "color.h"
 #include "lighting.h"
-#include <stdio.h>
+#include "pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,8 +24,8 @@ typedef struct
 
 void skyInit();
 void skyQuit();
-void skySave(FILE* f, SkyDefinition* definition);
-void skyLoad(FILE* f, SkyDefinition* definition);
+void skySave(PackStream* stream, SkyDefinition* definition);
+void skyLoad(PackStream* stream, SkyDefinition* definition);
 
 SkyDefinition skyCreateDefinition();
 void skyDeleteDefinition(SkyDefinition* definition);

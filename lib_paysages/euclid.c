@@ -6,18 +6,18 @@
 
 Vector3 VECTOR_ZERO = {0.0, 0.0, 0.0};
 
-void v3Save(FILE* f, Vector3* v)
+void v3Save(PackStream* stream, Vector3* v)
 {
-    toolsSaveDouble(f, &v->x);
-    toolsSaveDouble(f, &v->y);
-    toolsSaveDouble(f, &v->z);
+    packWriteDouble(stream, &v->x);
+    packWriteDouble(stream, &v->y);
+    packWriteDouble(stream, &v->z);
 }
 
-void v3Load(FILE* f, Vector3* v)
+void v3Load(PackStream* stream, Vector3* v)
 {
-    toolsLoadDouble(f, &v->x);
-    toolsLoadDouble(f, &v->y);
-    toolsLoadDouble(f, &v->z);
+    packReadDouble(stream, &v->x);
+    packReadDouble(stream, &v->y);
+    packReadDouble(stream, &v->z);
 }
 
 Vector3 v3Translate(Vector3 v1, double x, double y, double z)
@@ -97,44 +97,44 @@ Vector3 v3Cross(Vector3 v1, Vector3 v2)
     return result;
 }
 
-void m4Save(FILE* f, Matrix4* m)
+void m4Save(PackStream* stream, Matrix4* m)
 {
-    toolsSaveDouble(f, &m->a);
-    toolsSaveDouble(f, &m->b);
-    toolsSaveDouble(f, &m->c);
-    toolsSaveDouble(f, &m->d);
-    toolsSaveDouble(f, &m->e);
-    toolsSaveDouble(f, &m->f);
-    toolsSaveDouble(f, &m->g);
-    toolsSaveDouble(f, &m->h);
-    toolsSaveDouble(f, &m->i);
-    toolsSaveDouble(f, &m->j);
-    toolsSaveDouble(f, &m->k);
-    toolsSaveDouble(f, &m->l);
-    toolsSaveDouble(f, &m->m);
-    toolsSaveDouble(f, &m->n);
-    toolsSaveDouble(f, &m->o);
-    toolsSaveDouble(f, &m->p);
+    packWriteDouble(stream, &m->a);
+    packWriteDouble(stream, &m->b);
+    packWriteDouble(stream, &m->c);
+    packWriteDouble(stream, &m->d);
+    packWriteDouble(stream, &m->e);
+    packWriteDouble(stream, &m->f);
+    packWriteDouble(stream, &m->g);
+    packWriteDouble(stream, &m->h);
+    packWriteDouble(stream, &m->i);
+    packWriteDouble(stream, &m->j);
+    packWriteDouble(stream, &m->k);
+    packWriteDouble(stream, &m->l);
+    packWriteDouble(stream, &m->m);
+    packWriteDouble(stream, &m->n);
+    packWriteDouble(stream, &m->o);
+    packWriteDouble(stream, &m->p);
 }
 
-void m4Load(FILE* f, Matrix4* m)
+void m4Load(PackStream* stream, Matrix4* m)
 {
-    toolsLoadDouble(f, &m->a);
-    toolsLoadDouble(f, &m->b);
-    toolsLoadDouble(f, &m->c);
-    toolsLoadDouble(f, &m->d);
-    toolsLoadDouble(f, &m->e);
-    toolsLoadDouble(f, &m->f);
-    toolsLoadDouble(f, &m->g);
-    toolsLoadDouble(f, &m->h);
-    toolsLoadDouble(f, &m->i);
-    toolsLoadDouble(f, &m->j);
-    toolsLoadDouble(f, &m->k);
-    toolsLoadDouble(f, &m->l);
-    toolsLoadDouble(f, &m->m);
-    toolsLoadDouble(f, &m->n);
-    toolsLoadDouble(f, &m->o);
-    toolsLoadDouble(f, &m->p);
+    packReadDouble(stream, &m->a);
+    packReadDouble(stream, &m->b);
+    packReadDouble(stream, &m->c);
+    packReadDouble(stream, &m->d);
+    packReadDouble(stream, &m->e);
+    packReadDouble(stream, &m->f);
+    packReadDouble(stream, &m->g);
+    packReadDouble(stream, &m->h);
+    packReadDouble(stream, &m->i);
+    packReadDouble(stream, &m->j);
+    packReadDouble(stream, &m->k);
+    packReadDouble(stream, &m->l);
+    packReadDouble(stream, &m->m);
+    packReadDouble(stream, &m->n);
+    packReadDouble(stream, &m->o);
+    packReadDouble(stream, &m->p);
 }
 
 Matrix4 m4NewIdentity()

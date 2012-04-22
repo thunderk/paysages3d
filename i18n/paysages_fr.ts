@@ -169,6 +169,7 @@ Cliquez avec le bouton droit sur un point pour le supprimer.</translation>
         <translation>Paysages 3D - Exploration</translation>
     </message>
     <message>
+        <location filename="../gui_qt/dialogwanderer.cpp" line="25"/>
         <source>COMMANDS
 
 Left click : Look around
@@ -176,16 +177,15 @@ Right click : Pan (adjust framing)
 Wheel : Move forward/backward
 Hold SHIFT : Faster
 Hold CTRL : Slower</source>
-        <translation type="obsolete">COMMANDES
+        <translation>COMMANDES
 
 Clic gauche : Regarder autour
 Clic droit : Déplacer le cadrage
 Molette : Avancer/reculer
-Maintenir MAJ : Plus rapide
+Maintenir Maj : Plus rapide
 Maintenir Ctrl : Plus lent</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogwanderer.cpp" line="25"/>
         <source>COMMANDS
 
 Left click : Look around
@@ -193,7 +193,7 @@ Right click : Pan (adjust framing)
 Wheel : Move forward/backward
 Hold SHIFT : Slower
 Hold CTRL : Faster</source>
-        <translation>COMMANDES
+        <translation type="obsolete">COMMANDES
 
 Clic gauche : Regarder autour
 Clic droit : Déplacer le cadrage

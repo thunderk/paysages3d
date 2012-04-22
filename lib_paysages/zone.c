@@ -48,93 +48,93 @@ void zoneDelete(Zone* zone)
     free(zone);
 }
 
-void zoneSave(FILE* f, Zone* zone)
+void zoneSave(PackStream* stream, Zone* zone)
 {
     int i;
 
-    toolsSaveInt(f, &zone->height_ranges_count);
+    packWriteInt(stream, &zone->height_ranges_count);
     for (i = 0; i < zone->height_ranges_count; i++)
     {
-        toolsSaveDouble(f, &zone->height_ranges[i].value);
-        toolsSaveDouble(f, &zone->height_ranges[i].hardmin);
-        toolsSaveDouble(f, &zone->height_ranges[i].softmin);
-        toolsSaveDouble(f, &zone->height_ranges[i].softmax);
-        toolsSaveDouble(f, &zone->height_ranges[i].hardmax);
+        packWriteDouble(stream, &zone->height_ranges[i].value);
+        packWriteDouble(stream, &zone->height_ranges[i].hardmin);
+        packWriteDouble(stream, &zone->height_ranges[i].softmin);
+        packWriteDouble(stream, &zone->height_ranges[i].softmax);
+        packWriteDouble(stream, &zone->height_ranges[i].hardmax);
     }
 
-    toolsSaveInt(f, &zone->slope_ranges_count);
+    packWriteInt(stream, &zone->slope_ranges_count);
     for (i = 0; i < zone->slope_ranges_count; i++)
     {
-        toolsSaveDouble(f, &zone->slope_ranges[i].value);
-        toolsSaveDouble(f, &zone->slope_ranges[i].hardmin);
-        toolsSaveDouble(f, &zone->slope_ranges[i].softmin);
-        toolsSaveDouble(f, &zone->slope_ranges[i].softmax);
-        toolsSaveDouble(f, &zone->slope_ranges[i].hardmax);
+        packWriteDouble(stream, &zone->slope_ranges[i].value);
+        packWriteDouble(stream, &zone->slope_ranges[i].hardmin);
+        packWriteDouble(stream, &zone->slope_ranges[i].softmin);
+        packWriteDouble(stream, &zone->slope_ranges[i].softmax);
+        packWriteDouble(stream, &zone->slope_ranges[i].hardmax);
     }
 
-    toolsSaveInt(f, &zone->circles_included_count);
+    packWriteInt(stream, &zone->circles_included_count);
     for (i = 0; i < zone->circles_included_count; i++)
     {
-        toolsSaveDouble(f, &zone->circles_included[i].value);
-        toolsSaveDouble(f, &zone->circles_included[i].centerx);
-        toolsSaveDouble(f, &zone->circles_included[i].centerz);
-        toolsSaveDouble(f, &zone->circles_included[i].softradius);
-        toolsSaveDouble(f, &zone->circles_included[i].hardradius);
+        packWriteDouble(stream, &zone->circles_included[i].value);
+        packWriteDouble(stream, &zone->circles_included[i].centerx);
+        packWriteDouble(stream, &zone->circles_included[i].centerz);
+        packWriteDouble(stream, &zone->circles_included[i].softradius);
+        packWriteDouble(stream, &zone->circles_included[i].hardradius);
     }
 
-    toolsSaveInt(f, &zone->circles_excluded_count);
+    packWriteInt(stream, &zone->circles_excluded_count);
     for (i = 0; i < zone->circles_excluded_count; i++)
     {
-        toolsSaveDouble(f, &zone->circles_excluded[i].value);
-        toolsSaveDouble(f, &zone->circles_excluded[i].centerx);
-        toolsSaveDouble(f, &zone->circles_excluded[i].centerz);
-        toolsSaveDouble(f, &zone->circles_excluded[i].softradius);
-        toolsSaveDouble(f, &zone->circles_excluded[i].hardradius);
+        packWriteDouble(stream, &zone->circles_excluded[i].value);
+        packWriteDouble(stream, &zone->circles_excluded[i].centerx);
+        packWriteDouble(stream, &zone->circles_excluded[i].centerz);
+        packWriteDouble(stream, &zone->circles_excluded[i].softradius);
+        packWriteDouble(stream, &zone->circles_excluded[i].hardradius);
     }
 }
 
-void zoneLoad(FILE* f, Zone* zone)
+void zoneLoad(PackStream* stream, Zone* zone)
 {
     int i;
 
-    toolsLoadInt(f, &zone->height_ranges_count);
+    packReadInt(stream, &zone->height_ranges_count);
     for (i = 0; i < zone->height_ranges_count; i++)
     {
-        toolsLoadDouble(f, &zone->height_ranges[i].value);
-        toolsLoadDouble(f, &zone->height_ranges[i].hardmin);
-        toolsLoadDouble(f, &zone->height_ranges[i].softmin);
-        toolsLoadDouble(f, &zone->height_ranges[i].softmax);
-        toolsLoadDouble(f, &zone->height_ranges[i].hardmax);
+        packReadDouble(stream, &zone->height_ranges[i].value);
+        packReadDouble(stream, &zone->height_ranges[i].hardmin);
+        packReadDouble(stream, &zone->height_ranges[i].softmin);
+        packReadDouble(stream, &zone->height_ranges[i].softmax);
+        packReadDouble(stream, &zone->height_ranges[i].hardmax);
     }
 
-    toolsLoadInt(f, &zone->slope_ranges_count);
+    packReadInt(stream, &zone->slope_ranges_count);
     for (i = 0; i < zone->slope_ranges_count; i++)
     {
-        toolsLoadDouble(f, &zone->slope_ranges[i].value);
-        toolsLoadDouble(f, &zone->slope_ranges[i].hardmin);
-        toolsLoadDouble(f, &zone->slope_ranges[i].softmin);
-        toolsLoadDouble(f, &zone->slope_ranges[i].softmax);
-        toolsLoadDouble(f, &zone->slope_ranges[i].hardmax);
+        packReadDouble(stream, &zone->slope_ranges[i].value);
+        packReadDouble(stream, &zone->slope_ranges[i].hardmin);
+        packReadDouble(stream, &zone->slope_ranges[i].softmin);
+        packReadDouble(stream, &zone->slope_ranges[i].softmax);
+        packReadDouble(stream, &zone->slope_ranges[i].hardmax);
     }
 
-    toolsLoadInt(f, &zone->circles_included_count);
+    packReadInt(stream, &zone->circles_included_count);
     for (i = 0; i < zone->circles_included_count; i++)
     {
-        toolsLoadDouble(f, &zone->circles_included[i].value);
-        toolsLoadDouble(f, &zone->circles_included[i].centerx);
-        toolsLoadDouble(f, &zone->circles_included[i].centerz);
-        toolsLoadDouble(f, &zone->circles_included[i].softradius);
-        toolsLoadDouble(f, &zone->circles_included[i].hardradius);
+        packReadDouble(stream, &zone->circles_included[i].value);
+        packReadDouble(stream, &zone->circles_included[i].centerx);
+        packReadDouble(stream, &zone->circles_included[i].centerz);
+        packReadDouble(stream, &zone->circles_included[i].softradius);
+        packReadDouble(stream, &zone->circles_included[i].hardradius);
     }
 
-    toolsLoadInt(f, &zone->circles_excluded_count);
+    packReadInt(stream, &zone->circles_excluded_count);
     for (i = 0; i < zone->circles_excluded_count; i++)
     {
-        toolsLoadDouble(f, &zone->circles_excluded[i].value);
-        toolsLoadDouble(f, &zone->circles_excluded[i].centerx);
-        toolsLoadDouble(f, &zone->circles_excluded[i].centerz);
-        toolsLoadDouble(f, &zone->circles_excluded[i].softradius);
-        toolsLoadDouble(f, &zone->circles_excluded[i].hardradius);
+        packReadDouble(stream, &zone->circles_excluded[i].value);
+        packReadDouble(stream, &zone->circles_excluded[i].centerx);
+        packReadDouble(stream, &zone->circles_excluded[i].centerz);
+        packReadDouble(stream, &zone->circles_excluded[i].softradius);
+        packReadDouble(stream, &zone->circles_excluded[i].hardradius);
     }
 }
 

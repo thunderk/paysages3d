@@ -2,6 +2,7 @@
 #define _PAYSAGES_ZONE_H_
 
 #include "shared/types.h"
+#include "pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,8 +19,8 @@ typedef struct
     
 Zone* zoneCreate();
 void zoneDelete(Zone* zone);
-void zoneSave(FILE* f, Zone* zone);
-void zoneLoad(FILE* f, Zone* zone);
+void zoneSave(PackStream* stream, Zone* zone);
+void zoneLoad(PackStream* stream, Zone* zone);
 void zoneCopy(Zone* source, Zone* destination);
 void zoneIncludeCircleArea(Zone* zone, double value, double centerx, double centerz, double softradius, double hardradius);
 void zoneExcludeCircleArea(Zone* zone, double centerx, double centerz, double softradius, double hardradius);

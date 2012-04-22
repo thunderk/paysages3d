@@ -5,7 +5,7 @@
 #include "renderer.h"
 #include "lighting.h"
 #include "noise.h"
-#include <stdio.h>
+#include "pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,8 +36,8 @@ typedef struct
 
 void waterInit();
 void waterQuit();
-void waterSave(FILE* f, WaterDefinition* definition);
-void waterLoad(FILE* f, WaterDefinition* definition);
+void waterSave(PackStream* stream, WaterDefinition* definition);
+void waterLoad(PackStream* stream, WaterDefinition* definition);
 
 WaterDefinition waterCreateDefinition();
 void waterDeleteDefinition(WaterDefinition* definition);

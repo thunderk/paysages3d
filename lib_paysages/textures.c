@@ -25,22 +25,22 @@ void texturesQuit()
     texturesLayerDeleteDefinition(&_NULL_LAYER);
 }
 
-void texturesSave(FILE* f, TexturesDefinition* definition)
+void texturesSave(PackStream* stream, TexturesDefinition* definition)
 {
     int i;
 
-    toolsSaveInt(f, &definition->nbtextures);
+    packWriteInt(stream, &definition->nbtextures);
     for (i = 0; i < definition->nbtextures; i++)
     {
-        zoneSave(f, definition->textures[i].zone);
-        noiseSaveGenerator(f, definition->textures[i].bump_noise);
-        toolsSaveDouble(f, &definition->textures[i].bump_height);
-        toolsSaveDouble(f, &definition->textures[i].bump_scaling);
-        materialSave(f, &definition->textures[i].material);
+        zoneSave(stream, definition->textures[i].zone);
+        noiseSaveGenerator(stream, definition->textures[i].bump_noise);
+        packWriteDouble(stream, &definition->textures[i].bump_height);
+        packWriteDouble(stream, &definition->textures[i].bump_scaling);
+        materialSave(stream, &definition->textures[i].material);
     }
 }
 
-void texturesLoad(FILE* f, TexturesDefinition* definition)
+void texturesLoad(PackStream* stream, TexturesDefinition* definition)
 {
     TextureLayerDefinition* layer;
     int i, n;
@@ -50,16 +50,16 @@ void texturesLoad(FILE* f, TexturesDefinition* definition)
         texturesDeleteLayer(definition, 0);
     }
 
-    toolsLoadInt(f, &n);
+    packReadInt(stream, &n);
     for (i = 0; i < n; i++)
     {
         layer = definition->textures + texturesAddLayer(definition);
 
-        zoneLoad(f, layer->zone);
-        noiseLoadGenerator(f, layer->bump_noise);
-        toolsLoadDouble(f, &layer->bump_height);
-        toolsLoadDouble(f, &layer->bump_scaling);
-        materialLoad(f, &layer->material);
+        zoneLoad(stream, layer->zone);
+        noiseLoadGenerator(stream, layer->bump_noise);
+        packReadDouble(stream, &layer->bump_height);
+        packReadDouble(stream, &layer->bump_scaling);
+        materialLoad(stream, &layer->material);
     }
 
     texturesValidateDefinition(definition);

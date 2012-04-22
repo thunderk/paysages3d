@@ -1,7 +1,7 @@
 #ifndef _PAYSAGES_VEGETATION_H_
 #define _PAYSAGES_VEGETATION_H_
 
-#include <stdio.h>
+#include "pack.h"
 #include "zone.h"
 
 #ifdef __cplusplus
@@ -20,8 +20,8 @@ typedef struct VegetationDefinition VegetationDefinition;
 
 void vegetationInit();
 void vegetationQuit();
-void vegetationSave(FILE* f, VegetationDefinition* definition);
-void vegetationLoad(FILE* f, VegetationDefinition* definition);
+void vegetationSave(PackStream* stream, VegetationDefinition* definition);
+void vegetationLoad(PackStream* stream, VegetationDefinition* definition);
 
 VegetationDefinition* vegetationCreateDefinition();
 void vegetationDeleteDefinition(VegetationDefinition* definition);

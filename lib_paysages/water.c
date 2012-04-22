@@ -19,32 +19,32 @@ void waterQuit()
 {
 }
 
-void waterSave(FILE* f, WaterDefinition* definition)
+void waterSave(PackStream* stream, WaterDefinition* definition)
 {
-    toolsSaveDouble(f, &definition->height);
-    materialSave(f, &definition->material);
-    colorSave(f, &definition->depth_color);
-    toolsSaveDouble(f, &definition->transparency_depth);
-    toolsSaveDouble(f, &definition->transparency);
-    toolsSaveDouble(f, &definition->reflection);
-    toolsSaveDouble(f, &definition->lighting_depth);
-    noiseSaveGenerator(f, definition->waves_noise);
-    toolsSaveDouble(f, &definition->waves_noise_height);
-    toolsSaveDouble(f, &definition->waves_noise_scale);
+    packWriteDouble(stream, &definition->height);
+    materialSave(stream, &definition->material);
+    colorSave(stream, &definition->depth_color);
+    packWriteDouble(stream, &definition->transparency_depth);
+    packWriteDouble(stream, &definition->transparency);
+    packWriteDouble(stream, &definition->reflection);
+    packWriteDouble(stream, &definition->lighting_depth);
+    noiseSaveGenerator(stream, definition->waves_noise);
+    packWriteDouble(stream, &definition->waves_noise_height);
+    packWriteDouble(stream, &definition->waves_noise_scale);
 }
 
-void waterLoad(FILE* f, WaterDefinition* definition)
+void waterLoad(PackStream* stream, WaterDefinition* definition)
 {
-    toolsLoadDouble(f, &definition->height);
-    materialLoad(f, &definition->material);
-    colorLoad(f, &definition->depth_color);
-    toolsLoadDouble(f, &definition->transparency_depth);
-    toolsLoadDouble(f, &definition->transparency);
-    toolsLoadDouble(f, &definition->reflection);
-    toolsLoadDouble(f, &definition->lighting_depth);
-    noiseLoadGenerator(f, definition->waves_noise);
-    toolsLoadDouble(f, &definition->waves_noise_height);
-    toolsLoadDouble(f, &definition->waves_noise_scale);
+    packReadDouble(stream, &definition->height);
+    materialLoad(stream, &definition->material);
+    colorLoad(stream, &definition->depth_color);
+    packReadDouble(stream, &definition->transparency_depth);
+    packReadDouble(stream, &definition->transparency);
+    packReadDouble(stream, &definition->reflection);
+    packReadDouble(stream, &definition->lighting_depth);
+    noiseLoadGenerator(stream, definition->waves_noise);
+    packReadDouble(stream, &definition->waves_noise_height);
+    packReadDouble(stream, &definition->waves_noise_scale);
 
     waterValidateDefinition(definition);
 }

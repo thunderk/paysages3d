@@ -46,18 +46,18 @@ void modifierDelete(HeightModifier* modifier)
     free(modifier);
 }
 
-void modifierSave(FILE* f, HeightModifier* modifier)
+void modifierSave(PackStream* stream, HeightModifier* modifier)
 {
-    toolsSaveInt(f, &modifier->mode);
-    toolsSaveDouble(f, &modifier->value);
-    zoneSave(f, modifier->zone);
+    packWriteInt(stream, &modifier->mode);
+    packWriteDouble(stream, &modifier->value);
+    zoneSave(stream, modifier->zone);
 }
 
-void modifierLoad(FILE* f, HeightModifier* modifier)
+void modifierLoad(PackStream* stream, HeightModifier* modifier)
 {
-    toolsLoadInt(f, &modifier->mode);
-    toolsLoadDouble(f, &modifier->value);
-    zoneLoad(f, modifier->zone);
+    packReadInt(stream, &modifier->mode);
+    packReadDouble(stream, &modifier->value);
+    zoneLoad(stream, modifier->zone);
 }
 
 Zone* modifierGetZone(HeightModifier* modifier)

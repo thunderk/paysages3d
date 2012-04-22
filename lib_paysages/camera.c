@@ -17,20 +17,20 @@ void cameraQuit()
 {
 }
 
-void cameraSave(FILE* f, CameraDefinition* camera)
+void cameraSave(PackStream* stream, CameraDefinition* camera)
 {
-    v3Save(f, &camera->location);
-    toolsSaveDouble(f, &camera->yaw);
-    toolsSaveDouble(f, &camera->pitch);
-    toolsSaveDouble(f, &camera->roll);
+    v3Save(stream, &camera->location);
+    packWriteDouble(stream, &camera->yaw);
+    packWriteDouble(stream, &camera->pitch);
+    packWriteDouble(stream, &camera->roll);
 }
 
-void cameraLoad(FILE* f, CameraDefinition* camera)
+void cameraLoad(PackStream* stream, CameraDefinition* camera)
 {
-    v3Load(f, &camera->location);
-    toolsLoadDouble(f, &camera->yaw);
-    toolsLoadDouble(f, &camera->pitch);
-    toolsLoadDouble(f, &camera->roll);
+    v3Load(stream, &camera->location);
+    packReadDouble(stream, &camera->yaw);
+    packReadDouble(stream, &camera->pitch);
+    packReadDouble(stream, &camera->roll);
 
     cameraValidateDefinition(camera, 0);
 }

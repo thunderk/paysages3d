@@ -42,11 +42,11 @@ void WidgetWanderer::keyPressEvent(QKeyEvent* event)
 {
     double factor;
 
-    if (event->modifiers() & Qt::ShiftModifier)
+    if (event->modifiers() & Qt::ControlModifier)
     {
         factor = 0.1;
     }
-    else if (event->modifiers() & Qt::ControlModifier)
+    else if (event->modifiers() & Qt::ShiftModifier)
     {
         factor = 10.0;
     }
@@ -104,11 +104,11 @@ void WidgetWanderer::mouseMoveEvent(QMouseEvent* event)
 {
     double factor;
 
-    if (event->modifiers() & Qt::ShiftModifier)
+    if (event->modifiers() & Qt::ControlModifier)
     {
         factor = 0.01;
     }
-    else if (event->modifiers() & Qt::ControlModifier)
+    else if (event->modifiers() & Qt::ShiftModifier)
     {
         factor = 1.0;
     }
@@ -145,11 +145,11 @@ void WidgetWanderer::wheelEvent(QWheelEvent* event)
 {
     double factor;
 
-    if (event->modifiers() & Qt::ShiftModifier)
+    if (event->modifiers() & Qt::ControlModifier)
     {
         factor = 0.01;
     }
-    else if (event->modifiers() & Qt::ControlModifier)
+    else if (event->modifiers() & Qt::ShiftModifier)
     {
         factor = 1.0;
     }

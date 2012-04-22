@@ -10,8 +10,8 @@ extern "C" {
 #endif
 
 /* Color */
-void colorSave(FILE* f, Color* col);
-void colorLoad(FILE* f, Color* col);
+void colorSave(PackStream* stream, Color* col);
+void colorLoad(PackStream* stream, Color* col);
 
 unsigned int colorTo32BitRGBA(Color* col);
 unsigned int colorTo32BitBGRA(Color* col);
@@ -29,8 +29,8 @@ ColorGradation* colorGradationCreate();
 void colorGradationDelete(ColorGradation* gradation);
 void colorGradationCopy(ColorGradation* source, ColorGradation* destination);
 
-void colorGradationSave(FILE* f, ColorGradation* gradation);
-void colorGradationLoad(FILE* f, ColorGradation* gradation);
+void colorGradationSave(PackStream* stream, ColorGradation* gradation);
+void colorGradationLoad(PackStream* stream, ColorGradation* gradation);
 
 void colorGradationGetRedCurve(ColorGradation* gradation, Curve* curve);
 void colorGradationGetGreenCurve(ColorGradation* gradation, Curve* curve);

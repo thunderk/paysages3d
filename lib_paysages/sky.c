@@ -22,26 +22,26 @@ void skyQuit()
 {
 }
 
-void skySave(FILE* f, SkyDefinition* definition)
+void skySave(PackStream* stream, SkyDefinition* definition)
 {
-    toolsSaveDouble(f, &definition->daytime);
-    colorGradationSave(f, definition->sun_color);
-    toolsSaveDouble(f, &definition->sun_radius);
-    colorGradationSave(f, definition->zenith_color);
-    colorGradationSave(f, definition->haze_color);
-    toolsSaveDouble(f, &definition->haze_height);
-    toolsSaveDouble(f, &definition->haze_smoothing);
+    packWriteDouble(stream, &definition->daytime);
+    colorGradationSave(stream, definition->sun_color);
+    packWriteDouble(stream, &definition->sun_radius);
+    colorGradationSave(stream, definition->zenith_color);
+    colorGradationSave(stream, definition->haze_color);
+    packWriteDouble(stream, &definition->haze_height);
+    packWriteDouble(stream, &definition->haze_smoothing);
 }
 
-void skyLoad(FILE* f, SkyDefinition* definition)
+void skyLoad(PackStream* stream, SkyDefinition* definition)
 {
-    toolsLoadDouble(f, &definition->daytime);
-    colorGradationLoad(f, definition->sun_color);
-    toolsLoadDouble(f, &definition->sun_radius);
-    colorGradationLoad(f, definition->zenith_color);
-    colorGradationLoad(f, definition->haze_color);
-    toolsLoadDouble(f, &definition->haze_height);
-    toolsLoadDouble(f, &definition->haze_smoothing);
+    packReadDouble(stream, &definition->daytime);
+    colorGradationLoad(stream, definition->sun_color);
+    packReadDouble(stream, &definition->sun_radius);
+    colorGradationLoad(stream, definition->zenith_color);
+    colorGradationLoad(stream, definition->haze_color);
+    packReadDouble(stream, &definition->haze_height);
+    packReadDouble(stream, &definition->haze_smoothing);
 
     skyValidateDefinition(definition);
 }
