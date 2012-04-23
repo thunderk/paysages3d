@@ -701,7 +701,7 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
                 chunks[i].finished = 0;
                 chunks[i].interrupt = 0;
                 chunks[i].startx = x * dx;
-                if (x == nx)
+                if (x == nx - 1)
                 {
                     chunks[i].endx = area->width - 1;
                 }
@@ -710,7 +710,7 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
                     chunks[i].endx = (x + 1) * dx - 1;
                 }
                 chunks[i].starty = y * dy;
-                if (y == ny)
+                if (y == ny - 1)
                 {
                     chunks[i].endy = area->height - 1;
                 }
