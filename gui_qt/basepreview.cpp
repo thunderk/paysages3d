@@ -53,7 +53,9 @@ BasePreview::BasePreview(QWidget* parent) :
     this->conf_scale_max = 1.0;
     this->conf_scale_init = 1.0;
     this->conf_scale_step = 0.0;
+    this->conf_scroll_logarithmic = false;
     this->scaling = 1.0;
+    this->scalingbase = 1.0;
     this->xoffset = 0.0;
     this->yoffset = 0.0;
     this->pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
@@ -94,7 +96,7 @@ QColor BasePreview::getColor(double x, double y)
     return QColor(0, 0, 0);
 }
 
-void BasePreview::configScaling(double min, double max, double step, double init)
+void BasePreview::configScaling(double min, double max, double step, double init, bool logarithmic)
 {
     double size = (double)width();
     
@@ -104,7 +106,14 @@ void BasePreview::configScaling(double min, double max, double step, double init
         conf_scale_max = max / size;
         conf_scale_step = step / size;
         conf_scale_init = init / size;
-        scaling = init / size;
+        conf_scroll_logarithmic = logarithmic;
+        scalingbase = init / size;
+        if (conf_scroll_logarithmic && conf_scale_max - conf_scale_min > 0.0000001)
+        {
+            scalingbase = pow((scalingbase - conf_scale_min) / (conf_scale_max - conf_scale_min), 0.5) * (conf_scale_max - conf_scale_min) + conf_scale_min;
+        }
+
+        updateScaling();
         redraw();
     }
 }
@@ -235,6 +244,18 @@ void BasePreview::renderPixbuf()
     }
 }
 
+void BasePreview::updateScaling()
+{
+    if (conf_scroll_logarithmic && conf_scale_max - conf_scale_min > 0.0000001)
+    {
+        scaling = pow((scalingbase - conf_scale_min) / (conf_scale_max - conf_scale_min), 2.0) * (conf_scale_max - conf_scale_min) + conf_scale_min;
+    }
+    else
+    {
+        scaling = scalingbase;
+    }
+}
+
 void BasePreview::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
@@ -354,57 +375,71 @@ void BasePreview::wheelEvent(QWheelEvent* event)
     {
         factor = 1.0;
     }
-
-    old_scaling = scaling;
-    width = pixbuf->width();
-    height = pixbuf->height();
     
     if (event->orientation() == Qt::Vertical)
     {
-        if (event->delta() > 0  && scaling > conf_scale_min)
+        if (event->delta() > 0  && scalingbase > conf_scale_min)
         {
-            scaling -= conf_scale_step * factor;
-            if (scaling < conf_scale_min)
+            scalingbase -= factor * conf_scale_step;
+            if (scalingbase < conf_scale_min)
             {
-                scaling = conf_scale_min;
+                scalingbase = conf_scale_min;
             }
-            
-            lock_drawing->lock();
-            new_width = (int)floor(((double)width) * scaling / old_scaling);
-            new_height = (int)floor(((double)height) * scaling / old_scaling);
-            QImage part = pixbuf->copy((width - new_width) / 2, (height - new_height) / 2, new_width, new_height).scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-            QPainter painter(pixbuf);
-            pixbuf->fill(0x00000000);
-            painter.setOpacity(0.99);
-            painter.drawImage(0, 0, part);
-            need_render = true;
-            lock_drawing->unlock();
-            
-            emit contentChange();
         }
-        else if (event->delta() < 0  && scaling < conf_scale_max)
+        else if (event->delta() < 0  && scalingbase < conf_scale_max)
         {
-            scaling += conf_scale_step * factor;
-            if (scaling > conf_scale_max)
+            scalingbase += factor * conf_scale_step;
+            if (scalingbase > conf_scale_max)
             {
-                scaling = conf_scale_max;
+                scalingbase = conf_scale_max;
             }
-            
-            lock_drawing->lock();
-            QImage part = pixbuf->scaled((int)floor(((double)width) * old_scaling / scaling), (int)floor(((double)height) * old_scaling / scaling), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-            QPainter painter(pixbuf);
-            pixbuf->fill(0x00000000);
-            painter.setOpacity(0.99);
-            painter.drawImage((width - part.width()) / 2, (height - part.height()) / 2, part);
-            need_render = true;
-            lock_drawing->unlock();
-            
-            emit contentChange();
         }
-        event->accept();
+        else
+        {
+            event->ignore();
+            return;
+        }
     }
     else
     {
         event->ignore();
+        return;
     }
+
+    old_scaling = scaling;
+    updateScaling();
+    
+    width = pixbuf->width();
+    height = pixbuf->height();
+    
+    if (scaling < old_scaling)
+    {
+        lock_drawing->lock();
+        new_width = (int)floor(((double)width) * scaling / old_scaling);
+        new_height = (int)floor(((double)height) * scaling / old_scaling);
+        QImage part = pixbuf->copy((width - new_width) / 2, (height - new_height) / 2, new_width, new_height).scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        QPainter painter(pixbuf);
+        pixbuf->fill(0x00000000);
+        painter.setOpacity(0.99);
+        painter.drawImage(0, 0, part);
+        need_render = true;
+        lock_drawing->unlock();
+
+        emit contentChange();
+    }
+    else if (scaling > old_scaling)
+    {
+        lock_drawing->lock();
+        QImage part = pixbuf->scaled((int)floor(((double)width) * old_scaling / scaling), (int)floor(((double)height) * old_scaling / scaling), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        QPainter painter(pixbuf);
+        pixbuf->fill(0x00000000);
+        painter.setOpacity(0.99);
+        painter.drawImage((width - part.width()) / 2, (height - part.height()) / 2, part);
+        need_render = true;
+        lock_drawing->unlock();
+
+        emit contentChange();
+    }
+    
+    event->accept();
 }

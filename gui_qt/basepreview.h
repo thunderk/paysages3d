@@ -22,7 +22,7 @@ protected:
     virtual void updateData();
     virtual QColor getColor(double x, double y);
     
-    void configScaling(double min, double max, double step, double init);
+    void configScaling(double min, double max, double step, double init, bool logarithmic=true);
     void configScrolling(double xmin, double xmax, double xinit, double ymin, double ymax, double yinit);
 
     double xoffset;
@@ -31,6 +31,7 @@ protected:
 
 private:
     void renderPixbuf();
+    void updateScaling();
 
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent* event);
@@ -47,6 +48,8 @@ private:
     int mousex;
     int mousey;
 
+    double scalingbase;
+
     bool alive;
     bool need_restart;
     bool need_render;
@@ -62,6 +65,7 @@ private:
     double conf_scale_max;
     double conf_scale_init;
     double conf_scale_step;
+    bool conf_scroll_logarithmic;
 
 signals:
     void contentChange();
