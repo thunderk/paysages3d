@@ -774,7 +774,7 @@ rapide (F5)</translation>
         <location filename="../gui_qt/mainwindow.cpp" line="150"/>
         <location filename="../gui_qt/mainwindow.cpp" line="165"/>
         <source>Paysages 3D Scenery (*.p3d)</source>
-        <translation>Scène Paysages 3D</translation>
+        <translation>Scène Paysages 3D (*.p3d)</translation>
     </message>
     <message>
         <location filename="../gui_qt/mainwindow.cpp" line="163"/>
