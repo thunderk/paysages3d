@@ -8,6 +8,8 @@
 extern "C" {
 #endif
 
+typedef struct Zone Zone;
+
 typedef struct
 {
     double value;

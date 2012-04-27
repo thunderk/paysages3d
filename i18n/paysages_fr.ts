@@ -499,7 +499,7 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormTextures</name>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="134"/>
+        <location filename="../gui_qt/formtextures.cpp" line="138"/>
         <source>Coverage preview</source>
         <translation>Aperçu de la couverture</translation>
     </message>
@@ -508,77 +508,77 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Rendu en couleur</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="135"/>
+        <location filename="../gui_qt/formtextures.cpp" line="139"/>
         <source>Lighted sample</source>
         <translation>Echantillon éclairé</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="137"/>
+        <location filename="../gui_qt/formtextures.cpp" line="141"/>
         <source>Surface noise</source>
         <translation>Bruit de surface</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="138"/>
+        <location filename="../gui_qt/formtextures.cpp" line="142"/>
         <source>Surface noise height</source>
         <translation>Hauteur du bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="139"/>
+        <location filename="../gui_qt/formtextures.cpp" line="143"/>
         <source>Surface noise scaling</source>
         <translation>Echelle du bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="140"/>
+        <location filename="../gui_qt/formtextures.cpp" line="144"/>
         <source>Base color</source>
         <translation>Couleur de base</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="141"/>
+        <location filename="../gui_qt/formtextures.cpp" line="145"/>
         <source>Light reflection</source>
         <translation>Réflexion de lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="142"/>
+        <location filename="../gui_qt/formtextures.cpp" line="146"/>
         <source>Light reflection shininess</source>
         <translation>Concentration de la lumière réfléchie</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="145"/>
+        <location filename="../gui_qt/formtextures.cpp" line="149"/>
         <source>Soft minimal height</source>
         <translation>Altitude minimal (adoucie)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="144"/>
+        <location filename="../gui_qt/formtextures.cpp" line="148"/>
         <source>Hard minimal height</source>
         <translation>Altitude minimale</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="147"/>
+        <location filename="../gui_qt/formtextures.cpp" line="151"/>
         <source>Hard maximal height</source>
         <translation>Altitude maximale</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="146"/>
+        <location filename="../gui_qt/formtextures.cpp" line="150"/>
         <source>Soft maximal height</source>
         <translation>Altitude maximale (adoucie)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="149"/>
+        <location filename="../gui_qt/formtextures.cpp" line="153"/>
         <source>Soft minimal slope</source>
         <translation>Pente minimale (adoucie)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="148"/>
+        <location filename="../gui_qt/formtextures.cpp" line="152"/>
         <source>Hard minimal slope</source>
         <translation>Pente minimale</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="151"/>
+        <location filename="../gui_qt/formtextures.cpp" line="155"/>
         <source>Hard maximal slope</source>
         <translation>Pente maximale</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="150"/>
+        <location filename="../gui_qt/formtextures.cpp" line="154"/>
         <source>Soft maximal slope</source>
         <translation>Pente maximale (adoucie)</translation>
     </message>

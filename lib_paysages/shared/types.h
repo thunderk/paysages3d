@@ -86,8 +86,6 @@ typedef struct
     double shininess;
 } SurfaceMaterial;
 
-typedef struct Zone Zone;
-
 typedef void (*RenderCallbackStart)(int width, int height, Color background);
 typedef void (*RenderCallbackDraw)(int x, int y, Color col);
 typedef void (*RenderCallbackUpdate)(double progress);

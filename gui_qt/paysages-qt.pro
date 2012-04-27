@@ -8,6 +8,7 @@ MOC_DIR = ./moc/$$BUILDMODE/
 DESTDIR = ../build/$$BUILDMODE/
 CONFIG += $$BUILDMODE
 
+LIBS += -lGLU
 unix:LIBS += -L$$DESTDIR -lpaysages
 win32:LIBS += ../libpaysages.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-2.0
 

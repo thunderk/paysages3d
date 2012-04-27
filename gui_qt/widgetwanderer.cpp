@@ -4,6 +4,7 @@
 #include <QKeyEvent>
 #include <QTime>
 #include <math.h>
+#include <GL/glu.h>
 #include "../lib_paysages/scenery.h"
 
 WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):

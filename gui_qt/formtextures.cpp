@@ -95,6 +95,8 @@ public:
         _renderer.camera_location.y = 20.0;
         _renderer.camera_location.z = 0.0;
         
+        _zone = zoneCreate();
+        
         configScaling(0.1, 10.0, 0.1, 1.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
@@ -110,6 +112,7 @@ protected:
     void updateData()
     {
         texturesLayerCopyDefinition(&_layer, &_preview_layer);
+        zoneCopy(_zone, _preview_layer.zone);
     }
 private:
     static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
@@ -117,6 +120,7 @@ private:
         return lightingApplyToSurface((LightingDefinition*)renderer->customData[0], renderer, location, normal, material);
     }
     
+    Zone* _zone;
     Renderer _renderer;
     TextureLayerDefinition _preview_layer;
     LightingDefinition _lighting;

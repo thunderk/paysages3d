@@ -5,6 +5,7 @@
 #include "noise.h"
 #include "lighting.h"
 #include "pack.h"
+#include "zone.h"
 
 #ifdef __cplusplus
 extern "C" {
