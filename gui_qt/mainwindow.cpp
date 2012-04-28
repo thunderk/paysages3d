@@ -31,14 +31,14 @@ int main(int argc, char** argv)
 {
     MainWindow* window;
     int result;
-    
+
     paysagesInit();
 
     QApplication app(argc, argv);
-    
+
     QTranslator qtTranslator;
     QTranslator myTranslator;
-    
+
     if (myTranslator.load("paysages_" + QLocale::system().name(), "./i18n"))
     {
         app.installTranslator(&myTranslator);
@@ -56,20 +56,20 @@ int main(int argc, char** argv)
     window->show();
 
     result = app.exec();
-    
+
     delete window;
-    
+
     paysagesQuit();
     return result;
 }
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent)
+QMainWindow(parent)
 {
     BaseForm* form;
     QTabWidget* tabs;
     QToolBar* toolbar;
-    
+
     tabs = new QTabWidget(this);
 
     form = new FormTerrain(tabs);
@@ -112,7 +112,7 @@ MainWindow::MainWindow(QWidget *parent) :
     toolbar->toggleViewAction()->setEnabled(false);
     toolbar->setIconSize(QSize(32, 32));
     addToolBar(Qt::LeftToolBarArea, toolbar);
-    
+
     toolbar->addAction(QIcon("images/new.png"), tr("&New"), this, SLOT(fileNew()))->setShortcut(QKeySequence(tr("Crtl+N")));
     toolbar->addAction(QIcon("images/save.png"), tr("&Save"), this, SLOT(fileSave()))->setShortcut(QKeySequence(tr("Crtl+S")));
     toolbar->addAction(QIcon("images/load.png"), tr("&Load"), this, SLOT(fileLoad()))->setShortcut(QKeySequence(tr("Crtl+L")));
@@ -154,7 +154,18 @@ void MainWindow::fileSave()
         {
             filepath = filepath.append(".p3d");
         }
-        paysagesSave((char*)filepath.toStdString().c_str());
+
+        FileOperationResult result = paysagesSave((char*) filepath.toStdString().c_str());
+        switch (result)
+        {
+        case FILE_OPERATION_OK:
+            break;
+        case FILE_OPERATION_IOERROR:
+            QMessageBox::critical(this, tr("Paysages 3D - File saving error"), tr("Can't write specified file : %1").arg(filepath));
+            break;
+        default:
+            QMessageBox::critical(this, tr("Paysages 3D - File saving error"), tr("Unexpected error while saving file : %1").arg(filepath));
+        }
     }
 }
 
@@ -165,15 +176,31 @@ void MainWindow::fileLoad()
         QString filepath = QFileDialog::getOpenFileName(this, tr("Paysages 3D - Choose a scenery file to load"), QString(), tr("Paysages 3D Scenery (*.p3d)"));
         if (!filepath.isNull())
         {
-            paysagesLoad((char*)filepath.toStdString().c_str());
-            refreshAll();
+            FileOperationResult result = paysagesLoad((char*) filepath.toStdString().c_str());
+            switch (result)
+            {
+            case FILE_OPERATION_OK:
+                refreshAll();
+                break;
+            case FILE_OPERATION_IOERROR:
+                QMessageBox::critical(this, tr("Paysages 3D - File loading error"), tr("Can't read specified file : %1").arg(filepath));
+                break;
+            case FILE_OPERATION_APP_MISMATCH:
+                QMessageBox::critical(this, tr("Paysages 3D - File loading error"), tr("This file doesn't look like a Paysages 3D file : %1").arg(filepath));
+                break;
+            case FILE_OPERATION_VERSION_MISMATCH:
+                QMessageBox::critical(this, tr("Paysages 3D - File loading error"), tr("This file was created with an incompatible Paysages 3D version : %1").arg(filepath));
+                break;
+            default:
+                QMessageBox::critical(this, tr("Paysages 3D - File loading error"), tr("Unexpected error while loading file : %1").arg(filepath));
+            }
         }
     }
 }
 
 void MainWindow::showAboutDialog()
 {
-    QMessageBox::about(this, tr("Paysages 3D"), tr("A 3D landscape editing and rendering software.\n\nCredits :\nProgramming - Michael Lemaire"));
+    QMessageBox::about(this, tr("Paysages 3D"), tr("A 3D landscape editing and rendering software.\n\nAuthors :\nProgramming - Michael Lemaire\n\nQt - http://qt.nokia.com/\nDevIL - http://openil.sourceforge.net/\nGLib - http://www.gtk.org/\n"));
 }
 
 void MainWindow::quickPreview()
@@ -190,9 +217,9 @@ void MainWindow::explore3D()
 
     DialogWanderer* dialog = new DialogWanderer(this, &camera, true);
     result = dialog->exec();
-    
+
     delete dialog;
-    
+
     if (result == QDialog::Accepted)
     {
         scenerySetCamera(&camera);

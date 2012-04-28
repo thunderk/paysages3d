@@ -17,7 +17,7 @@
 #include "textures.h"
 #include "vegetation.h"
 #include "water.h"
-
+#include "pack.h"
 #include "renderer.h"
 
 #ifdef __cplusplus
@@ -27,8 +27,8 @@ extern "C" {
 void sceneryInit();
 void sceneryQuit();
 
-void scenerySaveToFile(char* filepath);
-void sceneryLoadFromFile(char* filepath);
+void scenerySave(PackStream* stream);
+void sceneryLoad(PackStream* stream);
 
 void scenerySetAtmosphere(AtmosphereDefinition* atmosphere);
 void sceneryGetAtmosphere(AtmosphereDefinition* atmosphere);

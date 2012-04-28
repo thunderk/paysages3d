@@ -772,24 +772,81 @@ rapide (F5)</translation>
     </message>
     <message>
         <location filename="../gui_qt/mainwindow.cpp" line="150"/>
-        <location filename="../gui_qt/mainwindow.cpp" line="165"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="176"/>
         <source>Paysages 3D Scenery (*.p3d)</source>
         <translation>Scène Paysages 3D (*.p3d)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="163"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="164"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="167"/>
+        <source>Paysages 3D - File saving error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="164"/>
+        <source>Can&apos;t write specified file : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="167"/>
+        <source>Unexpected error while saving file : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="174"/>
         <source>Do you want to load a scenery from file ? Any unsaved changes will be lost.</source>
         <translation>Voulez-vous charger une scène ? Les modifications nons sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="163"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="174"/>
         <source>Paysages 3D - Load scenery</source>
         <translation>Paysages 3D - Charger une scène</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="165"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="176"/>
         <source>Paysages 3D - Choose a scenery file to load</source>
         <translation>Paysages 3D - Choisissez un fichier de scène à charger</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="186"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="189"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="192"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="195"/>
+        <source>Paysages 3D - File loading error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="186"/>
+        <source>Can&apos;t read specified file : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="189"/>
+        <source>This file doesn&apos;t look like a Paysages 3D file : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="192"/>
+        <source>This file was created with an incompatible Paysages 3D version : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="195"/>
+        <source>Unexpected error while loading file : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/mainwindow.cpp" line="203"/>
+        <source>A 3D landscape editing and rendering software.
+
+Authors :
+Programming - Michael Lemaire
+
+Qt - http://qt.nokia.com/
+DevIL - http://openil.sourceforge.net/
+GLib - http://www.gtk.org/
+</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../gui_qt/mainwindow.cpp" line="88"/>
@@ -888,17 +945,16 @@ rapide (F5)</translation>
         <translation type="obsolete">Voulez-vous charger un paysage ? Les modifications nons sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="176"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="203"/>
         <source>Paysages 3D</source>
         <translation>Paysages 3D</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="176"/>
         <source>A 3D landscape editing and rendering software.
 
 Credits :
 Programming - Michael Lemaire</source>
-        <translation>Un logiciel d&apos;édition et rendu de décors naturels en 3D
+        <translation type="obsolete">Un logiciel d&apos;édition et rendu de décors naturels en 3D
 
 Crédits :
 Développement - Michaël LEMAIRE</translation>

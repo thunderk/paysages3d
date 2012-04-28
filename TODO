@@ -1,7 +1,8 @@
 Technology Preview 2 :
 - Render tab previews should not rerender when changing render options.
-- Compute shadows only once for all textures at a same location.
-- Add antialiasing option (pay attention to memory usage).
+- Compute shadows only once for all textures at a same location (need an intermediary light status).
+- Add layer sorting/naming.
+- Save GUI config (views, render params).
 - Add an OSD ability on previews and use it for camera location and user landmarks.
 - Add a material editor dialog.
 - Add a zone editor dialog for localized textures.
@@ -9,13 +10,13 @@ Technology Preview 2 :
 - Add a noise filler (and maybe noise intervals ?).
 - Improve curve editor.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
-- Implement a file header/versioning.
+- More threading in previews and layered previews (with a less detailed layer in the background).
 
 Technology Preview 3 :
 - Restore render progress.
+- Add antialiasing option (pay attention to memory usage).
 - Add basic vegetation system (not sure).
 - Improve sky rendering (colors and light halo).
-- Add rendering steps in small previews (not sure).
 
 Release Candidate :
 - Polish all features and UI.

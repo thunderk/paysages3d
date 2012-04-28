@@ -65,10 +65,8 @@ void sceneryQuit()
     noiseQuit();
 }
 
-void scenerySaveToFile(char* filepath)
+void scenerySave(PackStream* stream)
 {
-    PackStream* stream = packWriteFile(filepath);
-
     noiseSave(stream);
     atmosphereSave(stream, &_atmosphere);
     cameraSave(stream, &_camera);
@@ -79,14 +77,10 @@ void scenerySaveToFile(char* filepath)
     texturesSave(stream, &_textures);
     vegetationSave(stream, _vegetation);
     waterSave(stream, &_water);
-
-    packCloseStream(stream);
 }
 
-void sceneryLoadFromFile(char* filepath)
+void sceneryLoad(PackStream* stream)
 {
-    PackStream* stream = packReadFile(filepath);
-
     /* TODO Use intermediary definitions ? */
 
     noiseLoad(stream);
@@ -109,8 +103,6 @@ void sceneryLoadFromFile(char* filepath)
     texturesValidateDefinition(&_textures);
     vegetationValidateDefinition(_vegetation);
     waterValidateDefinition(&_water);
-
-    packCloseStream(stream);
 }
 
 void scenerySetAtmosphere(AtmosphereDefinition* atmosphere)
