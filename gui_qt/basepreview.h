@@ -17,10 +17,11 @@ public:
 
     static void initDrawers();
     static void stopDrawers();
-
+    
     void redraw();
     
-    inline void tellContentChange() {emit contentChange();}
+    QImage startChunkTransaction(int x, int y, int w, int h, int* revision);
+    void commitChunkTransaction(QImage* chunk, int x, int y, int w, int h, int revision);
 
     QColor getPixelColor(int x, int y);
 
@@ -37,6 +38,7 @@ protected:
 
 private:
     void updateScaling();
+    void updateChunks();
 
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent* event);
@@ -50,6 +52,8 @@ private:
 
     int _width;
     int _height;
+    
+    int _revision;
 
     int mousex;
     int mousey;

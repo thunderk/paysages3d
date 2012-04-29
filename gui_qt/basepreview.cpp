@@ -6,15 +6,14 @@
 #include <QTimer>
 #include <QWheelEvent>
 
+/*************** PreviewChunk ***************/
 class PreviewChunk
 {
 public:
 
-    PreviewChunk(BasePreview* preview, QImage* pixbuf, QMutex* lock, int xstart, int ystart, int xsize, int ysize)
+    PreviewChunk(BasePreview* preview, int xstart, int ystart, int xsize, int ysize)
     {
         _preview = preview;
-        _pixbuf = pixbuf;
-        _lock = lock;
         _xstart = xstart;
         _ystart = ystart;
         _xsize = xsize;
@@ -36,26 +35,25 @@ public:
     bool render()
     {
         bool changed = false;
+        int revision;
         
         if (_need_render)
         {
             _need_render = false;
             
-            _lock->lock();
-            QImage tempbuffer = _pixbuf->copy(_xstart, _ystart, _xsize, _ysize);
-            _lock->unlock();
+            QImage pixbuf = _preview->startChunkTransaction(_xstart, _ystart, _xsize, _ysize, &revision);
 
             for (int x = 0; x < _xsize; x++)
             {
                 for (int y = 0; y < _ysize; y++)
                 {
-                    QRgb col = tempbuffer.pixel(x, y);
+                    QRgb col = pixbuf.pixel(x, y);
                     if (qAlpha(col) < 255)
                     {
                         QColor newcol = _preview->getPixelColor(_xstart + x, _ystart + y);
                         newcol.setAlpha(255);
                         
-                        tempbuffer.setPixel(x, y, newcol.rgb());
+                        pixbuf.setPixel(x, y, newcol.rgb());
                         
                         changed = true;
                     }
@@ -64,16 +62,7 @@ public:
             
             if (changed)
             {
-                _lock->lock();
-                for (int x = 0; x < _xsize; x++)
-                {
-                    for (int y = 0; y < _ysize; y++)
-                    {
-                        _pixbuf->setPixel(_xstart + x, _ystart + y, tempbuffer.pixel(x, y));
-                    }
-                }
-                _lock->unlock();
-                _preview->tellContentChange();
+                _preview->commitChunkTransaction(&pixbuf, _xstart, _ystart, _xsize, _ysize, revision);
             }
         }
         
@@ -81,8 +70,6 @@ public:
     }
 private:
     BasePreview* _preview;
-    QImage* _pixbuf;
-    QMutex* _lock;
     bool _need_render;
     int _xstart;
     int _ystart;
@@ -230,6 +217,7 @@ QWidget(parent)
     this->pixbuf->fill(0x00000000);
     _width = width();
     _height = height();
+    _revision = 0;
 
     this->alive = true;
 
@@ -311,6 +299,29 @@ void BasePreview::redraw()
     emit(redrawRequested());
 }
 
+QImage BasePreview::startChunkTransaction(int x, int y, int w, int h, int* revision)
+{
+    *revision = _revision;
+    return pixbuf->copy(x, y, w, h);
+}
+
+void BasePreview::commitChunkTransaction(QImage* chunk, int x, int y, int w, int h, int revision)
+{
+    if (revision == _revision)
+    {
+        lock_drawing->lock();
+        for (int ix = 0; ix < w; ix++)
+        {
+            for (int iy = 0; iy < h; iy++)
+            {
+                pixbuf->setPixel(x + ix, y + iy, chunk->pixel(ix, iy));
+            }
+        }
+        lock_drawing->unlock();
+        emit contentChange();
+    }
+}
+
 QColor BasePreview::getPixelColor(int x, int y)
 {
     return getColor((double) (x - _width / 2) * scaling + xoffset, (double) (y - _height / 2) * scaling + yoffset);
@@ -328,7 +339,7 @@ void BasePreview::handleRedraw()
     painter.setOpacity(0.99);
     painter.drawImage(0, 0, part);
     
-    _drawing_manager->updateChunks(this);
+    updateChunks();
 
     lock_drawing->unlock();
 }
@@ -353,7 +364,7 @@ void BasePreview::resizeEvent(QResizeEvent* event)
     {
         for (int y = 0; y < _height; y += 32)
         {
-            _drawing_manager->addChunk(new PreviewChunk(this, pixbuf, lock_drawing, x, y, x + 32 > _width ? _width - x : 32, y + 32 > _height ? _height - y : 32));
+            _drawing_manager->addChunk(new PreviewChunk(this, x, y, x + 32 > _width ? _width - x : 32, y + 32 > _height ? _height - y : 32));
         }
     }
 
@@ -378,6 +389,12 @@ void BasePreview::updateScaling()
     {
         scaling = scalingbase;
     }
+}
+
+void BasePreview::updateChunks()
+{
+    _drawing_manager->updateChunks(this);
+    _revision++;
 }
 
 void BasePreview::mousePressEvent(QMouseEvent* event)
@@ -430,7 +447,7 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
 
                 lock_drawing->lock();
                 pixbuf->fill(0x00000000);
-                _drawing_manager->updateChunks(this);
+                updateChunks();
                 lock_drawing->unlock();
             }
             else
@@ -468,7 +485,7 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
                 pixbuf->fill(0x00000000);
                 painter.drawImage(xstart + ndx, ystart + ndy, part);
 
-                _drawing_manager->updateChunks(this);
+                updateChunks();
                 lock_drawing->unlock();
 
                 emit contentChange();
@@ -546,7 +563,7 @@ void BasePreview::wheelEvent(QWheelEvent* event)
         pixbuf->fill(0x00000000);
         painter.setOpacity(0.99);
         painter.drawImage(0, 0, part);
-        _drawing_manager->updateChunks(this);
+        updateChunks();
         lock_drawing->unlock();
 
         emit contentChange();
@@ -559,7 +576,7 @@ void BasePreview::wheelEvent(QWheelEvent* event)
         pixbuf->fill(0x00000000);
         painter.setOpacity(0.99);
         painter.drawImage((width - part.width()) / 2, (height - part.height()) / 2, part);
-        _drawing_manager->updateChunks(this);
+        updateChunks();
         lock_drawing->unlock();
 
         emit contentChange();

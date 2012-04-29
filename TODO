@@ -11,12 +11,17 @@ Technology Preview 2 :
 - Improve curve editor.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - There should not have to be more preview threads than core.
+- Handle preview threads termination.
+- Add preview threads pausing (for rendering).
+- Add preview chunks priority (for visible previews).
+- Interrupt preview chunk renderings that will be discarded at commit.
 
 Technology Preview 3 :
 - Restore render progress.
 - Add antialiasing option (pay attention to memory usage).
 - Add basic vegetation system (not sure).
 - Improve sky rendering (colors and light halo).
+- Add a progress indicator on previews.
 
 Release Candidate :
 - Polish all features and UI.
