@@ -11,6 +11,7 @@
 #include <QLocale>
 #include <QMessageBox>
 
+#include "basepreview.h"
 #include "formatmosphere.h"
 #include "formclouds.h"
 #include "formlighting.h"
@@ -52,6 +53,8 @@ int main(int argc, char** argv)
         app.installTranslator(&qtTranslator);
     }
 
+    BasePreview::initDrawers();
+    
     window = new MainWindow();
     window->show();
 

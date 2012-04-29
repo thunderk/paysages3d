@@ -6,7 +6,7 @@
 void arrayCreate(Array* array, int item_size)
 {
     array->length = 0;
-    array->alloc_length = 3;
+    array->alloc_length = 1;
     array->item_size = item_size;
     array->dirty = 1;
     array->data = malloc((size_t)item_size * array->alloc_length);
@@ -25,7 +25,7 @@ void* arrayAppend(Array* array, void* item)
 
     if (array->length >= array->alloc_length)
     {
-        array->alloc_length += 10;
+        array->alloc_length += 1;
         array->data = realloc(array->data, item_size * array->alloc_length);
     }
 
@@ -100,7 +100,7 @@ void arrayClear(Array* array)
 {
     free(array->data);
     array->length = 0;
-    array->alloc_length = 3;
-    array->data = malloc((size_t)array->item_size * 3);
+    array->alloc_length = 1;
+    array->data = malloc((size_t)array->item_size * array->alloc_length);
     array->dirty = 1;
 }

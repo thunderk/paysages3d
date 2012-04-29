@@ -105,14 +105,12 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     previews->layout()->addWidget(label);
     previews->layout()->addWidget(previewLevel);
-    previewLevel->start();
     
     previewTotal = new PreviewTotal(previews, _current);
     label = new QLabel(tr("Total preview"));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     previews->layout()->addWidget(label);
     previews->layout()->addWidget(previewTotal);
-    previewTotal->start();
 
     form = new QWidget(this);
     form->setLayout(new QVBoxLayout());

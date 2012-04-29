@@ -10,7 +10,7 @@ Technology Preview 2 :
 - Add a noise filler (and maybe noise intervals ?).
 - Improve curve editor.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
-- More threading in previews and layered previews (with a less detailed layer in the background).
+- There should not have to be more preview threads than core.
 
 Technology Preview 3 :
 - Restore render progress.

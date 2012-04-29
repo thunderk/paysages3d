@@ -5,24 +5,30 @@
 #include <QImage>
 #include <QWidget>
 #include <QThread>
+#include <QVector>
+#include <QList>
 
-class BasePreview:public QWidget
-{
+class BasePreview : public QWidget {
     Q_OBJECT
 
 public:
     BasePreview(QWidget* parent);
     ~BasePreview();
 
-    void start();
-    void doRender();
+    static void initDrawers();
+    static void stopDrawers();
+
     void redraw();
+    
+    inline void tellContentChange() {emit contentChange();}
+
+    QColor getPixelColor(int x, int y);
 
 protected:
     virtual void updateData();
     virtual QColor getColor(double x, double y);
-    
-    void configScaling(double min, double max, double step, double init, bool logarithmic=true);
+
+    void configScaling(double min, double max, double step, double init, bool logarithmic = true);
     void configScrolling(double xmin, double xmax, double xinit, double ymin, double ymax, double yinit);
 
     double xoffset;
@@ -30,20 +36,20 @@ protected:
     double scaling;
 
 private:
-    void renderPixbuf();
     void updateScaling();
 
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent* event);
-    
+
     void mousePressEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
     void wheelEvent(QWheelEvent* event);
 
-    QThread* updater;
-
     QMutex* lock_drawing;
     QImage* pixbuf;
+
+    int _width;
+    int _height;
 
     int mousex;
     int mousey;
@@ -51,8 +57,6 @@ private:
     double scalingbase;
 
     bool alive;
-    bool need_restart;
-    bool need_render;
 
     double conf_scroll_xmin;
     double conf_scroll_xmax;
@@ -74,5 +78,44 @@ signals:
 private slots:
     void handleRedraw();
 };
+
+
+
+/*** Private section ***/
+class PreviewChunk;
+
+class PreviewDrawingThread : public QThread {
+public:
+    PreviewDrawingThread();
+    void askStop();
+
+    static inline void usleep(int us) {
+        QThread::usleep(us);
+    }
+
+protected:
+    void run();
+
+private:
+    bool _running;
+};
+
+class PreviewDrawingManager {
+public:
+    PreviewDrawingManager();
+    void startThreads();
+    void addChunk(PreviewChunk* chunk);
+    void removeChunks(BasePreview* preview);
+    void updateChunks(BasePreview* preview);
+    void performOneThreadJob();
+
+private:
+    int _thread_count;
+    QVector<PreviewDrawingThread*> _threads;
+    QVector<PreviewChunk*> _chunks;
+    QList<PreviewChunk*> _updateQueue;
+    QMutex _lock;
+};
+
 
 #endif

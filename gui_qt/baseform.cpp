@@ -170,7 +170,6 @@ void BaseForm::addPreview(BasePreview* preview, QString label)
     previews->layout()->addWidget(label_widget);
     previews->layout()->addWidget(preview);
     
-    preview->start();
     preview->setObjectName("_form_preview_");
 }
 

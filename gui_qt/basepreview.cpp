@@ -6,40 +6,208 @@
 #include <QTimer>
 #include <QWheelEvent>
 
-class PreviewDrawer:public QThread
+class PreviewChunk
 {
 public:
-    PreviewDrawer(BasePreview* preview):
-        QThread(),
-        _preview(preview)
+
+    PreviewChunk(BasePreview* preview, QImage* pixbuf, QMutex* lock, int xstart, int ystart, int xsize, int ysize)
     {
-        _running = false;
+        _preview = preview;
+        _pixbuf = pixbuf;
+        _lock = lock;
+        _xstart = xstart;
+        _ystart = ystart;
+        _xsize = xsize;
+        _ysize = ysize;
+        
+        _need_render = true;
     }
-    void askStop()
+    
+    bool isFrom(BasePreview* preview)
     {
-        _running = false;
+        return _preview == preview;
     }
-    static inline void usleep(int us)
+    
+    void update()
     {
-        QThread::usleep(us);
+        _need_render = true;
     }
-protected:
-    void run()
+
+    bool render()
     {
-        _running = true;
-        while (_running)
+        bool changed = false;
+        
+        if (_need_render)
         {
-            _preview->doRender();
-            QThread::usleep(50000);
+            _need_render = false;
+            
+            _lock->lock();
+            QImage tempbuffer = _pixbuf->copy(_xstart, _ystart, _xsize, _ysize);
+            _lock->unlock();
+
+            for (int x = 0; x < _xsize; x++)
+            {
+                for (int y = 0; y < _ysize; y++)
+                {
+                    QRgb col = tempbuffer.pixel(x, y);
+                    if (qAlpha(col) < 255)
+                    {
+                        QColor newcol = _preview->getPixelColor(_xstart + x, _ystart + y);
+                        newcol.setAlpha(255);
+                        
+                        tempbuffer.setPixel(x, y, newcol.rgb());
+                        
+                        changed = true;
+                    }
+                }
+            }
+            
+            if (changed)
+            {
+                _lock->lock();
+                for (int x = 0; x < _xsize; x++)
+                {
+                    for (int y = 0; y < _ysize; y++)
+                    {
+                        _pixbuf->setPixel(_xstart + x, _ystart + y, tempbuffer.pixel(x, y));
+                    }
+                }
+                _lock->unlock();
+                _preview->tellContentChange();
+            }
         }
+        
+        return changed;
     }
 private:
     BasePreview* _preview;
-    bool _running;
+    QImage* _pixbuf;
+    QMutex* _lock;
+    bool _need_render;
+    int _xstart;
+    int _ystart;
+    int _xsize;
+    int _ysize;
 };
 
+static PreviewDrawingManager* _drawing_manager = NULL;
+
+/*************** PreviewDrawingThread ***************/
+PreviewDrawingThread::PreviewDrawingThread() :
+QThread()
+{
+    _running = false;
+}
+
+void PreviewDrawingThread::askStop()
+{
+    _running = false;
+}
+
+void PreviewDrawingThread::run()
+{
+    _running = true;
+    while (_running)
+    {
+        _drawing_manager->performOneThreadJob();
+        QThread::usleep(50000);
+    }
+}
+
+/*************** PreviewDrawingManager ***************/
+PreviewDrawingManager::PreviewDrawingManager()
+{
+    _thread_count = QThread::idealThreadCount();
+    if (_thread_count < 1)
+    {
+        _thread_count = 1;
+    }
+}
+
+void PreviewDrawingManager::startThreads()
+{
+    for (int i = 0; i < _thread_count * 3; i++)
+    {
+        PreviewDrawingThread* thread = new PreviewDrawingThread();
+        _threads.append(thread);
+        thread->start();
+    }
+}
+
+void PreviewDrawingManager::addChunk(PreviewChunk* chunk)
+{
+    _lock.lock();
+    _chunks.append(chunk);
+    _updateQueue.append(chunk);
+    _lock.unlock();
+}
+
+void PreviewDrawingManager::removeChunks(BasePreview* preview)
+{
+    for (int i = 0; i < _chunks.size(); i++)
+    {
+        PreviewChunk* chunk;
+        chunk = _chunks.at(i);
+        if (chunk->isFrom(preview))
+        {
+            _lock.lock();
+            _chunks.remove(i);
+            _updateQueue.removeAll(chunk);
+            _lock.unlock();
+            
+            i--;
+        }
+    }
+}
+
+void PreviewDrawingManager::updateChunks(BasePreview* preview)
+{
+    for (int i = 0; i < _chunks.size(); i++)
+    {
+        PreviewChunk* chunk;
+        chunk = _chunks.at(i);
+        if (chunk->isFrom(preview))
+        {
+            chunk->update();
+            _lock.lock();
+            if (!_updateQueue.contains(chunk))
+            {   
+                _updateQueue.prepend(chunk);
+            }
+            _lock.unlock();
+        }
+    }
+}
+
+void PreviewDrawingManager::performOneThreadJob()
+{
+    PreviewChunk* chunk;
+    do
+    {
+        chunk = NULL;
+        _lock.lock();
+        if (!_updateQueue.isEmpty())
+        {
+            chunk = _updateQueue.takeFirst();
+        }
+        _lock.unlock();
+        
+        if (chunk)
+        {
+            chunk->render();
+            PreviewDrawingThread::usleep(50000);
+        }
+        else
+        {
+            PreviewDrawingThread::usleep(50000);
+        }
+        
+    } while (true);
+}
+
+/*************** BasePreview ***************/
 BasePreview::BasePreview(QWidget* parent) :
-    QWidget(parent)
+QWidget(parent)
 {
     this->lock_drawing = new QMutex();
 
@@ -60,10 +228,10 @@ BasePreview::BasePreview(QWidget* parent) :
     this->yoffset = 0.0;
     this->pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
     this->pixbuf->fill(0x00000000);
+    _width = width();
+    _height = height();
 
     this->alive = true;
-    this->need_restart = false;
-    this->need_render = true;
 
     QObject::connect(this, SIGNAL(contentChange()), this, SLOT(update()));
     QObject::connect(this, SIGNAL(redrawRequested()), this, SLOT(handleRedraw()));
@@ -71,20 +239,27 @@ BasePreview::BasePreview(QWidget* parent) :
     this->setMinimumSize(256, 256);
     this->setMaximumSize(256, 256);
     this->resize(256, 256);
-
-    this->updater = new PreviewDrawer(this);
 }
 
 BasePreview::~BasePreview()
 {
     alive = false;
 
-    ((PreviewDrawer*)updater)->askStop();
-    updater->wait();
+    _drawing_manager->removeChunks(this);
 
-    delete updater;
     delete pixbuf;
     delete lock_drawing;
+}
+
+void BasePreview::initDrawers()
+{
+    _drawing_manager = new PreviewDrawingManager();
+    _drawing_manager->startThreads();
+}
+
+void BasePreview::stopDrawers()
+{
+    //delete _drawing_manager;
 }
 
 void BasePreview::updateData()
@@ -98,8 +273,8 @@ QColor BasePreview::getColor(double x, double y)
 
 void BasePreview::configScaling(double min, double max, double step, double init, bool logarithmic)
 {
-    double size = (double)width();
-    
+    double size = (double) width();
+
     if (size >= 1.0)
     {
         conf_scale_min = min / size;
@@ -131,44 +306,30 @@ void BasePreview::configScrolling(double xmin, double xmax, double xinit, double
     redraw();
 }
 
-void BasePreview::start()
-{
-    this->updater->start();
-}
-
-void BasePreview::doRender()
-{
-    if (this->alive)
-    {
-        if (this->need_render)
-        {
-            this->need_render = false;
-            this->renderPixbuf();
-            emit contentChange();
-        }
-    }
-}
-
 void BasePreview::redraw()
 {
     emit(redrawRequested());
 }
 
+QColor BasePreview::getPixelColor(int x, int y)
+{
+    return getColor((double) (x - _width / 2) * scaling + xoffset, (double) (y - _height / 2) * scaling + yoffset);
+}
+
 void BasePreview::handleRedraw()
 {
     lock_drawing->lock();
-    
+
     updateData();
-    
+
     QImage part = pixbuf->copy();
     pixbuf->fill(0x00000000);
     QPainter painter(pixbuf);
     painter.setOpacity(0.99);
     painter.drawImage(0, 0, part);
     
-    need_render = true;
-    need_restart = true;
-    
+    _drawing_manager->updateChunks(this);
+
     lock_drawing->unlock();
 }
 
@@ -180,11 +341,21 @@ void BasePreview::resizeEvent(QResizeEvent* event)
 
     image = this->pixbuf;
 
+    _width = event->size().width();
+    _height = event->size().height();
+
     this->pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
 
     this->pixbuf->fill(0x00000000);
-    this->need_render = true;
-    this->need_restart = true;
+
+    _drawing_manager->removeChunks(this);
+    for (int x = 0; x < _width; x += 32)
+    {
+        for (int y = 0; y < _height; y += 32)
+        {
+            _drawing_manager->addChunk(new PreviewChunk(this, pixbuf, lock_drawing, x, y, x + 32 > _width ? _width - x : 32, y + 32 > _height ? _height - y : 32));
+        }
+    }
 
     delete image;
 
@@ -195,53 +366,6 @@ void BasePreview::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.drawImage(0, 0, *this->pixbuf);
-}
-
-void BasePreview::renderPixbuf()
-{
-    QColor col;
-    bool done;
-    int x, y, w, h;
-
-    w = this->pixbuf->width();
-    h = this->pixbuf->height();
-    
-    this->need_restart = false;
-
-    for (x = 0; x < w; x++)
-    {
-        this->lock_drawing->lock();
-
-        if (this->need_restart || !this->alive)
-        {
-            this->lock_drawing->unlock();
-            return;
-        }
-
-        done = false;
-        for (y = 0; y < h; y++)
-        {
-            if (this->need_restart || !this->alive)
-            {
-                this->lock_drawing->unlock();
-                return;
-            }
-
-            if (qAlpha(this->pixbuf->pixel(x, y)) < 255)
-            {
-                col = this->getColor((double)(x - w / 2) * this->scaling + this->xoffset, (double)(y - h / 2) * this->scaling + this->yoffset);
-                col.setAlpha(255);
-                this->pixbuf->setPixel(x, y, col.rgb());
-                done = true;
-            }
-        }
-        if (done && (x == w - 1 || x % 10 == 0))
-        {
-            emit contentChange();
-        }
-        this->lock_drawing->unlock();
-        PreviewDrawer::usleep(100);
-    }
 }
 
 void BasePreview::updateScaling()
@@ -270,7 +394,7 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
     int dx, dy;
     int ndx, ndy;
     int width, height;
-    
+
     if (event->buttons() & Qt::LeftButton)
     {
         dx = event->x() - mousex;
@@ -280,44 +404,44 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
         ndy = dy;
         if (xoffset - dx * scaling > conf_scroll_xmax)
         {
-            ndx = (int)floor((conf_scroll_xmax - xoffset) / scaling);
+            ndx = (int) floor((conf_scroll_xmax - xoffset) / scaling);
         }
         if (xoffset - dx * scaling < conf_scroll_xmin)
         {
-            ndx = (int)floor((conf_scroll_xmin - xoffset) / scaling);
+            ndx = (int) floor((conf_scroll_xmin - xoffset) / scaling);
         }
         if (yoffset - dy * scaling > conf_scroll_ymax)
         {
-            ndy = (int)floor((conf_scroll_ymax - yoffset) / scaling);
+            ndy = (int) floor((conf_scroll_ymax - yoffset) / scaling);
         }
         if (yoffset - dy * scaling < conf_scroll_ymin)
         {
-            ndy = (int)floor((conf_scroll_ymin - yoffset) / scaling);
+            ndy = (int) floor((conf_scroll_ymin - yoffset) / scaling);
         }
         if (ndx != 0 || ndy != 0)
         {
             width = this->width();
             height = this->height();
-            
+
             if (ndx <= -width || ndx >= width || ndy <= -height || ndy >= height)
             {
-                xoffset -= (double)ndx * scaling;
-                yoffset -= (double)ndy * scaling;
-            
+                xoffset -= (double) ndx * scaling;
+                yoffset -= (double) ndy * scaling;
+
                 lock_drawing->lock();
                 pixbuf->fill(0x00000000);
-                need_render = true;
+                _drawing_manager->updateChunks(this);
                 lock_drawing->unlock();
             }
             else
             {
                 int xstart, xsize, ystart, ysize;
-                
+
                 lock_drawing->lock();
 
-                xoffset -= (double)ndx * scaling;
-                yoffset -= (double)ndy * scaling;
-            
+                xoffset -= (double) ndx * scaling;
+                yoffset -= (double) ndy * scaling;
+
                 if (ndx < 0)
                 {
                     xstart = -ndx;
@@ -338,15 +462,15 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
                     ystart = 0;
                     ysize = height - ndy;
                 }
-                
+
                 QImage part = pixbuf->copy(xstart, ystart, xsize, ysize);
                 QPainter painter(pixbuf);
                 pixbuf->fill(0x00000000);
                 painter.drawImage(xstart + ndx, ystart + ndy, part);
-                
-                need_render = true;
+
+                _drawing_manager->updateChunks(this);
                 lock_drawing->unlock();
-                
+
                 emit contentChange();
             }
         }
@@ -362,7 +486,7 @@ void BasePreview::wheelEvent(QWheelEvent* event)
     double old_scaling;
     int width, height;
     int new_width, new_height;
-    
+
     if (event->modifiers() & Qt::ShiftModifier)
     {
         factor = 5.0;
@@ -375,10 +499,10 @@ void BasePreview::wheelEvent(QWheelEvent* event)
     {
         factor = 1.0;
     }
-    
+
     if (event->orientation() == Qt::Vertical)
     {
-        if (event->delta() > 0  && scalingbase > conf_scale_min)
+        if (event->delta() > 0 && scalingbase > conf_scale_min)
         {
             scalingbase -= factor * conf_scale_step;
             if (scalingbase < conf_scale_min)
@@ -386,7 +510,7 @@ void BasePreview::wheelEvent(QWheelEvent* event)
                 scalingbase = conf_scale_min;
             }
         }
-        else if (event->delta() < 0  && scalingbase < conf_scale_max)
+        else if (event->delta() < 0 && scalingbase < conf_scale_max)
         {
             scalingbase += factor * conf_scale_step;
             if (scalingbase > conf_scale_max)
@@ -408,21 +532,21 @@ void BasePreview::wheelEvent(QWheelEvent* event)
 
     old_scaling = scaling;
     updateScaling();
-    
+
     width = pixbuf->width();
     height = pixbuf->height();
-    
+
     if (scaling < old_scaling)
     {
         lock_drawing->lock();
-        new_width = (int)floor(((double)width) * scaling / old_scaling);
-        new_height = (int)floor(((double)height) * scaling / old_scaling);
+        new_width = (int) floor(((double) width) * scaling / old_scaling);
+        new_height = (int) floor(((double) height) * scaling / old_scaling);
         QImage part = pixbuf->copy((width - new_width) / 2, (height - new_height) / 2, new_width, new_height).scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         QPainter painter(pixbuf);
         pixbuf->fill(0x00000000);
         painter.setOpacity(0.99);
         painter.drawImage(0, 0, part);
-        need_render = true;
+        _drawing_manager->updateChunks(this);
         lock_drawing->unlock();
 
         emit contentChange();
@@ -430,16 +554,16 @@ void BasePreview::wheelEvent(QWheelEvent* event)
     else if (scaling > old_scaling)
     {
         lock_drawing->lock();
-        QImage part = pixbuf->scaled((int)floor(((double)width) * old_scaling / scaling), (int)floor(((double)height) * old_scaling / scaling), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        QImage part = pixbuf->scaled((int) floor(((double) width) * old_scaling / scaling), (int) floor(((double) height) * old_scaling / scaling), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         QPainter painter(pixbuf);
         pixbuf->fill(0x00000000);
         painter.setOpacity(0.99);
         painter.drawImage((width - part.width()) / 2, (height - part.height()) / 2, part);
-        need_render = true;
+        _drawing_manager->updateChunks(this);
         lock_drawing->unlock();
 
         emit contentChange();
     }
-    
+
     event->accept();
 }
