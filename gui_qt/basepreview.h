@@ -108,6 +108,7 @@ class PreviewDrawingManager {
 public:
     PreviewDrawingManager();
     void startThreads();
+    void stopThreads();
     void addChunk(PreviewChunk* chunk);
     void removeChunks(BasePreview* preview);
     void updateChunks(BasePreview* preview);

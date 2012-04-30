@@ -20,11 +20,17 @@ public:
         _ysize = ysize;
         
         _need_render = true;
+        _alive = true;
     }
     
     bool isFrom(BasePreview* preview)
     {
         return _preview == preview;
+    }
+    
+    void interrupt()
+    {
+        _alive = false;
     }
     
     void update()
@@ -48,6 +54,10 @@ public:
                 for (int y = 0; y < _ysize; y++)
                 {
                     QRgb col = pixbuf.pixel(x, y);
+                    if (!_alive)
+                    {
+                        return false;
+                    }
                     if (qAlpha(col) < 255)
                     {
                         QColor newcol = _preview->getPixelColor(_xstart + x, _ystart + y);
@@ -70,6 +80,7 @@ public:
     }
 private:
     BasePreview* _preview;
+    bool _alive;
     bool _need_render;
     int _xstart;
     int _ystart;
@@ -121,6 +132,22 @@ void PreviewDrawingManager::startThreads()
     }
 }
 
+void PreviewDrawingManager::stopThreads()
+{
+    for (int i = 0; i < _threads.size(); i++)
+    {
+        _threads.at(i)->askStop();
+    }
+    for (int i = 0; i < _chunks.size(); i++)
+    {
+        _chunks.at(i)->interrupt();
+    }
+    for (int i = 0; i < _threads.size(); i++)
+    {
+        _threads.at(i)->wait();
+    }
+}
+
 void PreviewDrawingManager::addChunk(PreviewChunk* chunk)
 {
     _lock.lock();
@@ -169,27 +196,19 @@ void PreviewDrawingManager::updateChunks(BasePreview* preview)
 void PreviewDrawingManager::performOneThreadJob()
 {
     PreviewChunk* chunk;
-    do
+
+    chunk = NULL;
+    _lock.lock();
+    if (!_updateQueue.isEmpty())
     {
-        chunk = NULL;
-        _lock.lock();
-        if (!_updateQueue.isEmpty())
-        {
-            chunk = _updateQueue.takeFirst();
-        }
-        _lock.unlock();
-        
-        if (chunk)
-        {
-            chunk->render();
-            PreviewDrawingThread::usleep(50000);
-        }
-        else
-        {
-            PreviewDrawingThread::usleep(50000);
-        }
-        
-    } while (true);
+        chunk = _updateQueue.takeFirst();
+    }
+    _lock.unlock();
+
+    if (chunk)
+    {
+        chunk->render();
+    }        
 }
 
 /*************** BasePreview ***************/
@@ -247,7 +266,7 @@ void BasePreview::initDrawers()
 
 void BasePreview::stopDrawers()
 {
-    //delete _drawing_manager;
+    _drawing_manager->stopThreads();
 }
 
 void BasePreview::updateData()

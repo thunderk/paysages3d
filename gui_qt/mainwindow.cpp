@@ -60,6 +60,8 @@ int main(int argc, char** argv)
 
     result = app.exec();
 
+    BasePreview::stopDrawers();
+
     delete window;
 
     paysagesQuit();
