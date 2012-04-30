@@ -309,16 +309,21 @@ Maintenir Ctrl : Plus rapide</translation>
     </message>
     <message>
         <location filename="../gui_qt/formclouds.cpp" line="161"/>
+        <source>Hardness to light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formclouds.cpp" line="162"/>
         <source>Transparency depth</source>
         <translation>Distance de transparence</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="162"/>
+        <location filename="../gui_qt/formclouds.cpp" line="163"/>
         <source>Light traversal depth</source>
         <translation>Distance de traversée de la lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="163"/>
+        <location filename="../gui_qt/formclouds.cpp" line="164"/>
         <source>Minimum lighting</source>
         <translation>Eclairage minimal</translation>
     </message>

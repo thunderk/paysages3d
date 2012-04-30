@@ -191,39 +191,81 @@ void texturesDeleteLayer(TexturesDefinition* definition, int layer)
     }
 }
 
-static inline Vector3 _getNormal(TextureLayerDefinition* definition, Renderer* renderer, Vector3 point, double scale)
+static inline Vector3 _getPoint(TextureLayerDefinition* definition, Renderer* renderer, double x, double z, Vector3 prenormal, double scale)
+{
+    Vector3 point;
+    
+    point.x = x;
+    point.z = z;
+    point.y = renderer->getTerrainHeight(renderer, point.x, point.z);
+    
+    return v3Add(point, v3Scale(prenormal, noiseGet2DTotal(definition->bump_noise, point.x / definition->bump_scaling, point.z / definition->bump_scaling) * definition->bump_height));
+}
+
+static inline Vector3 _getPreNormal(TextureLayerDefinition* definition, Renderer* renderer, Vector3 point, double scale)
 {
     Vector3 dpoint, ref, normal;
+    
+    /* TODO This method is better suited in terrain.c */
 
-    ref.x = 0.0;
     ref.y = 0.0;
-    point.y = renderer->getTerrainHeight(renderer, point.x, point.z) + noiseGet2DTotal(definition->bump_noise, point.x / definition->bump_scaling, point.z / definition->bump_scaling) * definition->bump_height;
-
-    dpoint.x = point.x - scale;
-    dpoint.z = point.z;
-    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x / definition->bump_scaling, dpoint.z / definition->bump_scaling) * definition->bump_height;
-    ref.z = -1.0;
-    normal = v3Normalize(v3Cross(ref, v3Sub(dpoint, point)));
+    point.y = renderer->getTerrainHeight(renderer, point.x, point.z);
 
     dpoint.x = point.x + scale;
     dpoint.z = point.z;
-    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x / definition->bump_scaling, dpoint.z / definition->bump_scaling) * definition->bump_height;
+    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z);
+    ref.x = 0.0;
     ref.z = 1.0;
-    normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
-
-    ref.z = 0.0;
-
-    dpoint.x = point.x;
-    dpoint.z = point.z - scale;
-    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x / definition->bump_scaling, dpoint.z / definition->bump_scaling) * definition->bump_height;
-    ref.x = 1.0;
     normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
 
     dpoint.x = point.x;
     dpoint.z = point.z + scale;
-    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z) + noiseGet2DTotal(definition->bump_noise, dpoint.x / definition->bump_scaling, dpoint.z / definition->bump_scaling) * definition->bump_height;
+    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z);
     ref.x = -1.0;
+    ref.z = 0.0;
     normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
+
+    if (renderer->render_quality > 5)
+    {
+        dpoint.x = point.x;
+        dpoint.z = point.z - scale;
+        dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z);
+        ref.x = 1.0;
+        ref.z = 0.0;
+        normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
+
+        dpoint.x = point.x - scale;
+        dpoint.z = point.z;
+        dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z);
+        ref.x = 0.0;
+        ref.z = -1.0;
+        normal = v3Normalize(v3Cross(ref, v3Sub(dpoint, point)));
+    }
+
+    return v3Normalize(normal);
+}
+
+static inline Vector3 _getPostNormal(TextureLayerDefinition* definition, Renderer* renderer, Vector3 point, Vector3 prenormal, double scale)
+{
+    Vector3 p0, d1, d2, d3, d4, normal;
+    
+    p0 = _getPoint(definition, renderer, point.x, point.z, prenormal, scale);
+    
+    d1 = v3Normalize(v3Sub(_getPoint(definition, renderer, point.x + scale, point.z, prenormal, scale), p0));
+    d3 = v3Normalize(v3Sub(_getPoint(definition, renderer, point.x, point.z + scale, prenormal, scale), p0));
+    if (renderer->render_quality > 5)
+    {
+        d2 = v3Normalize(v3Sub(_getPoint(definition, renderer, point.x - scale, point.z, prenormal, scale), p0));
+        d4 = v3Normalize(v3Sub(_getPoint(definition, renderer, point.x, point.z - scale, prenormal, scale), p0));
+    }
+    
+    normal = v3Cross(d3, d1);
+    if (renderer->render_quality > 5)
+    {
+        normal = v3Add(normal, v3Cross(d1, d4));
+        normal = v3Add(normal, v3Cross(d4, d2));
+        normal = v3Add(normal, v3Cross(d2, d3));
+    }
 
     return v3Normalize(normal);
 }
@@ -232,7 +274,7 @@ double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* re
 {
     Vector3 normal;
 
-    normal = _getNormal(definition, renderer, location, detail * 0.1);
+    normal = _getPreNormal(definition, renderer, location, detail * 0.1);
 
     return zoneGetValue(definition->zone, location, normal);
 }
@@ -244,11 +286,12 @@ Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* render
     double coverage;
 
     result = COLOR_TRANSPARENT;
-    normal = _getNormal(definition, renderer, location, detail * 0.1);
+    normal = _getPreNormal(definition, renderer, location, detail * 0.1);
 
     coverage = zoneGetValue(definition->zone, location, normal);
     if (coverage > 0.0)
     {
+        normal = _getPostNormal(definition, renderer, location, normal, detail * 0.1);
         result = renderer->applyLightingToSurface(renderer, location, normal, definition->material);
         result.a = coverage;
     }

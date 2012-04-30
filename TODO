@@ -22,6 +22,7 @@ Technology Preview 3 :
 - Add basic vegetation system (not sure).
 - Improve sky rendering (colors and light halo).
 - Add a progress indicator on previews.
+- Multi threaded first pass.
 
 Release Candidate :
 - Polish all features and UI.

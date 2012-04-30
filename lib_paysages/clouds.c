@@ -47,6 +47,7 @@ void cloudsSave(PackStream* stream, CloudsDefinition* definition)
         packWriteDouble(stream, &layer->ymax);
         noiseSaveGenerator(stream, layer->noise);
         materialSave(stream, &layer->material);
+        packWriteDouble(stream, &layer->hardness);
         packWriteDouble(stream, &layer->transparencydepth);
         packWriteDouble(stream, &layer->lighttraversal);
         packWriteDouble(stream, &layer->minimumlight);
@@ -75,6 +76,7 @@ void cloudsLoad(PackStream* stream, CloudsDefinition* definition)
         packReadDouble(stream, &layer->ymax);
         noiseLoadGenerator(stream, layer->noise);
         materialLoad(stream, &layer->material);
+        packReadDouble(stream, &layer->hardness);
         packReadDouble(stream, &layer->transparencydepth);
         packReadDouble(stream, &layer->lighttraversal);
         packReadDouble(stream, &layer->minimumlight);
@@ -160,6 +162,7 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
     result.material.base.b = 0.7;
     result.material.reflection = 0.1;
     result.material.shininess = 2.0;
+    result.hardness = 0.1;
     result.transparencydepth = 20.0;
     result.lighttraversal = 50.0;
     result.minimumlight = 0.5;
@@ -482,10 +485,13 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
     Vector3 normal;
 
     normal = v3Scale(_getNormal(definition, position, 3.0), 0.25);
-    normal = v3Add(normal, v3Scale(_getNormal(definition, position, 2.0), 0.25));
-    normal = v3Add(normal, v3Scale(_getNormal(definition, position, 1.0), 0.25));
+    if (renderer->render_quality > 5)
+    {
+        normal = v3Add(normal, v3Scale(_getNormal(definition, position, 2.0), 0.25));
+        normal = v3Add(normal, v3Scale(_getNormal(definition, position, 1.0), 0.25));
+    }
     normal = v3Add(normal, v3Scale(_getNormal(definition, position, 0.5), 0.25));
-    normal = v3Scale(v3Normalize(normal), 0.1);
+    normal = v3Scale(v3Normalize(normal), definition->hardness);
 
     return renderer->applyLightingToSurface(renderer, position, normal, definition->material);
 }

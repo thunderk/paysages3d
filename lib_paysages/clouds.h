@@ -23,6 +23,7 @@ struct CloudsLayerDefinition
     double ymax;
     NoiseGenerator* noise;
     SurfaceMaterial material;
+    double hardness;
     double transparencydepth;
     double lighttraversal;
     double minimumlight;
