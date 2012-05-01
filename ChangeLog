@@ -1,6 +1,9 @@
 ????-??-?? Technology Preview 2
 -------------------------------
 * Previews scaling is now logarithmic (slower when zoomed).
+* Previews drawing now takes advantage of multiple CPUs.
+* New displacement mode for textures (perpendicular to local ground surface).
+* Added clouds hardness to light.
 
 2012-04-20 Technology Preview 1
 -------------------------------

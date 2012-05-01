@@ -205,7 +205,7 @@ void MainWindow::fileLoad()
 
 void MainWindow::showAboutDialog()
 {
-    QMessageBox::about(this, tr("Paysages 3D"), tr("A 3D landscape editing and rendering software.\n\nAuthors :\nProgramming - Michael Lemaire\n\nQt - http://qt.nokia.com/\nDevIL - http://openil.sourceforge.net/\nGLib - http://www.gtk.org/\n"));
+    QMessageBox::about(this, tr("Paysages 3D"), tr("A 3D landscape editing and rendering software.\n\nAuthors :\nProgramming - Michael Lemaire\n\nCredits :\nQt - http://qt.nokia.com/\nDevIL - http://openil.sourceforge.net/\nGLib - http://www.gtk.org/\n"));
 }
 
 void MainWindow::quickPreview()

@@ -216,7 +216,7 @@ static inline Vector3 _getPreNormal(TextureLayerDefinition* definition, Renderer
     dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z);
     ref.x = 0.0;
     ref.z = 1.0;
-    normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
+    normal = v3Normalize(v3Cross(ref, v3Sub(dpoint, point)));
 
     dpoint.x = point.x;
     dpoint.z = point.z + scale;
@@ -239,7 +239,7 @@ static inline Vector3 _getPreNormal(TextureLayerDefinition* definition, Renderer
         dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z);
         ref.x = 0.0;
         ref.z = -1.0;
-        normal = v3Normalize(v3Cross(ref, v3Sub(dpoint, point)));
+        normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
     }
 
     return v3Normalize(normal);

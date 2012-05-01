@@ -847,6 +847,7 @@ rapide (F5)</translation>
 Authors :
 Programming - Michael Lemaire
 
+Credits :
 Qt - http://qt.nokia.com/
 DevIL - http://openil.sourceforge.net/
 GLib - http://www.gtk.org/
