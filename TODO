@@ -11,10 +11,10 @@ Technology Preview 2 :
 - Improve curve editor.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - There should not have to be more preview threads than cpu cores.
-- Add preview threads pausing (for rendering).
-- Add preview chunks priority (for visible previews).
-- Interrupt preview chunk renderings that will be discarded at commit.
+- Pause previews drawing of main window when a dialog is opened.
+- Interrupt preview chunk renderings that will be discarded at commit, or that are no more visible.
 - Can't overwrite picture files (ILError).
+- Fix "RGB parameters out of range" on preview while moving render size fast in render tab.
 
 Technology Preview 3 :
 - Restore render progress.

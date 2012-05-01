@@ -40,6 +40,7 @@ private:
     void updateScaling();
     void updateChunks();
 
+    void showEvent(QShowEvent* event);
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent* event);
 

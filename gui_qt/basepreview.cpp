@@ -47,6 +47,11 @@ public:
         {
             _need_render = false;
             
+            if (!_preview->isVisible())
+            {
+                return false;
+            }
+            
             QImage pixbuf = _preview->startChunkTransaction(_xstart, _ystart, _xsize, _ysize, &revision);
 
             for (int x = 0; x < _xsize; x++)
@@ -108,7 +113,7 @@ void PreviewDrawingThread::run()
     while (_running)
     {
         _drawing_manager->performOneThreadJob();
-        QThread::usleep(50000);
+        QThread::usleep(5000);
     }
 }
 
@@ -124,7 +129,7 @@ PreviewDrawingManager::PreviewDrawingManager()
 
 void PreviewDrawingManager::startThreads()
 {
-    for (int i = 0; i < _thread_count * 3; i++)
+    for (int i = 0; i < _thread_count; i++)
     {
         PreviewDrawingThread* thread = new PreviewDrawingThread();
         _threads.append(thread);
@@ -361,6 +366,11 @@ void BasePreview::handleRedraw()
     updateChunks();
 
     lock_drawing->unlock();
+}
+
+void BasePreview::showEvent(QShowEvent* event)
+{
+    updateChunks();
 }
 
 void BasePreview::resizeEvent(QResizeEvent* event)
