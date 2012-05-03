@@ -331,9 +331,9 @@ QImage BasePreview::startChunkTransaction(int x, int y, int w, int h, int* revis
 
 void BasePreview::commitChunkTransaction(QImage* chunk, int x, int y, int w, int h, int revision)
 {
+    lock_drawing->lock();
     if (revision == _revision)
     {
-        lock_drawing->lock();
         for (int ix = 0; ix < w; ix++)
         {
             for (int iy = 0; iy < h; iy++)
@@ -341,9 +341,9 @@ void BasePreview::commitChunkTransaction(QImage* chunk, int x, int y, int w, int
                 pixbuf->setPixel(x + ix, y + iy, chunk->pixel(ix, iy));
             }
         }
-        lock_drawing->unlock();
         emit contentChange();
     }
+    lock_drawing->unlock();
 }
 
 QColor BasePreview::getPixelColor(int x, int y)
@@ -356,14 +356,7 @@ void BasePreview::handleRedraw()
     lock_drawing->lock();
 
     updateData();
-
-    QImage part = pixbuf->copy();
-    pixbuf->fill(0x00000000);
-    QPainter painter(pixbuf);
-    painter.setOpacity(0.99);
-    painter.drawImage(0, 0, part);
-    
-    updateChunks();
+    invalidatePixbuf(128);
 
     lock_drawing->unlock();
 }
@@ -424,6 +417,22 @@ void BasePreview::updateChunks()
 {
     _drawing_manager->updateChunks(this);
     _revision++;
+}
+
+void BasePreview::invalidatePixbuf(int value)
+{
+    for (int ix = 0; ix < _width; ix++)
+    {
+        for (int iy = 0; iy < _height; iy++)
+        {
+            QRgb col = pixbuf->pixel(ix, iy);
+            if (qAlpha(col) == 255)
+            {
+                pixbuf->setPixel(ix, iy, qRgba(qRed(col), qGreen(col), qBlue(col), value));
+            }
+        }
+    }
+    updateChunks();
 }
 
 void BasePreview::mousePressEvent(QMouseEvent* event)
@@ -590,9 +599,8 @@ void BasePreview::wheelEvent(QWheelEvent* event)
         QImage part = pixbuf->copy((width - new_width) / 2, (height - new_height) / 2, new_width, new_height).scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         QPainter painter(pixbuf);
         pixbuf->fill(0x00000000);
-        painter.setOpacity(0.99);
         painter.drawImage(0, 0, part);
-        updateChunks();
+        invalidatePixbuf(254);
         lock_drawing->unlock();
 
         emit contentChange();
@@ -603,9 +611,8 @@ void BasePreview::wheelEvent(QWheelEvent* event)
         QImage part = pixbuf->scaled((int) floor(((double) width) * old_scaling / scaling), (int) floor(((double) height) * old_scaling / scaling), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         QPainter painter(pixbuf);
         pixbuf->fill(0x00000000);
-        painter.setOpacity(0.99);
         painter.drawImage((width - part.width()) / 2, (height - part.height()) / 2, part);
-        updateChunks();
+        invalidatePixbuf(254);
         lock_drawing->unlock();
 
         emit contentChange();

@@ -10,11 +10,11 @@ Technology Preview 2 :
 - Add a noise filler (and maybe noise intervals ?).
 - Improve curve editor.
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
-- There should not have to be more preview threads than cpu cores.
 - Pause previews drawing of main window when a dialog is opened.
 - Interrupt preview chunk renderings that will be discarded at commit, or that are no more visible.
 - Can't overwrite picture files (ILError).
-- Fix "RGB parameters out of range" on preview while moving render size fast in render tab.
+- Fix "RGB parameters out of range" (and segfault) on preview while moving render params fast in render tab.
+- When there are two previews in the same view, balance rendering between the two.
 
 Technology Preview 3 :
 - Restore render progress.

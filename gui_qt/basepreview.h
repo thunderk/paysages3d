@@ -39,6 +39,7 @@ protected:
 private:
     void updateScaling();
     void updateChunks();
+    void invalidatePixbuf(int value);
 
     void showEvent(QShowEvent* event);
     void resizeEvent(QResizeEvent* event);
