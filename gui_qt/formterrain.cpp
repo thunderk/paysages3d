@@ -120,7 +120,7 @@ private:
 
     static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
     {
-        return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location, precision);
+        return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
     }
     
     static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)

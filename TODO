@@ -1,6 +1,9 @@
 Technology Preview 2 :
+- Interface for textures thickness and slope_range.
 - Render tab previews should not rerender when changing render options.
-- Compute shadows only once for all textures at a same location (need an intermediary light status).
+- Compute shadows only once for all textures at a same location.
+   => Add an intermediary light status (two pass lighting).
+- Don't change opacity when scrolling previews.
 - Add layer sorting/naming.
 - Save GUI config (views, render params).
 - Add an OSD ability on previews and use it for camera location and user landmarks.
@@ -9,21 +12,30 @@ Technology Preview 2 :
 - Add a terrain modifier dialog with zones.
 - Add a noise filler (and maybe noise intervals ?).
 - Improve curve editor.
+   => Add curve modes
+   => Improve curve rendering
+   => Add axis labels
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - Pause previews drawing of main window when a dialog is opened.
 - Interrupt preview chunk renderings that will be discarded at commit, or that are no more visible.
 - Can't overwrite picture files (ILError).
 - Fix "RGB parameters out of range" (and segfault) on preview while moving render params fast in render tab.
+   => May need to change the updateData system.
+   => Previews need to be paused while updating data.
 - When there are two previews in the same view, balance rendering between the two.
+- Lock some previews together (eg: terrain height and colored preview).
+- Find a new licence.
 
 Technology Preview 3 :
 - Restore render progress.
 - Add antialiasing option (pay attention to memory usage).
-- Add basic vegetation system (not sure).
+- Add basic vegetation system ?
+- Texture shadowing and self-shadowing ?
 - Improve sky rendering (colors and light halo).
 - Add a progress indicator on previews.
 - Multi threaded first pass.
 - Fix potential holes in land rendering.
+- Progressive final render.
 
 Release Candidate :
 - Polish all features and UI.

@@ -37,6 +37,8 @@ void texturesSave(PackStream* stream, TexturesDefinition* definition)
         packWriteDouble(stream, &definition->textures[i].bump_height);
         packWriteDouble(stream, &definition->textures[i].bump_scaling);
         materialSave(stream, &definition->textures[i].material);
+        packWriteDouble(stream, &definition->textures[i].thickness);
+        packWriteDouble(stream, &definition->textures[i].slope_range);
     }
 }
 
@@ -60,6 +62,8 @@ void texturesLoad(PackStream* stream, TexturesDefinition* definition)
         packReadDouble(stream, &layer->bump_height);
         packReadDouble(stream, &layer->bump_scaling);
         materialLoad(stream, &layer->material);
+        packReadDouble(stream, &definition->textures[i].thickness);
+        packReadDouble(stream, &definition->textures[i].slope_range);
     }
 
     texturesValidateDefinition(definition);
@@ -120,6 +124,8 @@ TextureLayerDefinition texturesLayerCreateDefinition()
     result.material.base = COLOR_WHITE;
     result.material.reflection = 0.0;
     result.material.shininess = 0.0;
+    result.thickness = 0.0;
+    result.slope_range = 0.001;
 
     return result;
 }
@@ -135,6 +141,8 @@ void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDef
     destination->material = source->material;
     destination->bump_height = source->bump_height;
     destination->bump_scaling = source->bump_scaling;
+    destination->thickness = source->thickness;
+    destination->slope_range = source->slope_range;
     noiseCopy(source->bump_noise, destination->bump_noise);
     zoneCopy(source->zone, destination->zone);
 }
@@ -144,6 +152,10 @@ void texturesLayerValidateDefinition(TextureLayerDefinition* definition)
     if (definition->bump_scaling < 0.000001)
     {
         definition->bump_scaling = 0.000001;
+    }
+    if (definition->slope_range < 0.001)
+    {
+        definition->slope_range = 0.001;
     }
 }
 
@@ -191,128 +203,181 @@ void texturesDeleteLayer(TexturesDefinition* definition, int layer)
     }
 }
 
-static inline Vector3 _getPoint(TextureLayerDefinition* definition, Renderer* renderer, double x, double z, Vector3 prenormal, double scale)
-{
-    Vector3 point;
-    
-    point.x = x;
-    point.z = z;
-    point.y = renderer->getTerrainHeight(renderer, point.x, point.z);
-    
-    return v3Add(point, v3Scale(prenormal, noiseGet2DTotal(definition->bump_noise, point.x / definition->bump_scaling, point.z / definition->bump_scaling) * definition->bump_height));
-}
-
-static inline Vector3 _getPreNormal(TextureLayerDefinition* definition, Renderer* renderer, Vector3 point, double scale)
-{
-    Vector3 dpoint, ref, normal;
-    
-    /* TODO This method is better suited in terrain.c */
-
-    ref.y = 0.0;
-    point.y = renderer->getTerrainHeight(renderer, point.x, point.z);
-
-    dpoint.x = point.x + scale;
-    dpoint.z = point.z;
-    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z);
-    ref.x = 0.0;
-    ref.z = 1.0;
-    normal = v3Normalize(v3Cross(ref, v3Sub(dpoint, point)));
-
-    dpoint.x = point.x;
-    dpoint.z = point.z + scale;
-    dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z);
-    ref.x = -1.0;
-    ref.z = 0.0;
-    normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
-
-    if (renderer->render_quality > 5)
-    {
-        dpoint.x = point.x;
-        dpoint.z = point.z - scale;
-        dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z);
-        ref.x = 1.0;
-        ref.z = 0.0;
-        normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
-
-        dpoint.x = point.x - scale;
-        dpoint.z = point.z;
-        dpoint.y = renderer->getTerrainHeight(renderer, dpoint.x, dpoint.z);
-        ref.x = 0.0;
-        ref.z = -1.0;
-        normal = v3Add(normal, v3Normalize(v3Cross(ref, v3Sub(dpoint, point))));
-    }
-
-    return v3Normalize(normal);
-}
-
-static inline Vector3 _getPostNormal(TextureLayerDefinition* definition, Renderer* renderer, Vector3 point, Vector3 prenormal, double scale)
-{
-    Vector3 p0, d1, d2, d3, d4, normal;
-    
-    p0 = _getPoint(definition, renderer, point.x, point.z, prenormal, scale);
-    
-    d1 = v3Normalize(v3Sub(_getPoint(definition, renderer, point.x + scale, point.z, prenormal, scale), p0));
-    d3 = v3Normalize(v3Sub(_getPoint(definition, renderer, point.x, point.z + scale, prenormal, scale), p0));
-    if (renderer->render_quality > 5)
-    {
-        d2 = v3Normalize(v3Sub(_getPoint(definition, renderer, point.x - scale, point.z, prenormal, scale), p0));
-        d4 = v3Normalize(v3Sub(_getPoint(definition, renderer, point.x, point.z - scale, prenormal, scale), p0));
-    }
-    
-    normal = v3Cross(d3, d1);
-    if (renderer->render_quality > 5)
-    {
-        normal = v3Add(normal, v3Cross(d1, d4));
-        normal = v3Add(normal, v3Cross(d4, d2));
-        normal = v3Add(normal, v3Cross(d2, d3));
-    }
-
-    return v3Normalize(normal);
-}
-
-double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
-{
-    Vector3 normal;
-
-    normal = _getPreNormal(definition, renderer, location, detail * 0.1);
-
-    return zoneGetValue(definition->zone, location, normal);
-}
-
 Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
 {
     Color result;
     Vector3 normal;
-    double coverage;
+    double coverage, noise;
 
     result = COLOR_TRANSPARENT;
-    normal = _getPreNormal(definition, renderer, location, detail * 0.1);
+    /*normal = _getPreNormal(definition, renderer, location, detail * 0.1);
 
     coverage = zoneGetValue(definition->zone, location, normal);
     if (coverage > 0.0)
     {
-        normal = _getPostNormal(definition, renderer, location, normal, detail * 0.1);
-        result = renderer->applyLightingToSurface(renderer, location, normal, definition->material);
-        result.a = coverage;
-    }
+        if (coverage < 1.0)
+        {
+            noise = noiseGet2DTotal(definition->border_noise, location.x * 1000.0, location.z * 1000.0);
+            coverage = -1.0 + 2.0 * coverage + noise * (1.0 - coverage);
+        }
+        if (coverage > 0.0)
+        {
+            normal = _getPostNormal(definition, renderer, location, normal, detail * 0.1);
+            result = renderer->applyLightingToSurface(renderer, location, normal, definition->material);
+            result.a = coverage < 0.1 ? coverage / 0.1 : 1.0;
+        }
+    }*/
     return result;
 }
 
-Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, Vector3 location, double detail)
+
+
+static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, Vector3 south, Vector3 west)
 {
-    Color result, tex_color;
+    Vector3 dnorth, deast, dsouth, dwest, normal;
+    
+    dnorth = v3Sub(north, center);
+    deast = v3Sub(east, center);
+    dsouth = v3Sub(south, center);
+    dwest = v3Sub(west, center);
+    
+    normal = v3Cross(deast, dnorth);
+    normal = v3Add(normal, v3Cross(dsouth, deast));
+    normal = v3Add(normal, v3Cross(dwest, dsouth));
+    normal = v3Add(normal, v3Cross(dnorth, dwest));
+    
+    return v3Normalize(normal);
+}
+
+static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south)
+{
+    return v3Normalize(v3Cross(v3Sub(south, center), v3Sub(east, center)));
+}
+
+static inline TextureResult _getTerrainResult(Renderer* renderer, double x, double z, double detail)
+{
+    TextureResult result;
+    Vector3 center, north, east, south, west;
+    
+    /* TODO This method is better suited in terrain.c */
+
+    center.x = x;
+    center.z = z;
+    center.y = renderer->getTerrainHeight(renderer, center.x, center.z);
+
+    east.x = x + detail;
+    east.z = z;
+    east.y = renderer->getTerrainHeight(renderer, east.x, east.z);
+
+    south.x = x;
+    south.z = z + detail;
+    south.y = renderer->getTerrainHeight(renderer, south.x, south.z);
+
+    if (renderer->render_quality > 5)
+    {
+        west.x = x - detail;
+        west.z = z;
+        west.y = renderer->getTerrainHeight(renderer, west.x, west.z);
+
+        north.x = x;
+        north.z = z - detail;
+        north.y = renderer->getTerrainHeight(renderer, north.x, north.z);
+
+        result.normal = _getNormal4(center, north, east, south, west);
+    }
+    else
+    {
+        result.normal = _getNormal2(center, east, south);
+    }
+
+    result.location = center;
+    result.color = COLOR_GREEN;
+    result.thickness = -100.0;
+    
+    return result;
+}
+
+static inline void _getLayerThickness(TextureLayerDefinition* definition, Renderer* renderer, double x, double z, TextureResult* result)
+{
+    TextureResult base;
+    double coverage;
+
+    base = _getTerrainResult(renderer, x, z, definition->slope_range);
+    coverage = zoneGetValue(definition->zone, base.location, base.normal);
+    if (coverage > 0.0)
+    {
+        result->thickness = coverage * definition->thickness;
+        result->thickness += noiseGet2DTotal(definition->bump_noise, base.location.x / definition->bump_scaling, base.location.z / definition->bump_scaling) * definition->bump_height;
+
+        result->location = v3Add(base.location, v3Scale(base.normal, result->thickness));
+    }
+    else
+    {
+        result->thickness = -1000.0;
+        result->location = base.location;
+    }
+}
+
+static inline TextureResult _getLayerResult(TextureLayerDefinition* definition, Renderer* renderer, double x, double z, double detail)
+{
+    TextureResult result_center, result_north, result_east, result_south, result_west;
+    
+    _getLayerThickness(definition, renderer, x, z, &result_center);
+    _getLayerThickness(definition, renderer, x + detail, z, &result_east);
+    _getLayerThickness(definition, renderer, x, z + detail, &result_south);
+    
+    if (renderer->render_quality > 5)
+    {
+        _getLayerThickness(definition, renderer, x - detail, z, &result_west);
+        _getLayerThickness(definition, renderer, x, z - detail, &result_north);
+        
+        result_center.normal = _getNormal4(result_center.location, result_north.location, result_east.location, result_south.location, result_west.location);
+    }
+    else
+    {
+        result_center.normal = _getNormal2(result_center.location, result_east.location, result_south.location);
+    }
+    
+    result_center.color = renderer->applyLightingToSurface(renderer, result_center.location, result_center.normal, definition->material);
+    
+    return result_center;
+}
+
+static int _cmpResults(const void* result1, const void* result2)
+{
+    return ((TextureResult*)result1)->thickness > ((TextureResult*)result2)->thickness;
+}
+
+double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
+{
+    TextureResult base = _getTerrainResult(renderer, location.x, location.z, definition->slope_range);
+    return zoneGetValue(definition->zone, base.location, base.normal);
+}
+
+Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, double x, double z, double detail)
+{
+    TextureResult results[TEXTURES_MAX_LAYERS + 1];
+    Color result;
     int i;
 
-    result = COLOR_GREEN;
+    /* TODO Do not compute layers fully covered */
+    /* TODO Optimize : each layer computes the same shadows */
+    
+    detail *= 0.1;
+    
+    results[0] = _getTerrainResult(renderer, x, z, detail);
+
     for (i = 0; i < definition->nbtextures; i++)
     {
-        /* TODO Do not compute layers fully covered */
-        /* TODO Optimize : each layer computes the same shadows */
-        tex_color = texturesGetLayerColor(definition->textures + i, renderer, location, detail);
-        if (tex_color.a > 0.0001)
-        {
-            colorMask(&result, &tex_color);
-        }
+        results[i + 1] = _getLayerResult(definition->textures + i, renderer, x, z, detail);
+    }
+    
+    qsort(results, definition->nbtextures + 1, sizeof(TextureResult), _cmpResults);
+
+    result = results[0].color;
+    for (i = 0; i < definition->nbtextures; i++)
+    {
+        colorMask(&result, &results[i + 1].color);
     }
 
     return result;

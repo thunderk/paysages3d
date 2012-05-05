@@ -285,7 +285,7 @@ static HeightInfo _getWaterHeightInfo(Renderer* renderer)
 
 static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
 {
-    return texturesGetColor(&_textures, renderer, location, precision);
+    return texturesGetColor(&_textures, renderer, location.x, location.z, precision);
 }
 
 static Color _applyAtmosphere(Renderer* renderer, Vector3 location, Color base)

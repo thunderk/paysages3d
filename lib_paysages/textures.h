@@ -20,6 +20,8 @@ typedef struct
     double bump_scaling;
     double bump_height;
     SurfaceMaterial material;
+    double thickness;
+    double slope_range;
 } TextureLayerDefinition;
 
 typedef struct
@@ -27,6 +29,14 @@ typedef struct
     int nbtextures;
     TextureLayerDefinition textures[TEXTURES_MAX_LAYERS];
 } TexturesDefinition;
+
+typedef struct
+{
+    Vector3 location;
+    Vector3 normal;
+    double thickness;
+    Color color;
+} TextureResult;
 
 void texturesInit();
 void texturesQuit();
@@ -50,7 +60,7 @@ void texturesDeleteLayer(TexturesDefinition* definition, int layer);
 
 double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);
 Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);
-Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, Vector3 location, double detail);
+Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, double x, double z, double detail);
 
 #ifdef __cplusplus
 }
