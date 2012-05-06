@@ -22,6 +22,7 @@ typedef struct
     SurfaceMaterial material;
     double thickness;
     double slope_range;
+    double thickness_transparency;
 } TextureLayerDefinition;
 
 typedef struct
@@ -29,14 +30,6 @@ typedef struct
     int nbtextures;
     TextureLayerDefinition textures[TEXTURES_MAX_LAYERS];
 } TexturesDefinition;
-
-typedef struct
-{
-    Vector3 location;
-    Vector3 normal;
-    double thickness;
-    Color color;
-} TextureResult;
 
 void texturesInit();
 void texturesQuit();

@@ -15,6 +15,15 @@
 
 static TextureLayerDefinition _NULL_LAYER;
 
+typedef struct
+{
+    Vector3 location;
+    Vector3 normal;
+    double thickness;
+    Color color;
+    double thickness_transparency;
+} TextureResult;
+
 void texturesInit()
 {
     _NULL_LAYER = texturesLayerCreateDefinition();
@@ -39,6 +48,7 @@ void texturesSave(PackStream* stream, TexturesDefinition* definition)
         materialSave(stream, &definition->textures[i].material);
         packWriteDouble(stream, &definition->textures[i].thickness);
         packWriteDouble(stream, &definition->textures[i].slope_range);
+        packWriteDouble(stream, &definition->textures[i].thickness_transparency);
     }
 }
 
@@ -64,6 +74,7 @@ void texturesLoad(PackStream* stream, TexturesDefinition* definition)
         materialLoad(stream, &layer->material);
         packReadDouble(stream, &definition->textures[i].thickness);
         packReadDouble(stream, &definition->textures[i].slope_range);
+        packReadDouble(stream, &definition->textures[i].thickness_transparency);
     }
 
     texturesValidateDefinition(definition);
@@ -126,6 +137,7 @@ TextureLayerDefinition texturesLayerCreateDefinition()
     result.material.shininess = 0.0;
     result.thickness = 0.0;
     result.slope_range = 0.001;
+    result.thickness_transparency = 0.0;
 
     return result;
 }
@@ -143,6 +155,7 @@ void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDef
     destination->bump_scaling = source->bump_scaling;
     destination->thickness = source->thickness;
     destination->slope_range = source->slope_range;
+    destination->thickness_transparency = source->thickness_transparency;
     noiseCopy(source->bump_noise, destination->bump_noise);
     zoneCopy(source->zone, destination->zone);
 }
@@ -293,6 +306,7 @@ static inline TextureResult _getTerrainResult(Renderer* renderer, double x, doub
     result.location = center;
     result.color = COLOR_GREEN;
     result.thickness = -100.0;
+    result.thickness_transparency = 0.0;
     
     return result;
 }
@@ -339,6 +353,7 @@ static inline TextureResult _getLayerResult(TextureLayerDefinition* definition, 
     }
     
     result_center.color = renderer->applyLightingToSurface(renderer, result_center.location, result_center.normal, definition->material);
+    result_center.thickness_transparency = definition->thickness_transparency;
     
     return result_center;
 }
@@ -358,6 +373,7 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
 {
     TextureResult results[TEXTURES_MAX_LAYERS + 1];
     Color result;
+    double thickness, last_height;
     int i;
 
     /* TODO Do not compute layers fully covered */
@@ -375,9 +391,18 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
     qsort(results, definition->nbtextures + 1, sizeof(TextureResult), _cmpResults);
 
     result = results[0].color;
-    for (i = 0; i < definition->nbtextures; i++)
+    last_height = results[0].thickness;
+    for (i = 1; i <= definition->nbtextures; i++)
     {
-        colorMask(&result, &results[i + 1].color);
+        thickness = results[i].thickness - last_height;
+        last_height = results[i].thickness;
+        
+        if (thickness < results[i].thickness_transparency)
+        {
+            results[i].color.a = thickness / results[i].thickness_transparency;
+        }
+        
+        colorMask(&result, &results[i].color);
     }
 
     return result;

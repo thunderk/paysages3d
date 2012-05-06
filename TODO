@@ -1,5 +1,6 @@
 Technology Preview 2 :
-- Interface for textures thickness and slope_range.
+- Replace zone ranges with curves.
+- Interface for textures thickness, slope_range and thickness_transparency.
 - Render tab previews should not rerender when changing render options.
 - Compute shadows only once for all textures at a same location.
    => Add an intermediary light status (two pass lighting).
@@ -36,6 +37,7 @@ Technology Preview 3 :
 - Multi threaded first pass.
 - Fix potential holes in land rendering.
 - Progressive final render.
+- If we can't remove clouds artifacts, blur them.
 
 Release Candidate :
 - Polish all features and UI.
