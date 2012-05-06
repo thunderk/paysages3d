@@ -149,17 +149,46 @@ void lightingDeleteLight(LightingDefinition* definition, int light)
     }
 }
 
-static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+static int _getLightStatus(LightDefinition* definition, Renderer* renderer, Vector3 location, LightDefinition* result)
+{
+    Color light;
+    Vector3 direction_inv;
+    
+    light = definition->color;
+    direction_inv = v3Scale(definition->direction, -1.0);
+    if (definition->masked)
+    {
+        light = renderer->maskLight(renderer, light, location, v3Add(location, v3Scale(direction_inv, 1000.0)), direction_inv);
+    }
+    if (definition->filtered)
+    {
+        light = renderer->filterLight(renderer, light, location, v3Add(location, v3Scale(direction_inv, 1000.0)), direction_inv);
+    }
+    
+    if (light.r > 0.0 || light.g > 0.0 || light.b > 0.0)
+    {
+        *result = *definition;
+        result->color = light;
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+static Color _applyDirectLight(LightDefinition* definition, Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
 {
     Color result, light;
     double diffuse, specular, normal_norm;
     Vector3 view, reflect, direction_inv;
 
     light = definition->color;
+    direction_inv = v3Scale(definition->direction, -1.0);
 
     if (definition->amplitude > 0.0)
     {
-        // TODO Sampling around light direction
+        /* TODO Sampling around light direction */
         int xsamples, ysamples, samples, x, y;
         double xstep, ystep, factor;
         LightDefinition sublight;
@@ -178,7 +207,7 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
         sublight.color.g *= factor;
         sublight.color.b *= factor;
 
-        result = _applyLightCustom(&sublight, renderer, location, normal, material);
+        result = _applyDirectLight(&sublight, renderer, location, normal, material);
         for (x = 0; x < xsamples; x++)
         {
             for (y = 0; y < ysamples; y++)
@@ -186,7 +215,7 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
                 sublight.direction.x = cos(x * xstep) * cos(y * ystep);
                 sublight.direction.y = -sin(y * ystep);
                 sublight.direction.z = sin(x * xstep) * cos(y * ystep);
-                light = _applyLightCustom(&sublight, renderer, location, normal, material);
+                light = _applyDirectLight(&sublight, renderer, location, normal, material);
                 result.r += light.r;
                 result.g += light.g;
                 result.b += light.b;
@@ -195,16 +224,6 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
         return result;
     }
     
-    direction_inv = v3Scale(definition->direction, -1.0);
-    if (definition->masked)
-    {
-        light = renderer->maskLight(renderer, light, location, v3Add(location, v3Scale(direction_inv, 1000.0)), direction_inv);
-    }
-    if (definition->filtered)
-    {
-        light = renderer->filterLight(renderer, light, location, v3Add(location, v3Scale(direction_inv, 1000.0)), direction_inv);
-    }
-
     normal_norm = v3Norm(normal);
     if (normal_norm > 1.0)
     {
@@ -213,7 +232,7 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
     normal = v3Normalize(normal);
 
     diffuse = v3Dot(direction_inv, normal);
-    //diffuse = pow(diffuse * 0.5 + 0.5, 2.0);
+    /*diffuse = pow(diffuse * 0.5 + 0.5, 2.0);*/
     diffuse = diffuse * 0.5 + 0.5;
     if (diffuse > 0.0)
     {
@@ -255,28 +274,51 @@ static Color _applyLightCustom(LightDefinition* definition, Renderer* renderer, 
     return result;
 }
 
-Color lightingApplyToSurface(LightingDefinition* definition, Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+void lightingGetStatus(LightingDefinition* definition, Renderer* renderer, Vector3 location, LightStatus* result)
+{
+    int i;
+    
+    result->nblights = 0;
+    
+    for (i = 0; i < definition->nblights; i++)
+    {
+        if (_getLightStatus(definition->lights + i, renderer, location, result->lights + result->nblights))
+        {
+            result->nblights++;
+        }
+    }
+    for (i = 0; i < definition->_nbautolights; i++)
+    {
+        if (_getLightStatus(definition->_autolights + i, renderer, location, result->lights + result->nblights))
+        {
+            result->nblights++;
+        }
+    }
+}
+
+Color lightingApplyStatusToSurface(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material)
 {
     Color result, lighted;
     int i;
 
     result = COLOR_BLACK;
     result.a = material.base.a;
-
-    for (i = 0; i < definition->nblights; i++)
+    
+    for (i = 0; i < status->nblights; i++)
     {
-        lighted = _applyLightCustom(definition->lights + i, renderer, location, normal, material);
+        lighted = _applyDirectLight(status->lights + i, renderer, location, normal, material);
         result.r += lighted.r;
         result.g += lighted.g;
         result.b += lighted.b;
     }
-    for (i = 0; i < definition->_nbautolights; i++)
-    {
-        lighted = _applyLightCustom(definition->_autolights + i, renderer, location, normal, material);
-        result.r += lighted.r;
-        result.g += lighted.g;
-        result.b += lighted.b;
-    }
-
+    
     return result;
+}
+
+Color lightingApplyToSurface(LightingDefinition* definition, Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+{
+    LightStatus status;
+    
+    lightingGetStatus(definition, renderer, location, &status);
+    return lightingApplyStatusToSurface(renderer, &status, location, normal, material);
 }

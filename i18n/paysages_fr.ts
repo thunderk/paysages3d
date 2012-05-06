@@ -408,6 +408,11 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation>Images (*.png *.jpg)</translation>
     </message>
     <message>
+        <location filename="../gui_qt/formrender.cpp" line="210"/>
+        <source>Can&apos;t write to file : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Images (*.png, *.jpg)</source>
         <translation type="obsolete">Images (*.png *.jpg)</translation>
     </message>
@@ -416,7 +421,7 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Choisissez un nom de fichier pour le rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="205"/>
+        <location filename="../gui_qt/formrender.cpp" line="206"/>
         <source>The picture %1 has been saved.</source>
         <translation>L&apos;image %1 a été sauvegardée.</translation>
     </message>

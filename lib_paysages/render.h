@@ -25,7 +25,7 @@ void renderPushFragment(RenderArea* area, int x, int y, double z, Vertex* vertex
 void renderPushTriangle(RenderArea* area, Vertex* v1, Vertex* v2, Vertex* v3, Vector3 p1, Vector3 p2, Vector3 p3);
 
 void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks);
-void renderSaveToFile(RenderArea* area, const char* path);
+int renderSaveToFile(RenderArea* area, const char* path);
 void renderSetPreviewCallbacks(RenderArea* area, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update);
 
 

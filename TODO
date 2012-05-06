@@ -1,10 +1,9 @@
 Technology Preview 2 :
-- Replace zone ranges with curves.
-- Interface for textures thickness, slope_range and thickness_transparency.
+- Replace zone ranges with curves (with curve input and curve dialog).
+- Interface for textures thickness, slope_range and thickness_transparency (and correct slider ranges).
 - Render tab previews should not rerender when changing render options.
 - Compute shadows only once for all textures at a same location.
    => Add an intermediary light status (two pass lighting).
-- Don't change opacity when scrolling previews.
 - Add layer sorting/naming.
 - Save GUI config (views, render params).
 - Add an OSD ability on previews and use it for camera location and user landmarks.
@@ -12,6 +11,7 @@ Technology Preview 2 :
 - Add a zone editor dialog for localized textures.
 - Add a terrain modifier dialog with zones.
 - Add a noise filler (and maybe noise intervals ?).
+- Fix the sun appearance.
 - Improve curve editor.
    => Add curve modes
    => Improve curve rendering
@@ -19,7 +19,6 @@ Technology Preview 2 :
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - Pause previews drawing of main window when a dialog is opened.
 - Interrupt preview chunk renderings that will be discarded at commit, or that are no more visible.
-- Can't overwrite picture files (ILError).
 - Fix "RGB parameters out of range" (and segfault) on preview while moving render params fast in render tab.
    => May need to change the updateData system.
    => Previews need to be paused while updating data.

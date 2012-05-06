@@ -519,8 +519,8 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
                 }
 
                 QImage part = pixbuf->copy(xstart, ystart, xsize, ysize);
-                QPainter painter(pixbuf);
                 pixbuf->fill(0x00000000);
+                QPainter painter(pixbuf);
                 painter.drawImage(xstart + ndx, ystart + ndy, part);
 
                 updateChunks();
@@ -597,8 +597,8 @@ void BasePreview::wheelEvent(QWheelEvent* event)
         new_width = (int) floor(((double) width) * scaling / old_scaling);
         new_height = (int) floor(((double) height) * scaling / old_scaling);
         QImage part = pixbuf->copy((width - new_width) / 2, (height - new_height) / 2, new_width, new_height).scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        QPainter painter(pixbuf);
         pixbuf->fill(0x00000000);
+        QPainter painter(pixbuf);
         painter.drawImage(0, 0, part);
         invalidatePixbuf(254);
         lock_drawing->unlock();
@@ -609,8 +609,8 @@ void BasePreview::wheelEvent(QWheelEvent* event)
     {
         lock_drawing->lock();
         QImage part = pixbuf->scaled((int) floor(((double) width) * old_scaling / scaling), (int) floor(((double) height) * old_scaling / scaling), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        QPainter painter(pixbuf);
         pixbuf->fill(0x00000000);
+        QPainter painter(pixbuf);
         painter.drawImage((width - part.width()) / 2, (height - part.height()) / 2, part);
         invalidatePixbuf(254);
         lock_drawing->unlock();

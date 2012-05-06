@@ -30,6 +30,12 @@ typedef struct
     LightDefinition _autolights[LIGHTING_MAX_LIGHTS];
 } LightingDefinition;
 
+typedef struct
+{
+    int nblights;
+    LightDefinition lights[LIGHTING_MAX_LIGHTS * 2];
+} LightStatus;
+
 void lightingInit();
 void lightingQuit();
 void lightingSave(PackStream* stream, LightingDefinition* definition);
@@ -45,6 +51,8 @@ LightDefinition lightingGetLight(LightingDefinition* definition, int light);
 int lightingAddLight(LightingDefinition* definition, LightDefinition light);
 void lightingDeleteLight(LightingDefinition* definition, int light);
 
+void lightingGetStatus(LightingDefinition* definition, Renderer* renderer, Vector3 location, LightStatus* result);
+Color lightingApplyStatusToSurface(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material);
 Color lightingApplyToSurface(LightingDefinition* definition, Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material);
 
 #ifdef __cplusplus

@@ -216,35 +216,6 @@ void texturesDeleteLayer(TexturesDefinition* definition, int layer)
     }
 }
 
-Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
-{
-    Color result;
-    Vector3 normal;
-    double coverage, noise;
-
-    result = COLOR_TRANSPARENT;
-    /*normal = _getPreNormal(definition, renderer, location, detail * 0.1);
-
-    coverage = zoneGetValue(definition->zone, location, normal);
-    if (coverage > 0.0)
-    {
-        if (coverage < 1.0)
-        {
-            noise = noiseGet2DTotal(definition->border_noise, location.x * 1000.0, location.z * 1000.0);
-            coverage = -1.0 + 2.0 * coverage + noise * (1.0 - coverage);
-        }
-        if (coverage > 0.0)
-        {
-            normal = _getPostNormal(definition, renderer, location, normal, detail * 0.1);
-            result = renderer->applyLightingToSurface(renderer, location, normal, definition->material);
-            result.a = coverage < 0.1 ? coverage / 0.1 : 1.0;
-        }
-    }*/
-    return result;
-}
-
-
-
 static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, Vector3 south, Vector3 west)
 {
     Vector3 dnorth, deast, dsouth, dwest, normal;
@@ -367,6 +338,11 @@ double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* re
 {
     TextureResult base = _getTerrainResult(renderer, location.x, location.z, definition->slope_range);
     return zoneGetValue(definition->zone, base.location, base.normal);
+}
+
+Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
+{
+    return _getLayerResult(definition, renderer, location.x, location.z, detail).color;
 }
 
 Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, double x, double z, double detail)

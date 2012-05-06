@@ -1,6 +1,7 @@
 #include "render.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 #include "IL/il.h"
 #include "IL/ilu.h"
@@ -745,7 +746,7 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
     _processDirtyPixels(area);
 }
 
-void renderSaveToFile(RenderArea* area, const char* path)
+int renderSaveToFile(RenderArea* area, const char* path)
 {
     ILuint image_id;
     ilGenImages(1, &image_id);
@@ -756,6 +757,7 @@ void renderSaveToFile(RenderArea* area, const char* path)
     ILuint data[area->height * area->width];
     ILenum error;
     Array* pixel_data;
+    int error_count;
 
     for (y = 0; y < area->height; y++)
     {
@@ -769,14 +771,18 @@ void renderSaveToFile(RenderArea* area, const char* path)
     }
 
     ilTexImage((ILuint)area->width, (ILuint)area->height, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, data);
+    remove(path);
     ilSaveImage(path);
 
     ilDeleteImages(1, &image_id);
 
+    error_count = 0;
     while ((error=ilGetError()) != IL_NO_ERROR)
     {
         fprintf(stderr, "IL ERROR : %s\n", iluErrorString(error));
+        error_count++;
     }
+    return !error_count;
 }
 
 void renderSetPreviewCallbacks(RenderArea* area, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update)

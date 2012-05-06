@@ -201,8 +201,14 @@ void FormRender::saveRender()
             {
                 filepath = filepath.append(".png");
             }
-            renderSaveToFile(_renderer.render_area, (char*)filepath.toStdString().c_str());
-            QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
+            if (renderSaveToFile(_renderer.render_area, (char*)filepath.toStdString().c_str()))
+            {
+                QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
+            }
+            else
+            {
+                QMessageBox::critical(this, "Message", QString(tr("Can't write to file : %1")).arg(filepath));
+            }
         }
     }
 }
