@@ -17,11 +17,10 @@ static TextureLayerDefinition _NULL_LAYER;
 
 typedef struct
 {
+    double thickness;
     Vector3 location;
     Vector3 normal;
-    double thickness;
-    Color color;
-    double thickness_transparency;
+    TextureLayerDefinition* definition;
 } TextureResult;
 
 void texturesInit()
@@ -275,9 +274,8 @@ static inline TextureResult _getTerrainResult(Renderer* renderer, double x, doub
     }
 
     result.location = center;
-    result.color = COLOR_GREEN;
     result.thickness = -100.0;
-    result.thickness_transparency = 0.0;
+    result.definition = NULL;
     
     return result;
 }
@@ -323,8 +321,7 @@ static inline TextureResult _getLayerResult(TextureLayerDefinition* definition, 
         result_center.normal = _getNormal2(result_center.location, result_east.location, result_south.location);
     }
     
-    result_center.color = renderer->applyLightingToSurface(renderer, result_center.location, result_center.normal, definition->material);
-    result_center.thickness_transparency = definition->thickness_transparency;
+    result_center.definition = definition;
     
     return result_center;
 }
@@ -340,19 +337,23 @@ double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* re
     return zoneGetValue(definition->zone, base.location, base.normal);
 }
 
+static inline Color _getLayerColor(Renderer* renderer, TextureResult result)
+{
+    return renderer->applyLightingToSurface(renderer, result.location, result.normal, result.definition->material);
+}
+
 Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
 {
-    return _getLayerResult(definition, renderer, location.x, location.z, detail).color;
+    return _getLayerColor(renderer, _getLayerResult(definition, renderer, location.x, location.z, detail));
 }
 
 Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, double x, double z, double detail)
 {
     TextureResult results[TEXTURES_MAX_LAYERS + 1];
-    Color result;
+    Color result, color;
     double thickness, last_height;
-    int i;
+    int i, start;
 
-    /* TODO Do not compute layers fully covered */
     /* TODO Optimize : each layer computes the same shadows */
     
     detail *= 0.1;
@@ -366,20 +367,65 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
     
     qsort(results, definition->nbtextures + 1, sizeof(TextureResult), _cmpResults);
 
-    result = results[0].color;
+    /* Pre compute alpha channel */
+    start = 0;
     last_height = results[0].thickness;
     for (i = 1; i <= definition->nbtextures; i++)
     {
         thickness = results[i].thickness - last_height;
         last_height = results[i].thickness;
         
-        if (thickness < results[i].thickness_transparency)
+        if (results[i].definition)
         {
-            results[i].color.a = thickness / results[i].thickness_transparency;
+            if (thickness < results[i].definition->thickness_transparency)
+            {
+                results[i].thickness = thickness / results[i].definition->thickness_transparency;
+            }
+            else
+            {
+                results[i].thickness = (thickness > 0.0) ? 1.0 : 0.0;
+            }
+        }
+        else
+        {
+            color = COLOR_GREEN;
+            results[i].thickness = 1.0;
         }
         
-        colorMask(&result, &results[i].color);
+        if (results[i].thickness >= 0.999999)
+        {
+            start = i;
+        }
+        
+        colorMask(&result, &color);
     }
 
+    /* Apply colors and alphas */
+    if (results[start].definition)
+    {
+        result = _getLayerColor(renderer, results[start]);
+    }
+    else
+    {
+        result = COLOR_GREEN;
+    }
+    for (i = start; i <= definition->nbtextures; i++)
+    {
+        if (results[i].thickness)
+        {
+            if (results[i].definition)
+            {
+                color = _getLayerColor(renderer, results[i]);
+                color.a = results[i].thickness;
+            }
+            else
+            {
+                color = COLOR_GREEN;
+            }
+
+            colorMask(&result, &color);
+        }
+    }
+    
     return result;
 }

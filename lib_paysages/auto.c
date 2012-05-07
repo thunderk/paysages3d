@@ -178,7 +178,7 @@ void autoGenRealisticLandscape(int seed)
     texture->thickness = 0.02;
     texture->slope_range = 0.03;
     texture->thickness_transparency = 0.005;
-    texture = texturesGetLayer(&textures, texturesAddLayer(&textures));
+    /*texture = texturesGetLayer(&textures, texturesAddLayer(&textures));
     zoneAddHeightRangeQuick(texture->zone, 1.0, 4.0, 5.0, 100.0, 100.0);
     zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 0.2, 1.0);
     noiseGenerateBaseNoise(texture->bump_noise, 102400);
@@ -192,7 +192,7 @@ void autoGenRealisticLandscape(int seed)
     texture->material.shininess = 0.6;
     texture->thickness = 0.05;
     texture->slope_range = 0.3;
-    texture->thickness_transparency = 0.015;
+    texture->thickness_transparency = 0.015;*/
     scenerySetTextures(&textures);
     texturesDeleteDefinition(&textures);
 

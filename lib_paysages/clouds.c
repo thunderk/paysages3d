@@ -154,20 +154,20 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
 {
     CloudsLayerDefinition result;
 
-    result.ymin = 10.0;
-    result.ycenter = 40.0;
-    result.ymax = 100.0;
+    result.ymin = 4.0;
+    result.ycenter = 6.0;
+    result.ymax = 10.0;
     result.material.base.r = 0.7;
     result.material.base.g = 0.7;
     result.material.base.b = 0.7;
-    result.material.reflection = 0.1;
-    result.material.shininess = 2.0;
-    result.hardness = 0.1;
-    result.transparencydepth = 20.0;
-    result.lighttraversal = 50.0;
-    result.minimumlight = 0.5;
-    result.scaling = 50.0;
-    result.coverage = 0.5;
+    result.material.reflection = 0.3;
+    result.material.shininess = 0.8;
+    result.hardness = 0.15;
+    result.transparencydepth = 1.5;
+    result.lighttraversal = 3.0;
+    result.minimumlight = 0.4;
+    result.scaling = 3.5;
+    result.coverage = 0.45;
     result.noise = noiseCreateGenerator();
     noiseGenerateBaseNoise(result.noise, 262144);
     noiseAddLevelSimple(result.noise, 1.0, 1.0);
@@ -408,7 +408,16 @@ static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, 
         return 0;
     }
 
-    render_precision = 3.3 - 0.3 * (double)renderer->render_quality;
+    render_precision = 15.2 - 1.5 * (double)renderer->render_quality;
+    render_precision = render_precision * definition->scaling / 50.0;
+    if (render_precision > max_total_length / 10.0)
+    {
+        render_precision = max_total_length / 10.0;
+    }
+    else if (render_precision < max_total_length / 2000.0)
+    {
+        render_precision = max_total_length / 2000.0;
+    }
 
     segment_count = 0;
     current_total_length = 0.0;
