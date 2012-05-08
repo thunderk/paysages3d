@@ -70,7 +70,7 @@ WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
     {
         for (int j = 0; j < chunks; j++)
         {
-            WandererChunk* chunk = new WandererChunk(start + chunksize * (double)i, start + chunksize * (double)j, chunksize);
+            WandererChunk* chunk = new WandererChunk(&_renderer, start + chunksize * (double)i, start + chunksize * (double)j, chunksize);
             _chunks.append(chunk);
             _updateQueue.append(chunk);
         }
@@ -131,6 +131,11 @@ void WidgetWanderer::stopThreads()
     }
 }
 
+bool _cmpChunks(const WandererChunk* c1, const WandererChunk* c2)
+{
+    return c1->_ideal_priority > c2->_ideal_priority;
+}
+
 void WidgetWanderer::performChunksMaintenance()
 {
     WandererChunk* chunk;
@@ -147,7 +152,7 @@ void WidgetWanderer::performChunksMaintenance()
         return;
     }
     
-    if (chunk->maintain(&_renderer))
+    if (chunk->maintain(_current_camera.location))
     {
         if (!_alive)
         {
@@ -159,6 +164,7 @@ void WidgetWanderer::performChunksMaintenance()
     
     _lock_chunks.lock();
     _updateQueue.append(chunk);
+    qSort(_updateQueue.begin(), _updateQueue.end(), _cmpChunks);
     _lock_chunks.unlock();
 }
 

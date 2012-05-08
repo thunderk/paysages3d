@@ -9,27 +9,36 @@
 class WandererChunk
 {
 public:
-    WandererChunk(double x, double z, double size);
+    WandererChunk(Renderer* renderer, double x, double z, double size);
     ~WandererChunk();
     
-    bool maintain(Renderer* renderer);
+    bool maintain(Vector3 camera_location);
     void render(QGLWidget* widget);
     
     Vector3 getCenter();
     
+    double _ideal_priority;
+    
 private:
-    QMutex _lock;
-    QMutex _lock_dirty;
+    QMutex _lock_data;
+    Renderer* _renderer;
+    
     double _startx;
     double _startz;
-    int _dirty;
-    double _chunksize;
-    double _subchunksize;
-    int _nbsubchunks;
+    double _size;
+    
+    int _ideal_tessellation;
+    
+    double* _tessellation;
+    int _tessellation_max_size;
+    int _tessellation_current_size;
+    double _tessellation_step;
+    
     QImage* _texture;
     GLuint _texture_id;
-    bool _need_texture_upload;
-    double* _heightmap;
+    bool _texture_changed;
+    int _texture_max_size;
+    int _texture_current_size;
 };
 
 #endif
