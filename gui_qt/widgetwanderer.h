@@ -2,15 +2,19 @@
 #define _PAYSAGES_QT_WIDGETWANDERER_H_
 
 #include <QGLWidget>
+#include "wandererchunk.h"
+#include "../lib_paysages/atmosphere.h"
 #include "../lib_paysages/camera.h"
 #include "../lib_paysages/terrain.h"
 #include "../lib_paysages/water.h"
+#include "../lib_paysages/renderer.h"
 
 class WidgetWanderer : public QGLWidget
 {
     Q_OBJECT
 public:
     WidgetWanderer(QWidget* parent, CameraDefinition* camera);
+    ~WidgetWanderer();
 
 public slots:
     void resetCamera();
@@ -29,15 +33,18 @@ protected:
 private:
     CameraDefinition _current_camera;
     CameraDefinition* _base_camera;
-
-    TerrainDefinition terrain;
-    WaterDefinition water;
     
-    double average_frame_time;
-    int quality;
+    Renderer _renderer;
+    
+    QVector<WandererChunk*> _chunks;
 
-    int last_mouse_x;
-    int last_mouse_y;
+    WaterDefinition _water;
+    
+    double _average_frame_time;
+    int _quality;
+
+    int _last_mouse_x;
+    int _last_mouse_y;
 };
 
 #endif

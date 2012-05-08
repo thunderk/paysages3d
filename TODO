@@ -11,11 +11,17 @@ Technology Preview 2 :
 - Add a zone editor dialog for localized textures.
 - Add a terrain modifier dialog with zones.
 - Add a noise filler (and maybe noise intervals ?).
-- Fix the sun appearance.
+- Fix the distorted sun appearance.
 - Improve curve editor.
    => Add curve modes
    => Improve curve rendering
    => Add axis labels
+- Improve 3d explorer
+   => Store computed vertices in memory, using chunks
+   => Compute the ground texture by chunk
+   => Don't display the water if it's below all ground
+   => Add the sun position
+   => Try to overcome the near frustum cutting
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - Pause previews drawing of main window when a dialog is opened.
 - Interrupt preview chunk renderings that will be discarded at commit, or that are no more visible.
