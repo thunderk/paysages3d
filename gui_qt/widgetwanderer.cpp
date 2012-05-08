@@ -5,7 +5,45 @@
 #include <QTime>
 #include <math.h>
 #include <GL/glu.h>
+#include <QThread>
 #include "../lib_paysages/scenery.h"
+#include "../lib_paysages/euclid.h"
+
+class ChunkMaintenanceThread:public QThread
+{
+public:
+    ChunkMaintenanceThread(WidgetWanderer* wanderer)
+    {
+        _wanderer = wanderer;
+        _running = true;
+    }
+
+    void askStop()
+    {
+        _running = false;
+    }
+    
+    static inline void usleep(unsigned long us)
+    {
+        QThread::usleep(us);
+    }
+    
+protected:
+    void run()
+    {
+        while (_running)
+        {
+            _wanderer->performChunksMaintenance();
+            QThread::usleep(10000);
+        }
+    }
+    
+private:
+    bool _running;
+    WidgetWanderer* _wanderer;
+};
+
+static QVector<ChunkMaintenanceThread*> _threads;
 
 WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
     QGLWidget(parent)
@@ -18,20 +56,28 @@ WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
 
     _water = waterCreateDefinition();
     sceneryGetWater(&_water);
+    _sky = skyCreateDefinition();
+    sceneryGetSky(&_sky);
     
     _renderer = sceneryCreateStandardRenderer();
+    _updated = false;
 
     int chunks = 16;
-    double size = 30.0;
+    double size = 150.0;
     double chunksize = size / (double)chunks;
     double start = -size / 2.0;
     for (int i = 0; i < chunks; i++)
     {
         for (int j = 0; j < chunks; j++)
         {
-            _chunks.append(new WandererChunk(start + chunksize * (double)i, start + chunksize * (double)j, chunksize));
+            WandererChunk* chunk = new WandererChunk(start + chunksize * (double)i, start + chunksize * (double)j, chunksize);
+            _chunks.append(chunk);
+            _updateQueue.append(chunk);
         }
     }
+
+    startThreads();
+    startTimer(1000);
     
     _average_frame_time = 0.05;
     _quality = 3;
@@ -41,11 +87,79 @@ WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
 
 WidgetWanderer::~WidgetWanderer()
 {
+    stopThreads();
+    
     for (int i = 0; i < _chunks.count(); i++)
     {
         delete _chunks[i];
     }
     waterDeleteDefinition(&_water);
+}
+
+void WidgetWanderer::startThreads()
+{
+    int nbcore;
+    
+    _alive = true;
+    
+    nbcore = QThread::idealThreadCount() - 1;
+    if (nbcore < 1)
+    {
+        nbcore = 1;
+    }
+    
+    for (int i = 0; i < nbcore; i++)
+    {
+        _threads.append(new ChunkMaintenanceThread(this));
+    }
+    for (int i = 0; i < _threads.count(); i++)
+    {
+        _threads[i]->start();
+    }
+}
+
+void WidgetWanderer::stopThreads()
+{
+    for (int i = 0; i < _threads.count(); i++)
+    {
+        _threads[i]->askStop();
+    }
+    _alive = false;
+    for (int i = 0; i < _threads.count(); i++)
+    {
+        _threads[i]->wait();
+    }
+}
+
+void WidgetWanderer::performChunksMaintenance()
+{
+    WandererChunk* chunk;
+    
+    _lock_chunks.lock();
+    if (_updateQueue.count() > 0)
+    {
+        chunk = _updateQueue.takeFirst();
+        _lock_chunks.unlock();
+    }
+    else
+    {
+        _lock_chunks.unlock();
+        return;
+    }
+    
+    if (chunk->maintain(&_renderer))
+    {
+        if (!_alive)
+        {
+            return;
+        }
+
+        _updated = true;
+    }
+    
+    _lock_chunks.lock();
+    _updateQueue.append(chunk);
+    _lock_chunks.unlock();
 }
 
 void WidgetWanderer::resetCamera()
@@ -189,9 +303,18 @@ void WidgetWanderer::wheelEvent(QWheelEvent* event)
     event->accept();
 }
 
+void WidgetWanderer::timerEvent(QTimerEvent *event)
+{
+    if (_updated)
+    {
+        _updated = false;
+        updateGL();
+    }
+}
+
 void WidgetWanderer::initializeGL()
 {
-    glClearColor(0.4, 0.7, 0.8, 0.0);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
 
     glDisable(GL_LIGHTING);
 
@@ -208,7 +331,7 @@ void WidgetWanderer::initializeGL()
     glLineWidth(1.0);
 
     glDisable(GL_FOG);
-    
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -230,6 +353,11 @@ void WidgetWanderer::paintGL()
     QTime start_time;
     double frame_time;
     
+    if (_current_camera.location.y > 30.0)
+    {
+        _current_camera.location.y = 30.0;
+    }
+    
     cameraValidateDefinition(&_current_camera, 1);
     
     start_time = QTime::currentTime();
@@ -238,13 +366,27 @@ void WidgetWanderer::paintGL()
     glLoadIdentity();
     gluLookAt(_current_camera.location.x, _current_camera.location.y, _current_camera.location.z, _current_camera.target.x, _current_camera.target.y, _current_camera.target.z, _current_camera.up.x, _current_camera.up.y, _current_camera.up.z);
 
+    // Background
+    Color zenith_color = skyGetZenithColor(&_sky);
+    glClearColor(zenith_color.r, zenith_color.g, zenith_color.b, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    // Render sun
+    Vector3 sun_location = v3Add(_current_camera.location, v3Scale(skyGetSunDirection(&_sky), 500.0));
+    Color sun_color = skyGetSunColor(&_sky);
+    glDisable(GL_TEXTURE);
+    glDisable(GL_TEXTURE_2D);
+    glColor3f(sun_color.r, sun_color.g, sun_color.b);
+    glPointSize(15.0 * _sky.sun_radius / 0.02);
+    glEnable(GL_POINT_SMOOTH);
+    glBegin(GL_POINTS);
+    glVertex3f(sun_location.x, sun_location.y, sun_location.z);
+    glEnd();
 
     // Render water
     glDisable(GL_TEXTURE);
     glDisable(GL_TEXTURE_2D);
-    glColor3f(0.0, 0.0, 1.0);
+    glColor3f(_water.material.base.r, _water.material.base.g, _water.material.base.b);
     glBegin(GL_QUADS);
     glVertex3f(_current_camera.location.x - 500.0, _water.height, _current_camera.location.z - 500.0);
     glVertex3f(_current_camera.location.x - 500.0, _water.height, _current_camera.location.z + 500.0);
@@ -257,8 +399,7 @@ void WidgetWanderer::paintGL()
     glEnable(GL_TEXTURE_2D);
     for (int i = 0; i < _chunks.count(); i++)
     {
-        _chunks[i]->maintain(&_renderer);
-        
+        glColor3f(1.0, 1.0, 1.0);
         _chunks[i]->render(this);
     }
     

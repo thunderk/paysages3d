@@ -35,6 +35,9 @@ void skyValidateDefinition(SkyDefinition* definition);
 int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights);
 Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Vector3 look);
 void skyRender(SkyDefinition* definition, Renderer* renderer);
+Vector3 skyGetSunDirection(SkyDefinition* definition);
+Color skyGetSunColor(SkyDefinition* definition);
+Color skyGetZenithColor(SkyDefinition* definition);
 
 #ifdef __cplusplus
 }

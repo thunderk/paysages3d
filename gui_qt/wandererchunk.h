@@ -12,14 +12,17 @@ public:
     WandererChunk(double x, double z, double size);
     ~WandererChunk();
     
-    void maintain(Renderer* renderer);
+    bool maintain(Renderer* renderer);
     void render(QGLWidget* widget);
+    
+    Vector3 getCenter();
     
 private:
     QMutex _lock;
+    QMutex _lock_dirty;
     double _startx;
     double _startz;
-    bool _dirty;
+    int _dirty;
     double _chunksize;
     double _subchunksize;
     int _nbsubchunks;

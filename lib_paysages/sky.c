@@ -143,14 +143,11 @@ int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
 
 Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Vector3 look)
 {
-    double sun_angle, dist;
+    double dist;
     Vector3 sun_position;
     Color sun_color, sky_color;
 
-    sun_angle = (definition->daytime + 0.75) * M_PI * 2.0;
-    sun_position.x = cos(sun_angle);
-    sun_position.y = sin(sun_angle);
-    sun_position.z = 0.0;
+    sun_position = skyGetSunDirection(definition);
 
     look = v3Normalize(look);
     dist = v3Norm(v3Sub(look, sun_position));
@@ -268,4 +265,24 @@ void skyRender(SkyDefinition* definition, Renderer* renderer)
             renderer->pushQuad(renderer, &vertex1, &vertex4, &vertex3, &vertex2);
         }
     }
+}
+
+Vector3 skyGetSunDirection(SkyDefinition* definition)
+{
+    Vector3 result;
+    double sun_angle = (definition->daytime + 0.75) * M_PI * 2.0;
+    result.x = cos(sun_angle);
+    result.y = sin(sun_angle);
+    result.z = 0.0;
+    return result;
+}
+
+Color skyGetSunColor(SkyDefinition* definition)
+{
+    return colorGradationGet(definition->sun_color, definition->daytime);
+}
+
+Color skyGetZenithColor(SkyDefinition* definition)
+{
+    return colorGradationGet(definition->zenith_color, definition->daytime);
 }

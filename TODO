@@ -22,6 +22,7 @@ Technology Preview 2 :
    => Don't display the water if it's below all ground
    => Add the sun position
    => Try to overcome the near frustum cutting
+   => Disable texture reflection of light (dependant on camera location)
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - Pause previews drawing of main window when a dialog is opened.
 - Interrupt preview chunk renderings that will be discarded at commit, or that are no more visible.
