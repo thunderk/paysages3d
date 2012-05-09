@@ -17,12 +17,13 @@ Technology Preview 2 :
    => Improve curve rendering
    => Add axis labels
 - Improve 3d explorer
-   => Store computed vertices in memory, using chunks
-   => Compute the ground texture by chunk
+   => Improve priority rendering (prioritize on screen chunks)
+   => Restore LOD and intelligent poly count
+   => Interrupt chunk rendering when quitting dialog
    => Don't display the water if it's below all ground
-   => Add the sun position
    => Try to overcome the near frustum cutting
    => Disable texture reflection of light (dependant on camera location)
+   => Add toggles (for water...)
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - Pause previews drawing of main window when a dialog is opened.
 - Interrupt preview chunk renderings that will be discarded at commit, or that are no more visible.

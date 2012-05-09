@@ -12,7 +12,8 @@ public:
     WandererChunk(Renderer* renderer, double x, double z, double size);
     ~WandererChunk();
     
-    bool maintain(Vector3 camera_location);
+    bool maintain();
+    void updatePriority(Vector3 camera_location);
     void render(QGLWidget* widget);
     
     Vector3 getCenter();

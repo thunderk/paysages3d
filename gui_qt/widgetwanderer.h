@@ -7,6 +7,9 @@
 #include "../lib_paysages/water.h"
 #include "../lib_paysages/renderer.h"
 #include "../lib_paysages/sky.h"
+#include "../lib_paysages/terrain.h"
+#include "../lib_paysages/textures.h"
+#include "../lib_paysages/lighting.h"
 
 class WidgetWanderer : public QGLWidget
 {
@@ -49,6 +52,9 @@ private:
 
     WaterDefinition _water;
     SkyDefinition _sky;
+    TerrainDefinition _terrain;
+    TexturesDefinition _textures;
+    LightingDefinition _lighting;
     
     double _average_frame_time;
     int _quality;

@@ -25,13 +25,13 @@ WandererChunk::WandererChunk(Renderer* renderer, double x, double z, double size
     _tessellation_current_size = 0;
     _tessellation_step = _size / (double)_tessellation_max_size;
     
-    _texture_max_size = 32;
+    _texture_max_size = 128;
     _texture_current_size = 0;
     _texture = new QImage(1, 1, QImage::Format_ARGB32);
     _texture_id = 0;
     _texture_changed = false;
     
-    maintain(VECTOR_ZERO);
+    maintain();
 }
 
 WandererChunk::~WandererChunk()
@@ -82,10 +82,38 @@ void WandererChunk::render(QGLWidget* widget)
     }
 }
 
-bool WandererChunk::maintain(Vector3 camera_location)
+void WandererChunk::updatePriority(Vector3 camera_location)
 {
-    bool result;
-    
+    // Compute new priority
+    _lock_data.lock();
+    if (_tessellation_current_size == _tessellation_max_size && _texture_current_size == _texture_max_size)
+    {
+        _ideal_priority = -1000.0;
+    }
+    else
+    {
+        double distance = v3Norm(v3Sub(camera_location, getCenter()));
+        distance = distance < 0.1 ? 0.1 : distance;
+        _ideal_tessellation = (int)ceil(120.0 - distance / 3.0);
+        _ideal_priority = _ideal_tessellation - _texture_current_size;
+        if (_texture_current_size == 1)
+        {
+            _ideal_priority += 100.0;
+        }
+        else if (distance < 15.0 && _texture_current_size < _texture_max_size)
+        {
+            _ideal_priority += 75.0;
+        }
+        else if (distance < 30.0 && _texture_current_size < _texture_max_size / 2)
+        {
+            _ideal_priority += 50.0;
+        }
+    }
+    _lock_data.unlock();
+}
+
+bool WandererChunk::maintain()
+{
     if (_tessellation_current_size < _tessellation_max_size || _texture_current_size < _texture_max_size)
     {
         // Improve heightmap resolution
@@ -135,22 +163,12 @@ bool WandererChunk::maintain(Vector3 camera_location)
             _lock_data.unlock();
         }
 
-        result = true;
+        return true;
     }
     else
     {
-        result = false;
+        return false;
     }
-    
-    // Compute new priority
-    _lock_data.lock();
-    double distance = v3Norm(v3Sub(camera_location, getCenter()));
-    distance = distance < 0.1 ? 0.1 : distance;
-    _ideal_tessellation = (int)ceil(120.0 - distance / 3.0);
-    _ideal_priority = _ideal_tessellation - _texture_current_size;
-    _lock_data.unlock();
-    
-    return result;
 }
 
 Vector3 WandererChunk::getCenter()

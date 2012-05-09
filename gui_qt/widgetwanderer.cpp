@@ -45,6 +45,26 @@ private:
 
 static QVector<ChunkMaintenanceThread*> _threads;
 
+static double _getTerrainHeight(Renderer* renderer, double x, double z)
+{
+    return terrainGetHeight((TerrainDefinition*)(renderer->customData[0]), x, z);
+}
+
+static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
+{
+    return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
+}
+
+static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+{
+    return lightingApplyToSurface((LightingDefinition*)renderer->customData[2], renderer, location, normal, material);
+}
+
+static Color _maskLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
+{
+    return terrainLightFilter((TerrainDefinition*)(renderer->customData[0]), renderer, light_color, at_location, light_location, direction_to_light);
+}
+
 WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
     QGLWidget(parent)
 {
@@ -58,8 +78,24 @@ WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
     sceneryGetWater(&_water);
     _sky = skyCreateDefinition();
     sceneryGetSky(&_sky);
+    _terrain = terrainCreateDefinition();
+    sceneryGetTerrain(&_terrain);
+    _textures = texturesCreateDefinition();
+    sceneryGetTextures(&_textures);
+    _lighting = lightingCreateDefinition();
+    sceneryGetLighting(&_lighting);
     
-    _renderer = sceneryCreateStandardRenderer();
+    _renderer = rendererCreate();
+    _renderer.render_quality = 3;
+    _renderer.customData[0] = &_terrain;
+    _renderer.customData[1] = &_textures;
+    _renderer.customData[2] = &_lighting;
+    _renderer.customData[3] = &_water;
+    _renderer.applyTextures = _applyTextures;
+    _renderer.getTerrainHeight = _getTerrainHeight;
+    _renderer.applyLightingToSurface = _applyLightingToSurface;
+    _renderer.maskLight = _maskLight;
+    
     _updated = false;
 
     int chunks = 16;
@@ -102,7 +138,7 @@ void WidgetWanderer::startThreads()
     
     _alive = true;
     
-    nbcore = QThread::idealThreadCount() - 1;
+    nbcore = QThread::idealThreadCount();
     if (nbcore < 1)
     {
         nbcore = 1;
@@ -152,7 +188,7 @@ void WidgetWanderer::performChunksMaintenance()
         return;
     }
     
-    if (chunk->maintain(_current_camera.location))
+    if (chunk->maintain())
     {
         if (!_alive)
         {
@@ -164,7 +200,6 @@ void WidgetWanderer::performChunksMaintenance()
     
     _lock_chunks.lock();
     _updateQueue.append(chunk);
-    qSort(_updateQueue.begin(), _updateQueue.end(), _cmpChunks);
     _lock_chunks.unlock();
 }
 
@@ -316,6 +351,14 @@ void WidgetWanderer::timerEvent(QTimerEvent *event)
         _updated = false;
         updateGL();
     }
+    
+    for (int i = 0; i < _chunks.count(); i++)
+    {
+        _chunks[i]->updatePriority(_current_camera.location);
+    }
+    _lock_chunks.lock();
+    qSort(_updateQueue.begin(), _updateQueue.end(), _cmpChunks);
+    _lock_chunks.unlock();
 }
 
 void WidgetWanderer::initializeGL()

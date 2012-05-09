@@ -1,10 +1,12 @@
 ????-??-?? Technology Preview 2
 -------------------------------
 * Previews scaling is now logarithmic (slower when zoomed).
-* Previews drawing now takes advantage of multiple CPUs.
+* Previews drawing now takes advantage of multiple CPU cores.
 * New texture model (perpendicular displacement and thickness).
 * Added clouds hardness to light.
 * Version management in saved files.
+* Added ground texture and sun location in 3D explorer.
+* 3D explorer now takes advantage of multiple CPU cores.
 
 2012-04-20 Technology Preview 1
 -------------------------------
