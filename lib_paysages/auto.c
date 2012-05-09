@@ -81,7 +81,7 @@ void autoGenRealisticLandscape(int seed)
 
     /* Water */
     water = waterCreateDefinition();
-    water.height = 0.0;
+    water.height = -5.0;
     water.transparency = 0.5;
     water.reflection = 0.3;
     water.transparency_depth = 6.0;
@@ -141,7 +141,7 @@ void autoGenRealisticLandscape(int seed)
     noiseGenerateBaseNoise(terrain.height_noise, 1048576);
     noiseAddLevelsSimple(terrain.height_noise, 12, 1.0, 1.0);
     terrain.height_factor = 12.0 / noiseGetMaxValue(terrain.height_noise);
-    terrain.scaling = 10.0;
+    terrain.scaling = 20.0;
     scenerySetTerrain(&terrain);
     terrainDeleteDefinition(&terrain);
 
@@ -163,8 +163,8 @@ void autoGenRealisticLandscape(int seed)
     texture->slope_range = 0.001;
     texture->thickness_transparency = 0.0;
     texture = texturesGetLayer(&textures, texturesAddLayer(&textures));
-    zoneAddHeightRangeQuick(texture->zone, 1.0, -1.0, 0.0, 3.0, 15.0);
-    zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 0.1, 0.7);
+    zoneAddHeightRangeQuick(texture->zone, 1.0, -6.0, -5.0, 3.0, 15.0);
+    zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 0.05, 0.4);
     noiseGenerateBaseNoise(texture->bump_noise, 102400);
     noiseAddLevelsSimple(texture->bump_noise, 5, 1.0, 0.4);
     noiseAddLevelsSimple(texture->bump_noise, 2, 0.03, 0.08);

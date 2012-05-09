@@ -9,7 +9,7 @@
 class WandererChunk
 {
 public:
-    WandererChunk(Renderer* renderer, double x, double z, double size);
+    WandererChunk(Renderer* renderer, double x, double z, double size, int nbchunks);
     ~WandererChunk();
     
     bool maintain();
@@ -27,6 +27,8 @@ private:
     double _startx;
     double _startz;
     double _size;
+    double _overall_step;
+    bool _restart_needed;
     
     double* _tessellation;
     int _tessellation_max_size;

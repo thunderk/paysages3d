@@ -10,13 +10,15 @@
 #include "../lib_paysages/euclid.h"
 #include "../lib_paysages/tools.h"
 
-WandererChunk::WandererChunk(Renderer* renderer, double x, double z, double size)
+WandererChunk::WandererChunk(Renderer* renderer, double x, double z, double size, int nbchunks)
 {
     _renderer = renderer;
     
     _startx = x;
     _startz = z;
     _size = size;
+    _overall_step = size * (double)nbchunks;
+    _restart_needed = false;
     
     priority = 0.0;
     
@@ -63,11 +65,16 @@ void WandererChunk::render(QGLWidget* widget)
     }
 
     int tessellation_size = _tessellation_current_size;
-    int tessellation_inc = _tessellation_max_size / (double)tessellation_size;
     double tsize = 1.0 / (double)_tessellation_max_size;
     
     _lock_data.unlock();
     
+    if (tessellation_size == 0)
+    {
+        return;
+    }
+
+    int tessellation_inc = _tessellation_max_size / (double)tessellation_size;
     for (int j = 0; j < _tessellation_max_size; j += tessellation_inc)
     {
         glBegin(GL_QUAD_STRIP);
@@ -86,7 +93,32 @@ void WandererChunk::updatePriority(CameraDefinition* camera)
 {
     // Compute new priority
     _lock_data.lock();
-    if (_tessellation_current_size == _tessellation_max_size && _texture_current_size == _texture_max_size)
+    if (camera->location.x > _startx + _overall_step * 0.5)
+    {
+        _startx += _overall_step;
+        _restart_needed = true;
+    }
+    if (camera->location.z > _startz + _overall_step * 0.5)
+    {
+        _startz += _overall_step;
+        _restart_needed = true;
+    }
+    if (camera->location.x < _startx - _overall_step * 0.5)
+    {
+        _startx -= _overall_step;
+        _restart_needed = true;
+    }
+    if (camera->location.z < _startz - _overall_step * 0.5)
+    {
+        _startz -= _overall_step;
+        _restart_needed = true;
+    }
+    
+    if (_restart_needed || _texture_current_size <= 1)
+    {
+        priority = 1000.0;
+    }
+    else if (_tessellation_current_size == _tessellation_max_size && _texture_current_size == _texture_max_size)
     {
         priority = -1000.0;
     }
@@ -102,18 +134,18 @@ void WandererChunk::updatePriority(CameraDefinition* camera)
         wanted_size = (int)ceil(120.0 - distance / 3.0);
         
         priority = wanted_size - _texture_current_size;
-        if (_texture_current_size == 1)
-        {
-            priority += 100.0;
-        }
-        else if (distance < 15.0 && _texture_current_size < _texture_max_size)
+        /*else if (distance < 30.0 && _texture_current_size < _texture_max_size / 8)
         {
             priority += 75.0;
         }
-        else if (distance < 30.0 && _texture_current_size < _texture_max_size / 2)
+        else if (distance < 15.0 && _texture_current_size < _texture_max_size)
         {
             priority += 50.0;
         }
+        else if (distance < 30.0 && _texture_current_size < _texture_max_size / 2)
+        {
+            priority += 25.0;
+        }*/
         
         if (!cameraIsBoxInView(camera, center, _size, _size, 40.0))
         {
@@ -125,6 +157,16 @@ void WandererChunk::updatePriority(CameraDefinition* camera)
 
 bool WandererChunk::maintain()
 {
+    if (_restart_needed)
+    {
+        _restart_needed = false;
+
+        _lock_data.lock();
+        _texture_current_size = 0;
+        _tessellation_current_size = 0;
+        _lock_data.unlock();
+    }
+    
     if (_tessellation_current_size < _tessellation_max_size || _texture_current_size < _texture_max_size)
     {
         // Improve heightmap resolution

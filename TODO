@@ -5,6 +5,7 @@ Technology Preview 2 :
 - Compute shadows only once for all textures at a same location.
    => Add an intermediary light status (two pass lighting).
 - Add layer sorting/naming.
+- Add logarithmic sliders for some float values.
 - Save GUI config (views, render params).
 - Add an OSD ability on previews and use it for camera location and user landmarks.
 - Add a material editor dialog.

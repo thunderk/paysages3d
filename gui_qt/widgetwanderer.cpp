@@ -98,22 +98,22 @@ WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
     
     _updated = false;
 
-    int chunks = 16;
-    double size = 150.0;
+    int chunks = 20;
+    double size = 200.0;
     double chunksize = size / (double)chunks;
     double start = -size / 2.0;
     for (int i = 0; i < chunks; i++)
     {
         for (int j = 0; j < chunks; j++)
         {
-            WandererChunk* chunk = new WandererChunk(&_renderer, start + chunksize * (double)i, start + chunksize * (double)j, chunksize);
+            WandererChunk* chunk = new WandererChunk(&_renderer, start + chunksize * (double)i, start + chunksize * (double)j, chunksize, chunks);
             _chunks.append(chunk);
             _updateQueue.append(chunk);
         }
     }
 
     startThreads();
-    startTimer(1000);
+    startTimer(500);
     
     _average_frame_time = 0.05;
     _quality = 3;

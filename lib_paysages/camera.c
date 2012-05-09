@@ -300,10 +300,10 @@ void cameraProjectToFragment(CameraDefinition* camera, Renderer* renderer, doubl
 
 static inline void _updateBox(Vector3* point, double* xmin, double* xmax, double* ymin, double* ymax, double* zmax)
 {
-    *xmin = MIN(*xmax, point->x);
-    *xmax = MAX(*xmin, point->x);
-    *ymin = MIN(*ymax, point->y);
-    *ymax = MAX(*ymin, point->y);
+    *xmin = MIN(*xmin, point->x);
+    *xmax = MAX(*xmax, point->x);
+    *ymin = MIN(*ymin, point->y);
+    *ymax = MAX(*ymax, point->y);
     *zmax = MAX(*zmax, point->z);
 }
 
