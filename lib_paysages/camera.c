@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <glib-2.0/glib/gmacros.h>
 #include "euclid.h"
 #include "render.h"
 #include "shared/types.h"
@@ -296,3 +297,56 @@ void cameraProjectToFragment(CameraDefinition* camera, Renderer* renderer, doubl
 
     renderPushQuad(&v1, &v2, &v3, &v4);
 }*/
+
+static inline void _updateBox(Vector3* point, double* xmin, double* xmax, double* ymin, double* ymax, double* zmax)
+{
+    *xmin = MIN(*xmax, point->x);
+    *xmax = MAX(*xmin, point->x);
+    *ymin = MIN(*ymax, point->y);
+    *ymax = MAX(*ymin, point->y);
+    *zmax = MAX(*zmax, point->z);
+}
+
+int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, double ysize, double zsize)
+{
+    Vector3 projected;
+    double xmin, xmax, ymin, ymax, zmax;
+    
+    center.x -= xsize / 2.0;
+    center.y -= ysize / 2.0;
+    center.z -= zsize / 2.0;
+    projected = cameraProject(camera, NULL, center);
+    xmin = xmax = projected.x;
+    ymin = ymax = projected.y;
+    zmax = projected.z;
+    
+    center.x += xsize;
+    projected = cameraProject(camera, NULL, center);
+    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+
+    center.y += ysize;
+    projected = cameraProject(camera, NULL, center);
+    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+
+    center.z += zsize;
+    projected = cameraProject(camera, NULL, center);
+    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+
+    center.x -= xsize;
+    projected = cameraProject(camera, NULL, center);
+    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+    
+    center.y -= ysize;
+    projected = cameraProject(camera, NULL, center);
+    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+
+    center.x += xsize;
+    projected = cameraProject(camera, NULL, center);
+    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+
+    center.z -= zsize;
+    projected = cameraProject(camera, NULL, center);
+    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+    
+    return xmin <= camera->width && xmax >= 0.0 && ymin <= camera->height && ymax >= 0.0 && zmax >= camera->znear;
+}

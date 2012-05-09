@@ -5,6 +5,7 @@
 #include <QColor>
 #include <QGLWidget>
 #include <math.h>
+#include "../lib_paysages/camera.h"
 #include "../lib_paysages/color.h"
 #include "../lib_paysages/euclid.h"
 #include "../lib_paysages/tools.h"
@@ -17,8 +18,7 @@ WandererChunk::WandererChunk(Renderer* renderer, double x, double z, double size
     _startz = z;
     _size = size;
     
-    _ideal_tessellation = 1;
-    _ideal_priority = 0.0;
+    priority = 0.0;
     
     _tessellation_max_size = 32;
     _tessellation = new double[(_tessellation_max_size + 1) * (_tessellation_max_size + 1)];
@@ -82,31 +82,42 @@ void WandererChunk::render(QGLWidget* widget)
     }
 }
 
-void WandererChunk::updatePriority(Vector3 camera_location)
+void WandererChunk::updatePriority(CameraDefinition* camera)
 {
     // Compute new priority
     _lock_data.lock();
     if (_tessellation_current_size == _tessellation_max_size && _texture_current_size == _texture_max_size)
     {
-        _ideal_priority = -1000.0;
+        priority = -1000.0;
     }
     else
     {
-        double distance = v3Norm(v3Sub(camera_location, getCenter()));
+        double distance, wanted_size;
+        Vector3 center;
+        
+        center = getCenter();
+        
+        distance = v3Norm(v3Sub(camera->location, center));
         distance = distance < 0.1 ? 0.1 : distance;
-        _ideal_tessellation = (int)ceil(120.0 - distance / 3.0);
-        _ideal_priority = _ideal_tessellation - _texture_current_size;
+        wanted_size = (int)ceil(120.0 - distance / 3.0);
+        
+        priority = wanted_size - _texture_current_size;
         if (_texture_current_size == 1)
         {
-            _ideal_priority += 100.0;
+            priority += 100.0;
         }
         else if (distance < 15.0 && _texture_current_size < _texture_max_size)
         {
-            _ideal_priority += 75.0;
+            priority += 75.0;
         }
         else if (distance < 30.0 && _texture_current_size < _texture_max_size / 2)
         {
-            _ideal_priority += 50.0;
+            priority += 50.0;
+        }
+        
+        if (!cameraIsBoxInView(camera, center, _size, _size, 40.0))
+        {
+            priority -= 100.0;
         }
     }
     _lock_data.unlock();

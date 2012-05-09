@@ -36,7 +36,8 @@ Vector3 cameraProject(CameraDefinition* camera, Renderer* renderer, Vector3 poin
 Vector3 cameraUnproject(CameraDefinition* camera, Renderer* renderer, Vector3 point);
 void cameraProjectToFragment(CameraDefinition* camera, Renderer* renderer, double x, double y, double z, RenderFragment* result);
 /*void cameraPushOverlay(CameraDefinition* camera, Color col, f_RenderFragmentCallback callback);*/
-
+int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, double ysize, double zsize);
+        
 #ifdef __cplusplus
 }
 #endif

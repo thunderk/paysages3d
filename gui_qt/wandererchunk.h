@@ -13,12 +13,12 @@ public:
     ~WandererChunk();
     
     bool maintain();
-    void updatePriority(Vector3 camera_location);
+    void updatePriority(CameraDefinition* camera);
     void render(QGLWidget* widget);
     
     Vector3 getCenter();
     
-    double _ideal_priority;
+    double priority;
     
 private:
     QMutex _lock_data;
@@ -27,8 +27,6 @@ private:
     double _startx;
     double _startz;
     double _size;
-    
-    int _ideal_tessellation;
     
     double* _tessellation;
     int _tessellation_max_size;

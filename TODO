@@ -17,7 +17,6 @@ Technology Preview 2 :
    => Improve curve rendering
    => Add axis labels
 - Improve 3d explorer
-   => Improve priority rendering (prioritize on screen chunks)
    => Restore LOD and intelligent poly count
    => Interrupt chunk rendering when quitting dialog
    => Don't display the water if it's below all ground

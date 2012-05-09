@@ -169,7 +169,7 @@ void WidgetWanderer::stopThreads()
 
 bool _cmpChunks(const WandererChunk* c1, const WandererChunk* c2)
 {
-    return c1->_ideal_priority > c2->_ideal_priority;
+    return c1->priority > c2->priority;
 }
 
 void WidgetWanderer::performChunksMaintenance()
@@ -354,7 +354,7 @@ void WidgetWanderer::timerEvent(QTimerEvent *event)
     
     for (int i = 0; i < _chunks.count(); i++)
     {
-        _chunks[i]->updatePriority(_current_camera.location);
+        _chunks[i]->updatePriority(&_current_camera);
     }
     _lock_chunks.lock();
     qSort(_updateQueue.begin(), _updateQueue.end(), _cmpChunks);
