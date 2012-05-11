@@ -7,6 +7,7 @@
 
 #include "../lib_paysages/terrain.h"
 #include "../lib_paysages/scenery.h"
+#include "../lib_paysages/euclid.h"
 #include "../lib_paysages/shared/constants.h"
 
 static TerrainDefinition _definition;
@@ -60,9 +61,10 @@ public:
         light.color.g = 0.6;
         light.color.b = 0.6;
         light.amplitude = 0.0;
-        light.direction.x = -0.5;
-        light.direction.y = -0.7071;
-        light.direction.z = 0.5;
+        light.direction.x = -1.0;
+        light.direction.y = -0.5;
+        light.direction.z = 1.0;
+        light.direction = v3Normalize(light.direction);
         light.filtered = 0;
         light.masked = 1;
         light.reflection = 1.0;

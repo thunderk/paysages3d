@@ -55,7 +55,9 @@ void WandererChunk::render(QGLWidget* widget)
         {
             widget->deleteTexture(_texture_id);
         }
-        _texture_id = widget->bindTexture(*_texture);
+        // TODO Only do the scale if not power-of-two textures are unsupported by GPU
+        _texture_id = widget->bindTexture(_texture->scaled(_texture_current_size, _texture_current_size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        //_texture_id = widget->bindTexture(*_texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
@@ -196,15 +198,19 @@ bool WandererChunk::maintain()
         if (_texture_current_size < _texture_max_size)
         {
             int new_texture_size = _texture_current_size ? _texture_current_size * 2 : 1;
-            double step_size = _texture_current_size ? _size / (double)(new_texture_size - 1) : 0.1;
-            QImage* new_image = new QImage(new_texture_size, new_texture_size, QImage::Format_ARGB32);
-            for (int j = 0; j < new_texture_size; j++)
+            double step_size = _texture_current_size ? _size / (double)(new_texture_size) : 0.1;
+            //QImage* new_image = new QImage(new_texture_size, new_texture_size, QImage::Format_ARGB32);
+            QImage* new_image = new QImage(_texture->scaled(new_texture_size + 1, new_texture_size + 1, Qt::IgnoreAspectRatio, Qt::FastTransformation));
+            for (int j = 0; j <= new_texture_size; j++)
             {
-                for (int i = 0; i < new_texture_size; i++)
+                for (int i = 0; i <= new_texture_size; i++)
                 {
-                    Vector3 location = {_startx + step_size * (double)i, 0.0, _startz + step_size * (double)j};
-                    Color color = _renderer->applyTextures(_renderer, location, step_size);
-                    new_image->setPixel(i, j, colorTo32BitRGBA(&color));
+                    if (_texture_current_size <= 1 || i % 2 != 0 || j % 2 != 0)
+                    {
+                        Vector3 location = {_startx + step_size * (double)i, 0.0, _startz + step_size * (double)j};
+                        Color color = _renderer->applyTextures(_renderer, location, step_size);
+                        new_image->setPixel(i, j, colorTo32BitRGBA(&color));
+                    }
                 }
             }
             

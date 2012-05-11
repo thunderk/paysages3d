@@ -82,7 +82,7 @@ public:
         _renderer.customData[0] = &_preview_layer;
         _renderer.customData[1] = &_lighting;
         
-        configScaling(100.0, 400.0, 20.0, 200.0);
+        configScaling(1.0, 4.0, 0.2, 2.0);
     }
 protected:
     QColor getColor(double x, double y)
@@ -90,13 +90,13 @@ protected:
         Vector3 start, end;
         Color color_layer, result;
 
-        start.x = x;
-        start.y = -y;
-        start.z = 100.0;
+        start.x = x * _preview_layer.ymax;
+        start.y = -y * _preview_layer.ymax;
+        start.z = _preview_layer.ymax;
         
-        end.x = x;
-        end.y = -y;
-        end.z = -100.0;
+        end.x = x * _preview_layer.ymax;
+        end.y = -y * _preview_layer.ymax;
+        end.z = -_preview_layer.ymax;
 
         result = COLOR_BLUE;
         color_layer = cloudsGetLayerColor(&_preview_layer, &_renderer, start, end);
@@ -106,9 +106,9 @@ protected:
     void updateData()
     {
         cloudsLayerCopyDefinition(&_layer, &_preview_layer);
-        _preview_layer.ymin = -100.0;
+        _preview_layer.ymax = (_preview_layer.ymax - _preview_layer.ymin) / 2.0;
         _preview_layer.ycenter = 0.0;
-        _preview_layer.ymax = 100.0;
+        _preview_layer.ymin = -_preview_layer.ymin;
         _preview_layer.customcoverage = _coverageFunc;
     }
 private:
@@ -120,13 +120,13 @@ private:
     {
         double dist = v3Norm(position);
         
-        if (dist >= 100.0)
+        if (dist >= layer->ymax)
         {
             return 0.0;
         }
         else
         {
-            return 1.0 - dist / 100.0;
+            return 1.0 - dist / layer->ymax;
         }
     }
     static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
