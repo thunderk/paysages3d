@@ -99,6 +99,7 @@ void autoGenRealisticLandscape(int seed)
     water.waves_noise_height = 0.005;
     water.waves_noise_scale = 0.07;
     noiseGenerateBaseNoise(water.waves_noise, 262144);
+    noiseClearLevels(water.waves_noise);
     noiseAddLevelsSimple(water.waves_noise, 2, 1.0, 1.0);
     noiseAddLevelsSimple(water.waves_noise, 3, 0.15, 0.1);
     scenerySetWater(&water);
@@ -139,7 +140,8 @@ void autoGenRealisticLandscape(int seed)
     /* Terrain */
     terrain = terrainCreateDefinition();
     noiseGenerateBaseNoise(terrain.height_noise, 1048576);
-    noiseAddLevelsSimple(terrain.height_noise, 12, 1.0, 1.0);
+    noiseClearLevels(terrain.height_noise);
+    noiseAddLevelsSimple(terrain.height_noise, 10, 1.0, 1.0);
     terrain.height_factor = 12.0 / noiseGetMaxValue(terrain.height_noise);
     terrain.scaling = 20.0;
     scenerySetTerrain(&terrain);
@@ -151,6 +153,7 @@ void autoGenRealisticLandscape(int seed)
     zoneAddHeightRangeQuick(texture->zone, 1.0, -20.0, -20.0, 20.0, 20.0);
     zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 5.0, 5.0);
     noiseGenerateBaseNoise(texture->bump_noise, 102400);
+    noiseClearLevels(texture->bump_noise);
     noiseAddLevelsSimple(texture->bump_noise, 8, 1.0, 1.0);
     texture->bump_height = 0.01;
     texture->bump_scaling = 0.015;
@@ -166,6 +169,7 @@ void autoGenRealisticLandscape(int seed)
     zoneAddHeightRangeQuick(texture->zone, 1.0, -6.0, -5.0, 3.0, 15.0);
     zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 0.05, 0.4);
     noiseGenerateBaseNoise(texture->bump_noise, 102400);
+    noiseClearLevels(texture->bump_noise);
     noiseAddLevelsSimple(texture->bump_noise, 5, 1.0, 0.4);
     noiseAddLevelsSimple(texture->bump_noise, 2, 0.03, 0.08);
     texture->bump_height = 0.002;
@@ -182,6 +186,7 @@ void autoGenRealisticLandscape(int seed)
     zoneAddHeightRangeQuick(texture->zone, 1.0, 4.0, 5.0, 100.0, 100.0);
     zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 0.2, 1.0);
     noiseGenerateBaseNoise(texture->bump_noise, 102400);
+    noiseClearLevels(texture->bump_noise);
     noiseAddLevelsSimple(texture->bump_noise, 6, 1.0, 1.0);
     texture->bump_height = 0.002;
     texture->bump_scaling = 0.03;
