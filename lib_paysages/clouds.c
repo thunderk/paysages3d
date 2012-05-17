@@ -493,13 +493,16 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
 {
     Vector3 normal;
 
-    normal = v3Scale(_getNormal(definition, position, 3.0), 0.25);
+    normal = _getNormal(definition, position, 3.0);
     if (renderer->render_quality > 5)
     {
-        normal = v3Add(normal, v3Scale(_getNormal(definition, position, 2.0), 0.25));
-        normal = v3Add(normal, v3Scale(_getNormal(definition, position, 1.0), 0.25));
+        normal = v3Add(normal, _getNormal(definition, position, 2.0));
+        normal = v3Add(normal, _getNormal(definition, position, 1.0));
     }
-    normal = v3Add(normal, v3Scale(_getNormal(definition, position, 0.5), 0.25));
+    if (renderer->render_quality > 5)
+    {
+        normal = v3Add(normal, _getNormal(definition, position, 0.5));
+    }
     normal = v3Scale(v3Normalize(normal), definition->hardness);
 
     return renderer->applyLightingToSurface(renderer, position, normal, definition->material);
