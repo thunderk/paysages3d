@@ -10,7 +10,7 @@ class WidgetCurveEditor : public QWidget
     Q_OBJECT
     
 public:
-    WidgetCurveEditor(QWidget* parent);
+    WidgetCurveEditor(QWidget* parent, double xmin, double xmax, double ymin, double ymax);
     ~WidgetCurveEditor();
     
     void setCurve(Curve* curve);

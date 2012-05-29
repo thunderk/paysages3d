@@ -8,6 +8,7 @@
 #include "baseinput.h"
 #include "../lib_paysages/shared/types.h"
 #include "../lib_paysages/noise.h"
+#include "../lib_paysages/curve.h"
 #include "../lib_paysages/color.h"
 
 class BaseForm:public QWidget
@@ -42,6 +43,7 @@ protected:
     void addInputColor(QString label, Color* value);
     void addInputColorGradation(QString label, ColorGradation* value);
     void addInputNoise(QString label, NoiseGenerator* value);
+    void addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax);
 
     int currentLayer();
     void setLayerCount(int layer_count);

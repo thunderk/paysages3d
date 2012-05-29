@@ -6,7 +6,6 @@
 #include <string.h>
 
 #include "shared/types.h"
-#include "shared/constants.h"
 #include "color.h"
 #include "euclid.h"
 #include "renderer.h"

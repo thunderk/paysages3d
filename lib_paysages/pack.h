@@ -1,9 +1,6 @@
 #ifndef _PAYSAGES_PACK_H_
 #define _PAYSAGES_PACK_H_
 
-#include <stdio.h>
-#include "shared/types.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

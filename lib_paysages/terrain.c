@@ -6,7 +6,6 @@
 #include <assert.h>
 
 #include "shared/types.h"
-#include "shared/constants.h"
 #include "euclid.h"
 #include "render.h"
 #include "textures.h"

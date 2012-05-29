@@ -1,46 +1,12 @@
 #ifndef _PAYSAGES_TYPES_H_
 #define _PAYSAGES_TYPES_H_
 
-#include <stdio.h>
+#include "../euclid.h"
+#include "../color.h"
     
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef struct
-{
-    double x;
-    double y;
-    double z;
-} Vector3;
-
-typedef struct
-{
-    double a;
-    double b;
-    double c;
-    double d;
-    double e;
-    double f;
-    double g;
-    double h;
-    double i;
-    double j;
-    double k;
-    double l;
-    double m;
-    double n;
-    double o;
-    double p;
-} Matrix4;
-
-typedef struct
-{
-    double r;
-    double g;
-    double b;
-    double a;
-} Color;
 
 struct RenderFragment;
 struct Renderer;

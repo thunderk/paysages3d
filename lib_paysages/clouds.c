@@ -8,7 +8,6 @@
 #include "lighting.h"
 #include "tools.h"
 #include "shared/types.h"
-#include "shared/constants.h"
 
 typedef struct
 {
@@ -21,9 +20,7 @@ static CloudsLayerDefinition NULL_LAYER;
 
 void cloudsInit()
 {
-    NULL_LAYER.noise = noiseCreateGenerator();
-    NULL_LAYER.coverage = 0.0;
-    NULL_LAYER.customcoverage = NULL;
+    NULL_LAYER = cloudsLayerCreateDefinition();;
     cloudsLayerValidateDefinition(&NULL_LAYER);
 }
 
@@ -42,9 +39,9 @@ void cloudsSave(PackStream* stream, CloudsDefinition* definition)
     {
         layer = definition->layers + i;
         
-        packWriteDouble(stream, &layer->ycenter);
         packWriteDouble(stream, &layer->ymin);
         packWriteDouble(stream, &layer->ymax);
+        curveSave(stream, layer->density_altitude);
         noiseSaveGenerator(stream, layer->noise);
         materialSave(stream, &layer->material);
         packWriteDouble(stream, &layer->hardness);
@@ -71,9 +68,9 @@ void cloudsLoad(PackStream* stream, CloudsDefinition* definition)
     {
         layer = definition->layers + cloudsAddLayer(definition);
 
-        packReadDouble(stream, &layer->ycenter);
         packReadDouble(stream, &layer->ymin);
         packReadDouble(stream, &layer->ymax);
+        curveLoad(stream, layer->density_altitude);
         noiseLoadGenerator(stream, layer->noise);
         materialLoad(stream, &layer->material);
         packReadDouble(stream, &layer->hardness);
@@ -129,24 +126,13 @@ void cloudsValidateDefinition(CloudsDefinition* definition)
 
 static double _standardCoverageFunc(CloudsLayerDefinition* layer, Vector3 position)
 {
-    double inside;
-    
-    if (position.y > layer->ycenter)
-    {
-        inside = 1.0 - (position.y - layer->ycenter) / (layer->ymax - layer->ycenter);
-    }
-    else
-    {
-        inside = 1.0 - (layer->ycenter - position.y) / (layer->ycenter - layer->ymin);
-    }
-    
-    if (inside <= 0.0)
+    if (position.y > layer->ymax || position.y < layer->ymin)
     {
         return 0.0;
     }
     else
-    {    
-        return layer->coverage * inside;
+    {
+        return layer->coverage * curveGetValue(layer->density_altitude, (position.y - layer->ymin) / (layer->ymax - layer->ymin));
     }
 }
 
@@ -155,8 +141,12 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
     CloudsLayerDefinition result;
 
     result.ymin = 4.0;
-    result.ycenter = 6.0;
     result.ymax = 10.0;
+    result.density_altitude = curveCreate();
+    curveQuickAddPoint(result.density_altitude, 0.0, 0.0);
+    curveQuickAddPoint(result.density_altitude, 0.3, 1.0);
+    curveQuickAddPoint(result.density_altitude, 0.5, 1.0);
+    curveQuickAddPoint(result.density_altitude, 1.0, 0.0);
     result.material.base.r = 0.7;
     result.material.base.g = 0.7;
     result.material.base.b = 0.7;
@@ -197,17 +187,21 @@ void cloudsLayerDeleteDefinition(CloudsLayerDefinition* definition)
 
 void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinition* destination)
 {
-    NoiseGenerator* noise;
+    CloudsLayerDefinition temp;
     
     if (destination == &NULL_LAYER)
     {
         return;
     }
 
-    noise = destination->noise;
+    temp = *destination;
     *destination = *source;
-    destination->noise = noise;
+    
+    destination->noise = temp.noise;
     noiseCopy(source->noise, destination->noise);
+    
+    destination->density_altitude = temp.density_altitude;
+    curveCopy(source->density_altitude, destination->density_altitude);
 }
 
 void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)

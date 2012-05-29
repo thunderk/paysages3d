@@ -6,6 +6,7 @@
 #include "inputcolor.h"
 #include "inputcolorgradation.h"
 #include "inputnoise.h"
+#include "inputcurve.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -234,6 +235,11 @@ void BaseForm::addInputColorGradation(QString label, ColorGradation* value)
 void BaseForm::addInputNoise(QString label, NoiseGenerator* value)
 {
     addInput(new InputNoise(form, label, value));
+}
+
+void BaseForm::addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax)
+{
+    addInput(new InputCurve(form, label, value, xmin, xmax, ymin, ymax));
 }
 
 int BaseForm::currentLayer()

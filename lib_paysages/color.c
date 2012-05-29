@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-#include "shared/constants.h"
 #include "tools.h"
 #include "curve.h"
 

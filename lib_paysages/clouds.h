@@ -18,9 +18,9 @@ typedef double (*CloudCoverageFunc)(CloudsLayerDefinition* definition, Vector3 p
 
 struct CloudsLayerDefinition
 {
-    double ycenter;
     double ymin;
     double ymax;
+    Curve* density_altitude;
     NoiseGenerator* noise;
     SurfaceMaterial material;
     double hardness;

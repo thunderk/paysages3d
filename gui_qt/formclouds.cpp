@@ -4,7 +4,6 @@
 #include "../lib_paysages/color.h"
 #include "../lib_paysages/euclid.h"
 #include "../lib_paysages/scenery.h"
-#include "../lib_paysages/shared/constants.h"
 
 #include "tools.h"
 
@@ -107,8 +106,8 @@ protected:
     {
         cloudsLayerCopyDefinition(&_layer, &_preview_layer);
         _preview_layer.ymax = (_preview_layer.ymax - _preview_layer.ymin) / 2.0;
-        _preview_layer.ycenter = 0.0;
         _preview_layer.ymin = -_preview_layer.ymin;
+        curveClear(_preview_layer.density_altitude);
         _preview_layer.customcoverage = _coverageFunc;
     }
 private:
@@ -149,9 +148,9 @@ FormClouds::FormClouds(QWidget *parent):
     addPreview(new PreviewCloudsCoverage(parent), tr("Layer coverage (no lighting)"));
     addPreview(new PreviewCloudsColor(parent), tr("Color and lighting"));
 
-    addInputDouble(tr("Start altitude"), &_layer.ymin, -10.0, 250.0, 0.5, 5.0);
-    addInputDouble(tr("Max density altitude"), &_layer.ycenter, -10.0, 250.0, 0.5, 5.0);
-    addInputDouble(tr("End altitude"), &_layer.ymax, -10.0, 250.0, 0.5, 5.0);
+    addInputDouble(tr("Lower altitude"), &_layer.ymin, -10.0, 250.0, 0.5, 5.0);
+    addInputDouble(tr("Upper altitude"), &_layer.ymax, -10.0, 250.0, 0.5, 5.0);
+    addInputCurve(tr("Density / Altitude"), _layer.density_altitude, 0.0, 1.0, 0.0, 1.0);
     addInputNoise(tr("Noise"), _layer.noise);
     addInputDouble(tr("Coverage"), &_layer.coverage, 0.0, 1.0, 0.01, 0.1);
     addInputDouble(tr("Scaling"), &_layer.scaling, 1.0, 100.0, 0.5, 5.0);

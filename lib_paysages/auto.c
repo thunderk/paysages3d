@@ -5,7 +5,6 @@
 #include <time.h>
 
 #include "shared/types.h"
-#include "shared/constants.h"
 #include "clouds.h"
 #include "color.h"
 #include "lighting.h"

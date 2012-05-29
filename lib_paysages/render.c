@@ -7,7 +7,6 @@
 #include "IL/ilu.h"
 
 #include "shared/types.h"
-#include "shared/constants.h"
 #include "array.h"
 #include "color.h"
 #include "system.h"

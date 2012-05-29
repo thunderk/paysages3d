@@ -5,7 +5,6 @@
 #include <QSlider>
 #include <math.h>
 
-#include "../lib_paysages/shared/constants.h"
 #include "../lib_paysages/euclid.h"
 #include "../lib_paysages/lighting.h"
 #include "../lib_paysages/renderer.h"

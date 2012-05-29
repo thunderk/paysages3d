@@ -1,13 +1,27 @@
 #ifndef _PAYSAGES_COLOR_H_
 #define _PAYSAGES_COLOR_H_
 
-#include "shared/types.h"
-#include "shared/constants.h"
 #include "curve.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef struct
+{
+    double r;
+    double g;
+    double b;
+    double a;
+} Color;
+
+extern Color COLOR_TRANSPARENT;
+extern Color COLOR_BLACK;
+extern Color COLOR_RED;
+extern Color COLOR_GREEN;
+extern Color COLOR_BLUE;
+extern Color COLOR_WHITE;
+extern Color COLOR_GREY;
 
 /* Color */
 void colorSave(PackStream* stream, Color* col);

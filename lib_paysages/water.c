@@ -1,7 +1,6 @@
 #include "water.h"
 
 #include "shared/types.h"
-#include "shared/constants.h"
 #include "color.h"
 #include "euclid.h"
 #include "render.h"

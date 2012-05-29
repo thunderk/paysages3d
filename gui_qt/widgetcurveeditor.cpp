@@ -4,7 +4,7 @@
 #include <QMouseEvent>
 #include "../lib_paysages/tools.h"
 
-WidgetCurveEditor::WidgetCurveEditor(QWidget *parent) : QWidget(parent)
+WidgetCurveEditor::WidgetCurveEditor(QWidget *parent, double xmin, double xmax, double ymin, double ymax) : QWidget(parent)
 {
     _curve = curveCreate();
     _dragged = -1;

@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include <QPushButton>
-#include "baseform.h"
 #include "widgetcurveeditor.h"
 #include "previewcolorgradation.h"
 

@@ -1,6 +1,5 @@
 #include "atmosphere.h"
 
-#include "shared/constants.h"
 #include "scenery.h"
 #include "euclid.h"
 #include "color.h"

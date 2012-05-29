@@ -10,7 +10,6 @@
 #include <QSlider>
 #include <QScrollArea>
 #include <QPushButton>
-#include "baseform.h"
 #include "tools.h"
 #include "widgetcurveeditor.h"
 
@@ -40,7 +39,7 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
     label->setMaximumWidth(200);
     label->setWordWrap(true);
     form_layout->addWidget(label, 0, 1);
-    _curve_editor = new WidgetCurveEditor(form);
+    _curve_editor = new WidgetCurveEditor(form, 0.0, 1.0, 0.0, 1.0);
     _curve_editor->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     form_layout->addWidget(_curve_editor, 0, 0);
     connect(_curve_editor, SIGNAL(liveChanged()), this, SLOT(updateColors()));
