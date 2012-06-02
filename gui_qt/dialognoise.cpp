@@ -82,7 +82,7 @@ private:
 
 /**************** Dialog form ****************/
 DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
-    QDialog(parent)
+    DialogWithPreview(parent)
 {
     QWidget* previews;
     QWidget* form;

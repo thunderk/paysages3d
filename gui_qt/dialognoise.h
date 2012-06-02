@@ -1,13 +1,13 @@
 #ifndef _PAYSAGES_QT_DIALOGNOISE_H_
 #define _PAYSAGES_QT_DIALOGNOISE_H_
 
-#include <QDialog>
 #include <QListWidget>
 #include "basepreview.h"
+#include "tools.h"
 
 #include "../lib_paysages/noise.h"
 
-class DialogNoise : public QDialog
+class DialogNoise : public DialogWithPreview
 {
     Q_OBJECT
 public:

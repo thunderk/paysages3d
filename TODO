@@ -1,6 +1,5 @@
 Technology Preview 2 :
 - Fix the fog impression when cloud layer overlaps with ground range.
-- Fix dialog previews not always updating at dialog open.
 - Fix forms with layers apply and revert buttons (when deleting last cloud layer, can't apply it).
 - Replace zone ranges with curves (with curve input and curve dialog).
 - Interface for textures thickness, slope_range and thickness_transparency (and correct slider ranges).
@@ -11,7 +10,6 @@ Technology Preview 2 :
 - Add logarithmic sliders for some float values.
 - Save GUI config (views, render params).
 - Add an OSD ability on previews and use it for camera location and user landmarks.
-- WIP : Add a material editor dialog.
 - Add a zone editor dialog for localized textures.
 - Add a terrain modifier dialog with zones.
 - Use the curve editor in noise editor
@@ -49,6 +47,7 @@ Technology Preview 3 :
 - Multi threaded first pass.
 - Fix potential holes in land rendering.
 - Progressive final render.
+- Propose several backgrounds for water rendering (grid, sinus...).
 - If we can't remove clouds artifacts, blur them.
 
 Release Candidate :

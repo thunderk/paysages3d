@@ -5,10 +5,11 @@
 #include <QListWidget>
 #include "basepreview.h"
 #include "formmaterial.h"
+#include "tools.h"
 
 #include "../lib_paysages/shared/types.h"
 
-class DialogMaterial : public QDialog
+class DialogMaterial : public DialogWithPreview
 {
     Q_OBJECT
 public:

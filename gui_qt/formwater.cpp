@@ -24,7 +24,7 @@ public:
         _water = waterCreateDefinition();
         _terrain = terrainCreateDefinition();
         
-        configScaling(0.5, 200.0, 1.0, 50.0);
+        configScaling(0.5, 200.0, 3.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
@@ -81,6 +81,7 @@ public:
         _renderer.customData[1] = &_lighting;
         
         configScaling(10.0, 1000.0, 10.0, 250.0);
+        //configScrolling(-30.0, 30.0, 0.0, -20.0, 20.0, 0.0);
     }
 protected:
     QColor getColor(double x, double y)
@@ -138,13 +139,14 @@ private:
             x = location.x + direction.x * (0.0 - location.z) / direction.z;
             y = location.y + direction.y * (0.0 - location.z) / direction.z;
 
-            if (((int)ceil(x * 0.2) % 2 == 0) ^ ((int)ceil(y * 0.2 - 0.5) % 2 == 0))
+            //if (((int)ceil(x * 0.2) % 2 == 0) ^ ((int)ceil(y * 0.2 - 0.5) % 2 == 0))
+            if (y * 0.1 > sin(x - M_PI_2))
             {
                 result.hit_color = COLOR_WHITE;
             }
             else
             {
-                result.hit_color = COLOR_GREY;
+                result.hit_color = COLOR_BLACK;
             }
             result.hit_location.x = x;
             result.hit_location.y = y;

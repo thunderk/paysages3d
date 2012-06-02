@@ -6,7 +6,7 @@
 #include <QWidget>
 
 /**************** Dialog form ****************/
-DialogMaterial::DialogMaterial(QWidget *parent, SurfaceMaterial* material) : QDialog(parent)
+DialogMaterial::DialogMaterial(QWidget *parent, SurfaceMaterial* material) : DialogWithPreview(parent)
 {
     QPushButton* button;
     QWidget* buttons;
@@ -16,7 +16,7 @@ DialogMaterial::DialogMaterial(QWidget *parent, SurfaceMaterial* material) : QDi
     _form = new FormMaterial(this, material);
     _form->hideButtons();
     layout()->addWidget(_form);
-
+    
     buttons = new QWidget(this);
     buttons->setLayout(new QHBoxLayout());
     layout()->addWidget(buttons);

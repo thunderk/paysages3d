@@ -33,7 +33,7 @@ public:
         _renderer.customData[2] = &_lighting;
         _renderer.customData[3] = &_water;
         
-        configScaling(0.5, 200.0, 1.0, 50.0);
+        configScaling(0.5, 200.0, 3.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:

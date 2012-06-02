@@ -426,22 +426,22 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormMaterial</name>
     <message>
-        <location filename="../gui_qt/formmaterial.cpp" line="32"/>
+        <location filename="../gui_qt/formmaterial.cpp" line="11"/>
         <source>Base color</source>
         <translation type="unfinished">Couleur de base</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formmaterial.cpp" line="33"/>
+        <location filename="../gui_qt/formmaterial.cpp" line="12"/>
         <source>Light reflection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formmaterial.cpp" line="34"/>
+        <location filename="../gui_qt/formmaterial.cpp" line="13"/>
         <source>Light reflection shininess</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formmaterial.cpp" line="37"/>
+        <location filename="../gui_qt/formmaterial.cpp" line="16"/>
         <source>Lighting preview</source>
         <translation type="unfinished"></translation>
     </message>
@@ -689,17 +689,17 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormWater</name>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="177"/>
+        <location filename="../gui_qt/formwater.cpp" line="179"/>
         <source>Coverage preview</source>
         <translation>Aperçu de la couverture</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="178"/>
+        <location filename="../gui_qt/formwater.cpp" line="180"/>
         <source>Rendered preview (without/with lighting)</source>
         <translation>Aperçu du rendu (sans/avec éclairage)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="180"/>
+        <location filename="../gui_qt/formwater.cpp" line="182"/>
         <source>Height</source>
         <translation>Hauteur</translation>
     </message>
@@ -716,47 +716,47 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Concentration de la lumière réfléchie</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="181"/>
+        <location filename="../gui_qt/formwater.cpp" line="183"/>
         <source>Surface material</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="183"/>
+        <location filename="../gui_qt/formwater.cpp" line="185"/>
         <source>Transparency</source>
         <translation>Transparence</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="184"/>
+        <location filename="../gui_qt/formwater.cpp" line="186"/>
         <source>Reflection</source>
         <translation>Reflets</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="185"/>
+        <location filename="../gui_qt/formwater.cpp" line="187"/>
         <source>Transparency distance</source>
         <translation>Distance maximale de transparence</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="182"/>
+        <location filename="../gui_qt/formwater.cpp" line="184"/>
         <source>Depth color</source>
         <translation>Couleur en profondeur</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="186"/>
+        <location filename="../gui_qt/formwater.cpp" line="188"/>
         <source>Light-through distance</source>
         <translation>Distance de filtrage de la lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="187"/>
+        <location filename="../gui_qt/formwater.cpp" line="189"/>
         <source>Waves noise</source>
         <translation>Bruit des vagues</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="188"/>
+        <location filename="../gui_qt/formwater.cpp" line="190"/>
         <source>Waves height</source>
         <translation>Hauteur des vagues</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="189"/>
+        <location filename="../gui_qt/formwater.cpp" line="191"/>
         <source>Waves scaling</source>
         <translation>Echelle des vagues</translation>
     </message>
@@ -809,7 +809,7 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>InputMaterial</name>
     <message>
-        <location filename="../gui_qt/inputmaterial.cpp" line="50"/>
+        <location filename="../gui_qt/inputmaterial.cpp" line="17"/>
         <source>Edit</source>
         <translation type="unfinished">Editer</translation>
     </message>
@@ -916,7 +916,7 @@ rapide (F5)</translation>
     <message>
         <location filename="../gui_qt/mainwindow.cpp" line="189"/>
         <source>Do you want to load a scenery from file ? Any unsaved changes will be lost.</source>
-        <translation>Voulez-vous charger une scène ? Les modifications nons sauvegardées seront perdues.</translation>
+        <translation>Voulez-vous charger une scène ? Les modifications non sauvegardées seront perdues.</translation>
     </message>
     <message>
         <location filename="../gui_qt/mainwindow.cpp" line="189"/>

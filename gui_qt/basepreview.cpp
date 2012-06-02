@@ -24,6 +24,11 @@ public:
         _alive = true;
     }
     
+    inline bool isOnFront()
+    {
+        return _preview->isVisible() && _preview->window()->isActiveWindow();
+    }
+    
     bool isFrom(BasePreview* preview)
     {
         return _preview == preview;
@@ -46,11 +51,7 @@ public:
         
         if (_need_render)
         {
-            if (!_preview->isVisible())
-            {
-                return false;
-            }
-            if (!_preview->window()->isActiveWindow())
+            if (!isOnFront())
             {
                 return false;
             }
@@ -209,13 +210,16 @@ void PreviewDrawingManager::updateAllChunks()
     {
         PreviewChunk* chunk;
         chunk = _chunks.at(i);
-        chunk->update();
-        _lock.lock();
-        if (!_updateQueue.contains(chunk))
-        {   
-            _updateQueue.prepend(chunk);
+        if (chunk->isOnFront())
+        {
+            chunk->update();
+            _lock.lock();
+            if (!_updateQueue.contains(chunk))
+            {   
+                _updateQueue.prepend(chunk);
+            }
+            _lock.unlock();
         }
-        _lock.unlock();
     }
 }
 
