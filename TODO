@@ -1,5 +1,7 @@
 Technology Preview 2 :
 - Fix the fog impression when cloud layer overlaps with ground range.
+- Fix dialog previews not always updating at dialog open.
+- Fix forms with layers apply and revert buttons (when deleting last cloud layer, can't apply it).
 - Replace zone ranges with curves (with curve input and curve dialog).
 - Interface for textures thickness, slope_range and thickness_transparency (and correct slider ranges).
 - Render tab previews should not rerender when changing render options.

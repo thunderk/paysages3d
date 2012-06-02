@@ -156,6 +156,23 @@ static inline double _getHeight(TerrainDefinition* definition, double x, double 
     return location.y;
 }
 
+static inline double _getHeightDetail(TerrainDefinition* definition, double x, double z, double detail)
+{
+    Vector3 location;
+    int i;
+
+    location.x = x;
+    location.y = noiseGet2DDetail(definition->height_noise, x / definition->scaling, z / definition->scaling, detail / definition->height_factor) * definition->height_factor;
+    location.z = z;
+
+    for (i = 0; i < definition->height_modifiers_count; i++)
+    {
+        location = modifierApply(definition->height_modifiers[i], location);
+    }
+
+    return location.y;
+}
+
 static inline Vector3 _getPoint(TerrainDefinition* definition, double x, double z)
 {
     Vector3 result;
@@ -195,12 +212,13 @@ Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Colo
 
     light_factor = 1.0;
     length = 0.0;
+    diff = 0.0;
     do
     {
         inc_vector = v3Scale(direction_to_light, inc_value);
         length += v3Norm(inc_vector);
         location = v3Add(location, inc_vector);
-        height = _getHeight(definition, location.x, location.z);
+        height = _getHeightDetail(definition, location.x, location.z, diff / inc_factor);
         diff = location.y - height;
         if (diff < 0.0)
         {
@@ -219,7 +237,7 @@ Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Colo
         {
             inc_value = diff;
         }
-    } while (light_factor > 0.0 && length < 50.0 && location.y <= definition->_max_height);
+    } while (light_factor > 0.0 && length < (10.0 * inc_factor) && location.y <= definition->_max_height);
 
     if (light_factor <= 0.0)
     {

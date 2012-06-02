@@ -568,7 +568,7 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormTerrain</name>
     <message>
-        <location filename="../gui_qt/formterrain.cpp" line="146"/>
+        <location filename="../gui_qt/formterrain.cpp" line="147"/>
         <source>Height preview (normalized)</source>
         <translation>Aperçu de la hauteur (normalisée)</translation>
     </message>
@@ -577,22 +577,22 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Aperçu du rendu (sans ombres)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formterrain.cpp" line="147"/>
+        <location filename="../gui_qt/formterrain.cpp" line="148"/>
         <source>Lighted preview (no texture)</source>
         <translation>Aperçu éclairé (sans texture)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formterrain.cpp" line="149"/>
+        <location filename="../gui_qt/formterrain.cpp" line="150"/>
         <source>Noise</source>
         <translation>Bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formterrain.cpp" line="150"/>
+        <location filename="../gui_qt/formterrain.cpp" line="151"/>
         <source>Height</source>
         <translation>Hauteur</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formterrain.cpp" line="151"/>
+        <location filename="../gui_qt/formterrain.cpp" line="152"/>
         <source>Scaling</source>
         <translation>Echelle</translation>
     </message>

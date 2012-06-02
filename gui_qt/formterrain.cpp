@@ -47,6 +47,7 @@ public:
         TextureLayerDefinition* texture;
 
         _renderer = rendererCreate();
+        _renderer.render_quality = 3;
         _renderer.applyTextures = _applyTextures;
         _renderer.getTerrainHeight = _getTerrainHeight;
         _renderer.applyLightingToSurface = _applyLightingToSurface;
