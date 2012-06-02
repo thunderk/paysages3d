@@ -209,7 +209,7 @@ bool WandererChunk::maintain()
                     {
                         Vector3 location = {_startx + step_size * (double)i, 0.0, _startz + step_size * (double)j};
                         Color color = _renderer->applyTextures(_renderer, location, step_size);
-                        new_image->setPixel(i, j, colorTo32BitRGBA(&color));
+                        new_image->setPixel(i, j, colorTo32BitBGRA(&color));
                     }
                 }
             }
