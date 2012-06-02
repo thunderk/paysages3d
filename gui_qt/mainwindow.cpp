@@ -124,11 +124,21 @@ QMainWindow(parent)
     toolbar->addAction(QIcon("images/explore.png"), tr("&Explore (F2)"), this, SLOT(explore3D()))->setShortcut(QKeySequence(tr("F2")));
     toolbar->addAction(QIcon("images/render.png"), tr("&Quick\nrender (F5)"), this, SLOT(quickPreview()))->setShortcut(QKeySequence(tr("F5")));
     toolbar->addAction(QIcon("images/about.png"), tr("&About"), this, SLOT(showAboutDialog()));
-
+    
     setCentralWidget(tabs);
 
     setWindowTitle("Paysages 3D");
     setWindowIcon(QIcon("images/logo_32.png"));
+}
+
+bool MainWindow::event(QEvent* event)
+{
+    if (event->type() == QEvent::WindowActivate)
+    {
+        BasePreview::reviveAll();
+    }
+    
+    return QMainWindow::event(event);
 }
 
 void MainWindow::refreshAll()

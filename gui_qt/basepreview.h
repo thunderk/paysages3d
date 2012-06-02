@@ -17,6 +17,7 @@ public:
 
     static void initDrawers();
     static void stopDrawers();
+    static void reviveAll();
     
     void redraw();
     
@@ -114,6 +115,7 @@ public:
     void addChunk(PreviewChunk* chunk);
     void removeChunks(BasePreview* preview);
     void updateChunks(BasePreview* preview);
+    void updateAllChunks();
     void performOneThreadJob();
 
 private:

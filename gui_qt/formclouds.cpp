@@ -148,15 +148,13 @@ FormClouds::FormClouds(QWidget *parent):
     addPreview(new PreviewCloudsCoverage(parent), tr("Layer coverage (no lighting)"));
     addPreview(new PreviewCloudsColor(parent), tr("Color and lighting"));
 
-    addInputDouble(tr("Lower altitude"), &_layer.ymin, -10.0, 250.0, 0.5, 5.0);
-    addInputDouble(tr("Upper altitude"), &_layer.ymax, -10.0, 250.0, 0.5, 5.0);
-    addInputCurve(tr("Density / Altitude"), _layer.density_altitude, 0.0, 1.0, 0.0, 1.0);
+    addInputDouble(tr("Lower altitude"), &_layer.ymin, -10.0, 50.0, 0.5, 5.0);
+    addInputDouble(tr("Upper altitude"), &_layer.ymax, -10.0, 50.0, 0.5, 5.0);
+    addInputCurve(tr("Density by altitude"), _layer.density_altitude, 0.0, 1.0, 0.0, 1.0);
     addInputNoise(tr("Noise"), _layer.noise);
     addInputDouble(tr("Coverage"), &_layer.coverage, 0.0, 1.0, 0.01, 0.1);
     addInputDouble(tr("Scaling"), &_layer.scaling, 1.0, 100.0, 0.5, 5.0);
-    addInputColor(tr("Base color"), &_layer.material.base);
-    addInputDouble(tr("Light reflection"), &_layer.material.reflection, 0.0, 1.0, 0.01, 0.1);
-    addInputDouble(tr("Light reflection shininess"), &_layer.material.shininess, 0.0, 20.0, 0.1, 1.0);
+    addInputMaterial(tr("Material"), &_layer.material);
     addInputDouble(tr("Hardness to light"), &_layer.hardness, 0.0, 1.0, 0.01, 0.1);
     addInputDouble(tr("Transparency depth"), &_layer.transparencydepth, 0.0, 100.0, 0.5, 5.0);
     addInputDouble(tr("Light traversal depth"), &_layer.lighttraversal, 0.0, 100.0, 0.5, 5.0);

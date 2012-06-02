@@ -17,6 +17,7 @@ class BaseForm:public QWidget
 
 public:
     BaseForm(QWidget* parent, bool auto_apply=false, bool with_layers=false);
+    void hideButtons();
 
 signals:
     void configApplied();
@@ -44,7 +45,8 @@ protected:
     void addInputColorGradation(QString label, ColorGradation* value);
     void addInputNoise(QString label, NoiseGenerator* value);
     void addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax);
-
+    void addInputMaterial(QString label, SurfaceMaterial* material);
+    
     int currentLayer();
     void setLayerCount(int layer_count);
     

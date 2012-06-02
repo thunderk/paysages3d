@@ -7,6 +7,7 @@
 #include "inputcolorgradation.h"
 #include "inputnoise.h"
 #include "inputcurve.h"
+#include "inputmaterial.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -92,9 +93,14 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
 
     if (auto_apply)
     {
-        button_apply->hide();
-        button_revert->hide();
+        hideButtons();
     }
+}
+
+void BaseForm::hideButtons()
+{
+    button_apply->hide();
+    button_revert->hide();
 }
 
 void BaseForm::configChangeEvent()
@@ -240,6 +246,11 @@ void BaseForm::addInputNoise(QString label, NoiseGenerator* value)
 void BaseForm::addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax)
 {
     addInput(new InputCurve(form, label, value, xmin, xmax, ymin, ymax));
+}
+
+void BaseForm::addInputMaterial(QString label, SurfaceMaterial* material)
+{
+    addInput(new InputMaterial(form, label, material));
 }
 
 int BaseForm::currentLayer()

@@ -4,32 +4,32 @@
 <context>
     <name>BaseForm</name>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="38"/>
+        <location filename="../gui_qt/baseform.cpp" line="39"/>
         <source>Layers : </source>
         <translation>Niveaux :</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="46"/>
+        <location filename="../gui_qt/baseform.cpp" line="47"/>
         <source>Add layer</source>
         <translation>Ajouter un niveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="50"/>
+        <location filename="../gui_qt/baseform.cpp" line="51"/>
         <source>Delete layer</source>
         <translation>Supprimer un niveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="86"/>
+        <location filename="../gui_qt/baseform.cpp" line="87"/>
         <source>Apply</source>
         <translation>Appliquer</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="89"/>
+        <location filename="../gui_qt/baseform.cpp" line="90"/>
         <source>Revert</source>
         <translation>Annuler les modifications</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="268"/>
+        <location filename="../gui_qt/baseform.cpp" line="279"/>
         <source>Layer %1</source>
         <translation>Niveau %1</translation>
     </message>
@@ -118,6 +118,29 @@ Right click on a point to delete it.</source>
     <message>
         <location filename="../gui_qt/dialogcurve.cpp" line="62"/>
         <source>Paysages 3D - Curve editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DialogMaterial</name>
+    <message>
+        <location filename="../gui_qt/dialogmaterial.cpp" line="25"/>
+        <source>Validate</source>
+        <translation type="unfinished">Valider</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogmaterial.cpp" line="29"/>
+        <source>Reset</source>
+        <translation type="unfinished">Recommencer</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogmaterial.cpp" line="33"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Annuler</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogmaterial.cpp" line="37"/>
+        <source>Paysages 3D - Material editor</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -317,7 +340,7 @@ Maintenir Ctrl : Plus rapide</translation>
     </message>
     <message>
         <location filename="../gui_qt/formclouds.cpp" line="153"/>
-        <source>Density / Altitude</source>
+        <source>Density by altitude</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -337,36 +360,38 @@ Maintenir Ctrl : Plus rapide</translation>
     </message>
     <message>
         <location filename="../gui_qt/formclouds.cpp" line="157"/>
+        <source>Material</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Base color</source>
-        <translation>Couleur de base</translation>
+        <translation type="obsolete">Couleur de base</translation>
+    </message>
+    <message>
+        <source>Light reflection</source>
+        <translation type="obsolete">Facteur de réflexion de la lumière</translation>
+    </message>
+    <message>
+        <source>Light reflection shininess</source>
+        <translation type="obsolete">Concentration de la réflexion de lumière</translation>
     </message>
     <message>
         <location filename="../gui_qt/formclouds.cpp" line="158"/>
-        <source>Light reflection</source>
-        <translation>Facteur de réflexion de la lumière</translation>
-    </message>
-    <message>
-        <location filename="../gui_qt/formclouds.cpp" line="159"/>
-        <source>Light reflection shininess</source>
-        <translation>Concentration de la réflexion de lumière</translation>
-    </message>
-    <message>
-        <location filename="../gui_qt/formclouds.cpp" line="160"/>
         <source>Hardness to light</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="161"/>
+        <location filename="../gui_qt/formclouds.cpp" line="159"/>
         <source>Transparency depth</source>
         <translation>Distance de transparence</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="162"/>
+        <location filename="../gui_qt/formclouds.cpp" line="160"/>
         <source>Light traversal depth</source>
         <translation>Distance de traversée de la lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="163"/>
+        <location filename="../gui_qt/formclouds.cpp" line="161"/>
         <source>Minimum lighting</source>
         <translation>Eclairage minimal</translation>
     </message>
@@ -396,6 +421,29 @@ Maintenir Ctrl : Plus rapide</translation>
     <message>
         <source>Cancel</source>
         <translation type="obsolete">Annuler</translation>
+    </message>
+</context>
+<context>
+    <name>FormMaterial</name>
+    <message>
+        <location filename="../gui_qt/formmaterial.cpp" line="32"/>
+        <source>Base color</source>
+        <translation type="unfinished">Couleur de base</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formmaterial.cpp" line="33"/>
+        <source>Light reflection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formmaterial.cpp" line="34"/>
+        <source>Light reflection shininess</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formmaterial.cpp" line="37"/>
+        <source>Lighting preview</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -581,57 +629,59 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation>Echelle du bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="144"/>
         <source>Base color</source>
-        <translation>Couleur de base</translation>
+        <translation type="obsolete">Couleur de base</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="145"/>
         <source>Light reflection</source>
-        <translation>Réflexion de lumière</translation>
+        <translation type="obsolete">Réflexion de lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="146"/>
         <source>Light reflection shininess</source>
-        <translation>Concentration de la lumière réfléchie</translation>
+        <translation type="obsolete">Concentration de la lumière réfléchie</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="149"/>
+        <location filename="../gui_qt/formtextures.cpp" line="147"/>
         <source>Soft minimal height</source>
         <translation>Altitude minimal (adoucie)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="148"/>
+        <location filename="../gui_qt/formtextures.cpp" line="146"/>
         <source>Hard minimal height</source>
         <translation>Altitude minimale</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="151"/>
+        <location filename="../gui_qt/formtextures.cpp" line="144"/>
+        <source>Material</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formtextures.cpp" line="149"/>
         <source>Hard maximal height</source>
         <translation>Altitude maximale</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="150"/>
+        <location filename="../gui_qt/formtextures.cpp" line="148"/>
         <source>Soft maximal height</source>
         <translation>Altitude maximale (adoucie)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="153"/>
+        <location filename="../gui_qt/formtextures.cpp" line="151"/>
         <source>Soft minimal slope</source>
         <translation>Pente minimale (adoucie)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="152"/>
+        <location filename="../gui_qt/formtextures.cpp" line="150"/>
         <source>Hard minimal slope</source>
         <translation>Pente minimale</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="155"/>
+        <location filename="../gui_qt/formtextures.cpp" line="153"/>
         <source>Hard maximal slope</source>
         <translation>Pente maximale</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formtextures.cpp" line="154"/>
+        <location filename="../gui_qt/formtextures.cpp" line="152"/>
         <source>Soft maximal slope</source>
         <translation>Pente maximale (adoucie)</translation>
     </message>
@@ -654,57 +704,59 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation>Hauteur</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="181"/>
         <source>Surface color</source>
-        <translation>Couleur de la surface</translation>
+        <translation type="obsolete">Couleur de la surface</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="182"/>
         <source>Light reflection</source>
-        <translation>Réflection de la lumière</translation>
+        <translation type="obsolete">Réflection de la lumière</translation>
+    </message>
+    <message>
+        <source>Shininess to light</source>
+        <translation type="obsolete">Concentration de la lumière réfléchie</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formwater.cpp" line="181"/>
+        <source>Surface material</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../gui_qt/formwater.cpp" line="183"/>
-        <source>Shininess to light</source>
-        <translation>Concentration de la lumière réfléchie</translation>
-    </message>
-    <message>
-        <location filename="../gui_qt/formwater.cpp" line="184"/>
         <source>Transparency</source>
         <translation>Transparence</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="185"/>
+        <location filename="../gui_qt/formwater.cpp" line="184"/>
         <source>Reflection</source>
         <translation>Reflets</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="186"/>
+        <location filename="../gui_qt/formwater.cpp" line="185"/>
         <source>Transparency distance</source>
         <translation>Distance maximale de transparence</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="187"/>
+        <location filename="../gui_qt/formwater.cpp" line="182"/>
         <source>Depth color</source>
         <translation>Couleur en profondeur</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="188"/>
+        <location filename="../gui_qt/formwater.cpp" line="186"/>
         <source>Light-through distance</source>
         <translation>Distance de filtrage de la lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="189"/>
+        <location filename="../gui_qt/formwater.cpp" line="187"/>
         <source>Waves noise</source>
         <translation>Bruit des vagues</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="190"/>
+        <location filename="../gui_qt/formwater.cpp" line="188"/>
         <source>Waves height</source>
         <translation>Hauteur des vagues</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="191"/>
+        <location filename="../gui_qt/formwater.cpp" line="189"/>
         <source>Waves scaling</source>
         <translation>Echelle des vagues</translation>
     </message>
@@ -750,6 +802,14 @@ Maintenir Ctrl : Plus rapide</translation>
     <name>InputCurve</name>
     <message>
         <location filename="../gui_qt/inputcurve.cpp" line="58"/>
+        <source>Edit</source>
+        <translation type="unfinished">Editer</translation>
+    </message>
+</context>
+<context>
+    <name>InputMaterial</name>
+    <message>
+        <location filename="../gui_qt/inputmaterial.cpp" line="50"/>
         <source>Edit</source>
         <translation type="unfinished">Editer</translation>
     </message>
@@ -817,87 +877,87 @@ rapide (F5)</translation>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="145"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="155"/>
         <source>Do you want to start a new scenery ? Any unsaved changes will be lost.</source>
         <translation>Voulez-vous commencer un nouveau paysage ? Les modifications non sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="145"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="155"/>
         <source>Paysages 3D - New scenery</source>
         <translation>Paysages 3D - Nouvelle scène</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="155"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="165"/>
         <source>Paysages 3D - Choose a file to save the scenery</source>
         <translation>Paysages 3D - Choisissez un fichier pour enregistrer la scène</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="155"/>
-        <location filename="../gui_qt/mainwindow.cpp" line="181"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="165"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="191"/>
         <source>Paysages 3D Scenery (*.p3d)</source>
         <translation>Scène Paysages 3D (*.p3d)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="169"/>
-        <location filename="../gui_qt/mainwindow.cpp" line="172"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="179"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="182"/>
         <source>Paysages 3D - File saving error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="169"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="179"/>
         <source>Can&apos;t write specified file : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="172"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="182"/>
         <source>Unexpected error while saving file : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="179"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="189"/>
         <source>Do you want to load a scenery from file ? Any unsaved changes will be lost.</source>
         <translation>Voulez-vous charger une scène ? Les modifications nons sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="179"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="189"/>
         <source>Paysages 3D - Load scenery</source>
         <translation>Paysages 3D - Charger une scène</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="181"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="191"/>
         <source>Paysages 3D - Choose a scenery file to load</source>
         <translation>Paysages 3D - Choisissez un fichier de scène à charger</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="191"/>
-        <location filename="../gui_qt/mainwindow.cpp" line="194"/>
-        <location filename="../gui_qt/mainwindow.cpp" line="197"/>
-        <location filename="../gui_qt/mainwindow.cpp" line="200"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="201"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="204"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="207"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="210"/>
         <source>Paysages 3D - File loading error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="191"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="201"/>
         <source>Can&apos;t read specified file : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="194"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="204"/>
         <source>This file doesn&apos;t look like a Paysages 3D file : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="197"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="207"/>
         <source>This file was created with an incompatible Paysages 3D version : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="200"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="210"/>
         <source>Unexpected error while loading file : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="208"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="218"/>
         <source>A 3D landscape editing and rendering software.
 
 Authors :
@@ -1007,7 +1067,7 @@ GLib - http://www.gtk.org/
         <translation type="obsolete">Voulez-vous charger un paysage ? Les modifications nons sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="208"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="218"/>
         <source>Paysages 3D</source>
         <translation>Paysages 3D</translation>
     </message>

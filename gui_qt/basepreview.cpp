@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QTimer>
 #include <QWheelEvent>
+#include "tools.h"
 
 /*************** PreviewChunk ***************/
 class PreviewChunk
@@ -45,12 +46,16 @@ public:
         
         if (_need_render)
         {
-            _need_render = false;
-            
             if (!_preview->isVisible())
             {
                 return false;
             }
+            if (!_preview->window()->isActiveWindow())
+            {
+                return false;
+            }
+            
+            _need_render = false;
             
             QImage pixbuf = _preview->startChunkTransaction(_xstart, _ystart, _xsize, _ysize, &revision);
 
@@ -198,6 +203,22 @@ void PreviewDrawingManager::updateChunks(BasePreview* preview)
     }
 }
 
+void PreviewDrawingManager::updateAllChunks()
+{
+    for (int i = 0; i < _chunks.size(); i++)
+    {
+        PreviewChunk* chunk;
+        chunk = _chunks.at(i);
+        chunk->update();
+        _lock.lock();
+        if (!_updateQueue.contains(chunk))
+        {   
+            _updateQueue.prepend(chunk);
+        }
+        _lock.unlock();
+    }
+}
+
 void PreviewDrawingManager::performOneThreadJob()
 {
     PreviewChunk* chunk;
@@ -272,6 +293,12 @@ void BasePreview::initDrawers()
 void BasePreview::stopDrawers()
 {
     _drawing_manager->stopThreads();
+}
+
+void BasePreview::reviveAll()
+{
+    logDebug("Reviving all previews");
+    _drawing_manager->updateAllChunks();
 }
 
 void BasePreview::updateData()

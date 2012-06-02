@@ -178,13 +178,11 @@ FormWater::FormWater(QWidget *parent):
     addPreview(previewColor, QString(tr("Rendered preview (without/with lighting)")));
 
     addInputDouble(tr("Height"), &_definition.height, -10.0, 10.0, 0.1, 1.0);
-    addInputColor(tr("Surface color"), &_definition.material.base);
-    addInputDouble(tr("Light reflection"), &_definition.material.reflection, 0.0, 1.0, 0.01, 0.1);
-    addInputDouble(tr("Shininess to light"), &_definition.material.shininess, 0.0, 20.0, 0.1, 1.0);
+    addInputMaterial(tr("Surface material"), &_definition.material);
+    addInputColor(tr("Depth color"), &_definition.depth_color);
     addInputDouble(tr("Transparency"), &_definition.transparency, 0.0, 1.0, 0.001, 0.1);
     addInputDouble(tr("Reflection"), &_definition.reflection, 0.0, 1.0, 0.001, 0.1);
     addInputDouble(tr("Transparency distance"), &_definition.transparency_depth, 0.0, 20.0, 0.1, 1.0);
-    addInputColor(tr("Depth color"), &_definition.depth_color);
     addInputDouble(tr("Light-through distance"), &_definition.lighting_depth, 0.0, 20.0, 0.1, 1.0);
     addInputNoise(tr("Waves noise"), _definition.waves_noise);
     addInputDouble(tr("Waves height"), &_definition.waves_noise_height, 0.0, 0.1, 0.001, 0.01);

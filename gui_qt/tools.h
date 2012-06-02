@@ -12,4 +12,14 @@ static inline QColor colorToQColor(Color color)
     return QColor(color.r * 255.0, color.g * 255.0, color.b * 255.0, color.a * 255.0);
 }
 
+#ifndef NDEBUG
+#include <QDebug>
+static inline void logDebug(QString string)
+{
+    qDebug() << string;
+}
+#else
+#define logDebug(_x_) ;
+#endif
+
 #endif

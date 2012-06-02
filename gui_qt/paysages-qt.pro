@@ -6,7 +6,10 @@ INCLUDEPATH += .
 OBJECTS_DIR = ./obj/$$BUILDMODE/
 MOC_DIR = ./moc/$$BUILDMODE/
 DESTDIR = ../build/$$BUILDMODE/
+CONFIG -= release
 CONFIG += $$BUILDMODE
+
+release:DEFINES += NDEBUG
 
 LIBS += -lGLU
 unix:LIBS += -L$$DESTDIR -lpaysages

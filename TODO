@@ -9,7 +9,7 @@ Technology Preview 2 :
 - Add logarithmic sliders for some float values.
 - Save GUI config (views, render params).
 - Add an OSD ability on previews and use it for camera location and user landmarks.
-- Add a material editor dialog.
+- WIP : Add a material editor dialog.
 - Add a zone editor dialog for localized textures.
 - Add a terrain modifier dialog with zones.
 - Use the curve editor in noise editor
@@ -29,7 +29,6 @@ Technology Preview 2 :
    => Add toggles (for water...)
    => Max texture size should depend on GPU memory available
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
-- Pause previews drawing of main window when a dialog is opened.
 - Interrupt preview chunk renderings that will be discarded at commit, or that are no more visible.
 - Fix "RGB parameters out of range" (and segfault) on preview while moving render params fast in render tab.
    => May need to change the updateData system.
