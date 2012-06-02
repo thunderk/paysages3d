@@ -150,6 +150,7 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
     result.material.base.r = 0.7;
     result.material.base.g = 0.7;
     result.material.base.b = 0.7;
+    result.material.base.a = 1.0;
     result.material.reflection = 0.3;
     result.material.shininess = 0.8;
     result.hardness = 0.15;

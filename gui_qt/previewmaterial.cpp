@@ -43,8 +43,9 @@ QColor SmallMaterialPreview::getColor(double x, double y)
 {
     double dist = sqrt(x * x + y * y);
     Vector3 point;
+    Color color;
 
-    if (dist > 1.0)
+    if (dist >= 1.0)
     {
         return colorToQColor(COLOR_TRANSPARENT);
     }
@@ -62,8 +63,12 @@ QColor SmallMaterialPreview::getColor(double x, double y)
         }
 
         point = v3Normalize(point);
-
-        return colorToQColor(lightingApplyToSurface(&_lighting, &_renderer, point, point, *_material));
+        color = lightingApplyToSurface(&_lighting, &_renderer, point, point, *_material);
+        if (dist > 0.95)
+        {
+            color.a = (1.0 - dist) / 0.05;
+        }
+        return colorToQColor(color);
     }
 }
 
