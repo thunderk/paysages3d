@@ -50,8 +50,8 @@ public:
         _renderer.render_quality = 3;
         _renderer.applyTextures = _applyTextures;
         _renderer.getTerrainHeight = _getTerrainHeight;
-        _renderer.applyLightingToSurface = _applyLightingToSurface;
-        _renderer.maskLight = _maskLight;
+        _renderer.alterLight = _alterLight;
+        _renderer.getLightStatus = _getLightStatus;
         _renderer.camera_location.x = 0.0;
         _renderer.camera_location.y = 50.0;
         _renderer.camera_location.z = 0.0;
@@ -124,16 +124,17 @@ private:
     {
         return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
     }
-    
-    static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+
+    static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
     {
-        return lightingApplyToSurface((LightingDefinition*)renderer->customData[2], renderer, location, normal, material);
+        light->color = terrainLightFilter((TerrainDefinition*)(renderer->customData[0]), renderer, light->color, location, v3Scale(light->direction, -1000.0), v3Scale(light->direction, -1.0));
     }
     
-    static Color _maskLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
+    static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
     {
-        return terrainLightFilter((TerrainDefinition*)(renderer->customData[0]), renderer, light_color, at_location, light_location, direction_to_light);
+        lightingGetStatus((LightingDefinition*)renderer->customData[2], renderer, location, status);
     }
+    
 };
 
 /**************** Form ****************/

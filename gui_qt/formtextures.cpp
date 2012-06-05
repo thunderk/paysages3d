@@ -89,7 +89,7 @@ public:
         
         _renderer = rendererCreate();
         _renderer.render_quality = 3;
-        _renderer.applyLightingToSurface = _applyLightingToSurface;
+        _renderer.getLightStatus = _getLightStatus;
         _renderer.customData[0] = &_lighting;
         _renderer.camera_location.x = 0.0;
         _renderer.camera_location.y = 20.0;
@@ -115,15 +115,15 @@ protected:
         zoneCopy(_zone, _preview_layer.zone);
     }
 private:
-    static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
-    {
-        return lightingApplyToSurface((LightingDefinition*)renderer->customData[0], renderer, location, normal, material);
-    }
-    
     Zone* _zone;
     Renderer _renderer;
     TextureLayerDefinition _preview_layer;
     LightingDefinition _lighting;
+    
+    static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
+    {
+        lightingGetStatus((LightingDefinition*)renderer->customData[0], renderer, location, status);
+    }
 };
 
 /**************** Form ****************/

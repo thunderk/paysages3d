@@ -236,25 +236,34 @@ void sceneryRenderFirstPass(Renderer* renderer)
 
 
 /******* Standard renderer *********/
-static Color _filterLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
+static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
 {
-    // TODO atmosphere filter
-    light_color = waterLightFilter(&_water, renderer, light_color, at_location, light_location, direction_to_light);
-
-    return light_color;
+    Vector3 light_location;
+    Vector3 direction_to_light;
+    
+    direction_to_light = v3Normalize(v3Scale(light->direction, -1.0));
+    light_location = v3Add(location, v3Scale(direction_to_light, 1000.0));
+    
+    if (light->filtered)
+    {
+        // TODO atmosphere filter
+        light->color = waterLightFilter(&_water, renderer, light->color, location, light_location, direction_to_light);
+    }
+    if (light->masked)
+    {
+        light->color = terrainLightFilter(&_terrain, renderer, light->color, location, light_location, direction_to_light);
+        light->color = cloudsFilterLight(&_clouds, renderer, light->color, location, light_location, direction_to_light);
+    }
 }
 
-static Color _maskLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
+static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
 {
-    light_color = terrainLightFilter(&_terrain, renderer, light_color, at_location, light_location, direction_to_light);
-    light_color = cloudsFilterLight(&_clouds, renderer, light_color, at_location, light_location, direction_to_light);
-
-    return light_color;
+    lightingGetStatus(&_lighting, renderer, location, status);
 }
 
-static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+static Color _applyLightStatus(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material)
 {
-    return lightingApplyToSurface(&_lighting, renderer, location, normal, material);
+    return lightingApplyStatusToSurface(renderer, status, location, normal, material);
 }
 
 static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
@@ -333,9 +342,9 @@ Renderer sceneryCreateStandardRenderer()
     cameraCopyDefinition(&_camera, &result.render_camera);
     result.camera_location = _camera.location;
 
-    result.filterLight = _filterLight;
-    result.maskLight = _maskLight;
-    result.applyLightingToSurface = _applyLightingToSurface;
+    result.alterLight = _alterLight;
+    result.getLightStatus = _getLightStatus;
+    result.applyLightStatus = _applyLightStatus;
     result.rayWalking = _rayWalking;
     result.getTerrainHeight = _getTerrainHeight;
     result.getWaterHeightInfo = _getWaterHeightInfo;

@@ -12,6 +12,7 @@ InputBoolean::InputBoolean(QWidget* form, QString label, int* value) : BaseInput
     connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(applyValue()));
 
     _preview = new QLabel(form);
+    ((QLabel*)_preview)->setAlignment(Qt::AlignCenter);
     _control = checkbox;
 }
 

@@ -11,6 +11,9 @@ extern "C" {
 struct RenderFragment;
 struct Renderer;
 
+typedef struct LightDefinition LightDefinition;
+typedef struct LightStatus LightStatus;
+
 typedef int(*f_RenderFragmentCallback)(struct RenderFragment*, struct Renderer* renderer, void* data);
 
 typedef struct

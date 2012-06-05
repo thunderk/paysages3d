@@ -150,24 +150,15 @@ void lightingDeleteLight(LightingDefinition* definition, int light)
 
 static int _getLightStatus(LightDefinition* definition, Renderer* renderer, Vector3 location, LightDefinition* result)
 {
-    Color light;
-    Vector3 direction_inv;
+    *result = *definition;
     
-    light = definition->color;
-    direction_inv = v3Scale(definition->direction, -1.0);
-    if (definition->masked)
+    if (definition->masked || definition->filtered)
     {
-        light = renderer->maskLight(renderer, light, location, v3Add(location, v3Scale(direction_inv, 1000.0)), direction_inv);
-    }
-    if (definition->filtered)
-    {
-        light = renderer->filterLight(renderer, light, location, v3Add(location, v3Scale(direction_inv, 1000.0)), direction_inv);
+        renderer->alterLight(renderer, result, location);
     }
     
-    if (light.r > 0.0 || light.g > 0.0 || light.b > 0.0)
+    if (result->color.r > 0.0 || result->color.g > 0.0 || result->color.b > 0.0)
     {
-        *result = *definition;
-        result->color = light;
         return 1;
     }
     else

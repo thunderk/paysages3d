@@ -307,12 +307,12 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormClouds</name>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="148"/>
+        <location filename="../gui_qt/formclouds.cpp" line="155"/>
         <source>Layer coverage (no lighting)</source>
         <translation>Couverture de la couche (sans éclairage)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="149"/>
+        <location filename="../gui_qt/formclouds.cpp" line="156"/>
         <source>Color and lighting</source>
         <translation>Echantillon éclairé</translation>
     </message>
@@ -329,37 +329,37 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Altitude de fin</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="151"/>
+        <location filename="../gui_qt/formclouds.cpp" line="158"/>
         <source>Lower altitude</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="152"/>
+        <location filename="../gui_qt/formclouds.cpp" line="159"/>
         <source>Upper altitude</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="153"/>
+        <location filename="../gui_qt/formclouds.cpp" line="160"/>
         <source>Density by altitude</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="154"/>
+        <location filename="../gui_qt/formclouds.cpp" line="161"/>
         <source>Noise</source>
         <translation>Bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="155"/>
+        <location filename="../gui_qt/formclouds.cpp" line="162"/>
         <source>Coverage</source>
         <translation>Couverture</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="156"/>
+        <location filename="../gui_qt/formclouds.cpp" line="163"/>
         <source>Scaling</source>
         <translation>Echelle</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="157"/>
+        <location filename="../gui_qt/formclouds.cpp" line="164"/>
         <source>Material</source>
         <translation type="unfinished"></translation>
     </message>
@@ -376,22 +376,22 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Concentration de la réflexion de lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="158"/>
+        <location filename="../gui_qt/formclouds.cpp" line="165"/>
         <source>Hardness to light</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="159"/>
+        <location filename="../gui_qt/formclouds.cpp" line="166"/>
         <source>Transparency depth</source>
         <translation>Distance de transparence</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="160"/>
+        <location filename="../gui_qt/formclouds.cpp" line="167"/>
         <source>Light traversal depth</source>
         <translation>Distance de traversée de la lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="161"/>
+        <location filename="../gui_qt/formclouds.cpp" line="168"/>
         <source>Minimum lighting</source>
         <translation>Eclairage minimal</translation>
     </message>
@@ -568,7 +568,7 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormTerrain</name>
     <message>
-        <location filename="../gui_qt/formterrain.cpp" line="147"/>
+        <location filename="../gui_qt/formterrain.cpp" line="148"/>
         <source>Height preview (normalized)</source>
         <translation>Aperçu de la hauteur (normalisée)</translation>
     </message>
@@ -577,22 +577,22 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Aperçu du rendu (sans ombres)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formterrain.cpp" line="148"/>
+        <location filename="../gui_qt/formterrain.cpp" line="149"/>
         <source>Lighted preview (no texture)</source>
         <translation>Aperçu éclairé (sans texture)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formterrain.cpp" line="150"/>
+        <location filename="../gui_qt/formterrain.cpp" line="151"/>
         <source>Noise</source>
         <translation>Bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formterrain.cpp" line="151"/>
+        <location filename="../gui_qt/formterrain.cpp" line="152"/>
         <source>Height</source>
         <translation>Hauteur</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formterrain.cpp" line="152"/>
+        <location filename="../gui_qt/formterrain.cpp" line="153"/>
         <source>Scaling</source>
         <translation>Echelle</translation>
     </message>
@@ -689,17 +689,16 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormWater</name>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="179"/>
+        <location filename="../gui_qt/formwater.cpp" line="173"/>
         <source>Coverage preview</source>
         <translation>Aperçu de la couverture</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="180"/>
         <source>Rendered preview (without/with lighting)</source>
-        <translation>Aperçu du rendu (sans/avec éclairage)</translation>
+        <translation type="obsolete">Aperçu du rendu (sans/avec éclairage)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="182"/>
+        <location filename="../gui_qt/formwater.cpp" line="176"/>
         <source>Height</source>
         <translation>Hauteur</translation>
     </message>
@@ -716,47 +715,52 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Concentration de la lumière réfléchie</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="183"/>
+        <location filename="../gui_qt/formwater.cpp" line="177"/>
         <source>Surface material</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="185"/>
+        <location filename="../gui_qt/formwater.cpp" line="179"/>
         <source>Transparency</source>
         <translation>Transparence</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="186"/>
+        <location filename="../gui_qt/formwater.cpp" line="180"/>
         <source>Reflection</source>
         <translation>Reflets</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="187"/>
+        <location filename="../gui_qt/formwater.cpp" line="181"/>
         <source>Transparency distance</source>
         <translation>Distance maximale de transparence</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="184"/>
+        <location filename="../gui_qt/formwater.cpp" line="178"/>
         <source>Depth color</source>
         <translation>Couleur en profondeur</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="188"/>
+        <location filename="../gui_qt/formwater.cpp" line="174"/>
+        <source>Rendered preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formwater.cpp" line="182"/>
         <source>Light-through distance</source>
         <translation>Distance de filtrage de la lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="189"/>
+        <location filename="../gui_qt/formwater.cpp" line="183"/>
         <source>Waves noise</source>
         <translation>Bruit des vagues</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="190"/>
+        <location filename="../gui_qt/formwater.cpp" line="184"/>
         <source>Waves height</source>
         <translation>Hauteur des vagues</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formwater.cpp" line="191"/>
+        <location filename="../gui_qt/formwater.cpp" line="185"/>
         <source>Waves scaling</source>
         <translation>Echelle des vagues</translation>
     </message>
@@ -764,12 +768,12 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>InputBoolean</name>
     <message>
-        <location filename="../gui_qt/inputboolean.cpp" line="22"/>
+        <location filename="../gui_qt/inputboolean.cpp" line="23"/>
         <source>Yes</source>
         <translation>Oui</translation>
     </message>
     <message>
-        <location filename="../gui_qt/inputboolean.cpp" line="26"/>
+        <location filename="../gui_qt/inputboolean.cpp" line="27"/>
         <source>No</source>
         <translation>Non</translation>
     </message>

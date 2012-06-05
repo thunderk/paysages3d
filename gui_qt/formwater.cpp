@@ -76,7 +76,7 @@ public:
 
         _renderer = rendererCreate();
         _renderer.rayWalking = _rayWalking;
-        _renderer.applyLightingToSurface = _applyLightingToSurface;
+        _renderer.getLightStatus = _getLightStatus;
         _renderer.customData[0] = &_water;
         _renderer.customData[1] = &_lighting;
         
@@ -140,7 +140,7 @@ private:
             y = location.y + direction.y * (0.0 - location.z) / direction.z;
 
             //if (((int)ceil(x * 0.2) % 2 == 0) ^ ((int)ceil(y * 0.2 - 0.5) % 2 == 0))
-            if (y * 0.1 > sin(x - M_PI_2))
+            if (y * 0.1 > x * 0.03 + sin(x - M_PI_2))
             {
                 result.hit_color = COLOR_WHITE;
             }
@@ -155,16 +155,10 @@ private:
 
         return result;
     }
-    static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+
+    static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
     {
-        if (location.x >= 0.0)
-        {
-            return lightingApplyToSurface((LightingDefinition*)renderer->customData[1], renderer, location, normal, material);
-        }
-        else
-        {
-            return material.base;
-        }
+        lightingGetStatus((LightingDefinition*)renderer->customData[1], renderer, location, status);
     }
 };
 
@@ -177,7 +171,7 @@ FormWater::FormWater(QWidget *parent):
     previewCoverage = new PreviewWaterCoverage(this);
     previewColor = new PreviewWaterColor(this);
     addPreview(previewCoverage, QString(tr("Coverage preview")));
-    addPreview(previewColor, QString(tr("Rendered preview (without/with lighting)")));
+    addPreview(previewColor, QString(tr("Rendered preview")));
 
     addInputDouble(tr("Height"), &_definition.height, -10.0, 10.0, 0.1, 1.0);
     addInputMaterial(tr("Surface material"), &_definition.material);

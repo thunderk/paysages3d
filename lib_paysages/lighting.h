@@ -11,7 +11,7 @@ extern "C" {
 
 #define LIGHTING_MAX_LIGHTS 10
 
-typedef struct
+struct LightDefinition
 {
     Vector3 direction;  /* Global direction of the light */
     Color color;        /* Main color of the light */
@@ -19,7 +19,7 @@ typedef struct
     int filtered;       /* Should the light be filtered (by atmosphere, water...) */
     int masked;         /* Should the light be masked (cast shadows..) */
     double amplitude;   /* Angle amplitude of the light source (for multi-sampling, pi / 2.0 for skydome) */
-} LightDefinition;
+};
 
 typedef struct
 {
@@ -30,11 +30,11 @@ typedef struct
     LightDefinition _autolights[LIGHTING_MAX_LIGHTS];
 } LightingDefinition;
 
-typedef struct
+struct LightStatus
 {
     int nblights;
     LightDefinition lights[LIGHTING_MAX_LIGHTS * 2];
-} LightStatus;
+};
 
 void lightingInit();
 void lightingQuit();

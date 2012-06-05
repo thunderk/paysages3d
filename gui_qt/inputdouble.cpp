@@ -23,6 +23,7 @@ InputDouble::InputDouble(QWidget* form, QString label, double* value, double min
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(applyValue()));
 
     _preview = new QLabel(form);
+    ((QLabel*)_preview)->setAlignment(Qt::AlignCenter);
     _control = slider;
 }
 

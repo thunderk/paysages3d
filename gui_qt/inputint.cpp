@@ -22,6 +22,7 @@ InputInt::InputInt(QWidget* form, QString label, int* value, int min, int max, i
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(applyValue()));
 
     _preview = new QLabel(form);
+    ((QLabel*)_preview)->setAlignment(Qt::AlignCenter);
     _control = slider;
 }
 

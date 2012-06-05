@@ -153,9 +153,9 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
     result.material.base.a = 1.0;
     result.material.reflection = 0.3;
     result.material.shininess = 0.8;
-    result.hardness = 0.15;
+    result.hardness = 0.25;
     result.transparencydepth = 1.5;
-    result.lighttraversal = 3.0;
+    result.lighttraversal = 7.0;
     result.minimumlight = 0.4;
     result.scaling = 3.5;
     result.coverage = 0.45;
@@ -487,6 +487,8 @@ static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, 
 static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* renderer, Vector3 position, double detail)
 {
     Vector3 normal;
+    Color col1, col2;
+    LightStatus light;
 
     normal = _getNormal(definition, position, 3.0);
     if (renderer->render_quality > 5)
@@ -499,8 +501,17 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
         normal = v3Add(normal, _getNormal(definition, position, 0.5));
     }
     normal = v3Scale(v3Normalize(normal), definition->hardness);
+    
+    renderer->getLightStatus(renderer, &light, position);
+    col1 = renderer->applyLightStatus(renderer, &light, position, normal, definition->material);
+    col2 = renderer->applyLightStatus(renderer, &light, position, v3Scale(normal, -1.0), definition->material);
+    
+    col1.r = (col1.r + col2.r) / 2.0;
+    col1.g = (col1.g + col2.g) / 2.0;
+    col1.b = (col1.b + col2.b) / 2.0;
+    col1.a = (col1.a + col2.a) / 2.0;
 
-    return renderer->applyLightingToSurface(renderer, position, normal, definition->material);
+    return col1;
 }
 
 Color cloudsGetLayerColor(CloudsLayerDefinition* definition, Renderer* renderer, Vector3 start, Vector3 end)

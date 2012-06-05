@@ -39,9 +39,9 @@ struct Renderer
     Color (*applyClouds)(Renderer* renderer, Color base, Vector3 start, Vector3 end);
 
     /* Lighting related */
-    Color (*filterLight)(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light);
-    Color (*maskLight)(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light);
-    Color (*applyLightingToSurface)(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material);
+    void (*alterLight)(Renderer* renderer, LightDefinition* light, Vector3 location);
+    void (*getLightStatus)(Renderer* renderer, LightStatus* status, Vector3 location);
+    Color (*applyLightStatus)(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material);
 
     /* Custom data */
     void* customData[10];

@@ -54,19 +54,18 @@ static void _pushQuad(Renderer* renderer, Vertex* v1, Vertex* v2, Vertex* v3, Ve
     renderer->pushTriangle(renderer, v4, v1, v3);
 }
 
-static Color _filterLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
+static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
 {
-    return light_color;
 }
 
-static Color _maskLight(Renderer* renderer, Color light_color, Vector3 at_location, Vector3 light_location, Vector3 direction_to_light)
+static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
 {
-    return light_color;
+    status->nblights = 0;
 }
 
-static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
+static Color _applyLightStatus(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material)
 {
-    return material.base;
+    return lightingApplyStatusToSurface(renderer, status, location, normal, material);
 }
 
 static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
@@ -128,9 +127,9 @@ Renderer rendererCreate()
     result.applyAtmosphere = _applyAtmosphere;
     result.applyClouds = _applyClouds;
 
-    result.filterLight = _filterLight;
-    result.maskLight = _maskLight;
-    result.applyLightingToSurface = _applyLightingToSurface;
+    result.alterLight = _alterLight;
+    result.getLightStatus = _getLightStatus;
+    result.applyLightStatus = _applyLightStatus;
 
     return result;
 }
