@@ -26,6 +26,8 @@ void skySave(PackStream* stream, SkyDefinition* definition)
     packWriteDouble(stream, &definition->daytime);
     colorGradationSave(stream, definition->sun_color);
     packWriteDouble(stream, &definition->sun_radius);
+    packWriteDouble(stream, &definition->sun_halo_size);
+    curveSave(stream, definition->sun_halo_profile);
     colorGradationSave(stream, definition->zenith_color);
     colorGradationSave(stream, definition->haze_color);
     packWriteDouble(stream, &definition->haze_height);
@@ -37,6 +39,8 @@ void skyLoad(PackStream* stream, SkyDefinition* definition)
     packReadDouble(stream, &definition->daytime);
     colorGradationLoad(stream, definition->sun_color);
     packReadDouble(stream, &definition->sun_radius);
+    packReadDouble(stream, &definition->sun_halo_size);
+    curveLoad(stream, definition->sun_halo_profile);
     colorGradationLoad(stream, definition->zenith_color);
     colorGradationLoad(stream, definition->haze_color);
     packReadDouble(stream, &definition->haze_height);
@@ -52,6 +56,8 @@ SkyDefinition skyCreateDefinition()
     def.daytime = 0.0;
     def.sun_color = colorGradationCreate();
     def.sun_radius = 1.0;
+    def.sun_halo_size = 0.0;
+    def.sun_halo_profile = curveCreate();
     def.zenith_color = colorGradationCreate();
     def.haze_color = colorGradationCreate();
     def.haze_height = 0.0;
@@ -64,6 +70,7 @@ SkyDefinition skyCreateDefinition()
 
 void skyDeleteDefinition(SkyDefinition* definition)
 {
+    curveDelete(definition->sun_halo_profile);
     colorGradationDelete(definition->sun_color);
     colorGradationDelete(definition->zenith_color);
     colorGradationDelete(definition->haze_color);
@@ -73,8 +80,11 @@ void skyCopyDefinition(SkyDefinition* source, SkyDefinition* destination)
 {
     destination->daytime = source->daytime;
     destination->sun_radius = source->sun_radius;
+    destination->sun_halo_size = source->sun_halo_size;
     destination->haze_height = source->haze_height;
     destination->haze_smoothing = source->haze_smoothing;
+    
+    curveCopy(source->sun_halo_profile, destination->sun_halo_profile);
     
     colorGradationCopy(source->sun_color, destination->sun_color);
     colorGradationCopy(source->zenith_color, destination->zenith_color);
@@ -152,17 +162,17 @@ Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Ve
     dist = v3Norm(v3Sub(look, sun_position));
 
     sky_color = colorGradationGet(definition->_sky_gradation, look.y * 0.5 + 0.5);
-    if (dist < definition->sun_radius)
+    if (dist < definition->sun_radius + definition->sun_halo_size)
     {
-        dist = dist / definition->sun_radius;
         sun_color = colorGradationGet(definition->sun_color, definition->daytime);
-        if (dist < 0.9)
+        if (dist <= definition->sun_radius)
         {
             return sun_color;
         }
         else
         {
-            sun_color.a = (1.0 - dist) / 0.1;
+            dist = (dist - definition->sun_radius) / definition->sun_halo_size;
+            sun_color.a = curveGetValue(definition->sun_halo_profile, dist);
             colorMask(&sky_color, &sun_color);
             return sky_color;
         }

@@ -15,6 +15,8 @@ typedef struct
     double daytime;
     ColorGradation* sun_color;
     double sun_radius;
+    double sun_halo_size;
+    Curve* sun_halo_profile;
     ColorGradation* zenith_color;
     ColorGradation* haze_color;
     double haze_height;

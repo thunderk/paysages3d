@@ -90,7 +90,9 @@ FormSky::FormSky(QWidget *parent):
 
     addInputDouble(tr("Day time"), &_definition.daytime, 0.0, 1.0, 0.01, 0.1);
     addInputColorGradation(tr("Sun color"), _definition.sun_color);
-    addInputDouble(tr("Sun radius"), &_definition.sun_radius, 0.0, 0.3, 0.01, 0.03);
+    addInputDouble(tr("Sun radius"), &_definition.sun_radius, 0.0, 0.4, 0.004, 0.04);
+    addInputDouble(tr("Sun halo radius"), &_definition.sun_halo_size, 0.0, 0.4, 0.004, 0.04);
+    addInputCurve(tr("Sun halo profile"), _definition.sun_halo_profile, 0.0, 1.0, 0.0, 1.0);
     addInputColorGradation(tr("Zenith color"), _definition.zenith_color);
     addInputColorGradation(tr("Haze color"), _definition.haze_color);
     addInputDouble(tr("Haze height"), &_definition.haze_height, 0.0, 1.0, 0.01, 0.1);

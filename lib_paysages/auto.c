@@ -127,6 +127,11 @@ void autoGenRealisticLandscape(int seed)
     sky.haze_height = 0.75;
     sky.haze_smoothing = 0.3;
     sky.sun_radius = 0.02;
+    sky.sun_halo_size = 0.3;
+    curveClear(sky.sun_halo_profile);
+    curveQuickAddPoint(sky.sun_halo_profile, 0.0, 1.0);
+    curveQuickAddPoint(sky.sun_halo_profile, 0.1, 0.2);
+    curveQuickAddPoint(sky.sun_halo_profile, 1.0, 0.0);
     scenerySetSky(&sky);
     skyDeleteDefinition(&sky);
 
