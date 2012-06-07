@@ -155,16 +155,27 @@ void BaseForm::applyConfig()
 void BaseForm::layerAddClicked()
 {
     layerAddedEvent();
+    
+    button_apply->setEnabled(true);
+    button_revert->setEnabled(true);
 }
 
 void BaseForm::layerDelClicked()
 {
     layerDeletedEvent(layer_list->currentIndex());
+    
+    button_apply->setEnabled(true);
+    button_revert->setEnabled(true);
 }
 
 void BaseForm::layerListChanged()
 {
+    bool changed = button_apply->isEnabled();
+    
     layerSelectedEvent(layer_list->currentIndex());
+    
+    button_apply->setEnabled(changed);
+    button_revert->setEnabled(changed);
 }
 
 void BaseForm::addPreview(BasePreview* preview, QString label)

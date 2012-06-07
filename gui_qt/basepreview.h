@@ -117,6 +117,7 @@ public:
     void updateChunks(BasePreview* preview);
     void updateAllChunks();
     void performOneThreadJob();
+    int chunkCount();
 
 private:
     int _thread_count;

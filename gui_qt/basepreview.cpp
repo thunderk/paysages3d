@@ -169,6 +169,7 @@ void PreviewDrawingManager::addChunk(PreviewChunk* chunk)
 
 void PreviewDrawingManager::removeChunks(BasePreview* preview)
 {
+    int removed = 0;
     for (int i = 0; i < _chunks.size(); i++)
     {
         PreviewChunk* chunk;
@@ -180,9 +181,12 @@ void PreviewDrawingManager::removeChunks(BasePreview* preview)
             _updateQueue.removeAll(chunk);
             _lock.unlock();
             
+            removed++;
             i--;
         }
     }
+    
+    logDebug(QString("[Previews] %1 chunks removed, %2 remaining").arg(removed).arg(_chunks.size()));
 }
 
 void PreviewDrawingManager::updateChunks(BasePreview* preview)
@@ -239,6 +243,11 @@ void PreviewDrawingManager::performOneThreadJob()
     {
         chunk->render();
     }        
+}
+
+int PreviewDrawingManager::chunkCount()
+{
+    return _chunks.size();
 }
 
 /*************** BasePreview ***************/
@@ -301,7 +310,7 @@ void BasePreview::stopDrawers()
 
 void BasePreview::reviveAll()
 {
-    logDebug("Reviving all previews");
+    logDebug("[Previews] Reviving all previews");
     _drawing_manager->updateAllChunks();
 }
 
@@ -400,6 +409,7 @@ void BasePreview::showEvent(QShowEvent* event)
 void BasePreview::resizeEvent(QResizeEvent* event)
 {
     QImage* image;
+    int added = 0;
 
     this->lock_drawing->lock();
 
@@ -418,8 +428,10 @@ void BasePreview::resizeEvent(QResizeEvent* event)
         for (int y = 0; y < _height; y += 32)
         {
             _drawing_manager->addChunk(new PreviewChunk(this, x, y, x + 32 > _width ? _width - x : 32, y + 32 > _height ? _height - y : 32));
+            added++;
         }
     }
+    logDebug(QString("[Previews] %1 chunks added, %2 total").arg(added).arg(_drawing_manager->chunkCount()));
 
     delete image;
 
