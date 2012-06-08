@@ -1,4 +1,4 @@
-#include "widgetwanderer.h"
+#include "widgetexplorer.h"
 
 #include <QGLWidget>
 #include <QKeyEvent>
@@ -13,7 +13,7 @@
 class ChunkMaintenanceThread:public QThread
 {
 public:
-    ChunkMaintenanceThread(WidgetWanderer* wanderer)
+    ChunkMaintenanceThread(WidgetExplorer* wanderer)
     {
         _wanderer = wanderer;
         _running = true;
@@ -41,7 +41,7 @@ protected:
     
 private:
     bool _running;
-    WidgetWanderer* _wanderer;
+    WidgetExplorer* _wanderer;
 };
 
 static QVector<ChunkMaintenanceThread*> _threads;
@@ -66,7 +66,7 @@ static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 loc
     lightingGetStatus((LightingDefinition*)renderer->customData[2], renderer, location, status);
 }
 
-WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
+WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     QGLWidget(parent)
 {
     setMinimumSize(400, 300);
@@ -122,7 +122,7 @@ WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
     _last_mouse_y = 0;
 }
 
-WidgetWanderer::~WidgetWanderer()
+WidgetExplorer::~WidgetExplorer()
 {
     stopThreads();
     
@@ -133,7 +133,7 @@ WidgetWanderer::~WidgetWanderer()
     waterDeleteDefinition(&_water);
 }
 
-void WidgetWanderer::startThreads()
+void WidgetExplorer::startThreads()
 {
     int nbcore;
     
@@ -155,7 +155,7 @@ void WidgetWanderer::startThreads()
     }
 }
 
-void WidgetWanderer::stopThreads()
+void WidgetExplorer::stopThreads()
 {
     for (int i = 0; i < _threads.count(); i++)
     {
@@ -173,7 +173,7 @@ bool _cmpChunks(const BaseExplorerChunk* c1, const BaseExplorerChunk* c2)
     return c1->priority > c2->priority;
 }
 
-void WidgetWanderer::performChunksMaintenance()
+void WidgetExplorer::performChunksMaintenance()
 {
     BaseExplorerChunk* chunk;
     
@@ -204,18 +204,18 @@ void WidgetWanderer::performChunksMaintenance()
     _lock_chunks.unlock();
 }
 
-void WidgetWanderer::resetCamera()
+void WidgetExplorer::resetCamera()
 {
     cameraCopyDefinition(_base_camera, &_current_camera);
     updateGL();
 }
 
-void WidgetWanderer::validateCamera()
+void WidgetExplorer::validateCamera()
 {
     cameraCopyDefinition(&_current_camera, _base_camera);
 }
 
-void WidgetWanderer::keyPressEvent(QKeyEvent* event)
+void WidgetExplorer::keyPressEvent(QKeyEvent* event)
 {
     double factor;
 
@@ -269,7 +269,7 @@ void WidgetWanderer::keyPressEvent(QKeyEvent* event)
     }
 }
 
-void WidgetWanderer::mousePressEvent(QMouseEvent* event)
+void WidgetExplorer::mousePressEvent(QMouseEvent* event)
 {
     _last_mouse_x = event->x();
     _last_mouse_y = event->y();
@@ -277,7 +277,7 @@ void WidgetWanderer::mousePressEvent(QMouseEvent* event)
     event->ignore();
 }
 
-void WidgetWanderer::mouseMoveEvent(QMouseEvent* event)
+void WidgetExplorer::mouseMoveEvent(QMouseEvent* event)
 {
     double factor;
 
@@ -318,7 +318,7 @@ void WidgetWanderer::mouseMoveEvent(QMouseEvent* event)
     _last_mouse_y = event->y();
 }
 
-void WidgetWanderer::wheelEvent(QWheelEvent* event)
+void WidgetExplorer::wheelEvent(QWheelEvent* event)
 {
     double factor;
 
@@ -345,7 +345,7 @@ void WidgetWanderer::wheelEvent(QWheelEvent* event)
     event->accept();
 }
 
-void WidgetWanderer::timerEvent(QTimerEvent *event)
+void WidgetExplorer::timerEvent(QTimerEvent *event)
 {
     if (_updated)
     {
@@ -362,7 +362,7 @@ void WidgetWanderer::timerEvent(QTimerEvent *event)
     _lock_chunks.unlock();
 }
 
-void WidgetWanderer::initializeGL()
+void WidgetExplorer::initializeGL()
 {
     glClearColor(0.0, 0.0, 0.0, 0.0);
 
@@ -385,7 +385,7 @@ void WidgetWanderer::initializeGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void WidgetWanderer::resizeGL(int w, int h)
+void WidgetExplorer::resizeGL(int w, int h)
 {
     cameraSetRenderSize(&_current_camera, w, h);
     
@@ -398,7 +398,7 @@ void WidgetWanderer::resizeGL(int w, int h)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void WidgetWanderer::paintGL()
+void WidgetExplorer::paintGL()
 {
     QTime start_time;
     double frame_time;

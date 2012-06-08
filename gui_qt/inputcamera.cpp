@@ -5,7 +5,7 @@
 #include <QPainter>
 #include <QColorDialog>
 
-#include "dialogwanderer.h"
+#include "dialogexplorer.h"
 
 InputCamera::InputCamera(QWidget* form, QString label, CameraDefinition* value):BaseInput(form, label)
 {
@@ -40,7 +40,7 @@ void InputCamera::editCamera()
 {
     int result;
     
-    DialogWanderer* dialog = new DialogWanderer(_control, _value, true);
+    DialogExplorer* dialog = new DialogExplorer(_control, _value, true);
     result = dialog->exec();
 
     delete dialog;

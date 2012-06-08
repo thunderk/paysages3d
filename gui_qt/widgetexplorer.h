@@ -1,5 +1,5 @@
-#ifndef _PAYSAGES_QT_WIDGETWANDERER_H_
-#define _PAYSAGES_QT_WIDGETWANDERER_H_
+#ifndef _PAYSAGES_QT_WIDGETEXPLORER_H_
+#define _PAYSAGES_QT_WIDGETEXPLORER_H_
 
 #include <QGLWidget>
 #include "baseexplorerchunk.h"
@@ -11,12 +11,12 @@
 #include "../lib_paysages/textures.h"
 #include "../lib_paysages/lighting.h"
 
-class WidgetWanderer : public QGLWidget
+class WidgetExplorer : public QGLWidget
 {
     Q_OBJECT
 public:
-    WidgetWanderer(QWidget* parent, CameraDefinition* camera);
-    ~WidgetWanderer();
+    WidgetExplorer(QWidget* parent, CameraDefinition* camera);
+    ~WidgetExplorer();
     
     void performChunksMaintenance();
 

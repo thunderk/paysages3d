@@ -22,7 +22,7 @@
 #include "formrender.h"
 
 #include "dialogrender.h"
-#include "dialogwanderer.h"
+#include "dialogexplorer.h"
 
 #include "../lib_paysages/main.h"
 #include "../lib_paysages/auto.h"
@@ -230,7 +230,7 @@ void MainWindow::explore3D()
 
     sceneryGetCamera(&camera);
 
-    DialogWanderer* dialog = new DialogWanderer(this, &camera, true);
+    DialogExplorer* dialog = new DialogExplorer(this, &camera, true);
     result = dialog->exec();
 
     delete dialog;

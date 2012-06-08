@@ -218,12 +218,12 @@ Right click on a point to delete it.</source>
 <context>
     <name>DialogWanderer</name>
     <message>
-        <location filename="../gui_qt/dialogwanderer.cpp" line="15"/>
+        <location filename="../gui_qt/dialogexplorer.cpp" line="14"/>
         <source>Paysages 3D - Explore</source>
         <translation>Paysages 3D - Exploration</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogwanderer.cpp" line="25"/>
+        <location filename="../gui_qt/dialogexplorer.cpp" line="24"/>
         <source>COMMANDS
 
 Left click : Look around
@@ -256,17 +256,17 @@ Maintenir MAJ : Plus lent
 Maintenir Ctrl : Plus rapide</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogwanderer.cpp" line="27"/>
+        <location filename="../gui_qt/dialogexplorer.cpp" line="26"/>
         <source>Reset camera</source>
         <translation>Revenir au point de vue initial</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogwanderer.cpp" line="33"/>
+        <location filename="../gui_qt/dialogexplorer.cpp" line="32"/>
         <source>Validate as render camera</source>
         <translation>Choisir comme caméra de rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogwanderer.cpp" line="38"/>
+        <location filename="../gui_qt/dialogexplorer.cpp" line="37"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>

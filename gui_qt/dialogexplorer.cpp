@@ -1,12 +1,11 @@
-#include "dialogwanderer.h"
+#include "dialogexplorer.h"
 
 #include <QWidget>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLabel>
-#include "widgetwanderer.h"
 
-DialogWanderer::DialogWanderer(QWidget* parent, CameraDefinition* camera, bool camera_validable) : QDialog(parent)
+DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool camera_validable) : QDialog(parent)
 {
     QWidget* panel;
     QPushButton* button;
@@ -15,7 +14,7 @@ DialogWanderer::DialogWanderer(QWidget* parent, CameraDefinition* camera, bool c
     setWindowTitle(tr("Paysages 3D - Explore"));
     setLayout(new QHBoxLayout());
 
-    _wanderer = new WidgetWanderer(this, camera);
+    _wanderer = new WidgetExplorer(this, camera);
     layout()->addWidget(_wanderer);
 
     panel = new QWidget(this);
@@ -44,11 +43,11 @@ DialogWanderer::DialogWanderer(QWidget* parent, CameraDefinition* camera, bool c
     resize(900, 600);
 }
 
-DialogWanderer::~DialogWanderer()
+DialogExplorer::~DialogExplorer()
 {
 }
 
-void DialogWanderer::validateCamera()
+void DialogExplorer::validateCamera()
 {
     _wanderer->validateCamera();
     accept();
