@@ -47,7 +47,7 @@ bool BaseExplorerChunk::maintain()
             {
                 if (_texture_current_size <= 1 || i % 2 != 0 || j % 2 != 0)
                 {
-                    Color color = getTextureColor((double)i / (double)(new_texture_size + 1), (double)j / (double)(new_texture_size + 1));
+                    Color color = getTextureColor((double)i / (double)new_texture_size, 1.0 - (double)j / (double)new_texture_size);
                     new_image->setPixel(i, j, colorTo32BitBGRA(&color));
                 }
             }

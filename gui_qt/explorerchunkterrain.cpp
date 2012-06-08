@@ -112,9 +112,9 @@ void ExplorerChunkTerrain::onRenderEvent(QGLWidget* widget)
         glBegin(GL_QUAD_STRIP);
         for (int i = 0; i <= _tessellation_max_size; i += tessellation_inc)
         {
-            glTexCoord2d(tsize * (double)i, 1.0 - tsize * (double)j);
+            glTexCoord2d(tsize * (double)i, tsize * (double)j);
             glVertex3d(_startx + _tessellation_step * (double)i, _tessellation[j * (_tessellation_max_size + 1) + i], _startz + _tessellation_step * (double)j);
-            glTexCoord2d(tsize * (double)i, 1.0 - tsize * (double)(j + tessellation_inc));
+            glTexCoord2d(tsize * (double)i, tsize * (double)(j + tessellation_inc));
             glVertex3d(_startx + _tessellation_step * (double)i, _tessellation[(j + tessellation_inc) * (_tessellation_max_size + 1) + i], _startz + _tessellation_step * (double)(j + tessellation_inc));
         }
         glEnd();

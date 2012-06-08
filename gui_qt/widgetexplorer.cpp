@@ -9,6 +9,8 @@
 #include "../lib_paysages/scenery.h"
 #include "../lib_paysages/euclid.h"
 #include "explorerchunkterrain.h"
+#include "explorerchunksky.h"
+#include "tools.h"
 
 class ChunkMaintenanceThread:public QThread
 {
@@ -99,6 +101,7 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     
     _updated = false;
 
+    // Add terrain
     int chunks = 20;
     double size = 200.0;
     double chunksize = size / (double)chunks;
@@ -111,6 +114,14 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
             _chunks.append(chunk);
             _updateQueue.append(chunk);
         }
+    }
+    
+    // Add skybox
+    for (int orientation = 0; orientation < 6; orientation++)
+    {
+        ExplorerChunkSky* chunk = new ExplorerChunkSky(&_renderer, &_sky, 500.0, (SkyboxOrientation)orientation);
+        _chunks.append(chunk);
+        _updateQueue.append(chunk);
     }
 
     startThreads();
@@ -400,6 +411,7 @@ void WidgetExplorer::resizeGL(int w, int h)
 
 void WidgetExplorer::paintGL()
 {
+    GLenum error_code;
     QTime start_time;
     double frame_time;
     
@@ -409,6 +421,7 @@ void WidgetExplorer::paintGL()
     }
     
     cameraValidateDefinition(&_current_camera, 1);
+    _renderer.camera_location = _current_camera.location;
     
     start_time = QTime::currentTime();
     
@@ -421,20 +434,7 @@ void WidgetExplorer::paintGL()
     glClearColor(zenith_color.r, zenith_color.g, zenith_color.b, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Render sun
-    Vector3 sun_location = v3Add(_current_camera.location, v3Scale(skyGetSunDirection(&_sky), 500.0));
-    Color sun_color = skyGetSunColor(&_sky);
-    glDisable(GL_TEXTURE);
-    glDisable(GL_TEXTURE_2D);
-    glColor3f(sun_color.r, sun_color.g, sun_color.b);
-    glPointSize(15.0 * _sky.sun_radius / 0.02);
-    glEnable(GL_POINT_SMOOTH);
-    glBegin(GL_POINTS);
-    glVertex3f(sun_location.x, sun_location.y, sun_location.z);
-    glEnd();
-
     // Render water
-    glDisable(GL_TEXTURE);
     glDisable(GL_TEXTURE_2D);
     glColor3f(_water.material.base.r, _water.material.base.g, _water.material.base.b);
     glBegin(GL_QUADS);
@@ -444,8 +444,7 @@ void WidgetExplorer::paintGL()
     glVertex3f(_current_camera.location.x + 500.0, _water.height, _current_camera.location.z - 500.0);
     glEnd();
 
-    // Render terrain chunks
-    glEnable(GL_TEXTURE);
+    // Render chunks
     glEnable(GL_TEXTURE_2D);
     for (int i = 0; i < _chunks.count(); i++)
     {
@@ -465,5 +464,10 @@ void WidgetExplorer::paintGL()
     if (_average_frame_time < 0.04 && _quality < 10)
     {
         _quality++;
+    }
+    
+    while ((error_code = glGetError()) != GL_NO_ERROR)
+    {
+        logDebug(QString("[OpenGL] ERROR : ") + (const char*)gluErrorString(error_code));
     }
 }

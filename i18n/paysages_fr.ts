@@ -122,6 +122,46 @@ Right click on a point to delete it.</source>
     </message>
 </context>
 <context>
+    <name>DialogExplorer</name>
+    <message>
+        <location filename="../gui_qt/dialogexplorer.cpp" line="14"/>
+        <source>Paysages 3D - Explore</source>
+        <translation type="unfinished">Paysages 3D - Exploration</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogexplorer.cpp" line="24"/>
+        <source>COMMANDS
+
+Left click : Look around
+Right click : Pan (adjust framing)
+Wheel : Move forward/backward
+Hold SHIFT : Faster
+Hold CTRL : Slower</source>
+        <translation type="unfinished">COMMANDES
+
+Clic gauche : Regarder autour
+Clic droit : Déplacer le cadrage
+Molette : Avancer/reculer
+Maintenir Maj : Plus rapide
+Maintenir Ctrl : Plus lent</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogexplorer.cpp" line="26"/>
+        <source>Reset camera</source>
+        <translation type="unfinished">Revenir au point de vue initial</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogexplorer.cpp" line="32"/>
+        <source>Validate as render camera</source>
+        <translation type="unfinished">Choisir comme caméra de rendu</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/dialogexplorer.cpp" line="37"/>
+        <source>Close</source>
+        <translation type="unfinished">Fermer</translation>
+    </message>
+</context>
+<context>
     <name>DialogMaterial</name>
     <message>
         <location filename="../gui_qt/dialogmaterial.cpp" line="25"/>
@@ -218,12 +258,10 @@ Right click on a point to delete it.</source>
 <context>
     <name>DialogWanderer</name>
     <message>
-        <location filename="../gui_qt/dialogexplorer.cpp" line="14"/>
         <source>Paysages 3D - Explore</source>
-        <translation>Paysages 3D - Exploration</translation>
+        <translation type="obsolete">Paysages 3D - Exploration</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogexplorer.cpp" line="24"/>
         <source>COMMANDS
 
 Left click : Look around
@@ -231,7 +269,7 @@ Right click : Pan (adjust framing)
 Wheel : Move forward/backward
 Hold SHIFT : Faster
 Hold CTRL : Slower</source>
-        <translation>COMMANDES
+        <translation type="obsolete">COMMANDES
 
 Clic gauche : Regarder autour
 Clic droit : Déplacer le cadrage
@@ -256,19 +294,16 @@ Maintenir MAJ : Plus lent
 Maintenir Ctrl : Plus rapide</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogexplorer.cpp" line="26"/>
         <source>Reset camera</source>
-        <translation>Revenir au point de vue initial</translation>
+        <translation type="obsolete">Revenir au point de vue initial</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogexplorer.cpp" line="32"/>
         <source>Validate as render camera</source>
-        <translation>Choisir comme caméra de rendu</translation>
+        <translation type="obsolete">Choisir comme caméra de rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogexplorer.cpp" line="37"/>
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation type="obsolete">Fermer</translation>
     </message>
 </context>
 <context>

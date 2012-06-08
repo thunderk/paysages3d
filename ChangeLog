@@ -5,7 +5,7 @@
 * New texture model (perpendicular displacement and thickness).
 * Added clouds hardness to light.
 * Version management in saved files.
-* Added ground texture and sun location in 3D explorer.
+* Added ground texture and skybox in 3D explorer.
 * 3D explorer now takes advantage of multiple CPU cores.
 * Added sun halo control.
 
