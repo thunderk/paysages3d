@@ -336,17 +336,17 @@ double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* re
     return zoneGetValue(definition->zone, base.location, base.normal);
 }
 
-static inline Color _getLayerColor(Renderer* renderer, TextureResult result)
+static inline Color _getLayerColor(Renderer* renderer, TextureResult result, LightStatus* light)
 {
-    LightStatus light;
-    
-    renderer->getLightStatus(renderer, &light, result.location);
-    return renderer->applyLightStatus(renderer, &light, result.location, result.normal, result.definition->material);
+    return renderer->applyLightStatus(renderer, light, result.location, result.normal, result.definition->material);
 }
 
 Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
 {
-    return _getLayerColor(renderer, _getLayerResult(definition, renderer, location.x, location.z, detail));
+    LightStatus light;
+    TextureResult result = _getLayerResult(definition, renderer, location.x, location.z, detail);
+    renderer->getLightStatus(renderer, &light, result.location);
+    return _getLayerColor(renderer, result, &light);
 }
 
 Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, double x, double z, double detail)
@@ -356,8 +356,6 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
     double thickness, last_height;
     int i, start;
 
-    /* TODO Optimize : each layer computes the same shadows */
-    
     detail *= 0.1;
     
     results[0] = _getTerrainResult(renderer, x, z, detail);
@@ -403,9 +401,11 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
     }
 
     /* Apply colors and alphas */
+    LightStatus light;
+    renderer->getLightStatus(renderer, &light, results[start].location);
     if (results[start].definition)
     {
-        result = _getLayerColor(renderer, results[start]);
+        result = _getLayerColor(renderer, results[start], &light);
     }
     else
     {
@@ -417,7 +417,7 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
         {
             if (results[i].definition)
             {
-                color = _getLayerColor(renderer, results[i]);
+                color = _getLayerColor(renderer, results[i], &light);
                 color.a = results[i].thickness;
             }
             else

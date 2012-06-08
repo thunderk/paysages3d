@@ -27,6 +27,7 @@ public:
 protected:
     QColor getColor(double x, double y)
     {
+        y -= 100.0 * scaling;
         if (y > 0.0)
         {
             return QColor(0, 0, 0);
@@ -66,6 +67,7 @@ public:
 protected:
     QColor getColor(double x, double y)
     {
+        y -= 100.0 * scaling;
         if (y > 0.0)
         {
             return QColor(0, 0, 0);

@@ -555,57 +555,57 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormSky</name>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="101"/>
+        <location filename="../gui_qt/formsky.cpp" line="103"/>
         <source>West preview</source>
         <translation>Aperçu de l&apos;ouest</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="103"/>
+        <location filename="../gui_qt/formsky.cpp" line="105"/>
         <source>East preview</source>
         <translation>Aperçu de l&apos;est</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="105"/>
+        <location filename="../gui_qt/formsky.cpp" line="107"/>
         <source>Day time</source>
         <translation>Heure du jour</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="106"/>
+        <location filename="../gui_qt/formsky.cpp" line="108"/>
         <source>Sun color</source>
         <translation>Couleur du soleil</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="107"/>
+        <location filename="../gui_qt/formsky.cpp" line="109"/>
         <source>Sun radius</source>
         <translation>Diamètre apparent du soleil</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="108"/>
+        <location filename="../gui_qt/formsky.cpp" line="110"/>
         <source>Sun halo radius</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="109"/>
+        <location filename="../gui_qt/formsky.cpp" line="111"/>
         <source>Sun halo profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="110"/>
+        <location filename="../gui_qt/formsky.cpp" line="112"/>
         <source>Zenith color</source>
         <translation>Couleur du ciel au zénith</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="111"/>
+        <location filename="../gui_qt/formsky.cpp" line="113"/>
         <source>Haze color</source>
         <translation>Couleur de la brume</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="112"/>
+        <location filename="../gui_qt/formsky.cpp" line="114"/>
         <source>Haze height</source>
         <translation>Hauteur apparente de la brume</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="113"/>
+        <location filename="../gui_qt/formsky.cpp" line="115"/>
         <source>Haze smoothing</source>
         <translation>Facteur de lissage de la brume</translation>
     </message>

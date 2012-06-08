@@ -70,7 +70,7 @@ bool BaseExplorerChunk::maintain()
 
 void BaseExplorerChunk::updatePriority(CameraDefinition* camera)
 {
-    if (_reset_needed || (_texture_max_size > 0 && _texture_current_size == 0))
+    if (_reset_needed || (_texture_max_size > 1 && _texture_current_size <= 1))
     {
         priority = 1000.0;
     }

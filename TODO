@@ -1,10 +1,9 @@
 Technology Preview 2 :
 - Fix the fog impression when cloud layer overlaps with ground range.
+- Remove color gradations (replace with automatic boolean and simple colors).
 - Replace zone ranges with curves (with curve input and curve dialog).
 - Interface for textures thickness, slope_range and thickness_transparency (and correct slider ranges).
 - Render tab previews should not rerender when changing render options.
-- Compute shadows only once for all textures at a same location.
-   => Add an intermediary light status (two pass lighting).
 - Add layer sorting/naming.
 - Disable specular lighting in explorer (and everything camera dependent).
 - Add logarithmic sliders for some float values.
