@@ -8,6 +8,7 @@
 #include <QThread>
 #include "../lib_paysages/scenery.h"
 #include "../lib_paysages/euclid.h"
+#include "explorerchunkterrain.h"
 
 class ChunkMaintenanceThread:public QThread
 {
@@ -106,7 +107,7 @@ WidgetWanderer::WidgetWanderer(QWidget *parent, CameraDefinition* camera):
     {
         for (int j = 0; j < chunks; j++)
         {
-            WandererChunk* chunk = new WandererChunk(&_renderer, start + chunksize * (double)i, start + chunksize * (double)j, chunksize, chunks);
+            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(&_renderer, start + chunksize * (double)i, start + chunksize * (double)j, chunksize, chunks);
             _chunks.append(chunk);
             _updateQueue.append(chunk);
         }
@@ -167,14 +168,14 @@ void WidgetWanderer::stopThreads()
     }
 }
 
-bool _cmpChunks(const WandererChunk* c1, const WandererChunk* c2)
+bool _cmpChunks(const BaseExplorerChunk* c1, const BaseExplorerChunk* c2)
 {
     return c1->priority > c2->priority;
 }
 
 void WidgetWanderer::performChunksMaintenance()
 {
-    WandererChunk* chunk;
+    BaseExplorerChunk* chunk;
     
     _lock_chunks.lock();
     if (_updateQueue.count() > 0)

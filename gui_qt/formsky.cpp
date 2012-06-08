@@ -27,14 +27,21 @@ public:
 protected:
     QColor getColor(double x, double y)
     {
-        Vector3 eye = {0.0, 0.0, 0.0};
-        Vector3 look;
+        if (y > 0.0)
+        {
+            return QColor(0, 0, 0);
+        }
+        else
+        {
+            Vector3 eye = {0.0, 0.0, 0.0};
+            Vector3 look;
 
-        look.x = 1.0;
-        look.y = -y;
-        look.z = x;
+            look.x = 1.0;
+            look.y = -y;
+            look.z = x;
 
-        return colorToQColor(skyGetColor(&_preview_definition, &_renderer, eye, look));
+            return colorToQColor(skyGetColor(&_preview_definition, &_renderer, eye, look));
+        }
     }
     void updateData()
     {
@@ -59,14 +66,21 @@ public:
 protected:
     QColor getColor(double x, double y)
     {
-        Vector3 eye = {0.0, 0.0, 0.0};
-        Vector3 look;
+        if (y > 0.0)
+        {
+            return QColor(0, 0, 0);
+        }
+        else
+        {
+            Vector3 eye = {0.0, 0.0, 0.0};
+            Vector3 look;
 
-        look.x = -1.0;
-        look.y = -y;
-        look.z = -x;
+            look.x = -1.0;
+            look.y = -y;
+            look.z = -x;
 
-        return colorToQColor(skyGetColor(&_preview_definition, &_renderer, eye, look));
+            return colorToQColor(skyGetColor(&_preview_definition, &_renderer, eye, look));
+        }
     }
     void updateData()
     {

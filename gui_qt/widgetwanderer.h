@@ -2,7 +2,7 @@
 #define _PAYSAGES_QT_WIDGETWANDERER_H_
 
 #include <QGLWidget>
-#include "wandererchunk.h"
+#include "baseexplorerchunk.h"
 #include "../lib_paysages/camera.h"
 #include "../lib_paysages/water.h"
 #include "../lib_paysages/renderer.h"
@@ -45,8 +45,8 @@ private:
     Renderer _renderer;
     bool _updated;
     
-    QVector<WandererChunk*> _chunks;
-    QList<WandererChunk*> _updateQueue;
+    QVector<BaseExplorerChunk*> _chunks;
+    QList<BaseExplorerChunk*> _updateQueue;
     bool _alive;
     QMutex _lock_chunks;
 
