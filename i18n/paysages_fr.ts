@@ -850,7 +850,7 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>InputCurve</name>
     <message>
-        <location filename="../gui_qt/inputcurve.cpp" line="58"/>
+        <location filename="../gui_qt/inputcurve.cpp" line="62"/>
         <source>Edit</source>
         <translation type="unfinished">Editer</translation>
     </message>

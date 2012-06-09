@@ -16,7 +16,6 @@ Technology Preview 2 :
 - Fix the distorted sun appearance.
 - Improve curve editor.
    => Add curve modes
-   => Improve curve rendering
    => Add axis labels and grid
    => Add logarithmic mode
 - Improve 3d explorer

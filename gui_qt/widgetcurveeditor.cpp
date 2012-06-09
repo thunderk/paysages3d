@@ -41,7 +41,7 @@ void WidgetCurveEditor::paintEvent(QPaintEvent* event)
     int width, height;
     double dwidth, dheight;
     CurvePoint point;
-    double position, value;
+    double position, value, prev_value, next_value;
     
     width = this->width();
     height = this->height();
@@ -55,7 +55,12 @@ void WidgetCurveEditor::paintEvent(QPaintEvent* event)
     for (int x = 0; x < width; x++)
     {
         position = ((double)x) / dwidth;
+        
         value = curveGetValue(_curve, position);
+        prev_value = curveGetValue(_curve, position - 1.0 / dwidth);
+        next_value = curveGetValue(_curve, position + 1.0 / dwidth);
+        
+        painter.drawLine(x, height - 1 - (int)((value + (prev_value - value) / 2.0) * dheight), x, height - 1 - (int)((value + (next_value - value) / 2.0) * dheight));
         painter.drawPoint(x, height - 1 - (int)(value * dheight));
     }
     

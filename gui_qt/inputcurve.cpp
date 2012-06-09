@@ -27,7 +27,7 @@ public:
         QPainter painter(this);
         int width = this->width();
         int height = this->height();
-        double position, value;
+        double position, value, prev_value, next_value;
 
         painter.fillRect(rect(), QColor(255, 255, 255));
         for (int x = 0; x < width; x++)
@@ -35,6 +35,10 @@ public:
             painter.setPen(QColor(0, 0, 0));
             position = _xmin + (_xmax - _xmin) * (double)x / (double)(width - 1);
             value = (curveGetValue(_curve, position) - _ymin) * (_ymax - _ymin);
+            prev_value = curveGetValue(_curve, position - 1.0 / (double)(width - 1));
+            next_value = curveGetValue(_curve, position + 1.0 / (double)(width - 1));
+
+            painter.drawLine(x, height - 1 - (int)((value + (prev_value - value) / 2.0) * (double)(height - 1)), x, height - 1 - (int)((value + (next_value - value) / 2.0) * (double)(height - 1)));
             painter.drawPoint(x, height - 1 - (int)(value * (double)(height - 1)));
         }
     }
