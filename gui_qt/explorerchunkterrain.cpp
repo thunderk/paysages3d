@@ -101,7 +101,7 @@ void ExplorerChunkTerrain::onRenderEvent(QGLWidget* widget)
     double tsize = 1.0 / (double)_tessellation_max_size;
     _lock_data.unlock();
     
-    if (tessellation_size == 0)
+    if (tessellation_size <= 1)
     {
         return;
     }
@@ -123,21 +123,21 @@ void ExplorerChunkTerrain::onRenderEvent(QGLWidget* widget)
 
 double ExplorerChunkTerrain::getDisplayedSizeHint(CameraDefinition* camera)
 {
-    double distance, wanted_size;
+    double distance;
     Vector3 center;
 
     center = getCenter();
 
-    distance = v3Norm(v3Sub(camera->location, center));
-    distance = distance < 0.1 ? 0.1 : distance;
-    wanted_size = (int)ceil(120.0 - distance / 3.0);
-
-    if (!cameraIsBoxInView(camera, center, _size, _size, 40.0))
+    if (cameraIsBoxInView(camera, center, _size, 40.0, _size))
     {
-        wanted_size -= 500.0;
+        distance = v3Norm(v3Sub(camera->location, center));
+        distance = distance < 0.1 ? 0.1 : distance;
+        return (int)ceil(120.0 - distance / 1.5);
     }
-
-    return wanted_size;
+    else
+    {
+        return -800.0;
+    }
 }
 
 Color ExplorerChunkTerrain::getTextureColor(double x, double y)

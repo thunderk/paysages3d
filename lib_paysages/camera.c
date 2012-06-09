@@ -233,6 +233,11 @@ void cameraSetRenderSize(CameraDefinition* camera, int width, int height)
 Vector3 cameraProject(CameraDefinition* camera, Renderer* renderer, Vector3 point)
 {
     point = m4Transform(camera->project, point);
+    if (point.z < 1.0)
+    {
+        point.x = -point.x;
+        point.y = -point.y;
+    }
     point.x = (point.x + 1.0) * 0.5 * camera->width;
     point.y = (-point.y + 1.0) * 0.5 * camera->height;
     return point;
@@ -323,10 +328,6 @@ int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, do
     projected = cameraProject(camera, NULL, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
 
-    center.y += ysize;
-    projected = cameraProject(camera, NULL, center);
-    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
-
     center.z += zsize;
     projected = cameraProject(camera, NULL, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
@@ -334,16 +335,20 @@ int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, do
     center.x -= xsize;
     projected = cameraProject(camera, NULL, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
-    
-    center.y -= ysize;
+
+    center.y += ysize;
     projected = cameraProject(camera, NULL, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
-
+    
     center.x += xsize;
     projected = cameraProject(camera, NULL, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
 
     center.z -= zsize;
+    projected = cameraProject(camera, NULL, center);
+    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+
+    center.x -= xsize;
     projected = cameraProject(camera, NULL, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
     

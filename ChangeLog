@@ -1,14 +1,36 @@
 ????-??-?? Technology Preview 2
 -------------------------------
-* Previews scaling is now logarithmic (slower when zoomed).
-* Previews drawing now takes advantage of multiple CPU cores.
-* New texture model (perpendicular displacement and thickness).
-* Added clouds hardness to light.
-* Version management in saved files.
-* Added ground texture and skybox in 3D explorer.
-* 3D explorer now takes advantage of multiple CPU cores.
-* Added sun halo control.
+
+Previews :
+  * Scaling is now logarithmic (slower when zoomed).
+  * Drawing now takes advantage of multiple CPU cores.
+
+3D Explorer:
+  * Added ground texture and skybox.
+  * Progressive rendering now takes advantage of multiple CPU cores.
+
+Scenery :
+  * Added clouds hardness to light.
+  * Added sun halo control.
+
+Rendering :
+  * New texture model (perpendicular displacement and thickness).
+
+GUI :
+  * Improved curve rendering.
+  * New material editor.
+
+Misc :
+  * Version handling in saved files.
 
 2012-04-20 Technology Preview 1
 -------------------------------
-* First preview version.
+
+First preview version :
+  * Ground with simple texture layers
+  * Water with waves, transparency and reflection
+  * Sky with sun
+  * Atmosphere with fog
+  * Cloud 3d layers
+  * Two-pass rendering
+  * Form-based GUI, with real-time previews
