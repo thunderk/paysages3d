@@ -112,8 +112,8 @@ protected:
         cloudsLayerCopyDefinition(&_layer, &_preview_layer);
         _preview_layer.ymax = (_preview_layer.ymax - _preview_layer.ymin) / 2.0;
         _preview_layer.ymin = -_preview_layer.ymin;
-        curveClear(_preview_layer.density_altitude);
-        _preview_layer.customcoverage = _coverageFunc;
+        curveClear(_preview_layer.coverage_by_altitude);
+        _preview_layer._custom_coverage = _coverageFunc;
     }
 private:
     Renderer _renderer;
@@ -157,10 +157,13 @@ FormClouds::FormClouds(QWidget *parent):
 
     addInputDouble(tr("Lower altitude"), &_layer.ymin, -10.0, 50.0, 0.5, 5.0);
     addInputDouble(tr("Upper altitude"), &_layer.ymax, -10.0, 50.0, 0.5, 5.0);
-    addInputCurve(tr("Density by altitude"), _layer.density_altitude, 0.0, 1.0, 0.0, 1.0);
-    addInputNoise(tr("Noise"), _layer.noise);
-    addInputDouble(tr("Coverage"), &_layer.coverage, 0.0, 1.0, 0.01, 0.1);
-    addInputDouble(tr("Scaling"), &_layer.scaling, 1.0, 100.0, 0.5, 5.0);
+    addInputDouble(tr("Max coverage"), &_layer.base_coverage, 0.0, 1.0, 0.01, 0.1);
+    addInputCurve(tr("Coverage by altitude"), _layer.coverage_by_altitude, 0.0, 1.0, 0.0, 1.0);
+    addInputNoise(tr("Shape noise"), _layer.shape_noise);
+    addInputDouble(tr("Shape scaling"), &_layer.shape_scaling, 1.0, 10.0, 0.1, 1.0);
+    addInputNoise(tr("Edge noise"), _layer.edge_noise);
+    addInputDouble(tr("Edge scaling"), &_layer.edge_scaling, 0.02, 0.5, 0.01, 0.1);
+    addInputDouble(tr("Edge length"), &_layer.edge_length, 0.0, 1.0, 0.01, 0.1);
     addInputMaterial(tr("Material"), &_layer.material);
     addInputDouble(tr("Hardness to light"), &_layer.hardness, 0.0, 1.0, 0.01, 0.1);
     addInputDouble(tr("Transparency depth"), &_layer.transparencydepth, 0.0, 100.0, 0.5, 5.0);

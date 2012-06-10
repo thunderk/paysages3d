@@ -41,15 +41,18 @@ void cloudsSave(PackStream* stream, CloudsDefinition* definition)
         
         packWriteDouble(stream, &layer->ymin);
         packWriteDouble(stream, &layer->ymax);
-        curveSave(stream, layer->density_altitude);
-        noiseSaveGenerator(stream, layer->noise);
+        curveSave(stream, layer->coverage_by_altitude);
+        noiseSaveGenerator(stream, layer->shape_noise);
+        noiseSaveGenerator(stream, layer->edge_noise);
         materialSave(stream, &layer->material);
         packWriteDouble(stream, &layer->hardness);
         packWriteDouble(stream, &layer->transparencydepth);
         packWriteDouble(stream, &layer->lighttraversal);
         packWriteDouble(stream, &layer->minimumlight);
-        packWriteDouble(stream, &layer->scaling);
-        packWriteDouble(stream, &layer->coverage);
+        packWriteDouble(stream, &layer->shape_scaling);
+        packWriteDouble(stream, &layer->edge_scaling);
+        packWriteDouble(stream, &layer->edge_length);
+        packWriteDouble(stream, &layer->base_coverage);
     }
 }
 
@@ -70,15 +73,18 @@ void cloudsLoad(PackStream* stream, CloudsDefinition* definition)
 
         packReadDouble(stream, &layer->ymin);
         packReadDouble(stream, &layer->ymax);
-        curveLoad(stream, layer->density_altitude);
-        noiseLoadGenerator(stream, layer->noise);
+        curveLoad(stream, layer->coverage_by_altitude);
+        noiseLoadGenerator(stream, layer->shape_noise);
+        noiseLoadGenerator(stream, layer->edge_noise);
         materialLoad(stream, &layer->material);
         packReadDouble(stream, &layer->hardness);
         packReadDouble(stream, &layer->transparencydepth);
         packReadDouble(stream, &layer->lighttraversal);
         packReadDouble(stream, &layer->minimumlight);
-        packReadDouble(stream, &layer->scaling);
-        packReadDouble(stream, &layer->coverage);
+        packReadDouble(stream, &layer->shape_scaling);
+        packReadDouble(stream, &layer->edge_scaling);
+        packReadDouble(stream, &layer->edge_length);
+        packReadDouble(stream, &layer->base_coverage);
     }
 }
 
@@ -132,7 +138,7 @@ static double _standardCoverageFunc(CloudsLayerDefinition* layer, Vector3 positi
     }
     else
     {
-        return layer->coverage * curveGetValue(layer->density_altitude, (position.y - layer->ymin) / (layer->ymax - layer->ymin));
+        return layer->base_coverage * curveGetValue(layer->coverage_by_altitude, (position.y - layer->ymin) / (layer->ymax - layer->ymin));
     }
 }
 
@@ -142,11 +148,11 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
 
     result.ymin = 4.0;
     result.ymax = 10.0;
-    result.density_altitude = curveCreate();
-    curveQuickAddPoint(result.density_altitude, 0.0, 0.0);
-    curveQuickAddPoint(result.density_altitude, 0.3, 1.0);
-    curveQuickAddPoint(result.density_altitude, 0.5, 1.0);
-    curveQuickAddPoint(result.density_altitude, 1.0, 0.0);
+    result.coverage_by_altitude = curveCreate();
+    curveQuickAddPoint(result.coverage_by_altitude, 0.0, 0.0);
+    curveQuickAddPoint(result.coverage_by_altitude, 0.3, 1.0);
+    curveQuickAddPoint(result.coverage_by_altitude, 0.5, 1.0);
+    curveQuickAddPoint(result.coverage_by_altitude, 1.0, 0.0);
     result.material.base.r = 0.7;
     result.material.base.g = 0.7;
     result.material.base.b = 0.7;
@@ -157,33 +163,25 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
     result.transparencydepth = 1.5;
     result.lighttraversal = 7.0;
     result.minimumlight = 0.4;
-    result.scaling = 3.5;
-    result.coverage = 0.45;
-    result.noise = noiseCreateGenerator();
-    noiseGenerateBaseNoise(result.noise, 262144);
-    noiseAddLevelSimple(result.noise, 1.0, 1.0);
-    noiseAddLevelSimple(result.noise, 1.0 / 2.0, 0.6);
-    noiseAddLevelSimple(result.noise, 1.0 / 4.0, 0.3);
-    noiseAddLevelSimple(result.noise, 1.0 / 10.0, 0.15);
-    noiseAddLevelSimple(result.noise, 1.0 / 20.0, 0.09);
-    noiseAddLevelSimple(result.noise, 1.0 / 40.0, 0.06);
-    noiseAddLevelSimple(result.noise, 1.0 / 60.0, 0.03);
-    noiseAddLevelSimple(result.noise, 1.0 / 80.0, 0.015);
-    noiseAddLevelSimple(result.noise, 1.0 / 100.0, 0.06);
-    noiseAddLevelSimple(result.noise, 1.0 / 150.0, 0.015);
-    noiseAddLevelSimple(result.noise, 1.0 / 200.0, 0.009);
-    noiseAddLevelSimple(result.noise, 1.0 / 400.0, 0.024);
-    noiseAddLevelSimple(result.noise, 1.0 / 800.0, 0.003);
-    noiseAddLevelSimple(result.noise, 1.0 / 1000.0, 0.0015);
+    result.shape_scaling = 3.5;
+    result.edge_scaling = 0.1;
+    result.edge_length = 0.25;
+    result.base_coverage = 0.35;
+    result.shape_noise = noiseCreateGenerator();
+    noiseGenerateBaseNoise(result.shape_noise, 20000);
+    noiseAddLevelsSimple(result.shape_noise, 4, 1.0, 1.0);
+    result.edge_noise = noiseCreateGenerator();
+    noiseGenerateBaseNoise(result.edge_noise, 20000);
+    noiseAddLevelsSimple(result.edge_noise, 8, 1.0, 1.0);
     
-    result.customcoverage = _standardCoverageFunc;
+    result._custom_coverage = _standardCoverageFunc;
 
     return result;
 }
 
 void cloudsLayerDeleteDefinition(CloudsLayerDefinition* definition)
 {
-    noiseDeleteGenerator(definition->noise);
+    noiseDeleteGenerator(definition->shape_noise);
 }
 
 void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinition* destination)
@@ -198,22 +196,29 @@ void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinit
     temp = *destination;
     *destination = *source;
     
-    destination->noise = temp.noise;
-    noiseCopy(source->noise, destination->noise);
-    
-    destination->density_altitude = temp.density_altitude;
-    curveCopy(source->density_altitude, destination->density_altitude);
+    destination->shape_noise = temp.shape_noise;
+    noiseCopy(source->shape_noise, destination->shape_noise);
+
+    destination->edge_noise = temp.edge_noise;
+    noiseCopy(source->edge_noise, destination->edge_noise);
+
+    destination->coverage_by_altitude = temp.coverage_by_altitude;
+    curveCopy(source->coverage_by_altitude, destination->coverage_by_altitude);
 }
 
 void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
 {
-    if (definition->scaling < 0.0001)
+    if (definition->shape_scaling < 0.0001)
     {
-        definition->scaling = 0.00001;
+        definition->shape_scaling = 0.00001;
     }
-    if (definition->customcoverage == NULL)
+    if (definition->edge_scaling < 0.0001)
     {
-        definition->customcoverage = _standardCoverageFunc;
+        definition->edge_scaling = 0.00001;
+    }
+    if (definition->_custom_coverage == NULL)
+    {
+        definition->_custom_coverage = _standardCoverageFunc;
     }
 }
 
@@ -266,11 +271,33 @@ void cloudsDeleteLayer(CloudsDefinition* definition, int layer)
 
 static inline double _getDistanceToBorder(CloudsLayerDefinition* layer, Vector3 position)
 {
-    double val;
+    double density, coverage, val;
 
-    val = 0.5 * noiseGet3DTotal(layer->noise, position.x / layer->scaling, position.y / layer->scaling, position.z / layer->scaling) / noiseGetMaxValue(layer->noise);
+    val = noiseGet3DTotal(layer->shape_noise, position.x / layer->shape_scaling, position.y / layer->shape_scaling, position.z / layer->shape_scaling) / noiseGetMaxValue(layer->shape_noise);
+    coverage = layer->_custom_coverage(layer, position);
+    density = 0.5 * val - 0.5 + coverage;
+    
+    if (density <= 0.0)
+    {
+        /* outside the main shape */
+        return density * layer->shape_scaling;
+    }
+    else
+    {
+        /* inside the main shape, using edge noise */
+        density /= coverage;
+        if (density < layer->edge_length)
+        {
+            val = 0.5 * noiseGet3DTotal(layer->edge_noise, position.x / layer->edge_scaling, position.y / layer->edge_scaling, position.z / layer->edge_scaling) / noiseGetMaxValue(layer->edge_noise);
+            val = (val - 0.5 + density / layer->edge_length) * layer->edge_scaling;
 
-    return (val - 0.5 + layer->customcoverage(layer, position)) * layer->scaling;
+            return val;
+        }
+        else
+        {
+            return density * coverage * layer->shape_scaling;
+        }
+    }
 }
 
 static inline Vector3 _getNormal(CloudsLayerDefinition* layer, Vector3 position, double detail)
@@ -404,7 +431,7 @@ static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, 
     }
 
     render_precision = 15.2 - 1.5 * (double)renderer->render_quality;
-    render_precision = render_precision * definition->scaling / 50.0;
+    render_precision = render_precision * definition->shape_scaling / 50.0;
     if (render_precision > max_total_length / 10.0)
     {
         render_precision = max_total_length / 10.0;
@@ -532,7 +559,7 @@ Color cloudsGetLayerColor(CloudsLayerDefinition* definition, Renderer* renderer,
     direction = v3Normalize(direction);
     result = COLOR_TRANSPARENT;
 
-    detail = renderer->getPrecision(renderer, start) / definition->scaling;
+    detail = renderer->getPrecision(renderer, start) / definition->shape_scaling;
 
     segment_count = _findSegments(definition, renderer, start, direction, detail, 20, definition->transparencydepth, max_length, &inside_length, &total_length, segments);
     for (i = segment_count - 1; i >= 0; i--)

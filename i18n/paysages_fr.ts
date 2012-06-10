@@ -374,27 +374,19 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="160"/>
-        <source>Density by altitude</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui_qt/formclouds.cpp" line="161"/>
         <source>Noise</source>
-        <translation>Bruit</translation>
+        <translation type="obsolete">Bruit</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="162"/>
         <source>Coverage</source>
-        <translation>Couverture</translation>
+        <translation type="obsolete">Couverture</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="163"/>
         <source>Scaling</source>
-        <translation>Echelle</translation>
+        <translation type="obsolete">Echelle</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="164"/>
+        <location filename="../gui_qt/formclouds.cpp" line="167"/>
         <source>Material</source>
         <translation type="unfinished"></translation>
     </message>
@@ -411,22 +403,57 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Concentration de la réflexion de lumière</translation>
     </message>
     <message>
+        <location filename="../gui_qt/formclouds.cpp" line="160"/>
+        <source>Max coverage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formclouds.cpp" line="161"/>
+        <source>Coverage by altitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formclouds.cpp" line="162"/>
+        <source>Shape noise</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formclouds.cpp" line="163"/>
+        <source>Shape scaling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formclouds.cpp" line="164"/>
+        <source>Edge noise</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../gui_qt/formclouds.cpp" line="165"/>
-        <source>Hardness to light</source>
+        <source>Edge scaling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../gui_qt/formclouds.cpp" line="166"/>
+        <source>Edge length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formclouds.cpp" line="168"/>
+        <source>Hardness to light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formclouds.cpp" line="169"/>
         <source>Transparency depth</source>
         <translation>Distance de transparence</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="167"/>
+        <location filename="../gui_qt/formclouds.cpp" line="170"/>
         <source>Light traversal depth</source>
         <translation>Distance de traversée de la lumière</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="168"/>
+        <location filename="../gui_qt/formclouds.cpp" line="171"/>
         <source>Minimum lighting</source>
         <translation>Eclairage minimal</translation>
     </message>

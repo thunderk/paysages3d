@@ -20,16 +20,19 @@ struct CloudsLayerDefinition
 {
     double ymin;
     double ymax;
-    Curve* density_altitude;
-    NoiseGenerator* noise;
+    double base_coverage;
+    Curve* coverage_by_altitude;
+    NoiseGenerator* shape_noise;
+    double shape_scaling;
+    NoiseGenerator* edge_noise;
+    double edge_scaling;
+    double edge_length;
     SurfaceMaterial material;
     double hardness;
     double transparencydepth;
     double lighttraversal;
     double minimumlight;
-    double scaling;
-    double coverage;
-    CloudCoverageFunc customcoverage;
+    CloudCoverageFunc _custom_coverage;
 };
 
 typedef struct

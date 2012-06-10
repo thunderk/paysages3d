@@ -3,6 +3,7 @@ Technology Preview 2 :
 - Remove color gradations (replace with automatic boolean and simple colors).
 - Replace zone ranges with curves (with curve input and curve dialog).
 - Interface for textures thickness, slope_range and thickness_transparency (and correct slider ranges).
+- Add "hardness to light" and shadow control ("minimum lighting") to material.
 - Render tab previews should not rerender when changing render options.
 - Add layer sorting/naming.
 - Disable specular lighting in explorer (and everything camera dependent).
@@ -14,6 +15,7 @@ Technology Preview 2 :
 - Use the curve editor in noise editor
 - Add a noise filler (and maybe noise intervals ?).
 - Add a popup when rendering is complete (with stats), except for quick render.
+- Optimize the use of noiseGetMaxValue (limit its use or cache it).
 - Fix the distorted sun appearance.
 - Improve curve editor.
    => Add curve modes
