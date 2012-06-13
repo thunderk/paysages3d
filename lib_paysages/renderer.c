@@ -101,6 +101,7 @@ static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3
 Renderer rendererCreate()
 {
     Renderer result;
+    RenderParams params = {1, 1, 1, 5};
 
     result.render_quality = 5;
     result.render_width = 1;
@@ -111,7 +112,8 @@ Renderer rendererCreate()
     result.render_camera = cameraCreateDefinition();
     result.camera_location = result.render_camera.location;
     result.render_area = renderCreateArea();
-    renderSetSize(result.render_area, 1, 1);
+    
+    renderSetParams(result.render_area, params);
 
     result.addRenderProgress = _addRenderProgress;
     result.getPrecision = _getPrecision;
@@ -144,23 +146,26 @@ void rendererSetPreviewCallbacks(Renderer* renderer, RenderCallbackStart start, 
     renderSetPreviewCallbacks(renderer->render_area, start, draw, update);
 }
 
-void rendererStart(Renderer* renderer, int width, int height, int quality)
+void rendererStart(Renderer* renderer, RenderParams params)
 {
     Thread* thread;
     int loops;
     int core_count = systemGetCoreCount();
 
-    renderer->render_quality = quality;
-    renderer->render_width = width;
-    renderer->render_height = height;
+    params.antialias = (params.antialias < 1) ? 1 : params.antialias;
+    params.antialias = (params.antialias > 4) ? 4 : params.antialias;
+    
+    renderer->render_quality = params.quality;
+    renderer->render_width = params.width * params.antialias;
+    renderer->render_height = params.height * params.antialias;
     renderer->render_interrupt = 0;
     renderer->render_progress = 0.0;
     
-    cameraSetRenderSize(&renderer->render_camera, width, height);
+    cameraSetRenderSize(&renderer->render_camera, renderer->render_width, renderer->render_height);
     renderer->camera_location = renderer->render_camera.location;
 
     renderSetBackgroundColor(renderer->render_area, &COLOR_BLACK);
-    renderSetSize(renderer->render_area, width, height);
+    renderSetParams(renderer->render_area, params);
     renderClear(renderer->render_area);
 
     renderer->is_rendering = 1;

@@ -37,7 +37,9 @@ typedef struct
 {
     int width;
     int height;
-} RenderContext;
+    int antialias;
+    int quality;
+} RenderParams;
 
 typedef struct
 {

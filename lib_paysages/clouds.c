@@ -168,10 +168,10 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
     result.edge_length = 0.25;
     result.base_coverage = 0.35;
     result.shape_noise = noiseCreateGenerator();
-    noiseGenerateBaseNoise(result.shape_noise, 20000);
+    noiseGenerateBaseNoise(result.shape_noise, 200000);
     noiseAddLevelsSimple(result.shape_noise, 4, 1.0, 1.0);
     result.edge_noise = noiseCreateGenerator();
-    noiseGenerateBaseNoise(result.edge_noise, 20000);
+    noiseGenerateBaseNoise(result.edge_noise, 800000);
     noiseAddLevelsSimple(result.edge_noise, 8, 1.0, 1.0);
     
     result._custom_coverage = _standardCoverageFunc;

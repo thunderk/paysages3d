@@ -7,10 +7,10 @@
 #include "../lib_paysages/render.h"
 #include "../lib_paysages/scenery.h"
 
-void startRender(Renderer* renderer, char* outputpath, int width, int height, int quality)
+void startRender(Renderer* renderer, char* outputpath, RenderParams params)
 {
     printf("\rRendering %s ...                   \n", outputpath);
-    rendererStart(renderer, width, height, quality);
+    rendererStart(renderer, params);
     printf("\rSaving %s ...                      \n", outputpath);
     remove(outputpath);
     renderSaveToFile(renderer->render_area, outputpath);
@@ -26,6 +26,7 @@ void displayHelp()
     printf(" -rw x  Render width (int)\n");
     printf(" -rh x  Render height (int)\n");
     printf(" -rq x  Render quality (int, 1 to 10)\n");
+    printf(" -ra x  Render anti-aliasing (int, 1 to 4)\n");
     printf(" -di x  Day start time (float, 0.0 to 1.0)\n");
     printf(" -ds x  Day step time (float)\n");
 }
@@ -40,9 +41,7 @@ int main(int argc, char** argv)
 {
     Renderer renderer;
     char* conf_file_path = NULL;
-    int conf_render_width = 800;
-    int conf_render_height = 600;
-    int conf_render_quality = 5;
+    RenderParams conf_render_params = {800, 600, 1, 5};
     int conf_nb_pictures = 1;
     double conf_daytime_start = 0.4;
     double conf_daytime_step = 0.0;
@@ -77,21 +76,28 @@ int main(int argc, char** argv)
         {
             if (argc--)
             {
-                conf_render_width = atoi(*(++argv));
+                conf_render_params.width = atoi(*(++argv));
             }
         }
         else if (strcmp(*argv, "-rh") == 0 || strcmp(*argv, "--height") == 0)
         {
             if (argc--)
             {
-                conf_render_height = atoi(*(++argv));
+                conf_render_params.height = atoi(*(++argv));
             }
         }
         else if (strcmp(*argv, "-rq") == 0 || strcmp(*argv, "--quality") == 0)
         {
             if (argc--)
             {
-                conf_render_quality = atoi(*(++argv));
+                conf_render_params.quality = atoi(*(++argv));
+            }
+        }
+        else if (strcmp(*argv, "-ra") == 0 || strcmp(*argv, "--antialias") == 0)
+        {
+            if (argc--)
+            {
+                conf_render_params.antialias = atoi(*(++argv));
             }
         }
         else if (strcmp(*argv, "-di") == 0 || strcmp(*argv, "--daystart") == 0)
@@ -128,7 +134,7 @@ int main(int argc, char** argv)
         autoSetDaytimeFraction(conf_daytime_start);
 
         sprintf(outputpath, "output/pic%05d.png", outputcount);
-        startRender(&renderer, outputpath, conf_render_width, conf_render_height, conf_render_quality);
+        startRender(&renderer, outputpath, conf_render_params);
 
         conf_daytime_start += conf_daytime_step;
     }

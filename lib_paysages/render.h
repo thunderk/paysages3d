@@ -8,14 +8,14 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+    
 void renderInit();
 void renderQuit();
 
 RenderArea* renderCreateArea();
 void renderDeleteArea(RenderArea* area);
 
-void renderSetSize(RenderArea* area, int width, int height);
+void renderSetParams(RenderArea* area, RenderParams params);
 void renderSetBackgroundColor(RenderArea* area, Color* col);
 void renderClear(RenderArea* area);
 void renderUpdate(RenderArea* area);

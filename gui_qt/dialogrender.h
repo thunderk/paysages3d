@@ -14,7 +14,7 @@ public:
     explicit DialogRender(QWidget *parent, Renderer* renderer);
     ~DialogRender();
 
-    void startRender(int quality, int width, int height);
+    void startRender(RenderParams params);
     void loadLastRender();
 
     QImage* pixbuf;

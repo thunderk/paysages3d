@@ -50,7 +50,7 @@ struct Renderer
 Renderer rendererCreate();
 void rendererDelete(Renderer* renderer);
 void rendererSetPreviewCallbacks(Renderer* renderer, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update);
-void rendererStart(Renderer* renderer, int width, int height, int quality);
+void rendererStart(Renderer* renderer, RenderParams params);
 void rendererInterrupt(Renderer* renderer);
 
 #ifdef __cplusplus

@@ -13,8 +13,7 @@
 
 struct RenderArea
 {
-    int width;
-    int height;
+    RenderParams params;
     int pixel_count;
     Array* pixels;
     RenderFragment* scanline_up;
@@ -53,8 +52,10 @@ RenderArea* renderCreateArea()
     RenderArea* result;
     
     result = malloc(sizeof(RenderArea));
-    result->width = 1;
-    result->height = 1;
+    result->params.width = 1;
+    result->params.height = 1;
+    result->params.antialias = 1;
+    result->params.quality = 5;
     result->pixel_count = 1;
     result->pixels = malloc(sizeof(Array));
     arrayCreate(result->pixels, sizeof(RenderFragment));
@@ -81,11 +82,11 @@ void renderDeleteArea(RenderArea* area)
     int x;
     int y;
 
-    for (x = 0; x < area->width; x++)
+    for (x = 0; x < area->params.width * area->params.antialias; x++)
     {
-        for (y = 0; y < area->height; y++)
+        for (y = 0; y < area->params.height * area->params.antialias; y++)
         {
-            arrayDelete(area->pixels + (y * area->width + x));
+            arrayDelete(area->pixels + (y * area->params.width * area->params.antialias + x));
         }
     }
     
@@ -96,21 +97,23 @@ void renderDeleteArea(RenderArea* area)
     free(area);
 }
 
-void renderSetSize(RenderArea* area, int width, int height)
+void renderSetParams(RenderArea* area, RenderParams params)
 {
-    int x;
-    int y;
+    int x, y;
+    int width, height;
+    
+    width = params.width * params.antialias;
+    height = params.height * params.antialias;
 
-    for (x = 0; x < area->width; x++)
+    for (x = 0; x < area->params.width * area->params.antialias; x++)
     {
-        for (y = 0; y < area->height; y++)
+        for (y = 0; y < area->params.height * area->params.antialias; y++)
         {
-            arrayDelete(area->pixels + (y * area->width + x));
+            arrayDelete(area->pixels + (y * area->params.width * area->params.antialias + x));
         }
     }
 
-    area->width = width;
-    area->height = height;
+    area->params = params;
     area->pixels = realloc(area->pixels, sizeof(Array) * width * height);
     area->pixel_count = width * height;
 
@@ -144,22 +147,22 @@ void renderClear(RenderArea* area)
     int x;
     int y;
 
-    for (x = 0; x < area->width; x++)
+    for (x = 0; x < area->params.width * area->params.antialias; x++)
     {
-        for (y = 0; y < area->height; y++)
+        for (y = 0; y < area->params.height * area->params.antialias; y++)
         {
-            arrayClear(area->pixels + (y * area->width + x));
+            arrayClear(area->pixels + (y * area->params.width * area->params.antialias + x));
         }
     }
 
     area->scanline_left = 0;
-    area->scanline_right = area->width - 1;
+    area->scanline_right = area->params.width * area->params.antialias - 1;
 
-    area->callback_start(area->width, area->height, area->background_color);
+    area->callback_start(area->params.width, area->params.height, area->background_color);
 
-    area->dirty_left = area->width;
+    area->dirty_left = area->params.width * area->params.antialias;
     area->dirty_right = -1;
-    area->dirty_down = area->height;
+    area->dirty_down = area->params.height * area->params.antialias;
     area->dirty_up = -1;
     area->dirty_count = 0;
 }
@@ -233,7 +236,7 @@ static void _processDirtyPixels(RenderArea* area)
     {
         for (x = area->dirty_left; x <= area->dirty_right; x++)
         {
-            pixel_data = area->pixels + y * area->width + x;
+            pixel_data = area->pixels + y * area->params.width * area->params.antialias + x;
             if (pixel_data->dirty)
             {
                 col = _getPixelColor(area->background_color, pixel_data);
@@ -245,9 +248,9 @@ static void _processDirtyPixels(RenderArea* area)
 
     area->callback_update(0.0);
 
-    area->dirty_left = area->width;
+    area->dirty_left = area->params.width * area->params.antialias;
     area->dirty_right = -1;
-    area->dirty_down = area->height;
+    area->dirty_down = area->params.height * area->params.antialias;
     area->dirty_up = -1;
     area->dirty_count = 0;
 }
@@ -264,15 +267,15 @@ static void _setAllDirty(RenderArea* area)
     int x, y;
 
     area->dirty_left = 0;
-    area->dirty_right = area->width - 1;
+    area->dirty_right = area->params.width - 1;
     area->dirty_down = 0;
-    area->dirty_up = area->height - 1;
+    area->dirty_up = area->params.height - 1;
 
     for (y = area->dirty_down; y <= area->dirty_up; y++)
     {
         for (x = area->dirty_left; x <= area->dirty_right; x++)
         {
-            (area->pixels + y * area->width + x)->dirty = 1;
+            (area->pixels + y * area->params.width * area->params.antialias + x)->dirty = 1;
         }
     }
 }
@@ -289,9 +292,9 @@ void renderAddFragment(RenderArea* area, RenderFragment* fragment)
     RenderFragment* fragments;
 
     dirty = 0;
-    if (x >= 0 && x < area->width && y >= 0 && y < area->height && z > 1.0)
+    if (x >= 0 && x < area->params.width * area->params.antialias && y >= 0 && y < area->params.height * area->params.antialias && z > 1.0)
     {
-        pixel_data = area->pixels + (y * area->width + x);
+        pixel_data = area->pixels + (y * area->params.width * area->params.antialias + x);
         fragments = (RenderFragment*)pixel_data->data;
         fragments_count = pixel_data->length;
 
@@ -389,7 +392,7 @@ static void __vertexInterpolate(Vertex* v1, Vertex* diff, double value, Vertex* 
 
 static void __pushScanLinePoint(RenderArea* area, RenderFragment point)
 {
-    if (point.x < 0 || point.x >= area->width)
+    if (point.x < 0 || point.x >= area->params.width * area->params.antialias)
     {
         return;
     }
@@ -436,7 +439,7 @@ static void __pushScanLineEdge(RenderArea* area, Vector3 v1, Vector3 v2, Vertex*
     {
         __pushScanLineEdge(area, v2, v1, vertex2, vertex1);
     }
-    else if (endx < 0 || startx >= area->width)
+    else if (endx < 0 || startx >= area->params.width * area->params.antialias)
     {
         return;
     }
@@ -462,9 +465,9 @@ static void __pushScanLineEdge(RenderArea* area, Vector3 v1, Vector3 v2, Vertex*
         {
             startx = 0;
         }
-        if (endx >= area->width)
+        if (endx >= area->params.width * area->params.antialias)
         {
-            endx = area->width - 1;
+            endx = area->params.width * area->params.antialias - 1;
         }
 
         dx = v2.x - v1.x;
@@ -499,9 +502,9 @@ static void __clearScanLines(RenderArea* area)
     for (x = area->scanline_left; x <= area->scanline_right; x++)
     {
         area->scanline_up[x].y = -1;
-        area->scanline_down[x].y = area->height;
+        area->scanline_down[x].y = area->params.height * area->params.antialias;
     }
-    area->scanline_left = area->width;
+    area->scanline_left = area->params.width * area->params.antialias;
     area->scanline_right = -1;
 }
 
@@ -522,7 +525,7 @@ static void __renderScanLines(RenderArea* area)
             starty = down.y;
             endy = up.y;
 
-            if (endy < 0 || starty >= area->height)
+            if (endy < 0 || starty >= area->params.height * area->params.antialias)
             {
                 continue;
             }
@@ -531,9 +534,9 @@ static void __renderScanLines(RenderArea* area)
             {
                 starty = 0;
             }
-            if (endy >= area->height)
+            if (endy >= area->params.height * area->params.antialias)
             {
-                endy = area->height - 1;
+                endy = area->params.height * area->params.antialias - 1;
             }
 
             dy = (double)(up.y - down.y);
@@ -564,8 +567,8 @@ static void __renderScanLines(RenderArea* area)
 
 void renderPushTriangle(RenderArea* area, Vertex* v1, Vertex* v2, Vertex* v3, Vector3 p1, Vector3 p2, Vector3 p3)
 {
-    double limit_width = (double)(area->width - 1);
-    double limit_height = (double)(area->height - 1);
+    double limit_width = (double)(area->params.width * area->params.antialias - 1);
+    double limit_height = (double)(area->params.height * area->params.antialias - 1);
 
     /* Filter if outside screen */
     if (p1.z < 1.0 || p2.z < 1.0 || p3.z < 1.0 || (p1.x < 0.0 && p2.x < 0.0 && p3.x < 0.0) || (p1.y < 0.0 && p2.y < 0.0 && p3.y < 0.0) || (p1.x > limit_width && p2.x > limit_width && p3.x > limit_width) || (p1.y > limit_height && p2.y > limit_height && p3.y > limit_height))
@@ -603,14 +606,14 @@ void* _renderPostProcessChunk(void* data)
     RenderChunk* chunk = (RenderChunk*)data;
 
 #ifdef RENDER_INVERSE
-    for (y = chunk->area->height - 1 - chunk->starty; y >= chunk->area->height - 1 - chunk->endy; y--)
+    for (y = chunk->area->params.height * chunk->area->params.antialias - 1 - chunk->starty; y >= chunk->area->params.height * chunk->area->params.antialias - 1 - chunk->endy; y--)
 #else
     for (y = chunk->starty; y <= chunk->endy; y++)
 #endif
     {
         for (x = chunk->startx; x <= chunk->endx; x++)
         {
-            pixel_data = chunk->area->pixels + (y * chunk->area->width + x);
+            pixel_data = chunk->area->pixels + (y * chunk->area->params.width * chunk->area->params.antialias + x);
             fragments = (RenderFragment*)pixel_data->data;
             dirty = 0;
             for (i = 0; i < pixel_data->length; i++)
@@ -661,8 +664,8 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
 
     nx = 10;
     ny = 10;
-    dx = area->width / nx;
-    dy = area->height / ny;
+    dx = area->params.width * area->params.antialias / nx;
+    dy = area->params.height * area->params.antialias / ny;
     x = 0;
     y = 0;
     /*_progress_pixels = 0;*/
@@ -703,7 +706,7 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
                 chunks[i].startx = x * dx;
                 if (x == nx - 1)
                 {
-                    chunks[i].endx = area->width - 1;
+                    chunks[i].endx = area->params.width * area->params.antialias - 1;
                 }
                 else
                 {
@@ -712,7 +715,7 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
                 chunks[i].starty = y * dy;
                 if (y == ny - 1)
                 {
-                    chunks[i].endy = area->height - 1;
+                    chunks[i].endy = area->params.height * area->params.antialias - 1;
                 }
                 else
                 {
@@ -753,23 +756,24 @@ int renderSaveToFile(RenderArea* area, const char* path)
     Color result;
     ILuint x, y;
     ILuint rgba;
-    ILuint data[area->height * area->width];
+    ILuint data[area->params.height * area->params.width];
     ILenum error;
     Array* pixel_data;
     int error_count;
 
-    for (y = 0; y < area->height; y++)
+    for (y = 0; y < area->params.height; y++)
     {
-        for (x = 0; x < area->width; x++)
+        for (x = 0; x < area->params.width; x++)
         {
-            pixel_data = area->pixels + (y * area->width + x);
+            /* TODO Anti-alias */
+            pixel_data = area->pixels + (y * area->params.width + x);
             result = _getPixelColor(area->background_color, pixel_data);
             rgba = colorTo32BitRGBA(&result);
-            data[y * area->width + x] = rgba;
+            data[y * area->params.width + x] = rgba;
         }
     }
 
-    ilTexImage((ILuint)area->width, (ILuint)area->height, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, data);
+    ilTexImage((ILuint)area->params.width, (ILuint)area->params.height, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, data);
     remove(path);
     ilSaveImage(path);
 
@@ -790,7 +794,7 @@ void renderSetPreviewCallbacks(RenderArea* area, RenderCallbackStart start, Rend
     area->callback_draw = draw ? draw : _callbackDraw;
     area->callback_update = update ? update : _callbackUpdate;
 
-    area->callback_start(area->width, area->height, area->background_color);
+    area->callback_start(area->params.width, area->params.height, area->background_color);
 
     _setAllDirty(area);
     _processDirtyPixels(area);

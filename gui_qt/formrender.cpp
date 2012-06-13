@@ -96,9 +96,10 @@ FormRender::FormRender(QWidget *parent) :
 {
     QPushButton* button;
 
-    _quality = 5;
-    _width = 800;
-    _height = 600;
+    _params.quality = 5;
+    _params.width = 800;
+    _params.height = 600;
+    _params.antialias = 1;
     _camera = cameraCreateDefinition();
     
     _renderer_inited = false;
@@ -107,9 +108,10 @@ FormRender::FormRender(QWidget *parent) :
     addPreview(_preview_landscape, QString(tr("Top-down preview")));
     
     addInput(new InputCamera(this, tr("Camera"), &_camera));
-    addInputInt(tr("Quality"), &_quality, 1, 10, 1, 1);
-    addInputInt(tr("Image width"), &_width, 100, 2000, 10, 100);
-    addInputInt(tr("Image height"), &_height, 100, 2000, 10, 100);
+    addInputInt(tr("Quality"), &_params.quality, 1, 10, 1, 1);
+    addInputInt(tr("Image width"), &_params.width, 100, 2000, 10, 100);
+    addInputInt(tr("Image height"), &_params.height, 100, 2000, 10, 100);
+    addInputInt(tr("Anti aliasing"), &_params.antialias, 1, 4, 1, 1);
 
     button = addButton(tr("Start new render"));
     connect(button, SIGNAL(clicked()), this, SLOT(startRender()));
@@ -157,7 +159,8 @@ void FormRender::startQuickRender()
     _renderer_inited = true;
     
     DialogRender* dialog = new DialogRender(this, &_renderer);
-    dialog->startRender(3, 400, 300);
+    RenderParams params = {400, 300, 1, 3};
+    dialog->startRender(params);
 
     delete dialog;
 }
@@ -172,7 +175,7 @@ void FormRender::startRender()
     _renderer_inited = true;
     
     DialogRender* dialog = new DialogRender(this, &_renderer);
-    dialog->startRender(_quality, _width, _height);
+    dialog->startRender(_params);
 
     delete dialog;
 }

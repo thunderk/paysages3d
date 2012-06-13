@@ -32,22 +32,18 @@ static void _renderUpdate(double progress)
 class RenderThread:public QThread
 {
 public:
-    RenderThread(Renderer* renderer, int width, int height, int quality):QThread()
+    RenderThread(Renderer* renderer, RenderParams params):QThread()
     {
         _renderer = renderer;
-        _width = width;
-        _height = height;
-        _quality = quality;
+        _params = params;
     }
     void run()
     {
-        rendererStart(_renderer, _width, _height, _quality);
+        rendererStart(_renderer, _params);
     }
 private:
     Renderer* _renderer;
-    int _width;
-    int _height;
-    int _quality;
+    RenderParams _params;
 };
 
 class RenderArea:public QWidget
@@ -109,12 +105,12 @@ DialogRender::~DialogRender()
     delete pixbuf;
 }
 
-void DialogRender::startRender(int quality, int width, int height)
+void DialogRender::startRender(RenderParams params)
 {
-    applyRenderSize(width, height);
+    applyRenderSize(params.width, params.height);
     rendererSetPreviewCallbacks(_renderer, _renderStart, _renderDraw, _renderUpdate);
 
-    render_thread = new RenderThread(_renderer, width, height, quality);
+    render_thread = new RenderThread(_renderer, params);
     render_thread->start();
 
     exec();

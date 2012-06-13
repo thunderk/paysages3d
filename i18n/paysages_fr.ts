@@ -250,7 +250,7 @@ Maintenir Ctrl : Plus lent</translation>
 <context>
     <name>DialogRender</name>
     <message>
-        <location filename="../gui_qt/dialogrender.cpp" line="80"/>
+        <location filename="../gui_qt/dialogrender.cpp" line="76"/>
         <source>Paysages 3D - Render</source>
         <translation>Paysages 3D - Rendu</translation>
     </message>
@@ -511,57 +511,62 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormRender</name>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="107"/>
+        <location filename="../gui_qt/formrender.cpp" line="108"/>
         <source>Top-down preview</source>
         <translation>Aperçu plongeant</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="109"/>
+        <location filename="../gui_qt/formrender.cpp" line="110"/>
         <source>Camera</source>
         <translation>Caméra</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="110"/>
+        <location filename="../gui_qt/formrender.cpp" line="111"/>
         <source>Quality</source>
         <translation>Qualité de rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="111"/>
+        <location filename="../gui_qt/formrender.cpp" line="112"/>
         <source>Image width</source>
         <translation>Largeur de l&apos;image</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="112"/>
+        <location filename="../gui_qt/formrender.cpp" line="113"/>
         <source>Image height</source>
         <translation>Hauteur de l&apos;image</translation>
     </message>
     <message>
         <location filename="../gui_qt/formrender.cpp" line="114"/>
+        <source>Anti aliasing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formrender.cpp" line="116"/>
         <source>Start new render</source>
         <translation>Démarrer un rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="116"/>
+        <location filename="../gui_qt/formrender.cpp" line="118"/>
         <source>Show last render</source>
         <translation>Voir le dernier rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="118"/>
+        <location filename="../gui_qt/formrender.cpp" line="120"/>
         <source>Save last render</source>
         <translation>Sauvegarder le dernier rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="197"/>
+        <location filename="../gui_qt/formrender.cpp" line="200"/>
         <source>Paysages 3D - Choose a filename to save the last render</source>
         <translation>Paysages 3D - Choisissez un nom de fichier pour le rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="197"/>
+        <location filename="../gui_qt/formrender.cpp" line="200"/>
         <source>Images (*.png *.jpg)</source>
         <translation>Images (*.png *.jpg)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="210"/>
+        <location filename="../gui_qt/formrender.cpp" line="213"/>
         <source>Can&apos;t write to file : %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -574,7 +579,7 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Choisissez un nom de fichier pour le rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="206"/>
+        <location filename="../gui_qt/formrender.cpp" line="209"/>
         <source>The picture %1 has been saved.</source>
         <translation>L&apos;image %1 a été sauvegardée.</translation>
     </message>

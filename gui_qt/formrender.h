@@ -4,6 +4,7 @@
 #include "baseform.h"
 #include "../lib_paysages/camera.h"
 #include "../lib_paysages/renderer.h"
+#include "../lib_paysages/render.h"
 
 class FormRender : public BaseForm
 {
@@ -27,9 +28,7 @@ private slots:
     void saveRender();
 
 private:
-    int _quality;
-    int _width;
-    int _height;
+    RenderParams _params;
     CameraDefinition _camera;
     Renderer _renderer;
     bool _renderer_inited;
