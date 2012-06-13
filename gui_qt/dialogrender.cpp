@@ -16,6 +16,7 @@ static void _renderStart(int width, int height, Color background)
     delete _current_dialog->pixbuf;
     _current_dialog->pixbuf = new QImage(width, height, QImage::Format_ARGB32);
     _current_dialog->pixbuf->fill(colorToQColor(background).rgb());
+    _current_dialog->tellRenderSize(width, height);
 }
 
 static void _renderDraw(int x, int y, Color col)
@@ -71,7 +72,7 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     _current_dialog = this;
     render_thread = NULL;
     _renderer = renderer;
-
+    
     setModal(true);
     setWindowTitle(tr("Paysages 3D - Render"));
     setLayout(new QVBoxLayout());
@@ -89,6 +90,8 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     layout()->addWidget(progress);
     progress_value = 0;
     
+    connect(this, SIGNAL(renderSizeChanged(int, int)), this, SLOT(applyRenderSize(int, int)));
+    
     // TEMP
     progress->hide();
 }
@@ -105,9 +108,14 @@ DialogRender::~DialogRender()
     delete pixbuf;
 }
 
+void DialogRender::tellRenderSize(int width, int height)
+{
+    emit renderSizeChanged(width, height);
+}
+
 void DialogRender::startRender(RenderParams params)
 {
-    applyRenderSize(params.width, params.height);
+    //applyRenderSize(params.width, params.height);
     rendererSetPreviewCallbacks(_renderer, _renderStart, _renderDraw, _renderUpdate);
 
     render_thread = new RenderThread(_renderer, params);
@@ -118,7 +126,7 @@ void DialogRender::startRender(RenderParams params)
 
 void DialogRender::loadLastRender()
 {
-    applyRenderSize(_renderer->render_width, _renderer->render_height);
+    //applyRenderSize(_renderer->render_width, _renderer->render_height);
     progress->hide();
     rendererSetPreviewCallbacks(_renderer, _renderStart, _renderDraw, _renderUpdate);
 

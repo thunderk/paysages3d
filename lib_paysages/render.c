@@ -226,23 +226,48 @@ static inline void _setDirtyPixel(RenderArea* area, Array* pixel_data, int x, in
     area->dirty_count++;
 }
 
-static void _processDirtyPixels(RenderArea* area)
+static inline Color _getFinalPixel(RenderArea* area, int x, int y)
 {
-    Color col;
+    Color result, col;
+    int sx, sy;
     Array* pixel_data;
-    int x, y;
-
-    for (y = area->dirty_down; y <= area->dirty_up; y++)
+    
+    result.r = result.g = result.b = 0.0;
+    result.a = 1.0;
+    for (sx = 0; sx < area->params.antialias; sx++)
     {
-        for (x = area->dirty_left; x <= area->dirty_right; x++)
+        for (sy = 0; sy < area->params.antialias; sy++)
         {
-            pixel_data = area->pixels + y * area->params.width * area->params.antialias + x;
-            if (pixel_data->dirty)
+            pixel_data = area->pixels + (y * area->params.antialias + sy) * area->params.width * area->params.antialias + (x * area->params.antialias + sx);
+            if (1 || pixel_data->dirty)
             {
                 col = _getPixelColor(area->background_color, pixel_data);
-                area->callback_draw(x, y, col);
+                result.r += col.r / (double)(area->params.antialias * area->params.antialias);
+                result.g += col.g / (double)(area->params.antialias * area->params.antialias);
+                result.b += col.b / (double)(area->params.antialias * area->params.antialias);
                 pixel_data->dirty = 0;
             }
+        }
+    }
+    
+    return result;
+}
+
+static void _processDirtyPixels(RenderArea* area)
+{
+    int x, y;
+    int down, up, left, right;
+    
+    down = area->dirty_down / area->params.antialias;
+    up = area->dirty_up / area->params.antialias;
+    left = area->dirty_left / area->params.antialias;
+    right = area->dirty_right / area->params.antialias;
+
+    for (y = down; y <= up; y++)
+    {
+        for (x = left; x <= right; x++)
+        {
+            area->callback_draw(x, y, _getFinalPixel(area, x, y));
         }
     }
 
@@ -267,9 +292,9 @@ static void _setAllDirty(RenderArea* area)
     int x, y;
 
     area->dirty_left = 0;
-    area->dirty_right = area->params.width - 1;
+    area->dirty_right = area->params.width * area->params.antialias - 1;
     area->dirty_down = 0;
-    area->dirty_up = area->params.height - 1;
+    area->dirty_up = area->params.height * area->params.antialias - 1;
 
     for (y = area->dirty_down; y <= area->dirty_up; y++)
     {
@@ -765,9 +790,7 @@ int renderSaveToFile(RenderArea* area, const char* path)
     {
         for (x = 0; x < area->params.width; x++)
         {
-            /* TODO Anti-alias */
-            pixel_data = area->pixels + (y * area->params.width + x);
-            result = _getPixelColor(area->background_color, pixel_data);
+            result = _getFinalPixel(area, x, y);
             rgba = colorTo32BitRGBA(&result);
             data[y * area->params.width + x] = rgba;
         }

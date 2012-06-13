@@ -250,7 +250,7 @@ Maintenir Ctrl : Plus lent</translation>
 <context>
     <name>DialogRender</name>
     <message>
-        <location filename="../gui_qt/dialogrender.cpp" line="76"/>
+        <location filename="../gui_qt/dialogrender.cpp" line="77"/>
         <source>Paysages 3D - Render</source>
         <translation>Paysages 3D - Rendu</translation>
     </message>

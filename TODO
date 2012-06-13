@@ -40,7 +40,8 @@ Technology Preview 2 :
 
 Technology Preview 3 :
 - Restore render progress.
-- Add antialiasing option (pay attention to memory usage).
+- Use bicubic interpolation for antialiasing.
+- Improve large render/antialias memory consumption.
 - Add basic vegetation system ?
 - Texture shadowing and self-shadowing ?
 - Improve sky rendering (colors and light halo).

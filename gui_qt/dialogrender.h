@@ -14,6 +14,7 @@ public:
     explicit DialogRender(QWidget *parent, Renderer* renderer);
     ~DialogRender();
 
+    void tellRenderSize(int width, int height);
     void startRender(RenderParams params);
     void loadLastRender();
 
@@ -22,8 +23,11 @@ public:
     QProgressBar* progress;
     int progress_value;
     
-public slots:
+private slots:
     void applyRenderSize(int width, int height);
+    
+signals:
+    void renderSizeChanged(int width, int height);
 
 private:
     QScrollArea* scroll;

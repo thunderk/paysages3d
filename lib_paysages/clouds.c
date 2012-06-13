@@ -288,10 +288,12 @@ static inline double _getDistanceToBorder(CloudsLayerDefinition* layer, Vector3 
         density /= coverage;
         if (density < layer->edge_length)
         {
+            density /= layer->edge_length;
+            
             val = 0.5 * noiseGet3DTotal(layer->edge_noise, position.x / layer->edge_scaling, position.y / layer->edge_scaling, position.z / layer->edge_scaling) / noiseGetMaxValue(layer->edge_noise);
-            val = (val - 0.5 + density / layer->edge_length) * layer->edge_scaling;
+            val = val - 0.5 + density;
 
-            return val;
+            return val * (density * coverage * layer->shape_scaling + (1.0 - density) * layer->edge_scaling);
         }
         else
         {
