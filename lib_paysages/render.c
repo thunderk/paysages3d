@@ -7,7 +7,6 @@
 #include "IL/ilu.h"
 
 #include "shared/types.h"
-#include "array.h"
 #include "color.h"
 #include "system.h"
 
@@ -15,7 +14,7 @@ struct RenderArea
 {
     RenderParams params;
     int pixel_count;
-    Array* pixels;
+    RenderFragment* pixels;
     RenderFragment* scanline_up;
     RenderFragment* scanline_down;
     int scanline_left;
@@ -57,8 +56,7 @@ RenderArea* renderCreateArea()
     result->params.antialias = 1;
     result->params.quality = 5;
     result->pixel_count = 1;
-    result->pixels = malloc(sizeof(Array));
-    arrayCreate(result->pixels, sizeof(RenderFragment));
+    result->pixels = malloc(sizeof(RenderFragment));
     result->scanline_up = malloc(sizeof(RenderFragment));
     result->scanline_down = malloc(sizeof(RenderFragment));
     result->scanline_left = 0;
@@ -79,17 +77,6 @@ RenderArea* renderCreateArea()
 
 void renderDeleteArea(RenderArea* area)
 {
-    int x;
-    int y;
-
-    for (x = 0; x < area->params.width * area->params.antialias; x++)
-    {
-        for (y = 0; y < area->params.height * area->params.antialias; y++)
-        {
-            arrayDelete(area->pixels + (y * area->params.width * area->params.antialias + x));
-        }
-    }
-    
     mutexDestroy(area->lock);
     free(area->pixels);
     free(area->scanline_up);
@@ -99,22 +86,13 @@ void renderDeleteArea(RenderArea* area)
 
 void renderSetParams(RenderArea* area, RenderParams params)
 {
-    int x, y;
     int width, height;
     
     width = params.width * params.antialias;
     height = params.height * params.antialias;
 
-    for (x = 0; x < area->params.width * area->params.antialias; x++)
-    {
-        for (y = 0; y < area->params.height * area->params.antialias; y++)
-        {
-            arrayDelete(area->pixels + (y * area->params.width * area->params.antialias + x));
-        }
-    }
-
     area->params = params;
-    area->pixels = realloc(area->pixels, sizeof(Array) * width * height);
+    area->pixels = realloc(area->pixels, sizeof(RenderFragment) * width * height);
     area->pixel_count = width * height;
 
     area->scanline_left = 0;
@@ -128,13 +106,7 @@ void renderSetParams(RenderArea* area, RenderParams params)
     area->dirty_up = -1;
     area->dirty_count = 0;
 
-    for (y = 0; y < height; y++)
-    {
-        for (x = 0; x < width; x++)
-        {
-            arrayCreate(area->pixels + (y * width + x), sizeof(RenderFragment));
-        }
-    }
+    renderClear(area);
 }
 
 void renderSetBackgroundColor(RenderArea* area, Color* col)
@@ -144,6 +116,7 @@ void renderSetBackgroundColor(RenderArea* area, Color* col)
 
 void renderClear(RenderArea* area)
 {
+    RenderFragment* pixel;
     int x;
     int y;
 
@@ -151,7 +124,9 @@ void renderClear(RenderArea* area)
     {
         for (y = 0; y < area->params.height * area->params.antialias; y++)
         {
-            arrayClear(area->pixels + (y * area->params.width * area->params.antialias + x));
+            pixel = area->pixels + (y * area->params.width * area->params.antialias + x);
+            pixel->z = -100000000.0;
+            pixel->vertex.color = area->background_color;
         }
     }
 
@@ -186,26 +161,8 @@ void renderClear(RenderArea* area)
     }
 }*/
 
-static Color _getPixelColor(Color base, Array* pixel_data)
+static inline void _setDirtyPixel(RenderArea* area, RenderFragment* fragment, int x, int y)
 {
-    RenderFragment* fragment;
-    int i;
-
-    if (pixel_data->length > 0)
-    {
-        for (i = 0; i < pixel_data->length; i++)
-        {
-            fragment = ((RenderFragment*)pixel_data->data) + i;
-            colorMask(&base, &(fragment->vertex.color));
-        }
-    }
-
-    return base;
-}
-
-static inline void _setDirtyPixel(RenderArea* area, Array* pixel_data, int x, int y)
-{
-    pixel_data->dirty = 1;
     if (x < area->dirty_left)
     {
         area->dirty_left = x;
@@ -230,7 +187,7 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
 {
     Color result, col;
     int sx, sy;
-    Array* pixel_data;
+    RenderFragment* pixel_data;
     
     result.r = result.g = result.b = 0.0;
     result.a = 1.0;
@@ -239,14 +196,10 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
         for (sy = 0; sy < area->params.antialias; sy++)
         {
             pixel_data = area->pixels + (y * area->params.antialias + sy) * area->params.width * area->params.antialias + (x * area->params.antialias + sx);
-            if (1 || pixel_data->dirty)
-            {
-                col = _getPixelColor(area->background_color, pixel_data);
-                result.r += col.r / (float)(area->params.antialias * area->params.antialias);
-                result.g += col.g / (float)(area->params.antialias * area->params.antialias);
-                result.b += col.b / (float)(area->params.antialias * area->params.antialias);
-                pixel_data->dirty = 0;
-            }
+            col = pixel_data->vertex.color;
+            result.r += col.r / (float)(area->params.antialias * area->params.antialias);
+            result.g += col.g / (float)(area->params.antialias * area->params.antialias);
+            result.b += col.b / (float)(area->params.antialias * area->params.antialias);
         }
     }
     
@@ -289,83 +242,26 @@ void renderUpdate(RenderArea* area)
 
 static void _setAllDirty(RenderArea* area)
 {
-    int x, y;
-
     area->dirty_left = 0;
     area->dirty_right = area->params.width * area->params.antialias - 1;
     area->dirty_down = 0;
     area->dirty_up = area->params.height * area->params.antialias - 1;
-
-    for (y = area->dirty_down; y <= area->dirty_up; y++)
-    {
-        for (x = area->dirty_left; x <= area->dirty_right; x++)
-        {
-            (area->pixels + y * area->params.width * area->params.antialias + x)->dirty = 1;
-        }
-    }
 }
 
 void renderAddFragment(RenderArea* area, RenderFragment* fragment)
 {
-    Array* pixel_data;
+    RenderFragment* pixel_data;
     int x = fragment->x;
     int y = fragment->y;
     float z = fragment->z;
 
-    int i, dirty;
-    int fragments_count;
-    RenderFragment* fragments;
-
-    dirty = 0;
     if (x >= 0 && x < area->params.width * area->params.antialias && y >= 0 && y < area->params.height * area->params.antialias && z > 1.0)
     {
         pixel_data = area->pixels + (y * area->params.width * area->params.antialias + x);
-        fragments = (RenderFragment*)pixel_data->data;
-        fragments_count = pixel_data->length;
 
-        if (fragments_count == 0)
+        if (z > pixel_data->z)
         {
-            arrayAppend(pixel_data, fragment);
-            dirty = 1;
-        }
-        else if (fragments[0].z > z)
-        {
-            if (fragments[0].vertex.color.a < 1.0)
-            {
-                arrayInsert(pixel_data, fragment, 0);
-                dirty = 1;
-            }
-        }
-        else
-        {
-            for (i = 1; i <= fragments_count; i++)
-            {
-                if ((i == fragments_count) || (fragments[i].z > z))
-                {
-                    if (fragment->vertex.color.a > 0.999999)
-                    {
-                        if (i > 1)
-                        {
-                            arrayLStrip(pixel_data, i - 1);
-                        }
-                        arrayReplace(pixel_data, fragment, 0);
-                    }
-                    else if (i == fragments_count)
-                    {
-                        arrayAppend(pixel_data, fragment);
-                    }
-                    else
-                    {
-                        arrayInsert(pixel_data, fragment, i);
-                    }
-                    dirty = 1;
-                    break;
-                }
-            }
-        }
-
-        if (dirty)
-        {
+            *pixel_data = *fragment;
             _setDirtyPixel(area, pixel_data, x, y);
         }
     }
@@ -388,9 +284,6 @@ static void __vertexGetDiff(Vertex* v1, Vertex* v2, Vertex* result)
     result->location.x = v2->location.x - v1->location.x;
     result->location.y = v2->location.y - v1->location.y;
     result->location.z = v2->location.z - v1->location.z;
-    result->normal.x = v2->normal.x - v1->normal.x;
-    result->normal.y = v2->normal.y - v1->normal.y;
-    result->normal.z = v2->normal.z - v1->normal.z;
     result->color.r = v2->color.r - v1->color.r;
     result->color.g = v2->color.g - v1->color.g;
     result->color.b = v2->color.b - v1->color.b;
@@ -404,9 +297,6 @@ static void __vertexInterpolate(Vertex* v1, Vertex* diff, float value, Vertex* r
     result->location.x = v1->location.x + diff->location.x * value;
     result->location.y = v1->location.y + diff->location.y * value;
     result->location.z = v1->location.z + diff->location.z * value;
-    result->normal.x = v1->normal.x + diff->normal.x * value;
-    result->normal.y = v1->normal.y + diff->normal.y * value;
-    result->normal.z = v1->normal.z + diff->normal.z * value;
     result->color.r = v1->color.r + diff->color.r * value;
     result->color.g = v1->color.g + diff->color.g * value;
     result->color.b = v1->color.b + diff->color.b * value;
@@ -624,10 +514,8 @@ typedef struct {
 
 void* _renderPostProcessChunk(void* data)
 {
-    int x, y, i;
-    int dirty;
-    Array* pixel_data;
-    RenderFragment* fragments;
+    int x, y;
+    RenderFragment* fragment;
     RenderChunk* chunk = (RenderChunk*)data;
 
 #ifdef RENDER_INVERSE
@@ -638,25 +526,14 @@ void* _renderPostProcessChunk(void* data)
     {
         for (x = chunk->startx; x <= chunk->endx; x++)
         {
-            pixel_data = chunk->area->pixels + (y * chunk->area->params.width * chunk->area->params.antialias + x);
-            fragments = (RenderFragment*)pixel_data->data;
-            dirty = 0;
-            for (i = 0; i < pixel_data->length; i++)
+            fragment = chunk->area->pixels + (y * chunk->area->params.width * chunk->area->params.antialias + x);
+            if (fragment->vertex.callback)
             {
-                if (fragments[i].vertex.callback)
+                if (fragment->vertex.callback(fragment, chunk->renderer, fragment->vertex.callback_data))
                 {
-                    if (fragments[i].vertex.callback(fragments + i, chunk->renderer, fragments[i].vertex.callback_data))
-                    {
-                        colorNormalize(&fragments[i].vertex.color);
-                        dirty = 1;
-                    }
+                    colorNormalize(&fragment->vertex.color);
+                    _setDirtyPixel(chunk->area, fragment, x, y);
                 }
-            }
-            if (dirty)
-            {
-                mutexAcquire(chunk->area->lock);
-                _setDirtyPixel(chunk->area, pixel_data, x, y);
-                mutexRelease(chunk->area->lock);
             }
             /* chunk->area->progress_pixels++; */
         }
@@ -784,7 +661,6 @@ int renderSaveToFile(RenderArea* area, const char* path)
     ILuint rgba;
     ILuint data[area->params.height * area->params.width];
     ILenum error;
-    Array* pixel_data;
     int error_count;
 
     for (y = 0; y < area->params.height; y++)

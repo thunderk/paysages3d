@@ -345,7 +345,6 @@ static Vertex _getFirstPassVertex(TerrainDefinition* definition, float x, float 
     result.color.g = value;
     result.color.b = value;
     result.color.a = 1.0;
-    result.normal.x = result.normal.y = result.normal.z = 0.0;
     result.callback = _postProcessFragment;
     result.callback_data = definition;
 

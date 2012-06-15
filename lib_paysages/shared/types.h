@@ -19,7 +19,6 @@ typedef int(*f_RenderFragmentCallback)(struct RenderFragment*, struct Renderer* 
 typedef struct
 {
     Vector3 location;
-    Vector3 normal;
     Color color;
     f_RenderFragmentCallback callback;
     void* callback_data;
@@ -27,8 +26,8 @@ typedef struct
 
 typedef struct RenderFragment
 {
-    int x;
-    int y;
+    short int x;
+    short int y;
     float z;
     Vertex vertex;
 } RenderFragment;
