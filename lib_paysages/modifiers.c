@@ -13,7 +13,7 @@ struct HeightModifier
 {
     Zone* zone;
     int mode;
-    double value;
+    float value;
 };
 
 HeightModifier* modifierCreate()
@@ -49,14 +49,14 @@ void modifierDelete(HeightModifier* modifier)
 void modifierSave(PackStream* stream, HeightModifier* modifier)
 {
     packWriteInt(stream, &modifier->mode);
-    packWriteDouble(stream, &modifier->value);
+    packWriteFloat(stream, &modifier->value);
     zoneSave(stream, modifier->zone);
 }
 
 void modifierLoad(PackStream* stream, HeightModifier* modifier)
 {
     packReadInt(stream, &modifier->mode);
-    packReadDouble(stream, &modifier->value);
+    packReadFloat(stream, &modifier->value);
     zoneLoad(stream, modifier->zone);
 }
 
@@ -65,13 +65,13 @@ Zone* modifierGetZone(HeightModifier* modifier)
     return modifier->zone;
 }
 
-void modifierActionAddValue(HeightModifier* modifier, double value)
+void modifierActionAddValue(HeightModifier* modifier, float value)
 {
     modifier->mode = MODE_ADD_VALUE;
     modifier->value = value;
 }
 
-void modifierActionFixValue(HeightModifier* modifier, double value)
+void modifierActionFixValue(HeightModifier* modifier, float value)
 {
     modifier->mode = MODE_FIX_VALUE;
     modifier->value = value;
@@ -79,7 +79,7 @@ void modifierActionFixValue(HeightModifier* modifier, double value)
 
 Vector3 modifierApply(HeightModifier* modifier, Vector3 location)
 {
-    double influence, diff;
+    float influence, diff;
     Vector3 normal;
     
     switch (modifier->mode)

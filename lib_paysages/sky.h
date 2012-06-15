@@ -12,15 +12,15 @@ extern "C" {
 
 typedef struct
 {
-    double daytime;
+    float daytime;
     ColorGradation* sun_color;
-    double sun_radius;
-    double sun_halo_size;
+    float sun_radius;
+    float sun_halo_size;
     Curve* sun_halo_profile;
     ColorGradation* zenith_color;
     ColorGradation* haze_color;
-    double haze_height;
-    double haze_smoothing;
+    float haze_height;
+    float haze_smoothing;
     ColorGradation* _sky_gradation;
 } SkyDefinition;
 

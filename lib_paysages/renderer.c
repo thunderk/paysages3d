@@ -17,12 +17,12 @@ static void* _renderFirstPass(void* data)
     return NULL;
 }
 
-static int _addRenderProgress(Renderer* renderer, double progress)
+static int _addRenderProgress(Renderer* renderer, float progress)
 {
     return !renderer->render_interrupt;
 }
 
-static double _getPrecision(Renderer* renderer, Vector3 location)
+static float _getPrecision(Renderer* renderer, Vector3 location)
 {
     return 0.001;
 }
@@ -73,7 +73,7 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
     return _RAYCASTING_NULL;
 }
 
-static double _getTerrainHeight(Renderer* renderer, double x, double z)
+static float _getTerrainHeight(Renderer* renderer, float x, float z)
 {
     return 0.0;
 }
@@ -83,7 +83,7 @@ static HeightInfo _getWaterHeightInfo(Renderer* renderer)
     return _WATER_HEIGHT_INFO;
 }
 
-static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
+static Color _applyTextures(Renderer* renderer, Vector3 location, float precision)
 {
     return COLOR_TRANSPARENT;
 }

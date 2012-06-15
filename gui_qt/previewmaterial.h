@@ -12,7 +12,7 @@ public:
     SmallMaterialPreview(QWidget* parent, SurfaceMaterial* material);
     ~SmallMaterialPreview();
     
-    QColor getColor(double x, double y);
+    QColor getColor(float x, float y);
     
 protected:
     virtual void paintEvent(QPaintEvent* event);
@@ -32,7 +32,7 @@ public:
     ~PreviewMaterial();
     
 protected:
-    virtual QColor getColor(double x, double y);
+    virtual QColor getColor(float x, float y);
 
 private:
     SmallMaterialPreview* _small;

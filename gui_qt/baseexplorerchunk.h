@@ -15,7 +15,7 @@ public:
     void updatePriority(CameraDefinition* camera);
     void render(QGLWidget* widget);
     
-    double priority;
+    float priority;
 protected:
     BaseExplorerChunk(Renderer* renderer);
     
@@ -28,8 +28,8 @@ protected:
     virtual void onResetEvent();
     virtual bool onMaintainEvent();
     virtual void onRenderEvent(QGLWidget* widget);
-    virtual double getDisplayedSizeHint(CameraDefinition* camera);
-    virtual Color getTextureColor(double x, double y);
+    virtual float getDisplayedSizeHint(CameraDefinition* camera);
+    virtual Color getTextureColor(float x, float y);
     
     QMutex _lock_data;
 

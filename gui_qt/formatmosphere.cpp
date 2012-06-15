@@ -21,7 +21,7 @@ public:
         configScaling(100.0, 1000.0, 20.0, 200.0);
     }
 protected:
-    QColor getColor(double x, double y)
+    QColor getColor(float x, float y)
     {
         Vector3 eye, look, location;
 

@@ -19,24 +19,24 @@ void cameraDeleteDefinition(CameraDefinition* definition);
 void cameraCopyDefinition(CameraDefinition* source, CameraDefinition* destination);
 void cameraValidateDefinition(CameraDefinition* definition, int check_above);
 
-void cameraSetLocation(CameraDefinition* camera, double x, double y, double z);
-void cameraSetTarget(CameraDefinition* camera, double x, double y, double z);
-void cameraSetRoll(CameraDefinition* camera, double angle);
+void cameraSetLocation(CameraDefinition* camera, float x, float y, float z);
+void cameraSetTarget(CameraDefinition* camera, float x, float y, float z);
+void cameraSetRoll(CameraDefinition* camera, float angle);
 
-void cameraStrafeForward(CameraDefinition* camera, double value);
-void cameraStrafeRight(CameraDefinition* camera, double value);
-void cameraStrafeUp(CameraDefinition* camera, double value);
-void cameraRotateYaw(CameraDefinition* camera, double value);
-void cameraRotatePitch(CameraDefinition* camera, double value);
-void cameraRotateRoll(CameraDefinition* camera, double value);
+void cameraStrafeForward(CameraDefinition* camera, float value);
+void cameraStrafeRight(CameraDefinition* camera, float value);
+void cameraStrafeUp(CameraDefinition* camera, float value);
+void cameraRotateYaw(CameraDefinition* camera, float value);
+void cameraRotatePitch(CameraDefinition* camera, float value);
+void cameraRotateRoll(CameraDefinition* camera, float value);
 
 void cameraSetRenderSize(CameraDefinition* camera, int width, int height);
 
 Vector3 cameraProject(CameraDefinition* camera, Renderer* renderer, Vector3 point);
 Vector3 cameraUnproject(CameraDefinition* camera, Renderer* renderer, Vector3 point);
-void cameraProjectToFragment(CameraDefinition* camera, Renderer* renderer, double x, double y, double z, RenderFragment* result);
+void cameraProjectToFragment(CameraDefinition* camera, Renderer* renderer, float x, float y, float z, RenderFragment* result);
 /*void cameraPushOverlay(CameraDefinition* camera, Color col, f_RenderFragmentCallback callback);*/
-int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, double ysize, double zsize);
+int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, float xsize, float ysize, float zsize);
         
 #ifdef __cplusplus
 }

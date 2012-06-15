@@ -15,7 +15,7 @@
 #include "widgetcurveeditor.h"
 
 /**************** Dialog ****************/
-DialogCurve::DialogCurve(QWidget *parent, Curve* curve, double xmin, double xmax, double ymin, double ymax) : QDialog(parent)
+DialogCurve::DialogCurve(QWidget *parent, Curve* curve, float xmin, float xmax, float ymin, float ymax) : QDialog(parent)
 {
     QWidget* buttons;
     QWidget* form;
@@ -70,7 +70,7 @@ DialogCurve::~DialogCurve()
     curveDelete(_current);
 }
 
-bool DialogCurve::getCurve(QWidget* parent, Curve* curve, double xmin, double xmax, double ymin, double ymax)
+bool DialogCurve::getCurve(QWidget* parent, Curve* curve, float xmin, float xmax, float ymin, float ymax)
 {
     int result;
 

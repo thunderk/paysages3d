@@ -13,16 +13,16 @@ extern "C" {
 
 typedef struct
 {
-    double height;
-    double transparency;
-    double reflection;
+    float height;
+    float transparency;
+    float reflection;
     SurfaceMaterial material;
     Color depth_color;
-    double transparency_depth;
-    double lighting_depth;
+    float transparency_depth;
+    float lighting_depth;
     NoiseGenerator* waves_noise;
-    double waves_noise_height;
-    double waves_noise_scale;
+    float waves_noise_height;
+    float waves_noise_scale;
 } WaterDefinition;
 
 typedef struct

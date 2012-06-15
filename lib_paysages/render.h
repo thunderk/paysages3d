@@ -21,7 +21,7 @@ void renderClear(RenderArea* area);
 void renderUpdate(RenderArea* area);
 
 void renderAddFragment(RenderArea* area, RenderFragment* fragment);
-void renderPushFragment(RenderArea* area, int x, int y, double z, Vertex* vertex);
+void renderPushFragment(RenderArea* area, int x, int y, float z, Vertex* vertex);
 void renderPushTriangle(RenderArea* area, Vertex* v1, Vertex* v2, Vertex* v3, Vector3 p1, Vector3 p2, Vector3 p3);
 
 void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks);

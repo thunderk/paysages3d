@@ -16,10 +16,12 @@ Scenery :
 
 Rendering :
   * New texture model (perpendicular displacement and thickness).
+  * Added full scene antialiasing (FSAA).
 
 GUI :
   * Improved curve rendering.
   * New material editor.
+  * Added render timer.
 
 Misc :
   * Version handling in saved files.

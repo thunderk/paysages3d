@@ -37,7 +37,7 @@ struct RenderArea
 
 static void _callbackStart(int width, int height, Color background) {}
 static void _callbackDraw(int x, int y, Color col) {}
-static void _callbackUpdate(double progress) {}
+static void _callbackUpdate(float progress) {}
 
 void renderInit()
 {
@@ -169,7 +169,7 @@ void renderClear(RenderArea* area)
 
 /*static int _sortRenderFragment(void const* a, void const* b)
 {
-    double za, zb;
+    float za, zb;
     za = ((RenderFragment*)a)->z;
     zb = ((RenderFragment*)b)->z;
     if (za > zb)
@@ -242,9 +242,9 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
             if (1 || pixel_data->dirty)
             {
                 col = _getPixelColor(area->background_color, pixel_data);
-                result.r += col.r / (double)(area->params.antialias * area->params.antialias);
-                result.g += col.g / (double)(area->params.antialias * area->params.antialias);
-                result.b += col.b / (double)(area->params.antialias * area->params.antialias);
+                result.r += col.r / (float)(area->params.antialias * area->params.antialias);
+                result.g += col.g / (float)(area->params.antialias * area->params.antialias);
+                result.b += col.b / (float)(area->params.antialias * area->params.antialias);
                 pixel_data->dirty = 0;
             }
         }
@@ -310,7 +310,7 @@ void renderAddFragment(RenderArea* area, RenderFragment* fragment)
     Array* pixel_data;
     int x = fragment->x;
     int y = fragment->y;
-    double z = fragment->z;
+    float z = fragment->z;
 
     int i, dirty;
     int fragments_count;
@@ -371,7 +371,7 @@ void renderAddFragment(RenderArea* area, RenderFragment* fragment)
     }
 }
 
-void renderPushFragment(RenderArea* area, int x, int y, double z, Vertex* vertex)
+void renderPushFragment(RenderArea* area, int x, int y, float z, Vertex* vertex)
 {
     RenderFragment fragment;
 
@@ -399,7 +399,7 @@ static void __vertexGetDiff(Vertex* v1, Vertex* v2, Vertex* result)
     result->callback_data = v1->callback_data;
 }
 
-static void __vertexInterpolate(Vertex* v1, Vertex* diff, double value, Vertex* result)
+static void __vertexInterpolate(Vertex* v1, Vertex* diff, float value, Vertex* result)
 {
     result->location.x = v1->location.x + diff->location.x * value;
     result->location.y = v1->location.y + diff->location.y * value;
@@ -453,7 +453,7 @@ static void __pushScanLinePoint(RenderArea* area, RenderFragment point)
 
 static void __pushScanLineEdge(RenderArea* area, Vector3 v1, Vector3 v2, Vertex* vertex1, Vertex* vertex2)
 {
-    double dx, dy, dz, fx;
+    float dx, dy, dz, fx;
     Vertex diff;
     int startx = lround(v1.x);
     int endx = lround(v2.x);
@@ -501,7 +501,7 @@ static void __pushScanLineEdge(RenderArea* area, Vector3 v1, Vector3 v2, Vertex*
         __vertexGetDiff(vertex1, vertex2, &diff);
         for (curx = startx; curx <= endx; curx++)
         {
-            fx = (double)curx + 0.5;
+            fx = (float)curx + 0.5;
             if (fx < v1.x)
             {
                 fx = v1.x;
@@ -537,7 +537,7 @@ static void __renderScanLines(RenderArea* area)
 {
     int x, starty, endy, cury;
     Vertex diff;
-    double dy, dz, fy;
+    float dy, dz, fy;
     RenderFragment up, down, current;
 
     if (area->scanline_right > 0)
@@ -564,14 +564,14 @@ static void __renderScanLines(RenderArea* area)
                 endy = area->params.height * area->params.antialias - 1;
             }
 
-            dy = (double)(up.y - down.y);
+            dy = (float)(up.y - down.y);
             dz = up.z - down.z;
             __vertexGetDiff(&down.vertex, &up.vertex, &diff);
 
             current.x = x;
             for (cury = starty; cury <= endy; cury++)
             {
-                fy = (double)cury - down.y;
+                fy = (float)cury - down.y;
 
                 current.y = cury;
                 current.z = down.z + dz * fy / dy;
@@ -592,8 +592,8 @@ static void __renderScanLines(RenderArea* area)
 
 void renderPushTriangle(RenderArea* area, Vertex* v1, Vertex* v2, Vertex* v3, Vector3 p1, Vector3 p2, Vector3 p3)
 {
-    double limit_width = (double)(area->params.width * area->params.antialias - 1);
-    double limit_height = (double)(area->params.height * area->params.antialias - 1);
+    float limit_width = (float)(area->params.width * area->params.antialias - 1);
+    float limit_height = (float)(area->params.height * area->params.antialias - 1);
 
     /* Filter if outside screen */
     if (p1.z < 1.0 || p2.z < 1.0 || p3.z < 1.0 || (p1.x < 0.0 && p2.x < 0.0 && p3.x < 0.0) || (p1.y < 0.0 && p2.y < 0.0 && p3.y < 0.0) || (p1.x > limit_width && p2.x > limit_width && p3.x > limit_width) || (p1.y > limit_height && p2.y > limit_height && p3.y > limit_height))
@@ -761,7 +761,7 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
         if (++loops >= 10)
         {
             mutexAcquire(area->lock);
-            /*_progress = (double)_progress_pixels / (double)_pixel_count;*/
+            /*_progress = (float)_progress_pixels / (float)_pixel_count;*/
             _processDirtyPixels(area);
             mutexRelease(area->lock);
 
@@ -771,6 +771,7 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
 
     /*_progress = 1.0;*/
     _processDirtyPixels(area);
+    area->callback_update(1.0);
 }
 
 int renderSaveToFile(RenderArea* area, const char* path)

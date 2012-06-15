@@ -1,10 +1,12 @@
 #ifndef _PAYSAGES_QT_DIALOGRENDER_H_
 #define _PAYSAGES_QT_DIALOGRENDER_H_
 
+#include <time.h>
 #include <QDialog>
 #include <QThread>
 #include <QProgressBar>
 #include <QScrollArea>
+#include <QLabel>
 #include "../lib_paysages/renderer.h"
 
 class DialogRender : public QDialog
@@ -15,24 +17,29 @@ public:
     ~DialogRender();
 
     void tellRenderSize(int width, int height);
+    void tellProgressChange(float value);
     void startRender(RenderParams params);
     void loadLastRender();
 
     QImage* pixbuf;
     QWidget* area;
-    QProgressBar* progress;
-    int progress_value;
     
 private slots:
     void applyRenderSize(int width, int height);
+    void applyProgress(float value);
     
 signals:
     void renderSizeChanged(int width, int height);
+    void progressChanged(float value);
 
 private:
-    QScrollArea* scroll;
-    QThread* render_thread;
+    QScrollArea* _scroll;
+    QWidget* _info;
+    QThread* _render_thread;
+    QLabel* _timer;
     Renderer* _renderer;
+    QProgressBar* _progress;
+    time_t _started;
 };
 
 #endif // _PAYSAGES_QT_DIALOGRENDER_H_

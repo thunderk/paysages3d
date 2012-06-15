@@ -20,9 +20,9 @@ struct PackStream
 #define unpack754_32(i) (unpack754((i), 32, 8))
 #define unpack754_64(i) (unpack754((i), 64, 11))
 
-static uint64_t pack754(double f, unsigned bits, unsigned expbits)
+static uint64_t pack754(float f, unsigned bits, unsigned expbits)
 {
-    double fnorm;
+    float fnorm;
     int shift;
     long long sign, exp, significand;
     unsigned significandbits = bits - expbits - 1; // -1 for sign bit
@@ -49,9 +49,9 @@ static uint64_t pack754(double f, unsigned bits, unsigned expbits)
     return (sign<<(bits-1)) | (exp<<(bits-expbits-1)) | significand;
 }
 
-static double unpack754(uint64_t i, unsigned bits, unsigned expbits)
+static float unpack754(uint64_t i, unsigned bits, unsigned expbits)
 {
-    double result;
+    float result;
     long long shift;
     unsigned bias;
     unsigned significandbits = bits - expbits - 1; // -1 for sign bit
@@ -107,15 +107,15 @@ void packCloseStream(PackStream* stream)
     free(stream);
 }
 
-void packWriteDouble(PackStream* stream, double* value)
+void packWriteFloat(PackStream* stream, float* value)
 {
     uint64_t servalue;
     
-    servalue = pack754_64(*value);
+    servalue = pack754_32(*value);
     fwrite(&servalue, sizeof(uint64_t), 1, stream->fd);
 }
 
-void packReadDouble(PackStream* stream, double* value)
+void packReadFloat(PackStream* stream, float* value)
 {
     int read;
     uint64_t servalue;
@@ -123,7 +123,7 @@ void packReadDouble(PackStream* stream, double* value)
     read = fread(&servalue, sizeof(uint64_t), 1, stream->fd);
     assert(read == 1);
     
-    *value = unpack754_64(servalue);
+    *value = unpack754_32(servalue);
 }
 
 void packWriteInt(PackStream* stream, int* value)

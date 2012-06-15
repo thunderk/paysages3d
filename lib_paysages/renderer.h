@@ -20,21 +20,21 @@ struct Renderer
 
     /* Render related */
     RenderArea* render_area;
-    double render_progress;
+    float render_progress;
     int render_interrupt;
     int is_rendering;
-    double (*getPrecision)(Renderer* renderer, Vector3 location);
+    float (*getPrecision)(Renderer* renderer, Vector3 location);
     Vector3 (*projectPoint)(Renderer* renderer, Vector3 point);
     Vector3 (*unprojectPoint)(Renderer* renderer, Vector3 point);
-    int (*addRenderProgress)(Renderer* renderer, double progress);
+    int (*addRenderProgress)(Renderer* renderer, float progress);
     void (*pushTriangle)(Renderer* renderer, Vertex* v1, Vertex* v2, Vertex* v3);
     void (*pushQuad)(Renderer* renderer, Vertex* v1, Vertex* v2, Vertex* v3, Vertex* v4);
 
     /* Scenery related */
     RayCastingResult (*rayWalking)(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds);
-    double (*getTerrainHeight)(Renderer* renderer, double x, double z);
+    float (*getTerrainHeight)(Renderer* renderer, float x, float z);
     HeightInfo (*getWaterHeightInfo)(Renderer* renderer);
-    Color (*applyTextures)(Renderer* renderer, Vector3 location, double precision);
+    Color (*applyTextures)(Renderer* renderer, Vector3 location, float precision);
     Color (*applyAtmosphere)(Renderer* renderer, Vector3 location, Color base);
     Color (*applyClouds)(Renderer* renderer, Color base, Vector3 start, Vector3 end);
 

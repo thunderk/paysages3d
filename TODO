@@ -14,7 +14,6 @@ Technology Preview 2 :
 - Add a terrain modifier dialog with zones.
 - Use the curve editor in noise editor
 - Add a noise filler (and maybe noise intervals ?).
-- Add a popup when rendering is complete (with stats), except for quick render.
 - Optimize the use of noiseGetMaxValue (limit its use or cache it).
 - Fix the distorted sun appearance.
 - Improve curve editor.

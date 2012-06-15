@@ -19,16 +19,16 @@ enum SkyboxOrientation
 class ExplorerChunkSky:public BaseExplorerChunk
 {
 public:
-    ExplorerChunkSky(Renderer* renderer, SkyDefinition* sky, double size, SkyboxOrientation orientation);
+    ExplorerChunkSky(Renderer* renderer, SkyDefinition* sky, float size, SkyboxOrientation orientation);
     
     void onRenderEvent(QGLWidget* widget);
-    double getDisplayedSizeHint(CameraDefinition* camera);
-    Color getTextureColor(double x, double y);
+    float getDisplayedSizeHint(CameraDefinition* camera);
+    Color getTextureColor(float x, float y);
     
 private:
     SkyDefinition* _sky;
     SkyboxOrientation _orientation;
-    double _box_size;
+    float _box_size;
     
 };
 

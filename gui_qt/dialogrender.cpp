@@ -1,9 +1,11 @@
 #include "dialogrender.h"
 
+#include <math.h>
 #include <QVBoxLayout>
 #include <QImage>
 #include <QColor>
 #include <QPainter>
+#include <QMessageBox>
 #include "tools.h"
 
 #include "../lib_paysages/scenery.h"
@@ -24,10 +26,10 @@ static void _renderDraw(int x, int y, Color col)
     _current_dialog->pixbuf->setPixel(x, _current_dialog->pixbuf->height() - 1 - y, colorToQColor(col).rgb());
 }
 
-static void _renderUpdate(double progress)
+static void _renderUpdate(float progress)
 {
     _current_dialog->area->update();
-    _current_dialog->progress_value = progress * 1000.0;
+    _current_dialog->tellProgressChange(progress);
 }
 
 class RenderThread:public QThread
@@ -60,8 +62,6 @@ public:
     {
         QPainter painter(this);
         painter.drawImage(0, 0, *_current_dialog->pixbuf);
-        _current_dialog->progress->setValue(_current_dialog->progress_value);
-        _current_dialog->progress->update();
     }
 };
 
@@ -70,40 +70,45 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
 {
     pixbuf = new QImage(1, 1, QImage::Format_ARGB32);
     _current_dialog = this;
-    render_thread = NULL;
+    _render_thread = NULL;
     _renderer = renderer;
     
     setModal(true);
     setWindowTitle(tr("Paysages 3D - Render"));
     setLayout(new QVBoxLayout());
 
-    scroll = new QScrollArea(this);
-    scroll->setAlignment(Qt::AlignCenter);
-    area = new RenderArea(scroll);
-    scroll->setWidget(area);
-    layout()->addWidget(scroll);
+    _scroll = new QScrollArea(this);
+    _scroll->setAlignment(Qt::AlignCenter);
+    area = new RenderArea(_scroll);
+    _scroll->setWidget(area);
+    layout()->addWidget(_scroll);
+    
+    _info = new QWidget(this);
+    _info->setLayout(new QHBoxLayout());
+    layout()->addWidget(_info);
 
-    progress = new QProgressBar(this);
-    progress->setMinimum(0);
-    progress->setMaximum(1000);
-    progress->setValue(0);
-    layout()->addWidget(progress);
-    progress_value = 0;
+    _timer = new QLabel(QString("0:00.00"), _info);
+    _info->layout()->addWidget(_timer);
+    
+    _progress = new QProgressBar(_info);
+    _progress->setMaximumHeight(12);
+    _progress->setMinimum(0);
+    _progress->setMaximum(1000);
+    _progress->setValue(0);
+    _info->layout()->addWidget(_progress);
     
     connect(this, SIGNAL(renderSizeChanged(int, int)), this, SLOT(applyRenderSize(int, int)));
-    
-    // TEMP
-    progress->hide();
+    connect(this, SIGNAL(progressChanged(float)), this, SLOT(applyProgress(float)));
 }
 
 DialogRender::~DialogRender()
 {
-    if (render_thread)
+    if (_render_thread)
     {
         rendererInterrupt(_renderer);
-        render_thread->wait();
+        _render_thread->wait();
 
-        delete render_thread;
+        delete _render_thread;
     }
     delete pixbuf;
 }
@@ -113,13 +118,20 @@ void DialogRender::tellRenderSize(int width, int height)
     emit renderSizeChanged(width, height);
 }
 
+void DialogRender::tellProgressChange(float value)
+{
+    emit progressChanged(value);
+}
+
 void DialogRender::startRender(RenderParams params)
 {
+    _started = time(NULL);
+    
     //applyRenderSize(params.width, params.height);
     rendererSetPreviewCallbacks(_renderer, _renderStart, _renderDraw, _renderUpdate);
 
-    render_thread = new RenderThread(_renderer, params);
-    render_thread->start();
+    _render_thread = new RenderThread(_renderer, params);
+    _render_thread->start();
 
     exec();
 }
@@ -127,7 +139,7 @@ void DialogRender::startRender(RenderParams params)
 void DialogRender::loadLastRender()
 {
     //applyRenderSize(_renderer->render_width, _renderer->render_height);
-    progress->hide();
+    _info->hide();
     rendererSetPreviewCallbacks(_renderer, _renderStart, _renderDraw, _renderUpdate);
 
     exec();
@@ -138,5 +150,17 @@ void DialogRender::applyRenderSize(int width, int height)
     area->setMinimumSize(width, height);
     area->setMaximumSize(width, height);
     area->resize(width, height);
-    scroll->setMinimumSize(width > 800 ? 820 : width + 20, height > 600 ? 620 : height + 20);
+    _scroll->setMinimumSize(width > 800 ? 820 : width + 20, height > 600 ? 620 : height + 20);
 }
+
+void DialogRender::applyProgress(float value)
+{
+    double diff = difftime(time(NULL), _started);
+    int hours = (int)floor(diff / 3600.0);
+    int minutes = (int)floor((diff - 3600.0 * hours) / 60.0);
+    int seconds = (int)floor(diff - 3600.0 * hours - 60.0 * minutes);
+    _timer->setText(tr("%1:%2.%3").arg(hours).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
+    _progress->setValue((int)(value * 1000.0));
+    _progress->update();
+}
+

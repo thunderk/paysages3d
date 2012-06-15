@@ -20,17 +20,17 @@ void cameraQuit()
 void cameraSave(PackStream* stream, CameraDefinition* camera)
 {
     v3Save(stream, &camera->location);
-    packWriteDouble(stream, &camera->yaw);
-    packWriteDouble(stream, &camera->pitch);
-    packWriteDouble(stream, &camera->roll);
+    packWriteFloat(stream, &camera->yaw);
+    packWriteFloat(stream, &camera->pitch);
+    packWriteFloat(stream, &camera->roll);
 }
 
 void cameraLoad(PackStream* stream, CameraDefinition* camera)
 {
     v3Load(stream, &camera->location);
-    packReadDouble(stream, &camera->yaw);
-    packReadDouble(stream, &camera->pitch);
-    packReadDouble(stream, &camera->roll);
+    packReadFloat(stream, &camera->yaw);
+    packReadFloat(stream, &camera->pitch);
+    packReadFloat(stream, &camera->roll);
 
     cameraValidateDefinition(camera, 0);
 }
@@ -73,7 +73,7 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
 {
     WaterDefinition water;
     TerrainDefinition terrain;
-    double water_height, terrain_height, diff;
+    float water_height, terrain_height, diff;
     Vector3 move;
     Matrix4 rotation;
     
@@ -128,7 +128,7 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
     definition->unproject = m4Inverse(definition->project);
 }
 
-void cameraSetLocation(CameraDefinition* camera, double x, double y, double z)
+void cameraSetLocation(CameraDefinition* camera, float x, float y, float z)
 {
     camera->location.x = x;
     camera->location.y = y;
@@ -137,7 +137,7 @@ void cameraSetLocation(CameraDefinition* camera, double x, double y, double z)
     cameraValidateDefinition(camera, 0);
 }
 
-void cameraSetTarget(CameraDefinition* camera, double x, double y, double z)
+void cameraSetTarget(CameraDefinition* camera, float x, float y, float z)
 {
     Vector3 forward, target;
     
@@ -172,49 +172,49 @@ void cameraSetTarget(CameraDefinition* camera, double x, double y, double z)
     cameraValidateDefinition(camera, 0);
 }
 
-void cameraSetRoll(CameraDefinition* camera, double angle)
+void cameraSetRoll(CameraDefinition* camera, float angle)
 {
     camera->roll = angle;
 
     cameraValidateDefinition(camera, 0);
 }
 
-void cameraStrafeForward(CameraDefinition* camera, double value)
+void cameraStrafeForward(CameraDefinition* camera, float value)
 {
     camera->location = v3Add(camera->location, v3Scale(camera->forward, value));
 
     cameraValidateDefinition(camera, 0);
 }
 
-void cameraStrafeRight(CameraDefinition* camera, double value)
+void cameraStrafeRight(CameraDefinition* camera, float value)
 {
     camera->location = v3Add(camera->location, v3Scale(camera->right, value));
 
     cameraValidateDefinition(camera, 0);
 }
 
-void cameraStrafeUp(CameraDefinition* camera, double value)
+void cameraStrafeUp(CameraDefinition* camera, float value)
 {
     camera->location = v3Add(camera->location, v3Scale(camera->up, value));
 
     cameraValidateDefinition(camera, 0);
 }
 
-void cameraRotateYaw(CameraDefinition* camera, double value)
+void cameraRotateYaw(CameraDefinition* camera, float value)
 {
     camera->yaw += value;
 
     cameraValidateDefinition(camera, 0);
 }
 
-void cameraRotatePitch(CameraDefinition* camera, double value)
+void cameraRotatePitch(CameraDefinition* camera, float value)
 {
     camera->pitch += value;
 
     cameraValidateDefinition(camera, 0);
 }
 
-void cameraRotateRoll(CameraDefinition* camera, double value)
+void cameraRotateRoll(CameraDefinition* camera, float value)
 {
     camera->roll += value;
 
@@ -223,8 +223,8 @@ void cameraRotateRoll(CameraDefinition* camera, double value)
 
 void cameraSetRenderSize(CameraDefinition* camera, int width, int height)
 {
-    camera->width = (double)width;
-    camera->height = (double)height;
+    camera->width = (float)width;
+    camera->height = (float)height;
     camera->xratio = camera->width / camera->height;
     
     cameraValidateDefinition(camera, 0);
@@ -250,7 +250,7 @@ Vector3 cameraUnproject(CameraDefinition* camera, Renderer* renderer, Vector3 po
     return m4Transform(camera->unproject, point);
 }
 
-void cameraProjectToFragment(CameraDefinition* camera, Renderer* renderer, double x, double y, double z, RenderFragment* result)
+void cameraProjectToFragment(CameraDefinition* camera, Renderer* renderer, float x, float y, float z, RenderFragment* result)
 {
     Vector3 point = {x, y, z};
     point = cameraProject(camera, renderer, point);
@@ -279,20 +279,20 @@ void cameraProjectToFragment(CameraDefinition* camera, Renderer* renderer, doubl
     v1.callback = callback;
 
     v.x = 0.0;
-    v.y = (double)render_height;
+    v.y = (float)render_height;
     v.z = 10.0;
     v2.location = cameraUnproject(camera, v);
     v2.color = col;
     v2.callback = callback;
 
-    v.x = (double)render_width;
-    v.y = (double)render_height;
+    v.x = (float)render_width;
+    v.y = (float)render_height;
     v.z = 10.0;
     v3.location = cameraUnproject(camera, v);
     v3.color = col;
     v3.callback = callback;
 
-    v.x = (double)render_width;
+    v.x = (float)render_width;
     v.y = 0.0;
     v.z = 10.0;
     v4.location = cameraUnproject(camera, v);
@@ -302,7 +302,7 @@ void cameraProjectToFragment(CameraDefinition* camera, Renderer* renderer, doubl
     renderPushQuad(&v1, &v2, &v3, &v4);
 }*/
 
-static inline void _updateBox(Vector3* point, double* xmin, double* xmax, double* ymin, double* ymax, double* zmax)
+static inline void _updateBox(Vector3* point, float* xmin, float* xmax, float* ymin, float* ymax, float* zmax)
 {
     *xmin = MIN(*xmin, point->x);
     *xmax = MAX(*xmax, point->x);
@@ -311,10 +311,10 @@ static inline void _updateBox(Vector3* point, double* xmin, double* xmax, double
     *zmax = MAX(*zmax, point->z);
 }
 
-int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, double ysize, double zsize)
+int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, float xsize, float ysize, float zsize)
 {
     Vector3 projected;
-    double xmin, xmax, ymin, ymax, zmax;
+    float xmin, xmax, ymin, ymax, zmax;
     
     center.x -= xsize / 2.0;
     center.y -= ysize / 2.0;

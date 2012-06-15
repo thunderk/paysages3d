@@ -8,28 +8,28 @@
 class ExplorerChunkTerrain:public BaseExplorerChunk
 {
 public:
-    ExplorerChunkTerrain(Renderer* renderer, double x, double z, double size, int nbchunks);
+    ExplorerChunkTerrain(Renderer* renderer, float x, float z, float size, int nbchunks);
     ~ExplorerChunkTerrain();
     
     void onCameraEvent(CameraDefinition* camera);
     void onResetEvent();
     bool onMaintainEvent();
     void onRenderEvent(QGLWidget* widget);
-    double getDisplayedSizeHint(CameraDefinition* camera);
-    Color getTextureColor(double x, double y);
+    float getDisplayedSizeHint(CameraDefinition* camera);
+    Color getTextureColor(float x, float y);
     
 private:
     Vector3 getCenter();
     
-    double _startx;
-    double _startz;
-    double _size;
-    double _overall_step;
+    float _startx;
+    float _startz;
+    float _size;
+    float _overall_step;
     
-    double* _tessellation;
+    float* _tessellation;
     int _tessellation_max_size;
     int _tessellation_current_size;
-    double _tessellation_step;
+    float _tessellation_step;
     
 };
 

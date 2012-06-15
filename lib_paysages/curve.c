@@ -39,8 +39,8 @@ void curveSave(PackStream* stream, Curve* curve)
     packWriteInt(stream, &curve->nbpoints);
     for (i = 0; i < curve->nbpoints; i++)
     {
-        packWriteDouble(stream, &curve->points[i].position);
-        packWriteDouble(stream, &curve->points[i].value);
+        packWriteFloat(stream, &curve->points[i].position);
+        packWriteFloat(stream, &curve->points[i].value);
     }
 }
 
@@ -51,8 +51,8 @@ void curveLoad(PackStream* stream, Curve* curve)
     packReadInt(stream, &curve->nbpoints);
     for (i = 0; i < curve->nbpoints; i++)
     {
-        packReadDouble(stream, &curve->points[i].position);
-        packReadDouble(stream, &curve->points[i].value);
+        packReadFloat(stream, &curve->points[i].position);
+        packReadFloat(stream, &curve->points[i].value);
     }
 }
 
@@ -74,7 +74,7 @@ int curveAddPoint(Curve* curve, CurvePoint* point)
     }
 }
 
-int curveQuickAddPoint(Curve* curve, double position, double value)
+int curveQuickAddPoint(Curve* curve, float position, float value)
 {
     CurvePoint point;
     
@@ -137,10 +137,10 @@ void curveValidate(Curve* curve)
     }
 }
 
-double curveGetValue(Curve* curve, double position)
+float curveGetValue(Curve* curve, float position)
 {
     int i;
-    double fact;
+    float fact;
 
     if (curve->nbpoints == 0)
     {

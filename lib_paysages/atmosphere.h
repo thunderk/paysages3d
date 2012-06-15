@@ -12,9 +12,9 @@ extern "C" {
 
 typedef struct
 {
-    double distance_near;
-    double distance_far;
-    double full_mask;
+    float distance_near;
+    float distance_far;
+    float full_mask;
     int auto_lock_on_haze;
     Color color;
 } AtmosphereDefinition;

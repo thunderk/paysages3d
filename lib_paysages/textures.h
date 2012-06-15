@@ -17,12 +17,12 @@ typedef struct
 {
     Zone* zone;
     NoiseGenerator* bump_noise;
-    double bump_scaling;
-    double bump_height;
+    float bump_scaling;
+    float bump_height;
     SurfaceMaterial material;
-    double thickness;
-    double slope_range;
-    double thickness_transparency;
+    float thickness;
+    float slope_range;
+    float thickness_transparency;
 } TextureLayerDefinition;
 
 typedef struct
@@ -51,9 +51,9 @@ TextureLayerDefinition* texturesGetLayer(TexturesDefinition* definition, int lay
 int texturesAddLayer(TexturesDefinition* definition);
 void texturesDeleteLayer(TexturesDefinition* definition, int layer);
 
-double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);
-Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);
-Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, double x, double z, double detail);
+float texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, float detail);
+Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, float detail);
+Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, float x, float z, float detail);
 
 #ifdef __cplusplus
 }

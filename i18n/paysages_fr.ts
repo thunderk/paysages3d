@@ -254,6 +254,11 @@ Maintenir Ctrl : Plus lent</translation>
         <source>Paysages 3D - Render</source>
         <translation>Paysages 3D - Rendu</translation>
     </message>
+    <message>
+        <location filename="../gui_qt/dialogrender.cpp" line="162"/>
+        <source>%1:%2.%3</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogWanderer</name>

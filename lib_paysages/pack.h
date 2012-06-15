@@ -11,8 +11,8 @@ PackStream* packReadFile(char* filepath);
 PackStream* packWriteFile(char* filepath);
 void packCloseStream(PackStream* stream);
 
-void packWriteDouble(PackStream* stream, double* value);
-void packReadDouble(PackStream* stream, double* value);
+void packWriteFloat(PackStream* stream, float* value);
+void packReadFloat(PackStream* stream, float* value);
 void packWriteInt(PackStream* stream, int* value);
 void packReadInt(PackStream* stream, int* value);
     

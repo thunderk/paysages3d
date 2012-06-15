@@ -9,11 +9,11 @@
 
 typedef struct
 {
-    double value;
-    double centerx;
-    double centerz;
-    double softradius;
-    double hardradius;
+    float value;
+    float centerx;
+    float centerz;
+    float softradius;
+    float hardradius;
 } Circle;
 
 struct Zone {
@@ -55,41 +55,41 @@ void zoneSave(PackStream* stream, Zone* zone)
     packWriteInt(stream, &zone->height_ranges_count);
     for (i = 0; i < zone->height_ranges_count; i++)
     {
-        packWriteDouble(stream, &zone->height_ranges[i].value);
-        packWriteDouble(stream, &zone->height_ranges[i].hardmin);
-        packWriteDouble(stream, &zone->height_ranges[i].softmin);
-        packWriteDouble(stream, &zone->height_ranges[i].softmax);
-        packWriteDouble(stream, &zone->height_ranges[i].hardmax);
+        packWriteFloat(stream, &zone->height_ranges[i].value);
+        packWriteFloat(stream, &zone->height_ranges[i].hardmin);
+        packWriteFloat(stream, &zone->height_ranges[i].softmin);
+        packWriteFloat(stream, &zone->height_ranges[i].softmax);
+        packWriteFloat(stream, &zone->height_ranges[i].hardmax);
     }
 
     packWriteInt(stream, &zone->slope_ranges_count);
     for (i = 0; i < zone->slope_ranges_count; i++)
     {
-        packWriteDouble(stream, &zone->slope_ranges[i].value);
-        packWriteDouble(stream, &zone->slope_ranges[i].hardmin);
-        packWriteDouble(stream, &zone->slope_ranges[i].softmin);
-        packWriteDouble(stream, &zone->slope_ranges[i].softmax);
-        packWriteDouble(stream, &zone->slope_ranges[i].hardmax);
+        packWriteFloat(stream, &zone->slope_ranges[i].value);
+        packWriteFloat(stream, &zone->slope_ranges[i].hardmin);
+        packWriteFloat(stream, &zone->slope_ranges[i].softmin);
+        packWriteFloat(stream, &zone->slope_ranges[i].softmax);
+        packWriteFloat(stream, &zone->slope_ranges[i].hardmax);
     }
 
     packWriteInt(stream, &zone->circles_included_count);
     for (i = 0; i < zone->circles_included_count; i++)
     {
-        packWriteDouble(stream, &zone->circles_included[i].value);
-        packWriteDouble(stream, &zone->circles_included[i].centerx);
-        packWriteDouble(stream, &zone->circles_included[i].centerz);
-        packWriteDouble(stream, &zone->circles_included[i].softradius);
-        packWriteDouble(stream, &zone->circles_included[i].hardradius);
+        packWriteFloat(stream, &zone->circles_included[i].value);
+        packWriteFloat(stream, &zone->circles_included[i].centerx);
+        packWriteFloat(stream, &zone->circles_included[i].centerz);
+        packWriteFloat(stream, &zone->circles_included[i].softradius);
+        packWriteFloat(stream, &zone->circles_included[i].hardradius);
     }
 
     packWriteInt(stream, &zone->circles_excluded_count);
     for (i = 0; i < zone->circles_excluded_count; i++)
     {
-        packWriteDouble(stream, &zone->circles_excluded[i].value);
-        packWriteDouble(stream, &zone->circles_excluded[i].centerx);
-        packWriteDouble(stream, &zone->circles_excluded[i].centerz);
-        packWriteDouble(stream, &zone->circles_excluded[i].softradius);
-        packWriteDouble(stream, &zone->circles_excluded[i].hardradius);
+        packWriteFloat(stream, &zone->circles_excluded[i].value);
+        packWriteFloat(stream, &zone->circles_excluded[i].centerx);
+        packWriteFloat(stream, &zone->circles_excluded[i].centerz);
+        packWriteFloat(stream, &zone->circles_excluded[i].softradius);
+        packWriteFloat(stream, &zone->circles_excluded[i].hardradius);
     }
 }
 
@@ -100,41 +100,41 @@ void zoneLoad(PackStream* stream, Zone* zone)
     packReadInt(stream, &zone->height_ranges_count);
     for (i = 0; i < zone->height_ranges_count; i++)
     {
-        packReadDouble(stream, &zone->height_ranges[i].value);
-        packReadDouble(stream, &zone->height_ranges[i].hardmin);
-        packReadDouble(stream, &zone->height_ranges[i].softmin);
-        packReadDouble(stream, &zone->height_ranges[i].softmax);
-        packReadDouble(stream, &zone->height_ranges[i].hardmax);
+        packReadFloat(stream, &zone->height_ranges[i].value);
+        packReadFloat(stream, &zone->height_ranges[i].hardmin);
+        packReadFloat(stream, &zone->height_ranges[i].softmin);
+        packReadFloat(stream, &zone->height_ranges[i].softmax);
+        packReadFloat(stream, &zone->height_ranges[i].hardmax);
     }
 
     packReadInt(stream, &zone->slope_ranges_count);
     for (i = 0; i < zone->slope_ranges_count; i++)
     {
-        packReadDouble(stream, &zone->slope_ranges[i].value);
-        packReadDouble(stream, &zone->slope_ranges[i].hardmin);
-        packReadDouble(stream, &zone->slope_ranges[i].softmin);
-        packReadDouble(stream, &zone->slope_ranges[i].softmax);
-        packReadDouble(stream, &zone->slope_ranges[i].hardmax);
+        packReadFloat(stream, &zone->slope_ranges[i].value);
+        packReadFloat(stream, &zone->slope_ranges[i].hardmin);
+        packReadFloat(stream, &zone->slope_ranges[i].softmin);
+        packReadFloat(stream, &zone->slope_ranges[i].softmax);
+        packReadFloat(stream, &zone->slope_ranges[i].hardmax);
     }
 
     packReadInt(stream, &zone->circles_included_count);
     for (i = 0; i < zone->circles_included_count; i++)
     {
-        packReadDouble(stream, &zone->circles_included[i].value);
-        packReadDouble(stream, &zone->circles_included[i].centerx);
-        packReadDouble(stream, &zone->circles_included[i].centerz);
-        packReadDouble(stream, &zone->circles_included[i].softradius);
-        packReadDouble(stream, &zone->circles_included[i].hardradius);
+        packReadFloat(stream, &zone->circles_included[i].value);
+        packReadFloat(stream, &zone->circles_included[i].centerx);
+        packReadFloat(stream, &zone->circles_included[i].centerz);
+        packReadFloat(stream, &zone->circles_included[i].softradius);
+        packReadFloat(stream, &zone->circles_included[i].hardradius);
     }
 
     packReadInt(stream, &zone->circles_excluded_count);
     for (i = 0; i < zone->circles_excluded_count; i++)
     {
-        packReadDouble(stream, &zone->circles_excluded[i].value);
-        packReadDouble(stream, &zone->circles_excluded[i].centerx);
-        packReadDouble(stream, &zone->circles_excluded[i].centerz);
-        packReadDouble(stream, &zone->circles_excluded[i].softradius);
-        packReadDouble(stream, &zone->circles_excluded[i].hardradius);
+        packReadFloat(stream, &zone->circles_excluded[i].value);
+        packReadFloat(stream, &zone->circles_excluded[i].centerx);
+        packReadFloat(stream, &zone->circles_excluded[i].centerz);
+        packReadFloat(stream, &zone->circles_excluded[i].softradius);
+        packReadFloat(stream, &zone->circles_excluded[i].hardradius);
     }
 }
 
@@ -143,7 +143,7 @@ void zoneCopy(Zone* source, Zone* destination)
     *destination = *source;
 }
 
-void zoneIncludeCircleArea(Zone* zone, double value, double centerx, double centerz, double softradius, double hardradius)
+void zoneIncludeCircleArea(Zone* zone, float value, float centerx, float centerz, float softradius, float hardradius)
 {
     Circle circle = {value, centerx, centerz, softradius, hardradius};
 
@@ -153,7 +153,7 @@ void zoneIncludeCircleArea(Zone* zone, double value, double centerx, double cent
     }
 }
 
-void zoneExcludeCircleArea(Zone* zone, double centerx, double centerz, double softradius, double hardradius)
+void zoneExcludeCircleArea(Zone* zone, float centerx, float centerz, float softradius, float hardradius)
 {
     /* TODO */
 }
@@ -206,7 +206,7 @@ int zoneSetHeightRange(Zone* zone, int position, ZoneRangeCondition* range)
     }
 }
 
-int zoneAddHeightRangeQuick(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax)
+int zoneAddHeightRangeQuick(Zone* zone, float value, float hardmin, float softmin, float softmax, float hardmax)
 {
     ZoneRangeCondition range = {value, hardmin, softmin, softmax, hardmax};
     int position;
@@ -267,7 +267,7 @@ int zoneSetSlopeRange(Zone* zone, int position, ZoneRangeCondition* range)
     }
 }
 
-int zoneAddSlopeRangeQuick(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax)
+int zoneAddSlopeRangeQuick(Zone* zone, float value, float hardmin, float softmin, float softmax, float hardmax)
 {
     ZoneRangeCondition range = {value, hardmin, softmin, softmax, hardmax};
     int position;
@@ -280,7 +280,7 @@ int zoneAddSlopeRangeQuick(Zone* zone, double value, double hardmin, double soft
     return position;
 }
 
-static inline double _getRangeInfluence(ZoneRangeCondition range, double position)
+static inline float _getRangeInfluence(ZoneRangeCondition range, float position)
 {
     if (position >= range.hardmin && position <= range.hardmax)
     {
@@ -303,9 +303,9 @@ static inline double _getRangeInfluence(ZoneRangeCondition range, double positio
     }
 }
 
-static inline double _getCircleInfluence(Circle circle, Vector3 position)
+static inline float _getCircleInfluence(Circle circle, Vector3 position)
 {
-    double radius, dx, dz;
+    float radius, dx, dz;
 
     dx = position.x - circle.centerx;
     dz = position.z - circle.centerz;
@@ -325,10 +325,10 @@ static inline double _getCircleInfluence(Circle circle, Vector3 position)
     }
 }
 
-double zoneGetValue(Zone* zone, Vector3 location, Vector3 normal)
+float zoneGetValue(Zone* zone, Vector3 location, Vector3 normal)
 {
     int i;
-    double value, value_height, value_steepness, value_circle;
+    float value, value_height, value_steepness, value_circle;
 
     if (zone->circles_included_count > 0)
     {

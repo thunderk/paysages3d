@@ -56,7 +56,7 @@ private:
     TexturesDefinition _textures;
     LightingDefinition _lighting;
     
-    double _average_frame_time;
+    float _average_frame_time;
     int _quality;
 
     int _last_mouse_x;

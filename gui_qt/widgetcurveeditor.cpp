@@ -4,7 +4,7 @@
 #include <QMouseEvent>
 #include "../lib_paysages/tools.h"
 
-WidgetCurveEditor::WidgetCurveEditor(QWidget *parent, double xmin, double xmax, double ymin, double ymax) : QWidget(parent)
+WidgetCurveEditor::WidgetCurveEditor(QWidget *parent, float xmin, float xmax, float ymin, float ymax) : QWidget(parent)
 {
     _curve = curveCreate();
     _dragged = -1;
@@ -39,14 +39,14 @@ void WidgetCurveEditor::paintEvent(QPaintEvent* event)
 {
     int i, n;
     int width, height;
-    double dwidth, dheight;
+    float dwidth, dheight;
     CurvePoint point;
-    double position, value, prev_value, next_value;
+    float position, value, prev_value, next_value;
     
     width = this->width();
     height = this->height();
-    dheight = (double)(height - 1);
-    dwidth = (double)(width - 1);
+    dheight = (float)(height - 1);
+    dwidth = (float)(width - 1);
     
     QPainter painter(this);
     painter.fillRect(0, 0, width, height, QColor(255, 255, 255));
@@ -54,7 +54,7 @@ void WidgetCurveEditor::paintEvent(QPaintEvent* event)
     
     for (int x = 0; x < width; x++)
     {
-        position = ((double)x) / dwidth;
+        position = ((float)x) / dwidth;
         
         value = curveGetValue(_curve, position);
         prev_value = curveGetValue(_curve, position - 1.0 / dwidth);
@@ -88,8 +88,8 @@ void WidgetCurveEditor::mouseMoveEvent(QMouseEvent* event)
     
     if (_dragged >= 0 && (event->buttons() & Qt::LeftButton))
     {
-        point.position = ((double)event->x()) / (double)(width() - 1);
-        point.value = 1.0 - ((double)event->y()) / (double)(height() - 1);
+        point.position = ((float)event->x()) / (float)(width() - 1);
+        point.value = 1.0 - ((float)event->y()) / (float)(height() - 1);
         
         point.position = (point.position < 0.0) ? 0.0 : point.position;
         point.position = (point.position > 1.0) ? 1.0 : point.position;
@@ -138,8 +138,8 @@ void WidgetCurveEditor::mouseDoubleClickEvent(QMouseEvent* event)
     {
         if (getPointAt(event->x(), event->y()) < 0)
         {
-            point.position = ((double)event->x()) / (double)(width() - 1);
-            point.value = 1.0 - ((double)event->y()) / (double)(height() - 1);
+            point.position = ((float)event->x()) / (float)(width() - 1);
+            point.value = 1.0 - ((float)event->y()) / (float)(height() - 1);
 
             curveAddPoint(_curve, &point);
             curveValidate(_curve);
@@ -153,10 +153,10 @@ int WidgetCurveEditor::getPointAt(int x, int y)
 {
     int n;
     int nearest;
-    double distance, ndistance;
+    float distance, ndistance;
     CurvePoint point;
-    double dx = ((double)x) / (double)(width() - 1);
-    double dy = 1.0 - ((double)y) / (double)(height() - 1);
+    float dx = ((float)x) / (float)(width() - 1);
+    float dy = 1.0 - ((float)y) / (float)(height() - 1);
 
     n = curveGetPointCount(_curve);
     if (n < 1)

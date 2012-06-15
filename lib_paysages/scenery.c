@@ -282,7 +282,7 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
     return result;
 }
 
-static double _getTerrainHeight(Renderer* renderer, double x, double z)
+static float _getTerrainHeight(Renderer* renderer, float x, float z)
 {
     return terrainGetHeight(&_terrain, x, z);
 }
@@ -292,7 +292,7 @@ static HeightInfo _getWaterHeightInfo(Renderer* renderer)
     return waterGetHeightInfo(&_water);
 }
 
-static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
+static Color _applyTextures(Renderer* renderer, Vector3 location, float precision)
 {
     return texturesGetColor(&_textures, renderer, location.x, location.z, precision);
 }
@@ -322,7 +322,7 @@ static Vector3 _unprojectPoint(Renderer* renderer, Vector3 point)
     return cameraUnproject(&renderer->render_camera, renderer, point);
 }
 
-static double _getPrecision(Renderer* renderer, Vector3 location)
+static float _getPrecision(Renderer* renderer, Vector3 location)
 {
     Vector3 projected;
 
@@ -330,7 +330,7 @@ static double _getPrecision(Renderer* renderer, Vector3 location)
     projected.x += 1.0;
     //projected.y += 1.0;
 
-    return v3Norm(v3Sub(cameraUnproject(&renderer->render_camera, renderer, projected), location)); // / (double)render_quality;
+    return v3Norm(v3Sub(cameraUnproject(&renderer->render_camera, renderer, projected), location)); // / (float)render_quality;
 }
 
 Renderer sceneryCreateStandardRenderer()

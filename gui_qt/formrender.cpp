@@ -37,11 +37,11 @@ public:
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
-    QColor getColor(double x, double y)
+    QColor getColor(float x, float y)
     {
         Vector3 down = {0.0, -1.0, 0.0};
         Vector3 location;
-        double height = terrainGetHeight(&_terrain, x, y);
+        float height = terrainGetHeight(&_terrain, x, y);
         
         if (height < _water.height)
         {
@@ -69,12 +69,12 @@ private:
     TexturesDefinition _textures;
     LightingDefinition _lighting;
 
-    static double _getTerrainHeight(Renderer* renderer, double x, double z)
+    static float _getTerrainHeight(Renderer* renderer, float x, float z)
     {
         return terrainGetHeight((TerrainDefinition*)(renderer->customData[0]), x, z);
     }
 
-    static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
+    static Color _applyTextures(Renderer* renderer, Vector3 location, float precision)
     {
         return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
     }

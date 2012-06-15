@@ -11,10 +11,10 @@ class DialogCurve : public QDialog
 {
     Q_OBJECT
 public:
-    explicit DialogCurve(QWidget* parent, Curve* curve, double xmin, double xmax, double ymin, double ymax);
+    explicit DialogCurve(QWidget* parent, Curve* curve, float xmin, float xmax, float ymin, float ymax);
     ~DialogCurve();
 
-    static bool getCurve(QWidget* parent, Curve* curve, double xmin, double xmax, double ymin, double ymax);
+    static bool getCurve(QWidget* parent, Curve* curve, float xmin, float xmax, float ymin, float ymax);
 
 public slots:
     virtual void accept();

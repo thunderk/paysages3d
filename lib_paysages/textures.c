@@ -16,7 +16,7 @@ static TextureLayerDefinition _NULL_LAYER;
 
 typedef struct
 {
-    double thickness;
+    float thickness;
     Vector3 location;
     Vector3 normal;
     TextureLayerDefinition* definition;
@@ -41,12 +41,12 @@ void texturesSave(PackStream* stream, TexturesDefinition* definition)
     {
         zoneSave(stream, definition->textures[i].zone);
         noiseSaveGenerator(stream, definition->textures[i].bump_noise);
-        packWriteDouble(stream, &definition->textures[i].bump_height);
-        packWriteDouble(stream, &definition->textures[i].bump_scaling);
+        packWriteFloat(stream, &definition->textures[i].bump_height);
+        packWriteFloat(stream, &definition->textures[i].bump_scaling);
         materialSave(stream, &definition->textures[i].material);
-        packWriteDouble(stream, &definition->textures[i].thickness);
-        packWriteDouble(stream, &definition->textures[i].slope_range);
-        packWriteDouble(stream, &definition->textures[i].thickness_transparency);
+        packWriteFloat(stream, &definition->textures[i].thickness);
+        packWriteFloat(stream, &definition->textures[i].slope_range);
+        packWriteFloat(stream, &definition->textures[i].thickness_transparency);
     }
 }
 
@@ -67,12 +67,12 @@ void texturesLoad(PackStream* stream, TexturesDefinition* definition)
 
         zoneLoad(stream, layer->zone);
         noiseLoadGenerator(stream, layer->bump_noise);
-        packReadDouble(stream, &layer->bump_height);
-        packReadDouble(stream, &layer->bump_scaling);
+        packReadFloat(stream, &layer->bump_height);
+        packReadFloat(stream, &layer->bump_scaling);
         materialLoad(stream, &layer->material);
-        packReadDouble(stream, &definition->textures[i].thickness);
-        packReadDouble(stream, &definition->textures[i].slope_range);
-        packReadDouble(stream, &definition->textures[i].thickness_transparency);
+        packReadFloat(stream, &definition->textures[i].thickness);
+        packReadFloat(stream, &definition->textures[i].slope_range);
+        packReadFloat(stream, &definition->textures[i].thickness_transparency);
     }
 
     texturesValidateDefinition(definition);
@@ -236,7 +236,7 @@ static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south)
     return v3Normalize(v3Cross(v3Sub(south, center), v3Sub(east, center)));
 }
 
-static inline TextureResult _getTerrainResult(Renderer* renderer, double x, double z, double detail)
+static inline TextureResult _getTerrainResult(Renderer* renderer, float x, float z, float detail)
 {
     TextureResult result;
     Vector3 center, north, east, south, west;
@@ -279,10 +279,10 @@ static inline TextureResult _getTerrainResult(Renderer* renderer, double x, doub
     return result;
 }
 
-static inline void _getLayerThickness(TextureLayerDefinition* definition, Renderer* renderer, double x, double z, TextureResult* result)
+static inline void _getLayerThickness(TextureLayerDefinition* definition, Renderer* renderer, float x, float z, TextureResult* result)
 {
     TextureResult base;
-    double coverage;
+    float coverage;
 
     base = _getTerrainResult(renderer, x, z, definition->slope_range);
     coverage = zoneGetValue(definition->zone, base.location, base.normal);
@@ -300,7 +300,7 @@ static inline void _getLayerThickness(TextureLayerDefinition* definition, Render
     }
 }
 
-static inline TextureResult _getLayerResult(TextureLayerDefinition* definition, Renderer* renderer, double x, double z, double detail)
+static inline TextureResult _getLayerResult(TextureLayerDefinition* definition, Renderer* renderer, float x, float z, float detail)
 {
     TextureResult result_center, result_north, result_east, result_south, result_west;
     
@@ -330,7 +330,7 @@ static int _cmpResults(const void* result1, const void* result2)
     return ((TextureResult*)result1)->thickness > ((TextureResult*)result2)->thickness;
 }
 
-double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
+float texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, float detail)
 {
     TextureResult base = _getTerrainResult(renderer, location.x, location.z, definition->slope_range);
     return zoneGetValue(definition->zone, base.location, base.normal);
@@ -341,7 +341,7 @@ static inline Color _getLayerColor(Renderer* renderer, TextureResult result, Lig
     return renderer->applyLightStatus(renderer, light, result.location, result.normal, result.definition->material);
 }
 
-Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
+Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, float detail)
 {
     LightStatus light;
     TextureResult result = _getLayerResult(definition, renderer, location.x, location.z, detail);
@@ -349,11 +349,11 @@ Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* render
     return _getLayerColor(renderer, result, &light);
 }
 
-Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, double x, double z, double detail)
+Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, float x, float z, float detail)
 {
     TextureResult results[TEXTURES_MAX_LAYERS + 1];
     Color result, color;
-    double thickness, last_height;
+    float thickness, last_height;
     int i, start;
 
     detail *= 0.1;

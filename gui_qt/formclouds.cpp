@@ -25,7 +25,7 @@ public:
         configScaling(100.0, 1000.0, 20.0, 200.0);
     }
 protected:
-    QColor getColor(double x, double y)
+    QColor getColor(float x, float y)
     {
         Vector3 eye, look;
         Color color_layer, result;
@@ -89,7 +89,7 @@ public:
         configScaling(1.0, 4.0, 0.2, 2.0);
     }
 protected:
-    QColor getColor(double x, double y)
+    QColor getColor(float x, float y)
     {
         Vector3 start, end;
         Color color_layer, result;
@@ -120,9 +120,9 @@ private:
     CloudsLayerDefinition _preview_layer;
     LightingDefinition _lighting;
 
-    static double _coverageFunc(CloudsLayerDefinition* layer, Vector3 position)
+    static float _coverageFunc(CloudsLayerDefinition* layer, Vector3 position)
     {
-        double dist = v3Norm(position);
+        float dist = v3Norm(position);
         
         if (dist >= layer->ymax)
         {

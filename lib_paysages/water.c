@@ -20,30 +20,30 @@ void waterQuit()
 
 void waterSave(PackStream* stream, WaterDefinition* definition)
 {
-    packWriteDouble(stream, &definition->height);
+    packWriteFloat(stream, &definition->height);
     materialSave(stream, &definition->material);
     colorSave(stream, &definition->depth_color);
-    packWriteDouble(stream, &definition->transparency_depth);
-    packWriteDouble(stream, &definition->transparency);
-    packWriteDouble(stream, &definition->reflection);
-    packWriteDouble(stream, &definition->lighting_depth);
+    packWriteFloat(stream, &definition->transparency_depth);
+    packWriteFloat(stream, &definition->transparency);
+    packWriteFloat(stream, &definition->reflection);
+    packWriteFloat(stream, &definition->lighting_depth);
     noiseSaveGenerator(stream, definition->waves_noise);
-    packWriteDouble(stream, &definition->waves_noise_height);
-    packWriteDouble(stream, &definition->waves_noise_scale);
+    packWriteFloat(stream, &definition->waves_noise_height);
+    packWriteFloat(stream, &definition->waves_noise_scale);
 }
 
 void waterLoad(PackStream* stream, WaterDefinition* definition)
 {
-    packReadDouble(stream, &definition->height);
+    packReadFloat(stream, &definition->height);
     materialLoad(stream, &definition->material);
     colorLoad(stream, &definition->depth_color);
-    packReadDouble(stream, &definition->transparency_depth);
-    packReadDouble(stream, &definition->transparency);
-    packReadDouble(stream, &definition->reflection);
-    packReadDouble(stream, &definition->lighting_depth);
+    packReadFloat(stream, &definition->transparency_depth);
+    packReadFloat(stream, &definition->transparency);
+    packReadFloat(stream, &definition->reflection);
+    packReadFloat(stream, &definition->lighting_depth);
     noiseLoadGenerator(stream, definition->waves_noise);
-    packReadDouble(stream, &definition->waves_noise_height);
-    packReadDouble(stream, &definition->waves_noise_scale);
+    packReadFloat(stream, &definition->waves_noise_height);
+    packReadFloat(stream, &definition->waves_noise_scale);
 
     waterValidateDefinition(definition);
 }
@@ -87,15 +87,15 @@ void waterValidateDefinition(WaterDefinition* definition)
 {
 }
 
-static inline double _getHeight(WaterDefinition* definition, double x, double z, double detail)
+static inline float _getHeight(WaterDefinition* definition, float x, float z, float detail)
 {
     return definition->height + noiseGet2DDetail(definition->waves_noise, x / definition->waves_noise_scale, z / definition->waves_noise_scale, detail) * definition->waves_noise_height;
 }
 
-static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, double detail)
+static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, float detail)
 {
     Vector3 back, right;
-    double x, z;
+    float x, z;
 
     x = base.x;
     z = base.z;
@@ -115,7 +115,7 @@ static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, doub
 
 static inline Vector3 _reflectRay(Vector3 incoming, Vector3 normal)
 {
-    double c;
+    float c;
 
     c = v3Dot(normal, v3Scale(incoming, -1.0));
     return v3Add(incoming, v3Scale(normal, 2.0 * c));
@@ -123,7 +123,7 @@ static inline Vector3 _reflectRay(Vector3 incoming, Vector3 normal)
 
 static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal)
 {
-    double c1, c2, f;
+    float c1, c2, f;
 
     f = 1.0 / 1.33;
     c1 = v3Dot(normal, v3Scale(incoming, -1.0));
@@ -151,7 +151,7 @@ HeightInfo waterGetHeightInfo(WaterDefinition* definition)
 
 Color waterLightFilter(WaterDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light)
 {
-    double factor;
+    float factor;
 
     if (location.y < definition->height)
     {
@@ -189,7 +189,7 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
     Color color;
     LightStatus light;
     SurfaceMaterial material;
-    double detail, depth;
+    float detail, depth;
 
     detail = renderer->getPrecision(renderer, location);
 
@@ -243,10 +243,10 @@ static int _postProcessFragment(RenderFragment* fragment, Renderer* renderer, vo
     return 1;
 }
 
-static Vertex _getFirstPassVertex(WaterDefinition* definition, double x, double z, double precision)
+static Vertex _getFirstPassVertex(WaterDefinition* definition, float x, float z, float precision)
 {
     Vertex result;
-    double value;
+    float value;
 
     result.location.x = x;
     result.location.y = _getHeight(definition, x, z, 0.0);
@@ -263,7 +263,7 @@ static Vertex _getFirstPassVertex(WaterDefinition* definition, double x, double 
     return result;
 }
 
-static void _renderQuad(WaterDefinition* definition, Renderer* renderer, double x, double z, double size)
+static void _renderQuad(WaterDefinition* definition, Renderer* renderer, float x, float z, float size)
 {
     Vertex v1, v2, v3, v4;
 
@@ -277,11 +277,11 @@ static void _renderQuad(WaterDefinition* definition, Renderer* renderer, double 
 void waterRender(WaterDefinition* definition, Renderer* renderer)
 {
     int chunk_factor, chunk_count, i;
-    double cx = renderer->camera_location.x;
-    double cz = renderer->camera_location.z;
-    double radius_int, radius_ext, base_chunk_size, chunk_size;
+    float cx = renderer->camera_location.x;
+    float cz = renderer->camera_location.z;
+    float radius_int, radius_ext, base_chunk_size, chunk_size;
 
-    base_chunk_size = 2.0 / (double)renderer->render_quality;
+    base_chunk_size = 2.0 / (float)renderer->render_quality;
 
     chunk_factor = 1;
     chunk_count = 2;
@@ -304,7 +304,7 @@ void waterRender(WaterDefinition* definition, Renderer* renderer)
             _renderQuad(definition, renderer, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size);
         }
 
-        if (radius_int > 20.0 && chunk_count % 64 == 0 && (double)chunk_factor < radius_int / 20.0)
+        if (radius_int > 20.0 && chunk_count % 64 == 0 && (float)chunk_factor < radius_int / 20.0)
         {
             chunk_count /= 2;
             chunk_factor *= 2;

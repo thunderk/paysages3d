@@ -11,7 +11,7 @@ class InputCurve:public BaseInput
     Q_OBJECT
 
 public:
-    InputCurve(QWidget* form, QString label, Curve* value, double xmin, double xmax, double ymin, double ymax);
+    InputCurve(QWidget* form, QString label, Curve* value, float xmin, float xmax, float ymin, float ymax);
 
 public slots:
     virtual void updatePreview();
@@ -23,10 +23,10 @@ private slots:
 
 private:
     Curve* _value;
-    double _xmin;
-    double _xmax;
-    double _ymin;
-    double _ymax;
+    float _xmin;
+    float _xmax;
+    float _ymin;
+    float _ymax;
 };
 
 #endif

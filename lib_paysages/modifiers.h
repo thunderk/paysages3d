@@ -16,8 +16,8 @@ void modifierDelete(HeightModifier* modifier);
 void modifierSave(PackStream* stream, HeightModifier* modifier);
 void modifierLoad(PackStream* stream, HeightModifier* modifier);
 Zone* modifierGetZone(HeightModifier* modifier);
-void modifierActionAddValue(HeightModifier* modifier, double value);
-void modifierActionFixValue(HeightModifier* modifier, double value);
+void modifierActionAddValue(HeightModifier* modifier, float value);
+void modifierActionFixValue(HeightModifier* modifier, float value);
 Vector3 modifierApply(HeightModifier* modifier, Vector3 location);
 
 #ifdef __cplusplus

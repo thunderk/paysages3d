@@ -14,24 +14,24 @@ extern "C" {
 
 typedef struct CloudsLayerDefinition CloudsLayerDefinition;
     
-typedef double (*CloudCoverageFunc)(CloudsLayerDefinition* definition, Vector3 position);
+typedef float (*CloudCoverageFunc)(CloudsLayerDefinition* definition, Vector3 position);
 
 struct CloudsLayerDefinition
 {
-    double ymin;
-    double ymax;
-    double base_coverage;
+    float ymin;
+    float ymax;
+    float base_coverage;
     Curve* coverage_by_altitude;
     NoiseGenerator* shape_noise;
-    double shape_scaling;
+    float shape_scaling;
     NoiseGenerator* edge_noise;
-    double edge_scaling;
-    double edge_length;
+    float edge_scaling;
+    float edge_length;
     SurfaceMaterial material;
-    double hardness;
-    double transparencydepth;
-    double lighttraversal;
-    double minimumlight;
+    float hardness;
+    float transparencydepth;
+    float lighttraversal;
+    float minimumlight;
     CloudCoverageFunc _custom_coverage;
 };
 

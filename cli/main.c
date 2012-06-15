@@ -31,7 +31,7 @@ void displayHelp()
     printf(" -ds x  Day step time (float)\n");
 }
 
-void _previewUpdate(double progress)
+void _previewUpdate(float progress)
 {
     printf("\rProgress : %0.1f%%                         ", progress * 100.0);
     fflush(stdout);
@@ -43,8 +43,8 @@ int main(int argc, char** argv)
     char* conf_file_path = NULL;
     RenderParams conf_render_params = {800, 600, 1, 5};
     int conf_nb_pictures = 1;
-    double conf_daytime_start = 0.4;
-    double conf_daytime_step = 0.0;
+    float conf_daytime_start = 0.4;
+    float conf_daytime_step = 0.0;
     int outputcount;
     char outputpath[500];
 

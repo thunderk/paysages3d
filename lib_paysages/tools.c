@@ -8,19 +8,19 @@
 #include "color.h"
 #include "euclid.h"
 
-double toolsRandom()
+float toolsRandom()
 {
-    return (double)rand() / (double)RAND_MAX;
+    return (float)rand() / (float)RAND_MAX;
 }
 
-static inline double __cubicInterpolate(double p[4], double x)
+static inline float __cubicInterpolate(float p[4], float x)
 {
     return p[1] + 0.5 * x * (p[2] - p[0] + x * (2.0 * p[0] - 5.0 * p[1] + 4.0 * p[2] - p[3] + x * (3.0 * (p[1] - p[2]) + p[3] - p[0])));
 }
 
-double toolsBicubicInterpolate(double stencil[16], double x, double y)
+float toolsBicubicInterpolate(float stencil[16], float x, float y)
 {
-    double buf_cubic_y[4];
+    float buf_cubic_y[4];
 
     buf_cubic_y[0] = __cubicInterpolate(stencil, x);
     buf_cubic_y[1] = __cubicInterpolate(stencil + 4, x);
@@ -30,12 +30,12 @@ double toolsBicubicInterpolate(double stencil[16], double x, double y)
     return __cubicInterpolate(buf_cubic_y, y);
 }
 
-void toolsFloat2DMapCopy(double* src, double* dest, int src_xstart, int src_ystart, int dest_xstart, int dest_ystart, int xsize, int ysize, int src_xstep, int src_ystep, int dest_xstep, int dest_ystep)
+void toolsFloat2DMapCopy(float* src, float* dest, int src_xstart, int src_ystart, int dest_xstart, int dest_ystart, int xsize, int ysize, int src_xstep, int src_ystep, int dest_xstep, int dest_ystep)
 {
     /* TODO Optimize with memcpy if src_xstep == dest_xstep == 1 */
     int x, y;
-    double* src_row;
-    double* dest_row;
+    float* src_row;
+    float* dest_row;
     src += src_ystart * src_ystep + src_xstart * src_xstep;
     dest += dest_ystart * dest_ystep + dest_xstart * dest_xstep;
     for (y = 0; y < ysize; y++)
@@ -60,23 +60,23 @@ Vector3 toolsGetNormalFromTriangle(Vector3 center, Vector3 bottom, Vector3 right
     return v3Normalize(v3Cross(dz, dx));
 }
 
-double toolsGetDistance2D(double x1, double y1, double x2, double y2)
+float toolsGetDistance2D(float x1, float y1, float x2, float y2)
 {
-    double dx = x2 - x1;
-    double dy = y2 - y1;
+    float dx = x2 - x1;
+    float dy = y2 - y1;
     return sqrt(dx * dx + dy * dy);
 }
 
 void materialSave(PackStream* stream, SurfaceMaterial* material)
 {
     colorSave(stream, &material->base);
-    packWriteDouble(stream, &material->reflection);
-    packWriteDouble(stream, &material->shininess);
+    packWriteFloat(stream, &material->reflection);
+    packWriteFloat(stream, &material->shininess);
 }
 
 void materialLoad(PackStream* stream, SurfaceMaterial* material)
 {
     colorLoad(stream, &material->base);
-    packReadDouble(stream, &material->reflection);
-    packReadDouble(stream, &material->shininess);
+    packReadFloat(stream, &material->reflection);
+    packReadFloat(stream, &material->shininess);
 }

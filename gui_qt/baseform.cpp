@@ -229,7 +229,7 @@ void BaseForm::addInputInt(QString label, int* value, int min, int max, int smal
     addInput(new InputInt(form, label, value, min, max, small_step, large_step));
 }
 
-void BaseForm::addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step)
+void BaseForm::addInputDouble(QString label, float* value, float min, float max, float small_step, float large_step)
 {
     addInput(new InputDouble(form, label, value, min, max, small_step, large_step));
 }
@@ -254,7 +254,7 @@ void BaseForm::addInputNoise(QString label, NoiseGenerator* value)
     addInput(new InputNoise(form, label, value));
 }
 
-void BaseForm::addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax)
+void BaseForm::addInputCurve(QString label, Curve* value, float xmin, float xmax, float ymin, float ymax)
 {
     addInput(new InputCurve(form, label, value, xmin, xmax, ymin, ymax));
 }

@@ -29,7 +29,7 @@ typedef struct RenderFragment
 {
     int x;
     int y;
-    double z;
+    float z;
     Vertex vertex;
 } RenderFragment;
 
@@ -53,13 +53,13 @@ typedef struct
 typedef struct
 {
     Color base;
-    double reflection;
-    double shininess;
+    float reflection;
+    float shininess;
 } SurfaceMaterial;
 
 typedef void (*RenderCallbackStart)(int width, int height, Color background);
 typedef void (*RenderCallbackDraw)(int x, int y, Color col);
-typedef void (*RenderCallbackUpdate)(double progress);
+typedef void (*RenderCallbackUpdate)(float progress);
 
 typedef struct RenderArea RenderArea;
 
@@ -73,29 +73,29 @@ typedef RayCastingResult (*RayCastingFunction)(Vector3 start, Vector3 direction)
 
 typedef struct
 {
-    double min_height;
-    double max_height;
-    double base_height;
+    float min_height;
+    float max_height;
+    float base_height;
 } HeightInfo;
 
 typedef struct
 {
     Vector3 location;
-    double yaw;
-    double pitch;
-    double roll;
+    float yaw;
+    float pitch;
+    float roll;
     
     Vector3 target;
     Vector3 forward;
     Vector3 right;
     Vector3 up;
     
-    double width;
-    double height;
-    double yfov;
-    double xratio;
-    double znear;
-    double zfar;
+    float width;
+    float height;
+    float yfov;
+    float xratio;
+    float znear;
+    float zfar;
     
     Matrix4 project;
     Matrix4 unproject;

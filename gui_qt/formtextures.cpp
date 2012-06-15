@@ -9,14 +9,14 @@ static TextureLayerDefinition _layer;
 
 typedef struct
 {
-    double height_soft_min;
-    double height_hard_min;
-    double height_hard_max;
-    double height_soft_max;
-    double slope_soft_min;
-    double slope_hard_min;
-    double slope_hard_max;
-    double slope_soft_max;
+    float height_soft_min;
+    float height_hard_min;
+    float height_hard_max;
+    float height_soft_max;
+    float slope_soft_min;
+    float slope_hard_min;
+    float slope_hard_max;
+    float slope_soft_max;
 } TextureSupp;
 static TextureSupp _supp;
 
@@ -39,10 +39,10 @@ public:
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
-    QColor getColor(double x, double y)
+    QColor getColor(float x, float y)
     {
         Vector3 location;
-        double coverage;
+        float coverage;
         location.x = x;
         location.y = terrainGetHeight(&_terrain, x, y);
         location.z = y;
@@ -56,7 +56,7 @@ protected:
     }
 
 private:
-    static double _getTerrainHeight(Renderer* renderer, double x, double z)
+    static float _getTerrainHeight(Renderer* renderer, float x, float z)
     {
         return terrainGetHeight((TerrainDefinition*)(renderer->customData[0]), x, z);
     }
@@ -101,7 +101,7 @@ public:
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
-    QColor getColor(double x, double y)
+    QColor getColor(float x, float y)
     {
         Vector3 location;
         location.x = x;

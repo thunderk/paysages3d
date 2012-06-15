@@ -26,12 +26,12 @@ public:
         QPainter painter(this);
         int width = this->width();
         int height = this->height();
-        double value, factor;
+        float value, factor;
 
         for (int x = 0; x < width; x++)
         {
-            factor = ((double)(height / 2)) / noiseGetMaxValue(noise);
-            value = noiseGet1DTotal(noise, ((double)x) / factor) * factor;
+            factor = ((float)(height / 2)) / noiseGetMaxValue(noise);
+            value = noiseGet1DTotal(noise, ((float)x) / factor) * factor;
             painter.setPen(QColor(255, 255, 255));
             painter.drawLine(x, 0, x, height / 2 + value);
             painter.setPen(QColor(0, 0, 0));
