@@ -18,6 +18,8 @@ struct NoiseGenerator
     double height_offset;
     int level_count;
     struct NoiseLevel levels[MAX_LEVEL_COUNT];
+    
+    double _max_height;
 };
 
 static int _noise_pool_size;
@@ -80,6 +82,8 @@ NoiseGenerator* noiseCreateGenerator()
     result->size3 = 1;
     result->level_count = 0;
     result->height_offset = 0.0;
+    
+    noiseValidate(result);
 
     return result;
 }
@@ -131,6 +135,8 @@ void noiseLoadGenerator(PackStream* stream, NoiseGenerator* perlin)
         packReadDouble(stream, &level->yoffset);
         packReadDouble(stream, &level->zoffset);
     }
+    
+    noiseValidate(perlin);
 }
 
 void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination)
@@ -142,6 +148,21 @@ void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination)
     destination->level_count = source->level_count;
 
     memcpy(destination->levels, source->levels, sizeof(NoiseLevel) * destination->level_count);
+    
+    noiseValidate(destination);
+}
+
+void noiseValidate(NoiseGenerator* generator)
+{
+    int x;
+    double max_height = generator->height_offset;
+
+    for (x = 0; x < generator->level_count; x++)
+    {
+        max_height += generator->levels[x].height / 2.0;
+    }
+
+    generator->_max_height = max_height;
 }
 
 void noiseGenerateBaseNoise(NoiseGenerator* generator, int size)
@@ -161,15 +182,7 @@ int noiseGetBaseSize(NoiseGenerator* generator)
 
 double noiseGetMaxValue(NoiseGenerator* generator)
 {
-    int x;
-    double result = generator->height_offset;
-
-    for (x = 0; x < generator->level_count; x++)
-    {
-        result += generator->levels[x].height / 2.0;
-    }
-
-    return result;
+    return generator->_max_height;
 }
 
 int noiseGetLevelCount(NoiseGenerator* generator)
@@ -180,6 +193,7 @@ int noiseGetLevelCount(NoiseGenerator* generator)
 void noiseClearLevels(NoiseGenerator* generator)
 {
     generator->level_count = 0;
+    noiseValidate(generator);
 }
 
 void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level)
@@ -188,6 +202,7 @@ void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level)
     {
         generator->levels[generator->level_count] = level;
         generator->level_count++;
+        noiseValidate(generator);
     }
 }
 
@@ -240,6 +255,7 @@ void noiseRemoveLevel(NoiseGenerator* generator, int level)
             memmove(generator->levels + level, generator->levels + level + 1, sizeof(NoiseLevel) * (generator->level_count - level - 1));
         }
         generator->level_count--;
+        noiseValidate(generator);
     }
 }
 
@@ -261,6 +277,7 @@ void noiseSetLevel(NoiseGenerator* generator, int level, NoiseLevel params)
     if (level >= 0 && level < generator->level_count)
     {
         generator->levels[level] = params;
+        noiseValidate(generator);
     }
 }
 
@@ -301,6 +318,7 @@ void noiseNormalizeHeight(NoiseGenerator* generator, double min_height, double m
         }
     }
     generator->height_offset = min_height + target_height / 2.0;
+    noiseValidate(generator);
 }
 
 

@@ -6,7 +6,6 @@ Technology Preview 2 :
 - Add "hardness to light" and shadow control ("minimum lighting") to material.
 - Render tab previews should not rerender when changing render options.
 - Add layer sorting/naming.
-- Disable specular lighting in explorer (and everything camera dependent).
 - Add logarithmic sliders for some float values.
 - Save GUI config (views, render params).
 - Add an OSD ability on previews and use it for camera location and user landmarks.
@@ -14,22 +13,11 @@ Technology Preview 2 :
 - Add a terrain modifier dialog with zones.
 - Use the curve editor in noise editor
 - Add a noise filler (and maybe noise intervals ?).
-- Optimize the use of noiseGetMaxValue (limit its use or cache it).
 - Fix the distorted sun appearance.
 - Improve curve editor.
    => Add curve modes
    => Add axis labels and grid
    => Add logarithmic mode
-- Improve 3d explorer
-   => Restore LOD and intelligent poly count (and raise max tessellation)
-   => Interrupt chunk rendering when quitting dialog
-   => Don't display the water if it's below all ground
-   => Try to overcome the near frustum cutting
-   => Disable texture reflection of light (dependant on camera location)
-   => Add toggles (for water...)
-   => Max texture size should depend on GPU memory available
-- Water and terrain LOD moves with the camera, fix it like in the wanderer.
-- Interrupt preview chunk renderings that will be discarded at commit, or that are no more visible.
 - Fix "RGB parameters out of range" (and segfault) on preview while moving render params fast in render tab.
    => May need to change the updateData system.
    => Previews need to be paused while updating data.
@@ -49,8 +37,17 @@ Technology Preview 3 :
 - Mark modified tabs and ask for losing modifications (idem for layers).
 - Fix potential holes in land rendering.
 - Progressive final render.
-- Propose several backgrounds for water rendering (grid, sinus...).
-- If we can't remove clouds artifacts, blur them.
+- Propose several backgrounds for water preview (grid, sinus...).
+- Water and terrain LOD moves with the camera, fix it like in the wanderer.
+- Improve 3d explorer
+   => Restore LOD and intelligent poly count (and raise max tessellation)
+   => Interrupt chunk rendering when quitting dialog
+   => Don't display the water if it's below all ground
+   => Try to overcome the near frustum cutting
+   => Disable specular lighting (dependant on camera location)
+   => Add toggles (for water...)
+   => Max texture size should depend on GPU memory available
+- Interrupt preview chunk renderings that will be discarded at commit, or that are no more visible.
 
 Release Candidate :
 - Polish all features and UI.
