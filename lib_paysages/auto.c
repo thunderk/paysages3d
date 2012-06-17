@@ -20,10 +20,10 @@
 
 void autoSetDaytime(int hour, int minute)
 {
-    autoSetDaytimeFraction((float)hour / 24.0 + (float)minute / 1440.0);
+    autoSetDaytimeFraction((double)hour / 24.0 + (double)minute / 1440.0);
 }
 
-void autoSetDaytimeFraction(float daytime)
+void autoSetDaytimeFraction(double daytime)
 {
     SkyDefinition sky;
     /*ColorGradation grad_sun;

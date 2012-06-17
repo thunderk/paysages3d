@@ -15,15 +15,15 @@ struct NoiseGenerator
     int size1;
     int size2;
     int size3;
-    float height_offset;
+    double height_offset;
     int level_count;
     struct NoiseLevel levels[MAX_LEVEL_COUNT];
 };
 
 static int _noise_pool_size;
-static float* _noise_pool;
+static double* _noise_pool;
 
-static inline float _cubicInterpolate(float* p, float x)
+static inline double _cubicInterpolate(double* p, double x)
 {
     return p[1] + 0.5 * x * (p[2] - p[0] + x * (2.0 * p[0] - 5.0 * p[1] + 4.0 * p[2] - p[3] + x * (3.0 * (p[1] - p[2]) + p[3] - p[0])));
 }
@@ -33,7 +33,7 @@ void noiseInit()
     int i;
     
     _noise_pool_size = 1048576;
-    _noise_pool = malloc(sizeof(float) * _noise_pool_size);
+    _noise_pool = malloc(sizeof(double) * _noise_pool_size);
 
     for (i = 0; i < _noise_pool_size; i++)
     {
@@ -53,7 +53,7 @@ void noiseSave(PackStream* stream)
     packWriteInt(stream, &_noise_pool_size);
     for (i = 0; i < _noise_pool_size; i++)
     {
-        packWriteFloat(stream, _noise_pool + i);
+        packWriteDouble(stream, _noise_pool + i);
     }
 }
 
@@ -62,10 +62,10 @@ void noiseLoad(PackStream* stream)
     int i;
     
     packReadInt(stream, &_noise_pool_size);
-    _noise_pool = realloc(_noise_pool, sizeof(float) * _noise_pool_size);
+    _noise_pool = realloc(_noise_pool, sizeof(double) * _noise_pool_size);
     for (i = 0; i < _noise_pool_size; i++)
     {
-        packReadFloat(stream, _noise_pool + i);
+        packReadDouble(stream, _noise_pool + i);
     }
 }
 
@@ -96,18 +96,18 @@ void noiseSaveGenerator(PackStream* stream, NoiseGenerator* perlin)
     packWriteInt(stream, &perlin->size1);
     packWriteInt(stream, &perlin->size2);
     packWriteInt(stream, &perlin->size3);
-    packWriteFloat(stream, &perlin->height_offset);
+    packWriteDouble(stream, &perlin->height_offset);
     packWriteInt(stream, &perlin->level_count);
 
     for (x = 0; x < perlin->level_count; x++)
     {
         NoiseLevel* level = perlin->levels + x;
         
-        packWriteFloat(stream, &level->scaling);
-        packWriteFloat(stream, &level->height);
-        packWriteFloat(stream, &level->xoffset);
-        packWriteFloat(stream, &level->yoffset);
-        packWriteFloat(stream, &level->zoffset);
+        packWriteDouble(stream, &level->scaling);
+        packWriteDouble(stream, &level->height);
+        packWriteDouble(stream, &level->xoffset);
+        packWriteDouble(stream, &level->yoffset);
+        packWriteDouble(stream, &level->zoffset);
     }
 }
 
@@ -118,18 +118,18 @@ void noiseLoadGenerator(PackStream* stream, NoiseGenerator* perlin)
     packReadInt(stream, &perlin->size1);
     packReadInt(stream, &perlin->size2);
     packReadInt(stream, &perlin->size3);
-    packReadFloat(stream, &perlin->height_offset);
+    packReadDouble(stream, &perlin->height_offset);
     packReadInt(stream, &perlin->level_count);
 
     for (x = 0; x < perlin->level_count; x++)
     {
         NoiseLevel* level = perlin->levels + x;
         
-        packReadFloat(stream, &level->scaling);
-        packReadFloat(stream, &level->height);
-        packReadFloat(stream, &level->xoffset);
-        packReadFloat(stream, &level->yoffset);
-        packReadFloat(stream, &level->zoffset);
+        packReadDouble(stream, &level->scaling);
+        packReadDouble(stream, &level->height);
+        packReadDouble(stream, &level->xoffset);
+        packReadDouble(stream, &level->yoffset);
+        packReadDouble(stream, &level->zoffset);
     }
 }
 
@@ -150,8 +150,8 @@ void noiseGenerateBaseNoise(NoiseGenerator* generator, int size)
     size = (size > _noise_pool_size) ? _noise_pool_size : size;
 
     generator->size1 = size;
-    generator->size2 = (int)floor(sqrt((float)size));
-    generator->size3 = (int)floor(cbrt((float)size));
+    generator->size2 = (int)floor(sqrt((double)size));
+    generator->size3 = (int)floor(cbrt((double)size));
 }
 
 int noiseGetBaseSize(NoiseGenerator* generator)
@@ -159,10 +159,10 @@ int noiseGetBaseSize(NoiseGenerator* generator)
     return generator->size1;
 }
 
-float noiseGetMaxValue(NoiseGenerator* generator)
+double noiseGetMaxValue(NoiseGenerator* generator)
 {
     int x;
-    float result = generator->height_offset;
+    double result = generator->height_offset;
 
     for (x = 0; x < generator->level_count; x++)
     {
@@ -191,7 +191,7 @@ void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level)
     }
 }
 
-void noiseAddLevelSimple(NoiseGenerator* generator, float scaling, float height)
+void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double height)
 {
     NoiseLevel level;
 
@@ -204,7 +204,7 @@ void noiseAddLevelSimple(NoiseGenerator* generator, float scaling, float height)
     noiseAddLevel(generator, level);
 }
 
-void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, float scaling_factor, float height_factor, int randomize_offset)
+void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, double scaling_factor, double height_factor, int randomize_offset)
 {
     int i;
 
@@ -222,7 +222,7 @@ void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start
     }
 }
 
-void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, float scaling, float height)
+void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double height)
 {
     NoiseLevel level;
 
@@ -264,7 +264,7 @@ void noiseSetLevel(NoiseGenerator* generator, int level, NoiseLevel params)
     }
 }
 
-void noiseSetLevelSimple(NoiseGenerator* generator, int level, float scaling, float height)
+void noiseSetLevelSimple(NoiseGenerator* generator, int level, double scaling, double height)
 {
     NoiseLevel params;
 
@@ -277,11 +277,11 @@ void noiseSetLevelSimple(NoiseGenerator* generator, int level, float scaling, fl
     noiseSetLevel(generator, level, params);
 }
 
-void noiseNormalizeHeight(NoiseGenerator* generator, float min_height, float max_height, int adjust_scaling)
+void noiseNormalizeHeight(NoiseGenerator* generator, double min_height, double max_height, int adjust_scaling)
 {
     int level;
-    float height = 0.0;
-    float target_height = max_height - min_height;
+    double height = 0.0;
+    double target_height = max_height - min_height;
 
     if (generator->level_count == 0)
     {
@@ -306,13 +306,13 @@ void noiseNormalizeHeight(NoiseGenerator* generator, float min_height, float max
 
 
 
-static inline float _get1DRawNoiseValue(NoiseGenerator* generator, float x)
+static inline double _get1DRawNoiseValue(NoiseGenerator* generator, double x)
 {
     int size = generator->size1;
 
     int xbase = (int)floor(x);
 
-    float xinternal = x - (float)xbase;
+    double xinternal = x - (double)xbase;
 
     int x0 = (xbase - 1) % size;
     if (x0 < 0)
@@ -335,7 +335,7 @@ static inline float _get1DRawNoiseValue(NoiseGenerator* generator, float x)
         x3 += size;
     }
 
-    float buf_cubic_x[4];
+    double buf_cubic_x[4];
 
     buf_cubic_x[0] = _noise_pool[x0 % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[x1 % _noise_pool_size];
@@ -345,12 +345,12 @@ static inline float _get1DRawNoiseValue(NoiseGenerator* generator, float x)
     return _cubicInterpolate(buf_cubic_x, xinternal);
 }
 
-static inline float _get1DLevelValue(NoiseGenerator* generator, NoiseLevel* level, float x)
+static inline double _get1DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x)
 {
     return _get1DRawNoiseValue(generator, x / level->scaling + level->xoffset * generator->size1) * level->height;
 }
 
-float noiseGet1DLevel(NoiseGenerator* generator, int level, float x)
+double noiseGet1DLevel(NoiseGenerator* generator, int level, double x)
 {
     if (level >= 0 && level < generator->level_count)
     {
@@ -362,10 +362,10 @@ float noiseGet1DLevel(NoiseGenerator* generator, int level, float x)
     }
 }
 
-float noiseGet1DTotal(NoiseGenerator* generator, float x)
+double noiseGet1DTotal(NoiseGenerator* generator, double x)
 {
     int level;
-    float result;
+    double result;
 
     result = 0.0;
     for (level = 0; level < generator->level_count; level++)
@@ -375,10 +375,10 @@ float noiseGet1DTotal(NoiseGenerator* generator, float x)
     return result + generator->height_offset;
 }
 
-float noiseGet1DDetail(NoiseGenerator* generator, float x, float detail)
+double noiseGet1DDetail(NoiseGenerator* generator, double x, double detail)
 {
     int level;
-    float result, height, factor;
+    double result, height, factor;
 
     result = 0.0;
     for (level = 0; level < generator->level_count; level++)
@@ -402,15 +402,15 @@ float noiseGet1DDetail(NoiseGenerator* generator, float x, float detail)
 
 
 
-static inline float _get2DRawNoiseValue(NoiseGenerator* generator, float x, float y)
+static inline double _get2DRawNoiseValue(NoiseGenerator* generator, double x, double y)
 {
     int size = generator->size2;
 
     int xbase = (int)floor(x);
     int ybase = (int)floor(y);
 
-    float xinternal = x - (float)xbase;
-    float yinternal = y - (float)ybase;
+    double xinternal = x - (double)xbase;
+    double yinternal = y - (double)ybase;
 
     int x0 = (xbase - 1) % size;
     if (x0 < 0)
@@ -454,8 +454,8 @@ static inline float _get2DRawNoiseValue(NoiseGenerator* generator, float x, floa
         y3 += size;
     }
 
-    float buf_cubic_x[4];
-    float buf_cubic_y[4];
+    double buf_cubic_x[4];
+    double buf_cubic_y[4];
 
     buf_cubic_x[0] = _noise_pool[(y0 * size + x0) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y0 * size + x1) % _noise_pool_size];
@@ -484,12 +484,12 @@ static inline float _get2DRawNoiseValue(NoiseGenerator* generator, float x, floa
     return _cubicInterpolate(buf_cubic_y, yinternal);
 }
 
-static inline float _get2DLevelValue(NoiseGenerator* generator, NoiseLevel* level, float x, float y)
+static inline double _get2DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x, double y)
 {
     return _get2DRawNoiseValue(generator, x / level->scaling + level->xoffset * generator->size2, y / level->scaling + level->yoffset * generator->size2) * level->height;
 }
 
-float noiseGet2DLevel(NoiseGenerator* generator, int level, float x, float y)
+double noiseGet2DLevel(NoiseGenerator* generator, int level, double x, double y)
 {
     if (level >= 0 && level < generator->level_count)
     {
@@ -501,10 +501,10 @@ float noiseGet2DLevel(NoiseGenerator* generator, int level, float x, float y)
     }
 }
 
-float noiseGet2DTotal(NoiseGenerator* generator, float x, float y)
+double noiseGet2DTotal(NoiseGenerator* generator, double x, double y)
 {
     int level;
-    float result;
+    double result;
 
     result = 0.0;
     for (level = 0; level < generator->level_count; level++)
@@ -514,10 +514,10 @@ float noiseGet2DTotal(NoiseGenerator* generator, float x, float y)
     return result + generator->height_offset;
 }
 
-float noiseGet2DDetail(NoiseGenerator* generator, float x, float y, float detail)
+double noiseGet2DDetail(NoiseGenerator* generator, double x, double y, double detail)
 {
     int level;
-    float result, height, factor;
+    double result, height, factor;
 
     result = 0.0;
     for (level = 0; level < generator->level_count; level++)
@@ -541,7 +541,7 @@ float noiseGet2DDetail(NoiseGenerator* generator, float x, float y, float detail
 
 
 
-static inline float _get3DRawNoiseValue(NoiseGenerator* generator, float x, float y, float z)
+static inline double _get3DRawNoiseValue(NoiseGenerator* generator, double x, double y, double z)
 {
     int size = generator->size3;
 
@@ -549,9 +549,9 @@ static inline float _get3DRawNoiseValue(NoiseGenerator* generator, float x, floa
     int ybase = (int)floor(y);
     int zbase = (int)floor(z);
 
-    float xinternal = x - (float)xbase;
-    float yinternal = y - (float)ybase;
-    float zinternal = z - (float)zbase;
+    double xinternal = x - (double)xbase;
+    double yinternal = y - (double)ybase;
+    double zinternal = z - (double)zbase;
 
     int x0 = (xbase - 1) % size;
     if (x0 < 0)
@@ -616,9 +616,9 @@ static inline float _get3DRawNoiseValue(NoiseGenerator* generator, float x, floa
         z3 += size;
     }
 
-    float buf_cubic_x[4];
-    float buf_cubic_y[4];
-    float buf_cubic_z[4];
+    double buf_cubic_x[4];
+    double buf_cubic_y[4];
+    double buf_cubic_z[4];
 
     buf_cubic_x[0] = _noise_pool[(y0 * size * size + x0 * size + z0) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y0 * size * size + x1 * size + z0) % _noise_pool_size];
@@ -727,12 +727,12 @@ static inline float _get3DRawNoiseValue(NoiseGenerator* generator, float x, floa
     return _cubicInterpolate(buf_cubic_z, zinternal);
 }
 
-static inline float _get3DLevelValue(NoiseGenerator* generator, NoiseLevel* level, float x, float y, float z)
+static inline double _get3DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x, double y, double z)
 {
     return _get3DRawNoiseValue(generator, x / level->scaling + level->xoffset * generator->size3, y / level->scaling + level->yoffset * generator->size3, z / level->scaling + level->zoffset * generator->size3) * level->height;
 }
 
-float noiseGet3DLevel(NoiseGenerator* generator, int level, float x, float y, float z)
+double noiseGet3DLevel(NoiseGenerator* generator, int level, double x, double y, double z)
 {
     if (level >= 0 && level < generator->level_count)
     {
@@ -744,10 +744,10 @@ float noiseGet3DLevel(NoiseGenerator* generator, int level, float x, float y, fl
     }
 }
 
-float noiseGet3DTotal(NoiseGenerator* generator, float x, float y, float z)
+double noiseGet3DTotal(NoiseGenerator* generator, double x, double y, double z)
 {
     int level;
-    float result;
+    double result;
 
     result = 0.0;
     for (level = 0; level < generator->level_count; level++)
@@ -757,10 +757,10 @@ float noiseGet3DTotal(NoiseGenerator* generator, float x, float y, float z)
     return result + generator->height_offset;
 }
 
-float noiseGet3DDetail(NoiseGenerator* generator, float x, float y, float z, float detail)
+double noiseGet3DDetail(NoiseGenerator* generator, double x, double y, double z, double detail)
 {
     int level;
-    float result, height, factor;
+    double result, height, factor;
 
     result = 0.0;
     for (level = 0; level < generator->level_count; level++)

@@ -38,7 +38,7 @@ void paysagesInit()
     autoSetDaytime(8, 30);
 
     // DEBUG
-    /*float last_height, height, x;
+    /*double last_height, height, x;
     last_height = height = 0.0;
     x = 0.0;
     while (height <= 1.0 || height >= last_height || last_height < 0.1)
@@ -60,17 +60,17 @@ void paysagesQuit()
 FileOperationResult paysagesSave(char* filepath)
 {
     PackStream* stream = packWriteFile(filepath);
-    float app_header, version_header;
+    double app_header, version_header;
     
     if (!stream)
     {
         return FILE_OPERATION_IOERROR;
     }
     
-    app_header = (float)APP_HEADER;
-    packWriteFloat(stream, &app_header);
-    version_header = (float)PAYSAGES_CURRENT_DATA_VERSION;
-    packWriteFloat(stream, &version_header);
+    app_header = (double)APP_HEADER;
+    packWriteDouble(stream, &app_header);
+    version_header = (double)PAYSAGES_CURRENT_DATA_VERSION;
+    packWriteDouble(stream, &version_header);
     
     scenerySave(stream);
     
@@ -82,21 +82,21 @@ FileOperationResult paysagesSave(char* filepath)
 FileOperationResult paysagesLoad(char* filepath)
 {
     PackStream* stream = packReadFile(filepath);
-    float app_header, version_header;
+    double app_header, version_header;
 
     if (!stream)
     {
         return FILE_OPERATION_IOERROR;
     }
 
-    packReadFloat(stream, &app_header);
+    packReadDouble(stream, &app_header);
     if (app_header != APP_HEADER)
     {
         packCloseStream(stream);
         return FILE_OPERATION_APP_MISMATCH;
     }
     
-    packReadFloat(stream, &version_header);
+    packReadDouble(stream, &version_header);
     if ((int)version_header != PAYSAGES_CURRENT_DATA_VERSION)
     {
         packCloseStream(stream);

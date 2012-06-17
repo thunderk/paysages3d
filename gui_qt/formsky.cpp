@@ -25,7 +25,7 @@ public:
         configScaling(0.5, 5.0, 0.5, 2.5);
     }
 protected:
-    QColor getColor(float x, float y)
+    QColor getColor(double x, double y)
     {
         y -= 100.0 * scaling;
         if (y > 0.0)
@@ -65,7 +65,7 @@ public:
         configScaling(0.5, 5.0, 0.5, 2.5);
     }
 protected:
-    QColor getColor(float x, float y)
+    QColor getColor(double x, double y)
     {
         y -= 100.0 * scaling;
         if (y > 0.0)

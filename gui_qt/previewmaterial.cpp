@@ -39,9 +39,9 @@ SmallMaterialPreview::~SmallMaterialPreview()
     rendererDelete(&_renderer);
 }
 
-QColor SmallMaterialPreview::getColor(float x, float y)
+QColor SmallMaterialPreview::getColor(double x, double y)
 {
-    float dist = sqrt(x * x + y * y);
+    double dist = sqrt(x * x + y * y);
     Vector3 point;
     Color color;
 
@@ -77,24 +77,24 @@ void SmallMaterialPreview::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     int width = this->width();
     int height = this->height();
-    float factor, dx, dy;
+    double factor, dx, dy;
     
     if (width > height)
     {
-        factor = 2.0 / (float)height;
+        factor = 2.0 / (double)height;
     }
     else
     {
-        factor = 2.0 / (float)width;
+        factor = 2.0 / (double)width;
     }
-    dx = factor * (float)width / 2.0;
-    dy = factor * (float)height / 2.0;
+    dx = factor * (double)width / 2.0;
+    dy = factor * (double)height / 2.0;
 
     for (int x = 0; x < width; x++)
     {
         for (int y = 0; y < height; y++)
         {
-            painter.setPen(getColor((float)x * factor - dx, (float)y * factor - dy));
+            painter.setPen(getColor((double)x * factor - dx, (double)y * factor - dy));
             painter.drawPoint(x, y);
         }
     }
@@ -115,7 +115,7 @@ PreviewMaterial::~PreviewMaterial()
     delete _small;
 }
 
-QColor PreviewMaterial::getColor(float x, float y)
+QColor PreviewMaterial::getColor(double x, double y)
 {
     return _small->getColor(x, y);
 }

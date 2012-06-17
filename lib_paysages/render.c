@@ -10,13 +10,50 @@
 #include "color.h"
 #include "system.h"
 
+typedef struct
+{
+    struct
+    {
+        unsigned char dirty    : 1;
+        unsigned char edge     : 1;
+        unsigned char callback : 6;
+    } flags;
+    union
+    {
+        Vector3 location;
+        struct {
+            double r;
+            double g;
+            double b;
+        } color;
+    } data;
+    double z;
+} RenderFragment;
+
+typedef struct
+{
+    int x;
+    int y;
+    Vector3 pixel;
+    Vector3 location;
+    int callback;
+} ScanPoint;
+
+typedef struct
+{
+    f_RenderFragmentCallback function;
+    void* data;
+} FragmentCallback;
+
 struct RenderArea
 {
     RenderParams params;
     int pixel_count;
     RenderFragment* pixels;
-    RenderFragment* scanline_up;
-    RenderFragment* scanline_down;
+    ScanPoint* scanline_up;
+    ScanPoint* scanline_down;
+    int fragment_callbacks_count;
+    FragmentCallback fragment_callbacks[64];
     int scanline_left;
     int scanline_right;
     Color background_color;
@@ -31,12 +68,23 @@ struct RenderArea
     RenderCallbackUpdate callback_update;
 };
 
+typedef struct {
+    int startx;
+    int endx;
+    int starty;
+    int endy;
+    int finished;
+    int interrupt;
+    Thread* thread;
+    RenderArea* area;
+    Renderer* renderer;
+} RenderChunk;
+
 #define RENDER_INVERSE 1
-#define RENDER_WIREFRAME 1
 
 static void _callbackStart(int width, int height, Color background) {}
 static void _callbackDraw(int x, int y, Color col) {}
-static void _callbackUpdate(float progress) {}
+static void _callbackUpdate(double progress) {}
 
 void renderInit()
 {
@@ -57,8 +105,9 @@ RenderArea* renderCreateArea()
     result->params.quality = 5;
     result->pixel_count = 1;
     result->pixels = malloc(sizeof(RenderFragment));
-    result->scanline_up = malloc(sizeof(RenderFragment));
-    result->scanline_down = malloc(sizeof(RenderFragment));
+    result->fragment_callbacks_count = 0;
+    result->scanline_up = malloc(sizeof(ScanPoint));
+    result->scanline_down = malloc(sizeof(ScanPoint));
     result->scanline_left = 0;
     result->scanline_right = 0;
     result->background_color = COLOR_TRANSPARENT;
@@ -97,8 +146,8 @@ void renderSetParams(RenderArea* area, RenderParams params)
 
     area->scanline_left = 0;
     area->scanline_right = width - 1;
-    area->scanline_up = realloc(area->scanline_up, sizeof(RenderFragment) * width);
-    area->scanline_down = realloc(area->scanline_down, sizeof(RenderFragment) * width);
+    area->scanline_up = realloc(area->scanline_up, sizeof(ScanPoint) * width);
+    area->scanline_down = realloc(area->scanline_down, sizeof(ScanPoint) * width);
 
     area->dirty_left = width;
     area->dirty_right = -1;
@@ -114,11 +163,27 @@ void renderSetBackgroundColor(RenderArea* area, Color* col)
     area->background_color = *col;
 }
 
+static void _clearScanLines(RenderArea* area)
+{
+    int x;
+    for (x = area->scanline_left; x <= area->scanline_right; x++)
+    {
+        area->scanline_up[x].y = -1;
+        area->scanline_down[x].y = area->params.height * area->params.antialias;
+    }
+    area->scanline_left = area->params.width * area->params.antialias;
+    area->scanline_right = -1;
+}
+
 void renderClear(RenderArea* area)
 {
     RenderFragment* pixel;
     int x;
     int y;
+    
+    area->fragment_callbacks_count = 1;
+    area->fragment_callbacks[0].function = NULL;
+    area->fragment_callbacks[0].data = NULL;
 
     for (x = 0; x < area->params.width * area->params.antialias; x++)
     {
@@ -126,12 +191,17 @@ void renderClear(RenderArea* area)
         {
             pixel = area->pixels + (y * area->params.width * area->params.antialias + x);
             pixel->z = -100000000.0;
-            pixel->vertex.color = area->background_color;
+            pixel->flags.dirty = 0;
+            pixel->flags.callback = 0;
+            pixel->data.color.r = area->background_color.r;
+            pixel->data.color.g = area->background_color.g;
+            pixel->data.color.b = area->background_color.b;
         }
     }
 
     area->scanline_left = 0;
     area->scanline_right = area->params.width * area->params.antialias - 1;
+    _clearScanLines(area);
 
     area->callback_start(area->params.width, area->params.height, area->background_color);
 
@@ -142,26 +212,7 @@ void renderClear(RenderArea* area)
     area->dirty_count = 0;
 }
 
-/*static int _sortRenderFragment(void const* a, void const* b)
-{
-    float za, zb;
-    za = ((RenderFragment*)a)->z;
-    zb = ((RenderFragment*)b)->z;
-    if (za > zb)
-    {
-        return 1;
-    }
-    else if (za < zb)
-    {
-        return -1;
-    }
-    else
-    {
-        return 0;
-    }
-}*/
-
-static inline void _setDirtyPixel(RenderArea* area, RenderFragment* fragment, int x, int y)
+static inline void _setDirtyPixel(RenderArea* area, int x, int y)
 {
     if (x < area->dirty_left)
     {
@@ -196,10 +247,26 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
         for (sy = 0; sy < area->params.antialias; sy++)
         {
             pixel_data = area->pixels + (y * area->params.antialias + sy) * area->params.width * area->params.antialias + (x * area->params.antialias + sx);
-            col = pixel_data->vertex.color;
-            result.r += col.r / (float)(area->params.antialias * area->params.antialias);
-            result.g += col.g / (float)(area->params.antialias * area->params.antialias);
-            result.b += col.b / (float)(area->params.antialias * area->params.antialias);
+            if (pixel_data->flags.dirty)
+            {
+                if (pixel_data->flags.edge)
+                {
+                    col = COLOR_RED;
+                }
+                else
+                {
+                    col = COLOR_GREY;
+                }
+            }
+            else
+            {
+                col.r = pixel_data->data.color.r;
+                col.g = pixel_data->data.color.g;
+                col.b = pixel_data->data.color.b;
+            }
+            result.r += col.r / (double)(area->params.antialias * area->params.antialias);
+            result.g += col.g / (double)(area->params.antialias * area->params.antialias);
+            result.b += col.b / (double)(area->params.antialias * area->params.antialias);
         }
     }
     
@@ -248,111 +315,121 @@ static void _setAllDirty(RenderArea* area)
     area->dirty_up = area->params.height * area->params.antialias - 1;
 }
 
-void renderAddFragment(RenderArea* area, RenderFragment* fragment)
+static inline unsigned int _pushCallback(RenderArea* area, FragmentCallback callback)
+{
+    int i;
+    for (i = 0; i < area->fragment_callbacks_count; i++)
+    {
+        if (area->fragment_callbacks[i].function == callback.function && area->fragment_callbacks[i].data == callback.data)
+        {
+            return i;
+        }
+    }
+    
+    if (area->fragment_callbacks_count >= 64)
+    {
+        return 0;
+    }
+    else
+    {
+        area->fragment_callbacks[area->fragment_callbacks_count].function = callback.function;
+        area->fragment_callbacks[area->fragment_callbacks_count].data = callback.data;
+        return area->fragment_callbacks_count++;
+    }
+}
+
+static void _pushFragment(RenderArea* area, int x, int y, double z, int edge, Vector3 location, int callback)
 {
     RenderFragment* pixel_data;
-    int x = fragment->x;
-    int y = fragment->y;
-    float z = fragment->z;
-
+    
     if (x >= 0 && x < area->params.width * area->params.antialias && y >= 0 && y < area->params.height * area->params.antialias && z > 1.0)
     {
         pixel_data = area->pixels + (y * area->params.width * area->params.antialias + x);
 
         if (z > pixel_data->z)
         {
-            *pixel_data = *fragment;
-            _setDirtyPixel(area, pixel_data, x, y);
+            pixel_data->flags.dirty = (unsigned char)1;
+            pixel_data->flags.edge = (unsigned char)edge;
+            pixel_data->flags.callback = (unsigned char)callback;
+            pixel_data->data.location = location;
+            pixel_data->z = z;
+            _setDirtyPixel(area, x, y);
         }
     }
 }
 
-void renderPushFragment(RenderArea* area, int x, int y, float z, Vertex* vertex)
+static void _scanGetDiff(ScanPoint* v1, ScanPoint* v2, ScanPoint* result)
 {
-    RenderFragment fragment;
-
-    fragment.x = x;
-    fragment.y = y;
-    fragment.z = z;
-    fragment.vertex = *vertex;
-
-    renderAddFragment(area, &fragment);
-}
-
-static void __vertexGetDiff(Vertex* v1, Vertex* v2, Vertex* result)
-{
+    result->pixel.x = v2->pixel.x - v1->pixel.x;
+    result->pixel.y = v2->pixel.y - v1->pixel.y;
+    result->pixel.z = v2->pixel.z - v1->pixel.z;
     result->location.x = v2->location.x - v1->location.x;
     result->location.y = v2->location.y - v1->location.y;
     result->location.z = v2->location.z - v1->location.z;
-    result->color.r = v2->color.r - v1->color.r;
-    result->color.g = v2->color.g - v1->color.g;
-    result->color.b = v2->color.b - v1->color.b;
-    result->color.a = v2->color.a - v1->color.a;
     result->callback = v1->callback;
-    result->callback_data = v1->callback_data;
 }
 
-static void __vertexInterpolate(Vertex* v1, Vertex* diff, float value, Vertex* result)
+static void _scanInterpolate(ScanPoint* v1, ScanPoint* diff, double value, ScanPoint* result)
 {
+    result->pixel.x = v1->pixel.x + diff->pixel.x * value;
+    result->pixel.y = v1->pixel.y + diff->pixel.y * value;
+    result->pixel.z = v1->pixel.z + diff->pixel.z * value;
     result->location.x = v1->location.x + diff->location.x * value;
     result->location.y = v1->location.y + diff->location.y * value;
     result->location.z = v1->location.z + diff->location.z * value;
-    result->color.r = v1->color.r + diff->color.r * value;
-    result->color.g = v1->color.g + diff->color.g * value;
-    result->color.b = v1->color.b + diff->color.b * value;
-    result->color.a = v1->color.a + diff->color.a * value;
     result->callback = v1->callback;
-    result->callback_data = v1->callback_data;
 }
 
-static void __pushScanLinePoint(RenderArea* area, RenderFragment point)
+static void _pushScanPoint(RenderArea* area, ScanPoint* point)
 {
-    if (point.x < 0 || point.x >= area->params.width * area->params.antialias)
+    point->x = (int)floor(point->pixel.x);
+    point->y = (int)floor(point->pixel.y);
+    
+    if (point->x < 0 || point->x >= area->params.width * area->params.antialias)
     {
         return;
     }
 
-    if (point.x > area->scanline_right)
+    if (point->x > area->scanline_right)
     {
-        area->scanline_right = point.x;
-        area->scanline_up[area->scanline_right] = point;
-        area->scanline_down[area->scanline_right] = point;
-        if (point.x < area->scanline_left)
+        area->scanline_right = point->x;
+        area->scanline_up[area->scanline_right] = *point;
+        area->scanline_down[area->scanline_right] = *point;
+        if (point->x < area->scanline_left)
         {
-            area->scanline_left = point.x;
+            area->scanline_left = point->x;
         }
     }
-    else if (point.x < area->scanline_left)
+    else if (point->x < area->scanline_left)
     {
-        area->scanline_left = point.x;
-        area->scanline_up[area->scanline_left] = point;
-        area->scanline_down[area->scanline_left] = point;
+        area->scanline_left = point->x;
+        area->scanline_up[area->scanline_left] = *point;
+        area->scanline_down[area->scanline_left] = *point;
     }
     else
     {
-        if (point.y > area->scanline_up[point.x].y)
+        if (point->y > area->scanline_up[point->x].y)
         {
-            area->scanline_up[point.x] = point;
+            area->scanline_up[point->x] = *point;
         }
-        if (point.y < area->scanline_down[point.x].y)
+        if (point->y < area->scanline_down[point->x].y)
         {
-            area->scanline_down[point.x] = point;
+            area->scanline_down[point->x] = *point;
         }
     }
 }
 
-static void __pushScanLineEdge(RenderArea* area, Vector3 v1, Vector3 v2, Vertex* vertex1, Vertex* vertex2)
+static void _pushScanLineEdge(RenderArea* area, ScanPoint* point1, ScanPoint* point2)
 {
-    float dx, dy, dz, fx;
-    Vertex diff;
-    int startx = lround(v1.x);
-    int endx = lround(v2.x);
+    double dx, fx;
+    ScanPoint diff, point;
+    int startx = lround(point1->pixel.x);
+    int endx = lround(point2->pixel.x);
     int curx;
-    RenderFragment fragment;
 
     if (endx < startx)
     {
-        __pushScanLineEdge(area, v2, v1, vertex2, vertex1);
+        _pushScanLineEdge(area, point2, point1);
     }
     else if (endx < 0 || startx >= area->params.width * area->params.antialias)
     {
@@ -360,19 +437,8 @@ static void __pushScanLineEdge(RenderArea* area, Vector3 v1, Vector3 v2, Vertex*
     }
     else if (startx == endx)
     {
-        fragment.x = startx;
-        fragment.y = lround(v1.y);
-        fragment.z = v1.z;
-        fragment.vertex = *vertex1;
-
-        __pushScanLinePoint(area, fragment);
-
-        fragment.x = endx;
-        fragment.y = lround(v2.y);
-        fragment.z = v2.z;
-        fragment.vertex = *vertex2;
-
-        __pushScanLinePoint(area, fragment);
+        _pushScanPoint(area, point1);
+        _pushScanPoint(area, point2);
     }
     else
     {
@@ -385,50 +451,35 @@ static void __pushScanLineEdge(RenderArea* area, Vector3 v1, Vector3 v2, Vertex*
             endx = area->params.width * area->params.antialias - 1;
         }
 
-        dx = v2.x - v1.x;
-        dy = v2.y - v1.y;
-        dz = v2.z - v1.z;
-        __vertexGetDiff(vertex1, vertex2, &diff);
+        dx = point2->pixel.x - point1->pixel.x;
+        _scanGetDiff(point1, point2, &diff);
         for (curx = startx; curx <= endx; curx++)
         {
-            fx = (float)curx + 0.5;
-            if (fx < v1.x)
+            fx = (double)curx + 0.5;
+            if (fx < point1->pixel.x)
             {
-                fx = v1.x;
+                fx = point1->pixel.x;
             }
-            else if (fx > v2.x)
+            else if (fx > point2->pixel.x)
             {
-                fx = v2.x;
+                fx = point2->pixel.x;
             }
-            fx = fx - v1.x;
-            fragment.x = curx;
-            fragment.y = lround(v1.y + dy * fx / dx);
-            fragment.z = v1.z + dz * fx / dx;
-            __vertexInterpolate(vertex1, &diff, fx / dx, &(fragment.vertex));
+            fx = fx - point1->pixel.x;
+            _scanInterpolate(point1, &diff, fx / dx, &point);
 
-            __pushScanLinePoint(area, fragment);
+            /*point.pixel.x = (double)curx;*/
+            
+            _pushScanPoint(area, &point);
         }
     }
 }
 
-static void __clearScanLines(RenderArea* area)
-{
-    int x;
-    for (x = area->scanline_left; x <= area->scanline_right; x++)
-    {
-        area->scanline_up[x].y = -1;
-        area->scanline_down[x].y = area->params.height * area->params.antialias;
-    }
-    area->scanline_left = area->params.width * area->params.antialias;
-    area->scanline_right = -1;
-}
-
-static void __renderScanLines(RenderArea* area)
+static void _renderScanLines(RenderArea* area)
 {
     int x, starty, endy, cury;
-    Vertex diff;
-    float dy, dz, fy;
-    RenderFragment up, down, current;
+    ScanPoint diff;
+    double dy, fy;
+    ScanPoint up, down, current;
 
     if (area->scanline_right > 0)
     {
@@ -454,63 +505,67 @@ static void __renderScanLines(RenderArea* area)
                 endy = area->params.height * area->params.antialias - 1;
             }
 
-            dy = (float)(up.y - down.y);
-            dz = up.z - down.z;
-            __vertexGetDiff(&down.vertex, &up.vertex, &diff);
+            dy = up.pixel.y - down.pixel.y;
+            _scanGetDiff(&down, &up, &diff);
 
             current.x = x;
             for (cury = starty; cury <= endy; cury++)
             {
-                fy = (float)cury - down.y;
+                fy = (double)cury + 0.5;
+                if (fy < down.pixel.y)
+                {
+                    fy = down.pixel.y;
+                }
+                else if (fy > up.pixel.y)
+                {
+                    fy = up.pixel.y;
+                }
+                fy = fy - down.pixel.y;
 
                 current.y = cury;
-                current.z = down.z + dz * fy / dy;
-                __vertexInterpolate(&down.vertex, &diff, fy / dy, &current.vertex);
+                _scanInterpolate(&down, &diff, fy / dy, &current);
 
-#ifdef RENDER_WIREFRAME
-                if (cury == starty || cury == endy)
-                {
-                    current.vertex.color = COLOR_RED;
-                }
-#endif
-
-                renderAddFragment(area, &current);
+                _pushFragment(area, current.x, current.y, current.pixel.z, (cury == starty || cury == endy), current.location, current.callback);
             }
         }
     }
 }
 
-void renderPushTriangle(RenderArea* area, Vertex* v1, Vertex* v2, Vertex* v3, Vector3 p1, Vector3 p2, Vector3 p3)
+void renderPushTriangle(RenderArea* area, Vector3 pixel1, Vector3 pixel2, Vector3 pixel3, Vector3 location1, Vector3 location2, Vector3 location3, f_RenderFragmentCallback callback, void* callback_data)
 {
-    float limit_width = (float)(area->params.width * area->params.antialias - 1);
-    float limit_height = (float)(area->params.height * area->params.antialias - 1);
+    FragmentCallback fragment_callback = {callback, callback_data};
+    ScanPoint point1, point2, point3;
+    double limit_width = (double)(area->params.width * area->params.antialias - 1);
+    double limit_height = (double)(area->params.height * area->params.antialias - 1);
 
     /* Filter if outside screen */
-    if (p1.z < 1.0 || p2.z < 1.0 || p3.z < 1.0 || (p1.x < 0.0 && p2.x < 0.0 && p3.x < 0.0) || (p1.y < 0.0 && p2.y < 0.0 && p3.y < 0.0) || (p1.x > limit_width && p2.x > limit_width && p3.x > limit_width) || (p1.y > limit_height && p2.y > limit_height && p3.y > limit_height))
+    if (pixel1.z < 1.0 || pixel2.z < 1.0 || pixel3.z < 1.0 || (pixel1.x < 0.0 && pixel2.x < 0.0 && pixel3.x < 0.0) || (pixel1.y < 0.0 && pixel2.y < 0.0 && pixel3.y < 0.0) || (pixel1.x > limit_width && pixel2.x > limit_width && pixel3.x > limit_width) || (pixel1.y > limit_height && pixel2.y > limit_height && pixel3.y > limit_height))
     {
         return;
     }
+    
+    point1.pixel = pixel1;
+    point1.location = location1;
+    point1.callback = _pushCallback(area, fragment_callback);
 
-    __clearScanLines(area);
-    __pushScanLineEdge(area, p1, p2, v1, v2);
-    __pushScanLineEdge(area, p2, p3, v2, v3);
-    __pushScanLineEdge(area, p3, p1, v3, v1);
+    point2.pixel = pixel2;
+    point2.location = location2;
+    point2.callback = _pushCallback(area, fragment_callback);
+
+    point3.pixel = pixel3;
+    point3.location = location3;
+    point3.callback = _pushCallback(area, fragment_callback);
+    
+    _clearScanLines(area);
+    
+    _pushScanLineEdge(area, &point1, &point2);
+    _pushScanLineEdge(area, &point2, &point3);
+    _pushScanLineEdge(area, &point3, &point1);
+    
     mutexAcquire(area->lock);
-    __renderScanLines(area);
+    _renderScanLines(area);
     mutexRelease(area->lock);
 }
-
-typedef struct {
-    int startx;
-    int endx;
-    int starty;
-    int endy;
-    int finished;
-    int interrupt;
-    Thread* thread;
-    RenderArea* area;
-    Renderer* renderer;
-} RenderChunk;
 
 void* _renderPostProcessChunk(void* data)
 {
@@ -527,13 +582,28 @@ void* _renderPostProcessChunk(void* data)
         for (x = chunk->startx; x <= chunk->endx; x++)
         {
             fragment = chunk->area->pixels + (y * chunk->area->params.width * chunk->area->params.antialias + x);
-            if (fragment->vertex.callback)
+            if (fragment->flags.dirty)
             {
-                if (fragment->vertex.callback(fragment, chunk->renderer, fragment->vertex.callback_data))
+                FragmentCallback callback;
+                Color col;
+                
+                callback = chunk->area->fragment_callbacks[fragment->flags.callback];
+                if (callback.function)
                 {
-                    colorNormalize(&fragment->vertex.color);
-                    _setDirtyPixel(chunk->area, fragment, x, y);
+                    col = callback.function(chunk->renderer, fragment->data.location, callback.data);
+                    colorNormalize(&col);
                 }
+                else
+                {
+                    col = COLOR_BLACK;
+                }
+                
+                fragment->data.color.r = col.r;
+                fragment->data.color.g = col.g;
+                fragment->data.color.b = col.b;
+
+                fragment->flags.dirty = 0;
+                _setDirtyPixel(chunk->area, x, y);
             }
             /* chunk->area->progress_pixels++; */
         }
@@ -638,7 +708,7 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
         if (++loops >= 10)
         {
             mutexAcquire(area->lock);
-            /*_progress = (float)_progress_pixels / (float)_pixel_count;*/
+            /*_progress = (double)_progress_pixels / (double)_pixel_count;*/
             _processDirtyPixels(area);
             mutexRelease(area->lock);
 

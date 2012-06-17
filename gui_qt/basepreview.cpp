@@ -318,14 +318,14 @@ void BasePreview::updateData()
 {
 }
 
-QColor BasePreview::getColor(float x, float y)
+QColor BasePreview::getColor(double x, double y)
 {
     return QColor(0, 0, 0);
 }
 
-void BasePreview::configScaling(float min, float max, float step, float init, bool logarithmic)
+void BasePreview::configScaling(double min, double max, double step, double init, bool logarithmic)
 {
-    float size = (float) width();
+    double size = (double) width();
 
     if (size >= 1.0)
     {
@@ -345,7 +345,7 @@ void BasePreview::configScaling(float min, float max, float step, float init, bo
     }
 }
 
-void BasePreview::configScrolling(float xmin, float xmax, float xinit, float ymin, float ymax, float yinit)
+void BasePreview::configScrolling(double xmin, double xmax, double xinit, double ymin, double ymax, double yinit)
 {
     conf_scroll_xmin = xmin;
     conf_scroll_xmax = xmax;
@@ -388,7 +388,7 @@ void BasePreview::commitChunkTransaction(QImage* chunk, int x, int y, int w, int
 
 QColor BasePreview::getPixelColor(int x, int y)
 {
-    return getColor((float) (x - _width / 2) * scaling + xoffset, (float) (y - _height / 2) * scaling + yoffset);
+    return getColor((double) (x - _width / 2) * scaling + xoffset, (double) (y - _height / 2) * scaling + yoffset);
 }
 
 void BasePreview::handleRedraw()
@@ -523,8 +523,8 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
 
             if (ndx <= -width || ndx >= width || ndy <= -height || ndy >= height)
             {
-                xoffset -= (float) ndx * scaling;
-                yoffset -= (float) ndy * scaling;
+                xoffset -= (double) ndx * scaling;
+                yoffset -= (double) ndy * scaling;
 
                 lock_drawing->lock();
                 pixbuf->fill(0x00000000);
@@ -537,8 +537,8 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
 
                 lock_drawing->lock();
 
-                xoffset -= (float) ndx * scaling;
-                yoffset -= (float) ndy * scaling;
+                xoffset -= (double) ndx * scaling;
+                yoffset -= (double) ndy * scaling;
 
                 if (ndx < 0)
                 {
@@ -580,8 +580,8 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
 
 void BasePreview::wheelEvent(QWheelEvent* event)
 {
-    float factor;
-    float old_scaling;
+    double factor;
+    double old_scaling;
     int width, height;
     int new_width, new_height;
 
@@ -637,8 +637,8 @@ void BasePreview::wheelEvent(QWheelEvent* event)
     if (scaling < old_scaling)
     {
         lock_drawing->lock();
-        new_width = (int) floor(((float) width) * scaling / old_scaling);
-        new_height = (int) floor(((float) height) * scaling / old_scaling);
+        new_width = (int) floor(((double) width) * scaling / old_scaling);
+        new_height = (int) floor(((double) height) * scaling / old_scaling);
         QImage part = pixbuf->copy((width - new_width) / 2, (height - new_height) / 2, new_width, new_height).scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         pixbuf->fill(0x00000000);
         QPainter painter(pixbuf);
@@ -651,7 +651,7 @@ void BasePreview::wheelEvent(QWheelEvent* event)
     else if (scaling > old_scaling)
     {
         lock_drawing->lock();
-        QImage part = pixbuf->scaled((int) floor(((float) width) * old_scaling / scaling), (int) floor(((float) height) * old_scaling / scaling), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        QImage part = pixbuf->scaled((int) floor(((double) width) * old_scaling / scaling), (int) floor(((double) height) * old_scaling / scaling), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         pixbuf->fill(0x00000000);
         QPainter painter(pixbuf);
         painter.drawImage((width - part.width()) / 2, (height - part.height()) / 2, part);

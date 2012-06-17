@@ -32,7 +32,7 @@ protected:
     {
         noiseCopy(_noise_original, _noise_preview);
     }
-    QColor getColor(float x, float y)
+    QColor getColor(double x, double y)
     {
         if ((_level >= 0) && (y > noiseGet1DLevel(_noise_preview, _level, x)))
         {
@@ -64,7 +64,7 @@ protected:
     {
         noiseCopy(_noise_original, _noise_preview);
     }
-    QColor getColor(float x, float y)
+    QColor getColor(double x, double y)
     {
         if (y > noiseGet1DTotal(_noise_preview, x))
         {
@@ -295,7 +295,7 @@ void DialogNoise::levelChanged(int row)
 
 void DialogNoise::heightChanged(int value)
 {
-    _current_level_params.height = ((float)value) / 1000.0;
+    _current_level_params.height = ((double)value) / 1000.0;
     noiseSetLevel(_current, _current_level, _current_level_params);
     previewLevel->redraw();
     previewTotal->redraw();
@@ -303,7 +303,7 @@ void DialogNoise::heightChanged(int value)
 
 void DialogNoise::scalingChanged(int value)
 {
-    _current_level_params.scaling = ((float)value) / 1000.0;
+    _current_level_params.scaling = ((double)value) / 1000.0;
     noiseSetLevel(_current, _current_level, _current_level_params);
     previewLevel->redraw();
     previewTotal->redraw();

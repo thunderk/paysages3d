@@ -20,9 +20,9 @@ struct PackStream
 #define unpack754_32(i) (unpack754((i), 32, 8))
 #define unpack754_64(i) (unpack754((i), 64, 11))
 
-static uint64_t pack754(float f, unsigned bits, unsigned expbits)
+static uint64_t pack754(double f, unsigned bits, unsigned expbits)
 {
-    float fnorm;
+    double fnorm;
     int shift;
     long long sign, exp, significand;
     unsigned significandbits = bits - expbits - 1; // -1 for sign bit
@@ -39,7 +39,7 @@ static uint64_t pack754(float f, unsigned bits, unsigned expbits)
     while(fnorm < 1.0) { fnorm *= 2.0; shift--; }
     fnorm = fnorm - 1.0;
 
-    // calculate the binary form (non-float) of the significand data
+    // calculate the binary form (non-double) of the significand data
     significand = fnorm * ((1LL<<significandbits) + 0.5f);
 
     // get the biased exponent
@@ -49,9 +49,9 @@ static uint64_t pack754(float f, unsigned bits, unsigned expbits)
     return (sign<<(bits-1)) | (exp<<(bits-expbits-1)) | significand;
 }
 
-static float unpack754(uint64_t i, unsigned bits, unsigned expbits)
+static double unpack754(uint64_t i, unsigned bits, unsigned expbits)
 {
-    float result;
+    double result;
     long long shift;
     unsigned bias;
     unsigned significandbits = bits - expbits - 1; // -1 for sign bit
@@ -60,7 +60,7 @@ static float unpack754(uint64_t i, unsigned bits, unsigned expbits)
 
     // pull the significand
     result = (i&((1LL<<significandbits)-1)); // mask
-    result /= (1LL<<significandbits); // convert back to float
+    result /= (1LL<<significandbits); // convert back to double
     result += 1.0f; // add the one back on
 
     // deal with the exponent
@@ -107,15 +107,15 @@ void packCloseStream(PackStream* stream)
     free(stream);
 }
 
-void packWriteFloat(PackStream* stream, float* value)
+void packWriteDouble(PackStream* stream, double* value)
 {
     uint64_t servalue;
     
-    servalue = pack754_32(*value);
+    servalue = pack754_64(*value);
     fwrite(&servalue, sizeof(uint64_t), 1, stream->fd);
 }
 
-void packReadFloat(PackStream* stream, float* value)
+void packReadDouble(PackStream* stream, double* value)
 {
     int read;
     uint64_t servalue;
@@ -123,7 +123,7 @@ void packReadFloat(PackStream* stream, float* value)
     read = fread(&servalue, sizeof(uint64_t), 1, stream->fd);
     assert(read == 1);
     
-    *value = unpack754_32(servalue);
+    *value = unpack754_64(servalue);
 }
 
 void packWriteInt(PackStream* stream, int* value)

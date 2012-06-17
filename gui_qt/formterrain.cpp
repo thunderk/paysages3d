@@ -23,9 +23,9 @@ public:
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
-    QColor getColor(float x, float y)
+    QColor getColor(double x, double y)
     {
-        float height;
+        double height;
 
         height = terrainGetHeightNormalized(&_preview_definition, x, y);
         return QColor((int)(255.0 * height), (int)(255.0 * height), (int)(255.0 * height));
@@ -100,7 +100,7 @@ public:
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
-    QColor getColor(float x, float y)
+    QColor getColor(double x, double y)
     {
         return colorToQColor(terrainGetColor(&_terrain, &_renderer, x, y, scaling));
     }
@@ -115,12 +115,12 @@ private:
     TexturesDefinition _textures;
     LightingDefinition _lighting;
 
-    static float _getTerrainHeight(Renderer* renderer, float x, float z)
+    static double _getTerrainHeight(Renderer* renderer, double x, double z)
     {
         return terrainGetHeight((TerrainDefinition*)(renderer->customData[0]), x, z);
     }
 
-    static Color _applyTextures(Renderer* renderer, Vector3 location, float precision)
+    static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
     {
         return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
     }

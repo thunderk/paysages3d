@@ -15,18 +15,18 @@ void atmosphereQuit()
 
 void atmosphereSave(PackStream* stream, AtmosphereDefinition* definition)
 {
-    packWriteFloat(stream, &definition->distance_near);
-    packWriteFloat(stream, &definition->distance_far);
-    packWriteFloat(stream, &definition->full_mask);
+    packWriteDouble(stream, &definition->distance_near);
+    packWriteDouble(stream, &definition->distance_far);
+    packWriteDouble(stream, &definition->full_mask);
     packWriteInt(stream, &definition->auto_lock_on_haze);
     colorSave(stream, &definition->color);
 }
 
 void atmosphereLoad(PackStream* stream, AtmosphereDefinition* definition)
 {
-    packReadFloat(stream, &definition->distance_near);
-    packReadFloat(stream, &definition->distance_far);
-    packReadFloat(stream, &definition->full_mask);
+    packReadDouble(stream, &definition->distance_near);
+    packReadDouble(stream, &definition->distance_far);
+    packReadDouble(stream, &definition->full_mask);
     packReadInt(stream, &definition->auto_lock_on_haze);
     colorLoad(stream, &definition->color);
 
@@ -85,8 +85,8 @@ void atmosphereValidateDefinition(AtmosphereDefinition* definition)
 Color atmosphereApply(AtmosphereDefinition* definition, Renderer* renderer, Vector3 location, Color base)
 {
     Color mask = definition->color;
-    float distance = v3Norm(v3Sub(renderer->camera_location, location));
-    float value;
+    double distance = v3Norm(v3Sub(renderer->camera_location, location));
+    double value;
 
     if (distance < definition->distance_near)
     {

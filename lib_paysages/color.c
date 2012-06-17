@@ -23,18 +23,18 @@ struct ColorGradation
 
 void colorSave(PackStream* stream, Color* col)
 {
-    packWriteFloat(stream, &col->r);
-    packWriteFloat(stream, &col->g);
-    packWriteFloat(stream, &col->b);
-    packWriteFloat(stream, &col->a);
+    packWriteDouble(stream, &col->r);
+    packWriteDouble(stream, &col->g);
+    packWriteDouble(stream, &col->b);
+    packWriteDouble(stream, &col->a);
 }
 
 void colorLoad(PackStream* stream, Color* col)
 {
-    packReadFloat(stream, &col->r);
-    packReadFloat(stream, &col->g);
-    packReadFloat(stream, &col->b);
-    packReadFloat(stream, &col->a);
+    packReadDouble(stream, &col->r);
+    packReadDouble(stream, &col->g);
+    packReadDouble(stream, &col->b);
+    packReadDouble(stream, &col->a);
 }
 
 unsigned int colorTo32BitRGBA(Color* col)
@@ -59,15 +59,15 @@ unsigned int colorTo32BitABGR(Color* col)
 
 void colorMask(Color* base, Color* mask)
 {
-    float new_a;
+    double new_a;
     new_a = base->a + mask->a - (base->a * mask->a);
     base->r = (mask->r * mask->a + base->r * base->a - base->r * base->a * mask->a) / new_a;
     base->g = (mask->g * mask->a + base->g * base->a - base->g * base->a * mask->a) / new_a;
     base->b = (mask->b * mask->a + base->b * base->a - base->b * base->a * mask->a) / new_a;
     base->a = new_a;
 
-    /*float mask_weight = mask->a;
-    float base_weight = 1.0 - mask_weight;
+    /*double mask_weight = mask->a;
+    double base_weight = 1.0 - mask_weight;
 
     base->r = mask->r * mask_weight + base->r * base_weight;
     base->g = mask->g * mask_weight + base->g * base_weight;
@@ -75,9 +75,9 @@ void colorMask(Color* base, Color* mask)
     base->a = base->a + mask_weight * (1.0 - base->a);*/
 }
 
-float colorNormalize(Color* col)
+double colorNormalize(Color* col)
 {
-    float max = colorGetValue(col);
+    double max = colorGetValue(col);
 
     assert(col->r >= 0.0);
     assert(col->g >= 0.0);
@@ -93,9 +93,9 @@ float colorNormalize(Color* col)
     return max;
 }
 
-float colorGetValue(Color* col)
+double colorGetValue(Color* col)
 {
-    float max;
+    double max;
 
     max = col->r;
     if (col->g > max)
@@ -183,12 +183,12 @@ void colorGradationSetBlueCurve(ColorGradation* gradation, Curve* curve)
     curveValidate(gradation->blue);
 }
 
-void colorGradationQuickAdd(ColorGradation* gradation, float value, Color* col)
+void colorGradationQuickAdd(ColorGradation* gradation, double value, Color* col)
 {
     colorGradationQuickAddRgb(gradation, value, col->r, col->g, col->b);
 }
 
-void colorGradationQuickAddRgb(ColorGradation* gradation, float value, float r, float g, float b)
+void colorGradationQuickAddRgb(ColorGradation* gradation, double value, double r, double g, double b)
 {
     curveQuickAddPoint(gradation->red, value, r);
     curveValidate(gradation->red);
@@ -200,7 +200,7 @@ void colorGradationQuickAddRgb(ColorGradation* gradation, float value, float r, 
     curveValidate(gradation->blue);
 }
 
-Color colorGradationGet(ColorGradation* gradation, float value)
+Color colorGradationGet(ColorGradation* gradation, double value)
 {
     Color result;
 

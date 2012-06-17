@@ -8,19 +8,19 @@ Vector3 VECTOR_ZERO = {0.0, 0.0, 0.0};
 
 void v3Save(PackStream* stream, Vector3* v)
 {
-    packWriteFloat(stream, &v->x);
-    packWriteFloat(stream, &v->y);
-    packWriteFloat(stream, &v->z);
+    packWriteDouble(stream, &v->x);
+    packWriteDouble(stream, &v->y);
+    packWriteDouble(stream, &v->z);
 }
 
 void v3Load(PackStream* stream, Vector3* v)
 {
-    packReadFloat(stream, &v->x);
-    packReadFloat(stream, &v->y);
-    packReadFloat(stream, &v->z);
+    packReadDouble(stream, &v->x);
+    packReadDouble(stream, &v->y);
+    packReadDouble(stream, &v->z);
 }
 
-Vector3 v3Translate(Vector3 v1, float x, float y, float z)
+Vector3 v3Translate(Vector3 v1, double x, double y, double z)
 {
     Vector3 result;
     result.x = v1.x + x;
@@ -56,7 +56,7 @@ Vector3 v3Neg(Vector3 v)
     return result;
 }
 
-Vector3 v3Scale(Vector3 v, float scale)
+Vector3 v3Scale(Vector3 v, double scale)
 {
     Vector3 result;
     result.x = v.x * scale;
@@ -65,14 +65,14 @@ Vector3 v3Scale(Vector3 v, float scale)
     return result;
 }
 
-float v3Norm(Vector3 v)
+double v3Norm(Vector3 v)
 {
     return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 }
 
 Vector3 v3Normalize(Vector3 v)
 {
-    float norm = v3Norm(v);
+    double norm = v3Norm(v);
     if (norm == 0.0)
     {
         return VECTOR_ZERO;
@@ -83,7 +83,7 @@ Vector3 v3Normalize(Vector3 v)
     }
 }
 
-float v3Dot(Vector3 v1, Vector3 v2)
+double v3Dot(Vector3 v1, Vector3 v2)
 {
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
@@ -99,42 +99,42 @@ Vector3 v3Cross(Vector3 v1, Vector3 v2)
 
 void m4Save(PackStream* stream, Matrix4* m)
 {
-    packWriteFloat(stream, &m->a);
-    packWriteFloat(stream, &m->b);
-    packWriteFloat(stream, &m->c);
-    packWriteFloat(stream, &m->d);
-    packWriteFloat(stream, &m->e);
-    packWriteFloat(stream, &m->f);
-    packWriteFloat(stream, &m->g);
-    packWriteFloat(stream, &m->h);
-    packWriteFloat(stream, &m->i);
-    packWriteFloat(stream, &m->j);
-    packWriteFloat(stream, &m->k);
-    packWriteFloat(stream, &m->l);
-    packWriteFloat(stream, &m->m);
-    packWriteFloat(stream, &m->n);
-    packWriteFloat(stream, &m->o);
-    packWriteFloat(stream, &m->p);
+    packWriteDouble(stream, &m->a);
+    packWriteDouble(stream, &m->b);
+    packWriteDouble(stream, &m->c);
+    packWriteDouble(stream, &m->d);
+    packWriteDouble(stream, &m->e);
+    packWriteDouble(stream, &m->f);
+    packWriteDouble(stream, &m->g);
+    packWriteDouble(stream, &m->h);
+    packWriteDouble(stream, &m->i);
+    packWriteDouble(stream, &m->j);
+    packWriteDouble(stream, &m->k);
+    packWriteDouble(stream, &m->l);
+    packWriteDouble(stream, &m->m);
+    packWriteDouble(stream, &m->n);
+    packWriteDouble(stream, &m->o);
+    packWriteDouble(stream, &m->p);
 }
 
 void m4Load(PackStream* stream, Matrix4* m)
 {
-    packReadFloat(stream, &m->a);
-    packReadFloat(stream, &m->b);
-    packReadFloat(stream, &m->c);
-    packReadFloat(stream, &m->d);
-    packReadFloat(stream, &m->e);
-    packReadFloat(stream, &m->f);
-    packReadFloat(stream, &m->g);
-    packReadFloat(stream, &m->h);
-    packReadFloat(stream, &m->i);
-    packReadFloat(stream, &m->j);
-    packReadFloat(stream, &m->k);
-    packReadFloat(stream, &m->l);
-    packReadFloat(stream, &m->m);
-    packReadFloat(stream, &m->n);
-    packReadFloat(stream, &m->o);
-    packReadFloat(stream, &m->p);
+    packReadDouble(stream, &m->a);
+    packReadDouble(stream, &m->b);
+    packReadDouble(stream, &m->c);
+    packReadDouble(stream, &m->d);
+    packReadDouble(stream, &m->e);
+    packReadDouble(stream, &m->f);
+    packReadDouble(stream, &m->g);
+    packReadDouble(stream, &m->h);
+    packReadDouble(stream, &m->i);
+    packReadDouble(stream, &m->j);
+    packReadDouble(stream, &m->k);
+    packReadDouble(stream, &m->l);
+    packReadDouble(stream, &m->m);
+    packReadDouble(stream, &m->n);
+    packReadDouble(stream, &m->o);
+    packReadDouble(stream, &m->p);
 }
 
 Matrix4 m4NewIdentity()
@@ -180,7 +180,7 @@ Vector3 m4MultPoint(Matrix4 m, Vector3 v)
 Vector3 m4Transform(Matrix4 m, Vector3 v)
 {
     Vector3 result;
-    float w;
+    double w;
     result.x = m.a * v.x + m.b * v.y + m.c * v.z + m.d;
     result.y = m.e * v.x + m.f * v.y + m.g * v.z + m.h;
     result.z = m.i * v.x + m.j * v.y + m.k * v.z + m.l;
@@ -216,7 +216,7 @@ Matrix4 m4Transpose(Matrix4 m)
     return result;
 }
 
-Matrix4 m4NewScale(float x, float y, float z)
+Matrix4 m4NewScale(double x, double y, double z)
 {
     Matrix4 result = m4NewIdentity();
     result.a = x;
@@ -225,7 +225,7 @@ Matrix4 m4NewScale(float x, float y, float z)
     return result;
 }
 
-Matrix4 m4NewTranslate(float x, float y, float z)
+Matrix4 m4NewTranslate(double x, double y, double z)
 {
     Matrix4 result = m4NewIdentity();
     result.d = x;
@@ -234,45 +234,45 @@ Matrix4 m4NewTranslate(float x, float y, float z)
     return result;
 }
 
-Matrix4 m4NewRotateX(float angle)
+Matrix4 m4NewRotateX(double angle)
 {
     Matrix4 result = m4NewIdentity();
-    float s = sin(angle);
-    float c = cos(angle);
+    double s = sin(angle);
+    double c = cos(angle);
     result.f = result.k = c;
     result.g = -s;
     result.j = s;
     return result;
 }
 
-Matrix4 m4NewRotateY(float angle)
+Matrix4 m4NewRotateY(double angle)
 {
     Matrix4 result = m4NewIdentity();
-    float s = sin(angle);
-    float c = cos(angle);
+    double s = sin(angle);
+    double c = cos(angle);
     result.a = result.k = c;
     result.c = s;
     result.i = -s;
     return result;
 }
 
-Matrix4 m4NewRotateZ(float angle)
+Matrix4 m4NewRotateZ(double angle)
 {
     Matrix4 result = m4NewIdentity();
-    float s = sin(angle);
-    float c = cos(angle);
+    double s = sin(angle);
+    double c = cos(angle);
     result.a = result.f = c;
     result.b = -s;
     result.e = s;
     return result;
 }
 
-Matrix4 m4NewRotateAxis(float angle, Vector3 axis)
+Matrix4 m4NewRotateAxis(double angle, Vector3 axis)
 {
     Matrix4 result = m4NewIdentity();
-    float s = sin(angle);
-    float c = cos(angle);
-    float c1 = 1.0 - c;
+    double s = sin(angle);
+    double c = cos(angle);
+    double c1 = 1.0 - c;
     axis = v3Normalize(axis);
     result.a = axis.x * axis.x * c1 + c;
     result.b = axis.x * axis.y * c1 - axis.z * s;
@@ -286,15 +286,15 @@ Matrix4 m4NewRotateAxis(float angle, Vector3 axis)
     return result;
 }
 
-Matrix4 m4NewRotateEuler(float heading, float attitude, float bank)
+Matrix4 m4NewRotateEuler(double heading, double attitude, double bank)
 {
     Matrix4 result = m4NewIdentity();
-    float ch = cos(heading);
-    float sh = sin(heading);
-    float ca = cos(attitude);
-    float sa = sin(attitude);
-    float cb = cos(bank);
-    float sb = sin(bank);
+    double ch = cos(heading);
+    double sh = sin(heading);
+    double ca = cos(attitude);
+    double sa = sin(attitude);
+    double cb = cos(bank);
+    double sb = sin(bank);
     result.a = ch * ca;
     result.b = sh * sb - ch * sa * cb;
     result.c = ch * sa * sb + sh * cb;
@@ -334,10 +334,10 @@ Matrix4 m4NewLookAt(Vector3 eye, Vector3 at, Vector3 up)
     return m4Inverse(result);
 }
 
-Matrix4 m4NewPerspective(float fov_y, float aspect, float near, float far)
+Matrix4 m4NewPerspective(double fov_y, double aspect, double near, double far)
 {
     Matrix4 result = m4NewIdentity();
-    float f = 1 / tan(fov_y / 2.0);
+    double f = 1 / tan(fov_y / 2.0);
     result.a = f / aspect;
     result.f = f;
     result.k = (far + near) / (near - far);
@@ -347,7 +347,7 @@ Matrix4 m4NewPerspective(float fov_y, float aspect, float near, float far)
     return result;
 }
 
-float m4Determinant(Matrix4 m)
+double m4Determinant(Matrix4 m)
 {
     return ((m.a * m.f - m.e * m.b)
           * (m.k * m.p - m.o * m.l)
@@ -366,7 +366,7 @@ float m4Determinant(Matrix4 m)
 Matrix4 m4Inverse(Matrix4 m)
 {
     Matrix4 result;
-    float d = m4Determinant(m);
+    double d = m4Determinant(m);
 
     if (fabs(d) < 0.00001)
     {

@@ -23,28 +23,28 @@ void skyQuit()
 
 void skySave(PackStream* stream, SkyDefinition* definition)
 {
-    packWriteFloat(stream, &definition->daytime);
+    packWriteDouble(stream, &definition->daytime);
     colorGradationSave(stream, definition->sun_color);
-    packWriteFloat(stream, &definition->sun_radius);
-    packWriteFloat(stream, &definition->sun_halo_size);
+    packWriteDouble(stream, &definition->sun_radius);
+    packWriteDouble(stream, &definition->sun_halo_size);
     curveSave(stream, definition->sun_halo_profile);
     colorGradationSave(stream, definition->zenith_color);
     colorGradationSave(stream, definition->haze_color);
-    packWriteFloat(stream, &definition->haze_height);
-    packWriteFloat(stream, &definition->haze_smoothing);
+    packWriteDouble(stream, &definition->haze_height);
+    packWriteDouble(stream, &definition->haze_smoothing);
 }
 
 void skyLoad(PackStream* stream, SkyDefinition* definition)
 {
-    packReadFloat(stream, &definition->daytime);
+    packReadDouble(stream, &definition->daytime);
     colorGradationLoad(stream, definition->sun_color);
-    packReadFloat(stream, &definition->sun_radius);
-    packReadFloat(stream, &definition->sun_halo_size);
+    packReadDouble(stream, &definition->sun_radius);
+    packReadDouble(stream, &definition->sun_halo_size);
     curveLoad(stream, definition->sun_halo_profile);
     colorGradationLoad(stream, definition->zenith_color);
     colorGradationLoad(stream, definition->haze_color);
-    packReadFloat(stream, &definition->haze_height);
-    packReadFloat(stream, &definition->haze_smoothing);
+    packReadDouble(stream, &definition->haze_height);
+    packReadDouble(stream, &definition->haze_smoothing);
 
     skyValidateDefinition(definition);
 }
@@ -108,7 +108,7 @@ void skyValidateDefinition(SkyDefinition* definition)
 
 int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
 {
-    float sun_angle;
+    double sun_angle;
     Vector3 sun_direction;
     int nblights = 0;
 
@@ -152,7 +152,7 @@ int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
 
 Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Vector3 look)
 {
-    float dist;
+    double dist;
     Vector3 sun_position;
     Color sun_color, sky_color;
 
@@ -183,43 +183,35 @@ Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Ve
     }
 }
 
-static int _postProcessFragment(RenderFragment* fragment, Renderer* renderer, void* data)
+static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* data)
 {
-    Vector3 location, direction;
+    Vector3 direction;
     Color result;
     SkyDefinition* definition;
 
     definition = (SkyDefinition*)data;
 
-    location = fragment->vertex.location;
     direction = v3Sub(location, renderer->camera_location);
 
     result = skyGetColor(definition, renderer, renderer->camera_location, v3Normalize(direction));
     result = renderer->applyClouds(renderer, result, renderer->camera_location, v3Add(renderer->camera_location, v3Scale(direction, 10.0)));
 
-    fragment->vertex.color = result;
-
-    return 1;
+    return result;
 }
 
 void skyRender(SkyDefinition* definition, Renderer* renderer)
 {
     int res_i, res_j;
     int i, j;
-    float step_i, step_j;
-    float current_i, current_j;
-    Vertex vertex1, vertex2, vertex3, vertex4;
-    Color col;
+    double step_i, step_j;
+    double current_i, current_j;
+    Vector3 vertex1, vertex2, vertex3, vertex4;
     Vector3 direction;
 
     res_i = renderer->render_quality * 40;
     res_j = renderer->render_quality * 20;
-    step_i = M_PI * 2.0 / (float)res_i;
-    step_j = M_PI / (float)res_j;
-
-    col.r = 0.0;
-    col.g = 0.0;
-    col.a = 1.0;
+    step_i = M_PI * 2.0 / (double)res_i;
+    step_j = M_PI / (double)res_j;
 
     for (j = 0; j < res_j; j++)
     {
@@ -228,50 +220,34 @@ void skyRender(SkyDefinition* definition, Renderer* renderer)
             return;
         }
 
-        current_j = (float)(j - res_j / 2) * step_j;
+        current_j = (double)(j - res_j / 2) * step_j;
 
         for (i = 0; i < res_i; i++)
         {
-            current_i = (float)i * step_i;
+            current_i = (double)i * step_i;
 
             direction.x = SPHERE_SIZE * cos(current_i) * cos(current_j);
             direction.y = SPHERE_SIZE * sin(current_j);
             direction.z = SPHERE_SIZE * sin(current_i) * cos(current_j);
-            vertex1.location = v3Add(renderer->camera_location, direction);
-            col.b = sin(direction.x) * sin(direction.x) * cos(direction.z) * cos(direction.z);
-            vertex1.color = col;
-            vertex1.callback = _postProcessFragment;
-            vertex1.callback_data = definition;
+            vertex1 = v3Add(renderer->camera_location, direction);
 
             direction.x = SPHERE_SIZE * cos(current_i + step_i) * cos(current_j);
             direction.y = SPHERE_SIZE * sin(current_j);
             direction.z = SPHERE_SIZE * sin(current_i + step_i) * cos(current_j);
-            vertex2.location = v3Add(renderer->camera_location, direction);
-            col.b = sin(direction.x) * sin(direction.x) * cos(direction.z) * cos(direction.z);
-            vertex2.color = col;
-            vertex2.callback = _postProcessFragment;
-            vertex2.callback_data = definition;
+            vertex2 = v3Add(renderer->camera_location, direction);
 
             direction.x = SPHERE_SIZE * cos(current_i + step_i) * cos(current_j + step_j);
             direction.y = SPHERE_SIZE * sin(current_j + step_j);
             direction.z = SPHERE_SIZE * sin(current_i + step_i) * cos(current_j + step_j);
-            vertex3.location = v3Add(renderer->camera_location, direction);
-            col.b = sin(direction.x) * sin(direction.x) * cos(direction.z) * cos(direction.z);
-            vertex3.color = col;
-            vertex3.callback = _postProcessFragment;
-            vertex3.callback_data = definition;
+            vertex3 = v3Add(renderer->camera_location, direction);
 
             direction.x = SPHERE_SIZE * cos(current_i) * cos(current_j + step_j);
             direction.y = SPHERE_SIZE * sin(current_j + step_j);
             direction.z = SPHERE_SIZE * sin(current_i) * cos(current_j + step_j);
-            vertex4.location = v3Add(renderer->camera_location, direction);
-            col.b = sin(direction.x) * sin(direction.x) * cos(direction.z) * cos(direction.z);
-            vertex4.color = col;
-            vertex4.callback = _postProcessFragment;
-            vertex4.callback_data = definition;
+            vertex4 = v3Add(renderer->camera_location, direction);
 
             /* TODO Triangles at poles */
-            renderer->pushQuad(renderer, &vertex1, &vertex4, &vertex3, &vertex2);
+            renderer->pushQuad(renderer, vertex1, vertex4, vertex3, vertex2, _postProcessFragment, definition);
         }
     }
 }
@@ -279,7 +255,7 @@ void skyRender(SkyDefinition* definition, Renderer* renderer)
 Vector3 skyGetSunDirection(SkyDefinition* definition)
 {
     Vector3 result;
-    float sun_angle = (definition->daytime + 0.75) * M_PI * 2.0;
+    double sun_angle = (definition->daytime + 0.75) * M_PI * 2.0;
     result.x = cos(sun_angle);
     result.y = sin(sun_angle);
     result.z = 0.0;

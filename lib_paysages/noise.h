@@ -9,11 +9,11 @@ extern "C" {
 
 struct NoiseLevel
 {
-    float scaling;
-    float height;
-    float xoffset;
-    float yoffset;
-    float zoffset;
+    double scaling;
+    double height;
+    double xoffset;
+    double yoffset;
+    double zoffset;
 };
 typedef struct NoiseLevel NoiseLevel;
 typedef struct NoiseGenerator NoiseGenerator;
@@ -30,27 +30,27 @@ void noiseLoadGenerator(PackStream* stream, NoiseGenerator* perlin);
 void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination);
 void noiseGenerateBaseNoise(NoiseGenerator* generator, int size);
 int noiseGetBaseSize(NoiseGenerator* generator);
-float noiseGetMaxValue(NoiseGenerator* generator);
+double noiseGetMaxValue(NoiseGenerator* generator);
 int noiseGetLevelCount(NoiseGenerator* generator);
 void noiseClearLevels(NoiseGenerator* generator);
 void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level);
-void noiseAddLevelSimple(NoiseGenerator* generator, float scaling, float height);
-void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, float scaling_factor, float height_factor, int randomize_offset);
-void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, float scaling, float height);
+void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double height);
+void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, double scaling_factor, double height_factor, int randomize_offset);
+void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double height);
 void noiseRemoveLevel(NoiseGenerator* generator, int level);
 int noiseGetLevel(NoiseGenerator* generator, int level, NoiseLevel* params);
 void noiseSetLevel(NoiseGenerator* generator, int level, NoiseLevel params);
-void noiseSetLevelSimple(NoiseGenerator* generator, int level, float scaling, float height);
-void noiseNormalizeHeight(NoiseGenerator* generator, float min_height, float max_height, int adjust_scaling);
-float noiseGet1DLevel(NoiseGenerator* generator, int level, float x);
-float noiseGet1DTotal(NoiseGenerator* generator, float x);
-float noiseGet1DDetail(NoiseGenerator* generator, float x, float detail);
-float noiseGet2DLevel(NoiseGenerator* generator, int level, float x, float y);
-float noiseGet2DTotal(NoiseGenerator* generator, float x, float y);
-float noiseGet2DDetail(NoiseGenerator* generator, float x, float y, float detail);
-float noiseGet3DLevel(NoiseGenerator* generator, int level, float x, float y, float z);
-float noiseGet3DTotal(NoiseGenerator* generator, float x, float y, float z);
-float noiseGet3DDetail(NoiseGenerator* generator, float x, float y, float z, float detail);
+void noiseSetLevelSimple(NoiseGenerator* generator, int level, double scaling, double height);
+void noiseNormalizeHeight(NoiseGenerator* generator, double min_height, double max_height, int adjust_scaling);
+double noiseGet1DLevel(NoiseGenerator* generator, int level, double x);
+double noiseGet1DTotal(NoiseGenerator* generator, double x);
+double noiseGet1DDetail(NoiseGenerator* generator, double x, double detail);
+double noiseGet2DLevel(NoiseGenerator* generator, int level, double x, double y);
+double noiseGet2DTotal(NoiseGenerator* generator, double x, double y);
+double noiseGet2DDetail(NoiseGenerator* generator, double x, double y, double detail);
+double noiseGet3DLevel(NoiseGenerator* generator, int level, double x, double y, double z);
+double noiseGet3DTotal(NoiseGenerator* generator, double x, double y, double z);
+double noiseGet3DDetail(NoiseGenerator* generator, double x, double y, double z, double detail);
 
 #ifdef __cplusplus
 }

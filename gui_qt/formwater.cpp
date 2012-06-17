@@ -28,9 +28,9 @@ public:
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
-    QColor getColor(float x, float y)
+    QColor getColor(double x, double y)
     {
-        float height;
+        double height;
 
         height = terrainGetHeight(&_terrain, x, y);
         if (height > _definition.height)
@@ -84,7 +84,7 @@ public:
         //configScrolling(-30.0, 30.0, 0.0, -20.0, 20.0, 0.0);
     }
 protected:
-    QColor getColor(float x, float y)
+    QColor getColor(double x, double y)
     {
         Vector3 eye, look, location;
 
@@ -126,7 +126,7 @@ private:
     static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
     {
         RayCastingResult result;
-        float x, y;
+        double x, y;
 
         result.hit = 1;
         if (direction.z < 0.0001)

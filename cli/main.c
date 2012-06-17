@@ -27,11 +27,11 @@ void displayHelp()
     printf(" -rh x  Render height (int)\n");
     printf(" -rq x  Render quality (int, 1 to 10)\n");
     printf(" -ra x  Render anti-aliasing (int, 1 to 4)\n");
-    printf(" -di x  Day start time (float, 0.0 to 1.0)\n");
-    printf(" -ds x  Day step time (float)\n");
+    printf(" -di x  Day start time (double, 0.0 to 1.0)\n");
+    printf(" -ds x  Day step time (double)\n");
 }
 
-void _previewUpdate(float progress)
+void _previewUpdate(double progress)
 {
     printf("\rProgress : %0.1f%%                         ", progress * 100.0);
     fflush(stdout);
@@ -43,8 +43,8 @@ int main(int argc, char** argv)
     char* conf_file_path = NULL;
     RenderParams conf_render_params = {800, 600, 1, 5};
     int conf_nb_pictures = 1;
-    float conf_daytime_start = 0.4;
-    float conf_daytime_step = 0.0;
+    double conf_daytime_start = 0.4;
+    double conf_daytime_step = 0.0;
     int outputcount;
     char outputpath[500];
 

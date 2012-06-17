@@ -8,8 +8,8 @@ extern "C" {
 #endif
 
 typedef struct {
-    float position;
-    float value;
+    double position;
+    double value;
 } CurvePoint;
 typedef struct Curve Curve;
 
@@ -22,14 +22,14 @@ void curveLoad(PackStream* stream, Curve* curve);
 
 void curveClear(Curve* curve);
 int curveAddPoint(Curve* curve, CurvePoint* point);
-int curveQuickAddPoint(Curve* curve, float position, float value);
+int curveQuickAddPoint(Curve* curve, double position, double value);
 int curveGetPointCount(Curve* curve);
 void curveGetPoint(Curve* curve, int number, CurvePoint* point);
 void curveSetPoint(Curve* curve, int number, CurvePoint* point);
 void curveRemovePoint(Curve* curve, int number);
 void curveValidate(Curve* curve);
 
-float curveGetValue(Curve* curve, float position);
+double curveGetValue(Curve* curve, double position);
 
 #ifdef __cplusplus
 }

@@ -13,7 +13,7 @@ extern "C" {
 typedef struct
 {
     Zone* zone;
-    float max_height;
+    double max_height;
 } VegetationLayerDefinition;
 
 typedef struct VegetationDefinition VegetationDefinition;
@@ -39,7 +39,7 @@ int vegetationSetLayer(VegetationDefinition* definition, int position, Vegetatio
 int vegetationAddLayer(VegetationDefinition* definition);
 void vegetationDeleteLayer(VegetationDefinition* definition, int layer);
 
-/*float vegetationGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, float detail);*/
+/*double vegetationGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);*/
 
 #ifdef __cplusplus
 }

@@ -28,14 +28,14 @@ public:
 
 protected:
     virtual void updateData();
-    virtual QColor getColor(float x, float y);
+    virtual QColor getColor(double x, double y);
 
-    void configScaling(float min, float max, float step, float init, bool logarithmic = true);
-    void configScrolling(float xmin, float xmax, float xinit, float ymin, float ymax, float yinit);
+    void configScaling(double min, double max, double step, double init, bool logarithmic = true);
+    void configScrolling(double xmin, double xmax, double xinit, double ymin, double ymax, double yinit);
 
-    float xoffset;
-    float yoffset;
-    float scaling;
+    double xoffset;
+    double yoffset;
+    double scaling;
 
 private:
     void updateScaling();
@@ -61,21 +61,21 @@ private:
     int mousex;
     int mousey;
 
-    float scalingbase;
+    double scalingbase;
 
     bool alive;
 
-    float conf_scroll_xmin;
-    float conf_scroll_xmax;
-    float conf_scroll_xinit;
-    float conf_scroll_ymin;
-    float conf_scroll_ymax;
-    float conf_scroll_yinit;
+    double conf_scroll_xmin;
+    double conf_scroll_xmax;
+    double conf_scroll_xinit;
+    double conf_scroll_ymin;
+    double conf_scroll_ymax;
+    double conf_scroll_yinit;
 
-    float conf_scale_min;
-    float conf_scale_max;
-    float conf_scale_init;
-    float conf_scale_step;
+    double conf_scale_min;
+    double conf_scale_max;
+    double conf_scale_init;
+    double conf_scale_step;
     bool conf_scroll_logarithmic;
 
 signals:

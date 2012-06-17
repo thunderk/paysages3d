@@ -3,7 +3,7 @@
 #include <QLabel>
 #include "math.h"
 
-InputDouble::InputDouble(QWidget* form, QString label, float* value, float min, float max, float small_step, float large_step):
+InputDouble::InputDouble(QWidget* form, QString label, double* value, double min, double max, double small_step, double large_step):
     BaseInput(form, label),
     value(value), min(min), max(max), small_step(small_step), large_step(large_step)
 {
@@ -43,7 +43,7 @@ void InputDouble::applyValue()
     }
     else
     {
-        *value = min + ((float)ivalue) * small_step;
+        *value = min + ((double)ivalue) * small_step;
     }
     if (fabs(*value) < 0.0000001)
     {

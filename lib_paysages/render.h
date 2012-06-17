@@ -20,9 +20,7 @@ void renderSetBackgroundColor(RenderArea* area, Color* col);
 void renderClear(RenderArea* area);
 void renderUpdate(RenderArea* area);
 
-void renderAddFragment(RenderArea* area, RenderFragment* fragment);
-void renderPushFragment(RenderArea* area, int x, int y, float z, Vertex* vertex);
-void renderPushTriangle(RenderArea* area, Vertex* v1, Vertex* v2, Vertex* v3, Vector3 p1, Vector3 p2, Vector3 p3);
+void renderPushTriangle(RenderArea* area, Vector3 pixel1, Vector3 pixel2, Vector3 pixel3, Vector3 location1, Vector3 location2, Vector3 location3, f_RenderFragmentCallback callback, void* callback_data);
 
 void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks);
 int renderSaveToFile(RenderArea* area, const char* path);

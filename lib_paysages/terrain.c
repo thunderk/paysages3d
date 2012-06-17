@@ -25,8 +25,8 @@ void terrainSave(PackStream* stream, TerrainDefinition* definition)
     int i;
 
     noiseSaveGenerator(stream, definition->height_noise);
-    packWriteFloat(stream, &definition->height_factor);
-    packWriteFloat(stream, &definition->scaling);
+    packWriteDouble(stream, &definition->height_factor);
+    packWriteDouble(stream, &definition->scaling);
 
     packWriteInt(stream, &definition->height_modifiers_count);
     for (i = 0; i < definition->height_modifiers_count; i++)
@@ -41,8 +41,8 @@ void terrainLoad(PackStream* stream, TerrainDefinition* definition)
     HeightModifier* modifier;
 
     noiseLoadGenerator(stream, definition->height_noise);
-    packReadFloat(stream, &definition->height_factor);
-    packReadFloat(stream, &definition->scaling);
+    packReadDouble(stream, &definition->height_factor);
+    packReadDouble(stream, &definition->scaling);
 
     while (definition->height_modifiers_count > 0)
     {
@@ -139,7 +139,7 @@ void terrainDelModifier(TerrainDefinition* definition, int modifier_position)
     }
 }
 
-static inline float _getHeight(TerrainDefinition* definition, float x, float z)
+static inline double _getHeight(TerrainDefinition* definition, double x, double z)
 {
     Vector3 location;
     int i;
@@ -156,7 +156,7 @@ static inline float _getHeight(TerrainDefinition* definition, float x, float z)
     return location.y;
 }
 
-static inline float _getHeightDetail(TerrainDefinition* definition, float x, float z, float detail)
+static inline double _getHeightDetail(TerrainDefinition* definition, double x, double z, double detail)
 {
     Vector3 location;
     int i;
@@ -173,7 +173,7 @@ static inline float _getHeightDetail(TerrainDefinition* definition, float x, flo
     return location.y;
 }
 
-static inline Vector3 _getPoint(TerrainDefinition* definition, float x, float z)
+static inline Vector3 _getPoint(TerrainDefinition* definition, double x, double z)
 {
     Vector3 result;
 
@@ -187,7 +187,7 @@ static inline Vector3 _getPoint(TerrainDefinition* definition, float x, float z)
 Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light)
 {
     Vector3 inc_vector;
-    float inc_value, inc_base, inc_factor, height, diff, light_factor, smoothing, length;
+    double inc_value, inc_base, inc_factor, height, diff, light_factor, smoothing, length;
 
     direction_to_light = v3Normalize(direction_to_light);
     if (fabs(direction_to_light.x) < 0.0001 && fabs(direction_to_light.z) < 0.0001)
@@ -205,7 +205,7 @@ Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Colo
         light.b *= (0.05 + direction_to_light.y) / 0.05;
     }
 
-    inc_factor = (float)renderer->render_quality;
+    inc_factor = (double)renderer->render_quality;
     inc_base = 1.0;
     inc_value = inc_base / inc_factor;
     smoothing = 0.03 * inc_factor;
@@ -253,7 +253,7 @@ Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Colo
     }
 }
 
-static Color _getColor(TerrainDefinition* definition, Renderer* renderer, Vector3 point, float precision)
+static Color _getColor(TerrainDefinition* definition, Renderer* renderer, Vector3 point, double precision)
 {
     Color color;
 
@@ -267,10 +267,10 @@ static Color _getColor(TerrainDefinition* definition, Renderer* renderer, Vector
 int terrainProjectRay(TerrainDefinition* definition, Renderer* renderer, Vector3 start, Vector3 direction, Vector3* hit_point, Color* hit_color)
 {
     Vector3 inc_vector;
-    float inc_value, inc_base, inc_factor, height, diff, lastdiff, length;
+    double inc_value, inc_base, inc_factor, height, diff, lastdiff, length;
 
     direction = v3Normalize(direction);
-    inc_factor = (float)renderer->render_quality;
+    inc_factor = (double)renderer->render_quality;
     inc_base = 1.0;
     inc_value = inc_base / inc_factor;
     lastdiff = start.y - _getHeight(definition, start.x, start.z);
@@ -317,61 +317,40 @@ int terrainProjectRay(TerrainDefinition* definition, Renderer* renderer, Vector3
     return 0;
 }
 
-static int _postProcessFragment(RenderFragment* fragment, Renderer* renderer, void* data)
+static Color _postProcessFragment(Renderer* renderer, Vector3 point, void* data)
 {
-    Vector3 point;
-    float precision;
+    double precision;
     TerrainDefinition* definition;
 
     definition = (TerrainDefinition*)data;
 
-    point = fragment->vertex.location;
     point = _getPoint(definition, point.x, point.z);
 
     precision = renderer->getPrecision(renderer, point);
-    fragment->vertex.color = _getColor(definition, renderer, point, precision);
-
-    return 1;
+    return _getColor(definition, renderer, point, precision);
 }
 
-static Vertex _getFirstPassVertex(TerrainDefinition* definition, float x, float z, float detail)
+static void _renderQuad(TerrainDefinition* definition, Renderer* renderer, double x, double z, double size, double water_height)
 {
-    Vertex result;
-    float value;
+    Vector3 v1, v2, v3, v4;
 
-    result.location = _getPoint(definition, x, z);
-    value = sin(x) * sin(x) * cos(z) * cos(z);
-    result.color.r = value;
-    result.color.g = value;
-    result.color.b = value;
-    result.color.a = 1.0;
-    result.callback = _postProcessFragment;
-    result.callback_data = definition;
-
-    return result;
-}
-
-static void _renderQuad(TerrainDefinition* definition, Renderer* renderer, float x, float z, float size, float water_height)
-{
-    Vertex v1, v2, v3, v4;
-
-    v1 = _getFirstPassVertex(definition, x, z, size);
-    v2 = _getFirstPassVertex(definition, x, z + size, size);
-    v3 = _getFirstPassVertex(definition, x + size, z + size, size);
-    v4 = _getFirstPassVertex(definition, x + size, z, size);
+    v1 = _getPoint(definition, x, z);
+    v2 = _getPoint(definition, x, z + size);
+    v3 = _getPoint(definition, x + size, z + size);
+    v4 = _getPoint(definition, x + size, z);
     
-    if (v1.location.y > water_height || v2.location.y > water_height || v3.location.y > water_height || v4.location.y > water_height)
+    if (v1.y > water_height || v2.y > water_height || v3.y > water_height || v4.y > water_height)
     {
-        renderer->pushQuad(renderer, &v1, &v2, &v3, &v4);
+        renderer->pushQuad(renderer, v1, v2, v3, v4, _postProcessFragment, definition);
     }
 }
 
-float terrainGetHeight(TerrainDefinition* definition, float x, float z)
+double terrainGetHeight(TerrainDefinition* definition, double x, double z)
 {
     return _getHeight(definition, x, z);
 }
 
-float terrainGetHeightNormalized(TerrainDefinition* definition, float x, float z)
+double terrainGetHeightNormalized(TerrainDefinition* definition, double x, double z)
 {
     if (definition->_max_height == 0.0)
     {
@@ -383,7 +362,7 @@ float terrainGetHeightNormalized(TerrainDefinition* definition, float x, float z
     }
 }
 
-Color terrainGetColor(TerrainDefinition* definition, Renderer* renderer, float x, float z, float detail)
+Color terrainGetColor(TerrainDefinition* definition, Renderer* renderer, double x, double z, double detail)
 {
     Vector3 point = _getPoint(definition, x, z);
     return _getColor(definition, renderer, point, detail);
@@ -392,14 +371,14 @@ Color terrainGetColor(TerrainDefinition* definition, Renderer* renderer, float x
 void terrainRender(TerrainDefinition* definition, Renderer* renderer)
 {
     int chunk_factor, chunk_count, i;
-    float cx = renderer->camera_location.x;
-    float cz = renderer->camera_location.z;
-    float min_chunk_size, visible_chunk_size;
-    float radius_int, radius_ext, chunk_size;
-    float water_height;
+    double cx = renderer->camera_location.x;
+    double cz = renderer->camera_location.z;
+    double min_chunk_size, visible_chunk_size;
+    double radius_int, radius_ext, chunk_size;
+    double water_height;
 
-    min_chunk_size = 0.1 / (float)renderer->render_quality;
-    visible_chunk_size = 0.05 / (float)renderer->render_quality;
+    min_chunk_size = 0.1 / (double)renderer->render_quality;
+    visible_chunk_size = 0.05 / (double)renderer->render_quality;
 
     chunk_factor = 1;
     chunk_count = 2;

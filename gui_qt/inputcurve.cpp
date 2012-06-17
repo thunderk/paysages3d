@@ -8,7 +8,7 @@
 class CurveSmallPreview:public QWidget
 {
 public:
-    CurveSmallPreview(QWidget* parent, Curve* curve, float xmin, float xmax, float ymin, float ymax) : QWidget(parent)
+    CurveSmallPreview(QWidget* parent, Curve* curve, double xmin, double xmax, double ymin, double ymax) : QWidget(parent)
     {
         _curve = curve;
         _xmin = xmin;
@@ -27,29 +27,29 @@ public:
         QPainter painter(this);
         int width = this->width();
         int height = this->height();
-        float position, value, prev_value, next_value;
+        double position, value, prev_value, next_value;
 
         painter.fillRect(rect(), QColor(255, 255, 255));
         for (int x = 0; x < width; x++)
         {
             painter.setPen(QColor(0, 0, 0));
-            position = _xmin + (_xmax - _xmin) * (float)x / (float)(width - 1);
+            position = _xmin + (_xmax - _xmin) * (double)x / (double)(width - 1);
             value = (curveGetValue(_curve, position) - _ymin) * (_ymax - _ymin);
-            prev_value = curveGetValue(_curve, position - 1.0 / (float)(width - 1));
-            next_value = curveGetValue(_curve, position + 1.0 / (float)(width - 1));
+            prev_value = curveGetValue(_curve, position - 1.0 / (double)(width - 1));
+            next_value = curveGetValue(_curve, position + 1.0 / (double)(width - 1));
 
-            painter.drawLine(x, height - 1 - (int)((value + (prev_value - value) / 2.0) * (float)(height - 1)), x, height - 1 - (int)((value + (next_value - value) / 2.0) * (float)(height - 1)));
-            painter.drawPoint(x, height - 1 - (int)(value * (float)(height - 1)));
+            painter.drawLine(x, height - 1 - (int)((value + (prev_value - value) / 2.0) * (double)(height - 1)), x, height - 1 - (int)((value + (next_value - value) / 2.0) * (double)(height - 1)));
+            painter.drawPoint(x, height - 1 - (int)(value * (double)(height - 1)));
         }
     }
     Curve* _curve;
-    float _xmin;
-    float _xmax;
-    float _ymin;
-    float _ymax;
+    double _xmin;
+    double _xmax;
+    double _ymin;
+    double _ymax;
 };
 
-InputCurve::InputCurve(QWidget* form, QString label, Curve* value, float xmin, float xmax, float ymin, float ymax) : BaseInput(form, label)
+InputCurve::InputCurve(QWidget* form, QString label, Curve* value, double xmin, double xmax, double ymin, double ymax) : BaseInput(form, label)
 {
     _value = value;
     _xmin = xmin;

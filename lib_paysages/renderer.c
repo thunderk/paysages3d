@@ -17,12 +17,12 @@ static void* _renderFirstPass(void* data)
     return NULL;
 }
 
-static int _addRenderProgress(Renderer* renderer, float progress)
+static int _addRenderProgress(Renderer* renderer, double progress)
 {
     return !renderer->render_interrupt;
 }
 
-static float _getPrecision(Renderer* renderer, Vector3 location)
+static double _getPrecision(Renderer* renderer, Vector3 location)
 {
     return 0.001;
 }
@@ -37,21 +37,21 @@ static Vector3 _unprojectPoint(Renderer* renderer, Vector3 point)
     return point;
 }
 
-static void _pushTriangle(Renderer* renderer, Vertex* v1, Vertex* v2, Vertex* v3)
+static void _pushTriangle(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, f_RenderFragmentCallback callback, void* callback_data)
 {
     Vector3 p1, p2, p3;
     
-    p1 = renderer->projectPoint(renderer, v1->location);
-    p2 = renderer->projectPoint(renderer, v2->location);
-    p3 = renderer->projectPoint(renderer, v3->location);
+    p1 = renderer->projectPoint(renderer, v1);
+    p2 = renderer->projectPoint(renderer, v2);
+    p3 = renderer->projectPoint(renderer, v3);
     
-    renderPushTriangle(renderer->render_area, v1, v2, v3, p1, p2, p3);
+    renderPushTriangle(renderer->render_area, p1, p2, p3, v1, v2, v3, callback, callback_data);
 }
 
-static void _pushQuad(Renderer* renderer, Vertex* v1, Vertex* v2, Vertex* v3, Vertex* v4)
+static void _pushQuad(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, f_RenderFragmentCallback callback, void* callback_data)
 {
-    renderer->pushTriangle(renderer, v2, v3, v1);
-    renderer->pushTriangle(renderer, v4, v1, v3);
+    renderer->pushTriangle(renderer, v2, v3, v1, callback, callback_data);
+    renderer->pushTriangle(renderer, v4, v1, v3, callback, callback_data);
 }
 
 static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
@@ -73,7 +73,7 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
     return _RAYCASTING_NULL;
 }
 
-static float _getTerrainHeight(Renderer* renderer, float x, float z)
+static double _getTerrainHeight(Renderer* renderer, double x, double z)
 {
     return 0.0;
 }
@@ -83,7 +83,7 @@ static HeightInfo _getWaterHeightInfo(Renderer* renderer)
     return _WATER_HEIGHT_INFO;
 }
 
-static Color _applyTextures(Renderer* renderer, Vector3 location, float precision)
+static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
 {
     return COLOR_TRANSPARENT;
 }

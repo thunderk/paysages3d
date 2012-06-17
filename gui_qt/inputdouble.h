@@ -10,7 +10,7 @@ class InputDouble:public BaseInput
     Q_OBJECT
 
 public:
-    InputDouble(QWidget* form, QString label, float* value, float min, float max, float small_step, float large_step);
+    InputDouble(QWidget* form, QString label, double* value, double min, double max, double small_step, double large_step);
 
 public slots:
     virtual void updatePreview();
@@ -19,11 +19,11 @@ public slots:
 
 private:
     QSlider* slider;
-    float* value;
-    float min;
-    float max;
-    float small_step;
-    float large_step;
+    double* value;
+    double min;
+    double max;
+    double small_step;
+    double large_step;
 };
 
 #endif // _PAYSAGES_QT_INPUTDOUBLE_H_

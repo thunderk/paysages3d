@@ -213,21 +213,9 @@ void sceneryGetWater(WaterDefinition* water)
 
 void sceneryRenderFirstPass(Renderer* renderer)
 {
-    /*if (!renderSetNextProgressStep(0.0, 0.01))
-    {
-        return;
-    }*/
-    skyRender(&_sky, renderer);
-    /*if (!renderSetNextProgressStep(0.01, 0.085))
-    {
-        return;
-    }*/
     terrainRender(&_terrain, renderer);
-    /*if (!renderSetNextProgressStep(0.085, 0.1))
-    {
-        return;
-    }*/
     waterRender(&_water, renderer);
+    skyRender(&_sky, renderer);
 }
 
 
@@ -282,7 +270,7 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
     return result;
 }
 
-static float _getTerrainHeight(Renderer* renderer, float x, float z)
+static double _getTerrainHeight(Renderer* renderer, double x, double z)
 {
     return terrainGetHeight(&_terrain, x, z);
 }
@@ -292,7 +280,7 @@ static HeightInfo _getWaterHeightInfo(Renderer* renderer)
     return waterGetHeightInfo(&_water);
 }
 
-static Color _applyTextures(Renderer* renderer, Vector3 location, float precision)
+static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
 {
     return texturesGetColor(&_textures, renderer, location.x, location.z, precision);
 }
@@ -322,7 +310,7 @@ static Vector3 _unprojectPoint(Renderer* renderer, Vector3 point)
     return cameraUnproject(&renderer->render_camera, renderer, point);
 }
 
-static float _getPrecision(Renderer* renderer, Vector3 location)
+static double _getPrecision(Renderer* renderer, Vector3 location)
 {
     Vector3 projected;
 
@@ -330,7 +318,7 @@ static float _getPrecision(Renderer* renderer, Vector3 location)
     projected.x += 1.0;
     //projected.y += 1.0;
 
-    return v3Norm(v3Sub(cameraUnproject(&renderer->render_camera, renderer, projected), location)); // / (float)render_quality;
+    return v3Norm(v3Sub(cameraUnproject(&renderer->render_camera, renderer, projected), location)); // / (double)render_quality;
 }
 
 Renderer sceneryCreateStandardRenderer()

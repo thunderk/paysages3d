@@ -48,12 +48,12 @@ private:
 
 static QVector<ChunkMaintenanceThread*> _threads;
 
-static float _getTerrainHeight(Renderer* renderer, float x, float z)
+static double _getTerrainHeight(Renderer* renderer, double x, double z)
 {
     return terrainGetHeight((TerrainDefinition*)(renderer->customData[0]), x, z);
 }
 
-static Color _applyTextures(Renderer* renderer, Vector3 location, float precision)
+static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
 {
     return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
 }
@@ -103,14 +103,14 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
 
     // Add terrain
     int chunks = 20;
-    float size = 200.0;
-    float chunksize = size / (float)chunks;
-    float start = -size / 2.0;
+    double size = 200.0;
+    double chunksize = size / (double)chunks;
+    double start = -size / 2.0;
     for (int i = 0; i < chunks; i++)
     {
         for (int j = 0; j < chunks; j++)
         {
-            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(&_renderer, start + chunksize * (float)i, start + chunksize * (float)j, chunksize, chunks);
+            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(&_renderer, start + chunksize * (double)i, start + chunksize * (double)j, chunksize, chunks);
             _chunks.append(chunk);
             _updateQueue.append(chunk);
         }
@@ -228,7 +228,7 @@ void WidgetExplorer::validateCamera()
 
 void WidgetExplorer::keyPressEvent(QKeyEvent* event)
 {
-    float factor;
+    double factor;
 
     if (event->modifiers() & Qt::ControlModifier)
     {
@@ -290,7 +290,7 @@ void WidgetExplorer::mousePressEvent(QMouseEvent* event)
 
 void WidgetExplorer::mouseMoveEvent(QMouseEvent* event)
 {
-    float factor;
+    double factor;
 
     if (event->modifiers() & Qt::ControlModifier)
     {
@@ -308,15 +308,15 @@ void WidgetExplorer::mouseMoveEvent(QMouseEvent* event)
 
     if (event->buttons() & Qt::LeftButton)
     {
-        cameraRotateYaw(&_current_camera, (float)(event->x() - _last_mouse_x) * factor * 0.1);
-        cameraRotatePitch(&_current_camera, (float)(event->y() - _last_mouse_y) * factor * 0.1);
+        cameraRotateYaw(&_current_camera, (double)(event->x() - _last_mouse_x) * factor * 0.1);
+        cameraRotatePitch(&_current_camera, (double)(event->y() - _last_mouse_y) * factor * 0.1);
         updateGL();
         event->accept();
     }
     else if (event->buttons() & Qt::RightButton)
     {
-        cameraStrafeRight(&_current_camera, (float)(_last_mouse_x - event->x()) * factor);
-        cameraStrafeUp(&_current_camera, (float)(event->y() - _last_mouse_y) * factor);
+        cameraStrafeRight(&_current_camera, (double)(_last_mouse_x - event->x()) * factor);
+        cameraStrafeUp(&_current_camera, (double)(event->y() - _last_mouse_y) * factor);
         updateGL();
         event->accept();
     }
@@ -331,7 +331,7 @@ void WidgetExplorer::mouseMoveEvent(QMouseEvent* event)
 
 void WidgetExplorer::wheelEvent(QWheelEvent* event)
 {
-    float factor;
+    double factor;
 
     if (event->modifiers() & Qt::ControlModifier)
     {
@@ -349,7 +349,7 @@ void WidgetExplorer::wheelEvent(QWheelEvent* event)
 
     if (event->orientation() == Qt::Vertical)
     {
-        cameraStrafeForward(&_current_camera, (float)event->delta() * factor);
+        cameraStrafeForward(&_current_camera, (double)event->delta() * factor);
         updateGL();
 
     }
@@ -413,7 +413,7 @@ void WidgetExplorer::paintGL()
 {
     GLenum error_code;
     QTime start_time;
-    float frame_time;
+    double frame_time;
     
     if (_current_camera.location.y > 30.0)
     {
@@ -452,7 +452,7 @@ void WidgetExplorer::paintGL()
         _chunks[i]->render(this);
     }
     
-    frame_time = 0.001 * (float)start_time.msecsTo(QTime::currentTime());
+    frame_time = 0.001 * (double)start_time.msecsTo(QTime::currentTime());
     
     _average_frame_time = _average_frame_time * 0.8 + frame_time * 0.2;
     //printf("%d %f\n", quality, average_frame_time);

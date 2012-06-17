@@ -9,10 +9,10 @@ extern "C" {
 
 typedef struct
 {
-    float r;
-    float g;
-    float b;
-    float a;
+    double r;
+    double g;
+    double b;
+    double a;
 } Color;
 
 extern Color COLOR_TRANSPARENT;
@@ -33,8 +33,8 @@ unsigned int colorTo32BitARGB(Color* col);
 unsigned int colorTo32BitABGR(Color* col);
 
 void colorMask(Color* base, Color* mask);
-float colorNormalize(Color* col);
-float colorGetValue(Color* col);
+double colorNormalize(Color* col);
+double colorGetValue(Color* col);
 
 /* ColorGradation */
 typedef struct ColorGradation ColorGradation;
@@ -54,10 +54,10 @@ void colorGradationSetRedCurve(ColorGradation* gradation, Curve* curve);
 void colorGradationSetGreenCurve(ColorGradation* gradation, Curve* curve);
 void colorGradationSetBlueCurve(ColorGradation* gradation, Curve* curve);
 
-void colorGradationQuickAdd(ColorGradation* gradation, float value, Color* col);
-void colorGradationQuickAddRgb(ColorGradation* gradation, float value, float r, float g, float b);
+void colorGradationQuickAdd(ColorGradation* gradation, double value, Color* col);
+void colorGradationQuickAddRgb(ColorGradation* gradation, double value, double r, double g, double b);
 
-Color colorGradationGet(ColorGradation* gradation, float value);
+Color colorGradationGet(ColorGradation* gradation, double value);
 
 #ifdef __cplusplus
 }

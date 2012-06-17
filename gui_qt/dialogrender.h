@@ -17,7 +17,7 @@ public:
     ~DialogRender();
 
     void tellRenderSize(int width, int height);
-    void tellProgressChange(float value);
+    void tellProgressChange(double value);
     void startRender(RenderParams params);
     void loadLastRender();
 
@@ -26,11 +26,11 @@ public:
     
 private slots:
     void applyRenderSize(int width, int height);
-    void applyProgress(float value);
+    void applyProgress(double value);
     
 signals:
     void renderSizeChanged(int width, int height);
-    void progressChanged(float value);
+    void progressChanged(double value);
 
 private:
     QScrollArea* _scroll;

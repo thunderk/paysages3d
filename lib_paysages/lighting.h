@@ -15,10 +15,10 @@ struct LightDefinition
 {
     Vector3 direction;  /* Global direction of the light */
     Color color;        /* Main color of the light */
-    float reflection;  /* Reflected factor of the light (for specular lighting) */
+    double reflection;  /* Reflected factor of the light (for specular lighting) */
     int filtered;       /* Should the light be filtered (by atmosphere, water...) */
     int masked;         /* Should the light be masked (cast shadows..) */
-    float amplitude;   /* Angle amplitude of the light source (for multi-sampling, pi / 2.0 for skydome) */
+    double amplitude;   /* Angle amplitude of the light source (for multi-sampling, pi / 2.0 for skydome) */
 };
 
 typedef struct

@@ -4,7 +4,7 @@
 #include "baseexplorerchunk.h"
 #include "../lib_paysages/camera.h"
 
-ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, SkyDefinition* sky, float size, SkyboxOrientation orientation) : BaseExplorerChunk(renderer)
+ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, SkyDefinition* sky, double size, SkyboxOrientation orientation) : BaseExplorerChunk(renderer)
 {
     _sky = sky;
     _box_size = size;
@@ -16,7 +16,7 @@ ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, SkyDefinition* sky, float
 
 void ExplorerChunkSky::onRenderEvent(QGLWidget* widget)
 {
-    float size = _box_size;
+    double size = _box_size;
     Vector3 camera = renderer()->camera_location;
 
     glBegin(GL_QUADS);
@@ -86,12 +86,12 @@ void ExplorerChunkSky::onRenderEvent(QGLWidget* widget)
     glEnd();
 }
 
-float ExplorerChunkSky::getDisplayedSizeHint(CameraDefinition* camera)
+double ExplorerChunkSky::getDisplayedSizeHint(CameraDefinition* camera)
 {
     return 1000.0;
 }
 
-Color ExplorerChunkSky::getTextureColor(float x, float y)
+Color ExplorerChunkSky::getTextureColor(double x, double y)
 {
     Vector3 location;
     

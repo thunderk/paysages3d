@@ -49,16 +49,16 @@ void PreviewColorGradation::paintEvent(QPaintEvent* event)
         switch (band)
         {
             case COLORGRADATIONBAND_RED:
-                painter.setPen(QColor::fromRgbF(curveGetValue(curve, (float)x / (float)width), 0.0, 0.0));
+                painter.setPen(QColor::fromRgbF(curveGetValue(curve, (double)x / (double)width), 0.0, 0.0));
                 break;
             case COLORGRADATIONBAND_GREEN:
-                painter.setPen(QColor::fromRgbF(0.0, curveGetValue(curve, (float)x / (float)width), 0.0));
+                painter.setPen(QColor::fromRgbF(0.0, curveGetValue(curve, (double)x / (double)width), 0.0));
                 break;
             case COLORGRADATIONBAND_BLUE:
-                painter.setPen(QColor::fromRgbF(0.0, 0.0, curveGetValue(curve, (float)x / (float)width)));
+                painter.setPen(QColor::fromRgbF(0.0, 0.0, curveGetValue(curve, (double)x / (double)width)));
                 break;
             case COLORGRADATIONBAND_FINAL:
-                painter.setPen(colorToQColor(colorGradationGet(gradation, (float)x / (float)width)));
+                painter.setPen(colorToQColor(colorGradationGet(gradation, (double)x / (double)width)));
                 break;
         }
         painter.drawLine(x, 0, x, height - 1);

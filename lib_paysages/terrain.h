@@ -16,12 +16,12 @@ extern "C" {
 typedef struct
 {
     NoiseGenerator* height_noise;
-    float height_factor;
-    float scaling;
+    double height_factor;
+    double scaling;
     int height_modifiers_count;
     HeightModifier* height_modifiers[TERRAIN_MAX_MODIFIERS];
 
-    float _max_height;
+    double _max_height;
 } TerrainDefinition;
 
 void terrainInit();
@@ -39,9 +39,9 @@ void terrainDelModifier(TerrainDefinition* definition, int modifier_position);
 
 Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light);
 int terrainProjectRay(TerrainDefinition* definition, Renderer* renderer, Vector3 start, Vector3 direction, Vector3* hit_point, Color* hit_color);
-float terrainGetHeight(TerrainDefinition* definition, float x, float z);
-float terrainGetHeightNormalized(TerrainDefinition* definition, float x, float z);
-Color terrainGetColor(TerrainDefinition* definition, Renderer* renderer, float x, float z, float detail);
+double terrainGetHeight(TerrainDefinition* definition, double x, double z);
+double terrainGetHeightNormalized(TerrainDefinition* definition, double x, double z);
+Color terrainGetColor(TerrainDefinition* definition, Renderer* renderer, double x, double z, double detail);
 void terrainRender(TerrainDefinition* definition, Renderer* renderer);
 
 #ifdef __cplusplus

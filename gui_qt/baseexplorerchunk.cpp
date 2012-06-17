@@ -47,7 +47,8 @@ bool BaseExplorerChunk::maintain()
             {
                 if (_texture_current_size <= 1 || i % 2 != 0 || j % 2 != 0)
                 {
-                    Color color = getTextureColor((float)i / (float)new_texture_size, 1.0 - (float)j / (float)new_texture_size);
+                    Color color = getTextureColor((double)i / (double)new_texture_size, 1.0 - (double)j / (double)new_texture_size);
+                    colorNormalize(&color);
                     new_image->setPixel(i, j, colorTo32BitBGRA(&color));
                 }
             }
@@ -139,12 +140,12 @@ void BaseExplorerChunk::onRenderEvent(QGLWidget* widget)
 {
 }
 
-float BaseExplorerChunk::getDisplayedSizeHint(CameraDefinition* camera)
+double BaseExplorerChunk::getDisplayedSizeHint(CameraDefinition* camera)
 {
     return 0.0;
 }
 
-Color BaseExplorerChunk::getTextureColor(float x, float y)
+Color BaseExplorerChunk::getTextureColor(double x, double y)
 {
     return COLOR_TRANSPARENT;
 }

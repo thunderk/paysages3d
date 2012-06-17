@@ -26,7 +26,7 @@ static void _renderDraw(int x, int y, Color col)
     _current_dialog->pixbuf->setPixel(x, _current_dialog->pixbuf->height() - 1 - y, colorToQColor(col).rgb());
 }
 
-static void _renderUpdate(float progress)
+static void _renderUpdate(double progress)
 {
     _current_dialog->area->update();
     _current_dialog->tellProgressChange(progress);
@@ -98,7 +98,7 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     _info->layout()->addWidget(_progress);
     
     connect(this, SIGNAL(renderSizeChanged(int, int)), this, SLOT(applyRenderSize(int, int)));
-    connect(this, SIGNAL(progressChanged(float)), this, SLOT(applyProgress(float)));
+    connect(this, SIGNAL(progressChanged(double)), this, SLOT(applyProgress(double)));
 }
 
 DialogRender::~DialogRender()
@@ -118,7 +118,7 @@ void DialogRender::tellRenderSize(int width, int height)
     emit renderSizeChanged(width, height);
 }
 
-void DialogRender::tellProgressChange(float value)
+void DialogRender::tellProgressChange(double value)
 {
     emit progressChanged(value);
 }
@@ -153,7 +153,7 @@ void DialogRender::applyRenderSize(int width, int height)
     _scroll->setMinimumSize(width > 800 ? 820 : width + 20, height > 600 ? 620 : height + 20);
 }
 
-void DialogRender::applyProgress(float value)
+void DialogRender::applyProgress(double value)
 {
     double diff = difftime(time(NULL), _started);
     int hours = (int)floor(diff / 3600.0);

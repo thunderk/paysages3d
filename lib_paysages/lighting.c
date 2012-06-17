@@ -43,10 +43,10 @@ void lightingSave(PackStream* stream, LightingDefinition* definition)
     {
         v3Save(stream, &definition->lights[i].direction);
         colorSave(stream, &definition->lights[i].color);
-        packWriteFloat(stream, &definition->lights[i].reflection);
+        packWriteDouble(stream, &definition->lights[i].reflection);
         packWriteInt(stream, &definition->lights[i].filtered);
         packWriteInt(stream, &definition->lights[i].masked);
-        packWriteFloat(stream, &definition->lights[i].amplitude);
+        packWriteDouble(stream, &definition->lights[i].amplitude);
     }
 }
 
@@ -60,10 +60,10 @@ void lightingLoad(PackStream* stream, LightingDefinition* definition)
     {
         v3Load(stream, &definition->lights[i].direction);
         colorLoad(stream, &definition->lights[i].color);
-        packReadFloat(stream, &definition->lights[i].reflection);
+        packReadDouble(stream, &definition->lights[i].reflection);
         packReadInt(stream, &definition->lights[i].filtered);
         packReadInt(stream, &definition->lights[i].masked);
-        packReadFloat(stream, &definition->lights[i].amplitude);
+        packReadDouble(stream, &definition->lights[i].amplitude);
     }
 
     lightingValidateDefinition(definition);
@@ -170,7 +170,7 @@ static int _getLightStatus(LightDefinition* definition, Renderer* renderer, Vect
 static Color _applyDirectLight(LightDefinition* definition, Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
 {
     Color result, light;
-    float diffuse, specular, normal_norm;
+    double diffuse, specular, normal_norm;
     Vector3 view, reflect, direction_inv;
 
     light = definition->color;
@@ -180,16 +180,16 @@ static Color _applyDirectLight(LightDefinition* definition, Renderer* renderer, 
     {
         /* TODO Sampling around light direction */
         int xsamples, ysamples, samples, x, y;
-        float xstep, ystep, factor;
+        double xstep, ystep, factor;
         LightDefinition sublight;
         
         ysamples = renderer->render_quality / 4 + 1;
         xsamples = renderer->render_quality / 2 + 1;
         samples = xsamples * ysamples + 1;
-        factor = 1.0 / (float)samples;
+        factor = 1.0 / (double)samples;
         
-        xstep = M_PI * 2.0 / (float)xsamples;
-        ystep = M_PI * 0.5 / (float)(ysamples - 1);
+        xstep = M_PI * 2.0 / (double)xsamples;
+        ystep = M_PI * 0.5 / (double)(ysamples - 1);
         
         sublight = *definition;
         sublight.amplitude = 0.0;

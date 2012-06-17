@@ -39,12 +39,12 @@ protected:
     QPushButton* addButton(QString label);
     void addInput(BaseInput* input);
     void addInputInt(QString label, int* value, int min, int max, int small_step, int large_step);
-    void addInputDouble(QString label, float* value, float min, float max, float small_step, float large_step);
+    void addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step);
     void addInputBoolean(QString label, int* value);
     void addInputColor(QString label, Color* value);
     void addInputColorGradation(QString label, ColorGradation* value);
     void addInputNoise(QString label, NoiseGenerator* value);
-    void addInputCurve(QString label, Curve* value, float xmin, float xmax, float ymin, float ymax);
+    void addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax);
     void addInputMaterial(QString label, SurfaceMaterial* material);
     
     int currentLayer();
