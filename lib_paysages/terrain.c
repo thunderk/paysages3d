@@ -27,6 +27,7 @@ void terrainSave(PackStream* stream, TerrainDefinition* definition)
     noiseSaveGenerator(stream, definition->height_noise);
     packWriteDouble(stream, &definition->height_factor);
     packWriteDouble(stream, &definition->scaling);
+    packWriteDouble(stream, &definition->shadow_smoothing);
 
     packWriteInt(stream, &definition->height_modifiers_count);
     for (i = 0; i < definition->height_modifiers_count; i++)
@@ -43,6 +44,7 @@ void terrainLoad(PackStream* stream, TerrainDefinition* definition)
     noiseLoadGenerator(stream, definition->height_noise);
     packReadDouble(stream, &definition->height_factor);
     packReadDouble(stream, &definition->scaling);
+    packReadDouble(stream, &definition->shadow_smoothing);
 
     while (definition->height_modifiers_count > 0)
     {
@@ -68,6 +70,7 @@ TerrainDefinition terrainCreateDefinition()
     definition.height_factor = 0.0;
     definition.scaling = 1.0;
     definition.height_modifiers_count = 0;
+    definition.shadow_smoothing = 0.0;
 
     terrainValidateDefinition(&definition);
 
@@ -92,6 +95,7 @@ void terrainCopyDefinition(TerrainDefinition* source, TerrainDefinition* destina
     noiseCopy(source->height_noise, destination->height_noise);
     destination->height_factor = source->height_factor;
     destination->scaling = source->scaling;
+    destination->shadow_smoothing = source->shadow_smoothing;
 
     for (i = 0; i < destination->height_modifiers_count; i++)
     {
@@ -206,9 +210,9 @@ Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Colo
     }
 
     inc_factor = (double)renderer->render_quality;
-    inc_base = 1.0;
+    inc_base = definition->height_factor / definition->scaling;
     inc_value = inc_base / inc_factor;
-    smoothing = 0.03 * inc_factor;
+    smoothing = definition->shadow_smoothing;
 
     light_factor = 1.0;
     length = 0.0;
@@ -222,7 +226,14 @@ Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Colo
         diff = location.y - height;
         if (diff < 0.0)
         {
-            light_factor += diff / smoothing;
+            if (length * smoothing > 0.000001)
+            {
+                light_factor += diff * v3Norm(inc_vector) / (length * smoothing);
+            }
+            else
+            {
+                light_factor = 0.0;
+            }
         }
 
         if (diff < inc_base / inc_factor)

@@ -251,11 +251,11 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
             {
                 if (pixel_data->flags.edge)
                 {
-                    col = COLOR_RED;
+                    col = COLOR_GREY;
                 }
                 else
                 {
-                    col = COLOR_GREY;
+                    col = COLOR_WHITE;
                 }
             }
             else
@@ -602,8 +602,10 @@ void* _renderPostProcessChunk(void* data)
                 fragment->data.color.g = col.g;
                 fragment->data.color.b = col.b;
 
+                mutexAcquire(chunk->area->lock);
                 fragment->flags.dirty = 0;
                 _setDirtyPixel(chunk->area, x, y);
+                mutexRelease(chunk->area->lock);
             }
             /* chunk->area->progress_pixels++; */
         }

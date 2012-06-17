@@ -20,6 +20,7 @@ typedef struct
     double scaling;
     int height_modifiers_count;
     HeightModifier* height_modifiers[TERRAIN_MAX_MODIFIERS];
+    double shadow_smoothing;
 
     double _max_height;
 } TerrainDefinition;

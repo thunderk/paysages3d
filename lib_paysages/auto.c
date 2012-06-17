@@ -148,6 +148,7 @@ void autoGenRealisticLandscape(int seed)
     noiseAddLevelsSimple(terrain.height_noise, 10, 1.0, 1.0);
     terrain.height_factor = 12.0 / noiseGetMaxValue(terrain.height_noise);
     terrain.scaling = 20.0;
+    terrain.shadow_smoothing = 0.03;
     scenerySetTerrain(&terrain);
     terrainDeleteDefinition(&terrain);
 

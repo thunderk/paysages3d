@@ -678,6 +678,11 @@ Maintenir Ctrl : Plus rapide</translation>
         <source>Scaling</source>
         <translation>Echelle</translation>
     </message>
+    <message>
+        <location filename="../gui_qt/formterrain.cpp" line="154"/>
+        <source>Shadow smoothing</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FormTextures</name>
