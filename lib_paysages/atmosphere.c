@@ -87,6 +87,7 @@ Color atmosphereApply(AtmosphereDefinition* definition, Renderer* renderer, Vect
     Color mask = definition->color;
     double distance = v3Norm(v3Sub(renderer->camera_location, location));
     double value;
+    double alpha;
 
     if (distance < definition->distance_near)
     {
@@ -97,10 +98,15 @@ Color atmosphereApply(AtmosphereDefinition* definition, Renderer* renderer, Vect
         distance = definition->distance_far;
     }
 
+    alpha = base.a;
+    base.a = 1.0;
+    
     value = definition->full_mask * (distance - definition->distance_near) / (definition->distance_far - definition->distance_near);
+    
     mask.a = value;
-
     colorMask(&base, &mask);
+    
+    base.a = alpha;
 
     return base;
 }

@@ -169,7 +169,7 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
     result.base_coverage = 0.35;
     result.shape_noise = noiseCreateGenerator();
     noiseGenerateBaseNoise(result.shape_noise, 200000);
-    noiseAddLevelsSimple(result.shape_noise, 4, 1.0, 1.0);
+    noiseAddLevelsSimple(result.shape_noise, 5, 1.0, 1.0);
     result.edge_noise = noiseCreateGenerator();
     noiseGenerateBaseNoise(result.edge_noise, 800000);
     noiseAddLevelsSimple(result.edge_noise, 8, 1.0, 1.0);
@@ -575,7 +575,10 @@ Color cloudsGetLayerColor(CloudsLayerDefinition* definition, Renderer* renderer,
         col.a = 1.0;
     }
 
-    result = renderer->applyAtmosphere(renderer, start, result);
+    if (result.a > 0.000001)
+    {
+        result = renderer->applyAtmosphere(renderer, start, result);
+    }
 
     return result;
 }
@@ -602,7 +605,7 @@ Color cloudsGetColor(CloudsDefinition* definition, Renderer* renderer, Vector3 s
     for (i = 0; i < definition->nblayers; i++)
     {
         layer_color = cloudsGetLayerColor(layers + i, renderer, start, end);
-        if (layer_color.a > 0.0)
+        if (layer_color.a > 0.000001)
         {
             colorMask(&result, &layer_color);
         }

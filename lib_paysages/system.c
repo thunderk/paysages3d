@@ -1,6 +1,8 @@
 #include "system.h"
 #include <unistd.h>
 
+/*#define DEBUG_ONETHREAD 1*/
+
 #ifdef WIN32
 #include <windows.h>
 #endif
