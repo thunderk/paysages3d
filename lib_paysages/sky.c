@@ -158,85 +158,38 @@ static inline double _angleBetween(double thetav, double phiv, double theta, dou
     return acos(cospsi);
 }
 
-static inline double _perezFunction(double A, double B, double C, double D, double E, double Theta, double Gamma)
+static inline Color _toColor(float x, float y, float Y)
 {
-    double cosGamma = cos(Gamma);
-    return (1.0 + A * exp(B / cos(Theta))) * (1.0 + C * exp(D * Gamma) + E * cosGamma * cosGamma);
-}
+	float fX, fY, fZ;
+        Color result;
 
-typedef struct
-{
-    double x;
-    double y;
-    double Y;
-} ColorxyY;
+	fY = Y;
+	fX = x / y * Y;
+	fZ = ((1.0f - x - y) / y) * Y;
 
-/* Distribution coefficients for the luminance(Y) distribution function */
-static double YDC[5][2] = { { 0.1787, - 1.4630},
-                            {-0.3554,   0.4275},
-                            {-0.0227,   5.3251},
-                            { 0.1206, - 2.5771},
-                            {-0.0670,   0.3703} };
+	float r, g, b;
+		
+	r =  3.2404f * fX - 1.5371f * fY - 0.4985f * fZ;
+	g = -0.9692f * fX + 1.8759f * fY + 0.0415f * fZ;
+	b =  0.0556f * fX - 0.2040f * fY + 1.0573f * fZ;
 
-/* Distribution coefficients for the x distribution function */
-static double xDC[5][2] = { {-0.0193, -0.2592},
-                            {-0.0665, 0.0008},
-                            {-0.0004, 0.2125},
-                            {-0.0641, -0.8989},
-                            {-0.0033, 0.0452} };
+	float expo = -(1.0f / 10000.0f);
+	r = 1.0f - exp(expo * r);
+	g = 1.0f - exp(expo * g);
+	b = 1.0f - exp(expo * b);
 
-/* Distribution coefficients for the y distribution function */
-static double yDC[5][2] = { {-0.0167, -0.2608},
-                            {-0.0950, 0.0092},
-                            {-0.0079, 0.2102},
-                            {-0.0441, -1.6537},
-                            {-0.0109, 0.0529} };
+	if (r < 0.0f) r = 0.0f;
+	if (g < 0.0f) g = 0.0f;
+	if (b < 0.0f) b = 0.0f;
 
-/* Zenith x value */
-static double xZC[3][4] = {  {0.00166, -0.00375, 0.00209, 0},
-                            {-0.02903, 0.06377, -0.03203, 0.00394},
-                            {0.11693, -0.21196, 0.06052, 0.25886} };
-/* Zenith y value */
-static double yZC[3][4] = { { 0.00275, -0.00610, 0.00317, 0},
-                            {-0.04214, 0.08970, -0.04153, 0.00516},
-                            {0.15346, -0.26756, 0.06670, 0.26688} };
-
-static double _distribution(double A, double B, double C, double D, double E, double Theta, double Gamma, double ThetaSun)
-{
-    double f0 = _perezFunction(A,B,C,D,E,Theta,Gamma);
-    double f1 = _perezFunction(A,B,C,D,E,0,ThetaSun);
-    return(f0/f1);
-}
-
-static double _chromaticity( double ZC[3][4], double ThetaSun, double turbidity)
-{
-    double t1 = ThetaSun;
-    double t2 = t1*t1;
-    double t3 = t2 * t1;
-
-    double c = (ZC[0][0]*t3 + ZC[0][1]*t2 + ZC[0][2]*t1 + ZC[0][3])* turbidity * turbidity +
-            (ZC[1][0]*t3 + ZC[1][1]*t2 + ZC[1][2]*t1 + ZC[1][3])* turbidity +
-            (ZC[2][0]*t3 + ZC[2][1]*t2 + ZC[2][2]*t1 + ZC[2][3]);
-    return c;
-}
-
-static Color _toColor(ColorxyY src)
-{
-    double X, Y, Z;
-    Color dest;
-    
-    /* Convert to XYZ space */
-    X = src.x * (src.Y / src.y);
-    Y = src.Y;
-    Z = (1.0 - src.x - src.y)* (src.Y/src.y);
-    
-    /* Convert to RGB */
-    dest.r  =   3.240479 * X    - 1.537150 * Y  - 0.498535 * Z;
-    dest.g = -  0.969256 * X    + 1.875991 * Y  + 0.041556 * Z;
-    dest.b =    0.055648 * X    - 0.204043 * Y  + 1.057311 * Z;
-    dest.a = 1.0;
-    
-    return dest;
+	result.r = r;
+	result.g = g;
+	result.b = b; 
+        result.a = 1.0;
+        
+        colorNormalize(&result);
+        
+        return result;
 }
 
 static Color _preethamApproximate(SkyDefinition* definition, double theta, double phi)
@@ -244,82 +197,89 @@ static Color _preethamApproximate(SkyDefinition* definition, double theta, doubl
     double thetaSun;
     double phiSun;
     double gamma;
-    double turbidity = 3.0;
-    ColorxyY skycolor;
-    ColorxyY Zenith;
-    double A,B,C,D,E;
-    double d,chi;
+    double turbidity = 2.0;
 
     /* Handle angles */
+    if (theta > M_PI / 2.0)
+    {
+        theta = M_PI / 2.0;
+    }
     if (definition->daytime <= 0.5)
     {
-        if (definition->daytime <= 0.25)
-        {
-            thetaSun = M_PI / 2.0 - 0.00001;
-        }
-        else
-        {
-            thetaSun = M_PI - definition->daytime * 2.0 * M_PI;
-        }
+        thetaSun = M_PI - definition->daytime * 2.0 * M_PI;
         phiSun = 0.0;
     }
     else
     {
-        if (definition->daytime >= 0.75)
-        {
-            thetaSun = M_PI / 2.0 - 0.00001;
-        }
-        else
-        {
-            thetaSun = (definition->daytime - 0.5) * 2.0 * M_PI;
-        }
+        thetaSun = (definition->daytime - 0.5) * 2.0 * M_PI;
         phiSun = M_PI;
     }
     gamma = _angleBetween(theta, phi, thetaSun, phiSun);
+    
+    double cosTheta;
+    if (theta > M_PI / 2.0)
+    {
+        cosTheta = 0.0000001;
+    }
+    else
+    {
+        cosTheta = cos(theta);
+    }
+    
+    double T = turbidity;
+    double T2 = T * T;
+    double suntheta = thetaSun;
+    double suntheta2 = thetaSun * thetaSun;
+    double suntheta3 = thetaSun * suntheta2;
 
-    /* Zenith luminance */
-    chi = (4.0/9.0 - turbidity/120.0)*(M_PI - 2*thetaSun);
-    Zenith.Y = (4.0453*turbidity - 4.9710)*tan(chi) - 0.2155*turbidity + 2.4192;
-    if (Zenith.Y < 0.0) Zenith.Y = -Zenith.Y;
+    double Ax = -0.01925 * T - 0.25922;
+    double Bx = -0.06651 * T + 0.00081; 
+    double Cx = -0.00041 * T + 0.21247;
+    double Dx = -0.06409 * T - 0.89887;
+    double Ex = -0.00325 * T + 0.04517;
 
-    A = YDC[0][0]*turbidity + YDC[0][1];
-    B = YDC[1][0]*turbidity + YDC[1][1];
-    C = YDC[2][0]*turbidity + YDC[2][1];
-    D = YDC[3][0]*turbidity + YDC[3][1];
-    E = YDC[4][0]*turbidity + YDC[4][1];
+    double Ay = -0.01669 * T - 0.26078;
+    double By = -0.09495 * T + 0.00921;
+    double Cy = -0.00792 * T + 0.21023;
+    double Dy = -0.04405 * T - 1.65369;
+    double Ey = -0.01092 * T + 0.05291;
 
-    /* Sky luminance */
-    d = _distribution(A, B, C, D, E, theta, gamma, thetaSun);
-    skycolor.Y = Zenith.Y * d;
+    double AY =  0.17872 * T - 1.46303;
+    double BY = -0.35540 * T + 0.42749;
+    double CY = -0.02266 * T + 5.32505;
+    double DY =  0.12064 * T - 2.57705;
+    double EY = -0.06696 * T + 0.37027;
 
-    /* Zenith x */
-    Zenith.x = _chromaticity( xZC, thetaSun, turbidity );
-    A = xDC[0][0]*turbidity + xDC[0][1];
-    B = xDC[1][0]*turbidity + xDC[1][1];
-    C = xDC[2][0]*turbidity + xDC[2][1];
-    D = xDC[3][0]*turbidity + xDC[3][1];
-    E = xDC[4][0]*turbidity + xDC[4][1];
+    double cosGamma = cos(gamma);
+    cosGamma = cosGamma < 0.0 ? 0.0 : cosGamma;
+    double cosSTheta = fabs(cos(thetaSun));
+    
+    double xz = ( 0.00165 * suntheta3 - 0.00375 * suntheta2 + 0.00209 * suntheta + 0.00000) * T2 +
+		 (-0.02903 * suntheta3 + 0.06377 * suntheta2 - 0.03202 * suntheta + 0.00394) * T +
+		 ( 0.11693 * suntheta3 - 0.21196 * suntheta2 + 0.06052 * suntheta + 0.25886);
 
-    /* Sky x */
-    d = _distribution(A, B, C, D, E, theta, gamma, thetaSun);
-    skycolor.x = Zenith.x * d;
+    double yz = ( 0.00275 * suntheta3 - 0.00610 * suntheta2 + 0.00317 * suntheta + 0.00000) * T2 +
+                (-0.04214 * suntheta3 + 0.08970 * suntheta2 - 0.04153 * suntheta + 0.00516) * T +	
+                ( 0.15346 * suntheta3 - 0.26756 * suntheta2 + 0.06670 * suntheta + 0.26688);
+    
+    double X = (4.0f / 9.0f - T / 120.0f) * (M_PI - 2.0 * suntheta);		
+    double Yz = ((4.0453f * T - 4.9710) * tan(X) - 0.2155 * T + 2.4192) * 1000.0f;
 
-    /* Zenith y */
-    Zenith.y = _chromaticity( yZC, thetaSun, turbidity );
-    A = yDC[0][0]*turbidity + yDC[0][1];
-    B = yDC[1][0]*turbidity + yDC[1][1];
-    C = yDC[2][0]*turbidity + yDC[2][1];
-    D = yDC[3][0]*turbidity + yDC[3][1];
-    E = yDC[4][0]*turbidity + yDC[4][1];
+    double val1, val2;
+    
+    val1 = ( 1 + Ax * exp(Bx / cosTheta ) ) * ( 1 + Cx * exp(Dx * gamma) + Ex * sqrt(cosGamma) );
+    val2 = ( 1 + Ax * exp(Bx) ) * ( 1 + Cx * exp(Dx * suntheta) + Ex * sqrt(cosSTheta) );
+    double x = xz * val1 / val2;
+    
+    val1 = ( 1 + Ay * exp(By / cosTheta) ) * ( 1 + Cy * exp(Dy * gamma   ) + Ey * sqrt(cosGamma )  );
+    val2 = ( 1 + Ay * exp(By            )  ) * ( 1 + Cy * exp(Dy * suntheta) + Ey * sqrt(cosSTheta) );
+    double y = yz * val1 / val2;
+    
+    val1 = ( 1 + AY * exp(BY / cosTheta) ) * ( 1 + CY * exp(DY * gamma   ) + EY * sqrt(cosGamma) );
+    val2 = ( 1 + AY * exp(BY             ) ) * ( 1 + CY * exp(DY * suntheta) + EY * sqrt(cosSTheta) );
+    double Y = Yz * val1 / val2;
 
-    /* Sky y */
-    d = _distribution(A, B, C, D, E, theta, gamma, thetaSun);
-    skycolor.y = Zenith.y * d;
-
-    /* Small hack on luminance value */
-    //skycolor.Y = 1 - exp(-(1.0/25.0) * skycolor.Y);
-
-    return _toColor(skycolor);
+    return _toColor(x, y, Y);
 }
 
 Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Vector3 look)
@@ -333,7 +293,7 @@ Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Ve
     look = v3Normalize(look);
     dist = v3Norm(v3Sub(look, sun_position));
 
-    sky_color = _preethamApproximate(definition, M_PI/2.0 - asin(look.y), acos(v3Dot(look, sun_position)));
+    sky_color = _preethamApproximate(definition, M_PI/2.0 - asin(look.y), atan2(-look.z, look.x));
     if (dist < definition->sun_radius + definition->sun_halo_size)
     {
         sun_color = colorGradationGet(definition->sun_color, definition->daytime);
