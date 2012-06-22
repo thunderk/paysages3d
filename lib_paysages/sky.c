@@ -13,6 +13,7 @@
 
 #define SPHERE_SIZE 1000.0
 
+/******************************** Configuration ********************************/
 void skyInit()
 {
 }
@@ -23,28 +24,38 @@ void skyQuit()
 
 void skySave(PackStream* stream, SkyDefinition* definition)
 {
+    packWriteInt(stream, (int*)&definition->model);
     packWriteDouble(stream, &definition->daytime);
-    colorGradationSave(stream, definition->sun_color);
+    colorSave(stream, &definition->sun_color);
     packWriteDouble(stream, &definition->sun_radius);
     packWriteDouble(stream, &definition->sun_halo_size);
     curveSave(stream, definition->sun_halo_profile);
-    colorGradationSave(stream, definition->zenith_color);
-    colorGradationSave(stream, definition->haze_color);
-    packWriteDouble(stream, &definition->haze_height);
-    packWriteDouble(stream, &definition->haze_smoothing);
+    
+    packWriteInt(stream, &definition->model_custom.auto_from_daytime);
+    colorSave(stream, &definition->model_custom.zenith_color);
+    colorSave(stream, &definition->model_custom.haze_color);
+    packWriteDouble(stream, &definition->model_custom.haze_height);
+    packWriteDouble(stream, &definition->model_custom.haze_smoothing);
+    
+    packWriteDouble(stream, &definition->model_preetham.turbidity);
 }
 
 void skyLoad(PackStream* stream, SkyDefinition* definition)
 {
+    packReadInt(stream, (int*)&definition->model);
     packReadDouble(stream, &definition->daytime);
-    colorGradationLoad(stream, definition->sun_color);
+    colorLoad(stream, &definition->sun_color);
     packReadDouble(stream, &definition->sun_radius);
     packReadDouble(stream, &definition->sun_halo_size);
     curveLoad(stream, definition->sun_halo_profile);
-    colorGradationLoad(stream, definition->zenith_color);
-    colorGradationLoad(stream, definition->haze_color);
-    packReadDouble(stream, &definition->haze_height);
-    packReadDouble(stream, &definition->haze_smoothing);
+    
+    packReadInt(stream, &definition->model_custom.auto_from_daytime);
+    colorLoad(stream, &definition->model_custom.zenith_color);
+    colorLoad(stream, &definition->model_custom.haze_color);
+    packReadDouble(stream, &definition->model_custom.haze_height);
+    packReadDouble(stream, &definition->model_custom.haze_smoothing);
+    
+    packReadDouble(stream, &definition->model_preetham.turbidity);
 
     skyValidateDefinition(definition);
 }
@@ -53,15 +64,19 @@ SkyDefinition skyCreateDefinition()
 {
     SkyDefinition def;
 
+    def.model = SKY_MODEL_CUSTOM;
     def.daytime = 0.0;
-    def.sun_color = colorGradationCreate();
+    def.sun_color = COLOR_BLACK;
     def.sun_radius = 1.0;
     def.sun_halo_size = 0.0;
     def.sun_halo_profile = curveCreate();
-    def.zenith_color = colorGradationCreate();
-    def.haze_color = colorGradationCreate();
-    def.haze_height = 0.0;
-    def.haze_smoothing = 0.0;
+    def.model_custom.auto_from_daytime = 0;
+    def.model_custom.zenith_color = COLOR_BLACK;
+    def.model_custom.haze_color = COLOR_BLACK;
+    def.model_custom.haze_height = 0.0;
+    def.model_custom.haze_smoothing = 0.0;
+    def.model_custom._sky_gradation = colorGradationCreate();
+    def.model_preetham.turbidity = 0.0;
 
     skyValidateDefinition(&def);
 
@@ -71,39 +86,72 @@ SkyDefinition skyCreateDefinition()
 void skyDeleteDefinition(SkyDefinition* definition)
 {
     curveDelete(definition->sun_halo_profile);
-    colorGradationDelete(definition->sun_color);
-    colorGradationDelete(definition->zenith_color);
-    colorGradationDelete(definition->haze_color);
+    colorGradationDelete(definition->model_custom._sky_gradation);
 }
 
 void skyCopyDefinition(SkyDefinition* source, SkyDefinition* destination)
 {
+    destination->model = source->model;
     destination->daytime = source->daytime;
+    destination->sun_color = source->sun_color;
     destination->sun_radius = source->sun_radius;
     destination->sun_halo_size = source->sun_halo_size;
-    destination->haze_height = source->haze_height;
-    destination->haze_smoothing = source->haze_smoothing;
+    destination->model_custom.auto_from_daytime = source->model_custom.auto_from_daytime;
+    destination->model_custom.zenith_color = source->model_custom.zenith_color;
+    destination->model_custom.haze_color = source->model_custom.haze_color;
+    destination->model_custom.haze_height = source->model_custom.haze_height;
+    destination->model_custom.haze_smoothing = source->model_custom.haze_smoothing;
+    destination->model_preetham.turbidity = source->model_preetham.turbidity;
     
     curveCopy(source->sun_halo_profile, destination->sun_halo_profile);
     
-    colorGradationCopy(source->sun_color, destination->sun_color);
-    colorGradationCopy(source->zenith_color, destination->zenith_color);
-    colorGradationCopy(source->haze_color, destination->haze_color);
-    colorGradationCopy(source->_sky_gradation, destination->_sky_gradation);
+    skyValidateDefinition(destination);
+}
+
+static void _setAutoCustomModel(SkyDefinition* definition)
+{
+    ColorGradation* zenith_gradation;
+    ColorGradation* haze_gradation;
+    
+    zenith_gradation = colorGradationCreate();
+    haze_gradation = colorGradationCreate();
+
+    colorGradationQuickAddRgb(zenith_gradation, 0.2, 0.03, 0.03, 0.05);
+    colorGradationQuickAddRgb(zenith_gradation, 0.25, 0.25, 0.33, 0.37);
+    colorGradationQuickAddRgb(zenith_gradation, 0.35, 0.52, 0.63, 0.8);
+    colorGradationQuickAddRgb(zenith_gradation, 0.65, 0.52, 0.63, 0.8);
+    colorGradationQuickAddRgb(zenith_gradation, 0.75, 0.25, 0.33, 0.37);
+    colorGradationQuickAddRgb(zenith_gradation, 0.8, 0.03, 0.03, 0.05);
+    colorGradationQuickAddRgb(haze_gradation, 0.2, 0.05, 0.05, 0.08);
+    colorGradationQuickAddRgb(haze_gradation, 0.25, 0.55, 0.42, 0.42);
+    colorGradationQuickAddRgb(haze_gradation, 0.3, 0.6, 0.6, 0.6);
+    colorGradationQuickAddRgb(haze_gradation, 0.4, 0.92, 0.93, 1.0);
+    colorGradationQuickAddRgb(haze_gradation, 0.6, 0.92, 0.93, 1.0);
+    colorGradationQuickAddRgb(haze_gradation, 0.7, 0.6, 0.6, 0.8);
+    colorGradationQuickAddRgb(haze_gradation, 0.75, 0.62, 0.50, 0.42);
+    colorGradationQuickAddRgb(haze_gradation, 0.8, 0.05, 0.05, 0.08);
+
+    definition->model_custom.zenith_color = colorGradationGet(zenith_gradation, definition->daytime);
+    definition->model_custom.haze_color = colorGradationGet(haze_gradation, definition->daytime);
+    
+    colorGradationDelete(zenith_gradation);
+    colorGradationDelete(haze_gradation);
 }
 
 void skyValidateDefinition(SkyDefinition* definition)
 {
-    Color zenith, haze;
-
-    zenith = colorGradationGet(definition->zenith_color, definition->daytime);
-    haze = colorGradationGet(definition->haze_color, definition->daytime);
-
-    definition->_sky_gradation = colorGradationCreate();
-    colorGradationQuickAdd(definition->_sky_gradation, 0.0, &haze);
-    colorGradationQuickAdd(definition->_sky_gradation, definition->haze_height - definition->haze_smoothing, &haze);
-    colorGradationQuickAdd(definition->_sky_gradation, definition->haze_height, &zenith);
-    colorGradationQuickAdd(definition->_sky_gradation, 1.0, &zenith);
+    if (definition->model == SKY_MODEL_CUSTOM)
+    {
+        if (definition->model_custom.auto_from_daytime)
+        {
+            _setAutoCustomModel(definition);
+        }
+        colorGradationClear(definition->model_custom._sky_gradation);
+        colorGradationQuickAdd(definition->model_custom._sky_gradation, 0.0, &definition->model_custom.haze_color);
+        colorGradationQuickAdd(definition->model_custom._sky_gradation, definition->model_custom.haze_height - definition->model_custom.haze_smoothing, &definition->model_custom.haze_color);
+        colorGradationQuickAdd(definition->model_custom._sky_gradation, definition->model_custom.haze_height, &definition->model_custom.zenith_color);
+        colorGradationQuickAdd(definition->model_custom._sky_gradation, 1.0, &definition->model_custom.zenith_color);
+    }
 }
 
 int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
@@ -123,7 +171,7 @@ int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
     {
         /* Light from the sun */
         lights[0].direction = v3Scale(sun_direction, -1.0);
-        lights[0].color = colorGradationGet(sky->sun_color, sky->daytime);
+        lights[0].color = sky->sun_color;
         lights[0].reflection = 1.0;
         lights[0].filtered = 1;
         lights[0].masked = 1;
@@ -135,7 +183,7 @@ int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
             lights[1].direction.x = 0.0;
             lights[1].direction.y = -1.0;
             lights[1].direction.z = 0.0;
-            lights[1].color = colorGradationGet(sky->zenith_color, sky->daytime);
+            lights[1].color = sky->model_custom.zenith_color;
             lights[1].color.r *= 0.6;
             lights[1].color.g *= 0.6;
             lights[1].color.b *= 0.6;
@@ -150,6 +198,7 @@ int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
     return nblights;
 }
 
+/******************************** Preetham Model ********************************/
 static inline double _angleBetween(double thetav, double phiv, double theta, double phi) 
 {
     double cospsi = sin(thetav) * sin(theta) * cos(phi-phiv) + cos(thetav) * cos(theta);
@@ -158,29 +207,28 @@ static inline double _angleBetween(double thetav, double phiv, double theta, dou
     return acos(cospsi);
 }
 
-static inline Color _toColor(float x, float y, float Y)
+static inline Color _xyYToRGB(double x, double y, double Y)
 {
-	float fX, fY, fZ;
+	double fX, fY, fZ;
         Color result;
 
 	fY = Y;
 	fX = x / y * Y;
-	fZ = ((1.0f - x - y) / y) * Y;
+	fZ = ((1.0 - x - y) / y) * Y;
 
-	float r, g, b;
-		
-	r =  3.2404f * fX - 1.5371f * fY - 0.4985f * fZ;
-	g = -0.9692f * fX + 1.8759f * fY + 0.0415f * fZ;
-	b =  0.0556f * fX - 0.2040f * fY + 1.0573f * fZ;
+	double r, g, b;
+	r =  3.2404 * fX - 1.5371 * fY - 0.4985 * fZ;
+	g = -0.9692 * fX + 1.8759 * fY + 0.0415 * fZ;
+	b =  0.0556 * fX - 0.2040 * fY + 1.0573 * fZ;
 
-	float expo = -(1.0f / 10000.0f);
-	r = 1.0f - exp(expo * r);
-	g = 1.0f - exp(expo * g);
-	b = 1.0f - exp(expo * b);
+	double expo = -(1.0 / 10000.0);
+	r = 1.0 - exp(expo * r);
+	g = 1.0 - exp(expo * g);
+	b = 1.0 - exp(expo * b);
 
-	if (r < 0.0f) r = 0.0f;
-	if (g < 0.0f) g = 0.0f;
-	if (b < 0.0f) b = 0.0f;
+	if (r < 0.0) r = 0.0;
+	if (g < 0.0) g = 0.0;
+	if (b < 0.0) b = 0.0;
 
 	result.r = r;
 	result.g = g;
@@ -197,7 +245,7 @@ static Color _preethamApproximate(SkyDefinition* definition, double theta, doubl
     double thetaSun;
     double phiSun;
     double gamma;
-    double turbidity = 2.0;
+    double turbidity = definition->model_preetham.turbidity;
 
     /* Handle angles */
     if (theta > M_PI / 2.0)
@@ -262,26 +310,27 @@ static Color _preethamApproximate(SkyDefinition* definition, double theta, doubl
                 (-0.04214 * suntheta3 + 0.08970 * suntheta2 - 0.04153 * suntheta + 0.00516) * T +	
                 ( 0.15346 * suntheta3 - 0.26756 * suntheta2 + 0.06670 * suntheta + 0.26688);
     
-    double X = (4.0f / 9.0f - T / 120.0f) * (M_PI - 2.0 * suntheta);		
-    double Yz = ((4.0453f * T - 4.9710) * tan(X) - 0.2155 * T + 2.4192) * 1000.0f;
+    double X = (4.0 / 9.0 - T / 120.0) * (M_PI - 2.0 * suntheta);		
+    double Yz = ((4.0453 * T - 4.9710) * tan(X) - 0.2155 * T + 2.4192) * 1000.0;
 
     double val1, val2;
-    
-    val1 = ( 1 + Ax * exp(Bx / cosTheta ) ) * ( 1 + Cx * exp(Dx * gamma) + Ex * sqrt(cosGamma) );
-    val2 = ( 1 + Ax * exp(Bx) ) * ( 1 + Cx * exp(Dx * suntheta) + Ex * sqrt(cosSTheta) );
+
+    val1 = (1.0 + Ax * exp(Bx / cosTheta)) * (1.0 + Cx * exp(Dx * gamma) + Ex * sqrt(cosGamma));
+    val2 = (1.0 + Ax * exp(Bx)) * (1.0 + Cx * exp(Dx * suntheta) + Ex * sqrt(cosSTheta));
     double x = xz * val1 / val2;
-    
-    val1 = ( 1 + Ay * exp(By / cosTheta) ) * ( 1 + Cy * exp(Dy * gamma   ) + Ey * sqrt(cosGamma )  );
-    val2 = ( 1 + Ay * exp(By            )  ) * ( 1 + Cy * exp(Dy * suntheta) + Ey * sqrt(cosSTheta) );
+
+    val1 = (1.0 + Ay * exp(By / cosTheta)) * (1.0 + Cy * exp(Dy * gamma) + Ey * sqrt(cosGamma));
+    val2 = (1.0 + Ay * exp(By)) * (1.0 + Cy * exp(Dy * suntheta) + Ey * sqrt(cosSTheta));
     double y = yz * val1 / val2;
-    
-    val1 = ( 1 + AY * exp(BY / cosTheta) ) * ( 1 + CY * exp(DY * gamma   ) + EY * sqrt(cosGamma) );
-    val2 = ( 1 + AY * exp(BY             ) ) * ( 1 + CY * exp(DY * suntheta) + EY * sqrt(cosSTheta) );
+
+    val1 = (1.0 + AY * exp(BY / cosTheta)) * (1.0 + CY * exp(DY * gamma) + EY * sqrt(cosGamma));
+    val2 = (1.0 + AY * exp(BY)) * (1.0 + CY * exp(DY * suntheta) + EY * sqrt(cosSTheta));
     double Y = Yz * val1 / val2;
 
-    return _toColor(x, y, Y);
+    return _xyYToRGB(x, y, Y);
 }
 
+/******************************** Rendering ********************************/
 Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Vector3 look)
 {
     double dist;
@@ -293,10 +342,18 @@ Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Ve
     look = v3Normalize(look);
     dist = v3Norm(v3Sub(look, sun_position));
 
-    sky_color = _preethamApproximate(definition, M_PI/2.0 - asin(look.y), atan2(-look.z, look.x));
+    if (definition->model == SKY_MODEL_PREETHAM)
+    {
+        sky_color = _preethamApproximate(definition, M_PI/2.0 - asin(look.y), atan2(-look.z, look.x));
+    }
+    else
+    {
+        sky_color = colorGradationGet(definition->model_custom._sky_gradation, look.y * 0.5 + 0.5);
+    }
+    
     if (dist < definition->sun_radius + definition->sun_halo_size)
     {
-        sun_color = colorGradationGet(definition->sun_color, definition->daytime);
+        sun_color = definition->sun_color;
         if (dist <= definition->sun_radius)
         {
             return sun_color;
@@ -396,10 +453,10 @@ Vector3 skyGetSunDirection(SkyDefinition* definition)
 
 Color skyGetSunColor(SkyDefinition* definition)
 {
-    return colorGradationGet(definition->sun_color, definition->daytime);
+    return definition->sun_color;
 }
 
 Color skyGetZenithColor(SkyDefinition* definition)
 {
-    return colorGradationGet(definition->zenith_color, definition->daytime);
+    return definition->model_custom.zenith_color;
 }

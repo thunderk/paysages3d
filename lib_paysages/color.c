@@ -136,6 +136,13 @@ void colorGradationCopy(ColorGradation* source, ColorGradation* destination)
     curveCopy(source->blue, destination->blue);
 }
 
+void colorGradationClear(ColorGradation* gradation)
+{
+    curveClear(gradation->red);
+    curveClear(gradation->green);
+    curveClear(gradation->blue);
+}
+
 void colorGradationSave(PackStream* stream, ColorGradation* gradation)
 {
     curveSave(stream, gradation->red);

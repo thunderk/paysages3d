@@ -1,5 +1,13 @@
 Technology Preview 2 :
+- Finalize Preetham's model usage
+   => Add enumarate to choose model in formsky
+   => Hide fields based on chosen model
+   => Update all fields when "auto from daytime" is selected
+   => Apply the skydome lighting by directly sampling it (no more amplitude in lights)
+   => Apply model to atmosphere (aerial perspective)
+   => Find a proper model for night sky (maybe Shirley)
 - InputInt doesn't honor small_step.
+- Disable form fields when no layer is selected.
 - Remove color gradations (replace with automatic boolean and simple colors).
 - Replace zone ranges with curves (with curve input and curve dialog).
 - Interface for textures thickness, slope_range and thickness_transparency (and correct slider ranges).

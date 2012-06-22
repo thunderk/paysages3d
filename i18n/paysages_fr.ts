@@ -628,21 +628,31 @@ Maintenir Ctrl : Plus rapide</translation>
     </message>
     <message>
         <location filename="../gui_qt/formsky.cpp" line="112"/>
+        <source>Auto from daytime</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formsky.cpp" line="117"/>
+        <source>Turbidity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formsky.cpp" line="113"/>
         <source>Zenith color</source>
         <translation>Couleur du ciel au zénith</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="113"/>
+        <location filename="../gui_qt/formsky.cpp" line="114"/>
         <source>Haze color</source>
         <translation>Couleur de la brume</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="114"/>
+        <location filename="../gui_qt/formsky.cpp" line="115"/>
         <source>Haze height</source>
         <translation>Hauteur apparente de la brume</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="115"/>
+        <location filename="../gui_qt/formsky.cpp" line="116"/>
         <source>Haze smoothing</source>
         <translation>Facteur de lissage de la brume</translation>
     </message>

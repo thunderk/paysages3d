@@ -9,19 +9,32 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+    
+typedef enum
+{
+    SKY_MODEL_CUSTOM = 0,
+    SKY_MODEL_PREETHAM = 1
+} SkyModel;
 
 typedef struct
 {
+    SkyModel model;
     double daytime;
-    ColorGradation* sun_color;
+    Color sun_color;
     double sun_radius;
     double sun_halo_size;
     Curve* sun_halo_profile;
-    ColorGradation* zenith_color;
-    ColorGradation* haze_color;
-    double haze_height;
-    double haze_smoothing;
-    ColorGradation* _sky_gradation;
+    struct {
+        int auto_from_daytime;
+        Color zenith_color;
+        Color haze_color;
+        double haze_height;
+        double haze_smoothing;
+        ColorGradation* _sky_gradation;
+    } model_custom;
+    struct {
+        double turbidity;
+    } model_preetham;
 } SkyDefinition;
 
 void skyInit();

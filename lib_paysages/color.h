@@ -42,6 +42,7 @@ typedef struct ColorGradation ColorGradation;
 ColorGradation* colorGradationCreate();
 void colorGradationDelete(ColorGradation* gradation);
 void colorGradationCopy(ColorGradation* source, ColorGradation* destination);
+void colorGradationClear(ColorGradation* gradation);
 
 void colorGradationSave(PackStream* stream, ColorGradation* gradation);
 void colorGradationLoad(PackStream* stream, ColorGradation* gradation);
