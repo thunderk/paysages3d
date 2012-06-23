@@ -44,5 +44,5 @@ void InputInt::revert()
 {
     slider->setValue(*value);
 
-   BaseInput::revert();
+    BaseInput::revert();
 }

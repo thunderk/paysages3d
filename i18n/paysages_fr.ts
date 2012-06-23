@@ -4,32 +4,32 @@
 <context>
     <name>BaseForm</name>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="39"/>
+        <location filename="../gui_qt/baseform.cpp" line="40"/>
         <source>Layers : </source>
         <translation>Niveaux :</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="47"/>
+        <location filename="../gui_qt/baseform.cpp" line="48"/>
         <source>Add layer</source>
         <translation>Ajouter un niveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="51"/>
+        <location filename="../gui_qt/baseform.cpp" line="52"/>
         <source>Delete layer</source>
         <translation>Supprimer un niveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="87"/>
+        <location filename="../gui_qt/baseform.cpp" line="88"/>
         <source>Apply</source>
         <translation>Appliquer</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="90"/>
+        <location filename="../gui_qt/baseform.cpp" line="91"/>
         <source>Revert</source>
         <translation>Annuler les modifications</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="290"/>
+        <location filename="../gui_qt/baseform.cpp" line="296"/>
         <source>Layer %1</source>
         <translation>Niveau %1</translation>
     </message>
@@ -603,56 +603,71 @@ Maintenir Ctrl : Plus rapide</translation>
     </message>
     <message>
         <location filename="../gui_qt/formsky.cpp" line="107"/>
+        <source>Color model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formsky.cpp" line="107"/>
+        <source>Mixed Preetham/Shirley approximation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formsky.cpp" line="107"/>
+        <source>Custom model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formsky.cpp" line="108"/>
         <source>Day time</source>
         <translation>Heure du jour</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="108"/>
+        <location filename="../gui_qt/formsky.cpp" line="109"/>
         <source>Sun color</source>
         <translation>Couleur du soleil</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="109"/>
+        <location filename="../gui_qt/formsky.cpp" line="110"/>
         <source>Sun radius</source>
         <translation>Diamètre apparent du soleil</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="110"/>
+        <location filename="../gui_qt/formsky.cpp" line="111"/>
         <source>Sun halo radius</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="111"/>
+        <location filename="../gui_qt/formsky.cpp" line="112"/>
         <source>Sun halo profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="112"/>
+        <location filename="../gui_qt/formsky.cpp" line="113"/>
         <source>Auto from daytime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="117"/>
+        <location filename="../gui_qt/formsky.cpp" line="118"/>
         <source>Turbidity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="113"/>
+        <location filename="../gui_qt/formsky.cpp" line="114"/>
         <source>Zenith color</source>
         <translation>Couleur du ciel au zénith</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="114"/>
+        <location filename="../gui_qt/formsky.cpp" line="115"/>
         <source>Haze color</source>
         <translation>Couleur de la brume</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="115"/>
+        <location filename="../gui_qt/formsky.cpp" line="116"/>
         <source>Haze height</source>
         <translation>Hauteur apparente de la brume</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formsky.cpp" line="116"/>
+        <location filename="../gui_qt/formsky.cpp" line="117"/>
         <source>Haze smoothing</source>
         <translation>Facteur de lissage de la brume</translation>
     </message>

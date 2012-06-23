@@ -1,6 +1,5 @@
 Technology Preview 2 :
 - Finalize Preetham's model usage
-   => Add enumarate to choose model in formsky
    => Hide fields based on chosen model
    => Update all fields when "auto from daytime" is selected
    => Apply the skydome lighting by directly sampling it (no more amplitude in lights)

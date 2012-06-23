@@ -8,6 +8,7 @@
 #include "inputnoise.h"
 #include "inputcurve.h"
 #include "inputmaterial.h"
+#include "inputenum.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -262,6 +263,11 @@ void BaseForm::addInputCurve(QString label, Curve* value, double xmin, double xm
 void BaseForm::addInputMaterial(QString label, SurfaceMaterial* material)
 {
     addInput(new InputMaterial(form, label, material));
+}
+
+void BaseForm::addInputEnum(QString label, int* value, const QStringList& values)
+{
+    addInput(new InputEnum(form, label, value, values));
 }
 
 int BaseForm::currentLayer()

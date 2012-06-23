@@ -104,6 +104,7 @@ FormSky::FormSky(QWidget *parent):
     previewEast = new PreviewSkyEast(this);
     addPreview(previewEast, QString(tr("East preview")));
 
+    addInputEnum(tr("Color model"), (int*)&_definition.model, QStringList(tr("Custom model")) << tr("Mixed Preetham/Shirley approximation"));
     addInputDouble(tr("Day time"), &_definition.daytime, 0.0, 1.0, 0.002, 0.1);
     addInputColor(tr("Sun color"), &_definition.sun_color);
     addInputDouble(tr("Sun radius"), &_definition.sun_radius, 0.0, 0.4, 0.004, 0.04);

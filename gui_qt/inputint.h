@@ -26,4 +26,4 @@ private:
     int large_step;
 };
 
-#endif // _PAYSAGES_QT_INPUTINT_H_
+#endif

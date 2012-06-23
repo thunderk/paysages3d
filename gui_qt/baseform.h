@@ -46,6 +46,7 @@ protected:
     void addInputNoise(QString label, NoiseGenerator* value);
     void addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax);
     void addInputMaterial(QString label, SurfaceMaterial* material);
+    void addInputEnum(QString label, int* value, const QStringList& values);
     
     int currentLayer();
     void setLayerCount(int layer_count);
