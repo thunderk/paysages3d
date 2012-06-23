@@ -13,11 +13,13 @@ public:
     inline QWidget* label() {return _label;}
     inline QWidget* preview() {return _preview;}
     inline QWidget* control() {return _control;}
+    void setVisibilityCondition(int* value, int condition);
 
 public slots:
     virtual void updatePreview();
     virtual void revert();
     virtual void applyValue();
+    void checkVisibility();
 
 signals:
     void valueChanged();
@@ -26,6 +28,9 @@ protected:
     QLabel* _label;
     QWidget* _preview;
     QWidget* _control;
+    int* _visibility_value;
+    int _visibility_condition;
+    bool _visible;
 };
 
 #endif

@@ -37,16 +37,16 @@ private slots:
 protected:
     void addPreview(BasePreview* preview, QString label);
     QPushButton* addButton(QString label);
-    void addInput(BaseInput* input);
-    void addInputInt(QString label, int* value, int min, int max, int small_step, int large_step);
-    void addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step);
-    void addInputBoolean(QString label, int* value);
-    void addInputColor(QString label, Color* value);
-    void addInputColorGradation(QString label, ColorGradation* value);
-    void addInputNoise(QString label, NoiseGenerator* value);
-    void addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax);
-    void addInputMaterial(QString label, SurfaceMaterial* material);
-    void addInputEnum(QString label, int* value, const QStringList& values);
+    BaseInput* addInput(BaseInput* input);
+    BaseInput* addInputInt(QString label, int* value, int min, int max, int small_step, int large_step);
+    BaseInput* addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step);
+    BaseInput* addInputBoolean(QString label, int* value);
+    BaseInput* addInputColor(QString label, Color* value);
+    BaseInput* addInputColorGradation(QString label, ColorGradation* value);
+    BaseInput* addInputNoise(QString label, NoiseGenerator* value);
+    BaseInput* addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax);
+    BaseInput* addInputMaterial(QString label, SurfaceMaterial* material);
+    BaseInput* addInputEnum(QString label, int* value, const QStringList& values);
     
     int currentLayer();
     void setLayerCount(int layer_count);

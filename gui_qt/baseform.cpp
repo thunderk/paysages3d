@@ -116,6 +116,12 @@ void BaseForm::configChangeEvent()
         button_revert->setEnabled(true);
     }
 
+    QList<BaseInput*> inputs = form->findChildren<BaseInput*>("_form_input_");
+    for (int i = 0; i < inputs.size(); i++)
+    {
+        inputs[i]->checkVisibility();
+    }
+    
     QList<BasePreview*> list_previews = previews->findChildren<BasePreview*>("_form_preview_");
     for (int i = 0; i < list_previews.size(); i++)
     {
@@ -199,7 +205,7 @@ QPushButton* BaseForm::addButton(QString label)
     return button;
 }
 
-void BaseForm::addInput(BaseInput* input)
+BaseInput* BaseForm::addInput(BaseInput* input)
 {
     int row_height = 30;
     
@@ -223,51 +229,53 @@ void BaseForm::addInput(BaseInput* input)
 
     input->setObjectName("_form_input_");
     input->revert();
+    
+    return input;
 }
 
-void BaseForm::addInputInt(QString label, int* value, int min, int max, int small_step, int large_step)
+BaseInput* BaseForm::addInputInt(QString label, int* value, int min, int max, int small_step, int large_step)
 {
-    addInput(new InputInt(form, label, value, min, max, small_step, large_step));
+    return addInput(new InputInt(form, label, value, min, max, small_step, large_step));
 }
 
-void BaseForm::addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step)
+BaseInput* BaseForm::addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step)
 {
-    addInput(new InputDouble(form, label, value, min, max, small_step, large_step));
+    return addInput(new InputDouble(form, label, value, min, max, small_step, large_step));
 }
 
-void BaseForm::addInputBoolean(QString label, int* value)
+BaseInput* BaseForm::addInputBoolean(QString label, int* value)
 {
-    addInput(new InputBoolean(form, label, value));
+    return addInput(new InputBoolean(form, label, value));
 }
 
-void BaseForm::addInputColor(QString label, Color* value)
+BaseInput* BaseForm::addInputColor(QString label, Color* value)
 {
-    addInput(new InputColor(form, label, value));
+    return addInput(new InputColor(form, label, value));
 }
 
-void BaseForm::addInputColorGradation(QString label, ColorGradation* value)
+BaseInput* BaseForm::addInputColorGradation(QString label, ColorGradation* value)
 {
-    addInput(new InputColorGradation(form, label, value));
+    return addInput(new InputColorGradation(form, label, value));
 }
 
-void BaseForm::addInputNoise(QString label, NoiseGenerator* value)
+BaseInput* BaseForm::addInputNoise(QString label, NoiseGenerator* value)
 {
-    addInput(new InputNoise(form, label, value));
+    return addInput(new InputNoise(form, label, value));
 }
 
-void BaseForm::addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax)
+BaseInput* BaseForm::addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax)
 {
-    addInput(new InputCurve(form, label, value, xmin, xmax, ymin, ymax));
+    return addInput(new InputCurve(form, label, value, xmin, xmax, ymin, ymax));
 }
 
-void BaseForm::addInputMaterial(QString label, SurfaceMaterial* material)
+BaseInput* BaseForm::addInputMaterial(QString label, SurfaceMaterial* material)
 {
-    addInput(new InputMaterial(form, label, material));
+    return addInput(new InputMaterial(form, label, material));
 }
 
-void BaseForm::addInputEnum(QString label, int* value, const QStringList& values)
+BaseInput* BaseForm::addInputEnum(QString label, int* value, const QStringList& values)
 {
-    addInput(new InputEnum(form, label, value, values));
+    return addInput(new InputEnum(form, label, value, values));
 }
 
 int BaseForm::currentLayer()

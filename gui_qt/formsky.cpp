@@ -97,6 +97,8 @@ private:
 FormSky::FormSky(QWidget *parent):
     BaseForm(parent)
 {
+    BaseInput* input;
+    
     _definition = skyCreateDefinition();
 
     previewWest = new PreviewSkyWest(this);
@@ -110,12 +112,18 @@ FormSky::FormSky(QWidget *parent):
     addInputDouble(tr("Sun radius"), &_definition.sun_radius, 0.0, 0.4, 0.004, 0.04);
     addInputDouble(tr("Sun halo radius"), &_definition.sun_halo_size, 0.0, 0.4, 0.004, 0.04);
     addInputCurve(tr("Sun halo profile"), _definition.sun_halo_profile, 0.0, 1.0, 0.0, 1.0);
-    addInputBoolean(tr("Auto from daytime"), &_definition.model_custom.auto_from_daytime);
-    addInputColor(tr("Zenith color"), &_definition.model_custom.zenith_color);
-    addInputColor(tr("Haze color"), &_definition.model_custom.haze_color);
-    addInputDouble(tr("Haze height"), &_definition.model_custom.haze_height, 0.0, 1.0, 0.01, 0.1);
-    addInputDouble(tr("Haze smoothing"), &_definition.model_custom.haze_smoothing, 0.0, 1.0, 0.01, 0.1);
-    addInputDouble(tr("Turbidity"), &_definition.model_preetham.turbidity, 1.8, 6.0, 0.05, 0.5);
+    input = addInputBoolean(tr("Auto colors from daytime"), &_definition.model_custom.auto_from_daytime);
+    input->setVisibilityCondition((int*)&_definition.model, SKY_MODEL_CUSTOM);
+    input = addInputColor(tr("Zenith color"), &_definition.model_custom.zenith_color);
+    input->setVisibilityCondition((int*)&_definition.model, SKY_MODEL_CUSTOM);
+    input = addInputColor(tr("Haze color"), &_definition.model_custom.haze_color);
+    input->setVisibilityCondition((int*)&_definition.model, SKY_MODEL_CUSTOM);
+    input = addInputDouble(tr("Haze height"), &_definition.model_custom.haze_height, 0.0, 1.0, 0.01, 0.1);
+    input->setVisibilityCondition((int*)&_definition.model, SKY_MODEL_CUSTOM);
+    input = addInputDouble(tr("Haze smoothing"), &_definition.model_custom.haze_smoothing, 0.0, 1.0, 0.01, 0.1);
+    input->setVisibilityCondition((int*)&_definition.model, SKY_MODEL_CUSTOM);
+    input = addInputDouble(tr("Turbidity"), &_definition.model_preetham.turbidity, 1.8, 6.0, 0.05, 0.5);
+    input->setVisibilityCondition((int*)&_definition.model, SKY_MODEL_PREETHAM);
 
     revertConfig();
 }
