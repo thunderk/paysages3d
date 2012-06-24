@@ -150,7 +150,7 @@ FormTerrain::FormTerrain(QWidget *parent):
 
     addInputNoise(tr("Noise"), _definition.height_noise);
     addInputDouble(tr("Height"), &_definition.height_factor, 0.0, 20.0, 0.1, 1.0);
-    addInputDouble(tr("Scaling"), &_definition.scaling, 1.0, 20.0, 0.1, 1.0);
+    addInputDouble(tr("Scaling"), &_definition.scaling, 1.0, 50.0, 0.1, 5.0);
     addInputDouble(tr("Shadow smoothing"), &_definition.shadow_smoothing, 0.0, 0.3, 0.003, 0.03);
 
     revertConfig();

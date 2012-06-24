@@ -6,6 +6,7 @@ Technology Preview 2 :
    => Find a proper model for night sky (maybe Shirley)
 - InputInt doesn't honor small_step.
 - Disable form fields when no layer is selected.
+- Add buttons to restore "auto" default values in tabs and dialogs.
 - Remove color gradations (replace with automatic boolean and simple colors).
 - Replace zone ranges with curves (with curve input and curve dialog).
 - Interface for textures thickness, slope_range and thickness_transparency (and correct slider ranges).
@@ -33,6 +34,7 @@ Technology Preview 2 :
 
 Technology Preview 3 :
 - Restore render progress.
+- Implement High Dynamic Range.
 - Use bicubic interpolation for antialiasing.
 - Improve large render/antialias memory consumption.
 - Add basic vegetation system ?

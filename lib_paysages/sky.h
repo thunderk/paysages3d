@@ -13,7 +13,8 @@ extern "C" {
 typedef enum
 {
     SKY_MODEL_CUSTOM = 0,
-    SKY_MODEL_PREETHAM = 1
+    SKY_MODEL_RAYLEIGH_MIE = 1,
+    SKY_MODEL_PREETHAM = 2
 } SkyModel;
 
 typedef struct
@@ -53,6 +54,7 @@ void skyRender(SkyDefinition* definition, Renderer* renderer);
 Vector3 skyGetSunDirection(SkyDefinition* definition);
 Color skyGetSunColor(SkyDefinition* definition);
 Color skyGetZenithColor(SkyDefinition* definition);
+Color skyGetHorizonColor(SkyDefinition* definition);
 
 #ifdef __cplusplus
 }

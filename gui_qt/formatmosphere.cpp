@@ -66,7 +66,7 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
     addInputDouble(tr("Start distance"), &_definition.distance_near, -500.0, 500.0, 5.0, 50.0);
     addInputDouble(tr("End distance"), &_definition.distance_far, -500.0, 500.0, 5.0, 50.0);
     addInputDouble(tr("Masking power"), &_definition.full_mask, 0.0, 1.0, 0.01, 0.1);
-    addInputBoolean(tr("Lock color on haze"), &_definition.auto_lock_on_haze);
+    addInputBoolean(tr("Lock on horizon color"), &_definition.auto_lock_on_haze);
     addInputColor(tr("Color"), &_definition.color);
 
     revertConfig();

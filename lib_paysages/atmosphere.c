@@ -77,7 +77,7 @@ void atmosphereValidateDefinition(AtmosphereDefinition* definition)
     {
         sky = skyCreateDefinition();
         sceneryGetSky(&sky);
-        definition->color = sky.model_custom.haze_color;
+        definition->color = skyGetHorizonColor(&sky);
         skyDeleteDefinition(&sky);
     }
 }

@@ -335,8 +335,12 @@ Maintenir Ctrl : Plus rapide</translation>
     </message>
     <message>
         <location filename="../gui_qt/formatmosphere.cpp" line="69"/>
+        <source>Lock on horizon color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Lock color on haze</source>
-        <translation>Verrouiller sur la couleur de la brume</translation>
+        <translation type="obsolete">Verrouiller sur la couleur de la brume</translation>
     </message>
     <message>
         <location filename="../gui_qt/formatmosphere.cpp" line="70"/>
@@ -608,12 +612,17 @@ Maintenir Ctrl : Plus rapide</translation>
     </message>
     <message>
         <location filename="../gui_qt/formsky.cpp" line="109"/>
-        <source>Mixed Preetham/Shirley approximation</source>
+        <source>Custom model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../gui_qt/formsky.cpp" line="109"/>
-        <source>Custom model</source>
+        <source>Rayleigh/Mie scattering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formsky.cpp" line="109"/>
+        <source>Preetham/Shirley analytic model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
