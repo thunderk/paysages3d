@@ -224,6 +224,11 @@ void sceneryRenderFirstPass(Renderer* renderer)
 
 
 /******* Standard renderer *********/
+static int _getSkyDomeLights(Renderer* renderer, LightDefinition* array, int max_lights)
+{
+    return skyGetLights(&_sky, renderer, array, max_lights);
+}
+
 static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
 {
     Vector3 light_location;
@@ -330,6 +335,7 @@ Renderer sceneryCreateStandardRenderer()
     cameraCopyDefinition(&_camera, &result.render_camera);
     result.camera_location = _camera.location;
 
+    result.getSkyDomeLights = _getSkyDomeLights;
     result.alterLight = _alterLight;
     result.getLightStatus = _getLightStatus;
     result.applyLightStatus = _applyLightStatus;

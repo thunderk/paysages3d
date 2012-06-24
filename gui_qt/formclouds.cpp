@@ -68,7 +68,6 @@ public:
 
         _lighting = lightingCreateDefinition();
         light.color = COLOR_WHITE;
-        light.amplitude = 0.0;
         light.direction.x = -1.0;
         light.direction.y = -1.0;
         light.direction.z = 1.0;

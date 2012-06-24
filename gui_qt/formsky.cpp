@@ -112,6 +112,7 @@ FormSky::FormSky(QWidget *parent):
     addInputDouble(tr("Sun radius"), &_definition.sun_radius, 0.0, 0.4, 0.004, 0.04);
     addInputDouble(tr("Sun halo radius"), &_definition.sun_halo_size, 0.0, 0.4, 0.004, 0.04);
     addInputCurve(tr("Sun halo profile"), _definition.sun_halo_profile, 0.0, 1.0, 0.0, 1.0);
+    addInputDouble(tr("Influence of skydome on lighting"), &_definition.dome_lighting, 0.0, 2.0, 0.01, 0.1);
     input = addInputBoolean(tr("Auto colors from daytime"), &_definition.model_custom.auto_from_daytime);
     input->setVisibilityCondition((int*)&_definition.model, SKY_MODEL_CUSTOM);
     input = addInputColor(tr("Zenith color"), &_definition.model_custom.zenith_color);

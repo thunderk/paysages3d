@@ -15,7 +15,6 @@ SmallMaterialPreview::SmallMaterialPreview(QWidget* parent, SurfaceMaterial* mat
 
     _lighting = lightingCreateDefinition();
     light.color = COLOR_WHITE;
-    light.amplitude = 0.0;
     light.direction.x = -0.5;
     light.direction.y = -0.5;
     light.direction.z = -0.5;

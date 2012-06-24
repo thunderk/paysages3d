@@ -26,7 +26,6 @@ void lightingInit()
     _LIGHT_NULL.reflection = 0.0;
     _LIGHT_NULL.filtered = 0;
     _LIGHT_NULL.masked = 0;
-    _LIGHT_NULL.amplitude = 0.0;
 }
 
 void lightingQuit()
@@ -37,7 +36,6 @@ void lightingSave(PackStream* stream, LightingDefinition* definition)
 {
     int i;
 
-    packWriteInt(stream, &definition->autosetfromsky);
     packWriteInt(stream, &definition->nblights);
     for (i = 0; i < definition->nblights; i++)
     {
@@ -46,7 +44,6 @@ void lightingSave(PackStream* stream, LightingDefinition* definition)
         packWriteDouble(stream, &definition->lights[i].reflection);
         packWriteInt(stream, &definition->lights[i].filtered);
         packWriteInt(stream, &definition->lights[i].masked);
-        packWriteDouble(stream, &definition->lights[i].amplitude);
     }
 }
 
@@ -54,7 +51,6 @@ void lightingLoad(PackStream* stream, LightingDefinition* definition)
 {
     int i;
 
-    packReadInt(stream, &definition->autosetfromsky);
     packReadInt(stream, &definition->nblights);
     for (i = 0; i < definition->nblights; i++)
     {
@@ -63,7 +59,6 @@ void lightingLoad(PackStream* stream, LightingDefinition* definition)
         packReadDouble(stream, &definition->lights[i].reflection);
         packReadInt(stream, &definition->lights[i].filtered);
         packReadInt(stream, &definition->lights[i].masked);
-        packReadDouble(stream, &definition->lights[i].amplitude);
     }
 
     lightingValidateDefinition(definition);
@@ -73,9 +68,7 @@ LightingDefinition lightingCreateDefinition()
 {
     LightingDefinition definition;
 
-    definition.autosetfromsky = 0;
     definition.nblights = 0;
-    definition._nbautolights = 0;
 
     return definition;
 }
@@ -91,19 +84,6 @@ void lightingCopyDefinition(LightingDefinition* source, LightingDefinition* dest
 
 void lightingValidateDefinition(LightingDefinition* definition)
 {
-    if (definition->autosetfromsky)
-    {
-        SkyDefinition sky;
-
-        sky = skyCreateDefinition();
-        sceneryGetSky(&sky);
-        definition->_nbautolights = skyGetLights(&sky, definition->_autolights, LIGHTING_MAX_LIGHTS);
-        skyDeleteDefinition(&sky);
-    }
-    else
-    {
-        definition->_nbautolights = 0;
-    }
 }
 
 int lightingGetLightCount(LightingDefinition* definition)
@@ -176,44 +156,6 @@ static Color _applyDirectLight(LightDefinition* definition, Renderer* renderer, 
     light = definition->color;
     direction_inv = v3Scale(definition->direction, -1.0);
 
-    if (definition->amplitude > 0.0)
-    {
-        /* TODO Sampling around light direction */
-        int xsamples, ysamples, samples, x, y;
-        double xstep, ystep, factor;
-        LightDefinition sublight;
-        
-        ysamples = renderer->render_quality / 4 + 1;
-        xsamples = renderer->render_quality / 2 + 1;
-        samples = xsamples * ysamples + 1;
-        factor = 1.0 / (double)samples;
-        
-        xstep = M_PI * 2.0 / (double)xsamples;
-        ystep = M_PI * 0.5 / (double)(ysamples - 1);
-        
-        sublight = *definition;
-        sublight.amplitude = 0.0;
-        sublight.color.r *= factor;
-        sublight.color.g *= factor;
-        sublight.color.b *= factor;
-
-        result = _applyDirectLight(&sublight, renderer, location, normal, material);
-        for (x = 0; x < xsamples; x++)
-        {
-            for (y = 0; y < ysamples; y++)
-            {
-                sublight.direction.x = cos(x * xstep) * cos(y * ystep);
-                sublight.direction.y = -sin(y * ystep);
-                sublight.direction.z = sin(x * xstep) * cos(y * ystep);
-                light = _applyDirectLight(&sublight, renderer, location, normal, material);
-                result.r += light.r;
-                result.g += light.g;
-                result.b += light.b;
-            }
-        }
-        return result;
-    }
-    
     normal_norm = v3Norm(normal);
     if (normal_norm > 1.0)
     {
@@ -266,10 +208,12 @@ static Color _applyDirectLight(LightDefinition* definition, Renderer* renderer, 
 
 void lightingGetStatus(LightingDefinition* definition, Renderer* renderer, Vector3 location, LightStatus* result)
 {
-    int i;
+    int i, skydome_lights_count;
+    LightDefinition skydome_lights[LIGHTING_MAX_LIGHTS];
     
     result->nblights = 0;
     
+    /* Apply static lights */
     for (i = 0; i < definition->nblights; i++)
     {
         if (_getLightStatus(definition->lights + i, renderer, location, result->lights + result->nblights))
@@ -277,9 +221,13 @@ void lightingGetStatus(LightingDefinition* definition, Renderer* renderer, Vecto
             result->nblights++;
         }
     }
-    for (i = 0; i < definition->_nbautolights; i++)
+    
+    /* Apply skydome lights */
+    /* TODO Cache skydome lights for same render */
+    skydome_lights_count = renderer->getSkyDomeLights(renderer, skydome_lights, LIGHTING_MAX_LIGHTS);
+    for (i = 0; i < skydome_lights_count; i++)
     {
-        if (_getLightStatus(definition->_autolights + i, renderer, location, result->lights + result->nblights))
+        if (_getLightStatus(skydome_lights + i, renderer, location, result->lights + result->nblights))
         {
             result->nblights++;
         }

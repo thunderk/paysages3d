@@ -64,7 +64,6 @@ void autoGenRealisticLandscape(int seed)
     SkyDefinition sky;
     TexturesDefinition textures;
     TextureLayerDefinition* texture;
-    LightingDefinition lighting;
 
     if (!seed)
     {
@@ -114,6 +113,7 @@ void autoGenRealisticLandscape(int seed)
     sky.sun_color.a = 1.0;
     sky.sun_radius = 0.02;
     sky.sun_halo_size = 0.3;
+    sky.dome_lighting = 0.6;
     curveClear(sky.sun_halo_profile);
     curveQuickAddPoint(sky.sun_halo_profile, 0.0, 1.0);
     curveQuickAddPoint(sky.sun_halo_profile, 0.1, 0.2);
@@ -132,12 +132,6 @@ void autoGenRealisticLandscape(int seed)
     sky.model_preetham.turbidity = 2.0;
     scenerySetSky(&sky);
     skyDeleteDefinition(&sky);
-
-    /* Lighting */
-    lighting = lightingCreateDefinition();
-    lighting.autosetfromsky = 1;
-    scenerySetLighting(&lighting);
-    lightingDeleteDefinition(&lighting);
 
     /* Terrain */
     terrain = terrainCreateDefinition();

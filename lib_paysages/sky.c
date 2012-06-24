@@ -32,6 +32,7 @@ void skySave(PackStream* stream, SkyDefinition* definition)
     packWriteDouble(stream, &definition->sun_radius);
     packWriteDouble(stream, &definition->sun_halo_size);
     curveSave(stream, definition->sun_halo_profile);
+    packWriteDouble(stream, &definition->dome_lighting);
     
     packWriteInt(stream, &definition->model_custom.auto_from_daytime);
     colorSave(stream, &definition->model_custom.zenith_color);
@@ -50,6 +51,7 @@ void skyLoad(PackStream* stream, SkyDefinition* definition)
     packReadDouble(stream, &definition->sun_radius);
     packReadDouble(stream, &definition->sun_halo_size);
     curveLoad(stream, definition->sun_halo_profile);
+    packReadDouble(stream, &definition->dome_lighting);
     
     packReadInt(stream, &definition->model_custom.auto_from_daytime);
     colorLoad(stream, &definition->model_custom.zenith_color);
@@ -72,6 +74,7 @@ SkyDefinition skyCreateDefinition()
     def.sun_radius = 1.0;
     def.sun_halo_size = 0.0;
     def.sun_halo_profile = curveCreate();
+    def.dome_lighting = 0.0;
     def.model_custom.auto_from_daytime = 0;
     def.model_custom.zenith_color = COLOR_BLACK;
     def.model_custom.haze_color = COLOR_BLACK;
@@ -98,6 +101,7 @@ void skyCopyDefinition(SkyDefinition* source, SkyDefinition* destination)
     destination->sun_color = source->sun_color;
     destination->sun_radius = source->sun_radius;
     destination->sun_halo_size = source->sun_halo_size;
+    destination->dome_lighting = source->dome_lighting;
     destination->model_custom.auto_from_daytime = source->model_custom.auto_from_daytime;
     destination->model_custom.zenith_color = source->model_custom.zenith_color;
     destination->model_custom.haze_color = source->model_custom.haze_color;
@@ -156,7 +160,19 @@ void skyValidateDefinition(SkyDefinition* definition)
     }
 }
 
-int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
+static inline void _addDomeLight(SkyDefinition* sky, Renderer* renderer, LightDefinition* light, Vector3 direction, double factor)
+{
+    light->direction = v3Scale(direction, -1.0);
+    light->color = skyGetColor(sky, renderer, VECTOR_ZERO, direction);
+    light->color.r *= factor;
+    light->color.g *= factor;
+    light->color.b *= factor;
+    light->reflection = 0.0;
+    light->filtered = 0;
+    light->masked = 0;
+}
+
+int skyGetLights(SkyDefinition* sky, Renderer* renderer, LightDefinition* lights, int max_lights)
 {
     double sun_angle;
     Vector3 sun_direction;
@@ -167,33 +183,56 @@ int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights)
     sun_direction.y = sin(sun_angle);
     sun_direction.z = 0.0;
 
-    /* TODO Night lights */
+    /* TODO Moon light */
 
     if (max_lights > 0)
     {
-        /* Light from the sun */
+        /* Direct light from the sun */
         lights[0].direction = v3Scale(sun_direction, -1.0);
         lights[0].color = sky->sun_color;
         lights[0].reflection = 1.0;
         lights[0].filtered = 1;
         lights[0].masked = 1;
-        lights[0].amplitude = 0.0;
         nblights = 1;
-        if (max_lights > 1)
+        max_lights--;
+    }
+    
+    if (max_lights > 0)
+    {
+        /* Indirect lighting by skydome scattering */
+        int xsamples, ysamples, samples, x, y;
+        double xstep, ystep, factor;
+        Vector3 direction;
+        
+        samples = (renderer->render_quality < 5) ? 9 : (renderer->render_quality * 4 + 1);
+        samples = samples > max_lights ? max_lights : samples;
+        
+        factor = sky->dome_lighting / (double)samples;
+        
+        _addDomeLight(sky, renderer, lights + nblights, VECTOR_UP, factor);
+        nblights++;
+        samples--;
+        
+        if (samples >= 2)
         {
-            /* Skydome lighting */
-            lights[1].direction.x = 0.0;
-            lights[1].direction.y = -1.0;
-            lights[1].direction.z = 0.0;
-            lights[1].color = skyGetZenithColor(sky);
-            lights[1].color.r *= 0.6;
-            lights[1].color.g *= 0.6;
-            lights[1].color.b *= 0.6;
-            lights[1].reflection = 0.0;
-            lights[1].filtered = 1;
-            lights[1].masked = 0;
-            lights[1].amplitude = M_PI / 2.0;
-            nblights = 2;
+            xsamples = samples / 2;
+            ysamples = samples / xsamples;
+
+            xstep = M_PI * 2.0 / (double)xsamples;
+            ystep = M_PI * 0.5 / (double)ysamples;
+
+            for (x = 0; x < xsamples; x++)
+            {
+                for (y = 0; y < ysamples; y++)
+                {
+                    direction.x = cos(x * xstep) * cos(y * ystep);
+                    direction.y = -sin(y * ystep);
+                    direction.z = sin(x * xstep) * cos(y * ystep);
+
+                    _addDomeLight(sky, renderer, lights + nblights, direction, factor);
+                    nblights++;
+                }
+            }
         }
     }
 

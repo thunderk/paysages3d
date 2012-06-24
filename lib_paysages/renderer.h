@@ -39,6 +39,7 @@ struct Renderer
     Color (*applyClouds)(Renderer* renderer, Color base, Vector3 start, Vector3 end);
 
     /* Lighting related */
+    int (*getSkyDomeLights)(Renderer* renderer, LightDefinition* array, int max_lights);
     void (*alterLight)(Renderer* renderer, LightDefinition* light, Vector3 location);
     void (*getLightStatus)(Renderer* renderer, LightStatus* status, Vector3 location);
     Color (*applyLightStatus)(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material);

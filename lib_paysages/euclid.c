@@ -5,6 +5,12 @@
 #include "tools.h"
 
 Vector3 VECTOR_ZERO = {0.0, 0.0, 0.0};
+Vector3 VECTOR_DOWN = {0.0, -1.0, 0.0};
+Vector3 VECTOR_UP = {0.0, 1.0, 0.0};
+Vector3 VECTOR_NORTH = {0.0, 0.0, -1.0};
+Vector3 VECTOR_SOUTH = {0.0, 0.0, 1.0};
+Vector3 VECTOR_WEST = {-1.0, 0.0, 0.0};
+Vector3 VECTOR_EAST = {1.0, 0.0, 0.0};
 
 void v3Save(PackStream* stream, Vector3* v)
 {

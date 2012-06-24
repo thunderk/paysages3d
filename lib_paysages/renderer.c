@@ -54,6 +54,11 @@ static void _pushQuad(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Ve
     renderer->pushTriangle(renderer, v4, v1, v3, callback, callback_data);
 }
 
+static int _getSkyDomeLights(Renderer* renderer, LightDefinition* array, int max_lights)
+{
+    return 0;
+}
+
 static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
 {
 }
@@ -129,6 +134,7 @@ Renderer rendererCreate()
     result.applyAtmosphere = _applyAtmosphere;
     result.applyClouds = _applyClouds;
 
+    result.getSkyDomeLights = _getSkyDomeLights;
     result.alterLight = _alterLight;
     result.getLightStatus = _getLightStatus;
     result.applyLightStatus = _applyLightStatus;

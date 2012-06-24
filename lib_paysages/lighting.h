@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-#define LIGHTING_MAX_LIGHTS 10
+#define LIGHTING_MAX_LIGHTS 30
 
 struct LightDefinition
 {
@@ -18,16 +18,12 @@ struct LightDefinition
     double reflection;  /* Reflected factor of the light (for specular lighting) */
     int filtered;       /* Should the light be filtered (by atmosphere, water...) */
     int masked;         /* Should the light be masked (cast shadows..) */
-    double amplitude;   /* Angle amplitude of the light source (for multi-sampling, pi / 2.0 for skydome) */
 };
 
 typedef struct
 {
-    int autosetfromsky;
     int nblights;
     LightDefinition lights[LIGHTING_MAX_LIGHTS];
-    int _nbautolights;
-    LightDefinition _autolights[LIGHTING_MAX_LIGHTS];
 } LightingDefinition;
 
 struct LightStatus

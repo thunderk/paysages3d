@@ -1,10 +1,10 @@
 Technology Preview 2 :
 - Finalize Preetham's model usage
    => Update all fields when "auto from daytime" is selected
-   => Apply the skydome lighting by directly sampling it (no more amplitude in lights)
    => Apply model to atmosphere (aerial perspective)
    => Find a proper model for night sky (maybe Shirley)
 - InputInt doesn't honor small_step.
+- Keep skydome lights in cache for a render.
 - Disable form fields when no layer is selected.
 - Add buttons to restore "auto" default values in tabs and dialogs.
 - Remove color gradations (replace with automatic boolean and simple colors).

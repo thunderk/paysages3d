@@ -60,7 +60,6 @@ public:
         light.color.r = 0.6;
         light.color.g = 0.6;
         light.color.b = 0.6;
-        light.amplitude = 0.0;
         light.direction.x = -1.0;
         light.direction.y = -0.5;
         light.direction.z = 1.0;
@@ -72,7 +71,6 @@ public:
         light.color.r = 0.3;
         light.color.g = 0.3;
         light.color.b = 0.3;
-        light.amplitude = 0.0;
         light.direction.x = 0.5;
         light.direction.y = 0.7071;
         light.direction.z = -0.5;

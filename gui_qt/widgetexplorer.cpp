@@ -58,6 +58,11 @@ static Color _applyTextures(Renderer* renderer, Vector3 location, double precisi
     return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
 }
 
+static int _getSkyDomeLights(Renderer* renderer, LightDefinition* array, int max_lights)
+{
+    return skyGetLights((SkyDefinition*)(renderer->customData[4]), renderer, array, max_lights);
+}
+
 static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
 {
     light->color = terrainLightFilter((TerrainDefinition*)(renderer->customData[0]), renderer, light->color, location, v3Scale(light->direction, -1000.0), v3Scale(light->direction, -1.0));
@@ -94,8 +99,10 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     _renderer.customData[1] = &_textures;
     _renderer.customData[2] = &_lighting;
     _renderer.customData[3] = &_water;
+    _renderer.customData[4] = &_sky;
     _renderer.applyTextures = _applyTextures;
     _renderer.getTerrainHeight = _getTerrainHeight;
+    _renderer.getSkyDomeLights = _getSkyDomeLights;
     _renderer.alterLight = _alterLight;
     _renderer.getLightStatus = _getLightStatus;
     

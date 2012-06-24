@@ -25,6 +25,7 @@ typedef struct
     double sun_radius;
     double sun_halo_size;
     Curve* sun_halo_profile;
+    double dome_lighting;
     struct {
         int auto_from_daytime;
         Color zenith_color;
@@ -48,7 +49,7 @@ void skyDeleteDefinition(SkyDefinition* definition);
 void skyCopyDefinition(SkyDefinition* source, SkyDefinition* destination);
 void skyValidateDefinition(SkyDefinition* definition);
 
-int skyGetLights(SkyDefinition* sky, LightDefinition* lights, int max_lights);
+int skyGetLights(SkyDefinition* sky, Renderer* renderer, LightDefinition* lights, int max_lights);
 Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Vector3 look);
 void skyRender(SkyDefinition* definition, Renderer* renderer);
 Vector3 skyGetSunDirection(SkyDefinition* definition);

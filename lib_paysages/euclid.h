@@ -35,6 +35,12 @@ typedef struct
 } Matrix4;
 
 extern Vector3 VECTOR_ZERO;
+extern Vector3 VECTOR_DOWN;
+extern Vector3 VECTOR_UP;
+extern Vector3 VECTOR_NORTH;
+extern Vector3 VECTOR_SOUTH;
+extern Vector3 VECTOR_EAST;
+extern Vector3 VECTOR_WEST;
 
 void v3Save(PackStream* stream, Vector3* v);
 void v3Load(PackStream* stream, Vector3* v);
