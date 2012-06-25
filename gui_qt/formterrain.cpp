@@ -1,9 +1,9 @@
 #include "formterrain.h"
 
-#include "tools.h"
+#include <math.h>
 #include <QColor>
 #include <QSlider>
-#include <math.h>
+#include "tools.h"
 
 #include "../lib_paysages/terrain.h"
 #include "../lib_paysages/scenery.h"
@@ -18,6 +18,8 @@ public:
     PreviewTerrainHeight(QWidget* parent):BasePreview(parent)
     {
         _preview_definition = terrainCreateDefinition();
+        
+        addOsd(QString("geolocation"));
         
         configScaling(0.5, 200.0, 3.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
@@ -93,6 +95,8 @@ public:
         _renderer.customData[0] = &_terrain;
         _renderer.customData[1] = &_textures;
         _renderer.customData[2] = &_lighting;
+
+        addOsd(QString("geolocation"));
         
         configScaling(0.5, 200.0, 3.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);

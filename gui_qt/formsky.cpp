@@ -107,7 +107,7 @@ FormSky::FormSky(QWidget *parent):
     addPreview(previewEast, QString(tr("East preview")));
 
     addInputEnum(tr("Color model"), (int*)&_definition.model, QStringList(tr("Custom model")) << tr("Rayleigh/Mie scattering") << tr("Preetham/Shirley analytic model"));
-    addInputDouble(tr("Day time"), &_definition.daytime, 0.0, 1.0, 0.002, 0.1);
+    addInputDouble(tr("Day time"), &_definition.daytime, 0.14, 0.86, 0.002, 0.1);
     addInputColor(tr("Sun color"), &_definition.sun_color);
     addInputDouble(tr("Sun radius"), &_definition.sun_radius, 0.0, 0.4, 0.004, 0.04);
     addInputDouble(tr("Sun halo radius"), &_definition.sun_halo_size, 0.0, 0.4, 0.004, 0.04);

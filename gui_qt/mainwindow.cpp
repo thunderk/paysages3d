@@ -143,11 +143,15 @@ bool MainWindow::event(QEvent* event)
 
 void MainWindow::refreshAll()
 {
+    // Refresh all tabs
     QList<BaseForm*> list_forms = this->findChildren<BaseForm*>("_base_form_");
     for (int i = 0; i < list_forms.size(); i++)
     {
         list_forms[i]->revertConfig();
     }
+    
+    // Refresh preview OSD
+    //PreviewOsd* osd = PreviewOsd::getInstance(QString("geolocation"));
 }
 
 void MainWindow::fileNew()

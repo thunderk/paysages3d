@@ -7,6 +7,7 @@
 #include <QThread>
 #include <QVector>
 #include <QList>
+#include "previewosd.h"
 
 class BasePreview : public QWidget {
     Q_OBJECT
@@ -14,6 +15,8 @@ class BasePreview : public QWidget {
 public:
     BasePreview(QWidget* parent);
     ~BasePreview();
+    
+    void addOsd(QString name);
 
     static void initDrawers();
     static void stopDrawers();
@@ -52,6 +55,7 @@ private:
 
     QMutex* lock_drawing;
     QImage* pixbuf;
+    QVector<PreviewOsd*> _osd;
 
     int _width;
     int _height;

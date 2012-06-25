@@ -297,6 +297,11 @@ BasePreview::~BasePreview()
     delete lock_drawing;
 }
 
+void BasePreview::addOsd(QString name)
+{
+    _osd.append(PreviewOsd::getInstance(name));
+}
+
 void BasePreview::initDrawers()
 {
     _drawing_manager = new PreviewDrawingManager();
@@ -442,6 +447,14 @@ void BasePreview::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.drawImage(0, 0, *this->pixbuf);
+    
+    QImage osd(pixbuf->size(), pixbuf->format());
+    osd.fill(0x00000000);
+    for (int i = 0; i < _osd.size(); i++)
+    {
+        _osd[i]->apply(&osd, xoffset, yoffset, scaling);
+    }
+    painter.drawImage(0, 0, osd);
 }
 
 void BasePreview::updateScaling()
