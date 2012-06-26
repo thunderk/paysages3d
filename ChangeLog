@@ -24,6 +24,7 @@ GUI :
   * Improved curve rendering.
   * New material editor.
   * Added render timer.
+  * Added camera location to previews.
 
 Misc :
   * Version handling in saved files.

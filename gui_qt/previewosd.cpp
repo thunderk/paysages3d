@@ -2,6 +2,7 @@
 
 #include <QHash>
 #include <QPainter>
+#include <math.h>
 
 static QHash<QString, PreviewOsd*> _instances;
 
@@ -10,6 +11,7 @@ PreviewOsdItem::PreviewOsdItem(int width, int height) : QImage(width, height, QI
 {
     _xlocation = 0.0;
     _ylocation = 0.0;
+    fill(0x00000000);
 }
 
 void PreviewOsdItem::setLocation(double x, double y)
@@ -18,10 +20,24 @@ void PreviewOsdItem::setLocation(double x, double y)
     _ylocation = y;
 }
 
+void PreviewOsdItem::drawCamera(CameraDefinition* camera)
+{
+    int w2 = width() / 2;
+    int h2 = height() / 2;
+    
+    _xlocation = camera->location.x;
+    _ylocation = camera->location.z;
+    
+    QPainter painter(this);
+    painter.setPen(QPen(Qt::red, 2));
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing, true);
+    painter.drawLine(w2, h2, w2 + w2 * cos(camera->yaw - M_PI_4), h2 - h2 * sin(camera->yaw - M_PI_4));
+    painter.drawLine(w2, h2, w2 + w2 * cos(camera->yaw + M_PI_4), h2 - h2 * sin(camera->yaw + M_PI_4));
+}
+
 /*************** PreviewOsd ***************/
 PreviewOsd::PreviewOsd()
 {
-    newItem(50, 50)->fill(0x88888888);
 }
 
 PreviewOsd::~PreviewOsd()
@@ -44,6 +60,15 @@ PreviewOsd* PreviewOsd::getInstance(QString name)
         _instances.insert(name, instance);
         return instance;
     }
+}
+
+void PreviewOsd::clearItems()
+{
+    for (int i = 0; i < _items.size(); i++)
+    {
+        delete _items[i];
+    }
+    _items.clear();
 }
     
 PreviewOsdItem* PreviewOsd::newItem(int width, int height)

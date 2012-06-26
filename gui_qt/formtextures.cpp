@@ -35,6 +35,8 @@ public:
         
         _preview_layer = texturesLayerCreateDefinition();
         
+        addOsd(QString("geolocation"));
+        
         configScaling(0.5, 200.0, 1.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }

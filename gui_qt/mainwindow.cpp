@@ -129,6 +129,8 @@ QMainWindow(parent)
 
     setWindowTitle("Paysages 3D");
     setWindowIcon(QIcon("images/logo_32.png"));
+    
+    refreshAll();
 }
 
 bool MainWindow::event(QEvent* event)
@@ -151,7 +153,12 @@ void MainWindow::refreshAll()
     }
     
     // Refresh preview OSD
-    //PreviewOsd* osd = PreviewOsd::getInstance(QString("geolocation"));
+    CameraDefinition camera = cameraCreateDefinition();
+    PreviewOsd* osd = PreviewOsd::getInstance(QString("geolocation"));
+    osd->clearItems();
+    sceneryGetCamera(&camera);
+    osd->newItem(50, 50)->drawCamera(&camera);
+    cameraDeleteDefinition(&camera);
 }
 
 void MainWindow::fileNew()
