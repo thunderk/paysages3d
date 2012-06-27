@@ -157,7 +157,9 @@ void MainWindow::refreshAll()
     PreviewOsd* osd = PreviewOsd::getInstance(QString("geolocation"));
     osd->clearItems();
     sceneryGetCamera(&camera);
-    osd->newItem(50, 50)->drawCamera(&camera);
+    PreviewOsdItem* item = osd->newItem(50, 50);
+    item->drawCamera(&camera);
+    item->setToolTip(QString(tr("Camera")));
     cameraDeleteDefinition(&camera);
 }
 

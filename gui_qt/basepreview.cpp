@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QTimer>
 #include <QWheelEvent>
+#include <qt4/QtGui/qlabel.h>
 #include "tools.h"
 
 /*************** PreviewChunk ***************/
@@ -276,6 +277,10 @@ QWidget(parent)
     _width = width();
     _height = height();
     _revision = 0;
+    
+    _info = new QLabel(this);
+    _info->setVisible(false);
+    _info->setStyleSheet("QLabel { background-color: white; color: black; }");
 
     this->alive = true;
 
@@ -293,6 +298,7 @@ BasePreview::~BasePreview()
 
     _drawing_manager->removeChunks(this);
 
+    delete _info;
     delete pixbuf;
     delete lock_drawing;
 }
@@ -300,6 +306,7 @@ BasePreview::~BasePreview()
 void BasePreview::addOsd(QString name)
 {
     _osd.append(PreviewOsd::getInstance(name));
+    setMouseTracking(true);
 }
 
 void BasePreview::initDrawers()
@@ -502,12 +509,16 @@ void BasePreview::mousePressEvent(QMouseEvent* event)
 
 void BasePreview::mouseMoveEvent(QMouseEvent* event)
 {
-    int dx, dy;
-    int ndx, ndy;
     int width, height;
+    
+    width = this->width();
+    height = this->height();
 
     if (event->buttons() & Qt::LeftButton)
     {
+        int dx, dy;
+        int ndx, ndy;
+        
         dx = event->x() - mousex;
         dy = event->y() - mousey;
 
@@ -531,9 +542,6 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
         }
         if (ndx != 0 || ndy != 0)
         {
-            width = this->width();
-            height = this->height();
-
             if (ndx <= -width || ndx >= width || ndy <= -height || ndy >= height)
             {
                 xoffset -= (double) ndx * scaling;
@@ -588,6 +596,28 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
 
         mousex = event->x();
         mousey = event->y();
+    }
+    else
+    {
+        // Get text info from OSD
+        bool found = false;
+        for (int i = 0; i < _osd.size(); i++)
+        {
+            double x = xoffset + (event->x() - width / 2) * scaling;
+            double y = yoffset + (event->y() - height / 2) * scaling;
+            QString info = _osd[i]->getToolTip(x, y, scaling);
+            if (not info.isEmpty())
+            {
+                _info->setText(info);
+                _info->setVisible(true);
+                found = true;
+                break;
+            }
+        }
+        if (not found)
+        {
+            _info->setVisible(false);
+        }
     }
 }
 
@@ -675,4 +705,9 @@ void BasePreview::wheelEvent(QWheelEvent* event)
     }
 
     event->accept();
+}
+
+void BasePreview::leaveEvent(QEvent* event)
+{
+    _info->setVisible(false);
 }

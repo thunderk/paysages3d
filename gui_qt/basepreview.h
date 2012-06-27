@@ -7,6 +7,7 @@
 #include <QThread>
 #include <QVector>
 #include <QList>
+#include <QLabel>
 #include "previewosd.h"
 
 class BasePreview : public QWidget {
@@ -52,10 +53,13 @@ private:
     void mousePressEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
     void wheelEvent(QWheelEvent* event);
+    void leaveEvent(QEvent* event);
 
     QMutex* lock_drawing;
     QImage* pixbuf;
     QVector<PreviewOsd*> _osd;
+    
+    QLabel* _info;
 
     int _width;
     int _height;

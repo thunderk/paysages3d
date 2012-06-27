@@ -17,7 +17,6 @@ Technology Preview 2 :
 - Improve previews.
    => Add a right click menu for toggles and modes
    => Add user markers on OSD
-   => Add a tooltip for OSD items
 - Add a zone editor dialog for localized textures.
 - Add a terrain modifier dialog with zones.
 - Use the curve editor in noise editor

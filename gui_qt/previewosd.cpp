@@ -35,6 +35,23 @@ void PreviewOsdItem::drawCamera(CameraDefinition* camera)
     painter.drawLine(w2, h2, w2 + w2 * cos(camera->yaw + M_PI_4), h2 - h2 * sin(camera->yaw + M_PI_4));
 }
 
+void PreviewOsdItem::setToolTip(QString text)
+{
+    _tooltip = text;
+}
+
+QString PreviewOsdItem::getToolTip(double x, double y, double scaling)
+{
+    if (_tooltip.isEmpty() or (x > _xlocation - (width() / 2) * scaling and x < _xlocation + (width() / 2) * scaling and y > _ylocation - (height() / 2) * scaling and y < _ylocation + (height() / 2) * scaling))
+    {
+        return _tooltip;
+    }
+    else
+    {
+        return QString();
+    }
+}
+
 /*************** PreviewOsd ***************/
 PreviewOsd::PreviewOsd()
 {
@@ -97,4 +114,18 @@ void PreviewOsd::apply(QImage* mask, double xoffset, double yoffset, double scal
         int y = (int)(mask->height() / 2 - (yoffset - item->ylocation()) / scaling - item->height() / 2);
         painter.drawImage(x, y, *item);
     }
+}
+
+QString PreviewOsd::getToolTip(double x, double y, double scaling)
+{
+    for (int i = 0; i < _items.size(); i++)
+    {
+        PreviewOsdItem* item = _items[i];
+        QString tooltip = item->getToolTip(x, y, scaling);
+        if (not tooltip.isEmpty())
+        {
+            return tooltip;
+        }
+    }
+    return QString();
 }

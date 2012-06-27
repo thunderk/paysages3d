@@ -13,11 +13,15 @@ public:
     inline double xlocation() {return _xlocation;};
     inline double ylocation() {return _ylocation;};
     
+    void setToolTip(QString text);
+    QString getToolTip(double x, double y, double scaling);
+    
     void drawCamera(CameraDefinition* camera);
     
 private:
     double _xlocation;
     double _ylocation;
+    QString _tooltip;
 };
 
 class PreviewOsd
@@ -32,6 +36,7 @@ public:
     PreviewOsdItem* newItem(int width, int height);
     PreviewOsdItem* newItem(QImage image);
     void apply(QImage* mask, double xoffset, double yoffset, double scaling);
+    QString getToolTip(double x, double y, double scaling);
     
 private:
     QVector<PreviewOsdItem*> _items;
