@@ -13,6 +13,8 @@ public:
     WidgetCurveEditor(QWidget* parent, double xmin, double xmax, double ymin, double ymax);
     ~WidgetCurveEditor();
     
+    void setAxisLabels(QString xlabel, QString ylabel);
+    
     void setCurve(Curve* curve);
     void getCurve(Curve* curve);
     
@@ -34,6 +36,8 @@ private:
     Curve* _curve;
     int _dragged;
     QColor _pen;
+    QString _xlabel;
+    QString _ylabel;
 };
 
 #endif

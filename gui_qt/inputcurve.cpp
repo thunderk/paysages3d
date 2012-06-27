@@ -49,13 +49,15 @@ public:
     double _ymax;
 };
 
-InputCurve::InputCurve(QWidget* form, QString label, Curve* value, double xmin, double xmax, double ymin, double ymax) : BaseInput(form, label)
+InputCurve::InputCurve(QWidget* form, QString label, Curve* value, double xmin, double xmax, double ymin, double ymax, QString xlabel, QString ylabel) : BaseInput(form, label)
 {
     _value = value;
     _xmin = xmin;
     _xmax = xmax;
     _ymin = ymin;
     _ymax = ymax;
+    _xlabel = xlabel;
+    _ylabel = ylabel;
     
     _preview = new CurveSmallPreview(form, value, xmin, xmax, ymin, ymax);
     _preview->setMinimumSize(100, 40);
@@ -84,7 +86,7 @@ void InputCurve::revert()
 
 void InputCurve::editCurve()
 {
-    if (DialogCurve::getCurve(_control, _value, _xmin, _xmax, _ymin, _ymax))
+    if (DialogCurve::getCurve(_control, _value, _xmin, _xmax, _ymin, _ymax, _xlabel, _ylabel))
     {
         applyValue();
     }

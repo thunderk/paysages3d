@@ -47,7 +47,7 @@ protected:
     BaseInput* addInputColor(QString label, Color* value);
     BaseInput* addInputColorGradation(QString label, ColorGradation* value);
     BaseInput* addInputNoise(QString label, NoiseGenerator* value);
-    BaseInput* addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax);
+    BaseInput* addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax, QString xlabel, QString ylabel);
     BaseInput* addInputMaterial(QString label, SurfaceMaterial* material);
     BaseInput* addInputEnum(QString label, int* value, const QStringList& values);
     

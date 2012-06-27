@@ -25,6 +25,7 @@ GUI :
   * New material editor.
   * Added render timer.
   * Previews locations and render params are now saved.
+  * Added grid and axis labels to curve editor.
   * Added camera location to previews.
 
 Misc :

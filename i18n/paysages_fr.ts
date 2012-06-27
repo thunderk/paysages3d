@@ -101,22 +101,22 @@ Right click on a point to delete it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogcurve.cpp" line="50"/>
+        <location filename="../gui_qt/dialogcurve.cpp" line="51"/>
         <source>Validate</source>
         <translation type="unfinished">Valider</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogcurve.cpp" line="54"/>
+        <location filename="../gui_qt/dialogcurve.cpp" line="55"/>
         <source>Revert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogcurve.cpp" line="58"/>
+        <location filename="../gui_qt/dialogcurve.cpp" line="59"/>
         <source>Cancel</source>
         <translation type="unfinished">Annuler</translation>
     </message>
     <message>
-        <location filename="../gui_qt/dialogcurve.cpp" line="62"/>
+        <location filename="../gui_qt/dialogcurve.cpp" line="63"/>
         <source>Paysages 3D - Curve editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -422,6 +422,16 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../gui_qt/formclouds.cpp" line="160"/>
+        <source>Altitude in cloud layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formclouds.cpp" line="160"/>
+        <source>Coverage value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../gui_qt/formclouds.cpp" line="161"/>
         <source>Shape noise</source>
         <translation type="unfinished"></translation>
@@ -664,6 +674,16 @@ Maintenir Ctrl : Plus rapide</translation>
         <location filename="../gui_qt/formsky.cpp" line="118"/>
         <source>Zenith color</source>
         <translation>Couleur du ciel au zénith</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formsky.cpp" line="114"/>
+        <source>Distance to center of the sun</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formsky.cpp" line="114"/>
+        <source>Light influence (halo opacity)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../gui_qt/formsky.cpp" line="116"/>
@@ -931,7 +951,7 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>InputCurve</name>
     <message>
-        <location filename="../gui_qt/inputcurve.cpp" line="62"/>
+        <location filename="../gui_qt/inputcurve.cpp" line="64"/>
         <source>Edit</source>
         <translation type="unfinished">Editer</translation>
     </message>

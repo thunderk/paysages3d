@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <QMouseEvent>
+#include <qt4/QtGui/qpaintengine.h>
 #include "../lib_paysages/tools.h"
 
 WidgetCurveEditor::WidgetCurveEditor(QWidget *parent, double xmin, double xmax, double ymin, double ymax) : QWidget(parent)
@@ -16,6 +17,12 @@ WidgetCurveEditor::WidgetCurveEditor(QWidget *parent, double xmin, double xmax, 
 WidgetCurveEditor::~WidgetCurveEditor()
 {
     curveDelete(_curve);
+}
+
+void WidgetCurveEditor::setAxisLabels(QString xlabel, QString ylabel)
+{
+    _xlabel = xlabel;
+    _ylabel = ylabel;
 }
 
 void WidgetCurveEditor::setCurve(Curve* curve)
@@ -49,9 +56,35 @@ void WidgetCurveEditor::paintEvent(QPaintEvent* event)
     dwidth = (double)(width - 1);
     
     QPainter painter(this);
-    painter.fillRect(0, 0, width, height, QColor(255, 255, 255));
-    painter.setPen(_pen);
+    painter.fillRect(rect(), Qt::white);
     
+    // Draw grid
+    painter.setPen(QPen(Qt::lightGray));
+    for (int x = 0; x <= 10; x++)
+    {
+        int vx = (x == 10) ? width - 1 : x * width / 10;
+        painter.drawLine(vx, 0, vx, height -1);
+        vx = (x == 10) ? height - 1 : x * height / 10;
+        painter.drawLine(0, vx, width - 1, vx);
+    }
+    
+    // Draw labels
+    painter.setPen(QColor(50, 50, 50));
+    if (not _xlabel.isEmpty())
+    {
+        painter.drawText(rect(), Qt::AlignCenter | Qt::AlignBottom, _xlabel);
+    }
+    if (not _ylabel.isEmpty())
+    {
+        painter.rotate(-90.0);
+        painter.translate(-height, 0.0);
+        painter.drawText(0, 0, height, 20, Qt::AlignCenter | Qt::AlignTop, _ylabel);
+        painter.translate(height, 0.0);
+        painter.rotate(90.0);
+    }
+    
+    // Draw curve path
+    painter.setPen(_pen);
     for (int x = 0; x < width; x++)
     {
         position = ((double)x) / dwidth;
@@ -64,7 +97,9 @@ void WidgetCurveEditor::paintEvent(QPaintEvent* event)
         painter.drawPoint(x, height - 1 - (int)(value * dheight));
     }
     
+    // Draw handles
     n = curveGetPointCount(_curve);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing, true);
     for (i = 0; i < n; i++)
     {
         curveGetPoint(_curve, i, &point);

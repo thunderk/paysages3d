@@ -15,7 +15,7 @@
 #include "widgetcurveeditor.h"
 
 /**************** Dialog ****************/
-DialogCurve::DialogCurve(QWidget *parent, Curve* curve, double xmin, double xmax, double ymin, double ymax) : QDialog(parent)
+DialogCurve::DialogCurve(QWidget *parent, Curve* curve, double xmin, double xmax, double ymin, double ymax, QString xlabel, QString ylabel) : QDialog(parent)
 {
     QWidget* buttons;
     QWidget* form;
@@ -40,6 +40,7 @@ DialogCurve::DialogCurve(QWidget *parent, Curve* curve, double xmin, double xmax
     label->setWordWrap(true);
     form_layout->addWidget(label, 0, 1);
     _curve_editor = new WidgetCurveEditor(form, xmin, xmax, ymin, ymax);
+    _curve_editor->setAxisLabels(xlabel, ylabel);
     _curve_editor->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     form_layout->addWidget(_curve_editor, 0, 0);
 
@@ -70,11 +71,11 @@ DialogCurve::~DialogCurve()
     curveDelete(_current);
 }
 
-bool DialogCurve::getCurve(QWidget* parent, Curve* curve, double xmin, double xmax, double ymin, double ymax)
+bool DialogCurve::getCurve(QWidget* parent, Curve* curve, double xmin, double xmax, double ymin, double ymax, QString xlabel, QString ylabel)
 {
     int result;
 
-    DialogCurve* dialog = new DialogCurve(parent, curve, xmin, xmax, ymin, ymax);
+    DialogCurve* dialog = new DialogCurve(parent, curve, xmin, xmax, ymin, ymax, xlabel, ylabel);
     result = dialog->exec();
 
     delete dialog;

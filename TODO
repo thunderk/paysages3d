@@ -23,8 +23,8 @@ Technology Preview 2 :
 - Fix the distorted sun appearance.
 - Improve curve editor.
    => Add curve modes
-   => Add axis labels and grid
    => Add logarithmic mode
+   => Add zoom and scrolling
 - Fix "RGB parameters out of range" (and segfault) on preview while moving render params fast in render tab.
    => May need to change the updateData system.
    => Previews need to be paused while updating data.

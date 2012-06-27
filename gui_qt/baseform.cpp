@@ -285,9 +285,9 @@ BaseInput* BaseForm::addInputNoise(QString label, NoiseGenerator* value)
     return addInput(new InputNoise(form, label, value));
 }
 
-BaseInput* BaseForm::addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax)
+BaseInput* BaseForm::addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax, QString xlabel, QString ylabel)
 {
-    return addInput(new InputCurve(form, label, value, xmin, xmax, ymin, ymax));
+    return addInput(new InputCurve(form, label, value, xmin, xmax, ymin, ymax, xlabel, ylabel));
 }
 
 BaseInput* BaseForm::addInputMaterial(QString label, SurfaceMaterial* material)

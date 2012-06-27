@@ -157,7 +157,7 @@ FormClouds::FormClouds(QWidget *parent):
     addInputDouble(tr("Lower altitude"), &_layer.ymin, -10.0, 50.0, 0.5, 5.0);
     addInputDouble(tr("Upper altitude"), &_layer.ymax, -10.0, 50.0, 0.5, 5.0);
     addInputDouble(tr("Max coverage"), &_layer.base_coverage, 0.0, 1.0, 0.01, 0.1);
-    addInputCurve(tr("Coverage by altitude"), _layer.coverage_by_altitude, 0.0, 1.0, 0.0, 1.0);
+    addInputCurve(tr("Coverage by altitude"), _layer.coverage_by_altitude, 0.0, 1.0, 0.0, 1.0, tr("Altitude in cloud layer"), tr("Coverage value"));
     addInputNoise(tr("Shape noise"), _layer.shape_noise);
     addInputDouble(tr("Shape scaling"), &_layer.shape_scaling, 1.0, 10.0, 0.1, 1.0);
     addInputNoise(tr("Edge noise"), _layer.edge_noise);
