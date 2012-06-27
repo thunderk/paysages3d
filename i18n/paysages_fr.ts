@@ -29,7 +29,7 @@
         <translation>Annuler les modifications</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="326"/>
+        <location filename="../gui_qt/baseform.cpp" line="342"/>
         <source>Layer %1</source>
         <translation>Niveau %1</translation>
     </message>
@@ -530,62 +530,62 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormRender</name>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="120"/>
+        <location filename="../gui_qt/formrender.cpp" line="122"/>
         <source>Top-down preview</source>
         <translation>Aperçu plongeant</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="122"/>
+        <location filename="../gui_qt/formrender.cpp" line="124"/>
         <source>Camera</source>
         <translation>Caméra</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="123"/>
+        <location filename="../gui_qt/formrender.cpp" line="125"/>
         <source>Quality</source>
         <translation>Qualité de rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="124"/>
+        <location filename="../gui_qt/formrender.cpp" line="126"/>
         <source>Image width</source>
         <translation>Largeur de l&apos;image</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="125"/>
+        <location filename="../gui_qt/formrender.cpp" line="127"/>
         <source>Image height</source>
         <translation>Hauteur de l&apos;image</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="126"/>
+        <location filename="../gui_qt/formrender.cpp" line="128"/>
         <source>Anti aliasing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="128"/>
+        <location filename="../gui_qt/formrender.cpp" line="130"/>
         <source>Start new render</source>
         <translation>Démarrer un rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="130"/>
+        <location filename="../gui_qt/formrender.cpp" line="132"/>
         <source>Show last render</source>
         <translation>Voir le dernier rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="132"/>
+        <location filename="../gui_qt/formrender.cpp" line="134"/>
         <source>Save last render</source>
         <translation>Sauvegarder le dernier rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="234"/>
+        <location filename="../gui_qt/formrender.cpp" line="236"/>
         <source>Paysages 3D - Choose a filename to save the last render</source>
         <translation>Paysages 3D - Choisissez un nom de fichier pour le rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="234"/>
+        <location filename="../gui_qt/formrender.cpp" line="236"/>
         <source>Images (*.png *.jpg)</source>
         <translation>Images (*.png *.jpg)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="247"/>
+        <location filename="../gui_qt/formrender.cpp" line="249"/>
         <source>Can&apos;t write to file : %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -598,7 +598,7 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Choisissez un nom de fichier pour le rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="243"/>
+        <location filename="../gui_qt/formrender.cpp" line="245"/>
         <source>The picture %1 has been saved.</source>
         <translation>L&apos;image %1 a été sauvegardée.</translation>
     </message>

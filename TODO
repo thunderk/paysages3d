@@ -10,7 +10,6 @@ Technology Preview 2 :
 - Replace zone ranges with curves (with curve input and curve dialog).
 - Interface for textures thickness, slope_range and thickness_transparency (and correct slider ranges).
 - Add "hardness to light" and shadow control ("minimum lighting") to material.
-- Render tab previews should not rerender when changing render options.
 - Add layer sorting/naming.
 - Add logarithmic sliders for some float values.
 - Improve previews.

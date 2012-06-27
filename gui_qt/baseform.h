@@ -51,6 +51,9 @@ protected:
     BaseInput* addInputMaterial(QString label, SurfaceMaterial* material);
     BaseInput* addInputEnum(QString label, int* value, const QStringList& values);
     
+    void updatePreviews();
+    void disablePreviewsUpdate();
+    
     int currentLayer();
     void setLayerCount(int layer_count);
     
@@ -59,6 +62,7 @@ protected:
     virtual void layerSelectedEvent(int layer);
 
 private:
+    bool auto_update_previews;
     bool auto_apply;
     bool with_layers;
     QComboBox* layer_list;

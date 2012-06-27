@@ -91,6 +91,8 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
     button_revert = addButton(tr("Revert"));
     button_revert->setEnabled(false);
     connect(button_revert, SIGNAL(clicked()), this, SLOT(revertConfig()));
+    
+    auto_update_previews = true;
 
     if (auto_apply)
     {
@@ -144,10 +146,9 @@ void BaseForm::configChangeEvent()
         inputs[i]->checkVisibility();
     }
     
-    QList<BasePreview*> list_previews = previews->findChildren<BasePreview*>("_form_preview_");
-    for (int i = 0; i < list_previews.size(); i++)
+    if (auto_update_previews)
     {
-        list_previews[i]->redraw();
+        updatePreviews();
     }
 }
 
@@ -167,7 +168,8 @@ void BaseForm::revertConfig()
         }
     }
 
-    BaseForm::configChangeEvent();
+    updatePreviews();
+    configChangeEvent();
 
     button_apply->setEnabled(false);
     button_revert->setEnabled(false);
@@ -298,6 +300,20 @@ BaseInput* BaseForm::addInputMaterial(QString label, SurfaceMaterial* material)
 BaseInput* BaseForm::addInputEnum(QString label, int* value, const QStringList& values)
 {
     return addInput(new InputEnum(form, label, value, values));
+}
+
+void BaseForm::updatePreviews()
+{
+    QList<BasePreview*> list_previews = previews->findChildren<BasePreview*>("_form_preview_");
+    for (int i = 0; i < list_previews.size(); i++)
+    {
+        list_previews[i]->redraw();
+    }
+}
+
+void BaseForm::disablePreviewsUpdate()
+{
+    auto_update_previews = false;
 }
 
 int BaseForm::currentLayer()

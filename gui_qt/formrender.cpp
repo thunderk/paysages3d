@@ -115,6 +115,8 @@ FormRender::FormRender(QWidget *parent) :
     _camera = cameraCreateDefinition();
     
     _renderer_inited = false;
+    
+    disablePreviewsUpdate();
 
     _preview_landscape = new PreviewRenderLandscape(this);
     addPreview(_preview_landscape, QString(tr("Top-down preview")));
