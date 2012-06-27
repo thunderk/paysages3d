@@ -27,6 +27,7 @@
 #include "../lib_paysages/main.h"
 #include "../lib_paysages/auto.h"
 #include "../lib_paysages/scenery.h"
+#include "tools.h"
 
 int main(int argc, char** argv)
 {
@@ -130,6 +131,8 @@ QMainWindow(parent)
     setWindowTitle("Paysages 3D");
     setWindowIcon(QIcon("images/logo_32.png"));
     
+    scenerySetCustomDataCallback(MainWindow::guiSaveCallback, MainWindow::guiLoadCallback, this);
+    
     refreshAll();
 }
 
@@ -145,6 +148,8 @@ bool MainWindow::event(QEvent* event)
 
 void MainWindow::refreshAll()
 {
+    logDebug("[MainWindow] Refreshing whole UI");
+    
     // Refresh all tabs
     QList<BaseForm*> list_forms = this->findChildren<BaseForm*>("_base_form_");
     for (int i = 0; i < list_forms.size(); i++)
@@ -252,5 +257,37 @@ void MainWindow::explore3D()
     {
         scenerySetCamera(&camera);
         refreshAll();
+    }
+}
+
+void MainWindow::guiSaveCallback(PackStream* stream, void* data)
+{
+    ((MainWindow*)data)->guiSave(stream);
+}
+
+void MainWindow::guiLoadCallback(PackStream* stream, void* data)
+{
+    ((MainWindow*)data)->guiLoad(stream);
+}
+
+void MainWindow::guiSave(PackStream* stream)
+{
+    // Save all tabs status
+    // TODO Ensure same order in save and load
+    QList<BaseForm*> list_forms = this->findChildren<BaseForm*>("_base_form_");
+    for (int i = 0; i < list_forms.size(); i++)
+    {
+        list_forms[i]->savePack(stream);
+    }
+}
+
+void MainWindow::guiLoad(PackStream* stream)
+{
+    // Load all tabs status
+    // TODO Ensure same order in save and load
+    QList<BaseForm*> list_forms = this->findChildren<BaseForm*>("_base_form_");
+    for (int i = 0; i < list_forms.size(); i++)
+    {
+        list_forms[i]->loadPack(stream);
     }
 }

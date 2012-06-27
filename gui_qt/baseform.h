@@ -10,6 +10,7 @@
 #include "../lib_paysages/noise.h"
 #include "../lib_paysages/curve.h"
 #include "../lib_paysages/color.h"
+#include "../lib_paysages/pack.h"
 
 class BaseForm:public QWidget
 {
@@ -18,6 +19,8 @@ class BaseForm:public QWidget
 public:
     BaseForm(QWidget* parent, bool auto_apply=false, bool with_layers=false);
     void hideButtons();
+    virtual void savePack(PackStream* stream);
+    virtual void loadPack(PackStream* stream);
 
 signals:
     void configApplied();

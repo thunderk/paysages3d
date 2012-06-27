@@ -9,6 +9,7 @@
 #include <QList>
 #include <QLabel>
 #include "previewosd.h"
+#include "../lib_paysages/pack.h"
 
 class BasePreview : public QWidget {
     Q_OBJECT
@@ -19,6 +20,9 @@ public:
     
     void addOsd(QString name);
 
+    virtual void savePack(PackStream* stream);
+    virtual void loadPack(PackStream* stream);
+    
     static void initDrawers();
     static void stopDrawers();
     static void reviveAll();

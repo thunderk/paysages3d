@@ -309,6 +309,21 @@ void BasePreview::addOsd(QString name)
     setMouseTracking(true);
 }
 
+void BasePreview::savePack(PackStream* stream)
+{
+    packWriteDouble(stream, &this->xoffset);
+    packWriteDouble(stream, &this->yoffset);
+    packWriteDouble(stream, &this->scaling);
+}
+
+void BasePreview::loadPack(PackStream* stream)
+{
+    packReadDouble(stream, &this->xoffset);
+    packReadDouble(stream, &this->yoffset);
+    packReadDouble(stream, &this->scaling);
+    emit contentChange();
+}
+
 void BasePreview::initDrawers()
 {
     _drawing_manager = new PreviewDrawingManager();

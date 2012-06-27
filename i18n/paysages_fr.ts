@@ -29,7 +29,7 @@
         <translation>Annuler les modifications</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="304"/>
+        <location filename="../gui_qt/baseform.cpp" line="326"/>
         <source>Layer %1</source>
         <translation>Niveau %1</translation>
     </message>
@@ -565,17 +565,17 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation>Sauvegarder le dernier rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="212"/>
+        <location filename="../gui_qt/formrender.cpp" line="234"/>
         <source>Paysages 3D - Choose a filename to save the last render</source>
         <translation>Paysages 3D - Choisissez un nom de fichier pour le rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="212"/>
+        <location filename="../gui_qt/formrender.cpp" line="234"/>
         <source>Images (*.png *.jpg)</source>
         <translation>Images (*.png *.jpg)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="225"/>
+        <location filename="../gui_qt/formrender.cpp" line="247"/>
         <source>Can&apos;t write to file : %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -588,7 +588,7 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Choisissez un nom de fichier pour le rendu</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formrender.cpp" line="221"/>
+        <location filename="../gui_qt/formrender.cpp" line="243"/>
         <source>The picture %1 has been saved.</source>
         <translation>L&apos;image %1 a été sauvegardée.</translation>
     </message>
@@ -955,144 +955,144 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="81"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="82"/>
         <source>Terrain</source>
         <translation>Terrain</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="85"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="86"/>
         <source>Textures</source>
         <translation>Textures</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="89"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="90"/>
         <source>Water</source>
         <translation>Eau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="97"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="98"/>
         <source>Atmosphere</source>
         <translation>Atmosphère</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="123"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="124"/>
         <source>&amp;Load</source>
         <translation>&amp;Ouvrir</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="123"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="124"/>
         <source>Crtl+L</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="124"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="125"/>
         <source>&amp;Explore (F2)</source>
         <translation>&amp;Explorer (F2)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="124"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="125"/>
         <source>F2</source>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="125"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="126"/>
         <source>&amp;Quick
 render (F5)</source>
         <translation>&amp;Rendu
 rapide (F5)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="125"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="126"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="162"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="167"/>
         <source>Camera</source>
         <translation type="unfinished">Caméra</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="168"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="173"/>
         <source>Do you want to start a new scenery ? Any unsaved changes will be lost.</source>
         <translation>Voulez-vous commencer un nouveau paysage ? Les modifications non sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="168"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="173"/>
         <source>Paysages 3D - New scenery</source>
         <translation>Paysages 3D - Nouvelle scène</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="178"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="183"/>
         <source>Paysages 3D - Choose a file to save the scenery</source>
         <translation>Paysages 3D - Choisissez un fichier pour enregistrer la scène</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="178"/>
-        <location filename="../gui_qt/mainwindow.cpp" line="204"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="183"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="209"/>
         <source>Paysages 3D Scenery (*.p3d)</source>
         <translation>Scène Paysages 3D (*.p3d)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="192"/>
-        <location filename="../gui_qt/mainwindow.cpp" line="195"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="197"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="200"/>
         <source>Paysages 3D - File saving error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="192"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="197"/>
         <source>Can&apos;t write specified file : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="195"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="200"/>
         <source>Unexpected error while saving file : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="202"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="207"/>
         <source>Do you want to load a scenery from file ? Any unsaved changes will be lost.</source>
         <translation>Voulez-vous charger une scène ? Les modifications non sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="202"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="207"/>
         <source>Paysages 3D - Load scenery</source>
         <translation>Paysages 3D - Charger une scène</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="204"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="209"/>
         <source>Paysages 3D - Choose a scenery file to load</source>
         <translation>Paysages 3D - Choisissez un fichier de scène à charger</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="214"/>
-        <location filename="../gui_qt/mainwindow.cpp" line="217"/>
-        <location filename="../gui_qt/mainwindow.cpp" line="220"/>
-        <location filename="../gui_qt/mainwindow.cpp" line="223"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="219"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="222"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="225"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="228"/>
         <source>Paysages 3D - File loading error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="214"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="219"/>
         <source>Can&apos;t read specified file : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="217"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="222"/>
         <source>This file doesn&apos;t look like a Paysages 3D file : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="220"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="225"/>
         <source>This file was created with an incompatible Paysages 3D version : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="223"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="228"/>
         <source>Unexpected error while loading file : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="231"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="236"/>
         <source>A 3D landscape editing and rendering software.
 
 Authors :
@@ -1106,12 +1106,12 @@ GLib - http://www.gtk.org/
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="93"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="94"/>
         <source>Sky</source>
         <translation>Ciel</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="101"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="102"/>
         <source>Clouds</source>
         <translation>Nuages</translation>
     </message>
@@ -1120,7 +1120,7 @@ GLib - http://www.gtk.org/
         <translation type="obsolete">Eclairage</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="109"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="110"/>
         <source>Render</source>
         <translation>Rendu</translation>
     </message>
@@ -1129,22 +1129,22 @@ GLib - http://www.gtk.org/
         <translation type="obsolete">&amp;Scène</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="121"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="122"/>
         <source>&amp;New</source>
         <translation>&amp;Nouveau</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="121"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="122"/>
         <source>Crtl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="122"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="123"/>
         <source>&amp;Save</source>
         <translation>&amp;Sauvegarder</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="122"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="123"/>
         <source>Crtl+S</source>
         <translation>Ctrl+S</translation>
     </message>
@@ -1181,7 +1181,7 @@ GLib - http://www.gtk.org/
         <translation type="obsolete">Ai&amp;de</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="126"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="127"/>
         <source>&amp;About</source>
         <translation>&amp;A propos</translation>
     </message>
@@ -1202,7 +1202,7 @@ GLib - http://www.gtk.org/
         <translation type="obsolete">Voulez-vous charger un paysage ? Les modifications nons sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../gui_qt/mainwindow.cpp" line="231"/>
+        <location filename="../gui_qt/mainwindow.cpp" line="236"/>
         <source>Paysages 3D</source>
         <translation>Paysages 3D</translation>
     </message>

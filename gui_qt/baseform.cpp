@@ -104,6 +104,28 @@ void BaseForm::hideButtons()
     button_revert->hide();
 }
 
+void BaseForm::savePack(PackStream* stream)
+{
+    // Save previews status
+    // TODO Ensure same order in save and load
+    QList<BasePreview*> list_previews = previews->findChildren<BasePreview*>("_form_preview_");
+    for (int i = 0; i < list_previews.size(); i++)
+    {
+        list_previews[i]->savePack(stream);
+    }
+}
+
+void BaseForm::loadPack(PackStream* stream)
+{
+    // Load previews status
+    // TODO Ensure same order in save and load
+    QList<BasePreview*> list_previews = previews->findChildren<BasePreview*>("_form_preview_");
+    for (int i = 0; i < list_previews.size(); i++)
+    {
+        list_previews[i]->loadPack(stream);
+    }
+}
+
 void BaseForm::configChangeEvent()
 {
     if (auto_apply)

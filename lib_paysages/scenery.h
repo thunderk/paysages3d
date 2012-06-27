@@ -24,8 +24,12 @@
 extern "C" {
 #endif
 
+typedef void (*SceneryCustomDataCallback)(PackStream* stream, void* data);
+    
 void sceneryInit();
 void sceneryQuit();
+
+void scenerySetCustomDataCallback(SceneryCustomDataCallback callback_save, SceneryCustomDataCallback callback_load, void* data);
 
 void scenerySave(PackStream* stream);
 void sceneryLoad(PackStream* stream);

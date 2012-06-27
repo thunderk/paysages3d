@@ -14,6 +14,9 @@ public:
     explicit FormRender(QWidget *parent = 0);
     ~FormRender();
 
+    virtual void savePack(PackStream* stream);
+    virtual void loadPack(PackStream* stream);
+
 public slots:
     virtual void revertConfig();
     virtual void applyConfig();

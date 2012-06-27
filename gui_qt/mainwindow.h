@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "formrender.h"
+#include "../lib_paysages/pack.h"
 
 class MainWindow : public QMainWindow
 {
@@ -11,6 +12,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     virtual bool event(QEvent* event);
+    
+    static void guiSaveCallback(PackStream* stream, void* data);
+    static void guiLoadCallback(PackStream* stream, void* data);
 
 public slots:
     void refreshAll();
@@ -25,6 +29,9 @@ public slots:
     void explore3D();
     
 private:
+    void guiSave(PackStream* stream);
+    void guiLoad(PackStream* stream);
+    
     FormRender* _form_render;
 };
 

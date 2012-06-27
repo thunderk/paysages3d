@@ -13,7 +13,6 @@ Technology Preview 2 :
 - Render tab previews should not rerender when changing render options.
 - Add layer sorting/naming.
 - Add logarithmic sliders for some float values.
-- Save GUI config (views, render params).
 - Improve previews.
    => Add a right click menu for toggles and modes
    => Add user markers on OSD

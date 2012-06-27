@@ -143,6 +143,28 @@ FormRender::~FormRender()
     }
 }
 
+void FormRender::savePack(PackStream* stream)
+{
+    BaseForm::savePack(stream);
+    
+    packWriteInt(stream, &_params.width);
+    packWriteInt(stream, &_params.height);
+    packWriteInt(stream, &_params.antialias);
+    packWriteInt(stream, &_params.quality);
+}
+
+void FormRender::loadPack(PackStream* stream)
+{
+    BaseForm::loadPack(stream);
+    
+    packReadInt(stream, &_params.width);
+    packReadInt(stream, &_params.height);
+    packReadInt(stream, &_params.antialias);
+    packReadInt(stream, &_params.quality);
+    
+    revertConfig();
+}
+
 void FormRender::revertConfig()
 {
     sceneryGetCamera(&_camera);

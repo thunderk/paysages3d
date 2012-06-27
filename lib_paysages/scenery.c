@@ -7,15 +7,19 @@
 #include "system.h"
 #include "vegetation.h"
 
-AtmosphereDefinition _atmosphere;
-CameraDefinition _camera;
-CloudsDefinition _clouds;
-LightingDefinition _lighting;
-SkyDefinition _sky;
-TerrainDefinition _terrain;
-TexturesDefinition _textures;
-VegetationDefinition* _vegetation;
-WaterDefinition _water;
+static AtmosphereDefinition _atmosphere;
+static CameraDefinition _camera;
+static CloudsDefinition _clouds;
+static LightingDefinition _lighting;
+static SkyDefinition _sky;
+static TerrainDefinition _terrain;
+static TexturesDefinition _textures;
+static VegetationDefinition* _vegetation;
+static WaterDefinition _water;
+
+static SceneryCustomDataCallback _custom_save = NULL;
+static SceneryCustomDataCallback _custom_load = NULL;
+static void* _custom_data = NULL;
 
 void sceneryInit()
 {
@@ -39,6 +43,9 @@ void sceneryInit()
     _textures = texturesCreateDefinition();
     _vegetation = vegetationCreateDefinition();
     _water = waterCreateDefinition();
+    
+    _custom_save = NULL;
+    _custom_load = NULL;
 }
 
 void sceneryQuit()
@@ -65,6 +72,13 @@ void sceneryQuit()
     noiseQuit();
 }
 
+void scenerySetCustomDataCallback(SceneryCustomDataCallback callback_save, SceneryCustomDataCallback callback_load, void* data)
+{
+    _custom_save = callback_save;
+    _custom_load = callback_load;
+    _custom_data = data;
+}
+
 void scenerySave(PackStream* stream)
 {
     noiseSave(stream);
@@ -77,6 +91,11 @@ void scenerySave(PackStream* stream)
     texturesSave(stream, &_textures);
     vegetationSave(stream, _vegetation);
     waterSave(stream, &_water);
+    
+    if (_custom_save)
+    {
+        _custom_save(stream, _custom_data);
+    }
 }
 
 void sceneryLoad(PackStream* stream)
@@ -103,6 +122,11 @@ void sceneryLoad(PackStream* stream)
     texturesValidateDefinition(&_textures);
     vegetationValidateDefinition(_vegetation);
     waterValidateDefinition(&_water);
+    
+    if (_custom_load)
+    {
+        _custom_load(stream, _custom_data);
+    }
 }
 
 void scenerySetAtmosphere(AtmosphereDefinition* atmosphere)
