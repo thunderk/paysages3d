@@ -25,6 +25,11 @@ public:
         _alive = true;
     }
     
+    inline BasePreview* preview()
+    {
+        return _preview;
+    }
+    
     inline bool isOnFront()
     {
         return _preview->isVisible() && _preview->window()->isActiveWindow();
@@ -132,6 +137,7 @@ PreviewDrawingManager::PreviewDrawingManager()
     {
         _thread_count = 1;
     }
+    _lastRendered = NULL;
 }
 
 void PreviewDrawingManager::startThreads()
@@ -201,7 +207,7 @@ void PreviewDrawingManager::updateChunks(BasePreview* preview)
             chunk->update();
             _lock.lock();
             if (!_updateQueue.contains(chunk))
-            {   
+            {
                 _updateQueue.prepend(chunk);
             }
             _lock.unlock();
@@ -220,7 +226,7 @@ void PreviewDrawingManager::updateAllChunks()
             chunk->update();
             _lock.lock();
             if (!_updateQueue.contains(chunk))
-            {   
+            {
                 _updateQueue.prepend(chunk);
             }
             _lock.unlock();
@@ -236,12 +242,24 @@ void PreviewDrawingManager::performOneThreadJob()
     _lock.lock();
     if (!_updateQueue.isEmpty())
     {
-        chunk = _updateQueue.takeFirst();
+        for (int i = _updateQueue.size(); i > 0; i--)
+        {
+            chunk = _updateQueue.takeFirst();
+            if (chunk && i > 1 && chunk->preview() == _lastRendered)
+            {
+                _updateQueue.append(chunk);
+            }
+            else
+            {
+                break;
+            }
+        }
     }
     _lock.unlock();
 
     if (chunk)
     {
+        _lastRendered = chunk->preview();
         chunk->render();
     }        
 }

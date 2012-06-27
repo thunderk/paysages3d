@@ -28,7 +28,6 @@ Technology Preview 2 :
 - Fix "RGB parameters out of range" (and segfault) on preview while moving render params fast in render tab.
    => May need to change the updateData system.
    => Previews need to be paused while updating data.
-- When there are two previews in the same view, balance rendering between the two.
 - Lock some previews together (eg: terrain height and colored preview).
 - Find a new licence.
 
