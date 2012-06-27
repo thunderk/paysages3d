@@ -19,7 +19,7 @@ public slots:
     virtual void updatePreview();
     virtual void revert();
     virtual void applyValue();
-    void checkVisibility();
+    void checkVisibility(bool enabled);
 
 signals:
     void valueChanged();
@@ -31,6 +31,7 @@ protected:
     int* _visibility_value;
     int _visibility_condition;
     bool _visible;
+    bool _enabled;
 };
 
 #endif

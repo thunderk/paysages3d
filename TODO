@@ -5,7 +5,6 @@ Technology Preview 2 :
    => Find a proper model for night sky (maybe Shirley)
 - InputInt doesn't honor small_step.
 - Keep skydome lights in cache for a render.
-- Disable form fields when no layer is selected.
 - Add buttons to restore "auto" default values in tabs and dialogs.
 - Replace zone ranges with curves (with curve input and curve dialog).
 - Interface for textures thickness, slope_range and thickness_transparency (and correct slider ranges).

@@ -10,6 +10,7 @@ BaseInput::BaseInput(QWidget* form, QString label):
     
     _visibility_value = NULL;
     _visible = true;
+    _enabled = true;
 }
 
 void BaseInput::setVisibilityCondition(int* value, int condition)
@@ -33,7 +34,7 @@ void BaseInput::revert()
     updatePreview();
 }
 
-void BaseInput::checkVisibility()
+void BaseInput::checkVisibility(bool enabled)
 {
     if (!_visibility_value || *_visibility_value == _visibility_condition)
     {
@@ -55,6 +56,27 @@ void BaseInput::checkVisibility()
             _label->hide();
             _preview->hide();
             _control->hide();
+        }
+    }
+    
+    if (enabled)
+    {
+        if (not _enabled)
+        {
+            _enabled = true;
+            
+            _preview->setEnabled(true);
+            _control->setEnabled(true);
+        }
+    }
+    else
+    {
+        if (_enabled)
+        {
+            _enabled = false;
+            
+            _preview->setEnabled(false);
+            _control->setEnabled(false);
         }
     }
 }

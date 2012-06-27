@@ -29,7 +29,7 @@
         <translation>Annuler les modifications</translation>
     </message>
     <message>
-        <location filename="../gui_qt/baseform.cpp" line="342"/>
+        <location filename="../gui_qt/baseform.cpp" line="349"/>
         <source>Layer %1</source>
         <translation>Niveau %1</translation>
     </message>

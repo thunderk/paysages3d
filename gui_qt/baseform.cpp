@@ -143,7 +143,14 @@ void BaseForm::configChangeEvent()
     QList<BaseInput*> inputs = form->findChildren<BaseInput*>("_form_input_");
     for (int i = 0; i < inputs.size(); i++)
     {
-        inputs[i]->checkVisibility();
+        if (with_layers && layer_list->count() == 0)
+        {
+            inputs[i]->checkVisibility(false);
+        }
+        else
+        {
+            inputs[i]->checkVisibility(true);
+        }
     }
     
     if (auto_update_previews)
@@ -372,6 +379,7 @@ void BaseForm::layerSelectedEvent(int layer)
     for (int i = 0; i < inputs.size(); i++)
     {
         inputs[i]->revert();
+        inputs[i]->checkVisibility(layer >= 0);
     }
 
     QList<BasePreview*> list_previews = previews->findChildren<BasePreview*>("_form_preview_");
