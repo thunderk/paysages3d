@@ -321,12 +321,7 @@ static Color _applyAtmosphere(Renderer* renderer, Vector3 location, Color base)
 
 static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3 end)
 {
-    Color clouds;
-
-    clouds = cloudsGetColor(&_clouds, renderer, start, end);
-    colorMask(&base, &clouds);
-
-    return base;
+    return cloudsApply(&_clouds, base, renderer, start, end);
 }
 
 static Vector3 _projectPoint(Renderer* renderer, Vector3 point)

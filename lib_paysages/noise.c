@@ -175,6 +175,13 @@ void noiseGenerateBaseNoise(NoiseGenerator* generator, int size)
     generator->size3 = (int)floor(cbrt((double)size));
 }
 
+void noiseForceValue(NoiseGenerator* generator, double value)
+{
+    noiseClearLevels(generator);
+    generator->height_offset = value;
+    noiseAddLevelSimple(generator, 1.0, 0.0); /* FIXME Should not be needed */
+}
+
 int noiseGetBaseSize(NoiseGenerator* generator)
 {
     return generator->size1;

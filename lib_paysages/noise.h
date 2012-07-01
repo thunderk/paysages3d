@@ -30,6 +30,7 @@ void noiseLoadGenerator(PackStream* stream, NoiseGenerator* perlin);
 void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination);
 void noiseValidate(NoiseGenerator* generator);
 void noiseGenerateBaseNoise(NoiseGenerator* generator, int size);
+void noiseForceValue(NoiseGenerator* generator, double value);
 int noiseGetBaseSize(NoiseGenerator* generator);
 double noiseGetMaxValue(NoiseGenerator* generator);
 int noiseGetLevelCount(NoiseGenerator* generator);

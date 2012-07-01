@@ -9,6 +9,8 @@
 #include "tools.h"
 #include "shared/types.h"
 
+#define MAX_SEGMENT_COUNT 30
+
 typedef struct
 {
     Vector3 start;
@@ -39,8 +41,8 @@ void cloudsSave(PackStream* stream, CloudsDefinition* definition)
     {
         layer = definition->layers + i;
         
-        packWriteDouble(stream, &layer->ymin);
-        packWriteDouble(stream, &layer->ymax);
+        packWriteDouble(stream, &layer->lower_altitude);
+        packWriteDouble(stream, &layer->thickness);
         curveSave(stream, layer->coverage_by_altitude);
         noiseSaveGenerator(stream, layer->shape_noise);
         noiseSaveGenerator(stream, layer->edge_noise);
@@ -71,8 +73,8 @@ void cloudsLoad(PackStream* stream, CloudsDefinition* definition)
     {
         layer = definition->layers + cloudsAddLayer(definition);
 
-        packReadDouble(stream, &layer->ymin);
-        packReadDouble(stream, &layer->ymax);
+        packReadDouble(stream, &layer->lower_altitude);
+        packReadDouble(stream, &layer->thickness);
         curveLoad(stream, layer->coverage_by_altitude);
         noiseLoadGenerator(stream, layer->shape_noise);
         noiseLoadGenerator(stream, layer->edge_noise);
@@ -132,13 +134,13 @@ void cloudsValidateDefinition(CloudsDefinition* definition)
 
 static double _standardCoverageFunc(CloudsLayerDefinition* layer, Vector3 position)
 {
-    if (position.y > layer->ymax || position.y < layer->ymin)
+    if (position.y < layer->lower_altitude || position.y >= layer->lower_altitude + layer->thickness)
     {
         return 0.0;
     }
     else
     {
-        return layer->base_coverage * curveGetValue(layer->coverage_by_altitude, (position.y - layer->ymin) / (layer->ymax - layer->ymin));
+        return layer->base_coverage * curveGetValue(layer->coverage_by_altitude, (position.y - layer->lower_altitude) / layer->thickness);
     }
 }
 
@@ -146,8 +148,8 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
 {
     CloudsLayerDefinition result;
 
-    result.ymin = 4.0;
-    result.ymax = 10.0;
+    result.lower_altitude = 4.0;
+    result.thickness = 6.0;
     result.coverage_by_altitude = curveCreate();
     curveQuickAddPoint(result.coverage_by_altitude, 0.0, 0.0);
     curveQuickAddPoint(result.coverage_by_altitude, 0.3, 1.0);
@@ -164,8 +166,8 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
     result.lighttraversal = 7.0;
     result.minimumlight = 0.4;
     result.shape_scaling = 3.5;
-    result.edge_scaling = 0.1;
-    result.edge_length = 0.25;
+    result.edge_scaling = 0.07;
+    result.edge_length = 0.2;
     result.base_coverage = 0.35;
     result.shape_noise = noiseCreateGenerator();
     noiseGenerateBaseNoise(result.shape_noise, 200000);
@@ -353,48 +355,48 @@ static int _optimizeSearchLimits(CloudsLayerDefinition* layer, Vector3* start, V
 {
     Vector3 diff;
 
-    if (start->y > layer->ymax)
+    if (start->y > layer->lower_altitude + layer->thickness)
     {
-        if (end->y >= layer->ymax)
+        if (end->y >= layer->lower_altitude + layer->thickness)
         {
             return 0;
         }
         else
         {
             diff = v3Sub(*end, *start);
-            *start = v3Add(*start, v3Scale(diff, (layer->ymax - start->y) / diff.y));
-            if (end->y < layer->ymin)
+            *start = v3Add(*start, v3Scale(diff, (layer->lower_altitude + layer->thickness - start->y) / diff.y));
+            if (end->y < layer->lower_altitude)
             {
-                *end = v3Add(*end, v3Scale(diff, (layer->ymin - end->y) / diff.y));
+                *end = v3Add(*end, v3Scale(diff, (layer->lower_altitude - end->y) / diff.y));
             }
         }
     }
-    else if (start->y < layer->ymin)
+    else if (start->y < layer->lower_altitude)
     {
-        if (end->y <= layer->ymin)
+        if (end->y <= layer->lower_altitude)
         {
             return 0;
         }
         else
         {
             diff = v3Sub(*end, *start);
-            *start = v3Add(*start, v3Scale(diff, (layer->ymin - start->y) / diff.y));
-            if (end->y > layer->ymax)
+            *start = v3Add(*start, v3Scale(diff, (layer->lower_altitude - start->y) / diff.y));
+            if (end->y >= layer->lower_altitude + layer->thickness)
             {
-                *end = v3Add(*end, v3Scale(diff, (layer->ymax - end->y) / diff.y));
+                *end = v3Add(*end, v3Scale(diff, (layer->lower_altitude + layer->thickness - end->y) / diff.y));
             }
         }
     }
     else /* start is inside layer */
     {
         diff = v3Sub(*end, *start);
-        if (end->y > layer->ymax)
+        if (end->y > layer->thickness)
         {
-            *end = v3Add(*start, v3Scale(diff, (layer->ymax - start->y) / diff.y));
+            *end = v3Add(*start, v3Scale(diff, (layer->lower_altitude + layer->thickness - start->y) / diff.y));
         }
-        else if (end->y < layer->ymin)
+        else if (end->y < layer->lower_altitude)
         {
-            *end = v3Add(*start, v3Scale(diff, (layer->ymin - start->y) / diff.y));
+            *end = v3Add(*start, v3Scale(diff, (layer->lower_altitude - start->y) / diff.y));
         }
     }
 
@@ -460,6 +462,11 @@ static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, 
         noise_distance = _getDistanceToBorder(definition, walker) * render_precision;
         current_total_length += step_length;
 
+        if (current_total_length >= max_total_length || current_inside_length > max_inside_length)
+        {
+            noise_distance = 0.0;
+        }
+
         if (noise_distance > 0.0)
         {
             if (inside)
@@ -506,7 +513,7 @@ static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, 
                 step = v3Scale(direction, (noise_distance > -render_precision) ? render_precision : -noise_distance);
             }
         }
-    } while (inside || (walker.y <= definition->ymax + 0.001 && walker.y >= definition->ymin - 0.001 && current_total_length < max_total_length && current_inside_length < max_inside_length));
+    } while (inside || (walker.y <= definition->lower_altitude + definition->thickness + 0.001 && walker.y >= definition->lower_altitude - 0.001 && current_total_length < max_total_length && current_inside_length < max_inside_length));
 
     *total_length = current_total_length;
     *inside_length = current_inside_length;
@@ -543,85 +550,76 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
     return col1;
 }
 
-Color cloudsGetLayerColor(CloudsLayerDefinition* definition, Renderer* renderer, Vector3 start, Vector3 end)
+Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end)
 {
     int i, segment_count;
     double max_length, detail, total_length, inside_length;
     Vector3 direction;
-    Color result, col;
-    CloudSegment segments[20];
+    Color col;
+    CloudSegment segments[MAX_SEGMENT_COUNT];
 
     if (!_optimizeSearchLimits(definition, &start, &end))
     {
-        return COLOR_TRANSPARENT;
+        return base;
     }
 
     direction = v3Sub(end, start);
     max_length = v3Norm(direction);
     direction = v3Normalize(direction);
-    result = COLOR_TRANSPARENT;
 
     detail = renderer->getPrecision(renderer, start) / definition->shape_scaling;
 
-    segment_count = _findSegments(definition, renderer, start, direction, detail, 20, definition->transparencydepth, max_length, &inside_length, &total_length, segments);
+    segment_count = _findSegments(definition, renderer, start, direction, detail, MAX_SEGMENT_COUNT, definition->transparencydepth * (double)renderer->render_quality, max_length, &inside_length, &total_length, segments);
     for (i = segment_count - 1; i >= 0; i--)
     {
         col = _applyLayerLighting(definition, renderer, segments[i].start, detail);
+        col.a = 1.0;
+        col = renderer->applyAtmosphere(renderer, start, col);
         col.a = (segments[i].length >= definition->transparencydepth) ? 1.0 : (segments[i].length / definition->transparencydepth);
-        colorMask(&result, &col);
+        colorMask(&base, &col);
     }
     if (inside_length >= definition->transparencydepth)
     {
         col.a = 1.0;
     }
 
-    if (result.a > 0.000001)
-    {
-        result = renderer->applyAtmosphere(renderer, start, result);
-    }
-
-    return result;
+    return base;
 }
 
 static int _cmpLayer(const void* layer1, const void* layer2)
 {
-    return (((CloudsLayerDefinition*)layer1)->ymin > ((CloudsLayerDefinition*)layer2)->ymin) ? -1 : 1;
+    return (((CloudsLayerDefinition*)layer1)->lower_altitude > ((CloudsLayerDefinition*)layer2)->lower_altitude) ? -1 : 1;
 }
 
-Color cloudsGetColor(CloudsDefinition* definition, Renderer* renderer, Vector3 start, Vector3 end)
+Color cloudsApply(CloudsDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end)
 {
     int i;
-    Color layer_color, result;
+    Color layer_color;
     CloudsLayerDefinition layers[CLOUDS_MAX_LAYERS];
 
     if (definition->nblayers < 1)
     {
-        return COLOR_TRANSPARENT;
+        return base;
     }
 
-    result = COLOR_TRANSPARENT;
     memcpy(layers, definition->layers, sizeof(CloudsLayerDefinition) * definition->nblayers);
     qsort(layers, definition->nblayers, sizeof(CloudsLayerDefinition), _cmpLayer);
     for (i = 0; i < definition->nblayers; i++)
     {
-        layer_color = cloudsGetLayerColor(layers + i, renderer, start, end);
-        if (layer_color.a > 0.000001)
-        {
-            colorMask(&result, &layer_color);
-        }
+        base = cloudsApplyLayer(layers + i, base, renderer, start, end);
     }
 
-    return result;
+    return base;
 }
 
 Color cloudsLayerFilterLight(CloudsLayerDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light)
 {
     double inside_depth, total_depth, factor;
-    CloudSegment segments[20];
+    CloudSegment segments[MAX_SEGMENT_COUNT];
 
     _optimizeSearchLimits(definition, &location, &light_location);
 
-    _findSegments(definition, renderer, location, direction_to_light, 0.1, 20, definition->lighttraversal, v3Norm(v3Sub(light_location, location)), &inside_depth, &total_depth, segments);
+    _findSegments(definition, renderer, location, direction_to_light, 0.1, MAX_SEGMENT_COUNT, definition->lighttraversal, v3Norm(v3Sub(light_location, location)), &inside_depth, &total_depth, segments);
 
     if (definition->lighttraversal < 0.0001)
     {

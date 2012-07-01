@@ -134,7 +134,7 @@ void packWriteInt(PackStream* stream, int* value)
 void packReadInt(PackStream* stream, int* value)
 {
     int read;
-    
+
     read = fscanf(stream->fd, "%d;", value);
     assert(read == 1);
 }

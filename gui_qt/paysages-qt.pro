@@ -10,6 +10,7 @@ CONFIG -= release
 CONFIG += $$BUILDMODE
 
 release:DEFINES += NDEBUG
+release:QMAKE_CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter -Wno-unused-but-set-variable
 
 LIBS += -lGLU
 unix:LIBS += -L$$DESTDIR -lpaysages
@@ -19,5 +20,5 @@ HEADERS += $$files(*.h) $$files(../lib_paysages/*.h) $$files(../lib_paysages/sha
 SOURCES += $$files(*.cpp)
 TRANSLATIONS = ../i18n/paysages_fr.ts
 
-system(lupdate paysages-qt.pro)
-system(lrelease $$TRANSLATIONS)
+#system(lupdate paysages-qt.pro)
+#system(lrelease $$TRANSLATIONS)

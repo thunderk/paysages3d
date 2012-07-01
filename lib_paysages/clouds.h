@@ -18,8 +18,8 @@ typedef double (*CloudCoverageFunc)(CloudsLayerDefinition* definition, Vector3 p
 
 struct CloudsLayerDefinition
 {
-    double ymin;
-    double ymax;
+    double lower_altitude;
+    double thickness;
     double base_coverage;
     Curve* coverage_by_altitude;
     NoiseGenerator* shape_noise;
@@ -61,8 +61,8 @@ CloudsLayerDefinition* cloudsGetLayer(CloudsDefinition* definition, int layer);
 int cloudsAddLayer(CloudsDefinition* definition);
 void cloudsDeleteLayer(CloudsDefinition* definition, int layer);
 
-Color cloudsGetLayerColor(CloudsLayerDefinition* definition, Renderer* renderer, Vector3 start, Vector3 end);
-Color cloudsGetColor(CloudsDefinition* definition, Renderer* renderer, Vector3 start, Vector3 end);
+Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end);
+Color cloudsApply(CloudsDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end);
 Color cloudsLayerFilterLight(CloudsLayerDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light);
 Color cloudsFilterLight(CloudsDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light);
 

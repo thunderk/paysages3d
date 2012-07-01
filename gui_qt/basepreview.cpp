@@ -5,8 +5,9 @@
 #include <QPainter>
 #include <QTimer>
 #include <QWheelEvent>
-#include <qt4/QtGui/qlabel.h>
+#include <QLabel>
 #include "tools.h"
+#include "../lib_paysages/system.h"
 
 /*************** PreviewChunk ***************/
 class PreviewChunk
@@ -132,11 +133,7 @@ void PreviewDrawingThread::run()
 /*************** PreviewDrawingManager ***************/
 PreviewDrawingManager::PreviewDrawingManager()
 {
-    _thread_count = QThread::idealThreadCount();
-    if (_thread_count < 1)
-    {
-        _thread_count = 1;
-    }
+    _thread_count = systemGetCoreCount();
     _lastRendered = NULL;
 }
 

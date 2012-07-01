@@ -28,7 +28,7 @@ protected:
     QColor getColor(double x, double y)
     {
         Vector3 eye, look;
-        Color color_layer, result;
+        Color color_layer;
 
         eye.x = 0.0;
         eye.y = scaling;
@@ -38,10 +38,8 @@ protected:
         look.z = 1.0;
         look = v3Normalize(look);
 
-        result = COLOR_BLUE;
-        color_layer = cloudsGetLayerColor(&_preview_layer, &_renderer, eye, v3Add(eye, v3Scale(look, 1000.0)));
-        colorMask(&result, &color_layer);
-        return colorToQColor(result);
+        color_layer = cloudsApplyLayer(&_preview_layer, COLOR_BLUE, &_renderer, eye, v3Add(eye, v3Scale(look, 1000.0)));
+        return colorToQColor(color_layer);
     }
     void updateData()
     {
@@ -85,33 +83,32 @@ public:
         _renderer.customData[0] = &_preview_layer;
         _renderer.customData[1] = &_lighting;
         
-        configScaling(1.0, 4.0, 0.2, 2.0);
+        configScaling(0.5, 2.0, 0.1, 2.0);
     }
 protected:
     QColor getColor(double x, double y)
     {
         Vector3 start, end;
-        Color color_layer, result;
+        Color color_layer;
 
-        start.x = x * _preview_layer.ymax;
-        start.y = -y * _preview_layer.ymax;
-        start.z = _preview_layer.ymax;
+        start.x = x * _preview_layer.thickness * 0.5;
+        start.y = -y * _preview_layer.thickness * 0.5;
+        start.z = _preview_layer.thickness * 0.5;
         
-        end.x = x * _preview_layer.ymax;
-        end.y = -y * _preview_layer.ymax;
-        end.z = -_preview_layer.ymax;
+        end.x = x * _preview_layer.thickness * 0.5;
+        end.y = -y * _preview_layer.thickness * 0.5;
+        end.z = -_preview_layer.thickness * 0.5;
 
-        result = COLOR_BLUE;
-        color_layer = cloudsGetLayerColor(&_preview_layer, &_renderer, start, end);
-        colorMask(&result, &color_layer);
-        return colorToQColor(result);
+        color_layer = cloudsApplyLayer(&_preview_layer, COLOR_BLUE, &_renderer, start, end);
+        return colorToQColor(color_layer);
     }
     void updateData()
     {
         cloudsLayerCopyDefinition(&_layer, &_preview_layer);
-        _preview_layer.ymax = (_preview_layer.ymax - _preview_layer.ymin) / 2.0;
-        _preview_layer.ymin = -_preview_layer.ymin;
-        curveClear(_preview_layer.coverage_by_altitude);
+        //noiseForceValue(_preview_layer.shape_noise, 1.0);
+        _preview_layer.lower_altitude = -_preview_layer.thickness * 0.5;
+        //curveClear(_preview_layer.coverage_by_altitude);
+        _preview_layer.base_coverage = 1.0;
         _preview_layer._custom_coverage = _coverageFunc;
     }
 private:
@@ -121,15 +118,18 @@ private:
 
     static double _coverageFunc(CloudsLayerDefinition* layer, Vector3 position)
     {
+        double coverage = curveGetValue(layer->coverage_by_altitude, position.y / layer->thickness + 0.5);
+        position.y = 0.0;
         double dist = v3Norm(position);
         
-        if (dist >= layer->ymax)
+        if (dist >= layer->thickness * 0.5)
         {
             return 0.0;
         }
         else
         {
-            return 1.0 - dist / layer->ymax;
+            double density = 1.0 - dist / (layer->thickness * 0.5);
+            return (density < coverage) ? density : coverage;
         }
     }
     
@@ -152,10 +152,10 @@ FormClouds::FormClouds(QWidget *parent):
     _layer = cloudsLayerCreateDefinition();
     
     addPreview(new PreviewCloudsCoverage(parent), tr("Layer coverage (no lighting)"));
-    addPreview(new PreviewCloudsColor(parent), tr("Color and lighting"));
+    addPreview(new PreviewCloudsColor(parent), tr("Appearance"));
 
-    addInputDouble(tr("Lower altitude"), &_layer.ymin, -10.0, 50.0, 0.5, 5.0);
-    addInputDouble(tr("Upper altitude"), &_layer.ymax, -10.0, 50.0, 0.5, 5.0);
+    addInputDouble(tr("Lower altitude"), &_layer.lower_altitude, -10.0, 50.0, 0.5, 5.0);
+    addInputDouble(tr("Layer thickness"), &_layer.thickness, 0.0, 20.0, 0.1, 1.0);
     addInputDouble(tr("Max coverage"), &_layer.base_coverage, 0.0, 1.0, 0.01, 0.1);
     addInputCurve(tr("Coverage by altitude"), _layer.coverage_by_altitude, 0.0, 1.0, 0.0, 1.0, tr("Altitude in cloud layer"), tr("Coverage value"));
     addInputNoise(tr("Shape noise"), _layer.shape_noise);

@@ -1,7 +1,9 @@
 #include "system.h"
 #include <unistd.h>
 
-/*#define DEBUG_ONETHREAD 1*/
+#ifndef NDEBUG
+#define DEBUG_ONETHREAD 1
+#endif
 
 #ifdef WIN32
 #include <windows.h>
