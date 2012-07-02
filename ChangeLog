@@ -15,6 +15,7 @@ Scenery :
   * New cloud model with 2 noises : one for the global shape and one for edges.
   * Terrain shadows have been improved and are now configurable.
   * New sky model (based on Preetham's work).
+  * Textures ranges are now using curves.
 
 Rendering :
   * New texture model (perpendicular displacement and thickness).

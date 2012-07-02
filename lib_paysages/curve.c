@@ -8,6 +8,7 @@
 
 struct Curve
 {
+    double default_value;
     int nbpoints;
     CurvePoint points[MAX_NB_POINTS];
 };
@@ -18,6 +19,7 @@ Curve* curveCreate()
     
     result = malloc(sizeof(Curve));
     result->nbpoints = 0;
+    result->default_value = 0.0;
     
     return result;
 }
@@ -36,6 +38,7 @@ void curveSave(PackStream* stream, Curve* curve)
 {
     int i;
     
+    packWriteDouble(stream, &curve->default_value);
     packWriteInt(stream, &curve->nbpoints);
     for (i = 0; i < curve->nbpoints; i++)
     {
@@ -48,6 +51,7 @@ void curveLoad(PackStream* stream, Curve* curve)
 {
     int i;
     
+    packReadDouble(stream, &curve->default_value);
     packReadInt(stream, &curve->nbpoints);
     for (i = 0; i < curve->nbpoints; i++)
     {
@@ -59,6 +63,11 @@ void curveLoad(PackStream* stream, Curve* curve)
 void curveClear(Curve* curve)
 {
     curve->nbpoints = 0;
+}
+
+void curveSetDefault(Curve* curve, double value)
+{
+    curve->default_value = value;
 }
 
 int curveAddPoint(Curve* curve, CurvePoint* point)
@@ -144,7 +153,7 @@ double curveGetValue(Curve* curve, double position)
 
     if (curve->nbpoints == 0)
     {
-        return 0.0;
+        return curve->default_value;
     }
     else if (curve->nbpoints == 1 || position <= curve->points[0].position)
     {

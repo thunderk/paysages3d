@@ -21,6 +21,7 @@ void curveSave(PackStream* stream, Curve* curve);
 void curveLoad(PackStream* stream, Curve* curve);
 
 void curveClear(Curve* curve);
+void curveSetDefault(Curve* curve, double value);
 int curveAddPoint(Curve* curve, CurvePoint* point);
 int curveQuickAddPoint(Curve* curve, double position, double value);
 int curveGetPointCount(Curve* curve);

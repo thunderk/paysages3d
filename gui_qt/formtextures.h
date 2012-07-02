@@ -11,6 +11,7 @@ class FormTextures : public BaseForm
 
 public:
     explicit FormTextures(QWidget *parent = 0);
+    ~FormTextures();
 
 protected:
     virtual void layerAddedEvent();
