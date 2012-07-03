@@ -31,8 +31,14 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent* event);
     
 private:
+    void curveToScreen(double curve_x, double curve_y, int* screen_x, int* screen_y);
+    void screenToCurve(int screen_x, int screen_y, double* curve_x, double* curve_y);
     int getPointAt(int x, int y);
     
+    double _xmin;
+    double _xmax;
+    double _ymin;
+    double _ymax;
     Curve* _curve;
     int _dragged;
     QColor _pen;
