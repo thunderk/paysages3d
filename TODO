@@ -6,7 +6,6 @@ Technology Preview 2 :
 - InputInt doesn't honor small_step.
 - Keep skydome lights in cache for a render.
 - Add buttons to restore "auto" default values in tabs and dialogs.
-- Interface for textures thickness, slope_range and thickness_transparency (and correct slider ranges).
 - Add "hardness to light" and shadow control ("minimum lighting") to material.
 - Add layer sorting/naming.
 - Add logarithmic sliders for some float values.

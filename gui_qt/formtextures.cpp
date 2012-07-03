@@ -136,11 +136,14 @@ FormTextures::FormTextures(QWidget *parent):
     addPreview(previewColor, tr("Lighted sample"));
 
     addInputNoise(tr("Surface noise"), _layer.bump_noise);
-    addInputDouble(tr("Surface noise height"), &_layer.bump_height, 0.0, 0.5, 0.001, 0.05);
-    addInputDouble(tr("Surface noise scaling"), &_layer.bump_scaling, 0.01, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Surface noise height"), &_layer.bump_height, 0.0, 0.1, 0.001, 0.01);
+    addInputDouble(tr("Surface noise scaling"), &_layer.bump_scaling, 0.001, 0.1, 0.001, 0.01);
     addInputMaterial(tr("Material"), &_layer.material);
     addInputCurve(tr("Coverage by altitude"), _supp.height_curve, -20.0, 20.0, 0.0, 1.0, tr("Terrain altitude"), tr("Texture coverage"));
     addInputCurve(tr("Coverage by slope"), _supp.slope_curve, 0.0, 5.0, 0.0, 1.0, tr("Terrain slope"), tr("Texture coverage"));
+    addInputDouble(tr("Amplitude for slope coverage"), &_layer.slope_range, 0.001, 0.1, 0.001, 0.01);
+    addInputDouble(tr("Layer thickness"), &_layer.thickness, 0.0, 0.1, 0.001, 0.01);
+    addInputDouble(tr("Transparency thickness"), &_layer.thickness_transparency, 0.0, 0.1, 0.001, 0.01);
 
     revertConfig();
 }
