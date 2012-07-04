@@ -117,8 +117,10 @@ FormSky::FormSky(QWidget *parent):
     input->setVisibilityCondition((int*)&_definition.model, SKY_MODEL_CUSTOM);
     input = addInputColor(tr("Zenith color"), &_definition.model_custom.zenith_color);
     input->setVisibilityCondition((int*)&_definition.model, SKY_MODEL_CUSTOM);
+    input->setEnabledCondition(&_definition.model_custom.auto_from_daytime, 0);
     input = addInputColor(tr("Haze color"), &_definition.model_custom.haze_color);
     input->setVisibilityCondition((int*)&_definition.model, SKY_MODEL_CUSTOM);
+    input->setEnabledCondition(&_definition.model_custom.auto_from_daytime, 0);
     input = addInputDouble(tr("Haze height"), &_definition.model_custom.haze_height, 0.0, 1.0, 0.01, 0.1);
     input->setVisibilityCondition((int*)&_definition.model, SKY_MODEL_CUSTOM);
     input = addInputDouble(tr("Haze smoothing"), &_definition.model_custom.haze_smoothing, 0.0, 1.0, 0.01, 0.1);

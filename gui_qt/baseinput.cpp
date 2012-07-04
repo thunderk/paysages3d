@@ -9,6 +9,8 @@ BaseInput::BaseInput(QWidget* form, QString label):
     _label->setWordWrap(true);
     
     _visibility_value = NULL;
+    _enabled_value = NULL;
+    
     _visible = true;
     _enabled = true;
 }
@@ -17,6 +19,12 @@ void BaseInput::setVisibilityCondition(int* value, int condition)
 {
     _visibility_value = value;
     _visibility_condition = condition;
+}
+
+void BaseInput::setEnabledCondition(int* value, int condition)
+{
+    _enabled_value = value;
+    _enabled_condition = condition;
 }
 
 void BaseInput::updatePreview()
@@ -59,7 +67,7 @@ void BaseInput::checkVisibility(bool enabled)
         }
     }
     
-    if (enabled)
+    if (enabled && (!_enabled_value || *_enabled_value == _enabled_condition))
     {
         if (not _enabled)
         {

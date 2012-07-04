@@ -14,6 +14,7 @@ public:
     inline QWidget* preview() {return _preview;}
     inline QWidget* control() {return _control;}
     void setVisibilityCondition(int* value, int condition);
+    void setEnabledCondition(int* value, int condition);
 
 public slots:
     virtual void updatePreview();
@@ -30,6 +31,8 @@ protected:
     QWidget* _control;
     int* _visibility_value;
     int _visibility_condition;
+    int* _enabled_value;
+    int _enabled_condition;
     bool _visible;
     bool _enabled;
 };
