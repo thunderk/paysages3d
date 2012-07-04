@@ -8,6 +8,7 @@
 #include <QVector>
 #include <QList>
 #include <QLabel>
+#include <QHash>
 #include "previewosd.h"
 #include "../lib_paysages/pack.h"
 
