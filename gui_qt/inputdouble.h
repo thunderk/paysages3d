@@ -18,12 +18,12 @@ public slots:
     virtual void revert();
 
 private:
-    QSlider* slider;
-    double* value;
-    double min;
-    double max;
-    double small_step;
-    double large_step;
+    QSlider* _slider;
+    double* _value;
+    double _min;
+    double _max;
+    double _small_step;
+    double _large_step;
 };
 
-#endif // _PAYSAGES_QT_INPUTDOUBLE_H_
+#endif

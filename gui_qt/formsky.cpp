@@ -144,5 +144,11 @@ void FormSky::applyConfig()
 void FormSky::configChangeEvent()
 {
     skyValidateDefinition(&_definition);
+    
+    if (_definition.model == SKY_MODEL_CUSTOM && _definition.model_custom.auto_from_daytime)
+    {
+        BaseForm::revertConfig();
+    }
+    
     BaseForm::configChangeEvent();
 }

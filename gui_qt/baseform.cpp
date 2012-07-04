@@ -176,7 +176,7 @@ void BaseForm::revertConfig()
     }
 
     updatePreviews();
-    configChangeEvent();
+    //configChangeEvent();
 
     button_apply->setEnabled(false);
     button_revert->setEnabled(false);

@@ -23,7 +23,10 @@ void InputEnum::applyValue()
 
 void InputEnum::revert()
 {
-    ((QComboBox*)_control)->setCurrentIndex(*_value);
+    if (*_value != ((QComboBox*)_control)->currentIndex())
+    {
+        ((QComboBox*)_control)->setCurrentIndex(*_value);
+    }
 
     BaseInput::revert();
 }

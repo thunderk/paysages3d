@@ -18,12 +18,12 @@ public slots:
     virtual void revert();
 
 private:
-    QSlider* slider;
-    int* value;
-    int min;
-    int max;
-    int small_step;
-    int large_step;
+    QSlider* _slider;
+    int* _value;
+    int _min;
+    int _max;
+    int _small_step;
+    int _large_step;
 };
 
 #endif

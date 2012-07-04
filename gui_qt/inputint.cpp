@@ -3,46 +3,54 @@
 #include <QLabel>
 
 InputInt::InputInt(QWidget* form, QString label, int* value, int min, int max, int small_step, int large_step):
-    BaseInput(form, label),
-    value(value), min(min), max(max), small_step(small_step), large_step(large_step)
+    BaseInput(form, label)
 {
-    slider = new QSlider(form);
+    _value = value;
+    _min = min;
+    _max = max;
+    _small_step = small_step;
+    _large_step = large_step;
+    
+    _slider = new QSlider(form);
 
-    slider->setOrientation(Qt::Horizontal);
-    slider->setMinimumWidth(150);
-    slider->setMaximumWidth(400);
+    _slider->setOrientation(Qt::Horizontal);
+    _slider->setMinimumWidth(150);
+    _slider->setMaximumWidth(400);
 
-    slider->setMinimum(min);
-    slider->setMaximum(max);
-    slider->setValue(*value);
+    _slider->setMinimum(min);
+    _slider->setMaximum(max);
+    _slider->setValue(*value);
 
-    slider->setTickInterval(large_step);
-    slider->setTickPosition(QSlider::TicksBelow);
+    _slider->setTickInterval(large_step);
+    _slider->setTickPosition(QSlider::TicksBelow);
 
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(applyValue()));
+    connect(_slider, SIGNAL(valueChanged(int)), this, SLOT(applyValue()));
 
     _preview = new QLabel(form);
     ((QLabel*)_preview)->setAlignment(Qt::AlignCenter);
-    _control = slider;
+    _control = _slider;
 }
 
 void InputInt::updatePreview()
 {
-    ((QLabel*)_preview)->setText(QString("%1").arg(*value));
+    ((QLabel*)_preview)->setText(QString("%1").arg(*_value));
 
     BaseInput::updatePreview();
 }
 
 void InputInt::applyValue()
 {
-    *value = (int)slider->value();
+    *_value = (int)_slider->value();
 
     BaseInput::applyValue();
 }
 
 void InputInt::revert()
 {
-    slider->setValue(*value);
+    if (*_value != _slider->value())
+    {
+        _slider->setValue(*_value);
+    }
 
     BaseInput::revert();
 }

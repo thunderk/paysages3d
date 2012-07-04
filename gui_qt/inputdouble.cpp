@@ -4,50 +4,55 @@
 #include "math.h"
 
 InputDouble::InputDouble(QWidget* form, QString label, double* value, double min, double max, double small_step, double large_step):
-    BaseInput(form, label),
-    value(value), min(min), max(max), small_step(small_step), large_step(large_step)
+    BaseInput(form, label)
 {
-    slider = new QSlider(form);
+    _value = value;
+    _min = min;
+    _max = max;
+    _small_step = small_step;
+    _large_step = large_step;
+    
+    _slider = new QSlider(form);
 
-    slider->setOrientation(Qt::Horizontal);
-    slider->setMinimumWidth(200);
-    slider->setMaximumWidth(400);
+    _slider->setOrientation(Qt::Horizontal);
+    _slider->setMinimumWidth(200);
+    _slider->setMaximumWidth(400);
 
-    slider->setMinimum(0);
-    slider->setMaximum(round((max - min) / small_step));
-    slider->setValue(round((*value - min) / small_step));
+    _slider->setMinimum(0);
+    _slider->setMaximum(round((max - min) / small_step));
+    _slider->setValue(round((*value - min) / small_step));
 
-    slider->setTickInterval(round(large_step / small_step));
-    slider->setTickPosition(QSlider::TicksBelow);
+    _slider->setTickInterval(round(large_step / small_step));
+    _slider->setTickPosition(QSlider::TicksBelow);
 
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(applyValue()));
+    connect(_slider, SIGNAL(valueChanged(int)), this, SLOT(applyValue()));
 
     _preview = new QLabel(form);
     ((QLabel*)_preview)->setAlignment(Qt::AlignCenter);
-    _control = slider;
+    _control = _slider;
 }
 
 void InputDouble::updatePreview()
 {
-    ((QLabel*)_preview)->setText(QString::number(*value, 'g', 3));
+    ((QLabel*)_preview)->setText(QString::number(*_value, 'g', 3));
 
     BaseInput::updatePreview();
 }
 
 void InputDouble::applyValue()
 {
-    int ivalue = slider->value();
-    if (ivalue == slider->maximum())
+    int ivalue = _slider->value();
+    if (ivalue == _slider->maximum())
     {
-        *value = max;
+        *_value = _max;
     }
     else
     {
-        *value = min + ((double)ivalue) * small_step;
+        *_value = _min + ((double)ivalue) * _small_step;
     }
-    if (fabs(*value) < 0.0000001)
+    if (fabs(*_value) < 0.0000001)
     {
-        *value = 0.0;
+        *_value = 0.0;
     }
 
     BaseInput::applyValue();
@@ -55,7 +60,11 @@ void InputDouble::applyValue()
 
 void InputDouble::revert()
 {
-    slider->setValue(round((*value - min) / small_step));
+    double value = round((*_value - _min) / _small_step);
+    if (value != _slider->value())
+    {
+        _slider->setValue(value);
+    }
 
     BaseInput::revert();
 }
