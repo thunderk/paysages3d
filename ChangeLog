@@ -28,6 +28,7 @@ GUI :
   * Previews locations and render params are now saved.
   * Added grid and axis labels to curve editor.
   * Added camera location to previews.
+  * Added toggles and choices to configure some previews.
 
 Misc :
   * Version handling in saved files.

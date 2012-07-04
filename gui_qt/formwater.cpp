@@ -62,6 +62,9 @@ public:
     {
         LightDefinition light;
         
+        _background = 0;
+        _lighting_enabled = false;
+        
         _water = waterCreateDefinition();
         
         _lighting = lightingCreateDefinition();
@@ -78,12 +81,18 @@ public:
         _renderer = rendererCreate();
         _renderer.rayWalking = _rayWalking;
         _renderer.getLightStatus = _getLightStatus;
+        _renderer.applyLightStatus = _applyLightStatus;
         _renderer.customData[0] = &_water;
         _renderer.customData[1] = &_lighting;
+        _renderer.customData[2] = this;
         
         configScaling(10.0, 1000.0, 10.0, 250.0);
         //configScrolling(-30.0, 30.0, 0.0, -20.0, 20.0, 0.0);
+
+        addChoice("bg", tr("Background"), QStringList(tr("None")) << tr("Grid") << tr("Sinusoid"), 2);
+        addToggle("light", tr("Lighting"), true);
     }
+    int _background;
 protected:
     QColor getColor(double x, double y)
     {
@@ -118,15 +127,33 @@ protected:
         waterCopyDefinition(&_definition, &_water);
         _water.height = 0.0;
     }
+    void choiceChangeEvent(const QString& key, int position)
+    {
+        if (key == "bg")
+        {
+            _background = position;
+            redraw();
+        }
+    }
+    void toggleChangeEvent(QString key, bool value)
+    {
+        if (key == "light")
+        {
+            _lighting_enabled = value;
+            redraw();
+        }
+    }
 
 private:
     Renderer _renderer;
     WaterDefinition _water;
     LightingDefinition _lighting;
+    bool _lighting_enabled;
     
     static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
     {
         RayCastingResult result;
+        PreviewWaterColor* preview = (PreviewWaterColor*)renderer->customData[2];
         double x, y;
 
         result.hit = 1;
@@ -140,14 +167,16 @@ private:
             x = location.x + direction.x * (0.0 - location.z) / direction.z;
             y = location.y + direction.y * (0.0 - location.z) / direction.z;
 
-            //if (((int)ceil(x * 0.2) % 2 == 0) ^ ((int)ceil(y * 0.2 - 0.5) % 2 == 0))
-            if (y * 0.1 > x * 0.03 + sin(x - M_PI_2))
+            switch (preview->_background)
             {
+            case 1:
+                result.hit_color = (((int)ceil(x * 0.2) % 2 == 0) ^ ((int)ceil(y * 0.2 - 0.5) % 2 == 0)) ? COLOR_WHITE : COLOR_BLACK;
+                break;
+            case 2:
+                result.hit_color = (y * 0.1 > x * 0.03 + sin(x - M_PI_2)) ? COLOR_WHITE : COLOR_BLACK;
+                break;
+            default:
                 result.hit_color = COLOR_WHITE;
-            }
-            else
-            {
-                result.hit_color = COLOR_BLACK;
             }
             result.hit_location.x = x;
             result.hit_location.y = y;
@@ -156,7 +185,17 @@ private:
 
         return result;
     }
-
+    static Color _applyLightStatus(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material)
+    {
+        if (((PreviewWaterColor*)renderer->customData[2])->_lighting_enabled)
+        {
+            return lightingApplyStatusToSurface(renderer, status, location, normal, material);
+        }
+        else
+        {
+            return material.base;
+        }
+    }
     static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
     {
         lightingGetStatus((LightingDefinition*)renderer->customData[1], renderer, location, status);

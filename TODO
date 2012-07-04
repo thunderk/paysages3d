@@ -9,7 +9,6 @@ Technology Preview 2 :
 - Add layer sorting/naming.
 - Add logarithmic sliders for some float values.
 - Improve previews.
-   => Add a right click menu for toggles and modes
    => Add user markers on OSD
 - Add a zone editor dialog for localized textures.
 - Add a terrain modifier dialog with zones.
@@ -39,7 +38,6 @@ Technology Preview 3 :
 - Mark modified tabs and ask for losing modifications (idem for layers).
 - Fix potential holes in land rendering.
 - Progressive final render (increasing resolution, for second pass only).
-- Propose several backgrounds for water preview (grid, sinus...).
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - Improve 3d explorer
    => Restore LOD and intelligent poly count (and raise max tessellation)

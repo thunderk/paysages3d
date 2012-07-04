@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QWheelEvent>
 #include <QLabel>
+#include <QMenu>
 #include "tools.h"
 #include "../lib_paysages/system.h"
 
@@ -270,7 +271,7 @@ int PreviewDrawingManager::chunkCount()
 BasePreview::BasePreview(QWidget* parent) :
 QWidget(parent)
 {
-    this->lock_drawing = new QMutex();
+    this->_lock_drawing = new QMutex();
 
     this->conf_scroll_xmin = 0.0;
     this->conf_scroll_xmax = 0.0;
@@ -287,8 +288,8 @@ QWidget(parent)
     this->scalingbase = 1.0;
     this->xoffset = 0.0;
     this->yoffset = 0.0;
-    this->pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
-    this->pixbuf->fill(0x00000000);
+    this->_pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
+    this->_pixbuf->fill(0x00000000);
     _width = width();
     _height = height();
     _revision = 0;
@@ -314,8 +315,8 @@ BasePreview::~BasePreview()
     _drawing_manager->removeChunks(this);
 
     delete _info;
-    delete pixbuf;
-    delete lock_drawing;
+    delete _pixbuf;
+    delete _lock_drawing;
 }
 
 void BasePreview::addOsd(QString name)
@@ -329,6 +330,8 @@ void BasePreview::savePack(PackStream* stream)
     packWriteDouble(stream, &this->xoffset);
     packWriteDouble(stream, &this->yoffset);
     packWriteDouble(stream, &this->scaling);
+    
+    // TODO Save choices and toggles
 }
 
 void BasePreview::loadPack(PackStream* stream)
@@ -336,6 +339,9 @@ void BasePreview::loadPack(PackStream* stream)
     packReadDouble(stream, &this->xoffset);
     packReadDouble(stream, &this->yoffset);
     packReadDouble(stream, &this->scaling);
+    
+    // TODO Save choices and toggles
+    
     emit contentChange();
 }
 
@@ -400,6 +406,37 @@ void BasePreview::configScrolling(double xmin, double xmax, double xinit, double
     redraw();
 }
 
+void BasePreview::addChoice(const QString& key, const QString& title, const QStringList& choices, int init_value)
+{
+    _ContextChoice choice;
+    choice.title = title;
+    choice.items << choices;
+    choice.current = init_value;
+    
+    _choices.insert(key, choice);
+    
+    choiceChangeEvent(key, init_value);
+}
+
+void BasePreview::choiceChangeEvent(const QString&, int)
+{
+}
+
+void BasePreview::addToggle(const QString& key, const QString& text, bool init_value)
+{
+    _ContextToggle toggle;
+    toggle.title = text;
+    toggle.value = init_value;
+    
+    _toggles.insert(key, toggle);
+    
+    toggleChangeEvent(key, init_value);
+}
+
+void BasePreview::toggleChangeEvent(QString, bool)
+{
+}
+
 void BasePreview::redraw()
 {
     emit(redrawRequested());
@@ -408,24 +445,24 @@ void BasePreview::redraw()
 QImage BasePreview::startChunkTransaction(int x, int y, int w, int h, int* revision)
 {
     *revision = _revision;
-    return pixbuf->copy(x, y, w, h);
+    return _pixbuf->copy(x, y, w, h);
 }
 
 void BasePreview::commitChunkTransaction(QImage* chunk, int x, int y, int w, int h, int revision)
 {
-    lock_drawing->lock();
+    _lock_drawing->lock();
     if (revision == _revision)
     {
         for (int ix = 0; ix < w; ix++)
         {
             for (int iy = 0; iy < h; iy++)
             {
-                pixbuf->setPixel(x + ix, y + iy, chunk->pixel(ix, iy));
+                _pixbuf->setPixel(x + ix, y + iy, chunk->pixel(ix, iy));
             }
         }
         emit contentChange();
     }
-    lock_drawing->unlock();
+    _lock_drawing->unlock();
 }
 
 QColor BasePreview::getPixelColor(int x, int y)
@@ -435,12 +472,41 @@ QColor BasePreview::getPixelColor(int x, int y)
 
 void BasePreview::handleRedraw()
 {
-    lock_drawing->lock();
+    _lock_drawing->lock();
 
     updateData();
     invalidatePixbuf(128);
 
-    lock_drawing->unlock();
+    _lock_drawing->unlock();
+}
+
+void BasePreview::choiceSelected(QAction* action)
+{
+    switch (action->property("mode").toInt())
+    {
+    case 1:
+    {
+        QString key = action->property("key").toString();
+        int value = action->property("value").toInt();
+
+        _choices[key].current = value;
+
+        choiceChangeEvent(key, value);
+        break;
+    }
+    case 2:
+    {
+        QString key = action->property("key").toString();
+        bool value = action->property("value").toBool();
+
+        _toggles[key].value = value;
+
+        toggleChangeEvent(key, value);
+        break;
+    }
+    default:
+        ;
+    }
 }
 
 void BasePreview::showEvent(QShowEvent* event)
@@ -453,16 +519,16 @@ void BasePreview::resizeEvent(QResizeEvent* event)
     QImage* image;
     int added = 0;
 
-    this->lock_drawing->lock();
+    this->_lock_drawing->lock();
 
-    image = this->pixbuf;
+    image = this->_pixbuf;
 
     _width = event->size().width();
     _height = event->size().height();
 
-    this->pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
+    this->_pixbuf = new QImage(this->size(), QImage::Format_ARGB32);
 
-    this->pixbuf->fill(0x00000000);
+    this->_pixbuf->fill(0x00000000);
 
     _drawing_manager->removeChunks(this);
     for (int x = 0; x < _width; x += 32)
@@ -477,15 +543,15 @@ void BasePreview::resizeEvent(QResizeEvent* event)
 
     delete image;
 
-    this->lock_drawing->unlock();
+    this->_lock_drawing->unlock();
 }
 
 void BasePreview::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
-    painter.drawImage(0, 0, *this->pixbuf);
+    painter.drawImage(0, 0, *this->_pixbuf);
     
-    QImage osd(pixbuf->size(), pixbuf->format());
+    QImage osd(_pixbuf->size(), _pixbuf->format());
     osd.fill(0x00000000);
     for (int i = 0; i < _osd.size(); i++)
     {
@@ -518,14 +584,78 @@ void BasePreview::invalidatePixbuf(int value)
     {
         for (int iy = 0; iy < _height; iy++)
         {
-            QRgb col = pixbuf->pixel(ix, iy);
+            QRgb col = _pixbuf->pixel(ix, iy);
             if (qAlpha(col) == 255)
             {
-                pixbuf->setPixel(ix, iy, qRgba(qRed(col), qGreen(col), qBlue(col), value));
+                _pixbuf->setPixel(ix, iy, qRgba(qRed(col), qGreen(col), qBlue(col), value));
             }
         }
     }
     updateChunks();
+}
+
+void BasePreview::contextMenuEvent(QContextMenuEvent* event)
+{
+    QMenu menu(this);
+
+    // TODO Get menu items from OSDs
+
+    // Fill with choices
+    QHashIterator<QString, _ContextChoice> iter1(_choices);
+    while (iter1.hasNext())
+    {
+        if (not menu.isEmpty())
+        {
+            menu.addSeparator();
+        }
+        
+        iter1.next();
+        menu.addAction(QString("   %1   ").arg(iter1.value().title))->setDisabled(true);
+        
+        QStringList list = iter1.value().items;
+        for (int i = 0; i < list.count(); i++)
+        {
+            QAction* action = menu.addAction(list[i]);
+            action->setProperty("mode", 1);
+            action->setProperty("key", iter1.key());
+            action->setProperty("value", i);
+            if (i == iter1.value().current)
+            {
+                action->setIcon(QIcon("images/choice_on.png"));
+                action->setIconVisibleInMenu(true);
+            }
+        }
+    }
+
+    // Fill with toggles
+    QHashIterator<QString, _ContextToggle> iter2(_toggles);
+    while (iter2.hasNext())
+    {
+        if (not menu.isEmpty() and not iter2.hasPrevious())
+        {
+            menu.addSeparator();
+        }
+        
+        iter2.next();
+
+        QAction* action = menu.addAction(iter2.value().title);
+        action->setProperty("mode", 2);
+        action->setProperty("key", iter2.key());
+        action->setProperty("value", not iter2.value().value);
+        if (iter2.value().value)
+        {
+            action->setIcon(QIcon("images/toggle_on.png"));
+            action->setIconVisibleInMenu(true);
+        }
+    }
+
+    if (not menu.isEmpty())
+    {
+        connect(&menu, SIGNAL(triggered(QAction*)), this, SLOT(choiceSelected(QAction*)));
+        
+        menu.exec(event->globalPos());
+        event->accept();
+    }
 }
 
 void BasePreview::mousePressEvent(QMouseEvent* event)
@@ -577,16 +707,16 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
                 xoffset -= (double) ndx * scaling;
                 yoffset -= (double) ndy * scaling;
 
-                lock_drawing->lock();
-                pixbuf->fill(0x00000000);
+                _lock_drawing->lock();
+                _pixbuf->fill(0x00000000);
                 updateChunks();
-                lock_drawing->unlock();
+                _lock_drawing->unlock();
             }
             else
             {
                 int xstart, xsize, ystart, ysize;
 
-                lock_drawing->lock();
+                _lock_drawing->lock();
 
                 xoffset -= (double) ndx * scaling;
                 yoffset -= (double) ndy * scaling;
@@ -612,13 +742,13 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
                     ysize = height - ndy;
                 }
 
-                QImage part = pixbuf->copy(xstart, ystart, xsize, ysize);
-                pixbuf->fill(0x00000000);
-                QPainter painter(pixbuf);
+                QImage part = _pixbuf->copy(xstart, ystart, xsize, ysize);
+                _pixbuf->fill(0x00000000);
+                QPainter painter(_pixbuf);
                 painter.drawImage(xstart + ndx, ystart + ndy, part);
 
                 updateChunks();
-                lock_drawing->unlock();
+                _lock_drawing->unlock();
 
                 emit contentChange();
             }
@@ -704,32 +834,32 @@ void BasePreview::wheelEvent(QWheelEvent* event)
     old_scaling = scaling;
     updateScaling();
 
-    width = pixbuf->width();
-    height = pixbuf->height();
+    width = _pixbuf->width();
+    height = _pixbuf->height();
 
     if (scaling < old_scaling)
     {
-        lock_drawing->lock();
+        _lock_drawing->lock();
         new_width = (int) floor(((double) width) * scaling / old_scaling);
         new_height = (int) floor(((double) height) * scaling / old_scaling);
-        QImage part = pixbuf->copy((width - new_width) / 2, (height - new_height) / 2, new_width, new_height).scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        pixbuf->fill(0x00000000);
-        QPainter painter(pixbuf);
+        QImage part = _pixbuf->copy((width - new_width) / 2, (height - new_height) / 2, new_width, new_height).scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        _pixbuf->fill(0x00000000);
+        QPainter painter(_pixbuf);
         painter.drawImage(0, 0, part);
         invalidatePixbuf(254);
-        lock_drawing->unlock();
+        _lock_drawing->unlock();
 
         emit contentChange();
     }
     else if (scaling > old_scaling)
     {
-        lock_drawing->lock();
-        QImage part = pixbuf->scaled((int) floor(((double) width) * old_scaling / scaling), (int) floor(((double) height) * old_scaling / scaling), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        pixbuf->fill(0x00000000);
-        QPainter painter(pixbuf);
+        _lock_drawing->lock();
+        QImage part = _pixbuf->scaled((int) floor(((double) width) * old_scaling / scaling), (int) floor(((double) height) * old_scaling / scaling), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        _pixbuf->fill(0x00000000);
+        QPainter painter(_pixbuf);
         painter.drawImage((width - part.width()) / 2, (height - part.height()) / 2, part);
         invalidatePixbuf(254);
-        lock_drawing->unlock();
+        _lock_drawing->unlock();
 
         emit contentChange();
     }

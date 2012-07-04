@@ -165,6 +165,7 @@ void FormTextures::revertConfig()
 
 void FormTextures::applyConfig()
 {
+    configChangeEvent();
     scenerySetTextures(&_definition);
     BaseForm::applyConfig();
 }

@@ -356,9 +356,8 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation>Couverture de la couche (sans éclairage)</translation>
     </message>
     <message>
-        <location filename="../gui_qt/formclouds.cpp" line="155"/>
         <source>Color and lighting</source>
-        <translation>Echantillon éclairé</translation>
+        <translation type="obsolete">Echantillon éclairé</translation>
     </message>
     <message>
         <source>Start altitude</source>
@@ -375,11 +374,6 @@ Maintenir Ctrl : Plus rapide</translation>
     <message>
         <location filename="../gui_qt/formclouds.cpp" line="157"/>
         <source>Lower altitude</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui_qt/formclouds.cpp" line="158"/>
-        <source>Upper altitude</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -410,6 +404,16 @@ Maintenir Ctrl : Plus rapide</translation>
     <message>
         <source>Light reflection shininess</source>
         <translation type="obsolete">Concentration de la réflexion de lumière</translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formclouds.cpp" line="155"/>
+        <source>Appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui_qt/formclouds.cpp" line="158"/>
+        <source>Layer thickness</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../gui_qt/formclouds.cpp" line="159"/>

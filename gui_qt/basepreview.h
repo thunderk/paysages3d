@@ -11,6 +11,21 @@
 #include "previewosd.h"
 #include "../lib_paysages/pack.h"
 
+class _ContextChoice
+{
+public:
+    QString title;
+    QStringList items;
+    int current;
+};
+
+class _ContextToggle
+{
+public:
+    QString title;
+    bool value;
+};
+
 class BasePreview : public QWidget {
     Q_OBJECT
 
@@ -18,8 +33,6 @@ public:
     BasePreview(QWidget* parent);
     ~BasePreview();
     
-    void addOsd(QString name);
-
     virtual void savePack(PackStream* stream);
     virtual void loadPack(PackStream* stream);
     
@@ -41,6 +54,14 @@ protected:
     void configScaling(double min, double max, double step, double init, bool logarithmic = true);
     void configScrolling(double xmin, double xmax, double xinit, double ymin, double ymax, double yinit);
 
+    void addOsd(QString name);
+
+    void addChoice(const QString& key, const QString& title, const QStringList& choices, int init_value);
+    virtual void choiceChangeEvent(const QString& key, int position);
+
+    void addToggle(const QString& key, const QString& text, bool init_value);
+    virtual void toggleChangeEvent(QString key, bool value);
+
     double xoffset;
     double yoffset;
     double scaling;
@@ -54,14 +75,17 @@ private:
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent* event);
 
+    void contextMenuEvent(QContextMenuEvent* event);
     void mousePressEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
     void wheelEvent(QWheelEvent* event);
     void leaveEvent(QEvent* event);
 
-    QMutex* lock_drawing;
-    QImage* pixbuf;
+    QMutex* _lock_drawing;
+    QImage* _pixbuf;
     QVector<PreviewOsd*> _osd;
+    QHash<QString, _ContextChoice> _choices;
+    QHash<QString, _ContextToggle> _toggles;
     
     QLabel* _info;
 
@@ -96,6 +120,7 @@ signals:
 
 private slots:
     void handleRedraw();
+    void choiceSelected(QAction* action);
 };
 
 
