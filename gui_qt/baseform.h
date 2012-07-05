@@ -33,8 +33,11 @@ protected slots:
     virtual void configChangeEvent();
     
 private slots:
+    void rebuildLayerList();
     void layerAddClicked();
     void layerDelClicked();
+    void layerUpClicked();
+    void layerDownClicked();
     void layerListChanged();
 
 protected:
@@ -59,23 +62,27 @@ protected:
     
     virtual void layerAddedEvent();
     virtual void layerDeletedEvent(int layer);
+    virtual void layerMovedEvent(int layer, int new_position);
     virtual void layerSelectedEvent(int layer);
 
 private:
-    bool auto_update_previews;
-    bool auto_apply;
-    bool with_layers;
-    QComboBox* layer_list;
-    QPushButton* layer_new;
-    QPushButton* layer_del;
-    QWidget* previews;
-    QWidget* form;
-    QWidget* form_labels;
-    QWidget* form_previews;
-    QWidget* form_controls;
-    QWidget* buttons;
-    QPushButton* button_apply;
-    QPushButton* button_revert;
+    bool _auto_update_previews;
+    bool _auto_apply;
+    bool _with_layers;
+    QComboBox* _layer_list;
+    int _layer_count;
+    QPushButton* _layer_new;
+    QPushButton* _layer_del;
+    QPushButton* _layer_up;
+    QPushButton* _layer_down;
+    QWidget* _previews;
+    QWidget* _form;
+    QWidget* _form_labels;
+    QWidget* _form_previews;
+    QWidget* _form_controls;
+    QWidget* _buttons;
+    QPushButton* _button_apply;
+    QPushButton* _button_revert;
 };
 
-#endif // _PAYSAGES_QT_BASEFORM_H_
+#endif

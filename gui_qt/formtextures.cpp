@@ -185,6 +185,7 @@ void FormTextures::layerAddedEvent()
 {
     if (texturesAddLayer(&_definition) >= 0)
     {
+        setLayerCount(texturesGetLayerCount(&_definition));
         BaseForm::layerAddedEvent();
     }
 }
@@ -192,6 +193,7 @@ void FormTextures::layerAddedEvent()
 void FormTextures::layerDeletedEvent(int layer)
 {
     texturesDeleteLayer(&_definition, layer);
+    setLayerCount(texturesGetLayerCount(&_definition));
     
     BaseForm::layerDeletedEvent(layer);
 }

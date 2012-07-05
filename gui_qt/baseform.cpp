@@ -20,8 +20,8 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
     QWidget* layers;
     QLabel* label;
 
-    this->auto_apply = auto_apply;
-    this->with_layers = with_layers;
+    this->_auto_apply = auto_apply;
+    this->_with_layers = with_layers;
 
     setLayout(new QHBoxLayout());
     setObjectName("_base_form_");
@@ -30,6 +30,8 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
     control->setLayout(new QVBoxLayout());
     control->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     layout()->addWidget(control);
+    
+    _layer_count = 0;
     
     if (with_layers)
     {
@@ -41,58 +43,74 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
         label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         layers->layout()->addWidget(label);
         
-        layer_list = new QComboBox(layers);
-        layers->layout()->addWidget(layer_list);
-        QObject::connect(layer_list, SIGNAL(currentIndexChanged(int)), this, SLOT(layerListChanged()));
+        _layer_list = new QComboBox(layers);
+        layers->layout()->addWidget(_layer_list);
+        QObject::connect(_layer_list, SIGNAL(currentIndexChanged(int)), this, SLOT(layerListChanged()));
 
-        layer_new = new QPushButton(tr("Add layer"), layers);
-        layers->layout()->addWidget(layer_new);
-        QObject::connect(layer_new, SIGNAL(clicked()), this, SLOT(layerAddClicked()));
+        _layer_new = new QPushButton(QIcon("images/layer_add.png"), "", layers);
+        _layer_new->setToolTip(tr("Add layer"));
+        _layer_new->setMaximumSize(30, 30);
+        layers->layout()->addWidget(_layer_new);
+        QObject::connect(_layer_new, SIGNAL(clicked()), this, SLOT(layerAddClicked()));
         
-        layer_del = new QPushButton(tr("Delete layer"), layers);
-        layers->layout()->addWidget(layer_del);
-        QObject::connect(layer_del, SIGNAL(clicked()), this, SLOT(layerDelClicked()));
+        _layer_del = new QPushButton(QIcon("images/layer_del.png"), "", layers);
+        _layer_del->setToolTip(tr("Delete layer"));
+        _layer_del->setMaximumSize(30, 30);
+        layers->layout()->addWidget(_layer_del);
+        QObject::connect(_layer_del, SIGNAL(clicked()), this, SLOT(layerDelClicked()));
+
+        _layer_up = new QPushButton(QIcon("images/layer_up.png"), "", layers);
+        _layer_up->setToolTip(tr("Move layer upward"));
+        _layer_up->setMaximumSize(30, 30);
+        layers->layout()->addWidget(_layer_up);
+        QObject::connect(_layer_up, SIGNAL(clicked()), this, SLOT(layerUpClicked()));
+
+        _layer_down = new QPushButton(QIcon("images/layer_down.png"), "", layers);
+        _layer_down->setToolTip(tr("Move layer downward"));
+        _layer_down->setMaximumSize(30, 30);
+        layers->layout()->addWidget(_layer_down);
+        QObject::connect(_layer_down, SIGNAL(clicked()), this, SLOT(layerDownClicked()));
         
         control->layout()->addWidget(layers);
-        control->layout()->setAlignment(buttons, Qt::AlignTop);
+        control->layout()->setAlignment(_buttons, Qt::AlignTop);
     }
 
-    previews = new QWidget(this);
-    previews->setLayout(new QVBoxLayout());
-    previews->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    layout()->addWidget(previews);
-    layout()->setAlignment(previews, Qt::AlignTop);
+    _previews = new QWidget(this);
+    _previews->setLayout(new QVBoxLayout());
+    _previews->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    layout()->addWidget(_previews);
+    layout()->setAlignment(_previews, Qt::AlignTop);
     
-    form = new QWidget(this);
-    form->setLayout(new QHBoxLayout());
-    control->layout()->addWidget(form);
-    control->layout()->setAlignment(form, Qt::AlignTop);
+    _form = new QWidget(this);
+    _form->setLayout(new QHBoxLayout());
+    control->layout()->addWidget(_form);
+    control->layout()->setAlignment(_form, Qt::AlignTop);
     
-    form_labels = new QWidget(form);
-    form_labels->setLayout(new QVBoxLayout());
-    form->layout()->addWidget(form_labels);
+    _form_labels = new QWidget(_form);
+    _form_labels->setLayout(new QVBoxLayout());
+    _form->layout()->addWidget(_form_labels);
 
-    form_previews = new QWidget(form);
-    form_previews->setLayout(new QVBoxLayout());
-    form->layout()->addWidget(form_previews);
+    _form_previews = new QWidget(_form);
+    _form_previews->setLayout(new QVBoxLayout());
+    _form->layout()->addWidget(_form_previews);
 
-    form_controls = new QWidget(form);
-    form_controls->setLayout(new QVBoxLayout());
-    form->layout()->addWidget(form_controls);
+    _form_controls = new QWidget(_form);
+    _form_controls->setLayout(new QVBoxLayout());
+    _form->layout()->addWidget(_form_controls);
     
-    buttons = new QWidget(this);
-    buttons->setLayout(new QHBoxLayout());
-    control->layout()->addWidget(buttons);
-    control->layout()->setAlignment(buttons, Qt::AlignBottom);
+    _buttons = new QWidget(this);
+    _buttons->setLayout(new QHBoxLayout());
+    control->layout()->addWidget(_buttons);
+    control->layout()->setAlignment(_buttons, Qt::AlignBottom);
 
-    button_apply = addButton(tr("Apply"));
-    button_apply->setEnabled(false);
-    connect(button_apply, SIGNAL(clicked()), this, SLOT(applyConfig()));
-    button_revert = addButton(tr("Revert"));
-    button_revert->setEnabled(false);
-    connect(button_revert, SIGNAL(clicked()), this, SLOT(revertConfig()));
+    _button_apply = addButton(tr("Apply"));
+    _button_apply->setEnabled(false);
+    connect(_button_apply, SIGNAL(clicked()), this, SLOT(applyConfig()));
+    _button_revert = addButton(tr("Revert"));
+    _button_revert->setEnabled(false);
+    connect(_button_revert, SIGNAL(clicked()), this, SLOT(revertConfig()));
     
-    auto_update_previews = true;
+    _auto_update_previews = true;
 
     if (auto_apply)
     {
@@ -102,15 +120,15 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
 
 void BaseForm::hideButtons()
 {
-    button_apply->hide();
-    button_revert->hide();
+    _button_apply->hide();
+    _button_revert->hide();
 }
 
 void BaseForm::savePack(PackStream* stream)
 {
     // Save previews status
     // TODO Ensure same order in save and load
-    QList<BasePreview*> list_previews = previews->findChildren<BasePreview*>("_form_preview_");
+    QList<BasePreview*> list_previews = _previews->findChildren<BasePreview*>("_form_preview_");
     for (int i = 0; i < list_previews.size(); i++)
     {
         list_previews[i]->savePack(stream);
@@ -121,7 +139,7 @@ void BaseForm::loadPack(PackStream* stream)
 {
     // Load previews status
     // TODO Ensure same order in save and load
-    QList<BasePreview*> list_previews = previews->findChildren<BasePreview*>("_form_preview_");
+    QList<BasePreview*> list_previews = _previews->findChildren<BasePreview*>("_form_preview_");
     for (int i = 0; i < list_previews.size(); i++)
     {
         list_previews[i]->loadPack(stream);
@@ -130,20 +148,20 @@ void BaseForm::loadPack(PackStream* stream)
 
 void BaseForm::configChangeEvent()
 {
-    if (auto_apply)
+    if (_auto_apply)
     {
         applyConfig();
     }
     else
     {
-        button_apply->setEnabled(true);
-        button_revert->setEnabled(true);
+        _button_apply->setEnabled(true);
+        _button_revert->setEnabled(true);
     }
 
-    QList<BaseInput*> inputs = form->findChildren<BaseInput*>("_form_input_");
+    QList<BaseInput*> inputs = _form->findChildren<BaseInput*>("_form_input_");
     for (int i = 0; i < inputs.size(); i++)
     {
-        if (with_layers && layer_list->count() == 0)
+        if (_with_layers && _layer_list->count() == 0)
         {
             inputs[i]->checkVisibility(false);
         }
@@ -153,7 +171,7 @@ void BaseForm::configChangeEvent()
         }
     }
     
-    if (auto_update_previews)
+    if (_auto_update_previews)
     {
         updatePreviews();
     }
@@ -161,70 +179,129 @@ void BaseForm::configChangeEvent()
 
 void BaseForm::revertConfig()
 {
-    QList<BaseInput*> inputs = form->findChildren<BaseInput*>("_form_input_");
+    QList<BaseInput*> inputs = _form->findChildren<BaseInput*>("_form_input_");
     for (int i = 0; i < inputs.size(); i++)
     {
         inputs[i]->revert();
     }
     
-    if (with_layers)
+    if (_with_layers)
     {
-        if (layer_list->currentIndex() < 0 && layer_list->count() > 0)
+        if (_layer_list->currentIndex() < 0 && _layer_list->count() > 0)
         {
-            layer_list->setCurrentIndex(0);
+            _layer_list->setCurrentIndex(0);
         }
     }
 
     updatePreviews();
     //configChangeEvent();
 
-    button_apply->setEnabled(false);
-    button_revert->setEnabled(false);
+    _button_apply->setEnabled(false);
+    _button_revert->setEnabled(false);
 }
 
 void BaseForm::applyConfig()
 {
-    button_apply->setEnabled(false);
-    button_revert->setEnabled(false);
+    _button_apply->setEnabled(false);
+    _button_revert->setEnabled(false);
 
     emit(configApplied());
+}
+
+void BaseForm::rebuildLayerList()
+{
+    if (_with_layers)
+    {
+        int selected = _layer_list->currentIndex();
+        _layer_list->clear();
+
+        for (int i = 0; i < _layer_count; i++)
+        {
+            _layer_list->addItem(QString(tr("Layer %1")).arg(i + 1));
+        }
+        if (selected >= 0)
+        {
+            if (selected >= _layer_count)
+            {
+                _layer_list->setCurrentIndex(_layer_count - 1);
+            }
+            else
+            {
+                _layer_list->setCurrentIndex(selected);
+            }
+        }
+    }
 }
 
 void BaseForm::layerAddClicked()
 {
     layerAddedEvent();
     
-    button_apply->setEnabled(true);
-    button_revert->setEnabled(true);
+    rebuildLayerList();
+    _layer_list->setCurrentIndex(_layer_list->count() - 1);
+    
+    _button_apply->setEnabled(true);
+    _button_revert->setEnabled(true);
 }
 
 void BaseForm::layerDelClicked()
 {
-    layerDeletedEvent(layer_list->currentIndex());
+    if (_layer_list->currentIndex() >= 0)
+    {
+        layerDeletedEvent(_layer_list->currentIndex());
+
+        rebuildLayerList();
+
+        _button_apply->setEnabled(true);
+        _button_revert->setEnabled(true);
+    }
+}
     
-    button_apply->setEnabled(true);
-    button_revert->setEnabled(true);
+void BaseForm::layerUpClicked()
+{
+    if (_layer_list->currentIndex() < _layer_count - 1)
+    {
+        layerMovedEvent(_layer_list->currentIndex(), _layer_list->currentIndex() + 1);
+
+        rebuildLayerList();
+
+        _button_apply->setEnabled(true);
+        _button_revert->setEnabled(true);
+    }
+}
+
+void BaseForm::layerDownClicked()
+{
+    if (_layer_list->currentIndex() > 0)
+    {
+        layerMovedEvent(_layer_list->currentIndex(), _layer_list->currentIndex() - 1);
+
+        rebuildLayerList();
+
+        _button_apply->setEnabled(true);
+        _button_revert->setEnabled(true);
+    }
 }
 
 void BaseForm::layerListChanged()
 {
-    bool changed = button_apply->isEnabled();
+    bool changed = _button_apply->isEnabled();
     
-    layerSelectedEvent(layer_list->currentIndex());
+    layerSelectedEvent(_layer_list->currentIndex());
     
-    button_apply->setEnabled(changed);
-    button_revert->setEnabled(changed);
+    _button_apply->setEnabled(changed);
+    _button_revert->setEnabled(changed);
 }
 
 void BaseForm::addPreview(BasePreview* preview, QString label)
 {
     QLabel* label_widget;
     
-    label_widget = new QLabel(label, previews);
+    label_widget = new QLabel(label, _previews);
     label_widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     
-    previews->layout()->addWidget(label_widget);
-    previews->layout()->addWidget(preview);
+    _previews->layout()->addWidget(label_widget);
+    _previews->layout()->addWidget(preview);
     
     preview->setObjectName("_form_preview_");
 }
@@ -232,7 +309,7 @@ void BaseForm::addPreview(BasePreview* preview, QString label)
 QPushButton* BaseForm::addButton(QString label)
 {
     QPushButton* button = new QPushButton(label);
-    buttons->layout()->addWidget(button);
+    _buttons->layout()->addWidget(button);
     return button;
 }
 
@@ -240,9 +317,9 @@ BaseInput* BaseForm::addInput(BaseInput* input)
 {
     int row_height = 30;
     
-    form_labels->layout()->addWidget(input->label());
-    form_previews->layout()->addWidget(input->preview());
-    form_controls->layout()->addWidget(input->control());
+    _form_labels->layout()->addWidget(input->label());
+    _form_previews->layout()->addWidget(input->preview());
+    _form_controls->layout()->addWidget(input->control());
     
     input->label()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     input->label()->setMinimumSize(150, row_height);
@@ -266,52 +343,52 @@ BaseInput* BaseForm::addInput(BaseInput* input)
 
 BaseInput* BaseForm::addInputInt(QString label, int* value, int min, int max, int small_step, int large_step)
 {
-    return addInput(new InputInt(form, label, value, min, max, small_step, large_step));
+    return addInput(new InputInt(_form, label, value, min, max, small_step, large_step));
 }
 
 BaseInput* BaseForm::addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step)
 {
-    return addInput(new InputDouble(form, label, value, min, max, small_step, large_step));
+    return addInput(new InputDouble(_form, label, value, min, max, small_step, large_step));
 }
 
 BaseInput* BaseForm::addInputBoolean(QString label, int* value)
 {
-    return addInput(new InputBoolean(form, label, value));
+    return addInput(new InputBoolean(_form, label, value));
 }
 
 BaseInput* BaseForm::addInputColor(QString label, Color* value)
 {
-    return addInput(new InputColor(form, label, value));
+    return addInput(new InputColor(_form, label, value));
 }
 
 BaseInput* BaseForm::addInputColorGradation(QString label, ColorGradation* value)
 {
-    return addInput(new InputColorGradation(form, label, value));
+    return addInput(new InputColorGradation(_form, label, value));
 }
 
 BaseInput* BaseForm::addInputNoise(QString label, NoiseGenerator* value)
 {
-    return addInput(new InputNoise(form, label, value));
+    return addInput(new InputNoise(_form, label, value));
 }
 
 BaseInput* BaseForm::addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax, QString xlabel, QString ylabel)
 {
-    return addInput(new InputCurve(form, label, value, xmin, xmax, ymin, ymax, xlabel, ylabel));
+    return addInput(new InputCurve(_form, label, value, xmin, xmax, ymin, ymax, xlabel, ylabel));
 }
 
 BaseInput* BaseForm::addInputMaterial(QString label, SurfaceMaterial* material)
 {
-    return addInput(new InputMaterial(form, label, material));
+    return addInput(new InputMaterial(_form, label, material));
 }
 
 BaseInput* BaseForm::addInputEnum(QString label, int* value, const QStringList& values)
 {
-    return addInput(new InputEnum(form, label, value, values));
+    return addInput(new InputEnum(_form, label, value, values));
 }
 
 void BaseForm::updatePreviews()
 {
-    QList<BasePreview*> list_previews = previews->findChildren<BasePreview*>("_form_preview_");
+    QList<BasePreview*> list_previews = _previews->findChildren<BasePreview*>("_form_preview_");
     for (int i = 0; i < list_previews.size(); i++)
     {
         list_previews[i]->redraw();
@@ -320,14 +397,14 @@ void BaseForm::updatePreviews()
 
 void BaseForm::disablePreviewsUpdate()
 {
-    auto_update_previews = false;
+    _auto_update_previews = false;
 }
 
 int BaseForm::currentLayer()
 {
-    if (with_layers)
+    if (_with_layers)
     {
-        return layer_list->currentIndex();
+        return _layer_list->currentIndex();
     }
     else
     {
@@ -337,52 +414,32 @@ int BaseForm::currentLayer()
 
 void BaseForm::setLayerCount(int layer_count)
 {
-    int i, selected;
-    
-    if (with_layers)
-    {
-        selected = layer_list->currentIndex();
-        layer_list->clear();
-
-        for (i = 0; i < layer_count; i++)
-        {
-            layer_list->addItem(QString(tr("Layer %1")).arg(i + 1));
-        }
-        if (selected >= 0)
-        {
-            if (selected > layer_count)
-            {
-                layer_list->setCurrentIndex(layer_count - 1);
-            }
-            else
-            {
-                layer_list->setCurrentIndex(selected);
-            }
-        }
-    }
+    this->_layer_count = layer_count;
+    rebuildLayerList();
 }
     
 void BaseForm::layerAddedEvent()
 {
-    setLayerCount(layer_list->count() + 1);
-    layer_list->setCurrentIndex(layer_list->count() - 1);
 }
 
 void BaseForm::layerDeletedEvent(int layer)
 {
-    layer_list->removeItem(layer);
+}
+
+void BaseForm::layerMovedEvent(int layer, int new_position)
+{
 }
 
 void BaseForm::layerSelectedEvent(int layer)
 {
-    QList<BaseInput*> inputs = form->findChildren<BaseInput*>("_form_input_");
+    QList<BaseInput*> inputs = _form->findChildren<BaseInput*>("_form_input_");
     for (int i = 0; i < inputs.size(); i++)
     {
         inputs[i]->revert();
         inputs[i]->checkVisibility(layer >= 0);
     }
 
-    QList<BasePreview*> list_previews = previews->findChildren<BasePreview*>("_form_preview_");
+    QList<BasePreview*> list_previews = _previews->findChildren<BasePreview*>("_form_preview_");
     for (int i = 0; i < list_previews.size(); i++)
     {
         list_previews[i]->redraw();

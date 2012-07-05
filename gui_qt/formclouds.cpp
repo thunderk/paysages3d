@@ -196,6 +196,7 @@ void FormClouds::layerAddedEvent()
 {
     if (cloudsAddLayer(&_definition) >= 0)
     {
+        setLayerCount(cloudsGetLayerCount(&_definition));
         BaseForm::layerAddedEvent();
     }
 }
@@ -203,6 +204,7 @@ void FormClouds::layerAddedEvent()
 void FormClouds::layerDeletedEvent(int layer)
 {
     cloudsDeleteLayer(&_definition, layer);
+    setLayerCount(cloudsGetLayerCount(&_definition));
     
     BaseForm::layerDeletedEvent(layer);
 }
