@@ -271,6 +271,24 @@ void cloudsDeleteLayer(CloudsDefinition* definition, int layer)
     }
 }
 
+void cloudsMoveLayer(CloudsDefinition* definition, int layer, int new_position)
+{
+    if (layer >= 0 && layer < definition->nblayers && new_position != layer && new_position >= 0 && new_position < definition->nblayers)
+    {
+        CloudsLayerDefinition temp;
+        temp = definition->layers[layer];
+        if (new_position > layer)
+        {
+            memmove(definition->layers + layer, definition->layers + layer + 1, sizeof(CloudsLayerDefinition) * (new_position - layer));
+        }
+        else
+        {
+            memmove(definition->layers + new_position, definition->layers + new_position + 1, sizeof(CloudsLayerDefinition) * (layer - new_position));
+        }
+        definition->layers[new_position] = temp;
+    }
+}
+
 static inline double _getDistanceToBorder(CloudsLayerDefinition* layer, Vector3 position)
 {
     double density, coverage, val;

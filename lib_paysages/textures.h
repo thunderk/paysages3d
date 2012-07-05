@@ -27,8 +27,8 @@ typedef struct
 
 typedef struct
 {
-    int nbtextures;
-    TextureLayerDefinition textures[TEXTURES_MAX_LAYERS];
+    int nblayers;
+    TextureLayerDefinition layers[TEXTURES_MAX_LAYERS];
 } TexturesDefinition;
 
 void texturesInit();
@@ -50,6 +50,7 @@ int texturesGetLayerCount(TexturesDefinition* definition);
 TextureLayerDefinition* texturesGetLayer(TexturesDefinition* definition, int layer);
 int texturesAddLayer(TexturesDefinition* definition);
 void texturesDeleteLayer(TexturesDefinition* definition, int layer);
+void texturesMoveLayer(TexturesDefinition* definition, int layer, int new_position);
 
 double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);
 Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);

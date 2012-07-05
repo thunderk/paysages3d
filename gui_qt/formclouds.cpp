@@ -201,6 +201,14 @@ void FormClouds::layerAddedEvent()
     }
 }
 
+void FormClouds::layerMovedEvent(int layer, int new_position)
+{
+    cloudsMoveLayer(&_definition, layer, new_position);
+    setLayerCount(cloudsGetLayerCount(&_definition));
+    
+    BaseForm::layerMovedEvent(layer, new_position);
+}
+
 void FormClouds::layerDeletedEvent(int layer)
 {
     cloudsDeleteLayer(&_definition, layer);

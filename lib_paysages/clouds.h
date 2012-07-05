@@ -60,6 +60,7 @@ int cloudsGetLayerCount(CloudsDefinition* definition);
 CloudsLayerDefinition* cloudsGetLayer(CloudsDefinition* definition, int layer);
 int cloudsAddLayer(CloudsDefinition* definition);
 void cloudsDeleteLayer(CloudsDefinition* definition, int layer);
+void cloudsMoveLayer(CloudsDefinition* definition, int layer, int new_position);
 
 Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end);
 Color cloudsApply(CloudsDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end);

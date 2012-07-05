@@ -29,6 +29,7 @@ GUI :
   * Added grid and axis labels to curve editor.
   * Added camera location to previews.
   * Added toggles and choices to configure some previews.
+  * Added layer sorting.
 
 Misc :
   * Version handling in saved files.

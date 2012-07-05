@@ -198,6 +198,14 @@ void FormTextures::layerDeletedEvent(int layer)
     BaseForm::layerDeletedEvent(layer);
 }
 
+void FormTextures::layerMovedEvent(int layer, int new_position)
+{
+    texturesMoveLayer(&_definition, layer, new_position);
+    setLayerCount(texturesGetLayerCount(&_definition));
+    
+    BaseForm::layerMovedEvent(layer, new_position);
+}
+
 void FormTextures::layerSelectedEvent(int layer)
 {
     texturesLayerCopyDefinition(texturesGetLayer(&_definition, layer), &_layer);

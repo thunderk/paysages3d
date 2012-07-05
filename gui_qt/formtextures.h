@@ -16,6 +16,7 @@ public:
 protected:
     virtual void layerAddedEvent();
     virtual void layerDeletedEvent(int layer);
+    virtual void layerMovedEvent(int layer, int new_position);
     virtual void layerSelectedEvent(int layer);
 
 public slots:

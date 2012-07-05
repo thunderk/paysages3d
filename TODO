@@ -6,7 +6,7 @@ Technology Preview 2 :
 - Keep skydome lights in cache for a render.
 - Add buttons to restore "auto" default values in tabs and dialogs.
 - Add "hardness to light" and shadow control ("minimum lighting") to material.
-- Add layer sorting/naming.
+- Add layer naming.
 - Add logarithmic sliders for some float values.
 - Improve previews.
    => Add user markers on OSD
