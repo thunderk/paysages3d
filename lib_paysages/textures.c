@@ -226,7 +226,7 @@ void texturesMoveLayer(TexturesDefinition* definition, int layer, int new_positi
         }
         else
         {
-            memmove(definition->layers + new_position, definition->layers + new_position + 1, sizeof(TextureLayerDefinition) * (layer - new_position));
+            memmove(definition->layers + new_position + 1, definition->layers + new_position, sizeof(TextureLayerDefinition) * (layer - new_position));
         }
         definition->layers[new_position] = temp;
     }

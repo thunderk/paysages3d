@@ -283,7 +283,7 @@ void cloudsMoveLayer(CloudsDefinition* definition, int layer, int new_position)
         }
         else
         {
-            memmove(definition->layers + new_position, definition->layers + new_position + 1, sizeof(CloudsLayerDefinition) * (layer - new_position));
+            memmove(definition->layers + new_position + 1, definition->layers + new_position, sizeof(CloudsLayerDefinition) * (layer - new_position));
         }
         definition->layers[new_position] = temp;
     }

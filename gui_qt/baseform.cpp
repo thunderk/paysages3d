@@ -264,7 +264,9 @@ void BaseForm::layerUpClicked()
         layerMovedEvent(_layer_list->currentIndex(), _layer_list->currentIndex() + 1);
 
         rebuildLayerList();
-
+        
+        _layer_list->setCurrentIndex(_layer_list->currentIndex() + 1);
+        
         _button_apply->setEnabled(true);
         _button_revert->setEnabled(true);
     }
@@ -277,6 +279,8 @@ void BaseForm::layerDownClicked()
         layerMovedEvent(_layer_list->currentIndex(), _layer_list->currentIndex() - 1);
 
         rebuildLayerList();
+
+        _layer_list->setCurrentIndex(_layer_list->currentIndex() - 1);
 
         _button_apply->setEnabled(true);
         _button_revert->setEnabled(true);
