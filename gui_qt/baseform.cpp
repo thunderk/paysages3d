@@ -13,6 +13,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <qt4/QtCore/qvariant.h>
 
 BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget(parent)
 {
@@ -187,6 +188,7 @@ void BaseForm::revertConfig()
     
     if (_with_layers)
     {
+        rebuildLayerList();
         if (_layer_list->currentIndex() < 0 && _layer_list->count() > 0)
         {
             _layer_list->setCurrentIndex(0);
@@ -214,10 +216,13 @@ void BaseForm::rebuildLayerList()
     {
         int selected = _layer_list->currentIndex();
         _layer_list->clear();
+        
+        _layer_names = getLayers();
+        _layer_count = _layer_names.count();
 
         for (int i = 0; i < _layer_count; i++)
         {
-            _layer_list->addItem(QString(tr("Layer %1")).arg(i + 1));
+            _layer_list->addItem(QString(tr("Layer %1 - %2")).arg(i + 1).arg(_layer_names[i]));
         }
         if (selected >= 0)
         {
@@ -416,22 +421,24 @@ int BaseForm::currentLayer()
     }
 }
 
-void BaseForm::setLayerCount(int layer_count)
+QStringList BaseForm::getLayers()
 {
-    this->_layer_count = layer_count;
-    rebuildLayerList();
+    return QStringList();
 }
     
 void BaseForm::layerAddedEvent()
 {
+    rebuildLayerList();
 }
 
-void BaseForm::layerDeletedEvent(int layer)
+void BaseForm::layerDeletedEvent(int)
 {
+    rebuildLayerList();
 }
 
-void BaseForm::layerMovedEvent(int layer, int new_position)
+void BaseForm::layerMovedEvent(int, int)
 {
+    rebuildLayerList();
 }
 
 void BaseForm::layerSelectedEvent(int layer)

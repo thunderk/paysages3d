@@ -15,6 +15,8 @@ void packWriteDouble(PackStream* stream, double* value);
 void packReadDouble(PackStream* stream, double* value);
 void packWriteInt(PackStream* stream, int* value);
 void packReadInt(PackStream* stream, int* value);
+void packWriteString(PackStream* stream, char* value, int max_length);
+void packReadString(PackStream* stream, char* value, int max_length);
     
 #ifdef __cplusplus
 }

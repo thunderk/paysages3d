@@ -175,7 +175,6 @@ FormClouds::FormClouds(QWidget *parent):
 void FormClouds::revertConfig()
 {
     sceneryGetClouds(&_definition);
-    setLayerCount(cloudsGetLayerCount(&_definition));
     BaseForm::revertConfig();
 }
 
@@ -192,11 +191,26 @@ void FormClouds::configChangeEvent()
     BaseForm::configChangeEvent();
 }
 
+QStringList FormClouds::getLayers()
+{
+    QStringList result;
+    CloudsLayerDefinition* layer;
+    int i, n;
+    
+    n = cloudsGetLayerCount(&_definition);
+    for (i = 0; i < n; i++)
+    {
+        layer = cloudsGetLayer(&_definition, i);
+        result << QString(layer->name);
+    }
+    
+    return result;
+}
+
 void FormClouds::layerAddedEvent()
 {
     if (cloudsAddLayer(&_definition) >= 0)
     {
-        setLayerCount(cloudsGetLayerCount(&_definition));
         BaseForm::layerAddedEvent();
     }
 }
@@ -204,7 +218,6 @@ void FormClouds::layerAddedEvent()
 void FormClouds::layerMovedEvent(int layer, int new_position)
 {
     cloudsMoveLayer(&_definition, layer, new_position);
-    setLayerCount(cloudsGetLayerCount(&_definition));
     
     BaseForm::layerMovedEvent(layer, new_position);
 }
@@ -212,7 +225,6 @@ void FormClouds::layerMovedEvent(int layer, int new_position)
 void FormClouds::layerDeletedEvent(int layer)
 {
     cloudsDeleteLayer(&_definition, layer);
-    setLayerCount(cloudsGetLayerCount(&_definition));
     
     BaseForm::layerDeletedEvent(layer);
 }

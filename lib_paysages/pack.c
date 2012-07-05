@@ -3,8 +3,10 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <inttypes.h>
 #include <math.h>
+#include <unistd.h>
 
 #include "color.h"
 #include "euclid.h"
@@ -137,4 +139,24 @@ void packReadInt(PackStream* stream, int* value)
 
     read = fscanf(stream->fd, "%d;", value);
     assert(read == 1);
+}
+
+void packWriteString(PackStream* stream, char* value, int max_length)
+{
+    int len = strnlen(value, max_length - 1);
+    packWriteInt(stream, &len);
+    fwrite(value, len + 1, 1, stream->fd);
+}
+
+void packReadString(PackStream* stream, char* value, int max_length)
+{
+    int read;
+    int len;
+    packReadInt(stream, &len);
+    if (len > max_length - 1)
+    {
+        len = max_length - 1;
+    }
+    read = fread(value, len + 1, 1, stream->fd);
+    assert(read == len + 1);
 }

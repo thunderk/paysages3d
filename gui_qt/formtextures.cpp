@@ -159,7 +159,6 @@ FormTextures::~FormTextures()
 void FormTextures::revertConfig()
 {
     sceneryGetTextures(&_definition);
-    setLayerCount(texturesGetLayerCount(&_definition));
     BaseForm::revertConfig();
 }
 
@@ -181,11 +180,26 @@ void FormTextures::configChangeEvent()
     BaseForm::configChangeEvent();
 }
 
+QStringList FormTextures::getLayers()
+{
+    QStringList result;
+    TextureLayerDefinition* layer;
+    int i, n;
+    
+    n = texturesGetLayerCount(&_definition);
+    for (i = 0; i < n; i++)
+    {
+        layer = texturesGetLayer(&_definition, i);
+        result << QString(layer->name);
+    }
+    
+    return result;
+}
+
 void FormTextures::layerAddedEvent()
 {
     if (texturesAddLayer(&_definition) >= 0)
     {
-        setLayerCount(texturesGetLayerCount(&_definition));
         BaseForm::layerAddedEvent();
     }
 }
@@ -193,7 +207,6 @@ void FormTextures::layerAddedEvent()
 void FormTextures::layerDeletedEvent(int layer)
 {
     texturesDeleteLayer(&_definition, layer);
-    setLayerCount(texturesGetLayerCount(&_definition));
     
     BaseForm::layerDeletedEvent(layer);
 }
@@ -201,7 +214,6 @@ void FormTextures::layerDeletedEvent(int layer)
 void FormTextures::layerMovedEvent(int layer, int new_position)
 {
     texturesMoveLayer(&_definition, layer, new_position);
-    setLayerCount(texturesGetLayerCount(&_definition));
     
     BaseForm::layerMovedEvent(layer, new_position);
 }

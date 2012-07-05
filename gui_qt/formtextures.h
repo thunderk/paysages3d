@@ -14,6 +14,7 @@ public:
     ~FormTextures();
 
 protected:
+    virtual QStringList getLayers();
     virtual void layerAddedEvent();
     virtual void layerDeletedEvent(int layer);
     virtual void layerMovedEvent(int layer, int new_position);

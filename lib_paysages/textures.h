@@ -12,9 +12,11 @@ extern "C" {
 #endif
 
 #define TEXTURES_MAX_LAYERS 50
+#define TEXTURES_MAX_NAME_LENGTH 50
 
 typedef struct
 {
+    char name[TEXTURES_MAX_NAME_LENGTH + 1];
     Zone* zone;
     NoiseGenerator* bump_noise;
     double bump_scaling;
@@ -45,6 +47,7 @@ TextureLayerDefinition texturesLayerCreateDefinition();
 void texturesLayerDeleteDefinition(TextureLayerDefinition* definition);
 void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDefinition* destination);
 void texturesLayerValidateDefinition(TextureLayerDefinition* definition);
+void texturesLayerSetName(TextureLayerDefinition* definition, const char* name);
 
 int texturesGetLayerCount(TexturesDefinition* definition);
 TextureLayerDefinition* texturesGetLayer(TexturesDefinition* definition, int layer);

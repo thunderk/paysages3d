@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QComboBox>
+#include <QStringList>
 #include "basepreview.h"
 #include "baseinput.h"
 #include "../lib_paysages/shared/types.h"
@@ -58,7 +59,7 @@ protected:
     void disablePreviewsUpdate();
     
     int currentLayer();
-    void setLayerCount(int layer_count);
+    virtual QStringList getLayers();
     
     virtual void layerAddedEvent();
     virtual void layerDeletedEvent(int layer);
@@ -71,6 +72,7 @@ private:
     bool _with_layers;
     QComboBox* _layer_list;
     int _layer_count;
+    QStringList _layer_names;
     QPushButton* _layer_new;
     QPushButton* _layer_del;
     QPushButton* _layer_up;

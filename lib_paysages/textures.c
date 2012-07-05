@@ -39,6 +39,7 @@ void texturesSave(PackStream* stream, TexturesDefinition* definition)
     packWriteInt(stream, &definition->nblayers);
     for (i = 0; i < definition->nblayers; i++)
     {
+        packWriteString(stream, definition->layers[i].name, TEXTURES_MAX_NAME_LENGTH);
         zoneSave(stream, definition->layers[i].zone);
         noiseSaveGenerator(stream, definition->layers[i].bump_noise);
         packWriteDouble(stream, &definition->layers[i].bump_height);
@@ -65,6 +66,7 @@ void texturesLoad(PackStream* stream, TexturesDefinition* definition)
     {
         layer = definition->layers + texturesAddLayer(definition);
 
+        packReadString(stream, layer->name, TEXTURES_MAX_NAME_LENGTH);
         zoneLoad(stream, layer->zone);
         noiseLoadGenerator(stream, layer->bump_noise);
         packReadDouble(stream, &layer->bump_height);
@@ -124,6 +126,7 @@ TextureLayerDefinition texturesLayerCreateDefinition()
 {
     TextureLayerDefinition result;
 
+    texturesLayerSetName(&result, "Unnamed");
     result.zone = zoneCreate();
     result.bump_noise = noiseCreateGenerator();
     noiseGenerateBaseNoise(result.bump_noise, 102400);
@@ -148,6 +151,7 @@ void texturesLayerDeleteDefinition(TextureLayerDefinition* definition)
 
 void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDefinition* destination)
 {
+    strncpy(destination->name, source->name, TEXTURES_MAX_NAME_LENGTH);
     destination->material = source->material;
     destination->bump_height = source->bump_height;
     destination->bump_scaling = source->bump_scaling;
@@ -160,6 +164,7 @@ void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDef
 
 void texturesLayerValidateDefinition(TextureLayerDefinition* definition)
 {
+    definition->name[TEXTURES_MAX_NAME_LENGTH] = '\0';
     if (definition->bump_scaling < 0.000001)
     {
         definition->bump_scaling = 0.000001;
@@ -168,6 +173,11 @@ void texturesLayerValidateDefinition(TextureLayerDefinition* definition)
     {
         definition->slope_range = 0.001;
     }
+}
+
+void texturesLayerSetName(TextureLayerDefinition* definition, const char* name)
+{
+    strncpy(definition->name, name, TEXTURES_MAX_NAME_LENGTH);
 }
 
 int texturesGetLayerCount(TexturesDefinition* definition)

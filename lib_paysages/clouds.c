@@ -41,6 +41,7 @@ void cloudsSave(PackStream* stream, CloudsDefinition* definition)
     {
         layer = definition->layers + i;
         
+        packWriteString(stream, layer->name, CLOUDS_MAX_NAME_LENGTH);
         packWriteDouble(stream, &layer->lower_altitude);
         packWriteDouble(stream, &layer->thickness);
         curveSave(stream, layer->coverage_by_altitude);
@@ -73,6 +74,7 @@ void cloudsLoad(PackStream* stream, CloudsDefinition* definition)
     {
         layer = definition->layers + cloudsAddLayer(definition);
 
+        packReadString(stream, layer->name, CLOUDS_MAX_NAME_LENGTH);
         packReadDouble(stream, &layer->lower_altitude);
         packReadDouble(stream, &layer->thickness);
         curveLoad(stream, layer->coverage_by_altitude);
@@ -148,6 +150,7 @@ CloudsLayerDefinition cloudsLayerCreateDefinition()
 {
     CloudsLayerDefinition result;
 
+    cloudsLayerSetName(&result, "Unnamed");
     result.lower_altitude = 4.0;
     result.thickness = 6.0;
     result.coverage_by_altitude = curveCreate();
@@ -210,6 +213,7 @@ void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinit
 
 void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
 {
+    definition->name[CLOUDS_MAX_NAME_LENGTH] = '\0';
     if (definition->shape_scaling < 0.0001)
     {
         definition->shape_scaling = 0.00001;
@@ -222,6 +226,11 @@ void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
     {
         definition->_custom_coverage = _standardCoverageFunc;
     }
+}
+
+void cloudsLayerSetName(CloudsLayerDefinition* definition, const char* name)
+{
+    strncpy(definition->name, name, CLOUDS_MAX_NAME_LENGTH);
 }
 
 int cloudsGetLayerCount(CloudsDefinition* definition)

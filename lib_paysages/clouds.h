@@ -11,6 +11,7 @@ extern "C" {
 #endif
 
 #define CLOUDS_MAX_LAYERS 6
+#define CLOUDS_MAX_NAME_LENGTH 50
 
 typedef struct CloudsLayerDefinition CloudsLayerDefinition;
     
@@ -18,6 +19,7 @@ typedef double (*CloudCoverageFunc)(CloudsLayerDefinition* definition, Vector3 p
 
 struct CloudsLayerDefinition
 {
+    char name[CLOUDS_MAX_NAME_LENGTH + 1];
     double lower_altitude;
     double thickness;
     double base_coverage;
@@ -55,6 +57,7 @@ CloudsLayerDefinition cloudsLayerCreateDefinition();
 void cloudsLayerDeleteDefinition(CloudsLayerDefinition* definition);
 void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinition* destination);
 void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition);
+void cloudsLayerSetName(CloudsLayerDefinition* definition, const char* name);
 
 int cloudsGetLayerCount(CloudsDefinition* definition);
 CloudsLayerDefinition* cloudsGetLayer(CloudsDefinition* definition, int layer);

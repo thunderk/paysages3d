@@ -20,6 +20,7 @@ protected slots:
     virtual void configChangeEvent();
     
 protected:
+    virtual QStringList getLayers();
     virtual void layerAddedEvent();
     virtual void layerDeletedEvent(int layer);
     virtual void layerMovedEvent(int layer, int new_position);
