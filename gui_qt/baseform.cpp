@@ -26,7 +26,6 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
     this->_with_layers = with_layers;
 
     setLayout(new QHBoxLayout());
-    setObjectName("_base_form_");
     
     control = new QWidget(this);
     control->setLayout(new QVBoxLayout());
@@ -135,22 +134,18 @@ void BaseForm::hideButtons()
 void BaseForm::savePack(PackStream* stream)
 {
     // Save previews status
-    // TODO Ensure same order in save and load
-    QList<BasePreview*> list_previews = _previews->findChildren<BasePreview*>("_form_preview_");
-    for (int i = 0; i < list_previews.size(); i++)
+    for (int i = 0; i < _previews_list.size(); i++)
     {
-        list_previews[i]->savePack(stream);
+        _previews_list[i]->savePack(stream);
     }
 }
 
 void BaseForm::loadPack(PackStream* stream)
 {
     // Load previews status
-    // TODO Ensure same order in save and load
-    QList<BasePreview*> list_previews = _previews->findChildren<BasePreview*>("_form_preview_");
-    for (int i = 0; i < list_previews.size(); i++)
+    for (int i = 0; i < _previews_list.size(); i++)
     {
-        list_previews[i]->loadPack(stream);
+        _previews_list[i]->loadPack(stream);
     }
 }
 
@@ -166,16 +161,15 @@ void BaseForm::configChangeEvent()
         _button_revert->setEnabled(true);
     }
 
-    QList<BaseInput*> inputs = _form->findChildren<BaseInput*>("_form_input_");
-    for (int i = 0; i < inputs.size(); i++)
+    for (int i = 0; i < _inputs_list.size(); i++)
     {
         if (_with_layers && _layer_list->count() == 0)
         {
-            inputs[i]->checkVisibility(false);
+            _inputs_list[i]->checkVisibility(false);
         }
         else
         {
-            inputs[i]->checkVisibility(true);
+            _inputs_list[i]->checkVisibility(true);
         }
     }
     
@@ -187,10 +181,9 @@ void BaseForm::configChangeEvent()
 
 void BaseForm::revertConfig()
 {
-    QList<BaseInput*> inputs = _form->findChildren<BaseInput*>("_form_input_");
-    for (int i = 0; i < inputs.size(); i++)
+    for (int i = 0; i < _inputs_list.size(); i++)
     {
-        inputs[i]->revert();
+        _inputs_list[i]->revert();
     }
     
     if (_with_layers)
@@ -335,7 +328,7 @@ void BaseForm::addPreview(BasePreview* preview, QString label)
     _previews->layout()->addWidget(label_widget);
     _previews->layout()->addWidget(preview);
     
-    preview->setObjectName("_form_preview_");
+    _previews_list.append(preview);
 }
 
 QPushButton* BaseForm::addButton(QString label)
@@ -367,7 +360,7 @@ BaseInput* BaseForm::addInput(BaseInput* input)
 
     connect(input, SIGNAL(valueChanged()), this, SLOT(configChangeEvent()));
 
-    input->setObjectName("_form_input_");
+    _inputs_list.append(input);
     input->revert();
     
     return input;
@@ -420,10 +413,9 @@ BaseInput* BaseForm::addInputEnum(QString label, int* value, const QStringList& 
 
 void BaseForm::updatePreviews()
 {
-    QList<BasePreview*> list_previews = _previews->findChildren<BasePreview*>("_form_preview_");
-    for (int i = 0; i < list_previews.size(); i++)
+    for (int i = 0; i < _previews_list.size(); i++)
     {
-        list_previews[i]->redraw();
+        _previews_list[i]->redraw();
     }
 }
 
@@ -471,16 +463,14 @@ void BaseForm::layerRenamedEvent(int, QString)
 
 void BaseForm::layerSelectedEvent(int layer)
 {
-    QList<BaseInput*> inputs = _form->findChildren<BaseInput*>("_form_input_");
-    for (int i = 0; i < inputs.size(); i++)
+    for (int i = 0; i < _inputs_list.size(); i++)
     {
-        inputs[i]->revert();
-        inputs[i]->checkVisibility(layer >= 0);
+        _inputs_list[i]->revert();
+        _inputs_list[i]->checkVisibility(layer >= 0);
     }
 
-    QList<BasePreview*> list_previews = _previews->findChildren<BasePreview*>("_form_preview_");
-    for (int i = 0; i < list_previews.size(); i++)
+    for (int i = 0; i < _previews_list.size(); i++)
     {
-        list_previews[i]->redraw();
+        _previews_list[i]->redraw();
     }
 }

@@ -81,33 +81,41 @@ QMainWindow(parent)
     form = new FormTerrain(tabs);
     tabs->addTab(form, tr("Terrain"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    _forms.append(form);
 
     form = new FormTextures(tabs);
     tabs->addTab(form, tr("Textures"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    _forms.append(form);
 
     form = new FormWater(tabs);
     tabs->addTab(form, tr("Water"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    _forms.append(form);
 
     form = new FormSky(tabs);
     tabs->addTab(form, tr("Sky"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    _forms.append(form);
 
     form = new FormAtmosphere(tabs);
     tabs->addTab(form, tr("Atmosphere"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    _forms.append(form);
 
     form = new FormClouds(tabs);
     tabs->addTab(form, tr("Clouds"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    _forms.append(form);
 
     /*form = new FormLighting(tabs);
     tabs->addTab(form, tr("Lighting"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));*/
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    _forms.append(form);*/
 
     _form_render = new FormRender(tabs);
     tabs->addTab(_form_render, tr("Render"));
+    _forms.append(_form_render);
 
     toolbar = new QToolBar(this);
     toolbar->setOrientation(Qt::Vertical);
@@ -151,10 +159,9 @@ void MainWindow::refreshAll()
     logDebug("[MainWindow] Refreshing whole UI");
     
     // Refresh all tabs
-    QList<BaseForm*> list_forms = this->findChildren<BaseForm*>("_base_form_");
-    for (int i = 0; i < list_forms.size(); i++)
+    for (int i = 0; i < _forms.size(); i++)
     {
-        list_forms[i]->revertConfig();
+        _forms[i]->revertConfig();
     }
     
     // Refresh preview OSD
@@ -273,21 +280,17 @@ void MainWindow::guiLoadCallback(PackStream* stream, void* data)
 void MainWindow::guiSave(PackStream* stream)
 {
     // Save all tabs status
-    // TODO Ensure same order in save and load
-    QList<BaseForm*> list_forms = this->findChildren<BaseForm*>("_base_form_");
-    for (int i = 0; i < list_forms.size(); i++)
+    for (int i = 0; i < _forms.size(); i++)
     {
-        list_forms[i]->savePack(stream);
+        _forms[i]->savePack(stream);
     }
 }
 
 void MainWindow::guiLoad(PackStream* stream)
 {
     // Load all tabs status
-    // TODO Ensure same order in save and load
-    QList<BaseForm*> list_forms = this->findChildren<BaseForm*>("_base_form_");
-    for (int i = 0; i < list_forms.size(); i++)
+    for (int i = 0; i < _forms.size(); i++)
     {
-        list_forms[i]->loadPack(stream);
+        _forms[i]->loadPack(stream);
     }
 }

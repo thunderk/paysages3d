@@ -69,9 +69,7 @@ protected:
     virtual void layerSelectedEvent(int layer);
 
 private:
-    bool _auto_update_previews;
     bool _auto_apply;
-    QWidget* _previews;
     QWidget* _form;
     QWidget* _form_labels;
     QWidget* _form_previews;
@@ -79,6 +77,12 @@ private:
     QWidget* _buttons;
     QPushButton* _button_apply;
     QPushButton* _button_revert;
+
+    QWidget* _previews;
+    QVector<BasePreview*> _previews_list;
+    bool _auto_update_previews;
+    
+    QVector<BaseInput*> _inputs_list;
     
     bool _with_layers;
     QComboBox* _layer_list;

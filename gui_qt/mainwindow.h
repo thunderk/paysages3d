@@ -32,6 +32,7 @@ private:
     void guiSave(PackStream* stream);
     void guiLoad(PackStream* stream);
     
+    QVector<BaseForm*> _forms;
     FormRender* _form_render;
 };
 
