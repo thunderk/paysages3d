@@ -201,7 +201,7 @@ QStringList FormClouds::getLayers()
     for (i = 0; i < n; i++)
     {
         layer = cloudsGetLayer(&_definition, i);
-        result << QString(layer->name);
+        result << QString::fromUtf8(layer->name);
     }
     
     return result;
@@ -227,6 +227,16 @@ void FormClouds::layerDeletedEvent(int layer)
     cloudsDeleteLayer(&_definition, layer);
     
     BaseForm::layerDeletedEvent(layer);
+}
+
+void FormClouds::layerRenamedEvent(int layer, QString new_name)
+{
+    CloudsLayerDefinition* layer_def;
+    
+    layer_def = cloudsGetLayer(&_definition, layer);
+    cloudsLayerSetName(layer_def, new_name.toUtf8().data());
+    
+    BaseForm::layerRenamedEvent(layer, new_name);
 }
 
 void FormClouds::layerSelectedEvent(int layer)

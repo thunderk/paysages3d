@@ -190,7 +190,7 @@ QStringList FormTextures::getLayers()
     for (i = 0; i < n; i++)
     {
         layer = texturesGetLayer(&_definition, i);
-        result << QString(layer->name);
+        result << QString::fromUtf8(layer->name);
     }
     
     return result;
@@ -216,6 +216,16 @@ void FormTextures::layerMovedEvent(int layer, int new_position)
     texturesMoveLayer(&_definition, layer, new_position);
     
     BaseForm::layerMovedEvent(layer, new_position);
+}
+
+void FormTextures::layerRenamedEvent(int layer, QString new_name)
+{
+    TextureLayerDefinition* layer_def;
+    
+    layer_def = texturesGetLayer(&_definition, layer);
+    texturesLayerSetName(layer_def, new_name.toUtf8().data());
+    
+    BaseForm::layerRenamedEvent(layer, new_name);
 }
 
 void FormTextures::layerSelectedEvent(int layer)

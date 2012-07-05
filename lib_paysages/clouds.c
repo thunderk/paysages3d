@@ -621,7 +621,6 @@ static int _cmpLayer(const void* layer1, const void* layer2)
 Color cloudsApply(CloudsDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end)
 {
     int i;
-    Color layer_color;
     CloudsLayerDefinition layers[CLOUDS_MAX_LAYERS];
 
     if (definition->nblayers < 1)

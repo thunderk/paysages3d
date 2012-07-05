@@ -111,10 +111,12 @@ void packCloseStream(PackStream* stream)
 
 void packWriteDouble(PackStream* stream, double* value)
 {
+    int written;
     uint64_t servalue;
     
     servalue = pack754_64(*value);
-    fwrite(&servalue, sizeof(uint64_t), 1, stream->fd);
+    written = fwrite(&servalue, sizeof(uint64_t), 1, stream->fd);
+    assert(written == 1);
 }
 
 void packReadDouble(PackStream* stream, double* value)
@@ -130,7 +132,10 @@ void packReadDouble(PackStream* stream, double* value)
 
 void packWriteInt(PackStream* stream, int* value)
 {
-    fprintf(stream->fd, "%d;", *value);
+    int written;
+    
+    written = fprintf(stream->fd, "%d;", *value);
+    assert(written > 1);
 }
 
 void packReadInt(PackStream* stream, int* value)
@@ -143,9 +148,11 @@ void packReadInt(PackStream* stream, int* value)
 
 void packWriteString(PackStream* stream, char* value, int max_length)
 {
-    int len = strnlen(value, max_length - 1);
+    int written;
+    int len = strnlen(value, max_length - 1) + 1;
     packWriteInt(stream, &len);
-    fwrite(value, len + 1, 1, stream->fd);
+    written = fwrite(value, 1, len, stream->fd);
+    assert(written == len);
 }
 
 void packReadString(PackStream* stream, char* value, int max_length)
@@ -153,10 +160,10 @@ void packReadString(PackStream* stream, char* value, int max_length)
     int read;
     int len;
     packReadInt(stream, &len);
-    if (len > max_length - 1)
+    if (len > max_length)
     {
-        len = max_length - 1;
+        len = max_length;
     }
-    read = fread(value, len + 1, 1, stream->fd);
-    assert(read == len + 1);
+    read = fread(value, 1, len, stream->fd);
+    assert(read == len);
 }

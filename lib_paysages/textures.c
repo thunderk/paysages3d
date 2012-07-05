@@ -34,20 +34,23 @@ void texturesQuit()
 
 void texturesSave(PackStream* stream, TexturesDefinition* definition)
 {
+    TextureLayerDefinition* layer;
     int i;
 
     packWriteInt(stream, &definition->nblayers);
     for (i = 0; i < definition->nblayers; i++)
     {
-        packWriteString(stream, definition->layers[i].name, TEXTURES_MAX_NAME_LENGTH);
-        zoneSave(stream, definition->layers[i].zone);
-        noiseSaveGenerator(stream, definition->layers[i].bump_noise);
-        packWriteDouble(stream, &definition->layers[i].bump_height);
-        packWriteDouble(stream, &definition->layers[i].bump_scaling);
-        materialSave(stream, &definition->layers[i].material);
-        packWriteDouble(stream, &definition->layers[i].thickness);
-        packWriteDouble(stream, &definition->layers[i].slope_range);
-        packWriteDouble(stream, &definition->layers[i].thickness_transparency);
+        layer = definition->layers + i;
+        
+        packWriteString(stream, layer->name, TEXTURES_MAX_NAME_LENGTH);
+        zoneSave(stream, layer->zone);
+        noiseSaveGenerator(stream, layer->bump_noise);
+        packWriteDouble(stream, &layer->bump_height);
+        packWriteDouble(stream, &layer->bump_scaling);
+        materialSave(stream, &layer->material);
+        packWriteDouble(stream, &layer->thickness);
+        packWriteDouble(stream, &layer->slope_range);
+        packWriteDouble(stream, &layer->thickness_transparency);
     }
 }
 
@@ -72,9 +75,9 @@ void texturesLoad(PackStream* stream, TexturesDefinition* definition)
         packReadDouble(stream, &layer->bump_height);
         packReadDouble(stream, &layer->bump_scaling);
         materialLoad(stream, &layer->material);
-        packReadDouble(stream, &definition->layers[i].thickness);
-        packReadDouble(stream, &definition->layers[i].slope_range);
-        packReadDouble(stream, &definition->layers[i].thickness_transparency);
+        packReadDouble(stream, &layer->thickness);
+        packReadDouble(stream, &layer->slope_range);
+        packReadDouble(stream, &layer->thickness_transparency);
     }
 
     texturesValidateDefinition(definition);

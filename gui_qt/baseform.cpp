@@ -13,7 +13,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <qt4/QtCore/qvariant.h>
+#include <QVariant>
+#include <QInputDialog>
 
 BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget(parent)
 {
@@ -60,6 +61,12 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
         layers->layout()->addWidget(_layer_del);
         QObject::connect(_layer_del, SIGNAL(clicked()), this, SLOT(layerDelClicked()));
 
+        _layer_rename = new QPushButton(QIcon("images/layer_rename.png"), "", layers);
+        _layer_rename->setToolTip(tr("Rename layer"));
+        _layer_rename->setMaximumSize(30, 30);
+        layers->layout()->addWidget(_layer_rename);
+        QObject::connect(_layer_rename, SIGNAL(clicked()), this, SLOT(layerRenameClicked()));
+        
         _layer_up = new QPushButton(QIcon("images/layer_up.png"), "", layers);
         _layer_up->setToolTip(tr("Move layer upward"));
         _layer_up->setMaximumSize(30, 30);
@@ -292,6 +299,22 @@ void BaseForm::layerDownClicked()
     }
 }
 
+void BaseForm::layerRenameClicked()
+{
+    int layer = _layer_list->currentIndex();
+    if (layer >= 0)
+    {
+        QString new_name = QInputDialog::getText(this, tr("Rename layer"), tr("New name: "), QLineEdit::Normal, _layer_names[layer]);
+        if (not new_name.isEmpty())
+        {
+            layerRenamedEvent(layer, new_name);
+
+            _button_apply->setEnabled(true);
+            _button_revert->setEnabled(true);
+        }
+    }
+}
+
 void BaseForm::layerListChanged()
 {
     bool changed = _button_apply->isEnabled();
@@ -437,6 +460,11 @@ void BaseForm::layerDeletedEvent(int)
 }
 
 void BaseForm::layerMovedEvent(int, int)
+{
+    rebuildLayerList();
+}
+
+void BaseForm::layerRenamedEvent(int, QString)
 {
     rebuildLayerList();
 }

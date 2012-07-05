@@ -39,6 +39,7 @@ private slots:
     void layerDelClicked();
     void layerUpClicked();
     void layerDownClicked();
+    void layerRenameClicked();
     void layerListChanged();
 
 protected:
@@ -64,19 +65,12 @@ protected:
     virtual void layerAddedEvent();
     virtual void layerDeletedEvent(int layer);
     virtual void layerMovedEvent(int layer, int new_position);
+    virtual void layerRenamedEvent(int layer, QString new_name);
     virtual void layerSelectedEvent(int layer);
 
 private:
     bool _auto_update_previews;
     bool _auto_apply;
-    bool _with_layers;
-    QComboBox* _layer_list;
-    int _layer_count;
-    QStringList _layer_names;
-    QPushButton* _layer_new;
-    QPushButton* _layer_del;
-    QPushButton* _layer_up;
-    QPushButton* _layer_down;
     QWidget* _previews;
     QWidget* _form;
     QWidget* _form_labels;
@@ -85,6 +79,16 @@ private:
     QWidget* _buttons;
     QPushButton* _button_apply;
     QPushButton* _button_revert;
+    
+    bool _with_layers;
+    QComboBox* _layer_list;
+    int _layer_count;
+    QStringList _layer_names;
+    QPushButton* _layer_new;
+    QPushButton* _layer_del;
+    QPushButton* _layer_up;
+    QPushButton* _layer_down;
+    QPushButton* _layer_rename;
 };
 
 #endif
