@@ -25,4 +25,4 @@ private:
     CameraDefinition* _value;
 };
 
-#endif // _PAYSAGES_QT_INPUTNOISE_H_
+#endif

@@ -42,4 +42,4 @@ private:
     time_t _started;
 };
 
-#endif // _PAYSAGES_QT_DIALOGRENDER_H_
+#endif

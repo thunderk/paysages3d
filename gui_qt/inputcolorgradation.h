@@ -25,4 +25,4 @@ private:
     ColorGradation* _value;
 };
 
-#endif // _PAYSAGES_QT_INPUTCOLORGRADATION_H_
+#endif

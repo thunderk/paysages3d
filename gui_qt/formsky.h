@@ -24,4 +24,4 @@ private:
     BasePreview* previewWest;
 };
 
-#endif // _PAYSAGES_QT_FORMSKY_H_
+#endif

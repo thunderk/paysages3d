@@ -21,4 +21,4 @@ private:
     BasePreview* previewColor;
 };
 
-#endif // _PAYSAGES_QT_FORMWATER_H_
+#endif

@@ -38,4 +38,4 @@ private:
     BasePreview* _preview_landscape;
 };
 
-#endif // _PAYSAGES_QT_FORMRENDER_H_
+#endif

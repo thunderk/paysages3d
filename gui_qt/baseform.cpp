@@ -9,6 +9,7 @@
 #include "inputcurve.h"
 #include "inputmaterial.h"
 #include "inputenum.h"
+#include "inputlayers.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -409,6 +410,11 @@ BaseInput* BaseForm::addInputMaterial(QString label, SurfaceMaterial* material)
 BaseInput* BaseForm::addInputEnum(QString label, int* value, const QStringList& values)
 {
     return addInput(new InputEnum(_form, label, value, values));
+}
+
+BaseInput* BaseForm::addInputLayers(QString label, Layers* value)
+{
+    return addInput(new InputLayers(_form, label, value));
 }
 
 void BaseForm::updatePreviews()

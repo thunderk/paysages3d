@@ -25,4 +25,4 @@ private:
     Color* _value;
 };
 
-#endif // _PAYSAGES_QT_INPUTCOLOR_H_
+#endif

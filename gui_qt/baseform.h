@@ -11,6 +11,7 @@
 #include "../lib_paysages/noise.h"
 #include "../lib_paysages/curve.h"
 #include "../lib_paysages/color.h"
+#include "../lib_paysages/layers.h"
 #include "../lib_paysages/pack.h"
 
 class BaseForm:public QWidget
@@ -55,6 +56,7 @@ protected:
     BaseInput* addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax, QString xlabel, QString ylabel);
     BaseInput* addInputMaterial(QString label, SurfaceMaterial* material);
     BaseInput* addInputEnum(QString label, int* value, const QStringList& values);
+    BaseInput* addInputLayers(QString label, Layers* value);
     
     void updatePreviews();
     void disablePreviewsUpdate();
