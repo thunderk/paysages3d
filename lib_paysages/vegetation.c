@@ -7,14 +7,6 @@ struct VegetationDefinition {
     VegetationLayerDefinition layers[MAX_LAYER_COUNT];
 };
 
-void vegetationInit()
-{
-}
-
-void vegetationQuit()
-{
-}
-
 void vegetationSave(PackStream* stream, VegetationDefinition* definition)
 {
 }

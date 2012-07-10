@@ -19,8 +19,6 @@ typedef struct
     Color color;
 } AtmosphereDefinition;
 
-void atmosphereInit();
-void atmosphereQuit();
 void atmosphereSave(PackStream* stream, AtmosphereDefinition* definition);
 void atmosphereLoad(PackStream* stream, AtmosphereDefinition* definition);
 

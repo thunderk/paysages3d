@@ -9,14 +9,6 @@
 #include "scenery.h"
 #include "tools.h"
 
-void cameraInit()
-{
-}
-
-void cameraQuit()
-{
-}
-
 void cameraSave(PackStream* stream, CameraDefinition* camera)
 {
     v3Save(stream, &camera->location);

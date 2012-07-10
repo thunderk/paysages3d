@@ -16,14 +16,6 @@
 #define SPHERE_SIZE 1000.0
 
 /******************************** Configuration ********************************/
-void skyInit()
-{
-}
-
-void skyQuit()
-{
-}
-
 void skySave(PackStream* stream, SkyDefinition* definition)
 {
     packWriteInt(stream, (int*)&definition->model);

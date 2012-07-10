@@ -34,8 +34,6 @@ typedef struct
     Color final;
 } WaterResult;
 
-void waterInit();
-void waterQuit();
 void waterSave(PackStream* stream, WaterDefinition* definition);
 void waterLoad(PackStream* stream, WaterDefinition* definition);
 

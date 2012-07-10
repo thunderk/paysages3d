@@ -18,8 +18,6 @@ typedef struct
 
 typedef struct VegetationDefinition VegetationDefinition;
 
-void vegetationInit();
-void vegetationQuit();
 void vegetationSave(PackStream* stream, VegetationDefinition* definition);
 void vegetationLoad(PackStream* stream, VegetationDefinition* definition);
 

@@ -39,8 +39,6 @@ typedef struct
     } model_preetham;
 } SkyDefinition;
 
-void skyInit();
-void skyQuit();
 void skySave(PackStream* stream, SkyDefinition* definition);
 void skyLoad(PackStream* stream, SkyDefinition* definition);
 

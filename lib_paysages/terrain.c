@@ -11,53 +11,25 @@
 #include "textures.h"
 #include "water.h"
 #include "tools.h"
-
-void terrainInit()
-{
-}
-
-void terrainQuit()
-{
-}
+#include "layers.h"
+#include "terraincanvas.h"
 
 void terrainSave(PackStream* stream, TerrainDefinition* definition)
 {
-    int i;
-
     noiseSaveGenerator(stream, definition->height_noise);
     packWriteDouble(stream, &definition->height_factor);
     packWriteDouble(stream, &definition->scaling);
+    layersSave(stream, &definition->canvases);
     packWriteDouble(stream, &definition->shadow_smoothing);
-
-    packWriteInt(stream, &definition->height_modifiers_count);
-    for (i = 0; i < definition->height_modifiers_count; i++)
-    {
-        modifierSave(stream, definition->height_modifiers[i]);
-    }
 }
 
 void terrainLoad(PackStream* stream, TerrainDefinition* definition)
 {
-    int i, n;
-    HeightModifier* modifier;
-
     noiseLoadGenerator(stream, definition->height_noise);
     packReadDouble(stream, &definition->height_factor);
     packReadDouble(stream, &definition->scaling);
+    layersLoad(stream, &definition->canvases);
     packReadDouble(stream, &definition->shadow_smoothing);
-
-    while (definition->height_modifiers_count > 0)
-    {
-        terrainDelModifier(definition, 0);
-    }
-    packReadInt(stream, &n);
-    for (i = 0; i < n; i++)
-    {
-        modifier = modifierCreate();
-        modifierLoad(stream, modifier);
-        terrainAddModifier(definition, modifier);
-        modifierDelete(modifier);
-    }
 
     terrainValidateDefinition(definition);
 }
@@ -69,7 +41,7 @@ TerrainDefinition terrainCreateDefinition()
     definition.height_noise = noiseCreateGenerator();
     definition.height_factor = 0.0;
     definition.scaling = 1.0;
-    definition.height_modifiers_count = 0;
+    definition.canvases = layersCreate(terrainCanvasGetLayerType(), 50);
     definition.shadow_smoothing = 0.0;
 
     terrainValidateDefinition(&definition);
@@ -82,10 +54,7 @@ void terrainDeleteDefinition(TerrainDefinition* definition)
     int i;
 
     noiseDeleteGenerator(definition->height_noise);
-    for (i = 0; i < definition->height_modifiers_count; i++)
-    {
-        modifierDelete(definition->height_modifiers[i]);
-    }
+    layersDelete(definition->canvases);
 }
 
 void terrainCopyDefinition(TerrainDefinition* source, TerrainDefinition* destination)
@@ -95,52 +64,19 @@ void terrainCopyDefinition(TerrainDefinition* source, TerrainDefinition* destina
     noiseCopy(source->height_noise, destination->height_noise);
     destination->height_factor = source->height_factor;
     destination->scaling = source->scaling;
+    layersCopy(source->canvases, destination->canvases);
     destination->shadow_smoothing = source->shadow_smoothing;
-
-    for (i = 0; i < destination->height_modifiers_count; i++)
-    {
-        modifierDelete(destination->height_modifiers[i]);
-    }
-    destination->height_modifiers_count = 0;
-
-    for (i = 0; i < source->height_modifiers_count; i++)
-    {
-        terrainAddModifier(destination, source->height_modifiers[i]);
-    }
 
     terrainValidateDefinition(destination);
 }
 
 void terrainValidateDefinition(TerrainDefinition* definition)
 {
+    noiseValidate(definition->height_noise);
+    layersValidate(definition->canvases);
+    
     definition->_max_height = noiseGetMaxValue(definition->height_noise) * definition->height_factor;
-    /* FIXME _max_height depends on modifiers */
-}
-
-int terrainAddModifier(TerrainDefinition* definition, HeightModifier* modifier)
-{
-    if (definition->height_modifiers_count < TERRAIN_MAX_MODIFIERS)
-    {
-        definition->height_modifiers[definition->height_modifiers_count] = modifierCreateCopy(modifier);
-        return definition->height_modifiers_count++;
-    }
-    else
-    {
-        return -1;
-    }
-}
-
-void terrainDelModifier(TerrainDefinition* definition, int modifier_position)
-{
-    if (modifier_position >= 0 && modifier_position < definition->height_modifiers_count)
-    {
-        modifierDelete(definition->height_modifiers[modifier_position]);
-        if (definition->height_modifiers_count > 1 && modifier_position < definition->height_modifiers_count - 1)
-        {
-            memmove(definition->height_modifiers + modifier_position, definition->height_modifiers + modifier_position + 1, sizeof(HeightModifier*) * (definition->height_modifiers_count - modifier_position - 1));
-        }
-        definition->height_modifiers_count--;
-    }
+    /* FIXME _max_height depends on canvases/modifiers */
 }
 
 static inline double _getHeight(TerrainDefinition* definition, double x, double z)
@@ -152,10 +88,7 @@ static inline double _getHeight(TerrainDefinition* definition, double x, double 
     location.y = noiseGet2DTotal(definition->height_noise, x / definition->scaling, z / definition->scaling) * definition->height_factor;
     location.z = z;
 
-    for (i = 0; i < definition->height_modifiers_count; i++)
-    {
-        location = modifierApply(definition->height_modifiers[i], location);
-    }
+    /* TODO Apply canvases and modifiers */
 
     return location.y;
 }
@@ -169,10 +102,7 @@ static inline double _getHeightDetail(TerrainDefinition* definition, double x, d
     location.y = noiseGet2DDetail(definition->height_noise, x / definition->scaling, z / definition->scaling, detail / definition->height_factor) * definition->height_factor;
     location.z = z;
 
-    for (i = 0; i < definition->height_modifiers_count; i++)
-    {
-        location = modifierApply(definition->height_modifiers[i], location);
-    }
+    /* TODO Apply canvases and modifiers */
 
     return location.y;
 }

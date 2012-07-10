@@ -9,8 +9,6 @@
 extern "C" {
 #endif
 
-void cameraInit();
-void cameraQuit();
 void cameraSave(PackStream* stream, CameraDefinition* camera);
 void cameraLoad(PackStream* stream, CameraDefinition* camera);
 

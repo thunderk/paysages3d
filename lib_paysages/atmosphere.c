@@ -5,14 +5,6 @@
 #include "color.h"
 #include "tools.h"
 
-void atmosphereInit()
-{
-}
-
-void atmosphereQuit()
-{
-}
-
 void atmosphereSave(PackStream* stream, AtmosphereDefinition* definition)
 {
     packWriteDouble(stream, &definition->distance_near);

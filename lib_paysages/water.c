@@ -10,14 +10,6 @@
 
 #include <math.h>
 
-void waterInit()
-{
-}
-
-void waterQuit()
-{
-}
-
 void waterSave(PackStream* stream, WaterDefinition* definition)
 {
     packWriteDouble(stream, &definition->height);

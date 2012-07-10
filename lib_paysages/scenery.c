@@ -24,15 +24,9 @@ static void* _custom_data = NULL;
 void sceneryInit()
 {
     noiseInit();
-    atmosphereInit();
-    cameraInit();
     cloudsInit();
     lightingInit();
-    skyInit();
-    terrainInit();
     texturesInit();
-    vegetationInit();
-    waterInit();
 
     _atmosphere = atmosphereCreateDefinition();
     _camera = cameraCreateDefinition();
@@ -60,15 +54,9 @@ void sceneryQuit()
     vegetationDeleteDefinition(_vegetation);
     waterDeleteDefinition(&_water);
 
-    atmosphereQuit();
-    cameraQuit();
     cloudsQuit();
     lightingQuit();
-    skyQuit();
-    terrainQuit();
     texturesQuit();
-    vegetationQuit();
-    waterQuit();
     noiseQuit();
 }
 

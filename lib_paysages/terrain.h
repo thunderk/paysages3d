@@ -6,6 +6,7 @@
 #include "noise.h"
 #include "lighting.h"
 #include "pack.h"
+#include "layers.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,15 +19,12 @@ typedef struct
     NoiseGenerator* height_noise;
     double height_factor;
     double scaling;
-    int height_modifiers_count;
-    HeightModifier* height_modifiers[TERRAIN_MAX_MODIFIERS];
+    Layers* canvases;
     double shadow_smoothing;
 
     double _max_height;
 } TerrainDefinition;
 
-void terrainInit();
-void terrainQuit();
 void terrainSave(PackStream* stream, TerrainDefinition* definition);
 void terrainLoad(PackStream* stream, TerrainDefinition* definition);
 
@@ -34,9 +32,6 @@ TerrainDefinition terrainCreateDefinition();
 void terrainDeleteDefinition(TerrainDefinition* definition);
 void terrainCopyDefinition(TerrainDefinition* source, TerrainDefinition* destination);
 void terrainValidateDefinition(TerrainDefinition* definition);
-
-int terrainAddModifier(TerrainDefinition* definition, HeightModifier* modifier);
-void terrainDelModifier(TerrainDefinition* definition, int modifier_position);
 
 Color terrainLightFilter(TerrainDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light);
 int terrainProjectRay(TerrainDefinition* definition, Renderer* renderer, Vector3 start, Vector3 direction, Vector3* hit_point, Color* hit_color);
