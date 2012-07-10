@@ -329,7 +329,7 @@ void BasePreview::savePack(PackStream* stream)
 {
     packWriteDouble(stream, &this->xoffset);
     packWriteDouble(stream, &this->yoffset);
-    packWriteDouble(stream, &this->scaling);
+    packWriteDouble(stream, &this->scalingbase);
     
     // TODO Save choices and toggles
 }
@@ -338,10 +338,11 @@ void BasePreview::loadPack(PackStream* stream)
 {
     packReadDouble(stream, &this->xoffset);
     packReadDouble(stream, &this->yoffset);
-    packReadDouble(stream, &this->scaling);
+    packReadDouble(stream, &this->scalingbase);
     
     // TODO Save choices and toggles
     
+    updateScaling();
     emit contentChange();
 }
 

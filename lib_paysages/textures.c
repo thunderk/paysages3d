@@ -401,6 +401,7 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
     /* Pre compute alpha channel */
     start = 0;
     last_height = results[0].thickness;
+    results[0].thickness = 1.0;
     for (i = 1; i <= definition->nblayers; i++)
     {
         thickness = results[i].thickness - last_height;
@@ -419,7 +420,6 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
         }
         else
         {
-            color = COLOR_GREEN;
             results[i].thickness = 1.0;
         }
         
@@ -427,8 +427,6 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
         {
             start = i;
         }
-        
-        colorMask(&result, &color);
     }
 
     /* Apply colors and alphas */
@@ -442,7 +440,7 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
     {
         result = COLOR_GREEN;
     }
-    for (i = start; i <= definition->nblayers; i++)
+    for (i = start + 1; i <= definition->nblayers; i++)
     {
         if (results[i].thickness)
         {

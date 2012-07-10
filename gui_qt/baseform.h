@@ -7,6 +7,7 @@
 #include <QStringList>
 #include "basepreview.h"
 #include "baseinput.h"
+#include "dialoglayers.h"
 #include "../lib_paysages/shared/types.h"
 #include "../lib_paysages/noise.h"
 #include "../lib_paysages/curve.h"
@@ -56,7 +57,7 @@ protected:
     BaseInput* addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax, QString xlabel, QString ylabel);
     BaseInput* addInputMaterial(QString label, SurfaceMaterial* material);
     BaseInput* addInputEnum(QString label, int* value, const QStringList& values);
-    BaseInput* addInputLayers(QString label, Layers* value);
+    BaseInput* addInputLayers(QString label, Layers* value, FormLayerBuilder form_builder);
     
     void updatePreviews();
     void disablePreviewsUpdate();

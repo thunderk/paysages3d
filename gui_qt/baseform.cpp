@@ -412,9 +412,9 @@ BaseInput* BaseForm::addInputEnum(QString label, int* value, const QStringList& 
     return addInput(new InputEnum(_form, label, value, values));
 }
 
-BaseInput* BaseForm::addInputLayers(QString label, Layers* value)
+BaseInput* BaseForm::addInputLayers(QString label, Layers* value, FormLayerBuilder form_builder)
 {
-    return addInput(new InputLayers(_form, label, value));
+    return addInput(new InputLayers(_form, label, value, form_builder));
 }
 
 void BaseForm::updatePreviews()
