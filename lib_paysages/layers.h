@@ -28,6 +28,7 @@ typedef struct {
 typedef struct Layers Layers;
 
 Layers* layersCreate(LayerType type, int max_layer_count);
+Layers* layersCreateCopy(Layers* original);
 void layersDelete(Layers* layers);
 
 void layersCopy(Layers* source, Layers* destination);

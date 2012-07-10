@@ -16,7 +16,7 @@ DialogLayers::DialogLayers(QWidget *parent, Layers* layers, QString title, FormL
     
     setLayout(new QVBoxLayout());
     
-    _form = form_builder(this);
+    _form = form_builder(this, _layers);
     _form->hideButtons();
     layout()->addWidget(_form);
     

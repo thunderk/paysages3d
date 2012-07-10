@@ -33,6 +33,13 @@ Layers* layersCreate(LayerType type, int max_layer_count)
     return result;
 }
 
+Layers* layersCreateCopy(Layers* original)
+{
+    Layers* result = layersCreate(original->type, original->max_count);
+    layersCopy(original, result);
+    return result;
+}
+
 void layersDelete(Layers* layers)
 {
     int i;

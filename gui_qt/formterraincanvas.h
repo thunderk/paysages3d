@@ -10,7 +10,7 @@ class FormTerrainCanvas : public BaseFormLayer
     Q_OBJECT
 
 public:
-    FormTerrainCanvas(QWidget* parent);
+    FormTerrainCanvas(QWidget* parent, Layers* layers);
 
 public slots:
     virtual void revertConfig();

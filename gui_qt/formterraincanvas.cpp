@@ -1,8 +1,8 @@
 #include "formterraincanvas.h"
 
 /**************** Form ****************/
-FormTerrainCanvas::FormTerrainCanvas(QWidget *parent):
-    BaseFormLayer(parent)
+FormTerrainCanvas::FormTerrainCanvas(QWidget *parent, Layers* layers):
+    BaseFormLayer(parent, layers)
 {
 }
 

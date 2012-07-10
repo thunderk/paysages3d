@@ -11,7 +11,7 @@
 class DialogLayers;
 class BaseFormLayer;
 
-typedef BaseFormLayer* (*FormLayerBuilder)(DialogLayers* parent);
+typedef BaseFormLayer* (*FormLayerBuilder)(DialogLayers* parent, Layers* layers);
 
 class DialogLayers : public DialogWithPreview
 {

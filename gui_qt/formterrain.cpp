@@ -141,9 +141,9 @@ private:
 };
 
 /**************** Form ****************/
-static BaseFormLayer* _formBuilderCanvas(DialogLayers* parent)
+static BaseFormLayer* _formBuilderCanvas(DialogLayers* parent, Layers* layers)
 {
-    return new FormTerrainCanvas(parent);
+    return new FormTerrainCanvas(parent, layers);
 }
 
 FormTerrain::FormTerrain(QWidget *parent):
