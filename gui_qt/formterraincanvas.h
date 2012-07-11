@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "basepreview.h"
 #include "baseformlayer.h"
+#include "../lib_paysages/terraincanvas.h"
 
 class FormTerrainCanvas : public BaseFormLayer
 {
@@ -11,15 +12,14 @@ class FormTerrainCanvas : public BaseFormLayer
 
 public:
     FormTerrainCanvas(QWidget* parent, Layers* layers);
-
-public slots:
-    virtual void revertConfig();
-    virtual void applyConfig();
-
-protected slots:
-    virtual void configChangeEvent();
+    ~FormTerrainCanvas();
+    
+protected:
+    virtual void layerGetCopy(void* layer_definition);
+    virtual void layerApply(void* layer_definition);
 
 private:
+    TerrainCanvas* _definition;
 //    BasePreview* previewHeight;
 //    BasePreview* previewColor;
 };

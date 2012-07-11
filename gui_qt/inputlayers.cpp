@@ -28,5 +28,6 @@ void InputLayers::editLayers()
 {
     if (DialogLayers::editLayers(_control, _value, _label->text(), _form_builder))
     {
+        applyValue();
     }
 }

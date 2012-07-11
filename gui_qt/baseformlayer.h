@@ -14,7 +14,15 @@ public:
     BaseFormLayer(QWidget* parent, Layers* layers);
     ~BaseFormLayer();
 
+public slots:
+    virtual void revertConfig();
+    virtual void applyConfig();
+    
 protected:
+    virtual void layerGetCopy(void* layer_definition) = 0;
+    virtual void layerApply(void* layer_definition) = 0;
+
+private:
     virtual QStringList getLayers();
     virtual void layerAddedEvent();
     virtual void layerDeletedEvent(int layer);

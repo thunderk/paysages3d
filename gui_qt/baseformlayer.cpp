@@ -11,11 +11,26 @@ BaseFormLayer::~BaseFormLayer()
     layersDelete(_layers_modified);
 }
 
+void BaseFormLayer::revertConfig()
+{
+    layersCopy(_layers_original, _layers_modified);
+    layerSelectedEvent(currentLayer());
+    
+    BaseForm::revertConfig();
+}
+
+void BaseFormLayer::applyConfig()
+{
+    layersCopy(_layers_modified, _layers_original);
+    
+    BaseForm::applyConfig();
+}
+
 void BaseFormLayer::configChangeEvent()
 {
-    /*texturesLayerCopyDefinition(&_layer, texturesGetLayer(&_definition, currentLayer()));
+    layerApply(layersGetLayer(_layers_modified, currentLayer()));
+    layersValidate(_layers_modified);
     
-    layersValidate(_layers_modified);*/
     BaseForm::configChangeEvent();
 }
 
@@ -62,7 +77,7 @@ void BaseFormLayer::layerRenamedEvent(int layer, QString new_name)
 
 void BaseFormLayer::layerSelectedEvent(int layer)
 {
-    //texturesLayerCopyDefinition(texturesGetLayer(&_definition, layer), &_layer);
+    layerGetCopy(layersGetLayer(_layers_modified, layer));
     
     BaseForm::layerSelectedEvent(layer);
 }
