@@ -15,6 +15,10 @@ public:
 public slots:
     virtual void accept();
     void revert();
+    
+private slots:
+    void angleHChanged(int value);
+    void angleVChanged(int value);
 
 private:
     HeightMap* _value_original;

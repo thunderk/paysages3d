@@ -54,3 +54,17 @@ void heightmapLoad(PackStream* stream, HeightMap* heightmap)
         packReadDouble(stream, &heightmap->data[i]);
     }
 }
+
+void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resolution_z)
+{
+    int i;
+    
+    heightmap->resolution_x = resolution_x;
+    heightmap->resolution_z = resolution_z;
+    heightmap->data = realloc(heightmap->data, sizeof(double) * heightmap->resolution_x * heightmap->resolution_z);
+    
+    for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
+    {
+        heightmap->data[i] = 0.0;
+    }
+}

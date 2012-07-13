@@ -14,6 +14,7 @@ TerrainCanvas* terrainCanvasCreate()
     result->area.size_z = 1.0;
     result->offset_z = 0.0;
     result->height_map = heightmapCreate();
+    heightmapChangeResolution(&result->height_map, 256, 256);
     result->height_factor = 1.0;
     result->detail_noise = noiseCreateGenerator();
     result->detail_height_factor = 0.1;

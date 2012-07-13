@@ -10,6 +10,12 @@ class WidgetHeightMap : public QGLWidget
 public:
     WidgetHeightMap(QWidget* parent, HeightMap* heightmap);
     ~WidgetHeightMap();
+    
+    void setHorizontalViewAngle(double angle_h);
+    void setVerticalViewAngle(double angle_v);
+    
+public slots:
+    void resetToTerrain();
 
 protected:
     void keyPressEvent(QKeyEvent* event);
@@ -22,9 +28,15 @@ protected:
     void paintGL();
     
 private:
+    HeightMap* _heightmap;
+    
     double _average_frame_time;
+    
     int _last_mouse_x;
     int _last_mouse_y;
+    
+    double _angle_h;
+    double _angle_v;
 };
 
 #endif

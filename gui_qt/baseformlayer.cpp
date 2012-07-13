@@ -48,8 +48,10 @@ QStringList BaseFormLayer::getLayers()
 
 void BaseFormLayer::layerAddedEvent()
 {
-    if (layersAddLayer(_layers_modified, NULL) >= 0)
+    int layer = layersAddLayer(_layers_modified, NULL);
+    if (layer >= 0)
     {
+        layersSetName(_layers_modified, layer, tr("Unnamed").toUtf8().data());
         BaseForm::layerAddedEvent();
     }
 }

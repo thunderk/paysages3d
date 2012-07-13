@@ -57,7 +57,12 @@ void layersCopy(Layers* source, Layers* destination)
 {
     int i;
     
-    assert(source->type == destination->type);
+    assert(source->type.callback_copy == destination->type.callback_copy);
+    assert(source->type.callback_create == destination->type.callback_create);
+    assert(source->type.callback_delete == destination->type.callback_delete);
+    assert(source->type.callback_load == destination->type.callback_load);
+    assert(source->type.callback_save == destination->type.callback_save);
+    assert(source->type.callback_validate == destination->type.callback_validate);
     assert(source->max_count == destination->max_count);
 
     /* TODO Optimize by reusing common layers */
@@ -157,6 +162,7 @@ int layersAddLayer(Layers* layers, void* definition)
         
         layers->count++;
         layersSetName(layers, layers->count - 1, "unnamed");
+        return layers->count - 1;
     }
     else
     {

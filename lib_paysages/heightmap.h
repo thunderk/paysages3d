@@ -23,6 +23,8 @@ void heightmapValidate(HeightMap* heightmap);
 
 void heightmapSave(PackStream* stream, HeightMap* heightmap);
 void heightmapLoad(PackStream* stream, HeightMap* heightmap);
+
+void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resolution_z);
     
 #ifdef __cplusplus
 }
