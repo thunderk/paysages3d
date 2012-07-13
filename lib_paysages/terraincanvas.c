@@ -13,9 +13,7 @@ TerrainCanvas* terrainCanvasCreate()
     result->area.size_x = 1.0;
     result->area.size_z = 1.0;
     result->offset_z = 0.0;
-    result->height_map.data = malloc(sizeof(double));
-    result->height_map.resolution_x = 1;
-    result->height_map.resolution_z = 1;
+    result->height_map = heightmapCreate();
     result->height_factor = 1.0;
     result->detail_noise = noiseCreateGenerator();
     result->detail_height_factor = 0.1;
@@ -28,7 +26,7 @@ TerrainCanvas* terrainCanvasCreate()
 
 void terrainCanvasDelete(TerrainCanvas* canvas)
 {
-    free(canvas->height_map.data);
+    heightmapDelete(&canvas->height_map);
     noiseDeleteGenerator(canvas->detail_noise);
     free(canvas);
 }
@@ -37,11 +35,8 @@ void terrainCanvasCopy(TerrainCanvas* source, TerrainCanvas* destination)
 {
     destination->area = source->area;
     destination->offset_z = source->offset_z;
-    destination->height_map.resolution_x = source->height_map.resolution_x;
-    destination->height_map.resolution_z = source->height_map.resolution_z;
-    destination->height_map.data = realloc(destination->height_map.data, sizeof(double) * destination->height_map.resolution_x * destination->height_map.resolution_z);
-    memcpy(destination->height_map.data, source->height_map.data, sizeof(double) * destination->height_map.resolution_x * destination->height_map.resolution_z);
     destination->height_factor = source->height_factor;
+    heightmapCopy(&source->height_map, &destination->height_map);
     noiseCopy(source->detail_noise, destination->detail_noise);
     destination->detail_height_factor = source->detail_height_factor;
     destination->detail_scaling = source->detail_scaling;
@@ -55,6 +50,7 @@ void terrainCanvasValidate(TerrainCanvas* canvas)
     {
         canvas->detail_scaling = 0.00001;
     }
+    heightmapValidate(&canvas->height_map);
     noiseValidate(canvas->detail_noise);
 }
 
@@ -74,20 +70,13 @@ LayerType terrainCanvasGetLayerType()
 
 void terrainCanvasSave(PackStream* stream, TerrainCanvas* canvas)
 {
-    int i;
-    
     packWriteInt(stream, &canvas->area.bounded);
     packWriteDouble(stream, &canvas->area.location_x);
     packWriteDouble(stream, &canvas->area.location_z);
     packWriteDouble(stream, &canvas->area.size_x);
     packWriteDouble(stream, &canvas->area.size_z);
     packWriteDouble(stream, &canvas->offset_z);
-    packWriteInt(stream, &canvas->height_map.resolution_x);
-    packWriteInt(stream, &canvas->height_map.resolution_z);
-    for (i = 0; i < canvas->height_map.resolution_x * canvas->height_map.resolution_z; i++)
-    {
-        packWriteDouble(stream, &canvas->height_map.data[i]);
-    }
+    heightmapSave(stream, &canvas->height_map);
     packWriteDouble(stream, &canvas->height_factor);
     noiseSaveGenerator(stream, canvas->detail_noise);
     packWriteDouble(stream, &canvas->detail_height_factor);
@@ -98,21 +87,13 @@ void terrainCanvasSave(PackStream* stream, TerrainCanvas* canvas)
 
 void terrainCanvasLoad(PackStream* stream, TerrainCanvas* canvas)
 {
-    int i;
-    
     packReadInt(stream, &canvas->area.bounded);
     packReadDouble(stream, &canvas->area.location_x);
     packReadDouble(stream, &canvas->area.location_z);
     packReadDouble(stream, &canvas->area.size_x);
     packReadDouble(stream, &canvas->area.size_z);
     packReadDouble(stream, &canvas->offset_z);
-    packReadInt(stream, &canvas->height_map.resolution_x);
-    packReadInt(stream, &canvas->height_map.resolution_z);
-    canvas->height_map.data = realloc(canvas->height_map.data, sizeof(double) * canvas->height_map.resolution_x * canvas->height_map.resolution_z);
-    for (i = 0; i < canvas->height_map.resolution_x * canvas->height_map.resolution_z; i++)
-    {
-        packReadDouble(stream, &canvas->height_map.data[i]);
-    }
+    heightmapLoad(stream, &canvas->height_map);
     packReadDouble(stream, &canvas->height_factor);
     noiseLoadGenerator(stream, canvas->detail_noise);
     packReadDouble(stream, &canvas->detail_height_factor);

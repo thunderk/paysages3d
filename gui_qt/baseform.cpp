@@ -8,6 +8,7 @@
 #include "inputnoise.h"
 #include "inputcurve.h"
 #include "inputmaterial.h"
+#include "inputheightmap.h"
 #include "inputenum.h"
 #include "inputlayers.h"
 
@@ -405,6 +406,11 @@ BaseInput* BaseForm::addInputCurve(QString label, Curve* value, double xmin, dou
 BaseInput* BaseForm::addInputMaterial(QString label, SurfaceMaterial* material)
 {
     return addInput(new InputMaterial(_form, label, material));
+}
+
+BaseInput* BaseForm::addInputHeightMap(QString label, HeightMap* heightmap)
+{
+    return addInput(new InputHeightMap(_form, label, heightmap));
 }
 
 BaseInput* BaseForm::addInputEnum(QString label, int* value, const QStringList& values)

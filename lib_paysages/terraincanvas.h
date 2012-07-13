@@ -7,6 +7,7 @@
 #include "noise.h"
 #include "terrain.h"
 #include "layers.h"
+#include "heightmap.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,13 +21,6 @@ typedef struct
     double size_x;
     double size_z;
 } GeoArea;
-
-typedef struct
-{
-    int resolution_x;
-    int resolution_z;
-    double* data;
-} HeightMap;
 
 #define TERRAINCANVAS_MASKMODE_SQUARE 0
 #define TERRAINCANVAS_MASKMODE_CIRCLE 1
