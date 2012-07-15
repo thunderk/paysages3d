@@ -19,6 +19,8 @@ public slots:
 private slots:
     void angleHChanged(int value);
     void angleVChanged(int value);
+    void brushSizeChanged(int value);
+    void brushSmoothingChanged(int value);
 
 private:
     HeightMap* _value_original;

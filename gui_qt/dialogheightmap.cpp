@@ -1,5 +1,6 @@
 #include "dialogheightmap.h"
 
+#include <QLabel>
 #include <QBoxLayout>
 #include <QGridLayout>
 #include <QPushButton>
@@ -16,6 +17,7 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap) : Dialog
     QWidget* viewer;
     QGridLayout* viewer_layout;
     
+    QLabel* label;
     QSlider* slider;
     QPushButton* button;
     
@@ -43,6 +45,7 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap) : Dialog
     panel = new QWidget(mainarea);
     panel->setLayout(new QVBoxLayout());
     mainarea->layout()->addWidget(panel);
+    mainarea->layout()->setAlignment(panel, Qt::AlignTop);
     
     // Viewer layout (3d display + sliders)
     _3dview = new WidgetHeightMap(viewer, &_value_modified);
@@ -57,10 +60,28 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap) : Dialog
     viewer_layout->addWidget(slider, 0, 1);
     
     // Panel layout
-    button = new QPushButton(tr("Reset to terrain height"), buttons);
+    button = new QPushButton(tr("Reset to terrain height"), panel);
     connect(button, SIGNAL(clicked()), _3dview, SLOT(resetToTerrain()));
     panel->layout()->addWidget(button);
+    
+    label = new QLabel(tr("Brush size"), panel);
+    panel->layout()->addWidget(label);
+    
+    slider = new QSlider(Qt::Horizontal, panel);
+    slider->setRange(6, 150);
+    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(brushSizeChanged(int)));
+    panel->layout()->addWidget(slider);
+    slider->setValue(30);
 
+    label = new QLabel(tr("Brush smoothing"), panel);
+    panel->layout()->addWidget(label);
+    
+    slider = new QSlider(Qt::Horizontal, panel);
+    slider->setRange(0, 1000);
+    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(brushSmoothingChanged(int)));
+    panel->layout()->addWidget(slider);
+    slider->setValue(200);
+    
     // Buttons layout
     button = new QPushButton(tr("Validate"), buttons);
     buttons->layout()->addWidget(button);
@@ -106,4 +127,14 @@ void DialogHeightMap::angleHChanged(int value)
 void DialogHeightMap::angleVChanged(int value)
 {
     _3dview->setVerticalViewAngle(M_PI_2 * ((double)value) / 1000.0);
+}
+
+void DialogHeightMap::brushSizeChanged(int value)
+{
+    _3dview->setBrushSize((double)value / 10.0);
+}
+
+void DialogHeightMap::brushSmoothingChanged(int value)
+{
+    _3dview->setBrushSmoothing((double)value / 1000.0);
 }
