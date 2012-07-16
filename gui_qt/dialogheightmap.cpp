@@ -88,6 +88,15 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap) : Dialog
     slider->setRange(0, 1000);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(brushSmoothingChanged(int)));
     panel->layout()->addWidget(slider);
+    slider->setValue(600);
+    
+    label = new QLabel(tr("Brush strength"), panel);
+    panel->layout()->addWidget(label);
+    
+    slider = new QSlider(Qt::Horizontal, panel);
+    slider->setRange(0, 1000);
+    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(brushStrengthChanged(int)));
+    panel->layout()->addWidget(slider);
     slider->setValue(200);
     
     // Buttons layout
@@ -120,11 +129,14 @@ bool DialogHeightMap::editHeightMap(QWidget* parent, HeightMap* heightmap)
 
 void DialogHeightMap::accept()
 {
+    heightmapCopy(&_value_modified, _value_original);
     QDialog::accept();
 }
 
 void DialogHeightMap::revert()
 {
+    heightmapCopy(_value_original, &_value_modified);
+    _3dview->revert();
 }
 
 void DialogHeightMap::angleHChanged(int value)
@@ -150,4 +162,9 @@ void DialogHeightMap::brushSizeChanged(int value)
 void DialogHeightMap::brushSmoothingChanged(int value)
 {
     _3dview->setBrushSmoothing((double)value / 1000.0);
+}
+
+void DialogHeightMap::brushStrengthChanged(int value)
+{
+    _3dview->setBrushStrength((double)value / 2000.0);
 }

@@ -8,10 +8,10 @@ TerrainCanvas* terrainCanvasCreate()
     TerrainCanvas* result = malloc(sizeof(TerrainCanvas));
     
     result->area.bounded = 1;
-    result->area.location_x = 0.0;
-    result->area.location_z = 0.0;
-    result->area.size_x = 1.0;
-    result->area.size_z = 1.0;
+    result->area.location_x = -40.0;
+    result->area.location_z = -40.0;
+    result->area.size_x = 80.0;
+    result->area.size_z = 80.0;
     result->offset_z = 0.0;
     result->height_map = heightmapCreate();
     heightmapChangeResolution(&result->height_map, 256, 256);
@@ -107,6 +107,14 @@ void terrainCanvasRevertToTerrain(TerrainCanvas* canvas, TerrainDefinition* terr
 {
 }
 
-Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 position)
+Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 location)
 {
+    if (location.x >= canvas->area.location_x &&
+        location.z >= canvas->area.location_z &&
+        location.x <= canvas->area.location_x + canvas->area.size_x &&
+        location.z <= canvas->area.location_z + canvas->area.size_z)
+    {
+        location.y = heightmapGetValue(&canvas->height_map, (location.x - canvas->area.location_x) / canvas->area.size_x, (location.z - canvas->area.location_z) / canvas->area.size_z);
+    }
+    return location;
 }

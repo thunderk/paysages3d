@@ -29,15 +29,18 @@ public:
     void setBrushMode(HeightMapBrushMode mode);
     void setBrushSize(double size);
     void setBrushSmoothing(double smoothing);
+    void setBrushStrength(double smoothing);
     
 public slots:
+    void revert();
     void resetToTerrain();
 
 protected:
-    void keyPressEvent(QKeyEvent* event);
     void mousePressEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
-    void wheelEvent(QWheelEvent* event);
+    
+    void timerEvent(QTimerEvent* event);
 
     void initializeGL();
     void resizeGL(int w, int h);
@@ -54,6 +57,7 @@ private:
     
     double _average_frame_time;
     
+    int _last_brush_action;
     int _last_mouse_x;
     int _last_mouse_y;
     
@@ -65,6 +69,7 @@ private:
     HeightMapBrushMode _brush_mode;
     double _brush_size;
     double _brush_smoothing;
+    double _brush_strength;
 };
 
 #endif

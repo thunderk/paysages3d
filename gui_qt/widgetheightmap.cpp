@@ -14,6 +14,8 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, HeightMap* heightmap):
     setMinimumSize(500, 500);
     setFocusPolicy(Qt::StrongFocus);
     setMouseTracking(true);
+    setCursor(Qt::CrossCursor);
+    startTimer(100);
 
     _heightmap = heightmap;
     _vertexes = new _VertexInfo[heightmap->resolution_x * heightmap->resolution_z];
@@ -22,6 +24,7 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, HeightMap* heightmap):
     
     _average_frame_time = 0.0;
     
+    _last_brush_action = 0;
     _last_mouse_x = 0;
     _last_mouse_y = 0;
     
@@ -33,6 +36,7 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, HeightMap* heightmap):
     _brush_mode = HEIGHTMAP_BRUSH_RAISE;
     _brush_size = 10.0;
     _brush_smoothing = 0.5;
+    _brush_strength = 1.0;
 }
 
 WidgetHeightMap::~WidgetHeightMap()
@@ -55,6 +59,9 @@ void WidgetHeightMap::setVerticalViewAngle(double angle_v)
 void WidgetHeightMap::setBrushMode(HeightMapBrushMode mode)
 {
     _brush_mode = mode;
+    _brush_x = 0.0;
+    _brush_z = 0.0;
+    updateGL();
 }
 
 void WidgetHeightMap::setBrushSize(double size)
@@ -70,6 +77,20 @@ void WidgetHeightMap::setBrushSmoothing(double smoothing)
     _brush_smoothing = smoothing;
     _brush_x = 0.0;
     _brush_z = 0.0;
+    updateGL();
+}
+
+void WidgetHeightMap::setBrushStrength(double strength)
+{
+    _brush_strength = strength;
+    _brush_x = 0.0;
+    _brush_z = 0.0;
+    updateGL();
+}
+
+void WidgetHeightMap::revert()
+{
+    _dirty = true;
     updateGL();
 }
 
@@ -92,83 +113,69 @@ void WidgetHeightMap::resetToTerrain()
     }
 
     terrainDeleteDefinition(&terrain);
-    _dirty = true;
-    updateGL();
-}
-
-void WidgetHeightMap::keyPressEvent(QKeyEvent* event)
-{
+    revert();
 }
 
 void WidgetHeightMap::mousePressEvent(QMouseEvent* event)
 {
-    mouseMoveEvent(event);
+    _last_mouse_x = event->x();
+    _last_mouse_y = event->y();
+    if (event->buttons() & Qt::LeftButton)
+    {
+        _last_brush_action = 1;
+    }
+    else if (event->buttons() & Qt::RightButton)
+    {
+        _last_brush_action = -1;
+    }
+}
+
+void WidgetHeightMap::mouseReleaseEvent(QMouseEvent* event)
+{
+    _last_brush_action = 0;
 }
 
 void WidgetHeightMap::mouseMoveEvent(QMouseEvent* event)
 {
-    int move_x = event->x() - _last_mouse_x;
-    int move_y = event->y() - _last_mouse_y;
+    if (event->buttons() & Qt::MiddleButton)
+    {
+        // Rotate around the turntable
+        int move_x = event->x() - _last_mouse_x;
+        int move_y = event->y() - _last_mouse_y;
+        
+        _angle_h -= (double)move_x * 0.008;
+        _angle_v += (double)move_y * 0.003;
+    }
     
-    if ((event->buttons() & Qt::LeftButton) || (event->buttons() & Qt::RightButton))
+    _last_mouse_x = event->x();
+    _last_mouse_y = event->y();
+
+    updateGL();
+}
+
+void WidgetHeightMap::timerEvent(QTimerEvent* event)
+{
+    if (_last_brush_action)
     {
         HeightMapBrush brush;
 
         brush.relative_x = (_brush_x + 40.0) / 80.0;
         brush.relative_z = (_brush_z + 40.0) / 80.0;
-        brush.hard_radius = _brush_size / 80.0 - _brush_smoothing;
-        brush.smoothed_size = (_brush_size / 80.0) * _brush_smoothing;
+        brush.hard_radius = _brush_size * (1.0 - _brush_smoothing) / 80.0;
+        brush.smoothed_size = _brush_size * _brush_smoothing / 80.0;
         
         switch (_brush_mode)
         {
             case HEIGHTMAP_BRUSH_RAISE:
-                heightmapBrushElevation(_heightmap, &brush, (event->buttons() & Qt::RightButton) ? -0.01 : 0.01);
-                _dirty = true;
-                updateGL();
+                heightmapBrushElevation(_heightmap, &brush, _brush_strength * _last_brush_action);
                 break;
             default:
-                ;
+                return;
         }
-    }
-    else if (event->buttons() & Qt::MiddleButton)
-    {
-        // Rotate around the turntable
-        _angle_h -= (double)move_x * 0.008;
-        _angle_v += (double)move_y * 0.003;
         
+        _dirty = true;
         updateGL();
     }
-    else
-    {
-        // OpenGL picking using z-buffer
-        GLint viewport[4];
-        GLdouble modelview[16];
-        GLdouble projection[16];
-        GLfloat winX, winY, winZ;
-        Vector3 point;
-
-        glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-        glGetDoublev(GL_PROJECTION_MATRIX, projection);
-        glGetIntegerv(GL_VIEWPORT, viewport);
-
-        winX = (float)event->x();
-        winY = (float)height() - (float)event->y();
-        glReadPixels(event->x(), (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
-
-        gluUnProject(winX, winY, winZ, modelview, projection, viewport, &point.x, &point.y, &point.z);
-
-        _brush_x = point.x;
-        _brush_z = point.z;
-
-        updateGL();
-    }
-    
-    _last_mouse_x = event->x();
-    _last_mouse_y = event->y();
-}
-
-void WidgetHeightMap::wheelEvent(QWheelEvent* event)
-{
 }
 
 void WidgetHeightMap::initializeGL()
@@ -229,6 +236,26 @@ void WidgetHeightMap::paintGL()
         updateVertexInfo();
         _dirty = false;
     }
+    
+    // Picking mouse position using z-buffer (for brush)
+    GLint viewport[4];
+    GLdouble modelview[16];
+    GLdouble projection[16];
+    GLfloat winX, winY, winZ;
+    Vector3 point;
+
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+    glGetDoublev(GL_PROJECTION_MATRIX, projection);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    winX = (float)_last_mouse_x;
+    winY = (float)height() - (float)_last_mouse_y;
+    glReadPixels(_last_mouse_x, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+
+    gluUnProject(winX, winY, winZ, modelview, projection, viewport, &point.x, &point.y, &point.z);
+
+    _brush_x = point.x;
+    _brush_z = point.z;
     
     // Place camera
     glMatrixMode(GL_MODELVIEW);

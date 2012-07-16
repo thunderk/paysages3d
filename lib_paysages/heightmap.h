@@ -33,6 +33,7 @@ void heightmapSave(PackStream* stream, HeightMap* heightmap);
 void heightmapLoad(PackStream* stream, HeightMap* heightmap);
 
 void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resolution_z);
+double heightmapGetValue(HeightMap* heightmap, double x, double z);
 
 void heightmapBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double value);
     

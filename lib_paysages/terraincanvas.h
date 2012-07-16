@@ -48,7 +48,7 @@ void terrainCanvasSave(PackStream* stream, TerrainCanvas* canvas);
 void terrainCanvasLoad(PackStream* stream, TerrainCanvas* canvas);
 
 void terrainCanvasRevertToTerrain(TerrainCanvas* canvas, TerrainDefinition* terrain, int only_masked);
-Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 position);
+Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 location);
     
 #ifdef __cplusplus
 }

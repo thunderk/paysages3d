@@ -50,6 +50,7 @@ void heightmapLoad(PackStream* stream, HeightMap* heightmap)
     
     packReadInt(stream, &heightmap->resolution_x);
     packReadInt(stream, &heightmap->resolution_z);
+    heightmap->data = realloc(heightmap->data, sizeof(double) * heightmap->resolution_x * heightmap->resolution_z);
     for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
     {
         packReadDouble(stream, &heightmap->data[i]);
@@ -68,6 +69,12 @@ void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resol
     {
         heightmap->data[i] = 0.0;
     }
+}
+
+double heightmapGetValue(HeightMap* heightmap, double x, double z)
+{
+    // TODO Bicubic interpolation
+    return heightmap->data[lround(z * (heightmap->resolution_z - 1)) * heightmap->resolution_x + lround(x * (heightmap->resolution_x - 1))];
 }
 
 void heightmapBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double value)
@@ -89,7 +96,7 @@ void heightmapBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double
             {
                 if (distance <= brush->hard_radius + brush->smoothed_size)
                 {
-                    heightmap->data[z * heightmap->resolution_x +x] += value * (distance - brush->hard_radius) / brush->smoothed_size;
+                    heightmap->data[z * heightmap->resolution_x +x] += value * (1.0 - (distance - brush->hard_radius) / brush->smoothed_size);
                 }
             }
             else

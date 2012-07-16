@@ -22,6 +22,7 @@ private slots:
     void brushModeChanged(int value);
     void brushSizeChanged(int value);
     void brushSmoothingChanged(int value);
+    void brushStrengthChanged(int value);
 
 private:
     HeightMap* _value_original;

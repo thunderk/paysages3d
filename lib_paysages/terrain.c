@@ -19,7 +19,7 @@ void terrainSave(PackStream* stream, TerrainDefinition* definition)
     noiseSaveGenerator(stream, definition->height_noise);
     packWriteDouble(stream, &definition->height_factor);
     packWriteDouble(stream, &definition->scaling);
-    layersSave(stream, &definition->canvases);
+    layersSave(stream, definition->canvases);
     packWriteDouble(stream, &definition->shadow_smoothing);
 }
 
@@ -28,7 +28,7 @@ void terrainLoad(PackStream* stream, TerrainDefinition* definition)
     noiseLoadGenerator(stream, definition->height_noise);
     packReadDouble(stream, &definition->height_factor);
     packReadDouble(stream, &definition->scaling);
-    layersLoad(stream, &definition->canvases);
+    layersLoad(stream, definition->canvases);
     packReadDouble(stream, &definition->shadow_smoothing);
 
     terrainValidateDefinition(definition);
@@ -81,28 +81,44 @@ void terrainValidateDefinition(TerrainDefinition* definition)
 
 static inline double _getHeight(TerrainDefinition* definition, double x, double z)
 {
+    TerrainCanvas* canvas;
     Vector3 location;
-    int i;
+    int i, n;
 
     location.x = x;
     location.y = noiseGet2DTotal(definition->height_noise, x / definition->scaling, z / definition->scaling) * definition->height_factor;
     location.z = z;
+    
+    n = layersCount(definition->canvases);
+    for (i = 0; i < n; i++)
+    {
+        canvas = layersGetLayer(definition->canvases, i);
+        location = terrainCanvasApply(canvas, location);
+    }
 
-    /* TODO Apply canvases and modifiers */
+    /* TODO Apply modifiers */
 
     return location.y;
 }
 
 static inline double _getHeightDetail(TerrainDefinition* definition, double x, double z, double detail)
 {
+    TerrainCanvas* canvas;
     Vector3 location;
-    int i;
+    int i, n;
 
     location.x = x;
     location.y = noiseGet2DDetail(definition->height_noise, x / definition->scaling, z / definition->scaling, detail / definition->height_factor) * definition->height_factor;
     location.z = z;
 
-    /* TODO Apply canvases and modifiers */
+    n = layersCount(definition->canvases);
+    for (i = 0; i < n; i++)
+    {
+        canvas = layersGetLayer(definition->canvases, i);
+        location = terrainCanvasApply(canvas, location);
+    }
+
+    /* TODO Apply modifiers */
 
     return location.y;
 }
