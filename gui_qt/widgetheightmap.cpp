@@ -30,6 +30,7 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, HeightMap* heightmap):
     
     _brush_x = 0.0;
     _brush_z = 0.0;
+    _brush_mode = HEIGHTMAP_BRUSH_RAISE;
     _brush_size = 10.0;
     _brush_smoothing = 0.5;
 }
@@ -49,6 +50,11 @@ void WidgetHeightMap::setVerticalViewAngle(double angle_v)
 {
     _angle_v = angle_v;
     updateGL();
+}
+
+void WidgetHeightMap::setBrushMode(HeightMapBrushMode mode)
+{
+    _brush_mode = mode;
 }
 
 void WidgetHeightMap::setBrushSize(double size)
@@ -96,6 +102,7 @@ void WidgetHeightMap::keyPressEvent(QKeyEvent* event)
 
 void WidgetHeightMap::mousePressEvent(QMouseEvent* event)
 {
+    mouseMoveEvent(event);
 }
 
 void WidgetHeightMap::mouseMoveEvent(QMouseEvent* event)
@@ -103,7 +110,27 @@ void WidgetHeightMap::mouseMoveEvent(QMouseEvent* event)
     int move_x = event->x() - _last_mouse_x;
     int move_y = event->y() - _last_mouse_y;
     
-    if (event->buttons() & Qt::MiddleButton)
+    if ((event->buttons() & Qt::LeftButton) || (event->buttons() & Qt::RightButton))
+    {
+        HeightMapBrush brush;
+
+        brush.relative_x = (_brush_x + 40.0) / 80.0;
+        brush.relative_z = (_brush_z + 40.0) / 80.0;
+        brush.hard_radius = _brush_size / 80.0 - _brush_smoothing;
+        brush.smoothed_size = (_brush_size / 80.0) * _brush_smoothing;
+        
+        switch (_brush_mode)
+        {
+            case HEIGHTMAP_BRUSH_RAISE:
+                heightmapBrushElevation(_heightmap, &brush, (event->buttons() & Qt::RightButton) ? -0.01 : 0.01);
+                _dirty = true;
+                updateGL();
+                break;
+            default:
+                ;
+        }
+    }
+    else if (event->buttons() & Qt::MiddleButton)
     {
         // Rotate around the turntable
         _angle_h -= (double)move_x * 0.008;

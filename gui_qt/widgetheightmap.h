@@ -11,6 +11,12 @@ typedef struct
     Vector3 normal;
 } _VertexInfo;
 
+typedef enum
+{
+    HEIGHTMAP_BRUSH_RAISE = 0,
+    HEIGHTMAP_BRUSH_SMOOTH = 1
+} HeightMapBrushMode;
+
 class WidgetHeightMap : public QGLWidget
 {
     Q_OBJECT
@@ -20,6 +26,7 @@ public:
     
     void setHorizontalViewAngle(double angle_h);
     void setVerticalViewAngle(double angle_v);
+    void setBrushMode(HeightMapBrushMode mode);
     void setBrushSize(double size);
     void setBrushSmoothing(double smoothing);
     
@@ -55,6 +62,7 @@ private:
     
     double _brush_x;
     double _brush_z;
+    HeightMapBrushMode _brush_mode;
     double _brush_size;
     double _brush_smoothing;
 };

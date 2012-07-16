@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 HeightMap heightmapCreate()
 {
@@ -66,5 +67,35 @@ void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resol
     for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
     {
         heightmap->data[i] = 0.0;
+    }
+}
+
+void heightmapBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double value)
+{
+    int x, z;
+    double dx, dz, distance;
+    
+    // TODO Limit to brush radius
+    
+    for (x = 0; x < heightmap->resolution_x; x++)
+    {
+        dx = (double)x / (double)heightmap->resolution_x;
+        for (z = 0; z < heightmap->resolution_z; z++)
+        {
+            dz = (double)z / (double)heightmap->resolution_z;
+            distance = sqrt((brush->relative_x - dx) * (brush->relative_x - dx) + (brush->relative_z - dz) * (brush->relative_z - dz));
+            
+            if (distance > brush->hard_radius)
+            {
+                if (distance <= brush->hard_radius + brush->smoothed_size)
+                {
+                    heightmap->data[z * heightmap->resolution_x +x] += value * (distance - brush->hard_radius) / brush->smoothed_size;
+                }
+            }
+            else
+            {
+                heightmap->data[z * heightmap->resolution_x +x] += value;
+            }
+        }
     }
 }

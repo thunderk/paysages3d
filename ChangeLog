@@ -10,6 +10,7 @@ Previews :
   * Progressive rendering now takes advantage of multiple CPU cores.
 
 Scenery :
+  * Added terrain canvases to paint the shape directly.
   * Added clouds hardness to light.
   * Added sun halo control.
   * New cloud model with 2 noises : one for the global shape and one for edges.

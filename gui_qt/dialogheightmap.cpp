@@ -4,6 +4,7 @@
 #include <QBoxLayout>
 #include <QGridLayout>
 #include <QPushButton>
+#include <QComboBox>
 #include <QSlider>
 #include <math.h>
 #include "widgetheightmap.h"
@@ -20,6 +21,7 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap) : Dialog
     QLabel* label;
     QSlider* slider;
     QPushButton* button;
+    QComboBox* combobox;
     
     _value_original = heightmap;
     _value_modified = heightmapCreate();
@@ -63,6 +65,12 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap) : Dialog
     button = new QPushButton(tr("Reset to terrain height"), panel);
     connect(button, SIGNAL(clicked()), _3dview, SLOT(resetToTerrain()));
     panel->layout()->addWidget(button);
+    
+    combobox = new QComboBox(panel);
+    combobox->addItem(tr("Raise / lower"));
+    combobox->addItem(tr("Smooth / add noise"));
+    connect(combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(brushModeChanged(int)));
+    panel->layout()->addWidget(combobox);
     
     label = new QLabel(tr("Brush size"), panel);
     panel->layout()->addWidget(label);
@@ -127,6 +135,11 @@ void DialogHeightMap::angleHChanged(int value)
 void DialogHeightMap::angleVChanged(int value)
 {
     _3dview->setVerticalViewAngle(M_PI_2 * ((double)value) / 1000.0);
+}
+
+void DialogHeightMap::brushModeChanged(int value)
+{
+    _3dview->setBrushMode((HeightMapBrushMode)value);
 }
 
 void DialogHeightMap::brushSizeChanged(int value)
