@@ -1,4 +1,5 @@
 #include "heightmap.h"
+#include "tools.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -73,8 +74,26 @@ void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resol
 
 double heightmapGetValue(HeightMap* heightmap, double x, double z)
 {
-    // TODO Bicubic interpolation
-    return heightmap->data[lround(z * (heightmap->resolution_z - 1)) * heightmap->resolution_x + lround(x * (heightmap->resolution_x - 1))];
+    int xmax = heightmap->resolution_x - 1;
+    int zmax = heightmap->resolution_z - 1;
+    int xlow = floor(x * xmax);
+    int zlow = floor(z * zmax);
+    double stencil[16];
+    int ix, iz, cx, cz;
+    
+    for (ix = xlow - 1; ix <= xlow + 2; ix++)
+    {
+        for (iz = zlow - 1; iz <= zlow + 2; iz++)
+        {
+            cx = ix < 0 ? 0 : ix;
+            cx = cx > xmax ? xmax : cx;
+            cz = iz < 0 ? 0 : iz;
+            cz = cz > zmax ? zmax : cz;
+            stencil[(iz - (zlow - 1)) * 4 + ix - (xlow - 1)] = heightmap->data[cz * heightmap->resolution_x + cx];
+        }
+    }
+    
+    return toolsBicubicInterpolate(stencil, x * xmax - (double)xlow, z * zmax - (double)zlow);
 }
 
 void heightmapBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double value)
@@ -82,7 +101,7 @@ void heightmapBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double
     int x, z;
     double dx, dz, distance;
     
-    // TODO Limit to brush radius
+    /* TODO Limit to brush radius */
     
     for (x = 0; x < heightmap->resolution_x; x++)
     {

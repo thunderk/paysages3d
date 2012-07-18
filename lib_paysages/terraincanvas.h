@@ -22,8 +22,14 @@ typedef struct
     double size_z;
 } GeoArea;
 
-#define TERRAINCANVAS_MASKMODE_SQUARE 0
-#define TERRAINCANVAS_MASKMODE_CIRCLE 1
+typedef struct
+{
+    int mode;
+    double smoothing;
+} IntegrationMask;
+
+#define INTEGRATIONMASK_MODE_SQUARE 0
+#define INTEGRATIONMASK_MODE_CIRCLE 1
 
 typedef struct
 {
@@ -34,8 +40,7 @@ typedef struct
     NoiseGenerator* detail_noise;
     double detail_height_factor;
     double detail_scaling;
-    int mask_mode;
-    double mask_smoothing;
+    IntegrationMask mask;
 } TerrainCanvas;
 
 TerrainCanvas* terrainCanvasCreate();

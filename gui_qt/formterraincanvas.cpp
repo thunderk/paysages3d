@@ -13,8 +13,8 @@ FormTerrainCanvas::FormTerrainCanvas(QWidget *parent, Layers* layers):
     addInputNoise(tr("Detail noise"), _definition->detail_noise);
     addInputDouble(tr("Detail noise height"), &_definition->detail_height_factor, 0.0, 20.0, 0.1, 1.0);
     addInputDouble(tr("Detail noise scaling"), &_definition->detail_scaling, 0.0, 20.0, 0.1, 1.0);
-    addInputEnum(tr("Mask shape"), &_definition->mask_mode, QStringList(tr("Square")) << tr("Circle"));
-    addInputDouble(tr("Mask smoothing"), &_definition->mask_smoothing, 0.0, 1.0, 0.01, 0.1);
+    addInputEnum(tr("Mask shape"), &_definition->mask.mode, QStringList(tr("Square")) << tr("Circle"));
+    addInputDouble(tr("Mask smoothing"), &_definition->mask.smoothing, 0.0, 1.0, 0.01, 0.1);
     
     revertConfig();
 }

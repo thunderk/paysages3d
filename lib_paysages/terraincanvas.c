@@ -19,8 +19,8 @@ TerrainCanvas* terrainCanvasCreate()
     result->detail_noise = noiseCreateGenerator();
     result->detail_height_factor = 0.1;
     result->detail_scaling = 1.0;
-    result->mask_mode = TERRAINCANVAS_MASKMODE_SQUARE;
-    result->mask_smoothing = 0.0;
+    result->mask.mode = INTEGRATIONMASK_MODE_CIRCLE;
+    result->mask.smoothing = 0.1;
     
     return result;
 }
@@ -41,8 +41,7 @@ void terrainCanvasCopy(TerrainCanvas* source, TerrainCanvas* destination)
     noiseCopy(source->detail_noise, destination->detail_noise);
     destination->detail_height_factor = source->detail_height_factor;
     destination->detail_scaling = source->detail_scaling;
-    destination->mask_mode = source->mask_mode;
-    destination->mask_smoothing = source->mask_smoothing;
+    destination->mask = source->mask;
 }
 
 void terrainCanvasValidate(TerrainCanvas* canvas)
@@ -82,8 +81,8 @@ void terrainCanvasSave(PackStream* stream, TerrainCanvas* canvas)
     noiseSaveGenerator(stream, canvas->detail_noise);
     packWriteDouble(stream, &canvas->detail_height_factor);
     packWriteDouble(stream, &canvas->detail_scaling);
-    packWriteInt(stream, &canvas->mask_mode);
-    packWriteDouble(stream, &canvas->mask_smoothing);
+    packWriteInt(stream, &canvas->mask.mode);
+    packWriteDouble(stream, &canvas->mask.smoothing);
 }
 
 void terrainCanvasLoad(PackStream* stream, TerrainCanvas* canvas)
@@ -99,8 +98,8 @@ void terrainCanvasLoad(PackStream* stream, TerrainCanvas* canvas)
     noiseLoadGenerator(stream, canvas->detail_noise);
     packReadDouble(stream, &canvas->detail_height_factor);
     packReadDouble(stream, &canvas->detail_scaling);
-    packReadInt(stream, &canvas->mask_mode);
-    packReadDouble(stream, &canvas->mask_smoothing);
+    packReadInt(stream, &canvas->mask.mode);
+    packReadDouble(stream, &canvas->mask.smoothing);
 }
 
 void terrainCanvasRevertToTerrain(TerrainCanvas* canvas, TerrainDefinition* terrain, int only_masked)
@@ -114,7 +113,39 @@ Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 location)
         location.x <= canvas->area.location_x + canvas->area.size_x &&
         location.z <= canvas->area.location_z + canvas->area.size_z)
     {
-        location.y = heightmapGetValue(&canvas->height_map, (location.x - canvas->area.location_x) / canvas->area.size_x, (location.z - canvas->area.location_z) / canvas->area.size_z);
+        double inside_x, inside_z;
+        double height, distance;
+        
+        /* Get height map displacement */
+        inside_x = (location.x - canvas->area.location_x) / canvas->area.size_x;
+        inside_z = (location.z - canvas->area.location_z) / canvas->area.size_z;
+        height = heightmapGetValue(&canvas->height_map, inside_x, inside_z);
+        
+        /* TODO Apply detail noise */
+        
+        /* Apply integration mask */
+        inside_x = (inside_x - 0.5) * 2.0;
+        inside_z = (inside_z - 0.5) * 2.0;
+        if (canvas->mask.mode == INTEGRATIONMASK_MODE_SQUARE)
+        {
+            inside_x = fabs(inside_x);
+            inside_z = fabs(inside_z);
+            distance = inside_x > inside_z ? inside_x : inside_z;
+        }
+        else
+        {
+            distance = sqrt(inside_x * inside_x + inside_z * inside_z);
+        }
+        if (distance <= 1.0 - canvas->mask.smoothing)
+        {
+            location.y = height;
+        }
+        else
+        {
+            double influence = (1.0 - distance) / canvas->mask.smoothing;
+            location.y = influence * height + (1.0 - influence) * location.y;
+        }
+        
     }
     return location;
 }
