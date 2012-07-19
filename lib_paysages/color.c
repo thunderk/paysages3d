@@ -57,6 +57,54 @@ unsigned int colorTo32BitABGR(Color* col)
     return (((unsigned int)(col->r * 255.0)) << 24) | (((unsigned int)(col->g * 255.0)) << 16) | (((unsigned int)(col->b * 255.0)) << 8) | ((unsigned int)(col->a * 255.0));
 }
 
+Color colorFrom32BitRGBA(unsigned int col)
+{
+    Color result;
+    
+    result.r = ((double)(col & 0x000000FF)) / 255.0;
+    result.g = ((double)((col & 0x0000FF00) >> 8)) / 255.0;
+    result.b = ((double)((col & 0x00FF0000) >> 16)) / 255.0;
+    result.a = ((double)((col & 0xFF000000) >> 24)) / 255.0;
+    
+    return result;
+}
+
+Color colorFrom32BitBGRA(unsigned int col)
+{
+    Color result;
+    
+    result.b = ((double)(col & 0x000000FF)) / 255.0;
+    result.g = ((double)((col & 0x0000FF00) >> 8)) / 255.0;
+    result.r = ((double)((col & 0x00FF0000) >> 16)) / 255.0;
+    result.a = ((double)((col & 0xFF000000) >> 24)) / 255.0;
+    
+    return result;
+}
+
+Color colorFrom32BitARGB(unsigned int col)
+{
+    Color result;
+    
+    result.a = ((double)(col & 0x000000FF)) / 255.0;
+    result.r = ((double)((col & 0x0000FF00) >> 8)) / 255.0;
+    result.g = ((double)((col & 0x00FF0000) >> 16)) / 255.0;
+    result.b = ((double)((col & 0xFF000000) >> 24)) / 255.0;
+    
+    return result;
+}
+
+Color colorFrom32BitABGR(unsigned int col)
+{
+    Color result;
+    
+    result.a = ((double)(col & 0x000000FF)) / 255.0;
+    result.b = ((double)((col & 0x0000FF00) >> 8)) / 255.0;
+    result.g = ((double)((col & 0x00FF0000) >> 16)) / 255.0;
+    result.r = ((double)((col & 0xFF000000) >> 24)) / 255.0;
+    
+    return result;
+}
+
 void colorMask(Color* base, Color* mask)
 {
     double new_a;

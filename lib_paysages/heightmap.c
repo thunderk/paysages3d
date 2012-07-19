@@ -1,9 +1,11 @@
 #include "heightmap.h"
 #include "tools.h"
+#include "system.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <assert.h>
 
 HeightMap heightmapCreate()
 {
@@ -56,6 +58,19 @@ void heightmapLoad(PackStream* stream, HeightMap* heightmap)
     {
         packReadDouble(stream, &heightmap->data[i]);
     }
+}
+
+static void _loadFromFilePixel(HeightMap* heightmap, int x, int y, Color col)
+{
+    assert(x >= 0 && x < heightmap->resolution_x);
+    assert(y >= 0 && y < heightmap->resolution_z);
+    
+    heightmap->data[y * heightmap->resolution_x + x] = (col.r + col.g + col.b) / 3.0;
+}
+
+void heightmapImportFromPicture(HeightMap* heightmap, const char* picturepath)
+{
+    systemLoadPictureFile(picturepath, (PictureCallbackLoadStarted)heightmapChangeResolution, (PictureCallbackLoadPixel)_loadFromFilePixel, heightmap);
 }
 
 void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resolution_z)

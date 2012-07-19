@@ -32,6 +32,8 @@ void heightmapValidate(HeightMap* heightmap);
 void heightmapSave(PackStream* stream, HeightMap* heightmap);
 void heightmapLoad(PackStream* stream, HeightMap* heightmap);
 
+void heightmapImportFromPicture(HeightMap* heightmap, const char* picturepath);
+
 void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resolution_z);
 double heightmapGetValue(HeightMap* heightmap, double x, double z);
 

@@ -34,7 +34,7 @@ typedef struct
 typedef struct
 {
     GeoArea area;
-    double offset_z;
+    double offset_y;
     HeightMap height_map;
     double height_factor;
     NoiseGenerator* detail_noise;

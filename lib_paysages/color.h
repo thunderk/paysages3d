@@ -32,6 +32,11 @@ unsigned int colorTo32BitBGRA(Color* col);
 unsigned int colorTo32BitARGB(Color* col);
 unsigned int colorTo32BitABGR(Color* col);
 
+Color colorFrom32BitRGBA(unsigned int col);
+Color colorFrom32BitBGRA(unsigned int col);
+Color colorFrom32BitARGB(unsigned int col);
+Color colorFrom32BitABGR(unsigned int col);
+
 void colorMask(Color* base, Color* mask);
 double colorNormalize(Color* col);
 double colorGetValue(Color* col);

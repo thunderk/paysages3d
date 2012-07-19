@@ -1,14 +1,24 @@
 #ifndef _PAYSAGES_SYSTEM_H_
 #define _PAYSAGES_SYSTEM_H_
 
+/* Library dependent features */
+
+#include "color.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef void*(*ThreadFunction)(void* data);
+typedef void* (*ThreadFunction)(void* data);
+typedef Color (*PictureCallbackSavePixel)(void* data, int x, int y);
+typedef void (*PictureCallbackLoadStarted)(void* data, int width, int height);
+typedef void (*PictureCallbackLoadPixel)(void* data, int x, int y, Color col);
 
 void systemInit();
 int systemGetCoreCount();
+
+int systemSavePictureFile(const char* filepath, PictureCallbackSavePixel callback_pixel, void* data, int width, int height);
+int systemLoadPictureFile(const char* filepath, PictureCallbackLoadStarted callback_start, PictureCallbackLoadPixel callback_pixel, void* data);
 
 #ifdef HAVE_GLIB
 #include <glib.h>

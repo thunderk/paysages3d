@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "IL/il.h"
-#include "IL/ilu.h"
-
 #include "shared/types.h"
 
 #include "auto.h"
@@ -21,8 +18,6 @@ void paysagesInit()
     CameraDefinition camera;
 
     systemInit();
-    ilInit();
-    iluInit();
 
     sceneryInit();
     renderInit();

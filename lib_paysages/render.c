@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "IL/il.h"
-#include "IL/ilu.h"
 
 #include "shared/types.h"
 #include "color.h"
@@ -725,39 +723,7 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
 
 int renderSaveToFile(RenderArea* area, const char* path)
 {
-    ILuint image_id;
-    ilGenImages(1, &image_id);
-    ilBindImage(image_id);
-    Color result;
-    ILuint x, y;
-    ILuint rgba;
-    ILuint data[area->params.height * area->params.width];
-    ILenum error;
-    int error_count;
-
-    for (y = 0; y < area->params.height; y++)
-    {
-        for (x = 0; x < area->params.width; x++)
-        {
-            result = _getFinalPixel(area, x, y);
-            rgba = colorTo32BitRGBA(&result);
-            data[y * area->params.width + x] = rgba;
-        }
-    }
-
-    ilTexImage((ILuint)area->params.width, (ILuint)area->params.height, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, data);
-    remove(path);
-    ilSaveImage(path);
-
-    ilDeleteImages(1, &image_id);
-
-    error_count = 0;
-    while ((error=ilGetError()) != IL_NO_ERROR)
-    {
-        fprintf(stderr, "IL ERROR : %s\n", iluErrorString(error));
-        error_count++;
-    }
-    return !error_count;
+    return systemSavePictureFile(path, (PictureCallbackSavePixel)_getFinalPixel, area, area->params.width, area->params.height);
 }
 
 void renderSetPreviewCallbacks(RenderArea* area, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update)
