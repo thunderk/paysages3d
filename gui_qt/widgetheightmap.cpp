@@ -27,6 +27,7 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, HeightMap* heightmap):
     _last_brush_action = 0;
     _last_mouse_x = 0;
     _last_mouse_y = 0;
+    _mouse_moved = false;
     
     _angle_h = 0.0;
     _angle_v = 0.3;
@@ -149,6 +150,7 @@ void WidgetHeightMap::mouseMoveEvent(QMouseEvent* event)
     
     _last_mouse_x = event->x();
     _last_mouse_y = event->y();
+    _mouse_moved = true;
 
     updateGL();
 }
@@ -238,24 +240,28 @@ void WidgetHeightMap::paintGL()
     }
     
     // Picking mouse position using z-buffer (for brush)
-    GLint viewport[4];
-    GLdouble modelview[16];
-    GLdouble projection[16];
-    GLfloat winX, winY, winZ;
-    Vector3 point;
+    if (_mouse_moved)
+    {
+        GLint viewport[4];
+        GLdouble modelview[16];
+        GLdouble projection[16];
+        GLfloat winX, winY, winZ;
+        Vector3 point;
 
-    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-    glGetDoublev(GL_PROJECTION_MATRIX, projection);
-    glGetIntegerv(GL_VIEWPORT, viewport);
+        glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+        glGetDoublev(GL_PROJECTION_MATRIX, projection);
+        glGetIntegerv(GL_VIEWPORT, viewport);
 
-    winX = (float)_last_mouse_x;
-    winY = (float)height() - (float)_last_mouse_y;
-    glReadPixels(_last_mouse_x, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+        winX = (float)_last_mouse_x;
+        winY = (float)height() - (float)_last_mouse_y;
+        glReadPixels(_last_mouse_x, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 
-    gluUnProject(winX, winY, winZ, modelview, projection, viewport, &point.x, &point.y, &point.z);
+        gluUnProject(winX, winY, winZ, modelview, projection, viewport, &point.x, &point.y, &point.z);
 
-    _brush_x = point.x;
-    _brush_z = point.z;
+        _brush_x = point.x;
+        _brush_z = point.z;
+        _mouse_moved = false;
+    }
     
     // Place camera
     glMatrixMode(GL_MODELVIEW);

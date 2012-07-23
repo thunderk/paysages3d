@@ -87,6 +87,35 @@ void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resol
     }
 }
 
+double heightmapGetLimits(HeightMap* heightmap, double* ymin, double* ymax)
+{
+    double y;
+    int i;
+    *ymin = 1000000.0;
+    *ymax = -1000000.0;
+    /* TODO Keep the value in cache */
+    for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
+    {
+        y = heightmap->data[i];
+        if (y < *ymin)
+        {
+            *ymin = y;
+        }
+        if (y > *ymax)
+        {
+            *ymax = y;
+        }
+    }
+}
+
+double heightmapGetRawValue(HeightMap* heightmap, double x, double z)
+{
+    assert(x >= 0.0 && x <= 1.0);
+    assert(z >= 0.0 && z <= 1.0);
+    
+    return heightmap->data[((int)(z * (double)(heightmap->resolution_z - 1))) * heightmap->resolution_x + ((int)(x * (double)(heightmap->resolution_x - 1)))];
+}
+
 double heightmapGetValue(HeightMap* heightmap, double x, double z)
 {
     int xmax = heightmap->resolution_x - 1;

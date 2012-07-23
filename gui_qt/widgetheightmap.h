@@ -60,6 +60,7 @@ private:
     int _last_brush_action;
     int _last_mouse_x;
     int _last_mouse_y;
+    bool _mouse_moved;
     
     double _angle_h;
     double _angle_v;

@@ -32,10 +32,12 @@ void heightmapValidate(HeightMap* heightmap);
 void heightmapSave(PackStream* stream, HeightMap* heightmap);
 void heightmapLoad(PackStream* stream, HeightMap* heightmap);
 
-void heightmapImportFromPicture(HeightMap* heightmap, const char* picturepath);
+double heightmapGetLimits(HeightMap* heightmap, double* ymin, double* ymax);
+double heightmapGetRawValue(HeightMap* heightmap, double x, double z);
+double heightmapGetValue(HeightMap* heightmap, double x, double z);
 
 void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resolution_z);
-double heightmapGetValue(HeightMap* heightmap, double x, double z);
+void heightmapImportFromPicture(HeightMap* heightmap, const char* picturepath);
 
 void heightmapBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double value);
     

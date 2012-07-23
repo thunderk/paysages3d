@@ -128,7 +128,8 @@ Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 location)
         /* Apply factor */
         height = height * canvas->height_factor + canvas->offset_y;
         
-        /* TODO Apply detail noise */
+        /* Apply detail noise */
+        height += noiseGet2DTotal(canvas->detail_noise, location.x / canvas->detail_scaling, location.z / canvas->detail_scaling) * canvas->detail_height_factor;
         
         /* Apply integration mask */
         inside_x = (inside_x - 0.5) * 2.0;
@@ -147,7 +148,7 @@ Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 location)
         {
             location.y = height;
         }
-        else
+        else if (distance <= 1.0)
         {
             double influence = (1.0 - distance) / canvas->mask.smoothing;
             location.y = influence * height + (1.0 - influence) * location.y;

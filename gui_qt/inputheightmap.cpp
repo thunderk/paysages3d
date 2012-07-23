@@ -14,8 +14,33 @@ public:
 
     void paintEvent(QPaintEvent* event)
     {
+        double min, max, value, fx, fy;
+        int ivalue;
         QPainter painter(this);
-        painter.fillRect(this->rect(), Qt::black);
+        
+        heightmapGetLimits(_value, &min, &max);
+        if (max - min < 0.000001)
+        {
+            painter.fillRect(rect(), Qt::black);
+            return;
+        }
+        
+        fx = 1.0 / (double)(width() - 1);
+        fy = 1.0 / (double)(height() - 1);
+        for (int x = 0; x < width(); x++)
+        {
+            for (int y = 0; y < height(); y++)
+            {
+                value = heightmapGetRawValue(_value, fx * x, fy * y);
+                ivalue = (int)(255.0 * (value - min) / (max - min));
+                if (ivalue > 255 || ivalue < 0)
+                {
+                    ivalue = 128;
+                }
+                painter.setPen(QColor(ivalue, ivalue, ivalue));
+                painter.drawPoint(x, y);
+            }
+        }
     }
     HeightMap* _value;
 };
@@ -25,7 +50,7 @@ InputHeightMap::InputHeightMap(QWidget* form, QString label, HeightMap* value) :
     _value = value;
     
     _preview = new SmallPreviewHeightMap(form, value);
-    _preview->setMinimumSize(100, 40);
+    _preview->setMinimumSize(100, 100);
     
     _control = new QPushButton(tr("Paint"), form);
     _control->setMaximumWidth(150);
