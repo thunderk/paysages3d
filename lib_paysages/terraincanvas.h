@@ -52,7 +52,7 @@ LayerType terrainCanvasGetLayerType();
 void terrainCanvasSave(PackStream* stream, TerrainCanvas* canvas);
 void terrainCanvasLoad(PackStream* stream, TerrainCanvas* canvas);
 
-double terrainCanvasGetLimits(TerrainCanvas* canvas, double* ymin, double* ymax);
+void terrainCanvasGetLimits(TerrainCanvas* canvas, double* ymin, double* ymax);
 void terrainCanvasRevertToTerrain(TerrainCanvas* canvas, TerrainDefinition* terrain, int only_masked);
 Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 location);
     

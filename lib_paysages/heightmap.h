@@ -32,7 +32,7 @@ void heightmapValidate(HeightMap* heightmap);
 void heightmapSave(PackStream* stream, HeightMap* heightmap);
 void heightmapLoad(PackStream* stream, HeightMap* heightmap);
 
-double heightmapGetLimits(HeightMap* heightmap, double* ymin, double* ymax);
+void heightmapGetLimits(HeightMap* heightmap, double* ymin, double* ymax);
 double heightmapGetRawValue(HeightMap* heightmap, double x, double z);
 double heightmapGetValue(HeightMap* heightmap, double x, double z);
 

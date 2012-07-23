@@ -18,9 +18,10 @@ TerrainCanvas* terrainCanvasCreate()
     heightmapChangeResolution(&result->height_map, 256, 256);
     result->height_factor = 1.0;
     result->detail_noise = noiseCreateGenerator();
-    noiseAddLevelsSimple(result->detail_noise, 6, 1.0, 1.0);
-    result->detail_height_factor = 0.002;
-    result->detail_scaling = 0.002;
+    noiseGenerateBaseNoise(result->detail_noise, 1048576);
+    noiseAddLevelsSimple(result->detail_noise, 5, 1.0, 1.0);
+    result->detail_height_factor = 0.2;
+    result->detail_scaling = 0.4;
     result->mask.mode = INTEGRATIONMASK_MODE_CIRCLE;
     result->mask.smoothing = 0.1;
 
@@ -107,9 +108,12 @@ void terrainCanvasLoad(PackStream* stream, TerrainCanvas* canvas)
     packReadDouble(stream, &canvas->mask.smoothing);
 }
 
-double terrainCanvasGetLimits(TerrainCanvas* canvas, double* ymin, double* ymax)
+void terrainCanvasGetLimits(TerrainCanvas* canvas, double* ymin, double* ymax)
 {
-    return heightmapGetLimits(&canvas->height_map, ymin, ymax);
+    double noise_max = noiseGetMaxValue(canvas->detail_noise) * canvas->detail_height_factor;
+    heightmapGetLimits(&canvas->height_map, ymin, ymax);
+    *ymin -= noise_max;
+    *ymax += noise_max;
 }
 
 void terrainCanvasRevertToTerrain(TerrainCanvas* canvas, TerrainDefinition* terrain, int only_masked)

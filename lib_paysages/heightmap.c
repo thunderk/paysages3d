@@ -87,7 +87,7 @@ void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resol
     }
 }
 
-double heightmapGetLimits(HeightMap* heightmap, double* ymin, double* ymax)
+void heightmapGetLimits(HeightMap* heightmap, double* ymin, double* ymax)
 {
     double y;
     int i;
