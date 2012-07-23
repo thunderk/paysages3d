@@ -22,6 +22,7 @@ typedef struct
     Layers* canvases;
     double shadow_smoothing;
 
+    double _min_height;
     double _max_height;
 } TerrainDefinition;
 

@@ -72,11 +72,31 @@ void terrainCopyDefinition(TerrainDefinition* source, TerrainDefinition* destina
 
 void terrainValidateDefinition(TerrainDefinition* definition)
 {
+    int i, n;
+    TerrainCanvas* canvas;
+    double min, max;
+    
     noiseValidate(definition->height_noise);
     layersValidate(definition->canvases);
     
+    /* Get minimal and maximal height */
+    definition->_min_height = -noiseGetMaxValue(definition->height_noise) * definition->height_factor;
     definition->_max_height = noiseGetMaxValue(definition->height_noise) * definition->height_factor;
-    /* FIXME _max_height depends on canvases/modifiers */
+    
+    n = layersCount(definition->canvases);
+    for (i = 0; i < n; i++)
+    {
+        canvas = layersGetLayer(definition->canvases, i);
+        terrainCanvasGetLimits(canvas, &min, &max);
+        if (min < definition->_min_height)
+        {
+            definition->_min_height = min;
+        }
+        if (max > definition->_max_height)
+        {
+            definition->_max_height = max;
+        }
+    }
 }
 
 static inline double _getHeight(TerrainDefinition* definition, double x, double z)
@@ -309,13 +329,13 @@ double terrainGetHeight(TerrainDefinition* definition, double x, double z)
 
 double terrainGetHeightNormalized(TerrainDefinition* definition, double x, double z)
 {
-    if (definition->_max_height == 0.0)
+    if (definition->_max_height - definition->_min_height <= 0.0000001)
     {
         return 0.5;
     }
     else
     {
-        return 0.5 + _getHeight(definition, x, z) / (definition->_max_height * 2.0);
+        return _getHeight(definition, x, z) - definition->_min_height / (definition->_max_height - definition->_min_height);
     }
 }
 
