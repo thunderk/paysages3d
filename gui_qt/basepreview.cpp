@@ -93,6 +93,10 @@ public:
             {
                 _preview->commitChunkTransaction(&pixbuf, _xstart, _ystart, _xsize, _ysize, revision);
             }
+            else
+            {
+                _preview->rollbackChunkTransaction();
+            }
         }
         
         return changed;
@@ -194,6 +198,23 @@ void PreviewDrawingManager::removeChunks(BasePreview* preview)
     logDebug(QString("[Previews] %1 chunks removed, %2 remaining").arg(removed).arg(_chunks.size()));
 }
 
+void PreviewDrawingManager::suspendChunks(BasePreview* preview)
+{
+    _lock.lock();
+    for (int i = 0; i < _updateQueue.size(); i++)
+    {
+        PreviewChunk* chunk;
+        chunk = _updateQueue.at(i);
+        if (chunk->isFrom(preview))
+        {
+            _updateQueue.takeAt(i);
+            i--;
+        }
+    }
+    // TODO Interrupt currently processing chunks
+    _lock.unlock();
+}
+
 void PreviewDrawingManager::updateChunks(BasePreview* preview)
 {
     for (int i = 0; i < _chunks.size(); i++)
@@ -293,6 +314,8 @@ QWidget(parent)
     _width = width();
     _height = height();
     _revision = 0;
+    _transactions_count = 0;
+    _redraw_requested = false;
     
     _info = new QLabel(this);
     _info->setVisible(false);
@@ -301,11 +324,12 @@ QWidget(parent)
     this->alive = true;
 
     QObject::connect(this, SIGNAL(contentChange()), this, SLOT(update()));
-    QObject::connect(this, SIGNAL(redrawRequested()), this, SLOT(handleRedraw()));
 
     this->setMinimumSize(256, 256);
     this->setMaximumSize(256, 256);
     this->resize(256, 256);
+    
+    startTimer(50);
 }
 
 BasePreview::~BasePreview()
@@ -440,18 +464,31 @@ void BasePreview::toggleChangeEvent(QString, bool)
 
 void BasePreview::redraw()
 {
-    emit(redrawRequested());
+    _drawing_manager->suspendChunks(this);
+    _redraw_requested = true;
 }
 
 QImage BasePreview::startChunkTransaction(int x, int y, int w, int h, int* revision)
 {
+    QImage result;
+    
+    _lock_drawing->lock();
+    
     *revision = _revision;
-    return _pixbuf->copy(x, y, w, h);
+    result = _pixbuf->copy(x, y, w, h);
+    _transactions_count++;
+    
+    _lock_drawing->unlock();
+    
+    return result;
 }
 
-void BasePreview::commitChunkTransaction(QImage* chunk, int x, int y, int w, int h, int revision)
+bool BasePreview::commitChunkTransaction(QImage* chunk, int x, int y, int w, int h, int revision)
 {
+    bool result;
+    
     _lock_drawing->lock();
+    
     if (revision == _revision)
     {
         for (int ix = 0; ix < w; ix++)
@@ -462,7 +499,26 @@ void BasePreview::commitChunkTransaction(QImage* chunk, int x, int y, int w, int
             }
         }
         emit contentChange();
+        result = true;
     }
+    else
+    {
+        result = false;
+    }
+    
+    _transactions_count--;
+    
+    _lock_drawing->unlock();
+    
+    return result;
+}
+
+void BasePreview::rollbackChunkTransaction()
+{
+    _lock_drawing->lock();
+    
+    _transactions_count--;
+    
     _lock_drawing->unlock();
 }
 
@@ -471,12 +527,16 @@ QColor BasePreview::getPixelColor(int x, int y)
     return getColor((double) (x - _width / 2) * scaling + xoffset, (double) (y - _height / 2) * scaling + yoffset);
 }
 
-void BasePreview::handleRedraw()
+void BasePreview::timerEvent(QTimerEvent*)
 {
     _lock_drawing->lock();
 
-    updateData();
-    invalidatePixbuf(128);
+    if (_redraw_requested && _transactions_count == 0)
+    {
+        updateData();
+        invalidatePixbuf(128);
+        _redraw_requested = false;
+    }
 
     _lock_drawing->unlock();
 }

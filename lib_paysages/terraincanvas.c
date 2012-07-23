@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 TerrainCanvas* terrainCanvasCreate()
 {
@@ -108,7 +109,7 @@ void terrainCanvasLoad(PackStream* stream, TerrainCanvas* canvas)
 
 double terrainCanvasGetLimits(TerrainCanvas* canvas, double* ymin, double* ymax)
 {
-    return heightmapGetLimits(canvas->height_map, ymin, ymax);
+    return heightmapGetLimits(&canvas->height_map, ymin, ymax);
 }
 
 void terrainCanvasRevertToTerrain(TerrainCanvas* canvas, TerrainDefinition* terrain, int only_masked)

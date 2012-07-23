@@ -44,7 +44,8 @@ public:
     void redraw();
     
     QImage startChunkTransaction(int x, int y, int w, int h, int* revision);
-    void commitChunkTransaction(QImage* chunk, int x, int y, int w, int h, int revision);
+    bool commitChunkTransaction(QImage* chunk, int x, int y, int w, int h, int revision);
+    void rollbackChunkTransaction();
 
     QColor getPixelColor(int x, int y);
 
@@ -72,6 +73,7 @@ private:
     void updateChunks();
     void invalidatePixbuf(int value);
 
+    void timerEvent(QTimerEvent* event);
     void showEvent(QShowEvent* event);
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent* event);
@@ -94,6 +96,8 @@ private:
     int _height;
     
     int _revision;
+    int _transactions_count;
+    bool _redraw_requested;
 
     int mousex;
     int mousey;
@@ -120,7 +124,6 @@ signals:
     void redrawRequested();
 
 private slots:
-    void handleRedraw();
     void choiceSelected(QAction* action);
 };
 
@@ -153,6 +156,7 @@ public:
     void addChunk(PreviewChunk* chunk);
     void removeChunks(BasePreview* preview);
     void updateChunks(BasePreview* preview);
+    void suspendChunks(BasePreview* preview);
     void updateAllChunks();
     void performOneThreadJob();
     int chunkCount();

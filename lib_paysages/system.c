@@ -1,5 +1,7 @@
 #include "system.h"
+
 #include <unistd.h>
+#include <stdlib.h>
 
 #include "IL/il.h"
 #include "IL/ilu.h"

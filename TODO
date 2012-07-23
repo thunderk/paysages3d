@@ -22,9 +22,6 @@ Technology Preview 2 :
    => Add curve modes
    => Add logarithmic mode
    => Add zoom and scrolling
-- Fix "RGB parameters out of range" (and segfault) on some previews, caused by data changing during a chunk computation.
-   => May need to change the updateData system.
-   => Previews need to be paused while updating data.
 - Lock some previews together (eg: terrain height and colored preview).
 - Find a new licence.
 

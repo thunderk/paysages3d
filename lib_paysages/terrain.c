@@ -51,16 +51,12 @@ TerrainDefinition terrainCreateDefinition()
 
 void terrainDeleteDefinition(TerrainDefinition* definition)
 {
-    int i;
-
     noiseDeleteGenerator(definition->height_noise);
     layersDelete(definition->canvases);
 }
 
 void terrainCopyDefinition(TerrainDefinition* source, TerrainDefinition* destination)
 {
-    int i;
-
     noiseCopy(source->height_noise, destination->height_noise);
     destination->height_factor = source->height_factor;
     destination->scaling = source->scaling;
@@ -335,7 +331,7 @@ double terrainGetHeightNormalized(TerrainDefinition* definition, double x, doubl
     }
     else
     {
-        return _getHeight(definition, x, z) - definition->_min_height / (definition->_max_height - definition->_min_height);
+        return (_getHeight(definition, x, z) - definition->_min_height) / (definition->_max_height - definition->_min_height);
     }
 }
 

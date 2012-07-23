@@ -2,6 +2,7 @@
 
 #include <math.h>
 
+#if 0
 static Vector3 _betaR = {5.5e-6, 13.0e-6, 22.4e-6};  /* Rayleigh scattering coefficients at sea level */
 static Vector3 _betaM = {21e-6, 0.0, 0.0};           /* Mie scattering coefficients at sea level */
 static double _Hr = 7994;                            /* Rayleigh scale height */
@@ -10,6 +11,7 @@ static double _radiusEarth = 6360e3;                 /* Earth radius */
 static double _radiusAtmosphere = 6420e3;            /* Atmosphere radius */
 static double _sunIntensity = 20.0;                  /* Sun intensity */
 static double _g = 0.76;                             /* Mean cosine */
+#endif
 
 /*typedef struct
 {
