@@ -4,6 +4,7 @@
 #include <QMouseEvent>
 #include <math.h>
 #include <GL/glu.h>
+#include <qt4/QtCore/qlocale.h>
 #include "tools.h"
 #include "../lib_paysages/terrain.h"
 #include "../lib_paysages/scenery.h"
@@ -27,6 +28,7 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, HeightMap* heightmap):
     _last_brush_action = 0;
     _last_mouse_x = 0;
     _last_mouse_y = 0;
+    _last_time = QDateTime::currentDateTime();
     _mouse_moved = false;
     
     _angle_h = 0.0;
@@ -38,10 +40,14 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, HeightMap* heightmap):
     _brush_size = 10.0;
     _brush_smoothing = 0.5;
     _brush_strength = 1.0;
+    _brush_noise = noiseCreateGenerator();
+    noiseGenerateBaseNoise(_brush_noise, 102400);
+    noiseAddLevelsSimple(_brush_noise, 6, 1.0, 1.0);
 }
 
 WidgetHeightMap::~WidgetHeightMap()
 {
+    noiseDeleteGenerator(_brush_noise);
     delete[] _vertexes;
 }
 
@@ -155,10 +161,15 @@ void WidgetHeightMap::mouseMoveEvent(QMouseEvent* event)
     updateGL();
 }
 
-void WidgetHeightMap::timerEvent(QTimerEvent* event)
+void WidgetHeightMap::timerEvent(QTimerEvent*)
 {
-    if (_last_brush_action)
+    QDateTime new_time = QDateTime::currentDateTime();
+    double duration = 0.001 * (double)_last_time.msecsTo(new_time);
+    _last_time = new_time;
+    
+    if (_last_brush_action != 0)
     {
+        double brush_strength;
         HeightMapBrush brush;
 
         brush.relative_x = (_brush_x + 40.0) / 80.0;
@@ -166,15 +177,28 @@ void WidgetHeightMap::timerEvent(QTimerEvent* event)
         brush.hard_radius = _brush_size * (1.0 - _brush_smoothing) / 80.0;
         brush.smoothed_size = _brush_size * _brush_smoothing / 80.0;
         
+        brush_strength = _brush_strength * duration / 0.1;
+        
         switch (_brush_mode)
         {
             case HEIGHTMAP_BRUSH_RAISE:
-                heightmapBrushElevation(_heightmap, &brush, _brush_strength * _last_brush_action);
+                heightmapBrushElevation(_heightmap, &brush, brush_strength * _last_brush_action);
+                break;
+            case HEIGHTMAP_BRUSH_SMOOTH:
+                if (_last_brush_action < 0)
+                {
+                    heightmapBrushSmooth(_heightmap, &brush, brush_strength);
+                }
+                else
+                {
+                    heightmapBrushAddNoise(_heightmap, &brush, _brush_noise, brush_strength);
+                }
                 break;
             default:
                 return;
         }
         
+        // TODO Only mark dirty the updated area
         _dirty = true;
         updateGL();
     }

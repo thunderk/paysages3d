@@ -2,6 +2,7 @@
 #define _PAYSAGES_QT_WIDGETHEIGHTMAP_H_
 
 #include <QGLWidget>
+#include <QDateTime>
 #include "../lib_paysages/euclid.h"
 #include "../lib_paysages/heightmap.h"
 
@@ -60,6 +61,7 @@ private:
     int _last_brush_action;
     int _last_mouse_x;
     int _last_mouse_y;
+    QDateTime _last_time;
     bool _mouse_moved;
     
     double _angle_h;
@@ -71,6 +73,7 @@ private:
     double _brush_size;
     double _brush_smoothing;
     double _brush_strength;
+    NoiseGenerator* _brush_noise;
 };
 
 #endif
