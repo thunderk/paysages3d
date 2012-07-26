@@ -170,45 +170,12 @@ static inline void _getBrushBoundaries(HeightMapBrush* brush, int rx, int rz, in
     }
 }
 
-void heightmapBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double value)
+typedef double (*BrushCallback)(HeightMap* heightmap, HeightMapBrush* brush, double x, double z, double basevalue, double influence, double force, void* data);
+
+static inline void _applyBrush(HeightMap* heightmap, HeightMapBrush* brush, double force, void* data, BrushCallback callback)
 {
     int x, x1, x2, z, z1, z2;
-    double dx, dz, distance;
-    
-    _getBrushBoundaries(brush, heightmap->resolution_x - 1, heightmap->resolution_z - 1, &x1, &x2, &z1, &z2);
-    
-    for (x = x1; x <= x2; x++)
-    {
-        dx = (double)x / (double)heightmap->resolution_x;
-        for (z = z1; z <= z2; z++)
-        {
-            dz = (double)z / (double)heightmap->resolution_z;
-            distance = sqrt((brush->relative_x - dx) * (brush->relative_x - dx) + (brush->relative_z - dz) * (brush->relative_z - dz));
-            
-            if (distance > brush->hard_radius)
-            {
-                if (distance <= brush->hard_radius + brush->smoothed_size)
-                {
-                    heightmap->data[z * heightmap->resolution_x + x] += value * (1.0 - (distance - brush->hard_radius) / brush->smoothed_size);
-                }
-            }
-            else
-            {
-                heightmap->data[z * heightmap->resolution_x + x] += value;
-            }
-        }
-    }
-}
-
-void heightmapBrushSmooth(HeightMap* heightmap, HeightMapBrush* brush, double value)
-{
-    /* TODO */
-}
-
-void heightmapBrushAddNoise(HeightMap* heightmap, HeightMapBrush* brush, NoiseGenerator* generator, double value)
-{
-    int x, x1, x2, z, z1, z2;
-    double dx, dz, distance, factor, brush_size;
+    double dx, dz, distance, influence, brush_size;
     
     _getBrushBoundaries(brush, heightmap->resolution_x - 1, heightmap->resolution_z - 1, &x1, &x2, &z1, &z2);
     brush_size = brush->hard_radius + brush->smoothed_size;
@@ -225,7 +192,7 @@ void heightmapBrushAddNoise(HeightMap* heightmap, HeightMapBrush* brush, NoiseGe
             {
                 if (distance <= brush->hard_radius + brush->smoothed_size)
                 {
-                    factor = (1.0 - (distance - brush->hard_radius) / brush->smoothed_size);
+                    influence = (1.0 - (distance - brush->hard_radius) / brush->smoothed_size);
                 }
                 else
                 {
@@ -234,10 +201,51 @@ void heightmapBrushAddNoise(HeightMap* heightmap, HeightMapBrush* brush, NoiseGe
             }
             else
             {
-                factor = 1.0;
+                influence = 1.0;
             }
             
-            heightmap->data[z * heightmap->resolution_x + x] += factor * noiseGet2DTotal(generator, dx / brush_size, dz / brush_size) * brush_size;
+            heightmap->data[z * heightmap->resolution_x + x] = callback(heightmap, brush, dx, dz, heightmap->data[z * heightmap->resolution_x + x], influence, force, data);
         }
     }
+}
+
+static double _applyBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
+{
+    return basevalue + influence * force * brush->total_radius;
+}
+
+void heightmapBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double value)
+{
+    _applyBrush(heightmap, brush, value, NULL, _applyBrushElevation);
+}
+
+static double _applyBrushSmooth(HeightMap* heightmap, HeightMapBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
+{
+    double ideal, factor;
+    ideal = heightmapGetValue(heightmap, x + brush->total_radius * 0.5, z);
+    ideal += heightmapGetValue(heightmap, x - brush->total_radius * 0.5, z);
+    ideal += heightmapGetValue(heightmap, x, z - brush->total_radius * 0.5);
+    ideal += heightmapGetValue(heightmap, x, z + brush->total_radius * 0.5);
+    ideal /= 4.0;
+    factor = influence * force;
+    if (factor > 1.0)
+    {
+        factor = 0.0;
+    }
+    return basevalue + (ideal - basevalue) * factor;
+}
+
+void heightmapBrushSmooth(HeightMap* heightmap, HeightMapBrush* brush, double value)
+{
+    _applyBrush(heightmap, brush, value, NULL, _applyBrushSmooth);
+}
+
+static double _applyBrushAddNoise(HeightMap* heightmap, HeightMapBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
+{
+    return basevalue + noiseGet2DTotal((NoiseGenerator*)data, x / brush->total_radius, z / brush->total_radius) * influence * force * brush->total_radius;
+}
+
+void heightmapBrushAddNoise(HeightMap* heightmap, HeightMapBrush* brush, NoiseGenerator* generator, double value)
+{
+    _applyBrush(heightmap, brush, value, generator, _applyBrushAddNoise);
 }

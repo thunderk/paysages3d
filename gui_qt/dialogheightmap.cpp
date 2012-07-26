@@ -68,7 +68,7 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap) : Dialog
     
     combobox = new QComboBox(panel);
     combobox->addItem(tr("Raise / lower"));
-    combobox->addItem(tr("Smooth / add noise"));
+    combobox->addItem(tr("Add noise / smooth"));
     connect(combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(brushModeChanged(int)));
     panel->layout()->addWidget(combobox);
     
@@ -76,10 +76,10 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap) : Dialog
     panel->layout()->addWidget(label);
     
     slider = new QSlider(Qt::Horizontal, panel);
-    slider->setRange(6, 150);
+    slider->setRange(6, 300);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(brushSizeChanged(int)));
     panel->layout()->addWidget(slider);
-    slider->setValue(30);
+    slider->setValue(60);
 
     label = new QLabel(tr("Brush smoothing"), panel);
     panel->layout()->addWidget(label);

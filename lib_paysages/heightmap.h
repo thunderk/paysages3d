@@ -23,6 +23,7 @@ typedef struct
     double relative_z;
     double hard_radius;
     double smoothed_size;
+    double total_radius;
 } HeightMapBrush;
 
 HeightMap heightmapCreate();

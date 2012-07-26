@@ -176,13 +176,14 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
         brush.relative_z = (_brush_z + 40.0) / 80.0;
         brush.hard_radius = _brush_size * (1.0 - _brush_smoothing) / 80.0;
         brush.smoothed_size = _brush_size * _brush_smoothing / 80.0;
+        brush.total_radius = brush.hard_radius + brush.smoothed_size;
         
         brush_strength = _brush_strength * duration / 0.1;
         
         switch (_brush_mode)
         {
             case HEIGHTMAP_BRUSH_RAISE:
-                heightmapBrushElevation(_heightmap, &brush, brush_strength * _last_brush_action);
+                heightmapBrushElevation(_heightmap, &brush, brush_strength * _last_brush_action * 20.0);
                 break;
             case HEIGHTMAP_BRUSH_SMOOTH:
                 if (_last_brush_action < 0)
@@ -191,7 +192,7 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
                 }
                 else
                 {
-                    heightmapBrushAddNoise(_heightmap, &brush, _brush_noise, brush_strength);
+                    heightmapBrushAddNoise(_heightmap, &brush, _brush_noise, brush_strength * 10.0);
                 }
                 break;
             default:
