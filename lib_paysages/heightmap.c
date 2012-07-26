@@ -121,11 +121,31 @@ double heightmapGetValue(HeightMap* heightmap, double x, double z)
 {
     int xmax = heightmap->resolution_x - 1;
     int zmax = heightmap->resolution_z - 1;
-    int xlow = floor(x * xmax);
-    int zlow = floor(z * zmax);
+    int xlow;
+    int zlow;
     double stencil[16];
     int ix, iz, cx, cz;
     
+    if (x < 0.0)
+    {
+        x = 0.0;
+    }
+    else if (x > 1.0)
+    {
+        x = 1.0;
+    }
+    if (z < 0.0)
+    {
+        z = 0.0;
+    }
+    else if (z > 1.0)
+    {
+        z = 1.0;
+    }
+
+    xlow = floor(x * xmax);
+    zlow = floor(z * zmax);
+
     for (ix = xlow - 1; ix <= xlow + 2; ix++)
     {
         for (iz = zlow - 1; iz <= zlow + 2; iz++)
@@ -152,21 +172,37 @@ static inline void _getBrushBoundaries(HeightMapBrush* brush, int rx, int rz, in
     *x2 = (int)ceil(cx + sx);
     *z1 = (int)floor(cz - sz);
     *z2 = (int)ceil(cz + sz);
-    if (*x1 < 0) 
+    if (*x1 < 0)
     {
         *x1 = 0;
     }
-    if (*x1 > rx) 
+    else if (*x1 > rx)
     {
         *x1 = rx;
     }
-    if (*z1 < 0) 
+    if (*x2 < 0)
+    {
+        *x2 = 0;
+    }
+    else if (*x2 > rx)
+    {
+        *x2 = rx;
+    }
+    if (*z1 < 0)
     {
         *z1 = 0;
     }
-    if (*z1 > rz) 
+    else if (*z1 > rz)
     {
         *z1 = rz;
+    }
+    if (*z2 < 0)
+    {
+        *z2 = 0;
+    }
+    else if (*z2 > rz)
+    {
+        *z2 = rz;
     }
 }
 
