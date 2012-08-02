@@ -485,4 +485,9 @@ void BaseForm::layerSelectedEvent(int layer)
     {
         _previews_list[i]->redraw();
     }
+    
+    _layer_del->setEnabled(layer >= 0);
+    _layer_rename->setEnabled(layer >= 0);
+    _layer_down->setEnabled(layer > 0);
+    _layer_up->setEnabled(layer >= 0 and layer < _layer_count - 1);
 }

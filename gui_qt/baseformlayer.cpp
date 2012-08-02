@@ -1,5 +1,7 @@
 #include "baseformlayer.h"
 
+#include <QInputDialog>
+
 BaseFormLayer::BaseFormLayer(QWidget* parent, Layers* layers) : BaseForm(parent, false, true)
 {
     _layers_original = layers;
@@ -48,11 +50,15 @@ QStringList BaseFormLayer::getLayers()
 
 void BaseFormLayer::layerAddedEvent()
 {
-    int layer = layersAddLayer(_layers_modified, NULL);
-    if (layer >= 0)
+    QString layer_name = QInputDialog::getText(this, tr("Create layer"), tr("Layer name :"), QLineEdit::Normal, tr("Unnamed layer"));
+    if (not layer_name.isEmpty())
     {
-        layersSetName(_layers_modified, layer, tr("Unnamed").toUtf8().data());
-        BaseForm::layerAddedEvent();
+        int layer = layersAddLayer(_layers_modified, NULL);
+        if (layer >= 0)
+        {
+            layersSetName(_layers_modified, layer, layer_name.toUtf8().data());
+            BaseForm::layerAddedEvent();
+        }
     }
 }
 

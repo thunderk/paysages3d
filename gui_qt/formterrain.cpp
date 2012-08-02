@@ -153,8 +153,8 @@ FormTerrain::FormTerrain(QWidget *parent):
 
     previewHeight = new PreviewTerrainHeight(this);
     previewColor = new PreviewTerrainColor(this);
-    addPreview(previewHeight, QString(tr("Height preview (normalized)")));
-    addPreview(previewColor, QString(tr("Lighted preview (no texture)")));
+    addPreview(previewHeight, tr("Height preview (normalized)"));
+    addPreview(previewColor, tr("Lighted preview (no texture)"));
 
     addInputNoise(tr("Noise"), _definition.height_noise);
     addInputDouble(tr("Height"), &_definition.height_factor, 0.0, 20.0, 0.1, 1.0);

@@ -20,8 +20,8 @@ protected:
 
 private:
     TerrainCanvas* _definition;
-//    BasePreview* previewHeight;
-//    BasePreview* previewColor;
+    BasePreview* _previewHeight;
+    BasePreview* _previewColor;
 };
 
 #endif

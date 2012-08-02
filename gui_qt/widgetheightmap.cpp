@@ -4,7 +4,6 @@
 #include <QMouseEvent>
 #include <math.h>
 #include <GL/glu.h>
-#include <qt4/QtCore/qlocale.h>
 #include "tools.h"
 #include "../lib_paysages/terrain.h"
 #include "../lib_paysages/scenery.h"
@@ -42,7 +41,7 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, HeightMap* heightmap):
     _brush_strength = 1.0;
     _brush_noise = noiseCreateGenerator();
     noiseGenerateBaseNoise(_brush_noise, 102400);
-    noiseAddLevelsSimple(_brush_noise, 6, 1.0, 1.0);
+    noiseAddLevelsSimple(_brush_noise, 10, 1.0, 1.0);
 }
 
 WidgetHeightMap::~WidgetHeightMap()
@@ -188,7 +187,7 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
             case HEIGHTMAP_BRUSH_SMOOTH:
                 if (_last_brush_action < 0)
                 {
-                    heightmapBrushSmooth(_heightmap, &brush, brush_strength);
+                    heightmapBrushSmooth(_heightmap, &brush, brush_strength * 0.1);
                 }
                 else
                 {
@@ -209,15 +208,19 @@ void WidgetHeightMap::initializeGL()
 {
     glClearColor(0.0, 0.0, 0.0, 0.0);
 
-    GLfloat light_position[] = { 40.0, 40.0, 40.0, 0.0 };
-    GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat light_diffuse[] = { 0.75, 0.74, 0.7, 1.0 };
     GLfloat light_specular[] = { 0.0, 0.0, 0.0, 0.0 };
-    glShadeModel(GL_SMOOTH);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+    light_diffuse[0] = 0.3;
+    light_diffuse[1] = 0.3;
+    light_diffuse[2] = 0.4;
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
+    glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
     glEnable(GL_COLOR_MATERIAL);
    
     //glFrontFace(GL_CCW);
@@ -255,8 +258,6 @@ void WidgetHeightMap::paintGL()
     double frame_time;
     int rx, rz;
     
-    start_time = QTime::currentTime();
-    
     // Update vertex cache
     if (_dirty)
     {
@@ -293,6 +294,13 @@ void WidgetHeightMap::paintGL()
     glLoadIdentity();
     gluLookAt(50.0 * cos(_angle_h) * cos(_angle_v), 50.0 * sin(_angle_v), -50.0 * sin(_angle_h) * cos(_angle_v), 0.0, 0.0, 0.0, -cos(_angle_h) * sin(_angle_v), cos(_angle_v), sin(_angle_h) * sin(_angle_v));
 
+    // Place lights
+    GLfloat light_position[] = { 40.0, 40.0, 40.0, 0.0 };
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    light_position[0] = -40.0;
+    light_position[2] = -60.0;
+    glLightfv(GL_LIGHT1, GL_POSITION, light_position);
+    
     // Background
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
