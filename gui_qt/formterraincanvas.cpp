@@ -44,7 +44,7 @@ FormTerrainCanvas::FormTerrainCanvas(QWidget *parent, Layers* layers):
     
     // TODO Area
     //addInputDouble(tr("Apply at height"), &_definition->offset_y, -20.0, 20.0, 0.1, 1.0);
-    addInputHeightMap(tr("Height map"), &_definition->height_map);
+    addInputHeightMap(tr("Height map"), &_definition->height_map, _definition);
     //addInputDouble(tr("Canvas height"), &_definition->height_factor, 0.0, 20.0, 0.1, 1.0);
     addInputNoise(tr("Detail noise"), _definition->detail_noise);
     addInputDouble(tr("Detail noise height"), &_definition->detail_height_factor, 0.0, 20.0, 0.1, 1.0);

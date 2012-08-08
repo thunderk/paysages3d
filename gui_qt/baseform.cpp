@@ -408,9 +408,9 @@ BaseInput* BaseForm::addInputMaterial(QString label, SurfaceMaterial* material)
     return addInput(new InputMaterial(_form, label, material));
 }
 
-BaseInput* BaseForm::addInputHeightMap(QString label, HeightMap* heightmap)
+BaseInput* BaseForm::addInputHeightMap(QString label, HeightMap* heightmap, TerrainCanvas* canvas)
 {
-    return addInput(new InputHeightMap(_form, label, heightmap));
+    return addInput(new InputHeightMap(_form, label, heightmap, canvas));
 }
 
 BaseInput* BaseForm::addInputEnum(QString label, int* value, const QStringList& values)

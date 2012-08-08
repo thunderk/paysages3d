@@ -34,7 +34,6 @@ public:
     
 public slots:
     void revert();
-    void resetToTerrain();
 
 protected:
     void mousePressEvent(QMouseEvent* event);
@@ -52,7 +51,7 @@ private:
 
 private:
     HeightMap* _heightmap;
-    _VertexInfo* _vertexes;
+    _VertexInfo* _vertices;
     
     bool _dirty;
     

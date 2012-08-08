@@ -83,7 +83,7 @@ bool DialogCurve::getCurve(QWidget* parent, Curve* curve, double xmin, double xm
     return (result != 0) ? true : false;
 }
 
-void DialogCurve::closeEvent(QCloseEvent* e)
+void DialogCurve::closeEvent(QCloseEvent*)
 {
     reject();
 }

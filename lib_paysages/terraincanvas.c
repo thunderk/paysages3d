@@ -1,4 +1,5 @@
 #include "terraincanvas.h"
+#include "scenery.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -8,11 +9,7 @@ TerrainCanvas* terrainCanvasCreate()
 {
     TerrainCanvas* result = malloc(sizeof(TerrainCanvas));
     
-    result->area.bounded = 1;
-    result->area.location_x = -40.0;
-    result->area.location_z = -40.0;
-    result->area.size_x = 80.0;
-    result->area.size_z = 80.0;
+    result->area = geoareaCreate();
     result->offset_y = 0.0;
     result->height_map = heightmapCreate();
     heightmapChangeResolution(&result->height_map, 256, 256);
@@ -24,10 +21,7 @@ TerrainCanvas* terrainCanvasCreate()
     result->detail_scaling = 0.4;
     result->mask.mode = INTEGRATIONMASK_MODE_CIRCLE;
     result->mask.smoothing = 0.1;
-
-    /* DEBUG */
-    /*heightmapImportFromPicture(&result->height_map, "output/height.png");*/
-        
+    
     return result;
 }
 
@@ -40,7 +34,7 @@ void terrainCanvasDelete(TerrainCanvas* canvas)
 
 void terrainCanvasCopy(TerrainCanvas* source, TerrainCanvas* destination)
 {
-    destination->area = source->area;
+    geoareaCopy(&source->area, &destination->area);
     destination->offset_y = source->offset_y;
     destination->height_factor = source->height_factor;
     heightmapCopy(&source->height_map, &destination->height_map);
@@ -56,6 +50,7 @@ void terrainCanvasValidate(TerrainCanvas* canvas)
     {
         canvas->detail_scaling = 0.00001;
     }
+    geoareaValidate(&canvas->area);
     heightmapValidate(&canvas->height_map);
     noiseValidate(canvas->detail_noise);
 }
@@ -76,11 +71,7 @@ LayerType terrainCanvasGetLayerType()
 
 void terrainCanvasSave(PackStream* stream, TerrainCanvas* canvas)
 {
-    packWriteInt(stream, &canvas->area.bounded);
-    packWriteDouble(stream, &canvas->area.location_x);
-    packWriteDouble(stream, &canvas->area.location_z);
-    packWriteDouble(stream, &canvas->area.size_x);
-    packWriteDouble(stream, &canvas->area.size_z);
+    geoareaSave(stream, &canvas->area);
     packWriteDouble(stream, &canvas->offset_y);
     heightmapSave(stream, &canvas->height_map);
     packWriteDouble(stream, &canvas->height_factor);
@@ -93,11 +84,7 @@ void terrainCanvasSave(PackStream* stream, TerrainCanvas* canvas)
 
 void terrainCanvasLoad(PackStream* stream, TerrainCanvas* canvas)
 {
-    packReadInt(stream, &canvas->area.bounded);
-    packReadDouble(stream, &canvas->area.location_x);
-    packReadDouble(stream, &canvas->area.location_z);
-    packReadDouble(stream, &canvas->area.size_x);
-    packReadDouble(stream, &canvas->area.size_z);
+    geoareaLoad(stream, &canvas->area);
     packReadDouble(stream, &canvas->offset_y);
     heightmapLoad(stream, &canvas->height_map);
     packReadDouble(stream, &canvas->height_factor);
@@ -116,8 +103,16 @@ void terrainCanvasGetLimits(TerrainCanvas* canvas, double* ymin, double* ymax)
     *ymax += noise_max;
 }
 
-void terrainCanvasRevertToTerrain(TerrainCanvas* canvas, TerrainDefinition* terrain, int only_masked)
+void terrainCanvasRevertToTerrain(TerrainCanvas* canvas)
 {
+    TerrainDefinition terrain;
+    
+    terrain = terrainCreateDefinition();
+    sceneryGetTerrain(&terrain);
+    
+    heightmapRevertToTerrain(&canvas->height_map, &terrain, &canvas->area);
+    
+    terrainDeleteDefinition(&terrain);
 }
 
 Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 location)

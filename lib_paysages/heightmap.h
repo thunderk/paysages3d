@@ -5,6 +5,8 @@
 
 #include "pack.h"
 #include "noise.h"
+#include "geoarea.h"
+#include "terrain.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,6 +42,7 @@ double heightmapGetValue(HeightMap* heightmap, double x, double z);
 
 void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resolution_z);
 void heightmapImportFromPicture(HeightMap* heightmap, const char* picturepath);
+void heightmapRevertToTerrain(HeightMap* heightmap, TerrainDefinition* terrain, GeoArea* area);
 
 void heightmapBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double value);
 void heightmapBrushSmooth(HeightMap* heightmap, HeightMapBrush* brush, double value);

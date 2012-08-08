@@ -45,9 +45,10 @@ public:
     HeightMap* _value;
 };
 
-InputHeightMap::InputHeightMap(QWidget* form, QString label, HeightMap* value) : BaseInput(form, label)
+InputHeightMap::InputHeightMap(QWidget* form, QString label, HeightMap* value, TerrainCanvas* canvas) : BaseInput(form, label)
 {
     _value = value;
+    _canvas = canvas;
     
     _preview = new SmallPreviewHeightMap(form, value);
     _preview->setMinimumSize(100, 100);
@@ -77,7 +78,7 @@ void InputHeightMap::revert()
 
 void InputHeightMap::editHeightMap()
 {
-    if (DialogHeightMap::editHeightMap(_control, _value))
+    if (DialogHeightMap::editHeightMap(_control, _value, _canvas))
     {
         applyValue();
     }

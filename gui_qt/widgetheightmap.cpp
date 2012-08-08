@@ -5,8 +5,6 @@
 #include <math.h>
 #include <GL/glu.h>
 #include "tools.h"
-#include "../lib_paysages/terrain.h"
-#include "../lib_paysages/scenery.h"
 
 WidgetHeightMap::WidgetHeightMap(QWidget *parent, HeightMap* heightmap):
     QGLWidget(parent)
@@ -18,7 +16,7 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, HeightMap* heightmap):
     startTimer(100);
 
     _heightmap = heightmap;
-    _vertexes = new _VertexInfo[heightmap->resolution_x * heightmap->resolution_z];
+    _vertices = new _VertexInfo[heightmap->resolution_x * heightmap->resolution_z];
     
     _dirty = true;
     
@@ -47,7 +45,7 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, HeightMap* heightmap):
 WidgetHeightMap::~WidgetHeightMap()
 {
     noiseDeleteGenerator(_brush_noise);
-    delete[] _vertexes;
+    delete[] _vertices;
 }
 
 void WidgetHeightMap::setHorizontalViewAngle(double angle_h)
@@ -98,28 +96,6 @@ void WidgetHeightMap::revert()
 {
     _dirty = true;
     updateGL();
-}
-
-void WidgetHeightMap::resetToTerrain()
-{
-    TerrainDefinition terrain;
-    
-    terrain = terrainCreateDefinition();
-    sceneryGetTerrain(&terrain);
-    
-    // TODO Apply geoarea
-    int rx = _heightmap->resolution_x;
-    int rz = _heightmap->resolution_z;
-    for (int x = 0; x < rx; x++)
-    {
-        for (int z = 0; z < rz; z++)
-        {
-            _heightmap->data[z * rx + x] = terrainGetHeight(&terrain, 80.0 * (double)x / (double)(rx - 1) - 40.0, 80.0 * (double)z / (double)(rz - 1) - 40.0);
-        }
-    }
-
-    terrainDeleteDefinition(&terrain);
-    revert();
 }
 
 void WidgetHeightMap::mousePressEvent(QMouseEvent* event)
@@ -312,7 +288,7 @@ void WidgetHeightMap::paintGL()
         glBegin(GL_QUAD_STRIP);
         for (int z = 0; z < rz; z++)
         {
-            _VertexInfo* vertex = _vertexes + z * rx + x;
+            _VertexInfo* vertex = _vertices + z * rx + x;
             double diff_x, diff_z, diff;
             
             diff_x = (vertex + 1)->point.x - _brush_x;
@@ -371,13 +347,17 @@ void WidgetHeightMap::updateVertexInfo()
 {
     int rx = _heightmap->resolution_x;
     int rz = _heightmap->resolution_z;
+
+    _VertexInfo* old_vertices = _vertices;
+    _vertices = new _VertexInfo[rx * rz];
+    delete[] old_vertices;
     
     // Update positions
     for (int x = 0; x < rx; x++)
     {
         for (int z = 0; z < rz; z++)
         {
-            _VertexInfo* vertex = _vertexes + z * rx + x;
+            _VertexInfo* vertex = _vertices + z * rx + x;
             
             vertex->point.x = 80.0 * (double)x / (double)(rx - 1) - 40.0;
             vertex->point.y = _heightmap->data[z * rx + x];
@@ -390,7 +370,7 @@ void WidgetHeightMap::updateVertexInfo()
     {
         for (int z = 0; z < rz; z++)
         {
-            _VertexInfo* vertex = _vertexes + z * rx + x;
+            _VertexInfo* vertex = _vertices + z * rx + x;
             
             if (x == rx - 1)
             {

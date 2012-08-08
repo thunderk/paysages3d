@@ -6,11 +6,14 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QSlider>
+#include <QFileDialog>
 #include <math.h>
+#include "../lib_paysages/terrain.h"
+#include "../lib_paysages/scenery.h"
 #include "widgetheightmap.h"
 
 /**************** Dialog form ****************/
-DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap) : DialogWithPreview(parent)
+DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap, TerrainCanvas* canvas) : DialogWithPreview(parent)
 {
     QWidget* mainarea;
     QWidget* buttons;
@@ -23,6 +26,7 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap) : Dialog
     QPushButton* button;
     QComboBox* combobox;
     
+    _canvas = canvas;
     _value_original = heightmap;
     _value_modified = heightmapCreate();
     heightmapCopy(_value_original, &_value_modified);
@@ -62,8 +66,15 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap) : Dialog
     viewer_layout->addWidget(slider, 0, 1);
     
     // Panel layout
-    button = new QPushButton(tr("Reset to terrain height"), panel);
-    connect(button, SIGNAL(clicked()), _3dview, SLOT(resetToTerrain()));
+    if (canvas)
+    {
+        button = new QPushButton(tr("Reset to terrain height"), panel);
+        connect(button, SIGNAL(clicked()), this, SLOT(resetToTerrain()));
+        panel->layout()->addWidget(button);
+    }
+
+    button = new QPushButton(tr("Load from picture file"), panel);
+    connect(button, SIGNAL(clicked()), this, SLOT(loadFromFile()));
     panel->layout()->addWidget(button);
     
     combobox = new QComboBox(panel);
@@ -115,11 +126,11 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap) : Dialog
     setWindowTitle(tr("Paysages 3D - Height map painting"));
 }
 
-bool DialogHeightMap::editHeightMap(QWidget* parent, HeightMap* heightmap)
+bool DialogHeightMap::editHeightMap(QWidget* parent, HeightMap* heightmap, TerrainCanvas* canvas)
 {
     int result;
 
-    DialogHeightMap* dialog = new DialogHeightMap(parent, heightmap);
+    DialogHeightMap* dialog = new DialogHeightMap(parent, heightmap, canvas);
     result = dialog->exec();
 
     delete dialog;
@@ -167,4 +178,31 @@ void DialogHeightMap::brushSmoothingChanged(int value)
 void DialogHeightMap::brushStrengthChanged(int value)
 {
     _3dview->setBrushStrength((double)value / 2000.0);
+}
+
+void DialogHeightMap::loadFromFile()
+{
+    QString filepath = QFileDialog::getOpenFileName(this, tr("Paysages 3D - Choose a picture to load"), QString(), tr("Images (*.jpg *.jpeg *.bmp *.png)"));
+    if (!filepath.isNull())
+    {
+        heightmapImportFromPicture(&_value_modified, (char*) filepath.toStdString().c_str());
+        _3dview->revert();
+    }
+}
+
+void DialogHeightMap::resetToTerrain()
+{
+    if (_canvas)
+    {
+        TerrainDefinition terrain;
+
+        terrain = terrainCreateDefinition();
+        sceneryGetTerrain(&terrain);
+
+        heightmapRevertToTerrain(&_value_modified, &terrain, &_canvas->area);
+
+        terrainDeleteDefinition(&terrain);
+        
+        _3dview->revert();
+    }
 }

@@ -8,19 +8,11 @@
 #include "terrain.h"
 #include "layers.h"
 #include "heightmap.h"
+#include "geoarea.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef struct
-{
-    int bounded;
-    double location_x;
-    double location_z;
-    double size_x;
-    double size_z;
-} GeoArea;
 
 typedef struct
 {
@@ -53,7 +45,7 @@ void terrainCanvasSave(PackStream* stream, TerrainCanvas* canvas);
 void terrainCanvasLoad(PackStream* stream, TerrainCanvas* canvas);
 
 void terrainCanvasGetLimits(TerrainCanvas* canvas, double* ymin, double* ymax);
-void terrainCanvasRevertToTerrain(TerrainCanvas* canvas, TerrainDefinition* terrain, int only_masked);
+void terrainCanvasRevertToTerrain(TerrainCanvas* canvas);
 Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 location);
     
 #ifdef __cplusplus

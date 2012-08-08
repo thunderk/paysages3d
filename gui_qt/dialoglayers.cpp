@@ -56,7 +56,7 @@ bool DialogLayers::editLayers(QWidget* parent, Layers* layers, QString title, Fo
     return result != 0;
 }
 
-void DialogLayers::closeEvent(QCloseEvent* e)
+void DialogLayers::closeEvent(QCloseEvent*)
 {
     reject();
 }

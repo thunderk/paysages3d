@@ -1,12 +1,12 @@
 #include "heightmap.h"
-#include "tools.h"
-#include "system.h"
-#include "noise.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <assert.h>
+#include "tools.h"
+#include "system.h"
+#include "noise.h"
 
 HeightMap heightmapCreate()
 {
@@ -34,6 +34,7 @@ void heightmapCopy(HeightMap* source, HeightMap* destination)
 
 void heightmapValidate(HeightMap* heightmap)
 {
+    UNUSED(heightmap);
 }
 
 void heightmapSave(PackStream* stream, HeightMap* heightmap)
@@ -67,25 +68,6 @@ static void _loadFromFilePixel(HeightMap* heightmap, int x, int y, Color col)
     assert(y >= 0 && y < heightmap->resolution_z);
     
     heightmap->data[y * heightmap->resolution_x + x] = (col.r + col.g + col.b) / 3.0;
-}
-
-void heightmapImportFromPicture(HeightMap* heightmap, const char* picturepath)
-{
-    systemLoadPictureFile(picturepath, (PictureCallbackLoadStarted)heightmapChangeResolution, (PictureCallbackLoadPixel)_loadFromFilePixel, heightmap);
-}
-
-void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resolution_z)
-{
-    int i;
-    
-    heightmap->resolution_x = resolution_x;
-    heightmap->resolution_z = resolution_z;
-    heightmap->data = realloc(heightmap->data, sizeof(double) * heightmap->resolution_x * heightmap->resolution_z);
-    
-    for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
-    {
-        heightmap->data[i] = 0.0;
-    }
 }
 
 void heightmapGetLimits(HeightMap* heightmap, double* ymin, double* ymax)
@@ -161,6 +143,44 @@ double heightmapGetValue(HeightMap* heightmap, double x, double z)
     return toolsBicubicInterpolate(stencil, x * xmax - (double)xlow, z * zmax - (double)zlow);
 }
 
+
+void heightmapImportFromPicture(HeightMap* heightmap, const char* picturepath)
+{
+    systemLoadPictureFile(picturepath, (PictureCallbackLoadStarted)heightmapChangeResolution, (PictureCallbackLoadPixel)_loadFromFilePixel, heightmap);
+}
+
+void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resolution_z)
+{
+    int i;
+    
+    heightmap->resolution_x = resolution_x;
+    heightmap->resolution_z = resolution_z;
+    heightmap->data = realloc(heightmap->data, sizeof(double) * heightmap->resolution_x * heightmap->resolution_z);
+    
+    for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
+    {
+        heightmap->data[i] = 0.0;
+    }
+}
+
+void heightmapRevertToTerrain(HeightMap* heightmap, TerrainDefinition* terrain, GeoArea* area)
+{
+    int rx, rz;
+    int x, z;
+    
+    rx = heightmap->resolution_x;
+    rz = heightmap->resolution_z;
+    for (x = 0; x < rx; x++)
+    {
+        for (z = 0; z < rz; z++)
+        {
+            /* FIXME Apply geoarea */
+            heightmap->data[z * rx + x] = terrainGetHeight(terrain, 80.0 * (double)x / (double)(rx - 1) - 40.0, 80.0 * (double)z / (double)(rz - 1) - 40.0);
+        }
+    }
+}
+
+
 static inline void _getBrushBoundaries(HeightMapBrush* brush, int rx, int rz, int* x1, int* x2, int* z1, int* z2)
 {
     double cx = brush->relative_x * rx;
@@ -211,10 +231,9 @@ typedef double (*BrushCallback)(HeightMap* heightmap, HeightMapBrush* brush, dou
 static inline void _applyBrush(HeightMap* heightmap, HeightMapBrush* brush, double force, void* data, BrushCallback callback)
 {
     int x, x1, x2, z, z1, z2;
-    double dx, dz, distance, influence, brush_size;
+    double dx, dz, distance, influence;
     
     _getBrushBoundaries(brush, heightmap->resolution_x - 1, heightmap->resolution_z - 1, &x1, &x2, &z1, &z2);
-    brush_size = brush->hard_radius + brush->smoothed_size;
     
     for (x = x1; x <= x2; x++)
     {

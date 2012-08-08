@@ -7,6 +7,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+    
+#define UNUSED(_x_) ((void)(_x_))
 
 double toolsRandom();
 double toolsBicubicInterpolate(double stencil[16], double x, double y);
