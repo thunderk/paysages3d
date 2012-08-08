@@ -47,6 +47,7 @@ void terrainCanvasLoad(PackStream* stream, TerrainCanvas* canvas);
 void terrainCanvasGetLimits(TerrainCanvas* canvas, double* ymin, double* ymax);
 void terrainCanvasRevertToTerrain(TerrainCanvas* canvas);
 Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 location);
+double terrainCanvasGetMaskValue(TerrainCanvas* canvas, double local_x, double local_z);
     
 #ifdef __cplusplus
 }

@@ -126,8 +126,7 @@ Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 location)
         double height, distance;
         
         /* Get height map displacement */
-        inside_x = (location.x - canvas->area.location_x) / canvas->area.size_x;
-        inside_z = (location.z - canvas->area.location_z) / canvas->area.size_z;
+        geoareaToLocal(&canvas->area, location.x, location.z, &inside_x, &inside_z);
         height = heightmapGetValue(&canvas->height_map, inside_x, inside_z);
         
         /* Apply factor */
@@ -137,28 +136,41 @@ Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 location)
         height += noiseGet2DTotal(canvas->detail_noise, location.x / canvas->detail_scaling, location.z / canvas->detail_scaling) * canvas->detail_height_factor;
         
         /* Apply integration mask */
-        inside_x = (inside_x - 0.5) * 2.0;
-        inside_z = (inside_z - 0.5) * 2.0;
-        if (canvas->mask.mode == INTEGRATIONMASK_MODE_SQUARE)
-        {
-            inside_x = fabs(inside_x);
-            inside_z = fabs(inside_z);
-            distance = inside_x > inside_z ? inside_x : inside_z;
-        }
-        else
-        {
-            distance = sqrt(inside_x * inside_x + inside_z * inside_z);
-        }
-        if (distance <= 1.0 - canvas->mask.smoothing)
-        {
-            location.y = height;
-        }
-        else if (distance <= 1.0)
-        {
-            double influence = (1.0 - distance) / canvas->mask.smoothing;
-            location.y = influence * height + (1.0 - influence) * location.y;
-        }
+        double influence = terrainCanvasGetMaskValue(canvas, inside_x, inside_z);
+        location.y = influence * height + (1.0 - influence) * location.y;
         
     }
     return location;
+}
+
+double terrainCanvasGetMaskValue(TerrainCanvas* canvas, double local_x, double local_z)
+{
+    double distance;
+    
+    local_x = (local_x - 0.5) * 2.0;
+    local_z = (local_z - 0.5) * 2.0;
+    
+    if (canvas->mask.mode == INTEGRATIONMASK_MODE_SQUARE)
+    {
+        local_x = fabs(local_x);
+        local_z = fabs(local_z);
+        distance = local_x > local_z ? local_x : local_z;
+    }
+    else
+    {
+        distance = sqrt(local_x * local_x + local_z * local_z);
+    }
+    
+    if (distance <= 1.0 - canvas->mask.smoothing)
+    {
+        return 1.0;
+    }
+    else if (distance <= 1.0)
+    {
+        return (1.0 - distance) / canvas->mask.smoothing;
+    }
+    else
+    {
+        return 0.0;
+    }
 }

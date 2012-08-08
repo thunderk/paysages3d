@@ -11,8 +11,8 @@ public:
         
         //addOsd(QString("geolocation"));
         
-        configScaling(0.5, 200.0, 3.0, 50.0);
-        configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
+        configScaling(1.0, 1.0, 1.0, 1.0);
+        //configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
     
     ~PreviewTerrainCanvasHeight()
@@ -22,18 +22,37 @@ public:
 protected:
     QColor getColor(double x, double y)
     {
+        Color col, mask;
         double height;
 
-        height = 0.0; // TODO
-        return QColor((int)(255.0 * height), (int)(255.0 * height), (int)(255.0 * height));
+        if (_max - _min < 0.000001)
+        {
+            return Qt::black;
+        }
+        else
+        {
+            height = heightmapGetValue(&_preview_canvas->height_map, x + 0.5, y + 0.5);
+            col.r = col.g = col.b = (height - _min) / (_max - _min);
+            col.a = 1.0;
+            
+            mask.r = 0.3;
+            mask.g = 0.0;
+            mask.b = 0.0;
+            mask.a = 1.0 - terrainCanvasGetMaskValue(_preview_canvas, x + 0.5, y + 0.5);
+            colorMask(&col, &mask);
+            
+            return colorToQColor(col);
+        }
     }
     void updateData()
     {
         terrainCanvasCopy(_base_canvas, _preview_canvas);
+        heightmapGetLimits(&_preview_canvas->height_map, &_min, &_max);
     }
 private:
     TerrainCanvas* _base_canvas;
     TerrainCanvas* _preview_canvas;
+    double _max, _min;
 };
 
 /**************** Form ****************/
