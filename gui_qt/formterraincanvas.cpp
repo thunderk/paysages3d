@@ -72,3 +72,8 @@ void FormTerrainCanvas::layerApply(void* layer_definition)
 {
     terrainCanvasCopy(_definition, (TerrainCanvas*)layer_definition);
 }
+
+void FormTerrainCanvas::afterLayerAdded(void* layer_definition)
+{
+    terrainCanvasRevertToTerrain((TerrainCanvas*)layer_definition);
+}

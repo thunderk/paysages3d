@@ -241,27 +241,27 @@ void DialogHeightMap::changeResolution()
     result = QInputDialog::getItem(this, tr("Paysages 3D - Change heightmap resolution"), tr("Choose the new heightmap resolution. Beware that lowering the resolution may imply a loss of accuracy."), items, current, false);
     if (!result.isEmpty())
     {
-        int new_res_x, new_res_y;
+        int new_res_x, new_res_z;
         if (result == QString("64 x 64"))
         {
-            new_res_x = new_res_y = 64;
+            new_res_x = new_res_z = 64;
         }
         else if (result == QString("256 x 256"))
         {
-            new_res_x = new_res_y = 256;
+            new_res_x = new_res_z = 256;
         }
         else if (result == QString("512 x 512"))
         {
-            new_res_x = new_res_y = 512;
+            new_res_x = new_res_z = 512;
         }
         else
         {
-            new_res_x = new_res_y = 128;
+            new_res_x = new_res_z = 128;
         }
         
-        if (new_res_x != _value_modified.resolution_x or new_res_y != _value_modified.resolution_z)
+        if (new_res_x != _value_modified.resolution_x or new_res_z != _value_modified.resolution_z)
         {
-            heightmapChangeResolution(&_value_modified, 64, 64);
+            heightmapChangeResolution(&_value_modified, new_res_x, new_res_z);
             _3dview->revert();
             updateResolutionLabel();
         }

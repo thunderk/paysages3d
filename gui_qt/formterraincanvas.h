@@ -17,6 +17,7 @@ public:
 protected:
     virtual void layerGetCopy(void* layer_definition);
     virtual void layerApply(void* layer_definition);
+    virtual void afterLayerAdded(void* layer_definition);
 
 private:
     TerrainCanvas* _definition;

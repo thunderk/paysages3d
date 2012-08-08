@@ -12,7 +12,6 @@ Technology Preview 2 :
    => Add areas marking.
 - Improve terrain canvas editor.
    => Add GeoArea editor.
-   => Apply GeoArea to revertToTerrain.
    => Resample map on changing resolution.
    => Map loading should not choose arbitrary resolution.
 - Improve textures (current model is greatly incorrect).

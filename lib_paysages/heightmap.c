@@ -167,6 +167,7 @@ void heightmapRevertToTerrain(HeightMap* heightmap, TerrainDefinition* terrain, 
 {
     int rx, rz;
     int x, z;
+    double dx, dz;
     
     rx = heightmap->resolution_x;
     rz = heightmap->resolution_z;
@@ -174,8 +175,10 @@ void heightmapRevertToTerrain(HeightMap* heightmap, TerrainDefinition* terrain, 
     {
         for (z = 0; z < rz; z++)
         {
-            /* FIXME Apply geoarea */
-            heightmap->data[z * rx + x] = terrainGetHeight(terrain, 80.0 * (double)x / (double)(rx - 1) - 40.0, 80.0 * (double)z / (double)(rz - 1) - 40.0);
+            dx = (double)x / (double)(rx - 1);
+            dz = (double)z / (double)(rz - 1);
+            geoareaFromLocal(area, dx, dz, &dx, &dz);
+            heightmap->data[z * rx + x] = terrainGetHeight(terrain, dx, dz);
         }
     }
 }

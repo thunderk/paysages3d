@@ -51,3 +51,15 @@ void geoareaLoad(PackStream* stream, GeoArea* geoarea)
     packReadDouble(stream, &geoarea->size_x);
     packReadDouble(stream, &geoarea->size_z);
 }
+
+void geoareaToLocal(GeoArea* geoarea, double absolute_x, double absolute_z, double* local_x, double* local_z)
+{
+    *local_x = (absolute_x - geoarea->location_x) / geoarea->size_x;
+    *local_z = (absolute_z - geoarea->location_z) / geoarea->size_z;
+}
+
+void geoareaFromLocal(GeoArea* geoarea, double local_x, double local_z, double* absolute_x, double* absolute_z)
+{
+    *absolute_x = geoarea->location_x + local_x * geoarea->size_x;
+    *absolute_z = geoarea->location_z + local_z * geoarea->size_z;
+}

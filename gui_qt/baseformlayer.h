@@ -21,6 +21,7 @@ public slots:
 protected:
     virtual void layerGetCopy(void* layer_definition) = 0;
     virtual void layerApply(void* layer_definition) = 0;
+    virtual void afterLayerAdded(void* layer_definition);
 
 private:
     virtual QStringList getLayers();

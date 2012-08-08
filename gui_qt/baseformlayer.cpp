@@ -28,6 +28,10 @@ void BaseFormLayer::applyConfig()
     BaseForm::applyConfig();
 }
 
+void BaseFormLayer::afterLayerAdded(void*)
+{
+}
+
 void BaseFormLayer::configChangeEvent()
 {
     layerApply(layersGetLayer(_layers_modified, currentLayer()));
@@ -57,7 +61,10 @@ void BaseFormLayer::layerAddedEvent()
         if (layer >= 0)
         {
             layersSetName(_layers_modified, layer, layer_name.toUtf8().data());
+            
             BaseForm::layerAddedEvent();
+            
+            afterLayerAdded(layersGetLayer(_layers_modified, layer));
         }
     }
 }
