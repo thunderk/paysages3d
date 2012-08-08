@@ -7,6 +7,7 @@
 #include <QComboBox>
 #include <QSlider>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <math.h>
 #include "../lib_paysages/terrain.h"
 #include "../lib_paysages/scenery.h"
@@ -76,6 +77,14 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap, TerrainC
     button = new QPushButton(tr("Load from picture file"), panel);
     connect(button, SIGNAL(clicked()), this, SLOT(loadFromFile()));
     panel->layout()->addWidget(button);
+
+    button = new QPushButton(tr("Change resolution"), panel);
+    connect(button, SIGNAL(clicked()), this, SLOT(changeResolution()));
+    panel->layout()->addWidget(button);
+    
+    _resolution_label = new QLabel("", panel);
+    panel->layout()->addWidget(_resolution_label);
+    updateResolutionLabel();
     
     combobox = new QComboBox(panel);
     combobox->addItem(tr("Raise / lower"));
@@ -148,6 +157,7 @@ void DialogHeightMap::revert()
 {
     heightmapCopy(_value_original, &_value_modified);
     _3dview->revert();
+    updateResolutionLabel();
 }
 
 void DialogHeightMap::angleHChanged(int value)
@@ -187,6 +197,7 @@ void DialogHeightMap::loadFromFile()
     {
         heightmapImportFromPicture(&_value_modified, (char*) filepath.toStdString().c_str());
         _3dview->revert();
+        updateResolutionLabel();
     }
 }
 
@@ -205,4 +216,59 @@ void DialogHeightMap::resetToTerrain()
         
         _3dview->revert();
     }
+}
+
+void DialogHeightMap::changeResolution()
+{
+    QString result;
+    QStringList items;
+    int current;
+    
+    items << QString("64 x 64") << QString("128 x 128") << QString("256 x 256") << QString("512 x 512");
+    current = 1;
+    if (_value_modified.resolution_x == 64 && _value_modified.resolution_z == 64)
+    {
+        current = 0;
+    }
+    else if (_value_modified.resolution_x == 256 && _value_modified.resolution_z == 256)
+    {
+        current = 2;
+    }
+    else if (_value_modified.resolution_x == 512 && _value_modified.resolution_z == 512)
+    {
+        current = 3;
+    }
+    result = QInputDialog::getItem(this, tr("Paysages 3D - Change heightmap resolution"), tr("Choose the new heightmap resolution. Beware that lowering the resolution may imply a loss of accuracy."), items, current, false);
+    if (!result.isEmpty())
+    {
+        int new_res_x, new_res_y;
+        if (result == QString("64 x 64"))
+        {
+            new_res_x = new_res_y = 64;
+        }
+        else if (result == QString("256 x 256"))
+        {
+            new_res_x = new_res_y = 256;
+        }
+        else if (result == QString("512 x 512"))
+        {
+            new_res_x = new_res_y = 512;
+        }
+        else
+        {
+            new_res_x = new_res_y = 128;
+        }
+        
+        if (new_res_x != _value_modified.resolution_x or new_res_y != _value_modified.resolution_z)
+        {
+            heightmapChangeResolution(&_value_modified, 64, 64);
+            _3dview->revert();
+            updateResolutionLabel();
+        }
+    }
+}
+
+void DialogHeightMap::updateResolutionLabel()
+{
+    _resolution_label->setText(tr("Map resolution : %1 x %2").arg(_value_modified.resolution_x).arg(_value_modified.resolution_z));
 }

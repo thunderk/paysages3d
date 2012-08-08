@@ -10,7 +10,11 @@ Technology Preview 2 :
 - Improve previews.
    => Add user markers on OSD.
    => Add areas marking.
-- Start a terrain editor (see mockup).
+- Improve terrain canvas editor.
+   => Add GeoArea editor.
+   => Apply GeoArea to revertToTerrain.
+   => Resample map on changing resolution.
+   => Map loading should not choose arbitrary resolution.
 - Improve textures (current model is greatly incorrect).
    => Separate models (basic texture and covering texture).
    => Covering texture height should inpact terrain height.
