@@ -1,12 +1,13 @@
 #include "basepreview.h"
 
-#include <math.h>
 #include <QVector>
 #include <QPainter>
 #include <QTimer>
 #include <QWheelEvent>
 #include <QLabel>
 #include <QMenu>
+#include <assert.h>
+#include <math.h>
 #include "tools.h"
 #include "../lib_paysages/system.h"
 
@@ -24,12 +25,19 @@ public:
         _ysize = ysize;
         
         _need_render = true;
+        _rendering = false;
         _alive = true;
+        _priority = xstart;
     }
     
     inline BasePreview* preview()
     {
         return _preview;
+    }
+    
+    inline int priority()
+    {
+        return _priority;
     }
     
     inline bool isOnFront()
@@ -49,6 +57,7 @@ public:
     
     void update()
     {
+        _priority = _xstart;
         _need_render = true;
     }
 
@@ -57,10 +66,20 @@ public:
         bool changed = false;
         int revision;
         
+        if (_rendering)
+        {
+            return false;
+        }
+        
+        _rendering = true;
+        _alive = true;
+        
         if (_need_render)
         {
             if (!isOnFront())
             {
+                _priority = -1;
+                _rendering = false;
                 return false;
             }
             
@@ -75,7 +94,10 @@ public:
                     QRgb col = pixbuf.pixel(x, y);
                     if (!_alive)
                     {
-                        return false;
+                        _need_render = true;
+                        _preview->rollbackChunkTransaction();
+                        _rendering = false;
+                        return true;
                     }
                     if (qAlpha(col) < 255)
                     {
@@ -91,7 +113,7 @@ public:
             
             if (changed)
             {
-                _preview->commitChunkTransaction(&pixbuf, _xstart, _ystart, _xsize, _ysize, revision);
+                _need_render = not _preview->commitChunkTransaction(&pixbuf, _xstart, _ystart, _xsize, _ysize, revision);
             }
             else
             {
@@ -99,12 +121,20 @@ public:
             }
         }
         
-        return changed;
+        if (not _need_render)
+        {
+            _priority = -1;
+        }
+        
+        _rendering = false;
+        return _need_render;
     }
 private:
     BasePreview* _preview;
+    int _priority;
     bool _alive;
     bool _need_render;
+    bool _rendering;
     int _xstart;
     int _ystart;
     int _xsize;
@@ -139,7 +169,6 @@ void PreviewDrawingThread::run()
 PreviewDrawingManager::PreviewDrawingManager()
 {
     _thread_count = systemGetCoreCount();
-    _lastRendered = NULL;
 }
 
 void PreviewDrawingManager::startThreads()
@@ -154,6 +183,7 @@ void PreviewDrawingManager::startThreads()
 
 void PreviewDrawingManager::stopThreads()
 {
+    logDebug(QString("[Previews] Stopping all render threads"));
     for (int i = 0; i < _threads.size(); i++)
     {
         _threads.at(i)->askStop();
@@ -211,7 +241,10 @@ void PreviewDrawingManager::suspendChunks(BasePreview* preview)
             i--;
         }
     }
-    // TODO Interrupt currently processing chunks
+    for (int i = 0; i < _chunks.size(); i++)
+    {
+        _chunks.at(i)->interrupt();
+    }
     _lock.unlock();
 }
 
@@ -236,6 +269,7 @@ void PreviewDrawingManager::updateChunks(BasePreview* preview)
 
 void PreviewDrawingManager::updateAllChunks()
 {
+    logDebug(QString("[Previews] Reviving all %1 preview chunks").arg(_chunks.size()));
     for (int i = 0; i < _chunks.size(); i++)
     {
         PreviewChunk* chunk;
@@ -253,6 +287,12 @@ void PreviewDrawingManager::updateAllChunks()
     }
 }
 
+static bool _cmpChunkPriority(const PreviewChunk* chunk1, const PreviewChunk* chunk2)
+{
+    return ((PreviewChunk*)chunk1)->priority() < ((PreviewChunk*)chunk2)->priority();
+}
+
+
 void PreviewDrawingManager::performOneThreadJob()
 {
     PreviewChunk* chunk;
@@ -261,25 +301,22 @@ void PreviewDrawingManager::performOneThreadJob()
     _lock.lock();
     if (!_updateQueue.isEmpty())
     {
-        for (int i = _updateQueue.size(); i > 0; i--)
-        {
-            chunk = _updateQueue.takeFirst();
-            if (chunk && i > 1 && chunk->preview() == _lastRendered)
-            {
-                _updateQueue.append(chunk);
-            }
-            else
-            {
-                break;
-            }
-        }
+        qSort(_updateQueue.begin(), _updateQueue.end(), _cmpChunkPriority);
+        chunk = _updateQueue.takeFirst();
     }
     _lock.unlock();
 
     if (chunk)
     {
-        _lastRendered = chunk->preview();
-        chunk->render();
+        if (chunk->render())
+        {
+            _lock.lock();
+            if (!_updateQueue.contains(chunk))
+            {
+                _updateQueue.append(chunk);
+            }
+            _lock.unlock();
+        }
     }        
 }
 
@@ -383,7 +420,6 @@ void BasePreview::stopDrawers()
 
 void BasePreview::reviveAll()
 {
-    logDebug("[Previews] Reviving all previews");
     _drawing_manager->updateAllChunks();
 }
 

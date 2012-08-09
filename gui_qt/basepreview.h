@@ -166,7 +166,6 @@ private:
     QVector<PreviewDrawingThread*> _threads;
     QVector<PreviewChunk*> _chunks;
     QList<PreviewChunk*> _updateQueue;
-    BasePreview* _lastRendered;
     QMutex _lock;
 };
 

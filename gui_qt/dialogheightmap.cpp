@@ -238,7 +238,7 @@ void DialogHeightMap::changeResolution()
     {
         current = 3;
     }
-    result = QInputDialog::getItem(this, tr("Paysages 3D - Change heightmap resolution"), tr("Choose the new heightmap resolution. Beware that lowering the resolution may imply a loss of accuracy."), items, current, false);
+    result = QInputDialog::getItem(this, tr("Paysages 3D - Change heightmap resolution"), tr("Choose the new heightmap resolution.\nBeware that lowering the resolution may imply a loss of accuracy."), items, current, false);
     if (!result.isEmpty())
     {
         int new_res_x, new_res_z;
