@@ -30,6 +30,7 @@ Technology Preview 2 :
 
 Technology Preview 3 :
 - Restore render progress.
+- Store the terrain canvases in a tree to allow "multi-res" edition.
 - Implement High Dynamic Range.
 - Implement Sub Surface Scattering for water.
 - Use bicubic interpolation for antialiasing.

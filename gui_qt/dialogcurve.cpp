@@ -48,17 +48,20 @@ DialogCurve::DialogCurve(QWidget *parent, Curve* curve, double xmin, double xmax
     layout()->addWidget(buttons);
     buttons->setLayout(new QHBoxLayout());
     
-    _button_accept = new QPushButton(tr("Validate"), buttons);
-    buttons->layout()->addWidget(_button_accept);
-    QObject::connect(_button_accept, SIGNAL(clicked()), this, SLOT(accept()));
+    _button_cancel = new QPushButton(tr("Cancel"), buttons);
+    _button_cancel->setIcon(QIcon("images/cancel.png"));
+    buttons->layout()->addWidget(_button_cancel);
+    QObject::connect(_button_cancel, SIGNAL(clicked()), this, SLOT(reject()));
 
     _button_revert = new QPushButton(tr("Revert"), buttons);
+    _button_revert->setIcon(QIcon("images/revert.png"));
     buttons->layout()->addWidget(_button_revert);
     QObject::connect(_button_revert, SIGNAL(clicked()), this, SLOT(revert()));
 
-    _button_cancel = new QPushButton(tr("Cancel"), buttons);
-    buttons->layout()->addWidget(_button_cancel);
-    QObject::connect(_button_cancel, SIGNAL(clicked()), this, SLOT(reject()));
+    _button_accept = new QPushButton(tr("Validate"), buttons);
+    _button_accept->setIcon(QIcon("images/apply.png"));
+    buttons->layout()->addWidget(_button_accept);
+    QObject::connect(_button_accept, SIGNAL(clicked()), this, SLOT(accept()));
 
     setWindowTitle(tr("Paysages 3D - Curve editor"));
     resize(900, 600);

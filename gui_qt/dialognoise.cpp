@@ -161,17 +161,20 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     buttons->setLayout(new QHBoxLayout());
     form->layout()->addWidget(buttons);
 
-    button = new QPushButton(tr("Validate"), buttons);
+    button = new QPushButton(tr("Cancel"), buttons);
+    button->setIcon(QIcon("images/cancel.png"));
     buttons->layout()->addWidget(button);
-    QObject::connect(button, SIGNAL(clicked()), this, SLOT(accept()));
+    QObject::connect(button, SIGNAL(clicked()), this, SLOT(reject()));
 
-    button = new QPushButton(tr("Reset"), buttons);
+    button = new QPushButton(tr("Revert"), buttons);
+    button->setIcon(QIcon("images/revert.png"));
     buttons->layout()->addWidget(button);
     QObject::connect(button, SIGNAL(clicked()), this, SLOT(revert()));
 
-    button = new QPushButton(tr("Cancel"), buttons);
+    button = new QPushButton(tr("Validate"), buttons);
+    button->setIcon(QIcon("images/apply.png"));
     buttons->layout()->addWidget(button);
-    QObject::connect(button, SIGNAL(clicked()), this, SLOT(reject()));
+    QObject::connect(button, SIGNAL(clicked()), this, SLOT(accept()));
 
     setWindowTitle(tr("Paysages 3D - Noise editor"));
 

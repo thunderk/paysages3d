@@ -25,17 +25,20 @@ DialogLayers::DialogLayers(QWidget *parent, Layers* layers, QString title, FormL
     layout()->addWidget(buttons);
     layout()->setAlignment(buttons, Qt::AlignBottom);
 
-    button = new QPushButton(tr("Validate"), buttons);
+    button = new QPushButton(tr("Cancel"), buttons);
+    button->setIcon(QIcon("images/cancel.png"));
     buttons->layout()->addWidget(button);
-    QObject::connect(button, SIGNAL(clicked()), this, SLOT(accept()));
+    QObject::connect(button, SIGNAL(clicked()), this, SLOT(reject()));
 
     button = new QPushButton(tr("Reset"), buttons);
+    button->setIcon(QIcon("images/revert.png"));
     buttons->layout()->addWidget(button);
     QObject::connect(button, SIGNAL(clicked()), this, SLOT(revert()));
 
-    button = new QPushButton(tr("Cancel"), buttons);
+    button = new QPushButton(tr("Validate"), buttons);
+    button->setIcon(QIcon("images/apply.png"));
     buttons->layout()->addWidget(button);
-    QObject::connect(button, SIGNAL(clicked()), this, SLOT(reject()));
+    QObject::connect(button, SIGNAL(clicked()), this, SLOT(accept()));
 
     setWindowTitle(tr("Paysages 3D - ") + title);
 }

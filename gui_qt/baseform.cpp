@@ -112,12 +112,14 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
     control->layout()->addWidget(_buttons);
     control->layout()->setAlignment(_buttons, Qt::AlignBottom);
 
-    _button_apply = addButton(tr("Apply"));
-    _button_apply->setEnabled(false);
-    connect(_button_apply, SIGNAL(clicked()), this, SLOT(applyConfig()));
     _button_revert = addButton(tr("Revert"));
+    _button_revert->setIcon(QIcon("images/cancel.png"));
     _button_revert->setEnabled(false);
     connect(_button_revert, SIGNAL(clicked()), this, SLOT(revertConfig()));
+    _button_apply = addButton(tr("Apply"));
+    _button_apply->setIcon(QIcon("images/apply.png"));
+    _button_apply->setEnabled(false);
+    connect(_button_apply, SIGNAL(clicked()), this, SLOT(applyConfig()));
     
     _auto_update_previews = true;
 
