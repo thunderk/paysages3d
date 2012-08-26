@@ -38,7 +38,6 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, HeightMap* heightmap):
     _brush_smoothing = 0.5;
     _brush_strength = 1.0;
     _brush_noise = noiseCreateGenerator();
-    noiseGenerateBaseNoise(_brush_noise, 102400);
     noiseAddLevelsSimple(_brush_noise, 10, 1.0, 1.0);
 }
 

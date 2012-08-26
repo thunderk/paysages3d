@@ -222,7 +222,7 @@ FormWater::FormWater(QWidget *parent):
     addInputDouble(tr("Light-through distance"), &_definition.lighting_depth, 0.0, 20.0, 0.1, 1.0);
     addInputNoise(tr("Waves noise"), _definition.waves_noise);
     addInputDouble(tr("Waves height"), &_definition.waves_noise_height, 0.0, 0.1, 0.001, 0.01);
-    addInputDouble(tr("Waves scaling"), &_definition.waves_noise_scale, 0.01, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Waves scaling"), &_definition.waves_noise_scale, 0.03, 3.0, 0.03, 0.3);
 
     revertConfig();
 }

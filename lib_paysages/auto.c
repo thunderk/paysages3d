@@ -96,8 +96,7 @@ void autoGenRealisticLandscape(int seed)
     water.depth_color.a = 1.0;
     water.lighting_depth = 3.0;
     water.waves_noise_height = 0.005;
-    water.waves_noise_scale = 0.07;
-    noiseGenerateBaseNoise(water.waves_noise, 262144);
+    water.waves_noise_scale = 0.21;
     noiseClearLevels(water.waves_noise);
     noiseAddLevelsSimple(water.waves_noise, 2, 1.0, 1.0);
     noiseAddLevelsSimple(water.waves_noise, 3, 0.15, 0.1);
@@ -136,11 +135,10 @@ void autoGenRealisticLandscape(int seed)
 
     /* Terrain */
     terrain = terrainCreateDefinition();
-    noiseGenerateBaseNoise(terrain.height_noise, 1048576);
     noiseClearLevels(terrain.height_noise);
     noiseAddLevelsSimple(terrain.height_noise, 10, 1.0, 1.0);
     terrain.height_factor = 12.0 / noiseGetMaxValue(terrain.height_noise);
-    terrain.scaling = 20.0;
+    terrain.scaling = 60.0;
     terrain.shadow_smoothing = 0.03;
     scenerySetTerrain(&terrain);
     terrainDeleteDefinition(&terrain);
@@ -150,11 +148,10 @@ void autoGenRealisticLandscape(int seed)
     layer = layersAddLayer(textures.layers, NULL);
     layersSetName(textures.layers, layer, "Ground");
     texture = layersGetLayer(textures.layers, layer);
-    noiseGenerateBaseNoise(texture->bump_noise, 102400);
     noiseClearLevels(texture->bump_noise);
     noiseAddLevelsSimple(texture->bump_noise, 8, 1.0, 1.0);
     texture->bump_height = 0.01;
-    texture->bump_scaling = 0.015;
+    texture->bump_scaling = 0.045;
     texture->material.base.r = 0.6;
     texture->material.base.g = 0.55;
     texture->material.base.b = 0.57;
@@ -168,16 +165,15 @@ void autoGenRealisticLandscape(int seed)
     texture = layersGetLayer(textures.layers, layer);
     zoneAddHeightRangeQuick(texture->zone, 1.0, -6.0, -5.0, 3.0, 15.0);
     zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 0.05, 0.4);
-    noiseGenerateBaseNoise(texture->bump_noise, 102400);
     noiseClearLevels(texture->bump_noise);
     noiseAddLevelsSimple(texture->bump_noise, 5, 1.0, 0.4);
     noiseAddLevelsSimple(texture->bump_noise, 2, 0.03, 0.08);
     texture->bump_height = 0.002;
-    texture->bump_scaling = 0.01;
+    texture->bump_scaling = 0.03;
     texture->material.base.r = 0.12;
     texture->material.base.g = 0.19;
     texture->material.base.b = 0.035;
-    texture->material.reflection = 0.1;
+    texture->material.reflection = 0.03;
     texture->material.shininess = 2.0;
     texture->thickness = 0.02;
     texture->slope_range = 0.03;

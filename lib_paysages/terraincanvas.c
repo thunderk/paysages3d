@@ -15,7 +15,6 @@ TerrainCanvas* terrainCanvasCreate()
     heightmapChangeResolution(&result->height_map, 256, 256);
     result->height_factor = 1.0;
     result->detail_noise = noiseCreateGenerator();
-    noiseGenerateBaseNoise(result->detail_noise, 1048576);
     noiseAddLevelsSimple(result->detail_noise, 5, 1.0, 1.0);
     result->detail_height_factor = 0.2;
     result->detail_scaling = 0.4;

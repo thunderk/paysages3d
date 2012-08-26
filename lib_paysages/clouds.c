@@ -88,15 +88,13 @@ CloudsLayerDefinition* cloudsLayerCreateDefinition()
     result->transparencydepth = 1.5;
     result->lighttraversal = 7.0;
     result->minimumlight = 0.4;
-    result->shape_scaling = 3.5;
-    result->edge_scaling = 0.07;
+    result->shape_scaling = 10.0;
+    result->edge_scaling = 0.2;
     result->edge_length = 0.2;
     result->base_coverage = 0.35;
     result->shape_noise = noiseCreateGenerator();
-    noiseGenerateBaseNoise(result->shape_noise, 200000);
     noiseAddLevelsSimple(result->shape_noise, 5, 1.0, 1.0);
     result->edge_noise = noiseCreateGenerator();
-    noiseGenerateBaseNoise(result->edge_noise, 800000);
     noiseAddLevelsSimple(result->edge_noise, 8, 1.0, 1.0);
     
     result->_custom_coverage = _standardCoverageFunc;
@@ -359,7 +357,7 @@ static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, 
     }
 
     render_precision = 15.2 - 1.5 * (double)renderer->render_quality;
-    render_precision = render_precision * definition->shape_scaling / 50.0;
+    render_precision = render_precision * definition->shape_scaling / 150.0;
     if (render_precision > max_total_length / 10.0)
     {
         render_precision = max_total_length / 10.0;

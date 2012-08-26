@@ -1,4 +1,11 @@
 Technology Preview 2 :
+- Fully move layer management from BaseForm to BaseFormLayer.
+- Replace math.h methods by optimized ones (fastfloor, fastsin...).
+- Replace terrain canvas editor by full sculpting editor.
+   => Add a generation dialog, with fixed resolution.
+   => Store local terrain modifications in fully dynamic canvas.
+   => Add map preview with editor area.
+   => Allow camera move and zoom.
 - Finalize Preetham's model usage
    => Apply model to atmosphere (aerial perspective)
    => Find a proper model for night sky (maybe Shirley)
@@ -6,15 +13,12 @@ Technology Preview 2 :
 - Keep skydome lights in cache for a render.
 - Add buttons to restore "auto" default values in tabs and dialogs.
 - Add "hardness to light" and shadow control ("minimum lighting") to material.
+
+Technlogy Preview 3 :
 - Add logarithmic sliders for some float values.
 - Improve previews.
    => Add user markers on OSD.
    => Add areas marking.
-- Improve terrain canvas editor.
-   => Add GeoArea editor.
-   => Resample map on changing resolution.
-   => GeoAreas should not overlap.
-   => Map loading should not choose arbitrary resolution, choose the closer one and resample.
 - Improve textures (current model is greatly incorrect).
    => Separate models (basic texture and covering texture).
    => Covering texture height should inpact terrain height.
@@ -29,7 +33,7 @@ Technology Preview 2 :
 - Lock some previews together (eg: terrain height and colored preview).
 - Find a new licence.
 
-Technology Preview 3 :
+Technology Preview 4 :
 - Restore render progress.
 - Store the terrain canvases in a tree to allow "multi-res" edition.
 - Implement High Dynamic Range.

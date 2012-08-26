@@ -146,7 +146,7 @@ FormTextures::FormTextures(QWidget *parent):
 
     addInputNoise(tr("Surface noise"), _layer->bump_noise);
     addInputDouble(tr("Surface noise height"), &_layer->bump_height, 0.0, 0.1, 0.001, 0.01);
-    addInputDouble(tr("Surface noise scaling"), &_layer->bump_scaling, 0.001, 0.1, 0.001, 0.01);
+    addInputDouble(tr("Surface noise scaling"), &_layer->bump_scaling, 0.003, 0.3, 0.003, 0.03);
     addInputMaterial(tr("Material"), &_layer->material);
     addInputCurve(tr("Coverage by altitude"), _supp.height_curve, -20.0, 20.0, 0.0, 1.0, tr("Terrain altitude"), tr("Texture coverage"));
     addInputCurve(tr("Coverage by slope"), _supp.slope_curve, 0.0, 5.0, 0.0, 1.0, tr("Terrain slope"), tr("Texture coverage"));

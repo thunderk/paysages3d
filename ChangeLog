@@ -21,6 +21,7 @@ Scenery :
 Rendering :
   * New texture model (perpendicular displacement and thickness).
   * Added full scene antialiasing (FSAA).
+  * Replaced old noise algorithm with Simplex Noise (up to 4 times faster).
 
 GUI :
   * Improved curve rendering.

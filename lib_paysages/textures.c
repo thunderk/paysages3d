@@ -64,7 +64,6 @@ TextureLayerDefinition* texturesLayerCreateDefinition()
     
     result->zone = zoneCreate();
     result->bump_noise = noiseCreateGenerator();
-    noiseGenerateBaseNoise(result->bump_noise, 102400);
     noiseAddLevelsSimple(result->bump_noise, 8, 1.0, 1.0);
     result->bump_height = 0.1;
     result->bump_scaling = 0.1;
