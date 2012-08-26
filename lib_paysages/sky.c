@@ -10,8 +10,8 @@
 #include "lighting.h"
 #include "render.h"
 #include "tools.h"
-#include "preetham.h"
-#include "rayleigh.h"
+#include "skypreetham.h"
+#include "skyrayleigh.h"
 
 #define SPHERE_SIZE 1000.0
 
@@ -245,11 +245,11 @@ Color skyGetColor(SkyDefinition* definition, Renderer* renderer, Vector3 eye, Ve
 
     if (definition->model == SKY_MODEL_PREETHAM)
     {
-        sky_color = preethamGetSkyColor(eye, look, sun_position, definition->model_preetham.turbidity);
+        sky_color = skyPreethamGetColor(eye, look, sun_position, definition->model_preetham.turbidity);
     }
     else if (definition->model == SKY_MODEL_RAYLEIGH_MIE)
     {
-        sky_color = rayleighGetSkyColor(eye, look, sun_position);
+        sky_color = skyRayleighGetColor(eye, look, sun_position);
     }
     else
     {

@@ -1,4 +1,4 @@
-#include "rayleigh.h"
+#include "skyrayleigh.h"
 
 #include <math.h>
 
@@ -71,12 +71,12 @@ static Vector3 _computeIncidentLight(Ray r)
     return 20 * (sumR * phaseR * _betaR + sumM * phaseM * _betaM);
 }*/
 
-Color rayleighGetSkyColor(Vector3 viewer, Vector3 direction, Vector3 sun_direction)
+Color skyRayleighGetColor(Vector3 viewer, Vector3 direction, Vector3 sun_direction)
 {
     return COLOR_BLACK;
 }
 
-Color rayleighApplyToObject(Vector3 viewer, Vector3 object_location, Vector3 sun_direction, Color object_color)
+Color skyRayleighApplyToObject(Vector3 viewer, Vector3 object_location, Vector3 sun_direction, Color object_color)
 {
     return COLOR_BLACK;
 }

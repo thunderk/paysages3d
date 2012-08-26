@@ -10,8 +10,8 @@
 extern "C" {
 #endif
 
-Color rayleighGetSkyColor(Vector3 viewer, Vector3 direction, Vector3 sun_direction);
-Color rayleighApplyToObject(Vector3 viewer, Vector3 object_location, Vector3 sun_direction, Color object_color);
+Color skyRayleighGetColor(Vector3 viewer, Vector3 direction, Vector3 sun_direction);
+Color skyRayleighApplyToObject(Vector3 viewer, Vector3 object_location, Vector3 sun_direction, Color object_color);
 
 #ifdef __cplusplus
 }

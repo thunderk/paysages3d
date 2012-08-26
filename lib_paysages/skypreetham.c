@@ -1,4 +1,4 @@
-#include "preetham.h"
+#include "skypreetham.h"
 
 #include <math.h>
 
@@ -50,7 +50,7 @@ static inline void _directionToThetaPhi(Vector3 direction, double* theta, double
     *theta = M_PI_2 - asin(direction.y);
 }
 
-Color preethamGetSkyColor(Vector3 viewer, Vector3 direction, Vector3 sun_direction, double turbidity)
+Color skyPreethamGetColor(Vector3 viewer, Vector3 direction, Vector3 sun_direction, double turbidity)
 {
     double theta, phi;
     double thetaSun, phiSun;
@@ -130,7 +130,7 @@ Color preethamGetSkyColor(Vector3 viewer, Vector3 direction, Vector3 sun_directi
     return _xyYToRGB(x, y, Y);
 }
 
-Color preethamApplyToObject(Vector3 viewer, Vector3 object_location, Vector3 sun_direction, double turbidity, Color object_color)
+Color skyPreethamApplyToObject(Vector3 viewer, Vector3 object_location, Vector3 sun_direction, double turbidity, Color object_color)
 {
     /* TODO Aerial perspective */
     return object_color;

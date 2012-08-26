@@ -10,8 +10,8 @@
 extern "C" {
 #endif
 
-Color preethamGetSkyColor(Vector3 viewer, Vector3 direction, Vector3 sun_direction, double turbidity);
-Color preethamApplyToObject(Vector3 viewer, Vector3 object_location, Vector3 sun_direction, double turbidity, Color object_color);
+Color skyPreethamGetColor(Vector3 viewer, Vector3 direction, Vector3 sun_direction, double turbidity);
+Color skyPreethamApplyToObject(Vector3 viewer, Vector3 object_location, Vector3 sun_direction, double turbidity, Color object_color);
 
 #ifdef __cplusplus
 }
