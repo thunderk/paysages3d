@@ -3,9 +3,10 @@
 
 #include <QWidget>
 #include "basepreview.h"
-#include "baseform.h"
+#include "baseformlayer.h"
+#include "../lib_paysages/clouds.h"
 
-class FormClouds : public BaseForm
+class FormClouds : public BaseFormLayer
 {
     Q_OBJECT
 
@@ -16,20 +17,15 @@ public slots:
     virtual void revertConfig();
     virtual void applyConfig();
 
-protected slots:
-    virtual void configChangeEvent();
-    
 protected:
-    virtual QStringList getLayers();
-    virtual void layerAddedEvent();
-    virtual void layerDeletedEvent(int layer);
-    virtual void layerMovedEvent(int layer, int new_position);
-    virtual void layerRenamedEvent(int layer, QString new_name);
-    virtual void layerSelectedEvent(int layer);
+    virtual void layerGetCopy(void* layer_definition);
+    virtual void layerApply(void* layer_definition);
 
 private:
-    BasePreview* previewCoverage;
-    BasePreview* previewColor;
+    CloudsDefinition _definition;
+    CloudsLayerDefinition* _layer;
+    BasePreview* _previewCoverage;
+    BasePreview* _previewColor;
 };
 
 #endif

@@ -2,16 +2,13 @@
 #define _PAYSAGES_CLOUDS_H_
 
 #include "shared/types.h"
+#include "layers.h"
 #include "noise.h"
 #include "renderer.h"
-#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define CLOUDS_MAX_LAYERS 6
-#define CLOUDS_MAX_NAME_LENGTH 50
 
 typedef struct CloudsLayerDefinition CloudsLayerDefinition;
     
@@ -19,7 +16,6 @@ typedef double (*CloudCoverageFunc)(CloudsLayerDefinition* definition, Vector3 p
 
 struct CloudsLayerDefinition
 {
-    char name[CLOUDS_MAX_NAME_LENGTH + 1];
     double lower_altitude;
     double thickness;
     double base_coverage;
@@ -39,31 +35,22 @@ struct CloudsLayerDefinition
 
 typedef struct
 {
-    int nblayers;
-    CloudsLayerDefinition layers[CLOUDS_MAX_LAYERS];
+    Layers* layers;
 } CloudsDefinition;
-
-void cloudsInit();
-void cloudsQuit();
-void cloudsSave(PackStream* stream, CloudsDefinition* definition);
-void cloudsLoad(PackStream* stream, CloudsDefinition* definition);
 
 CloudsDefinition cloudsCreateDefinition();
 void cloudsDeleteDefinition(CloudsDefinition* definition);
 void cloudsCopyDefinition(CloudsDefinition* source, CloudsDefinition* destination);
 void cloudsValidateDefinition(CloudsDefinition* definition);
+void cloudsSave(PackStream* stream, CloudsDefinition* definition);
+void cloudsLoad(PackStream* stream, CloudsDefinition* definition);
 
-CloudsLayerDefinition cloudsLayerCreateDefinition();
+CloudsLayerDefinition* cloudsLayerCreateDefinition();
 void cloudsLayerDeleteDefinition(CloudsLayerDefinition* definition);
 void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinition* destination);
 void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition);
 void cloudsLayerSetName(CloudsLayerDefinition* definition, const char* name);
-
-int cloudsGetLayerCount(CloudsDefinition* definition);
-CloudsLayerDefinition* cloudsGetLayer(CloudsDefinition* definition, int layer);
-int cloudsAddLayer(CloudsDefinition* definition);
-void cloudsDeleteLayer(CloudsDefinition* definition, int layer);
-void cloudsMoveLayer(CloudsDefinition* definition, int layer, int new_position);
+LayerType cloudsGetLayerType();
 
 Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end);
 Color cloudsApply(CloudsDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end);

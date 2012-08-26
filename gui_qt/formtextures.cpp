@@ -139,10 +139,10 @@ FormTextures::FormTextures(QWidget *parent):
     _supp.height_curve = curveCreate();
     _supp.slope_curve = curveCreate();
 
-    previewCoverage = new PreviewTexturesCoverage(this, _layer);
-    previewColor = new PreviewTexturesColor(this, _layer);
-    addPreview(previewCoverage, tr("Coverage preview"));
-    addPreview(previewColor, tr("Lighted sample"));
+    _previewCoverage = new PreviewTexturesCoverage(this, _layer);
+    _previewColor = new PreviewTexturesColor(this, _layer);
+    addPreview(_previewCoverage, tr("Coverage preview"));
+    addPreview(_previewColor, tr("Lighted sample"));
 
     addInputNoise(tr("Surface noise"), _layer->bump_noise);
     addInputDouble(tr("Surface noise height"), &_layer->bump_height, 0.0, 0.1, 0.001, 0.01);

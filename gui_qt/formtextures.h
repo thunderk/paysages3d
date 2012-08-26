@@ -25,8 +25,8 @@ protected:
 private:
     TexturesDefinition _definition;
     TextureLayerDefinition* _layer;
-    BasePreview* previewCoverage;
-    BasePreview* previewColor;
+    BasePreview* _previewCoverage;
+    BasePreview* _previewColor;
 };
 
 #endif

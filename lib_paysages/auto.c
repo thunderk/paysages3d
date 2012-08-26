@@ -74,7 +74,7 @@ void autoGenRealisticLandscape(int seed)
 
     /* Cloud layer */
     clouds = cloudsCreateDefinition();
-    cloudsAddLayer(&clouds);
+    layersAddLayer(clouds.layers, NULL);
     scenerySetClouds(&clouds);
     cloudsDeleteDefinition(&clouds);
 

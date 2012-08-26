@@ -37,11 +37,11 @@ void texturesValidateDefinition(TexturesDefinition* definition);
 void texturesSave(PackStream* stream, TexturesDefinition* definition);
 void texturesLoad(PackStream* stream, TexturesDefinition* definition);
 
-LayerType texturesGetLayerType();
 TextureLayerDefinition* texturesLayerCreateDefinition();
 void texturesLayerDeleteDefinition(TextureLayerDefinition* definition);
 void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDefinition* destination);
 void texturesLayerValidateDefinition(TextureLayerDefinition* definition);
+LayerType texturesGetLayerType();
 
 double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);
 Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);

@@ -24,7 +24,6 @@ static void* _custom_data = NULL;
 void sceneryInit()
 {
     noiseInit();
-    cloudsInit();
     lightingInit();
 
     _atmosphere = atmosphereCreateDefinition();
@@ -53,7 +52,6 @@ void sceneryQuit()
     vegetationDeleteDefinition(_vegetation);
     waterDeleteDefinition(&_water);
 
-    cloudsQuit();
     lightingQuit();
     noiseQuit();
 }

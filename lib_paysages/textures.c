@@ -22,30 +22,6 @@ typedef struct
     TextureLayerDefinition* definition;
 } TextureResult;
 
-static void texturesLayerSave(PackStream* stream, TextureLayerDefinition* layer)
-{
-    zoneSave(stream, layer->zone);
-    noiseSaveGenerator(stream, layer->bump_noise);
-    packWriteDouble(stream, &layer->bump_height);
-    packWriteDouble(stream, &layer->bump_scaling);
-    materialSave(stream, &layer->material);
-    packWriteDouble(stream, &layer->thickness);
-    packWriteDouble(stream, &layer->slope_range);
-    packWriteDouble(stream, &layer->thickness_transparency);
-}
-
-static void texturesLayerLoad(PackStream* stream, TextureLayerDefinition* layer)
-{
-    zoneLoad(stream, layer->zone);
-    noiseLoadGenerator(stream, layer->bump_noise);
-    packReadDouble(stream, &layer->bump_height);
-    packReadDouble(stream, &layer->bump_scaling);
-    materialLoad(stream, &layer->material);
-    packReadDouble(stream, &layer->thickness);
-    packReadDouble(stream, &layer->slope_range);
-    packReadDouble(stream, &layer->thickness_transparency);
-}
-
 TexturesDefinition texturesCreateDefinition()
 {
     TexturesDefinition result;
@@ -78,20 +54,6 @@ void texturesSave(PackStream* stream, TexturesDefinition* definition)
 void texturesLoad(PackStream* stream, TexturesDefinition* definition)
 {
     layersLoad(stream, definition->layers);
-}
-
-LayerType texturesGetLayerType()
-{
-    LayerType result;
-    
-    result.callback_create = (LayerCallbackCreate)texturesLayerCreateDefinition;
-    result.callback_delete = (LayerCallbackDelete)texturesLayerDeleteDefinition;
-    result.callback_copy = (LayerCallbackCopy)texturesLayerCopyDefinition;
-    result.callback_validate = (LayerCallbackValidate)texturesLayerValidateDefinition;
-    result.callback_save = (LayerCallbackSave)texturesLayerSave;
-    result.callback_load = (LayerCallbackLoad)texturesLayerLoad;
-    
-    return result;
 }
 
 TextureLayerDefinition* texturesLayerCreateDefinition()
@@ -145,6 +107,44 @@ void texturesLayerValidateDefinition(TextureLayerDefinition* definition)
     {
         definition->slope_range = 0.001;
     }
+}
+
+static void _texturesLayerSave(PackStream* stream, TextureLayerDefinition* layer)
+{
+    zoneSave(stream, layer->zone);
+    noiseSaveGenerator(stream, layer->bump_noise);
+    packWriteDouble(stream, &layer->bump_height);
+    packWriteDouble(stream, &layer->bump_scaling);
+    materialSave(stream, &layer->material);
+    packWriteDouble(stream, &layer->thickness);
+    packWriteDouble(stream, &layer->slope_range);
+    packWriteDouble(stream, &layer->thickness_transparency);
+}
+
+static void _texturesLayerLoad(PackStream* stream, TextureLayerDefinition* layer)
+{
+    zoneLoad(stream, layer->zone);
+    noiseLoadGenerator(stream, layer->bump_noise);
+    packReadDouble(stream, &layer->bump_height);
+    packReadDouble(stream, &layer->bump_scaling);
+    materialLoad(stream, &layer->material);
+    packReadDouble(stream, &layer->thickness);
+    packReadDouble(stream, &layer->slope_range);
+    packReadDouble(stream, &layer->thickness_transparency);
+}
+
+LayerType texturesGetLayerType()
+{
+    LayerType result;
+    
+    result.callback_create = (LayerCallbackCreate)texturesLayerCreateDefinition;
+    result.callback_delete = (LayerCallbackDelete)texturesLayerDeleteDefinition;
+    result.callback_copy = (LayerCallbackCopy)texturesLayerCopyDefinition;
+    result.callback_validate = (LayerCallbackValidate)texturesLayerValidateDefinition;
+    result.callback_save = (LayerCallbackSave)_texturesLayerSave;
+    result.callback_load = (LayerCallbackLoad)_texturesLayerLoad;
+    
+    return result;
 }
 
 static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, Vector3 south, Vector3 west)
