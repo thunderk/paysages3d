@@ -19,7 +19,7 @@ public:
         _noise_preview = noiseCreateGenerator();
         _level = -1;
         
-        configScaling(0.05, 2.0, 0.05, 2.0);
+        configScaling(0.15, 6.0, 0.09, 6.0);
     }
 
     void setLevel(int row)
@@ -57,7 +57,7 @@ public:
         _noise_original = noise;
         _noise_preview = noiseCreateGenerator();
         
-        configScaling(0.05, 2.0, 0.03, 2.0);
+        configScaling(0.15, 6.0, 0.09, 6.0);
     }
 protected:
     void updateData()
