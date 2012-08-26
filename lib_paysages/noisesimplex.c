@@ -1,4 +1,4 @@
-#include "simplexnoise.h"
+#include "noisesimplex.h"
 
 /*
  * Simplex noise implementation.
@@ -119,7 +119,7 @@ static double _dot4(Grad4 g, double x, double y, double z, double w)
     return g.x * x + g.y * y + g.z * z + g.w * w;
 }
 
-void simplexNoiseInit()
+void noiseSimplexInit()
 {
     int i;
 
@@ -139,7 +139,7 @@ void simplexNoiseInit()
     _G4 = (5.0 - sqrt(5.0)) / 20.0;
 }
 
-double simplexNoiseGet2DValue(double xin, double yin)
+double noiseSimplexGet2DValue(double xin, double yin)
 {
     double n0, n1, n2; /* Noise contributions from the three corners */
     /* Skew the input space to determine which simplex cell we're in */
@@ -204,7 +204,7 @@ double simplexNoiseGet2DValue(double xin, double yin)
     return 70.0 * (n0 + n1 + n2);
 }
 
-double simplexNoiseGet3DValue(double xin, double yin, double zin)
+double noiseSimplexGet3DValue(double xin, double yin, double zin)
 {
     double n0, n1, n2, n3; /* Noise contributions from the four corners */
     /* Skew the input space to determine which simplex cell we're in */
@@ -338,7 +338,7 @@ double simplexNoiseGet3DValue(double xin, double yin, double zin)
     return 32.0 * (n0 + n1 + n2 + n3);
 }
 
-double simplexNoiseGet4DValue(double x, double y, double z, double w)
+double noiseSimplexGet4DValue(double x, double y, double z, double w)
 {
     double n0, n1, n2, n3, n4; /* Noise contributions from the five corners */
     /* Skew the (x,y,z,w) space to determine which cell of 24 simplices we're in */

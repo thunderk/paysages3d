@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "tools.h"
-#include "simplexnoise.h"
+#include "noisesimplex.h"
 
 #define MAX_LEVEL_COUNT 30
 
@@ -22,7 +22,7 @@ struct NoiseGenerator
 
 void noiseInit()
 {
-    simplexNoiseInit();
+    noiseSimplexInit();
 }
 
 void noiseQuit()
@@ -274,7 +274,7 @@ void noiseNormalizeHeight(NoiseGenerator* generator, double min_height, double m
 
 static inline double _get1DRawNoiseValue(NoiseGenerator* generator, double x)
 {
-    return simplexNoiseGet2DValue(x, 0.0) * 0.5;
+    return noiseSimplexGet2DValue(x, 0.0) * 0.5;
 }
 
 static inline double _get1DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x)
@@ -336,7 +336,7 @@ double noiseGet1DDetail(NoiseGenerator* generator, double x, double detail)
 
 static inline double _get2DRawNoiseValue(NoiseGenerator* generator, double x, double y)
 {
-    return simplexNoiseGet2DValue(x, y) * 0.5;
+    return noiseSimplexGet2DValue(x, y) * 0.5;
 }
 
 static inline double _get2DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x, double y)
@@ -398,7 +398,7 @@ double noiseGet2DDetail(NoiseGenerator* generator, double x, double y, double de
 
 static inline double _get3DRawNoiseValue(NoiseGenerator* generator, double x, double y, double z)
 {
-    return simplexNoiseGet3DValue(x, y, z) * 0.5;
+    return noiseSimplexGet3DValue(x, y, z) * 0.5;
 }
 
 static inline double _get3DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x, double y, double z)
