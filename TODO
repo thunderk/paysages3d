@@ -13,7 +13,8 @@ Technology Preview 2 :
 - Improve terrain canvas editor.
    => Add GeoArea editor.
    => Resample map on changing resolution.
-   => Map loading should not choose arbitrary resolution.
+   => GeoAreas should not overlap.
+   => Map loading should not choose arbitrary resolution, choose the closer one and resample.
 - Improve textures (current model is greatly incorrect).
    => Separate models (basic texture and covering texture).
    => Covering texture height should inpact terrain height.

@@ -64,6 +64,7 @@ void autoGenRealisticLandscape(int seed)
     SkyDefinition sky;
     TexturesDefinition textures;
     TextureLayerDefinition* texture;
+    int layer;
 
     if (!seed)
     {
@@ -146,8 +147,9 @@ void autoGenRealisticLandscape(int seed)
 
     /* Textures */
     textures = texturesCreateDefinition();
-    texture = texturesGetLayer(&textures, texturesAddLayer(&textures));
-    texturesLayerSetName(texture, "Ground");
+    layer = layersAddLayer(textures.layers, NULL);
+    layersSetName(textures.layers, layer, "Ground");
+    texture = layersGetLayer(textures.layers, layer);
     noiseGenerateBaseNoise(texture->bump_noise, 102400);
     noiseClearLevels(texture->bump_noise);
     noiseAddLevelsSimple(texture->bump_noise, 8, 1.0, 1.0);
@@ -161,8 +163,9 @@ void autoGenRealisticLandscape(int seed)
     texture->thickness = 0.001;
     texture->slope_range = 0.001;
     texture->thickness_transparency = 0.0;
-    texture = texturesGetLayer(&textures, texturesAddLayer(&textures));
-    texturesLayerSetName(texture, "Grass");
+    layer = layersAddLayer(textures.layers, NULL);
+    layersSetName(textures.layers, layer, "Grass");
+    texture = layersGetLayer(textures.layers, layer);
     zoneAddHeightRangeQuick(texture->zone, 1.0, -6.0, -5.0, 3.0, 15.0);
     zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 0.05, 0.4);
     noiseGenerateBaseNoise(texture->bump_noise, 102400);

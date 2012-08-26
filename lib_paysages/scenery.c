@@ -26,7 +26,6 @@ void sceneryInit()
     noiseInit();
     cloudsInit();
     lightingInit();
-    texturesInit();
 
     _atmosphere = atmosphereCreateDefinition();
     _camera = cameraCreateDefinition();
@@ -56,7 +55,6 @@ void sceneryQuit()
 
     cloudsQuit();
     lightingQuit();
-    texturesQuit();
     noiseQuit();
 }
 

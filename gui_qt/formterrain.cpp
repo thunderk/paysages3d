@@ -85,8 +85,7 @@ public:
 
         _terrain = terrainCreateDefinition();
         _textures = texturesCreateDefinition();
-        texturesAddLayer(&_textures);
-        texture = texturesGetLayer(&_textures, 0);
+        texture = (TextureLayerDefinition*)layersGetLayer(_textures.layers, layersAddLayer(_textures.layers, NULL));
         texture->material.base = COLOR_WHITE;
         texture->material.reflection = 0.3;
         texture->material.shininess = 2.0;

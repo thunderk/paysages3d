@@ -2,6 +2,7 @@
 #define _PAYSAGES_TEXTURES_H_
 
 #include "shared/types.h"
+#include "layers.h"
 #include "noise.h"
 #include "lighting.h"
 #include "pack.h"
@@ -11,12 +12,8 @@
 extern "C" {
 #endif
 
-#define TEXTURES_MAX_LAYERS 50
-#define TEXTURES_MAX_NAME_LENGTH 50
-
 typedef struct
 {
-    char name[TEXTURES_MAX_NAME_LENGTH + 1];
     Zone* zone;
     NoiseGenerator* bump_noise;
     double bump_scaling;
@@ -29,31 +26,22 @@ typedef struct
 
 typedef struct
 {
-    int nblayers;
-    TextureLayerDefinition layers[TEXTURES_MAX_LAYERS];
+    Layers* layers;
 } TexturesDefinition;
-
-void texturesInit();
-void texturesQuit();
-void texturesSave(PackStream* stream, TexturesDefinition* definition);
-void texturesLoad(PackStream* stream, TexturesDefinition* definition);
 
 TexturesDefinition texturesCreateDefinition();
 void texturesDeleteDefinition(TexturesDefinition* definition);
 void texturesCopyDefinition(TexturesDefinition* source, TexturesDefinition* destination);
 void texturesValidateDefinition(TexturesDefinition* definition);
 
-TextureLayerDefinition texturesLayerCreateDefinition();
+void texturesSave(PackStream* stream, TexturesDefinition* definition);
+void texturesLoad(PackStream* stream, TexturesDefinition* definition);
+
+LayerType texturesGetLayerType();
+TextureLayerDefinition* texturesLayerCreateDefinition();
 void texturesLayerDeleteDefinition(TextureLayerDefinition* definition);
 void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDefinition* destination);
 void texturesLayerValidateDefinition(TextureLayerDefinition* definition);
-void texturesLayerSetName(TextureLayerDefinition* definition, const char* name);
-
-int texturesGetLayerCount(TexturesDefinition* definition);
-TextureLayerDefinition* texturesGetLayer(TexturesDefinition* definition, int layer);
-int texturesAddLayer(TexturesDefinition* definition);
-void texturesDeleteLayer(TexturesDefinition* definition, int layer);
-void texturesMoveLayer(TexturesDefinition* definition, int layer, int new_position);
 
 double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);
 Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail);

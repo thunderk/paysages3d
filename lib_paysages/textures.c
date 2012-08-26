@@ -12,7 +12,7 @@
 #include "terrain.h"
 #include "tools.h"
 
-static TextureLayerDefinition _NULL_LAYER;
+#define TEXTURES_MAX_LAYERS 50
 
 typedef struct
 {
@@ -22,126 +22,96 @@ typedef struct
     TextureLayerDefinition* definition;
 } TextureResult;
 
-void texturesInit()
+static void texturesLayerSave(PackStream* stream, TextureLayerDefinition* layer)
 {
-    _NULL_LAYER = texturesLayerCreateDefinition();
+    zoneSave(stream, layer->zone);
+    noiseSaveGenerator(stream, layer->bump_noise);
+    packWriteDouble(stream, &layer->bump_height);
+    packWriteDouble(stream, &layer->bump_scaling);
+    materialSave(stream, &layer->material);
+    packWriteDouble(stream, &layer->thickness);
+    packWriteDouble(stream, &layer->slope_range);
+    packWriteDouble(stream, &layer->thickness_transparency);
 }
 
-void texturesQuit()
+static void texturesLayerLoad(PackStream* stream, TextureLayerDefinition* layer)
 {
-    texturesLayerDeleteDefinition(&_NULL_LAYER);
-}
-
-void texturesSave(PackStream* stream, TexturesDefinition* definition)
-{
-    TextureLayerDefinition* layer;
-    int i;
-
-    packWriteInt(stream, &definition->nblayers);
-    for (i = 0; i < definition->nblayers; i++)
-    {
-        layer = definition->layers + i;
-        
-        packWriteString(stream, layer->name, TEXTURES_MAX_NAME_LENGTH);
-        zoneSave(stream, layer->zone);
-        noiseSaveGenerator(stream, layer->bump_noise);
-        packWriteDouble(stream, &layer->bump_height);
-        packWriteDouble(stream, &layer->bump_scaling);
-        materialSave(stream, &layer->material);
-        packWriteDouble(stream, &layer->thickness);
-        packWriteDouble(stream, &layer->slope_range);
-        packWriteDouble(stream, &layer->thickness_transparency);
-    }
-}
-
-void texturesLoad(PackStream* stream, TexturesDefinition* definition)
-{
-    TextureLayerDefinition* layer;
-    int i, n;
-
-    while (definition->nblayers > 0)
-    {
-        texturesDeleteLayer(definition, 0);
-    }
-
-    packReadInt(stream, &n);
-    for (i = 0; i < n; i++)
-    {
-        layer = definition->layers + texturesAddLayer(definition);
-
-        packReadString(stream, layer->name, TEXTURES_MAX_NAME_LENGTH);
-        zoneLoad(stream, layer->zone);
-        noiseLoadGenerator(stream, layer->bump_noise);
-        packReadDouble(stream, &layer->bump_height);
-        packReadDouble(stream, &layer->bump_scaling);
-        materialLoad(stream, &layer->material);
-        packReadDouble(stream, &layer->thickness);
-        packReadDouble(stream, &layer->slope_range);
-        packReadDouble(stream, &layer->thickness_transparency);
-    }
-
-    texturesValidateDefinition(definition);
+    zoneLoad(stream, layer->zone);
+    noiseLoadGenerator(stream, layer->bump_noise);
+    packReadDouble(stream, &layer->bump_height);
+    packReadDouble(stream, &layer->bump_scaling);
+    materialLoad(stream, &layer->material);
+    packReadDouble(stream, &layer->thickness);
+    packReadDouble(stream, &layer->slope_range);
+    packReadDouble(stream, &layer->thickness_transparency);
 }
 
 TexturesDefinition texturesCreateDefinition()
 {
     TexturesDefinition result;
 
-    result.nblayers = 0;
+    result.layers = layersCreate(texturesGetLayerType(), TEXTURES_MAX_LAYERS);
 
     return result;
 }
 
 void texturesDeleteDefinition(TexturesDefinition* definition)
 {
-    while (definition->nblayers > 0)
-    {
-        texturesDeleteLayer(definition, 0);
-    }
+    layersDelete(definition->layers);
 }
 
 void texturesCopyDefinition(TexturesDefinition* source, TexturesDefinition* destination)
 {
-    TextureLayerDefinition* layer;
-    int i;
-
-    while (destination->nblayers > 0)
-    {
-        texturesDeleteLayer(destination, 0);
-    }
-    for (i = 0; i < source->nblayers; i++)
-    {
-        layer = texturesGetLayer(destination, texturesAddLayer(destination));
-        texturesLayerCopyDefinition(source->layers + i, layer);
-    }
+    layersCopy(source->layers, destination->layers);
 }
 
 void texturesValidateDefinition(TexturesDefinition* definition)
 {
-    int i;
-    for (i = 0; i < definition->nblayers; i++)
-    {
-        texturesLayerValidateDefinition(definition->layers + i);
-    }
+    layersValidate(definition->layers);
 }
 
-TextureLayerDefinition texturesLayerCreateDefinition()
+void texturesSave(PackStream* stream, TexturesDefinition* definition)
 {
-    TextureLayerDefinition result;
+    layersSave(stream, definition->layers);
+}
 
-    texturesLayerSetName(&result, "Unnamed");
-    result.zone = zoneCreate();
-    result.bump_noise = noiseCreateGenerator();
-    noiseGenerateBaseNoise(result.bump_noise, 102400);
-    noiseAddLevelsSimple(result.bump_noise, 8, 1.0, 1.0);
-    result.bump_height = 0.1;
-    result.bump_scaling = 0.1;
-    result.material.base = COLOR_WHITE;
-    result.material.reflection = 0.0;
-    result.material.shininess = 0.0;
-    result.thickness = 0.0;
-    result.slope_range = 0.001;
-    result.thickness_transparency = 0.0;
+void texturesLoad(PackStream* stream, TexturesDefinition* definition)
+{
+    layersLoad(stream, definition->layers);
+}
+
+LayerType texturesGetLayerType()
+{
+    LayerType result;
+    
+    result.callback_create = (LayerCallbackCreate)texturesLayerCreateDefinition;
+    result.callback_delete = (LayerCallbackDelete)texturesLayerDeleteDefinition;
+    result.callback_copy = (LayerCallbackCopy)texturesLayerCopyDefinition;
+    result.callback_validate = (LayerCallbackValidate)texturesLayerValidateDefinition;
+    result.callback_save = (LayerCallbackSave)texturesLayerSave;
+    result.callback_load = (LayerCallbackLoad)texturesLayerLoad;
+    
+    return result;
+}
+
+TextureLayerDefinition* texturesLayerCreateDefinition()
+{
+    TextureLayerDefinition* result;
+
+    result = malloc(sizeof(TextureLayerDefinition));
+    
+    result->zone = zoneCreate();
+    result->bump_noise = noiseCreateGenerator();
+    noiseGenerateBaseNoise(result->bump_noise, 102400);
+    noiseAddLevelsSimple(result->bump_noise, 8, 1.0, 1.0);
+    result->bump_height = 0.1;
+    result->bump_scaling = 0.1;
+    result->material.base = COLOR_WHITE;
+    result->material.reflection = 0.0;
+    result->material.shininess = 0.0;
+    result->thickness = 0.0;
+    result->slope_range = 0.001;
+    result->thickness_transparency = 0.0;
 
     return result;
 }
@@ -150,11 +120,11 @@ void texturesLayerDeleteDefinition(TextureLayerDefinition* definition)
 {
     zoneDelete(definition->zone);
     noiseDeleteGenerator(definition->bump_noise);
+    free(definition);
 }
 
 void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDefinition* destination)
 {
-    strncpy(destination->name, source->name, TEXTURES_MAX_NAME_LENGTH);
     destination->material = source->material;
     destination->bump_height = source->bump_height;
     destination->bump_scaling = source->bump_scaling;
@@ -167,7 +137,6 @@ void texturesLayerCopyDefinition(TextureLayerDefinition* source, TextureLayerDef
 
 void texturesLayerValidateDefinition(TextureLayerDefinition* definition)
 {
-    definition->name[TEXTURES_MAX_NAME_LENGTH] = '\0';
     if (definition->bump_scaling < 0.000001)
     {
         definition->bump_scaling = 0.000001;
@@ -175,73 +144,6 @@ void texturesLayerValidateDefinition(TextureLayerDefinition* definition)
     if (definition->slope_range < 0.001)
     {
         definition->slope_range = 0.001;
-    }
-}
-
-void texturesLayerSetName(TextureLayerDefinition* definition, const char* name)
-{
-    strncpy(definition->name, name, TEXTURES_MAX_NAME_LENGTH);
-}
-
-int texturesGetLayerCount(TexturesDefinition* definition)
-{
-    return definition->nblayers;
-}
-
-TextureLayerDefinition* texturesGetLayer(TexturesDefinition* definition, int layer)
-{
-    if (layer >= 0 && layer < definition->nblayers)
-    {
-        return definition->layers + layer;
-    }
-    else
-    {
-        return &_NULL_LAYER;
-    }
-}
-
-int texturesAddLayer(TexturesDefinition* definition)
-{
-    if (definition->nblayers < TEXTURES_MAX_LAYERS)
-    {
-        definition->layers[definition->nblayers] = texturesLayerCreateDefinition();
-
-        return definition->nblayers++;
-    }
-    else
-    {
-        return -1;
-    }
-}
-
-void texturesDeleteLayer(TexturesDefinition* definition, int layer)
-{
-    if (layer >= 0 && layer < definition->nblayers)
-    {
-        texturesLayerDeleteDefinition(definition->layers + layer);
-        if (definition->nblayers > 1 && layer < definition->nblayers - 1)
-        {
-            memmove(definition->layers + layer, definition->layers + layer + 1, sizeof(TextureLayerDefinition) * (definition->nblayers - layer - 1));
-        }
-        definition->nblayers--;
-    }
-}
-
-void texturesMoveLayer(TexturesDefinition* definition, int layer, int new_position)
-{
-    if (layer >= 0 && layer < definition->nblayers && new_position != layer && new_position >= 0 && new_position < definition->nblayers)
-    {
-        TextureLayerDefinition temp;
-        temp = definition->layers[layer];
-        if (new_position > layer)
-        {
-            memmove(definition->layers + layer, definition->layers + layer + 1, sizeof(TextureLayerDefinition) * (new_position - layer));
-        }
-        else
-        {
-            memmove(definition->layers + new_position + 1, definition->layers + new_position, sizeof(TextureLayerDefinition) * (layer - new_position));
-        }
-        definition->layers[new_position] = temp;
     }
 }
 
@@ -385,24 +287,25 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
     TextureResult results[TEXTURES_MAX_LAYERS + 1];
     Color result, color;
     double thickness, last_height;
-    int i, start;
+    int i, start, nblayers;
 
     detail *= 0.1;
     
     results[0] = _getTerrainResult(renderer, x, z, detail);
 
-    for (i = 0; i < definition->nblayers; i++)
+    nblayers = layersCount(definition->layers);
+    for (i = 0; i < nblayers; i++)
     {
-        results[i + 1] = _getLayerResult(definition->layers + i, renderer, x, z, detail);
+        results[i + 1] = _getLayerResult(layersGetLayer(definition->layers, i), renderer, x, z, detail);
     }
     
-    qsort(results, definition->nblayers + 1, sizeof(TextureResult), _cmpResults);
+    qsort(results, nblayers + 1, sizeof(TextureResult), _cmpResults);
 
     /* Pre compute alpha channel */
     start = 0;
     last_height = results[0].thickness;
     results[0].thickness = 1.0;
-    for (i = 1; i <= definition->nblayers; i++)
+    for (i = 1; i <= nblayers; i++)
     {
         thickness = results[i].thickness - last_height;
         last_height = results[i].thickness;
@@ -440,7 +343,7 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
     {
         result = COLOR_GREEN;
     }
-    for (i = start + 1; i <= definition->nblayers; i++)
+    for (i = start + 1; i <= nblayers; i++)
     {
         if (results[i].thickness)
         {

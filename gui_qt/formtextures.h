@@ -3,9 +3,10 @@
 
 #include <QWidget>
 #include "basepreview.h"
-#include "baseform.h"
+#include "baseformlayer.h"
+#include "../lib_paysages/textures.h"
 
-class FormTextures : public BaseForm
+class FormTextures : public BaseFormLayer
 {
     Q_OBJECT
 
@@ -13,22 +14,17 @@ public:
     explicit FormTextures(QWidget *parent = 0);
     ~FormTextures();
 
-protected:
-    virtual QStringList getLayers();
-    virtual void layerAddedEvent();
-    virtual void layerDeletedEvent(int layer);
-    virtual void layerMovedEvent(int layer, int new_position);
-    virtual void layerRenamedEvent(int layer, QString new_name);
-    virtual void layerSelectedEvent(int layer);
-
 public slots:
     virtual void revertConfig();
     virtual void applyConfig();
 
-protected slots:
-    virtual void configChangeEvent();
+protected:
+    virtual void layerGetCopy(void* layer_definition);
+    virtual void layerApply(void* layer_definition);
 
 private:
+    TexturesDefinition _definition;
+    TextureLayerDefinition* _layer;
     BasePreview* previewCoverage;
     BasePreview* previewColor;
 };

@@ -11,7 +11,7 @@ class BaseFormLayer:public BaseForm
     Q_OBJECT
 
 public:
-    BaseFormLayer(QWidget* parent, Layers* layers);
+    BaseFormLayer(QWidget* parent, Layers* layers=NULL);
     ~BaseFormLayer();
 
 public slots:
@@ -19,6 +19,7 @@ public slots:
     virtual void applyConfig();
     
 protected:
+    void setLayers(Layers* layers);
     virtual void layerGetCopy(void* layer_definition) = 0;
     virtual void layerApply(void* layer_definition) = 0;
     virtual void afterLayerAdded(void* layer_definition);

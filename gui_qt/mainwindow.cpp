@@ -80,37 +80,37 @@ QMainWindow(parent)
 
     form = new FormTerrain(tabs);
     tabs->addTab(form, tr("Terrain"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
     form = new FormTextures(tabs);
     tabs->addTab(form, tr("Textures"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
     form = new FormWater(tabs);
     tabs->addTab(form, tr("Water"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
     form = new FormSky(tabs);
     tabs->addTab(form, tr("Sky"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
     form = new FormAtmosphere(tabs);
     tabs->addTab(form, tr("Atmosphere"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
     form = new FormClouds(tabs);
     tabs->addTab(form, tr("Clouds"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
     /*form = new FormLighting(tabs);
     tabs->addTab(form, tr("Lighting"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()));
+    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);*/
 
     _form_render = new FormRender(tabs);
