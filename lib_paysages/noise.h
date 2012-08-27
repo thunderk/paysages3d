@@ -7,6 +7,19 @@
 extern "C" {
 #endif
 
+typedef enum
+{
+    NOISE_FUNCTION_SIMPLEX,
+    NOISE_FUNCTION_PERLIN,
+    NOISE_FUNCTION_NAIVE
+} NoiseFunctionAlgorithm;
+
+typedef struct
+{
+    NoiseFunctionAlgorithm algorithm;
+    double ridge_factor;
+} NoiseFunction;
+    
 struct NoiseLevel
 {
     double scaling;
@@ -29,6 +42,9 @@ void noiseSaveGenerator(PackStream* stream, NoiseGenerator* generator);
 void noiseLoadGenerator(PackStream* stream, NoiseGenerator* generator);
 void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination);
 void noiseValidate(NoiseGenerator* generator);
+NoiseFunction noiseGetFunction(NoiseGenerator* generator);
+void noiseSetFunction(NoiseGenerator* generator, NoiseFunction* function);
+void noiseSetFunctionParams(NoiseGenerator* generator, NoiseFunctionAlgorithm algorithm, double ridge_factor);
 void noiseForceValue(NoiseGenerator* generator, double value);
 double noiseGetMaxValue(NoiseGenerator* generator);
 int noiseGetLevelCount(NoiseGenerator* generator);

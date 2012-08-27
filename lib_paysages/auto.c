@@ -100,6 +100,7 @@ void autoGenRealisticLandscape(int seed)
     noiseClearLevels(water.waves_noise);
     noiseAddLevelsSimple(water.waves_noise, 2, 1.0, 1.0);
     noiseAddLevelsSimple(water.waves_noise, 3, 0.15, 0.1);
+    noiseSetFunctionParams(water.waves_noise, NOISE_FUNCTION_SIMPLEX, -0.3);
     scenerySetWater(&water);
     waterDeleteDefinition(&water);
 
@@ -137,8 +138,9 @@ void autoGenRealisticLandscape(int seed)
     terrain = terrainCreateDefinition();
     noiseClearLevels(terrain.height_noise);
     noiseAddLevelsSimple(terrain.height_noise, 10, 1.0, 1.0);
+    noiseSetFunctionParams(terrain.height_noise, NOISE_FUNCTION_SIMPLEX, -0.2);
     terrain.height_factor = 12.0 / noiseGetMaxValue(terrain.height_noise);
-    terrain.scaling = 60.0;
+    terrain.scaling = 80.0;
     terrain.shadow_smoothing = 0.03;
     scenerySetTerrain(&terrain);
     terrainDeleteDefinition(&terrain);

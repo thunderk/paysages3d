@@ -14,7 +14,7 @@ public:
     PreviewCloudsCoverage(QWidget* parent, CloudsLayerDefinition* layer):BasePreview(parent)
     {
         _renderer = rendererCreate();
-        _renderer.render_quality = 3;
+        _renderer.render_quality = 5;
         _renderer.applyLightStatus = _applyLightStatus;
         
         _original_layer = layer;
@@ -81,7 +81,7 @@ public:
         lightingValidateDefinition(&_lighting);
         
         _renderer = rendererCreate();
-        _renderer.render_quality = 3;
+        _renderer.render_quality = 8;
         _renderer.alterLight = _alterLight;
         _renderer.getLightStatus = _getLightStatus;
         _renderer.customData[0] = _preview_layer;
@@ -109,9 +109,9 @@ protected:
     void updateData()
     {
         cloudsLayerCopyDefinition(_original_layer, _preview_layer);
-        //noiseForceValue(_preview_layer.shape_noise, 1.0);
+        //noiseForceValue(_preview_layer->shape_noise, 1.0);
         _preview_layer->lower_altitude = -_preview_layer->thickness * 0.5;
-        //curveClear(_preview_layer.coverage_by_altitude);
+        //curveClear(_preview_layer->coverage_by_altitude);
         _preview_layer->base_coverage = 1.0;
         _preview_layer->_custom_coverage = _coverageFunc;
     }
@@ -172,8 +172,8 @@ FormClouds::FormClouds(QWidget *parent):
     addInputDouble(tr("Edge length"), &_layer->edge_length, 0.0, 1.0, 0.01, 0.1);
     addInputMaterial(tr("Material"), &_layer->material);
     addInputDouble(tr("Hardness to light"), &_layer->hardness, 0.0, 1.0, 0.01, 0.1);
-    addInputDouble(tr("Transparency depth"), &_layer->transparencydepth, 0.0, 100.0, 0.5, 5.0);
-    addInputDouble(tr("Light traversal depth"), &_layer->lighttraversal, 0.0, 100.0, 0.5, 5.0);
+    addInputDouble(tr("Transparency depth"), &_layer->transparencydepth, 0.0, 10.0, 0.1, 1.0);
+    addInputDouble(tr("Light traversal depth"), &_layer->lighttraversal, 0.0, 10.0, 0.1, 1.0);
     addInputDouble(tr("Minimum lighting"), &_layer->minimumlight, 0.0, 1.0, 0.01, 0.1);
 
     setLayers(_definition.layers);

@@ -31,10 +31,10 @@ public:
         for (int x = 0; x < width; x++)
         {
             factor = ((double)(height / 2)) / noiseGetMaxValue(noise);
-            value = noiseGet1DTotal(noise, ((double)x) / factor) * factor;
-            painter.setPen(QColor(255, 255, 255));
+            value = -noiseGet1DTotal(noise, ((double)x) / factor) * factor;
+            painter.setPen(Qt::white);
             painter.drawLine(x, 0, x, height / 2 + value);
-            painter.setPen(QColor(0, 0, 0));
+            painter.setPen(Qt::black);
             painter.drawLine(x, height / 2 + value + 1, x, height);
         }
     }

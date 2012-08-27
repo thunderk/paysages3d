@@ -2,6 +2,7 @@
 #define _PAYSAGES_QT_DIALOGNOISE_H_
 
 #include <QListWidget>
+#include <QComboBox>
 #include "basepreview.h"
 #include "tools.h"
 
@@ -29,6 +30,7 @@ private:
 private slots:
     void addLevel();
     void removeLevel();
+    void functionChanged();
     void levelChanged(int row);
     void heightChanged(int value);
     void scalingChanged(int value);
@@ -40,6 +42,8 @@ private:
     NoiseLevel _current_level_params;
     BasePreview* previewLevel;
     BasePreview* previewTotal;
+    QComboBox* function_algo;
+    QSlider* function_ridge;
     QListWidget* levels;
     QSlider* slider_height;
     QSlider* slider_scaling;

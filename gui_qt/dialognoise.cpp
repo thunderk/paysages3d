@@ -8,6 +8,7 @@
 #include <QSlider>
 #include <QScrollArea>
 #include <QPushButton>
+#include <math.h>
 
 /**************** Previews ****************/
 class PreviewLevel:public BasePreview
@@ -34,13 +35,13 @@ protected:
     }
     QColor getColor(double x, double y)
     {
-        if ((_level >= 0) && (y > noiseGet1DLevel(_noise_preview, _level, x)))
+        if ((_level >= 0) && (-y > noiseGet1DLevel(_noise_preview, _level, x)))
         {
-            return QColor(255, 255, 255);
+            return Qt::black;
         }
         else
         {
-            return QColor(0, 0, 0);
+            return Qt::white;
         }
     }
 private:
@@ -66,13 +67,13 @@ protected:
     }
     QColor getColor(double x, double y)
     {
-        if (y > noiseGet1DTotal(_noise_preview, x))
+        if (-y > noiseGet1DTotal(_noise_preview, x))
         {
-            return QColor(255, 255, 255);
+            return Qt::black;
         }
         else
         {
-            return QColor(0, 0, 0);
+            return Qt::white;
         }
     }
 private:
@@ -84,6 +85,7 @@ private:
 DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     DialogWithPreview(parent)
 {
+    QWidget* function;
     QWidget* previews;
     QWidget* form;
     QWidget* buttons;
@@ -115,6 +117,23 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     form = new QWidget(this);
     form->setLayout(new QVBoxLayout());
     layout()->addWidget(form);
+    
+    function = new QWidget(form);
+    function->setLayout(new QHBoxLayout());
+    form->layout()->addWidget(function);
+    
+    function->layout()->addWidget(new QLabel(tr("Noise function")));
+    function_algo = new QComboBox(function);
+    function_algo->addItems(QStringList(tr("Simplex")) << tr("Perlin") << tr("Naive"));
+    function->layout()->addWidget(function_algo);
+    function->layout()->addWidget(new QLabel(tr("Ridge factor")));
+    function_ridge = new QSlider(Qt::Horizontal, function);
+    function_ridge->setRange(-10, 10);
+    function_ridge->setTickInterval(10);
+    function_ridge->setTickPosition(QSlider::TicksBelow);
+    function->layout()->addWidget(function_ridge);
+    QObject::connect(function_algo, SIGNAL(currentIndexChanged(int)), this, SLOT(functionChanged()));
+    QObject::connect(function_ridge, SIGNAL(valueChanged(int)), this, SLOT(functionChanged()));
 
     form->layout()->addWidget(new QLabel(tr("Noise components")));
     levels = new QListWidget(form);
@@ -223,6 +242,7 @@ void DialogNoise::revertToCurrent()
 {
     int i, n;
     int selected;
+    NoiseFunction function;
     
     selected = levels->currentRow();
 
@@ -245,6 +265,10 @@ void DialogNoise::revertToCurrent()
         }
         levels->setCurrentRow(selected);
     }
+    
+    function = noiseGetFunction(_current);
+    function_algo->setCurrentIndex((int)function.algorithm);
+    function_ridge->setValue(round(function.ridge_factor * 20.0));
 
     previewLevel->redraw();
     previewTotal->redraw();
@@ -281,6 +305,20 @@ void DialogNoise::removeLevel()
         row--;
     }
     levels->setCurrentRow(row);
+}
+
+void DialogNoise::functionChanged()
+{
+    NoiseFunction function;
+    
+    function.algorithm = (NoiseFunctionAlgorithm)function_algo->currentIndex();
+    function.ridge_factor = (double)function_ridge->value() * 0.05;
+    
+    noiseSetFunction(_current, &function);
+    noiseValidate(_current);
+    
+    previewLevel->redraw();
+    previewTotal->redraw();
 }
 
 void DialogNoise::levelChanged(int row)

@@ -89,13 +89,15 @@ CloudsLayerDefinition* cloudsLayerCreateDefinition()
     result->lighttraversal = 7.0;
     result->minimumlight = 0.4;
     result->shape_scaling = 10.0;
-    result->edge_scaling = 0.2;
-    result->edge_length = 0.2;
+    result->edge_scaling = 0.3;
+    result->edge_length = 0.4;
     result->base_coverage = 0.35;
     result->shape_noise = noiseCreateGenerator();
-    noiseAddLevelsSimple(result->shape_noise, 5, 1.0, 1.0);
+    noiseAddLevelsSimple(result->shape_noise, 6, 1.0, 1.0);
+    noiseSetFunctionParams(result->shape_noise, NOISE_FUNCTION_SIMPLEX, 0.3);
     result->edge_noise = noiseCreateGenerator();
     noiseAddLevelsSimple(result->edge_noise, 8, 1.0, 1.0);
+    noiseSetFunctionParams(result->edge_noise, NOISE_FUNCTION_SIMPLEX, 0.5);
     
     result->_custom_coverage = _standardCoverageFunc;
 

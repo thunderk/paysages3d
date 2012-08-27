@@ -13,11 +13,15 @@ struct NoiseLevel;
 
 struct NoiseGenerator
 {
+    NoiseFunction function;
     double height_offset;
     int level_count;
     struct NoiseLevel levels[MAX_LEVEL_COUNT];
     
     double _max_height;
+    double (*_func_noise_1d)(double x);
+    double (*_func_noise_2d)(double x, double y);
+    double (*_func_noise_3d)(double x, double y, double z);
 };
 
 void noiseInit()
@@ -45,9 +49,11 @@ NoiseGenerator* noiseCreateGenerator()
 
     /* initialize */
     result = malloc(sizeof(NoiseGenerator));
+    result->function.algorithm = NOISE_FUNCTION_SIMPLEX;
+    result->function.ridge_factor = 0.0;
     result->level_count = 0;
     result->height_offset = 0.0;
-    
+
     noiseValidate(result);
 
     return result;
@@ -62,6 +68,10 @@ void noiseSaveGenerator(PackStream* stream, NoiseGenerator* generator)
 {
     int x;
 
+    x = (int)generator->function.algorithm;
+    packWriteInt(stream, &x);
+    packWriteDouble(stream, &generator->function.ridge_factor);
+    
     packWriteDouble(stream, &generator->height_offset);
     packWriteInt(stream, &generator->level_count);
 
@@ -80,6 +90,10 @@ void noiseSaveGenerator(PackStream* stream, NoiseGenerator* generator)
 void noiseLoadGenerator(PackStream* stream, NoiseGenerator* generator)
 {
     int x;
+
+    packReadInt(stream, &x);
+    generator->function.algorithm = (NoiseFunctionAlgorithm)x;
+    packReadDouble(stream, &generator->function.ridge_factor);
 
     packReadDouble(stream, &generator->height_offset);
     packReadInt(stream, &generator->level_count);
@@ -100,6 +114,7 @@ void noiseLoadGenerator(PackStream* stream, NoiseGenerator* generator)
 
 void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination)
 {
+    destination->function = source->function;
     destination->height_offset = source->height_offset;
     destination->level_count = source->level_count;
 
@@ -112,6 +127,34 @@ void noiseValidate(NoiseGenerator* generator)
 {
     int x;
     double max_height = generator->height_offset;
+    
+    if (generator->function.algorithm < 0 || generator->function.algorithm > NOISE_FUNCTION_NAIVE)
+    {
+        generator->function.algorithm = NOISE_FUNCTION_SIMPLEX;
+    }
+    switch (generator->function.algorithm)
+    {
+    case NOISE_FUNCTION_SIMPLEX:
+        generator->_func_noise_1d = noiseSimplexGet1DValue;
+        generator->_func_noise_2d = noiseSimplexGet2DValue;
+        generator->_func_noise_3d = noiseSimplexGet3DValue;
+        break;
+    case NOISE_FUNCTION_PERLIN:
+        /*TODO*/
+        break;
+    case NOISE_FUNCTION_NAIVE:
+        /* TODO */
+        break;
+    }
+    
+    if (generator->function.ridge_factor > 0.5)
+    {
+        generator->function.ridge_factor = 0.5;
+    }
+    if (generator->function.ridge_factor < -0.5)
+    {
+        generator->function.ridge_factor = -0.5;
+    }
 
     for (x = 0; x < generator->level_count; x++)
     {
@@ -119,6 +162,23 @@ void noiseValidate(NoiseGenerator* generator)
     }
 
     generator->_max_height = max_height;
+}
+
+NoiseFunction noiseGetFunction(NoiseGenerator* generator)
+{
+    return generator->function;
+}
+
+void noiseSetFunction(NoiseGenerator* generator, NoiseFunction* function)
+{
+    generator->function = *function;
+    noiseValidate(generator);
+}
+
+void noiseSetFunctionParams(NoiseGenerator* generator, NoiseFunctionAlgorithm algorithm, double ridge_factor)
+{
+    NoiseFunction function = {algorithm, ridge_factor};
+    noiseSetFunction(generator, &function);
 }
 
 void noiseForceValue(NoiseGenerator* generator, double value)
@@ -269,17 +329,28 @@ void noiseNormalizeHeight(NoiseGenerator* generator, double min_height, double m
     noiseValidate(generator);
 }
 
-
-
-
-static inline double _get1DRawNoiseValue(NoiseGenerator* generator, double x)
+static inline double _applyRidge(double value, double ridge)
 {
-    return noiseSimplexGet2DValue(x, 0.0) * 0.5;
+    if (ridge > 0.0)
+    {
+        return fabs(value + 0.5 - ridge) - 0.5 + ridge;
+    }
+    else if (ridge < 0.0)
+    {
+        return -fabs(value - 0.5 - ridge) + 0.5 + ridge;
+    }
+    else
+    {
+        return value;
+    }
 }
+
+
+
 
 static inline double _get1DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x)
 {
-    return _get1DRawNoiseValue(generator, x / level->scaling + level->xoffset) * level->height;
+    return _applyRidge(generator->_func_noise_1d(x / level->scaling + level->xoffset) * level->height, generator->function.ridge_factor);
 }
 
 double noiseGet1DLevel(NoiseGenerator* generator, int level, double x)
@@ -334,14 +405,9 @@ double noiseGet1DDetail(NoiseGenerator* generator, double x, double detail)
 
 
 
-static inline double _get2DRawNoiseValue(NoiseGenerator* generator, double x, double y)
-{
-    return noiseSimplexGet2DValue(x, y) * 0.5;
-}
-
 static inline double _get2DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x, double y)
 {
-    return _get2DRawNoiseValue(generator, x / level->scaling + level->xoffset, y / level->scaling + level->yoffset) * level->height;
+    return _applyRidge(generator->_func_noise_2d(x / level->scaling + level->xoffset, y / level->scaling + level->yoffset) * level->height, generator->function.ridge_factor);
 }
 
 double noiseGet2DLevel(NoiseGenerator* generator, int level, double x, double y)
@@ -396,14 +462,9 @@ double noiseGet2DDetail(NoiseGenerator* generator, double x, double y, double de
 
 
 
-static inline double _get3DRawNoiseValue(NoiseGenerator* generator, double x, double y, double z)
-{
-    return noiseSimplexGet3DValue(x, y, z) * 0.5;
-}
-
 static inline double _get3DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x, double y, double z)
 {
-    return _get3DRawNoiseValue(generator, x / level->scaling + level->xoffset, y / level->scaling + level->yoffset, z / level->scaling + level->zoffset) * level->height;
+    return _applyRidge(generator->_func_noise_3d(x / level->scaling + level->xoffset, y / level->scaling + level->yoffset, z / level->scaling + level->zoffset) * level->height, generator->function.ridge_factor);
 }
 
 double noiseGet3DLevel(NoiseGenerator* generator, int level, double x, double y, double z)
