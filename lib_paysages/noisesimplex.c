@@ -139,24 +139,24 @@ void noiseSimplexInit()
     _G4 = (5.0 - sqrt(5.0)) / 20.0;
 }
 
-double noiseSimplexGet1DValue(double xin)
+double noiseSimplexGet1DValue(double x)
 {
     /* TODO Find custom function */
-    return noiseSimplexGet2DValue(xin, 0.0);
+    return noiseSimplexGet2DValue(x, 0.0);
 }
 
-double noiseSimplexGet2DValue(double xin, double yin)
+double noiseSimplexGet2DValue(double x, double y)
 {
     double n0, n1, n2; /* Noise contributions from the three corners */
     /* Skew the input space to determine which simplex cell we're in */
-    double s = (xin + yin) * _F2; /* Hairy factor for 2D */
-    int i = _fastfloor(xin + s);
-    int j = _fastfloor(yin + s);
+    double s = (x + y) * _F2; /* Hairy factor for 2D */
+    int i = _fastfloor(x + s);
+    int j = _fastfloor(y + s);
     double t = (i + j) * _G2;
     double X0 = i - t; /* Unskew the cell origin back to (x,y) space */
     double Y0 = j - t;
-    double x0 = xin - X0; /* The x,y distances from the cell origin */
-    double y0 = yin - Y0;
+    double x0 = x - X0; /* The x,y distances from the cell origin */
+    double y0 = y - Y0;
     /* For the 2D case, the simplex shape is an equilateral triangle.
        Determine which simplex we are in. */
     int i1, j1; /* Offsets for second (middle) corner of simplex in (i,j) coords */
@@ -210,21 +210,21 @@ double noiseSimplexGet2DValue(double xin, double yin)
     return 35.0 * (n0 + n1 + n2);
 }
 
-double noiseSimplexGet3DValue(double xin, double yin, double zin)
+double noiseSimplexGet3DValue(double x, double y, double z)
 {
     double n0, n1, n2, n3; /* Noise contributions from the four corners */
     /* Skew the input space to determine which simplex cell we're in */
-    double s = (xin + yin + zin) * _F3; /* Very nice and simple skew factor for 3D */
-    int i = _fastfloor(xin + s);
-    int j = _fastfloor(yin + s);
-    int k = _fastfloor(zin + s);
+    double s = (x + y + z) * _F3; /* Very nice and simple skew factor for 3D */
+    int i = _fastfloor(x + s);
+    int j = _fastfloor(y + s);
+    int k = _fastfloor(z + s);
     double t = (i + j + k) * _G3;
     double X0 = i - t; /* Unskew the cell origin back to (x,y,z) space */
     double Y0 = j - t;
     double Z0 = k - t;
-    double x0 = xin - X0; /* The x,y,z distances from the cell origin */
-    double y0 = yin - Y0;
-    double z0 = zin - Z0;
+    double x0 = x - X0; /* The x,y,z distances from the cell origin */
+    double y0 = y - Y0;
+    double z0 = z - Z0;
     /* For the 3D case, the simplex shape is a slightly irregular tetrahedron.
        Determine which simplex we are in. */
     int i1, j1, k1; /* Offsets for second corner of simplex in (i,j,k) coords */

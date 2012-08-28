@@ -13,21 +13,26 @@ double toolsRandom()
     return ((double)rand()) / (double)RAND_MAX;
 }
 
-static inline double __cubicInterpolate(double p[4], double x)
+static inline double _cubicInterpolate(double p[4], double x)
 {
     return p[1] + 0.5 * x * (p[2] - p[0] + x * (2.0 * p[0] - 5.0 * p[1] + 4.0 * p[2] - p[3] + x * (3.0 * (p[1] - p[2]) + p[3] - p[0])));
+}
+
+double toolsCubicInterpolate(double stencil[4], double x)
+{
+    return _cubicInterpolate(stencil, x);
 }
 
 double toolsBicubicInterpolate(double stencil[16], double x, double y)
 {
     double buf_cubic_y[4];
 
-    buf_cubic_y[0] = __cubicInterpolate(stencil, x);
-    buf_cubic_y[1] = __cubicInterpolate(stencil + 4, x);
-    buf_cubic_y[2] = __cubicInterpolate(stencil + 8, x);
-    buf_cubic_y[3] = __cubicInterpolate(stencil + 12, x);
+    buf_cubic_y[0] = _cubicInterpolate(stencil, x);
+    buf_cubic_y[1] = _cubicInterpolate(stencil + 4, x);
+    buf_cubic_y[2] = _cubicInterpolate(stencil + 8, x);
+    buf_cubic_y[3] = _cubicInterpolate(stencil + 12, x);
 
-    return __cubicInterpolate(buf_cubic_y, y);
+    return _cubicInterpolate(buf_cubic_y, y);
 }
 
 void toolsFloat2DMapCopy(double* src, double* dest, int src_xstart, int src_ystart, int dest_xstart, int dest_ystart, int xsize, int ysize, int src_xstep, int src_ystep, int dest_xstep, int dest_ystep)

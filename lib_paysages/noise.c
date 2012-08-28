@@ -6,6 +6,7 @@
 
 #include "tools.h"
 #include "noisesimplex.h"
+#include "noisenaive.h"
 
 #define MAX_LEVEL_COUNT 30
 
@@ -27,20 +28,22 @@ struct NoiseGenerator
 void noiseInit()
 {
     noiseSimplexInit();
+    noiseNaiveInit();
 }
 
 void noiseQuit()
 {
+    noiseNaiveQuit();
 }
 
 void noiseSave(PackStream* stream)
 {
-    UNUSED(stream);
+    noiseNaiveSave(stream);
 }
 
 void noiseLoad(PackStream* stream)
 {
-    UNUSED(stream);
+    noiseNaiveLoad(stream);
 }
 
 NoiseGenerator* noiseCreateGenerator()
@@ -144,6 +147,9 @@ void noiseValidate(NoiseGenerator* generator)
         break;
     case NOISE_FUNCTION_NAIVE:
         /* TODO */
+        generator->_func_noise_1d = noiseNaiveGet1DValue;
+        generator->_func_noise_2d = noiseNaiveGet2DValue;
+        generator->_func_noise_3d = noiseNaiveGet3DValue;
         break;
     }
     
