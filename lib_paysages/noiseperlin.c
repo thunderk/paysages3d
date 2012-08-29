@@ -39,7 +39,7 @@ static double g1[B + B + 2];
 
 double noisePerlinGet1DValue(double x)
 {
-        double vec[1] = {x};
+        double vec[1] = {x*2.0};
 	int bx0, bx1;
 	double rx0, rx1, sx, t, u, v;
 
@@ -50,12 +50,12 @@ double noisePerlinGet1DValue(double x)
 	u = rx0 * g1[ p[ bx0 ] ];
 	v = rx1 * g1[ p[ bx1 ] ];
 
-	return lerp(sx, u, v);
+	return lerp(sx, u, v) * 1.068;
 }
 
 double noisePerlinGet2DValue(double x, double y)
 {
-        double vec[2] = {x, y};
+        double vec[2] = {x*2.0, y*2.0};
 	int bx0, bx1, by0, by1, b00, b10, b01, b11;
 	double rx0, rx1, ry0, ry1, *q, sx, sy, a, b, t, u, v;
 	int i, j;
@@ -84,12 +84,12 @@ double noisePerlinGet2DValue(double x, double y)
 	q = g2[ b11 ] ; v = at2(rx1,ry1);
 	b = lerp(sx, u, v);
 
-	return lerp(sy, a, b);
+	return lerp(sy, a, b) * 0.709;
 }
 
 double noisePerlinGet3DValue(double x, double y, double z)
 {
-        double vec[3] = {x, y, z};
+        double vec[3] = {x*2.0, y*2.0, z*2.0};
 	int bx0, bx1, by0, by1, bz0, bz1, b00, b10, b01, b11;
 	double rx0, rx1, ry0, ry1, rz0, rz1, *q, sy, sz, a, b, c, d, t, u, v;
 	int i, j;
@@ -132,7 +132,7 @@ double noisePerlinGet3DValue(double x, double y, double z)
 
 	d = lerp(sy, a, b);
 
-	return lerp(sz, c, d);
+	return lerp(sz, c, d) * 0.661;
 }
 
 static void _normalize2(double v[2])

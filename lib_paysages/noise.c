@@ -31,6 +31,26 @@ void noiseInit()
     noiseSimplexInit();
     noisePerlinInit();
     noiseNaiveInit();
+    
+    /* Noise stats */
+    /*NoiseGenerator* noise;
+    int x;
+    double min, max, value;
+    noise = noiseCreateGenerator();
+    noiseSetFunctionParams(noise, NOISE_FUNCTION_NAIVE, 0.0);
+    noiseAddLevelSimple(noise, 1.0, 1.0);
+    min = 100000.0;
+    max = -100000.0;
+    for (x = 0; x < 1000000; x++)
+    {
+        value = noiseGet1DTotal(noise, toolsRandom() * 10000.0);
+        value = noiseGet2DTotal(noise, toolsRandom() * 10000.0, toolsRandom() * 10000.0);
+        value = noiseGet3DTotal(noise, toolsRandom() * 10000.0, toolsRandom() * 10000.0, toolsRandom() * 10000.0);
+        if (value < min) min = value;
+        if (value > max) max = value;
+    }
+    printf("%f %f\n", min, max);
+    noiseDeleteGenerator(noise);*/
 }
 
 void noiseQuit()
