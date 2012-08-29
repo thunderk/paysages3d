@@ -7,6 +7,7 @@
 #include "tools.h"
 #include "noisesimplex.h"
 #include "noisenaive.h"
+#include "noiseperlin.h"
 
 #define MAX_LEVEL_COUNT 30
 
@@ -28,6 +29,7 @@ struct NoiseGenerator
 void noiseInit()
 {
     noiseSimplexInit();
+    noisePerlinInit();
     noiseNaiveInit();
 }
 
@@ -143,10 +145,11 @@ void noiseValidate(NoiseGenerator* generator)
         generator->_func_noise_3d = noiseSimplexGet3DValue;
         break;
     case NOISE_FUNCTION_PERLIN:
-        /*TODO*/
+        generator->_func_noise_1d = noisePerlinGet1DValue;
+        generator->_func_noise_2d = noisePerlinGet2DValue;
+        generator->_func_noise_3d = noisePerlinGet3DValue;
         break;
     case NOISE_FUNCTION_NAIVE:
-        /* TODO */
         generator->_func_noise_1d = noiseNaiveGet1DValue;
         generator->_func_noise_2d = noiseNaiveGet2DValue;
         generator->_func_noise_3d = noiseNaiveGet3DValue;
