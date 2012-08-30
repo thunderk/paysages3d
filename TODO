@@ -1,7 +1,6 @@
 Technology Preview 2 :
 - Fully move layer management from BaseForm to BaseFormLayer.
 - Replace math.h methods by optimized ones (fastfloor, fastsin...).
-- Reimplement perlin noise and custom noise.
 - Replace terrain canvas editor by full sculpting editor.
    => Add a generation dialog, with fixed resolution.
    => Store local terrain modifications in fully dynamic canvas.

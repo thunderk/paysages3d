@@ -9,6 +9,7 @@
 #include <QScrollArea>
 #include <QPushButton>
 #include <math.h>
+#include <qt4/QtGui/qwidget.h>
 
 /**************** Previews ****************/
 class PreviewLevel:public BasePreview
@@ -124,13 +125,14 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     
     function->layout()->addWidget(new QLabel(tr("Noise function")));
     function_algo = new QComboBox(function);
-    function_algo->addItems(QStringList(tr("Simplex")) << tr("Perlin") << tr("Naive"));
+    function_algo->addItems(QStringList(tr("Simplex (best)")) << tr("Perlin (fast)") << tr("Naive (slow)"));
     function->layout()->addWidget(function_algo);
     function->layout()->addWidget(new QLabel(tr("Ridge factor")));
     function_ridge = new QSlider(Qt::Horizontal, function);
     function_ridge->setRange(-10, 10);
     function_ridge->setTickInterval(10);
     function_ridge->setTickPosition(QSlider::TicksBelow);
+    function_ridge->setMinimumWidth(150);
     function->layout()->addWidget(function_ridge);
     QObject::connect(function_algo, SIGNAL(currentIndexChanged(int)), this, SLOT(functionChanged()));
     QObject::connect(function_ridge, SIGNAL(valueChanged(int)), this, SLOT(functionChanged()));

@@ -362,6 +362,18 @@ static inline double _applyRidge(double value, double ridge)
 {
     if (ridge > 0.0)
     {
+        return fabs(value + 0.5 - ridge) / (1.0 - ridge) - 0.5;
+    }
+    else if (ridge < 0.0)
+    {
+        return -fabs(value - 0.5 - ridge) / (1.0 + ridge) + 0.5;
+    }
+    else
+    {
+        return value;
+    }
+    /*if (ridge > 0.0)
+    {
         return fabs(value + 0.5 - ridge) - 0.5 + ridge;
     }
     else if (ridge < 0.0)
@@ -371,7 +383,7 @@ static inline double _applyRidge(double value, double ridge)
     else
     {
         return value;
-    }
+    }*/
 }
 
 
@@ -379,7 +391,7 @@ static inline double _applyRidge(double value, double ridge)
 
 static inline double _get1DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x)
 {
-    return _applyRidge(generator->_func_noise_1d(x / level->scaling + level->xoffset) * level->height, generator->function.ridge_factor);
+    return _applyRidge(generator->_func_noise_1d(x / level->scaling + level->xoffset), generator->function.ridge_factor) * level->height;
 }
 
 double noiseGet1DLevel(NoiseGenerator* generator, int level, double x)
@@ -436,7 +448,7 @@ double noiseGet1DDetail(NoiseGenerator* generator, double x, double detail)
 
 static inline double _get2DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x, double y)
 {
-    return _applyRidge(generator->_func_noise_2d(x / level->scaling + level->xoffset, y / level->scaling + level->yoffset) * level->height, generator->function.ridge_factor);
+    return _applyRidge(generator->_func_noise_2d(x / level->scaling + level->xoffset, y / level->scaling + level->yoffset), generator->function.ridge_factor) * level->height;
 }
 
 double noiseGet2DLevel(NoiseGenerator* generator, int level, double x, double y)
@@ -493,7 +505,7 @@ double noiseGet2DDetail(NoiseGenerator* generator, double x, double y, double de
 
 static inline double _get3DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x, double y, double z)
 {
-    return _applyRidge(generator->_func_noise_3d(x / level->scaling + level->xoffset, y / level->scaling + level->yoffset, z / level->scaling + level->zoffset) * level->height, generator->function.ridge_factor);
+    return _applyRidge(generator->_func_noise_3d(x / level->scaling + level->xoffset, y / level->scaling + level->yoffset, z / level->scaling + level->zoffset), generator->function.ridge_factor) * level->height;
 }
 
 double noiseGet3DLevel(NoiseGenerator* generator, int level, double x, double y, double z)
