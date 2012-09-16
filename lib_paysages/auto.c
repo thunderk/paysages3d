@@ -80,7 +80,7 @@ void autoGenRealisticLandscape(int seed)
 
     /* Water */
     water = waterCreateDefinition();
-    water.height = -5.0;
+    water.height = -4.0;
     water.transparency = 0.5;
     water.reflection = 0.4;
     water.transparency_depth = 6.0;

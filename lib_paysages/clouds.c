@@ -89,11 +89,11 @@ CloudsLayerDefinition* cloudsLayerCreateDefinition()
     result->lighttraversal = 7.0;
     result->minimumlight = 0.4;
     result->shape_scaling = 10.0;
-    result->edge_scaling = 0.3;
-    result->edge_length = 0.4;
-    result->base_coverage = 0.35;
+    result->edge_scaling = 0.8;
+    result->edge_length = 0.3;
+    result->base_coverage = 0.4;
     result->shape_noise = noiseCreateGenerator();
-    noiseAddLevelsSimple(result->shape_noise, 6, 1.0, 1.0);
+    noiseAddLevelsSimple(result->shape_noise, 2, 1.0, 1.0);
     noiseSetFunctionParams(result->shape_noise, NOISE_FUNCTION_SIMPLEX, 0.3);
     result->edge_noise = noiseCreateGenerator();
     noiseAddLevelsSimple(result->edge_noise, 8, 1.0, 1.0);
@@ -278,7 +278,7 @@ static inline Vector3 _getNormal(CloudsLayerDefinition* layer, Vector3 position,
 static int _optimizeSearchLimits(CloudsLayerDefinition* layer, Vector3* start, Vector3* end)
 {
     Vector3 diff;
-
+    
     if (start->y > layer->lower_altitude + layer->thickness)
     {
         if (end->y >= layer->lower_altitude + layer->thickness)
@@ -314,7 +314,7 @@ static int _optimizeSearchLimits(CloudsLayerDefinition* layer, Vector3* start, V
     else /* start is inside layer */
     {
         diff = v3Sub(*end, *start);
-        if (end->y > layer->thickness)
+        if (end->y > layer->lower_altitude + layer->thickness)
         {
             *end = v3Add(*start, v3Scale(diff, (layer->lower_altitude + layer->thickness - start->y) / diff.y));
         }

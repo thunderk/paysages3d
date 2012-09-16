@@ -11,7 +11,8 @@ Technology Preview 2 :
    => Find a proper model for night sky (maybe Shirley)
 - InputInt doesn't honor small_step.
 - Keep skydome lights in cache for a render.
-- Add buttons to restore "auto" default values in tabs and dialogs.
+- Add buttons to restore "auto" default values in tabs and dialogs (with several auto presets).
+- Clouds should keep distance to ground.
 - Add "hardness to light" and shadow control ("minimum lighting") to material.
 
 Technlogy Preview 3 :
