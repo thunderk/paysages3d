@@ -3,9 +3,9 @@
 
 #include <QWidget>
 #include <QSlider>
-#include "baseinput.h"
+#include "inputdouble.h"
 
-class InputInt:public BaseInput
+class InputInt:public InputDouble
 {
     Q_OBJECT
 
@@ -18,12 +18,8 @@ public slots:
     virtual void revert();
 
 private:
-    QSlider* _slider;
     int* _value;
-    int _min;
-    int _max;
-    int _small_step;
-    int _large_step;
+    double _dvalue;
 };
 
 #endif
