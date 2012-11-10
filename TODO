@@ -1,11 +1,7 @@
 Technology Preview 2 :
 - Fully move layer management from BaseForm to BaseFormLayer.
 - Replace math.h methods by optimized ones (fastfloor, fastsin...).
-- Replace terrain canvas editor by full sculpting editor.
-   => Add a generation dialog, with fixed resolution.
-   => Store local terrain modifications in fully dynamic canvas.
-   => Add map preview with editor area.
-   => Allow camera move and zoom.
+- Add foam to water.
 - Finalize Preetham's model usage
    => Apply model to atmosphere (aerial perspective)
    => Find a proper model for night sky (maybe Shirley)
@@ -16,6 +12,11 @@ Technology Preview 2 :
 
 Technlogy Preview 3 :
 - Add logarithmic sliders for some float values.
+- Replace terrain canvas editor by full sculpting editor.
+   => Add a generation dialog, with fixed resolution.
+   => Store local terrain modifications in fully dynamic canvas.
+   => Add map preview with editor area.
+   => Allow camera move and zoom.
 - Improve previews.
    => Add user markers on OSD.
    => Add areas marking.

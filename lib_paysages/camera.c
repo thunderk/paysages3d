@@ -2,7 +2,6 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include <glib-2.0/glib/gmacros.h>
 #include "euclid.h"
 #include "render.h"
 #include "shared/types.h"
@@ -287,11 +286,12 @@ Vector3 cameraUnproject(CameraDefinition* camera, Renderer* renderer, Vector3 po
 
 static inline void _updateBox(Vector3* point, double* xmin, double* xmax, double* ymin, double* ymax, double* zmax)
 {
-    *xmin = MIN(*xmin, point->x);
-    *xmax = MAX(*xmax, point->x);
-    *ymin = MIN(*ymin, point->y);
-    *ymax = MAX(*ymax, point->y);
-    *zmax = MAX(*zmax, point->z);
+    *xmin = (*xmin < point->x) ? *xmin : point->x;
+    *ymin = (*ymin < point->y) ? *ymin : point->y;
+    
+    *xmax = (*xmax > point->x) ? *xmax : point->x;
+    *ymax = (*ymax > point->y) ? *ymax : point->y;
+    *zmax = (*zmax > point->z) ? *zmax : point->z;
 }
 
 int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, double ysize, double zsize)

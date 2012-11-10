@@ -122,7 +122,7 @@ Vector3 terrainCanvasApply(TerrainCanvas* canvas, Vector3 location)
         location.z <= canvas->area.location_z + canvas->area.size_z)
     {
         double inside_x, inside_z;
-        double height, distance;
+        double height;
         
         /* Get height map displacement */
         geoareaToLocal(&canvas->area, location.x, location.z, &inside_x, &inside_z);

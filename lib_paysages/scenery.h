@@ -15,7 +15,6 @@
 #include "sky.h"
 #include "terrain.h"
 #include "textures.h"
-#include "vegetation.h"
 #include "water.h"
 #include "pack.h"
 #include "renderer.h"
@@ -54,9 +53,6 @@ void sceneryGetTerrain(TerrainDefinition* terrain);
 
 void scenerySetTextures(TexturesDefinition* textures);
 void sceneryGetTextures(TexturesDefinition* textures);
-
-void scenerySetVegetation(VegetationDefinition* vegetation);
-void sceneryGetVegetation(VegetationDefinition* vegetation);
 
 void scenerySetWater(WaterDefinition* water);
 void sceneryGetWater(WaterDefinition* water);

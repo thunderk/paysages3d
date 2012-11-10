@@ -8,7 +8,8 @@ BaseFormLayer::BaseFormLayer(QWidget* parent, Layers* layers) : BaseForm(parent,
     _layers_modified = NULL;
     if (layers)
     {
-        setLayers(layers);
+        _layers_original = layers;
+        _layers_modified = layersCreateCopy(_layers_original);
     }
 }
 

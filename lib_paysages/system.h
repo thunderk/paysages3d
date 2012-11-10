@@ -4,6 +4,7 @@
 /* Library dependent features */
 
 #include "color.h"
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,8 +28,12 @@ typedef GThread Thread;
 
 static inline Thread* threadCreate(ThreadFunction function, void* data)
 {
+#ifdef GLIB_VERSION_2_32
+    return g_thread_new("thread", (GThreadFunc)function, data);
+#else
     GError* error;
     return g_thread_create((GThreadFunc)function, data, 1, &error);
+#endif
 }
 
 static inline void* threadJoin(Thread* thread)
@@ -40,12 +45,23 @@ typedef GMutex Mutex;
 
 static inline Mutex* mutexCreate()
 {
+#ifdef GLIB_VERSION_2_32
+    Mutex* mutex = malloc(sizeof(Mutex));
+    g_mutex_init(mutex);
+    return mutex;
+#else
     return g_mutex_new();
+#endif
 }
 
 static inline void mutexDestroy(Mutex* mutex)
 {
+#ifdef GLIB_VERSION_2_32
+    g_mutex_clear(mutex);
+    free(mutex);
+#else
     g_mutex_free(mutex);
+#endif
 }
 
 static inline void mutexAcquire(Mutex* mutex)

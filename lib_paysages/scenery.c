@@ -5,7 +5,6 @@
 #include "euclid.h"
 #include "render.h"
 #include "system.h"
-#include "vegetation.h"
 
 static AtmosphereDefinition _atmosphere;
 static CameraDefinition _camera;
@@ -14,7 +13,6 @@ static LightingDefinition _lighting;
 static SkyDefinition _sky;
 static TerrainDefinition _terrain;
 static TexturesDefinition _textures;
-static VegetationDefinition* _vegetation;
 static WaterDefinition _water;
 
 static SceneryCustomDataCallback _custom_save = NULL;
@@ -33,7 +31,6 @@ void sceneryInit()
     _sky = skyCreateDefinition();
     _terrain = terrainCreateDefinition();
     _textures = texturesCreateDefinition();
-    _vegetation = vegetationCreateDefinition();
     _water = waterCreateDefinition();
     
     _custom_save = NULL;
@@ -49,7 +46,6 @@ void sceneryQuit()
     skyDeleteDefinition(&_sky);
     terrainDeleteDefinition(&_terrain);
     texturesDeleteDefinition(&_textures);
-    vegetationDeleteDefinition(_vegetation);
     waterDeleteDefinition(&_water);
 
     lightingQuit();
@@ -73,7 +69,6 @@ void scenerySave(PackStream* stream)
     skySave(stream, &_sky);
     terrainSave(stream, &_terrain);
     texturesSave(stream, &_textures);
-    vegetationSave(stream, _vegetation);
     waterSave(stream, &_water);
     
     if (_custom_save)
@@ -94,7 +89,6 @@ void sceneryLoad(PackStream* stream)
     skyLoad(stream, &_sky);
     terrainLoad(stream, &_terrain);
     texturesLoad(stream, &_textures);
-    vegetationLoad(stream, _vegetation);
     waterLoad(stream, &_water);
     
     atmosphereValidateDefinition(&_atmosphere);
@@ -104,7 +98,6 @@ void sceneryLoad(PackStream* stream)
     skyValidateDefinition(&_sky);
     terrainValidateDefinition(&_terrain);
     texturesValidateDefinition(&_textures);
-    vegetationValidateDefinition(_vegetation);
     waterValidateDefinition(&_water);
     
     if (_custom_load)
@@ -193,17 +186,6 @@ void scenerySetTextures(TexturesDefinition* textures)
 void sceneryGetTextures(TexturesDefinition* textures)
 {
     texturesCopyDefinition(&_textures, textures);
-}
-
-void scenerySetVegetation(VegetationDefinition* vegetation)
-{
-    vegetationCopyDefinition(vegetation, _vegetation);
-    vegetationValidateDefinition(_vegetation);
-}
-
-void sceneryGetTVegetation(VegetationDefinition* vegetation)
-{
-    vegetationCopyDefinition(_vegetation, vegetation);
 }
 
 void scenerySetWater(WaterDefinition* water)
