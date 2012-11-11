@@ -15,6 +15,9 @@ public:
 public slots:
     virtual void revertConfig();
     virtual void applyConfig();
+    
+protected slots:
+    virtual void configChangeEvent();
 
 private:
     BasePreview* previewCoverage;

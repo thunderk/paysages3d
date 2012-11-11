@@ -19,9 +19,13 @@ void waterSave(PackStream* stream, WaterDefinition* definition)
     packWriteDouble(stream, &definition->transparency);
     packWriteDouble(stream, &definition->reflection);
     packWriteDouble(stream, &definition->lighting_depth);
-    noiseSaveGenerator(stream, definition->waves_noise);
-    packWriteDouble(stream, &definition->waves_noise_height);
-    packWriteDouble(stream, &definition->waves_noise_scale);
+    
+    packWriteDouble(stream, &definition->scaling);
+    packWriteDouble(stream, &definition->waves_height);
+    packWriteDouble(stream, &definition->detail_height);
+    packWriteDouble(stream, &definition->turbulence);
+    
+    noiseSaveGenerator(stream, definition->_waves_noise);
 }
 
 void waterLoad(PackStream* stream, WaterDefinition* definition)
@@ -33,9 +37,13 @@ void waterLoad(PackStream* stream, WaterDefinition* definition)
     packReadDouble(stream, &definition->transparency);
     packReadDouble(stream, &definition->reflection);
     packReadDouble(stream, &definition->lighting_depth);
-    noiseLoadGenerator(stream, definition->waves_noise);
-    packReadDouble(stream, &definition->waves_noise_height);
-    packReadDouble(stream, &definition->waves_noise_scale);
+
+    packReadDouble(stream, &definition->scaling);
+    packReadDouble(stream, &definition->waves_height);
+    packReadDouble(stream, &definition->detail_height);
+    packReadDouble(stream, &definition->turbulence);
+
+    noiseLoadGenerator(stream, definition->_waves_noise);
 
     waterValidateDefinition(definition);
 }
@@ -44,61 +52,95 @@ WaterDefinition waterCreateDefinition()
 {
     WaterDefinition result;
 
-    result.material.base = COLOR_BLACK;
-    result.material.reflection = 0.0;
-    result.material.shininess = 0.0;
-    result.depth_color = COLOR_BLACK;
-    result.height = -1000.0;
-    result.reflection = 0.0;
-    result.transparency = 0.0;
-    result.transparency_depth = 0.0;
-    result.lighting_depth = 0.0;
-    result.waves_noise = noiseCreateGenerator();
-    result.waves_noise_height = 0.02;
-    result.waves_noise_scale = 0.2;
-
+    result.height = -4.0;
+    result._waves_noise = noiseCreateGenerator();
+    
     return result;
 }
 
 void waterDeleteDefinition(WaterDefinition* definition)
 {
-    noiseDeleteGenerator(definition->waves_noise);
+    noiseDeleteGenerator(definition->_waves_noise);
+}
+
+void waterAutoPreset(WaterDefinition* definition, WaterPreset preset)
+{
+    if (preset == WATER_PRESET_STD)
+    {
+        definition->transparency = 0.5;
+        definition->reflection = 0.4;
+        definition->transparency_depth = 6.0;
+        definition->material.base.r = 0.05;
+        definition->material.base.g = 0.15;
+        definition->material.base.b = 0.2;
+        definition->material.base.a = 1.0;
+        definition->material.reflection = 1.0;
+        definition->material.shininess = 16.0;
+        definition->depth_color.r = 0.0;
+        definition->depth_color.g = 0.1;
+        definition->depth_color.b = 0.1;
+        definition->depth_color.a = 1.0;
+        definition->lighting_depth = 3.0;
+        definition->scaling = 1.0;
+        definition->waves_height = 1.0;
+        definition->detail_height = 0.05;
+        definition->turbulence = 0.3;
+    }
+    
+    waterValidateDefinition(definition);
 }
 
 void waterCopyDefinition(WaterDefinition* source, WaterDefinition* destination)
 {
     NoiseGenerator* noise;
 
-    noise = destination->waves_noise;
+    noise = destination->_waves_noise;
     *destination = *source;
-    destination->waves_noise = noise;
-    noiseCopy(source->waves_noise, destination->waves_noise);
+    destination->_waves_noise = noise;
+    noiseCopy(source->_waves_noise, destination->_waves_noise);
 }
 
 void waterValidateDefinition(WaterDefinition* definition)
 {
+    double scaling = definition->scaling * 0.3;
+    noiseClearLevels(definition->_waves_noise);
+    if (definition->waves_height > 0.0)
+    {
+        noiseAddLevelsSimple(definition->_waves_noise, 2, scaling, definition->waves_height * scaling * 0.03);
+    }
+    if (definition->detail_height > 0.0)
+    {
+        noiseAddLevelsSimple(definition->_waves_noise, 3, scaling * 0.1, definition->detail_height * scaling * 0.03);
+    }
+    noiseSetFunctionParams(definition->_waves_noise, NOISE_FUNCTION_SIMPLEX, -definition->turbulence);
+    noiseValidate(definition->_waves_noise);
 }
 
-static inline double _getHeight(WaterDefinition* definition, double x, double z, double detail)
+static inline double _getHeight(WaterDefinition* definition, double x, double z)
 {
-    return definition->height + noiseGet2DDetail(definition->waves_noise, x / definition->waves_noise_scale, z / definition->waves_noise_scale, detail) * definition->waves_noise_height;
+    return definition->height + noiseGet2DTotal(definition->_waves_noise, x, z);
 }
 
 static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, double detail)
 {
     Vector3 back, right;
     double x, z;
+    
+    if (detail < 0.00001)
+    {
+        detail = 0.00001;
+    }
 
     x = base.x;
     z = base.z;
 
     back.x = x;
-    back.y = _getHeight(definition, x, z + detail, detail);
+    back.y = _getHeight(definition, x, z + detail);
     back.z = z + detail;
     back = v3Sub(back, base);
 
     right.x = x + detail;
-    right.y = _getHeight(definition, x + detail, z, detail);
+    right.y = _getHeight(definition, x + detail, z);
     right.z = z;
     right = v3Sub(right, base);
 
@@ -135,8 +177,8 @@ HeightInfo waterGetHeightInfo(WaterDefinition* definition)
     HeightInfo info;
     
     info.base_height = definition->height;
-    info.min_height = definition->height - noiseGetMaxValue(definition->waves_noise) * definition->waves_noise_height;
-    info.max_height = definition->height + noiseGetMaxValue(definition->waves_noise) * definition->waves_noise_height;
+    info.min_height = definition->height - noiseGetMaxValue(definition->_waves_noise);
+    info.max_height = definition->height + noiseGetMaxValue(definition->_waves_noise);
     
     return info;
 }
@@ -185,7 +227,7 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
 
     detail = renderer->getPrecision(renderer, location);
 
-    location.y = _getHeight(definition, location.x, location.z, detail);
+    location.y = _getHeight(definition, location.x, location.z);
     result.location = location;
 
     normal = _getNormal(definition, location, detail);
@@ -239,7 +281,7 @@ static Vector3 _getFirstPassVertex(WaterDefinition* definition, double x, double
     Vector3 result;
 
     result.x = x;
-    result.y = _getHeight(definition, x, z, 0.0);
+    result.y = _getHeight(definition, x, z);
     result.z = z;
 
     return result;

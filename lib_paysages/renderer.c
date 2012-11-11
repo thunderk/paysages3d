@@ -24,7 +24,7 @@ static int _addRenderProgress(Renderer* renderer, double progress)
 
 static double _getPrecision(Renderer* renderer, Vector3 location)
 {
-    return 0.001;
+    return 0.0;
 }
 
 static Vector3 _projectPoint(Renderer* renderer, Vector3 point)

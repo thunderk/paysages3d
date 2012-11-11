@@ -220,9 +220,10 @@ FormWater::FormWater(QWidget *parent):
     addInputDouble(tr("Reflection"), &_definition.reflection, 0.0, 1.0, 0.001, 0.1);
     addInputDouble(tr("Transparency distance"), &_definition.transparency_depth, 0.0, 20.0, 0.1, 1.0);
     addInputDouble(tr("Light-through distance"), &_definition.lighting_depth, 0.0, 20.0, 0.1, 1.0);
-    addInputNoise(tr("Waves noise"), _definition.waves_noise);
-    addInputDouble(tr("Waves height"), &_definition.waves_noise_height, 0.0, 0.1, 0.001, 0.01);
-    addInputDouble(tr("Waves scaling"), &_definition.waves_noise_scale, 0.03, 3.0, 0.03, 0.3);
+    addInputDouble(tr("Waves scaling"), &_definition.scaling, 0.02, 2.0, 0.02, 0.2);
+    addInputDouble(tr("Waves height"), &_definition.waves_height, 0.0, 2.0, 0.02, 0.2);
+    addInputDouble(tr("Waves detail"), &_definition.detail_height, 0.0, 0.3, 0.003, 0.03);
+    addInputDouble(tr("Waves turbulence"), &_definition.turbulence, 0.0, 0.5, 0.005, 0.05);
 
     revertConfig();
 }
@@ -237,4 +238,10 @@ void FormWater::applyConfig()
 {
     scenerySetWater(&_definition);
     BaseForm::applyConfig();
+}
+
+void FormWater::configChangeEvent()
+{
+    waterValidateDefinition(&_definition);
+    BaseForm::configChangeEvent();
 }

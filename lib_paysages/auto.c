@@ -80,27 +80,7 @@ void autoGenRealisticLandscape(int seed)
 
     /* Water */
     water = waterCreateDefinition();
-    water.height = -4.0;
-    water.transparency = 0.5;
-    water.reflection = 0.4;
-    water.transparency_depth = 6.0;
-    water.material.base.r = 0.05;
-    water.material.base.g = 0.15;
-    water.material.base.b = 0.2;
-    water.material.base.a = 1.0;
-    water.material.reflection = 1.0;
-    water.material.shininess = 16.0;
-    water.depth_color.r = 0.0;
-    water.depth_color.g = 0.1;
-    water.depth_color.b = 0.1;
-    water.depth_color.a = 1.0;
-    water.lighting_depth = 3.0;
-    water.waves_noise_height = 0.005;
-    water.waves_noise_scale = 0.21;
-    noiseClearLevels(water.waves_noise);
-    noiseAddLevelsSimple(water.waves_noise, 2, 1.0, 1.0);
-    noiseAddLevelsSimple(water.waves_noise, 3, 0.15, 0.1);
-    noiseSetFunctionParams(water.waves_noise, NOISE_FUNCTION_SIMPLEX, -0.3);
+    waterAutoPreset(&water, WATER_PRESET_STD);
     scenerySetWater(&water);
     waterDeleteDefinition(&water);
 

@@ -11,6 +11,11 @@
 extern "C" {
 #endif
 
+typedef enum
+{
+    WATER_PRESET_STD
+} WaterPreset;
+    
 typedef struct
 {
     double height;
@@ -20,9 +25,13 @@ typedef struct
     Color depth_color;
     double transparency_depth;
     double lighting_depth;
-    NoiseGenerator* waves_noise;
-    double waves_noise_height;
-    double waves_noise_scale;
+    
+    double scaling;
+    double turbulence;
+    double waves_height;
+    double detail_height;
+    
+    NoiseGenerator* _waves_noise;
 } WaterDefinition;
 
 typedef struct
@@ -39,6 +48,7 @@ void waterLoad(PackStream* stream, WaterDefinition* definition);
 
 WaterDefinition waterCreateDefinition();
 void waterDeleteDefinition(WaterDefinition* definition);
+void waterAutoPreset(WaterDefinition* definition, WaterPreset preset);
 void waterCopyDefinition(WaterDefinition* source, WaterDefinition* destination);
 void waterValidateDefinition(WaterDefinition* definition);
 
