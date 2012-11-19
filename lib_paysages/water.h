@@ -31,6 +31,9 @@ typedef struct
     double waves_height;
     double detail_height;
     
+    double foam_coverage;
+    SurfaceMaterial foam_material;
+    
     NoiseGenerator* _waves_noise;
 } WaterDefinition;
 
@@ -40,6 +43,7 @@ typedef struct
     Color base;
     Color reflected;
     Color refracted;
+    Color foam;
     Color final;
 } WaterResult;
 

@@ -36,6 +36,7 @@ public slots:
 
 protected slots:
     virtual void configChangeEvent();
+    virtual void autoPresetSelected(int preset);
     
 private slots:
     void rebuildLayerList();
@@ -45,10 +46,12 @@ private slots:
     void layerDownClicked();
     void layerRenameClicked();
     void layerListChanged();
+    void presetChoiceClicked();
 
 protected:
     void addPreview(BasePreview* preview, QString label);
     QPushButton* addButton(QString label);
+    void addAutoPreset(QString label);
     BaseInput* addInput(BaseInput* input);
     BaseInput* addInputInt(QString label, int* value, int min, int max, int small_step, int large_step);
     BaseInput* addInputDouble(QString label, double* value, double min, double max, double small_step, double large_step);
@@ -83,12 +86,15 @@ private:
     QWidget* _buttons;
     QPushButton* _button_apply;
     QPushButton* _button_revert;
+    QPushButton* _button_preset;
 
     QWidget* _previews;
     QVector<BasePreview*> _previews_list;
     bool _auto_update_previews;
     
     QVector<BaseInput*> _inputs_list;
+    
+    QStringList _preset_list;
     
     bool _with_layers;
     QComboBox* _layer_list;

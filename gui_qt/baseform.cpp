@@ -120,6 +120,10 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
     _button_apply->setIcon(QIcon("images/apply.png"));
     _button_apply->setEnabled(false);
     connect(_button_apply, SIGNAL(clicked()), this, SLOT(applyConfig()));
+    _button_preset = addButton(tr("Load preset"));
+    _button_preset->setIcon(QIcon("images/auto.png"));
+    _button_preset->hide();
+    connect(_button_preset, SIGNAL(clicked()), this, SLOT(presetChoiceClicked()));
     
     _auto_update_previews = true;
 
@@ -181,6 +185,16 @@ void BaseForm::configChangeEvent()
     {
         updatePreviews();
     }
+}
+
+void BaseForm::autoPresetSelected(int)
+{
+    for (int i = 0; i < _inputs_list.size(); i++)
+    {
+        _inputs_list[i]->revert();
+    }
+    updatePreviews();
+    configChangeEvent();
 }
 
 void BaseForm::revertConfig()
@@ -322,6 +336,21 @@ void BaseForm::layerListChanged()
     _button_revert->setEnabled(changed);
 }
 
+void BaseForm::presetChoiceClicked()
+{
+    bool ok;
+    QString item = QInputDialog::getItem(this, tr("Choose a preset"), tr("Preset settings : "), _preset_list, 0, false, &ok);
+    
+    if (ok && !item.isEmpty())
+    {
+        int preset = _preset_list.indexOf(item);
+        if (preset >= 0)
+        {
+            autoPresetSelected(preset);
+        }
+    }
+}
+
 void BaseForm::addPreview(BasePreview* preview, QString label)
 {
     QLabel* label_widget;
@@ -340,6 +369,12 @@ QPushButton* BaseForm::addButton(QString label)
     QPushButton* button = new QPushButton(label);
     _buttons->layout()->addWidget(button);
     return button;
+}
+
+void BaseForm::addAutoPreset(QString label)
+{
+    _preset_list.append(label);
+    _button_preset->show();
 }
 
 BaseInput* BaseForm::addInput(BaseInput* input)

@@ -24,6 +24,9 @@ void waterSave(PackStream* stream, WaterDefinition* definition)
     packWriteDouble(stream, &definition->waves_height);
     packWriteDouble(stream, &definition->detail_height);
     packWriteDouble(stream, &definition->turbulence);
+
+    packWriteDouble(stream, &definition->foam_coverage);
+    materialSave(stream, &definition->foam_material);
     
     noiseSaveGenerator(stream, definition->_waves_noise);
 }
@@ -42,6 +45,9 @@ void waterLoad(PackStream* stream, WaterDefinition* definition)
     packReadDouble(stream, &definition->waves_height);
     packReadDouble(stream, &definition->detail_height);
     packReadDouble(stream, &definition->turbulence);
+
+    packReadDouble(stream, &definition->foam_coverage);
+    materialLoad(stream, &definition->foam_material);
 
     noiseLoadGenerator(stream, definition->_waves_noise);
 
@@ -85,6 +91,12 @@ void waterAutoPreset(WaterDefinition* definition, WaterPreset preset)
         definition->waves_height = 1.0;
         definition->detail_height = 0.05;
         definition->turbulence = 0.3;
+        definition->foam_coverage = 0.4;
+        definition->foam_material.base.r = 0.8;
+        definition->foam_material.base.g = 0.8;
+        definition->foam_material.base.b = 0.8;
+        definition->foam_material.reflection = 0.2;
+        definition->foam_material.shininess = 1.5;
     }
     
     waterValidateDefinition(definition);
@@ -126,11 +138,6 @@ static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, doub
     Vector3 back, right;
     double x, z;
     
-    if (detail < 0.00001)
-    {
-        detail = 0.00001;
-    }
-
     x = base.x;
     z = base.z;
 
@@ -186,6 +193,9 @@ HeightInfo waterGetHeightInfo(WaterDefinition* definition)
 Color waterLightFilter(WaterDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light)
 {
     double factor;
+    
+    UNUSED(renderer);
+    UNUSED(light_location);
 
     if (location.y < definition->height)
     {
@@ -215,6 +225,67 @@ Color waterLightFilter(WaterDefinition* definition, Renderer* renderer, Color li
     }
 }
 
+static inline void _applyFoam(WaterDefinition* definition, Vector3 location, Vector3 normal, double detail, SurfaceMaterial* material)
+{
+    Color result = definition->foam_material.base;
+    double foam_factor, normal_diff, location_offset;
+    
+    location_offset = 2.0 * detail;
+    
+    foam_factor = 0.0;
+    location.x += location_offset;
+    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, location, detail));
+    if (normal_diff > foam_factor)
+    {
+        foam_factor = normal_diff;
+    }
+    location.x -= location_offset * 2.0;
+    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, location, detail));
+    if (normal_diff > foam_factor)
+    {
+        foam_factor = normal_diff;
+    }
+    location.x += location_offset;
+    location.z -= location_offset;
+    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, location, detail));
+    if (normal_diff > foam_factor)
+    {
+        foam_factor = normal_diff;
+    }
+    location.z += location_offset * 2.0;
+    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, location, detail));
+    if (normal_diff > foam_factor)
+    {
+        foam_factor = normal_diff;
+    }
+    
+    foam_factor *= 10.0;
+    if (foam_factor > 1.0)
+    {
+        foam_factor = 1.0;
+    }
+    
+    if (foam_factor <= 1.0 - definition->foam_coverage)
+    {
+        return;
+    }
+    foam_factor = (foam_factor - (1.0 - definition->foam_coverage)) * definition->foam_coverage;
+    
+    material->reflection = foam_factor * definition->foam_material.reflection + (1.0 - foam_factor) * material->reflection;
+    material->shininess = foam_factor * definition->foam_material.shininess + (1.0 - foam_factor) * material->shininess;
+    
+    /* TODO This should be configurable */
+    if (foam_factor > 0.2)
+    {
+        result.a = 0.8;
+    }
+    else
+    {
+        result.a = 0.8 * (foam_factor / 0.2);
+    }
+    colorMask(&material->base, &result);
+}
+
 WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer, Vector3 location, Vector3 look)
 {
     WaterResult result;
@@ -225,7 +296,11 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
     SurfaceMaterial material;
     double detail, depth;
 
-    detail = renderer->getPrecision(renderer, location);
+    detail = renderer->getPrecision(renderer, location) * 0.1;
+    if (detail < 0.00001)
+    {
+        detail = 0.00001;
+    }
 
     location.y = _getHeight(definition, location.x, location.z);
     result.location = location;
@@ -252,14 +327,17 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
     color.g = definition->material.base.g * (1.0 - definition->transparency) + result.reflected.g * definition->reflection + result.refracted.g * definition->transparency;
     color.b = definition->material.base.b * (1.0 - definition->transparency) + result.reflected.b * definition->reflection + result.refracted.b * definition->transparency;
     color.a = 1.0;
-
+    
     material = definition->material;
     material.base = color;
+    
+    _applyFoam(definition, location, normal, detail, &material);
+
     renderer->getLightStatus(renderer, &light, location);
     color = renderer->applyLightStatus(renderer, &light, location, normal, material);
     color = renderer->applyAtmosphere(renderer, location, color);
     color = renderer->applyClouds(renderer, color, renderer->camera_location, location);
-
+    
     result.base = definition->material.base;
     result.final = color;
 

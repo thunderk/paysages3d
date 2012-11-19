@@ -1,27 +1,31 @@
 ????-??-?? Technology Preview 2
 -------------------------------
 
-Previews :
-  * Scaling is now logarithmic (slower when zoomed).
-  * Drawing now takes advantage of multiple CPU cores.
+Global :
+  * Version handling in saved files.
+  * Replaced old noise algorithm with Simplex Noise (up to 4 times faster).
 
-3D Explorer:
-  * Added ground texture and skybox.
-  * Progressive rendering now takes advantage of multiple CPU cores.
+Terrain :
+  * Added canvases to paint the shape directly.
+  * Shadows have been improved and are now configurable.
 
-Scenery :
-  * Added terrain canvases to paint the shape directly.
-  * Added clouds hardness to light.
-  * Added sun halo control.
-  * New cloud model with 2 noises : one for the global shape and one for edges.
-  * Terrain shadows have been improved and are now configurable.
-  * New sky model (based on Preetham's work).
+Textures :
+  * New texture model (perpendicular displacement and thickness).
   * Textures ranges are now using curves.
 
+Water :
+  * Added foam.
+
+Sky :
+  * New sky model (based on Preetham's work).
+  * Added sun halo control.
+
+Clouds :
+  * Added clouds hardness to light.
+  * New cloud model with 2 noises : one for the global shape and one for edges.
+
 Rendering :
-  * New texture model (perpendicular displacement and thickness).
   * Added full scene antialiasing (FSAA).
-  * Replaced old noise algorithm with Simplex Noise (up to 4 times faster).
 
 GUI :
   * Improved curve rendering.
@@ -29,12 +33,18 @@ GUI :
   * Added render timer.
   * Previews locations and render params are now saved.
   * Added grid and axis labels to curve editor.
-  * Added camera location to previews.
-  * Added toggles and choices to configure some previews.
   * Added layer sorting and naming.
+  * Automatic settings can be loaded from presets.
 
-Misc :
-  * Version handling in saved files.
+Previews :
+  * Scaling is now logarithmic (slower when zoomed).
+  * Drawing now takes advantage of multiple CPU cores.
+  * Added camera location.
+  * Added toggles and choices to configure some previews.
+
+3D Explorer:
+  * Added ground texture and skybox.
+  * Progressive rendering now takes advantage of multiple CPU cores.
 
 2012-04-20 Technology Preview 1
 -------------------------------

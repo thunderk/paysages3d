@@ -206,12 +206,14 @@ private:
 FormWater::FormWater(QWidget *parent):
     BaseForm(parent)
 {
+    addAutoPreset(tr("Standard water"));
+    
     _definition = waterCreateDefinition();
 
     previewCoverage = new PreviewWaterCoverage(this);
     previewColor = new PreviewWaterColor(this);
-    addPreview(previewCoverage, QString(tr("Coverage preview")));
-    addPreview(previewColor, QString(tr("Rendered preview")));
+    addPreview(previewCoverage, tr("Coverage preview"));
+    addPreview(previewColor, tr("Rendered preview"));
 
     addInputDouble(tr("Height"), &_definition.height, -10.0, 10.0, 0.1, 1.0);
     addInputMaterial(tr("Surface material"), &_definition.material);
@@ -224,6 +226,8 @@ FormWater::FormWater(QWidget *parent):
     addInputDouble(tr("Waves height"), &_definition.waves_height, 0.0, 2.0, 0.02, 0.2);
     addInputDouble(tr("Waves detail"), &_definition.detail_height, 0.0, 0.3, 0.003, 0.03);
     addInputDouble(tr("Waves turbulence"), &_definition.turbulence, 0.0, 0.5, 0.005, 0.05);
+    addInputDouble(tr("Foam coverage"), &_definition.foam_coverage, 0.0, 1.0, 0.01, 0.1);
+    addInputMaterial(tr("Foam material"), &_definition.foam_material);
 
     revertConfig();
 }
@@ -245,3 +249,13 @@ void FormWater::configChangeEvent()
     waterValidateDefinition(&_definition);
     BaseForm::configChangeEvent();
 }
+
+void FormWater::autoPresetSelected(int preset)
+{
+    if (preset == (int)WATER_PRESET_STD)
+    {
+        waterAutoPreset(&_definition, WATER_PRESET_STD);
+    }
+    BaseForm::autoPresetSelected(preset);
+}
+

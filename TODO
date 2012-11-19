@@ -1,22 +1,26 @@
 Technology Preview 2 :
 - Fully move layer management from BaseForm to BaseFormLayer.
-- Replace math.h methods by optimized ones (fastfloor, fastsin...).
-- Add foam to water.
+- Replace terrain canvas editor by full sculpting editor.
+   => Add a generation dialog, with fixed resolution.
+   => Store local terrain modifications in fully dynamic canvas.
+   => Add map preview with editor area.
+   => Allow camera move and zoom.
+- Get rid of noise dialogs, for simpler settings.
 - Finalize Preetham's model usage
    => Apply model to atmosphere (aerial perspective)
    => Find a proper model for night sky (maybe Shirley)
 - Keep skydome lights in cache for a render.
 - Add buttons to restore "auto" default values in tabs and dialogs (with several auto presets).
 - Clouds should keep distance to ground.
+- Rethink the quality settings and detail smoothing in the distance.
+   => When quality setting is set to 10, add boost options
+   => Add detail boost (adds granularity)
+   => Add step boost (for marching algorithms)
+- Waves noise should not change layers offsets each time a setting is changed (layers are reconstructed currently).
 - Add "hardness to light" and shadow control ("minimum lighting") to material.
 
 Technlogy Preview 3 :
 - Add logarithmic sliders for some float values.
-- Replace terrain canvas editor by full sculpting editor.
-   => Add a generation dialog, with fixed resolution.
-   => Store local terrain modifications in fully dynamic canvas.
-   => Add map preview with editor area.
-   => Allow camera move and zoom.
 - Improve previews.
    => Add user markers on OSD.
    => Add areas marking.
