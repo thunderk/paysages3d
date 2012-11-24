@@ -13,7 +13,8 @@ extern "C" {
 
 typedef enum
 {
-    WATER_PRESET_STD
+    WATER_PRESET_LAKE,
+    WATER_PRESET_SEA
 } WaterPreset;
     
 typedef struct

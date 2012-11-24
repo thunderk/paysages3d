@@ -80,7 +80,7 @@ void autoGenRealisticLandscape(int seed)
 
     /* Water */
     water = waterCreateDefinition();
-    waterAutoPreset(&water, WATER_PRESET_STD);
+    waterAutoPreset(&water, WATER_PRESET_LAKE);
     scenerySetWater(&water);
     waterDeleteDefinition(&water);
 

@@ -10,7 +10,6 @@ Technology Preview 2 :
    => Apply model to atmosphere (aerial perspective)
    => Find a proper model for night sky (maybe Shirley)
 - Keep skydome lights in cache for a render.
-- Add buttons to restore "auto" default values in tabs and dialogs (with several auto presets).
 - Clouds should keep distance to ground.
 - Rethink the quality settings and detail smoothing in the distance.
    => When quality setting is set to 10, add boost options

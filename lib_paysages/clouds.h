@@ -10,6 +10,14 @@
 extern "C" {
 #endif
 
+typedef enum
+{
+    CLOUDS_PRESET_STRATOCUMULUS,
+    CLOUDS_PRESET_CUMULUS,
+    CLOUDS_PRESET_CIRRUS,
+    CLOUDS_PRESET_STRATUS
+} CloudsPreset;
+
 typedef struct CloudsLayerDefinition CloudsLayerDefinition;
     
 typedef double (*CloudCoverageFunc)(CloudsLayerDefinition* definition, Vector3 position);
@@ -47,6 +55,7 @@ void cloudsLoad(PackStream* stream, CloudsDefinition* definition);
 
 CloudsLayerDefinition* cloudsLayerCreateDefinition();
 void cloudsLayerDeleteDefinition(CloudsLayerDefinition* definition);
+void cloudsLayerAutoPreset(CloudsLayerDefinition* definition, CloudsPreset preset);
 void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinition* destination);
 void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition);
 void cloudsLayerSetName(CloudsLayerDefinition* definition, const char* name);

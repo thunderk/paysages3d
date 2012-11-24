@@ -206,7 +206,8 @@ private:
 FormWater::FormWater(QWidget *parent):
     BaseForm(parent)
 {
-    addAutoPreset(tr("Standard water"));
+    addAutoPreset(tr("Lake surface"));
+    addAutoPreset(tr("Standard sea"));
     
     _definition = waterCreateDefinition();
 
@@ -252,10 +253,7 @@ void FormWater::configChangeEvent()
 
 void FormWater::autoPresetSelected(int preset)
 {
-    if (preset == (int)WATER_PRESET_STD)
-    {
-        waterAutoPreset(&_definition, WATER_PRESET_STD);
-    }
+    waterAutoPreset(&_definition, (WaterPreset)preset);
     BaseForm::autoPresetSelected(preset);
 }
 

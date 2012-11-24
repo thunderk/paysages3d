@@ -20,6 +20,7 @@ public slots:
 protected:
     virtual void layerGetCopy(void* layer_definition);
     virtual void layerApply(void* layer_definition);
+    virtual void autoPresetSelected(int preset);
 
 private:
     CloudsDefinition _definition;

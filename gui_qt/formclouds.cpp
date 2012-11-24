@@ -131,9 +131,13 @@ private:
         {
             return 0.0;
         }
+        else if (dist < layer->thickness * 0.4)
+        {
+            return coverage;
+        }
         else
         {
-            double density = 1.0 - dist / (layer->thickness * 0.5);
+            double density = 1.0 - (dist - (layer->thickness * 0.4)) / (layer->thickness * 0.1);
             return (density < coverage) ? density : coverage;
         }
     }
@@ -153,6 +157,11 @@ private:
 FormClouds::FormClouds(QWidget *parent):
     BaseFormLayer(parent)
 {
+    addAutoPreset(tr("Stratocumulus"));
+    addAutoPreset(tr("Cumulus"));
+    addAutoPreset(tr("Cirrus"));
+    addAutoPreset(tr("Stratus"));
+
     _definition = cloudsCreateDefinition();
     _layer = cloudsLayerCreateDefinition();
     
@@ -168,7 +177,7 @@ FormClouds::FormClouds(QWidget *parent):
     addInputNoise(tr("Shape noise"), _layer->shape_noise);
     addInputDouble(tr("Shape scaling"), &_layer->shape_scaling, 3.0, 30.0, 0.3, 3.0);
     addInputNoise(tr("Edge noise"), _layer->edge_noise);
-    addInputDouble(tr("Edge scaling"), &_layer->edge_scaling, 0.06, 1.5, 0.03, 0.3);
+    addInputDouble(tr("Edge scaling"), &_layer->edge_scaling, 0.5, 5.0, 0.05, 0.5);
     addInputDouble(tr("Edge length"), &_layer->edge_length, 0.0, 1.0, 0.01, 0.1);
     addInputMaterial(tr("Material"), &_layer->material);
     addInputDouble(tr("Hardness to light"), &_layer->hardness, 0.0, 1.0, 0.01, 0.1);
@@ -200,3 +209,10 @@ void FormClouds::layerApply(void* layer_definition)
 {
     cloudsLayerCopyDefinition(_layer, (CloudsLayerDefinition*)layer_definition);
 }
+
+void FormClouds::autoPresetSelected(int preset)
+{
+    cloudsLayerAutoPreset(_layer, (CloudsPreset)preset);
+    BaseForm::autoPresetSelected(preset);
+}
+

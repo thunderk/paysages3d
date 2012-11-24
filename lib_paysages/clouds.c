@@ -70,36 +70,13 @@ CloudsLayerDefinition* cloudsLayerCreateDefinition()
     CloudsLayerDefinition* result;
     
     result = malloc(sizeof(CloudsLayerDefinition));
-
-    result->lower_altitude = 4.0;
-    result->thickness = 6.0;
     result->coverage_by_altitude = curveCreate();
-    curveQuickAddPoint(result->coverage_by_altitude, 0.0, 0.0);
-    curveQuickAddPoint(result->coverage_by_altitude, 0.3, 1.0);
-    curveQuickAddPoint(result->coverage_by_altitude, 0.5, 1.0);
-    curveQuickAddPoint(result->coverage_by_altitude, 1.0, 0.0);
-    result->material.base.r = 0.7;
-    result->material.base.g = 0.7;
-    result->material.base.b = 0.7;
-    result->material.base.a = 1.0;
-    result->material.reflection = 0.3;
-    result->material.shininess = 0.8;
-    result->hardness = 0.25;
-    result->transparencydepth = 1.5;
-    result->lighttraversal = 7.0;
-    result->minimumlight = 0.4;
-    result->shape_scaling = 10.0;
-    result->edge_scaling = 0.8;
-    result->edge_length = 0.3;
-    result->base_coverage = 0.4;
     result->shape_noise = noiseCreateGenerator();
-    noiseAddLevelsSimple(result->shape_noise, 2, 1.0, 1.0);
-    noiseSetFunctionParams(result->shape_noise, NOISE_FUNCTION_SIMPLEX, 0.3);
     result->edge_noise = noiseCreateGenerator();
-    noiseAddLevelsSimple(result->edge_noise, 8, 1.0, 1.0);
-    noiseSetFunctionParams(result->edge_noise, NOISE_FUNCTION_SIMPLEX, 0.5);
-    
+
     result->_custom_coverage = _standardCoverageFunc;
+    
+    cloudsLayerAutoPreset(result, CLOUDS_PRESET_STRATOCUMULUS);
 
     return result;
 }
@@ -110,6 +87,110 @@ void cloudsLayerDeleteDefinition(CloudsLayerDefinition* definition)
     noiseDeleteGenerator(definition->shape_noise);
     noiseDeleteGenerator(definition->edge_noise);
     free(definition);
+}
+
+void cloudsLayerAutoPreset(CloudsLayerDefinition* definition, CloudsPreset preset)
+{
+    curveClear(definition->coverage_by_altitude);
+    noiseClearLevels(definition->shape_noise);
+    noiseClearLevels(definition->edge_noise);
+    definition->material.base.r = 0.7;
+    definition->material.base.g = 0.7;
+    definition->material.base.b = 0.7;
+    definition->material.base.a = 1.0;
+        
+    if (preset == CLOUDS_PRESET_STRATOCUMULUS)
+    {
+        definition->lower_altitude = 5.0;
+        definition->thickness = 6.0;
+        curveQuickAddPoint(definition->coverage_by_altitude, 0.0, 0.0);
+        curveQuickAddPoint(definition->coverage_by_altitude, 0.2, 1.0);
+        curveQuickAddPoint(definition->coverage_by_altitude, 0.5, 1.0);
+        curveQuickAddPoint(definition->coverage_by_altitude, 1.0, 0.0);
+        definition->material.reflection = 0.3;
+        definition->material.shininess = 0.8;
+        definition->hardness = 0.25;
+        definition->transparencydepth = 1.5;
+        definition->lighttraversal = 7.0;
+        definition->minimumlight = 0.4;
+        definition->shape_scaling = 10.0;
+        definition->edge_scaling = 0.8;
+        definition->edge_length = 0.3;
+        definition->base_coverage = 0.4;
+        noiseAddLevelsSimple(definition->shape_noise, 2, 1.0, 1.0);
+        noiseSetFunctionParams(definition->shape_noise, NOISE_FUNCTION_SIMPLEX, 0.3);
+        noiseAddLevelsSimple(definition->edge_noise, 8, 1.0, 1.0);
+        noiseSetFunctionParams(definition->edge_noise, NOISE_FUNCTION_SIMPLEX, 0.5);
+    }
+    else if (preset == CLOUDS_PRESET_CUMULUS)
+    {
+        definition->lower_altitude = 15.0;
+        definition->thickness = 15.0;
+        curveQuickAddPoint(definition->coverage_by_altitude, 0.0, 0.0);
+        curveQuickAddPoint(definition->coverage_by_altitude, 0.1, 1.0);
+        curveQuickAddPoint(definition->coverage_by_altitude, 0.4, 0.8);
+        curveQuickAddPoint(definition->coverage_by_altitude, 0.7, 1.0);
+        curveQuickAddPoint(definition->coverage_by_altitude, 1.0, 0.0);
+        definition->material.reflection = 0.5;
+        definition->material.shininess = 1.2;
+        definition->hardness = 0.25;
+        definition->transparencydepth = 1.5;
+        definition->lighttraversal = 8.0;
+        definition->minimumlight = 0.4;
+        definition->shape_scaling = 20.0;
+        definition->edge_scaling = 2.0;
+        definition->edge_length = 0.0;
+        definition->base_coverage = 0.7;
+        noiseAddLevelsSimple(definition->shape_noise, 7, 1.0, 1.0);
+        noiseSetFunctionParams(definition->shape_noise, NOISE_FUNCTION_SIMPLEX, 0.4);
+    }
+    else if (preset == CLOUDS_PRESET_CIRRUS)
+    {
+        definition->lower_altitude = 25.0;
+        definition->thickness = 2.0;
+        curveQuickAddPoint(definition->coverage_by_altitude, 0.0, 0.0);
+        curveQuickAddPoint(definition->coverage_by_altitude, 0.5, 1.0);
+        curveQuickAddPoint(definition->coverage_by_altitude, 1.0, 0.0);
+        definition->material.reflection = 0.4;
+        definition->material.shininess = 0.5;
+        definition->hardness = 0.0;
+        definition->transparencydepth = 3.0;
+        definition->lighttraversal = 10.0;
+        definition->minimumlight = 0.6;
+        definition->shape_scaling = 8.0;
+        definition->edge_scaling = 2.0;
+        definition->edge_length = 0.8;
+        definition->base_coverage = 0.6;
+        noiseAddLevelsSimple(definition->shape_noise, 3, 1.0, 1.0);
+        noiseSetFunctionParams(definition->shape_noise, NOISE_FUNCTION_SIMPLEX, 0.0);
+        noiseAddLevelsSimple(definition->edge_noise, 4, 1.0, 1.0);
+        noiseSetFunctionParams(definition->edge_noise, NOISE_FUNCTION_SIMPLEX, -0.2);
+    }
+    else if (preset == CLOUDS_PRESET_STRATUS)
+    {
+        definition->lower_altitude = 3.0;
+        definition->thickness = 4.0;
+        curveQuickAddPoint(definition->coverage_by_altitude, 0.0, 0.0);
+        curveQuickAddPoint(definition->coverage_by_altitude, 0.2, 1.0);
+        curveQuickAddPoint(definition->coverage_by_altitude, 0.8, 1.0);
+        curveQuickAddPoint(definition->coverage_by_altitude, 1.0, 0.0);
+        definition->material.reflection = 0.1;
+        definition->material.shininess = 0.8;
+        definition->hardness = 0.1;
+        definition->transparencydepth = 3.0;
+        definition->lighttraversal = 10.0;
+        definition->minimumlight = 0.6;
+        definition->shape_scaling = 8.0;
+        definition->edge_scaling = 2.0;
+        definition->edge_length = 1.0;
+        definition->base_coverage = 0.4;
+        noiseAddLevelsSimple(definition->shape_noise, 3, 1.0, 1.0);
+        noiseSetFunctionParams(definition->shape_noise, NOISE_FUNCTION_SIMPLEX, -0.3);
+        noiseAddLevelsSimple(definition->edge_noise, 4, 1.0, 1.0);
+        noiseSetFunctionParams(definition->edge_noise, NOISE_FUNCTION_SIMPLEX, -0.5);
+    }
+    
+    cloudsLayerValidateDefinition(definition);
 }
 
 void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinition* destination)
