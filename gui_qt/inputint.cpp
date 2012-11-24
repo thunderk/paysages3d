@@ -16,7 +16,7 @@ void InputInt::updatePreview()
 
 void InputInt::applyValue()
 {
-    *_value = (int)_dvalue;
+    *_value = (int)getValue();
 
     InputDouble::applyValue();
 }

@@ -16,6 +16,9 @@ public slots:
     virtual void updatePreview();
     virtual void applyValue();
     virtual void revert();
+    
+protected:
+    double getValue();
 
 private:
     QSlider* _slider;

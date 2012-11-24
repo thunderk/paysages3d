@@ -61,6 +61,8 @@ WaterDefinition waterCreateDefinition()
     result.height = -4.0;
     result._waves_noise = noiseCreateGenerator();
     
+    waterAutoPreset(&result, WATER_PRESET_LAKE);
+    
     return result;
 }
 
@@ -115,6 +117,7 @@ void waterAutoPreset(WaterDefinition* definition, WaterPreset preset)
     definition->foam_material.base.r = 0.8;
     definition->foam_material.base.g = 0.8;
     definition->foam_material.base.b = 0.8;
+    definition->foam_material.base.a = 1.0;
     definition->foam_material.reflection = 0.4;
     definition->foam_material.shininess = 1.5;
     

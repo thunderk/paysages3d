@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <QPainter>
 #include "dialogcurve.h"
+#include "tools.h"
 
 class CurveSmallPreview:public QWidget
 {
@@ -17,13 +18,13 @@ public:
         _ymax = ymax;
     }
 
-    void paintEvent(QPaintEvent* event)
+    void paintEvent(QPaintEvent*)
     {
         if (!_curve)
         {
             return;
         }
-
+        
         QPainter painter(this);
         int width = this->width();
         int height = this->height();

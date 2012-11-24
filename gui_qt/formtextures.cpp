@@ -179,10 +179,18 @@ void FormTextures::applyConfig()
 
 void FormTextures::layerGetCopy(void* layer_definition)
 {
-    texturesLayerCopyDefinition((TextureLayerDefinition*)layer_definition, _layer);
+    TextureLayerDefinition* source = (TextureLayerDefinition*)layer_definition;
+    texturesLayerCopyDefinition(source, _layer);
+
+    zoneGetHeightCurve(source->zone, _supp.height_curve);
+    zoneGetSlopeCurve(source->zone, _supp.slope_curve);
 }
 
 void FormTextures::layerApply(void* layer_definition)
 {
-    texturesLayerCopyDefinition(_layer, (TextureLayerDefinition*)layer_definition);
+    TextureLayerDefinition* destination = (TextureLayerDefinition*)layer_definition;
+    texturesLayerCopyDefinition(_layer, destination);
+    
+    zoneSetHeightCurve(destination->zone, _supp.height_curve);
+    zoneSetSlopeCurve(destination->zone, _supp.slope_curve);
 }

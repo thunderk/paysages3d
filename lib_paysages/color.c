@@ -127,6 +127,7 @@ double colorNormalize(Color* col)
 {
     double max = colorGetValue(col);
 
+    assert(max >= 0.0);
     assert(col->r >= 0.0);
     assert(col->g >= 0.0);
     assert(col->b >= 0.0);

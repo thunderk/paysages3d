@@ -16,6 +16,7 @@ Technology Preview 2 :
    => Add detail boost (adds granularity)
    => Add step boost (for marching algorithms)
 - Waves noise should not change layers offsets each time a setting is changed (layers are reconstructed currently).
+- Fix rendering when inside a cloud layer, with other upper or lower layers.
 - Add "hardness to light" and shadow control ("minimum lighting") to material.
 
 Technlogy Preview 3 :

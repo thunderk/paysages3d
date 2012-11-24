@@ -39,22 +39,28 @@ void InputDouble::updatePreview()
     BaseInput::updatePreview();
 }
 
-void InputDouble::applyValue()
+double InputDouble::getValue()
 {
+    double result;
     int ivalue = _slider->value();
     if (ivalue == _slider->maximum())
     {
-        *_value = _max;
+        result = _max;
     }
     else
     {
-        *_value = _min + ((double)ivalue) * _small_step;
+        result = _min + ((double)ivalue) * _small_step;
     }
     if (fabs(*_value) < 0.0000001)
     {
-        *_value = 0.0;
+        result = 0.0;
     }
+    return result;
+}
 
+void InputDouble::applyValue()
+{
+    *_value = getValue();
     BaseInput::applyValue();
 }
 

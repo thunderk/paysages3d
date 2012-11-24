@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <QPainter>
 #include <QColorDialog>
+#include "tools.h"
 
 class ColorPreview:public QWidget
 {
@@ -13,7 +14,7 @@ public:
     {
     }
 
-    void paintEvent(QPaintEvent* event)
+    void paintEvent(QPaintEvent*)
     {
         QPainter painter(this);
         painter.fillRect(this->rect(), col);
@@ -50,7 +51,7 @@ void InputColor::applyValue()
 
 void InputColor::revert()
 {
-    ((ColorPreview*)_preview)->col = QColor::fromRgbF(_value->r, _value->g, _value->b);
+    ((ColorPreview*)_preview)->col = colorToQColor(*_value);
     BaseInput::revert();
 }
 

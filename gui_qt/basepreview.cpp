@@ -427,7 +427,7 @@ void BasePreview::updateData()
 {
 }
 
-QColor BasePreview::getColor(double x, double y)
+QColor BasePreview::getColor(double, double)
 {
     return QColor(0, 0, 0);
 }
@@ -606,7 +606,7 @@ void BasePreview::choiceSelected(QAction* action)
     }
 }
 
-void BasePreview::showEvent(QShowEvent* event)
+void BasePreview::showEvent(QShowEvent*)
 {
     updateChunks();
 }
@@ -643,7 +643,7 @@ void BasePreview::resizeEvent(QResizeEvent* event)
     this->_lock_drawing->unlock();
 }
 
-void BasePreview::paintEvent(QPaintEvent* event)
+void BasePreview::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     painter.drawImage(0, 0, *this->_pixbuf);
@@ -964,7 +964,7 @@ void BasePreview::wheelEvent(QWheelEvent* event)
     event->accept();
 }
 
-void BasePreview::leaveEvent(QEvent* event)
+void BasePreview::leaveEvent(QEvent*)
 {
     _info->setVisible(false);
 }

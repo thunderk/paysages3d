@@ -58,7 +58,7 @@ public:
         setMinimumSize(800, 600);
     }
 
-    void paintEvent(QPaintEvent* event)
+    void paintEvent(QPaintEvent*)
     {
         QPainter painter(this);
         painter.drawImage(0, 0, *_current_dialog->pixbuf);
