@@ -76,7 +76,7 @@ CloudsLayerDefinition* cloudsLayerCreateDefinition()
 
     result->_custom_coverage = _standardCoverageFunc;
     
-    cloudsLayerAutoPreset(result, CLOUDS_PRESET_STRATOCUMULUS);
+    cloudsLayerAutoPreset(result, CLOUDS_PRESET_CIRRUS);
 
     return result;
 }

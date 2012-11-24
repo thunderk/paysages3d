@@ -51,7 +51,7 @@ double InputDouble::getValue()
     {
         result = _min + ((double)ivalue) * _small_step;
     }
-    if (fabs(*_value) < 0.0000001)
+    if (fabs(result) < 0.0000001)
     {
         result = 0.0;
     }

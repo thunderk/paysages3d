@@ -9,6 +9,10 @@ Technology Preview 2 :
 - Finalize Preetham's model usage
    => Apply model to atmosphere (aerial perspective)
    => Find a proper model for night sky (maybe Shirley)
+- Merge atmosphere and sky in a coherent model.
+   => All stopper rendering (terrain, water and skydome) should pass through an atmosphere walker.
+   => The atmosphere walker collects callbacks (clouds, water...) to alter the medium.
+   => God rays are possible with particle lighting through the walker.
 - Keep skydome lights in cache for a render.
 - Clouds should keep distance to ground.
 - Rethink the quality settings and detail smoothing in the distance.

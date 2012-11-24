@@ -157,9 +157,9 @@ private:
 FormClouds::FormClouds(QWidget *parent):
     BaseFormLayer(parent)
 {
-    addAutoPreset(tr("Stratocumulus"));
-    addAutoPreset(tr("Cumulus"));
     addAutoPreset(tr("Cirrus"));
+    addAutoPreset(tr("Cumulus"));
+    addAutoPreset(tr("Stratocumulus"));
     addAutoPreset(tr("Stratus"));
 
     _definition = cloudsCreateDefinition();
