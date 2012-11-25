@@ -6,7 +6,6 @@
 #include "../lib_paysages/camera.h"
 #include "../lib_paysages/water.h"
 #include "../lib_paysages/renderer.h"
-#include "../lib_paysages/sky.h"
 #include "../lib_paysages/terrain.h"
 #include "../lib_paysages/textures.h"
 #include "../lib_paysages/lighting.h"
@@ -51,7 +50,6 @@ private:
     QMutex _lock_chunks;
 
     WaterDefinition _water;
-    SkyDefinition _sky;
     TerrainDefinition _terrain;
     TexturesDefinition _textures;
     LightingDefinition _lighting;

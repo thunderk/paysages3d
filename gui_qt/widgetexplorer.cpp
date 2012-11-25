@@ -58,11 +58,6 @@ static Color _applyTextures(Renderer* renderer, Vector3 location, double precisi
     return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
 }
 
-static int _getSkyDomeLights(Renderer* renderer, LightDefinition* array, int max_lights)
-{
-    return skyGetLights((SkyDefinition*)(renderer->customData[4]), renderer, array, max_lights);
-}
-
 static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
 {
     light->color = terrainLightFilter((TerrainDefinition*)(renderer->customData[0]), renderer, light->color, location, v3Scale(light->direction, -1000.0), v3Scale(light->direction, -1.0));
@@ -84,8 +79,6 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
 
     _water = waterCreateDefinition();
     sceneryGetWater(&_water);
-    _sky = skyCreateDefinition();
-    sceneryGetSky(&_sky);
     _terrain = terrainCreateDefinition();
     sceneryGetTerrain(&_terrain);
     _textures = texturesCreateDefinition();
@@ -93,16 +86,14 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     _lighting = lightingCreateDefinition();
     sceneryGetLighting(&_lighting);
     
-    _renderer = rendererCreate();
+    _renderer = sceneryCreateStandardRenderer();
     _renderer.render_quality = 3;
     _renderer.customData[0] = &_terrain;
     _renderer.customData[1] = &_textures;
     _renderer.customData[2] = &_lighting;
     _renderer.customData[3] = &_water;
-    _renderer.customData[4] = &_sky;
     _renderer.applyTextures = _applyTextures;
     _renderer.getTerrainHeight = _getTerrainHeight;
-    _renderer.getSkyDomeLights = _getSkyDomeLights;
     _renderer.alterLight = _alterLight;
     _renderer.getLightStatus = _getLightStatus;
     
@@ -126,7 +117,7 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     // Add skybox
     for (int orientation = 0; orientation < 6; orientation++)
     {
-        ExplorerChunkSky* chunk = new ExplorerChunkSky(&_renderer, &_sky, 500.0, (SkyboxOrientation)orientation);
+        ExplorerChunkSky* chunk = new ExplorerChunkSky(&_renderer, 500.0, (SkyboxOrientation)orientation);
         _chunks.append(chunk);
         _updateQueue.append(chunk);
     }
@@ -437,8 +428,7 @@ void WidgetExplorer::paintGL()
     gluLookAt(_current_camera.location.x, _current_camera.location.y, _current_camera.location.z, _current_camera.target.x, _current_camera.target.y, _current_camera.target.z, _current_camera.up.x, _current_camera.up.y, _current_camera.up.z);
 
     // Background
-    Color zenith_color = skyGetZenithColor(&_sky);
-    glClearColor(zenith_color.r, zenith_color.g, zenith_color.b, 0.0);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render water

@@ -2,12 +2,11 @@
 #define _PAYSAGES_RENDERER_H_
 
 #include "shared/types.h"
+#include "atmosphere/atmosphere.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef struct Renderer Renderer;
 
 struct Renderer
 {
@@ -35,14 +34,15 @@ struct Renderer
     double (*getTerrainHeight)(Renderer* renderer, double x, double z);
     HeightInfo (*getWaterHeightInfo)(Renderer* renderer);
     Color (*applyTextures)(Renderer* renderer, Vector3 location, double precision);
-    Color (*applyAtmosphere)(Renderer* renderer, Vector3 location, Color base);
     Color (*applyClouds)(Renderer* renderer, Color base, Vector3 start, Vector3 end);
 
     /* Lighting related */
-    int (*getSkyDomeLights)(Renderer* renderer, LightDefinition* array, int max_lights);
     void (*alterLight)(Renderer* renderer, LightDefinition* light, Vector3 location);
     void (*getLightStatus)(Renderer* renderer, LightStatus* status, Vector3 location);
     Color (*applyLightStatus)(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material);
+    
+    /* Autonomous sub-renderers */
+    AtmosphereRenderer* atmosphere;
 
     /* Custom data */
     void* customData[10];

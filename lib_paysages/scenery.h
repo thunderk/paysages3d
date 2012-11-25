@@ -8,11 +8,10 @@
  * a standard renderer.
  */
 
-#include "atmosphere.h"
+#include "atmosphere/atmosphere.h"
 #include "camera.h"
 #include "clouds.h"
 #include "lighting.h"
-#include "sky.h"
 #include "terrain.h"
 #include "textures.h"
 #include "water.h"
@@ -44,9 +43,6 @@ void sceneryGetClouds(CloudsDefinition* clouds);
 
 void scenerySetLighting(LightingDefinition* lighting);
 void sceneryGetLighting(LightingDefinition* lighting);
-
-void scenerySetSky(SkyDefinition* sky);
-void sceneryGetSky(SkyDefinition* sky);
 
 void scenerySetTerrain(TerrainDefinition* terrain);
 void sceneryGetTerrain(TerrainDefinition* terrain);

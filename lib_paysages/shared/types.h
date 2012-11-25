@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-struct Renderer;
+typedef struct Renderer Renderer;
 
 typedef struct LightDefinition LightDefinition;
 typedef struct LightStatus LightStatus;

@@ -10,7 +10,6 @@
 #include "euclid.h"
 #include "renderer.h"
 #include "scenery.h"
-#include "sky.h"
 #include "terrain.h"
 #include "tools.h"
 #include "water.h"
@@ -224,7 +223,7 @@ void lightingGetStatus(LightingDefinition* definition, Renderer* renderer, Vecto
     
     /* Apply skydome lights */
     /* TODO Cache skydome lights for same render */
-    skydome_lights_count = renderer->getSkyDomeLights(renderer, skydome_lights, LIGHTING_MAX_LIGHTS);
+    skydome_lights_count = renderer->atmosphere->getSkydomeLights(renderer, skydome_lights, LIGHTING_MAX_LIGHTS);
     for (i = 0; i < skydome_lights_count; i++)
     {
         if (_getLightStatus(skydome_lights + i, renderer, location, result->lights + result->nblights))

@@ -1,6 +1,7 @@
-#include "skypreetham.h"
+#include "atmosphere.h"
 
 #include <math.h>
+#include "../renderer.h"
 
 static inline double _angleBetween(double thetav, double phiv, double theta, double phi) 
 {
@@ -50,13 +51,13 @@ static inline void _directionToThetaPhi(Vector3 direction, double* theta, double
     *theta = M_PI_2 - asin(direction.y);
 }
 
-Color skyPreethamGetColor(Vector3 viewer, Vector3 direction, Vector3 sun_direction, double turbidity)
+Color preethamGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position)
 {
     double theta, phi;
     double thetaSun, phiSun;
     
     _directionToThetaPhi(direction, &theta, &phi);
-    _directionToThetaPhi(sun_direction, &thetaSun, &phiSun);
+    _directionToThetaPhi(sun_position, &thetaSun, &phiSun);
     
     if (theta > M_PI / 2.0)
     {
@@ -74,7 +75,7 @@ Color skyPreethamGetColor(Vector3 viewer, Vector3 direction, Vector3 sun_directi
         cosTheta = cos(theta);
     }
     
-    double T = turbidity;
+    double T = definition->humidity;
     double T2 = T * T;
     double suntheta = thetaSun;
     double suntheta2 = thetaSun * thetaSun;
@@ -128,10 +129,4 @@ Color skyPreethamGetColor(Vector3 viewer, Vector3 direction, Vector3 sun_directi
     double Y = Yz * val1 / val2;
 
     return _xyYToRGB(x, y, Y);
-}
-
-Color skyPreethamApplyToObject(Vector3 viewer, Vector3 object_location, Vector3 sun_direction, double turbidity, Color object_color)
-{
-    /* TODO Aerial perspective */
-    return object_color;
 }

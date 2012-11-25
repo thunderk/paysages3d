@@ -4,9 +4,8 @@
 #include "baseexplorerchunk.h"
 #include "../lib_paysages/camera.h"
 
-ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, SkyDefinition* sky, double size, SkyboxOrientation orientation) : BaseExplorerChunk(renderer)
+ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, double size, SkyboxOrientation orientation) : BaseExplorerChunk(renderer)
 {
-    _sky = sky;
     _box_size = size;
     _orientation = orientation;
     
@@ -131,5 +130,5 @@ Color ExplorerChunkSky::getTextureColor(double x, double y)
             location.z = y;
             break;
     }
-    return skyGetColor(_sky, renderer(), VECTOR_ZERO, v3Normalize(location));
+    return renderer()->atmosphere->getSkyColor(renderer(), v3Normalize(location));
 }

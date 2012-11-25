@@ -579,7 +579,7 @@ Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* 
     {
         col = _applyLayerLighting(definition, renderer, segments[i].start, detail);
         col.a = 1.0;
-        col = renderer->applyAtmosphere(renderer, start, col);
+        col = renderer->atmosphere->applyAerialPerspective(renderer, start, col);
         col.a = (segments[i].length >= definition->transparencydepth) ? 1.0 : (segments[i].length / definition->transparencydepth);
         colorMask(&base, &col);
     }

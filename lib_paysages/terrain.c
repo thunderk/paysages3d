@@ -231,7 +231,7 @@ static Color _getColor(TerrainDefinition* definition, Renderer* renderer, Vector
     Color color;
 
     color = renderer->applyTextures(renderer, point, precision);
-    color = renderer->applyAtmosphere(renderer, point, color);
+    color = renderer->atmosphere->applyAerialPerspective(renderer, point, color);
     color = renderer->applyClouds(renderer, color, renderer->camera_location, point);
 
     return color;

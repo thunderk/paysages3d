@@ -20,7 +20,8 @@ protected slots:
     virtual void configChangeEvent();
 
 private:
-    BasePreview* previewColor;
+    BasePreview* previewEast;
+    BasePreview* previewWest;
 };
 
 #endif

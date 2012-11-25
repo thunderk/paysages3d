@@ -19,7 +19,6 @@ public:
         _renderer.getTerrainHeight = _getTerrainHeight;
         _renderer.alterLight = _alterLight;
         _renderer.getLightStatus = _getLightStatus;
-        _renderer.getSkyDomeLights = _getSkyDomeLights;
         _renderer.camera_location.x = 0.0;
         _renderer.camera_location.y = 50.0;
         _renderer.camera_location.z = 0.0;
@@ -28,13 +27,12 @@ public:
         _textures = texturesCreateDefinition();
         _lighting = lightingCreateDefinition();
         _water = waterCreateDefinition();
-        _sky = skyCreateDefinition();
+        _atmosphere = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
 
         _renderer.customData[0] = &_terrain;
         _renderer.customData[1] = &_textures;
         _renderer.customData[2] = &_lighting;
         _renderer.customData[3] = &_water;
-        _renderer.customData[4] = &_sky;
         
         addOsd(QString("geolocation"));
         
@@ -66,7 +64,9 @@ protected:
         sceneryGetLighting(&_lighting);
         sceneryGetTextures(&_textures);
         sceneryGetWater(&_water);
-        sceneryGetSky(&_sky);
+        
+        sceneryGetAtmosphere(_atmosphere);
+        AtmosphereRendererClass.bind(_renderer.atmosphere, _atmosphere);
     }
 private:
     Renderer _renderer;
@@ -74,7 +74,7 @@ private:
     WaterDefinition _water;
     TexturesDefinition _textures;
     LightingDefinition _lighting;
-    SkyDefinition _sky;
+    AtmosphereDefinition* _atmosphere;
 
     static double _getTerrainHeight(Renderer* renderer, double x, double z)
     {
@@ -86,11 +86,6 @@ private:
         return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
     }
 
-    static int _getSkyDomeLights(Renderer* renderer, LightDefinition* array, int max_lights)
-    {
-        return skyGetLights((SkyDefinition*)(renderer->customData[4]), renderer, array, max_lights);
-    }
-    
     static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
     {
         light->color = terrainLightFilter((TerrainDefinition*)(renderer->customData[0]), renderer, light->color, location, v3Scale(light->direction, -1000.0), v3Scale(light->direction, -1.0));

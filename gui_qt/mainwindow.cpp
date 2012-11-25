@@ -12,10 +12,9 @@
 #include <QMessageBox>
 
 #include "basepreview.h"
-#include "formatmosphere.h"
 #include "formclouds.h"
 #include "formlighting.h"
-#include "formsky.h"
+#include "formatmosphere.h"
 #include "formterrain.h"
 #include "formtextures.h"
 #include "formwater.h"
@@ -90,11 +89,6 @@ QMainWindow(parent)
 
     form = new FormWater(tabs);
     tabs->addTab(form, tr("Water"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
-    _forms.append(form);
-
-    form = new FormSky(tabs);
-    tabs->addTab(form, tr("Sky"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 

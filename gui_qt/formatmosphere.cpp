@@ -1,91 +1,131 @@
 #include "formatmosphere.h"
 
 #include "tools.h"
-#include "../lib_paysages/atmosphere.h"
-#include "../lib_paysages/scenery.h"
-#include "../lib_paysages/euclid.h"
-#include "../lib_paysages/color.h"
 
-static AtmosphereDefinition _definition;
+#include <QColor>
+#include <QSlider>
+#include <math.h>
+
+#include "../lib_paysages/atmosphere/atmosphere.h"
+#include "../lib_paysages/scenery.h"
+#include "../lib_paysages/renderer.h"
+
+static AtmosphereDefinition* _definition;
 
 /**************** Previews ****************/
-class PreviewAtmosphereColor:public BasePreview
+class PreviewSkyEast:public BasePreview
 {
 public:
-    PreviewAtmosphereColor(QWidget* parent):
+    PreviewSkyEast(QWidget* parent):
         BasePreview(parent)
     {
         _renderer = rendererCreate();
-        _preview_definition = atmosphereCreateDefinition();
         
-        configScaling(100.0, 1000.0, 20.0, 200.0);
+        configScaling(0.5, 5.0, 0.5, 2.5);
     }
 protected:
     QColor getColor(double x, double y)
     {
-        Vector3 eye, look, location;
-
-        eye.x = 0.0;
-        eye.y = scaling * 5.0;
-        eye.z = -10.0 * scaling;
-        _renderer.camera_location = eye;
-        look.x = x * 0.01 / scaling;
-        look.y = -y * 0.01 / scaling - 0.3;
-        look.z = 1.0;
-        look = v3Normalize(look);
-
-        if (look.y > -0.0001)
+        y -= 100.0 * scaling;
+        if (y > 0.0)
         {
-            return colorToQColor(COLOR_BLUE);
+            return QColor(0, 0, 0);
         }
+        else
+        {
+            Vector3 look;
 
-        location.x = eye.x - look.x * eye.y / look.y;
-        location.y = 0.0;
-        location.z = eye.z - look.z * eye.y / look.y;
+            look.x = 1.0;
+            look.y = -y;
+            look.z = x;
 
-        return colorToQColor(atmosphereApply(&_preview_definition, &_renderer, location, COLOR_BLACK));
+            return colorToQColor(_renderer.atmosphere->getSkyColor(&_renderer, look));
+        }
     }
     void updateData()
     {
-        atmosphereCopyDefinition(&_definition, &_preview_definition);
+        AtmosphereRendererClass.bind(_renderer.atmosphere, _definition);
     }
 private:
     Renderer _renderer;
-    AtmosphereDefinition _preview_definition;
+};
+
+class PreviewSkyWest:public BasePreview
+{
+public:
+    PreviewSkyWest(QWidget* parent):
+        BasePreview(parent)
+    {
+        _renderer = rendererCreate();
+        
+        configScaling(0.5, 5.0, 0.5, 2.5);
+    }
+protected:
+    QColor getColor(double x, double y)
+    {
+        y -= 100.0 * scaling;
+        if (y > 0.0)
+        {
+            return QColor(0, 0, 0);
+        }
+        else
+        {
+            Vector3 look;
+
+            look.x = -1.0;
+            look.y = -y;
+            look.z = -x;
+
+            return colorToQColor(_renderer.atmosphere->getSkyColor(&_renderer, look));
+        }
+    }
+    void updateData()
+    {
+        AtmosphereRendererClass.bind(_renderer.atmosphere, _definition);
+    }
+private:
+    Renderer _renderer;
 };
 
 /**************** Form ****************/
 FormAtmosphere::FormAtmosphere(QWidget *parent):
     BaseForm(parent)
 {
-    _definition = atmosphereCreateDefinition();
+    BaseInput* input;
+    
+    _definition = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
 
-    previewColor = new PreviewAtmosphereColor(this);
-    addPreview(previewColor, QString(tr("Color preview")));
+    previewWest = new PreviewSkyWest(this);
+    addPreview(previewWest, QString(tr("West preview")));
+    previewEast = new PreviewSkyEast(this);
+    addPreview(previewEast, QString(tr("East preview")));
 
-    addInputDouble(tr("Start distance"), &_definition.distance_near, -500.0, 500.0, 5.0, 50.0);
-    addInputDouble(tr("End distance"), &_definition.distance_far, -500.0, 500.0, 5.0, 50.0);
-    addInputDouble(tr("Masking power"), &_definition.full_mask, 0.0, 1.0, 0.01, 0.1);
-    addInputBoolean(tr("Lock on horizon color"), &_definition.auto_lock_on_haze);
-    addInputColor(tr("Color"), &_definition.color)->setEnabledCondition(&_definition.auto_lock_on_haze, 0);
+    addInputEnum(tr("Color model"), (int*)&_definition->model, QStringList(tr("Preetham/Shirley analytic model")) << tr("Bruneton/Neyret precomputed model"));
+    addInputDouble(tr("Day time"), &_definition->daytime, 0.14, 0.86, 0.002, 0.1);
+    addInputColor(tr("Sun color"), &_definition->sun_color);
+    addInputDouble(tr("Sun radius"), &_definition->sun_radius, 0.0, 0.4, 0.004, 0.04);
+    addInputDouble(tr("Sun halo radius"), &_definition->sun_halo_size, 0.0, 0.4, 0.004, 0.04);
+    addInputCurve(tr("Sun halo profile"), _definition->sun_halo_profile, 0.0, 1.0, 0.0, 1.0, tr("Distance to center of the sun"), tr("Light influence (halo opacity)"));
+    addInputDouble(tr("Influence of skydome on lighting"), &_definition->dome_lighting, 0.0, 2.0, 0.01, 0.1);
+    input = addInputDouble(tr("Humidity"), &_definition->humidity, 1.8, 6.0, 0.05, 0.5);
 
     revertConfig();
 }
 
 void FormAtmosphere::revertConfig()
 {
-    sceneryGetAtmosphere(&_definition);
+    sceneryGetAtmosphere(_definition);
     BaseForm::revertConfig();
 }
 
 void FormAtmosphere::applyConfig()
 {
-    scenerySetAtmosphere(&_definition);
+    scenerySetAtmosphere(_definition);
     BaseForm::applyConfig();
 }
 
 void FormAtmosphere::configChangeEvent()
 {
-    atmosphereValidateDefinition(&_definition);
+    AtmosphereDefinitionClass.validate(_definition);
     BaseForm::configChangeEvent();
 }

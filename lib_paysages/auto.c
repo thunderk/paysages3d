@@ -13,7 +13,6 @@
 #include "terrain.h"
 #include "textures.h"
 #include "scenery.h"
-#include "sky.h"
 #include "system.h"
 #include "water.h"
 #include "zone.h"
@@ -25,9 +24,7 @@ void autoSetDaytime(int hour, int minute)
 
 void autoSetDaytimeFraction(double daytime)
 {
-    SkyDefinition sky;
-    /*ColorGradation grad_sun;
-    Color sun;*/
+    AtmosphereDefinition* atmosphere;
 
     daytime = fmod(daytime, 1.0);
     if (daytime < 0.0)
@@ -35,33 +32,18 @@ void autoSetDaytimeFraction(double daytime)
         daytime += 1.0;
     }
 
-    /*lightingSetSunAngle(0.0, (daytime + 0.25) * M_PI * 2.0);
-
-    grad_sun = colorGradationCreate();
-    colorGradationAddRgba(&grad_sun, 0.2, 0.1, 0.1, 0.1, 1.0);
-    colorGradationAddRgba(&grad_sun, 0.25, 0.9, 0.5, 0.5, 1.0);
-    colorGradationAddRgba(&grad_sun, 0.3, 0.8, 0.8, 0.8, 1.0);
-    colorGradationAddRgba(&grad_sun, 0.5, 1.0, 1.0, 1.0, 1.0);
-    colorGradationAddRgba(&grad_sun, 0.7, 0.8, 0.8, 0.8, 1.0);
-    colorGradationAddRgba(&grad_sun, 0.75, 0.7, 0.6, 0.5, 1.0);
-    colorGradationAddRgba(&grad_sun, 0.8, 0.1, 0.1, 0.1, 1.0);
-    sun = colorGradationGet(&grad_sun, daytime);
-    lightingSetSunColor(sun);*/
-
-    sky = skyCreateDefinition();
-    sceneryGetSky(&sky);
-    sky.daytime = daytime;
-    scenerySetSky(&sky);
-    skyDeleteDefinition(&sky);
+    atmosphere = AtmosphereDefinitionClass.create();
+    sceneryGetAtmosphere(atmosphere);
+    atmosphere->daytime = daytime;
+    scenerySetAtmosphere(atmosphere);
+    AtmosphereDefinitionClass.destroy(atmosphere);
 }
 
 void autoGenRealisticLandscape(int seed)
 {
-    AtmosphereDefinition atmosphere;
     TerrainDefinition terrain;
     WaterDefinition water;
     CloudsDefinition clouds;
-    SkyDefinition sky;
     TexturesDefinition textures;
     TextureLayerDefinition* texture;
     int layer;
@@ -83,36 +65,6 @@ void autoGenRealisticLandscape(int seed)
     waterAutoPreset(&water, WATER_PRESET_LAKE);
     scenerySetWater(&water);
     waterDeleteDefinition(&water);
-
-    /* Sky */
-    sky = skyCreateDefinition();
-    sky.model = SKY_MODEL_PREETHAM;
-    sky.daytime = 0.0;
-    sky.sun_color.r = 1.0;
-    sky.sun_color.g = 0.95;
-    sky.sun_color.b = 0.9;
-    sky.sun_color.a = 1.0;
-    sky.sun_radius = 0.02;
-    sky.sun_halo_size = 0.3;
-    sky.dome_lighting = 0.6;
-    curveClear(sky.sun_halo_profile);
-    curveQuickAddPoint(sky.sun_halo_profile, 0.0, 1.0);
-    curveQuickAddPoint(sky.sun_halo_profile, 0.1, 0.2);
-    curveQuickAddPoint(sky.sun_halo_profile, 1.0, 0.0);
-    sky.model_custom.auto_from_daytime = 1;
-    sky.model_custom.zenith_color.r = 0.52;
-    sky.model_custom.zenith_color.g = 0.63;
-    sky.model_custom.zenith_color.b = 0.8;
-    sky.model_custom.zenith_color.a = 1.0;
-    sky.model_custom.haze_color.r = 0.92;
-    sky.model_custom.haze_color.g = 0.93;
-    sky.model_custom.haze_color.b = 1.0;
-    sky.model_custom.haze_color.a = 1.0;
-    sky.model_custom.haze_height = 0.75;
-    sky.model_custom.haze_smoothing = 0.3;
-    sky.model_preetham.turbidity = 2.0;
-    scenerySetSky(&sky);
-    skyDeleteDefinition(&sky);
 
     /* Terrain */
     terrain = terrainCreateDefinition();
@@ -180,11 +132,11 @@ void autoGenRealisticLandscape(int seed)
     texturesDeleteDefinition(&textures);
 
     /* Atmosphere */
-    atmosphere = atmosphereCreateDefinition();
+    /*atmosphere = atmosphereCreateDefinition();
     atmosphere.distance_near = 20.0;
     atmosphere.distance_far = 100.0;
     atmosphere.full_mask = 0.6;
     atmosphere.auto_lock_on_haze = 1;
     scenerySetAtmosphere(&atmosphere);
-    atmosphereDeleteDefinition(&atmosphere);
+    atmosphereDeleteDefinition(&atmosphere);*/
 }

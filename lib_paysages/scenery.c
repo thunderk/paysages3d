@@ -6,11 +6,10 @@
 #include "render.h"
 #include "system.h"
 
-static AtmosphereDefinition _atmosphere;
+static AtmosphereDefinition* _atmosphere;
 static CameraDefinition _camera;
 static CloudsDefinition _clouds;
 static LightingDefinition _lighting;
-static SkyDefinition _sky;
 static TerrainDefinition _terrain;
 static TexturesDefinition _textures;
 static WaterDefinition _water;
@@ -24,11 +23,10 @@ void sceneryInit()
     noiseInit();
     lightingInit();
 
-    _atmosphere = atmosphereCreateDefinition();
+    _atmosphere = AtmosphereDefinitionClass.create();
     _camera = cameraCreateDefinition();
     _clouds = cloudsCreateDefinition();
     _lighting = lightingCreateDefinition();
-    _sky = skyCreateDefinition();
     _terrain = terrainCreateDefinition();
     _textures = texturesCreateDefinition();
     _water = waterCreateDefinition();
@@ -39,11 +37,10 @@ void sceneryInit()
 
 void sceneryQuit()
 {
-    atmosphereDeleteDefinition(&_atmosphere);
+    AtmosphereDefinitionClass.destroy(_atmosphere);
     cameraDeleteDefinition(&_camera);
     cloudsDeleteDefinition(&_clouds);
     lightingDeleteDefinition(&_lighting);
-    skyDeleteDefinition(&_sky);
     terrainDeleteDefinition(&_terrain);
     texturesDeleteDefinition(&_textures);
     waterDeleteDefinition(&_water);
@@ -62,11 +59,10 @@ void scenerySetCustomDataCallback(SceneryCustomDataCallback callback_save, Scene
 void scenerySave(PackStream* stream)
 {
     noiseSave(stream);
-    atmosphereSave(stream, &_atmosphere);
+    AtmosphereDefinitionClass.save(stream, _atmosphere);
     cameraSave(stream, &_camera);
     cloudsSave(stream, &_clouds);
     lightingSave(stream, &_lighting);
-    skySave(stream, &_sky);
     terrainSave(stream, &_terrain);
     texturesSave(stream, &_textures);
     waterSave(stream, &_water);
@@ -82,20 +78,17 @@ void sceneryLoad(PackStream* stream)
     /* TODO Use intermediary definitions ? */
 
     noiseLoad(stream);
-    atmosphereLoad(stream, &_atmosphere);
+    AtmosphereDefinitionClass.load(stream, _atmosphere);
     cameraLoad(stream, &_camera);
     cloudsLoad(stream, &_clouds);
     lightingLoad(stream, &_lighting);
-    skyLoad(stream, &_sky);
     terrainLoad(stream, &_terrain);
     texturesLoad(stream, &_textures);
     waterLoad(stream, &_water);
     
-    atmosphereValidateDefinition(&_atmosphere);
     cameraValidateDefinition(&_camera, 0);
     cloudsValidateDefinition(&_clouds);
     lightingValidateDefinition(&_lighting);
-    skyValidateDefinition(&_sky);
     terrainValidateDefinition(&_terrain);
     texturesValidateDefinition(&_textures);
     waterValidateDefinition(&_water);
@@ -108,13 +101,13 @@ void sceneryLoad(PackStream* stream)
 
 void scenerySetAtmosphere(AtmosphereDefinition* atmosphere)
 {
-    atmosphereCopyDefinition(atmosphere, &_atmosphere);
-    atmosphereValidateDefinition(&_atmosphere);
+    AtmosphereDefinitionClass.copy(atmosphere, _atmosphere);
+    AtmosphereDefinitionClass.validate(_atmosphere);
 }
 
 void sceneryGetAtmosphere(AtmosphereDefinition* atmosphere)
 {
-    atmosphereCopyDefinition(&_atmosphere, atmosphere);
+    AtmosphereDefinitionClass.copy(_atmosphere, atmosphere);
 }
 
 void scenerySetCamera(CameraDefinition* camera)
@@ -148,20 +141,6 @@ void scenerySetLighting(LightingDefinition* lighting)
 void sceneryGetLighting(LightingDefinition* lighting)
 {
     lightingCopyDefinition(&_lighting, lighting);
-}
-
-void scenerySetSky(SkyDefinition* sky)
-{
-    skyCopyDefinition(sky, &_sky);
-    skyValidateDefinition(&_sky);
-
-    atmosphereValidateDefinition(&_atmosphere);
-    lightingValidateDefinition(&_lighting);
-}
-
-void sceneryGetSky(SkyDefinition* sky)
-{
-    skyCopyDefinition(&_sky, sky);
 }
 
 void scenerySetTerrain(TerrainDefinition* terrain)
@@ -205,7 +184,7 @@ void sceneryRenderFirstPass(Renderer* renderer)
 {
     terrainRender(&_terrain, renderer);
     waterRender(&_water, renderer);
-    skyRender(&_sky, renderer);
+    atmosphereRenderSkydome(renderer);
 }
 
 
@@ -214,11 +193,6 @@ void sceneryRenderFirstPass(Renderer* renderer)
 
 
 /******* Standard renderer *********/
-static int _getSkyDomeLights(Renderer* renderer, LightDefinition* array, int max_lights)
-{
-    return skyGetLights(&_sky, renderer, array, max_lights);
-}
-
 static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
 {
     Vector3 light_location;
@@ -256,7 +230,7 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
 
     if (!terrainProjectRay(&_terrain, renderer, location, direction, &result.hit_location, &result.hit_color))
     {
-        sky_color = skyGetColor(&_sky, renderer, location, direction);
+        sky_color = renderer->atmosphere->getSkyColor(renderer, direction);
         result.hit_location = v3Add(location, v3Scale(direction, 1000.0));
         result.hit_color = renderer->applyClouds(renderer, sky_color, location, result.hit_location);
     }
@@ -278,11 +252,6 @@ static HeightInfo _getWaterHeightInfo(Renderer* renderer)
 static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
 {
     return texturesGetColor(&_textures, renderer, location.x, location.z, precision);
-}
-
-static Color _applyAtmosphere(Renderer* renderer, Vector3 location, Color base)
-{
-    return atmosphereApply(&_atmosphere, renderer, location, base);
 }
 
 static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3 end)
@@ -320,7 +289,6 @@ Renderer sceneryCreateStandardRenderer()
     cameraCopyDefinition(&_camera, &result.render_camera);
     result.camera_location = _camera.location;
 
-    result.getSkyDomeLights = _getSkyDomeLights;
     result.alterLight = _alterLight;
     result.getLightStatus = _getLightStatus;
     result.applyLightStatus = _applyLightStatus;
@@ -328,11 +296,12 @@ Renderer sceneryCreateStandardRenderer()
     result.getTerrainHeight = _getTerrainHeight;
     result.getWaterHeightInfo = _getWaterHeightInfo;
     result.applyTextures = _applyTextures;
-    result.applyAtmosphere = _applyAtmosphere;
     result.applyClouds = _applyClouds;
     result.projectPoint = _projectPoint;
     result.unprojectPoint = _unprojectPoint;
     result.getPrecision = _getPrecision;
+    
+    AtmosphereRendererClass.bind(result.atmosphere, _atmosphere);
 
     return result;
 }

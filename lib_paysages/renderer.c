@@ -54,11 +54,6 @@ static void _pushQuad(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Ve
     renderer->pushTriangle(renderer, v4, v1, v3, callback, callback_data);
 }
 
-static int _getSkyDomeLights(Renderer* renderer, LightDefinition* array, int max_lights)
-{
-    return 0;
-}
-
 static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
 {
 }
@@ -91,11 +86,6 @@ static HeightInfo _getWaterHeightInfo(Renderer* renderer)
 static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
 {
     return COLOR_TRANSPARENT;
-}
-
-static Color _applyAtmosphere(Renderer* renderer, Vector3 location, Color base)
-{
-    return base;
 }
 
 static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3 end)
@@ -131,19 +121,20 @@ Renderer rendererCreate()
     result.getTerrainHeight = _getTerrainHeight;
     result.getWaterHeightInfo = _getWaterHeightInfo;
     result.applyTextures = _applyTextures;
-    result.applyAtmosphere = _applyAtmosphere;
     result.applyClouds = _applyClouds;
 
-    result.getSkyDomeLights = _getSkyDomeLights;
     result.alterLight = _alterLight;
     result.getLightStatus = _getLightStatus;
     result.applyLightStatus = _applyLightStatus;
+    
+    result.atmosphere = AtmosphereRendererClass.create();
 
     return result;
 }
 
 void rendererDelete(Renderer* renderer)
 {
+    AtmosphereRendererClass.destroy(renderer->atmosphere);
     renderDeleteArea(renderer->render_area);
 }
 

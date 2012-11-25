@@ -1,9 +1,9 @@
 BUILDMODE = debug
 BUILDPATH = ../build/${BUILDMODE}
 OBJPATH = ./obj/${BUILDMODE}
-SOURCES = $(wildcard *.c)
+SOURCES = $(wildcard *.c atmosphere/*.c)
 OBJECTS = ${SOURCES:%.c=${OBJPATH}/%.o}
-HEADERS = $(wildcard shared/*.h *.h)
+HEADERS = $(wildcard shared/*.h atmosphere/*.h *.h)
 RESULT = ${BUILDPATH}/libpaysages.so
 CC_FLAGS = -Wall -fPIC $(shell pkg-config --cflags glib-2.0 gthread-2.0) -DHAVE_GLIB=1
 CC_LDFLAGS = $(shell pkg-config --libs glib-2.0 gthread-2.0) -lIL -lILU
@@ -27,6 +27,7 @@ clean:
 	rm -f ${RESULT}
 
 ${OBJPATH}/%.o:%.c ${HEADERS}
+	mkdir -p `dirname $@`
 	${CC} -c ${CC_FLAGS} $< -o $@
 
 ${RESULT}:${OBJECTS}
