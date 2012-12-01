@@ -10,6 +10,10 @@ Technology Preview 2 :
    => Apply model to atmosphere (aerial perspective)
    => Find a proper model for night sky (maybe Shirley)
 - Clouds should keep distance to ground.
+- Restore aerial perspective.
+- Implement Bruneton's scattering model.
+- Add clouds to explorer with 3d textures.
+- Start using OpenCL to optimize rendering.
 - Rethink the quality settings and detail smoothing in the distance.
    => When quality setting is set to 10, add boost options
    => Add detail boost (adds granularity)

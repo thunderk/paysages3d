@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 #include "IL/il.h"
 #include "IL/ilu.h"
@@ -111,16 +112,16 @@ int systemLoadPictureFile(const char* filepath, PictureCallbackLoadStarted callb
 
     ilGenImages(1, &image_id);
     ilBindImage(image_id);
-    
+
     if (ilLoadImage(filepath))
     {
         width = ilGetInteger(IL_IMAGE_WIDTH);
         height = ilGetInteger(IL_IMAGE_HEIGHT);
         callback_start(data, width, height);
-        
+
         pixels = malloc(sizeof(ILuint) * width * height);
         ilCopyPixels(0, 0, 0, width, height, 1, IL_RGBA, IL_UNSIGNED_BYTE, pixels);
-        
+
         for (y = 0; y < height; y++)
         {
             for (x = 0; x < width; x++)
@@ -128,10 +129,10 @@ int systemLoadPictureFile(const char* filepath, PictureCallbackLoadStarted callb
                 callback_pixel(data, x, y, colorFrom32BitRGBA(pixels[y * width + x]));
             }
         }
-        
+
         free(pixels);
     }
-    
+
     error_count = 0;
     while ((error=ilGetError()) != IL_NO_ERROR)
     {
@@ -139,4 +140,11 @@ int systemLoadPictureFile(const char* filepath, PictureCallbackLoadStarted callb
         error_count++;
     }
     return !error_count;
+}
+
+int systemGetFileSize(const char* path)
+{
+    struct stat st;
+    stat(path, &st);
+    return st.st_size;
 }

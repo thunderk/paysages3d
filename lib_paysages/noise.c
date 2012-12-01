@@ -8,6 +8,7 @@
 #include "noisesimplex.h"
 #include "noisenaive.h"
 #include "noiseperlin.h"
+#include "opencl.h"
 
 #define MAX_LEVEL_COUNT 30
 
@@ -19,7 +20,7 @@ struct NoiseGenerator
     double height_offset;
     int level_count;
     struct NoiseLevel levels[MAX_LEVEL_COUNT];
-    
+
     double _max_height;
     double (*_func_noise_1d)(double x);
     double (*_func_noise_2d)(double x, double y);
@@ -31,7 +32,7 @@ void noiseInit()
     noiseSimplexInit();
     noisePerlinInit();
     noiseNaiveInit();
-    
+
     /* Noise stats */
     /*NoiseGenerator* noise;
     int x;
@@ -96,14 +97,14 @@ void noiseSaveGenerator(PackStream* stream, NoiseGenerator* generator)
     x = (int)generator->function.algorithm;
     packWriteInt(stream, &x);
     packWriteDouble(stream, &generator->function.ridge_factor);
-    
+
     packWriteDouble(stream, &generator->height_offset);
     packWriteInt(stream, &generator->level_count);
 
     for (x = 0; x < generator->level_count; x++)
     {
         NoiseLevel* level = generator->levels + x;
-        
+
         packWriteDouble(stream, &level->scaling);
         packWriteDouble(stream, &level->height);
         packWriteDouble(stream, &level->xoffset);
@@ -126,14 +127,14 @@ void noiseLoadGenerator(PackStream* stream, NoiseGenerator* generator)
     for (x = 0; x < generator->level_count; x++)
     {
         NoiseLevel* level = generator->levels + x;
-        
+
         packReadDouble(stream, &level->scaling);
         packReadDouble(stream, &level->height);
         packReadDouble(stream, &level->xoffset);
         packReadDouble(stream, &level->yoffset);
         packReadDouble(stream, &level->zoffset);
     }
-    
+
     noiseValidate(generator);
 }
 
@@ -144,7 +145,7 @@ void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination)
     destination->level_count = source->level_count;
 
     memcpy(destination->levels, source->levels, sizeof(NoiseLevel) * destination->level_count);
-    
+
     noiseValidate(destination);
 }
 
@@ -152,7 +153,7 @@ void noiseValidate(NoiseGenerator* generator)
 {
     int x;
     double max_height = generator->height_offset;
-    
+
     if (generator->function.algorithm < 0 || generator->function.algorithm > NOISE_FUNCTION_NAIVE)
     {
         generator->function.algorithm = NOISE_FUNCTION_SIMPLEX;
@@ -175,7 +176,7 @@ void noiseValidate(NoiseGenerator* generator)
         generator->_func_noise_3d = noiseNaiveGet3DValue;
         break;
     }
-    
+
     if (generator->function.ridge_factor > 0.5)
     {
         generator->function.ridge_factor = 0.5;

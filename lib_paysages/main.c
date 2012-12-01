@@ -10,6 +10,7 @@
 #include "scenery.h"
 #include "render.h"
 #include "main.h"
+#include "opencl.h"
 
 #define APP_HEADER 198632.125
 
@@ -18,6 +19,7 @@ void paysagesInit()
     CameraDefinition camera;
 
     systemInit();
+    openclInit();
 
     sceneryInit();
     renderInit();
@@ -50,6 +52,8 @@ void paysagesQuit()
 {
     sceneryQuit();
     renderQuit();
+    
+    openclQuit();
 }
 
 FileOperationResult paysagesSave(char* filepath)
