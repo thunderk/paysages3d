@@ -1,4 +1,5 @@
-#include "atmosphere.h"
+#include "public.h"
+#include "private.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -43,8 +44,8 @@ static AtmosphereDefinition* _createDefinition()
     curveQuickAddPoint(result->sun_halo_profile, 0.1, 0.2);
     curveQuickAddPoint(result->sun_halo_profile, 1.0, 0.0);
     result->dome_lighting = 0.6;
-    result->humidity = 2.0;
-    
+    result->humidity = 0.1;
+
     _validateDefinition(result);
 
     return result;
@@ -65,9 +66,9 @@ static void _copyDefinition(AtmosphereDefinition* source, AtmosphereDefinition* 
     destination->sun_halo_size = source->sun_halo_size;
     destination->dome_lighting = source->dome_lighting;
     destination->humidity = source->humidity;
-    
+
     curveCopy(source->sun_halo_profile, destination->sun_halo_profile);
-    
+
     _validateDefinition(destination);
 }
 
@@ -107,13 +108,10 @@ StandardDefinition AtmosphereDefinitionClass = {
 };
 
 /******************** Binding ********************/
-extern Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position);
-extern Color preethamGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position);
-
-static Color _fakeApplyAerialPerspective(Renderer* renderer, Vector3 direction, Color base)
+static Color _fakeApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
 {
     UNUSED(renderer);
-    UNUSED(direction);
+    UNUSED(location);
     return base;
 }
 static Color _fakeGetSkyColor(Renderer* renderer, Vector3 direction)
@@ -136,9 +134,9 @@ static Color _getSkyColor(Renderer* renderer, Vector3 direction)
     double dist;
     Vector3 sun_position;
     Color sky_color, sun_color;
-    
+
     definition = renderer->atmosphere->definition;
-    
+
     sun_position = renderer->atmosphere->getSunDirection(renderer);
     direction = v3Normalize(direction);
     dist = v3Norm(v3Sub(direction, sun_position));
@@ -155,7 +153,7 @@ static Color _getSkyColor(Renderer* renderer, Vector3 direction)
     default:
         sky_color = COLOR_BLUE;
     }
-    
+
     /* Get sun halo */
     if (dist < definition->sun_radius + definition->sun_halo_size)
     {
@@ -207,7 +205,7 @@ static int _getSkydomeLights(Renderer* renderer, LightDefinition* lights, int ma
     double sun_angle;
     Vector3 sun_direction;
     int nblights = 0;
-    
+
     mutexAcquire(cache->lock);
     if (cache->nblights < 0)
     {
@@ -219,7 +217,7 @@ static int _getSkydomeLights(Renderer* renderer, LightDefinition* lights, int ma
         sun_direction.z = 0.0;
 
         /* TODO Moon light */
-        
+
         if (max_lights > MAX_SKYDOME_LIGHTS)
         {
             max_lights = MAX_SKYDOME_LIGHTS;
@@ -279,7 +277,7 @@ static int _getSkydomeLights(Renderer* renderer, LightDefinition* lights, int ma
         cache->nblights = nblights;
     }
     mutexRelease(cache->lock);
-    
+
     memcpy(lights, cache->lights, sizeof(LightDefinition) * cache->nblights);
     return cache->nblights;
 }
@@ -289,20 +287,20 @@ static AtmosphereRenderer* _createRenderer()
 {
     AtmosphereRenderer* result;
     AtmosphereRendererCache* cache;
-    
+
     result = malloc(sizeof(AtmosphereRenderer));
     result->definition = AtmosphereDefinitionClass.create();
-    
+
     result->getSunDirection = _getSunDirection;
     result->applyAerialPerspective = _fakeApplyAerialPerspective;
     result->getSkydomeLights = _fakeGetSkydomeLights;
     result->getSkyColor = _fakeGetSkyColor;
-    
+
     cache = malloc(sizeof(AtmosphereRendererCache));
     cache->lock = mutexCreate();
     cache->nblights = -1;
     result->_internal_data = cache;
-    
+
     return result;
 }
 
@@ -311,7 +309,7 @@ static void _deleteRenderer(AtmosphereRenderer* renderer)
     AtmosphereRendererCache* cache = (AtmosphereRendererCache*)renderer->_internal_data;
     mutexDestroy(cache->lock);
     free(cache);
-    
+
     AtmosphereDefinitionClass.destroy(renderer->definition);
     free(renderer);
 }
@@ -319,12 +317,21 @@ static void _deleteRenderer(AtmosphereRenderer* renderer)
 static void _bindRenderer(AtmosphereRenderer* renderer, AtmosphereDefinition* definition)
 {
     AtmosphereRendererCache* cache = (AtmosphereRendererCache*)renderer->_internal_data;
-    
+
     AtmosphereDefinitionClass.copy(definition, renderer->definition);
-    
+
     renderer->getSkyColor = _getSkyColor;
     renderer->getSkydomeLights = _getSkydomeLights;
-    
+
+    switch (definition->model)
+    {
+        case ATMOSPHERE_MODEL_PREETHAM:
+            renderer->applyAerialPerspective = preethamApplyAerialPerspective;
+            break;
+        default:
+            renderer->applyAerialPerspective = _fakeApplyAerialPerspective;
+    }
+
     mutexAcquire(cache->lock);
     cache->nblights = -1;
     mutexRelease(cache->lock);
@@ -341,7 +348,7 @@ static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* da
 {
     Vector3 direction;
     Color result;
-    
+
     UNUSED(data);
 
     direction = v3Sub(location, renderer->camera_location);

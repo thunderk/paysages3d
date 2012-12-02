@@ -2,7 +2,7 @@
 #define _PAYSAGES_RENDERER_H_
 
 #include "shared/types.h"
-#include "atmosphere/atmosphere.h"
+#include "atmosphere/public.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,7 +40,7 @@ struct Renderer
     void (*alterLight)(Renderer* renderer, LightDefinition* light, Vector3 location);
     void (*getLightStatus)(Renderer* renderer, LightStatus* status, Vector3 location);
     Color (*applyLightStatus)(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material);
-    
+
     /* Autonomous sub-renderers */
     AtmosphereRenderer* atmosphere;
 

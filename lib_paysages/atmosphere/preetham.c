@@ -1,9 +1,11 @@
-#include "atmosphere.h"
+#include "public.h"
+#include "private.h"
 
 #include <math.h>
+#include <assert.h>
 #include "../renderer.h"
 
-static inline double _angleBetween(double thetav, double phiv, double theta, double phi) 
+static inline double _angleBetween(double thetav, double phiv, double theta, double phi)
 {
     double cospsi = sin(thetav) * sin(theta) * cos(phi-phiv) + cos(thetav) * cos(theta);
     if (cospsi > 1.0) return 0.0;
@@ -36,11 +38,11 @@ static inline Color _xyYToRGB(double x, double y, double Y)
 
 	result.r = r;
 	result.g = g;
-	result.b = b; 
+	result.b = b;
         result.a = 1.0;
-        
+
         colorNormalize(&result);
-        
+
         return result;
 }
 
@@ -55,16 +57,16 @@ Color preethamGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
 {
     double theta, phi;
     double thetaSun, phiSun;
-    
+
     _directionToThetaPhi(direction, &theta, &phi);
     _directionToThetaPhi(sun_position, &thetaSun, &phiSun);
-    
+
     if (theta > M_PI / 2.0)
     {
         theta = M_PI / 2.0;
     }
     double gamma = _angleBetween(theta, phi, thetaSun, phiSun);
-    
+
     double cosTheta;
     if (theta > M_PI / 2.0)
     {
@@ -74,15 +76,15 @@ Color preethamGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
     {
         cosTheta = cos(theta);
     }
-    
-    double T = definition->humidity;
+
+    double T = definition->humidity * 3.0 + 1.8;
     double T2 = T * T;
     double suntheta = thetaSun;
     double suntheta2 = thetaSun * thetaSun;
     double suntheta3 = thetaSun * suntheta2;
 
     double Ax = -0.01925 * T - 0.25922;
-    double Bx = -0.06651 * T + 0.00081; 
+    double Bx = -0.06651 * T + 0.00081;
     double Cx = -0.00041 * T + 0.21247;
     double Dx = -0.06409 * T - 0.89887;
     double Ex = -0.00325 * T + 0.04517;
@@ -102,16 +104,16 @@ Color preethamGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
     double cosGamma = cos(gamma);
     cosGamma = cosGamma < 0.0 ? 0.0 : cosGamma;
     double cosSTheta = fabs(cos(thetaSun));
-    
+
     double xz = ( 0.00165 * suntheta3 - 0.00375 * suntheta2 + 0.00209 * suntheta + 0.00000) * T2 +
 		 (-0.02903 * suntheta3 + 0.06377 * suntheta2 - 0.03202 * suntheta + 0.00394) * T +
 		 ( 0.11693 * suntheta3 - 0.21196 * suntheta2 + 0.06052 * suntheta + 0.25886);
 
     double yz = ( 0.00275 * suntheta3 - 0.00610 * suntheta2 + 0.00317 * suntheta + 0.00000) * T2 +
-                (-0.04214 * suntheta3 + 0.08970 * suntheta2 - 0.04153 * suntheta + 0.00516) * T +	
+                (-0.04214 * suntheta3 + 0.08970 * suntheta2 - 0.04153 * suntheta + 0.00516) * T +
                 ( 0.15346 * suntheta3 - 0.26756 * suntheta2 + 0.06670 * suntheta + 0.26688);
-    
-    double X = (4.0 / 9.0 - T / 120.0) * (M_PI - 2.0 * suntheta);		
+
+    double X = (4.0 / 9.0 - T / 120.0) * (M_PI - 2.0 * suntheta);
     double Yz = ((4.0453 * T - 4.9710) * tan(X) - 0.2155 * T + 2.4192) * 1000.0;
 
     double val1, val2;
@@ -128,5 +130,38 @@ Color preethamGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
     val2 = (1.0 + AY * exp(BY)) * (1.0 + CY * exp(DY * suntheta) + EY * sqrt(cosSTheta));
     double Y = Yz * val1 / val2;
 
-    return _xyYToRGB(x, y, Y);
+    Color result = _xyYToRGB(x, y, Y);
+    Color humidity_color = {0.8, 0.8, 0.8, definition->humidity * 0.8 * colorGetValue(&result)};
+    colorMask(&result, &humidity_color);
+    return result;
+}
+
+Color preethamApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
+{
+    Vector3 ray = v3Sub(location, renderer->camera_location);
+    Vector3 direction = v3Normalize(ray);
+    double distance = v3Norm(ray);
+    AtmosphereDefinition* definition = renderer->atmosphere->definition;
+    double near = 10.0 - definition->humidity * 10.0;
+    double far = 100.0 - definition->humidity * 90.0;
+    double max = 0.85 + definition->humidity * 0.12;
+
+    assert(near < far);
+
+    if (distance < near)
+    {
+        return base;
+    }
+    else
+    {
+        Vector3 sun_position = renderer->atmosphere->getSunDirection(renderer);
+        Color sky = preethamGetSkyColor(definition, renderer->camera_location, direction, sun_position);
+        if (distance > far)
+        {
+            distance = far;
+        }
+        sky.a = max * ((distance - near) / (far - near));
+        colorMask(&base, &sky);
+        return base;
+    }
 }

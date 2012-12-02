@@ -33,9 +33,9 @@ public:
         _renderer.customData[1] = &_textures;
         _renderer.customData[2] = &_lighting;
         _renderer.customData[3] = &_water;
-        
+
         addOsd(QString("geolocation"));
-        
+
         configScaling(0.5, 200.0, 3.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
@@ -45,7 +45,7 @@ protected:
         Vector3 down = {0.0, -1.0, 0.0};
         Vector3 location;
         double height = terrainGetHeight(&_terrain, x, y);
-        
+
         if (height < _water.height)
         {
             location.x = x;
@@ -64,9 +64,10 @@ protected:
         sceneryGetLighting(&_lighting);
         sceneryGetTextures(&_textures);
         sceneryGetWater(&_water);
-        
+
         sceneryGetAtmosphere(_atmosphere);
         AtmosphereRendererClass.bind(_renderer.atmosphere, _atmosphere);
+        _renderer.atmosphere->applyAerialPerspective = _applyAerialPerspective;
     }
 private:
     Renderer _renderer;
@@ -95,6 +96,11 @@ private:
     {
         lightingGetStatus((LightingDefinition*)renderer->customData[2], renderer, location, status);
     }
+
+    static Color _applyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
+    {
+        return base;
+    }
 };
 
 /**************** Form ****************/
@@ -108,14 +114,14 @@ FormRender::FormRender(QWidget *parent) :
     _params.height = 600;
     _params.antialias = 1;
     _camera = cameraCreateDefinition();
-    
+
     _renderer_inited = false;
-    
+
     disablePreviewsUpdate();
 
     _preview_landscape = new PreviewRenderLandscape(this);
     addPreview(_preview_landscape, QString(tr("Top-down preview")));
-    
+
     addInput(new InputCamera(this, tr("Camera"), &_camera));
     addInputInt(tr("Quality"), &_params.quality, 1, 10, 1, 1);
     addInputInt(tr("Image width"), &_params.width, 100, 2000, 10, 100);
@@ -143,7 +149,7 @@ FormRender::~FormRender()
 void FormRender::savePack(PackStream* stream)
 {
     BaseForm::savePack(stream);
-    
+
     packWriteInt(stream, &_params.width);
     packWriteInt(stream, &_params.height);
     packWriteInt(stream, &_params.antialias);
@@ -153,12 +159,12 @@ void FormRender::savePack(PackStream* stream)
 void FormRender::loadPack(PackStream* stream)
 {
     BaseForm::loadPack(stream);
-    
+
     packReadInt(stream, &_params.width);
     packReadInt(stream, &_params.height);
     packReadInt(stream, &_params.antialias);
     packReadInt(stream, &_params.quality);
-    
+
     revertConfig();
 }
 
@@ -188,7 +194,7 @@ void FormRender::startQuickRender()
     }
     _renderer = sceneryCreateStandardRenderer();
     _renderer_inited = true;
-    
+
     DialogRender* dialog = new DialogRender(this, &_renderer);
     RenderParams params = {400, 300, 1, 3};
     dialog->startRender(params);
@@ -204,7 +210,7 @@ void FormRender::startRender()
     }
     _renderer = sceneryCreateStandardRenderer();
     _renderer_inited = true;
-    
+
     DialogRender* dialog = new DialogRender(this, &_renderer);
     dialog->startRender(_params);
 

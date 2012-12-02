@@ -8,7 +8,7 @@
  * a standard renderer.
  */
 
-#include "atmosphere/atmosphere.h"
+#include "atmosphere/public.h"
 #include "camera.h"
 #include "clouds.h"
 #include "lighting.h"
@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 typedef void (*SceneryCustomDataCallback)(PackStream* stream, void* data);
-    
+
 void sceneryInit();
 void sceneryQuit();
 

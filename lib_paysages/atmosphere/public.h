@@ -1,5 +1,5 @@
-#ifndef _PAYSAGES_ATMOSPHERE_INTERFACE_H_
-#define _PAYSAGES_ATMOSPHERE_INTERFACE_H_
+#ifndef _PAYSAGES_ATMOSPHERE_PUBLIC_H_
+#define _PAYSAGES_ATMOSPHERE_PUBLIC_H_
 
 #include "../shared/types.h"
 #include "../euclid.h"
@@ -19,7 +19,7 @@ typedef void (*FuncObjectValidate)(void* object);
 typedef void (*FuncObjectSave)(PackStream* stream, void* object);
 typedef void (*FuncObjectLoad)(PackStream* stream, void* object);
 typedef void (*FuncObjectBind)(void* base, void* sub);
-    
+
 typedef struct {
     FuncObjectCreate create;
     FuncObjectDelete destroy;
@@ -62,12 +62,12 @@ typedef Vector3 (*FuncAtmosphereGetSunDirection)(Renderer* renderer);
 typedef struct
 {
     AtmosphereDefinition* definition;
-    
+
     FuncAtmosphereGetSkydomeLights getSkydomeLights;
     FuncAtmosphereApplyAerialPerspective applyAerialPerspective;
     FuncAtmosphereGetSkyColor getSkyColor;
     FuncAtmosphereGetSunDirection getSunDirection;
-    
+
     void* _internal_data;
 } AtmosphereRenderer;
 

@@ -6,7 +6,7 @@
 #include <QSlider>
 #include <math.h>
 
-#include "../lib_paysages/atmosphere/atmosphere.h"
+#include "../lib_paysages/atmosphere/public.h"
 #include "../lib_paysages/scenery.h"
 #include "../lib_paysages/renderer.h"
 
@@ -20,7 +20,7 @@ public:
         BasePreview(parent)
     {
         _renderer = rendererCreate();
-        
+
         configScaling(0.5, 5.0, 0.5, 2.5);
     }
 protected:
@@ -57,7 +57,7 @@ public:
         BasePreview(parent)
     {
         _renderer = rendererCreate();
-        
+
         configScaling(0.5, 5.0, 0.5, 2.5);
     }
 protected:
@@ -92,7 +92,7 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
     BaseForm(parent)
 {
     BaseInput* input;
-    
+
     _definition = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
 
     previewWest = new PreviewSkyWest(this);
@@ -107,7 +107,7 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
     addInputDouble(tr("Sun halo radius"), &_definition->sun_halo_size, 0.0, 0.4, 0.004, 0.04);
     addInputCurve(tr("Sun halo profile"), _definition->sun_halo_profile, 0.0, 1.0, 0.0, 1.0, tr("Distance to center of the sun"), tr("Light influence (halo opacity)"));
     addInputDouble(tr("Influence of skydome on lighting"), &_definition->dome_lighting, 0.0, 2.0, 0.01, 0.1);
-    input = addInputDouble(tr("Humidity"), &_definition->humidity, 1.8, 6.0, 0.05, 0.5);
+    addInputDouble(tr("Humidity"), &_definition->humidity, 0.0, 1.0, 0.01, 0.1);
 
     revertConfig();
 }
