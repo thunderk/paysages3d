@@ -12,6 +12,14 @@ extern "C" {
 
 typedef enum
 {
+    CLOUDS_TYPE_CIRRUS,
+    CLOUDS_TYPE_CUMULUS,
+    CLOUDS_TYPE_STRATOCUMULUS,
+    CLOUDS_TYPE_STRATUS
+} CloudsType;
+
+typedef enum
+{
     CLOUDS_PRESET_CIRRUS,
     CLOUDS_PRESET_CUMULUS,
     CLOUDS_PRESET_STRATOCUMULUS,
@@ -24,13 +32,11 @@ typedef double (*CloudCoverageFunc)(CloudsLayerDefinition* definition, Vector3 p
 
 struct CloudsLayerDefinition
 {
+    CloudsType type;
     double lower_altitude;
     double thickness;
     double base_coverage;
-    Curve* coverage_by_altitude;
-    NoiseGenerator* shape_noise;
     double shape_scaling;
-    NoiseGenerator* edge_noise;
     double edge_scaling;
     double edge_length;
     SurfaceMaterial material;
@@ -38,7 +44,11 @@ struct CloudsLayerDefinition
     double transparencydepth;
     double lighttraversal;
     double minimumlight;
+    
     CloudCoverageFunc _custom_coverage;
+    Curve* _coverage_by_altitude;
+    NoiseGenerator* _shape_noise;
+    NoiseGenerator* _edge_noise;
 };
 
 typedef struct

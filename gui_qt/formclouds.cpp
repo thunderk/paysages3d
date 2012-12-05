@@ -123,7 +123,7 @@ private:
 
     static double _coverageFunc(CloudsLayerDefinition* layer, Vector3 position)
     {
-        double coverage = curveGetValue(layer->coverage_by_altitude, position.y / layer->thickness + 0.5);
+        double coverage = curveGetValue(layer->_coverage_by_altitude, position.y / layer->thickness + 0.5);
         position.y = 0.0;
         double dist = v3Norm(position);
         
@@ -170,13 +170,14 @@ FormClouds::FormClouds(QWidget *parent):
     addPreview(_previewCoverage, tr("Layer coverage (no lighting)"));
     addPreview(_previewColor, tr("Appearance"));
 
+    addInputEnum(tr("Clouds model"), (int*)&_layer->type, QStringList() << tr("Cirrus") << tr("Cumulus") << tr("Stratocumulus") << tr("Stratus"));
     addInputDouble(tr("Lower altitude"), &_layer->lower_altitude, -10.0, 50.0, 0.5, 5.0);
     addInputDouble(tr("Layer thickness"), &_layer->thickness, 0.0, 20.0, 0.1, 1.0);
     addInputDouble(tr("Max coverage"), &_layer->base_coverage, 0.0, 1.0, 0.01, 0.1);
-    addInputCurve(tr("Coverage by altitude"), _layer->coverage_by_altitude, 0.0, 1.0, 0.0, 1.0, tr("Altitude in cloud layer"), tr("Coverage value"));
-    addInputNoise(tr("Shape noise"), _layer->shape_noise);
+//    addInputCurve(tr("Coverage by altitude"), _layer->_coverage_by_altitude, 0.0, 1.0, 0.0, 1.0, tr("Altitude in cloud layer"), tr("Coverage value"));
+//    addInputNoise(tr("Shape noise"), _layer->_shape_noise);
     addInputDouble(tr("Shape scaling"), &_layer->shape_scaling, 3.0, 30.0, 0.3, 3.0);
-    addInputNoise(tr("Edge noise"), _layer->edge_noise);
+//    addInputNoise(tr("Edge noise"), _layer->_edge_noise);
     addInputDouble(tr("Edge scaling"), &_layer->edge_scaling, 0.5, 5.0, 0.05, 0.5);
     addInputDouble(tr("Edge length"), &_layer->edge_length, 0.0, 1.0, 0.01, 0.1);
     addInputMaterial(tr("Material"), &_layer->material);
@@ -198,6 +199,12 @@ void FormClouds::applyConfig()
 {
     BaseFormLayer::applyConfig();
     scenerySetClouds(&_definition);
+}
+
+void FormClouds::configChangeEvent()
+{
+    cloudsLayerValidateDefinition(_layer);
+    BaseForm::configChangeEvent();
 }
 
 void FormClouds::layerGetCopy(void* layer_definition)

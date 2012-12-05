@@ -22,6 +22,9 @@ protected:
     virtual void layerApply(void* layer_definition);
     virtual void autoPresetSelected(int preset);
 
+protected slots:
+    virtual void configChangeEvent();
+
 private:
     CloudsDefinition _definition;
     CloudsLayerDefinition* _layer;

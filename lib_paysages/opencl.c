@@ -180,14 +180,9 @@ void openclInit()
 
     /* Get platform */
     error = clGetPlatformIDs(1, &_platform, &platform_count);
-    if (error != CL_SUCCESS)
+    if (error != CL_SUCCESS || platform_count != 1)
     {
-        printf("[OpenCL] Error getting platform id: %s\n", _getErrorMessage(error));
-        return;
-    }
-    else if (platform_count != 1)
-    {
-        printf("[OpenCL] No platform available\n");
+        printf("OpenCL support is unavailable\n");
         return;
     }
     /* Get available devices */

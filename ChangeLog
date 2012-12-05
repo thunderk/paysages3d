@@ -23,6 +23,7 @@ Sky :
 Clouds :
   * Added clouds hardness to light.
   * New cloud model with 2 noises : one for the global shape and one for edges.
+  * Added clouds types with automatic settings.
 
 Rendering :
   * Added full scene antialiasing (FSAA).
