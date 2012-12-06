@@ -17,11 +17,11 @@ public:
 public slots:
     virtual void revertConfig();
     virtual void applyConfig();
-    
+
 protected:
     void setLayers(Layers* layers);
-    virtual void layerGetCopy(void* layer_definition) = 0;
-    virtual void layerApply(void* layer_definition) = 0;
+    virtual void layerReadCurrentFrom(void* layer_definition) = 0;
+    virtual void layerWriteCurrentTo(void* layer_definition) = 0;
     virtual void afterLayerAdded(void* layer_definition);
 
 private:

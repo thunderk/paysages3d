@@ -19,8 +19,8 @@ public slots:
     virtual void applyConfig();
 
 protected:
-    virtual void layerGetCopy(void* layer_definition);
-    virtual void layerApply(void* layer_definition);
+    virtual void layerReadCurrentFrom(void* layer_definition);
+    virtual void layerWriteCurrentTo(void* layer_definition);
 
 private:
     TexturesDefinition _definition;

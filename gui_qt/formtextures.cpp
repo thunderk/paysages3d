@@ -18,17 +18,17 @@ public:
     PreviewTexturesCoverage(QWidget* parent, TextureLayerDefinition* layer):BasePreview(parent)
     {
         _terrain = terrainCreateDefinition();
-        
+
         _renderer = rendererCreate();
         _renderer.render_quality = 3;
         _renderer.getTerrainHeight = _getTerrainHeight;
         _renderer.customData[0] = &_terrain;
-        
+
         _original_layer = layer;
         _preview_layer = texturesLayerCreateDefinition();
-        
+
         addOsd(QString("geolocation"));
-        
+
         configScaling(0.5, 200.0, 1.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
@@ -74,7 +74,7 @@ public:
 
         _original_layer = layer;
         _preview_layer = texturesLayerCreateDefinition();
-        
+
         _lighting = lightingCreateDefinition();
         light.color = COLOR_WHITE;
         light.direction.x = 0.0;
@@ -85,7 +85,7 @@ public:
         light.reflection = 1.0;
         lightingAddLight(&_lighting, light);
         lightingValidateDefinition(&_lighting);
-        
+
         _renderer = rendererCreate();
         _renderer.render_quality = 3;
         _renderer.getLightStatus = _getLightStatus;
@@ -93,9 +93,9 @@ public:
         _renderer.camera_location.x = 0.0;
         _renderer.camera_location.y = 20.0;
         _renderer.camera_location.z = 0.0;
-        
+
         _zone = zoneCreate();
-        
+
         configScaling(0.01, 1.0, 0.01, 0.1);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
@@ -123,7 +123,7 @@ private:
     TextureLayerDefinition* _original_layer;
     TextureLayerDefinition* _preview_layer;
     LightingDefinition _lighting;
-    
+
     static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
     {
         lightingGetStatus((LightingDefinition*)renderer->customData[0], renderer, location, status);
@@ -177,7 +177,7 @@ void FormTextures::applyConfig()
     scenerySetTextures(&_definition);
 }
 
-void FormTextures::layerGetCopy(void* layer_definition)
+void FormTextures::layerReadCurrentFrom(void* layer_definition)
 {
     TextureLayerDefinition* source = (TextureLayerDefinition*)layer_definition;
     texturesLayerCopyDefinition(source, _layer);
@@ -186,11 +186,11 @@ void FormTextures::layerGetCopy(void* layer_definition)
     zoneGetSlopeCurve(source->zone, _supp.slope_curve);
 }
 
-void FormTextures::layerApply(void* layer_definition)
+void FormTextures::layerWriteCurrentTo(void* layer_definition)
 {
     TextureLayerDefinition* destination = (TextureLayerDefinition*)layer_definition;
     texturesLayerCopyDefinition(_layer, destination);
-    
+
     zoneSetHeightCurve(destination->zone, _supp.height_curve);
     zoneSetSlopeCurve(destination->zone, _supp.slope_curve);
 }

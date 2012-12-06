@@ -16,10 +16,10 @@ public:
         _renderer = rendererCreate();
         _renderer.render_quality = 5;
         _renderer.applyLightStatus = _applyLightStatus;
-        
+
         _original_layer = layer;
         _preview_layer = cloudsLayerCreateDefinition();
-        
+
         configScaling(100.0, 1000.0, 20.0, 200.0);
     }
     ~PreviewCloudsCoverage()
@@ -64,7 +64,7 @@ public:
     PreviewCloudsColor(QWidget* parent, CloudsLayerDefinition* layer):BasePreview(parent)
     {
         LightDefinition light;
-        
+
         _original_layer = layer;
         _preview_layer = cloudsLayerCreateDefinition();
 
@@ -79,14 +79,14 @@ public:
         light.reflection = 1.0;
         lightingAddLight(&_lighting, light);
         lightingValidateDefinition(&_lighting);
-        
+
         _renderer = rendererCreate();
         _renderer.render_quality = 8;
         _renderer.alterLight = _alterLight;
         _renderer.getLightStatus = _getLightStatus;
         _renderer.customData[0] = _preview_layer;
         _renderer.customData[1] = &_lighting;
-        
+
         configScaling(0.5, 2.0, 0.1, 2.0);
     }
 protected:
@@ -98,7 +98,7 @@ protected:
         start.x = x * _preview_layer->thickness * 0.5;
         start.y = -y * _preview_layer->thickness * 0.5;
         start.z = _preview_layer->thickness * 0.5;
-        
+
         end.x = x * _preview_layer->thickness * 0.5;
         end.y = -y * _preview_layer->thickness * 0.5;
         end.z = -_preview_layer->thickness * 0.5;
@@ -126,7 +126,7 @@ private:
         double coverage = curveGetValue(layer->_coverage_by_altitude, position.y / layer->thickness + 0.5);
         position.y = 0.0;
         double dist = v3Norm(position);
-        
+
         if (dist >= layer->thickness * 0.5)
         {
             return 0.0;
@@ -141,12 +141,12 @@ private:
             return (density < coverage) ? density : coverage;
         }
     }
-    
+
     static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
     {
         light->color = cloudsLayerFilterLight((CloudsLayerDefinition*)renderer->customData[0], renderer, light->color, location, v3Scale(light->direction, -1000.0), v3Scale(light->direction, -1.0));
     }
-    
+
     static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
     {
         lightingGetStatus((LightingDefinition*)renderer->customData[1], renderer, location, status);
@@ -164,7 +164,7 @@ FormClouds::FormClouds(QWidget *parent):
 
     _definition = cloudsCreateDefinition();
     _layer = cloudsLayerCreateDefinition();
-    
+
     _previewCoverage = new PreviewCloudsCoverage(parent, _layer);
     _previewColor = new PreviewCloudsColor(parent, _layer);
     addPreview(_previewCoverage, tr("Layer coverage (no lighting)"));
@@ -204,15 +204,15 @@ void FormClouds::applyConfig()
 void FormClouds::configChangeEvent()
 {
     cloudsLayerValidateDefinition(_layer);
-    BaseForm::configChangeEvent();
+    BaseFormLayer::configChangeEvent();
 }
 
-void FormClouds::layerGetCopy(void* layer_definition)
+void FormClouds::layerReadCurrentFrom(void* layer_definition)
 {
     cloudsLayerCopyDefinition((CloudsLayerDefinition*)layer_definition, _layer);
 }
 
-void FormClouds::layerApply(void* layer_definition)
+void FormClouds::layerWriteCurrentTo(void* layer_definition)
 {
     cloudsLayerCopyDefinition(_layer, (CloudsLayerDefinition*)layer_definition);
 }
