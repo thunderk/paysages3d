@@ -26,21 +26,7 @@ public:
 protected:
     QColor getColor(double x, double y)
     {
-        y -= 100.0 * scaling;
-        if (y > 0.0)
-        {
-            return QColor(0, 0, 0);
-        }
-        else
-        {
-            Vector3 look;
-
-            look.x = 1.0;
-            look.y = -y;
-            look.z = x;
-
-            return colorToQColor(_renderer.atmosphere->getSkyColor(&_renderer, look));
-        }
+        return colorToQColor(atmosphereGetPreview(&_renderer, x, -y, M_PI_2));
     }
     void updateData()
     {
@@ -63,21 +49,7 @@ public:
 protected:
     QColor getColor(double x, double y)
     {
-        y -= 100.0 * scaling;
-        if (y > 0.0)
-        {
-            return QColor(0, 0, 0);
-        }
-        else
-        {
-            Vector3 look;
-
-            look.x = -1.0;
-            look.y = -y;
-            look.z = -x;
-
-            return colorToQColor(_renderer.atmosphere->getSkyColor(&_renderer, look));
-        }
+        return colorToQColor(atmosphereGetPreview(&_renderer, x, -y, -M_PI_2));
     }
     void updateData()
     {
@@ -91,8 +63,6 @@ private:
 FormAtmosphere::FormAtmosphere(QWidget *parent):
     BaseForm(parent)
 {
-    BaseInput* input;
-
     _definition = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
 
     previewWest = new PreviewSkyWest(this);

@@ -4,6 +4,7 @@
 Global :
   * Version handling in saved files.
   * Replaced old noise algorithm with Simplex Noise (up to 4 times faster).
+  * New noise settings for better shape control.
 
 Terrain :
   * Added canvases to paint the shape directly.
@@ -16,9 +17,11 @@ Textures :
 Water :
   * Added foam.
 
-Sky :
+Atmosphere :
+  * Merged with sky module.
   * New sky model (based on Preetham's work).
   * Added sun halo control.
+  * Better previews.
 
 Clouds :
   * Added clouds hardness to light.
