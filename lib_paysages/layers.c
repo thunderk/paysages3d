@@ -23,13 +23,13 @@ struct Layers {
 Layers* layersCreate(LayerType type, int max_layer_count)
 {
     Layers* result = malloc(sizeof(Layers));
-    
+
     result->type = type;
     result->count = 0;
     result->max_count = max_layer_count;
     result->null_layer = type.callback_create();
     result->layers_info = malloc(sizeof(LayerInfo) * max_layer_count);
-    
+
     return result;
 }
 
@@ -47,8 +47,8 @@ void layersDelete(Layers* layers)
     {
         layers->type.callback_delete(layers->layers_info[i].definition);
     }
-    
-    free(layers->null_layer);
+
+    layers->type.callback_delete(layers->null_layer);
     free(layers->layers_info);
     free(layers);
 }
@@ -56,7 +56,7 @@ void layersDelete(Layers* layers)
 void layersCopy(Layers* source, Layers* destination)
 {
     int i;
-    
+
     assert(source->type.callback_copy == destination->type.callback_copy);
     assert(source->type.callback_create == destination->type.callback_create);
     assert(source->type.callback_delete == destination->type.callback_delete);
@@ -80,7 +80,7 @@ void layersCopy(Layers* source, Layers* destination)
 void layersValidate(Layers* layers)
 {
     int i;
-    
+
     for (i = 0; i < layers->count; i++)
     {
         layers->type.callback_validate(layers->layers_info[i].definition);
@@ -91,7 +91,7 @@ void layersValidate(Layers* layers)
 void layersSave(PackStream* stream, Layers* layers)
 {
     int i;
-    
+
     packWriteInt(stream, &layers->count);
     for (i = 0; i < layers->count; i++)
     {
@@ -103,7 +103,7 @@ void layersSave(PackStream* stream, Layers* layers)
 void layersLoad(PackStream* stream, Layers* layers)
 {
     int i;
-    
+
     packReadInt(stream, &layers->count);
     for (i = 0; i < layers->count; i++)
     {
@@ -159,7 +159,7 @@ int layersAddLayer(Layers* layers, void* definition)
         {
             layers->type.callback_copy(definition, layers->layers_info[layers->count].definition);
         }
-        
+
         layers->count++;
         layersSetName(layers, layers->count - 1, "unnamed");
         return layers->count - 1;

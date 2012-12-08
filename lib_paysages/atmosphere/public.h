@@ -75,6 +75,7 @@ extern StandardDefinition AtmosphereDefinitionClass;
 extern StandardRenderer AtmosphereRendererClass;
 
 void atmosphereRenderSkydome(Renderer* renderer);
+Renderer atmosphereCreatePreviewRenderer();
 Color atmosphereGetPreview(Renderer* renderer, double x, double y, double heading);
 
 #ifdef __cplusplus

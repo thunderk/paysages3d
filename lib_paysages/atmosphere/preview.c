@@ -2,6 +2,7 @@
 
 #include "../renderer.h"
 #include "../lighting.h"
+#include "../terrain.h"
 
 /*
  * Atmosphere previews.
@@ -15,8 +16,8 @@ typedef struct
 
 #define MOUNTS_COUNT 11
 static Mount MOUNTS[MOUNTS_COUNT] = {
-    {{2.0, 0.0, -4.0}, 4.0},
-    {{-1.0, 0.0, -6.0}, 4.0},
+    {{2.0, 0.0, -6.0}, 4.0},
+    {{-1.5, 0.0, -8.0}, 4.0},
     {{3.0, 0.0, -10.0}, 6.0},
     {{-8.0, 0.0, -15.0}, 6.0},
     {{10.0, 0.0, -20.0}, 6.0},
@@ -28,7 +29,7 @@ static Mount MOUNTS[MOUNTS_COUNT] = {
     {{30.0, 0.0, -100.0}, 10.0},
 };
 
-static SurfaceMaterial MOUNT_MATERIAL = {{0.0, 0.0, 0.0, 1.0}, 0.0, 0.0};
+static SurfaceMaterial MOUNT_MATERIAL = {{0.4, 0.4, 0.4, 1.0}, 0.0, 0.0};
 
 static inline int _rayIntersectsTriangle(Vector3 p, Vector3 d, Vector3 v0, Vector3 v1, Vector3 v2, Vector3* hit)
 {
@@ -135,10 +136,8 @@ Color atmosphereGetPreview(Renderer* renderer, double x, double y, double headin
         normal = m4Transform(rotation, normal);
         hit = m4Transform(rotation, hit);
 
-        /* TODO Refactor lighting module for this to work */
         renderer->getLightStatus(renderer, &light, hit);
         color = renderer->applyLightStatus(renderer, &light, hit, normal, MOUNT_MATERIAL);
-        color = COLOR_BLACK;
 
         return renderer->atmosphere->applyAerialPerspective(renderer, hit, color);
     }
@@ -148,4 +147,32 @@ Color atmosphereGetPreview(Renderer* renderer, double x, double y, double headin
 
         return renderer->atmosphere->getSkyColor(renderer, direction);
     }
+}
+
+static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
+{
+    LightingDefinition def;
+
+    def = lightingCreateDefinition();
+    lightingGetStatus(&def, renderer, location, status);
+    lightingDeleteDefinition(&def);
+}
+
+static Color _applyLightStatus(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material)
+{
+    return lightingApplyStatusToSurface(renderer, status, location, normal, material);
+}
+
+Renderer atmosphereCreatePreviewRenderer()
+{
+    Renderer result = rendererCreate();
+
+    result.camera_location.x = 0.0;
+    result.camera_location.y = 8.0;
+    result.camera_location.z = 0.0;
+
+    result.getLightStatus = _getLightStatus;
+    result.applyLightStatus = _applyLightStatus;
+
+    return result;
 }

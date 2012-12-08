@@ -19,7 +19,7 @@ public:
     PreviewSkyEast(QWidget* parent):
         BasePreview(parent)
     {
-        _renderer = rendererCreate();
+        _renderer = atmosphereCreatePreviewRenderer();
 
         configScaling(0.5, 5.0, 0.5, 2.5);
     }
@@ -42,7 +42,7 @@ public:
     PreviewSkyWest(QWidget* parent):
         BasePreview(parent)
     {
-        _renderer = rendererCreate();
+        _renderer = atmosphereCreatePreviewRenderer();
 
         configScaling(0.5, 5.0, 0.5, 2.5);
     }

@@ -68,14 +68,14 @@ static double _standardCoverageFunc(CloudsLayerDefinition* layer, Vector3 positi
 CloudsLayerDefinition* cloudsLayerCreateDefinition()
 {
     CloudsLayerDefinition* result;
-    
+
     result = malloc(sizeof(CloudsLayerDefinition));
     result->_coverage_by_altitude = curveCreate();
     result->_shape_noise = noiseCreateGenerator();
     result->_edge_noise = noiseCreateGenerator();
 
     result->_custom_coverage = _standardCoverageFunc;
-    
+
     cloudsLayerAutoPreset(result, CLOUDS_PRESET_CIRRUS);
 
     return result;
@@ -95,7 +95,7 @@ void cloudsLayerAutoPreset(CloudsLayerDefinition* definition, CloudsPreset prese
     definition->material.base.g = 0.7;
     definition->material.base.b = 0.7;
     definition->material.base.a = 1.0;
-        
+
     switch (preset)
     {
         case CLOUDS_PRESET_CIRRUS:
@@ -161,17 +161,17 @@ void cloudsLayerAutoPreset(CloudsLayerDefinition* definition, CloudsPreset prese
         default:
             break;
     }
-    
+
     cloudsLayerValidateDefinition(definition);
 }
 
 void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinition* destination)
 {
     CloudsLayerDefinition temp;
-    
+
     temp = *destination;
     *destination = *source;
-    
+
     destination->_shape_noise = temp._shape_noise;
     noiseCopy(source->_shape_noise, destination->_shape_noise);
 
@@ -200,7 +200,7 @@ void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
     curveClear(definition->_coverage_by_altitude);
     noiseClearLevels(definition->_shape_noise);
     noiseClearLevels(definition->_edge_noise);
-        
+
     switch (definition->type)
     {
         case CLOUDS_TYPE_CIRRUS:
@@ -249,7 +249,7 @@ void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
 void _cloudsLayerSave(PackStream* stream, CloudsLayerDefinition* layer)
 {
     int clouds_type = (int)layer->type;
-    
+
     packWriteInt(stream, &clouds_type);
     packWriteDouble(stream, &layer->lower_altitude);
     packWriteDouble(stream, &layer->thickness);
@@ -270,7 +270,7 @@ void _cloudsLayerSave(PackStream* stream, CloudsLayerDefinition* layer)
 void _cloudsLayerLoad(PackStream* stream, CloudsLayerDefinition* layer)
 {
     int clouds_type;
-    
+
     packReadInt(stream, &clouds_type);
     layer->type = (CloudsType)clouds_type;
     packReadDouble(stream, &layer->lower_altitude);
@@ -284,21 +284,21 @@ void _cloudsLayerLoad(PackStream* stream, CloudsLayerDefinition* layer)
     packReadDouble(stream, &layer->edge_scaling);
     packReadDouble(stream, &layer->edge_length);
     packReadDouble(stream, &layer->base_coverage);
-    
+
     cloudsLayerValidateDefinition(layer);
 }
 
 LayerType cloudsGetLayerType()
 {
     LayerType result;
-    
+
     result.callback_create = (LayerCallbackCreate)cloudsLayerCreateDefinition;
     result.callback_delete = (LayerCallbackDelete)cloudsLayerDeleteDefinition;
     result.callback_copy = (LayerCallbackCopy)cloudsLayerCopyDefinition;
     result.callback_validate = (LayerCallbackValidate)cloudsLayerValidateDefinition;
     result.callback_save = (LayerCallbackSave)_cloudsLayerSave;
     result.callback_load = (LayerCallbackLoad)_cloudsLayerLoad;
-    
+
     return result;
 }
 
@@ -309,7 +309,7 @@ static inline double _getDistanceToBorder(CloudsLayerDefinition* layer, Vector3 
     val = noiseGet3DTotal(layer->_shape_noise, position.x / layer->shape_scaling, position.y / layer->shape_scaling, position.z / layer->shape_scaling) / noiseGetMaxValue(layer->_shape_noise);
     coverage = layer->_custom_coverage(layer, position);
     density = 0.5 * val - 0.5 + coverage;
-    
+
     if (density <= 0.0)
     {
         /* outside the main shape */
@@ -322,7 +322,7 @@ static inline double _getDistanceToBorder(CloudsLayerDefinition* layer, Vector3 
         if (density < layer->edge_length)
         {
             density /= layer->edge_length;
-            
+
             val = 0.5 * noiseGet3DTotal(layer->_edge_noise, position.x / layer->edge_scaling, position.y / layer->edge_scaling, position.z / layer->edge_scaling) / noiseGetMaxValue(layer->_edge_noise);
             val = val - 0.5 + density;
 
@@ -340,7 +340,7 @@ static inline Vector3 _getNormal(CloudsLayerDefinition* layer, Vector3 position,
     Vector3 result = {0.0, 0.0, 0.0};
     Vector3 dposition;
     double val, dval;
-    
+
     val = _getDistanceToBorder(layer, position);
 
     dposition.x = position.x + detail;
@@ -385,7 +385,7 @@ static inline Vector3 _getNormal(CloudsLayerDefinition* layer, Vector3 position,
 static int _optimizeSearchLimits(CloudsLayerDefinition* layer, Vector3* start, Vector3* end)
 {
     Vector3 diff;
-    
+
     if (start->y > layer->lower_altitude + layer->thickness)
     {
         if (end->y >= layer->lower_altitude + layer->thickness)
@@ -465,15 +465,14 @@ static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, 
         return 0;
     }
 
-    render_precision = 15.2 - 1.5 * (double)renderer->render_quality;
-    render_precision = render_precision * definition->shape_scaling / 150.0;
+    render_precision = 1.005 - 0.01 * (double)(renderer->render_quality * renderer->render_quality);
     if (render_precision > max_total_length / 10.0)
     {
         render_precision = max_total_length / 10.0;
     }
-    else if (render_precision < max_total_length / 2000.0)
+    else if (render_precision < max_total_length / 10000.0)
     {
-        render_precision = max_total_length / 2000.0;
+        render_precision = max_total_length / 10000.0;
     }
 
     segment_count = 0;
@@ -568,11 +567,11 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
         normal = v3Add(normal, _getNormal(definition, position, 0.5));
     }
     normal = v3Scale(v3Normalize(normal), definition->hardness);
-    
+
     renderer->getLightStatus(renderer, &light, position);
     col1 = renderer->applyLightStatus(renderer, &light, position, normal, definition->material);
     col2 = renderer->applyLightStatus(renderer, &light, position, v3Scale(normal, -1.0), definition->material);
-    
+
     col1.r = (col1.r + col2.r) / 2.0;
     col1.g = (col1.g + col2.g) / 2.0;
     col1.b = (col1.b + col2.b) / 2.0;
@@ -662,7 +661,7 @@ Color cloudsLayerFilterLight(CloudsLayerDefinition* definition, Renderer* render
             factor = 1.0;
         }
     }
-    
+
     factor = 1.0 - (1.0 - definition->minimumlight) * factor;
 
     light.r = light.r * factor;
@@ -675,7 +674,7 @@ Color cloudsLayerFilterLight(CloudsLayerDefinition* definition, Renderer* render
 Color cloudsFilterLight(CloudsDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light)
 {
     int i, n;
-    
+
     /* TODO Iter layers in sorted order */
     n = layersCount(definition->layers);
     for (i = 0; i < n; i++)
