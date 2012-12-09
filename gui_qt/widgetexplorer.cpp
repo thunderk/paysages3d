@@ -25,12 +25,12 @@ public:
     {
         _running = false;
     }
-    
+
     static inline void usleep(unsigned long us)
     {
         QThread::usleep(us);
     }
-    
+
 protected:
     void run()
     {
@@ -40,7 +40,7 @@ protected:
             QThread::usleep(10000);
         }
     }
-    
+
 private:
     bool _running;
     WidgetExplorer* _wanderer;
@@ -48,19 +48,9 @@ private:
 
 static QVector<ChunkMaintenanceThread*> _threads;
 
-static double _getTerrainHeight(Renderer* renderer, double x, double z)
-{
-    return terrainGetHeight((TerrainDefinition*)(renderer->customData[0]), x, z);
-}
-
 static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
 {
     return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
-}
-
-static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
-{
-    light->color = terrainLightFilter((TerrainDefinition*)(renderer->customData[0]), renderer, light->color, location, v3Scale(light->direction, -1000.0), v3Scale(light->direction, -1.0));
 }
 
 static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
@@ -79,24 +69,19 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
 
     _water = waterCreateDefinition();
     sceneryGetWater(&_water);
-    _terrain = terrainCreateDefinition();
-    sceneryGetTerrain(&_terrain);
     _textures = texturesCreateDefinition();
     sceneryGetTextures(&_textures);
     _lighting = lightingCreateDefinition();
     sceneryGetLighting(&_lighting);
-    
+
     _renderer = sceneryCreateStandardRenderer();
     _renderer.render_quality = 3;
-    _renderer.customData[0] = &_terrain;
     _renderer.customData[1] = &_textures;
     _renderer.customData[2] = &_lighting;
     _renderer.customData[3] = &_water;
     _renderer.applyTextures = _applyTextures;
-    _renderer.getTerrainHeight = _getTerrainHeight;
-    _renderer.alterLight = _alterLight;
     _renderer.getLightStatus = _getLightStatus;
-    
+
     _updated = false;
 
     // Add terrain
@@ -113,7 +98,7 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
             _updateQueue.append(chunk);
         }
     }
-    
+
     // Add skybox
     for (int orientation = 0; orientation < 6; orientation++)
     {
@@ -124,7 +109,7 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
 
     startThreads();
     startTimer(500);
-    
+
     _average_frame_time = 0.05;
     _quality = 3;
     _last_mouse_x = 0;
@@ -134,7 +119,7 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
 WidgetExplorer::~WidgetExplorer()
 {
     stopThreads();
-    
+
     for (int i = 0; i < _chunks.count(); i++)
     {
         delete _chunks[i];
@@ -145,15 +130,15 @@ WidgetExplorer::~WidgetExplorer()
 void WidgetExplorer::startThreads()
 {
     int nbcore;
-    
+
     _alive = true;
-    
+
     nbcore = QThread::idealThreadCount();
     if (nbcore < 1)
     {
         nbcore = 1;
     }
-    
+
     for (int i = 0; i < nbcore; i++)
     {
         _threads.append(new ChunkMaintenanceThread(this));
@@ -185,7 +170,7 @@ bool _cmpChunks(const BaseExplorerChunk* c1, const BaseExplorerChunk* c2)
 void WidgetExplorer::performChunksMaintenance()
 {
     BaseExplorerChunk* chunk;
-    
+
     _lock_chunks.lock();
     if (_updateQueue.count() > 0)
     {
@@ -197,7 +182,7 @@ void WidgetExplorer::performChunksMaintenance()
         _lock_chunks.unlock();
         return;
     }
-    
+
     if (chunk->maintain())
     {
         if (!_alive)
@@ -207,7 +192,7 @@ void WidgetExplorer::performChunksMaintenance()
 
         _updated = true;
     }
-    
+
     _lock_chunks.lock();
     _updateQueue.append(chunk);
     _lock_chunks.unlock();
@@ -361,7 +346,7 @@ void WidgetExplorer::timerEvent(QTimerEvent *event)
         _updated = false;
         updateGL();
     }
-    
+
     for (int i = 0; i < _chunks.count(); i++)
     {
         _chunks[i]->updatePriority(&_current_camera);
@@ -397,13 +382,13 @@ void WidgetExplorer::initializeGL()
 void WidgetExplorer::resizeGL(int w, int h)
 {
     cameraSetRenderSize(&_current_camera, w, h);
-    
+
     glViewport(0, 0, w, h);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(_current_camera.yfov * 180.0 / M_PI, _current_camera.xratio, _current_camera.znear, _current_camera.zfar);
-    
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -412,17 +397,17 @@ void WidgetExplorer::paintGL()
     GLenum error_code;
     QTime start_time;
     double frame_time;
-    
+
     if (_current_camera.location.y > 30.0)
     {
         _current_camera.location.y = 30.0;
     }
-    
+
     cameraValidateDefinition(&_current_camera, 1);
     _renderer.camera_location = _current_camera.location;
-    
+
     start_time = QTime::currentTime();
-    
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(_current_camera.location.x, _current_camera.location.y, _current_camera.location.z, _current_camera.target.x, _current_camera.target.y, _current_camera.target.z, _current_camera.up.x, _current_camera.up.y, _current_camera.up.z);
@@ -448,12 +433,12 @@ void WidgetExplorer::paintGL()
         glColor3f(1.0, 1.0, 1.0);
         _chunks[i]->render(this);
     }
-    
+
     frame_time = 0.001 * (double)start_time.msecsTo(QTime::currentTime());
-    
+
     _average_frame_time = _average_frame_time * 0.8 + frame_time * 0.2;
     //printf("%d %f\n", quality, average_frame_time);
-    
+
     if (_average_frame_time > 0.1 && _quality > 1)
     {
         _quality--;
@@ -462,7 +447,7 @@ void WidgetExplorer::paintGL()
     {
         _quality++;
     }
-    
+
     while ((error_code = glGetError()) != GL_NO_ERROR)
     {
         logDebug(QString("[OpenGL] ERROR : ") + (const char*)gluErrorString(error_code));

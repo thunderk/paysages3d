@@ -51,7 +51,7 @@ typedef struct
     Color hit_color;
     Vector3 hit_location;
 } RayCastingResult;
-typedef RayCastingResult (*RayCastingFunction)(Vector3 start, Vector3 direction);
+typedef RayCastingResult (*FuncGeneralCastRay)(Renderer* renderer, Vector3 start, Vector3 direction);
 
 typedef struct
 {
@@ -66,22 +66,45 @@ typedef struct
     double yaw;
     double pitch;
     double roll;
-    
+
     Vector3 target;
     Vector3 forward;
     Vector3 right;
     Vector3 up;
-    
+
     double width;
     double height;
     double yfov;
     double xratio;
     double znear;
     double zfar;
-    
+
     Matrix4 project;
     Matrix4 unproject;
 } CameraDefinition;
+
+typedef void* (*FuncObjectCreate)();
+typedef void (*FuncObjectDelete)(void* object);
+typedef void (*FuncObjectCopy)(void* source, void* destination);
+typedef void (*FuncObjectValidate)(void* object);
+typedef void (*FuncObjectSave)(PackStream* stream, void* object);
+typedef void (*FuncObjectLoad)(PackStream* stream, void* object);
+typedef void (*FuncObjectBind)(void* base, void* sub);
+
+typedef struct {
+    FuncObjectCreate create;
+    FuncObjectDelete destroy;
+    FuncObjectCopy copy;
+    FuncObjectValidate validate;
+    FuncObjectSave save;
+    FuncObjectLoad load;
+} StandardDefinition;
+
+typedef struct {
+    FuncObjectCreate create;
+    FuncObjectDelete destroy;
+    FuncObjectBind bind;
+} StandardRenderer;
 
 #ifdef __cplusplus
 }

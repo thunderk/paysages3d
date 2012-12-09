@@ -9,7 +9,6 @@
 #include "../lib_paysages/lighting.h"
 #include "../lib_paysages/renderer.h"
 #include "../lib_paysages/scenery.h"
-#include "../lib_paysages/terrain.h"
 #include "../lib_paysages/water.h"
 #include "tools.h"
 
@@ -21,15 +20,15 @@ class PreviewWaterCoverage:public BasePreview
 public:
     PreviewWaterCoverage(QWidget* parent):BasePreview(parent)
     {
-        _water = waterCreateDefinition();
-        _terrain = terrainCreateDefinition();
-        
+        /*_water = waterCreateDefinition();
+        _terrain = terrainCreateDefinition();*/
+
         addOsd(QString("geolocation"));
-        
+
         configScaling(0.5, 200.0, 3.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
-protected:
+/*protected:
     QColor getColor(double x, double y)
     {
         double height;
@@ -49,7 +48,7 @@ protected:
     {
         waterCopyDefinition(&_definition, &_water);
         sceneryGetTerrain(&_terrain);
-    }
+    }*/
 private:
     WaterDefinition _water;
     TerrainDefinition _terrain;
@@ -61,12 +60,12 @@ public:
     PreviewWaterColor(QWidget* parent):BasePreview(parent)
     {
         LightDefinition light;
-        
+
         _background = 0;
         _lighting_enabled = false;
-        
+
         _water = waterCreateDefinition();
-        
+
         _lighting = lightingCreateDefinition();
         light.color = COLOR_WHITE;
         light.direction.x = 0.0;
@@ -85,7 +84,7 @@ public:
         _renderer.customData[0] = &_water;
         _renderer.customData[1] = &_lighting;
         _renderer.customData[2] = this;
-        
+
         configScaling(10.0, 1000.0, 10.0, 250.0);
         //configScrolling(-30.0, 30.0, 0.0, -20.0, 20.0, 0.0);
 
@@ -149,7 +148,7 @@ private:
     WaterDefinition _water;
     LightingDefinition _lighting;
     bool _lighting_enabled;
-    
+
     static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
     {
         RayCastingResult result;
@@ -208,7 +207,7 @@ FormWater::FormWater(QWidget *parent):
 {
     addAutoPreset(tr("Lake surface"));
     addAutoPreset(tr("Standard sea"));
-    
+
     _definition = waterCreateDefinition();
 
     previewCoverage = new PreviewWaterCoverage(this);

@@ -10,14 +10,14 @@ ExplorerChunkTerrain::ExplorerChunkTerrain(Renderer* renderer, double x, double 
     _startz = z;
     _size = size;
     _overall_step = size * (double)nbchunks;
-    
+
     _tessellation_max_size = 32;
     _tessellation = new double[(_tessellation_max_size + 1) * (_tessellation_max_size + 1)];
     _tessellation_current_size = 0;
     _tessellation_step = _size / (double)_tessellation_max_size;
-    
+
     setMaxTextureSize(128);
-    
+
     maintain();
 }
 
@@ -36,7 +36,7 @@ void ExplorerChunkTerrain::onResetEvent()
 bool ExplorerChunkTerrain::onMaintainEvent()
 {
     Renderer* renderer = this->renderer();
-    
+
     // Improve heightmap resolution
     if (_tessellation_current_size < _tessellation_max_size)
     {
@@ -49,7 +49,7 @@ bool ExplorerChunkTerrain::onMaintainEvent()
             {
                 if (_tessellation_current_size == 0 || i % old_tessellation_inc != 0 || j % old_tessellation_inc != 0)
                 {
-                    double height = renderer->getTerrainHeight(renderer, _startx + _tessellation_step * (double)i, _startz + _tessellation_step * (double)j);
+                    double height = renderer->terrain->getHeight(renderer, _startx + _tessellation_step * (double)i, _startz + _tessellation_step * (double)j);
                     _tessellation[j * (_tessellation_max_size + 1) + i] = height;
                 }
             }
@@ -100,7 +100,7 @@ void ExplorerChunkTerrain::onRenderEvent(QGLWidget* widget)
     int tessellation_size = _tessellation_current_size;
     double tsize = 1.0 / (double)_tessellation_max_size;
     _lock_data.unlock();
-    
+
     if (tessellation_size <= 1)
     {
         return;
@@ -149,10 +149,10 @@ Color ExplorerChunkTerrain::getTextureColor(double x, double y)
 Vector3 ExplorerChunkTerrain::getCenter()
 {
     Vector3 result;
-    
+
     result.x = _startx + _size / 2.0;
     result.y = 0.0;
     result.z = _startz + _size / 2.0;
-    
+
     return result;
 }

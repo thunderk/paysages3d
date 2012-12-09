@@ -6,7 +6,7 @@
 #include "pack.h"
 #include "noise.h"
 #include "geoarea.h"
-#include "terrain.h"
+#include "terrain/public.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,7 +47,7 @@ void heightmapRevertToTerrain(HeightMap* heightmap, TerrainDefinition* terrain, 
 void heightmapBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double value);
 void heightmapBrushSmooth(HeightMap* heightmap, HeightMapBrush* brush, double value);
 void heightmapBrushAddNoise(HeightMap* heightmap, HeightMapBrush* brush, NoiseGenerator* generator, double value);
-    
+
 #ifdef __cplusplus
 }
 #endif

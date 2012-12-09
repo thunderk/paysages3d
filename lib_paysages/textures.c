@@ -6,10 +6,11 @@
 #include <assert.h>
 
 #include "shared/types.h"
+#include "terrain/public.h"
 #include "color.h"
 #include "euclid.h"
 #include "lighting.h"
-#include "terrain.h"
+#include "renderer.h"
 #include "tools.h"
 
 #define TEXTURES_MAX_LAYERS 50
@@ -61,7 +62,7 @@ TextureLayerDefinition* texturesLayerCreateDefinition()
     TextureLayerDefinition* result;
 
     result = malloc(sizeof(TextureLayerDefinition));
-    
+
     result->zone = zoneCreate();
     result->bump_noise = noiseCreateGenerator();
     noiseAddLevelsSimple(result->bump_noise, 8, 1.0, 1.0);
@@ -135,31 +136,31 @@ static void _texturesLayerLoad(PackStream* stream, TextureLayerDefinition* layer
 LayerType texturesGetLayerType()
 {
     LayerType result;
-    
+
     result.callback_create = (LayerCallbackCreate)texturesLayerCreateDefinition;
     result.callback_delete = (LayerCallbackDelete)texturesLayerDeleteDefinition;
     result.callback_copy = (LayerCallbackCopy)texturesLayerCopyDefinition;
     result.callback_validate = (LayerCallbackValidate)texturesLayerValidateDefinition;
     result.callback_save = (LayerCallbackSave)_texturesLayerSave;
     result.callback_load = (LayerCallbackLoad)_texturesLayerLoad;
-    
+
     return result;
 }
 
 static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, Vector3 south, Vector3 west)
 {
     Vector3 dnorth, deast, dsouth, dwest, normal;
-    
+
     dnorth = v3Sub(north, center);
     deast = v3Sub(east, center);
     dsouth = v3Sub(south, center);
     dwest = v3Sub(west, center);
-    
+
     normal = v3Cross(deast, dnorth);
     normal = v3Add(normal, v3Cross(dsouth, deast));
     normal = v3Add(normal, v3Cross(dwest, dsouth));
     normal = v3Add(normal, v3Cross(dnorth, dwest));
-    
+
     return v3Normalize(normal);
 }
 
@@ -172,30 +173,30 @@ static inline TextureResult _getTerrainResult(Renderer* renderer, double x, doub
 {
     TextureResult result;
     Vector3 center, north, east, south, west;
-    
+
     /* TODO This method is better suited in terrain.c */
 
     center.x = x;
     center.z = z;
-    center.y = renderer->getTerrainHeight(renderer, center.x, center.z);
+    center.y = renderer->terrain->getHeight(renderer, center.x, center.z);
 
     east.x = x + detail;
     east.z = z;
-    east.y = renderer->getTerrainHeight(renderer, east.x, east.z);
+    east.y = renderer->terrain->getHeight(renderer, east.x, east.z);
 
     south.x = x;
     south.z = z + detail;
-    south.y = renderer->getTerrainHeight(renderer, south.x, south.z);
+    south.y = renderer->terrain->getHeight(renderer, south.x, south.z);
 
     if (renderer->render_quality > 5)
     {
         west.x = x - detail;
         west.z = z;
-        west.y = renderer->getTerrainHeight(renderer, west.x, west.z);
+        west.y = renderer->terrain->getHeight(renderer, west.x, west.z);
 
         north.x = x;
         north.z = z - detail;
-        north.y = renderer->getTerrainHeight(renderer, north.x, north.z);
+        north.y = renderer->terrain->getHeight(renderer, north.x, north.z);
 
         result.normal = _getNormal4(center, north, east, south, west);
     }
@@ -207,7 +208,7 @@ static inline TextureResult _getTerrainResult(Renderer* renderer, double x, doub
     result.location = center;
     result.thickness = -100.0;
     result.definition = NULL;
-    
+
     return result;
 }
 
@@ -235,25 +236,25 @@ static inline void _getLayerThickness(TextureLayerDefinition* definition, Render
 static inline TextureResult _getLayerResult(TextureLayerDefinition* definition, Renderer* renderer, double x, double z, double detail)
 {
     TextureResult result_center, result_north, result_east, result_south, result_west;
-    
+
     _getLayerThickness(definition, renderer, x, z, &result_center);
     _getLayerThickness(definition, renderer, x + detail, z, &result_east);
     _getLayerThickness(definition, renderer, x, z + detail, &result_south);
-    
+
     if (renderer->render_quality > 5)
     {
         _getLayerThickness(definition, renderer, x - detail, z, &result_west);
         _getLayerThickness(definition, renderer, x, z - detail, &result_north);
-        
+
         result_center.normal = _getNormal4(result_center.location, result_north.location, result_east.location, result_south.location, result_west.location);
     }
     else
     {
         result_center.normal = _getNormal2(result_center.location, result_east.location, result_south.location);
     }
-    
+
     result_center.definition = definition;
-    
+
     return result_center;
 }
 
@@ -289,7 +290,7 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
     int i, start, nblayers;
 
     detail *= 0.1;
-    
+
     results[0] = _getTerrainResult(renderer, x, z, detail);
 
     nblayers = layersCount(definition->layers);
@@ -297,7 +298,7 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
     {
         results[i + 1] = _getLayerResult(layersGetLayer(definition->layers, i), renderer, x, z, detail);
     }
-    
+
     qsort(results, nblayers + 1, sizeof(TextureResult), _cmpResults);
 
     /* Pre compute alpha channel */
@@ -308,7 +309,7 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
     {
         thickness = results[i].thickness - last_height;
         last_height = results[i].thickness;
-        
+
         if (results[i].definition)
         {
             if (thickness < results[i].definition->thickness_transparency)
@@ -324,7 +325,7 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
         {
             results[i].thickness = 1.0;
         }
-        
+
         if (results[i].thickness >= 0.999999)
         {
             start = i;
@@ -359,6 +360,6 @@ Color texturesGetColor(TexturesDefinition* definition, Renderer* renderer, doubl
             colorMask(&result, &color);
         }
     }
-    
+
     return result;
 }

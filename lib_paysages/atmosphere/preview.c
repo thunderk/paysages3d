@@ -2,7 +2,6 @@
 
 #include "../renderer.h"
 #include "../lighting.h"
-#include "../terrain.h"
 
 /*
  * Atmosphere previews.

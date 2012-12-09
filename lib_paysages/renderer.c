@@ -11,7 +11,7 @@ HeightInfo _WATER_HEIGHT_INFO = {-1000000.0, -1000000.0, -1000000.0};
 static void* _renderFirstPass(void* data)
 {
     Renderer* renderer = (Renderer*)data;
-    
+
     sceneryRenderFirstPass(renderer);
     renderer->is_rendering = 0;
     return NULL;
@@ -40,11 +40,11 @@ static Vector3 _unprojectPoint(Renderer* renderer, Vector3 point)
 static void _pushTriangle(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, f_RenderFragmentCallback callback, void* callback_data)
 {
     Vector3 p1, p2, p3;
-    
+
     p1 = renderer->projectPoint(renderer, v1);
     p2 = renderer->projectPoint(renderer, v2);
     p3 = renderer->projectPoint(renderer, v3);
-    
+
     renderPushTriangle(renderer->render_area, p1, p2, p3, v1, v2, v3, callback, callback_data);
 }
 
@@ -71,11 +71,6 @@ static Color _applyLightStatus(Renderer* renderer, LightStatus* status, Vector3 
 static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
 {
     return _RAYCASTING_NULL;
-}
-
-static double _getTerrainHeight(Renderer* renderer, double x, double z)
-{
-    return 0.0;
 }
 
 static HeightInfo _getWaterHeightInfo(Renderer* renderer)
@@ -107,7 +102,7 @@ Renderer rendererCreate()
     result.render_camera = cameraCreateDefinition();
     result.camera_location = result.render_camera.location;
     result.render_area = renderCreateArea();
-    
+
     renderSetParams(result.render_area, params);
 
     result.addRenderProgress = _addRenderProgress;
@@ -118,7 +113,6 @@ Renderer rendererCreate()
     result.pushQuad = _pushQuad;
 
     result.rayWalking = _rayWalking;
-    result.getTerrainHeight = _getTerrainHeight;
     result.getWaterHeightInfo = _getWaterHeightInfo;
     result.applyTextures = _applyTextures;
     result.applyClouds = _applyClouds;
@@ -126,8 +120,9 @@ Renderer rendererCreate()
     result.alterLight = _alterLight;
     result.getLightStatus = _getLightStatus;
     result.applyLightStatus = _applyLightStatus;
-    
+
     result.atmosphere = AtmosphereRendererClass.create();
+    result.terrain = TerrainRendererClass.create();
 
     return result;
 }
@@ -135,6 +130,8 @@ Renderer rendererCreate()
 void rendererDelete(Renderer* renderer)
 {
     AtmosphereRendererClass.destroy(renderer->atmosphere);
+    TerrainRendererClass.destroy(renderer->terrain);
+
     renderDeleteArea(renderer->render_area);
 }
 
@@ -151,13 +148,13 @@ void rendererStart(Renderer* renderer, RenderParams params)
 
     params.antialias = (params.antialias < 1) ? 1 : params.antialias;
     params.antialias = (params.antialias > 4) ? 4 : params.antialias;
-    
+
     renderer->render_quality = params.quality;
     renderer->render_width = params.width * params.antialias;
     renderer->render_height = params.height * params.antialias;
     renderer->render_interrupt = 0;
     renderer->render_progress = 0.0;
-    
+
     cameraSetRenderSize(&renderer->render_camera, renderer->render_width, renderer->render_height);
     renderer->camera_location = renderer->render_camera.location;
 
@@ -180,7 +177,7 @@ void rendererStart(Renderer* renderer, RenderParams params)
         }
     }
     threadJoin(thread);
-    
+
     renderer->is_rendering = 1;
     renderPostProcess(renderer->render_area, renderer, core_count);
     renderer->is_rendering = 0;

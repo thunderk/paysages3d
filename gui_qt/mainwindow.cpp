@@ -54,7 +54,7 @@ int main(int argc, char** argv)
     }
 
     BasePreview::initDrawers();
-    
+
     window = new MainWindow();
     window->show();
 
@@ -127,14 +127,14 @@ QMainWindow(parent)
     toolbar->addAction(QIcon("images/explore.png"), tr("&Explore (F2)"), this, SLOT(explore3D()))->setShortcut(QKeySequence(tr("F2")));
     toolbar->addAction(QIcon("images/render.png"), tr("&Quick\nrender (F5)"), this, SLOT(quickPreview()))->setShortcut(QKeySequence(tr("F5")));
     toolbar->addAction(QIcon("images/about.png"), tr("&About"), this, SLOT(showAboutDialog()));
-    
+
     setCentralWidget(tabs);
 
     setWindowTitle("Paysages 3D");
     setWindowIcon(QIcon("images/logo_32.png"));
-    
+
     scenerySetCustomDataCallback(MainWindow::guiSaveCallback, MainWindow::guiLoadCallback, this);
-    
+
     refreshAll();
 }
 
@@ -144,20 +144,20 @@ bool MainWindow::event(QEvent* event)
     {
         BasePreview::reviveAll();
     }
-    
+
     return QMainWindow::event(event);
 }
 
 void MainWindow::refreshAll()
 {
     logDebug("[MainWindow] Refreshing whole UI");
-    
+
     // Refresh all tabs
     for (int i = 0; i < _forms.size(); i++)
     {
         _forms[i]->revertConfig();
     }
-    
+
     // Refresh preview OSD
     CameraDefinition camera = cameraCreateDefinition();
     PreviewOsd* osd = PreviewOsd::getInstance(QString("geolocation"));

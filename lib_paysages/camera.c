@@ -36,14 +36,14 @@ CameraDefinition cameraCreateDefinition()
     definition.yaw = 0.0;
     definition.pitch = 0.0;
     definition.roll = 0.0;
-    
+
     definition.width = 1.0;
     definition.height = 1.0;
     definition.yfov = 1.57;
     definition.xratio = 1.0;
     definition.znear = 1.0;
     definition.zfar = 1000.0;
-    
+
     cameraValidateDefinition(&definition, 0);
 
     return definition;
@@ -56,18 +56,18 @@ void cameraDeleteDefinition(CameraDefinition* definition)
 void cameraCopyDefinition(CameraDefinition* source, CameraDefinition* destination)
 {
     *destination = *source;
-    
+
     cameraValidateDefinition(destination, 0);
 }
 
 void cameraValidateDefinition(CameraDefinition* definition, int check_above)
 {
     WaterDefinition water;
-    TerrainDefinition terrain;
+    Renderer renderer;
     double water_height, terrain_height, diff;
     Vector3 move;
     Matrix4 rotation;
-    
+
     if (check_above)
     {
         water = waterCreateDefinition();
@@ -75,11 +75,10 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
         water_height = water.height + 0.5;
         waterDeleteDefinition(&water);
 
-        terrain = terrainCreateDefinition();
-        sceneryGetTerrain(&terrain);
-        terrain_height = terrainGetHeight(&terrain, definition->location.x, definition->location.z) + 0.5;
-        terrainDeleteDefinition(&terrain);
-        
+        renderer = sceneryCreateStandardRenderer();
+        terrain_height = renderer.terrain->getHeight(&renderer, definition->location.x, definition->location.z) + 0.5;
+        rendererDelete(&renderer);
+
         if (definition->location.y < water_height || definition->location.y < terrain_height)
         {
             if (water_height > terrain_height)
@@ -96,7 +95,7 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
             definition->location = v3Add(definition->location, move);
         }
     }
-    
+
     definition->forward.x = 1.0;
     definition->forward.y = 0.0;
     definition->forward.z = 0.0;
@@ -106,13 +105,13 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
     definition->up.x = 0.0;
     definition->up.y = 1.0;
     definition->up.z = 0.0;
-    
+
     rotation = m4NewRotateEuler(definition->yaw, definition->pitch, definition->roll);
-    
+
     definition->forward = m4MultPoint(rotation, definition->forward);
     definition->right = m4MultPoint(rotation, definition->right);
     definition->up = m4MultPoint(rotation, definition->up);
-    
+
     definition->target = v3Add(definition->location, definition->forward);
 
     definition->project = m4Mult(m4NewPerspective(definition->yfov, definition->xratio, definition->znear, definition->zfar), m4NewLookAt(definition->location, definition->target, definition->up));
@@ -131,18 +130,18 @@ void cameraSetLocation(CameraDefinition* camera, double x, double y, double z)
 void cameraSetTarget(CameraDefinition* camera, double x, double y, double z)
 {
     Vector3 forward, target;
-    
+
     target.x = x;
     target.y = y;
     target.z = z;
-    
+
     forward = v3Sub(target, camera->location);
     if (v3Norm(forward) < 0.0000001)
     {
         return;
     }
     forward = v3Normalize(forward);
-    
+
     if (fabs(forward.x) < 0.0000001 && fabs(forward.z) < 0.0000001)
     {
         /* Forward vector is vertical */
@@ -217,7 +216,7 @@ void cameraSetRenderSize(CameraDefinition* camera, int width, int height)
     camera->width = (double)width;
     camera->height = (double)height;
     camera->xratio = camera->width / camera->height;
-    
+
     cameraValidateDefinition(camera, 0);
 }
 
@@ -288,7 +287,7 @@ static inline void _updateBox(Vector3* point, double* xmin, double* xmax, double
 {
     *xmin = (*xmin < point->x) ? *xmin : point->x;
     *ymin = (*ymin < point->y) ? *ymin : point->y;
-    
+
     *xmax = (*xmax > point->x) ? *xmax : point->x;
     *ymax = (*ymax > point->y) ? *ymax : point->y;
     *zmax = (*zmax > point->z) ? *zmax : point->z;
@@ -298,7 +297,7 @@ int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, do
 {
     Vector3 projected;
     double xmin, xmax, ymin, ymax, zmax;
-    
+
     center.x -= xsize / 2.0;
     center.y -= ysize / 2.0;
     center.z -= zsize / 2.0;
@@ -306,7 +305,7 @@ int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, do
     xmin = xmax = projected.x;
     ymin = ymax = projected.y;
     zmax = projected.z;
-    
+
     center.x += xsize;
     projected = cameraProject(camera, NULL, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
@@ -322,7 +321,7 @@ int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, do
     center.y += ysize;
     projected = cameraProject(camera, NULL, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
-    
+
     center.x += xsize;
     projected = cameraProject(camera, NULL, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
@@ -334,6 +333,6 @@ int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, do
     center.x -= xsize;
     projected = cameraProject(camera, NULL, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
-    
+
     return xmin <= camera->width && xmax >= 0.0 && ymin <= camera->height && ymax >= 0.0 && zmax >= camera->znear;
 }

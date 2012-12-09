@@ -2,7 +2,6 @@
 #define _PAYSAGES_LIGHTING_H_
 
 #include "shared/types.h"
-#include "renderer.h"
 #include "pack.h"
 
 #ifdef __cplusplus
@@ -31,6 +30,8 @@ struct LightStatus
     int nblights;
     LightDefinition lights[LIGHTING_MAX_LIGHTS * 2];
 };
+
+typedef LightDefinition (*FuncLightingAlterLight)(Renderer* renderer, LightDefinition* light, Vector3 at);
 
 void lightingInit();
 void lightingQuit();

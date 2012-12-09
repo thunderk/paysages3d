@@ -8,7 +8,6 @@
 #include "inputnoise.h"
 #include "inputcurve.h"
 #include "inputmaterial.h"
-#include "inputheightmap.h"
 #include "inputenum.h"
 #include "inputlayers.h"
 
@@ -28,14 +27,14 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
     this->_with_layers = with_layers;
 
     setLayout(new QHBoxLayout());
-    
+
     control = new QWidget(this);
     control->setLayout(new QVBoxLayout());
     control->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     layout()->addWidget(control);
-    
+
     _layer_count = 0;
-    
+
     if (with_layers)
     {
         layers = new QWidget(this);
@@ -45,7 +44,7 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
         label = new QLabel(tr("Layers : "), layers);
         label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         layers->layout()->addWidget(label);
-        
+
         _layer_list = new QComboBox(layers);
         layers->layout()->addWidget(_layer_list);
         QObject::connect(_layer_list, SIGNAL(currentIndexChanged(int)), this, SLOT(layerListChanged()));
@@ -55,7 +54,7 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
         _layer_new->setMaximumSize(30, 30);
         layers->layout()->addWidget(_layer_new);
         QObject::connect(_layer_new, SIGNAL(clicked()), this, SLOT(layerAddClicked()));
-        
+
         _layer_del = new QPushButton(QIcon("images/layer_del.png"), "", layers);
         _layer_del->setToolTip(tr("Delete layer"));
         _layer_del->setMaximumSize(30, 30);
@@ -67,7 +66,7 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
         _layer_rename->setMaximumSize(30, 30);
         layers->layout()->addWidget(_layer_rename);
         QObject::connect(_layer_rename, SIGNAL(clicked()), this, SLOT(layerRenameClicked()));
-        
+
         _layer_up = new QPushButton(QIcon("images/layer_up.png"), "", layers);
         _layer_up->setToolTip(tr("Move layer upward"));
         _layer_up->setMaximumSize(30, 30);
@@ -79,7 +78,7 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
         _layer_down->setMaximumSize(30, 30);
         layers->layout()->addWidget(_layer_down);
         QObject::connect(_layer_down, SIGNAL(clicked()), this, SLOT(layerDownClicked()));
-        
+
         control->layout()->addWidget(layers);
         control->layout()->setAlignment(_buttons, Qt::AlignTop);
     }
@@ -89,12 +88,12 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
     _previews->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     layout()->addWidget(_previews);
     layout()->setAlignment(_previews, Qt::AlignTop);
-    
+
     _form = new QWidget(this);
     _form->setLayout(new QHBoxLayout());
     control->layout()->addWidget(_form);
     control->layout()->setAlignment(_form, Qt::AlignTop);
-    
+
     _form_labels = new QWidget(_form);
     _form_labels->setLayout(new QVBoxLayout());
     _form->layout()->addWidget(_form_labels);
@@ -106,7 +105,7 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
     _form_controls = new QWidget(_form);
     _form_controls->setLayout(new QVBoxLayout());
     _form->layout()->addWidget(_form_controls);
-    
+
     _buttons = new QWidget(this);
     _buttons->setLayout(new QHBoxLayout());
     control->layout()->addWidget(_buttons);
@@ -124,7 +123,7 @@ BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget
     _button_preset->setIcon(QIcon("images/auto.png"));
     _button_preset->hide();
     connect(_button_preset, SIGNAL(clicked()), this, SLOT(presetChoiceClicked()));
-    
+
     _auto_update_previews = true;
 
     if (auto_apply)
@@ -180,7 +179,7 @@ void BaseForm::configChangeEvent()
             _inputs_list[i]->checkVisibility(true);
         }
     }
-    
+
     if (_auto_update_previews)
     {
         updatePreviews();
@@ -203,7 +202,7 @@ void BaseForm::revertConfig()
     {
         _inputs_list[i]->revert();
     }
-    
+
     if (_with_layers)
     {
         rebuildLayerList();
@@ -234,7 +233,7 @@ void BaseForm::rebuildLayerList()
     {
         int selected = _layer_list->currentIndex();
         _layer_list->clear();
-        
+
         _layer_names = getLayers();
         _layer_count = _layer_names.count();
 
@@ -259,10 +258,10 @@ void BaseForm::rebuildLayerList()
 void BaseForm::layerAddClicked()
 {
     layerAddedEvent();
-    
+
     rebuildLayerList();
     _layer_list->setCurrentIndex(_layer_list->count() - 1);
-    
+
     _button_apply->setEnabled(true);
     _button_revert->setEnabled(true);
 }
@@ -279,7 +278,7 @@ void BaseForm::layerDelClicked()
         _button_revert->setEnabled(true);
     }
 }
-    
+
 void BaseForm::layerUpClicked()
 {
     if (_layer_list->currentIndex() < _layer_count - 1)
@@ -287,9 +286,9 @@ void BaseForm::layerUpClicked()
         layerMovedEvent(_layer_list->currentIndex(), _layer_list->currentIndex() + 1);
 
         rebuildLayerList();
-        
+
         _layer_list->setCurrentIndex(_layer_list->currentIndex() + 1);
-        
+
         _button_apply->setEnabled(true);
         _button_revert->setEnabled(true);
     }
@@ -329,9 +328,9 @@ void BaseForm::layerRenameClicked()
 void BaseForm::layerListChanged()
 {
     bool changed = _button_apply->isEnabled();
-    
+
     layerSelectedEvent(_layer_list->currentIndex());
-    
+
     _button_apply->setEnabled(changed);
     _button_revert->setEnabled(changed);
 }
@@ -340,7 +339,7 @@ void BaseForm::presetChoiceClicked()
 {
     bool ok;
     QString item = QInputDialog::getItem(this, tr("Choose a preset"), tr("Preset settings : "), _preset_list, 0, false, &ok);
-    
+
     if (ok && !item.isEmpty())
     {
         int preset = _preset_list.indexOf(item);
@@ -354,13 +353,13 @@ void BaseForm::presetChoiceClicked()
 void BaseForm::addPreview(BasePreview* preview, QString label)
 {
     QLabel* label_widget;
-    
+
     label_widget = new QLabel(label, _previews);
     label_widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    
+
     _previews->layout()->addWidget(label_widget);
     _previews->layout()->addWidget(preview);
-    
+
     _previews_list.append(preview);
 }
 
@@ -380,19 +379,19 @@ void BaseForm::addAutoPreset(QString label)
 BaseInput* BaseForm::addInput(BaseInput* input)
 {
     int row_height = 30;
-    
+
     _form_labels->layout()->addWidget(input->label());
     _form_previews->layout()->addWidget(input->preview());
     _form_controls->layout()->addWidget(input->control());
-    
+
     input->label()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     input->label()->setMinimumSize(150, row_height);
     input->label()->setMaximumSize(250, row_height);
-    
+
     input->preview()->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     input->preview()->setMinimumSize(100, row_height);
     input->preview()->setMaximumSize(250, row_height);
-    
+
     input->control()->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     input->control()->setMinimumSize(280, row_height);
     input->control()->setMaximumSize(700, row_height);
@@ -401,7 +400,7 @@ BaseInput* BaseForm::addInput(BaseInput* input)
 
     _inputs_list.append(input);
     input->revert();
-    
+
     return input;
 }
 
@@ -445,11 +444,6 @@ BaseInput* BaseForm::addInputMaterial(QString label, SurfaceMaterial* material)
     return addInput(new InputMaterial(_form, label, material));
 }
 
-BaseInput* BaseForm::addInputHeightMap(QString label, HeightMap* heightmap, TerrainCanvas* canvas)
-{
-    return addInput(new InputHeightMap(_form, label, heightmap, canvas));
-}
-
 BaseInput* BaseForm::addInputEnum(QString label, int* value, const QStringList& values)
 {
     return addInput(new InputEnum(_form, label, value, values));
@@ -489,7 +483,7 @@ QStringList BaseForm::getLayers()
 {
     return QStringList();
 }
-    
+
 void BaseForm::layerAddedEvent()
 {
     rebuildLayerList();
@@ -522,7 +516,7 @@ void BaseForm::layerSelectedEvent(int layer)
     {
         _previews_list[i]->redraw();
     }
-    
+
     _layer_del->setEnabled(layer >= 0);
     _layer_rename->setEnabled(layer >= 0);
     _layer_down->setEnabled(layer > 0);

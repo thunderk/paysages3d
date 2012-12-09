@@ -10,7 +10,6 @@
 #include "lighting.h"
 #include "modifiers.h"
 #include "render.h"
-#include "terrain.h"
 #include "textures.h"
 #include "scenery.h"
 #include "system.h"
@@ -65,17 +64,6 @@ void autoGenRealisticLandscape(int seed)
     waterAutoPreset(&water, WATER_PRESET_LAKE);
     scenerySetWater(&water);
     waterDeleteDefinition(&water);
-
-    /* Terrain */
-    terrain = terrainCreateDefinition();
-    noiseClearLevels(terrain.height_noise);
-    noiseAddLevelsSimple(terrain.height_noise, 10, 1.0, 1.0);
-    noiseSetFunctionParams(terrain.height_noise, NOISE_FUNCTION_SIMPLEX, -0.2);
-    terrain.height_factor = 12.0 / noiseGetMaxValue(terrain.height_noise);
-    terrain.scaling = 80.0;
-    terrain.shadow_smoothing = 0.03;
-    scenerySetTerrain(&terrain);
-    terrainDeleteDefinition(&terrain);
 
     /* Textures */
     textures = texturesCreateDefinition();

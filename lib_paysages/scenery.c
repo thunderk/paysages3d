@@ -10,7 +10,7 @@ static AtmosphereDefinition* _atmosphere;
 static CameraDefinition _camera;
 static CloudsDefinition _clouds;
 static LightingDefinition _lighting;
-static TerrainDefinition _terrain;
+static TerrainDefinition* _terrain;
 static TexturesDefinition _textures;
 static WaterDefinition _water;
 
@@ -27,10 +27,10 @@ void sceneryInit()
     _camera = cameraCreateDefinition();
     _clouds = cloudsCreateDefinition();
     _lighting = lightingCreateDefinition();
-    _terrain = terrainCreateDefinition();
+    _terrain = TerrainDefinitionClass.create();
     _textures = texturesCreateDefinition();
     _water = waterCreateDefinition();
-    
+
     _custom_save = NULL;
     _custom_load = NULL;
 }
@@ -41,7 +41,7 @@ void sceneryQuit()
     cameraDeleteDefinition(&_camera);
     cloudsDeleteDefinition(&_clouds);
     lightingDeleteDefinition(&_lighting);
-    terrainDeleteDefinition(&_terrain);
+    TerrainDefinitionClass.destroy(_terrain);
     texturesDeleteDefinition(&_textures);
     waterDeleteDefinition(&_water);
 
@@ -63,10 +63,10 @@ void scenerySave(PackStream* stream)
     cameraSave(stream, &_camera);
     cloudsSave(stream, &_clouds);
     lightingSave(stream, &_lighting);
-    terrainSave(stream, &_terrain);
+    TerrainDefinitionClass.save(stream, _terrain);
     texturesSave(stream, &_textures);
     waterSave(stream, &_water);
-    
+
     if (_custom_save)
     {
         _custom_save(stream, _custom_data);
@@ -82,17 +82,16 @@ void sceneryLoad(PackStream* stream)
     cameraLoad(stream, &_camera);
     cloudsLoad(stream, &_clouds);
     lightingLoad(stream, &_lighting);
-    terrainLoad(stream, &_terrain);
+    TerrainDefinitionClass.load(stream, _terrain);
     texturesLoad(stream, &_textures);
     waterLoad(stream, &_water);
-    
+
     cameraValidateDefinition(&_camera, 0);
     cloudsValidateDefinition(&_clouds);
     lightingValidateDefinition(&_lighting);
-    terrainValidateDefinition(&_terrain);
     texturesValidateDefinition(&_textures);
     waterValidateDefinition(&_water);
-    
+
     if (_custom_load)
     {
         _custom_load(stream, _custom_data);
@@ -102,7 +101,6 @@ void sceneryLoad(PackStream* stream)
 void scenerySetAtmosphere(AtmosphereDefinition* atmosphere)
 {
     AtmosphereDefinitionClass.copy(atmosphere, _atmosphere);
-    AtmosphereDefinitionClass.validate(_atmosphere);
 }
 
 void sceneryGetAtmosphere(AtmosphereDefinition* atmosphere)
@@ -145,15 +143,14 @@ void sceneryGetLighting(LightingDefinition* lighting)
 
 void scenerySetTerrain(TerrainDefinition* terrain)
 {
-    terrainCopyDefinition(terrain, &_terrain);
-    terrainValidateDefinition(&_terrain);
-    
+    TerrainDefinitionClass.copy(terrain, _terrain);
+
     cameraValidateDefinition(&_camera, 1);
 }
 
 void sceneryGetTerrain(TerrainDefinition* terrain)
 {
-    terrainCopyDefinition(&_terrain, terrain);
+    TerrainDefinitionClass.copy(_terrain, terrain);
 }
 
 void scenerySetTextures(TexturesDefinition* textures)
@@ -182,7 +179,7 @@ void sceneryGetWater(WaterDefinition* water)
 
 void sceneryRenderFirstPass(Renderer* renderer)
 {
-    terrainRender(&_terrain, renderer);
+    terrainRenderSurface(renderer);
     waterRender(&_water, renderer);
     atmosphereRenderSkydome(renderer);
 }
@@ -197,10 +194,10 @@ static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 loca
 {
     Vector3 light_location;
     Vector3 direction_to_light;
-    
+
     direction_to_light = v3Normalize(v3Scale(light->direction, -1.0));
     light_location = v3Add(location, v3Scale(direction_to_light, 1000.0));
-    
+
     if (light->filtered)
     {
         // TODO atmosphere filter
@@ -208,7 +205,7 @@ static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 loca
     }
     if (light->masked)
     {
-        light->color = terrainLightFilter(&_terrain, renderer, light->color, location, light_location, direction_to_light);
+        *light = renderer->terrain->alterLight(renderer, light, location);
         light->color = cloudsFilterLight(&_clouds, renderer, light->color, location, light_location, direction_to_light);
     }
 }
@@ -228,20 +225,17 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
     RayCastingResult result;
     Color sky_color;
 
-    if (!terrainProjectRay(&_terrain, renderer, location, direction, &result.hit_location, &result.hit_color))
+    result = renderer->terrain->castRay(renderer, location, direction);
+    if (!result.hit)
     {
         sky_color = renderer->atmosphere->getSkyColor(renderer, direction);
+
+        result.hit = 1;
         result.hit_location = v3Add(location, v3Scale(direction, 1000.0));
         result.hit_color = renderer->applyClouds(renderer, sky_color, location, result.hit_location);
     }
 
-    result.hit = 1;
     return result;
-}
-
-static double _getTerrainHeight(Renderer* renderer, double x, double z)
-{
-    return terrainGetHeight(&_terrain, x, z);
 }
 
 static HeightInfo _getWaterHeightInfo(Renderer* renderer)
@@ -283,7 +277,7 @@ static double _getPrecision(Renderer* renderer, Vector3 location)
 Renderer sceneryCreateStandardRenderer()
 {
     Renderer result;
-    
+
     result = rendererCreate();
 
     cameraCopyDefinition(&_camera, &result.render_camera);
@@ -293,15 +287,15 @@ Renderer sceneryCreateStandardRenderer()
     result.getLightStatus = _getLightStatus;
     result.applyLightStatus = _applyLightStatus;
     result.rayWalking = _rayWalking;
-    result.getTerrainHeight = _getTerrainHeight;
     result.getWaterHeightInfo = _getWaterHeightInfo;
     result.applyTextures = _applyTextures;
     result.applyClouds = _applyClouds;
     result.projectPoint = _projectPoint;
     result.unprojectPoint = _unprojectPoint;
     result.getPrecision = _getPrecision;
-    
+
     AtmosphereRendererClass.bind(result.atmosphere, _atmosphere);
+    TerrainRendererClass.bind(result.terrain, _terrain);
 
     return result;
 }

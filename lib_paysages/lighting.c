@@ -10,7 +10,6 @@
 #include "euclid.h"
 #include "renderer.h"
 #include "scenery.h"
-#include "terrain.h"
 #include "tools.h"
 #include "water.h"
 
@@ -130,12 +129,12 @@ void lightingDeleteLight(LightingDefinition* definition, int light)
 static int _getLightStatus(LightDefinition* definition, Renderer* renderer, Vector3 location, LightDefinition* result)
 {
     *result = *definition;
-    
+
     if (definition->masked || definition->filtered)
     {
         renderer->alterLight(renderer, result, location);
     }
-    
+
     if (result->color.r > 0.0 || result->color.g > 0.0 || result->color.b > 0.0)
     {
         return 1;
@@ -209,9 +208,9 @@ void lightingGetStatus(LightingDefinition* definition, Renderer* renderer, Vecto
 {
     int i, skydome_lights_count;
     LightDefinition skydome_lights[LIGHTING_MAX_LIGHTS];
-    
+
     result->nblights = 0;
-    
+
     /* Apply static lights */
     for (i = 0; i < definition->nblights; i++)
     {
@@ -220,7 +219,7 @@ void lightingGetStatus(LightingDefinition* definition, Renderer* renderer, Vecto
             result->nblights++;
         }
     }
-    
+
     /* Apply skydome lights */
     /* TODO Cache skydome lights for same render */
     skydome_lights_count = renderer->atmosphere->getSkydomeLights(renderer, skydome_lights, LIGHTING_MAX_LIGHTS);
@@ -240,7 +239,7 @@ Color lightingApplyStatusToSurface(Renderer* renderer, LightStatus* status, Vect
 
     result = COLOR_BLACK;
     result.a = material.base.a;
-    
+
     for (i = 0; i < status->nblights; i++)
     {
         lighted = _applyDirectLight(status->lights + i, renderer, location, normal, material);
@@ -248,14 +247,14 @@ Color lightingApplyStatusToSurface(Renderer* renderer, LightStatus* status, Vect
         result.g += lighted.g;
         result.b += lighted.b;
     }
-    
+
     return result;
 }
 
 Color lightingApplyToSurface(LightingDefinition* definition, Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial material)
 {
     LightStatus status;
-    
+
     lightingGetStatus(definition, renderer, location, &status);
     return lightingApplyStatusToSurface(renderer, &status, location, normal, material);
 }

@@ -3,6 +3,7 @@
 
 #include "shared/types.h"
 #include "atmosphere/public.h"
+#include "terrain/public.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,7 +32,6 @@ struct Renderer
 
     /* Scenery related */
     RayCastingResult (*rayWalking)(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds);
-    double (*getTerrainHeight)(Renderer* renderer, double x, double z);
     HeightInfo (*getWaterHeightInfo)(Renderer* renderer);
     Color (*applyTextures)(Renderer* renderer, Vector3 location, double precision);
     Color (*applyClouds)(Renderer* renderer, Color base, Vector3 start, Vector3 end);
@@ -43,6 +43,7 @@ struct Renderer
 
     /* Autonomous sub-renderers */
     AtmosphereRenderer* atmosphere;
+    TerrainRenderer* terrain;
 
     /* Custom data */
     void* customData[10];

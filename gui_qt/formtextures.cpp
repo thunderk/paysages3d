@@ -17,12 +17,10 @@ class PreviewTexturesCoverage:public BasePreview
 public:
     PreviewTexturesCoverage(QWidget* parent, TextureLayerDefinition* layer):BasePreview(parent)
     {
-        _terrain = terrainCreateDefinition();
+        _terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
 
         _renderer = rendererCreate();
         _renderer.render_quality = 3;
-        _renderer.getTerrainHeight = _getTerrainHeight;
-        _renderer.customData[0] = &_terrain;
 
         _original_layer = layer;
         _preview_layer = texturesLayerCreateDefinition();
@@ -42,27 +40,24 @@ protected:
         Vector3 location;
         double coverage;
         location.x = x;
-        location.y = terrainGetHeight(&_terrain, x, y);
+        location.y = _renderer.terrain->getHeight(&_renderer, x, y);
         location.z = y;
         coverage = texturesGetLayerCoverage(_preview_layer, &_renderer, location, this->scaling);
         return QColor::fromRgbF(coverage, coverage, coverage, 1.0);
     }
     void updateData()
     {
-        sceneryGetTerrain(&_terrain);
+        sceneryGetTerrain(_terrain);
+        TerrainRendererClass.bind(_renderer.terrain, _terrain);
+
         texturesLayerCopyDefinition(_original_layer, _preview_layer);
     }
 
 private:
-    static double _getTerrainHeight(Renderer* renderer, double x, double z)
-    {
-        return terrainGetHeight((TerrainDefinition*)(renderer->customData[0]), x, z);
-    }
-
     Renderer _renderer;
     TextureLayerDefinition* _original_layer;
     TextureLayerDefinition* _preview_layer;
-    TerrainDefinition _terrain;
+    TerrainDefinition* _terrain;
 };
 
 class PreviewTexturesColor:public BasePreview

@@ -9,10 +9,10 @@
  */
 
 #include "atmosphere/public.h"
+#include "terrain/public.h"
 #include "camera.h"
 #include "clouds.h"
 #include "lighting.h"
-#include "terrain.h"
 #include "textures.h"
 #include "water.h"
 #include "pack.h"

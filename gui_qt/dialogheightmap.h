@@ -5,19 +5,18 @@
 #include "tools.h"
 #include "widgetheightmap.h"
 #include "../lib_paysages/heightmap.h"
-#include "../lib_paysages/terraincanvas.h"
 
 class DialogHeightMap : public DialogWithPreview
 {
     Q_OBJECT
 public:
-    explicit DialogHeightMap(QWidget* parent, HeightMap* heightmap, TerrainCanvas* canvas);
-    static bool editHeightMap(QWidget* parent, HeightMap* heightmap, TerrainCanvas* canvas);
+    explicit DialogHeightMap(QWidget* parent, HeightMap* heightmap, void* canvas);
+    static bool editHeightMap(QWidget* parent, HeightMap* heightmap, void* canvas);
 
 public slots:
     virtual void accept();
     void revert();
-    
+
 private slots:
     void angleHChanged(int value);
     void angleVChanged(int value);
@@ -35,7 +34,6 @@ private:
     HeightMap _value_modified;
     WidgetHeightMap* _3dview;
     QLabel* _resolution_label;
-    TerrainCanvas* _canvas;
 };
 
 #endif

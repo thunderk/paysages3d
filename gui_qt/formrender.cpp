@@ -16,18 +16,17 @@ public:
     {
         _renderer = rendererCreate();
         _renderer.applyTextures = _applyTextures;
-        _renderer.getTerrainHeight = _getTerrainHeight;
-        _renderer.alterLight = _alterLight;
         _renderer.getLightStatus = _getLightStatus;
         _renderer.camera_location.x = 0.0;
         _renderer.camera_location.y = 50.0;
         _renderer.camera_location.z = 0.0;
 
-        _terrain = terrainCreateDefinition();
         _textures = texturesCreateDefinition();
         _lighting = lightingCreateDefinition();
         _water = waterCreateDefinition();
+
         _atmosphere = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
+        _terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
 
         _renderer.customData[0] = &_terrain;
         _renderer.customData[1] = &_textures;
@@ -44,7 +43,7 @@ protected:
     {
         Vector3 down = {0.0, -1.0, 0.0};
         Vector3 location;
-        double height = terrainGetHeight(&_terrain, x, y);
+        double height = _renderer.terrain->getHeight(&_renderer, x, y);
 
         if (height < _water.height)
         {
@@ -55,12 +54,14 @@ protected:
         }
         else
         {
-            return colorToQColor(terrainGetColor(&_terrain, &_renderer, x, y, scaling));
+            location.x = x;
+            location.y = height;
+            location.z = y;
+            return colorToQColor(_renderer.terrain->getFinalColor(&_renderer, location, scaling));
         }
     }
     void updateData()
     {
-        sceneryGetTerrain(&_terrain);
         sceneryGetLighting(&_lighting);
         sceneryGetTextures(&_textures);
         sceneryGetWater(&_water);
@@ -68,28 +69,21 @@ protected:
         sceneryGetAtmosphere(_atmosphere);
         AtmosphereRendererClass.bind(_renderer.atmosphere, _atmosphere);
         _renderer.atmosphere->applyAerialPerspective = _applyAerialPerspective;
+
+        sceneryGetTerrain(_terrain);
+        TerrainRendererClass.bind(_renderer.terrain, _terrain);
     }
 private:
     Renderer _renderer;
-    TerrainDefinition _terrain;
+    TerrainDefinition* _terrain;
     WaterDefinition _water;
     TexturesDefinition _textures;
     LightingDefinition _lighting;
     AtmosphereDefinition* _atmosphere;
 
-    static double _getTerrainHeight(Renderer* renderer, double x, double z)
-    {
-        return terrainGetHeight((TerrainDefinition*)(renderer->customData[0]), x, z);
-    }
-
     static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
     {
         return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
-    }
-
-    static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
-    {
-        light->color = terrainLightFilter((TerrainDefinition*)(renderer->customData[0]), renderer, light->color, location, v3Scale(light->direction, -1000.0), v3Scale(light->direction, -1.0));
     }
 
     static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)

@@ -6,7 +6,6 @@
 #include "../lib_paysages/camera.h"
 #include "../lib_paysages/water.h"
 #include "../lib_paysages/renderer.h"
-#include "../lib_paysages/terrain.h"
 #include "../lib_paysages/textures.h"
 #include "../lib_paysages/lighting.h"
 
@@ -16,7 +15,7 @@ class WidgetExplorer : public QGLWidget
 public:
     WidgetExplorer(QWidget* parent, CameraDefinition* camera);
     ~WidgetExplorer();
-    
+
     void performChunksMaintenance();
 
 public slots:
@@ -33,27 +32,26 @@ protected:
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
-    
+
 private:
     void startThreads();
     void stopThreads();
-    
+
     CameraDefinition _current_camera;
     CameraDefinition* _base_camera;
-    
+
     Renderer _renderer;
     bool _updated;
-    
+
     QVector<BaseExplorerChunk*> _chunks;
     QList<BaseExplorerChunk*> _updateQueue;
     bool _alive;
     QMutex _lock_chunks;
 
     WaterDefinition _water;
-    TerrainDefinition _terrain;
     TexturesDefinition _textures;
     LightingDefinition _lighting;
-    
+
     double _average_frame_time;
     int _quality;
 

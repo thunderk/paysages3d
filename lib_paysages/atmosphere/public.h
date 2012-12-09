@@ -11,31 +11,6 @@
 extern "C" {
 #endif
 
-    /*** TO EXTRACT ***/
-typedef void* (*FuncObjectCreate)();
-typedef void (*FuncObjectDelete)(void* object);
-typedef void (*FuncObjectCopy)(void* source, void* destination);
-typedef void (*FuncObjectValidate)(void* object);
-typedef void (*FuncObjectSave)(PackStream* stream, void* object);
-typedef void (*FuncObjectLoad)(PackStream* stream, void* object);
-typedef void (*FuncObjectBind)(void* base, void* sub);
-
-typedef struct {
-    FuncObjectCreate create;
-    FuncObjectDelete destroy;
-    FuncObjectCopy copy;
-    FuncObjectValidate validate;
-    FuncObjectSave save;
-    FuncObjectLoad load;
-} StandardDefinition;
-
-typedef struct {
-    FuncObjectCreate create;
-    FuncObjectDelete destroy;
-    FuncObjectBind bind;
-} StandardRenderer;
-    /*** TO EXTRACT ***/
-
 typedef enum
 {
     ATMOSPHERE_MODEL_PREETHAM = 0,

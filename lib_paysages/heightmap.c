@@ -11,11 +11,11 @@
 HeightMap heightmapCreate()
 {
     HeightMap result;
-    
+
     result.data = malloc(sizeof(double));
     result.resolution_x = 1;
     result.resolution_z = 1;
-    
+
     return result;
 }
 
@@ -40,7 +40,7 @@ void heightmapValidate(HeightMap* heightmap)
 void heightmapSave(PackStream* stream, HeightMap* heightmap)
 {
     int i;
-    
+
     packWriteInt(stream, &heightmap->resolution_x);
     packWriteInt(stream, &heightmap->resolution_z);
     for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
@@ -52,7 +52,7 @@ void heightmapSave(PackStream* stream, HeightMap* heightmap)
 void heightmapLoad(PackStream* stream, HeightMap* heightmap)
 {
     int i;
-    
+
     packReadInt(stream, &heightmap->resolution_x);
     packReadInt(stream, &heightmap->resolution_z);
     heightmap->data = realloc(heightmap->data, sizeof(double) * heightmap->resolution_x * heightmap->resolution_z);
@@ -66,7 +66,7 @@ static void _loadFromFilePixel(HeightMap* heightmap, int x, int y, Color col)
 {
     assert(x >= 0 && x < heightmap->resolution_x);
     assert(y >= 0 && y < heightmap->resolution_z);
-    
+
     heightmap->data[y * heightmap->resolution_x + x] = (col.r + col.g + col.b) / 3.0;
 }
 
@@ -95,7 +95,7 @@ double heightmapGetRawValue(HeightMap* heightmap, double x, double z)
 {
     assert(x >= 0.0 && x <= 1.0);
     assert(z >= 0.0 && z <= 1.0);
-    
+
     return heightmap->data[((int)(z * (double)(heightmap->resolution_z - 1))) * heightmap->resolution_x + ((int)(x * (double)(heightmap->resolution_x - 1)))];
 }
 
@@ -107,7 +107,7 @@ double heightmapGetValue(HeightMap* heightmap, double x, double z)
     int zlow;
     double stencil[16];
     int ix, iz, cx, cz;
-    
+
     if (x < 0.0)
     {
         x = 0.0;
@@ -139,7 +139,7 @@ double heightmapGetValue(HeightMap* heightmap, double x, double z)
             stencil[(iz - (zlow - 1)) * 4 + ix - (xlow - 1)] = heightmap->data[cz * heightmap->resolution_x + cx];
         }
     }
-    
+
     return toolsBicubicInterpolate(stencil, x * xmax - (double)xlow, z * zmax - (double)zlow);
 }
 
@@ -152,11 +152,11 @@ void heightmapImportFromPicture(HeightMap* heightmap, const char* picturepath)
 void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resolution_z)
 {
     int i;
-    
+
     heightmap->resolution_x = resolution_x;
     heightmap->resolution_z = resolution_z;
     heightmap->data = realloc(heightmap->data, sizeof(double) * heightmap->resolution_x * heightmap->resolution_z);
-    
+
     for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
     {
         heightmap->data[i] = 0.0;
@@ -168,7 +168,7 @@ void heightmapRevertToTerrain(HeightMap* heightmap, TerrainDefinition* terrain, 
     int rx, rz;
     int x, z;
     double dx, dz;
-    
+
     rx = heightmap->resolution_x;
     rz = heightmap->resolution_z;
     for (x = 0; x < rx; x++)
@@ -178,7 +178,7 @@ void heightmapRevertToTerrain(HeightMap* heightmap, TerrainDefinition* terrain, 
             dx = (double)x / (double)(rx - 1);
             dz = (double)z / (double)(rz - 1);
             geoareaFromLocal(area, dx, dz, &dx, &dz);
-            heightmap->data[z * rx + x] = terrainGetHeight(terrain, dx, dz);
+//            heightmap->data[z * rx + x] = terrainGetHeight(terrain, dx, dz);
         }
     }
 }
@@ -235,9 +235,9 @@ static inline void _applyBrush(HeightMap* heightmap, HeightMapBrush* brush, doub
 {
     int x, x1, x2, z, z1, z2;
     double dx, dz, distance, influence;
-    
+
     _getBrushBoundaries(brush, heightmap->resolution_x - 1, heightmap->resolution_z - 1, &x1, &x2, &z1, &z2);
-    
+
     for (x = x1; x <= x2; x++)
     {
         dx = (double)x / (double)heightmap->resolution_x;
@@ -245,7 +245,7 @@ static inline void _applyBrush(HeightMap* heightmap, HeightMapBrush* brush, doub
         {
             dz = (double)z / (double)heightmap->resolution_z;
             distance = sqrt((brush->relative_x - dx) * (brush->relative_x - dx) + (brush->relative_z - dz) * (brush->relative_z - dz));
-            
+
             if (distance > brush->hard_radius)
             {
                 if (distance <= brush->hard_radius + brush->smoothed_size)
@@ -261,7 +261,7 @@ static inline void _applyBrush(HeightMap* heightmap, HeightMapBrush* brush, doub
             {
                 influence = 1.0;
             }
-            
+
             heightmap->data[z * heightmap->resolution_x + x] = callback(heightmap, brush, dx, dz, heightmap->data[z * heightmap->resolution_x + x], influence, force, data);
         }
     }

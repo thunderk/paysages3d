@@ -15,7 +15,6 @@
 #include "../lib_paysages/layers.h"
 #include "../lib_paysages/heightmap.h"
 #include "../lib_paysages/pack.h"
-#include "../lib_paysages/terraincanvas.h"
 
 class BaseForm:public QWidget
 {
@@ -37,7 +36,7 @@ public slots:
 protected slots:
     virtual void configChangeEvent();
     virtual void autoPresetSelected(int preset);
-    
+
 private slots:
     void rebuildLayerList();
     void layerAddClicked();
@@ -61,16 +60,15 @@ protected:
     BaseInput* addInputNoise(QString label, NoiseGenerator* value);
     BaseInput* addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax, QString xlabel, QString ylabel);
     BaseInput* addInputMaterial(QString label, SurfaceMaterial* material);
-    BaseInput* addInputHeightMap(QString label, HeightMap* heightmap, TerrainCanvas* canvas);
     BaseInput* addInputEnum(QString label, int* value, const QStringList& values);
     BaseInput* addInputLayers(QString label, Layers* value, FormLayerBuilder form_builder);
-    
+
     void updatePreviews();
     void disablePreviewsUpdate();
-    
+
     int currentLayer();
     virtual QStringList getLayers();
-    
+
     virtual void layerAddedEvent();
     virtual void layerDeletedEvent(int layer);
     virtual void layerMovedEvent(int layer, int new_position);
@@ -91,11 +89,11 @@ private:
     QWidget* _previews;
     QVector<BasePreview*> _previews_list;
     bool _auto_update_previews;
-    
+
     QVector<BaseInput*> _inputs_list;
-    
+
     QStringList _preset_list;
-    
+
     bool _with_layers;
     QComboBox* _layer_list;
     int _layer_count;

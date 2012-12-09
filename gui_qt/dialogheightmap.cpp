@@ -9,51 +9,49 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <math.h>
-#include "../lib_paysages/terrain.h"
 #include "../lib_paysages/scenery.h"
 #include "widgetheightmap.h"
 
 /**************** Dialog form ****************/
-DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap, TerrainCanvas* canvas) : DialogWithPreview(parent)
+DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap, void* canvas) : DialogWithPreview(parent)
 {
     QWidget* mainarea;
     QWidget* buttons;
     QWidget* panel;
     QWidget* viewer;
     QGridLayout* viewer_layout;
-    
+
     QLabel* label;
     QSlider* slider;
     QPushButton* button;
     QComboBox* combobox;
-    
-    _canvas = canvas;
+
     _value_original = heightmap;
     _value_modified = heightmapCreate();
     heightmapCopy(_value_original, &_value_modified);
     setLayout(new QVBoxLayout());
-    
+
     // Dialog layout (main area + buttons)
     mainarea = new QWidget(this);
     mainarea->setLayout(new QHBoxLayout());
     this->layout()->addWidget(mainarea);
-    
+
     buttons = new QWidget(this);
     buttons->setLayout(new QHBoxLayout());
     buttons->layout()->setAlignment(buttons, Qt::AlignBottom);
     this->layout()->addWidget(buttons);
-    
+
     // Main area layout (viewer + panel)
     viewer = new QWidget(mainarea);
     viewer_layout = new QGridLayout();
     viewer->setLayout(viewer_layout);
     mainarea->layout()->addWidget(viewer);
-    
+
     panel = new QWidget(mainarea);
     panel->setLayout(new QVBoxLayout());
     mainarea->layout()->addWidget(panel);
     mainarea->layout()->setAlignment(panel, Qt::AlignTop);
-    
+
     // Viewer layout (3d display + sliders)
     _3dview = new WidgetHeightMap(viewer, &_value_modified);
     viewer_layout->addWidget(_3dview, 0, 0);
@@ -65,7 +63,7 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap, TerrainC
     slider->setRange(-300, 700);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(angleVChanged(int)));
     viewer_layout->addWidget(slider, 0, 1);
-    
+
     // Panel layout
     if (canvas)
     {
@@ -81,20 +79,20 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap, TerrainC
     button = new QPushButton(tr("Change resolution"), panel);
     connect(button, SIGNAL(clicked()), this, SLOT(changeResolution()));
     panel->layout()->addWidget(button);
-    
+
     _resolution_label = new QLabel("", panel);
     panel->layout()->addWidget(_resolution_label);
     updateResolutionLabel();
-    
+
     combobox = new QComboBox(panel);
     combobox->addItem(tr("Raise / lower"));
     combobox->addItem(tr("Add noise / smooth"));
     connect(combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(brushModeChanged(int)));
     panel->layout()->addWidget(combobox);
-    
+
     label = new QLabel(tr("Brush size"), panel);
     panel->layout()->addWidget(label);
-    
+
     slider = new QSlider(Qt::Horizontal, panel);
     slider->setRange(6, 300);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(brushSizeChanged(int)));
@@ -103,22 +101,22 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap, TerrainC
 
     label = new QLabel(tr("Brush smoothing"), panel);
     panel->layout()->addWidget(label);
-    
+
     slider = new QSlider(Qt::Horizontal, panel);
     slider->setRange(0, 1000);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(brushSmoothingChanged(int)));
     panel->layout()->addWidget(slider);
     slider->setValue(600);
-    
+
     label = new QLabel(tr("Brush strength"), panel);
     panel->layout()->addWidget(label);
-    
+
     slider = new QSlider(Qt::Horizontal, panel);
     slider->setRange(0, 1000);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(brushStrengthChanged(int)));
     panel->layout()->addWidget(slider);
     slider->setValue(200);
-    
+
     // Buttons layout
     button = new QPushButton(tr("Cancel"), buttons);
     button->setIcon(QIcon("images/cancel.png"));
@@ -138,7 +136,7 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, HeightMap* heightmap, TerrainC
     setWindowTitle(tr("Paysages 3D - Height map painting"));
 }
 
-bool DialogHeightMap::editHeightMap(QWidget* parent, HeightMap* heightmap, TerrainCanvas* canvas)
+bool DialogHeightMap::editHeightMap(QWidget* parent, HeightMap* heightmap, void* canvas)
 {
     int result;
 
@@ -206,7 +204,7 @@ void DialogHeightMap::loadFromFile()
 
 void DialogHeightMap::resetToTerrain()
 {
-    if (_canvas)
+    /*if (_canvas)
     {
         TerrainDefinition terrain;
 
@@ -216,9 +214,9 @@ void DialogHeightMap::resetToTerrain()
         heightmapRevertToTerrain(&_value_modified, &terrain, &_canvas->area);
 
         terrainDeleteDefinition(&terrain);
-        
+
         _3dview->revert();
-    }
+    }*/
 }
 
 void DialogHeightMap::changeResolution()
@@ -226,7 +224,7 @@ void DialogHeightMap::changeResolution()
     QString result;
     QStringList items;
     int current;
-    
+
     items << QString("64 x 64") << QString("128 x 128") << QString("256 x 256") << QString("512 x 512");
     current = 1;
     if (_value_modified.resolution_x == 64 && _value_modified.resolution_z == 64)
@@ -261,7 +259,7 @@ void DialogHeightMap::changeResolution()
         {
             new_res_x = new_res_z = 128;
         }
-        
+
         if (new_res_x != _value_modified.resolution_x or new_res_z != _value_modified.resolution_z)
         {
             heightmapChangeResolution(&_value_modified, new_res_x, new_res_z);

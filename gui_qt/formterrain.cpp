@@ -3,14 +3,12 @@
 #include <math.h>
 #include <QColor>
 #include <QSlider>
-#include "formterraincanvas.h"
 #include "tools.h"
 
-#include "../lib_paysages/terrain.h"
 #include "../lib_paysages/scenery.h"
 #include "../lib_paysages/euclid.h"
 
-static TerrainDefinition _definition;
+static TerrainDefinition* _definition;
 
 /**************** Previews ****************/
 class PreviewTerrainHeight:public BasePreview
@@ -18,27 +16,28 @@ class PreviewTerrainHeight:public BasePreview
 public:
     PreviewTerrainHeight(QWidget* parent):BasePreview(parent)
     {
-        _preview_definition = terrainCreateDefinition();
-        
+        _renderer = rendererCreate();
+
         addOsd(QString("geolocation"));
-        
+
         configScaling(0.5, 200.0, 3.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
     QColor getColor(double x, double y)
     {
-        double height;
+        double height = 0.0;
 
-        height = terrainGetHeightNormalized(&_preview_definition, x, y);
+        // TODO
+        //height = terrainGetHeightNormalized(&_preview_definition, x, y);
         return QColor((int)(255.0 * height), (int)(255.0 * height), (int)(255.0 * height));
     }
     void updateData()
     {
-        terrainCopyDefinition(&_definition, &_preview_definition);
+        TerrainRendererClass.bind(_renderer.terrain, _definition);
     }
 private:
-    TerrainDefinition _preview_definition;
+    Renderer _renderer;
 };
 
 class PreviewTerrainColor:public BasePreview
@@ -52,8 +51,6 @@ public:
         _renderer = rendererCreate();
         _renderer.render_quality = 3;
         _renderer.applyTextures = _applyTextures;
-        _renderer.getTerrainHeight = _getTerrainHeight;
-        _renderer.alterLight = _alterLight;
         _renderer.getLightStatus = _getLightStatus;
         _renderer.camera_location.x = 0.0;
         _renderer.camera_location.y = 50.0;
@@ -83,7 +80,6 @@ public:
         lightingAddLight(&_lighting, light);
         lightingValidateDefinition(&_lighting);
 
-        _terrain = terrainCreateDefinition();
         _textures = texturesCreateDefinition();
         texture = (TextureLayerDefinition*)layersGetLayer(_textures.layers, layersAddLayer(_textures.layers, NULL));
         texture->material.base = COLOR_WHITE;
@@ -92,92 +88,80 @@ public:
         texture->bump_height = 0.0;
         texturesLayerValidateDefinition(texture);
 
-        _renderer.customData[0] = &_terrain;
         _renderer.customData[1] = &_textures;
         _renderer.customData[2] = &_lighting;
 
         addOsd(QString("geolocation"));
-        
+
         configScaling(0.5, 200.0, 3.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
     QColor getColor(double x, double y)
     {
-        return colorToQColor(terrainGetColor(&_terrain, &_renderer, x, y, scaling));
+        Vector3 point;
+
+        point.x = x;
+        point.y = _renderer.terrain->getHeight(&_renderer, x, y);
+        point.z = y;
+
+        return colorToQColor(_renderer.terrain->getFinalColor(&_renderer, point, scaling));
     }
     void updateData()
     {
-        terrainCopyDefinition(&_definition, &_terrain);
+        TerrainRendererClass.bind(_renderer.terrain, _definition);
         //sceneryGetTextures(&_textures);
     }
 private:
     Renderer _renderer;
-    TerrainDefinition _terrain;
     TexturesDefinition _textures;
     LightingDefinition _lighting;
-
-    static double _getTerrainHeight(Renderer* renderer, double x, double z)
-    {
-        return terrainGetHeight((TerrainDefinition*)(renderer->customData[0]), x, z);
-    }
 
     static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
     {
         return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
     }
 
-    static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
-    {
-        light->color = terrainLightFilter((TerrainDefinition*)(renderer->customData[0]), renderer, light->color, location, v3Scale(light->direction, -1000.0), v3Scale(light->direction, -1.0));
-    }
-    
     static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
     {
         lightingGetStatus((LightingDefinition*)renderer->customData[2], renderer, location, status);
     }
-    
+
 };
 
 /**************** Form ****************/
-static BaseFormLayer* _formBuilderCanvas(DialogLayers* parent, Layers* layers)
-{
-    return new FormTerrainCanvas(parent, layers);
-}
-
 FormTerrain::FormTerrain(QWidget *parent):
     BaseForm(parent)
 {
-    _definition = terrainCreateDefinition();
+    _definition = (TerrainDefinition*)TerrainDefinitionClass.create();
 
     previewHeight = new PreviewTerrainHeight(this);
     previewColor = new PreviewTerrainColor(this);
     addPreview(previewHeight, tr("Height preview (normalized)"));
     addPreview(previewColor, tr("Lighted preview (no texture)"));
 
-    addInputNoise(tr("Noise"), _definition.height_noise);
-    addInputDouble(tr("Height"), &_definition.height_factor, 0.0, 20.0, 0.1, 1.0);
-    addInputDouble(tr("Scaling"), &_definition.scaling, 20.0, 200.0, 1.0, 10.0);
-    addInputDouble(tr("Shadow smoothing"), &_definition.shadow_smoothing, 0.0, 0.3, 0.003, 0.03);
-    addInputLayers(tr("Canvases"), _definition.canvases, _formBuilderCanvas);
+    //addInputNoise(tr("Noise"), _definition.height_noise);
+    addInputDouble(tr("Height"), &_definition->height, 0.0, 20.0, 0.1, 1.0);
+    addInputDouble(tr("Scaling"), &_definition->scaling, 20.0, 200.0, 1.0, 10.0);
+    addInputDouble(tr("Shadow smoothing"), &_definition->shadow_smoothing, 0.0, 0.3, 0.003, 0.03);
 
     revertConfig();
 }
 
 void FormTerrain::revertConfig()
 {
-    sceneryGetTerrain(&_definition);
+    sceneryGetTerrain(_definition);
     BaseForm::revertConfig();
 }
 
 void FormTerrain::applyConfig()
 {
-    scenerySetTerrain(&_definition);
+    scenerySetTerrain(_definition);
     BaseForm::applyConfig();
 }
 
 void FormTerrain::configChangeEvent()
 {
-    terrainValidateDefinition(&_definition);
+    TerrainDefinitionClass.validate(_definition);
     BaseForm::configChangeEvent();
 }
