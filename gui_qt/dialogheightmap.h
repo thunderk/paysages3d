@@ -2,16 +2,16 @@
 #define _PAYSAGES_QT_DIALOGHEIGHTMAP_H_
 
 #include <QLabel>
+#include "../lib_paysages/terrain/public.h"
 #include "tools.h"
 #include "widgetheightmap.h"
-#include "../lib_paysages/heightmap.h"
 
 class DialogHeightMap : public DialogWithPreview
 {
     Q_OBJECT
 public:
-    explicit DialogHeightMap(QWidget* parent, HeightMap* heightmap, void* canvas);
-    static bool editHeightMap(QWidget* parent, HeightMap* heightmap, void* canvas);
+    explicit DialogHeightMap(QWidget* parent, TerrainDefinition* terrain);
+    static bool editHeightMap(QWidget* parent, TerrainDefinition* terrain);
 
 public slots:
     virtual void accept();
@@ -24,16 +24,12 @@ private slots:
     void brushSizeChanged(int value);
     void brushSmoothingChanged(int value);
     void brushStrengthChanged(int value);
-    void loadFromFile();
-    void resetToTerrain();
-    void changeResolution();
-    void updateResolutionLabel();
+    //void loadFromFile();
 
 private:
-    HeightMap* _value_original;
-    HeightMap _value_modified;
+    TerrainDefinition* _value_original;
+    TerrainDefinition* _value_modified;
     WidgetHeightMap* _3dview;
-    QLabel* _resolution_label;
 };
 
 #endif

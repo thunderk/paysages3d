@@ -19,6 +19,9 @@ public slots:
 protected slots:
     virtual void configChangeEvent();
 
+private slots:
+    void startPainting();
+
 private:
     BasePreview* previewHeight;
     BasePreview* previewColor;

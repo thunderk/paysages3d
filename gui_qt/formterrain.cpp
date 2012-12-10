@@ -7,6 +7,7 @@
 
 #include "../lib_paysages/scenery.h"
 #include "../lib_paysages/euclid.h"
+#include "dialogheightmap.h"
 
 static TerrainDefinition* _definition;
 
@@ -52,6 +53,7 @@ public:
         _renderer.render_quality = 3;
         _renderer.applyTextures = _applyTextures;
         _renderer.getLightStatus = _getLightStatus;
+        _renderer.alterLight = _alterLight;
         _renderer.camera_location.x = 0.0;
         _renderer.camera_location.y = 50.0;
         _renderer.camera_location.z = 0.0;
@@ -127,6 +129,11 @@ private:
         lightingGetStatus((LightingDefinition*)renderer->customData[2], renderer, location, status);
     }
 
+    static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
+    {
+        *light = renderer->terrain->alterLight(renderer, light, location);
+    }
+
 };
 
 /**************** Form ****************/
@@ -134,6 +141,9 @@ FormTerrain::FormTerrain(QWidget *parent):
     BaseForm(parent)
 {
     _definition = (TerrainDefinition*)TerrainDefinitionClass.create();
+
+    QPushButton* button = addButton(tr("Paint"));
+    connect(button, SIGNAL(clicked()), this, SLOT(startPainting()));
 
     previewHeight = new PreviewTerrainHeight(this);
     previewColor = new PreviewTerrainColor(this);
@@ -164,4 +174,9 @@ void FormTerrain::configChangeEvent()
 {
     TerrainDefinitionClass.validate(_definition);
     BaseForm::configChangeEvent();
+}
+
+void FormTerrain::startPainting()
+{
+    DialogHeightMap::editHeightMap(this, _definition);
 }

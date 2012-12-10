@@ -13,7 +13,6 @@
 #include "../lib_paysages/curve.h"
 #include "../lib_paysages/color.h"
 #include "../lib_paysages/layers.h"
-#include "../lib_paysages/heightmap.h"
 #include "../lib_paysages/pack.h"
 
 class BaseForm:public QWidget

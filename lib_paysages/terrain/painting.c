@@ -1,57 +1,50 @@
-#include "heightmap.h"
+#include "private.h"
+
+/*
+ * Terrain height map painting.
+ */
 
 #include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <assert.h>
-#include "tools.h"
-#include "system.h"
-#include "noise.h"
 
-HeightMap heightmapCreate()
+TerrainHeightMap terrainHeightMapCreate()
 {
-    HeightMap result;
+    TerrainHeightMap result;
 
-    result.data = malloc(sizeof(double));
+    /*result.data = malloc(sizeof(double));
     result.resolution_x = 1;
-    result.resolution_z = 1;
+    result.resolution_z = 1;*/
 
     return result;
 }
 
-void heightmapDelete(HeightMap* heightmap)
+void terrainHeightmapDelete(TerrainHeightMap* heightmap)
 {
-    free(heightmap->data);
+    /*free(heightmap->data);*/
 }
 
-void heightmapCopy(HeightMap* source, HeightMap* destination)
+void terrainHeightmapCopy(TerrainHeightMap* source, TerrainHeightMap* destination)
 {
-    destination->resolution_x = source->resolution_x;
+    /*destination->resolution_x = source->resolution_x;
     destination->resolution_z = source->resolution_z;
     destination->data = realloc(destination->data, sizeof(double) * destination->resolution_x * destination->resolution_z);
-    memcpy(destination->data, source->data, sizeof(double) * destination->resolution_x * destination->resolution_z);
+    memcpy(destination->data, source->data, sizeof(double) * destination->resolution_x * destination->resolution_z);*/
 }
 
-void heightmapValidate(HeightMap* heightmap)
+void terrainHeightmapSave(PackStream* stream, TerrainHeightMap* heightmap)
 {
-    UNUSED(heightmap);
-}
-
-void heightmapSave(PackStream* stream, HeightMap* heightmap)
-{
-    int i;
+    /*int i;
 
     packWriteInt(stream, &heightmap->resolution_x);
     packWriteInt(stream, &heightmap->resolution_z);
     for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
     {
         packWriteDouble(stream, &heightmap->data[i]);
-    }
+    }*/
 }
 
-void heightmapLoad(PackStream* stream, HeightMap* heightmap)
+void terrainHeightmapLoad(PackStream* stream, TerrainHeightMap* heightmap)
 {
-    int i;
+    /*int i;
 
     packReadInt(stream, &heightmap->resolution_x);
     packReadInt(stream, &heightmap->resolution_z);
@@ -59,9 +52,22 @@ void heightmapLoad(PackStream* stream, HeightMap* heightmap)
     for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
     {
         packReadDouble(stream, &heightmap->data[i]);
-    }
+    }*/
 }
 
+void terrainBrushElevation(TerrainDefinition* heightmap, TerrainBrush* brush, double value)
+{
+}
+
+void terrainBrushSmooth(TerrainDefinition* heightmap, TerrainBrush* brush, double value)
+{
+}
+
+void terrainBrushAddNoise(TerrainDefinition* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value)
+{
+}
+
+#if 0
 static void _loadFromFilePixel(HeightMap* heightmap, int x, int y, Color col)
 {
     assert(x >= 0 && x < heightmap->resolution_x);
@@ -184,7 +190,7 @@ void heightmapRevertToTerrain(HeightMap* heightmap, TerrainDefinition* terrain, 
 }
 
 
-static inline void _getBrushBoundaries(HeightMapBrush* brush, int rx, int rz, int* x1, int* x2, int* z1, int* z2)
+static inline void _getBrushBoundaries(TerrainBrush* brush, int rx, int rz, int* x1, int* x2, int* z1, int* z2)
 {
     double cx = brush->relative_x * rx;
     double cz = brush->relative_z * rz;
@@ -229,9 +235,9 @@ static inline void _getBrushBoundaries(HeightMapBrush* brush, int rx, int rz, in
     }
 }
 
-typedef double (*BrushCallback)(HeightMap* heightmap, HeightMapBrush* brush, double x, double z, double basevalue, double influence, double force, void* data);
+typedef double (*BrushCallback)(HeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data);
 
-static inline void _applyBrush(HeightMap* heightmap, HeightMapBrush* brush, double force, void* data, BrushCallback callback)
+static inline void _applyBrush(HeightMap* heightmap, TerrainBrush* brush, double force, void* data, BrushCallback callback)
 {
     int x, x1, x2, z, z1, z2;
     double dx, dz, distance, influence;
@@ -267,17 +273,17 @@ static inline void _applyBrush(HeightMap* heightmap, HeightMapBrush* brush, doub
     }
 }
 
-static double _applyBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
+static double _applyBrushElevation(HeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
 {
     return basevalue + influence * force * brush->total_radius;
 }
 
-void heightmapBrushElevation(HeightMap* heightmap, HeightMapBrush* brush, double value)
+void terrainBrushElevation(HeightMap* heightmap, TerrainBrush* brush, double value)
 {
     _applyBrush(heightmap, brush, value, NULL, _applyBrushElevation);
 }
 
-static double _applyBrushSmooth(HeightMap* heightmap, HeightMapBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
+static double _applyBrushSmooth(HeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
 {
     double ideal, factor;
     ideal = heightmapGetValue(heightmap, x + brush->total_radius * 0.5, z);
@@ -293,17 +299,18 @@ static double _applyBrushSmooth(HeightMap* heightmap, HeightMapBrush* brush, dou
     return basevalue + (ideal - basevalue) * factor;
 }
 
-void heightmapBrushSmooth(HeightMap* heightmap, HeightMapBrush* brush, double value)
+void terrainBrushSmooth(HeightMap* heightmap, TerrainBrush* brush, double value)
 {
     _applyBrush(heightmap, brush, value, NULL, _applyBrushSmooth);
 }
 
-static double _applyBrushAddNoise(HeightMap* heightmap, HeightMapBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
+static double _applyBrushAddNoise(HeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
 {
     return basevalue + noiseGet2DTotal((NoiseGenerator*)data, x / brush->total_radius, z / brush->total_radius) * influence * force * brush->total_radius;
 }
 
-void heightmapBrushAddNoise(HeightMap* heightmap, HeightMapBrush* brush, NoiseGenerator* generator, double value)
+void terrainBrushAddNoise(HeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value)
 {
     _applyBrush(heightmap, brush, value, generator, _applyBrushAddNoise);
 }
+#endif

@@ -49,6 +49,19 @@ void terrainRenderSurface(Renderer* renderer);
 /*Renderer terrainCreatePreviewRenderer();
 Color terrainGetPreview(Renderer* renderer, double x, double y);*/
 
+typedef struct
+{
+    double relative_x;
+    double relative_z;
+    double hard_radius;
+    double smoothed_size;
+    double total_radius;
+} TerrainBrush;
+
+void terrainBrushElevation(TerrainDefinition* heightmap, TerrainBrush* brush, double value);
+void terrainBrushSmooth(TerrainDefinition* heightmap, TerrainBrush* brush, double value);
+void terrainBrushAddNoise(TerrainDefinition* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value);
+
 #ifdef __cplusplus
 }
 #endif

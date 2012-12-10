@@ -84,7 +84,13 @@ static double _fakeGetHeight(Renderer* renderer, double x, double z)
 static double _getHeight(Renderer* renderer, double x, double z)
 {
     TerrainDefinition* definition = renderer->terrain->definition;
-    return noiseGet2DTotal(definition->_height_noise, x / definition->scaling, z / definition->scaling) * definition->height;
+    x /= definition->scaling;
+    z /= definition->scaling;
+
+    double height = noiseGet2DTotal(definition->_height_noise, x, z);
+    /* TODO Apply paintings */
+
+    return height * definition->height;
 }
 
 static Color _fakeGetFinalColor(Renderer* renderer, Vector3 location, double precision)

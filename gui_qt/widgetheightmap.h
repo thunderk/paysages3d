@@ -4,7 +4,7 @@
 #include <QGLWidget>
 #include <QDateTime>
 #include "../lib_paysages/euclid.h"
-#include "../lib_paysages/heightmap.h"
+#include "../lib_paysages/terrain/public.h"
 
 typedef struct
 {
@@ -22,16 +22,16 @@ class WidgetHeightMap : public QGLWidget
 {
     Q_OBJECT
 public:
-    WidgetHeightMap(QWidget* parent, HeightMap* heightmap);
+    WidgetHeightMap(QWidget* parent, TerrainDefinition* terrain);
     ~WidgetHeightMap();
-    
+
     void setHorizontalViewAngle(double angle_h);
     void setVerticalViewAngle(double angle_v);
     void setBrushMode(HeightMapBrushMode mode);
     void setBrushSize(double size);
     void setBrushSmoothing(double smoothing);
     void setBrushStrength(double smoothing);
-    
+
 public slots:
     void revert();
 
@@ -39,33 +39,33 @@ protected:
     void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
-    
+
     void timerEvent(QTimerEvent* event);
 
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
-    
+
 private:
     void updateVertexInfo();
 
 private:
-    HeightMap* _heightmap;
+    TerrainDefinition* _terrain;
     _VertexInfo* _vertices;
-    
+
     bool _dirty;
-    
+
     double _average_frame_time;
-    
+
     int _last_brush_action;
     int _last_mouse_x;
     int _last_mouse_y;
     QDateTime _last_time;
     bool _mouse_moved;
-    
+
     double _angle_h;
     double _angle_v;
-    
+
     double _brush_x;
     double _brush_z;
     HeightMapBrushMode _brush_mode;
