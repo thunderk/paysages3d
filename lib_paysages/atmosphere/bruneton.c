@@ -19,13 +19,36 @@ static const double Rg = 6360.0;
 static const double Rt = 6420.0;
 static const double RL = 6421.0;
 static const double exposure = 0.4;
-static const float ISun = 100.0;
+static const double ISun = 100.0;
 
 #define RES_MU 128
 #define RES_MU_S 32
 #define RES_R 32
 #define RES_NU 8
 #define TRANSMITTANCE_INTEGRAL_SAMPLES 500
+/*#define SKY_W 64
+#define SKY_H 16*/
+#define SKY_W 640
+#define SKY_H 160
+
+typedef struct
+{
+    int xsize;
+    int ysize;
+    Color* data;
+} Texture2D;
+
+typedef struct
+{
+    int xsize;
+    int ysize;
+    int zsize;
+    Color* data;
+} Texture3D;
+
+Texture2D _transmittanceTexture = {0, 0, 0};
+Texture2D _irrDeltaETexture;
+Texture3D _inscatterSampler;
 
 // Rayleigh
 static const double HR = 8.0;
@@ -49,8 +72,8 @@ static const vec3 betaMEx = betaMSca / 0.9;
 static const float mieG = 0.65;*/
 
 #define step(_a_,_b_) ((_a_) < (_b_) ? 0 : 1)
-#define max(_a_,_b_) ((_a_) < (_b_) ? (_a_) : (_b_))
-#define min(_a_,_b_) ((_a_) > (_b_) ? (_a_) : (_b_))
+#define max(_a_,_b_) ((_a_) > (_b_) ? (_a_) : (_b_))
+#define min(_a_,_b_) ((_a_) < (_b_) ? (_a_) : (_b_))
 #define sign(_a_) ((_a_) < 0.0 ? -1.0 : ((_a_) > 0.0 ? 1.0 : 0.0))
 #define mix(_x_,_y_,_a_) ((_x_) * (1.0 - (_a_)) + (_y_) * (_a_))
 static inline Color vec4mix(Color v1, Color v2, double a)
@@ -109,20 +132,48 @@ static inline Color vec4(double r, double g, double b, double a)
     return result;
 }
 
-typedef struct
+static Color _texture2D(Texture2D* tex, double x, double y)
 {
-    int xsize;
-    int ysize;
-    Color* data;
-} Texture2D;
+    if (x < 0.0) x = 0.0;
+    if (x > 1.0) x = 1.0;
+    if (y < 0.0) y = 0.0;
+    if (y > 1.0) y = 1.0;
+    /* TODO Interpolation */
+    int ix = (int)round(x * ((double)(tex->xsize - 1)) + 0.5);
+    int iy = (int)round(y * ((double)(tex->ysize - 1)) + 0.5);
+    return tex->data[iy * tex->xsize + ix];
+}
 
-typedef struct
+static Color _texture3D(Texture3D* tex, Vector3 p)
 {
-    int xsize;
-    int ysize;
-    int zsize;
-    Color* data;
-} Texture3D;
+    /* TODO Interpolation */
+    return tex->data[(int)(p.z * (tex->zsize - 1)) * tex->ysize * tex->xsize + (int)(p.y * (tex->ysize - 1)) * tex->xsize + (int)(p.x * (tex->xsize - 1))];
+}
+
+static Color _texture4D(Texture3D* tex3d, double r, double mu, double muS, double nu)
+{
+    double H = sqrt(Rt * Rt - Rg * Rg);
+    double rho = sqrt(r * r - Rg * Rg);
+#ifdef INSCATTER_NON_LINEAR
+    double rmu = r * mu;
+    double delta = rmu * rmu - r * r + Rg * Rg;
+    Color cst = (rmu < 0.0 && delta > 0.0) ? vec4(1.0, 0.0, 0.0, 0.5 - 0.5 / (double)(RES_MU)) : vec4(-1.0, H * H, H, 0.5 + 0.5 / (double)(RES_MU));
+    double uR = 0.5 / (double)(RES_R) + rho / H * (1.0 - 1.0 / (double)(RES_R));
+    double uMu = cst.a + (rmu * cst.r + sqrt(delta + cst.g)) / (rho + cst.b) * (0.5 - 1.0 / (double)(RES_MU));
+    // paper formula
+    //float uMuS = 0.5 / (double)(RES_MU_S) + max((1.0 - exp(-3.0 * muS - 0.6)) / (1.0 - exp(-3.6)), 0.0) * (1.0 - 1.0 / (double)(RES_MU_S));
+    // better formula
+    double uMuS = 0.5 / (double)(RES_MU_S) + (atan(max(muS, -0.1975) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / (double)(RES_MU_S));
+#else
+    float uR = 0.5 / (double)(RES_R) + rho / H * (1.0 - 1.0 / (double)(RES_R));
+    float uMu = 0.5 / (double)(RES_MU) + (mu + 1.0) / 2.0 * (1.0 - 1.0 / (double)(RES_MU));
+    float uMuS = 0.5 / (double)(RES_MU_S) + max(muS + 0.2, 0.0) / 1.2 * (1.0 - 1.0 / (double)(RES_MU_S));
+#endif
+    double lerp = (nu + 1.0) / 2.0 * ((double)(RES_NU) - 1.0);
+    double uNu = floor(lerp);
+    lerp = lerp - uNu;
+    return vec4mix(_texture3D(tex3d, vec3((uNu + uMuS + 1.0) / (double)(RES_NU), uMu, uR)), _texture3D(tex3d, vec3((uNu + uMuS) / (double)(RES_NU), uMu, uR)), lerp);
+}
 
 /* Rayleigh phase function */
 static double _phaseFunctionR(double mu)
@@ -170,15 +221,92 @@ static double _opticalDepth(double H, double r, double mu, double d)
 static Texture3D _precomputeInscatterSampler()
 {
     Texture3D result;
+    int x, y;
 
-    result.xsize = 0;
-    result.ysize = 0;
-    result.zsize = 0;
-    result.data = 0;
+#if 0
+    result.xsize = 256;
+    result.ysize = 64;
+    result.data = malloc(sizeof(Color) * result.xsize * result.ysize); /* TODO free */
+
+    for (x = 0; x < result.xsize; x++)
+    {
+        for (y = 0; y < result.ysize; y++)
+        {
+            double r, muS;
+            _getTransmittanceRMu((double)x / result.xsize, (double)y / result.ysize, &r, &muS);
+            double depth1 = _opticalDepthTransmittance(HR, r, muS);
+            double depth2 = _opticalDepthTransmittance(HM, r, muS);
+            Color trans;
+            trans.r = exp(-(betaR.r * depth1 + betaMEx.x * depth2));
+            trans.g = exp(-(betaR.g * depth1 + betaMEx.y * depth2));
+            trans.b = exp(-(betaR.b * depth1 + betaMEx.z * depth2));
+            trans.a = 1.0;
+            result.data[y * result.xsize + x] = trans; /* Eq (5) */
+        }
+    }
+#endif
 
     return result;
 }
-Texture3D _inscatterSampler;
+
+static inline void _getTransmittanceUV(double r, double mu, double* u, double* v)
+{
+#ifdef TRANSMITTANCE_NON_LINEAR
+    *v = sqrt((r - Rg) / (Rt - Rg));
+    *u = atan((mu + 0.15) / (1.0 + 0.15) * tan(1.5)) / 1.5;
+#else
+    *v = (r - Rg) / (Rt - Rg);
+    *u = (mu + 0.15) / (1.0 + 0.15);
+#endif
+}
+
+/* transmittance(=transparency) of atmosphere for infinite ray (r,mu)
+   (mu=cos(view zenith angle)), intersections with ground ignored */
+static Color _transmittance(double r, double mu)
+{
+    double u, v;
+    _getTransmittanceUV(r, mu, &u, &v);
+    return _texture2D(&_transmittanceTexture, u, v);
+}
+
+static void _getIrradianceRMuS(double x, double y, double* r, double* muS)
+{
+    *r = Rg + y * (Rt - Rg);
+    *muS = -0.2 + x * (1.0 + 0.2);
+}
+
+static Texture2D _precomputeIrrDeltaETexture()
+{
+    Texture2D result;
+    int x, y;
+
+    result.xsize = SKY_W;
+    result.ysize = SKY_H;
+    result.data = malloc(sizeof(Color) * result.xsize * result.ysize); /* TODO free */
+
+    /* Irradiance program */
+    for (x = 0; x < result.xsize; x++)
+    {
+        for (y = 0; y < result.ysize; y++)
+        {
+            double r, muS, u, v;
+            Color trans, irr;
+            _getIrradianceRMuS((double)x / result.xsize, (double)y / result.ysize, &r, &muS);
+            trans = _transmittance(r, muS);
+
+            _getTransmittanceUV(r, muS, &u, &v);
+            //printf("%d %d -> %f %f -> %f %f %f\n", x, y, u, v, trans.r, trans.g, trans.b);
+
+            irr.r = trans.r * max(muS, 0.0);
+            irr.g = trans.g * max(muS, 0.0);
+            irr.b = trans.b * max(muS, 0.0);
+            irr.a = 1.0;
+            result.data[y * result.xsize + x] = irr;
+        }
+    }
+
+    return result;
+}
 
 /* nearest intersection of ray r,mu with ground or top atmosphere boundary
  * mu=cos(ray zenith angle at ray origin) */
@@ -188,7 +316,7 @@ static double limit(double r, double mu)
     double delta2 = r * r * (mu * mu - 1.0) + Rg * Rg;
     if (delta2 >= 0.0)
     {
-        float din = -r * mu - sqrt(delta2);
+        double din = -r * mu - sqrt(delta2);
         if (din >= 0.0) {
             dout = min(dout, din);
         }
@@ -230,7 +358,7 @@ static Color _debugSave2D(void* data, int x, int y)
     return tex->data[y * tex->xsize + x];
 }
 
-static Texture2D _precomputeTransmittanceSampler()
+static Texture2D _precomputeTransmittanceTexture()
 {
     Texture2D result;
     int x, y;
@@ -256,56 +384,22 @@ static Texture2D _precomputeTransmittanceSampler()
         }
     }
 
-    /* DEBUG */
-    systemSavePictureFile("debug.png", _debugSave2D, &result, result.xsize, result.ysize);
-
     return result;
 }
-Texture2D _transmittanceSampler;
 
 void brunetonInit()
 {
-    _inscatterSampler = _precomputeInscatterSampler();
-    _transmittanceSampler = _precomputeTransmittanceSampler();
+    if (_transmittanceTexture.xsize == 0) /* TEMP */
+    {
+        _transmittanceTexture = _precomputeTransmittanceTexture();
+        _irrDeltaETexture = _precomputeIrrDeltaETexture();
+        //_inscatterSampler = _precomputeInscatterSampler();
+    }
 
+    /* DEBUG */
+    systemSavePictureFile("transmittance.png", _debugSave2D, &_transmittanceTexture, _transmittanceTexture.xsize, _transmittanceTexture.ysize);
+    systemSavePictureFile("irrdeltae.png", _debugSave2D, &_irrDeltaETexture, _irrDeltaETexture.xsize, _irrDeltaETexture.ysize);
     exit(1);
-}
-
-static Color _texture2D(Texture2D* tex, double x, double y)
-{
-    /* TODO Sampling */
-    return COLOR_BLACK;
-}
-
-static Color _texture3D(Texture3D* tex, Vector3 location)
-{
-    /* TODO Sampling */
-    return COLOR_BLACK;
-}
-
-static Color _texture4D(Texture3D* tex3d, double r, double mu, double muS, double nu)
-{
-    double H = sqrt(Rt * Rt - Rg * Rg);
-    double rho = sqrt(r * r - Rg * Rg);
-#ifdef INSCATTER_NON_LINEAR
-    double rmu = r * mu;
-    double delta = rmu * rmu - r * r + Rg * Rg;
-    Color cst = (rmu < 0.0 && delta > 0.0) ? vec4(1.0, 0.0, 0.0, 0.5 - 0.5 / (double)(RES_MU)) : vec4(-1.0, H * H, H, 0.5 + 0.5 / (double)(RES_MU));
-    double uR = 0.5 / (double)(RES_R) + rho / H * (1.0 - 1.0 / (double)(RES_R));
-    double uMu = cst.a + (rmu * cst.r + sqrt(delta + cst.g)) / (rho + cst.b) * (0.5 - 1.0 / (double)(RES_MU));
-    // paper formula
-    //float uMuS = 0.5 / (double)(RES_MU_S) + max((1.0 - exp(-3.0 * muS - 0.6)) / (1.0 - exp(-3.6)), 0.0) * (1.0 - 1.0 / (double)(RES_MU_S));
-    // better formula
-    double uMuS = 0.5 / (double)(RES_MU_S) + (atan(max(muS, -0.1975) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / (double)(RES_MU_S));
-#else
-    float uR = 0.5 / (double)(RES_R) + rho / H * (1.0 - 1.0 / (double)(RES_R));
-    float uMu = 0.5 / (double)(RES_MU) + (mu + 1.0) / 2.0 * (1.0 - 1.0 / (double)(RES_MU));
-    float uMuS = 0.5 / (double)(RES_MU_S) + max(muS + 0.2, 0.0) / 1.2 * (1.0 - 1.0 / (double)(RES_MU_S));
-#endif
-    double lerp = (nu + 1.0) / 2.0 * ((double)(RES_NU) - 1.0);
-    double uNu = floor(lerp);
-    lerp = lerp - uNu;
-    return vec4mix(_texture3D(tex3d, vec3((uNu + uMuS + 1.0) / (double)(RES_NU), uMu, uR)), _texture3D(tex3d, vec3((uNu + uMuS) / (double)(RES_NU), uMu, uR)), lerp);
 }
 
 /* transmittance(=transparency) of atmosphere for ray (r,mu) of length d
@@ -482,26 +576,6 @@ static Color _inscatter(Vector3* _x, double* _t, Vector3 v, Vector3 s, double* _
     }
     return result;
 }*/
-
-static inline void _getTransmittanceUV(double r, double mu, double* u, double* v)
-{
-#ifdef TRANSMITTANCE_NON_LINEAR
-    *v = sqrt((r - Rg) / (Rt - Rg));
-    *u = atan((mu + 0.15) / (1.0 + 0.15) * tan(1.5)) / 1.5;
-#else
-    *v = (r - Rg) / (Rt - Rg);
-    *u = (mu + 0.15) / (1.0 + 0.15);
-#endif
-}
-
-/* transmittance(=transparency) of atmosphere for infinite ray (r,mu)
-   (mu=cos(view zenith angle)), intersections with ground ignored */
-static Color _transmittance(double r, double mu)
-{
-    double u, v;
-    _getTransmittanceUV(r, mu, &u, &v);
-    return _texture2D(&_transmittanceSampler, u, v);
-}
 
 /* transmittance(=transparency) of atmosphere for infinite ray (r,mu)
    (mu=cos(view zenith angle)), or zero if ray intersects ground */

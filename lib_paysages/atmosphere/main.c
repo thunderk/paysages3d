@@ -28,7 +28,7 @@ static AtmosphereDefinition* _createDefinition()
 {
     AtmosphereDefinition* result;
 
-    // brunetonInit(); /* DEBUG */
+    //brunetonInit(); /* DEBUG */
 
     result = malloc(sizeof(AtmosphereDefinition));
     result->model = ATMOSPHERE_MODEL_PREETHAM;
