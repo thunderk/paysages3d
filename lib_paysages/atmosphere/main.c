@@ -28,6 +28,8 @@ static AtmosphereDefinition* _createDefinition()
 {
     AtmosphereDefinition* result;
 
+    // brunetonInit(); /* DEBUG */
+
     result = malloc(sizeof(AtmosphereDefinition));
     result->model = ATMOSPHERE_MODEL_PREETHAM;
     result->daytime = 0.0;

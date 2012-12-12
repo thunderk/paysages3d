@@ -5,9 +5,11 @@
  * http://evasion.inrialpes.fr/~Eric.Bruneton/
  */
 
-#if 0
+#if 1
 
 #include <math.h>
+#include <stdlib.h>
+#include "../system.h"
 
 #define TRANSMITTANCE_NON_LINEAR
 #define INSCATTER_NON_LINEAR
@@ -19,6 +21,12 @@ static const double RL = 6421.0;
 static const double exposure = 0.4;
 static const float ISun = 100.0;
 
+#define RES_MU 128
+#define RES_MU_S 32
+#define RES_R 32
+#define RES_NU 8
+#define TRANSMITTANCE_INTEGRAL_SAMPLES 500
+
 // Rayleigh
 static const double HR = 8.0;
 static const Color betaR = {5.8e-3, 1.35e-2, 3.31e-2, 1.0};
@@ -26,8 +34,8 @@ static const Color betaR = {5.8e-3, 1.35e-2, 3.31e-2, 1.0};
 // Mie
 // DEFAULT
 static const double HM = 1.2;
-/*static const vec3 betaMSca = vec3(4e-3);
-static const vec3 betaMEx = betaMSca / 0.9;*/
+static const Vector3 betaMSca = {4e-3, 4e-3, 4e-3};
+static const Vector3 betaMEx = {4e-3 / 0.9, 4e-3 / 0.9, 4e-3 / 0.9};
 static const double mieG = 0.8;
 // CLEAR SKY
 /*static const float HM = 1.2;
@@ -42,7 +50,79 @@ static const float mieG = 0.65;*/
 
 #define step(_a_,_b_) ((_a_) < (_b_) ? 0 : 1)
 #define max(_a_,_b_) ((_a_) < (_b_) ? (_a_) : (_b_))
+#define min(_a_,_b_) ((_a_) > (_b_) ? (_a_) : (_b_))
 #define sign(_a_) ((_a_) < 0.0 ? -1.0 : ((_a_) > 0.0 ? 1.0 : 0.0))
+#define mix(_x_,_y_,_a_) ((_x_) * (1.0 - (_a_)) + (_y_) * (_a_))
+static inline Color vec4mix(Color v1, Color v2, double a)
+{
+    v1.r = mix(v1.r, v2.r, a);
+    v1.g = mix(v1.g, v2.g, a);
+    v1.b = mix(v1.b, v2.b, a);
+    v1.a = mix(v1.a, v2.a, a);
+    return v1;
+}
+static inline double clamp(double x, double minVal, double maxVal)
+{
+    if (x < minVal)
+    {
+        x = minVal;
+    }
+    return (x > maxVal) ? maxVal : x;
+}
+static inline double smoothstep(double edge0, double edge1, double x)
+{
+    double t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+    return t * t * (3.0 - 2.0 * t);
+}
+static inline void _fixVec4Min(Color* vec, double minVal)
+{
+    if (vec->r < minVal) { vec->r = minVal; }
+    if (vec->g < minVal) { vec->g = minVal; }
+    if (vec->b < minVal) { vec->b = minVal; }
+    if (vec->a < minVal) { vec->a = minVal; }
+}
+static inline Color vec4max(Color vec, double minVal)
+{
+    if (vec.r < minVal) { vec.r = minVal; }
+    if (vec.g < minVal) { vec.g = minVal; }
+    if (vec.b < minVal) { vec.b = minVal; }
+    if (vec.a < minVal) { vec.a = minVal; }
+    return vec;
+}
+
+static inline Vector3 vec3(double x, double y, double z)
+{
+    Vector3 result;
+    result.x = x;
+    result.y = y;
+    result.z = z;
+    return result;
+}
+
+static inline Color vec4(double r, double g, double b, double a)
+{
+    Color result;
+    result.r = r;
+    result.g = g;
+    result.b = b;
+    result.a = a;
+    return result;
+}
+
+typedef struct
+{
+    int xsize;
+    int ysize;
+    Color* data;
+} Texture2D;
+
+typedef struct
+{
+    int xsize;
+    int ysize;
+    int zsize;
+    Color* data;
+} Texture3D;
 
 /* Rayleigh phase function */
 static double _phaseFunctionR(double mu)
@@ -57,14 +137,16 @@ static double _phaseFunctionM(double mu)
 }
 
 /* approximated single Mie scattering (cf. approximate Cm in paragraph "Angular precision") */
-static Color _getMie(Color rayMie)
+Color getMie(Color rayMie)
 {
-    double value = rayMie.a / max(rayMie.r, 1e-4) * (betaR.r / betaR); /* TODO divide by a vector ? */
-    rayMie.r *= value;
-    rayMie.g *= value;
-    rayMie.b *= value;
-    rayMie.a = 1.0;
-    return rayMie;
+    Color result;
+
+    result.r = rayMie.r * rayMie.a / max(rayMie.r, 1e-4) * (betaR.r / betaR.r);
+    result.g = rayMie.g * rayMie.a / max(rayMie.r, 1e-4) * (betaR.r / betaR.g);
+    result.b = rayMie.b * rayMie.a / max(rayMie.r, 1e-4) * (betaR.r / betaR.b);
+    result.a = 1.0;
+
+    return result;
 }
 
 /* optical depth for ray (r,mu) of length d, using analytic formula
@@ -85,30 +167,145 @@ static double _opticalDepth(double H, double r, double mu, double d)
     return sqrt((6.2831 * H) * r) * exp((Rg - r) / H) * (x + yx - yy);
 }
 
-static Color _texture4D(sampler3D table, float r, float mu, float muS, float nu)
+static Texture3D _precomputeInscatterSampler()
 {
-    float H = sqrt(Rt * Rt - Rg * Rg);
-    float rho = sqrt(r * r - Rg * Rg);
-#ifdef INSCATTER_NON_LINEAR
-    float rmu = r * mu;
-    float delta = rmu * rmu - r * r + Rg * Rg;
-    vec4 cst = rmu < 0.0 && delta > 0.0 ? vec4(1.0, 0.0, 0.0, 0.5 - 0.5 / float(RES_MU)) : vec4(-1.0, H * H, H, 0.5 + 0.5 / float(RES_MU));
-	float uR = 0.5 / float(RES_R) + rho / H * (1.0 - 1.0 / float(RES_R));
-    float uMu = cst.w + (rmu * cst.x + sqrt(delta + cst.y)) / (rho + cst.z) * (0.5 - 1.0 / float(RES_MU));
-    // paper formula
-    //float uMuS = 0.5 / float(RES_MU_S) + max((1.0 - exp(-3.0 * muS - 0.6)) / (1.0 - exp(-3.6)), 0.0) * (1.0 - 1.0 / float(RES_MU_S));
-    // better formula
-    float uMuS = 0.5 / float(RES_MU_S) + (atan(max(muS, -0.1975) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / float(RES_MU_S));
+    Texture3D result;
+
+    result.xsize = 0;
+    result.ysize = 0;
+    result.zsize = 0;
+    result.data = 0;
+
+    return result;
+}
+Texture3D _inscatterSampler;
+
+/* nearest intersection of ray r,mu with ground or top atmosphere boundary
+ * mu=cos(ray zenith angle at ray origin) */
+static double limit(double r, double mu)
+{
+    double dout = -r * mu + sqrt(r * r * (mu * mu - 1.0) + RL * RL);
+    double delta2 = r * r * (mu * mu - 1.0) + Rg * Rg;
+    if (delta2 >= 0.0)
+    {
+        float din = -r * mu - sqrt(delta2);
+        if (din >= 0.0) {
+            dout = min(dout, din);
+        }
+    }
+    return dout;
+}
+
+static double _opticalDepthTransmittance(double H, double r, double mu)
+{
+    double result = 0.0;
+    double dx = limit(r, mu) / (double)TRANSMITTANCE_INTEGRAL_SAMPLES;
+    double xi = 0.0;
+    double yi = exp(-(r - Rg) / H);
+    int i;
+    for (i = 1; i <= TRANSMITTANCE_INTEGRAL_SAMPLES; ++i) {
+        double xj = (double)i * dx;
+        double yj = exp(-(sqrt(r * r + xj * xj + 2.0 * xj * r * mu) - Rg) / H);
+        result += (yi + yj) / 2.0 * dx;
+        xi = xj;
+        yi = yj;
+    }
+    return mu < -sqrt(1.0 - (Rg / r) * (Rg / r)) ? 1e9 : result;
+}
+
+static void _getTransmittanceRMu(double x, double y, double* r, double* muS)
+{
+#ifdef TRANSMITTANCE_NON_LINEAR
+    *r = Rg + (y * y) * (Rt - Rg);
+    *muS = -0.15 + tan(1.5 * x) / tan(1.5) * (1.0 + 0.15);
 #else
-    float uR = 0.5 / float(RES_R) + rho / H * (1.0 - 1.0 / float(RES_R));
-    float uMu = 0.5 / float(RES_MU) + (mu + 1.0) / 2.0 * (1.0 - 1.0 / float(RES_MU));
-    float uMuS = 0.5 / float(RES_MU_S) + max(muS + 0.2, 0.0) / 1.2 * (1.0 - 1.0 / float(RES_MU_S));
+    *r = Rg + y * (Rt - Rg);
+    *muS = -0.15 + x * (1.0 + 0.15);
 #endif
-    float lerp = (nu + 1.0) / 2.0 * (float(RES_NU) - 1.0);
-    float uNu = floor(lerp);
+}
+
+static Color _debugSave2D(void* data, int x, int y)
+{
+    Texture2D* tex = (Texture2D*)data;
+    return tex->data[y * tex->xsize + x];
+}
+
+static Texture2D _precomputeTransmittanceSampler()
+{
+    Texture2D result;
+    int x, y;
+
+    result.xsize = 256;
+    result.ysize = 64;
+    result.data = malloc(sizeof(Color) * result.xsize * result.ysize); /* TODO free */
+
+    for (x = 0; x < result.xsize; x++)
+    {
+        for (y = 0; y < result.ysize; y++)
+        {
+            double r, muS;
+            _getTransmittanceRMu((double)x / result.xsize, (double)y / result.ysize, &r, &muS);
+            double depth1 = _opticalDepthTransmittance(HR, r, muS);
+            double depth2 = _opticalDepthTransmittance(HM, r, muS);
+            Color trans;
+            trans.r = exp(-(betaR.r * depth1 + betaMEx.x * depth2));
+            trans.g = exp(-(betaR.g * depth1 + betaMEx.y * depth2));
+            trans.b = exp(-(betaR.b * depth1 + betaMEx.z * depth2));
+            trans.a = 1.0;
+            result.data[y * result.xsize + x] = trans; /* Eq (5) */
+        }
+    }
+
+    /* DEBUG */
+    systemSavePictureFile("debug.png", _debugSave2D, &result, result.xsize, result.ysize);
+
+    return result;
+}
+Texture2D _transmittanceSampler;
+
+void brunetonInit()
+{
+    _inscatterSampler = _precomputeInscatterSampler();
+    _transmittanceSampler = _precomputeTransmittanceSampler();
+
+    exit(1);
+}
+
+static Color _texture2D(Texture2D* tex, double x, double y)
+{
+    /* TODO Sampling */
+    return COLOR_BLACK;
+}
+
+static Color _texture3D(Texture3D* tex, Vector3 location)
+{
+    /* TODO Sampling */
+    return COLOR_BLACK;
+}
+
+static Color _texture4D(Texture3D* tex3d, double r, double mu, double muS, double nu)
+{
+    double H = sqrt(Rt * Rt - Rg * Rg);
+    double rho = sqrt(r * r - Rg * Rg);
+#ifdef INSCATTER_NON_LINEAR
+    double rmu = r * mu;
+    double delta = rmu * rmu - r * r + Rg * Rg;
+    Color cst = (rmu < 0.0 && delta > 0.0) ? vec4(1.0, 0.0, 0.0, 0.5 - 0.5 / (double)(RES_MU)) : vec4(-1.0, H * H, H, 0.5 + 0.5 / (double)(RES_MU));
+    double uR = 0.5 / (double)(RES_R) + rho / H * (1.0 - 1.0 / (double)(RES_R));
+    double uMu = cst.a + (rmu * cst.r + sqrt(delta + cst.g)) / (rho + cst.b) * (0.5 - 1.0 / (double)(RES_MU));
+    // paper formula
+    //float uMuS = 0.5 / (double)(RES_MU_S) + max((1.0 - exp(-3.0 * muS - 0.6)) / (1.0 - exp(-3.6)), 0.0) * (1.0 - 1.0 / (double)(RES_MU_S));
+    // better formula
+    double uMuS = 0.5 / (double)(RES_MU_S) + (atan(max(muS, -0.1975) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / (double)(RES_MU_S));
+#else
+    float uR = 0.5 / (double)(RES_R) + rho / H * (1.0 - 1.0 / (double)(RES_R));
+    float uMu = 0.5 / (double)(RES_MU) + (mu + 1.0) / 2.0 * (1.0 - 1.0 / (double)(RES_MU));
+    float uMuS = 0.5 / (double)(RES_MU_S) + max(muS + 0.2, 0.0) / 1.2 * (1.0 - 1.0 / (double)(RES_MU_S));
+#endif
+    double lerp = (nu + 1.0) / 2.0 * ((double)(RES_NU) - 1.0);
+    double uNu = floor(lerp);
     lerp = lerp - uNu;
-    return texture3D(table, vec3((uNu + uMuS) / float(RES_NU), uMu, uR)) * (1.0 - lerp) +
-           texture3D(table, vec3((uNu + uMuS + 1.0) / float(RES_NU), uMu, uR)) * lerp;
+    return vec4mix(_texture3D(tex3d, vec3((uNu + uMuS + 1.0) / (double)(RES_NU), uMu, uR)), _texture3D(tex3d, vec3((uNu + uMuS) / (double)(RES_NU), uMu, uR)), lerp);
 }
 
 /* transmittance(=transparency) of atmosphere for ray (r,mu) of length d
@@ -116,31 +313,53 @@ static Color _texture4D(sampler3D table, float r, float mu, float muS, float nu)
    uses analytic formula instead of transmittance texture */
 static Vector3 _analyticTransmittance(double r, double mu, double d)
 {
-    return exp(-betaR * _opticalDepth(HR, r, mu, d) - betaMEx * _opticalDepth(HM, r, mu, d));
+    Vector3 result;
+    double opt = _opticalDepth(HR, r, mu, d);
+
+    result.x = exp(-betaR.r * opt) - betaMEx.x * opt;
+    result.y = exp(-betaR.g * opt) - betaMEx.y * opt;
+    result.z = exp(-betaR.b * opt) - betaMEx.z * opt;
+
+    return result;
+}
+
+static inline Color _applyInscatter(Color inscatter, Color attmod, Color samp)
+{
+    inscatter.r = inscatter.r - attmod.r * samp.r;
+    inscatter.g = inscatter.g - attmod.g * samp.g;
+    inscatter.b = inscatter.b - attmod.b * samp.b;
+    inscatter.a = inscatter.a - attmod.a * samp.a;
+    return vec4max(inscatter, 0.0);
 }
 
 /* inscattered light along ray x+tv, when sun in direction s (=S[L]-T(x,x0)S[L]|x0) */
-static Color _inscatter(Vector3* x, double* t, Vector3 v, Vector3 s, double* _r, double* _mu, Color* attenuation)
+static Color _inscatter(Vector3* _x, double* _t, Vector3 v, Vector3 s, double* _r, double* _mu, Vector3* attenuation)
 {
     Color result;
-    double r = v3Norm(x);
-    double mu = v3Dot(x, v) / r;
+    double r = v3Norm(*_x);
+    double mu = v3Dot(*_x, v) / r;
     double d = -r * mu - sqrt(r * r * (mu * mu - 1.0) + Rt * Rt);
     if (d > 0.0)
-    { // if x in space and ray intersects atmosphere
-        // move x to nearest intersection of ray with top atmosphere boundary
-        x += d * v;
-        t -= d;
+    {
+        /* if x in space and ray intersects atmosphere
+           move x to nearest intersection of ray with top atmosphere boundary */
+        _x->x += d * v.x;
+        _x->y += d * v.y;
+        _x->z += d * v.z;
+        *_t -= d;
         mu = (r * mu + d) / Rt;
         r = Rt;
     }
+    double t = *_t;
+    Vector3 x = *_x;
     if (r <= Rt)
-    { // if ray intersects atmosphere
+    {
+        /* if ray intersects atmosphere */
         double nu = v3Dot(v, s);
         double muS = v3Dot(x, s) / r;
         double phaseR = _phaseFunctionR(nu);
         double phaseM = _phaseFunctionM(nu);
-        vec4 inscatter = max(texture4D(inscatterSampler, r, mu, muS, nu), 0.0);
+        Color inscatter = vec4max(_texture4D(&_inscatterSampler, r, mu, muS, nu), 0.0);
         if (t > 0.0)
         {
             Vector3 x0 = v3Add(x, v3Scale(v, t));
@@ -149,50 +368,58 @@ static Color _inscatter(Vector3* x, double* t, Vector3 v, Vector3 s, double* _r,
             double mu0 = rMu0 / r0;
             double muS0 = v3Dot(x0, s) / r0;
 #ifdef FIX
-            // avoids imprecision problems in transmittance computations based on textures
+            /* avoids imprecision problems in transmittance computations based on textures */
             *attenuation = _analyticTransmittance(r, mu, t);
 #else
             *attenuation = _transmittance(r, mu, v, x0);
 #endif
             if (r0 > Rg + 0.01)
             {
-                // computes S[L]-T(x,x0)S[L]|x0
-                inscatter = max(inscatter - attenuation.rgbr * texture4D(inscatterSampler, r0, mu0, muS0, nu), 0.0);
+                /* computes S[L]-T(x,x0)S[L]|x0 */
+                Color attmod = {attenuation->x, attenuation->y, attenuation->z, attenuation->x};
+                Color samp = _texture4D(&_inscatterSampler, r0, mu0, muS0, nu);
+                inscatter = _applyInscatter(inscatter, attmod, samp);
 #ifdef FIX
-                // avoids imprecision problems near horizon by interpolating between two points above and below horizon
-                const float EPS = 0.004;
-                float muHoriz = -sqrt(1.0 - (Rg / r) * (Rg / r));
-                if (abs(mu - muHoriz) < EPS)
+                /* avoids imprecision problems near horizon by interpolating between two points above and below horizon */
+                const double EPS = 0.004;
+                double muHoriz = -sqrt(1.0 - (Rg / r) * (Rg / r));
+                if (fabs(mu - muHoriz) < EPS)
                 {
-                    float a = ((mu - muHoriz) + EPS) / (2.0 * EPS);
+                    double a = ((mu - muHoriz) + EPS) / (2.0 * EPS);
 
                     mu = muHoriz - EPS;
                     r0 = sqrt(r * r + t * t + 2.0 * r * t * mu);
                     mu0 = (r * mu + t) / r0;
-                    vec4 inScatter0 = texture4D(inscatterSampler, r, mu, muS, nu);
-                    vec4 inScatter1 = texture4D(inscatterSampler, r0, mu0, muS0, nu);
-                    vec4 inScatterA = max(inScatter0 - attenuation.rgbr * inScatter1, 0.0);
+                    Color inScatter0 = _texture4D(&_inscatterSampler, r, mu, muS, nu);
+                    Color inScatter1 = _texture4D(&_inscatterSampler, r0, mu0, muS0, nu);
+                    Color inScatterA = _applyInscatter(inScatter0, attmod, inScatter1);
 
                     mu = muHoriz + EPS;
                     r0 = sqrt(r * r + t * t + 2.0 * r * t * mu);
                     mu0 = (r * mu + t) / r0;
-                    inScatter0 = texture4D(inscatterSampler, r, mu, muS, nu);
-                    inScatter1 = texture4D(inscatterSampler, r0, mu0, muS0, nu);
-                    vec4 inScatterB = max(inScatter0 - attenuation.rgbr * inScatter1, 0.0);
+                    inScatter0 = _texture4D(&_inscatterSampler, r, mu, muS, nu);
+                    inScatter1 = _texture4D(&_inscatterSampler, r0, mu0, muS0, nu);
+                    Color inScatterB = _applyInscatter(inScatter0, attmod, inScatter1);
 
-                    inscatter = mix(inScatterA, inScatterB, a);
+                    inscatter = vec4mix(inScatterA, inScatterB, a);
                 }
 #endif
             }
         }
 #ifdef FIX
-        // avoids imprecision problems in Mie scattering when sun is below horizon
-        inscatter.w *= smoothstep(0.00, 0.02, muS);
+        /* avoids imprecision problems in Mie scattering when sun is below horizon */
+        inscatter.a *= smoothstep(0.00, 0.02, muS);
 #endif
-        result = max(inscatter.rgb * phaseR + getMie(inscatter) * phaseM, 0.0);
+        Color mie = getMie(inscatter);
+        result.r = inscatter.r * phaseR + mie.r * phaseM;
+        result.g = inscatter.g * phaseR + mie.g * phaseM;
+        result.b = inscatter.b * phaseR + mie.b * phaseM;
+        result.a = inscatter.a * phaseR + mie.a * phaseM;
+        _fixVec4Min(&result, 0.0);
     }
     else
-    { // x in space and ray looking in space
+    {
+        /* x in space and ray looking in space */
         result = COLOR_BLACK;
     }
 
@@ -207,7 +434,6 @@ static Color _inscatter(Vector3* x, double* t, Vector3 v, Vector3 s, double* _r,
 
 /*ground radiance at end of ray x+tv, when sun in direction s
  *attenuated bewteen ground and viewer (=R[L0]+R[L*]) */
-
 /*static Color _groundColor(Vector3 x, double t, Vector3 v, Vector3 s, double r, double mu, Color attenuation)
 {
     Color result;
@@ -273,8 +499,8 @@ static inline void _getTransmittanceUV(double r, double mu, double* u, double* v
 static Color _transmittance(double r, double mu)
 {
     double u, v;
-    _getTransmittanceUV(r, mu, u, v);
-    return texture2D(transmittanceSampler, uv).rgb;
+    _getTransmittanceUV(r, mu, &u, &v);
+    return _texture2D(&_transmittanceSampler, u, v);
 }
 
 /* transmittance(=transparency) of atmosphere for infinite ray (r,mu)
@@ -295,7 +521,11 @@ static Color _sunColor(Vector3 x, double t, Vector3 v, Vector3 s, double r, doub
     {
         Color transmittance = r <= Rt ? _transmittanceWithShadow(r, mu) : COLOR_WHITE; // T(x,xo)
         double isun = step(cos(M_PI / 180.0), v3Dot(v, s)) * ISun; // Lsun
-        return transmittance * isun; // Eq (9)
+        transmittance.r *= isun;
+        transmittance.g *= isun;
+        transmittance.b *= isun;
+        transmittance.a *= isun;
+        return transmittance; // Eq (9)
     }
 }
 
@@ -303,7 +533,11 @@ static Color _hdr(Color c1, Color c2, Color c3)
 {
     Color L = {c1.r + c2.r + c3.r, c1.g + c2.g + c3.g, c1.b + c2.b + c3.b, 1.0};
 
-    L = L * exposure;
+    L.r *= exposure;
+    L.g *= exposure;
+    L.b *= exposure;
+    L.a *= exposure;
+
     L.r = L.r < 1.413 ? pow(L.r * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.r);
     L.g = L.g < 1.413 ? pow(L.g * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.g);
     L.b = L.b < 1.413 ? pow(L.b * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.b);
@@ -342,7 +576,7 @@ Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
     }
 
     Vector3 attenuation;
-    Color inscatterColor = _inscatter(x, t, v, s, &r, &mu, &attenuation); //S[L]-T(x,xs)S[l]|xs
+    Color inscatterColor = _inscatter(&x, &t, v, s, &r, &mu, &attenuation); //S[L]-T(x,xs)S[l]|xs
     /*Color groundColor = _groundColor(x, t, v, s, r, mu, attenuation); //R[L0]+R[L*]*/
     Color groundColor = COLOR_BLACK;
     Color sunColor = _sunColor(x, t, v, s, r, mu); //L0
