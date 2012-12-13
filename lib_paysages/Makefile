@@ -1,9 +1,9 @@
 BUILDMODE = debug
 BUILDPATH = ../build/${BUILDMODE}
 OBJPATH = ./obj/${BUILDMODE}
-SOURCES = $(wildcard *.c atmosphere/*.c terrain/*.c)
+SOURCES = $(wildcard *.c atmosphere/*.c terrain/*.c tools/*.c)
 OBJECTS = ${SOURCES:%.c=${OBJPATH}/%.o}
-HEADERS = $(wildcard *.h atmosphere/*.h terrain/*.h shared/*.h)
+HEADERS = $(wildcard *.h atmosphere/*.h terrain/*.h tools/*.h shared/*.h)
 RESULT = ${BUILDPATH}/libpaysages.so
 LIBS = glib-2.0 gthread-2.0 IL ILU
 CC_FLAGS = -Wall -fPIC -DHAVE_GLIB=1
