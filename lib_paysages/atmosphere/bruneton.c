@@ -8,8 +8,10 @@
 #if 1
 
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "../system.h"
+#include "../tools/cache.h"
 #include "../tools/texture.h"
 
 /*********************** Constants ***********************/
@@ -400,12 +402,9 @@ static void _getMuMuSNu(double x, double y, double r, Color dhdH, double* mu, do
 
 /*********************** Texture precomputing ***********************/
 
-static Texture2D* _precomputeTransmittanceTexture()
+static void _precomputeTransmittanceTexture()
 {
-    Texture2D* result;
     int x, y;
-
-    result = texture2DCreate(TRANSMITTANCE_W, TRANSMITTANCE_H);
 
     for (x = 0; x < TRANSMITTANCE_W; x++)
     {
@@ -420,19 +419,14 @@ static Texture2D* _precomputeTransmittanceTexture()
             trans.g = exp(-(betaR.g * depth1 + betaMEx.y * depth2));
             trans.b = exp(-(betaR.b * depth1 + betaMEx.z * depth2));
             trans.a = 1.0;
-            texture2DSetPixel(result, x, y, trans); /* Eq (5) */
+            texture2DSetPixel(_transmittanceTexture, x, y, trans); /* Eq (5) */
         }
     }
-
-    return result;
 }
 
-static Texture2D* _precomputeIrrDeltaETexture()
+static void _precomputeIrrDeltaETexture()
 {
-    Texture2D* result;
     int x, y;
-
-    result = texture2DCreate(SKY_W, SKY_H);
 
     /* Irradiance program */
     for (x = 0; x < SKY_W; x++)
@@ -452,11 +446,9 @@ static Texture2D* _precomputeIrrDeltaETexture()
             irr.b = trans.b * max(muS, 0.0);
             irr.a = 1.0;
 
-            texture2DSetPixel(result, x, y, irr);
+            texture2DSetPixel(_irrDeltaETexture, x, y, irr);
         }
     }
-
-    return result;
 }
 
 static void _setLayer(int layer)
@@ -735,31 +727,116 @@ static Color _sunColor(Vector3 x, double t, Vector3 v, Vector3 s, double r, doub
     }
 }
 
+/*********************** Cache methods ***********************/
+
+static int _tryLoadCache2D(Texture2D* tex, const char* tag)
+{
+    CacheFile* cache;
+    int xsize, ysize;
+
+    texture2DGetSize(tex, &xsize, &ysize);
+    cache = cacheFileCreateAccessor("atmo-br", "png", tag, xsize, ysize, 0);
+    if (cacheFileIsReadable(cache))
+    {
+        texture2DLoadFromFile(tex, cacheFileGetPath(cache));
+        cacheFileDeleteAccessor(cache);
+        return 1;
+    }
+    else
+    {
+        cacheFileDeleteAccessor(cache);
+        return 0;
+    }
+}
+
+static void _saveCache2D(Texture2D* tex, const char* tag)
+{
+    CacheFile* cache;
+    int xsize, ysize;
+
+    texture2DGetSize(tex, &xsize, &ysize);
+    cache = cacheFileCreateAccessor("atmo-br", "png", tag, xsize, ysize, 0);
+    if (cacheFileIsWritable(cache))
+    {
+        texture2DSaveToFile(tex, cacheFileGetPath(cache));
+    }
+    cacheFileDeleteAccessor(cache);
+}
+
+static int _tryLoadCache3D(Texture3D* tex, const char* tag)
+{
+    CacheFile* cache;
+    int xsize, ysize, zsize;
+
+    texture3DGetSize(tex, &xsize, &ysize, &zsize);
+    cache = cacheFileCreateAccessor("atmo-br", "png", tag, xsize, ysize, zsize);
+    if (cacheFileIsReadable(cache))
+    {
+        texture3DLoadFromFile(tex, cacheFileGetPath(cache));
+        cacheFileDeleteAccessor(cache);
+        return 1;
+    }
+    else
+    {
+        cacheFileDeleteAccessor(cache);
+        return 0;
+    }
+}
+
+static void _saveCache3D(Texture3D* tex, const char* tag)
+{
+    CacheFile* cache;
+    int xsize, ysize, zsize;
+
+    texture3DGetSize(tex, &xsize, &ysize, &zsize);
+    cache = cacheFileCreateAccessor("atmo-br", "png", tag, xsize, ysize, zsize);
+    if (cacheFileIsWritable(cache))
+    {
+        texture3DSaveToFile(tex, cacheFileGetPath(cache));
+    }
+    cacheFileDeleteAccessor(cache);
+}
+
 /*********************** Public methods ***********************/
 
 void brunetonInit()
 {
-    int layer, x, y, z;
+    int layer, x, y, z, order;
 
     if (_transmittanceTexture == NULL) /* TEMP */
     {
-         /* TODO Deletes */
+        /* TODO Deletes */
 
-         /* computes transmittance texture T (line 1 in algorithm 4.1) */
-        _transmittanceTexture = _precomputeTransmittanceTexture();
+        /* computes transmittance texture T (line 1 in algorithm 4.1) */
+        _transmittanceTexture = texture2DCreate(TRANSMITTANCE_W, TRANSMITTANCE_H);
+        if (!_tryLoadCache2D(_transmittanceTexture, "transmittance"))
+        {
+            _precomputeTransmittanceTexture();
+            _saveCache2D(_transmittanceTexture, "transmittance");
+        }
 
         /* computes irradiance texture deltaE (line 2 in algorithm 4.1) */
-        _irrDeltaETexture = _precomputeIrrDeltaETexture();
+        _irrDeltaETexture = texture2DCreate(SKY_W, SKY_H);
+        if (!_tryLoadCache2D(_irrDeltaETexture, "irradianceDeltaE"))
+        {
+            _precomputeIrrDeltaETexture();
+            _saveCache2D(_irrDeltaETexture, "irradianceDeltaE");
+        }
 
         /* computes single scattering texture deltaS (line 3 in algorithm 4.1)
          * Rayleigh and Mie separated in deltaSR + deltaSM */
         _deltaSRTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
         _deltaSMTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
-        for (layer = 0; layer < RES_R; ++layer)
+        if (!_tryLoadCache3D(_deltaSRTexture, "deltaSR") || !_tryLoadCache3D(_deltaSMTexture, "deltaSM"))
         {
-            printf("%d\n", layer);
-            _setLayer(layer);
-            _inscatter1Prog(_deltaSRTexture, _deltaSMTexture);
+            for (layer = 0; layer < RES_R; ++layer)
+            {
+                printf("%d\n", layer);
+                _setLayer(layer);
+                _inscatter1Prog(_deltaSRTexture, _deltaSMTexture);
+            }
+            _saveCache3D(_deltaSRTexture, "deltaSR");
+            _saveCache3D(_deltaSMTexture, "deltaSM");
         }
 
         /* copies deltaE into irradiance texture E (line 4 in algorithm 4.1) */
@@ -769,22 +846,26 @@ void brunetonInit()
 
         /* copies deltaS into inscatter texture S (line 5 in algorithm 4.1) */
         _inscatterTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
-        for (x = 0; x < RES_MU_S * RES_NU; x++)
+        if (!_tryLoadCache3D(_inscatterTexture, "inscatter"))
         {
-            for (y = 0; y < RES_MU; y++)
+            for (x = 0; x < RES_MU_S * RES_NU; x++)
             {
-                for (z = 0; z < RES_R; z++)
+                for (y = 0; y < RES_MU; y++)
                 {
-                    Color result = texture3DGetPixel(_deltaSRTexture, x, y, z);
-                    Color mie = texture3DGetPixel(_deltaSMTexture, x, y, z);
-                    result.a = mie.r;
-                    texture3DSetPixel(_inscatterTexture, x, y, z, result);
+                    for (z = 0; z < RES_R; z++)
+                    {
+                        Color result = texture3DGetPixel(_deltaSRTexture, x, y, z);
+                        Color mie = texture3DGetPixel(_deltaSMTexture, x, y, z);
+                        result.a = mie.r;
+                        texture3DSetPixel(_inscatterTexture, x, y, z, result);
+                    }
                 }
             }
+            _saveCache3D(_inscatterTexture, "inscatter");
         }
 
         /* loop for each scattering order (line 6 in algorithm 4.1) */
-        for (int order = 2; order <= 4; ++order) {
+        for (order = 2; order <= 4; ++order) {
 
             /* computes deltaJ (line 7 in algorithm 4.1) */
             /*glFramebufferTextureEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, deltaJTexture, 0);
@@ -848,11 +929,6 @@ void brunetonInit()
     }
 
     /* DEBUG */
-    texture2DSaveToFile(_transmittanceTexture, "transmittance.png");
-    texture2DSaveToFile(_irrDeltaETexture, "irrdeltae.png");
-    texture3DSaveToFile(_deltaSRTexture, "deltasr.png");
-    texture3DSaveToFile(_deltaSMTexture, "deltasm.png");
-    texture3DSaveToFile(_inscatterTexture, "inscatter.png");
     exit(1);
 }
 

@@ -10,6 +10,7 @@
 #include <QTranslator>
 #include <QLocale>
 #include <QMessageBox>
+#include <QSplashScreen>
 
 #include "basepreview.h"
 #include "formclouds.h"
@@ -31,11 +32,13 @@
 int main(int argc, char** argv)
 {
     MainWindow* window;
+    QSplashScreen* splash;
     int result;
 
-    paysagesInit();
-
     QApplication app(argc, argv);
+
+    splash = new QSplashScreen(QPixmap("images/logo_256.png"));
+    splash->show();
 
     QTranslator qtTranslator;
     QTranslator myTranslator;
@@ -53,10 +56,17 @@ int main(int argc, char** argv)
         app.installTranslator(&qtTranslator);
     }
 
+    splash->showMessage(app.tr("Preloading environment...\n(may take some time on the first launch)"), Qt::AlignCenter, Qt::white);
+    app.processEvents();
+
+    paysagesInit();
     BasePreview::initDrawers();
 
     window = new MainWindow();
     window->show();
+    splash->finish(window);
+
+    delete splash;
 
     result = app.exec();
 

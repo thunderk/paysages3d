@@ -26,6 +26,8 @@ Texture2D* texture2DCreate(int xsize, int ysize)
 {
     Texture2D* result;
 
+    assert(xsize > 0 && ysize > 0);
+
     result = (Texture2D*)malloc(sizeof(Texture2D));
     result->xsize = xsize;
     result->ysize = ysize;
@@ -38,6 +40,12 @@ void texture2DDelete(Texture2D* tex)
 {
     free(tex->data);
     free(tex);
+}
+
+void texture2DGetSize(Texture2D* tex, int* xsize, int* ysize)
+{
+    *xsize = tex->xsize;
+    *ysize = tex->ysize;
 }
 
 void texture2DSetPixel(Texture2D* tex, int x, int y, Color col)
@@ -89,12 +97,27 @@ void texture2DSaveToFile(Texture2D* tex, const char* filepath)
     systemSavePictureFile(filepath, (PictureCallbackSavePixel)texture2DGetPixel, tex, tex->xsize, tex->ysize);
 }
 
+static void _callbackTex2dLoad(Texture2D* tex, int x, int y, Color col)
+{
+    if (x >= 0 && x < tex->xsize && y >= 0 && y < tex->ysize)
+    {
+        tex->data[y * tex->xsize + x] = col;
+    }
+}
+
+void texture2DLoadFromFile(Texture2D* tex, const char* filepath)
+{
+    systemLoadPictureFile(filepath, NULL, (PictureCallbackLoadPixel)_callbackTex2dLoad, tex);
+}
+
 
 
 
 Texture3D* texture3DCreate(int xsize, int ysize, int zsize)
 {
     Texture3D* result;
+
+    assert(xsize > 0 && ysize > 0 && zsize > 0);
 
     result = (Texture3D*)malloc(sizeof(Texture3D));
     result->xsize = xsize;
@@ -109,6 +132,13 @@ void texture3DDelete(Texture3D* tex)
 {
     free(tex->data);
     free(tex);
+}
+
+void texture3DGetSize(Texture3D* tex, int* xsize, int* ysize, int* zsize)
+{
+    *xsize = tex->xsize;
+    *ysize = tex->ysize;
+    *zsize = tex->zsize;
 }
 
 void texture3DSetPixel(Texture3D* tex, int x, int y, int z, Color col)
@@ -167,13 +197,29 @@ static Color _callbackTex3dSave(Texture3D* tex, int x, int y)
     y = y % tex->ysize;
 
     assert(x >= 0 && x < tex->xsize);
-    assert(y >= 0 && y < tex->xsize);
-    assert(z >= 0 && z < tex->xsize);
-    
+    assert(y >= 0 && y < tex->ysize);
+    assert(z >= 0 && z < tex->zsize);
+
     return tex->data[z * tex->xsize * tex->ysize + y * tex->xsize + x];
 }
 
 void texture3DSaveToFile(Texture3D* tex, const char* filepath)
 {
     systemSavePictureFile(filepath, (PictureCallbackSavePixel)_callbackTex3dSave, tex, tex->xsize, tex->ysize * tex->zsize);
+}
+
+static void _callbackTex3dLoad(Texture3D* tex, int x, int y, Color col)
+{
+    int z = y / tex->ysize;
+    y = y % tex->ysize;
+
+    if (x >= 0 && x < tex->xsize && y >= 0 && y < tex->ysize && z >= 0 && z < tex->zsize)
+    {
+        tex->data[z * tex->xsize * tex->ysize + y * tex->xsize + x] = col;
+    }
+}
+
+void texture3DLoadFromFile(Texture3D* tex, const char* filepath)
+{
+    systemLoadPictureFile(filepath, NULL, (PictureCallbackLoadPixel)_callbackTex3dLoad, tex);
 }

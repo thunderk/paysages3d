@@ -56,6 +56,8 @@ void systemInit()
     _core_count = _getCoreCount();
     ilInit();
     iluInit();
+    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+    ilEnable(IL_ORIGIN_SET);
 }
 
 int systemGetCoreCount()
@@ -117,7 +119,10 @@ int systemLoadPictureFile(const char* filepath, PictureCallbackLoadStarted callb
     {
         width = ilGetInteger(IL_IMAGE_WIDTH);
         height = ilGetInteger(IL_IMAGE_HEIGHT);
-        callback_start(data, width, height);
+        if (callback_start)
+        {
+            callback_start(data, width, height);
+        }
 
         pixels = malloc(sizeof(ILuint) * width * height);
         ilCopyPixels(0, 0, 0, width, height, 1, IL_RGBA, IL_UNSIGNED_BYTE, pixels);
