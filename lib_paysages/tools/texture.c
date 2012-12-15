@@ -89,7 +89,7 @@ Color texture2DGetLinear(Texture2D* tex, double dx, double dy)
 Color texture2DGetCubic(Texture2D* tex, double dx, double dy)
 {
     /* TODO */
-    return texture2DGetNearest(tex, dx, dy);
+    return texture2DGetLinear(tex, dx, dy);
 }
 
 void texture2DSaveToFile(Texture2D* tex, const char* filepath)
@@ -188,7 +188,7 @@ Color texture3DGetLinear(Texture3D* tex, double dx, double dy, double dz)
 Color texture3DGetCubic(Texture3D* tex, double dx, double dy, double dz)
 {
     /* TODO */
-    return texture3DGetNearest(tex, dx, dy, dz);
+    return texture3DGetLinear(tex, dx, dy, dz);
 }
 
 static Color _callbackTex3dSave(Texture3D* tex, int x, int y)

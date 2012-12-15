@@ -18,6 +18,8 @@ typedef struct
     LightDefinition lights[MAX_SKYDOME_LIGHTS];
 } AtmosphereRendererCache;
 
+static int _inited = 0;
+
 /******************** Definition ********************/
 static void _validateDefinition(AtmosphereDefinition* definition)
 {
@@ -28,7 +30,12 @@ static AtmosphereDefinition* _createDefinition()
 {
     AtmosphereDefinition* result;
 
-    //brunetonInit(); /* DEBUG */
+    /* TODO Find a better place for this */
+    if (!_inited)
+    {
+        _inited = 1;
+        brunetonInit();
+    }
 
     result = malloc(sizeof(AtmosphereDefinition));
     result->model = ATMOSPHERE_MODEL_PREETHAM;
