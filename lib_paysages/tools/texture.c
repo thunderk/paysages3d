@@ -92,6 +92,33 @@ Color texture2DGetCubic(Texture2D* tex, double dx, double dy)
     return texture2DGetLinear(tex, dx, dy);
 }
 
+void texture2DFill(Texture2D* tex, Color col)
+{
+    int i, n;
+    n = tex->xsize * tex->ysize;
+    for (i = 0; i < n; i++)
+    {
+        tex->data[i] = col;
+    }
+}
+
+void texture2DAdd(Texture2D* source, Texture2D* destination)
+{
+    int i, n;
+
+    assert(source->xsize == destination->xsize);
+    assert(source->ysize == destination->ysize);
+
+    n = source->xsize * source->ysize;
+    for (i = 0; i < n; i++)
+    {
+        destination->data[i].r += source->data[i].r;
+        destination->data[i].g += source->data[i].g;
+        destination->data[i].b += source->data[i].b;
+        /* destination->data[i].a += source->data[i].a; */
+    }
+}
+
 void texture2DSaveToFile(Texture2D* tex, const char* filepath)
 {
     systemSavePictureFile(filepath, (PictureCallbackSavePixel)texture2DGetPixel, tex, tex->xsize, tex->ysize);
@@ -189,6 +216,34 @@ Color texture3DGetCubic(Texture3D* tex, double dx, double dy, double dz)
 {
     /* TODO */
     return texture3DGetLinear(tex, dx, dy, dz);
+}
+
+void texture3DFill(Texture3D* tex, Color col)
+{
+    int i, n;
+    n = tex->xsize * tex->ysize * tex->zsize;
+    for (i = 0; i < n; i++)
+    {
+        tex->data[i] = col;
+    }
+}
+
+void texture3DAdd(Texture3D* source, Texture3D* destination)
+{
+    int i, n;
+
+    assert(source->xsize == destination->xsize);
+    assert(source->ysize == destination->ysize);
+    assert(source->zsize == destination->zsize);
+
+    n = source->xsize * source->ysize * source->zsize;
+    for (i = 0; i < n; i++)
+    {
+        destination->data[i].r += source->data[i].r;
+        destination->data[i].g += source->data[i].g;
+        destination->data[i].b += source->data[i].b;
+        /* destination->data[i].a += source->data[i].a; */
+    }
 }
 
 static Color _callbackTex3dSave(Texture3D* tex, int x, int y)
