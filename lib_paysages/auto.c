@@ -40,7 +40,6 @@ void autoSetDaytimeFraction(double daytime)
 
 void autoGenRealisticLandscape(int seed)
 {
-    TerrainDefinition terrain;
     WaterDefinition water;
     CloudsDefinition clouds;
     TexturesDefinition textures;

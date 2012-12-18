@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "cache.h"
 
 #include <stdio.h>

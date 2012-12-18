@@ -9,8 +9,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../system.h"
+#include "../tools.h"
 #include "../tools/cache.h"
 #include "../tools/texture.h"
+#include "../tools/parallel.h"
 
 /*********************** Constants ***********************/
 
@@ -77,12 +79,6 @@ static const float mieG = 0.76;*/
 static const vec3 betaMSca = vec3(3e-3);
 static const vec3 betaMEx = betaMSca / 0.9;
 static const float mieG = 0.65;*/
-
-/*********************** Layer variables ***********************/
-
-static double _r;
-static Color _dhdH;
-static int _layer;
 
 /*********************** Shader helpers ***********************/
 
@@ -441,7 +437,7 @@ static void _precomputeIrrDeltaETexture()
     }
 }
 
-static void _setLayer(int layer)
+static void _getLayerParams(int layer, double* _r, Color* _dhdH)
 {
     double r = layer / (RES_R - 1.0);
     r = r * r;
@@ -451,12 +447,11 @@ static void _setLayer(int layer)
     double dminp = r - Rg;
     double dmaxp = sqrt(r * r - Rg * Rg);
 
-    _r = r;
-    _dhdH.r = dmin;
-    _dhdH.g = dmax;
-    _dhdH.b = dminp;
-    _dhdH.a = dmaxp;
-    _layer = layer;
+    *_r = r;
+    _dhdH->r = dmin;
+    _dhdH->g = dmax;
+    _dhdH->b = dminp;
+    _dhdH->a = dmaxp;
 }
 
 /*********************** inscatter1.glsl ***********************/
@@ -519,8 +514,21 @@ static void _inscatter1(double r, double mu, double muS, double nu, Color* ray, 
     mie->b *= betaMSca.z;
 }
 
-static void _inscatter1Prog(Texture3D* tex_rayleigh, Texture3D* tex_mie)
+typedef struct
 {
+    Texture3D* ray;
+    Texture3D* mie;
+} Inscatter1Params;
+
+static int _inscatter1Worker(ParallelWork* work, int layer, void* data)
+{
+    Inscatter1Params* params = (Inscatter1Params*)data;
+    UNUSED(work);
+
+    double r;
+    Color dhdH;
+    _getLayerParams(layer, &r, &dhdH);
+
     int x, y;
     for (x = 0; x < RES_MU_S * RES_NU; x++)
     {
@@ -532,14 +540,15 @@ static void _inscatter1Prog(Texture3D* tex_rayleigh, Texture3D* tex_mie)
             Color ray = COLOR_BLACK;
             Color mie = COLOR_BLACK;
             double mu, muS, nu;
-            _getMuMuSNu((double)x, (double)y, _r, _dhdH, &mu, &muS, &nu);
-            _inscatter1(_r, mu, muS, nu, &ray, &mie);
+            _getMuMuSNu((double)x, (double)y, r, dhdH, &mu, &muS, &nu);
+            _inscatter1(r, mu, muS, nu, &ray, &mie);
             /* store separately Rayleigh and Mie contributions, WITHOUT the phase function factor
              * (cf "Angular precision") */
-            texture3DSetPixel(tex_rayleigh, x, y, _layer, ray);
-            texture3DSetPixel(tex_mie, x, y, _layer, mie);
+            texture3DSetPixel(params->ray, x, y, layer, ray);
+            texture3DSetPixel(params->mie, x, y, layer, mie);
         }
     }
+    return 1;
 }
 
 /*********************** inscatterS.glsl ***********************/
@@ -642,8 +651,21 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first)
     return raymie;
 }
 
-static void _jProg(Texture3D* result, int first)
+typedef struct
 {
+    Texture3D* result;
+    int first;
+} jParams;
+
+static int _jWorker(ParallelWork* work, int layer, void* data)
+{
+    jParams* params = (jParams*)data;
+    UNUSED(work);
+
+    double r;
+    Color dhdH;
+    _getLayerParams(layer, &r, &dhdH);
+
     int x, y;
     for (x = 0; x < RES_MU_S * RES_NU; x++)
     {
@@ -651,11 +673,12 @@ static void _jProg(Texture3D* result, int first)
         {
             Color raymie;
             double mu, muS, nu;
-            _getMuMuSNu((double)x, (double)y, _r, _dhdH, &mu, &muS, &nu);
-            raymie = _inscatterS(_r, mu, muS, nu, first);
-            texture3DSetPixel(result, x, y, _layer, raymie);
+            _getMuMuSNu((double)x, (double)y, r, dhdH, &mu, &muS, &nu);
+            raymie = _inscatterS(r, mu, muS, nu, params->first);
+            texture3DSetPixel(params->result, x, y, layer, raymie);
         }
     }
+    return 1;
 }
 
 /*********************** irradianceN.glsl ***********************/
@@ -747,40 +770,61 @@ static Color _inscatterN(double r, double mu, double muS, double nu)
     return raymie;
 }
 
-static void _inscatterNProg(Texture3D* result)
+static int _inscatterNWorker(ParallelWork* work, int layer, void* data)
 {
+    UNUSED(work);
+
+    double r;
+    Color dhdH;
+    _getLayerParams(layer, &r, &dhdH);
+
     int x, y;
     for (x = 0; x < RES_MU_S * RES_NU; x++)
     {
         for (y = 0; y < RES_MU; y++)
         {
             double mu, muS, nu;
-            _getMuMuSNu((double)x, (double)y, _r, _dhdH, &mu, &muS, &nu);
-            texture3DSetPixel(result, x, y, _layer, _inscatterN(_r, mu, muS, nu));
+            _getMuMuSNu((double)x, (double)y, r, dhdH, &mu, &muS, &nu);
+            texture3DSetPixel((Texture3D*)data, x, y, layer, _inscatterN(r, mu, muS, nu));
         }
     }
+    return 1;
 }
 
 /*********************** copyInscatterN.glsl ***********************/
 
-static void _copyInscatterNProg(Texture3D* source, Texture3D* destination)
+typedef struct
 {
+    Texture3D* source;
+    Texture3D* destination;
+} CopyInscatterNParams;
+
+static int _copyInscatterNWorker(ParallelWork* work, int layer, void* data)
+{
+    CopyInscatterNParams* params = (CopyInscatterNParams*)data;
+    UNUSED(work);
+
+    double r;
+    Color dhdH;
+    _getLayerParams(layer, &r, &dhdH);
+
     int x, y;
     for (x = 0; x < RES_MU_S * RES_NU; x++)
     {
         for (y = 0; y < RES_MU; y++)
         {
             double mu, muS, nu;
-            _getMuMuSNu((double)x, (double)y, _r, _dhdH, &mu, &muS, &nu);
-            Color col1 = texture3DGetLinear(source, x / (double)(RES_MU_S * RES_NU), y / (double)(RES_MU), _layer + 0.5 / (double)(RES_R));
-            Color col2 = texture3DGetPixel(destination, x, y, _layer);
+            _getMuMuSNu((double)x, (double)y, r, dhdH, &mu, &muS, &nu);
+            Color col1 = texture3DGetLinear(params->source, x / (double)(RES_MU_S * RES_NU), y / (double)(RES_MU), layer + 0.5 / (double)(RES_R));
+            Color col2 = texture3DGetPixel(params->destination, x, y, layer);
             col2.r += col1.r * 0.1 / _phaseFunctionR(nu);
             col2.g += col1.g * 0.1 / _phaseFunctionR(nu);
             col2.b += col1.b * 0.1 / _phaseFunctionR(nu);
             col2.a = 1.0;
-            texture3DSetPixel(destination, x, y, _layer, col2);
+            texture3DSetPixel(params->destination, x, y, layer, col2);
         }
     }
+    return 1;
 }
 
 /*********************** Final getters ***********************/
@@ -1019,10 +1063,10 @@ static void _saveCache3D(Texture3D* tex, const char* tag, int order)
 }
 
 /*********************** Public methods ***********************/
-
 void brunetonInit()
 {
-    int layer, x, y, z, order;
+    int x, y, z, order;
+    ParallelWork* work;
 
     /* TODO Deletes */
 
@@ -1048,12 +1092,11 @@ void brunetonInit()
     _deltaSMTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
     if (!_tryLoadCache3D(_deltaSRTexture, "deltaSR", 0) || !_tryLoadCache3D(_deltaSMTexture, "deltaSM", 0))
     {
-        for (layer = 0; layer < RES_R; ++layer)
-        {
-            printf("deltaS %d\n", layer);
-            _setLayer(layer);
-            _inscatter1Prog(_deltaSRTexture, _deltaSMTexture);
-        }
+        Inscatter1Params params = {_deltaSRTexture, _deltaSMTexture};
+        work = parallelWorkCreate(_inscatter1Worker, RES_R, &params);
+        parallelWorkPerform(work, -1);
+        parallelWorkDelete(work);
+
         _saveCache3D(_deltaSRTexture, "deltaSR", 0);
         _saveCache3D(_deltaSMTexture, "deltaSM", 0);
     }
@@ -1090,12 +1133,11 @@ void brunetonInit()
         _deltaJTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
         if (!_tryLoadCache3D(_deltaJTexture, "deltaJ", order))
         {
-            for (layer = 0; layer < RES_R; ++layer)
-            {
-                printf("deltaJ %d %d\n", order, layer);
-                _setLayer(layer);
-                _jProg(_deltaJTexture, order == 2);
-            }
+            jParams params = {_deltaJTexture, order == 2};
+            work = parallelWorkCreate(_jWorker, RES_R, &params);
+            parallelWorkPerform(work, -1);
+            parallelWorkDelete(work);
+
             _saveCache3D(_deltaJTexture, "deltaJ", order);
         }
 
@@ -1110,12 +1152,10 @@ void brunetonInit()
         /* computes deltaS (line 9 in algorithm 4.1) */
         if (!_tryLoadCache3D(_deltaSRTexture, "deltaSR", order))
         {
-            for (layer = 0; layer < RES_R; ++layer)
-            {
-                printf("deltaS %d %d\n", order, layer);
-                _setLayer(layer);
-                _inscatterNProg(_deltaSRTexture);
-            }
+            work = parallelWorkCreate(_inscatterNWorker, RES_R, _deltaSRTexture);
+            parallelWorkPerform(work, -1);
+            parallelWorkDelete(work);
+
             _saveCache3D(_deltaSRTexture, "deltaSR", order);
         }
 
@@ -1129,11 +1169,11 @@ void brunetonInit()
         /* adds deltaS into inscatter texture S (line 11 in algorithm 4.1) */
         if (!_tryLoadCache3D(_inscatterTexture, "inscatter", order))
         {
-            for (layer = 0; layer < RES_R; ++layer)
-            {
-                _setLayer(layer);
-                _copyInscatterNProg(_deltaSRTexture, _inscatterTexture);
-            }
+            CopyInscatterNParams params = {_deltaSRTexture, _inscatterTexture};
+            work = parallelWorkCreate(_copyInscatterNWorker, RES_R, &params);
+            parallelWorkPerform(work, -1);
+            parallelWorkDelete(work);
+
             _saveCache3D(_inscatterTexture, "inscatter", order);
         }
     }
