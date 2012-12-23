@@ -21,6 +21,18 @@ struct Texture3D
 
 
 
+static inline Color _lerp(Color c1, Color c2, double d)
+{
+    Color result;
+
+    result.r = c1.r * (1.0 - d) + c2.r * d;
+    result.g = c1.g * (1.0 - d) + c2.g * d;
+    result.b = c1.b * (1.0 - d) + c2.b * d;
+    result.a = c1.a * (1.0 - d) + c2.a * d;
+
+    return result;
+}
+
 
 Texture2D* texture2DCreate(int xsize, int ysize)
 {
@@ -82,8 +94,34 @@ Color texture2DGetNearest(Texture2D* tex, double dx, double dy)
 
 Color texture2DGetLinear(Texture2D* tex, double dx, double dy)
 {
-    /* TODO */
-    return texture2DGetNearest(tex, dx, dy);
+    if (dx < 0.0) dx = 0.0;
+    if (dx > 1.0) dx = 1.0;
+    if (dy < 0.0) dy = 0.0;
+    if (dy > 1.0) dy = 1.0;
+
+    dx *= (double)(tex->xsize - 1);
+    dy *= (double)(tex->ysize - 1);
+
+    int ix = (int)floor(dx);
+    if (ix == tex->xsize - 1)
+    {
+        ix--;
+    }
+    int iy = (int)floor(dy);
+    if (iy == tex->ysize - 1)
+    {
+        iy--;
+    }
+
+    dx -= (double)ix;
+    dy -= (double)iy;
+
+    Color* data = tex->data + iy * tex->xsize + ix;
+
+    Color c1 = _lerp(*data, *(data + 1), dx);
+    Color c2 = _lerp(*(data + tex->xsize), *(data + tex->xsize + 1), dx);
+
+    return _lerp(c1, c2, dy);
 }
 
 Color texture2DGetCubic(Texture2D* tex, double dx, double dy)
@@ -208,8 +246,49 @@ Color texture3DGetNearest(Texture3D* tex, double dx, double dy, double dz)
 
 Color texture3DGetLinear(Texture3D* tex, double dx, double dy, double dz)
 {
-    /* TODO */
-    return texture3DGetNearest(tex, dx, dy, dz);
+    if (dx < 0.0) dx = 0.0;
+    if (dx > 1.0) dx = 1.0;
+    if (dy < 0.0) dy = 0.0;
+    if (dy > 1.0) dy = 1.0;
+    if (dz < 0.0) dz = 0.0;
+    if (dz > 1.0) dz = 1.0;
+
+    dx *= (double)(tex->xsize - 1);
+    dy *= (double)(tex->ysize - 1);
+    dz *= (double)(tex->zsize - 1);
+
+    int ix = (int)floor(dx);
+    if (ix == tex->xsize - 1)
+    {
+        ix--;
+    }
+    int iy = (int)floor(dy);
+    if (iy == tex->ysize - 1)
+    {
+        iy--;
+    }
+    int iz = (int)floor(dz);
+    if (iz == tex->zsize - 1)
+    {
+        iz--;
+    }
+
+    dx -= (double)ix;
+    dy -= (double)iy;
+    dz -= (double)iz;
+
+    Color* data = tex->data + iz * tex->xsize * tex->ysize + iy * tex->xsize + ix;
+
+    Color cx1 = _lerp(*data, *(data + 1), dx);
+    Color cx2 = _lerp(*(data + tex->xsize), *(data + tex->xsize + 1), dx);
+    Color cy1 = _lerp(cx1, cx2, dy);
+
+    data += tex->xsize * tex->ysize;
+    cx1 = _lerp(*(data), *(data + 1), dx);
+    cx2 = _lerp(*(data + tex->xsize), *(data + tex->xsize + 1), dx);
+    Color cy2 = _lerp(cx1, cx2, dy);
+
+    return _lerp(cy1, cy2, dz);
 }
 
 Color texture3DGetCubic(Texture3D* tex, double dx, double dy, double dz)

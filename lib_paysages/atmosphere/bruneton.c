@@ -82,7 +82,7 @@ static const float mieG = 0.65;*/
 
 /*********************** Shader helpers ***********************/
 
-#define step(_a_,_b_) ((_a_) < (_b_) ? 0 : 1)
+#define step(_a_,_b_) ((_b_) < (_a_) ? 0.0 : 1.0)
 #define sign(_a_) ((_a_) < 0.0 ? -1.0 : ((_a_) > 0.0 ? 1.0 : 0.0))
 #define mix(_x_,_y_,_a_) ((_x_) * (1.0 - (_a_)) + (_y_) * (_a_))
 static inline double min(double a, double b)
@@ -158,7 +158,7 @@ static inline Color _texture3D(Texture3D* tex, Vector3 p)
 
 static Color _texture4D(Texture3D* tex3d, double r, double mu, double muS, double nu)
 {
-    if (r < Rg + 0.001) r = Rg + 0.001;
+    if (r < Rg + 0.00000001) r = Rg + 0.00000001;
     double H = sqrt(Rt * Rt - Rg * Rg);
     double rho = sqrt(r * r - Rg * Rg);
     double rmu = r * mu;
@@ -170,7 +170,7 @@ static Color _texture4D(Texture3D* tex3d, double r, double mu, double muS, doubl
     double lerp = (nu + 1.0) / 2.0 * ((double)(RES_NU) - 1.0);
     double uNu = floor(lerp);
     lerp = lerp - uNu;
-    return vec4mix(_texture3D(tex3d, vec3((uNu + uMuS + 1.0) / (double)(RES_NU), uMu, uR)), _texture3D(tex3d, vec3((uNu + uMuS) / (double)(RES_NU), uMu, uR)), lerp);
+    return vec4mix(_texture3D(tex3d, vec3((uNu + uMuS) / (double)(RES_NU), uMu, uR)), _texture3D(tex3d, vec3((uNu + uMuS + 1.0) / (double)(RES_NU), uMu, uR)), lerp);
 }
 
 /*********************** Physics functions ***********************/
@@ -220,7 +220,7 @@ static double _opticalDepth(double H, double r, double mu, double d)
 
 static inline void _getTransmittanceUV(double r, double mu, double* u, double* v)
 {
-    if (r < Rg + 0.001) r = Rg + 0.001;
+    if (r < Rg + 0.00000001) r = Rg + 0.00000001;
     double dr = (r - Rg) / (Rt - Rg);
     *v = sqrt(dr);
     *u = atan((mu + 0.15) / (1.0 + 0.15) * tan(1.5)) / 1.5;
@@ -316,15 +316,6 @@ static Vector3 _analyticTransmittance(double r, double mu, double d)
     result.z = exp(-betaR.b * opt) - betaMEx.z * opt;
 
     return result;
-}
-
-static inline Color _applyInscatter(Color inscatter, Color attmod, Color samp)
-{
-    inscatter.r = inscatter.r - attmod.r * samp.r;
-    inscatter.g = inscatter.g - attmod.g * samp.g;
-    inscatter.b = inscatter.b - attmod.b * samp.b;
-    inscatter.a = inscatter.a - attmod.a * samp.a;
-    return vec4max(inscatter, 0.0);
 }
 
 /* transmittance(=transparency) of atmosphere for infinite ray (r,mu)
@@ -829,6 +820,15 @@ static int _copyInscatterNWorker(ParallelWork* work, int layer, void* data)
 
 /*********************** Final getters ***********************/
 
+static inline Color _applyInscatter(Color inscatter, Color attmod, Color samp)
+{
+    inscatter.r = inscatter.r - attmod.r * samp.r;
+    inscatter.g = inscatter.g - attmod.g * samp.g;
+    inscatter.b = inscatter.b - attmod.b * samp.b;
+    inscatter.a = inscatter.a - attmod.a * samp.a;
+    return vec4max(inscatter, 0.0);
+}
+
 /* inscattered light along ray x+tv, when sun in direction s (=S[L]-T(x,x0)S[L]|x0) */
 static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, double* _r, double* _mu, Vector3* attenuation)
 {
@@ -903,7 +903,7 @@ static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, d
         result.r = inscatter.r * phaseR + mie.r * phaseM;
         result.g = inscatter.g * phaseR + mie.g * phaseM;
         result.b = inscatter.b * phaseR + mie.b * phaseM;
-        result.a = inscatter.a * phaseR + mie.a * phaseM;
+        result.a = 1.0;
         _fixVec4Min(&result, 0.0);
     }
     else
@@ -918,7 +918,6 @@ static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, d
     result.g *= ISun;
     result.b *= ISun;
     result.a = 1.0;
-    /*printf("%f %f %f\n", result.r, result.g, result.b);*/
     return result;
 }
 
@@ -987,7 +986,7 @@ static Color _sunColor(Vector3 x, double t, Vector3 v, Vector3 s, double r, doub
         transmittance.r *= isun;
         transmittance.g *= isun;
         transmittance.b *= isun;
-        transmittance.a *= isun;
+        transmittance.a = 1.0;
         return transmittance; /* Eq (9) */
     }
 }
@@ -1179,11 +1178,22 @@ void brunetonInit()
     }
 }
 
+static inline void _fixVector(Vector3* v)
+{
+    double temp = v->y;
+    /*v->x = -v->x;*/
+    v->y = v->z;
+    v->z = temp;
+}
+
 Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position)
 {
     Vector3 x = {0.0, Rg + eye.y, 0.0};
+    _fixVector(&x);
     Vector3 v = v3Normalize(direction);
+    _fixVector(&v);
     Vector3 s = v3Normalize(v3Sub(sun_position, eye));
+    _fixVector(&s);
 
     double r = v3Norm(x);
     double mu = v3Dot(x, v) / r;
@@ -1214,6 +1224,5 @@ Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
     /*Color groundColor = _groundColor(x, t, v, s, r, mu, attenuation); //R[L0]+R[L*]*/
     Color groundColor = COLOR_BLACK;
     Color sunColor = _sunColor(x, t, v, s, r, mu); //L0
-    return inscatterColor;
     return _hdr(sunColor, groundColor, inscatterColor); // Eq (16)
 }

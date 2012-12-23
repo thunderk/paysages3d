@@ -140,14 +140,16 @@ static Color _getSkyColor(Renderer* renderer, Vector3 direction)
 {
     AtmosphereDefinition* definition;
     double dist;
-    Vector3 sun_position;
+    Vector3 sun_direction, sun_position;
     Color sky_color, sun_color;
 
     definition = renderer->atmosphere->definition;
 
-    sun_position = renderer->atmosphere->getSunDirection(renderer);
+    sun_direction = renderer->atmosphere->getSunDirection(renderer);
     direction = v3Normalize(direction);
-    dist = v3Norm(v3Sub(direction, sun_position));
+    dist = v3Norm(v3Sub(direction, sun_direction));
+
+    sun_position = v3Scale(sun_direction, 149597870.0);
 
     /* Get base scattering*/
     switch (definition->model)
