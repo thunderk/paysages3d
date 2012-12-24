@@ -15,9 +15,12 @@ static DialogRender* _current_dialog;
 
 static void _renderStart(int width, int height, Color background)
 {
+    _current_dialog->pixbuf_lock->lock();
     delete _current_dialog->pixbuf;
     _current_dialog->pixbuf = new QImage(width, height, QImage::Format_ARGB32);
     _current_dialog->pixbuf->fill(colorToQColor(background).rgb());
+    _current_dialog->pixbuf_lock->unlock();
+
     _current_dialog->tellRenderSize(width, height);
 }
 
@@ -61,18 +64,21 @@ public:
     void paintEvent(QPaintEvent*)
     {
         QPainter painter(this);
+        _current_dialog->pixbuf_lock->lock();
         painter.drawImage(0, 0, *_current_dialog->pixbuf);
+        _current_dialog->pixbuf_lock->unlock();
     }
 };
 
 DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint)
 {
+    pixbuf_lock = new QMutex();
     pixbuf = new QImage(1, 1, QImage::Format_ARGB32);
     _current_dialog = this;
     _render_thread = NULL;
     _renderer = renderer;
-    
+
     setModal(true);
     setWindowTitle(tr("Paysages 3D - Render"));
     setLayout(new QVBoxLayout());
@@ -82,21 +88,21 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     area = new RenderArea(_scroll);
     _scroll->setWidget(area);
     layout()->addWidget(_scroll);
-    
+
     _info = new QWidget(this);
     _info->setLayout(new QHBoxLayout());
     layout()->addWidget(_info);
 
     _timer = new QLabel(QString("0:00.00"), _info);
     _info->layout()->addWidget(_timer);
-    
+
     _progress = new QProgressBar(_info);
     _progress->setMaximumHeight(12);
     _progress->setMinimum(0);
     _progress->setMaximum(1000);
     _progress->setValue(0);
     _info->layout()->addWidget(_progress);
-    
+
     connect(this, SIGNAL(renderSizeChanged(int, int)), this, SLOT(applyRenderSize(int, int)));
     connect(this, SIGNAL(progressChanged(double)), this, SLOT(applyProgress(double)));
 }
@@ -111,6 +117,7 @@ DialogRender::~DialogRender()
         delete _render_thread;
     }
     delete pixbuf;
+    delete pixbuf_lock;
 }
 
 void DialogRender::tellRenderSize(int width, int height)
@@ -126,7 +133,7 @@ void DialogRender::tellProgressChange(double value)
 void DialogRender::startRender(RenderParams params)
 {
     _started = time(NULL);
-    
+
     //applyRenderSize(params.width, params.height);
     rendererSetPreviewCallbacks(_renderer, _renderStart, _renderDraw, _renderUpdate);
 

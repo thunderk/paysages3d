@@ -3,10 +3,10 @@
 BaseExplorerChunk::BaseExplorerChunk(Renderer* renderer)
 {
     _renderer = renderer;
-    
+
     priority = 0.0;
     _reset_needed = false;
-    
+
     _texture = new QImage(1, 1, QImage::Format_ARGB32);
     _texture_id = 0;
     _texture_changed = false;
@@ -24,7 +24,7 @@ BaseExplorerChunk::~BaseExplorerChunk()
 bool BaseExplorerChunk::maintain()
 {
     bool subchanged;
-    
+
     _lock_data.lock();
     if (_reset_needed)
     {
@@ -33,9 +33,9 @@ bool BaseExplorerChunk::maintain()
         onResetEvent();
     }
     _lock_data.unlock();
-    
+
     subchanged = onMaintainEvent();
-    
+
     // Improve texture resolution
     if (_texture_current_size < _texture_max_size)
     {
@@ -60,7 +60,7 @@ bool BaseExplorerChunk::maintain()
         _texture_current_size = new_texture_size;
         _texture_changed = true;
         _lock_data.unlock();
-        
+
         return true;
     }
     else
@@ -108,7 +108,7 @@ void BaseExplorerChunk::render(QGLWidget* widget)
         glBindTexture(GL_TEXTURE_2D, _texture_id);
     }
     _lock_data.unlock();
-    
+
     // Delegate poly rendering to subclass
     onRenderEvent(widget);
 }
@@ -123,7 +123,7 @@ void BaseExplorerChunk::setMaxTextureSize(int size)
     _texture_max_size = size;
 }
 
-void BaseExplorerChunk::onCameraEvent(CameraDefinition* camera)
+void BaseExplorerChunk::onCameraEvent(CameraDefinition*)
 {
 }
 
@@ -136,16 +136,16 @@ bool BaseExplorerChunk::onMaintainEvent()
     return false;
 }
 
-void BaseExplorerChunk::onRenderEvent(QGLWidget* widget)
+void BaseExplorerChunk::onRenderEvent(QGLWidget*)
 {
 }
 
-double BaseExplorerChunk::getDisplayedSizeHint(CameraDefinition* camera)
+double BaseExplorerChunk::getDisplayedSizeHint(CameraDefinition*)
 {
     return 0.0;
 }
 
-Color BaseExplorerChunk::getTextureColor(double x, double y)
+Color BaseExplorerChunk::getTextureColor(double, double)
 {
     return COLOR_TRANSPARENT;
 }

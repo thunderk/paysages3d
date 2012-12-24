@@ -21,18 +21,18 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
     QWidget* form;
     QGridLayout* form_layout;
     QLabel* label;
-    
+
     _base = gradation;
     _current = colorGradationCreate();
     colorGradationCopy(_base, _current);
 
     setLayout(new QVBoxLayout());
-    
+
     form = new QWidget(this);
     form_layout = new QGridLayout();
     form->setLayout(form_layout);
     layout()->addWidget(form);
-    
+
     label = new QLabel(tr("This is the curve editor for color components.\nClick on a component preview below to edit it.\nClick on points and drag them to move them.\nDouble click to add a new point.\nRight click on a point to delete it."), form);
     label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     label->setMinimumWidth(150);
@@ -94,11 +94,11 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
     _preview_final->setMaximumHeight(60);
     _preview_final->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     form_layout->addWidget(_preview_final, 4, 0);
-    
+
     buttons = new QWidget(this);
     layout()->addWidget(buttons);
     buttons->setLayout(new QHBoxLayout());
-    
+
     _button_accept = new QPushButton(tr("Validate"), buttons);
     buttons->layout()->addWidget(_button_accept);
     QObject::connect(_button_accept, SIGNAL(clicked()), this, SLOT(accept()));
@@ -137,7 +137,7 @@ bool DialogColorGradation::getGradation(QWidget* parent, ColorGradation* gradati
     return (result != 0) ? true : false;
 }
 
-void DialogColorGradation::closeEvent(QCloseEvent* e)
+void DialogColorGradation::closeEvent(QCloseEvent*)
 {
     reject();
 }
@@ -182,10 +182,10 @@ void DialogColorGradation::selectBlue()
 void DialogColorGradation::updateColors()
 {
     Curve* curve;
-    
+
     curve = curveCreate();
     _curve_editor->getCurve(curve);
-    
+
     switch (_selected)
     {
     case 0:
@@ -209,7 +209,7 @@ void DialogColorGradation::updateColors()
         ;
     }
     _preview_final->update();
-    
+
     curveDelete(curve);
 }
 

@@ -7,6 +7,7 @@
 #include <QProgressBar>
 #include <QScrollArea>
 #include <QLabel>
+#include <QMutex>
 #include "../lib_paysages/renderer.h"
 
 class DialogRender : public QDialog
@@ -22,12 +23,13 @@ public:
     void loadLastRender();
 
     QImage* pixbuf;
+    QMutex* pixbuf_lock;
     QWidget* area;
-    
+
 private slots:
     void applyRenderSize(int width, int height);
     void applyProgress(double value);
-    
+
 signals:
     void renderSizeChanged(int width, int height);
     void progressChanged(double value);

@@ -91,7 +91,7 @@ private:
         lightingGetStatus((LightingDefinition*)renderer->customData[2], renderer, location, status);
     }
 
-    static Color _applyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
+    static Color _applyAerialPerspective(Renderer*, Vector3, Color base)
     {
         return base;
     }
