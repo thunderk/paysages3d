@@ -10,6 +10,7 @@ extern "C" {
 #endif
 
 #include "../color.h"
+#include "../pack.h"
 
 typedef struct Texture2D Texture2D;
 typedef struct Texture3D Texture3D;
@@ -24,6 +25,8 @@ Color texture2DGetLinear(Texture2D* tex, double dx, double dy);
 Color texture2DGetCubic(Texture2D* tex, double dx, double dy);
 void texture2DFill(Texture2D* tex, Color col);
 void texture2DAdd(Texture2D* source, Texture2D* destination);
+void texture2DSave(PackStream* stream, Texture2D* tex);
+void texture2DLoad(PackStream* stream, Texture2D* tex);
 void texture2DSaveToFile(Texture2D* tex, const char* filepath);
 void texture2DLoadFromFile(Texture2D* tex, const char* filepath);
 
@@ -37,6 +40,8 @@ Color texture3DGetLinear(Texture3D* tex, double dx, double dy, double dz);
 Color texture3DGetCubic(Texture3D* tex, double dx, double dy, double dz);
 void texture3DFill(Texture3D* tex, Color col);
 void texture3DAdd(Texture3D* source, Texture3D* destination);
+void texture3DSave(PackStream* stream, Texture3D* tex);
+void texture3DLoad(PackStream* stream, Texture3D* tex);
 void texture3DSaveToFile(Texture3D* tex, const char* filepath);
 void texture3DLoadFromFile(Texture3D* tex, const char* filepath);
 

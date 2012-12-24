@@ -5,6 +5,7 @@
 
 void brunetonInit();
 Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position);
+Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base);
 
 Color preethamGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position);
 Color preethamApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base);

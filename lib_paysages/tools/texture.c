@@ -157,6 +157,31 @@ void texture2DAdd(Texture2D* source, Texture2D* destination)
     }
 }
 
+void texture2DSave(PackStream* stream, Texture2D* tex)
+{
+    int i, n;
+    packWriteInt(stream, &tex->xsize);
+    packWriteInt(stream, &tex->ysize);
+    n = tex->xsize * tex->ysize;
+    for (i = 0; i < n; i++)
+    {
+        colorSave(stream, tex->data + i);
+    }
+}
+
+void texture2DLoad(PackStream* stream, Texture2D* tex)
+{
+    int i, n;
+    packReadInt(stream, &tex->xsize);
+    packReadInt(stream, &tex->ysize);
+    n = tex->xsize * tex->ysize;
+    tex->data = realloc(tex->data, sizeof(Color) * n);
+    for (i = 0; i < n; i++)
+    {
+        colorLoad(stream, tex->data + i);
+    }
+}
+
 void texture2DSaveToFile(Texture2D* tex, const char* filepath)
 {
     systemSavePictureFile(filepath, (PictureCallbackSavePixel)texture2DGetPixel, tex, tex->xsize, tex->ysize);
@@ -322,6 +347,33 @@ void texture3DAdd(Texture3D* source, Texture3D* destination)
         destination->data[i].g += source->data[i].g;
         destination->data[i].b += source->data[i].b;
         /* destination->data[i].a += source->data[i].a; */
+    }
+}
+
+void texture3DSave(PackStream* stream, Texture3D* tex)
+{
+    int i, n;
+    packWriteInt(stream, &tex->xsize);
+    packWriteInt(stream, &tex->ysize);
+    packWriteInt(stream, &tex->zsize);
+    n = tex->xsize * tex->ysize * tex->zsize;
+    for (i = 0; i < n; i++)
+    {
+        colorSave(stream, tex->data + i);
+    }
+}
+
+void texture3DLoad(PackStream* stream, Texture3D* tex)
+{
+    int i, n;
+    packReadInt(stream, &tex->xsize);
+    packReadInt(stream, &tex->ysize);
+    packReadInt(stream, &tex->zsize);
+    n = tex->xsize * tex->ysize * tex->zsize;
+    tex->data = realloc(tex->data, sizeof(Color) * n);
+    for (i = 0; i < n; i++)
+    {
+        colorLoad(stream, tex->data + i);
     }
 }
 

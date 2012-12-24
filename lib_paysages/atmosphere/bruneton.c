@@ -5,6 +5,7 @@
  * http://evasion.inrialpes.fr/~Eric.Bruneton/
  */
 
+#include <assert.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,6 +14,7 @@
 #include "../tools/cache.h"
 #include "../tools/texture.h"
 #include "../tools/parallel.h"
+#include "../renderer.h"
 
 /*********************** Constants ***********************/
 
@@ -52,12 +54,8 @@ static const double AVERAGE_GROUND_REFLECTANCE = 0.1;
 #endif
 
 Texture2D* _transmittanceTexture = NULL;
-Texture2D* _deltaETexture = NULL;
 Texture2D* _irradianceTexture = NULL;
 Texture3D* _inscatterTexture = NULL;
-Texture3D* _deltaSMTexture = NULL;
-Texture3D* _deltaSRTexture = NULL;
-Texture3D* _deltaJTexture = NULL;
 
 // Rayleigh
 static const double HR = 8.0;
@@ -402,7 +400,7 @@ static void _precomputeTransmittanceTexture()
     }
 }
 
-static void _precomputeIrrDeltaETexture()
+static void _precomputeIrrDeltaETexture(Texture2D* destination)
 {
     int x, y;
 
@@ -423,7 +421,7 @@ static void _precomputeIrrDeltaETexture()
             irr.b = trans.b * max(muS, 0.0);
             irr.a = 1.0;
 
-            texture2DSetPixel(_deltaETexture, x, y, irr);
+            texture2DSetPixel(destination, x, y, irr);
         }
     }
 }
@@ -544,7 +542,7 @@ static int _inscatter1Worker(ParallelWork* work, int layer, void* data)
 
 /*********************** inscatterS.glsl ***********************/
 
-static Color _inscatterS(double r, double mu, double muS, double nu, int first)
+static Color _inscatterS(double r, double mu, double muS, double nu, int first, Texture2D* deltaE, Texture3D* deltaSR, Texture3D* deltaSM)
 {
     Color raymie = COLOR_BLACK;
 
@@ -599,7 +597,7 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first)
             gnormal.x = dground * w.x / Rg;
             gnormal.y = dground * w.y / Rg;
             gnormal.z = r + dground * w.z / Rg;
-            Color girradiance = _irradiance(_deltaETexture, Rg, v3Dot(gnormal, s));
+            Color girradiance = _irradiance(deltaE, Rg, v3Dot(gnormal, s));
 
             Color raymie1; /* light arriving at x from direction w */
 
@@ -615,15 +613,15 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first)
                  * without the phase functions factors; they must be reintroduced here */
                 double pr1 = _phaseFunctionR(nu1);
                 double pm1 = _phaseFunctionM(nu1);
-                Color ray1 = _texture4D(_deltaSRTexture, r, w.z, muS, nu1);
-                Color mie1 = _texture4D(_deltaSMTexture, r, w.z, muS, nu1);
+                Color ray1 = _texture4D(deltaSR, r, w.z, muS, nu1);
+                Color mie1 = _texture4D(deltaSM, r, w.z, muS, nu1);
                 raymie1.r += ray1.r * pr1 + mie1.r + pm1;
                 raymie1.g += ray1.g * pr1 + mie1.g + pm1;
                 raymie1.b += ray1.b * pr1 + mie1.b + pm1;
             }
             else
             {
-                Color col = _texture4D(_deltaSRTexture, r, w.z, muS, nu1);
+                Color col = _texture4D(deltaSR, r, w.z, muS, nu1);
                 raymie1.r += col.r;
                 raymie1.g += col.g;
                 raymie1.b += col.b;
@@ -645,6 +643,9 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first)
 typedef struct
 {
     Texture3D* result;
+    Texture2D* deltaE;
+    Texture3D* deltaSR;
+    Texture3D* deltaSM;
     int first;
 } jParams;
 
@@ -665,7 +666,7 @@ static int _jWorker(ParallelWork* work, int layer, void* data)
             Color raymie;
             double mu, muS, nu;
             _getMuMuSNu((double)x, (double)y, r, dhdH, &mu, &muS, &nu);
-            raymie = _inscatterS(r, mu, muS, nu, params->first);
+            raymie = _inscatterS(r, mu, muS, nu, params->first, params->deltaE, params->deltaSR, params->deltaSM);
             texture3DSetPixel(params->result, x, y, layer, raymie);
         }
     }
@@ -674,7 +675,7 @@ static int _jWorker(ParallelWork* work, int layer, void* data)
 
 /*********************** irradianceN.glsl ***********************/
 
-void _irradianceNProg(Texture2D* tex, int first)
+void _irradianceNProg(Texture2D* destination, Texture3D* deltaSR, Texture3D* deltaSM, int first)
 {
     int x, y;
     double dphi = M_PI / (double)(IRRADIANCE_INTEGRAL_SAMPLES);
@@ -706,15 +707,15 @@ void _irradianceNProg(Texture2D* tex, int first)
                            without the phase functions factors; they must be reintroduced here */
                         double pr1 = _phaseFunctionR(nu);
                         double pm1 = _phaseFunctionM(nu);
-                        Color ray1 = _texture4D(_deltaSRTexture, r, w.z, muS, nu);
-                        Color mie1 = _texture4D(_deltaSMTexture, r, w.z, muS, nu);
+                        Color ray1 = _texture4D(deltaSR, r, w.z, muS, nu);
+                        Color mie1 = _texture4D(deltaSM, r, w.z, muS, nu);
                         result.r += (ray1.r * pr1 + mie1.r * pm1) * w.z * dw;
                         result.g += (ray1.g * pr1 + mie1.g * pm1) * w.z * dw;
                         result.b += (ray1.b * pr1 + mie1.b * pm1) * w.z * dw;
                     }
                     else
                     {
-                        Color col = _texture4D(_deltaSRTexture, r, w.z, muS, nu);
+                        Color col = _texture4D(deltaSR, r, w.z, muS, nu);
                         result.r += col.r * w.z * dw;
                         result.g += col.g * w.z * dw;
                         result.b += col.b * w.z * dw;
@@ -722,20 +723,26 @@ void _irradianceNProg(Texture2D* tex, int first)
                 }
             }
 
-            texture2DSetPixel(tex, x, y, result);
+            texture2DSetPixel(destination, x, y, result);
         }
     }
 }
 
 /*********************** inscatterN.glsl ***********************/
 
-static Color _integrand2(double r, double mu, double muS, double nu, double t)
+typedef struct
+{
+    Texture3D* destination;
+    Texture3D* deltaJ;
+} InscatterNParams;
+
+static Color _integrand2(Texture3D* deltaJ, double r, double mu, double muS, double nu, double t)
 {
     double ri = sqrt(r * r + t * t + 2.0 * r * mu * t);
     double mui = (r * mu + t) / ri;
     double muSi = (nu * t + muS * r) / ri;
     Color c1, c2;
-    c1 = _texture4D(_deltaJTexture, ri, mui, muSi, nu);
+    c1 = _texture4D(deltaJ, ri, mui, muSi, nu);
     c2 = _transmittance3(r, mu, t);
     c1.r *= c2.r;
     c1.g *= c2.g;
@@ -743,16 +750,16 @@ static Color _integrand2(double r, double mu, double muS, double nu, double t)
     return c1;
 }
 
-static Color _inscatterN(double r, double mu, double muS, double nu)
+static Color _inscatterN(Texture3D* deltaJ, double r, double mu, double muS, double nu)
 {
     Color raymie = COLOR_BLACK;
     double dx = _limit(r, mu) / (double)(INSCATTER_INTEGRAL_SAMPLES);
-    Color raymiei = _integrand2(r, mu, muS, nu, 0.0);
+    Color raymiei = _integrand2(deltaJ, r, mu, muS, nu, 0.0);
     int i;
     for (i = 1; i <= INSCATTER_INTEGRAL_SAMPLES; ++i)
     {
         double xj = (double)(i) * dx;
-        Color raymiej = _integrand2(r, mu, muS, nu, xj);
+        Color raymiej = _integrand2(deltaJ, r, mu, muS, nu, xj);
         raymie.r += (raymiei.r + raymiej.r) / 2.0 * dx;
         raymie.g += (raymiei.r + raymiej.r) / 2.0 * dx;
         raymie.b += (raymiei.r + raymiej.r) / 2.0 * dx;
@@ -765,6 +772,8 @@ static int _inscatterNWorker(ParallelWork* work, int layer, void* data)
 {
     UNUSED(work);
 
+    InscatterNParams* params = data;
+
     double r;
     Color dhdH;
     _getLayerParams(layer, &r, &dhdH);
@@ -776,7 +785,7 @@ static int _inscatterNWorker(ParallelWork* work, int layer, void* data)
         {
             double mu, muS, nu;
             _getMuMuSNu((double)x, (double)y, r, dhdH, &mu, &muS, &nu);
-            texture3DSetPixel((Texture3D*)data, x, y, layer, _inscatterN(r, mu, muS, nu));
+            texture3DSetPixel(params->destination, x, y, layer, _inscatterN(params->deltaJ, r, mu, muS, nu));
         }
     }
     return 1;
@@ -808,10 +817,9 @@ static int _copyInscatterNWorker(ParallelWork* work, int layer, void* data)
             _getMuMuSNu((double)x, (double)y, r, dhdH, &mu, &muS, &nu);
             Color col1 = texture3DGetLinear(params->source, x / (double)(RES_MU_S * RES_NU), y / (double)(RES_MU), layer + 0.5 / (double)(RES_R));
             Color col2 = texture3DGetPixel(params->destination, x, y, layer);
-            col2.r += col1.r * 0.1 / _phaseFunctionR(nu);
-            col2.g += col1.g * 0.1 / _phaseFunctionR(nu);
-            col2.b += col1.b * 0.1 / _phaseFunctionR(nu);
-            col2.a = 1.0;
+            col2.r += col1.r / _phaseFunctionR(nu);
+            col2.g += col1.g / _phaseFunctionR(nu);
+            col2.b += col1.b / _phaseFunctionR(nu);
             texture3DSetPixel(params->destination, x, y, layer, col2);
         }
     }
@@ -923,54 +931,53 @@ static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, d
 
 /*ground radiance at end of ray x+tv, when sun in direction s
  *attenuated bewteen ground and viewer (=R[L0]+R[L*]) */
-/*static Color _groundColor(Vector3 x, double t, Vector3 v, Vector3 s, double r, double mu, Color attenuation)
+static Color _groundColor(Color base, Vector3 x, double t, Vector3 v, Vector3 s, double r, double mu, Vector3 attenuation)
 {
     Color result;
-    if (t > 0.0)
-    { // if ray hits ground surface
 
-        // ground reflectance at end of ray, x0
-        Vector3 x0 = v3Add(x, v3Scale(v, t));
-        float r0 = v3Norm(x0);
-        Vector3 n = v3Scale(x0, 1.0 / r0);
-        vec2 coords = vec2(atan(n.y, n.x), acos(n.z)) * vec2(0.5, 1.0) / M_PI + vec2(0.5, 0.0);
-        Color reflectance;
-        if (r0 > Rg + 0.01)
-        {
-            reflectance = vec4(0.4, 0.4, 0.4, 0.0);
-        }
-        else
-        {
-            reflectance = texture2D(reflectanceSampler, coords) * vec4(0.2, 0.2, 0.2, 1.0);
-        }
-
-        // direct sun light (radiance) reaching x0
-        float muS = v3Dot(n, s);
-        Color sunLight = _transmittanceWithShadow(r0, muS);
-
-        // precomputed sky light (irradiance) (=E[L*]) at x0
-        Color groundSkyLight = irradiance(irradianceSampler, r0, muS);
-
-        // light reflected at x0 (=(R[L0]+R[L*])/T(x,x0))
-        Color groundColor = reflectance.rgb * (max(muS, 0.0) * sunLight + groundSkyLight) * ISun / M_PI;
-
-        // water specular color due to sunLight
-        if (reflectance.w > 0.0)
-        {
-            vec3 h = normalize(s - v);
-            float fresnel = 0.02 + 0.98 * pow(1.0 - dot(-v, h), 5.0);
-            float waterBrdf = fresnel * pow(max(dot(h, n), 0.0), 150.0);
-            groundColor += reflectance.w * max(waterBrdf, 0.0) * sunLight * ISun;
-        }
-
-        result = attenuation * groundColor; //=R[L0]+R[L*]
+#if 0
+    // ground reflectance at end of ray, x0
+    Vector3 x0 = v3Add(x, v3Scale(v, t));
+    float r0 = v3Norm(x0);
+    Vector3 n = v3Scale(x0, 1.0 / r0);
+    vec2 coords = vec2(atan(n.y, n.x), acos(n.z)) * vec2(0.5, 1.0) / M_PI + vec2(0.5, 0.0);
+    Color reflectance;
+    if (r0 > Rg + 0.01)
+    {
+        reflectance = vec4(0.4, 0.4, 0.4, 0.0);
     }
     else
-    { // ray looking at the sky
-        return COLOR_BLACK;
+    {
+        reflectance = texture2D(reflectanceSampler, coords) * vec4(0.2, 0.2, 0.2, 1.0);
     }
+
+    // direct sun light (radiance) reaching x0
+    float muS = v3Dot(n, s);
+    Color sunLight = _transmittanceWithShadow(r0, muS);
+
+    // precomputed sky light (irradiance) (=E[L*]) at x0
+    Color groundSkyLight = irradiance(irradianceSampler, r0, muS);
+
+    // light reflected at x0 (=(R[L0]+R[L*])/T(x,x0))
+    Color groundColor = reflectance.rgb * (max(muS, 0.0) * sunLight + groundSkyLight) * ISun / M_PI;
+
+    // water specular color due to sunLight
+    if (reflectance.w > 0.0)
+    {
+        vec3 h = normalize(s - v);
+        float fresnel = 0.02 + 0.98 * pow(1.0 - dot(-v, h), 5.0);
+        float waterBrdf = fresnel * pow(max(dot(h, n), 0.0), 150.0);
+        groundColor += reflectance.w * max(waterBrdf, 0.0) * sunLight * ISun;
+    }
+#endif
+
+    result.r = attenuation.x * base.r; //=R[L0]+R[L*]
+    result.g = attenuation.y * base.g;
+    result.b = attenuation.z * base.b;
+    result.a = 1.0;
+
     return result;
-}*/
+}
 
 /* direct sun light for ray x+tv, when sun in direction s (=L0) */
 static Color _sunColor(Vector3 x, double t, Vector3 v, Vector3 s, double r, double mu)
@@ -991,7 +998,7 @@ static Color _sunColor(Vector3 x, double t, Vector3 v, Vector3 s, double r, doub
     }
 }
 
-/*********************** Cache methods ***********************/
+/*********************** Cache/debug methods ***********************/
 
 static int _tryLoadCache2D(Texture2D* tex, const char* tag, int order)
 {
@@ -999,10 +1006,14 @@ static int _tryLoadCache2D(Texture2D* tex, const char* tag, int order)
     int xsize, ysize;
 
     texture2DGetSize(tex, &xsize, &ysize);
-    cache = cacheFileCreateAccessor("atmo-br", "png", tag, xsize, ysize, 0, order);
+    cache = cacheFileCreateAccessor("atmo-br", "cache", tag, xsize, ysize, 0, order);
     if (cacheFileIsReadable(cache))
     {
-        texture2DLoadFromFile(tex, cacheFileGetPath(cache));
+        PackStream* stream;
+        stream = packReadFile(cacheFileGetPath(cache));
+        texture2DLoad(stream, tex);
+        packCloseStream(stream);
+
         cacheFileDeleteAccessor(cache);
         return 1;
     }
@@ -1014,6 +1025,23 @@ static int _tryLoadCache2D(Texture2D* tex, const char* tag, int order)
 }
 
 static void _saveCache2D(Texture2D* tex, const char* tag, int order)
+{
+    CacheFile* cache;
+    int xsize, ysize;
+
+    texture2DGetSize(tex, &xsize, &ysize);
+    cache = cacheFileCreateAccessor("atmo-br", "cache", tag, xsize, ysize, 0, order);
+    if (cacheFileIsWritable(cache))
+    {
+        PackStream* stream;
+        stream = packWriteFile(cacheFileGetPath(cache));
+        texture2DSave(stream, tex);
+        packCloseStream(stream);
+    }
+    cacheFileDeleteAccessor(cache);
+}
+
+static void _saveDebug2D(Texture2D* tex, const char* tag, int order)
 {
     CacheFile* cache;
     int xsize, ysize;
@@ -1033,10 +1061,14 @@ static int _tryLoadCache3D(Texture3D* tex, const char* tag, int order)
     int xsize, ysize, zsize;
 
     texture3DGetSize(tex, &xsize, &ysize, &zsize);
-    cache = cacheFileCreateAccessor("atmo-br", "png", tag, xsize, ysize, zsize, order);
+    cache = cacheFileCreateAccessor("atmo-br", "cache", tag, xsize, ysize, zsize, order);
     if (cacheFileIsReadable(cache))
     {
-        texture3DLoadFromFile(tex, cacheFileGetPath(cache));
+        PackStream* stream;
+        stream = packReadFile(cacheFileGetPath(cache));
+        texture3DLoad(stream, tex);
+        packCloseStream(stream);
+
         cacheFileDeleteAccessor(cache);
         return 1;
     }
@@ -1048,6 +1080,23 @@ static int _tryLoadCache3D(Texture3D* tex, const char* tag, int order)
 }
 
 static void _saveCache3D(Texture3D* tex, const char* tag, int order)
+{
+    CacheFile* cache;
+    int xsize, ysize, zsize;
+
+    texture3DGetSize(tex, &xsize, &ysize, &zsize);
+    cache = cacheFileCreateAccessor("atmo-br", "cache", tag, xsize, ysize, zsize, order);
+    if (cacheFileIsWritable(cache))
+    {
+        PackStream* stream;
+        stream = packWriteFile(cacheFileGetPath(cache));
+        texture3DSave(stream, tex);
+        packCloseStream(stream);
+    }
+    cacheFileDeleteAccessor(cache);
+}
+
+static void _saveDebug3D(Texture3D* tex, const char* tag, int order)
 {
     CacheFile* cache;
     int xsize, ysize, zsize;
@@ -1067,115 +1116,104 @@ void brunetonInit()
     int x, y, z, order;
     ParallelWork* work;
 
+    assert(_inscatterTexture == NULL);
+
     /* TODO Deletes */
+    _transmittanceTexture = texture2DCreate(TRANSMITTANCE_W, TRANSMITTANCE_H);
+    _irradianceTexture = texture2DCreate(SKY_W, SKY_H);
+    _inscatterTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
+
+    /* try loading from cache */
+    if (_tryLoadCache2D(_transmittanceTexture, "transmittance", 0)
+     && _tryLoadCache2D(_irradianceTexture, "irradiance", 0)
+     && _tryLoadCache3D(_inscatterTexture, "inscatter", 0))
+    {
+        return;
+    }
+
+    Texture2D* _deltaETexture = texture2DCreate(SKY_W, SKY_H);
+    Texture3D* _deltaSMTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
+    Texture3D* _deltaSRTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
+    Texture3D* _deltaJTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
 
     /* computes transmittance texture T (line 1 in algorithm 4.1) */
-    _transmittanceTexture = texture2DCreate(TRANSMITTANCE_W, TRANSMITTANCE_H);
-    if (!_tryLoadCache2D(_transmittanceTexture, "transmittance", 0))
-    {
-        _precomputeTransmittanceTexture();
-        _saveCache2D(_transmittanceTexture, "transmittance", 0);
-    }
+    _precomputeTransmittanceTexture();
+    _saveDebug2D(_transmittanceTexture, "transmittance", 0);
 
     /* computes irradiance texture deltaE (line 2 in algorithm 4.1) */
-    _deltaETexture = texture2DCreate(SKY_W, SKY_H);
-    if (!_tryLoadCache2D(_deltaETexture, "deltaE", 0))
-    {
-        _precomputeIrrDeltaETexture();
-        _saveCache2D(_deltaETexture, "deltaE", 0);
-    }
+    _precomputeIrrDeltaETexture(_deltaETexture);
+    _saveDebug2D(_deltaETexture, "deltaE", 0);
 
     /* computes single scattering texture deltaS (line 3 in algorithm 4.1)
      * Rayleigh and Mie separated in deltaSR + deltaSM */
-    _deltaSRTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
-    _deltaSMTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
-    if (!_tryLoadCache3D(_deltaSRTexture, "deltaSR", 0) || !_tryLoadCache3D(_deltaSMTexture, "deltaSM", 0))
-    {
-        Inscatter1Params params = {_deltaSRTexture, _deltaSMTexture};
-        work = parallelWorkCreate(_inscatter1Worker, RES_R, &params);
-        parallelWorkPerform(work, -1);
-        parallelWorkDelete(work);
-
-        _saveCache3D(_deltaSRTexture, "deltaSR", 0);
-        _saveCache3D(_deltaSMTexture, "deltaSM", 0);
-    }
+    Inscatter1Params params = {_deltaSRTexture, _deltaSMTexture};
+    work = parallelWorkCreate(_inscatter1Worker, RES_R, &params);
+    parallelWorkPerform(work, -1);
+    parallelWorkDelete(work);
+    _saveDebug3D(_deltaSRTexture, "deltaSR", 0);
+    _saveDebug3D(_deltaSMTexture, "deltaSM", 0);
 
     /* copies deltaE into irradiance texture E (line 4 in algorithm 4.1) */
     /* ??? all black texture (k=0.0) ??? */
-    _irradianceTexture = texture2DCreate(SKY_W, SKY_H);
     texture2DFill(_irradianceTexture, COLOR_BLACK);
 
     /* copies deltaS into inscatter texture S (line 5 in algorithm 4.1) */
-    _inscatterTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
-    if (!_tryLoadCache3D(_inscatterTexture, "inscatter", 0))
+    for (x = 0; x < RES_MU_S * RES_NU; x++)
     {
-        for (x = 0; x < RES_MU_S * RES_NU; x++)
+        for (y = 0; y < RES_MU; y++)
         {
-            for (y = 0; y < RES_MU; y++)
+            for (z = 0; z < RES_R; z++)
             {
-                for (z = 0; z < RES_R; z++)
-                {
-                    Color result = texture3DGetPixel(_deltaSRTexture, x, y, z);
-                    Color mie = texture3DGetPixel(_deltaSMTexture, x, y, z);
-                    result.a = mie.r;
-                    texture3DSetPixel(_inscatterTexture, x, y, z, result);
-                }
+                Color result = texture3DGetPixel(_deltaSRTexture, x, y, z);
+                Color mie = texture3DGetPixel(_deltaSMTexture, x, y, z);
+                result.a = mie.r;
+                texture3DSetPixel(_inscatterTexture, x, y, z, result);
             }
         }
-        _saveCache3D(_inscatterTexture, "inscatter", 0);
     }
+    _saveDebug3D(_inscatterTexture, "inscatter", 0);
 
     /* loop for each scattering order (line 6 in algorithm 4.1) */
     for (order = 2; order <= 4; ++order)
     {
         /* computes deltaJ (line 7 in algorithm 4.1) */
-        _deltaJTexture = texture3DCreate(RES_MU_S * RES_NU, RES_MU, RES_R);
-        if (!_tryLoadCache3D(_deltaJTexture, "deltaJ", order))
-        {
-            jParams params = {_deltaJTexture, order == 2};
-            work = parallelWorkCreate(_jWorker, RES_R, &params);
-            parallelWorkPerform(work, -1);
-            parallelWorkDelete(work);
-
-            _saveCache3D(_deltaJTexture, "deltaJ", order);
-        }
+        jParams jparams = {_deltaJTexture, _deltaETexture, _deltaSRTexture, _deltaSMTexture, order == 2};
+        work = parallelWorkCreate(_jWorker, RES_R, &jparams);
+        parallelWorkPerform(work, -1);
+        parallelWorkDelete(work);
+        _saveDebug3D(_deltaJTexture, "deltaJ", order);
 
         /* computes deltaE (line 8 in algorithm 4.1) */
-        _deltaETexture = texture2DCreate(SKY_W, SKY_H);
-        if (!_tryLoadCache2D(_deltaETexture, "deltaE", order))
-        {
-            _irradianceNProg(_deltaETexture, order == 2);
-            _saveCache2D(_deltaETexture, "deltaE", order);
-        }
+        _irradianceNProg(_deltaETexture, _deltaSRTexture, _deltaSMTexture, order == 2);
+        _saveDebug2D(_deltaETexture, "deltaE", order);
 
         /* computes deltaS (line 9 in algorithm 4.1) */
-        if (!_tryLoadCache3D(_deltaSRTexture, "deltaSR", order))
-        {
-            work = parallelWorkCreate(_inscatterNWorker, RES_R, _deltaSRTexture);
-            parallelWorkPerform(work, -1);
-            parallelWorkDelete(work);
-
-            _saveCache3D(_deltaSRTexture, "deltaSR", order);
-        }
+        InscatterNParams iparams = {_deltaSRTexture, _deltaJTexture};
+        work = parallelWorkCreate(_inscatterNWorker, RES_R, &iparams);
+        parallelWorkPerform(work, -1);
+        parallelWorkDelete(work);
+        _saveDebug3D(_deltaSRTexture, "deltaSR", order);
 
         /* adds deltaE into irradiance texture E (line 10 in algorithm 4.1) */
-        if (!_tryLoadCache2D(_irradianceTexture, "irradiance", order))
-        {
-            texture2DAdd(_deltaETexture, _irradianceTexture);
-            _saveCache2D(_irradianceTexture, "irradiance", order);
-        }
+        texture2DAdd(_deltaETexture, _irradianceTexture);
+        _saveDebug2D(_irradianceTexture, "irradiance", order);
 
         /* adds deltaS into inscatter texture S (line 11 in algorithm 4.1) */
-        if (!_tryLoadCache3D(_inscatterTexture, "inscatter", order))
-        {
-            CopyInscatterNParams params = {_deltaSRTexture, _inscatterTexture};
-            work = parallelWorkCreate(_copyInscatterNWorker, RES_R, &params);
-            parallelWorkPerform(work, -1);
-            parallelWorkDelete(work);
-
-            _saveCache3D(_inscatterTexture, "inscatter", order);
-        }
+        CopyInscatterNParams cparams = {_deltaSRTexture, _inscatterTexture};
+        work = parallelWorkCreate(_copyInscatterNWorker, RES_R, &cparams);
+        parallelWorkPerform(work, -1);
+        parallelWorkDelete(work);
+        _saveDebug3D(_inscatterTexture, "inscatter", order);
     }
+
+    _saveCache2D(_transmittanceTexture, "transmittance", 0);
+    _saveCache2D(_irradianceTexture, "irradiance", 0);
+    _saveCache3D(_inscatterTexture, "inscatter", 0);
+
+    texture2DDelete(_deltaETexture);
+    texture3DDelete(_deltaSMTexture);
+    texture3DDelete(_deltaSRTexture);
+    texture3DDelete(_deltaJTexture);
 }
 
 static inline void _fixVector(Vector3* v)
@@ -1188,12 +1226,12 @@ static inline void _fixVector(Vector3* v)
 
 Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position)
 {
-    Vector3 x = {0.0, Rg + eye.y, 0.0};
+    Vector3 x = {0.0, Rg + (eye.y + 20.0) * 0.1, 0.0};
     _fixVector(&x);
     Vector3 v = v3Normalize(direction);
     _fixVector(&v);
-    Vector3 s = v3Normalize(v3Sub(sun_position, eye));
-    _fixVector(&s);
+    _fixVector(&sun_position);
+    Vector3 s = v3Normalize(v3Sub(sun_position, x));
 
     double r = v3Norm(x);
     double mu = v3Dot(x, v) / r;
@@ -1220,9 +1258,53 @@ Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
     }
 
     Vector3 attenuation;
-    Color inscatterColor = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); //S[L]-T(x,xs)S[l]|xs
-    /*Color groundColor = _groundColor(x, t, v, s, r, mu, attenuation); //R[L0]+R[L*]*/
+    Color inscatterColor = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
     Color groundColor = COLOR_BLACK;
-    Color sunColor = _sunColor(x, t, v, s, r, mu); //L0
-    return _hdr(sunColor, groundColor, inscatterColor); // Eq (16)
+    Color sunColor = _sunColor(x, 0.0, v, s, r, mu); /* L0 */
+    return _hdr(sunColor, groundColor, inscatterColor); /* Eq (16) */
+}
+
+Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
+{
+    Vector3 eye = renderer->camera_location;
+    Vector3 direction = v3Scale(v3Sub(location, eye), 0.1);
+    Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), 149597870.0);
+
+    Vector3 x = {0.0, Rg + (eye.y + 20.0) * 0.1, 0.0};
+    _fixVector(&x);
+    Vector3 v = v3Normalize(direction);
+    _fixVector(&v);
+    _fixVector(&sun_position);
+    Vector3 s = v3Normalize(v3Sub(sun_position, x));
+
+    double r = v3Norm(x);
+    double mu = v3Dot(x, v) / r;
+    /*double t = -r * mu - sqrt(r * r * (mu * mu - 1.0) + Rg * Rg);*/
+    double t = v3Norm(direction);
+
+    Vector3 g = {0.0, 0.0, Rg + 10.0};
+    g = v3Sub(x, g);
+    double a = v.x * v.x + v.y * v.y - v.z * v.z;
+    double b = 2.0 * (g.x * v.x + g.y * v.y - g.z * v.z);
+    double c = g.x * g.x + g.y * g.y - g.z * g.z;
+    double d = -(b + sqrt(b * b - 4.0 * a * c)) / (2.0 * a);
+    int cone = d > 0.0 && fabs(x.z + d * v.z - Rg) <= 10.0;
+
+    if (t > 0.0)
+    {
+        if (cone && d < t)
+        {
+            t = d;
+        }
+    }
+    else if (cone)
+    {
+        t = d;
+    }
+
+    Vector3 attenuation;
+    Color inscatterColor = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
+    Color groundColor = _groundColor(base, x, t, v, s, r, mu, attenuation); //R[L0]+R[L*]*/
+    Color sunColor = _sunColor(x, t, v, s, r, mu); /* L0 */
+    return _hdr(sunColor, groundColor, inscatterColor); /* Eq (16) */
 }

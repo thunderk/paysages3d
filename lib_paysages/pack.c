@@ -77,25 +77,25 @@ static double unpack754(uint64_t i, unsigned bits, unsigned expbits)
     return result;
 }
 
-PackStream* packReadFile(char* filepath)
+PackStream* packReadFile(const char* filepath)
 {
     PackStream* result;
-    
+
     result = malloc(sizeof(PackStream));
     result->fd = fopen(filepath, "rb");
     result->write = 0;
-    
+
     return result;
 }
 
-PackStream* packWriteFile(char* filepath)
+PackStream* packWriteFile(const char* filepath)
 {
     PackStream* result;
-    
+
     result = malloc(sizeof(PackStream));
     result->fd = fopen(filepath, "wb");
     result->write = 1;
-    
+
     return result;
 }
 
@@ -113,7 +113,7 @@ void packWriteDouble(PackStream* stream, double* value)
 {
     int written;
     uint64_t servalue;
-    
+
     servalue = pack754_64(*value);
     written = fwrite(&servalue, sizeof(uint64_t), 1, stream->fd);
     assert(written == 1);
@@ -123,17 +123,17 @@ void packReadDouble(PackStream* stream, double* value)
 {
     int read;
     uint64_t servalue;
-    
+
     read = fread(&servalue, sizeof(uint64_t), 1, stream->fd);
     assert(read == 1);
-    
+
     *value = unpack754_64(servalue);
 }
 
 void packWriteInt(PackStream* stream, int* value)
 {
     int written;
-    
+
     written = fprintf(stream->fd, "%d;", *value);
     assert(written > 1);
 }

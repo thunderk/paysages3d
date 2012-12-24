@@ -338,6 +338,9 @@ static void _bindRenderer(AtmosphereRenderer* renderer, AtmosphereDefinition* de
         case ATMOSPHERE_MODEL_PREETHAM:
             renderer->applyAerialPerspective = preethamApplyAerialPerspective;
             break;
+        case ATMOSPHERE_MODEL_BRUNETON:
+            renderer->applyAerialPerspective = brunetonApplyAerialPerspective;
+            break;
         default:
             renderer->applyAerialPerspective = _fakeApplyAerialPerspective;
     }

@@ -43,6 +43,8 @@ static void _copyDefinition(TerrainDefinition* source, TerrainDefinition* destin
     destination->scaling = source->scaling;
     destination->shadow_smoothing = source->shadow_smoothing;
 
+    noiseCopy(source->_height_noise, destination->_height_noise);
+
     _validateDefinition(destination);
 }
 
@@ -51,6 +53,7 @@ static void _saveDefinition(PackStream* stream, TerrainDefinition* definition)
     packWriteDouble(stream, &definition->height);
     packWriteDouble(stream, &definition->scaling);
     packWriteDouble(stream, &definition->shadow_smoothing);
+    noiseSaveGenerator(stream, definition->_height_noise);
 }
 
 static void _loadDefinition(PackStream* stream, TerrainDefinition* definition)
@@ -58,6 +61,7 @@ static void _loadDefinition(PackStream* stream, TerrainDefinition* definition)
     packReadDouble(stream, &definition->height);
     packReadDouble(stream, &definition->scaling);
     packReadDouble(stream, &definition->shadow_smoothing);
+    noiseLoadGenerator(stream, definition->_height_noise);
 
     _validateDefinition(definition);
 }
