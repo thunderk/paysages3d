@@ -18,6 +18,7 @@ public slots:
 
 protected slots:
     virtual void configChangeEvent();
+    virtual void autoPresetSelected(int preset);
 
 private:
     BasePreview* previewEast;

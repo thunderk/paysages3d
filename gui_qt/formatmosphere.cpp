@@ -63,6 +63,12 @@ private:
 FormAtmosphere::FormAtmosphere(QWidget *parent):
     BaseForm(parent)
 {
+    addAutoPreset(tr("Clear day"));
+    addAutoPreset(tr("Clear sunset"));
+    addAutoPreset(tr("Hazy morning"));
+    addAutoPreset(tr("Foggy"));
+    addAutoPreset(tr("Stormy"));
+
     _definition = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
 
     previewWest = new PreviewSkyWest(this);
@@ -98,4 +104,10 @@ void FormAtmosphere::configChangeEvent()
 {
     AtmosphereDefinitionClass.validate(_definition);
     BaseForm::configChangeEvent();
+}
+
+void FormAtmosphere::autoPresetSelected(int preset)
+{
+    atmosphereAutoPreset(_definition, (AtmospherePreset)preset);
+    BaseForm::autoPresetSelected(preset);
 }

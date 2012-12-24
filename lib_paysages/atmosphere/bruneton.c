@@ -57,26 +57,26 @@ Texture2D* _transmittanceTexture = NULL;
 Texture2D* _irradianceTexture = NULL;
 Texture3D* _inscatterTexture = NULL;
 
-// Rayleigh
+/* Rayleigh */
 static const double HR = 8.0;
 static const Color betaR = {5.8e-3, 1.35e-2, 3.31e-2, 1.0};
 
-// Mie
-// DEFAULT
+/* Mie */
+/* DEFAULT */
 static const double HM = 1.2;
 static const Vector3 betaMSca = {4e-3, 4e-3, 4e-3};
 static const Vector3 betaMEx = {4e-3 / 0.9, 4e-3 / 0.9, 4e-3 / 0.9};
 static const double mieG = 0.8;
-// CLEAR SKY
-/*static const float HM = 1.2;
-static const vec3 betaMSca = vec3(20e-3);
-static const vec3 betaMEx = betaMSca / 0.9;
-static const float mieG = 0.76;*/
-// PARTLY CLOUDY
-/*static const float HM = 3.0;
-static const vec3 betaMSca = vec3(3e-3);
-static const vec3 betaMEx = betaMSca / 0.9;
-static const float mieG = 0.65;*/
+/* CLEAR SKY */
+/*static const double HM = 1.2;
+static const Vector3 betaMSca = {20e-3, 20e-3, 20e-3};
+static const Vector3 betaMEx = {20e-3 / 0.9, 20e-3 / 0.9, 20e-3 / 0.9};
+static const double mieG = 0.76;*/
+/* PARTLY CLOUDY */
+/*static const double HM = 3.0;
+static const Vector3 betaMSca = {3e-3, 3e-3, 3e-3};
+static const Vector3 betaMEx = {3e-3 / 0.9, 3e-3 / 0.9, 3e-3 / 0.9};
+static const double mieG = 0.65;*/
 
 /*********************** Shader helpers ***********************/
 
@@ -330,7 +330,7 @@ static Color _hdr(Color c1, Color c2, Color c3)
     L.r *= exposure;
     L.g *= exposure;
     L.b *= exposure;
-    L.a *= exposure;
+    L.a = 1.0;
 
     L.r = L.r < 1.413 ? pow(L.r * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.r);
     L.g = L.g < 1.413 ? pow(L.g * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.g);
@@ -356,9 +356,6 @@ static void _getMuMuSNu(double x, double y, double r, Color dhdH, double* mu, do
         *mu = (Rt * Rt - r * r - d * d) / (2.0 * r * d);
     }
     *muS = fmod(x, (double)(RES_MU_S)) / ((double)(RES_MU_S));
-    /* paper formula :
-     *   muS = -(0.6 + log(1.0 - muS * (1.0 -  exp(-3.6)))) / 3.0; */
-    /* better formula */
     *muS = tan((2.0 * (*muS) - 1.0 + 0.26) * 1.1) / tan(1.26 * 1.1);
     *nu = -1.0 + floor(x / (double)(RES_MU_S)) / ((double)(RES_NU)) * 2.0;
 }
@@ -936,44 +933,39 @@ static Color _groundColor(Color base, Vector3 x, double t, Vector3 v, Vector3 s,
     Color result;
 
 #if 0
-    // ground reflectance at end of ray, x0
+    /* ground reflectance at end of ray, x0 */
     Vector3 x0 = v3Add(x, v3Scale(v, t));
     float r0 = v3Norm(x0);
     Vector3 n = v3Scale(x0, 1.0 / r0);
-    vec2 coords = vec2(atan(n.y, n.x), acos(n.z)) * vec2(0.5, 1.0) / M_PI + vec2(0.5, 0.0);
-    Color reflectance;
-    if (r0 > Rg + 0.01)
-    {
-        reflectance = vec4(0.4, 0.4, 0.4, 0.0);
-    }
-    else
-    {
-        reflectance = texture2D(reflectanceSampler, coords) * vec4(0.2, 0.2, 0.2, 1.0);
-    }
 
-    // direct sun light (radiance) reaching x0
+    /* direct sun light (radiance) reaching x0 */
     float muS = v3Dot(n, s);
     Color sunLight = _transmittanceWithShadow(r0, muS);
 
-    // precomputed sky light (irradiance) (=E[L*]) at x0
-    Color groundSkyLight = irradiance(irradianceSampler, r0, muS);
+    /* precomputed sky light (irradiance) (=E[L*]) at x0 */
+    Color groundSkyLight = _irradiance(_irradianceTexture, r0, muS);
 
-    // light reflected at x0 (=(R[L0]+R[L*])/T(x,x0))
-    Color groundColor = reflectance.rgb * (max(muS, 0.0) * sunLight + groundSkyLight) * ISun / M_PI;
+    /* light reflected at x0 (=(R[L0]+R[L*])/T(x,x0)) */
+    Color groundColor;
+    groundColor.r = base.r * (max(muS, 0.0) * sunLight.r + groundSkyLight.r) * ISun / M_PI;
+    groundColor.g = base.g * (max(muS, 0.0) * sunLight.g + groundSkyLight.g) * ISun / M_PI;
+    groundColor.b = base.b * (max(muS, 0.0) * sunLight.b + groundSkyLight.b) * ISun / M_PI;
 
-    // water specular color due to sunLight
-    if (reflectance.w > 0.0)
+    /* water specular color due to sunLight */
+    /*if (reflectance.w > 0.0)
     {
         vec3 h = normalize(s - v);
         float fresnel = 0.02 + 0.98 * pow(1.0 - dot(-v, h), 5.0);
         float waterBrdf = fresnel * pow(max(dot(h, n), 0.0), 150.0);
         groundColor += reflectance.w * max(waterBrdf, 0.0) * sunLight * ISun;
-    }
+    }*/
+#else
+    Color groundColor = base;
 #endif
 
-    result.r = attenuation.x * base.r; //=R[L0]+R[L*]
-    result.g = attenuation.y * base.g;
-    result.b = attenuation.z * base.b;
+    result.r = attenuation.x * groundColor.r; //=R[L0]+R[L*]
+    result.g = attenuation.y * groundColor.g;
+    result.b = attenuation.z * groundColor.b;
     result.a = 1.0;
 
     return result;
@@ -1226,7 +1218,7 @@ static inline void _fixVector(Vector3* v)
 
 Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position)
 {
-    Vector3 x = {0.0, Rg + (eye.y + 20.0) * 0.1, 0.0};
+    Vector3 x = {0.0, Rg + (eye.y + 10.0) * 0.01, 0.0};
     _fixVector(&x);
     Vector3 v = v3Normalize(direction);
     _fixVector(&v);
@@ -1237,8 +1229,7 @@ Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
     double mu = v3Dot(x, v) / r;
     double t = -r * mu - sqrt(r * r * (mu * mu - 1.0) + Rg * Rg);
 
-    Vector3 g = {0.0, 0.0, Rg + 10.0};
-    g = v3Sub(x, g);
+    Vector3 g = {x.x, x.y, x.z - Rg + 10.0};
     double a = v.x * v.x + v.y * v.y - v.z * v.z;
     double b = 2.0 * (g.x * v.x + g.y * v.y - g.z * v.z);
     double c = g.x * g.x + g.y * g.y - g.z * g.z;
@@ -1267,10 +1258,10 @@ Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
 Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
 {
     Vector3 eye = renderer->camera_location;
-    Vector3 direction = v3Scale(v3Sub(location, eye), 0.1);
+    Vector3 direction = v3Scale(v3Sub(location, eye), 0.01);
     Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), 149597870.0);
 
-    Vector3 x = {0.0, Rg + (eye.y + 20.0) * 0.1, 0.0};
+    Vector3 x = {0.0, Rg + (eye.y + 10.0) * 0.01, 0.0};
     _fixVector(&x);
     Vector3 v = v3Normalize(direction);
     _fixVector(&v);
@@ -1282,8 +1273,7 @@ Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color
     /*double t = -r * mu - sqrt(r * r * (mu * mu - 1.0) + Rg * Rg);*/
     double t = v3Norm(direction);
 
-    Vector3 g = {0.0, 0.0, Rg + 10.0};
-    g = v3Sub(x, g);
+    Vector3 g = {x.x, x.y, x.z - Rg - 10.0};
     double a = v.x * v.x + v.y * v.y - v.z * v.z;
     double b = 2.0 * (g.x * v.x + g.y * v.y - g.z * v.z);
     double c = g.x * g.x + g.y * g.y - g.z * g.z;
@@ -1305,6 +1295,6 @@ Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color
     Vector3 attenuation;
     Color inscatterColor = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
     Color groundColor = _groundColor(base, x, t, v, s, r, mu, attenuation); //R[L0]+R[L*]*/
-    Color sunColor = _sunColor(x, t, v, s, r, mu); /* L0 */
+    Color sunColor = COLOR_BLACK;
     return _hdr(sunColor, groundColor, inscatterColor); /* Eq (16) */
 }

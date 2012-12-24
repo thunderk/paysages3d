@@ -13,6 +13,15 @@ extern "C" {
 
 typedef enum
 {
+    ATMOSPHERE_PRESET_CLEAR_DAY = 0,
+    ATMOSPHERE_PRESET_CLEAR_SUNSET = 1,
+    ATMOSPHERE_PRESET_HAZY_MORNING = 2,
+    ATMOSPHERE_PRESET_FOGGY = 3,
+    ATMOSPHERE_PRESET_STORMY = 4
+} AtmospherePreset;
+
+typedef enum
+{
     ATMOSPHERE_MODEL_PREETHAM = 0,
     ATMOSPHERE_MODEL_BRUNETON = 1
 } AtmosphereModel;
@@ -49,6 +58,7 @@ typedef struct
 extern StandardDefinition AtmosphereDefinitionClass;
 extern StandardRenderer AtmosphereRendererClass;
 
+void atmosphereAutoPreset(AtmosphereDefinition* definition, AtmospherePreset preset);
 void atmosphereRenderSkydome(Renderer* renderer);
 Renderer atmosphereCreatePreviewRenderer();
 Color atmosphereGetPreview(Renderer* renderer, double x, double y, double heading);

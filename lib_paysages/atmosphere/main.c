@@ -38,23 +38,9 @@ static AtmosphereDefinition* _createDefinition()
     }
 
     result = malloc(sizeof(AtmosphereDefinition));
-    result->model = ATMOSPHERE_MODEL_PREETHAM;
-    result->daytime = 0.0;
-    result->sun_color = COLOR_BLACK;
-    result->sun_color.r = 1.0;
-    result->sun_color.g = 0.95;
-    result->sun_color.b = 0.9;
-    result->sun_color.a = 1.0;
-    result->sun_radius = 0.02;
-    result->sun_halo_size = 0.3;
     result->sun_halo_profile = curveCreate();
-    curveQuickAddPoint(result->sun_halo_profile, 0.0, 1.0);
-    curveQuickAddPoint(result->sun_halo_profile, 0.1, 0.2);
-    curveQuickAddPoint(result->sun_halo_profile, 1.0, 0.0);
-    result->dome_lighting = 0.6;
-    result->humidity = 0.1;
 
-    _validateDefinition(result);
+    atmosphereAutoPreset(result, ATMOSPHERE_PRESET_CLEAR_DAY);
 
     return result;
 }

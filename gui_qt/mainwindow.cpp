@@ -56,7 +56,7 @@ int main(int argc, char** argv)
         app.installTranslator(&qtTranslator);
     }
 
-    splash->showMessage(app.tr("Preloading environment...\n(may take some time on the first launch)"), Qt::AlignCenter, Qt::white);
+    splash->showMessage(app.tr("Preloading..."), Qt::AlignCenter, Qt::white);
     app.processEvents();
 
     paysagesInit();

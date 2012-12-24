@@ -1,3 +1,5 @@
+#include "public.h"
+
 #ifndef _PAYSAGES_ATMOSPHERE_PRIVATE_H_
 #define _PAYSAGES_ATMOSPHERE_PRIVATE_H_
 
