@@ -8,12 +8,12 @@ ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, double size, SkyboxOrient
 {
     _box_size = size;
     _orientation = orientation;
-    
+
     setMaxTextureSize(256);
     maintain();
 }
 
-void ExplorerChunkSky::onRenderEvent(QGLWidget* widget)
+void ExplorerChunkSky::onRenderEvent(QGLWidget*)
 {
     double size = _box_size;
     Vector3 camera = renderer()->camera_location;
@@ -85,7 +85,7 @@ void ExplorerChunkSky::onRenderEvent(QGLWidget* widget)
     glEnd();
 }
 
-double ExplorerChunkSky::getDisplayedSizeHint(CameraDefinition* camera)
+double ExplorerChunkSky::getDisplayedSizeHint(CameraDefinition*)
 {
     return 1000.0;
 }
@@ -93,10 +93,10 @@ double ExplorerChunkSky::getDisplayedSizeHint(CameraDefinition* camera)
 Color ExplorerChunkSky::getTextureColor(double x, double y)
 {
     Vector3 location;
-    
+
     x -= 0.5;
     y -= 0.5;
-    
+
     switch(_orientation)
     {
         case SKYBOX_NORTH:

@@ -135,33 +135,3 @@ Color preethamGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
     colorMask(&result, &humidity_color);
     return result;
 }
-
-Color preethamApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
-{
-    Vector3 ray = v3Sub(location, renderer->camera_location);
-    Vector3 direction = v3Normalize(ray);
-    double distance = v3Norm(ray);
-    AtmosphereDefinition* definition = renderer->atmosphere->definition;
-    double near = 10.0 - definition->humidity * 10.0;
-    double far = 100.0 - definition->humidity * 90.0;
-    double max = 0.85 + definition->humidity * 0.12;
-
-    assert(near < far);
-
-    if (distance < near)
-    {
-        return base;
-    }
-    else
-    {
-        Vector3 sun_position = renderer->atmosphere->getSunDirection(renderer);
-        Color sky = preethamGetSkyColor(definition, renderer->camera_location, direction, sun_position);
-        if (distance > far)
-        {
-            distance = far;
-        }
-        sky.a = max * ((distance - near) / (far - near));
-        colorMask(&base, &sky);
-        return base;
-    }
-}

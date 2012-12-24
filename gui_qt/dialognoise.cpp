@@ -20,7 +20,7 @@ public:
         _noise_original = noise;
         _noise_preview = noiseCreateGenerator();
         _level = -1;
-        
+
         configScaling(0.15, 6.0, 0.09, 6.0);
     }
 
@@ -58,7 +58,7 @@ public:
     {
         _noise_original = noise;
         _noise_preview = noiseCreateGenerator();
-        
+
         configScaling(0.15, 6.0, 0.09, 6.0);
     }
 protected:
@@ -108,7 +108,7 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     previews->layout()->addWidget(label);
     previews->layout()->addWidget(previewLevel);
-    
+
     previewTotal = new PreviewTotal(previews, _current);
     label = new QLabel(tr("Total preview"));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -118,11 +118,11 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     form = new QWidget(this);
     form->setLayout(new QVBoxLayout());
     layout()->addWidget(form);
-    
+
     function = new QWidget(form);
     function->setLayout(new QHBoxLayout());
     form->layout()->addWidget(function);
-    
+
     function->layout()->addWidget(new QLabel(tr("Noise function")));
     function_algo = new QComboBox(function);
     function_algo->addItems(QStringList(tr("Simplex (best)")) << tr("Perlin (fast)") << tr("Naive (slow)"));
@@ -222,7 +222,7 @@ bool DialogNoise::getNoise(QWidget* parent, NoiseGenerator* noise)
     return (result != 0) ? true : false;
 }
 
-void DialogNoise::closeEvent(QCloseEvent* e)
+void DialogNoise::closeEvent(QCloseEvent*)
 {
     reject();
 }
@@ -245,7 +245,7 @@ void DialogNoise::revertToCurrent()
     int i, n;
     int selected;
     NoiseFunction function;
-    
+
     selected = levels->currentRow();
 
     levels->clear();
@@ -254,7 +254,7 @@ void DialogNoise::revertToCurrent()
     {
         levels->addItem(QString(tr("Component %1")).arg(i + 1));
     }
-    
+
     if (n > 0)
     {
         if (selected < 0)
@@ -267,7 +267,7 @@ void DialogNoise::revertToCurrent()
         }
         levels->setCurrentRow(selected);
     }
-    
+
     function = noiseGetFunction(_current);
     function_algo->setCurrentIndex((int)function.algorithm);
     function_ridge->setValue(round(function.ridge_factor * 20.0));
@@ -279,7 +279,7 @@ void DialogNoise::revertToCurrent()
 void DialogNoise::addLevel()
 {
     NoiseLevel level;
-    
+
     level.height = 0.1;
     level.scaling = 0.1;
     level.xoffset = 0.0;
@@ -288,20 +288,20 @@ void DialogNoise::addLevel()
     noiseAddLevel(_current, level);
 
     revertToCurrent();
-    
+
     levels->setCurrentRow(levels->count() - 1);
 }
 
 void DialogNoise::removeLevel()
 {
     int row;
-    
+
     row = levels->currentRow();
-    
+
     noiseRemoveLevel(_current, _current_level);
 
     revertToCurrent();
-    
+
     if (row >= levels->count())
     {
         row--;
@@ -312,13 +312,13 @@ void DialogNoise::removeLevel()
 void DialogNoise::functionChanged()
 {
     NoiseFunction function;
-    
+
     function.algorithm = (NoiseFunctionAlgorithm)function_algo->currentIndex();
     function.ridge_factor = (double)function_ridge->value() * 0.05;
-    
+
     noiseSetFunction(_current, &function);
     noiseValidate(_current);
-    
+
     previewLevel->redraw();
     previewTotal->redraw();
 }

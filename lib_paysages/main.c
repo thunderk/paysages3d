@@ -32,7 +32,6 @@ void paysagesInit()
     cameraDeleteDefinition(&camera);
 
     autoGenRealisticLandscape(0);
-    autoSetDaytime(8, 30);
 
     // DEBUG
     /*double last_height, height, x;
@@ -52,7 +51,7 @@ void paysagesQuit()
 {
     sceneryQuit();
     renderQuit();
-    
+
     openclQuit();
 }
 
@@ -60,21 +59,21 @@ FileOperationResult paysagesSave(char* filepath)
 {
     PackStream* stream = packWriteFile(filepath);
     double app_header, version_header;
-    
+
     if (!stream)
     {
         return FILE_OPERATION_IOERROR;
     }
-    
+
     app_header = (double)APP_HEADER;
     packWriteDouble(stream, &app_header);
     version_header = (double)PAYSAGES_CURRENT_DATA_VERSION;
     packWriteDouble(stream, &version_header);
-    
+
     scenerySave(stream);
-    
+
     packCloseStream(stream);
-    
+
     return FILE_OPERATION_OK;
 }
 
@@ -94,7 +93,7 @@ FileOperationResult paysagesLoad(char* filepath)
         packCloseStream(stream);
         return FILE_OPERATION_APP_MISMATCH;
     }
-    
+
     packReadDouble(stream, &version_header);
     if ((int)version_header != PAYSAGES_CURRENT_DATA_VERSION)
     {
@@ -105,6 +104,6 @@ FileOperationResult paysagesLoad(char* filepath)
     sceneryLoad(stream);
 
     packCloseStream(stream);
-    
+
     return FILE_OPERATION_OK;
 }

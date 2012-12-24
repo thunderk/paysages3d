@@ -47,7 +47,7 @@ protected:
     {
         cloudsLayerCopyDefinition(_original_layer, _preview_layer);
     }
-    static Color _applyLightStatus(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material)
+    static Color _applyLightStatus(Renderer*, LightStatus*, Vector3, Vector3, SurfaceMaterial)
     {
         return COLOR_WHITE;
     }

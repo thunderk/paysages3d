@@ -29,13 +29,16 @@ typedef enum
 typedef struct
 {
     AtmosphereModel model;
-    double daytime;
+    int hour;
+    int minute;
     double humidity;
     Color sun_color;
     double sun_radius;
     double sun_halo_size;
     Curve* sun_halo_profile;
     double dome_lighting;
+
+    double _daytime;
 } AtmosphereDefinition;
 
 typedef int (*FuncAtmosphereGetSkydomeLights)(Renderer* renderer, LightDefinition* array, int max_lights);

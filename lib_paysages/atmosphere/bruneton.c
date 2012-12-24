@@ -25,7 +25,7 @@ static const double exposure = 0.4;
 static const double ISun = 100.0;
 static const double AVERAGE_GROUND_REFLECTANCE = 0.1;
 
-#if 0
+#if 1
 #define RES_MU 128
 #define RES_MU_S 32
 #define RES_R 32

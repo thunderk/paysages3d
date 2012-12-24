@@ -23,7 +23,24 @@ static int _inited = 0;
 /******************** Definition ********************/
 static void _validateDefinition(AtmosphereDefinition* definition)
 {
-    UNUSED(definition);
+    if (definition->hour < 0)
+    {
+        definition->hour = 0;
+    }
+    if (definition->hour > 23)
+    {
+        definition->hour = 23;
+    }
+    if (definition->minute < 0)
+    {
+        definition->minute = 0;
+    }
+    if (definition->minute > 59)
+    {
+        definition->minute = 59;
+    }
+
+    definition->_daytime = (double)definition->hour / 24.0 + (double)definition->minute / 1440.0;
 }
 
 static AtmosphereDefinition* _createDefinition()
@@ -54,7 +71,8 @@ static void _deleteDefinition(AtmosphereDefinition* definition)
 static void _copyDefinition(AtmosphereDefinition* source, AtmosphereDefinition* destination)
 {
     destination->model = source->model;
-    destination->daytime = source->daytime;
+    destination->hour = source->hour;
+    destination->minute = source->minute;
     destination->sun_color = source->sun_color;
     destination->sun_radius = source->sun_radius;
     destination->sun_halo_size = source->sun_halo_size;
@@ -69,7 +87,8 @@ static void _copyDefinition(AtmosphereDefinition* source, AtmosphereDefinition* 
 static void _saveDefinition(PackStream* stream, AtmosphereDefinition* definition)
 {
     packWriteInt(stream, (int*)&definition->model);
-    packWriteDouble(stream, &definition->daytime);
+    packWriteInt(stream, &definition->hour);
+    packWriteInt(stream, &definition->minute);
     colorSave(stream, &definition->sun_color);
     packWriteDouble(stream, &definition->sun_radius);
     packWriteDouble(stream, &definition->sun_halo_size);
@@ -81,7 +100,8 @@ static void _saveDefinition(PackStream* stream, AtmosphereDefinition* definition
 static void _loadDefinition(PackStream* stream, AtmosphereDefinition* definition)
 {
     packReadInt(stream, (int*)&definition->model);
-    packReadDouble(stream, &definition->daytime);
+    packReadInt(stream, &definition->hour);
+    packReadInt(stream, &definition->minute);
     colorLoad(stream, &definition->sun_color);
     packReadDouble(stream, &definition->sun_radius);
     packReadDouble(stream, &definition->sun_halo_size);
@@ -175,7 +195,7 @@ static Color _getSkyColor(Renderer* renderer, Vector3 direction)
 static Vector3 _getSunDirection(Renderer* renderer)
 {
     Vector3 result;
-    double sun_angle = (renderer->atmosphere->definition->daytime + 0.75) * M_PI * 2.0;
+    double sun_angle = (renderer->atmosphere->definition->_daytime + 0.75) * M_PI * 2.0;
     result.x = cos(sun_angle);
     result.y = sin(sun_angle);
     result.z = 0.0;
@@ -207,7 +227,7 @@ static int _getSkydomeLights(Renderer* renderer, LightDefinition* lights, int ma
     {
         definition = renderer->atmosphere->definition;
 
-        sun_angle = (definition->daytime + 0.75) * M_PI * 2.0;
+        sun_angle = (definition->_daytime + 0.75) * M_PI * 2.0;
         sun_direction.x = cos(sun_angle);
         sun_direction.y = sin(sun_angle);
         sun_direction.z = 0.0;
@@ -321,14 +341,11 @@ static void _bindRenderer(AtmosphereRenderer* renderer, AtmosphereDefinition* de
 
     switch (definition->model)
     {
-        case ATMOSPHERE_MODEL_PREETHAM:
-            renderer->applyAerialPerspective = preethamApplyAerialPerspective;
-            break;
         case ATMOSPHERE_MODEL_BRUNETON:
             renderer->applyAerialPerspective = brunetonApplyAerialPerspective;
             break;
         default:
-            renderer->applyAerialPerspective = _fakeApplyAerialPerspective;
+            renderer->applyAerialPerspective = basicApplyAerialPerspective;
     }
 
     mutexAcquire(cache->lock);

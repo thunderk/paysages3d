@@ -94,7 +94,7 @@ void ExplorerChunkTerrain::onCameraEvent(CameraDefinition* camera)
     _lock_data.unlock();
 }
 
-void ExplorerChunkTerrain::onRenderEvent(QGLWidget* widget)
+void ExplorerChunkTerrain::onRenderEvent(QGLWidget*)
 {
     _lock_data.lock();
     int tessellation_size = _tessellation_current_size;

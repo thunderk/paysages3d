@@ -16,28 +16,6 @@
 #include "water.h"
 #include "zone.h"
 
-void autoSetDaytime(int hour, int minute)
-{
-    autoSetDaytimeFraction((double)hour / 24.0 + (double)minute / 1440.0);
-}
-
-void autoSetDaytimeFraction(double daytime)
-{
-    AtmosphereDefinition* atmosphere;
-
-    daytime = fmod(daytime, 1.0);
-    if (daytime < 0.0)
-    {
-        daytime += 1.0;
-    }
-
-    atmosphere = AtmosphereDefinitionClass.create();
-    sceneryGetAtmosphere(atmosphere);
-    atmosphere->daytime = daytime;
-    scenerySetAtmosphere(atmosphere);
-    AtmosphereDefinitionClass.destroy(atmosphere);
-}
-
 void autoGenRealisticLandscape(int seed)
 {
     WaterDefinition water;

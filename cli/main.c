@@ -120,7 +120,7 @@ int main(int argc, char** argv)
 
     printf("Initializing ...\n");
     paysagesInit();
-    
+
     if (conf_file_path)
     {
         paysagesLoad(conf_file_path);
@@ -131,14 +131,14 @@ int main(int argc, char** argv)
 
     for (outputcount = 0; outputcount < conf_nb_pictures; outputcount++)
     {
-        autoSetDaytimeFraction(conf_daytime_start);
+        /*autoSetDaytimeFraction(conf_daytime_start);*/ /* TODO */
 
         sprintf(outputpath, "output/pic%05d.png", outputcount);
         startRender(&renderer, outputpath, conf_render_params);
 
         conf_daytime_start += conf_daytime_step;
     }
-    
+
     printf("Cleaning up ...\n");
     rendererDelete(&renderer);
     paysagesQuit();

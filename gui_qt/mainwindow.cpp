@@ -56,7 +56,7 @@ int main(int argc, char** argv)
         app.installTranslator(&qtTranslator);
     }
 
-    splash->showMessage(app.tr("Preloading..."), Qt::AlignCenter, Qt::white);
+    //splash->showMessage(app.tr("Preloading..."), Qt::AlignCenter, Qt::white);
     app.processEvents();
 
     paysagesInit();
@@ -184,7 +184,6 @@ void MainWindow::fileNew()
     if (QMessageBox::question(this, tr("Paysages 3D - New scenery"), tr("Do you want to start a new scenery ? Any unsaved changes will be lost."), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
         autoGenRealisticLandscape(0);
-        autoSetDaytime(8, 30);
         refreshAll();
     }
 }

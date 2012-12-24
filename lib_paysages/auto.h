@@ -7,8 +7,6 @@
 extern "C" {
 #endif
 
-void autoSetDaytime(int hour, int minute);
-void autoSetDaytimeFraction(double daytime);
 void autoGenRealisticLandscape(int seed);
 
 #ifdef __cplusplus
