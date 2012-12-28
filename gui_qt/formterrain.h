@@ -23,7 +23,7 @@ private slots:
     void startPainting();
 
 private:
-    BasePreview* previewHeight;
+    /*BasePreview* previewHeight;*/
     BasePreview* previewColor;
 };
 

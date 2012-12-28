@@ -46,8 +46,9 @@ extern StandardRenderer TerrainRendererClass;
 
 void terrainAutoPreset(TerrainDefinition* definition, TerrainPreset preset);
 void terrainRenderSurface(Renderer* renderer);
-/*Renderer terrainCreatePreviewRenderer();
-Color terrainGetPreview(Renderer* renderer, double x, double y);*/
+
+Renderer terrainCreatePreviewRenderer();
+Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double detail);
 
 typedef struct
 {

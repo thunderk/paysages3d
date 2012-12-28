@@ -20,38 +20,72 @@ class PreviewWaterCoverage:public BasePreview
 public:
     PreviewWaterCoverage(QWidget* parent):BasePreview(parent)
     {
-        /*_water = waterCreateDefinition();
-        _terrain = terrainCreateDefinition();*/
+        _renderer = terrainCreatePreviewRenderer();
+        _water = waterCreateDefinition();
+        _highlight_enabled = true;
 
         addOsd(QString("geolocation"));
+        addToggle("highlight", tr("Coverage highlight"), true);
 
         configScaling(0.5, 200.0, 3.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
-/*protected:
+protected:
     QColor getColor(double x, double y)
     {
         double height;
 
-        height = terrainGetHeight(&_terrain, x, y);
+        height = _renderer.terrain->getHeight(&_renderer, x, -y);
         if (height > _definition.height)
         {
-            height = terrainGetHeightNormalized(&_terrain, x, y);
-            return QColor((int)(255.0 * height), (int)(255.0 * height), (int)(255.0 * height));
+            return colorToQColor(terrainGetPreviewColor(&_renderer, x, -y, scaling));
         }
         else
         {
-            return colorToQColor(_definition.material.base);
+            Vector3 location, look;
+            Color base;
+
+            location.x = x;
+            location.y = _water.height;
+            location.z = -y;
+
+            look.x = 0.0;
+            look.y = -1.0;
+            look.z = 0.0;
+
+            base = waterGetColor(&_water, &_renderer, location, look);
+
+            if (_highlight_enabled)
+            {
+                Color mask = {0.5, 0.5, 1.0, 0.5};
+                colorMask(&base, &mask);
+            }
+
+            return colorToQColor(base);
         }
     }
     void updateData()
     {
         waterCopyDefinition(&_definition, &_water);
-        sceneryGetTerrain(&_terrain);
-    }*/
+
+        // TODO Do this only on full refresh
+        TerrainDefinition* terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
+        sceneryGetTerrain(terrain);
+        TerrainRendererClass.bind(_renderer.terrain, terrain);
+        TerrainDefinitionClass.destroy(terrain);
+    }
+    void toggleChangeEvent(QString key, bool value)
+    {
+        if (key == "highlight")
+        {
+            _highlight_enabled = value;
+            redraw();
+        }
+    }
 private:
+    Renderer _renderer;
     WaterDefinition _water;
-    TerrainDefinition _terrain;
+    bool _highlight_enabled;
 };
 
 class PreviewWaterColor:public BasePreview
