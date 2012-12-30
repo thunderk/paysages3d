@@ -25,7 +25,7 @@ static const double exposure = 0.4;
 static const double ISun = 100.0;
 static const double AVERAGE_GROUND_REFLECTANCE = 0.1;
 
-#if 1
+#if 0
 #define RES_MU 128
 #define RES_MU_S 32
 #define RES_R 32
@@ -236,7 +236,7 @@ static Color _transmittance(double r, double mu)
 /* transmittance(=transparency) of atmosphere between x and x0
  * assume segment x,x0 not intersecting ground
  * d = distance between x and x0, mu=cos(zenith angle of [x,x0) ray at x) */
-Color _transmittance3(double r, double mu, double d)
+static Color _transmittance3(double r, double mu, double d)
 {
     Color result, t1, t2;
     double r1 = sqrt(r * r + d * d + 2.0 * r * mu * d);
@@ -280,27 +280,6 @@ static double _limit(double r, double mu)
     return dout;
 }
 
-static double _opticalDepthTransmittance(double H, double r, double mu)
-{
-    double result = 0.0;
-    double dx = _limit(r, mu) / (double)TRANSMITTANCE_INTEGRAL_SAMPLES;
-    double yi = exp(-(r - Rg) / H);
-    int i;
-    for (i = 1; i <= TRANSMITTANCE_INTEGRAL_SAMPLES; ++i) {
-        double xj = (double)i * dx;
-        double yj = exp(-(sqrt(r * r + xj * xj + 2.0 * xj * r * mu) - Rg) / H);
-        result += (yi + yj) / 2.0 * dx;
-        yi = yj;
-    }
-    return mu < -sqrt(1.0 - (Rg / r) * (Rg / r)) ? 1e9 : result;
-}
-
-static void _getTransmittanceRMu(double x, double y, double* r, double* muS)
-{
-    *r = Rg + (y * y) * (Rt - Rg);
-    *muS = -0.15 + tan(1.5 * x) / tan(1.5) * (1.0 + 0.15);
-}
-
 /* transmittance(=transparency) of atmosphere for ray (r,mu) of length d
    (mu=cos(view zenith angle)), intersections with ground ignored
    uses analytic formula instead of transmittance texture */
@@ -342,6 +321,7 @@ static Color _hdr(Color c1, Color c2, Color c3)
 static void _getMuMuSNu(double x, double y, double r, Color dhdH, double* mu, double* muS, double* nu)
 {
     double d;
+
     if (y < (double)(RES_MU) / 2.0)
     {
         d = 1.0 - y / ((double)(RES_MU) / 2.0);
@@ -351,7 +331,7 @@ static void _getMuMuSNu(double x, double y, double r, Color dhdH, double* mu, do
     }
     else
     {
-        double d = (y - (double)(RES_MU) / 2.0) / ((double)(RES_MU) / 2.0);
+        d = (y - (double)(RES_MU) / 2.0) / ((double)(RES_MU) / 2.0);
         d = min(max(dhdH.r, d * dhdH.g), dhdH.g * 0.999);
         *mu = (Rt * Rt - r * r - d * d) / (2.0 * r * d);
     }
@@ -373,7 +353,28 @@ static Color _irradiance(Texture2D* sampler, double r, double muS)
     return texture2DGetLinear(sampler, u, v);
 }
 
-/*********************** Texture precomputing ***********************/
+/*********************** transmittance.glsl ***********************/
+
+static void _getTransmittanceRMu(double x, double y, double* r, double* muS)
+{
+    *r = Rg + (y * y) * (Rt - Rg);
+    *muS = -0.15 + tan(1.5 * x) / tan(1.5) * (1.0 + 0.15);
+}
+
+static double _opticalDepthTransmittance(double H, double r, double mu)
+{
+    double result = 0.0;
+    double dx = _limit(r, mu) / (double)TRANSMITTANCE_INTEGRAL_SAMPLES;
+    double yi = exp(-(r - Rg) / H);
+    int i;
+    for (i = 1; i <= TRANSMITTANCE_INTEGRAL_SAMPLES; ++i) {
+        double xj = (double)i * dx;
+        double yj = exp(-(sqrt(r * r + xj * xj + 2.0 * xj * r * mu) - Rg) / H);
+        result += (yi + yj) / 2.0 * dx;
+        yi = yj;
+    }
+    return mu < -sqrt(1.0 - (Rg / r) * (Rg / r)) ? 1e9 : result;
+}
 
 static void _precomputeTransmittanceTexture()
 {
@@ -384,7 +385,7 @@ static void _precomputeTransmittanceTexture()
         for (y = 0; y < TRANSMITTANCE_H; y++)
         {
             double r, muS;
-            _getTransmittanceRMu((double)x / TRANSMITTANCE_W, (double)y / TRANSMITTANCE_H, &r, &muS);
+            _getTransmittanceRMu((double)(x + 0.5) / TRANSMITTANCE_W, (double)(y + 0.5) / TRANSMITTANCE_H, &r, &muS);
             double depth1 = _opticalDepthTransmittance(HR, r, muS);
             double depth2 = _opticalDepthTransmittance(HM, r, muS);
             Color trans;
@@ -397,6 +398,8 @@ static void _precomputeTransmittanceTexture()
     }
 }
 
+/*********************** irradiance1.glsl ***********************/
+
 static void _precomputeIrrDeltaETexture(Texture2D* destination)
 {
     int x, y;
@@ -406,12 +409,10 @@ static void _precomputeIrrDeltaETexture(Texture2D* destination)
     {
         for (y = 0; y < SKY_H; y++)
         {
-            double r, muS, u, v;
+            double r, muS;
             Color trans, irr;
             _getIrradianceRMuS((double)x / SKY_W, (double)y / SKY_H, &r, &muS);
             trans = _transmittance(r, muS);
-
-            _getTransmittanceUV(r, muS, &u, &v);
 
             irr.r = trans.r * max(muS, 0.0);
             irr.g = trans.g * max(muS, 0.0);
@@ -593,7 +594,7 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
             Vector3 gnormal;
             gnormal.x = dground * w.x / Rg;
             gnormal.y = dground * w.y / Rg;
-            gnormal.z = r + dground * w.z / Rg;
+            gnormal.z = (r + dground * w.z) / Rg;
             Color girradiance = _irradiance(deltaE, Rg, v3Dot(gnormal, s));
 
             Color raymie1; /* light arriving at x from direction w */
@@ -744,6 +745,7 @@ static Color _integrand2(Texture3D* deltaJ, double r, double mu, double muS, dou
     c1.r *= c2.r;
     c1.g *= c2.g;
     c1.b *= c2.b;
+    c1.a = 1.0;
     return c1;
 }
 
@@ -758,8 +760,8 @@ static Color _inscatterN(Texture3D* deltaJ, double r, double mu, double muS, dou
         double xj = (double)(i) * dx;
         Color raymiej = _integrand2(deltaJ, r, mu, muS, nu, xj);
         raymie.r += (raymiei.r + raymiej.r) / 2.0 * dx;
-        raymie.g += (raymiei.r + raymiej.r) / 2.0 * dx;
-        raymie.b += (raymiei.r + raymiej.r) / 2.0 * dx;
+        raymie.g += (raymiei.g + raymiej.g) / 2.0 * dx;
+        raymie.b += (raymiei.b + raymiej.b) / 2.0 * dx;
         raymiei = raymiej;
     }
     return raymie;
