@@ -120,7 +120,7 @@ static inline int _checkHit(Vector3 eye, Vector3 direction, Vector3* hit, Vector
 
 Color atmosphereGetPreview(Renderer* renderer, double x, double y, double heading)
 {
-    Vector3 eye = {0.0, 8.0, 0.0};
+    Vector3 eye = {0.0, 7.0, 0.0};
     Vector3 direction = {x, y, -1.0};
     Vector3 hit, normal;
     Matrix4 rotation;
@@ -167,7 +167,7 @@ Renderer atmosphereCreatePreviewRenderer()
     Renderer result = rendererCreate();
 
     result.camera_location.x = 0.0;
-    result.camera_location.y = 8.0;
+    result.camera_location.y = 7.0;
     result.camera_location.z = 0.0;
 
     result.getLightStatus = _getLightStatus;

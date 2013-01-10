@@ -116,7 +116,7 @@ void WidgetHeightMap::mousePressEvent(QMouseEvent* event)
     }
 }
 
-void WidgetHeightMap::mouseReleaseEvent(QMouseEvent* event)
+void WidgetHeightMap::mouseReleaseEvent(QMouseEvent*)
 {
     _last_brush_action = 0;
 }
@@ -365,7 +365,7 @@ void WidgetHeightMap::updateVertexInfo()
 
             vertex->point.x = 80.0 * (double)x / (double)(rx - 1) - 40.0;
             vertex->point.z = 80.0 * (double)z / (double)(rz - 1) - 40.0;
-            
+
             vertex->point.y = _renderer.terrain->getHeight(&_renderer, vertex->point.x, vertex->point.z);
         }
     }

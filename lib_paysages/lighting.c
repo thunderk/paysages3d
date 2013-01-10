@@ -162,8 +162,6 @@ static Color _applyDirectLight(LightDefinition* definition, Renderer* renderer, 
     normal = v3Normalize(normal);
 
     diffuse = v3Dot(direction_inv, normal);
-    /*diffuse = pow(diffuse * 0.5 + 0.5, 2.0);*/
-    diffuse = diffuse * 0.5 + 0.5;
     if (diffuse > 0.0)
     {
         if (material.shininess > 0.0 && definition->reflection > 0.0)
@@ -174,13 +172,12 @@ static Color _applyDirectLight(LightDefinition* definition, Renderer* renderer, 
             specular = v3Dot(reflect, view);
             if (specular > 0.0)
             {
-                specular = pow(specular, material.shininess);
+                specular = pow(specular, material.shininess) * material.reflection;
             }
             else
             {
                 specular = 0.0;
             }
-            specular *= material.reflection;
         }
         else
         {

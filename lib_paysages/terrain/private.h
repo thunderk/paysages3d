@@ -22,4 +22,10 @@ struct TerrainHeightMap
     TerrainHeightMapData floating_data;
 };
 
+TerrainHeightMap* terrainHeightMapCreate();
+void terrainHeightmapDelete(TerrainHeightMap* heightmap);
+void terrainHeightmapCopy(TerrainHeightMap* source, TerrainHeightMap* destination);
+void terrainHeightmapSave(PackStream* stream, TerrainHeightMap* heightmap);
+void terrainHeightmapLoad(PackStream* stream, TerrainHeightMap* heightmap);
+
 #endif

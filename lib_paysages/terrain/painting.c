@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 TerrainHeightMap* terrainHeightMapCreate()
 {
@@ -62,7 +63,7 @@ static void _setFixedCount(TerrainHeightMap* heightmap, int new_count)
 
 void terrainHeightmapCopy(TerrainHeightMap* source, TerrainHeightMap* destination)
 {
-    int i, j;
+    int i;
 
     _setFixedCount(destination, source->fixed_count);
 
@@ -124,6 +125,22 @@ void terrainHeightmapLoad(PackStream* stream, TerrainHeightMap* heightmap)
     }
 
     heightmap->floating_used = 0;
+}
+
+static void _prepareBrushStroke(TerrainHeightMap* heightmap, TerrainBrush* brush)
+{
+    double cx = brush->relative_x / TERRAIN_HEIGHTMAP_DETAIL;
+    double cz = brush->relative_z / TERRAIN_HEIGHTMAP_DETAIL;
+    double s = brush->smoothed_size + brush->hard_radius;
+    double sx = s / TERRAIN_HEIGHTMAP_DETAIL;
+    double sz = s / TERRAIN_HEIGHTMAP_DETAIL;
+
+    int x1 = (int)floor(cx - sx);
+    int x2 = (int)ceil(cx + sx);
+    int z1 = (int)floor(cz - sz);
+    int z2 = (int)ceil(cz + sz);
+
+    /* TODO Prepare floating data */
 }
 
 void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)

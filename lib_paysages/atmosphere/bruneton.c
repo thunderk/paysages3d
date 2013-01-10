@@ -613,9 +613,9 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
                 double pm1 = _phaseFunctionM(nu1);
                 Color ray1 = _texture4D(deltaSR, r, w.z, muS, nu1);
                 Color mie1 = _texture4D(deltaSM, r, w.z, muS, nu1);
-                raymie1.r += ray1.r * pr1 + mie1.r + pm1;
-                raymie1.g += ray1.g * pr1 + mie1.g + pm1;
-                raymie1.b += ray1.b * pr1 + mie1.b + pm1;
+                raymie1.r += ray1.r * pr1 + mie1.r * pm1;
+                raymie1.g += ray1.g * pr1 + mie1.g * pm1;
+                raymie1.b += ray1.b * pr1 + mie1.b * pm1;
             }
             else
             {
@@ -949,9 +949,9 @@ static Color _groundColor(Color base, Vector3 x, double t, Vector3 v, Vector3 s,
 
     /* light reflected at x0 (=(R[L0]+R[L*])/T(x,x0)) */
     Color groundColor;
-    groundColor.r = base.r * (max(muS, 0.0) * sunLight.r + groundSkyLight.r) * ISun / M_PI;
-    groundColor.g = base.g * (max(muS, 0.0) * sunLight.g + groundSkyLight.g) * ISun / M_PI;
-    groundColor.b = base.b * (max(muS, 0.0) * sunLight.b + groundSkyLight.b) * ISun / M_PI;
+    groundColor.r = base.r * 0.2 * (max(muS, 0.0) * sunLight.r + groundSkyLight.r) * ISun / M_PI;
+    groundColor.g = base.g * 0.2 * (max(muS, 0.0) * sunLight.g + groundSkyLight.g) * ISun / M_PI;
+    groundColor.b = base.b * 0.2 * (max(muS, 0.0) * sunLight.b + groundSkyLight.b) * ISun / M_PI;
 
     /* water specular color due to sunLight */
     /*if (reflectance.w > 0.0)

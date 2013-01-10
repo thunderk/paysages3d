@@ -4,7 +4,6 @@
 #include "../shared/types.h"
 #include "../noise.h"
 #include "../lighting.h"
-#include "private.h"
 
 #ifdef __cplusplus
 extern "C" {
