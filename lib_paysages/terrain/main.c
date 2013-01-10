@@ -24,6 +24,9 @@ static TerrainDefinition* _createDefinition()
     definition->height = 0.0;
     definition->scaling = 1.0;
     definition->shadow_smoothing = 0.0;
+
+    definition->height_map = terrainHeightMapCreate();
+
     definition->_height_noise = noiseCreateGenerator();
 
     terrainAutoPreset(definition, TERRAIN_PRESET_STANDARD);
@@ -33,6 +36,7 @@ static TerrainDefinition* _createDefinition()
 
 static void _deleteDefinition(TerrainDefinition* definition)
 {
+    terrainHeightmapDelete(definition->height_map);
     noiseDeleteGenerator(definition->_height_noise);
     free(definition);
 }
@@ -42,6 +46,8 @@ static void _copyDefinition(TerrainDefinition* source, TerrainDefinition* destin
     destination->height = source->height;
     destination->scaling = source->scaling;
     destination->shadow_smoothing = source->shadow_smoothing;
+
+    terrainHeightmapCopy(source->height_map, destination->height_map);
 
     noiseCopy(source->_height_noise, destination->_height_noise);
 
@@ -53,6 +59,7 @@ static void _saveDefinition(PackStream* stream, TerrainDefinition* definition)
     packWriteDouble(stream, &definition->height);
     packWriteDouble(stream, &definition->scaling);
     packWriteDouble(stream, &definition->shadow_smoothing);
+    terrainHeightmapSave(stream, definition->height_map);
     noiseSaveGenerator(stream, definition->_height_noise);
 }
 
@@ -61,6 +68,7 @@ static void _loadDefinition(PackStream* stream, TerrainDefinition* definition)
     packReadDouble(stream, &definition->height);
     packReadDouble(stream, &definition->scaling);
     packReadDouble(stream, &definition->shadow_smoothing);
+    terrainHeightmapLoad(stream, definition->height_map);
     noiseLoadGenerator(stream, definition->_height_noise);
 
     _validateDefinition(definition);

@@ -4,6 +4,7 @@
 #include "../shared/types.h"
 #include "../noise.h"
 #include "../lighting.h"
+#include "private.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -14,11 +15,15 @@ typedef enum
     TERRAIN_PRESET_STANDARD
 } TerrainPreset;
 
+typedef struct TerrainHeightMap TerrainHeightMap;
+
 typedef struct
 {
     double height;
     double scaling;
     double shadow_smoothing;
+
+    TerrainHeightMap* height_map;
 
     double _detail;
     NoiseGenerator* _height_noise;
@@ -59,9 +64,10 @@ typedef struct
     double total_radius;
 } TerrainBrush;
 
-void terrainBrushElevation(TerrainDefinition* heightmap, TerrainBrush* brush, double value);
-void terrainBrushSmooth(TerrainDefinition* heightmap, TerrainBrush* brush, double value);
-void terrainBrushAddNoise(TerrainDefinition* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value);
+void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
+void terrainBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
+void terrainBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value);
+void terrainBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
 
 #ifdef __cplusplus
 }

@@ -5,65 +5,140 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
-TerrainHeightMap terrainHeightMapCreate()
+TerrainHeightMap* terrainHeightMapCreate()
 {
-    TerrainHeightMap result;
+    TerrainHeightMap* result;
 
-    /*result.data = malloc(sizeof(double));
-    result.resolution_x = 1;
-    result.resolution_z = 1;*/
+    result = malloc(sizeof(TerrainHeightMap));
+    result->fixed_count = 0;
+    result->fixed_data = malloc(sizeof(TerrainHeightMapData));
+    result->floating_used = 0;
+    result->floating_data.data = malloc(sizeof(double));
 
     return result;
 }
 
 void terrainHeightmapDelete(TerrainHeightMap* heightmap)
 {
-    /*free(heightmap->data);*/
+    int i;
+    for (i = 0; i < heightmap->fixed_count; i++)
+    {
+        free(heightmap->fixed_data[i].data);
+    }
+    free(heightmap->fixed_data);
+    free(heightmap->floating_data.data);
+    free(heightmap);
+}
+
+static void _setFixedCount(TerrainHeightMap* heightmap, int new_count)
+{
+    int old_count = heightmap->fixed_count;
+    int i;
+
+    if (new_count > old_count)
+    {
+        heightmap->fixed_data = realloc(heightmap->fixed_data, sizeof(TerrainHeightMapData) * new_count);
+        for (i = old_count; i < new_count; i++)
+        {
+            heightmap->fixed_data[i].data = malloc(sizeof(double));
+        }
+    }
+    else if (new_count < old_count)
+    {
+        for (i = new_count; i < old_count; i++)
+        {
+            free(heightmap->fixed_data[i].data);
+        }
+        if (new_count > 0)
+        {
+            heightmap->fixed_data = realloc(heightmap->fixed_data, sizeof(TerrainHeightMapData) * new_count);
+        }
+    }
+
+    heightmap->fixed_count = new_count;
 }
 
 void terrainHeightmapCopy(TerrainHeightMap* source, TerrainHeightMap* destination)
 {
-    /*destination->resolution_x = source->resolution_x;
-    destination->resolution_z = source->resolution_z;
-    destination->data = realloc(destination->data, sizeof(double) * destination->resolution_x * destination->resolution_z);
-    memcpy(destination->data, source->data, sizeof(double) * destination->resolution_x * destination->resolution_z);*/
+    int i, j;
+
+    _setFixedCount(destination, source->fixed_count);
+
+    for (i = 0; i < destination->fixed_count; i++)
+    {
+        destination->fixed_data[i].xstart = source->fixed_data[i].xstart;
+        destination->fixed_data[i].xsize = source->fixed_data[i].xsize;
+        destination->fixed_data[i].ystart = source->fixed_data[i].ystart;
+        destination->fixed_data[i].ysize = source->fixed_data[i].ysize;
+        if (destination->fixed_data[i].xsize * destination->fixed_data[i].ysize > 0)
+        {
+            destination->fixed_data[i].data = realloc(destination->fixed_data[i].data, sizeof(double) * destination->fixed_data[i].xsize * destination->fixed_data[i].ysize);
+        }
+        memcpy(destination->fixed_data[i].data, source->fixed_data[i].data, sizeof(double) * destination->fixed_data[i].xsize * destination->fixed_data[i].ysize);
+    }
+
+    destination->floating_used = 0;
 }
 
 void terrainHeightmapSave(PackStream* stream, TerrainHeightMap* heightmap)
 {
-    /*int i;
+    int i, j;
 
-    packWriteInt(stream, &heightmap->resolution_x);
-    packWriteInt(stream, &heightmap->resolution_z);
-    for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
+    packWriteInt(stream, &heightmap->fixed_count);
+    for (i = 0; i < heightmap->fixed_count; i++)
     {
-        packWriteDouble(stream, &heightmap->data[i]);
-    }*/
+        packWriteInt(stream, &heightmap->fixed_data[i].xstart);
+        packWriteInt(stream, &heightmap->fixed_data[i].xsize);
+        packWriteInt(stream, &heightmap->fixed_data[i].ystart);
+        packWriteInt(stream, &heightmap->fixed_data[i].ysize);
+        for (j = 0; j < heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].ysize; j++)
+        {
+            packWriteDouble(stream, &heightmap->fixed_data[i].data[j]);
+        }
+    }
 }
 
 void terrainHeightmapLoad(PackStream* stream, TerrainHeightMap* heightmap)
 {
-    /*int i;
+    int new_count, i, j;
 
-    packReadInt(stream, &heightmap->resolution_x);
-    packReadInt(stream, &heightmap->resolution_z);
-    heightmap->data = realloc(heightmap->data, sizeof(double) * heightmap->resolution_x * heightmap->resolution_z);
-    for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
+    packReadInt(stream, &new_count);
+    _setFixedCount(heightmap, new_count);
+
+    for (i = 0; i < heightmap->fixed_count; i++)
     {
-        packReadDouble(stream, &heightmap->data[i]);
-    }*/
+        packReadInt(stream, &heightmap->fixed_data[i].xstart);
+        packReadInt(stream, &heightmap->fixed_data[i].xsize);
+        packReadInt(stream, &heightmap->fixed_data[i].ystart);
+        packReadInt(stream, &heightmap->fixed_data[i].ysize);
+        if (heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].ysize > 0)
+        {
+            heightmap->fixed_data[i].data = realloc(heightmap->fixed_data[i].data, sizeof(double) * heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].ysize);
+        }
+        for (j = 0; j < heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].ysize; j++)
+        {
+            packReadDouble(stream, &heightmap->fixed_data[i].data[j]);
+        }
+    }
+
+    heightmap->floating_used = 0;
 }
 
-void terrainBrushElevation(TerrainDefinition* heightmap, TerrainBrush* brush, double value)
+void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)
 {
 }
 
-void terrainBrushSmooth(TerrainDefinition* heightmap, TerrainBrush* brush, double value)
+void terrainBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)
 {
 }
 
-void terrainBrushAddNoise(TerrainDefinition* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value)
+void terrainBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value)
+{
+}
+
+void terrainBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)
 {
 }
 

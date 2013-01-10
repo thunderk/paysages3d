@@ -11,15 +11,15 @@ typedef struct
     int ystart;
     int xsize;
     int ysize;
-    void* data;
+    double* data;
 } TerrainHeightMapData;
 
-typedef struct
+struct TerrainHeightMap
 {
     int fixed_count;
     TerrainHeightMapData* fixed_data;
-    int floating_count;
-    TerrainHeightMapData* floating_data;
-} TerrainHeightMap;
+    int floating_used;
+    TerrainHeightMapData floating_data;
+};
 
 #endif

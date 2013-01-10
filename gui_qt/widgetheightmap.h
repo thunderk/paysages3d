@@ -4,6 +4,7 @@
 #include <QGLWidget>
 #include <QDateTime>
 #include "../lib_paysages/euclid.h"
+#include "../lib_paysages/renderer.h"
 #include "../lib_paysages/terrain/public.h"
 
 typedef struct
@@ -51,6 +52,7 @@ private:
 
 private:
     TerrainDefinition* _terrain;
+    Renderer _renderer;
     _VertexInfo* _vertices;
 
     bool _dirty;

@@ -6,7 +6,7 @@
 #include <GL/glu.h>
 #include "tools.h"
 
-#define HEIGHTMAP_RESOLUTION 512
+#define HEIGHTMAP_RESOLUTION 256
 
 WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
     QGLWidget(parent)
@@ -18,6 +18,8 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
     startTimer(100);
 
     _terrain = terrain;
+    _renderer = rendererCreate();
+    TerrainRendererClass.bind(_renderer.terrain, _terrain);
     _vertices = new _VertexInfo[HEIGHTMAP_RESOLUTION * HEIGHTMAP_RESOLUTION];
 
     _dirty = true;
@@ -45,6 +47,7 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
 
 WidgetHeightMap::~WidgetHeightMap()
 {
+    rendererDelete(&_renderer);
     noiseDeleteGenerator(_brush_noise);
     delete[] _vertices;
 }
@@ -159,16 +162,16 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
         switch (_brush_mode)
         {
             case HEIGHTMAP_BRUSH_RAISE:
-                terrainBrushElevation(_terrain, &brush, brush_strength * _last_brush_action * 20.0);
+                terrainBrushElevation(_terrain->height_map, &brush, brush_strength * _last_brush_action * 20.0);
                 break;
             case HEIGHTMAP_BRUSH_SMOOTH:
                 if (_last_brush_action < 0)
                 {
-                    terrainBrushSmooth(_terrain, &brush, brush_strength * 0.1);
+                    terrainBrushSmooth(_terrain->height_map, &brush, brush_strength * 0.1);
                 }
                 else
                 {
-                    terrainBrushAddNoise(_terrain, &brush, _brush_noise, brush_strength * 10.0);
+                    terrainBrushAddNoise(_terrain->height_map, &brush, _brush_noise, brush_strength * 10.0);
                 }
                 break;
             default:
@@ -361,8 +364,9 @@ void WidgetHeightMap::updateVertexInfo()
             _VertexInfo* vertex = _vertices + z * rx + x;
 
             vertex->point.x = 80.0 * (double)x / (double)(rx - 1) - 40.0;
-            vertex->point.y = 0.0; //_heightmap->data[z * rx + x];
             vertex->point.z = 80.0 * (double)z / (double)(rz - 1) - 40.0;
+            
+            vertex->point.y = _renderer.terrain->getHeight(&_renderer, vertex->point.x, vertex->point.z);
         }
     }
 
