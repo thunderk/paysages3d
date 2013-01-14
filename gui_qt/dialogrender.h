@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QMutex>
 #include "../lib_paysages/renderer.h"
+#include "../lib_paysages/color.h"
 
 class DialogRender : public QDialog
 {
@@ -25,6 +26,7 @@ public:
     QImage* pixbuf;
     QMutex* pixbuf_lock;
     QWidget* area;
+    ColorProfile* _hdr_profile;
 
 private slots:
     void applyRenderSize(int width, int height);

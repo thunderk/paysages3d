@@ -26,6 +26,7 @@ static void _renderStart(int width, int height, Color background)
 
 static void _renderDraw(int x, int y, Color col)
 {
+    col = colorProfileApply(_current_dialog->_hdr_profile, col);
     _current_dialog->pixbuf->setPixel(x, _current_dialog->pixbuf->height() - 1 - y, colorToQColor(col).rgb());
 }
 
@@ -79,6 +80,8 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     _render_thread = NULL;
     _renderer = renderer;
 
+    _hdr_profile = colorProfileCreate();
+
     setModal(true);
     setWindowTitle(tr("Paysages 3D - Render"));
     setLayout(new QVBoxLayout());
@@ -116,6 +119,7 @@ DialogRender::~DialogRender()
 
         delete _render_thread;
     }
+    colorProfileDelete(_hdr_profile);
     delete pixbuf;
     delete pixbuf_lock;
 }

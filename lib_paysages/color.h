@@ -2,6 +2,7 @@
 #define _PAYSAGES_COLOR_H_
 
 #include "curve.h"
+#include "pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,6 +41,19 @@ Color colorFrom32BitABGR(unsigned int col);
 void colorMask(Color* base, Color* mask);
 double colorNormalize(Color* col);
 double colorGetValue(Color* col);
+
+/* HDR profile for tone-mapping */
+typedef struct ColorProfile ColorProfile;
+
+ColorProfile* colorProfileCreate();
+void colorProfileDelete(ColorProfile* profile);
+
+void colorProfileSave(PackStream* stream, ColorProfile* profile);
+void colorProfileLoad(PackStream* stream, ColorProfile* profile);
+
+void colorProfileClear(ColorProfile* profile);
+int colorProfileCollect(ColorProfile* profile, Color pixel);
+Color colorProfileApply(ColorProfile* profile, Color pixel);
 
 /* ColorGradation */
 typedef struct ColorGradation ColorGradation;

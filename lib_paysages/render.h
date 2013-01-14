@@ -3,12 +3,25 @@
 
 #include <stdio.h>
 #include "shared/types.h"
-#include "renderer.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
+typedef void (*RenderCallbackStart)(int width, int height, Color background);
+typedef void (*RenderCallbackDraw)(int x, int y, Color col);
+typedef void (*RenderCallbackUpdate)(double progress);
+
+typedef struct RenderArea RenderArea;
+
+typedef struct
+{
+    int width;
+    int height;
+    int antialias;
+    int quality;
+} RenderParams;
+
 void renderInit();
 void renderQuit();
 

@@ -3,8 +3,11 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <math.h>
 #include "tools.h"
 #include "curve.h"
+
+/******************************** Color ********************************/
 
 Color COLOR_TRANSPARENT = {0.0, 0.0, 0.0, 0.0};
 Color COLOR_BLACK = {0.0, 0.0, 0.0, 1.0};
@@ -13,13 +16,6 @@ Color COLOR_GREEN = {0.0, 1.0, 0.0, 1.0};
 Color COLOR_BLUE = {0.0, 0.0, 1.0, 1.0};
 Color COLOR_WHITE = {1.0, 1.0, 1.0, 1.0};
 Color COLOR_GREY = {0.5, 0.5, 0.5, 1.0};
-
-struct ColorGradation
-{
-    Curve* red;
-    Curve* green;
-    Curve* blue;
-};
 
 void colorSave(PackStream* stream, Color* col)
 {
@@ -60,48 +56,48 @@ unsigned int colorTo32BitABGR(Color* col)
 Color colorFrom32BitRGBA(unsigned int col)
 {
     Color result;
-    
+
     result.r = ((double)(col & 0x000000FF)) / 255.0;
     result.g = ((double)((col & 0x0000FF00) >> 8)) / 255.0;
     result.b = ((double)((col & 0x00FF0000) >> 16)) / 255.0;
     result.a = ((double)((col & 0xFF000000) >> 24)) / 255.0;
-    
+
     return result;
 }
 
 Color colorFrom32BitBGRA(unsigned int col)
 {
     Color result;
-    
+
     result.b = ((double)(col & 0x000000FF)) / 255.0;
     result.g = ((double)((col & 0x0000FF00) >> 8)) / 255.0;
     result.r = ((double)((col & 0x00FF0000) >> 16)) / 255.0;
     result.a = ((double)((col & 0xFF000000) >> 24)) / 255.0;
-    
+
     return result;
 }
 
 Color colorFrom32BitARGB(unsigned int col)
 {
     Color result;
-    
+
     result.a = ((double)(col & 0x000000FF)) / 255.0;
     result.r = ((double)((col & 0x0000FF00) >> 8)) / 255.0;
     result.g = ((double)((col & 0x00FF0000) >> 16)) / 255.0;
     result.b = ((double)((col & 0xFF000000) >> 24)) / 255.0;
-    
+
     return result;
 }
 
 Color colorFrom32BitABGR(unsigned int col)
 {
     Color result;
-    
+
     result.a = ((double)(col & 0x000000FF)) / 255.0;
     result.b = ((double)((col & 0x0000FF00) >> 8)) / 255.0;
     result.g = ((double)((col & 0x00FF0000) >> 16)) / 255.0;
     result.r = ((double)((col & 0xFF000000) >> 24)) / 255.0;
-    
+
     return result;
 }
 
@@ -125,7 +121,20 @@ void colorMask(Color* base, Color* mask)
 
 double colorNormalize(Color* col)
 {
-    double max = colorGetValue(col);
+    if (col->r > 1.0)
+    {
+        col->r = 1.0;
+    }
+    if (col->g > 1.0)
+    {
+        col->g = 1.0;
+    }
+    if (col->b > 1.0)
+    {
+        col->b = 1.0;
+    }
+    return 1.0;
+    /*double max = colorGetValue(col);
 
     assert(max >= 0.0);
     assert(col->r >= 0.0);
@@ -139,7 +148,7 @@ double colorNormalize(Color* col)
         col->g /= max;
         col->b /= max;
     }
-    return max;
+    return max;*/
 }
 
 double colorGetValue(Color* col)
@@ -158,6 +167,96 @@ double colorGetValue(Color* col)
     return max;
 }
 
+/******************************** ColorProfile ********************************/
+struct ColorProfile
+{
+    double minvalue;
+    double maxvalue;
+};
+
+ColorProfile* colorProfileCreate()
+{
+    ColorProfile* profile;
+
+    profile = malloc(sizeof(ColorProfile));
+
+    colorProfileClear(profile);
+
+    return profile;
+}
+
+void colorProfileDelete(ColorProfile* profile)
+{
+    free(profile);
+}
+
+void colorProfileSave(PackStream* stream, ColorProfile* profile)
+{
+    /* TODO */
+}
+
+void colorProfileLoad(PackStream* stream, ColorProfile* profile)
+{
+    /* TODO */
+}
+
+void colorProfileClear(ColorProfile* profile)
+{
+    profile->minvalue = 0.0;
+    profile->maxvalue = 3.0;
+}
+
+int colorProfileCollect(ColorProfile* profile, Color pixel)
+{
+    int changed = 0;
+    double value = pixel.r + pixel.g + pixel.b;
+
+    if (value < profile->minvalue)
+    {
+        profile->minvalue = value;
+        changed = 1;
+    }
+    if (value > profile->maxvalue)
+    {
+        profile->maxvalue = value;
+        changed = 1;
+    }
+    return changed;
+}
+
+float A = 0.15;
+float B = 0.50;
+float C = 0.10;
+float D = 0.20;
+float E = 0.02;
+float F = 0.30;
+float W = 11.2;
+
+static double _uncharted2Tonemap(double x)
+{
+   return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
+}
+
+Color colorProfileApply(ColorProfile* profile, Color pixel)
+{
+    double exposure_bias = 2.0;
+    double white_scale = 1.0 / _uncharted2Tonemap(W);
+
+    pixel.r = pow(_uncharted2Tonemap(pixel.r * exposure_bias) * white_scale, 1.0 / 2.2);
+    pixel.g = pow(_uncharted2Tonemap(pixel.g * exposure_bias) * white_scale, 1.0 / 2.2);
+    pixel.b = pow(_uncharted2Tonemap(pixel.b * exposure_bias) * white_scale, 1.0 / 2.2);
+
+    return pixel;
+}
+
+/******************************** ColorGradation ********************************/
+struct ColorGradation
+{
+    Curve* red;
+    Curve* green;
+    Curve* blue;
+};
+
 ColorGradation* colorGradationCreate()
 {
     ColorGradation* result;
@@ -166,7 +265,7 @@ ColorGradation* colorGradationCreate()
     result->red = curveCreate();
     result->green = curveCreate();
     result->blue = curveCreate();
-    
+
     return result;
 }
 
@@ -264,7 +363,7 @@ Color colorGradationGet(ColorGradation* gradation, double value)
     result.g = curveGetValue(gradation->green, value);
     result.b = curveGetValue(gradation->blue, value);
     result.a = 1.0;
-    
+
     return result;
 }
 

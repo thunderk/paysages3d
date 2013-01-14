@@ -302,22 +302,6 @@ static Color _transmittanceWithShadow(double r, double mu)
     return mu < -sqrt(1.0 - (Rg / r) * (Rg / r)) ? COLOR_BLACK : _transmittance(r, mu);
 }
 
-static Color _hdr(Color c1, Color c2, Color c3)
-{
-    Color L = {c1.r + c2.r + c3.r, c1.g + c2.g + c3.g, c1.b + c2.b + c3.b, 1.0};
-
-    L.r *= exposure;
-    L.g *= exposure;
-    L.b *= exposure;
-    L.a = 1.0;
-
-    L.r = L.r < 1.413 ? pow(L.r * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.r);
-    L.g = L.g < 1.413 ? pow(L.g * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.g);
-    L.b = L.b < 1.413 ? pow(L.b * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.b);
-
-    return L;
-}
-
 static void _getMuMuSNu(double x, double y, double r, Color dhdH, double* mu, double* muS, double* nu)
 {
     double d;
@@ -1252,9 +1236,12 @@ Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
 
     Vector3 attenuation;
     Color inscatterColor = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
-    Color groundColor = COLOR_BLACK;
     Color sunColor = _sunColor(x, 0.0, v, s, r, mu); /* L0 */
-    return _hdr(sunColor, groundColor, inscatterColor); /* Eq (16) */
+
+    inscatterColor.r += sunColor.r;
+    inscatterColor.g += sunColor.g;
+    inscatterColor.b += sunColor.b;
+    return inscatterColor; /* Eq (16) */
 }
 
 Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
@@ -1297,6 +1284,9 @@ Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color
     Vector3 attenuation;
     Color inscatterColor = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
     Color groundColor = _groundColor(base, x, t, v, s, r, mu, attenuation); //R[L0]+R[L*]*/
-    Color sunColor = COLOR_BLACK;
-    return _hdr(sunColor, groundColor, inscatterColor); /* Eq (16) */
+
+    groundColor.r += inscatterColor.r;
+    groundColor.g += inscatterColor.g;
+    groundColor.b += inscatterColor.b;
+    return groundColor; /* Eq (16) */
 }

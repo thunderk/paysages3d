@@ -6,6 +6,7 @@
 
 #include "shared/types.h"
 #include "color.h"
+#include "renderer.h"
 #include "system.h"
 
 typedef struct
@@ -95,7 +96,7 @@ void renderQuit()
 RenderArea* renderCreateArea()
 {
     RenderArea* result;
-    
+
     result = malloc(sizeof(RenderArea));
     result->params.width = 1;
     result->params.height = 1;
@@ -118,7 +119,7 @@ RenderArea* renderCreateArea()
     result->callback_start = _callbackStart;
     result->callback_draw = _callbackDraw;
     result->callback_update = _callbackUpdate;
-    
+
     return result;
 }
 
@@ -134,7 +135,7 @@ void renderDeleteArea(RenderArea* area)
 void renderSetParams(RenderArea* area, RenderParams params)
 {
     int width, height;
-    
+
     width = params.width * params.antialias;
     height = params.height * params.antialias;
 
@@ -178,7 +179,7 @@ void renderClear(RenderArea* area)
     RenderFragment* pixel;
     int x;
     int y;
-    
+
     area->fragment_callbacks_count = 1;
     area->fragment_callbacks[0].function = NULL;
     area->fragment_callbacks[0].data = NULL;
@@ -237,7 +238,7 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
     Color result, col;
     int sx, sy;
     RenderFragment* pixel_data;
-    
+
     result.r = result.g = result.b = 0.0;
     result.a = 1.0;
     for (sx = 0; sx < area->params.antialias; sx++)
@@ -267,7 +268,7 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
             result.b += col.b / (double)(area->params.antialias * area->params.antialias);
         }
     }
-    
+
     return result;
 }
 
@@ -275,7 +276,7 @@ static void _processDirtyPixels(RenderArea* area)
 {
     int x, y;
     int down, up, left, right;
-    
+
     down = area->dirty_down / area->params.antialias;
     up = area->dirty_up / area->params.antialias;
     left = area->dirty_left / area->params.antialias;
@@ -323,7 +324,7 @@ static inline unsigned int _pushCallback(RenderArea* area, FragmentCallback call
             return i;
         }
     }
-    
+
     if (area->fragment_callbacks_count >= 64)
     {
         return 0;
@@ -339,7 +340,7 @@ static inline unsigned int _pushCallback(RenderArea* area, FragmentCallback call
 static void _pushFragment(RenderArea* area, int x, int y, double z, int edge, Vector3 location, int callback)
 {
     RenderFragment* pixel_data;
-    
+
     if (x >= 0 && x < area->params.width * area->params.antialias && y >= 0 && y < area->params.height * area->params.antialias && z > 1.0)
     {
         pixel_data = area->pixels + (y * area->params.width * area->params.antialias + x);
@@ -382,7 +383,7 @@ static void _pushScanPoint(RenderArea* area, ScanPoint* point)
 {
     point->x = (int)floor(point->pixel.x);
     point->y = (int)floor(point->pixel.y);
-    
+
     if (point->x < 0 || point->x >= area->params.width * area->params.antialias)
     {
         return;
@@ -466,7 +467,7 @@ static void _pushScanLineEdge(RenderArea* area, ScanPoint* point1, ScanPoint* po
             _scanInterpolate(point1, &diff, fx / dx, &point);
 
             /*point.pixel.x = (double)curx;*/
-            
+
             _pushScanPoint(area, &point);
         }
     }
@@ -541,7 +542,7 @@ void renderPushTriangle(RenderArea* area, Vector3 pixel1, Vector3 pixel2, Vector
     {
         return;
     }
-    
+
     point1.pixel = pixel1;
     point1.location = location1;
     point1.callback = _pushCallback(area, fragment_callback);
@@ -553,13 +554,13 @@ void renderPushTriangle(RenderArea* area, Vector3 pixel1, Vector3 pixel2, Vector
     point3.pixel = pixel3;
     point3.location = location3;
     point3.callback = _pushCallback(area, fragment_callback);
-    
+
     _clearScanLines(area);
-    
+
     _pushScanLineEdge(area, &point1, &point2);
     _pushScanLineEdge(area, &point2, &point3);
     _pushScanLineEdge(area, &point3, &point1);
-    
+
     mutexAcquire(area->lock);
     _renderScanLines(area);
     mutexRelease(area->lock);
@@ -584,18 +585,18 @@ void* _renderPostProcessChunk(void* data)
             {
                 FragmentCallback callback;
                 Color col;
-                
+
                 callback = chunk->area->fragment_callbacks[fragment->flags.callback];
                 if (callback.function)
                 {
                     col = callback.function(chunk->renderer, fragment->data.location, callback.data);
-                    colorNormalize(&col);
+                    /*colorNormalize(&col);*/
                 }
                 else
                 {
                     col = COLOR_BLACK;
                 }
-                
+
                 fragment->data.color.r = col.r;
                 fragment->data.color.g = col.g;
                 fragment->data.color.b = col.b;

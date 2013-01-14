@@ -4,6 +4,7 @@
 #include "shared/types.h"
 #include "atmosphere/public.h"
 #include "terrain/public.h"
+#include "render.h"
 
 #ifdef __cplusplus
 extern "C" {

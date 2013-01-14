@@ -1,4 +1,5 @@
 Technology Preview 2 :
+- Implement High Dynamic Range (with OpenEXR or Radiance file format support ?).
 - Fully move layer management from BaseForm to BaseFormLayer.
 - Replace terrain canvas editor by full sculpting editor.
    => Add a generation dialog, with fixed resolution.
@@ -43,7 +44,6 @@ Technlogy Preview 3 :
 Technology Preview 4 :
 - Restore render progress.
 - Store the terrain canvases in a tree to allow "multi-res" edition.
-- Implement High Dynamic Range.
 - Implement Sub Surface Scattering for water.
 - Use bicubic interpolation for antialiasing.
 - Allow for larger renders/antialias (will need several two-pass chunks).

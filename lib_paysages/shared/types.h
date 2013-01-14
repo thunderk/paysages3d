@@ -17,14 +17,6 @@ typedef Color (*f_RenderFragmentCallback)(struct Renderer* renderer, Vector3 loc
 
 typedef struct
 {
-    int width;
-    int height;
-    int antialias;
-    int quality;
-} RenderParams;
-
-typedef struct
-{
     int length;
     int alloc_length;
     int item_size;
@@ -38,12 +30,6 @@ typedef struct
     double reflection;
     double shininess;
 } SurfaceMaterial;
-
-typedef void (*RenderCallbackStart)(int width, int height, Color background);
-typedef void (*RenderCallbackDraw)(int x, int y, Color col);
-typedef void (*RenderCallbackUpdate)(double progress);
-
-typedef struct RenderArea RenderArea;
 
 typedef struct
 {
