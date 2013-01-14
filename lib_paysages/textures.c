@@ -178,25 +178,25 @@ static inline TextureResult _getTerrainResult(Renderer* renderer, double x, doub
 
     center.x = x;
     center.z = z;
-    center.y = renderer->terrain->getHeight(renderer, center.x, center.z);
+    center.y = renderer->terrain->getHeight(renderer, center.x, center.z, 1);
 
     east.x = x + detail;
     east.z = z;
-    east.y = renderer->terrain->getHeight(renderer, east.x, east.z);
+    east.y = renderer->terrain->getHeight(renderer, east.x, east.z, 1);
 
     south.x = x;
     south.z = z + detail;
-    south.y = renderer->terrain->getHeight(renderer, south.x, south.z);
+    south.y = renderer->terrain->getHeight(renderer, south.x, south.z, 1);
 
     if (renderer->render_quality > 5)
     {
         west.x = x - detail;
         west.z = z;
-        west.y = renderer->terrain->getHeight(renderer, west.x, west.z);
+        west.y = renderer->terrain->getHeight(renderer, west.x, west.z, 1);
 
         north.x = x;
         north.z = z - detail;
-        north.y = renderer->terrain->getHeight(renderer, north.x, north.z);
+        north.y = renderer->terrain->getHeight(renderer, north.x, north.z, 1);
 
         result.normal = _getNormal4(center, north, east, south, west);
     }

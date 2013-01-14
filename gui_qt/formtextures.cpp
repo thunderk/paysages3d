@@ -40,7 +40,7 @@ protected:
         Vector3 location;
         double coverage;
         location.x = x;
-        location.y = _renderer.terrain->getHeight(&_renderer, x, y);
+        location.y = _renderer.terrain->getHeight(&_renderer, x, y, 1);
         location.z = y;
         coverage = texturesGetLayerCoverage(_preview_layer, &_renderer, location, this->scaling);
         return QColor::fromRgbF(coverage, coverage, coverage, 1.0);

@@ -88,7 +88,7 @@ Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double deta
     Vector3 point;
 
     point.x = x;
-    point.y = renderer->terrain->getHeight(renderer, x, z);
+    point.y = renderer->terrain->getHeight(renderer, x, z, 1);
     point.z = z;
 
     return renderer->terrain->getFinalColor(renderer, point, detail);

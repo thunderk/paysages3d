@@ -49,7 +49,7 @@ bool ExplorerChunkTerrain::onMaintainEvent()
             {
                 if (_tessellation_current_size == 0 || i % old_tessellation_inc != 0 || j % old_tessellation_inc != 0)
                 {
-                    double height = renderer->terrain->getHeight(renderer, _startx + _tessellation_step * (double)i, _startz + _tessellation_step * (double)j);
+                    double height = renderer->terrain->getHeight(renderer, _startx + _tessellation_step * (double)i, _startz + _tessellation_step * (double)j, 1);
                     _tessellation[j * (_tessellation_max_size + 1) + i] = height;
                 }
             }

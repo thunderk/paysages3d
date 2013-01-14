@@ -35,7 +35,7 @@ protected:
     {
         double height;
 
-        height = _renderer.terrain->getHeight(&_renderer, x, -y);
+        height = _renderer.terrain->getHeight(&_renderer, x, -y, 1);
         if (height > _definition.height)
         {
             return colorToQColor(terrainGetPreviewColor(&_renderer, x, -y, scaling));

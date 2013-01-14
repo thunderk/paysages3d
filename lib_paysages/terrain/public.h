@@ -30,7 +30,7 @@ typedef struct
     double _max_height;
 } TerrainDefinition;
 
-typedef double (*FuncTerrainGetHeight)(Renderer* renderer, double x, double z);
+typedef double (*FuncTerrainGetHeight)(Renderer* renderer, double x, double z, int with_painting);
 typedef Color (*FuncTerrainGetFinalColor)(Renderer* renderer, Vector3 location, double precision);
 
 typedef struct
@@ -50,6 +50,7 @@ extern StandardRenderer TerrainRendererClass;
 
 void terrainAutoPreset(TerrainDefinition* definition, TerrainPreset preset);
 void terrainRenderSurface(Renderer* renderer);
+double terrainGetGridHeight(TerrainDefinition* definition, int x, int z, int with_painting);
 
 Renderer terrainCreatePreviewRenderer();
 Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double detail);

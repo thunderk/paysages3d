@@ -43,7 +43,7 @@ protected:
     {
         Vector3 down = {0.0, -1.0, 0.0};
         Vector3 location;
-        double height = _renderer.terrain->getHeight(&_renderer, x, y);
+        double height = _renderer.terrain->getHeight(&_renderer, x, y, 1);
 
         if (height < _water.height)
         {

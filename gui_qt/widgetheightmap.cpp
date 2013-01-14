@@ -151,10 +151,10 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
         double brush_strength;
         TerrainBrush brush;
 
-        brush.relative_x = (_brush_x + 40.0) / 80.0;
-        brush.relative_z = (_brush_z + 40.0) / 80.0;
-        brush.hard_radius = _brush_size * (1.0 - _brush_smoothing) / 80.0;
-        brush.smoothed_size = _brush_size * _brush_smoothing / 80.0;
+        brush.relative_x = _brush_x;
+        brush.relative_z = _brush_z;
+        brush.hard_radius = _brush_size * (1.0 - _brush_smoothing);
+        brush.smoothed_size = _brush_size * _brush_smoothing;
         brush.total_radius = brush.hard_radius + brush.smoothed_size;
 
         brush_strength = _brush_strength * duration / 0.1;
@@ -363,10 +363,10 @@ void WidgetHeightMap::updateVertexInfo()
         {
             _VertexInfo* vertex = _vertices + z * rx + x;
 
-            vertex->point.x = 80.0 * (double)x / (double)(rx - 1) - 40.0;
-            vertex->point.z = 80.0 * (double)z / (double)(rz - 1) - 40.0;
+            vertex->point.x = (double)x;
+            vertex->point.z = (double)z;
 
-            vertex->point.y = _renderer.terrain->getHeight(&_renderer, vertex->point.x, vertex->point.z);
+            vertex->point.y = terrainGetGridHeight(_terrain, x, z, 1);
         }
     }
 

@@ -71,13 +71,13 @@ void terrainHeightmapCopy(TerrainHeightMap* source, TerrainHeightMap* destinatio
     {
         destination->fixed_data[i].xstart = source->fixed_data[i].xstart;
         destination->fixed_data[i].xsize = source->fixed_data[i].xsize;
-        destination->fixed_data[i].ystart = source->fixed_data[i].ystart;
-        destination->fixed_data[i].ysize = source->fixed_data[i].ysize;
-        if (destination->fixed_data[i].xsize * destination->fixed_data[i].ysize > 0)
+        destination->fixed_data[i].zstart = source->fixed_data[i].zstart;
+        destination->fixed_data[i].zsize = source->fixed_data[i].zsize;
+        if (destination->fixed_data[i].xsize * destination->fixed_data[i].zsize > 0)
         {
-            destination->fixed_data[i].data = realloc(destination->fixed_data[i].data, sizeof(double) * destination->fixed_data[i].xsize * destination->fixed_data[i].ysize);
+            destination->fixed_data[i].data = realloc(destination->fixed_data[i].data, sizeof(double) * destination->fixed_data[i].xsize * destination->fixed_data[i].zsize);
         }
-        memcpy(destination->fixed_data[i].data, source->fixed_data[i].data, sizeof(double) * destination->fixed_data[i].xsize * destination->fixed_data[i].ysize);
+        memcpy(destination->fixed_data[i].data, source->fixed_data[i].data, sizeof(double) * destination->fixed_data[i].xsize * destination->fixed_data[i].zsize);
     }
 
     destination->floating_used = 0;
@@ -92,9 +92,9 @@ void terrainHeightmapSave(PackStream* stream, TerrainHeightMap* heightmap)
     {
         packWriteInt(stream, &heightmap->fixed_data[i].xstart);
         packWriteInt(stream, &heightmap->fixed_data[i].xsize);
-        packWriteInt(stream, &heightmap->fixed_data[i].ystart);
-        packWriteInt(stream, &heightmap->fixed_data[i].ysize);
-        for (j = 0; j < heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].ysize; j++)
+        packWriteInt(stream, &heightmap->fixed_data[i].zstart);
+        packWriteInt(stream, &heightmap->fixed_data[i].zsize);
+        for (j = 0; j < heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].zsize; j++)
         {
             packWriteDouble(stream, &heightmap->fixed_data[i].data[j]);
         }
@@ -112,13 +112,13 @@ void terrainHeightmapLoad(PackStream* stream, TerrainHeightMap* heightmap)
     {
         packReadInt(stream, &heightmap->fixed_data[i].xstart);
         packReadInt(stream, &heightmap->fixed_data[i].xsize);
-        packReadInt(stream, &heightmap->fixed_data[i].ystart);
-        packReadInt(stream, &heightmap->fixed_data[i].ysize);
-        if (heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].ysize > 0)
+        packReadInt(stream, &heightmap->fixed_data[i].zstart);
+        packReadInt(stream, &heightmap->fixed_data[i].zsize);
+        if (heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].zsize > 0)
         {
-            heightmap->fixed_data[i].data = realloc(heightmap->fixed_data[i].data, sizeof(double) * heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].ysize);
+            heightmap->fixed_data[i].data = realloc(heightmap->fixed_data[i].data, sizeof(double) * heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].zsize);
         }
-        for (j = 0; j < heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].ysize; j++)
+        for (j = 0; j < heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].zsize; j++)
         {
             packReadDouble(stream, &heightmap->fixed_data[i].data[j]);
         }
@@ -127,32 +127,90 @@ void terrainHeightmapLoad(PackStream* stream, TerrainHeightMap* heightmap)
     heightmap->floating_used = 0;
 }
 
+static inline int _checkDataHit(TerrainHeightMapData* data, double x, double z, double* result)
+{
+    if (x > (double)data->xstart && x < (double)(data->xstart + data->xsize) && z > (double)data->zstart && z < (double)(data->zstart + data->zsize))
+    {
+        /* TODO Get interpolated value */
+        *result = 0.0;
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+int terrainHeightmapGetHeight(TerrainHeightMap* heightmap, double x, double z, double* result)
+{
+    int i;
+
+    for (i = 0; i < heightmap->fixed_count; i++)
+    {
+        if (_checkDataHit(heightmap->fixed_data + i, x, z, result))
+        {
+            return 1;
+        }
+    }
+
+    if (heightmap->floating_used && _checkDataHit(&heightmap->floating_data, x, z, result))
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 static void _prepareBrushStroke(TerrainHeightMap* heightmap, TerrainBrush* brush)
 {
-    double cx = brush->relative_x / TERRAIN_HEIGHTMAP_DETAIL;
-    double cz = brush->relative_z / TERRAIN_HEIGHTMAP_DETAIL;
+    double cx = brush->relative_x;
+    double cz = brush->relative_z;
     double s = brush->smoothed_size + brush->hard_radius;
-    double sx = s / TERRAIN_HEIGHTMAP_DETAIL;
-    double sz = s / TERRAIN_HEIGHTMAP_DETAIL;
+    double sx = s;
+    double sz = s;
 
     int x1 = (int)floor(cx - sx);
     int x2 = (int)ceil(cx + sx);
     int z1 = (int)floor(cz - sz);
     int z2 = (int)ceil(cz + sz);
 
-    /* TODO Prepare floating data */
+    /* Prepare floating data */
+    if (heightmap->floating_used)
+    {
+        /* Grow floating area */
+        /* TODO */
+    }
+    else
+    {
+        /* Init flaoting area */
+        heightmap->floating_used = 1;
+        heightmap->floating_data.xstart = x1;
+        heightmap->floating_data.xsize = x2 - x1 + 1;
+        heightmap->floating_data.zstart = z1;
+        heightmap->floating_data.zsize = z2 - z1 + 1;
+
+        size_t new_size;
+        new_size = sizeof(double) * heightmap->floating_data.xsize * heightmap->floating_data.zsize;
+        heightmap->floating_data.data = realloc(heightmap->floating_data.data, new_size);
+        memset(heightmap->floating_data.data, 0, new_size);
+    }
 }
 
 void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)
 {
+    _prepareBrushStroke(heightmap, brush);
 }
 
 void terrainBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)
 {
+    _prepareBrushStroke(heightmap, brush);
 }
 
 void terrainBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value)
 {
+    _prepareBrushStroke(heightmap, brush);
 }
 
 void terrainBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)

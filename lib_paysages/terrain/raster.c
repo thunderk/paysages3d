@@ -13,7 +13,7 @@ static inline Vector3 _getPoint(TerrainDefinition* definition, Renderer* rendere
     Vector3 result;
 
     result.x = x;
-    result.y = renderer->terrain->getHeight(renderer, x, z);
+    result.y = renderer->terrain->getHeight(renderer, x, z, 1);
     result.z = z;
 
     return result;

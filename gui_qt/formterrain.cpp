@@ -49,8 +49,8 @@ FormTerrain::FormTerrain(QWidget *parent):
     addPreview(previewColor, tr("Lighted preview (no texture)"));
 
     //addInputNoise(tr("Noise"), _definition.height_noise);
-    addInputDouble(tr("Height"), &_definition->height, 0.0, 20.0, 0.1, 1.0);
-    addInputDouble(tr("Scaling"), &_definition->scaling, 20.0, 200.0, 1.0, 10.0);
+    addInputDouble(tr("Scaling"), &_definition->scaling, 0.1, 3.0, 0.03, 0.3);
+    addInputDouble(tr("Height modifier"), &_definition->height, 0.0, 3.0, 0.01, 0.1);
     addInputDouble(tr("Shadow smoothing"), &_definition->shadow_smoothing, 0.0, 0.3, 0.003, 0.03);
 
     revertConfig();

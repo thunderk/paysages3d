@@ -84,25 +84,29 @@ StandardDefinition TerrainDefinitionClass = {
 };
 
 /******************** Binding ********************/
-static double _fakeGetHeight(Renderer* renderer, double x, double z)
+static double _fakeGetHeight(Renderer* renderer, double x, double z, int with_painting)
 {
     UNUSED(renderer);
     UNUSED(x);
     UNUSED(z);
+    UNUSED(with_painting);
 
     return 0.0;
 }
 
-static double _getHeight(Renderer* renderer, double x, double z)
+static double _getHeight(Renderer* renderer, double x, double z, int with_painting)
 {
+    double height;
     TerrainDefinition* definition = renderer->terrain->definition;
     x /= definition->scaling;
     z /= definition->scaling;
 
-    double height = noiseGet2DTotal(definition->_height_noise, x, z);
-    /* TODO Apply paintings */
+    if (!with_painting || !terrainHeightmapGetHeight(definition->height_map, x, z, &height))
+    {
+        height = noiseGet2DTotal(definition->_height_noise, x, z);
+    }
 
-    return height * definition->height;
+    return height * definition->height * definition->scaling;
 }
 
 static Color _fakeGetFinalColor(Renderer* renderer, Vector3 location, double precision)
@@ -123,7 +127,7 @@ static Color _getFinalColor(Renderer* renderer, Vector3 location, double precisi
     return color;
 }
 
-RayCastingResult _fakeCastRay(Renderer* renderer, Vector3 start, Vector3 direction)
+static RayCastingResult _fakeCastRay(Renderer* renderer, Vector3 start, Vector3 direction)
 {
     UNUSED(renderer);
     UNUSED(start);
@@ -134,7 +138,7 @@ RayCastingResult _fakeCastRay(Renderer* renderer, Vector3 start, Vector3 directi
     return result;
 }
 
-RayCastingResult _castRay(Renderer* renderer, Vector3 start, Vector3 direction)
+static RayCastingResult _castRay(Renderer* renderer, Vector3 start, Vector3 direction)
 {
     RayCastingResult result;
     TerrainDefinition* definition = renderer->terrain->definition;
@@ -145,7 +149,7 @@ RayCastingResult _castRay(Renderer* renderer, Vector3 start, Vector3 direction)
     inc_factor = (double)renderer->render_quality;
     inc_base = 1.0;
     inc_value = inc_base / inc_factor;
-    lastdiff = start.y - _getHeight(renderer, start.x, start.z);
+    lastdiff = start.y - _getHeight(renderer, start.x, start.z, 1);
 
     length = 0.0;
     do
@@ -153,14 +157,14 @@ RayCastingResult _castRay(Renderer* renderer, Vector3 start, Vector3 direction)
         inc_vector = v3Scale(direction, inc_value);
         length += v3Norm(inc_vector);
         start = v3Add(start, inc_vector);
-        height = _getHeight(renderer, start.x, start.z);
+        height = _getHeight(renderer, start.x, start.z, 1);
         diff = start.y - height;
         if (diff < 0.0)
         {
             if (fabs(diff - lastdiff) > 0.00001)
             {
                 start = v3Add(start, v3Scale(inc_vector, -diff / (diff - lastdiff)));
-                start.y = _getHeight(renderer, start.x, start.z);
+                start.y = _getHeight(renderer, start.x, start.z, 1);
             }
             else
             {
@@ -236,7 +240,7 @@ static LightDefinition _alterLight(Renderer* renderer, LightDefinition* light, V
         inc_vector = v3Scale(direction_to_light, inc_value);
         length += v3Norm(inc_vector);
         location = v3Add(location, inc_vector);
-        height = _getHeight(renderer, location.x, location.z);
+        height = _getHeight(renderer, location.x, location.z, 1);
         diff = location.y - height;
         if (diff < 0.0)
         {
@@ -277,6 +281,19 @@ static LightDefinition _alterLight(Renderer* renderer, LightDefinition* light, V
 
         return result;
     }
+}
+
+/******************** Public tools ********************/
+double terrainGetGridHeight(TerrainDefinition* definition, int x, int z, int with_painting)
+{
+    double height;
+
+    if (!with_painting || !terrainHeightmapGetHeight(definition->height_map, (double)x, (double)z, &height))
+    {
+        height = noiseGet2DTotal(definition->_height_noise, (double)x, (double)z);
+    }
+
+    return height;
 }
 
 /******************** Renderer ********************/
