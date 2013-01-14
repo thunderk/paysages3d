@@ -25,7 +25,7 @@ static TerrainDefinition* _createDefinition()
     definition->scaling = 1.0;
     definition->shadow_smoothing = 0.0;
 
-    definition->height_map = terrainHeightMapCreate();
+    definition->height_map = terrainHeightMapCreate(definition);
 
     definition->_height_noise = noiseCreateGenerator();
 

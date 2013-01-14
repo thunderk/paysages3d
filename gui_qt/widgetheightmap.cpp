@@ -32,6 +32,8 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
     _last_time = QDateTime::currentDateTime();
     _mouse_moved = false;
 
+    _position_x = 0;
+    _position_z = 0;
     _angle_h = 0.0;
     _angle_v = 0.3;
 
@@ -351,6 +353,7 @@ void WidgetHeightMap::updateVertexInfo()
 {
     int rx = HEIGHTMAP_RESOLUTION;
     int rz = HEIGHTMAP_RESOLUTION;
+    int dx, dz;
 
     _VertexInfo* old_vertices = _vertices;
     _vertices = new _VertexInfo[rx * rz];
@@ -363,10 +366,13 @@ void WidgetHeightMap::updateVertexInfo()
         {
             _VertexInfo* vertex = _vertices + z * rx + x;
 
-            vertex->point.x = (double)x;
-            vertex->point.z = (double)z;
+            dx = _position_x + x - rx / 2;
+            dz = _position_z + z - rz / 2;
 
-            vertex->point.y = terrainGetGridHeight(_terrain, x, z, 1);
+            vertex->point.x = (double)dx;
+            vertex->point.z = (double)dz;
+
+            vertex->point.y = terrainGetGridHeight(_terrain, dx, dz, 1);
         }
     }
 

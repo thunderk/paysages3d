@@ -5,22 +5,27 @@
 
 typedef struct
 {
-    int xstart;
-    int zstart;
-    int xsize;
-    int zsize;
+    struct {
+        int xstart;
+        int xend;
+        int xsize;
+        int zstart;
+        int zend;
+        int zsize;
+    } rect;
     double* data;
-} TerrainHeightMapData;
+} TerrainHeightMapChunk;
 
 struct TerrainHeightMap
 {
+    TerrainDefinition* terrain;
     int fixed_count;
-    TerrainHeightMapData* fixed_data;
+    TerrainHeightMapChunk* fixed_data;
     int floating_used;
-    TerrainHeightMapData floating_data;
+    TerrainHeightMapChunk floating_data;
 };
 
-TerrainHeightMap* terrainHeightMapCreate();
+TerrainHeightMap* terrainHeightMapCreate(TerrainDefinition* definition);
 void terrainHeightmapDelete(TerrainHeightMap* heightmap);
 void terrainHeightmapCopy(TerrainHeightMap* source, TerrainHeightMap* destination);
 void terrainHeightmapSave(PackStream* stream, TerrainHeightMap* heightmap);

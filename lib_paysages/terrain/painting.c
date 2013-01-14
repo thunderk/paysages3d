@@ -4,17 +4,20 @@
  * Terrain height map painting.
  */
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include "../tools/memory.h"
 
-TerrainHeightMap* terrainHeightMapCreate()
+TerrainHeightMap* terrainHeightMapCreate(TerrainDefinition* terrain)
 {
     TerrainHeightMap* result;
 
     result = malloc(sizeof(TerrainHeightMap));
+    result->terrain = terrain;
     result->fixed_count = 0;
-    result->fixed_data = malloc(sizeof(TerrainHeightMapData));
+    result->fixed_data = malloc(sizeof(TerrainHeightMapChunk));
     result->floating_used = 0;
     result->floating_data.data = malloc(sizeof(double));
 
@@ -40,7 +43,7 @@ static void _setFixedCount(TerrainHeightMap* heightmap, int new_count)
 
     if (new_count > old_count)
     {
-        heightmap->fixed_data = realloc(heightmap->fixed_data, sizeof(TerrainHeightMapData) * new_count);
+        heightmap->fixed_data = realloc(heightmap->fixed_data, sizeof(TerrainHeightMapChunk) * new_count);
         for (i = old_count; i < new_count; i++)
         {
             heightmap->fixed_data[i].data = malloc(sizeof(double));
@@ -54,7 +57,7 @@ static void _setFixedCount(TerrainHeightMap* heightmap, int new_count)
         }
         if (new_count > 0)
         {
-            heightmap->fixed_data = realloc(heightmap->fixed_data, sizeof(TerrainHeightMapData) * new_count);
+            heightmap->fixed_data = realloc(heightmap->fixed_data, sizeof(TerrainHeightMapChunk) * new_count);
         }
     }
 
@@ -65,19 +68,20 @@ void terrainHeightmapCopy(TerrainHeightMap* source, TerrainHeightMap* destinatio
 {
     int i;
 
+    destination->terrain = source->terrain;
+
     _setFixedCount(destination, source->fixed_count);
 
     for (i = 0; i < destination->fixed_count; i++)
     {
-        destination->fixed_data[i].xstart = source->fixed_data[i].xstart;
-        destination->fixed_data[i].xsize = source->fixed_data[i].xsize;
-        destination->fixed_data[i].zstart = source->fixed_data[i].zstart;
-        destination->fixed_data[i].zsize = source->fixed_data[i].zsize;
-        if (destination->fixed_data[i].xsize * destination->fixed_data[i].zsize > 0)
+        TerrainHeightMapChunk* chunk = destination->fixed_data + i;
+
+        chunk->rect = chunk->rect;
+        if (chunk->rect.xsize * chunk->rect.zsize > 0)
         {
-            destination->fixed_data[i].data = realloc(destination->fixed_data[i].data, sizeof(double) * destination->fixed_data[i].xsize * destination->fixed_data[i].zsize);
+            chunk->data = realloc(chunk->data, sizeof(double) * chunk->rect.xsize * chunk->rect.zsize);
         }
-        memcpy(destination->fixed_data[i].data, source->fixed_data[i].data, sizeof(double) * destination->fixed_data[i].xsize * destination->fixed_data[i].zsize);
+        memcpy(chunk->data, chunk->data, sizeof(double) * chunk->rect.xsize * chunk->rect.zsize);
     }
 
     destination->floating_used = 0;
@@ -90,13 +94,17 @@ void terrainHeightmapSave(PackStream* stream, TerrainHeightMap* heightmap)
     packWriteInt(stream, &heightmap->fixed_count);
     for (i = 0; i < heightmap->fixed_count; i++)
     {
-        packWriteInt(stream, &heightmap->fixed_data[i].xstart);
-        packWriteInt(stream, &heightmap->fixed_data[i].xsize);
-        packWriteInt(stream, &heightmap->fixed_data[i].zstart);
-        packWriteInt(stream, &heightmap->fixed_data[i].zsize);
-        for (j = 0; j < heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].zsize; j++)
+        TerrainHeightMapChunk* chunk = heightmap->fixed_data + i;
+
+        packWriteInt(stream, &chunk->rect.xstart);
+        packWriteInt(stream, &chunk->rect.xend);
+        packWriteInt(stream, &chunk->rect.xsize);
+        packWriteInt(stream, &chunk->rect.zstart);
+        packWriteInt(stream, &chunk->rect.zend);
+        packWriteInt(stream, &chunk->rect.zsize);
+        for (j = 0; j < chunk->rect.xsize * chunk->rect.zsize; j++)
         {
-            packWriteDouble(stream, &heightmap->fixed_data[i].data[j]);
+            packWriteDouble(stream, &chunk->data[j]);
         }
     }
 }
@@ -110,26 +118,30 @@ void terrainHeightmapLoad(PackStream* stream, TerrainHeightMap* heightmap)
 
     for (i = 0; i < heightmap->fixed_count; i++)
     {
-        packReadInt(stream, &heightmap->fixed_data[i].xstart);
-        packReadInt(stream, &heightmap->fixed_data[i].xsize);
-        packReadInt(stream, &heightmap->fixed_data[i].zstart);
-        packReadInt(stream, &heightmap->fixed_data[i].zsize);
-        if (heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].zsize > 0)
+        TerrainHeightMapChunk* chunk = heightmap->fixed_data + i;
+
+        packReadInt(stream, &chunk->rect.xstart);
+        packReadInt(stream, &chunk->rect.xend);
+        packReadInt(stream, &chunk->rect.xsize);
+        packReadInt(stream, &chunk->rect.zstart);
+        packReadInt(stream, &chunk->rect.zend);
+        packReadInt(stream, &chunk->rect.zsize);
+        if (chunk->rect.xsize * chunk->rect.zsize > 0)
         {
-            heightmap->fixed_data[i].data = realloc(heightmap->fixed_data[i].data, sizeof(double) * heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].zsize);
+            chunk->data = realloc(chunk->data, sizeof(double) * chunk->rect.xsize * chunk->rect.zsize);
         }
-        for (j = 0; j < heightmap->fixed_data[i].xsize * heightmap->fixed_data[i].zsize; j++)
+        for (j = 0; j < chunk->rect.xsize * chunk->rect.zsize; j++)
         {
-            packReadDouble(stream, &heightmap->fixed_data[i].data[j]);
+            packReadDouble(stream, &chunk->data[j]);
         }
     }
 
     heightmap->floating_used = 0;
 }
 
-static inline int _checkDataHit(TerrainHeightMapData* data, double x, double z, double* result)
+static inline int _checkDataHit(TerrainHeightMapChunk* chunk, double x, double z, double* result)
 {
-    if (x > (double)data->xstart && x < (double)(data->xstart + data->xsize) && z > (double)data->zstart && z < (double)(data->zstart + data->zsize))
+    if (x > (double)chunk->rect.xstart && x < (double)chunk->rect.xend && z > (double)chunk->rect.zstart && z < (double)chunk->rect.zend)
     {
         /* TODO Get interpolated value */
         *result = 0.0;
@@ -163,38 +175,72 @@ int terrainHeightmapGetHeight(TerrainHeightMap* heightmap, double x, double z, d
     }
 }
 
+static inline void _resetRect(TerrainHeightMap* heightmap, int x1, int x2, int z1, int z2)
+{
+    int x, z;
+
+    for (x = x1; x <= x2; x++)
+    {
+        for (z = z1; z <= z2; z++)
+        {
+            heightmap->floating_data.data[z * heightmap->floating_data.rect.xsize + x] = terrainGetGridHeight(heightmap->terrain, x + heightmap->floating_data.rect.xstart, z + heightmap->floating_data.rect.zstart, 1);
+        }
+    }
+}
+
 static void _prepareBrushStroke(TerrainHeightMap* heightmap, TerrainBrush* brush)
 {
-    double cx = brush->relative_x;
-    double cz = brush->relative_z;
     double s = brush->smoothed_size + brush->hard_radius;
-    double sx = s;
-    double sz = s;
-
-    int x1 = (int)floor(cx - sx);
-    int x2 = (int)ceil(cx + sx);
-    int z1 = (int)floor(cz - sz);
-    int z2 = (int)ceil(cz + sz);
+    int x1 = (int)floor(brush->relative_x - s);
+    int x2 = (int)ceil(brush->relative_x + s);
+    int z1 = (int)floor(brush->relative_z - s);
+    int z2 = (int)ceil(brush->relative_z + s);
 
     /* Prepare floating data */
     if (heightmap->floating_used)
     {
-        /* Grow floating area */
-        /* TODO */
+        int gx1 = (x1 < heightmap->floating_data.rect.xstart) ? heightmap->floating_data.rect.xstart - x1 : 0;
+        int gx2 = (x2 > heightmap->floating_data.rect.xend) ? x2 - heightmap->floating_data.rect.xend : 0;
+        int gz1 = (z1 < heightmap->floating_data.rect.zstart) ? heightmap->floating_data.rect.zstart - z1 : 0;
+        int gz2 = (z2 > heightmap->floating_data.rect.zend) ? z2 - heightmap->floating_data.rect.zend : 0;
+        if (gx1 || gx2 || gz1 || gz2)
+        {
+            /* Floating area needs growing */
+            int new_width = heightmap->floating_data.rect.xsize + gx1 + gx2;
+            int new_height = heightmap->floating_data.rect.zsize + gz1 + gz2;
+
+            heightmap->floating_data.data = memory2dRealloc(heightmap->floating_data.data, sizeof(double), heightmap->floating_data.rect.xsize, heightmap->floating_data.rect.zsize, new_width, new_height, gx1, gz1);
+
+            heightmap->floating_data.rect.xstart -= gx1;
+            heightmap->floating_data.rect.xend += gx2;
+            heightmap->floating_data.rect.xsize += gx1 + gx2;
+            heightmap->floating_data.rect.zstart -= gz1;
+            heightmap->floating_data.rect.zend += gz2;
+            heightmap->floating_data.rect.zsize += gz1 + gz2;
+
+            _resetRect(heightmap, 0, new_width - 1, 0, gz1 - 1);
+            _resetRect(heightmap, 0, new_width - 1, new_height - gz2 + 1, new_height - 1);
+            _resetRect(heightmap, 0, gx1 - 1, gz1, new_height - gz2);
+            _resetRect(heightmap, new_width - gx2 + 1, new_width - 1, gz1, new_height - gz2);
+        }
     }
     else
     {
-        /* Init flaoting area */
-        heightmap->floating_used = 1;
-        heightmap->floating_data.xstart = x1;
-        heightmap->floating_data.xsize = x2 - x1 + 1;
-        heightmap->floating_data.zstart = z1;
-        heightmap->floating_data.zsize = z2 - z1 + 1;
+        /* Init floating area */
+        heightmap->floating_data.rect.xstart = x1;
+        heightmap->floating_data.rect.xend = x2;
+        heightmap->floating_data.rect.xsize = x2 - x1 + 1;
+        heightmap->floating_data.rect.zstart = z1;
+        heightmap->floating_data.rect.zend = z2;
+        heightmap->floating_data.rect.zsize = z2 - z1 + 1;
 
         size_t new_size;
-        new_size = sizeof(double) * heightmap->floating_data.xsize * heightmap->floating_data.zsize;
+        new_size = sizeof(double) * heightmap->floating_data.rect.xsize * heightmap->floating_data.rect.zsize;
         heightmap->floating_data.data = realloc(heightmap->floating_data.data, new_size);
-        memset(heightmap->floating_data.data, 0, new_size);
+
+        _resetRect(heightmap, 0, 0, heightmap->floating_data.rect.xsize - 1, heightmap->floating_data.rect.zsize - 1);
+
+        heightmap->floating_used = 1;
     }
 }
 

@@ -65,6 +65,8 @@ private:
     QDateTime _last_time;
     bool _mouse_moved;
 
+    int _position_x;
+    int _position_z;
     double _angle_h;
     double _angle_v;
 
