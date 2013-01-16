@@ -65,7 +65,7 @@ void terrainRenderSurface(Renderer* renderer)
 
     water_height = renderer->getWaterHeightInfo(renderer).max_height;
 
-    while (radius_ext < 1000.0)
+    while (radius_int < 5000.0)
     {
         if (!renderer->addRenderProgress(renderer, 0.0))
         {

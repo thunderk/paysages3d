@@ -11,11 +11,6 @@ void atmosphereAutoPreset(AtmosphereDefinition* definition, AtmospherePreset pre
     definition->sun_color.b = 0.9;
     definition->sun_color.a = 1.0;
     definition->sun_radius = 0.02;
-    definition->sun_halo_size = 0.3;
-    curveClear(definition->sun_halo_profile);
-    curveQuickAddPoint(definition->sun_halo_profile, 0.0, 1.0);
-    curveQuickAddPoint(definition->sun_halo_profile, 0.1, 0.2);
-    curveQuickAddPoint(definition->sun_halo_profile, 1.0, 0.0);
     definition->humidity = 0.1;
 
     switch (preset)

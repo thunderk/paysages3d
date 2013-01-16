@@ -55,7 +55,6 @@ static AtmosphereDefinition* _createDefinition()
     }
 
     result = malloc(sizeof(AtmosphereDefinition));
-    result->sun_halo_profile = curveCreate();
 
     atmosphereAutoPreset(result, ATMOSPHERE_PRESET_CLEAR_DAY);
 
@@ -64,7 +63,6 @@ static AtmosphereDefinition* _createDefinition()
 
 static void _deleteDefinition(AtmosphereDefinition* definition)
 {
-    curveDelete(definition->sun_halo_profile);
     free(definition);
 }
 
@@ -75,11 +73,8 @@ static void _copyDefinition(AtmosphereDefinition* source, AtmosphereDefinition* 
     destination->minute = source->minute;
     destination->sun_color = source->sun_color;
     destination->sun_radius = source->sun_radius;
-    destination->sun_halo_size = source->sun_halo_size;
     destination->dome_lighting = source->dome_lighting;
     destination->humidity = source->humidity;
-
-    curveCopy(source->sun_halo_profile, destination->sun_halo_profile);
 
     _validateDefinition(destination);
 }
@@ -91,8 +86,6 @@ static void _saveDefinition(PackStream* stream, AtmosphereDefinition* definition
     packWriteInt(stream, &definition->minute);
     colorSave(stream, &definition->sun_color);
     packWriteDouble(stream, &definition->sun_radius);
-    packWriteDouble(stream, &definition->sun_halo_size);
-    curveSave(stream, definition->sun_halo_profile);
     packWriteDouble(stream, &definition->dome_lighting);
     packWriteDouble(stream, &definition->humidity);
 }
@@ -104,8 +97,6 @@ static void _loadDefinition(PackStream* stream, AtmosphereDefinition* definition
     packReadInt(stream, &definition->minute);
     colorLoad(stream, &definition->sun_color);
     packReadDouble(stream, &definition->sun_radius);
-    packReadDouble(stream, &definition->sun_halo_size);
-    curveLoad(stream, definition->sun_halo_profile);
     packReadDouble(stream, &definition->dome_lighting);
     packReadDouble(stream, &definition->humidity);
 
@@ -171,17 +162,19 @@ static Color _getSkyColor(Renderer* renderer, Vector3 direction)
     }
 
     /* Get sun halo */
-    if (dist < definition->sun_radius + definition->sun_halo_size)
+    if (dist < definition->sun_radius)
     {
         sun_color = definition->sun_color;
-        if (dist <= definition->sun_radius)
+        sun_color.r *= 100.0;
+        sun_color.g *= 100.0;
+        sun_color.b *= 100.0;
+        if (dist <= definition->sun_radius * 0.9)
         {
             return sun_color;
         }
         else
         {
-            dist = (dist - definition->sun_radius) / definition->sun_halo_size;
-            sun_color.a = curveGetValue(definition->sun_halo_profile, dist);
+            sun_color.a = (dist - definition->sun_radius * 0.9) / (definition->sun_radius * 0.1);
             colorMask(&sky_color, &sun_color);
             return sky_color;
         }

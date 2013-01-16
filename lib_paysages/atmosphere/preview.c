@@ -135,11 +135,6 @@ Color atmosphereGetPreview(Renderer* renderer, double x, double y, double headin
         normal = m4Transform(rotation, normal);
         hit = m4Transform(rotation, hit);
 
-        if (y == 0.0)
-        {
-            y = 0.0;
-        }
-
         renderer->getLightStatus(renderer, &light, hit);
         color = renderer->applyLightStatus(renderer, &light, hit, normal, MOUNT_MATERIAL);
 

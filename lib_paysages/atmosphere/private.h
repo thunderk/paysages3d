@@ -3,7 +3,7 @@
 #ifndef _PAYSAGES_ATMOSPHERE_PRIVATE_H_
 #define _PAYSAGES_ATMOSPHERE_PRIVATE_H_
 
-#define SPHERE_SIZE 1000.0
+#define SPHERE_SIZE 10000.0
 
 Color basicApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base);
 

@@ -34,8 +34,6 @@ typedef struct
     double humidity;
     Color sun_color;
     double sun_radius;
-    double sun_halo_size;
-    Curve* sun_halo_profile;
     double dome_lighting;
 
     double _daytime;

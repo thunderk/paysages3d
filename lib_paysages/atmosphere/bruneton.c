@@ -957,22 +957,15 @@ static Color _groundColor(Color base, Vector3 x, double t, Vector3 v, Vector3 s,
 }
 
 /* direct sun light for ray x+tv, when sun in direction s (=L0) */
-static Color _sunColor(Vector3 x, double t, Vector3 v, Vector3 s, double r, double mu)
+static Color _sunColor(Vector3 v, Vector3 s, double r, double mu)
 {
-    if (t > 0.0)
-    {
-        return COLOR_BLACK;
-    }
-    else
-    {
-        Color transmittance = r <= Rt ? _transmittanceWithShadow(r, mu) : COLOR_WHITE; /* T(x,xo) */
-        double isun = step(cos(M_PI / 180.0), v3Dot(v, s)) * ISun; /* Lsun */
-        transmittance.r *= isun;
-        transmittance.g *= isun;
-        transmittance.b *= isun;
-        transmittance.a = 1.0;
-        return transmittance; /* Eq (9) */
-    }
+    Color transmittance = r <= Rt ? _transmittanceWithShadow(r, mu) : COLOR_WHITE; /* T(x,xo) */
+    double isun = step(cos(M_PI / 180.0), v3Dot(v, s)) * ISun; /* Lsun */
+    transmittance.r *= isun;
+    transmittance.g *= isun;
+    transmittance.b *= isun;
+    transmittance.a = 1.0;
+    return transmittance; /* Eq (9) */
 }
 
 /*********************** Cache/debug methods ***********************/
@@ -1193,53 +1186,24 @@ void brunetonInit()
     texture3DDelete(_deltaJTexture);
 }
 
-static inline void _fixVector(Vector3* v)
-{
-    double temp = v->y;
-    /*v->x = -v->x;*/
-    v->y = v->z;
-    v->z = temp;
-}
-
 Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position)
 {
     Vector3 x = {0.0, Rg + (eye.y + 10.0) * 0.01, 0.0};
-    _fixVector(&x);
     Vector3 v = v3Normalize(direction);
-    _fixVector(&v);
-    _fixVector(&sun_position);
     Vector3 s = v3Normalize(v3Sub(sun_position, x));
 
     double r = v3Norm(x);
     double mu = v3Dot(x, v) / r;
     double t = -r * mu - sqrt(r * r * (mu * mu - 1.0) + Rg * Rg);
 
-    Vector3 g = {x.x, x.y, x.z - Rg + 10.0};
-    double a = v.x * v.x + v.y * v.y - v.z * v.z;
-    double b = 2.0 * (g.x * v.x + g.y * v.y - g.z * v.z);
-    double c = g.x * g.x + g.y * g.y - g.z * g.z;
-    double d = -(b + sqrt(b * b - 4.0 * a * c)) / (2.0 * a);
-    int cone = d > 0.0 && fabs(x.z + d * v.z - Rg) <= 10.0;
-
-    if (t > 0.0)
-    {
-        if (cone && d < t)
-        {
-            t = d;
-        }
-    }
-    else if (cone)
-    {
-        t = d;
-    }
-
     Vector3 attenuation;
     Color inscatterColor = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
-    Color sunColor = _sunColor(x, 0.0, v, s, r, mu); /* L0 */
+    Color sunColor = _sunColor(v, s, r, mu); /* L0 */
 
     inscatterColor.r += sunColor.r;
     inscatterColor.g += sunColor.g;
     inscatterColor.b += sunColor.b;
+
     return inscatterColor; /* Eq (16) */
 }
 
@@ -1250,42 +1214,25 @@ Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color
     Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), 149597870.0);
 
     Vector3 x = {0.0, Rg + (eye.y + 10.0) * 0.01, 0.0};
-    _fixVector(&x);
     Vector3 v = v3Normalize(direction);
-    _fixVector(&v);
-    _fixVector(&sun_position);
     Vector3 s = v3Normalize(v3Sub(sun_position, x));
+
+    if (v.y == 0.0)
+    {
+        v.y = -0.000001;
+    }
 
     double r = v3Norm(x);
     double mu = v3Dot(x, v) / r;
-    /*double t = -r * mu - sqrt(r * r * (mu * mu - 1.0) + Rg * Rg);*/
     double t = v3Norm(direction);
-
-    Vector3 g = {x.x, x.y, x.z - Rg - 10.0};
-    double a = v.x * v.x + v.y * v.y - v.z * v.z;
-    double b = 2.0 * (g.x * v.x + g.y * v.y - g.z * v.z);
-    double c = g.x * g.x + g.y * g.y - g.z * g.z;
-    double d = -(b + sqrt(b * b - 4.0 * a * c)) / (2.0 * a);
-    int cone = d > 0.0 && fabs(x.z + d * v.z - Rg) <= 10.0;
-
-    if (t > 0.0)
-    {
-        if (cone && d < t)
-        {
-            t = d;
-        }
-    }
-    else if (cone)
-    {
-        t = d;
-    }
 
     Vector3 attenuation;
     Color inscatterColor = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
-    Color groundColor = _groundColor(base, x, t, v, s, r, mu, attenuation); //R[L0]+R[L*]*/
+    Color groundColor = _groundColor(base, x, t, v, s, r, mu, attenuation); /*R[L0]+R[L*]*/
 
     groundColor.r += inscatterColor.r;
     groundColor.g += inscatterColor.g;
     groundColor.b += inscatterColor.b;
+
     return groundColor; /* Eq (16) */
 }
