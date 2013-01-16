@@ -21,12 +21,13 @@ public:
     {
         _renderer = atmosphereCreatePreviewRenderer();
 
+        configHdrToneMapping(true);
         configScaling(0.5, 5.0, 0.5, 2.5);
     }
 protected:
-    QColor getColor(double x, double y)
+    Color getColor(double x, double y)
     {
-        return colorToQColor(atmosphereGetPreview(&_renderer, x, -y, M_PI_2));
+        return atmosphereGetPreview(&_renderer, x, -y, M_PI_2);
     }
     void updateData()
     {
@@ -44,12 +45,13 @@ public:
     {
         _renderer = atmosphereCreatePreviewRenderer();
 
+        configHdrToneMapping(true);
         configScaling(0.5, 5.0, 0.5, 2.5);
     }
 protected:
-    QColor getColor(double x, double y)
+    Color getColor(double x, double y)
     {
-        return colorToQColor(atmosphereGetPreview(&_renderer, x, -y, -M_PI_2));
+        return atmosphereGetPreview(&_renderer, x, -y, -M_PI_2);
     }
     void updateData()
     {

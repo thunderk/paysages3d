@@ -1,5 +1,6 @@
 #include "dialognoise.h"
 
+#include <QWidget>
 #include <QVBoxLayout>
 #include <QImage>
 #include <QLabel>
@@ -9,7 +10,7 @@
 #include <QScrollArea>
 #include <QPushButton>
 #include <math.h>
-#include <qt4/QtGui/qwidget.h>
+#include "../lib_paysages/color.h"
 
 /**************** Previews ****************/
 class PreviewLevel:public BasePreview
@@ -34,15 +35,15 @@ protected:
     {
         noiseCopy(_noise_original, _noise_preview);
     }
-    QColor getColor(double x, double y)
+    Color getColor(double x, double y)
     {
         if ((_level >= 0) && (-y > noiseGet1DLevel(_noise_preview, _level, x)))
         {
-            return Qt::black;
+            return COLOR_WHITE;
         }
         else
         {
-            return Qt::white;
+            return COLOR_BLACK;
         }
     }
 private:
@@ -66,15 +67,15 @@ protected:
     {
         noiseCopy(_noise_original, _noise_preview);
     }
-    QColor getColor(double x, double y)
+    Color getColor(double x, double y)
     {
         if (-y > noiseGet1DTotal(_noise_preview, x))
         {
-            return Qt::black;
+            return COLOR_WHITE;
         }
         else
         {
-            return Qt::white;
+            return COLOR_BLACK;
         }
     }
 private:

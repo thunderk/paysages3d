@@ -18,8 +18,8 @@ PreviewColorGradation::PreviewColorGradation(QWidget* parent, ColorGradation* gr
     this->gradation = gradation;
     this->band = band;
 }
-    
-void PreviewColorGradation::paintEvent(QPaintEvent* event)
+
+void PreviewColorGradation::paintEvent(QPaintEvent*)
 {
     Curve* curve;
 
@@ -67,7 +67,7 @@ void PreviewColorGradation::paintEvent(QPaintEvent* event)
     curveDelete(curve);
 }
 
-void PreviewColorGradation::mouseReleaseEvent(QMouseEvent* event)
+void PreviewColorGradation::mouseReleaseEvent(QMouseEvent*)
 {
     emit clicked();
 }

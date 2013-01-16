@@ -16,7 +16,7 @@ public:
     {
     }
 
-    void paintEvent(QPaintEvent* event)
+    void paintEvent(QPaintEvent*)
     {
         if (!noise)
         {

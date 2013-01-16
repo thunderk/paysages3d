@@ -35,15 +35,15 @@ public:
         texturesLayerDeleteDefinition(_preview_layer);
     }
 protected:
-    QColor getColor(double x, double y)
+    Color getColor(double x, double y)
     {
         Vector3 location;
-        double coverage;
+        Color result;
         location.x = x;
         location.y = _renderer.terrain->getHeight(&_renderer, x, y, 1);
         location.z = y;
-        coverage = texturesGetLayerCoverage(_preview_layer, &_renderer, location, this->scaling);
-        return QColor::fromRgbF(coverage, coverage, coverage, 1.0);
+        result.r = result.g = result.b = texturesGetLayerCoverage(_preview_layer, &_renderer, location, this->scaling);
+        return result;
     }
     void updateData()
     {
@@ -99,13 +99,13 @@ public:
         texturesLayerDeleteDefinition(_preview_layer);
     }
 protected:
-    QColor getColor(double x, double y)
+    Color getColor(double x, double y)
     {
         Vector3 location;
         location.x = x;
         location.y = 0.0;
         location.z = y;
-        return colorToQColor(texturesGetLayerColor(_preview_layer, &_renderer, location, this->scaling));
+        return texturesGetLayerColor(_preview_layer, &_renderer, location, this->scaling);
     }
     void updateData()
     {

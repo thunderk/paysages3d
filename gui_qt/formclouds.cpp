@@ -27,10 +27,9 @@ public:
         cloudsLayerDeleteDefinition(_preview_layer);
     }
 protected:
-    QColor getColor(double x, double y)
+    Color getColor(double x, double y)
     {
         Vector3 eye, look;
-        Color color_layer;
 
         eye.x = 0.0;
         eye.y = scaling;
@@ -40,8 +39,7 @@ protected:
         look.z = 1.0;
         look = v3Normalize(look);
 
-        color_layer = cloudsApplyLayer(_preview_layer, COLOR_BLUE, &_renderer, eye, v3Add(eye, v3Scale(look, 1000.0)));
-        return colorToQColor(color_layer);
+        return cloudsApplyLayer(_preview_layer, COLOR_BLUE, &_renderer, eye, v3Add(eye, v3Scale(look, 1000.0)));
     }
     void updateData()
     {
@@ -90,10 +88,9 @@ public:
         configScaling(0.5, 2.0, 0.1, 2.0);
     }
 protected:
-    QColor getColor(double x, double y)
+    Color getColor(double x, double y)
     {
         Vector3 start, end;
-        Color color_layer;
 
         start.x = x * _preview_layer->thickness * 0.5;
         start.y = -y * _preview_layer->thickness * 0.5;
@@ -103,8 +100,7 @@ protected:
         end.y = -y * _preview_layer->thickness * 0.5;
         end.z = -_preview_layer->thickness * 0.5;
 
-        color_layer = cloudsApplyLayer(_preview_layer, COLOR_BLUE, &_renderer, start, end);
-        return colorToQColor(color_layer);
+        return cloudsApplyLayer(_preview_layer, COLOR_BLUE, &_renderer, start, end);
     }
     void updateData()
     {

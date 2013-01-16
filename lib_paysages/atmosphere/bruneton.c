@@ -212,7 +212,7 @@ static double _opticalDepth(double H, double r, double mu, double d)
     double ayq = ay * ay;
     double x = ays > axs ? exp(axq) : 0.0;
     double yx = axs / (2.3193 * fabs(ax) + sqrt(1.52 * axq + 4.0));
-    double yy = ays / (2.3193 * fabs(ay) + sqrt(1.52 * ayq + 4.0)) *  exp(-d / H * (d / (2.0 * r) + mu));
+    double yy = ays / (2.3193 * fabs(ay) + sqrt(1.52 * ayq + 4.0)) * exp(-d / H * (d / (2.0 * r) + mu));
     return sqrt((6.2831 * H) * r) * exp((Rg - r) / H) * (x + yx - yy);
 }
 
@@ -286,11 +286,10 @@ static double _limit(double r, double mu)
 static Vector3 _analyticTransmittance(double r, double mu, double d)
 {
     Vector3 result;
-    double opt = _opticalDepth(HR, r, mu, d);
 
-    result.x = exp(-betaR.r * opt) - betaMEx.x * opt;
-    result.y = exp(-betaR.g * opt) - betaMEx.y * opt;
-    result.z = exp(-betaR.b * opt) - betaMEx.z * opt;
+    result.x = exp(-betaR.r * _opticalDepth(HR, r, mu, d) - betaMEx.x * _opticalDepth(HM, r, mu, d));
+    result.y = exp(-betaR.g * _opticalDepth(HR, r, mu, d) - betaMEx.y * _opticalDepth(HM, r, mu, d));
+    result.z = exp(-betaR.b * _opticalDepth(HR, r, mu, d) - betaMEx.z * _opticalDepth(HM, r, mu, d));
 
     return result;
 }

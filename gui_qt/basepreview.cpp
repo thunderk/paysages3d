@@ -23,38 +23,38 @@ public:
         _ystart = ystart;
         _xsize = xsize;
         _ysize = ysize;
-        
+
         _need_render = true;
         _rendering = false;
         _alive = true;
         _priority = xstart;
     }
-    
+
     inline BasePreview* preview()
     {
         return _preview;
     }
-    
+
     inline int priority()
     {
         return _priority;
     }
-    
+
     inline bool isOnFront()
     {
         return _preview->isVisible() && _preview->window()->isActiveWindow();
     }
-    
+
     bool isFrom(BasePreview* preview)
     {
         return _preview == preview;
     }
-    
+
     void interrupt()
     {
         _alive = false;
     }
-    
+
     void update()
     {
         _priority = _xstart;
@@ -65,15 +65,15 @@ public:
     {
         bool changed = false;
         int revision;
-        
+
         if (_rendering)
         {
             return false;
         }
-        
+
         _rendering = true;
         _alive = true;
-        
+
         if (_need_render)
         {
             if (!isOnFront())
@@ -82,9 +82,9 @@ public:
                 _rendering = false;
                 return false;
             }
-            
+
             _need_render = false;
-            
+
             QImage pixbuf = _preview->startChunkTransaction(_xstart, _ystart, _xsize, _ysize, &revision);
 
             for (int x = 0; x < _xsize; x++)
@@ -103,14 +103,14 @@ public:
                     {
                         QColor newcol = _preview->getPixelColor(_xstart + x, _ystart + y);
                         newcol.setAlpha(255);
-                        
+
                         pixbuf.setPixel(x, y, newcol.rgb());
-                        
+
                         changed = true;
                     }
                 }
             }
-            
+
             if (changed)
             {
                 _need_render = not _preview->commitChunkTransaction(&pixbuf, _xstart, _ystart, _xsize, _ysize, revision);
@@ -120,12 +120,12 @@ public:
                 _preview->rollbackChunkTransaction();
             }
         }
-        
+
         if (not _need_render)
         {
             _priority = -1;
         }
-        
+
         _rendering = false;
         return _need_render;
     }
@@ -219,12 +219,12 @@ void PreviewDrawingManager::removeChunks(BasePreview* preview)
             _chunks.remove(i);
             _updateQueue.removeAll(chunk);
             _lock.unlock();
-            
+
             removed++;
             i--;
         }
     }
-    
+
     logDebug(QString("[Previews] %1 chunks removed, %2 remaining").arg(removed).arg(_chunks.size()));
 }
 
@@ -317,7 +317,7 @@ void PreviewDrawingManager::performOneThreadJob()
             }
             _lock.unlock();
         }
-    }        
+    }
 }
 
 int PreviewDrawingManager::chunkCount()
@@ -353,10 +353,13 @@ QWidget(parent)
     _revision = 0;
     _transactions_count = 0;
     _redraw_requested = false;
-    
+
     _info = new QLabel(this);
     _info->setVisible(false);
     _info->setStyleSheet("QLabel { background-color: white; color: black; }");
+
+    _hdr_enabled = false;
+    _hdr_profile = colorProfileCreate();
 
     this->alive = true;
 
@@ -365,7 +368,7 @@ QWidget(parent)
     this->setMinimumSize(256, 256);
     this->setMaximumSize(256, 256);
     this->resize(256, 256);
-    
+
     startTimer(50);
 }
 
@@ -373,11 +376,19 @@ BasePreview::~BasePreview()
 {
     alive = false;
 
+    colorProfileDelete(_hdr_profile);
+
     _drawing_manager->removeChunks(this);
 
     delete _info;
     delete _pixbuf;
     delete _lock_drawing;
+}
+
+void BasePreview::configHdrToneMapping(bool active)
+{
+    _hdr_enabled = active;
+    redraw();
 }
 
 void BasePreview::addOsd(QString name)
@@ -391,7 +402,7 @@ void BasePreview::savePack(PackStream* stream)
     packWriteDouble(stream, &this->xoffset);
     packWriteDouble(stream, &this->yoffset);
     packWriteDouble(stream, &this->scalingbase);
-    
+
     // TODO Save choices and toggles
 }
 
@@ -400,9 +411,9 @@ void BasePreview::loadPack(PackStream* stream)
     packReadDouble(stream, &this->xoffset);
     packReadDouble(stream, &this->yoffset);
     packReadDouble(stream, &this->scalingbase);
-    
+
     // TODO Save choices and toggles
-    
+
     updateScaling();
     emit contentChange();
 }
@@ -427,9 +438,9 @@ void BasePreview::updateData()
 {
 }
 
-QColor BasePreview::getColor(double, double)
+Color BasePreview::getColor(double, double)
 {
-    return QColor(0, 0, 0);
+    return COLOR_BLACK;
 }
 
 void BasePreview::configScaling(double min, double max, double step, double init, bool logarithmic)
@@ -473,9 +484,9 @@ void BasePreview::addChoice(const QString& key, const QString& title, const QStr
     choice.title = title;
     choice.items << choices;
     choice.current = init_value;
-    
+
     _choices.insert(key, choice);
-    
+
     choiceChangeEvent(key, init_value);
 }
 
@@ -488,9 +499,9 @@ void BasePreview::addToggle(const QString& key, const QString& text, bool init_v
     _ContextToggle toggle;
     toggle.title = text;
     toggle.value = init_value;
-    
+
     _toggles.insert(key, toggle);
-    
+
     toggleChangeEvent(key, init_value);
 }
 
@@ -507,24 +518,24 @@ void BasePreview::redraw()
 QImage BasePreview::startChunkTransaction(int x, int y, int w, int h, int* revision)
 {
     QImage result;
-    
+
     _lock_drawing->lock();
-    
+
     *revision = _revision;
     result = _pixbuf->copy(x, y, w, h);
     _transactions_count++;
-    
+
     _lock_drawing->unlock();
-    
+
     return result;
 }
 
 bool BasePreview::commitChunkTransaction(QImage* chunk, int x, int y, int w, int h, int revision)
 {
     bool result;
-    
+
     _lock_drawing->lock();
-    
+
     if (revision == _revision)
     {
         for (int ix = 0; ix < w; ix++)
@@ -541,26 +552,35 @@ bool BasePreview::commitChunkTransaction(QImage* chunk, int x, int y, int w, int
     {
         result = false;
     }
-    
+
     _transactions_count--;
-    
+
     _lock_drawing->unlock();
-    
+
     return result;
 }
 
 void BasePreview::rollbackChunkTransaction()
 {
     _lock_drawing->lock();
-    
+
     _transactions_count--;
-    
+
     _lock_drawing->unlock();
 }
 
 QColor BasePreview::getPixelColor(int x, int y)
 {
-    return getColor((double) (x - _width / 2) * scaling + xoffset, (double) (y - _height / 2) * scaling + yoffset);
+    Color col = getColor((double) (x - _width / 2) * scaling + xoffset, (double) (y - _height / 2) * scaling + yoffset);
+    if (_hdr_enabled)
+    {
+        col = colorProfileApply(_hdr_profile, col);
+    }
+    else
+    {
+        colorNormalize(&col);
+    }
+    return colorToQColor(col);
 }
 
 void BasePreview::timerEvent(QTimerEvent*)
@@ -647,7 +667,7 @@ void BasePreview::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     painter.drawImage(0, 0, *this->_pixbuf);
-    
+
     QImage osd(_pixbuf->size(), _pixbuf->format());
     osd.fill(0x00000000);
     for (int i = 0; i < _osd.size(); i++)
@@ -705,10 +725,10 @@ void BasePreview::contextMenuEvent(QContextMenuEvent* event)
         {
             menu.addSeparator();
         }
-        
+
         iter1.next();
         menu.addAction(QString("   %1   ").arg(iter1.value().title))->setDisabled(true);
-        
+
         QStringList list = iter1.value().items;
         for (int i = 0; i < list.count(); i++)
         {
@@ -732,7 +752,7 @@ void BasePreview::contextMenuEvent(QContextMenuEvent* event)
         {
             menu.addSeparator();
         }
-        
+
         iter2.next();
 
         QAction* action = menu.addAction(iter2.value().title);
@@ -749,7 +769,7 @@ void BasePreview::contextMenuEvent(QContextMenuEvent* event)
     if (not menu.isEmpty())
     {
         connect(&menu, SIGNAL(triggered(QAction*)), this, SLOT(choiceSelected(QAction*)));
-        
+
         menu.exec(event->globalPos());
         event->accept();
     }
@@ -767,7 +787,7 @@ void BasePreview::mousePressEvent(QMouseEvent* event)
 void BasePreview::mouseMoveEvent(QMouseEvent* event)
 {
     int width, height;
-    
+
     width = this->width();
     height = this->height();
 
@@ -775,7 +795,7 @@ void BasePreview::mouseMoveEvent(QMouseEvent* event)
     {
         int dx, dy;
         int ndx, ndy;
-        
+
         dx = event->x() - mousex;
         dy = event->y() - mousey;
 

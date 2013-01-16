@@ -22,9 +22,9 @@ public:
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
-    QColor getColor(double x, double y)
+    Color getColor(double x, double y)
     {
-        return colorToQColor(terrainGetPreviewColor(&_renderer, x, -y, scaling));
+        return terrainGetPreviewColor(&_renderer, x, -y, scaling);
     }
     void updateData()
     {

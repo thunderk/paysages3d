@@ -1,6 +1,6 @@
 #include "memory.h"
 
-#include <assert.h>
+#include <stdlib.h>
 
 void* memory2dRealloc(void* data, int datasize, int oldxsize, int oldysize, int newxsize, int newysize, int xoffset, int yoffset)
 {

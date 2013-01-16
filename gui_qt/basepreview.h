@@ -33,16 +33,16 @@ class BasePreview : public QWidget {
 public:
     BasePreview(QWidget* parent);
     ~BasePreview();
-    
+
     virtual void savePack(PackStream* stream);
     virtual void loadPack(PackStream* stream);
-    
+
     static void initDrawers();
     static void stopDrawers();
     static void reviveAll();
-    
+
     void redraw();
-    
+
     QImage startChunkTransaction(int x, int y, int w, int h, int* revision);
     bool commitChunkTransaction(QImage* chunk, int x, int y, int w, int h, int revision);
     void rollbackChunkTransaction();
@@ -51,8 +51,9 @@ public:
 
 protected:
     virtual void updateData();
-    virtual QColor getColor(double x, double y);
+    virtual Color getColor(double x, double y);
 
+    void configHdrToneMapping(bool active);
     void configScaling(double min, double max, double step, double init, bool logarithmic = true);
     void configScrolling(double xmin, double xmax, double xinit, double ymin, double ymax, double yinit);
 
@@ -89,12 +90,12 @@ private:
     QVector<PreviewOsd*> _osd;
     QHash<QString, _ContextChoice> _choices;
     QHash<QString, _ContextToggle> _toggles;
-    
+
     QLabel* _info;
 
     int _width;
     int _height;
-    
+
     int _revision;
     int _transactions_count;
     bool _redraw_requested;
@@ -105,6 +106,8 @@ private:
     double scalingbase;
 
     bool alive;
+    bool _hdr_enabled;
+    ColorProfile* _hdr_profile;
 
     double conf_scroll_xmin;
     double conf_scroll_xmax;

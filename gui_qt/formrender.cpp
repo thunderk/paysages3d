@@ -39,7 +39,7 @@ public:
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
-    QColor getColor(double x, double y)
+    Color getColor(double x, double y)
     {
         Vector3 down = {0.0, -1.0, 0.0};
         Vector3 location;
@@ -50,14 +50,14 @@ protected:
             location.x = x;
             location.y = _water.height;
             location.z = y;
-            return colorToQColor(waterGetColor(&_water, &_renderer, location, down));
+            return waterGetColor(&_water, &_renderer, location, down);
         }
         else
         {
             location.x = x;
             location.y = height;
             location.z = y;
-            return colorToQColor(_renderer.terrain->getFinalColor(&_renderer, location, scaling));
+            return _renderer.terrain->getFinalColor(&_renderer, location, scaling);
         }
     }
     void updateData()

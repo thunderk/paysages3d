@@ -38,7 +38,7 @@ SmallMaterialPreview::~SmallMaterialPreview()
     rendererDelete(&_renderer);
 }
 
-QColor SmallMaterialPreview::getColor(double x, double y)
+Color SmallMaterialPreview::getColor(double x, double y)
 {
     double dist = sqrt(x * x + y * y);
     Vector3 point;
@@ -46,7 +46,7 @@ QColor SmallMaterialPreview::getColor(double x, double y)
 
     if (dist >= 1.0)
     {
-        return colorToQColor(COLOR_TRANSPARENT);
+        return COLOR_TRANSPARENT;
     }
     else
     {
@@ -67,17 +67,17 @@ QColor SmallMaterialPreview::getColor(double x, double y)
         {
             color.a = (1.0 - dist) / 0.05;
         }
-        return colorToQColor(color);
+        return color;
     }
 }
 
-void SmallMaterialPreview::paintEvent(QPaintEvent* event)
+void SmallMaterialPreview::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     int width = this->width();
     int height = this->height();
     double factor, dx, dy;
-    
+
     if (width > height)
     {
         factor = 2.0 / (double)height;
@@ -93,7 +93,7 @@ void SmallMaterialPreview::paintEvent(QPaintEvent* event)
     {
         for (int y = 0; y < height; y++)
         {
-            painter.setPen(getColor((double)x * factor - dx, (double)y * factor - dy));
+            painter.setPen(colorToQColor(getColor((double)x * factor - dx, (double)y * factor - dy)));
             painter.drawPoint(x, y);
         }
     }
@@ -105,7 +105,7 @@ PreviewMaterial::PreviewMaterial(QWidget* parent, SurfaceMaterial* material) : B
 {
     _small = new SmallMaterialPreview(this, material);
     _small->hide();
-    
+
     configScaling(0.05, 2.0, 0.05, 2.0);
 }
 
@@ -114,7 +114,7 @@ PreviewMaterial::~PreviewMaterial()
     delete _small;
 }
 
-QColor PreviewMaterial::getColor(double x, double y)
+Color PreviewMaterial::getColor(double x, double y)
 {
     return _small->getColor(x, y);
 }

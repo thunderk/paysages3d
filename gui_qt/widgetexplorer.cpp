@@ -339,7 +339,7 @@ void WidgetExplorer::wheelEvent(QWheelEvent* event)
     event->accept();
 }
 
-void WidgetExplorer::timerEvent(QTimerEvent *event)
+void WidgetExplorer::timerEvent(QTimerEvent*)
 {
     if (_updated)
     {

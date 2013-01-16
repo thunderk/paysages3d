@@ -31,14 +31,14 @@ public:
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
-    QColor getColor(double x, double y)
+    Color getColor(double x, double y)
     {
         double height;
 
         height = _renderer.terrain->getHeight(&_renderer, x, -y, 1);
         if (height > _definition.height)
         {
-            return colorToQColor(terrainGetPreviewColor(&_renderer, x, -y, scaling));
+            return terrainGetPreviewColor(&_renderer, x, -y, scaling);
         }
         else
         {
@@ -61,7 +61,7 @@ protected:
                 colorMask(&base, &mask);
             }
 
-            return colorToQColor(base);
+            return base;
         }
     }
     void updateData()
@@ -127,7 +127,7 @@ public:
     }
     int _background;
 protected:
-    QColor getColor(double x, double y)
+    Color getColor(double x, double y)
     {
         Vector3 eye, look, location;
 
@@ -141,7 +141,7 @@ protected:
 
         if (look.y > -0.0001)
         {
-            return colorToQColor(_rayWalking(&_renderer, eye, look, 0, 0, 0, 0).hit_color);
+            return _rayWalking(&_renderer, eye, look, 0, 0, 0, 0).hit_color;
         }
 
         location.x = eye.x - look.x * eye.y / look.y;
@@ -150,10 +150,10 @@ protected:
 
         if (location.z > 0.0)
         {
-            return colorToQColor(_rayWalking(&_renderer, eye, look, 0, 0, 0, 0).hit_color);
+            return _rayWalking(&_renderer, eye, look, 0, 0, 0, 0).hit_color;
         }
 
-        return colorToQColor(waterGetColor(&_water, &_renderer, location, look));
+        return waterGetColor(&_water, &_renderer, location, look);
     }
     void updateData()
     {
@@ -183,7 +183,7 @@ private:
     LightingDefinition _lighting;
     bool _lighting_enabled;
 
-    static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
+    static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int, int, int, int)
     {
         RayCastingResult result;
         PreviewWaterColor* preview = (PreviewWaterColor*)renderer->customData[2];

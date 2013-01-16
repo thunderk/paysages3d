@@ -10,12 +10,12 @@ WidgetCurveEditor::WidgetCurveEditor(QWidget *parent, double xmin, double xmax, 
     _curve = curveCreate();
     _dragged = -1;
     _pen = QColor(0, 0, 0);
-    
+
     _xmin = xmin;
     _xmax = xmax;
     _ymin = ymin;
     _ymax = ymax;
-    
+
     setMinimumSize(300, 300);
 }
 
@@ -47,22 +47,22 @@ void WidgetCurveEditor::setPenColor(QColor color)
     update();
 }
 
-void WidgetCurveEditor::paintEvent(QPaintEvent* event)
+void WidgetCurveEditor::paintEvent(QPaintEvent*)
 {
     int i, n;
     int width, height;
     double dwidth, dheight;
     CurvePoint point;
     double position, value, prev_value, next_value;
-    
+
     width = this->width();
     height = this->height();
     dheight = (double)(height - 1);
     dwidth = (double)(width - 1);
-    
+
     QPainter painter(this);
     painter.fillRect(rect(), Qt::white);
-    
+
     // Draw grid
     painter.setPen(QPen(Qt::lightGray));
     for (int x = 0; x <= 10; x++)
@@ -72,7 +72,7 @@ void WidgetCurveEditor::paintEvent(QPaintEvent* event)
         vx = (x == 10) ? height - 1 : x * height / 10;
         painter.drawLine(0, vx, width - 1, vx);
     }
-    
+
     // Draw labels
     painter.setPen(QColor(50, 50, 50));
     if (not _xlabel.isEmpty())
@@ -87,21 +87,21 @@ void WidgetCurveEditor::paintEvent(QPaintEvent* event)
         painter.translate(height, 0.0);
         painter.rotate(90.0);
     }
-    
+
     // Draw curve path
     painter.setPen(_pen);
     for (int x = 0; x < width; x++)
     {
         position = ((double)x / dwidth) * (_xmax - _xmin) + _xmin;
-        
+
         value = (curveGetValue(_curve, position) - _ymin) / (_ymax - _ymin);
         prev_value = curveGetValue(_curve, position - (_xmax - _xmin) / dwidth);
         next_value = curveGetValue(_curve, position + (_xmax - _xmin) / dwidth);
-        
+
         painter.drawLine(x, height - 1 - (int)((value + (prev_value - value) / 2.0) * dheight), x, height - 1 - (int)((value + (next_value - value) / 2.0) * dheight));
         painter.drawPoint(x, height - 1 - (int)(value * dheight));
     }
-    
+
     // Draw handles
     n = curveGetPointCount(_curve);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing, true);
@@ -118,37 +118,37 @@ void WidgetCurveEditor::mousePressEvent(QMouseEvent* event)
     {
         _dragged = getPointAt(event->x(), event->y());
     }
-    
+
     event->accept();
 }
 
 void WidgetCurveEditor::mouseMoveEvent(QMouseEvent* event)
 {
     CurvePoint point;
-    
+
     if (_dragged >= 0 && (event->buttons() & Qt::LeftButton))
     {
         screenToCurve(event->x(), event->y(), &point.position, &point.value);
-        
+
         point.position = (point.position < _xmin) ? _xmin : point.position;
         point.position = (point.position > _xmax) ? _xmax : point.position;
         point.value = (point.value < _ymin) ? _ymin : point.value;
         point.value = (point.value > _ymax) ? _ymax : point.value;
-        
+
         curveSetPoint(_curve, _dragged, &point);
 
         update();
-        
+
         emit liveChanged();
     }
-    
+
     event->accept();
 }
 
 void WidgetCurveEditor::mouseReleaseEvent(QMouseEvent* event)
 {
     int clicked;
-    
+
     if (event->button() == Qt::RightButton)
     {
         clicked = getPointAt(event->x(), event->y());
@@ -165,14 +165,14 @@ void WidgetCurveEditor::mouseReleaseEvent(QMouseEvent* event)
         curveValidate(_curve);
         update();
     }
-    
+
     event->accept();
 }
 
 void WidgetCurveEditor::mouseDoubleClickEvent(QMouseEvent* event)
 {
     CurvePoint point;
-    
+
     if (event->button() == Qt::LeftButton && _dragged < 0)
     {
         if (getPointAt(event->x(), event->y()) < 0)
@@ -205,7 +205,7 @@ int WidgetCurveEditor::getPointAt(int x, int y)
     double distance, ndistance;
     CurvePoint point;
     int dx, dy;
-    
+
     n = curveGetPointCount(_curve);
     if (n < 1)
     {
@@ -226,7 +226,7 @@ int WidgetCurveEditor::getPointAt(int x, int y)
             nearest = i;
         }
     }
-    
+
     if (nearest >= 0 && distance < 5.0)
     {
         return nearest;

@@ -11,12 +11,12 @@ class SmallMaterialPreview:public QWidget
 public:
     SmallMaterialPreview(QWidget* parent, SurfaceMaterial* material);
     ~SmallMaterialPreview();
-    
-    QColor getColor(double x, double y);
-    
+
+    Color getColor(double x, double y);
+
 protected:
     virtual void paintEvent(QPaintEvent* event);
-    
+
 private:
     SurfaceMaterial* _material;
     LightingDefinition _lighting;
@@ -26,13 +26,13 @@ private:
 class PreviewMaterial:public BasePreview
 {
     Q_OBJECT
-    
+
 public:
     PreviewMaterial(QWidget* parent, SurfaceMaterial* material);
     ~PreviewMaterial();
-    
+
 protected:
-    virtual QColor getColor(double x, double y);
+    virtual Color getColor(double x, double y);
 
 private:
     SmallMaterialPreview* _small;
