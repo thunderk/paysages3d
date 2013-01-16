@@ -212,6 +212,18 @@ void BaseForm::revertConfig()
         }
     }
 
+    for (int i = 0; i < _inputs_list.size(); i++)
+    {
+        if (_with_layers && _layer_list->count() == 0)
+        {
+            _inputs_list[i]->checkVisibility(false);
+        }
+        else
+        {
+            _inputs_list[i]->checkVisibility(true);
+        }
+    }
+
     updatePreviews();
     //configChangeEvent();
 

@@ -398,11 +398,6 @@ void WidgetExplorer::paintGL()
     QTime start_time;
     double frame_time;
 
-    if (_current_camera.location.y > 30.0)
-    {
-        _current_camera.location.y = 30.0;
-    }
-
     cameraValidateDefinition(&_current_camera, 1);
     _renderer.camera_location = _current_camera.location;
 

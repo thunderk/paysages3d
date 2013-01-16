@@ -1,53 +1,49 @@
 Technology Preview 2 :
-- Implement High Dynamic Range (with OpenEXR or Radiance file format support ?).
-- Fully move layer management from BaseForm to BaseFormLayer.
 - Replace terrain canvas editor by full sculpting editor.
    => Add a generation dialog, with fixed resolution.
    => Store local terrain modifications in fully dynamic canvas.
    => Add map preview with editor area.
    => Allow camera move and zoom.
 - Get rid of noise dialogs, for simpler settings.
-- Finalize Preetham's model usage
-   => Apply model to atmosphere (aerial perspective)
-   => Find a proper model for night sky (maybe Shirley)
-- Clouds should keep distance to ground.
-- Add fresnel effect to specular lighting.
-- Add clouds to explorer with 3d textures.
-- Start using OpenCL to optimize rendering.
-- Rethink the quality settings and detail smoothing in the distance.
-   => When quality setting is set to 10, add boost options
-   => Add detail boost (adds granularity)
-   => Add step boost (for marching algorithms)
-- Waves noise should not change layers offsets each time a setting is changed (layers are reconstructed currently).
-- Fix rendering when inside a cloud layer, with other upper or lower layers.
-- Add "hardness to light" and shadow control ("minimum lighting") to material.
-
-Technlogy Preview 3 :
-- Add logarithmic sliders for some float values.
-- Improve previews.
-   => Add user markers on OSD.
-   => Add areas marking.
+- Apply Preetham's model usage
+   => Convert to HDR rendering.
+   => Apply model's aerial perspective.
+- Find a proper model for night sky (maybe Shirley).
 - Improve textures (current model is greatly incorrect).
    => Separate models (basic texture and covering texture).
    => Covering texture height should inpact terrain height.
    => Add texture shadowing.
-- Use the curve editor in noise editor (option).
-- Add a noise filler (and maybe noise intervals ?).
+- Clouds should keep distance to ground.
+- Add fresnel effect to specular lighting.
+- Add "hardness to light" and shadow control ("minimum lighting") to material.
+- Waves noise should not change layers offsets each time a setting is changed (layers are reconstructed currently).
+- Fix rendering when inside a cloud layer, with other upper or lower layers.
+
+Technlogy Preview 3 :
+- Fully move layer management from BaseForm to BaseFormLayer.
+- Start vegetation system.
+- Allow render saving in HDR compatible format.
+- Add clouds to explorer with 3d textures.
+- Start using OpenCL to optimize rendering.
+- Restore render progress.
+- Rethink the quality settings and detail smoothing in the distance.
+   => When quality setting is set to 10, add boost options
+   => Add detail boost (adds granularity)
+   => Add step boost (for marching algorithms)
+- Add logarithmic sliders for some float values.
+- Improve previews.
+   => Add user markers on OSD.
+   => Add areas marking.
+- Add a noise automatic filler.
 - Fix the distorted sun appearance.
-- Improve curve editor.
-   => Add curve modes
-   => Add logarithmic mode
-   => Add zoom and scrolling
 - Lock some previews together (eg: terrain height and colored preview).
 - Find a new licence.
 
 Technology Preview 4 :
-- Restore render progress.
-- Store the terrain canvases in a tree to allow "multi-res" edition.
-- Implement Sub Surface Scattering for water.
+- Implement Sub Surface Scattering for water, textures and clouds.
+- Implement earth curvature.
 - Use bicubic interpolation for antialiasing.
 - Allow for larger renders/antialias (will need several two-pass chunks).
-- Add basic vegetation system ?
 - Add a progress indicator on previews.
 - Multi threaded first pass.
 - Mark modified tabs and ask for losing modifications (idem for layers).
@@ -56,6 +52,7 @@ Technology Preview 4 :
 - Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - Improve 3d explorer
    => Restore LOD and intelligent poly count (and raise max tessellation)
+   => Better handling of high altitude
    => Interrupt chunk rendering when quitting dialog
    => Don't display the water if it's below all ground
    => Try to overcome the near frustum cutting
