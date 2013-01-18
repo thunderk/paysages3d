@@ -130,5 +130,10 @@ Color ExplorerChunkSky::getTextureColor(double x, double y)
             location.z = y;
             break;
     }
-    return renderer()->atmosphere->getSkyColor(renderer(), v3Normalize(location));
+    location = v3Normalize(location);
+    if (location.y < 0.0)
+    {
+        location.y = 0.0;
+    }
+    return renderer()->atmosphere->getSkyColor(renderer(), location);
 }

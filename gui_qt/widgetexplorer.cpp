@@ -100,7 +100,7 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     }
 
     // Add skybox
-    for (int orientation = 0; orientation < 6; orientation++)
+    for (int orientation = 0; orientation < 5; orientation++)
     {
         ExplorerChunkSky* chunk = new ExplorerChunkSky(&_renderer, 500.0, (SkyboxOrientation)orientation);
         _chunks.append(chunk);
