@@ -3,7 +3,7 @@
 
 #include <QGLWidget>
 #include <QDateTime>
-#include "../lib_paysages/euclid.h"
+#include "../lib_paysages/tools/euclid.h"
 #include "../lib_paysages/renderer.h"
 #include "../lib_paysages/terrain/public.h"
 

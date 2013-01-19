@@ -1,19 +1,14 @@
 #ifndef _PAYSAGES_TYPES_H_
 #define _PAYSAGES_TYPES_H_
 
-#include "../euclid.h"
-#include "../color.h"
+#include "../tools/euclid.h"
+#include "../tools/color.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 typedef struct Renderer Renderer;
-
-typedef struct LightDefinition LightDefinition;
-typedef struct LightStatus LightStatus;
-
-typedef Color (*f_RenderFragmentCallback)(struct Renderer* renderer, Vector3 location, void* data);
 
 typedef struct
 {
@@ -23,13 +18,6 @@ typedef struct
     int dirty;
     void* data;
 } Array;
-
-typedef struct
-{
-    Color base;
-    double reflection;
-    double shininess;
-} SurfaceMaterial;
 
 typedef struct
 {

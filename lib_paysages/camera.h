@@ -1,9 +1,9 @@
 #ifndef _PAYSAGES_CAMERA_H_
 #define _PAYSAGES_CAMERA_H_
 
-#include "shared/types.h"
+#include "tools/pack.h"
+#include "tools/euclid.h"
 #include "renderer.h"
-#include "pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,7 +34,7 @@ Vector3 cameraProject(CameraDefinition* camera, Renderer* renderer, Vector3 poin
 Vector3 cameraUnproject(CameraDefinition* camera, Renderer* renderer, Vector3 point);
 /*void cameraPushOverlay(CameraDefinition* camera, Color col, f_RenderFragmentCallback callback);*/
 int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, double ysize, double zsize);
-        
+
 #ifdef __cplusplus
 }
 #endif

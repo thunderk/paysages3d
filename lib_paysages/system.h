@@ -3,7 +3,7 @@
 
 /* Library dependent features */
 
-#include "color.h"
+#include "tools/color.h"
 #include <stdlib.h>
 
 #ifdef __cplusplus

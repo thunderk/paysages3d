@@ -1,8 +1,8 @@
 #include "formclouds.h"
 
 #include "../lib_paysages/clouds.h"
-#include "../lib_paysages/color.h"
-#include "../lib_paysages/euclid.h"
+#include "../lib_paysages/tools/color.h"
+#include "../lib_paysages/tools/euclid.h"
 #include "../lib_paysages/scenery.h"
 
 #include "tools.h"
@@ -15,7 +15,7 @@ public:
     {
         _renderer = rendererCreate();
         _renderer.render_quality = 5;
-        _renderer.applyLightStatus = _applyLightStatus;
+        //_renderer.applyLightStatus = _applyLightStatus;
 
         _original_layer = layer;
         _preview_layer = cloudsLayerCreateDefinition();
@@ -66,7 +66,7 @@ public:
         _original_layer = layer;
         _preview_layer = cloudsLayerCreateDefinition();
 
-        _lighting = lightingCreateDefinition();
+        /*_lighting = lightingCreateDefinition();
         light.color = COLOR_WHITE;
         light.direction.x = -1.0;
         light.direction.y = -1.0;
@@ -76,14 +76,14 @@ public:
         light.masked = 1;
         light.reflection = 1.0;
         lightingAddLight(&_lighting, light);
-        lightingValidateDefinition(&_lighting);
+        lightingValidateDefinition(&_lighting);*/
 
         _renderer = rendererCreate();
         _renderer.render_quality = 8;
-        _renderer.alterLight = _alterLight;
-        _renderer.getLightStatus = _getLightStatus;
+        /*_renderer.alterLight = _alterLight;
+        _renderer.getLightStatus = _getLightStatus;*/
         _renderer.customData[0] = _preview_layer;
-        _renderer.customData[1] = &_lighting;
+        //_renderer.customData[1] = &_lighting;
 
         configScaling(0.5, 2.0, 0.1, 2.0);
     }
@@ -115,7 +115,7 @@ private:
     Renderer _renderer;
     CloudsLayerDefinition* _original_layer;
     CloudsLayerDefinition* _preview_layer;
-    LightingDefinition _lighting;
+    //LightingDefinition _lighting;
 
     static double _coverageFunc(CloudsLayerDefinition* layer, Vector3 position)
     {
@@ -138,7 +138,7 @@ private:
         }
     }
 
-    static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
+    /*static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
     {
         light->color = cloudsLayerFilterLight((CloudsLayerDefinition*)renderer->customData[0], renderer, light->color, location, v3Scale(light->direction, -1000.0), v3Scale(light->direction, -1.0));
     }
@@ -146,7 +146,7 @@ private:
     static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
     {
         lightingGetStatus((LightingDefinition*)renderer->customData[1], renderer, location, status);
-    }
+    }*/
 };
 
 /**************** Form ****************/

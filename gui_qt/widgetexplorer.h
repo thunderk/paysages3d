@@ -7,7 +7,6 @@
 #include "../lib_paysages/water.h"
 #include "../lib_paysages/renderer.h"
 #include "../lib_paysages/textures.h"
-#include "../lib_paysages/lighting.h"
 
 class WidgetExplorer : public QGLWidget
 {
@@ -50,7 +49,6 @@ private:
 
     WaterDefinition _water;
     TexturesDefinition _textures;
-    LightingDefinition _lighting;
 
     double _average_frame_time;
     int _quality;

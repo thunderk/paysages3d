@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "shared/types.h"
-#include "color.h"
 #include "renderer.h"
 #include "system.h"
 

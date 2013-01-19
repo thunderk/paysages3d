@@ -37,10 +37,8 @@ struct Renderer
     Color (*applyTextures)(Renderer* renderer, Vector3 location, double precision);
     Color (*applyClouds)(Renderer* renderer, Color base, Vector3 start, Vector3 end);
 
-    /* Lighting related */
-    void (*alterLight)(Renderer* renderer, LightDefinition* light, Vector3 location);
-    void (*getLightStatus)(Renderer* renderer, LightStatus* status, Vector3 location);
-    Color (*applyLightStatus)(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material);
+    /* Autonomous tools */
+    LightingManager* lighting;
 
     /* Autonomous sub-renderers */
     AtmosphereRenderer* atmosphere;

@@ -14,7 +14,6 @@
 
 #include "basepreview.h"
 #include "formclouds.h"
-#include "formlighting.h"
 #include "formatmosphere.h"
 #include "formterrain.h"
 #include "formtextures.h"
@@ -111,11 +110,6 @@ QMainWindow(parent)
     tabs->addTab(form, tr("Clouds"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
-
-    /*form = new FormLighting(tabs);
-    tabs->addTab(form, tr("Lighting"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
-    _forms.append(form);*/
 
     _form_render = new FormRender(tabs);
     tabs->addTab(_form_render, tr("Render"));

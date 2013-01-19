@@ -4,8 +4,8 @@
 #include <QPainter>
 #include "tools.h"
 
-#include "../lib_paysages/lighting.h"
-#include "../lib_paysages/color.h"
+#include "../lib_paysages/tools/lighting.h"
+#include "../lib_paysages/tools/color.h"
 
 /***** Small static preview *****/
 
@@ -13,7 +13,7 @@ SmallMaterialPreview::SmallMaterialPreview(QWidget* parent, SurfaceMaterial* mat
 {
     LightDefinition light;
 
-    _lighting = lightingCreateDefinition();
+    /*_lighting = lightingCreateDefinition();
     light.color = COLOR_WHITE;
     light.direction.x = -0.5;
     light.direction.y = -0.5;
@@ -23,7 +23,7 @@ SmallMaterialPreview::SmallMaterialPreview(QWidget* parent, SurfaceMaterial* mat
     light.masked = 0;
     light.reflection = 1.0;
     lightingAddLight(&_lighting, light);
-    lightingValidateDefinition(&_lighting);
+    lightingValidateDefinition(&_lighting);*/
 
     _material = material;
 
@@ -62,7 +62,8 @@ Color SmallMaterialPreview::getColor(double x, double y)
         }
 
         point = v3Normalize(point);
-        color = lightingApplyToSurface(&_lighting, &_renderer, point, point, *_material);
+        //color = lightingApplyToSurface(&_lighting, &_renderer, point, point, *_material);
+        color = COLOR_RED;
         if (dist > 0.95)
         {
             color.a = (1.0 - dist) / 0.05;

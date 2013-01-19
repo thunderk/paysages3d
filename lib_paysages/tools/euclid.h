@@ -1,5 +1,5 @@
-#ifndef _PAYSAGES_EUCLID_H_
-#define _PAYSAGES_EUCLID_H_
+#ifndef _PAYSAGES_TOOLS_EUCLID_H_
+#define _PAYSAGES_TOOLS_EUCLID_H_
 
 #include "pack.h"
 

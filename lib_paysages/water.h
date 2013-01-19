@@ -1,11 +1,12 @@
 #ifndef _PAYSAGES_WATER_H_
 #define _PAYSAGES_WATER_H_
 
-#include "shared/types.h"
+#include "tools/color.h"
+#include "tools/euclid.h"
+#include "tools/lighting.h"
+#include "tools/pack.h"
 #include "renderer.h"
-#include "lighting.h"
 #include "noise.h"
-#include "pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,7 +17,7 @@ typedef enum
     WATER_PRESET_LAKE,
     WATER_PRESET_SEA
 } WaterPreset;
-    
+
 typedef struct
 {
     double height;
@@ -26,15 +27,15 @@ typedef struct
     Color depth_color;
     double transparency_depth;
     double lighting_depth;
-    
+
     double scaling;
     double turbulence;
     double waves_height;
     double detail_height;
-    
+
     double foam_coverage;
     SurfaceMaterial foam_material;
-    
+
     NoiseGenerator* _waves_noise;
 } WaterDefinition;
 

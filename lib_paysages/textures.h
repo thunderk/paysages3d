@@ -1,11 +1,13 @@
 #ifndef _PAYSAGES_TEXTURES_H_
 #define _PAYSAGES_TEXTURES_H_
 
+#include "tools/lighting.h"
+#include "tools/color.h"
+#include "tools/euclid.h"
+#include "tools/pack.h"
 #include "shared/types.h"
 #include "layers.h"
 #include "noise.h"
-#include "lighting.h"
-#include "pack.h"
 #include "zone.h"
 
 #ifdef __cplusplus

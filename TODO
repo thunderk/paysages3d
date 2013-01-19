@@ -5,6 +5,7 @@ Technology Preview 2 :
    => Add map preview with editor area.
    => Allow camera move and zoom.
 - Get rid of noise dialogs, for simpler settings.
+- Apply HDR to 3D explorer.
 - Apply Preetham's model usage
    => Convert to HDR rendering.
    => Apply model's aerial perspective.

@@ -30,6 +30,7 @@ Clouds :
 
 Rendering :
   * Added full scene antialiasing (FSAA).
+  * High Dynamic Range lighting.
 
 GUI :
   * Improved curve rendering.

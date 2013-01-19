@@ -1,10 +1,8 @@
-#include "public.h"
 #include "private.h"
 
 #include <stdlib.h>
 #include <math.h>
 #include "../tools.h"
-#include "../lighting.h"
 #include "../renderer.h"
 
 /******************** Definition ********************/
@@ -305,7 +303,6 @@ static TerrainRenderer* _createRenderer()
     result->definition = TerrainDefinitionClass.create();
 
     result->castRay = _fakeCastRay;
-    result->alterLight = _fakeAlterLight;
     result->getHeight = _fakeGetHeight;
     result->getFinalColor = _fakeGetFinalColor;
 
@@ -323,7 +320,6 @@ static void _bindRenderer(TerrainRenderer* renderer, TerrainDefinition* definiti
     TerrainDefinitionClass.copy(definition, renderer->definition);
 
     renderer->castRay = _castRay;
-    renderer->alterLight = _alterLight;
     renderer->getHeight = _getHeight;
     renderer->getFinalColor = _getFinalColor;
 }

@@ -1,5 +1,6 @@
-#include "public.h"
 #include "private.h"
+
+#include <math.h>
 
 /*
  * Terrain presets.

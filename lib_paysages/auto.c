@@ -4,11 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "shared/types.h"
 #include "clouds.h"
-#include "color.h"
-#include "lighting.h"
-#include "modifiers.h"
 #include "render.h"
 #include "textures.h"
 #include "scenery.h"

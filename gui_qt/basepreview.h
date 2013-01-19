@@ -10,7 +10,7 @@
 #include <QLabel>
 #include <QHash>
 #include "previewosd.h"
-#include "../lib_paysages/pack.h"
+#include "../lib_paysages/tools/pack.h"
 
 class _ContextChoice
 {

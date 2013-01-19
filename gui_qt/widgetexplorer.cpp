@@ -7,7 +7,7 @@
 #include <GL/glu.h>
 #include <QThread>
 #include "../lib_paysages/scenery.h"
-#include "../lib_paysages/euclid.h"
+#include "../lib_paysages/tools/euclid.h"
 #include "explorerchunkterrain.h"
 #include "explorerchunksky.h"
 #include "tools.h"
@@ -53,11 +53,6 @@ static Color _applyTextures(Renderer* renderer, Vector3 location, double precisi
     return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
 }
 
-static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
-{
-    lightingGetStatus((LightingDefinition*)renderer->customData[2], renderer, location, status);
-}
-
 WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     QGLWidget(parent)
 {
@@ -71,16 +66,12 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     sceneryGetWater(&_water);
     _textures = texturesCreateDefinition();
     sceneryGetTextures(&_textures);
-    _lighting = lightingCreateDefinition();
-    sceneryGetLighting(&_lighting);
 
     _renderer = sceneryCreateStandardRenderer();
     _renderer.render_quality = 3;
     _renderer.customData[1] = &_textures;
-    _renderer.customData[2] = &_lighting;
     _renderer.customData[3] = &_water;
     _renderer.applyTextures = _applyTextures;
-    _renderer.getLightStatus = _getLightStatus;
 
     _updated = false;
 

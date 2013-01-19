@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "../lib_paysages/color.h"
+#include "../lib_paysages/tools/color.h"
 
 typedef enum
 {
@@ -20,7 +20,7 @@ public:
     PreviewColorGradation(QWidget* parent, ColorGradation* gradation, EnumColorGradationBand band);
     void paintEvent(QPaintEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
-    
+
 signals:
     void clicked();
 

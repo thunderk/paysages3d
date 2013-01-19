@@ -1,9 +1,9 @@
 #ifndef _PAYSAGES_ZONE_H_
 #define _PAYSAGES_ZONE_H_
 
-#include "shared/types.h"
-#include "curve.h"
-#include "pack.h"
+#include "tools/euclid.h"
+#include "tools/curve.h"
+#include "tools/pack.h"
 
 #ifdef __cplusplus
 extern "C" {

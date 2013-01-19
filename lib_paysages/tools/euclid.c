@@ -1,8 +1,7 @@
 #include "euclid.h"
 
 #include <math.h>
-
-#include "tools.h"
+#include "../tools.h"
 
 Vector3 VECTOR_ZERO = {0.0, 0.0, 0.0};
 Vector3 VECTOR_DOWN = {0.0, -1.0, 0.0};
@@ -386,17 +385,17 @@ Matrix4 m4Inverse(Matrix4 m)
         result.e = d * (m.g * (m.i * m.p - m.m * m.l) + m.k * (m.m * m.h - m.e * m.p) + m.o * (m.e * m.l - m.i * m.h));
         result.i = d * (m.h * (m.i * m.n - m.m * m.j) + m.l * (m.m * m.f - m.e * m.n) + m.p * (m.e * m.j - m.i * m.f));
         result.m = d * (m.e * (m.n * m.k - m.j * m.o) + m.i * (m.f * m.o - m.n * m.g) + m.m * (m.j * m.g - m.f * m.k));
-        
+
         result.b = d * (m.j * (m.c * m.p - m.o * m.d) + m.n * (m.k * m.d - m.c * m.l) + m.b * (m.o * m.l - m.k * m.p));
         result.f = d * (m.k * (m.a * m.p - m.m * m.d) + m.o * (m.i * m.d - m.a * m.l) + m.c * (m.m * m.l - m.i * m.p));
         result.j = d * (m.l * (m.a * m.n - m.m * m.b) + m.p * (m.i * m.b - m.a * m.j) + m.d * (m.m * m.j - m.i * m.n));
         result.n = d * (m.i * (m.n * m.c - m.b * m.o) + m.m * (m.b * m.k - m.j * m.c) + m.a * (m.j * m.o - m.n * m.k));
-        
+
         result.c = d * (m.n * (m.c * m.h - m.g * m.d) + m.b * (m.g * m.p - m.o * m.h) + m.f * (m.o * m.d - m.c * m.p));
         result.g = d * (m.o * (m.a * m.h - m.e * m.d) + m.c * (m.e * m.p - m.m * m.h) + m.g * (m.m * m.d - m.a * m.p));
         result.k = d * (m.p * (m.a * m.f - m.e * m.b) + m.d * (m.e * m.n - m.m * m.f) + m.h * (m.m * m.b - m.a * m.n));
         result.o = d * (m.m * (m.f * m.c - m.b * m.g) + m.a * (m.n * m.g - m.f * m.o) + m.e * (m.b * m.o - m.n * m.c));
-        
+
         result.d = d * (m.b * (m.k * m.h - m.g * m.l) + m.f * (m.c * m.l - m.k * m.d) + m.j * (m.g * m.d - m.c * m.h));
         result.h = d * (m.c * (m.i * m.h - m.e * m.l) + m.g * (m.a * m.l - m.i * m.d) + m.k * (m.e * m.d - m.a * m.h));
         result.l = d * (m.d * (m.i * m.f - m.e * m.j) + m.h * (m.a * m.j - m.i * m.b) + m.l * (m.e * m.b - m.a * m.f));

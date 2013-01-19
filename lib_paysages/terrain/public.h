@@ -2,8 +2,9 @@
 #define _PAYSAGES_TERRAIN_PUBLIC_H_
 
 #include "../shared/types.h"
+#include "../tools/color.h"
+#include "../tools/euclid.h"
 #include "../noise.h"
-#include "../lighting.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,7 +39,6 @@ typedef struct
     TerrainDefinition* definition;
 
     FuncGeneralCastRay castRay;
-    FuncLightingAlterLight alterLight;
     FuncTerrainGetHeight getHeight;
     FuncTerrainGetFinalColor getFinalColor;
 

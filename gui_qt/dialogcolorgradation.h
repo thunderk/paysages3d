@@ -6,8 +6,8 @@
 #include "widgetcurveeditor.h"
 #include "previewcolorgradation.h"
 
-#include "../lib_paysages/color.h"
-#include "../lib_paysages/curve.h"
+#include "../lib_paysages/tools/color.h"
+#include "../lib_paysages/tools/curve.h"
 
 class DialogColorGradation : public QDialog
 {

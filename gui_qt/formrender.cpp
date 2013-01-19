@@ -16,13 +16,11 @@ public:
     {
         _renderer = rendererCreate();
         _renderer.applyTextures = _applyTextures;
-        _renderer.getLightStatus = _getLightStatus;
         _renderer.camera_location.x = 0.0;
         _renderer.camera_location.y = 50.0;
         _renderer.camera_location.z = 0.0;
 
         _textures = texturesCreateDefinition();
-        _lighting = lightingCreateDefinition();
         _water = waterCreateDefinition();
 
         _atmosphere = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
@@ -30,7 +28,6 @@ public:
 
         _renderer.customData[0] = &_terrain;
         _renderer.customData[1] = &_textures;
-        _renderer.customData[2] = &_lighting;
         _renderer.customData[3] = &_water;
 
         addOsd(QString("geolocation"));
@@ -62,7 +59,6 @@ protected:
     }
     void updateData()
     {
-        sceneryGetLighting(&_lighting);
         sceneryGetTextures(&_textures);
         sceneryGetWater(&_water);
 
@@ -78,17 +74,11 @@ private:
     TerrainDefinition* _terrain;
     WaterDefinition _water;
     TexturesDefinition _textures;
-    LightingDefinition _lighting;
     AtmosphereDefinition* _atmosphere;
 
     static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
     {
         return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
-    }
-
-    static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
-    {
-        lightingGetStatus((LightingDefinition*)renderer->customData[2], renderer, location, status);
     }
 
     static Color _applyAerialPerspective(Renderer*, Vector3, Color base)

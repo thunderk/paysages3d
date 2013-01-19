@@ -70,7 +70,7 @@ public:
         _original_layer = layer;
         _preview_layer = texturesLayerCreateDefinition();
 
-        _lighting = lightingCreateDefinition();
+        /*_lighting = lightingCreateDefinition();
         light.color = COLOR_WHITE;
         light.direction.x = 0.0;
         light.direction.y = -0.4794;
@@ -79,12 +79,12 @@ public:
         light.masked = 0;
         light.reflection = 1.0;
         lightingAddLight(&_lighting, light);
-        lightingValidateDefinition(&_lighting);
+        lightingValidateDefinition(&_lighting);*/
 
         _renderer = rendererCreate();
         _renderer.render_quality = 3;
-        _renderer.getLightStatus = _getLightStatus;
-        _renderer.customData[0] = &_lighting;
+        /*_renderer.getLightStatus = _getLightStatus;
+        _renderer.customData[0] = &_lighting;*/
         _renderer.camera_location.x = 0.0;
         _renderer.camera_location.y = 20.0;
         _renderer.camera_location.z = 0.0;
@@ -117,12 +117,12 @@ private:
     Renderer _renderer;
     TextureLayerDefinition* _original_layer;
     TextureLayerDefinition* _preview_layer;
-    LightingDefinition _lighting;
+    //LightingDefinition _lighting;
 
-    static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
+    /*static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
     {
         lightingGetStatus((LightingDefinition*)renderer->customData[0], renderer, location, status);
-    }
+    }*/
 };
 
 /**************** Form ****************/

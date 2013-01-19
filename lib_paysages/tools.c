@@ -5,9 +5,6 @@
 #include <inttypes.h>
 #include <math.h>
 
-#include "color.h"
-#include "euclid.h"
-
 double toolsRandom()
 {
     return ((double)rand()) / (double)RAND_MAX;
@@ -70,18 +67,4 @@ double toolsGetDistance2D(double x1, double y1, double x2, double y2)
     double dx = x2 - x1;
     double dy = y2 - y1;
     return sqrt(dx * dx + dy * dy);
-}
-
-void materialSave(PackStream* stream, SurfaceMaterial* material)
-{
-    colorSave(stream, &material->base);
-    packWriteDouble(stream, &material->reflection);
-    packWriteDouble(stream, &material->shininess);
-}
-
-void materialLoad(PackStream* stream, SurfaceMaterial* material)
-{
-    colorLoad(stream, &material->base);
-    packReadDouble(stream, &material->reflection);
-    packReadDouble(stream, &material->shininess);
 }

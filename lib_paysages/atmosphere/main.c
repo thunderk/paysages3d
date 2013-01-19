@@ -1,4 +1,3 @@
-#include "public.h"
 #include "private.h"
 
 #include <math.h>
@@ -6,7 +5,6 @@
 #include <string.h>
 #include "../tools.h"
 #include "../renderer.h"
-#include "../lighting.h"
 #include "../system.h"
 
 #define MAX_SKYDOME_LIGHTS 100
@@ -195,6 +193,7 @@ static Vector3 _getSunDirection(Renderer* renderer)
     return result;
 }
 
+#if 0
 static inline void _addDomeLight(Renderer* renderer, LightDefinition* light, Vector3 direction, double factor)
 {
     light->direction = v3Scale(direction, -1.0);
@@ -290,6 +289,15 @@ static int _getSkydomeLights(Renderer* renderer, LightDefinition* lights, int ma
     memcpy(lights, cache->lights, sizeof(LightDefinition) * cache->nblights);
     return cache->nblights;
 }
+#endif
+
+static void _fakeGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)
+{
+    UNUSED(renderer);
+    UNUSED(status);
+    UNUSED(normal);
+    UNUSED(opaque);
+}
 
 /******************** Renderer ********************/
 static AtmosphereRenderer* _createRenderer()
@@ -300,9 +308,9 @@ static AtmosphereRenderer* _createRenderer()
     result = malloc(sizeof(AtmosphereRenderer));
     result->definition = AtmosphereDefinitionClass.create();
 
+    result->getLightingStatus = _fakeGetLightingStatus;
     result->getSunDirection = _getSunDirection;
     result->applyAerialPerspective = _fakeApplyAerialPerspective;
-    result->getSkydomeLights = _fakeGetSkydomeLights;
     result->getSkyColor = _fakeGetSkyColor;
 
     cache = malloc(sizeof(AtmosphereRendererCache));
@@ -330,7 +338,7 @@ static void _bindRenderer(AtmosphereRenderer* renderer, AtmosphereDefinition* de
     AtmosphereDefinitionClass.copy(definition, renderer->definition);
 
     renderer->getSkyColor = _getSkyColor;
-    renderer->getSkydomeLights = _getSkydomeLights;
+    renderer->getLightingStatus = basicGetLightingStatus;
 
     switch (definition->model)
     {

@@ -1,10 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "shared/types.h"
-
 #include "auto.h"
-#include "color.h"
 #include "system.h"
 #include "camera.h"
 #include "scenery.h"

@@ -5,6 +5,7 @@
 #include "baseinput.h"
 
 #include "../lib_paysages/shared/types.h"
+#include "../lib_paysages/tools/lighting.h"
 
 class InputMaterial:public BaseInput
 {

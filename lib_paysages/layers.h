@@ -3,7 +3,7 @@
 
 /* Factorized layer management (with names) */
 
-#include "pack.h"
+#include "tools/pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,7 +15,7 @@ typedef void (*LayerCallbackCopy)(void* source, void* definition);
 typedef void (*LayerCallbackValidate)(void* layer);
 typedef void (*LayerCallbackSave)(PackStream* stream, void* layer);
 typedef void (*LayerCallbackLoad)(PackStream* stream, void* layer);
-    
+
 typedef struct {
     LayerCallbackCreate callback_create;
     LayerCallbackDelete callback_delete;

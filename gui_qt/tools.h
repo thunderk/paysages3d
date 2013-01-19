@@ -5,7 +5,7 @@
 #include <QDialog>
 
 #include "../lib_paysages/shared/types.h"
-#include "../lib_paysages/color.h"
+#include "../lib_paysages/tools/color.h"
 
 static inline QColor colorToQColor(Color color)
 {
@@ -18,7 +18,7 @@ class DialogWithPreview:public QDialog
     Q_OBJECT
 public:
     DialogWithPreview(QWidget* parent);
-    
+
 protected:
     virtual bool event(QEvent* event);
 };

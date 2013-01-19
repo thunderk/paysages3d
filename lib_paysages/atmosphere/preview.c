@@ -1,7 +1,6 @@
 #include "public.h"
 
 #include "../renderer.h"
-#include "../lighting.h"
 
 /*
  * Atmosphere previews.
@@ -130,13 +129,15 @@ Color atmosphereGetPreview(Renderer* renderer, double x, double y, double headin
     if (_checkHit(eye, direction, &hit, &normal))
     {
         Color color;
-        LightStatus light;
+        LightStatus* light;
 
         normal = m4Transform(rotation, normal);
         hit = m4Transform(rotation, hit);
 
-        renderer->getLightStatus(renderer, &light, hit);
-        color = renderer->applyLightStatus(renderer, &light, hit, normal, MOUNT_MATERIAL);
+        light = lightingCreateStatus(renderer->lighting, hit, renderer->camera_location);
+        renderer->atmosphere->getLightingStatus(renderer, light, normal, 1);
+        lightingApplyStatus(light, normal, &MOUNT_MATERIAL);
+        lightingDeleteStatus(light);
 
         return renderer->atmosphere->applyAerialPerspective(renderer, hit, color);
     }
@@ -148,20 +149,6 @@ Color atmosphereGetPreview(Renderer* renderer, double x, double y, double headin
     }
 }
 
-static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
-{
-    LightingDefinition def;
-
-    def = lightingCreateDefinition();
-    lightingGetStatus(&def, renderer, location, status);
-    lightingDeleteDefinition(&def);
-}
-
-static Color _applyLightStatus(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material)
-{
-    return lightingApplyStatusToSurface(renderer, status, location, normal, material);
-}
-
 Renderer atmosphereCreatePreviewRenderer()
 {
     Renderer result = rendererCreate();
@@ -169,9 +156,6 @@ Renderer atmosphereCreatePreviewRenderer()
     result.camera_location.x = 0.0;
     result.camera_location.y = 7.0;
     result.camera_location.z = 0.0;
-
-    result.getLightStatus = _getLightStatus;
-    result.applyLightStatus = _applyLightStatus;
 
     return result;
 }

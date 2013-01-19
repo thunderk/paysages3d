@@ -2,9 +2,7 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "euclid.h"
 #include "render.h"
-#include "shared/types.h"
 #include "scenery.h"
 #include "tools.h"
 

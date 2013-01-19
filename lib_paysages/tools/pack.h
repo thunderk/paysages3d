@@ -1,5 +1,5 @@
-#ifndef _PAYSAGES_PACK_H_
-#define _PAYSAGES_PACK_H_
+#ifndef _PAYSAGES_TOOLS_PACK_H_
+#define _PAYSAGES_TOOLS_PACK_H_
 
 #ifdef __cplusplus
 extern "C" {

@@ -5,8 +5,8 @@
 #include <QSlider>
 #include <math.h>
 
-#include "../lib_paysages/euclid.h"
-#include "../lib_paysages/lighting.h"
+#include "../lib_paysages/tools/euclid.h"
+#include "../lib_paysages/tools/lighting.h"
 #include "../lib_paysages/renderer.h"
 #include "../lib_paysages/scenery.h"
 #include "../lib_paysages/water.h"
@@ -100,7 +100,7 @@ public:
 
         _water = waterCreateDefinition();
 
-        _lighting = lightingCreateDefinition();
+        /*_lighting = lightingCreateDefinition();
         light.color = COLOR_WHITE;
         light.direction.x = 0.0;
         light.direction.y = -0.4794;
@@ -109,14 +109,14 @@ public:
         light.masked = 0;
         light.reflection = 1.0;
         lightingAddLight(&_lighting, light);
-        lightingValidateDefinition(&_lighting);
+        lightingValidateDefinition(&_lighting);*/
 
         _renderer = rendererCreate();
         _renderer.rayWalking = _rayWalking;
-        _renderer.getLightStatus = _getLightStatus;
-        _renderer.applyLightStatus = _applyLightStatus;
+        /*_renderer.getLightStatus = _getLightStatus;
+        _renderer.applyLightStatus = _applyLightStatus;*/
         _renderer.customData[0] = &_water;
-        _renderer.customData[1] = &_lighting;
+        //_renderer.customData[1] = &_lighting;
         _renderer.customData[2] = this;
 
         configScaling(10.0, 1000.0, 10.0, 250.0);
@@ -180,7 +180,7 @@ protected:
 private:
     Renderer _renderer;
     WaterDefinition _water;
-    LightingDefinition _lighting;
+    //LightingDefinition _lighting;
     bool _lighting_enabled;
 
     static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int, int, int, int)
@@ -218,7 +218,7 @@ private:
 
         return result;
     }
-    static Color _applyLightStatus(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material)
+    /*static Color _applyLightStatus(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material)
     {
         if (((PreviewWaterColor*)renderer->customData[2])->_lighting_enabled)
         {
@@ -232,7 +232,7 @@ private:
     static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
     {
         lightingGetStatus((LightingDefinition*)renderer->customData[1], renderer, location, status);
-    }
+    }*/
 };
 
 /**************** Form ****************/

@@ -1,11 +1,12 @@
 #ifndef _PAYSAGES_ATMOSPHERE_PUBLIC_H_
 #define _PAYSAGES_ATMOSPHERE_PUBLIC_H_
 
-#include "../shared/types.h"
-#include "../euclid.h"
-#include "../color.h"
-#include "../pack.h"
+#include "../tools/lighting.h"
+#include "../tools/euclid.h"
+#include "../tools/color.h"
+#include "../tools/pack.h"
 #include "../layers.h"
+#include "../shared/types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,7 +40,7 @@ typedef struct
     double _daytime;
 } AtmosphereDefinition;
 
-typedef int (*FuncAtmosphereGetSkydomeLights)(Renderer* renderer, LightDefinition* array, int max_lights);
+typedef void (*FuncAtmosphereGetLightingStatus)(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque);
 typedef Color (*FuncAtmosphereApplyAerialPerspective)(Renderer* renderer, Vector3 location, Color base);
 typedef Color (*FuncAtmosphereGetSkyColor)(Renderer* renderer, Vector3 direction);
 typedef Vector3 (*FuncAtmosphereGetSunDirection)(Renderer* renderer);
@@ -48,7 +49,7 @@ typedef struct
 {
     AtmosphereDefinition* definition;
 
-    FuncAtmosphereGetSkydomeLights getSkydomeLights;
+    FuncAtmosphereGetLightingStatus getLightingStatus;
     FuncAtmosphereApplyAerialPerspective applyAerialPerspective;
     FuncAtmosphereGetSkyColor getSkyColor;
     FuncAtmosphereGetSunDirection getSunDirection;

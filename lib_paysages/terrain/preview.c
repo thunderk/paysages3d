@@ -1,8 +1,8 @@
 #include "public.h"
 
 #include <stdlib.h>
+#include "../tools/lighting.h"
 #include "../renderer.h"
-#include "../lighting.h"
 #include "../textures.h"
 
 /*
@@ -10,22 +10,12 @@
  */
 
 static TexturesDefinition _textures;
-static LightingDefinition _lighting;
+/*static LightingDefinition _lighting;*/
 static int _inited = 0;
 
 static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
 {
     return texturesGetColor(&_textures, renderer, location.x, location.z, precision);
-}
-
-static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
-{
-    lightingGetStatus(&_lighting, renderer, location, status);
-}
-
-static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
-{
-    *light = renderer->terrain->alterLight(renderer, light, location);
 }
 
 Renderer terrainCreatePreviewRenderer()
@@ -34,20 +24,18 @@ Renderer terrainCreatePreviewRenderer()
 
     result.render_quality = 3;
     result.applyTextures = _applyTextures;
-    result.getLightStatus = _getLightStatus;
-    result.alterLight = _alterLight;
     result.camera_location.x = 0.0;
     result.camera_location.y = 50.0;
     result.camera_location.z = 0.0;
 
     if (!_inited)
     {
-        LightDefinition light;
+        /*LightDefinition light;*/
         TextureLayerDefinition* texture;
 
         _inited = 1;
 
-        _lighting = lightingCreateDefinition();
+        /*_lighting = lightingCreateDefinition();
         light.color.r = 0.6;
         light.color.g = 0.6;
         light.color.b = 0.6;
@@ -69,7 +57,7 @@ Renderer terrainCreatePreviewRenderer()
         light.masked = 0;
         light.reflection = 0.0;
         lightingAddLight(&_lighting, light);
-        lightingValidateDefinition(&_lighting);
+        lightingValidateDefinition(&_lighting);*/
 
         _textures = texturesCreateDefinition();
         texture = (TextureLayerDefinition*)layersGetLayer(_textures.layers, layersAddLayer(_textures.layers, NULL));

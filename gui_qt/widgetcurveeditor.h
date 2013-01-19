@@ -3,38 +3,38 @@
 
 #include <QWidget>
 #include <QColor>
-#include "../lib_paysages/curve.h"
+#include "../lib_paysages/tools/curve.h"
 
 class WidgetCurveEditor : public QWidget
 {
     Q_OBJECT
-    
+
 public:
     WidgetCurveEditor(QWidget* parent, double xmin, double xmax, double ymin, double ymax);
     ~WidgetCurveEditor();
-    
+
     void setAxisLabels(QString xlabel, QString ylabel);
-    
+
     void setCurve(Curve* curve);
     void getCurve(Curve* curve);
-    
+
     void setPenColor(QColor color);
-    
+
 signals:
     void liveChanged();
-    
+
 protected:
     void paintEvent(QPaintEvent* event);
     void mousePressEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void mouseDoubleClickEvent(QMouseEvent* event);
-    
+
 private:
     void curveToScreen(double curve_x, double curve_y, int* screen_x, int* screen_y);
     void screenToCurve(int screen_x, int screen_y, double* curve_x, double* curve_y);
     int getPointAt(int x, int y);
-    
+
     double _xmin;
     double _xmax;
     double _ymin;

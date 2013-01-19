@@ -1,0 +1,51 @@
+#ifndef _PAYSAGES_TOOLS_LIGHTING_H_
+#define _PAYSAGES_TOOLS_LIGHTING_H_
+
+#include "euclid.h"
+#include "color.h"
+#include "pack.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct
+{
+    Color base;
+    double reflection;
+    double shininess;
+} SurfaceMaterial;
+
+typedef struct
+{
+    Vector3 direction;  /* Global direction of the light */
+    Color color;        /* Main color of the light */
+    double reflection;  /* Reflected factor of the light (for specular lighting) */
+    int filtered;       /* Should the light be filtered (by atmosphere, water...) */
+    int masked;         /* Should the light be masked (cast shadows..) */
+} LightDefinition;
+
+typedef int (*FuncLightingAlterLight)(LightDefinition* light, Vector3 at, void* data);
+
+typedef struct LightingManager LightingManager;
+typedef struct LightStatus LightStatus;
+
+LightingManager* lightingManagerCreate();
+void lightingManagerDelete(LightingManager* filter);
+void lightingManagerRegisterFilter(LightingManager* filter, FuncLightingAlterLight callback, void* data);
+
+LightStatus* lightingCreateStatus(LightingManager* manager, Vector3 location, Vector3 eye);
+void lightingDeleteStatus(LightStatus* status);
+void lightingPushLight(LightStatus* status, LightDefinition* light);
+Color lightingApplyStatus(LightStatus* status, Vector3 normal, SurfaceMaterial* material);
+
+Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 location, Vector3 normal, SurfaceMaterial* material);
+
+void materialSave(PackStream* stream, SurfaceMaterial* material);
+void materialLoad(PackStream* stream, SurfaceMaterial* material);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

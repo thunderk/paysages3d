@@ -18,6 +18,7 @@
 
 /*********************** Constants ***********************/
 
+#define WORLD_SCALING 0.05
 static const double Rg = 6360.0;
 static const double Rt = 6420.0;
 static const double RL = 6421.0;
@@ -1188,7 +1189,7 @@ void brunetonInit()
 
 Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position)
 {
-    Vector3 x = {0.0, Rg + (eye.y + 10.0) * 0.01, 0.0};
+    Vector3 x = {0.0, Rg + (eye.y + WORLD_SCALING) * 0.01, 0.0};
     Vector3 v = v3Normalize(direction);
     Vector3 s = v3Normalize(v3Sub(sun_position, x));
 
@@ -1210,10 +1211,10 @@ Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
 Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
 {
     Vector3 eye = renderer->camera_location;
-    Vector3 direction = v3Scale(v3Sub(location, eye), 0.01);
+    Vector3 direction = v3Scale(v3Sub(location, eye), WORLD_SCALING);
     Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), 149597870.0);
 
-    Vector3 x = {0.0, Rg + (eye.y + 10.0) * 0.01, 0.0};
+    Vector3 x = {0.0, Rg + (eye.y + 10.0) * WORLD_SCALING, 0.0};
     Vector3 v = v3Normalize(direction);
     Vector3 s = v3Normalize(v3Sub(sun_position, x));
 

@@ -10,7 +10,7 @@
 #include <QScrollArea>
 #include <QPushButton>
 #include <math.h>
-#include "../lib_paysages/color.h"
+#include "../lib_paysages/tools/color.h"
 
 /**************** Previews ****************/
 class PreviewLevel:public BasePreview

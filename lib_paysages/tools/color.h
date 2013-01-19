@@ -1,5 +1,5 @@
-#ifndef _PAYSAGES_COLOR_H_
-#define _PAYSAGES_COLOR_H_
+#ifndef _PAYSAGES_TOOLS_COLOR_H_
+#define _PAYSAGES_TOOLS_COLOR_H_
 
 #include "curve.h"
 #include "pack.h"

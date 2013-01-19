@@ -1,10 +1,7 @@
 #include "water.h"
 
 #include "shared/types.h"
-#include "color.h"
-#include "euclid.h"
 #include "render.h"
-#include "lighting.h"
 #include "tools.h"
 
 #include <math.h>
@@ -313,7 +310,7 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
     RayCastingResult refracted;
     Vector3 normal;
     Color color;
-    LightStatus light;
+    LightStatus* light;
     SurfaceMaterial material;
     double detail, depth;
 
@@ -354,8 +351,9 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
 
     _applyFoam(definition, location, normal, detail, &material);
 
-    renderer->getLightStatus(renderer, &light, location);
-    color = renderer->applyLightStatus(renderer, &light, location, normal, material);
+    light = lightingCreateStatus(renderer->lighting, location, renderer->camera_location);
+    renderer->atmosphere->getLightingStatus(renderer, light, normal, 0);
+    color = lightingApplyStatus(light, normal, &material);
     color = renderer->atmosphere->applyAerialPerspective(renderer, location, color);
     color = renderer->applyClouds(renderer, color, renderer->camera_location, location);
 
@@ -406,6 +404,10 @@ void waterRender(WaterDefinition* definition, Renderer* renderer)
     double radius_int, radius_ext, base_chunk_size, chunk_size;
 
     base_chunk_size = 2.0 / (double)renderer->render_quality;
+    if (renderer->render_quality > 7)
+    {
+        base_chunk_size *= 0.5;
+    }
 
     chunk_factor = 1;
     chunk_count = 2;

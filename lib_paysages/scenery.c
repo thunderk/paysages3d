@@ -1,15 +1,13 @@
 #include "scenery.h"
 
-#include <stdio.h>
-#include "color.h"
-#include "euclid.h"
+#include "tools/color.h"
+#include "tools/euclid.h"
 #include "render.h"
 #include "system.h"
 
 static AtmosphereDefinition* _atmosphere;
 static CameraDefinition _camera;
 static CloudsDefinition _clouds;
-static LightingDefinition _lighting;
 static TerrainDefinition* _terrain;
 static TexturesDefinition _textures;
 static WaterDefinition _water;
@@ -21,12 +19,10 @@ static void* _custom_data = NULL;
 void sceneryInit()
 {
     noiseInit();
-    lightingInit();
 
     _atmosphere = AtmosphereDefinitionClass.create();
     _camera = cameraCreateDefinition();
     _clouds = cloudsCreateDefinition();
-    _lighting = lightingCreateDefinition();
     _terrain = TerrainDefinitionClass.create();
     _textures = texturesCreateDefinition();
     _water = waterCreateDefinition();
@@ -40,12 +36,10 @@ void sceneryQuit()
     AtmosphereDefinitionClass.destroy(_atmosphere);
     cameraDeleteDefinition(&_camera);
     cloudsDeleteDefinition(&_clouds);
-    lightingDeleteDefinition(&_lighting);
     TerrainDefinitionClass.destroy(_terrain);
     texturesDeleteDefinition(&_textures);
     waterDeleteDefinition(&_water);
 
-    lightingQuit();
     noiseQuit();
 }
 
@@ -62,7 +56,6 @@ void scenerySave(PackStream* stream)
     AtmosphereDefinitionClass.save(stream, _atmosphere);
     cameraSave(stream, &_camera);
     cloudsSave(stream, &_clouds);
-    lightingSave(stream, &_lighting);
     TerrainDefinitionClass.save(stream, _terrain);
     texturesSave(stream, &_textures);
     waterSave(stream, &_water);
@@ -81,14 +74,12 @@ void sceneryLoad(PackStream* stream)
     AtmosphereDefinitionClass.load(stream, _atmosphere);
     cameraLoad(stream, &_camera);
     cloudsLoad(stream, &_clouds);
-    lightingLoad(stream, &_lighting);
     TerrainDefinitionClass.load(stream, _terrain);
     texturesLoad(stream, &_textures);
     waterLoad(stream, &_water);
 
     cameraValidateDefinition(&_camera, 0);
     cloudsValidateDefinition(&_clouds);
-    lightingValidateDefinition(&_lighting);
     texturesValidateDefinition(&_textures);
     waterValidateDefinition(&_water);
 
@@ -128,17 +119,6 @@ void scenerySetClouds(CloudsDefinition* clouds)
 void sceneryGetClouds(CloudsDefinition* clouds)
 {
     cloudsCopyDefinition(&_clouds, clouds);
-}
-
-void scenerySetLighting(LightingDefinition* lighting)
-{
-    lightingCopyDefinition(lighting, &_lighting);
-    lightingValidateDefinition(&_lighting);
-}
-
-void sceneryGetLighting(LightingDefinition* lighting)
-{
-    lightingCopyDefinition(&_lighting, lighting);
 }
 
 void scenerySetTerrain(TerrainDefinition* terrain)
@@ -190,36 +170,6 @@ void sceneryRenderFirstPass(Renderer* renderer)
 
 
 /******* Standard renderer *********/
-static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
-{
-    Vector3 light_location;
-    Vector3 direction_to_light;
-
-    direction_to_light = v3Normalize(v3Scale(light->direction, -1.0));
-    light_location = v3Add(location, v3Scale(direction_to_light, 1000.0));
-
-    if (light->filtered)
-    {
-        // TODO atmosphere filter
-        light->color = waterLightFilter(&_water, renderer, light->color, location, light_location, direction_to_light);
-    }
-    if (light->masked)
-    {
-        *light = renderer->terrain->alterLight(renderer, light, location);
-        light->color = cloudsFilterLight(&_clouds, renderer, light->color, location, light_location, direction_to_light);
-    }
-}
-
-static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
-{
-    lightingGetStatus(&_lighting, renderer, location, status);
-}
-
-static Color _applyLightStatus(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material)
-{
-    return lightingApplyStatusToSurface(renderer, status, location, normal, material);
-}
-
 static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
 {
     RayCastingResult result;
@@ -283,9 +233,6 @@ Renderer sceneryCreateStandardRenderer()
     cameraCopyDefinition(&_camera, &result.render_camera);
     result.camera_location = _camera.location;
 
-    result.alterLight = _alterLight;
-    result.getLightStatus = _getLightStatus;
-    result.applyLightStatus = _applyLightStatus;
     result.rayWalking = _rayWalking;
     result.getWaterHeightInfo = _getWaterHeightInfo;
     result.applyTextures = _applyTextures;

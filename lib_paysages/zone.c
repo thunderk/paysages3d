@@ -1,8 +1,6 @@
 #include "zone.h"
 
-
 #include <string.h>
-
 #include <stdlib.h>
 #include <math.h>
 #include "tools.h"
@@ -111,10 +109,10 @@ void zoneCopy(Zone* source, Zone* destination)
 {
     curveCopy(source->value_by_height, destination->value_by_height);
     curveCopy(source->value_by_slope, destination->value_by_slope);
-    
+
     memcpy(destination->circles_included, source->circles_included, sizeof(Circle) * source->circles_included_count);
     destination->circles_included_count = source->circles_included_count;
-    
+
     memcpy(destination->circles_excluded, source->circles_excluded, sizeof(Circle) * source->circles_excluded_count);
     destination->circles_excluded_count = source->circles_excluded_count;
 }

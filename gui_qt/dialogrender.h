@@ -9,7 +9,7 @@
 #include <QLabel>
 #include <QMutex>
 #include "../lib_paysages/renderer.h"
-#include "../lib_paysages/color.h"
+#include "../lib_paysages/tools/color.h"
 
 class DialogRender : public QDialog
 {

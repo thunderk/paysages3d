@@ -3,7 +3,7 @@
 
 #include "basepreview.h"
 
-#include "../lib_paysages/lighting.h"
+#include "../lib_paysages/tools/lighting.h"
 #include "../lib_paysages/renderer.h"
 
 class SmallMaterialPreview:public QWidget
@@ -19,7 +19,7 @@ protected:
 
 private:
     SurfaceMaterial* _material;
-    LightingDefinition _lighting;
+    LightStatus* _light;
     Renderer _renderer;
 };
 

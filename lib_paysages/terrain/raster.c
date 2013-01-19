@@ -56,6 +56,11 @@ void terrainRenderSurface(Renderer* renderer)
 
     min_chunk_size = 0.1 / (double)renderer->render_quality;
     visible_chunk_size = 0.05 / (double)renderer->render_quality;
+    if (renderer->render_quality > 7)
+    {
+        min_chunk_size *= 0.5;
+        visible_chunk_size *= 0.5;
+    }
 
     chunk_factor = 1;
     chunk_count = 2;

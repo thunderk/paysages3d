@@ -9,8 +9,8 @@
 extern "C" {
 #endif
 
-#include "../color.h"
-#include "../pack.h"
+#include "color.h"
+#include "pack.h"
 
 typedef struct Texture2D Texture2D;
 typedef struct Texture3D Texture3D;

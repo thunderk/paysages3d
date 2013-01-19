@@ -3,11 +3,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
-#include "color.h"
-#include "euclid.h"
-#include "lighting.h"
+#include "tools/color.h"
+#include "tools/euclid.h"
 #include "tools.h"
-#include "shared/types.h"
 
 #define CLOUDS_MAX_LAYERS 6
 #define MAX_SEGMENT_COUNT 30
@@ -554,7 +552,7 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
 {
     Vector3 normal;
     Color col1, col2;
-    LightStatus light;
+    LightStatus* lighting;
 
     normal = _getNormal(definition, position, 3.0);
     if (renderer->render_quality > 5)
@@ -568,9 +566,11 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
     }
     normal = v3Scale(v3Normalize(normal), definition->hardness);
 
-    renderer->getLightStatus(renderer, &light, position);
-    col1 = renderer->applyLightStatus(renderer, &light, position, normal, definition->material);
-    col2 = renderer->applyLightStatus(renderer, &light, position, v3Scale(normal, -1.0), definition->material);
+    lighting = lightingCreateStatus(renderer->lighting, position, renderer->camera_location);
+    renderer->atmosphere->getLightingStatus(renderer, lighting, normal, 0);
+    col1 = lightingApplyStatus(lighting, normal, &definition->material);
+    col2 = lightingApplyStatus(lighting, v3Scale(normal, -1.0), &definition->material);
+    lightingDeleteStatus(lighting);
 
     col1.r = (col1.r + col2.r) / 2.0;
     col1.g = (col1.g + col2.g) / 2.0;

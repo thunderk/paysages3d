@@ -4,8 +4,7 @@
 #include <assert.h>
 #include <string.h>
 #include <math.h>
-#include "tools.h"
-#include "curve.h"
+#include "../tools.h"
 
 /******************************** Color ********************************/
 
@@ -224,22 +223,22 @@ int colorProfileCollect(ColorProfile* profile, Color pixel)
     return changed;
 }
 
-float A = 0.15;
-float B = 0.50;
-float C = 0.10;
-float D = 0.20;
-float E = 0.02;
-float F = 0.30;
-float W = 11.2;
-
 static double _uncharted2Tonemap(double x)
 {
-   return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
+    double A = 0.15;
+    double B = 0.50;
+    double C = 0.10;
+    double D = 0.20;
+    double E = 0.02;
+    double F = 0.30;
+
+    return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
 }
 
 Color colorProfileApply(ColorProfile* profile, Color pixel)
 {
     double exposure_bias = 2.0;
+    double W = 11.2;
     double white_scale = 1.0 / _uncharted2Tonemap(W);
 
     pixel.r = pow(_uncharted2Tonemap(pixel.r * exposure_bias) * white_scale, 1.0 / 2.2);

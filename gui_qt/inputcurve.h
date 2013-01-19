@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "baseinput.h"
 
-#include "../lib_paysages/curve.h"
+#include "../lib_paysages/tools/curve.h"
 
 class InputCurve:public BaseInput
 {

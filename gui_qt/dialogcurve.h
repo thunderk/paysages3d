@@ -5,7 +5,7 @@
 #include <QPushButton>
 #include "widgetcurveeditor.h"
 
-#include "../lib_paysages/curve.h"
+#include "../lib_paysages/tools/curve.h"
 
 class DialogCurve : public QDialog
 {

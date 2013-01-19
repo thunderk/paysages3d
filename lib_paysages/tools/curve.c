@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "tools.h"
+#include "../tools.h"
 
 #define MAX_NB_POINTS 40
 
@@ -16,11 +16,11 @@ struct Curve
 Curve* curveCreate()
 {
     Curve* result;
-    
+
     result = malloc(sizeof(Curve));
     result->nbpoints = 0;
     result->default_value = 0.0;
-    
+
     return result;
 }
 
@@ -37,7 +37,7 @@ void curveCopy(Curve* source, Curve* destination)
 void curveSave(PackStream* stream, Curve* curve)
 {
     int i;
-    
+
     packWriteDouble(stream, &curve->default_value);
     packWriteInt(stream, &curve->nbpoints);
     for (i = 0; i < curve->nbpoints; i++)
@@ -50,7 +50,7 @@ void curveSave(PackStream* stream, Curve* curve)
 void curveLoad(PackStream* stream, Curve* curve)
 {
     int i;
-    
+
     packReadDouble(stream, &curve->default_value);
     packReadInt(stream, &curve->nbpoints);
     for (i = 0; i < curve->nbpoints; i++)
@@ -86,10 +86,10 @@ int curveAddPoint(Curve* curve, CurvePoint* point)
 int curveQuickAddPoint(Curve* curve, double position, double value)
 {
     CurvePoint point;
-    
+
     point.position = position;
     point.value = value;
-    
+
     return curveAddPoint(curve, &point);
 }
 

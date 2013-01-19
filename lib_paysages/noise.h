@@ -1,7 +1,7 @@
 #ifndef _PAYSAGES_NOISE_H_
 #define _PAYSAGES_NOISE_H_
 
-#include "pack.h"
+#include "tools/pack.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,7 +19,7 @@ typedef struct
     NoiseFunctionAlgorithm algorithm;
     double ridge_factor;
 } NoiseFunction;
-    
+
 struct NoiseLevel
 {
     double scaling;

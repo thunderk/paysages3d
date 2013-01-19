@@ -9,11 +9,11 @@
 #include "baseinput.h"
 #include "dialoglayers.h"
 #include "../lib_paysages/shared/types.h"
+#include "../lib_paysages/tools/curve.h"
+#include "../lib_paysages/tools/color.h"
+#include "../lib_paysages/tools/pack.h"
 #include "../lib_paysages/noise.h"
-#include "../lib_paysages/curve.h"
-#include "../lib_paysages/color.h"
 #include "../lib_paysages/layers.h"
-#include "../lib_paysages/pack.h"
 
 class BaseForm:public QWidget
 {

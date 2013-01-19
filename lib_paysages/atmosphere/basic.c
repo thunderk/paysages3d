@@ -39,3 +39,18 @@ Color basicApplyAerialPerspective(Renderer* renderer, Vector3 location, Color ba
         return base;
     }
 }
+
+void basicGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)
+{
+    /* Direct light from the sun */
+    LightDefinition light;
+
+    light.direction = v3Scale(renderer->atmosphere->getSunDirection(renderer), -1.0);
+    light.color = renderer->atmosphere->definition->sun_color;
+    light.reflection = 1.0;
+    light.filtered = 1;
+    light.masked = 1;
+    lightingPushLight(status, &light);
+
+    /* TODO Sample other directions */
+}

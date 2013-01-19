@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-#include "lighting.h"
+#include "tools/lighting.h"
 #include "system.h"
 #include "render.h"
 #include "scenery.h"
@@ -54,20 +54,6 @@ static void _pushQuad(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Ve
     renderer->pushTriangle(renderer, v4, v1, v3, callback, callback_data);
 }
 
-static void _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
-{
-}
-
-static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
-{
-    status->nblights = 0;
-}
-
-static Color _applyLightStatus(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material)
-{
-    return lightingApplyStatusToSurface(renderer, status, location, normal, material);
-}
-
 static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
 {
     return _RAYCASTING_NULL;
@@ -117,9 +103,7 @@ Renderer rendererCreate()
     result.applyTextures = _applyTextures;
     result.applyClouds = _applyClouds;
 
-    result.alterLight = _alterLight;
-    result.getLightStatus = _getLightStatus;
-    result.applyLightStatus = _applyLightStatus;
+    result.lighting = lightingManagerCreate();
 
     result.atmosphere = AtmosphereRendererClass.create();
     result.terrain = TerrainRendererClass.create();
@@ -129,6 +113,8 @@ Renderer rendererCreate()
 
 void rendererDelete(Renderer* renderer)
 {
+    lightingManagerDelete(renderer->lighting);
+
     AtmosphereRendererClass.destroy(renderer->atmosphere);
     TerrainRendererClass.destroy(renderer->terrain);
 
