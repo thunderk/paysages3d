@@ -5,7 +5,13 @@ Technology Preview 2 :
    => Add map preview with editor area.
    => Allow camera move and zoom.
 - Get rid of noise dialogs, for simpler settings.
-- Apply HDR to 3D explorer.
+- Finalize Bruneton's model
+   => Fix artifacts on aerial perspective
+   => Fix blue appearance at night
+- Finalize lighting refactoring
+   => Restore water and cloud filters
+   => Restore cloud lighting
+   => Restore and improve skydome lighting
 - Apply Preetham's model usage
    => Convert to HDR rendering.
    => Apply model's aerial perspective.
@@ -15,16 +21,17 @@ Technology Preview 2 :
    => Covering texture height should inpact terrain height.
    => Add texture shadowing.
 - Clouds should keep distance to ground.
-- Add fresnel effect to specular lighting.
-- Add "hardness to light" and shadow control ("minimum lighting") to material.
 - Waves noise should not change layers offsets each time a setting is changed (layers are reconstructed currently).
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
+- Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).
 
 Technlogy Preview 3 :
 - Fully move layer management from BaseForm to BaseFormLayer.
 - Start vegetation system.
 - Allow render saving in HDR compatible format.
 - Add clouds to explorer with 3d textures.
+- Add fresnel effect to specular lighting.
+- Add "hardness to light" and shadow control ("minimum lighting") to material.
 - Start using OpenCL to optimize rendering.
 - Restore render progress.
 - Rethink the quality settings and detail smoothing in the distance.

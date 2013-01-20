@@ -93,30 +93,15 @@ class PreviewWaterColor:public BasePreview
 public:
     PreviewWaterColor(QWidget* parent):BasePreview(parent)
     {
-        LightDefinition light;
-
         _background = 0;
         _lighting_enabled = false;
 
         _water = waterCreateDefinition();
 
-        /*_lighting = lightingCreateDefinition();
-        light.color = COLOR_WHITE;
-        light.direction.x = 0.0;
-        light.direction.y = -0.4794;
-        light.direction.z = 0.8776;
-        light.filtered = 0;
-        light.masked = 0;
-        light.reflection = 1.0;
-        lightingAddLight(&_lighting, light);
-        lightingValidateDefinition(&_lighting);*/
-
         _renderer = rendererCreate();
+        _renderer->atmosphere->getLightingStatus = _getLightingStatus;
         _renderer->rayWalking = _rayWalking;
-        /*_renderer->getLightStatus = _getLightStatus;
-        _renderer->applyLightStatus = _applyLightStatus;*/
         _renderer->customData[0] = &_water;
-        //_renderer->customData[1] = &_lighting;
         _renderer->customData[2] = this;
 
         configScaling(10.0, 1000.0, 10.0, 250.0);
@@ -126,6 +111,7 @@ public:
         addToggle("light", tr("Lighting"), true);
     }
     int _background;
+    bool _lighting_enabled;
 protected:
     Color getColor(double x, double y)
     {
@@ -180,8 +166,6 @@ protected:
 private:
     Renderer* _renderer;
     WaterDefinition _water;
-    //LightingDefinition _lighting;
-    bool _lighting_enabled;
 
     static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int, int, int, int)
     {
@@ -218,21 +202,25 @@ private:
 
         return result;
     }
-    /*static Color _applyLightStatus(Renderer* renderer, LightStatus* status, Vector3 location, Vector3 normal, SurfaceMaterial material)
+    static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3, int)
     {
-        if (((PreviewWaterColor*)renderer->customData[2])->_lighting_enabled)
+        LightDefinition light;
+        PreviewWaterColor* preview = (PreviewWaterColor*)renderer->customData[2];
+        light.color = COLOR_WHITE;
+        light.direction.x = 0.0;
+        light.direction.y = -0.4794;
+        light.direction.z = 0.8776;
+        light.altered = 0;
+        if (preview->_lighting_enabled)
         {
-            return lightingApplyStatusToSurface(renderer, status, location, normal, material);
+            light.reflection = 1.0;
         }
         else
         {
-            return material.base;
+            light.reflection = 0.0;
         }
+        lightingPushLight(status, &light);
     }
-    static void _getLightStatus(Renderer* renderer, LightStatus* status, Vector3 location)
-    {
-        lightingGetStatus((LightingDefinition*)renderer->customData[1], renderer, location, status);
-    }*/
 };
 
 /**************** Form ****************/

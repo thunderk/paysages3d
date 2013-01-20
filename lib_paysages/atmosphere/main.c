@@ -193,110 +193,32 @@ static Vector3 _getSunDirection(Renderer* renderer)
     return result;
 }
 
-#if 0
-static inline void _addDomeLight(Renderer* renderer, LightDefinition* light, Vector3 direction, double factor)
-{
-    light->direction = v3Scale(direction, -1.0);
-    light->color = renderer->atmosphere->getSkyColor(renderer, direction);
-    light->color.r *= factor;
-    light->color.g *= factor;
-    light->color.b *= factor;
-    light->reflection = 0.0;
-    light->filtered = 0;
-    light->masked = 0;
-}
-
-static int _getSkydomeLights(Renderer* renderer, LightDefinition* lights, int max_lights)
-{
-    AtmosphereRendererCache* cache = (AtmosphereRendererCache*)renderer->atmosphere->_internal_data;
-    AtmosphereDefinition* definition;
-    double sun_angle;
-    Vector3 sun_direction;
-    int nblights = 0;
-
-    mutexAcquire(cache->lock);
-    if (cache->nblights < 0)
-    {
-        definition = renderer->atmosphere->definition;
-
-        sun_angle = (definition->_daytime + 0.75) * M_PI * 2.0;
-        sun_direction.x = cos(sun_angle);
-        sun_direction.y = sin(sun_angle);
-        sun_direction.z = 0.0;
-
-        /* TODO Moon light */
-
-        if (max_lights > MAX_SKYDOME_LIGHTS)
-        {
-            max_lights = MAX_SKYDOME_LIGHTS;
-        }
-
-        if (max_lights > 0)
-        {
-            /* Direct light from the sun */
-            cache->lights[0].direction = v3Scale(sun_direction, -1.0);
-            cache->lights[0].color = definition->sun_color;
-            cache->lights[0].reflection = 1.0;
-            cache->lights[0].filtered = 1;
-            cache->lights[0].masked = 1;
-            nblights = 1;
-            max_lights--;
-        }
-
-        if (max_lights > 0)
-        {
-            /* Indirect lighting by skydome scattering */
-            int xsamples, ysamples, samples, x, y;
-            double xstep, ystep, factor;
-            Vector3 direction;
-
-            samples = (renderer->render_quality < 5) ? 9 : (renderer->render_quality * 4 + 1);
-            samples = samples > max_lights ? max_lights : samples;
-
-            factor = definition->dome_lighting / (double)samples;
-
-            _addDomeLight(renderer, cache->lights + nblights, VECTOR_UP, factor);
-            nblights++;
-            samples--;
-
-            if (samples >= 2)
-            {
-                xsamples = samples / 2;
-                ysamples = samples / xsamples;
-
-                xstep = M_PI * 2.0 / (double)xsamples;
-                ystep = M_PI * 0.5 / (double)ysamples;
-
-                for (x = 0; x < xsamples; x++)
-                {
-                    for (y = 0; y < ysamples; y++)
-                    {
-                        direction.x = cos(x * xstep) * cos(y * ystep);
-                        direction.y = -sin(y * ystep);
-                        direction.z = sin(x * xstep) * cos(y * ystep);
-
-                        _addDomeLight(renderer, cache->lights + nblights, direction, factor);
-                        nblights++;
-                    }
-                }
-            }
-        }
-
-        cache->nblights = nblights;
-    }
-    mutexRelease(cache->lock);
-
-    memcpy(lights, cache->lights, sizeof(LightDefinition) * cache->nblights);
-    return cache->nblights;
-}
-#endif
-
 static void _fakeGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)
 {
+    LightDefinition light;
+
     UNUSED(renderer);
-    UNUSED(status);
     UNUSED(normal);
     UNUSED(opaque);
+
+    light.color.r = 0.8;
+    light.color.g = 0.8;
+    light.color.b = 0.8;
+    light.direction.x = -0.7;
+    light.direction.y = -0.7;
+    light.direction.z = -0.7;
+    light.altered = 0;
+    light.reflection = 0.0;
+    lightingPushLight(status, &light);
+    light.color.r = 0.3;
+    light.color.g = 0.31;
+    light.color.b = 0.34;
+    light.direction.x = 0.7;
+    light.direction.y = -0.7;
+    light.direction.z = 0.7;
+    light.altered = 0;
+    light.reflection = 0.0;
+    lightingPushLight(status, &light);
 }
 
 /******************** Renderer ********************/

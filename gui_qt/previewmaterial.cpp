@@ -11,19 +11,13 @@
 
 SmallMaterialPreview::SmallMaterialPreview(QWidget* parent, SurfaceMaterial* material) : QWidget(parent)
 {
-    LightDefinition light;
-
-    /*_lighting = lightingCreateDefinition();
-    light.color = COLOR_WHITE;
-    light.direction.x = -0.5;
-    light.direction.y = -0.5;
-    light.direction.z = -0.5;
-    light.direction = v3Normalize(light.direction);
-    light.filtered = 0;
-    light.masked = 0;
-    light.reflection = 1.0;
-    lightingAddLight(&_lighting, light);
-    lightingValidateDefinition(&_lighting);*/
+    _light.color = COLOR_WHITE;
+    _light.direction.x = -0.5;
+    _light.direction.y = -0.5;
+    _light.direction.z = -0.5;
+    _light.direction = v3Normalize(_light.direction);
+    _light.altered = 0;
+    _light.reflection = 1.0;
 
     _material = material;
 
@@ -62,8 +56,7 @@ Color SmallMaterialPreview::getColor(double x, double y)
         }
 
         point = v3Normalize(point);
-        //color = lightingApplyToSurface(&_lighting, &_renderer, point, point, *_material);
-        color = COLOR_RED;
+        color = lightingApplyOneLight(&_light, _renderer->camera_location, point, point, _material);
         if (dist > 0.95)
         {
             color.a = (1.0 - dist) / 0.05;

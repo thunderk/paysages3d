@@ -19,7 +19,7 @@ protected:
 
 private:
     SurfaceMaterial* _material;
-    LightStatus* _light;
+    LightDefinition _light;
     Renderer* _renderer;
 };
 

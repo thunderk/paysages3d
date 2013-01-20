@@ -134,7 +134,7 @@ Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 locatio
     Vector3 direction_inv;
 
     light_color = light->color;
-    direction_inv = v3Scale(light->direction, -1.0);
+    direction_inv = v3Scale(v3Normalize(light->direction), -1.0);
 
     normal_norm = v3Norm(normal);
     if (normal_norm > 1.0)
@@ -146,7 +146,7 @@ Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 locatio
     result = COLOR_BLACK;
 
     /* diffused light */
-    double diffuse = v3Dot(direction_inv, normal) / M_PI;
+    double diffuse = v3Dot(direction_inv, normal);
     if (diffuse > 0.0)
     {
         result.r += diffuse * material->base.r * light_color.r;
@@ -162,10 +162,13 @@ Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 locatio
         double specular = v3Dot(reflect, view);
         if (specular > 0.0)
         {
-            specular = pow(specular, material->shininess) * material->reflection;
-            result.r += specular * light_color.r;
-            result.g += specular * light_color.g;
-            result.b += specular * light_color.b;
+            specular = pow(specular, material->shininess) * material->reflection * light->reflection;
+            if (specular > 0.0)
+            {
+                result.r += specular * light_color.r;
+                result.g += specular * light_color.g;
+                result.b += specular * light_color.b;
+            }
         }
     }
 

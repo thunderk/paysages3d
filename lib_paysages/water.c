@@ -108,7 +108,7 @@ void waterAutoPreset(WaterDefinition* definition, WaterPreset preset)
 
     definition->depth_color.a = 1.0;
     definition->material.base.a = 1.0;
-    definition->material.reflection = 0.4;
+    definition->material.reflection = 1.0;
     definition->material.shininess = 16.0;
     definition->foam_material.base.r = 0.8;
     definition->foam_material.base.g = 0.8;

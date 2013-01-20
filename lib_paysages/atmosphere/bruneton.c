@@ -1190,6 +1190,8 @@ void brunetonInit()
 
 Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position)
 {
+    UNUSED(definition);
+
     Vector3 x = {0.0, Rg + (max(eye.y, 0.0) + GROUND_OFFSET) * WORLD_SCALING, 0.0};
     Vector3 v = v3Normalize(direction);
     Vector3 s = v3Normalize(v3Sub(sun_position, x));
