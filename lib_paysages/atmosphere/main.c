@@ -9,13 +9,6 @@
 
 #define MAX_SKYDOME_LIGHTS 100
 
-typedef struct
-{
-    Mutex* lock;
-    int nblights;
-    LightDefinition lights[MAX_SKYDOME_LIGHTS];
-} AtmosphereRendererCache;
-
 static int _inited = 0;
 
 /******************** Definition ********************/
@@ -159,7 +152,7 @@ static Color _getSkyColor(Renderer* renderer, Vector3 direction)
         sky_color = COLOR_BLUE;
     }
 
-    /* Get sun halo */
+    /* Get sun shape */
     if (dist < definition->sun_radius)
     {
         sun_color = definition->sun_color;
@@ -225,7 +218,6 @@ static void _fakeGetLightingStatus(Renderer* renderer, LightStatus* status, Vect
 static AtmosphereRenderer* _createRenderer()
 {
     AtmosphereRenderer* result;
-    AtmosphereRendererCache* cache;
 
     result = malloc(sizeof(AtmosphereRenderer));
     result->definition = AtmosphereDefinitionClass.create();
@@ -235,28 +227,17 @@ static AtmosphereRenderer* _createRenderer()
     result->applyAerialPerspective = _fakeApplyAerialPerspective;
     result->getSkyColor = _fakeGetSkyColor;
 
-    cache = malloc(sizeof(AtmosphereRendererCache));
-    cache->lock = mutexCreate();
-    cache->nblights = -1;
-    result->_internal_data = cache;
-
     return result;
 }
 
 static void _deleteRenderer(AtmosphereRenderer* renderer)
 {
-    AtmosphereRendererCache* cache = (AtmosphereRendererCache*)renderer->_internal_data;
-    mutexDestroy(cache->lock);
-    free(cache);
-
     AtmosphereDefinitionClass.destroy(renderer->definition);
     free(renderer);
 }
 
 static void _bindRenderer(Renderer* renderer, AtmosphereDefinition* definition)
 {
-    AtmosphereRendererCache* cache = (AtmosphereRendererCache*)renderer->atmosphere->_internal_data;
-
     AtmosphereDefinitionClass.copy(definition, renderer->atmosphere->definition);
 
     renderer->atmosphere->getSkyColor = _getSkyColor;
@@ -265,17 +246,12 @@ static void _bindRenderer(Renderer* renderer, AtmosphereDefinition* definition)
     {
         case ATMOSPHERE_MODEL_BRUNETON:
             renderer->atmosphere->applyAerialPerspective = brunetonApplyAerialPerspective;
-            /*renderer->atmosphere->getLightingStatus = brunetonGetLightingStatus;*/
-            renderer->atmosphere->getLightingStatus = basicGetLightingStatus;
+            renderer->atmosphere->getLightingStatus = brunetonGetLightingStatus;
             break;
         default:
             renderer->atmosphere->applyAerialPerspective = basicApplyAerialPerspective;
             renderer->atmosphere->getLightingStatus = basicGetLightingStatus;
     }
-
-    mutexAcquire(cache->lock);
-    cache->nblights = -1;
-    mutexRelease(cache->lock);
 }
 
 StandardRenderer AtmosphereRendererClass = {

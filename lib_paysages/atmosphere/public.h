@@ -54,7 +54,7 @@ typedef struct
     FuncAtmosphereGetSkyColor getSkyColor;
     FuncAtmosphereGetSunDirection getSunDirection;
 
-    void* _internal_data;
+    /*void* _internal_data;*/
 } AtmosphereRenderer;
 
 extern StandardDefinition AtmosphereDefinitionClass;

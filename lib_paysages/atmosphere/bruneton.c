@@ -309,20 +309,20 @@ static void _getMuMuSNu(double x, double y, double r, Color dhdH, double* mu, do
 
     if (y < (double)(RES_MU) / 2.0)
     {
-        d = 1.0 - y / ((double)(RES_MU) / 2.0);
+        d = 1.0 - y / ((double)(RES_MU) / 2.0 - 1.0);
         d = min(max(dhdH.b, d * dhdH.a), dhdH.a * 0.999);
         *mu = (Rg * Rg - r * r - d * d) / (2.0 * r * d);
         *mu = min(*mu, -sqrt(1.0 - (Rg / r) * (Rg / r)) - 0.001);
     }
     else
     {
-        d = (y - (double)(RES_MU) / 2.0) / ((double)(RES_MU) / 2.0);
+        d = (y - (double)(RES_MU) / 2.0) / ((double)(RES_MU) / 2.0 - 1.0);
         d = min(max(dhdH.r, d * dhdH.g), dhdH.g * 0.999);
         *mu = (Rt * Rt - r * r - d * d) / (2.0 * r * d);
     }
-    *muS = fmod(x, (double)(RES_MU_S)) / ((double)(RES_MU_S));
+    *muS = fmod(x, (double)(RES_MU_S)) / ((double)(RES_MU_S) - 1.0);
     *muS = tan((2.0 * (*muS) - 1.0 + 0.26) * 1.1) / tan(1.26 * 1.1);
-    *nu = -1.0 + floor(x / (double)(RES_MU_S)) / ((double)(RES_NU)) * 2.0;
+    *nu = -1.0 + floor(x / (double)(RES_MU_S)) / ((double)(RES_NU) - 1.0) * 2.0;
 }
 
 static void _getIrradianceUV(double r, double muS, double* uMuS, double* uR)
@@ -504,11 +504,8 @@ static int _inscatter1Worker(ParallelWork* work, int layer, void* data)
     int x, y;
     for (x = 0; x < RES_MU_S * RES_NU; x++)
     {
-        /*double dx = (double)x / (double)(RES_MU_S * RES_NU);*/
         for (y = 0; y < RES_MU; y++)
         {
-            /*double dy = (double)y / (double)(RES_MU);*/
-
             Color ray = COLOR_BLACK;
             Color mie = COLOR_BLACK;
             double mu, muS, nu;
@@ -799,7 +796,7 @@ static int _copyInscatterNWorker(ParallelWork* work, int layer, void* data)
         {
             double mu, muS, nu;
             _getMuMuSNu((double)x, (double)y, r, dhdH, &mu, &muS, &nu);
-            Color col1 = texture3DGetLinear(params->source, x / (double)(RES_MU_S * RES_NU), y / (double)(RES_MU), layer + 0.5 / (double)(RES_R));
+            Color col1 = texture3DGetPixel(params->source, x, y, layer);
             Color col2 = texture3DGetPixel(params->destination, x, y, layer);
             col2.r += col1.r / _phaseFunctionR(nu);
             col2.g += col1.g / _phaseFunctionR(nu);
@@ -910,51 +907,6 @@ static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, d
     result.g *= ISun;
     result.b *= ISun;
     result.a = 1.0;
-    return result;
-}
-
-/*ground radiance at end of ray x+tv, when sun in direction s
- *attenuated bewteen ground and viewer (=R[L0]+R[L*]) */
-static Color _groundColor(Color base, Vector3 x, double t, Vector3 v, Vector3 s, double r, double mu, Vector3 attenuation)
-{
-    Color result;
-
-#if 0
-    /* ground reflectance at end of ray, x0 */
-    Vector3 x0 = v3Add(x, v3Scale(v, t));
-    float r0 = v3Norm(x0);
-    Vector3 n = v3Scale(x0, 1.0 / r0);
-
-    /* direct sun light (radiance) reaching x0 */
-    float muS = v3Dot(n, s);
-    Color sunLight = _transmittanceWithShadow(r0, muS);
-
-    /* precomputed sky light (irradiance) (=E[L*]) at x0 */
-    Color groundSkyLight = _irradiance(_irradianceTexture, r0, muS);
-
-    /* light reflected at x0 (=(R[L0]+R[L*])/T(x,x0)) */
-    Color groundColor;
-    groundColor.r = base.r * 0.2 * (max(muS, 0.0) * sunLight.r + groundSkyLight.r) * ISun / M_PI;
-    groundColor.g = base.g * 0.2 * (max(muS, 0.0) * sunLight.g + groundSkyLight.g) * ISun / M_PI;
-    groundColor.b = base.b * 0.2 * (max(muS, 0.0) * sunLight.b + groundSkyLight.b) * ISun / M_PI;
-
-    /* water specular color due to sunLight */
-    /*if (reflectance.w > 0.0)
-    {
-        vec3 h = normalize(s - v);
-        float fresnel = 0.02 + 0.98 * pow(1.0 - dot(-v, h), 5.0);
-        float waterBrdf = fresnel * pow(max(dot(h, n), 0.0), 150.0);
-        groundColor += reflectance.w * max(waterBrdf, 0.0) * sunLight * ISun;
-    }*/
-#else
-    Color groundColor = base;
-#endif
-
-    result.r = attenuation.x * groundColor.r; //=R[L0]+R[L*]
-    result.g = attenuation.y * groundColor.g;
-    result.b = attenuation.z * groundColor.b;
-    result.a = 1.0;
-
     return result;
 }
 
@@ -1204,11 +1156,11 @@ Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
     Color inscatterColor = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
     Color sunColor = _sunColor(v, s, r, mu); /* L0 */
 
-    inscatterColor.r += sunColor.r;
-    inscatterColor.g += sunColor.g;
-    inscatterColor.b += sunColor.b;
+    sunColor.r = sunColor.r * attenuation.x + inscatterColor.r;
+    sunColor.g = sunColor.g * attenuation.y + inscatterColor.g;
+    sunColor.b = sunColor.b * attenuation.z + inscatterColor.b;
 
-    return inscatterColor; /* Eq (16) */
+    return sunColor; /* Eq (16) */
 }
 
 Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
@@ -1232,13 +1184,12 @@ Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color
 
     Vector3 attenuation;
     Color inscatterColor = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
-    Color groundColor = _groundColor(base, x, t, v, s, r, mu, attenuation); /*R[L0]+R[L*]*/
 
-    groundColor.r += inscatterColor.r;
-    groundColor.g += inscatterColor.g;
-    groundColor.b += inscatterColor.b;
+    base.r = base.r * attenuation.x + inscatterColor.r;
+    base.g = base.g * attenuation.y + inscatterColor.g;
+    base.b = base.b * attenuation.z + inscatterColor.b;
 
-    return groundColor; /* Eq (16) */
+    return base; /* Eq (16) */
 }
 
 void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)
@@ -1254,19 +1205,19 @@ void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 
 
     muS = v3Dot(up, s);
     sun.color = _transmittanceWithShadow(r0, muS);
-    sun.color.r *= 100.0;
+    /*sun.color.r *= 100.0;
     sun.color.g *= 100.0;
-    sun.color.b *= 100.0;
-    sun.direction = s;
+    sun.color.b *= 100.0;*/
+    sun.direction = v3Scale(s, -1.0);
     sun.reflection = 1.0;
     sun.altered = 1;
 
     lightingPushLight(status, &sun);
 
     irradiance.color = _irradiance(_irradianceTexture, r0, muS);
-    irradiance.color.r *= 100.0;
+    /*irradiance.color.r *= 100.0;
     irradiance.color.g *= 100.0;
-    irradiance.color.b *= 100.0;
+    irradiance.color.b *= 100.0;*/
     irradiance.direction = v3Scale(normal, -1.0);
     irradiance.reflection = 0.0;
     irradiance.altered = 0;

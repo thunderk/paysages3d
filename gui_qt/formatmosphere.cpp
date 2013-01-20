@@ -27,7 +27,7 @@ public:
 protected:
     Color getColor(double x, double y)
     {
-        return atmosphereGetPreview(_renderer, x, -y, M_PI_2);
+        return atmosphereGetPreview(_renderer, x, -y, -M_PI_2);
     }
     void updateData()
     {
@@ -51,7 +51,7 @@ public:
 protected:
     Color getColor(double x, double y)
     {
-        return atmosphereGetPreview(_renderer, x, -y, -M_PI_2);
+        return atmosphereGetPreview(_renderer, x, -y, M_PI_2);
     }
     void updateData()
     {

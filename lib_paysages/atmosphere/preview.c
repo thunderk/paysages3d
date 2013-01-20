@@ -134,9 +134,9 @@ Color atmosphereGetPreview(Renderer* renderer, double x, double y, double headin
         normal = m4Transform(rotation, normal);
         hit = m4Transform(rotation, hit);
 
-        light = lightingCreateStatus(renderer->lighting, hit, renderer->camera_location);
+        light = lightingCreateStatus(renderer->lighting, hit, eye);
         renderer->atmosphere->getLightingStatus(renderer, light, normal, 1);
-        lightingApplyStatus(light, normal, &MOUNT_MATERIAL);
+        color = lightingApplyStatus(light, normal, &MOUNT_MATERIAL);
         lightingDeleteStatus(light);
 
         return renderer->atmosphere->applyAerialPerspective(renderer, hit, color);

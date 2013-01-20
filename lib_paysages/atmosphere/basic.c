@@ -10,7 +10,7 @@ Color basicApplyAerialPerspective(Renderer* renderer, Vector3 location, Color ba
     double distance = v3Norm(direction);
     AtmosphereDefinition* definition = renderer->atmosphere->definition;
     double near = 10.0 - definition->humidity * 10.0;
-    double far = 200.0 - definition->humidity * 180.0;
+    double far = 500.0 - definition->humidity * 480.0;
     double max = 0.75 + definition->humidity * 0.22;
 
     assert(near < far);

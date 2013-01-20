@@ -15,35 +15,33 @@ static inline double _angleBetween(double thetav, double phiv, double theta, dou
 
 static inline Color _xyYToRGB(double x, double y, double Y)
 {
-	double fX, fY, fZ;
-        Color result;
+    double fX, fY, fZ;
+    Color result;
 
-	fY = Y;
-	fX = x / y * Y;
-	fZ = ((1.0 - x - y) / y) * Y;
+    fY = Y;
+    fX = x / y * Y;
+    fZ = ((1.0 - x - y) / y) * Y;
 
-	double r, g, b;
-	r =  3.2404 * fX - 1.5371 * fY - 0.4985 * fZ;
-	g = -0.9692 * fX + 1.8759 * fY + 0.0415 * fZ;
-	b =  0.0556 * fX - 0.2040 * fY + 1.0573 * fZ;
+    double r, g, b;
+    r =  3.2404 * fX - 1.5371 * fY - 0.4985 * fZ;
+    g = -0.9692 * fX + 1.8759 * fY + 0.0415 * fZ;
+    b =  0.0556 * fX - 0.2040 * fY + 1.0573 * fZ;
 
-	double expo = -(1.0 / 10000.0);
-	r = 1.0 - exp(expo * r);
-	g = 1.0 - exp(expo * g);
-	b = 1.0 - exp(expo * b);
+    double expo = -(1.0 / 10000.0);
+    r = 1.0 - exp(expo * r);
+    g = 1.0 - exp(expo * g);
+    b = 1.0 - exp(expo * b);
 
-	if (r < 0.0) r = 0.0;
-	if (g < 0.0) g = 0.0;
-	if (b < 0.0) b = 0.0;
+    if (r < 0.0) r = 0.0;
+    if (g < 0.0) g = 0.0;
+    if (b < 0.0) b = 0.0;
 
-	result.r = r;
-	result.g = g;
-	result.b = b;
-        result.a = 1.0;
+    result.r = r;
+    result.g = g;
+    result.b = b;
+    result.a = 1.0;
 
-        colorNormalize(&result);
-
-        return result;
+    return result;
 }
 
 static inline void _directionToThetaPhi(Vector3 direction, double* theta, double* phi)
