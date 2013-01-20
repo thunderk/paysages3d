@@ -21,8 +21,7 @@ typedef struct
     Vector3 direction;  /* Global direction of the light */
     Color color;        /* Main color of the light */
     double reflection;  /* Reflected factor of the light (for specular lighting) */
-    int filtered;       /* Should the light be filtered (by atmosphere, water...) */
-    int masked;         /* Should the light be masked (cast shadows..) */
+    int altered;        /* Should the light be filtered or masked (by atmosphere, water, ground, clouds...) */
 } LightDefinition;
 
 typedef int (*FuncLightingAlterLight)(LightDefinition* light, Vector3 at, void* data);
@@ -38,6 +37,7 @@ LightStatus* lightingCreateStatus(LightingManager* manager, Vector3 location, Ve
 void lightingDeleteStatus(LightStatus* status);
 void lightingPushLight(LightStatus* status, LightDefinition* light);
 Color lightingApplyStatus(LightStatus* status, Vector3 normal, SurfaceMaterial* material);
+Vector3 lightingGetStatusLocation(LightStatus* status);
 
 Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 location, Vector3 normal, SurfaceMaterial* material);
 

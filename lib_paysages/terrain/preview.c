@@ -18,15 +18,15 @@ static Color _applyTextures(Renderer* renderer, Vector3 location, double precisi
     return texturesGetColor(&_textures, renderer, location.x, location.z, precision);
 }
 
-Renderer terrainCreatePreviewRenderer()
+Renderer* terrainCreatePreviewRenderer()
 {
-    Renderer result = rendererCreate();
+    Renderer* result = rendererCreate();
 
-    result.render_quality = 3;
-    result.applyTextures = _applyTextures;
-    result.camera_location.x = 0.0;
-    result.camera_location.y = 50.0;
-    result.camera_location.z = 0.0;
+    result->render_quality = 3;
+    result->applyTextures = _applyTextures;
+    result->camera_location.x = 0.0;
+    result->camera_location.y = 50.0;
+    result->camera_location.z = 0.0;
 
     if (!_inited)
     {

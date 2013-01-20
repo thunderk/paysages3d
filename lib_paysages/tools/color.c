@@ -237,6 +237,14 @@ static double _uncharted2Tonemap(double x)
 
 Color colorProfileApply(ColorProfile* profile, Color pixel)
 {
+    /*pixel.r *= 0.4;
+    pixel.g *= 0.4;
+    pixel.b *= 0.4;
+    pixel.r = pixel.r < 1.413 ? pow(pixel.r * 0.38317, 1.0 / 2.2) : 1.0 - exp(-pixel.r);
+    pixel.g = pixel.g < 1.413 ? pow(pixel.g * 0.38317, 1.0 / 2.2) : 1.0 - exp(-pixel.g);
+    pixel.b = pixel.b < 1.413 ? pow(pixel.b * 0.38317, 1.0 / 2.2) : 1.0 - exp(-pixel.b);
+    return pixel;*/
+
     double exposure_bias = 2.0;
     double W = 11.2;
     double white_scale = 1.0 / _uncharted2Tonemap(W);

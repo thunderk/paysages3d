@@ -24,14 +24,14 @@ public:
 protected:
     Color getColor(double x, double y)
     {
-        return terrainGetPreviewColor(&_renderer, x, -y, scaling);
+        return terrainGetPreviewColor(_renderer, x, -y, scaling);
     }
     void updateData()
     {
-        TerrainRendererClass.bind(_renderer.terrain, _definition);
+        TerrainRendererClass.bind(_renderer, _definition);
     }
 private:
-    Renderer _renderer;
+    Renderer* _renderer;
 };
 
 /**************** Form ****************/

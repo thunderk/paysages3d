@@ -62,7 +62,7 @@ extern StandardRenderer AtmosphereRendererClass;
 
 void atmosphereAutoPreset(AtmosphereDefinition* definition, AtmospherePreset preset);
 void atmosphereRenderSkydome(Renderer* renderer);
-Renderer atmosphereCreatePreviewRenderer();
+Renderer* atmosphereCreatePreviewRenderer();
 Color atmosphereGetPreview(Renderer* renderer, double x, double y, double heading);
 
 #ifdef __cplusplus

@@ -27,14 +27,14 @@ public:
 protected:
     Color getColor(double x, double y)
     {
-        return atmosphereGetPreview(&_renderer, x, -y, M_PI_2);
+        return atmosphereGetPreview(_renderer, x, -y, M_PI_2);
     }
     void updateData()
     {
-        AtmosphereRendererClass.bind(_renderer.atmosphere, _definition);
+        AtmosphereRendererClass.bind(_renderer, _definition);
     }
 private:
-    Renderer _renderer;
+    Renderer* _renderer;
 };
 
 class PreviewSkyWest:public BasePreview
@@ -51,14 +51,14 @@ public:
 protected:
     Color getColor(double x, double y)
     {
-        return atmosphereGetPreview(&_renderer, x, -y, -M_PI_2);
+        return atmosphereGetPreview(_renderer, x, -y, -M_PI_2);
     }
     void updateData()
     {
-        AtmosphereRendererClass.bind(_renderer.atmosphere, _definition);
+        AtmosphereRendererClass.bind(_renderer, _definition);
     }
 private:
-    Renderer _renderer;
+    Renderer* _renderer;
 };
 
 /**************** Form ****************/

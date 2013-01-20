@@ -20,7 +20,7 @@ protected:
 private:
     SurfaceMaterial* _material;
     LightStatus* _light;
-    Renderer _renderer;
+    Renderer* _renderer;
 };
 
 class PreviewMaterial:public BasePreview

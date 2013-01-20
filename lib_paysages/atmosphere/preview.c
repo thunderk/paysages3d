@@ -149,13 +149,13 @@ Color atmosphereGetPreview(Renderer* renderer, double x, double y, double headin
     }
 }
 
-Renderer atmosphereCreatePreviewRenderer()
+Renderer* atmosphereCreatePreviewRenderer()
 {
-    Renderer result = rendererCreate();
+    Renderer* result = rendererCreate();
 
-    result.camera_location.x = 0.0;
-    result.camera_location.y = 7.0;
-    result.camera_location.z = 0.0;
+    result->camera_location.x = 0.0;
+    result->camera_location.y = 7.0;
+    result->camera_location.z = 0.0;
 
     return result;
 }

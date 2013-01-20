@@ -20,7 +20,7 @@ public:
         _terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
 
         _renderer = rendererCreate();
-        _renderer.render_quality = 3;
+        _renderer->render_quality = 3;
 
         _original_layer = layer;
         _preview_layer = texturesLayerCreateDefinition();
@@ -40,21 +40,21 @@ protected:
         Vector3 location;
         Color result;
         location.x = x;
-        location.y = _renderer.terrain->getHeight(&_renderer, x, y, 1);
+        location.y = _renderer->terrain->getHeight(_renderer, x, y, 1);
         location.z = y;
-        result.r = result.g = result.b = texturesGetLayerCoverage(_preview_layer, &_renderer, location, this->scaling);
+        result.r = result.g = result.b = texturesGetLayerCoverage(_preview_layer, _renderer, location, this->scaling);
         return result;
     }
     void updateData()
     {
         sceneryGetTerrain(_terrain);
-        TerrainRendererClass.bind(_renderer.terrain, _terrain);
+        TerrainRendererClass.bind(_renderer, _terrain);
 
         texturesLayerCopyDefinition(_original_layer, _preview_layer);
     }
 
 private:
-    Renderer _renderer;
+    Renderer* _renderer;
     TextureLayerDefinition* _original_layer;
     TextureLayerDefinition* _preview_layer;
     TerrainDefinition* _terrain;
@@ -82,12 +82,12 @@ public:
         lightingValidateDefinition(&_lighting);*/
 
         _renderer = rendererCreate();
-        _renderer.render_quality = 3;
-        /*_renderer.getLightStatus = _getLightStatus;
-        _renderer.customData[0] = &_lighting;*/
-        _renderer.camera_location.x = 0.0;
-        _renderer.camera_location.y = 20.0;
-        _renderer.camera_location.z = 0.0;
+        _renderer->render_quality = 3;
+        /*_renderer->getLightStatus = _getLightStatus;
+        _renderer->customData[0] = &_lighting;*/
+        _renderer->camera_location.x = 0.0;
+        _renderer->camera_location.y = 20.0;
+        _renderer->camera_location.z = 0.0;
 
         _zone = zoneCreate();
 
@@ -105,7 +105,7 @@ protected:
         location.x = x;
         location.y = 0.0;
         location.z = y;
-        return texturesGetLayerColor(_preview_layer, &_renderer, location, this->scaling);
+        return texturesGetLayerColor(_preview_layer, _renderer, location, this->scaling);
     }
     void updateData()
     {
@@ -114,7 +114,7 @@ protected:
     }
 private:
     Zone* _zone;
-    Renderer _renderer;
+    Renderer* _renderer;
     TextureLayerDefinition* _original_layer;
     TextureLayerDefinition* _preview_layer;
     //LightingDefinition _lighting;

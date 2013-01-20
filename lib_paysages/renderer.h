@@ -48,7 +48,7 @@ struct Renderer
     void* customData[10];
 };
 
-Renderer rendererCreate();
+Renderer* rendererCreate();
 void rendererDelete(Renderer* renderer);
 void rendererSetPreviewCallbacks(Renderer* renderer, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update);
 void rendererStart(Renderer* renderer, RenderParams params);

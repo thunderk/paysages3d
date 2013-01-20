@@ -61,7 +61,7 @@ void cameraCopyDefinition(CameraDefinition* source, CameraDefinition* destinatio
 void cameraValidateDefinition(CameraDefinition* definition, int check_above)
 {
     WaterDefinition water;
-    Renderer renderer;
+    Renderer* renderer;
     double water_height, terrain_height, diff;
     Vector3 move;
     Matrix4 rotation;
@@ -74,8 +74,8 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
         waterDeleteDefinition(&water);
 
         renderer = sceneryCreateStandardRenderer();
-        terrain_height = renderer.terrain->getHeight(&renderer, definition->location.x, definition->location.z, 1) + 0.5;
-        rendererDelete(&renderer);
+        terrain_height = renderer->terrain->getHeight(renderer, definition->location.x, definition->location.z, 1) + 0.5;
+        rendererDelete(renderer);
 
         if (definition->location.y < water_height || definition->location.y < terrain_height)
         {

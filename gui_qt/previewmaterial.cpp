@@ -28,14 +28,14 @@ SmallMaterialPreview::SmallMaterialPreview(QWidget* parent, SurfaceMaterial* mat
     _material = material;
 
     _renderer = rendererCreate();
-    _renderer.camera_location.x = 0.0;
-    _renderer.camera_location.x = 0.0;
-    _renderer.camera_location.z = 10.0;
+    _renderer->camera_location.x = 0.0;
+    _renderer->camera_location.x = 0.0;
+    _renderer->camera_location.z = 10.0;
 }
 
 SmallMaterialPreview::~SmallMaterialPreview()
 {
-    rendererDelete(&_renderer);
+    rendererDelete(_renderer);
 }
 
 Color SmallMaterialPreview::getColor(double x, double y)

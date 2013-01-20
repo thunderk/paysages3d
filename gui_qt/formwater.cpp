@@ -35,10 +35,10 @@ protected:
     {
         double height;
 
-        height = _renderer.terrain->getHeight(&_renderer, x, -y, 1);
+        height = _renderer->terrain->getHeight(_renderer, x, -y, 1);
         if (height > _definition.height)
         {
-            return terrainGetPreviewColor(&_renderer, x, -y, scaling);
+            return terrainGetPreviewColor(_renderer, x, -y, scaling);
         }
         else
         {
@@ -53,7 +53,7 @@ protected:
             look.y = -1.0;
             look.z = 0.0;
 
-            base = waterGetColor(&_water, &_renderer, location, look);
+            base = waterGetColor(&_water, _renderer, location, look);
 
             if (_highlight_enabled)
             {
@@ -71,7 +71,7 @@ protected:
         // TODO Do this only on full refresh
         TerrainDefinition* terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
         sceneryGetTerrain(terrain);
-        TerrainRendererClass.bind(_renderer.terrain, terrain);
+        TerrainRendererClass.bind(_renderer, terrain);
         TerrainDefinitionClass.destroy(terrain);
     }
     void toggleChangeEvent(QString key, bool value)
@@ -83,7 +83,7 @@ protected:
         }
     }
 private:
-    Renderer _renderer;
+    Renderer* _renderer;
     WaterDefinition _water;
     bool _highlight_enabled;
 };
@@ -112,12 +112,12 @@ public:
         lightingValidateDefinition(&_lighting);*/
 
         _renderer = rendererCreate();
-        _renderer.rayWalking = _rayWalking;
-        /*_renderer.getLightStatus = _getLightStatus;
-        _renderer.applyLightStatus = _applyLightStatus;*/
-        _renderer.customData[0] = &_water;
-        //_renderer.customData[1] = &_lighting;
-        _renderer.customData[2] = this;
+        _renderer->rayWalking = _rayWalking;
+        /*_renderer->getLightStatus = _getLightStatus;
+        _renderer->applyLightStatus = _applyLightStatus;*/
+        _renderer->customData[0] = &_water;
+        //_renderer->customData[1] = &_lighting;
+        _renderer->customData[2] = this;
 
         configScaling(10.0, 1000.0, 10.0, 250.0);
         //configScrolling(-30.0, 30.0, 0.0, -20.0, 20.0, 0.0);
@@ -141,7 +141,7 @@ protected:
 
         if (look.y > -0.0001)
         {
-            return _rayWalking(&_renderer, eye, look, 0, 0, 0, 0).hit_color;
+            return _rayWalking(_renderer, eye, look, 0, 0, 0, 0).hit_color;
         }
 
         location.x = eye.x - look.x * eye.y / look.y;
@@ -150,10 +150,10 @@ protected:
 
         if (location.z > 0.0)
         {
-            return _rayWalking(&_renderer, eye, look, 0, 0, 0, 0).hit_color;
+            return _rayWalking(_renderer, eye, look, 0, 0, 0, 0).hit_color;
         }
 
-        return waterGetColor(&_water, &_renderer, location, look);
+        return waterGetColor(&_water, _renderer, location, look);
     }
     void updateData()
     {
@@ -178,7 +178,7 @@ protected:
     }
 
 private:
-    Renderer _renderer;
+    Renderer* _renderer;
     WaterDefinition _water;
     //LightingDefinition _lighting;
     bool _lighting_enabled;

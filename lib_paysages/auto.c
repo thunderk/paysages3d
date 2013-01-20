@@ -50,7 +50,7 @@ void autoGenRealisticLandscape(int seed)
     texture->material.base.r = 0.6;
     texture->material.base.g = 0.55;
     texture->material.base.b = 0.57;
-    texture->material.reflection = 0.2;
+    texture->material.reflection = 0.02;
     texture->material.shininess = 3.0;
     texture->thickness = 0.001;
     texture->slope_range = 0.001;
@@ -68,7 +68,7 @@ void autoGenRealisticLandscape(int seed)
     texture->material.base.r = 0.12;
     texture->material.base.g = 0.19;
     texture->material.base.b = 0.035;
-    texture->material.reflection = 0.03;
+    texture->material.reflection = 0.003;
     texture->material.shininess = 2.0;
     texture->thickness = 0.02;
     texture->slope_range = 0.03;

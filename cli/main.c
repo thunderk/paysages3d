@@ -39,7 +39,7 @@ void _previewUpdate(double progress)
 
 int main(int argc, char** argv)
 {
-    Renderer renderer;
+    Renderer* renderer;
     char* conf_file_path = NULL;
     RenderParams conf_render_params = {800, 600, 1, 5};
     int conf_nb_pictures = 1;
@@ -127,20 +127,20 @@ int main(int argc, char** argv)
     }
 
     renderer = sceneryCreateStandardRenderer();
-    rendererSetPreviewCallbacks(&renderer, NULL, NULL, _previewUpdate);
+    rendererSetPreviewCallbacks(renderer, NULL, NULL, _previewUpdate);
 
     for (outputcount = 0; outputcount < conf_nb_pictures; outputcount++)
     {
         /*autoSetDaytimeFraction(conf_daytime_start);*/ /* TODO */
 
         sprintf(outputpath, "output/pic%05d.png", outputcount);
-        startRender(&renderer, outputpath, conf_render_params);
+        startRender(renderer, outputpath, conf_render_params);
 
         conf_daytime_start += conf_daytime_step;
     }
 
     printf("Cleaning up ...\n");
-    rendererDelete(&renderer);
+    rendererDelete(renderer);
     paysagesQuit();
 
     printf("\rDone.                         \n");

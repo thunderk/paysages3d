@@ -52,7 +52,7 @@ private:
 
 private:
     TerrainDefinition* _terrain;
-    Renderer _renderer;
+    Renderer* _renderer;
     _VertexInfo* _vertices;
 
     bool _dirty;

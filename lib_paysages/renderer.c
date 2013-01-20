@@ -74,39 +74,39 @@ static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3
     return base;
 }
 
-Renderer rendererCreate()
+Renderer* rendererCreate()
 {
-    Renderer result;
+    Renderer* result = malloc(sizeof(Renderer));
     RenderParams params = {1, 1, 1, 5};
 
-    result.render_quality = 5;
-    result.render_width = 1;
-    result.render_height = 1;
-    result.render_interrupt = 0;
-    result.render_progress = 0.0;
-    result.is_rendering = 0;
-    result.render_camera = cameraCreateDefinition();
-    result.camera_location = result.render_camera.location;
-    result.render_area = renderCreateArea();
+    result->render_quality = 5;
+    result->render_width = 1;
+    result->render_height = 1;
+    result->render_interrupt = 0;
+    result->render_progress = 0.0;
+    result->is_rendering = 0;
+    result->render_camera = cameraCreateDefinition();
+    result->camera_location = result->render_camera.location;
+    result->render_area = renderCreateArea();
 
-    renderSetParams(result.render_area, params);
+    renderSetParams(result->render_area, params);
 
-    result.addRenderProgress = _addRenderProgress;
-    result.getPrecision = _getPrecision;
-    result.projectPoint = _projectPoint;
-    result.unprojectPoint = _unprojectPoint;
-    result.pushTriangle = _pushTriangle;
-    result.pushQuad = _pushQuad;
+    result->addRenderProgress = _addRenderProgress;
+    result->getPrecision = _getPrecision;
+    result->projectPoint = _projectPoint;
+    result->unprojectPoint = _unprojectPoint;
+    result->pushTriangle = _pushTriangle;
+    result->pushQuad = _pushQuad;
 
-    result.rayWalking = _rayWalking;
-    result.getWaterHeightInfo = _getWaterHeightInfo;
-    result.applyTextures = _applyTextures;
-    result.applyClouds = _applyClouds;
+    result->rayWalking = _rayWalking;
+    result->getWaterHeightInfo = _getWaterHeightInfo;
+    result->applyTextures = _applyTextures;
+    result->applyClouds = _applyClouds;
 
-    result.lighting = lightingManagerCreate();
+    result->lighting = lightingManagerCreate();
 
-    result.atmosphere = AtmosphereRendererClass.create();
-    result.terrain = TerrainRendererClass.create();
+    result->atmosphere = AtmosphereRendererClass.create();
+    result->terrain = TerrainRendererClass.create();
 
     return result;
 }
@@ -119,6 +119,8 @@ void rendererDelete(Renderer* renderer)
     TerrainRendererClass.destroy(renderer->terrain);
 
     renderDeleteArea(renderer->render_area);
+
+    free(renderer);
 }
 
 void rendererSetPreviewCallbacks(Renderer* renderer, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update)

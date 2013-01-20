@@ -47,9 +47,11 @@ void basicGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 nor
 
     light.direction = v3Scale(renderer->atmosphere->getSunDirection(renderer), -1.0);
     light.color = renderer->atmosphere->definition->sun_color;
+    /*light.color.r *= 100.0;
+    light.color.g *= 100.0;
+    light.color.b *= 100.0;*/
     light.reflection = 1.0;
-    light.filtered = 1;
-    light.masked = 1;
+    light.altered = 1;
     lightingPushLight(status, &light);
 
     /* TODO Sample other directions */

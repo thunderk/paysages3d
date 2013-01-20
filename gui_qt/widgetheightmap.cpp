@@ -19,7 +19,7 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
 
     _terrain = terrain;
     _renderer = rendererCreate();
-    TerrainRendererClass.bind(_renderer.terrain, _terrain);
+    TerrainRendererClass.bind(_renderer, _terrain);
     _vertices = new _VertexInfo[HEIGHTMAP_RESOLUTION * HEIGHTMAP_RESOLUTION];
 
     _dirty = true;
@@ -49,7 +49,7 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
 
 WidgetHeightMap::~WidgetHeightMap()
 {
-    rendererDelete(&_renderer);
+    rendererDelete(_renderer);
     noiseDeleteGenerator(_brush_noise);
     delete[] _vertices;
 }

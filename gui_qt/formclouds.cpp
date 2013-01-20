@@ -14,7 +14,7 @@ public:
     PreviewCloudsCoverage(QWidget* parent, CloudsLayerDefinition* layer):BasePreview(parent)
     {
         _renderer = rendererCreate();
-        _renderer.render_quality = 5;
+        _renderer->render_quality = 5;
         //_renderer.applyLightStatus = _applyLightStatus;
 
         _original_layer = layer;
@@ -25,6 +25,7 @@ public:
     ~PreviewCloudsCoverage()
     {
         cloudsLayerDeleteDefinition(_preview_layer);
+        rendererDelete(_renderer);
     }
 protected:
     Color getColor(double x, double y)
@@ -39,7 +40,7 @@ protected:
         look.z = 1.0;
         look = v3Normalize(look);
 
-        return cloudsApplyLayer(_preview_layer, COLOR_BLUE, &_renderer, eye, v3Add(eye, v3Scale(look, 1000.0)));
+        return cloudsApplyLayer(_preview_layer, COLOR_BLUE, _renderer, eye, v3Add(eye, v3Scale(look, 1000.0)));
     }
     void updateData()
     {
@@ -51,7 +52,7 @@ protected:
     }
 
 private:
-    Renderer _renderer;
+    Renderer* _renderer;
     CloudsLayerDefinition* _original_layer;
     CloudsLayerDefinition* _preview_layer;
 };
@@ -79,10 +80,10 @@ public:
         lightingValidateDefinition(&_lighting);*/
 
         _renderer = rendererCreate();
-        _renderer.render_quality = 8;
+        _renderer->render_quality = 8;
         /*_renderer.alterLight = _alterLight;
         _renderer.getLightStatus = _getLightStatus;*/
-        _renderer.customData[0] = _preview_layer;
+        _renderer->customData[0] = _preview_layer;
         //_renderer.customData[1] = &_lighting;
 
         configScaling(0.5, 2.0, 0.1, 2.0);
@@ -100,7 +101,7 @@ protected:
         end.y = -y * _preview_layer->thickness * 0.5;
         end.z = -_preview_layer->thickness * 0.5;
 
-        return cloudsApplyLayer(_preview_layer, COLOR_BLUE, &_renderer, start, end);
+        return cloudsApplyLayer(_preview_layer, COLOR_BLUE, _renderer, start, end);
     }
     void updateData()
     {
@@ -112,7 +113,7 @@ protected:
         _preview_layer->_custom_coverage = _coverageFunc;
     }
 private:
-    Renderer _renderer;
+    Renderer* _renderer;
     CloudsLayerDefinition* _original_layer;
     CloudsLayerDefinition* _preview_layer;
     //LightingDefinition _lighting;

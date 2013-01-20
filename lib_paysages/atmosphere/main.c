@@ -331,22 +331,24 @@ static void _deleteRenderer(AtmosphereRenderer* renderer)
     free(renderer);
 }
 
-static void _bindRenderer(AtmosphereRenderer* renderer, AtmosphereDefinition* definition)
+static void _bindRenderer(Renderer* renderer, AtmosphereDefinition* definition)
 {
-    AtmosphereRendererCache* cache = (AtmosphereRendererCache*)renderer->_internal_data;
+    AtmosphereRendererCache* cache = (AtmosphereRendererCache*)renderer->atmosphere->_internal_data;
 
-    AtmosphereDefinitionClass.copy(definition, renderer->definition);
+    AtmosphereDefinitionClass.copy(definition, renderer->atmosphere->definition);
 
-    renderer->getSkyColor = _getSkyColor;
-    renderer->getLightingStatus = basicGetLightingStatus;
+    renderer->atmosphere->getSkyColor = _getSkyColor;
 
     switch (definition->model)
     {
         case ATMOSPHERE_MODEL_BRUNETON:
-            renderer->applyAerialPerspective = brunetonApplyAerialPerspective;
+            renderer->atmosphere->applyAerialPerspective = brunetonApplyAerialPerspective;
+            /*renderer->atmosphere->getLightingStatus = brunetonGetLightingStatus;*/
+            renderer->atmosphere->getLightingStatus = basicGetLightingStatus;
             break;
         default:
-            renderer->applyAerialPerspective = basicApplyAerialPerspective;
+            renderer->atmosphere->applyAerialPerspective = basicApplyAerialPerspective;
+            renderer->atmosphere->getLightingStatus = basicGetLightingStatus;
     }
 
     mutexAcquire(cache->lock);

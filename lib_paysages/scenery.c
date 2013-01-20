@@ -224,25 +224,25 @@ static double _getPrecision(Renderer* renderer, Vector3 location)
     return v3Norm(v3Sub(cameraUnproject(&renderer->render_camera, renderer, projected), location)); // / (double)render_quality;
 }
 
-Renderer sceneryCreateStandardRenderer()
+Renderer* sceneryCreateStandardRenderer()
 {
-    Renderer result;
+    Renderer* result;
 
     result = rendererCreate();
 
-    cameraCopyDefinition(&_camera, &result.render_camera);
-    result.camera_location = _camera.location;
+    cameraCopyDefinition(&_camera, &result->render_camera);
+    result->camera_location = _camera.location;
 
-    result.rayWalking = _rayWalking;
-    result.getWaterHeightInfo = _getWaterHeightInfo;
-    result.applyTextures = _applyTextures;
-    result.applyClouds = _applyClouds;
-    result.projectPoint = _projectPoint;
-    result.unprojectPoint = _unprojectPoint;
-    result.getPrecision = _getPrecision;
+    result->rayWalking = _rayWalking;
+    result->getWaterHeightInfo = _getWaterHeightInfo;
+    result->applyTextures = _applyTextures;
+    result->applyClouds = _applyClouds;
+    result->projectPoint = _projectPoint;
+    result->unprojectPoint = _unprojectPoint;
+    result->getPrecision = _getPrecision;
 
-    AtmosphereRendererClass.bind(result.atmosphere, _atmosphere);
-    TerrainRendererClass.bind(result.terrain, _terrain);
+    AtmosphereRendererClass.bind(result, _atmosphere);
+    TerrainRendererClass.bind(result, _terrain);
 
     return result;
 }

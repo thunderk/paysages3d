@@ -68,10 +68,10 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     sceneryGetTextures(&_textures);
 
     _renderer = sceneryCreateStandardRenderer();
-    _renderer.render_quality = 3;
-    _renderer.customData[1] = &_textures;
-    _renderer.customData[3] = &_water;
-    _renderer.applyTextures = _applyTextures;
+    _renderer->render_quality = 3;
+    _renderer->customData[1] = &_textures;
+    _renderer->customData[3] = &_water;
+    _renderer->applyTextures = _applyTextures;
 
     _updated = false;
 
@@ -84,7 +84,7 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     {
         for (int j = 0; j < chunks; j++)
         {
-            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(&_renderer, start + chunksize * (double)i, start + chunksize * (double)j, chunksize, chunks);
+            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(_renderer, start + chunksize * (double)i, start + chunksize * (double)j, chunksize, chunks);
             _chunks.append(chunk);
             _updateQueue.append(chunk);
         }
@@ -93,7 +93,7 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     // Add skybox
     for (int orientation = 0; orientation < 5; orientation++)
     {
-        ExplorerChunkSky* chunk = new ExplorerChunkSky(&_renderer, 500.0, (SkyboxOrientation)orientation);
+        ExplorerChunkSky* chunk = new ExplorerChunkSky(_renderer, 500.0, (SkyboxOrientation)orientation);
         _chunks.append(chunk);
         _updateQueue.append(chunk);
     }
@@ -116,6 +116,7 @@ WidgetExplorer::~WidgetExplorer()
         delete _chunks[i];
     }
     waterDeleteDefinition(&_water);
+    rendererDelete(_renderer);
 }
 
 void WidgetExplorer::startThreads()
@@ -390,7 +391,7 @@ void WidgetExplorer::paintGL()
     double frame_time;
 
     cameraValidateDefinition(&_current_camera, 1);
-    _renderer.camera_location = _current_camera.location;
+    _renderer->camera_location = _current_camera.location;
 
     start_time = QTime::currentTime();
 

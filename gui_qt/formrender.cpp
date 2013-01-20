@@ -15,10 +15,10 @@ public:
     PreviewRenderLandscape(QWidget* parent):BasePreview(parent)
     {
         _renderer = rendererCreate();
-        _renderer.applyTextures = _applyTextures;
-        _renderer.camera_location.x = 0.0;
-        _renderer.camera_location.y = 50.0;
-        _renderer.camera_location.z = 0.0;
+        _renderer->applyTextures = _applyTextures;
+        _renderer->camera_location.x = 0.0;
+        _renderer->camera_location.y = 50.0;
+        _renderer->camera_location.z = 0.0;
 
         _textures = texturesCreateDefinition();
         _water = waterCreateDefinition();
@@ -26,12 +26,13 @@ public:
         _atmosphere = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
         _terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
 
-        _renderer.customData[0] = &_terrain;
-        _renderer.customData[1] = &_textures;
-        _renderer.customData[3] = &_water;
+        _renderer->customData[0] = &_terrain;
+        _renderer->customData[1] = &_textures;
+        _renderer->customData[3] = &_water;
 
         addOsd(QString("geolocation"));
 
+        configHdrToneMapping(true);
         configScaling(0.5, 200.0, 3.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
@@ -40,21 +41,21 @@ protected:
     {
         Vector3 down = {0.0, -1.0, 0.0};
         Vector3 location;
-        double height = _renderer.terrain->getHeight(&_renderer, x, y, 1);
+        double height = _renderer->terrain->getHeight(_renderer, x, y, 1);
 
         if (height < _water.height)
         {
             location.x = x;
             location.y = _water.height;
             location.z = y;
-            return waterGetColor(&_water, &_renderer, location, down);
+            return waterGetColor(&_water, _renderer, location, down);
         }
         else
         {
             location.x = x;
             location.y = height;
             location.z = y;
-            return _renderer.terrain->getFinalColor(&_renderer, location, scaling);
+            return _renderer->terrain->getFinalColor(_renderer, location, scaling);
         }
     }
     void updateData()
@@ -63,14 +64,14 @@ protected:
         sceneryGetWater(&_water);
 
         sceneryGetAtmosphere(_atmosphere);
-        AtmosphereRendererClass.bind(_renderer.atmosphere, _atmosphere);
-        _renderer.atmosphere->applyAerialPerspective = _applyAerialPerspective;
+        AtmosphereRendererClass.bind(_renderer, _atmosphere);
+        _renderer->atmosphere->applyAerialPerspective = _applyAerialPerspective;
 
         sceneryGetTerrain(_terrain);
-        TerrainRendererClass.bind(_renderer.terrain, _terrain);
+        TerrainRendererClass.bind(_renderer, _terrain);
     }
 private:
-    Renderer _renderer;
+    Renderer* _renderer;
     TerrainDefinition* _terrain;
     WaterDefinition _water;
     TexturesDefinition _textures;
@@ -126,7 +127,7 @@ FormRender::~FormRender()
 {
     if (_renderer_inited)
     {
-        rendererDelete(&_renderer);
+        rendererDelete(_renderer);
     }
 }
 
@@ -174,12 +175,12 @@ void FormRender::startQuickRender()
 {
     if (_renderer_inited)
     {
-        rendererDelete(&_renderer);
+        rendererDelete(_renderer);
     }
     _renderer = sceneryCreateStandardRenderer();
     _renderer_inited = true;
 
-    DialogRender* dialog = new DialogRender(this, &_renderer);
+    DialogRender* dialog = new DialogRender(this, _renderer);
     RenderParams params = {400, 300, 1, 3};
     dialog->startRender(params);
 
@@ -190,12 +191,12 @@ void FormRender::startRender()
 {
     if (_renderer_inited)
     {
-        rendererDelete(&_renderer);
+        rendererDelete(_renderer);
     }
     _renderer = sceneryCreateStandardRenderer();
     _renderer_inited = true;
 
-    DialogRender* dialog = new DialogRender(this, &_renderer);
+    DialogRender* dialog = new DialogRender(this, _renderer);
     dialog->startRender(_params);
 
     delete dialog;
@@ -205,7 +206,7 @@ void FormRender::showRender()
 {
     if (_renderer_inited)
     {
-        DialogRender* dialog = new DialogRender(this, &_renderer);
+        DialogRender* dialog = new DialogRender(this, _renderer);
         dialog->loadLastRender();
 
         delete dialog;
@@ -225,7 +226,7 @@ void FormRender::saveRender()
             {
                 filepath = filepath.append(".png");
             }
-            if (renderSaveToFile(_renderer.render_area, (char*)filepath.toStdString().c_str()))
+            if (renderSaveToFile(_renderer->render_area, (char*)filepath.toStdString().c_str()))
             {
                 QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
             }

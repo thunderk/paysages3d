@@ -19,6 +19,7 @@
 /*********************** Constants ***********************/
 
 #define WORLD_SCALING 0.05
+#define GROUND_OFFSET 10.0
 static const double Rg = 6360.0;
 static const double Rt = 6420.0;
 static const double RL = 6421.0;
@@ -1189,7 +1190,7 @@ void brunetonInit()
 
 Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position)
 {
-    Vector3 x = {0.0, Rg + (eye.y + WORLD_SCALING) * 0.01, 0.0};
+    Vector3 x = {0.0, Rg + (max(eye.y, 0.0) + GROUND_OFFSET) * WORLD_SCALING, 0.0};
     Vector3 v = v3Normalize(direction);
     Vector3 s = v3Normalize(v3Sub(sun_position, x));
 
@@ -1214,7 +1215,7 @@ Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color
     Vector3 direction = v3Scale(v3Sub(location, eye), WORLD_SCALING);
     Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), 149597870.0);
 
-    Vector3 x = {0.0, Rg + (eye.y + 10.0) * WORLD_SCALING, 0.0};
+    Vector3 x = {0.0, Rg + (max(eye.y, 0.0) + GROUND_OFFSET) * WORLD_SCALING, 0.0};
     Vector3 v = v3Normalize(direction);
     Vector3 s = v3Normalize(v3Sub(sun_position, x));
 
@@ -1236,4 +1237,37 @@ Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color
     groundColor.b += inscatterColor.b;
 
     return groundColor; /* Eq (16) */
+}
+
+void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)
+{
+    LightDefinition sun, irradiance;
+    double muS;
+
+    double r0 = Rg + (max(lightingGetStatusLocation(status).y, 0.0) + GROUND_OFFSET) * WORLD_SCALING;
+    Vector3 up = {0.0, 1.0, 0.0};
+    Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), 149597870.0);
+    Vector3 x = {0.0, r0, 0.0};
+    Vector3 s = v3Normalize(v3Sub(sun_position, x));
+
+    muS = v3Dot(up, s);
+    sun.color = _transmittanceWithShadow(r0, muS);
+    sun.color.r *= 100.0;
+    sun.color.g *= 100.0;
+    sun.color.b *= 100.0;
+    sun.direction = s;
+    sun.reflection = 1.0;
+    sun.altered = 1;
+
+    lightingPushLight(status, &sun);
+
+    irradiance.color = _irradiance(_irradianceTexture, r0, muS);
+    irradiance.color.r *= 100.0;
+    irradiance.color.g *= 100.0;
+    irradiance.color.b *= 100.0;
+    irradiance.direction = v3Scale(normal, -1.0);
+    irradiance.reflection = 0.0;
+    irradiance.altered = 0;
+
+    lightingPushLight(status, &irradiance);
 }

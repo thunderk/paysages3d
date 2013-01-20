@@ -39,7 +39,7 @@ private:
     CameraDefinition _current_camera;
     CameraDefinition* _base_camera;
 
-    Renderer _renderer;
+    Renderer* _renderer;
     bool _updated;
 
     QVector<BaseExplorerChunk*> _chunks;

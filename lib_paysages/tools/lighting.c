@@ -46,6 +46,17 @@ void lightingManagerDelete(LightingManager* filter)
 
 void lightingManagerRegisterFilter(LightingManager* filter, FuncLightingAlterLight callback, void* data)
 {
+    int i;
+
+    for (i = 0; i < filter->callbacks_count; i++)
+    {
+        if (filter->callbacks[i].filter == callback)
+        {
+            filter->callbacks[i].data = data;
+            return;
+        }
+    }
+
     if (filter->callbacks_count < MAX_CALLBACK_COUNT)
     {
         filter->callbacks[filter->callbacks_count].filter = callback;
@@ -80,13 +91,16 @@ void lightingPushLight(LightStatus* status, LightDefinition* light)
         LightingManager* manager = status->manager;
         LightDefinition final = *light;
 
-        for (i = 0; i < manager->callbacks_count; i++)
+        if (light->altered)
         {
-            LightFilterCallback callback = manager->callbacks[i];
-            LightDefinition temp = final;
-            if (callback.filter(&temp, status->location, callback.data))
+            for (i = 0; i < manager->callbacks_count; i++)
             {
-                final = temp;
+                LightFilterCallback callback = manager->callbacks[i];
+                LightDefinition temp = final;
+                if (callback.filter(&temp, status->location, callback.data))
+                {
+                    final = temp;
+                }
             }
         }
 
@@ -110,14 +124,14 @@ Color lightingApplyStatus(LightStatus* status, Vector3 normal, SurfaceMaterial* 
         final.b += result.b;
     }
 
-    return result;
+    return final;
 }
 
 Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 location, Vector3 normal, SurfaceMaterial* material)
 {
     Color result, light_color;
-    double diffuse, specular, normal_norm;
-    Vector3 view, reflect, direction_inv;
+    double normal_norm;
+    Vector3 direction_inv;
 
     light_color = light->color;
     direction_inv = v3Scale(light->direction, -1.0);
@@ -129,44 +143,58 @@ Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 locatio
     }
     normal = v3Normalize(normal);
 
-    diffuse = v3Dot(direction_inv, normal);
+    result = COLOR_BLACK;
+
+    /* diffused light */
+    double diffuse = v3Dot(direction_inv, normal) / M_PI;
     if (diffuse > 0.0)
     {
-        if (material->shininess > 0.0 && light->reflection > 0.0)
-        {
-            view = v3Normalize(v3Sub(location, eye));
-            reflect = v3Sub(direction_inv, v3Scale(normal, 2.0 * v3Dot(direction_inv, normal)));
-
-            specular = v3Dot(reflect, view);
-            if (specular > 0.0)
-            {
-                specular = pow(specular, material->shininess) * material->reflection;
-            }
-            else
-            {
-                specular = 0.0;
-            }
-        }
-        else
-        {
-            specular = 0.0;
-        }
+        result.r += diffuse * material->base.r * light_color.r;
+        result.g += diffuse * material->base.g * light_color.g;
+        result.b += diffuse * material->base.b * light_color.b;
     }
-    else
+
+    /* specular reflection */
+    if (material->reflection > 0.0 && light->reflection > 0.0)
     {
-        diffuse = 0.0;
-        specular = 0.0;
+        Vector3 view = view = v3Normalize(v3Sub(location, eye));
+        Vector3 reflect = v3Sub(direction_inv, v3Scale(normal, 2.0 * v3Dot(direction_inv, normal)));
+        double specular = v3Dot(reflect, view);
+        if (specular > 0.0)
+        {
+            specular = pow(specular, material->shininess) * material->reflection;
+            result.r += specular * light_color.r;
+            result.g += specular * light_color.g;
+            result.b += specular * light_color.b;
+        }
     }
 
-    specular *= normal_norm * light->reflection;
-    diffuse = 1.0 - normal_norm + diffuse * normal_norm;
-
-    result.r = material->base.r * diffuse * light_color.r + specular * light_color.r;
-    result.g = material->base.g * diffuse * light_color.g + specular * light_color.g;
-    result.b = material->base.b * diffuse * light_color.b + specular * light_color.b;
-    result.a = material->base.a;
+    /* specular reflection with fresnel effect */
+    /*if (material->reflection > 0.0 && light->reflection > 0.0)
+    {
+        Vector3 view = v3Normalize(v3Sub(location, eye));
+        Vector3 h = v3Normalize(v3Sub(direction_inv, view));
+        double fresnel = 0.02 + 0.98 * pow(1.0 - v3Dot(v3Scale(view, -1.0), h), 5.0);
+        double refl = v3Dot(h, normal);
+        if (refl > 0.0)
+        {
+            double waterBrdf = fresnel * pow(refl, material->shininess);
+            if (waterBrdf > 0.0)
+            {
+                refl = material->reflection * waterBrdf * light->reflection;
+                result.r += refl * light_color.r;
+                result.g += refl * light_color.g;
+                result.b += refl * light_color.b;
+            }
+        }
+    }*/
 
     return result;
+}
+
+Vector3 lightingGetStatusLocation(LightStatus* status)
+{
+    return status->location;
 }
 
 void materialSave(PackStream* stream, SurfaceMaterial* material)

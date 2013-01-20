@@ -52,7 +52,7 @@ void terrainAutoPreset(TerrainDefinition* definition, TerrainPreset preset);
 void terrainRenderSurface(Renderer* renderer);
 double terrainGetGridHeight(TerrainDefinition* definition, int x, int z, int with_painting);
 
-Renderer terrainCreatePreviewRenderer();
+Renderer* terrainCreatePreviewRenderer();
 Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double detail);
 
 typedef struct

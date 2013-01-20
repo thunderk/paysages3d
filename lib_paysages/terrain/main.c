@@ -193,36 +193,27 @@ static RayCastingResult _castRay(Renderer* renderer, Vector3 start, Vector3 dire
     return result;
 }
 
-static LightDefinition _fakeAlterLight(Renderer* renderer, LightDefinition* light, Vector3 at)
-{
-    UNUSED(renderer);
-    UNUSED(at);
-
-    return *light;
-}
-
-static LightDefinition _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
+static int _alterLight(LightDefinition* light, Vector3 location, Renderer* renderer)
 {
     TerrainDefinition* definition = renderer->terrain->definition;
-    LightDefinition result = *light;
     Vector3 inc_vector, direction_to_light;
     double inc_value, inc_base, inc_factor, height, diff, light_factor, smoothing, length;
 
     direction_to_light = v3Scale(light->direction, -1.0);
     if ((fabs(direction_to_light.x) < 0.0001 && fabs(direction_to_light.z) < 0.0001) || definition->height < 0.001)
     {
-        return result;
+        return 0;
     }
     else if (direction_to_light.y < 0.05)
     {
-        result.color = COLOR_BLACK;
-        return result;
+        light->color = COLOR_BLACK;
+        return 1;
     }
     else if (direction_to_light.y < 0.0000)
     {
-        result.color.r *= (0.05 + direction_to_light.y) / 0.05;
-        result.color.g *= (0.05 + direction_to_light.y) / 0.05;
-        result.color.b *= (0.05 + direction_to_light.y) / 0.05;
+        light->color.r *= (0.05 + direction_to_light.y) / 0.05;
+        light->color.g *= (0.05 + direction_to_light.y) / 0.05;
+        light->color.b *= (0.05 + direction_to_light.y) / 0.05;
     }
 
     inc_factor = (double)renderer->render_quality;
@@ -268,16 +259,16 @@ static LightDefinition _alterLight(Renderer* renderer, LightDefinition* light, V
 
     if (light_factor <= 0.0)
     {
-        result.color = COLOR_BLACK;
-        return result;
+        light->color = COLOR_BLACK;
+        return 1;
     }
     else
     {
-        result.color.r *= light_factor;
-        result.color.g *= light_factor;
-        result.color.b *= light_factor;
+        light->color.r *= light_factor;
+        light->color.g *= light_factor;
+        light->color.b *= light_factor;
 
-        return result;
+        return 1;
     }
 }
 
@@ -315,13 +306,15 @@ static void _deleteRenderer(TerrainRenderer* renderer)
     free(renderer);
 }
 
-static void _bindRenderer(TerrainRenderer* renderer, TerrainDefinition* definition)
+static void _bindRenderer(Renderer* renderer, TerrainDefinition* definition)
 {
-    TerrainDefinitionClass.copy(definition, renderer->definition);
+    TerrainDefinitionClass.copy(definition, renderer->terrain->definition);
 
-    renderer->castRay = _castRay;
-    renderer->getHeight = _getHeight;
-    renderer->getFinalColor = _getFinalColor;
+    renderer->terrain->castRay = _castRay;
+    renderer->terrain->getHeight = _getHeight;
+    renderer->terrain->getFinalColor = _getFinalColor;
+
+    lightingManagerRegisterFilter(renderer->lighting, (FuncLightingAlterLight)_alterLight, renderer);
 }
 
 StandardRenderer TerrainRendererClass = {
