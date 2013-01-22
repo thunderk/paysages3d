@@ -310,7 +310,6 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
     RayCastingResult refracted;
     Vector3 normal;
     Color color;
-    LightStatus* light;
     SurfaceMaterial material;
     double detail, depth;
 
@@ -351,11 +350,7 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
 
     _applyFoam(definition, location, normal, detail, &material);
 
-    light = lightingCreateStatus(renderer->lighting, location, renderer->camera_location);
-    renderer->atmosphere->getLightingStatus(renderer, light, normal, 0);
-    color = lightingApplyStatus(light, normal, &material);
-    lightingDeleteStatus(light);
-
+    color = renderer->applyLightingToSurface(renderer, location, normal, &material);
     color = renderer->atmosphere->applyAerialPerspective(renderer, location, color);
     color = renderer->applyClouds(renderer, color, renderer->camera_location, location);
 

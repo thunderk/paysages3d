@@ -74,6 +74,15 @@ static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3
     return base;
 }
 
+Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material)
+{
+    LightStatus* light = lightingCreateStatus(renderer->lighting, location, renderer->camera_location);
+    renderer->atmosphere->getLightingStatus(renderer, light, normal, 0);
+    Color result = lightingApplyStatus(light, normal, material);
+    lightingDeleteStatus(light);
+    return result;
+}
+
 Renderer* rendererCreate()
 {
     Renderer* result = malloc(sizeof(Renderer));
@@ -102,6 +111,8 @@ Renderer* rendererCreate()
     result->getWaterHeightInfo = _getWaterHeightInfo;
     result->applyTextures = _applyTextures;
     result->applyClouds = _applyClouds;
+
+    result->applyLightingToSurface = _applyLightingToSurface;
 
     result->lighting = lightingManagerCreate();
 

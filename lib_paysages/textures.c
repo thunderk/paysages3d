@@ -268,13 +268,7 @@ double texturesGetLayerCoverage(TextureLayerDefinition* definition, Renderer* re
 
 static inline Color _getLayerColor(Renderer* renderer, TextureResult texture)
 {
-    LightStatus* light;
-    Color result;
-    light = lightingCreateStatus(renderer->lighting, texture.location, renderer->camera_location);
-    renderer->atmosphere->getLightingStatus(renderer, light, texture.normal, 1);
-    result = lightingApplyStatus(light, texture.normal, &texture.definition->material);
-    lightingDeleteStatus(light);
-    return result;
+    return renderer->applyLightingToSurface(renderer, texture.location, texture.normal, &texture.definition->material);
 }
 
 Color texturesGetLayerColor(TextureLayerDefinition* definition, Renderer* renderer, Vector3 location, double detail)
