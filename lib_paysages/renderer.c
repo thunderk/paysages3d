@@ -69,11 +69,6 @@ static Color _applyTextures(Renderer* renderer, Vector3 location, double precisi
     return COLOR_TRANSPARENT;
 }
 
-static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3 end)
-{
-    return base;
-}
-
 Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material)
 {
     LightStatus* light = lightingCreateStatus(renderer->lighting, location, renderer->camera_location);
@@ -110,13 +105,13 @@ Renderer* rendererCreate()
     result->rayWalking = _rayWalking;
     result->getWaterHeightInfo = _getWaterHeightInfo;
     result->applyTextures = _applyTextures;
-    result->applyClouds = _applyClouds;
 
     result->applyLightingToSurface = _applyLightingToSurface;
 
     result->lighting = lightingManagerCreate();
 
     result->atmosphere = AtmosphereRendererClass.create();
+    result->clouds = CloudsRendererClass.create();
     result->terrain = TerrainRendererClass.create();
 
     return result;
@@ -127,6 +122,7 @@ void rendererDelete(Renderer* renderer)
     lightingManagerDelete(renderer->lighting);
 
     AtmosphereRendererClass.destroy(renderer->atmosphere);
+    CloudsRendererClass.destroy(renderer->clouds);
     TerrainRendererClass.destroy(renderer->terrain);
 
     renderDeleteArea(renderer->render_area);

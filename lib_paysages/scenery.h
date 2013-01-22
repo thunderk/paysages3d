@@ -10,9 +10,9 @@
 
 #include "tools/pack.h"
 #include "atmosphere/public.h"
+#include "clouds/public.h"
 #include "terrain/public.h"
 #include "camera.h"
-#include "clouds.h"
 #include "textures.h"
 #include "water.h"
 #include "renderer.h"

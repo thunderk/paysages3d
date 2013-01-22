@@ -120,7 +120,7 @@ static Color _getFinalColor(Renderer* renderer, Vector3 location, double precisi
 
     /* TODO Factorize this in scenery renderer */
     color = renderer->atmosphere->applyAerialPerspective(renderer, location, color);
-    color = renderer->applyClouds(renderer, color, renderer->camera_location, location);
+    color = renderer->clouds->getColor(renderer, color, renderer->camera_location, location);
 
     return color;
 }
@@ -193,7 +193,7 @@ static RayCastingResult _castRay(Renderer* renderer, Vector3 start, Vector3 dire
     return result;
 }
 
-static int _alterLight(LightDefinition* light, Vector3 location, Renderer* renderer)
+static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
 {
     TerrainDefinition* definition = renderer->terrain->definition;
     Vector3 inc_vector, direction_to_light;

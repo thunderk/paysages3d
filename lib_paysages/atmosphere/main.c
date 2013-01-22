@@ -116,13 +116,6 @@ static Color _fakeGetSkyColor(Renderer* renderer, Vector3 direction)
     UNUSED(direction);
     return COLOR_WHITE;
 }
-static int _fakeGetSkydomeLights(Renderer* renderer, LightDefinition* lights, int max_lights)
-{
-    UNUSED(renderer);
-    UNUSED(lights);
-    UNUSED(max_lights);
-    return 0;
-}
 
 static Color _getSkyColor(Renderer* renderer, Vector3 direction)
 {

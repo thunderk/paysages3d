@@ -49,6 +49,7 @@ CameraDefinition cameraCreateDefinition()
 
 void cameraDeleteDefinition(CameraDefinition* definition)
 {
+    UNUSED(definition);
 }
 
 void cameraCopyDefinition(CameraDefinition* source, CameraDefinition* destination)

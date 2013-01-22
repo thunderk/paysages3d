@@ -97,7 +97,7 @@ void lightingPushLight(LightStatus* status, LightDefinition* light)
             {
                 LightFilterCallback callback = manager->callbacks[i];
                 LightDefinition temp = final;
-                if (callback.filter(&temp, status->location, callback.data))
+                if (callback.filter(callback.data, &temp, status->location))
                 {
                     final = temp;
                 }
@@ -147,6 +147,7 @@ Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 locatio
 
     /* diffused light */
     double diffuse = v3Dot(direction_inv, normal);
+    diffuse = (diffuse + (1.0 - normal_norm)) / (1.0 + (1.0 - normal_norm));
     if (diffuse > 0.0)
     {
         result.r += diffuse * material->base.r * light_color.r;

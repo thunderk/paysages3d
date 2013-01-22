@@ -7,7 +7,7 @@
 
 static AtmosphereDefinition* _atmosphere;
 static CameraDefinition _camera;
-static CloudsDefinition _clouds;
+static CloudsDefinition* _clouds;
 static TerrainDefinition* _terrain;
 static TexturesDefinition _textures;
 static WaterDefinition _water;
@@ -22,7 +22,7 @@ void sceneryInit()
 
     _atmosphere = AtmosphereDefinitionClass.create();
     _camera = cameraCreateDefinition();
-    _clouds = cloudsCreateDefinition();
+    _clouds = CloudsDefinitionClass.create();
     _terrain = TerrainDefinitionClass.create();
     _textures = texturesCreateDefinition();
     _water = waterCreateDefinition();
@@ -35,7 +35,7 @@ void sceneryQuit()
 {
     AtmosphereDefinitionClass.destroy(_atmosphere);
     cameraDeleteDefinition(&_camera);
-    cloudsDeleteDefinition(&_clouds);
+    CloudsDefinitionClass.destroy(_clouds);
     TerrainDefinitionClass.destroy(_terrain);
     texturesDeleteDefinition(&_textures);
     waterDeleteDefinition(&_water);
@@ -55,7 +55,7 @@ void scenerySave(PackStream* stream)
     noiseSave(stream);
     AtmosphereDefinitionClass.save(stream, _atmosphere);
     cameraSave(stream, &_camera);
-    cloudsSave(stream, &_clouds);
+    CloudsDefinitionClass.save(stream, _clouds);
     TerrainDefinitionClass.save(stream, _terrain);
     texturesSave(stream, &_textures);
     waterSave(stream, &_water);
@@ -73,13 +73,12 @@ void sceneryLoad(PackStream* stream)
     noiseLoad(stream);
     AtmosphereDefinitionClass.load(stream, _atmosphere);
     cameraLoad(stream, &_camera);
-    cloudsLoad(stream, &_clouds);
+    CloudsDefinitionClass.load(stream, _clouds);
     TerrainDefinitionClass.load(stream, _terrain);
     texturesLoad(stream, &_textures);
     waterLoad(stream, &_water);
 
     cameraValidateDefinition(&_camera, 0);
-    cloudsValidateDefinition(&_clouds);
     texturesValidateDefinition(&_textures);
     waterValidateDefinition(&_water);
 
@@ -112,13 +111,12 @@ void sceneryGetCamera(CameraDefinition* camera)
 
 void scenerySetClouds(CloudsDefinition* clouds)
 {
-    cloudsCopyDefinition(clouds, &_clouds);
-    cloudsValidateDefinition(&_clouds);
+    CloudsDefinitionClass.copy(clouds, _clouds);
 }
 
 void sceneryGetClouds(CloudsDefinition* clouds)
 {
-    cloudsCopyDefinition(&_clouds, clouds);
+    CloudsDefinitionClass.copy(_clouds, clouds);
 }
 
 void scenerySetTerrain(TerrainDefinition* terrain)
@@ -182,7 +180,7 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
 
         result.hit = 1;
         result.hit_location = v3Add(location, v3Scale(direction, 1000.0));
-        result.hit_color = renderer->applyClouds(renderer, sky_color, location, result.hit_location);
+        result.hit_color = renderer->clouds->getColor(renderer, sky_color, location, result.hit_location);
     }
 
     return result;
@@ -196,11 +194,6 @@ static HeightInfo _getWaterHeightInfo(Renderer* renderer)
 static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
 {
     return texturesGetColor(&_textures, renderer, location.x, location.z, precision);
-}
-
-static Color _applyClouds(Renderer* renderer, Color base, Vector3 start, Vector3 end)
-{
-    return cloudsApply(&_clouds, base, renderer, start, end);
 }
 
 static Vector3 _projectPoint(Renderer* renderer, Vector3 point)
@@ -236,13 +229,13 @@ Renderer* sceneryCreateStandardRenderer()
     result->rayWalking = _rayWalking;
     result->getWaterHeightInfo = _getWaterHeightInfo;
     result->applyTextures = _applyTextures;
-    result->applyClouds = _applyClouds;
     result->projectPoint = _projectPoint;
     result->unprojectPoint = _unprojectPoint;
     result->getPrecision = _getPrecision;
 
     AtmosphereRendererClass.bind(result, _atmosphere);
     TerrainRendererClass.bind(result, _terrain);
+    CloudsRendererClass.bind(result, _clouds);
 
     return result;
 }

@@ -120,6 +120,23 @@ void colorMask(Color* base, Color* mask)
 
 double colorNormalize(Color* col)
 {
+    assert(col->r >= 0.0);
+    assert(col->g >= 0.0);
+    assert(col->b >= 0.0);
+    assert(col->a >= 0.0);
+#ifdef isnan
+    assert(!isnan(col->r));
+    assert(!isnan(col->g));
+    assert(!isnan(col->b));
+    assert(!isnan(col->a));
+#endif
+#ifdef isfinite
+    assert(isfinite(col->r));
+    assert(isfinite(col->g));
+    assert(isfinite(col->b));
+    assert(isfinite(col->a));
+#endif
+
     if (col->r > 1.0)
     {
         col->r = 1.0;
@@ -136,10 +153,6 @@ double colorNormalize(Color* col)
     /*double max = colorGetValue(col);
 
     assert(max >= 0.0);
-    assert(col->r >= 0.0);
-    assert(col->g >= 0.0);
-    assert(col->b >= 0.0);
-    assert(col->a >= 0.0);
 
     if (max > 1.0)
     {

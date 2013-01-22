@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "basepreview.h"
 #include "baseformlayer.h"
-#include "../lib_paysages/clouds.h"
+#include "../lib_paysages/clouds/public.h"
 
 class FormClouds : public BaseFormLayer
 {
@@ -22,11 +22,8 @@ protected:
     virtual void layerWriteCurrentTo(void* layer_definition);
     virtual void autoPresetSelected(int preset);
 
-protected slots:
-    virtual void configChangeEvent();
-
 private:
-    CloudsDefinition _definition;
+    CloudsDefinition* _definition;
     CloudsLayerDefinition* _layer;
     BasePreview* _previewCoverage;
     BasePreview* _previewColor;

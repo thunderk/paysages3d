@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "clouds.h"
 #include "render.h"
 #include "textures.h"
 #include "scenery.h"
@@ -15,7 +14,6 @@
 void autoGenRealisticLandscape(int seed)
 {
     WaterDefinition water;
-    CloudsDefinition clouds;
     TexturesDefinition textures;
     TextureLayerDefinition* texture;
     int layer;
@@ -27,10 +25,10 @@ void autoGenRealisticLandscape(int seed)
     srand(seed);
 
     /* Cloud layer */
-    clouds = cloudsCreateDefinition();
-    layersAddLayer(clouds.layers, NULL);
-    scenerySetClouds(&clouds);
-    cloudsDeleteDefinition(&clouds);
+    CloudsDefinition* clouds = CloudsDefinitionClass.create();
+    layer = layersAddLayer(clouds->layers, NULL);
+    scenerySetClouds(clouds);
+    CloudsDefinitionClass.destroy(clouds);
 
     /* Water */
     water = waterCreateDefinition();

@@ -19,7 +19,7 @@
 /*********************** Constants ***********************/
 
 #define WORLD_SCALING 0.05
-#define GROUND_OFFSET 10.0
+#define GROUND_OFFSET 0.5
 static const double Rg = 6360.0;
 static const double Rt = 6420.0;
 static const double RL = 6421.0;
@@ -27,7 +27,7 @@ static const double exposure = 0.4;
 static const double ISun = 100.0;
 static const double AVERAGE_GROUND_REFLECTANCE = 0.1;
 
-#if 0
+#if 1
 #define RES_MU 128
 #define RES_MU_S 32
 #define RES_R 32
@@ -825,6 +825,7 @@ static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, d
     double r = v3Norm(*_x);
     double mu = v3Dot(*_x, v) / r;
     double d = -r * mu - sqrt(r * r * (mu * mu - 1.0) + Rt * Rt);
+    attenuation->x = attenuation->y = attenuation->z = 0.0;
     if (d > 0.0)
     {
         /* if x in space and ray intersects atmosphere
@@ -1218,7 +1219,7 @@ void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 
     /*irradiance.color.r *= 100.0;
     irradiance.color.g *= 100.0;
     irradiance.color.b *= 100.0;*/
-    irradiance.direction = v3Scale(normal, -1.0);
+    irradiance.direction = VECTOR_DOWN;
     irradiance.reflection = 0.0;
     irradiance.altered = 0;
 

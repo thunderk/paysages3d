@@ -24,7 +24,7 @@ typedef struct
     int altered;        /* Should the light be filtered or masked (by atmosphere, water, ground, clouds...) */
 } LightDefinition;
 
-typedef int (*FuncLightingAlterLight)(LightDefinition* light, Vector3 at, void* data);
+typedef int (*FuncLightingAlterLight)(void* data, LightDefinition* light, Vector3 at);
 
 typedef struct LightingManager LightingManager;
 typedef struct LightStatus LightStatus;

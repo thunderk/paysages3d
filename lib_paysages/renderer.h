@@ -3,6 +3,7 @@
 
 #include "shared/types.h"
 #include "atmosphere/public.h"
+#include "clouds/public.h"
 #include "terrain/public.h"
 #include "render.h"
 
@@ -38,7 +39,6 @@ struct Renderer
     RayCastingResult (*rayWalking)(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds);
     HeightInfo (*getWaterHeightInfo)(Renderer* renderer);
     Color (*applyTextures)(Renderer* renderer, Vector3 location, double precision);
-    Color (*applyClouds)(Renderer* renderer, Color base, Vector3 start, Vector3 end);
 
     /* Autonomous tools */
     LightingManager* lighting;
@@ -46,6 +46,7 @@ struct Renderer
     /* Autonomous sub-renderers */
     AtmosphereRenderer* atmosphere;
     TerrainRenderer* terrain;
+    CloudsRenderer* clouds;
 
     /* Custom data */
     void* customData[10];
