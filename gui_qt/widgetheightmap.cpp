@@ -44,7 +44,7 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
     _brush_smoothing = 0.5;
     _brush_strength = 1.0;
     _brush_noise = noiseCreateGenerator();
-    noiseAddLevelsSimple(_brush_noise, 10, 1.0, 1.0);
+    noiseAddLevelsSimple(_brush_noise, 10, 1.0, -0.5, 0.5);
 }
 
 WidgetHeightMap::~WidgetHeightMap()

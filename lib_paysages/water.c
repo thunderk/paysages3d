@@ -136,13 +136,13 @@ void waterValidateDefinition(WaterDefinition* definition)
     noiseClearLevels(definition->_waves_noise);
     if (definition->waves_height > 0.0)
     {
-        noiseAddLevelsSimple(definition->_waves_noise, 2, scaling, definition->waves_height * scaling * 0.03);
+        noiseAddLevelsSimple(definition->_waves_noise, 2, scaling, -definition->waves_height * scaling * 0.015, definition->waves_height * scaling * 0.015);
     }
     if (definition->detail_height > 0.0)
     {
-        noiseAddLevelsSimple(definition->_waves_noise, 3, scaling * 0.1, definition->detail_height * scaling * 0.03);
+        noiseAddLevelsSimple(definition->_waves_noise, 3, scaling * 0.1, -definition->detail_height * scaling * 0.015, definition->detail_height * scaling * 0.015);
     }
-    noiseSetFunctionParams(definition->_waves_noise, NOISE_FUNCTION_SIMPLEX, -definition->turbulence);
+    noiseSetFunctionParams(definition->_waves_noise, NOISE_FUNCTION_SIMPLEX, -definition->turbulence, 0.0);
     noiseValidate(definition->_waves_noise);
 }
 
@@ -200,10 +200,12 @@ static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal)
 HeightInfo waterGetHeightInfo(WaterDefinition* definition)
 {
     HeightInfo info;
+    double noise_minvalue, noise_maxvalue;
 
     info.base_height = definition->height;
-    info.min_height = definition->height - noiseGetMaxValue(definition->_waves_noise);
-    info.max_height = definition->height + noiseGetMaxValue(definition->_waves_noise);
+    noiseGetRange(definition->_waves_noise, &noise_minvalue, &noise_maxvalue);
+    info.min_height = definition->height + noise_minvalue;
+    info.max_height = definition->height + noise_maxvalue;
 
     return info;
 }

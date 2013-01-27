@@ -31,7 +31,7 @@ static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3 
     light.color.b = 0.6;
     light.direction.x = -1.0;
     light.direction.y = -0.5;
-    light.direction.z = -1.0;
+    light.direction.z = 1.0;
     light.direction = v3Normalize(light.direction);
     light.altered = 1;
     light.reflection = 1.0;
@@ -42,7 +42,7 @@ static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3 
     light.color.b = 0.2;
     light.direction.x = 1.0;
     light.direction.y = -0.5;
-    light.direction.z = 1.0;
+    light.direction.z = -1.0;
     light.direction = v3Normalize(light.direction);
     light.altered = 0;
     light.reflection = 0.0;

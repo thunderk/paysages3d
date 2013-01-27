@@ -35,10 +35,10 @@ protected:
     {
         double height;
 
-        height = _renderer->terrain->getHeight(_renderer, x, -y, 1);
+        height = _renderer->terrain->getHeight(_renderer, x, y, 1);
         if (height > _definition.height)
         {
-            return terrainGetPreviewColor(_renderer, x, -y, scaling);
+            return terrainGetPreviewColor(_renderer, x, y, scaling);
         }
         else
         {
@@ -47,7 +47,7 @@ protected:
 
             location.x = x;
             location.y = _water.height;
-            location.z = -y;
+            location.z = y;
 
             look.x = 0.0;
             look.y = -1.0;

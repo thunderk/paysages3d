@@ -17,18 +17,20 @@ typedef enum
 typedef struct
 {
     NoiseFunctionAlgorithm algorithm;
-    double ridge_factor;
+    double ridge_factor; /* -0.5;0.5 */
+    double curve_factor; /* -1.0;1.0 */
 } NoiseFunction;
 
-struct NoiseLevel
+typedef struct
 {
-    double scaling;
-    double height;
+    double wavelength;
+    double amplitude;
+    double minvalue;
     double xoffset;
     double yoffset;
     double zoffset;
-};
-typedef struct NoiseLevel NoiseLevel;
+} NoiseLevel;
+
 typedef struct NoiseGenerator NoiseGenerator;
 
 void noiseInit();
@@ -44,20 +46,20 @@ void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination);
 void noiseValidate(NoiseGenerator* generator);
 NoiseFunction noiseGetFunction(NoiseGenerator* generator);
 void noiseSetFunction(NoiseGenerator* generator, NoiseFunction* function);
-void noiseSetFunctionParams(NoiseGenerator* generator, NoiseFunctionAlgorithm algorithm, double ridge_factor);
+void noiseSetFunctionParams(NoiseGenerator* generator, NoiseFunctionAlgorithm algorithm, double ridge_factor, double curve_factor);
 void noiseForceValue(NoiseGenerator* generator, double value);
-double noiseGetMaxValue(NoiseGenerator* generator);
+void noiseGetRange(NoiseGenerator* generator, double* minvalue, double* maxvalue);
 int noiseGetLevelCount(NoiseGenerator* generator);
 void noiseClearLevels(NoiseGenerator* generator);
 void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level);
-void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double height);
-void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, double scaling_factor, double height_factor, int randomize_offset);
-void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double height);
+void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double minvalue, double maxvalue);
+void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, double scaling_factor, double amplitude_factor, double center_factor, int randomize_offset);
+void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double minvalue, double maxvalue);
 void noiseRemoveLevel(NoiseGenerator* generator, int level);
 int noiseGetLevel(NoiseGenerator* generator, int level, NoiseLevel* params);
 void noiseSetLevel(NoiseGenerator* generator, int level, NoiseLevel params);
-void noiseSetLevelSimple(NoiseGenerator* generator, int level, double scaling, double height);
-void noiseNormalizeHeight(NoiseGenerator* generator, double min_height, double max_height, int adjust_scaling);
+void noiseSetLevelSimple(NoiseGenerator* generator, int level, double scaling, double minvalue, double maxvalue);
+void noiseNormalizeAmplitude(NoiseGenerator* generator, double minvalue, double maxvalue, int adjust_scaling);
 double noiseGet1DLevel(NoiseGenerator* generator, int level, double x);
 double noiseGet1DTotal(NoiseGenerator* generator, double x);
 double noiseGet1DDetail(NoiseGenerator* generator, double x, double detail);

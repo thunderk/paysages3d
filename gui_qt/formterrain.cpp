@@ -24,7 +24,7 @@ public:
 protected:
     Color getColor(double x, double y)
     {
-        return terrainGetPreviewColor(_renderer, x, -y, scaling);
+        return terrainGetPreviewColor(_renderer, x, y, scaling);
     }
     void updateData()
     {

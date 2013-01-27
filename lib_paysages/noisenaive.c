@@ -15,7 +15,7 @@ static double* _noise_pool;
 void noiseNaiveInit()
 {
     int i;
-    
+
     _noise_pool_size = 1048576;
     _noise_pool = malloc(sizeof(double) * _noise_pool_size);
 
@@ -33,7 +33,7 @@ void noiseNaiveQuit()
 void noiseNaiveSave(PackStream* stream)
 {
     int i;
-    
+
     packWriteInt(stream, &_noise_pool_size);
     for (i = 0; i < _noise_pool_size; i++)
     {
@@ -44,7 +44,7 @@ void noiseNaiveSave(PackStream* stream)
 void noiseNaiveLoad(PackStream* stream)
 {
     int i;
-    
+
     packReadInt(stream, &_noise_pool_size);
     _noise_pool = realloc(_noise_pool, sizeof(double) * _noise_pool_size);
     for (i = 0; i < _noise_pool_size; i++)
@@ -56,7 +56,7 @@ void noiseNaiveLoad(PackStream* stream)
 double noiseNaiveGet1DValue(double x)
 {
     x *= 3.0;
-    
+
     int size = _noise_pool_size;
     int xbase = (int)floor(x);
 
@@ -89,15 +89,15 @@ double noiseNaiveGet1DValue(double x)
     buf_cubic_x[1] = _noise_pool[x1 % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[x2 % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[x3 % _noise_pool_size];
-    
-    return toolsCubicInterpolate(buf_cubic_x, xinternal) * 0.837;
+
+    return toolsCubicInterpolate(buf_cubic_x, xinternal) * 0.837 + 0.5;
 }
 
 double noiseNaiveGet2DValue(double x, double y)
 {
     x *= 3.0;
     y *= 3.0;
-    
+
     int size = (int)pow(_noise_pool_size, 0.5);
 
     int xbase = (int)floor(x);
@@ -175,7 +175,7 @@ double noiseNaiveGet2DValue(double x, double y)
     buf_cubic_x[3] = _noise_pool[(y3 * size + x3) % _noise_pool_size];
     buf_cubic_y[3] = toolsCubicInterpolate(buf_cubic_x, xinternal);
 
-    return toolsCubicInterpolate(buf_cubic_y, yinternal) * 0.723;
+    return toolsCubicInterpolate(buf_cubic_y, yinternal) * 0.723 + 0.5;
 }
 
 double noiseNaiveGet3DValue(double x, double y, double z)
@@ -183,7 +183,7 @@ double noiseNaiveGet3DValue(double x, double y, double z)
     x *= 3.0;
     y *= 3.0;
     z *= 3.0;
-    
+
     int size = (int)pow(_noise_pool_size, 0.33333333333333333);
 
     int xbase = (int)floor(x);
@@ -365,10 +365,10 @@ double noiseNaiveGet3DValue(double x, double y, double z)
 
     buf_cubic_z[3] =  toolsCubicInterpolate(buf_cubic_y, yinternal);
 
-    return toolsCubicInterpolate(buf_cubic_z, zinternal) * 0.794;
+    return toolsCubicInterpolate(buf_cubic_z, zinternal) * 0.794 + 0.5;
 }
 
 /*double noiseNaiveGet4DValue(double x, double y, double z, double w)
 {
-    
+
 }*/

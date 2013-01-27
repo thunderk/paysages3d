@@ -18,4 +18,6 @@ void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition);
 Color cloudsLayerFilterLight(CloudsLayerDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light);
 Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end);
 
+CloudsInfo cloudsGetLayerInfo(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location);
+
 #endif

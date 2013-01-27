@@ -27,10 +27,13 @@ public:
         int width = this->width();
         int height = this->height();
         double value, factor;
+        double minvalue, maxvalue;
+
+        noiseGetRange(noise, &minvalue, &maxvalue);
 
         for (int x = 0; x < width; x++)
         {
-            factor = ((double)(height / 2)) / noiseGetMaxValue(noise);
+            factor = ((double)(height / 2)) / maxvalue;
             value = -noiseGet1DTotal(noise, ((double)x) / factor) * factor;
             painter.setPen(Qt::white);
             painter.drawLine(x, 0, x, height / 2 + value);

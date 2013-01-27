@@ -192,7 +192,7 @@ static void _fakeGetLightingStatus(Renderer* renderer, LightStatus* status, Vect
     light.color.b = 0.8;
     light.direction.x = -0.7;
     light.direction.y = -0.7;
-    light.direction.z = -0.7;
+    light.direction.z = 0.7;
     light.altered = 0;
     light.reflection = 0.0;
     lightingPushLight(status, &light);
@@ -201,7 +201,7 @@ static void _fakeGetLightingStatus(Renderer* renderer, LightStatus* status, Vect
     light.color.b = 0.34;
     light.direction.x = 0.7;
     light.direction.y = -0.7;
-    light.direction.z = 0.7;
+    light.direction.z = -0.7;
     light.altered = 0;
     light.reflection = 0.0;
     lightingPushLight(status, &light);

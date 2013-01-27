@@ -5,6 +5,7 @@
  */
 
 #include "../renderer.h"
+#include "../tools.h"
 
 static double _standardCoverageFunc(CloudsLayerDefinition* layer, Vector3 position)
 {
@@ -22,7 +23,7 @@ static inline double _getDistanceToBorder(CloudsLayerDefinition* layer, Vector3 
 {
     double density, coverage, val;
 
-    val = noiseGet3DTotal(layer->_shape_noise, position.x / layer->shape_scaling, position.y / layer->shape_scaling, position.z / layer->shape_scaling) / noiseGetMaxValue(layer->_shape_noise);
+    val = noiseGet3DTotal(layer->_shape_noise, position.x / layer->shape_scaling, position.y / layer->shape_scaling, position.z / layer->shape_scaling) / 0.5;
     coverage = _standardCoverageFunc(layer, position);
     density = 0.5 * val - 0.5 + coverage;
 
@@ -39,7 +40,7 @@ static inline double _getDistanceToBorder(CloudsLayerDefinition* layer, Vector3 
         {
             density /= layer->edge_length;
 
-            val = 0.5 * noiseGet3DTotal(layer->_edge_noise, position.x / layer->edge_scaling, position.y / layer->edge_scaling, position.z / layer->edge_scaling) / noiseGetMaxValue(layer->_edge_noise);
+            val = 0.5 * noiseGet3DTotal(layer->_edge_noise, position.x / layer->edge_scaling, position.y / layer->edge_scaling, position.z / layer->edge_scaling) / 0.5;
             val = val - 0.5 + density;
 
             return val * (density * coverage * layer->shape_scaling + (1.0 - density) * layer->edge_scaling);
@@ -372,3 +373,67 @@ Color cloudsLayerFilterLight(CloudsLayerDefinition* definition, Renderer* render
 
     return light;
 }
+
+/*
+ * Get the coverage factor at the given location [0.0;1.0].
+ * 0.0 means no cloud is present.
+ * 1.0 means full layer.
+ */
+static inline double _getLayerCoverage(CloudsLayerDefinition* layer, double x, double z)
+{
+    return sin(x) * cos(z);
+}
+
+/*
+ * Get the local density factor at the given location [0.0;1.0].
+ * 0.0 means no cloud is present.
+ * 1.0 means full density (deep inside cloud).
+ */
+static inline double _getLayerDensity(CloudsLayerDefinition* layer, Vector3 location, double coverage)
+{
+    return 1.0;
+}
+
+CloudsInfo cloudsGetLayerInfo(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location)
+{
+    CloudsInfo result;
+
+    UNUSED(renderer);
+
+    result.density = 0.0;
+    result.distance_to_edge = 1.0;
+
+    /* Get coverage info */
+    double coverage = _getLayerCoverage(layer, location.x, location.z);
+    if (coverage <= 0.0)
+    {
+        /* TODO Distance to edge */
+    }
+    else
+    {
+        /* Apply altitude to coverage */
+        coverage *= curveGetValue(layer->_coverage_by_altitude, (location.y - layer->lower_altitude) / layer->thickness);
+        if (coverage <= 0.0)
+        {
+            /* TODO Distance to edge */
+        }
+        else
+        {
+            /* Get local density */
+            result.density = _getLayerDensity(layer, location, coverage);
+            if (result.density <= 0)
+            {
+                /* TODO Distance to edge */
+            }
+            else
+            {
+                /* TODO Distance to edge */
+            }
+        }
+    }
+
+    result.inside = (result.density > 0.0);
+
+    return result;
+}
+

@@ -2,7 +2,7 @@
 
 /*
  * Simplex noise implementation.
- * 
+ *
  * Based on Stefan Gustavson implementation.
  */
 
@@ -207,7 +207,7 @@ double noiseSimplexGet2DValue(double x, double y)
     }
     /* Add contributions from each corner to get the final noise value.
        The result is scaled to return values in the interval [-0.5,0.5]. */
-    return 35.0 * (n0 + n1 + n2);
+    return 35.0 * (n0 + n1 + n2) + 0.5;
 }
 
 double noiseSimplexGet3DValue(double x, double y, double z)
@@ -341,7 +341,7 @@ double noiseSimplexGet3DValue(double x, double y, double z)
     }
     /* Add contributions from each corner to get the final noise value.
        The result is scaled to stay just inside [-0.5,0.5] */
-    return 16.0 * (n0 + n1 + n2 + n3);
+    return 16.0 * (n0 + n1 + n2 + n3) + 0.5;
 }
 
 double noiseSimplexGet4DValue(double x, double y, double z, double w)
@@ -469,5 +469,5 @@ double noiseSimplexGet4DValue(double x, double y, double z, double w)
         n4 = t4 * t4 * _dot4(_grad4[gi4], x4, y4, z4, w4);
     }
     /* Sum up and scale the result to cover the range [-0.5,0.5] */
-    return 13.5 * (n0 + n1 + n2 + n3 + n4);
+    return 13.5 * (n0 + n1 + n2 + n3 + n4) + 0.5;
 }

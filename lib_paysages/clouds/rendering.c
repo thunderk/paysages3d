@@ -23,6 +23,21 @@ static Color _fakeGetColor(Renderer* renderer, Color base, Vector3 start, Vector
     return base;
 }
 
+static CloudsInfo _fakeGetLayerInfo(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location)
+{
+    UNUSED(renderer);
+    UNUSED(layer);
+    UNUSED(location);
+
+    CloudsInfo result;
+
+    result.inside = 0;
+    result.density = 0.0;
+    result.distance_to_edge = 1.0;
+
+    return result;
+}
+
 /******************** Real ********************/
 /*static int _cmpLayer(const void* layer1, const void* layer2)
 {
@@ -73,6 +88,7 @@ static CloudsRenderer* _createRenderer()
 
     result->getColor = _fakeGetColor;
     result->alterLight = (FuncLightingAlterLight)_fakeAlterLight;
+    result->getLayerInfo = _fakeGetLayerInfo;
 
     return result;
 }
@@ -89,6 +105,7 @@ static void _bindRenderer(Renderer* renderer, CloudsDefinition* definition)
 
     renderer->clouds->getColor = _getColor;
     renderer->clouds->alterLight = (FuncLightingAlterLight)_alterLight;
+    renderer->clouds->getLayerInfo = cloudsGetLayerInfo;
 
     lightingManagerRegisterFilter(renderer->lighting, (FuncLightingAlterLight)_alterLight, renderer);
 }

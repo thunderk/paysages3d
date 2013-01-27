@@ -44,6 +44,7 @@ typedef struct
     double minimumlight;
 
     Curve* _coverage_by_altitude;
+    NoiseGenerator* _coverage_noise;
     NoiseGenerator* _shape_noise;
     NoiseGenerator* _edge_noise;
 } CloudsLayerDefinition;
@@ -53,8 +54,15 @@ typedef struct
     Layers* layers;
 } CloudsDefinition;
 
+typedef struct
+{
+    int inside;
+    double density;
+    double distance_to_edge;
+} CloudsInfo;
 
 typedef Color (*FuncCloudsGetColor)(Renderer* renderer, Color base, Vector3 start, Vector3 end);
+typedef CloudsInfo (*FuncCloudsGetLayerInfo)(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location);
 
 typedef struct
 {
@@ -62,6 +70,7 @@ typedef struct
 
     FuncCloudsGetColor getColor;
     FuncLightingAlterLight alterLight;
+    FuncCloudsGetLayerInfo getLayerInfo;
 } CloudsRenderer;
 
 

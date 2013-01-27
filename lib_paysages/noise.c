@@ -12,16 +12,15 @@
 
 #define MAX_LEVEL_COUNT 30
 
-struct NoiseLevel;
-
 struct NoiseGenerator
 {
     NoiseFunction function;
     double height_offset;
     int level_count;
-    struct NoiseLevel levels[MAX_LEVEL_COUNT];
+    NoiseLevel levels[MAX_LEVEL_COUNT];
 
-    double _max_height;
+    double _min_value;
+    double _max_value;
     double (*_func_noise_1d)(double x);
     double (*_func_noise_2d)(double x, double y);
     double (*_func_noise_3d)(double x, double y, double z);
@@ -39,7 +38,7 @@ void noiseInit()
     double min, max, value;
     noise = noiseCreateGenerator();
     noiseSetFunctionParams(noise, NOISE_FUNCTION_NAIVE, 0.0);
-    noiseAddLevelSimple(noise, 1.0, 1.0);
+    noiseAddLevelSimple(noise, 1.0, 0.0, 1.0);
     min = 100000.0;
     max = -100000.0;
     for (x = 0; x < 1000000; x++)
@@ -77,6 +76,7 @@ NoiseGenerator* noiseCreateGenerator()
     result = malloc(sizeof(NoiseGenerator));
     result->function.algorithm = NOISE_FUNCTION_SIMPLEX;
     result->function.ridge_factor = 0.0;
+    result->function.curve_factor = 0.0;
     result->level_count = 0;
     result->height_offset = 0.0;
 
@@ -97,6 +97,7 @@ void noiseSaveGenerator(PackStream* stream, NoiseGenerator* generator)
     x = (int)generator->function.algorithm;
     packWriteInt(stream, &x);
     packWriteDouble(stream, &generator->function.ridge_factor);
+    packWriteDouble(stream, &generator->function.curve_factor);
 
     packWriteDouble(stream, &generator->height_offset);
     packWriteInt(stream, &generator->level_count);
@@ -105,8 +106,9 @@ void noiseSaveGenerator(PackStream* stream, NoiseGenerator* generator)
     {
         NoiseLevel* level = generator->levels + x;
 
-        packWriteDouble(stream, &level->scaling);
-        packWriteDouble(stream, &level->height);
+        packWriteDouble(stream, &level->wavelength);
+        packWriteDouble(stream, &level->amplitude);
+        packWriteDouble(stream, &level->minvalue);
         packWriteDouble(stream, &level->xoffset);
         packWriteDouble(stream, &level->yoffset);
         packWriteDouble(stream, &level->zoffset);
@@ -120,6 +122,7 @@ void noiseLoadGenerator(PackStream* stream, NoiseGenerator* generator)
     packReadInt(stream, &x);
     generator->function.algorithm = (NoiseFunctionAlgorithm)x;
     packReadDouble(stream, &generator->function.ridge_factor);
+    packReadDouble(stream, &generator->function.curve_factor);
 
     packReadDouble(stream, &generator->height_offset);
     packReadInt(stream, &generator->level_count);
@@ -128,8 +131,9 @@ void noiseLoadGenerator(PackStream* stream, NoiseGenerator* generator)
     {
         NoiseLevel* level = generator->levels + x;
 
-        packReadDouble(stream, &level->scaling);
-        packReadDouble(stream, &level->height);
+        packReadDouble(stream, &level->wavelength);
+        packReadDouble(stream, &level->amplitude);
+        packReadDouble(stream, &level->minvalue);
         packReadDouble(stream, &level->xoffset);
         packReadDouble(stream, &level->yoffset);
         packReadDouble(stream, &level->zoffset);
@@ -152,7 +156,6 @@ void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination)
 void noiseValidate(NoiseGenerator* generator)
 {
     int x;
-    double max_height = generator->height_offset;
 
     if (generator->function.algorithm < 0 || generator->function.algorithm > NOISE_FUNCTION_NAIVE)
     {
@@ -185,13 +188,31 @@ void noiseValidate(NoiseGenerator* generator)
     {
         generator->function.ridge_factor = -0.5;
     }
-
-    for (x = 0; x < generator->level_count; x++)
+    if (generator->function.curve_factor > 1.0)
     {
-        max_height += generator->levels[x].height / 2.0;
+        generator->function.curve_factor = 1.0;
+    }
+    if (generator->function.curve_factor < -1.0)
+    {
+        generator->function.curve_factor = -1.0;
     }
 
-    generator->_max_height = max_height;
+    generator->_min_value = generator->height_offset;
+    generator->_max_value = generator->height_offset;
+    for (x = 0; x < generator->level_count; x++)
+    {
+        double min_value = generator->levels[x].minvalue;
+        double max_value = min_value + generator->levels[x].amplitude;
+
+        if (min_value < generator->_min_value)
+        {
+            generator->_min_value = min_value;
+        }
+        if (max_value > generator->_max_value)
+        {
+            generator->_max_value = max_value;
+        }
+    }
 }
 
 NoiseFunction noiseGetFunction(NoiseGenerator* generator)
@@ -205,9 +226,9 @@ void noiseSetFunction(NoiseGenerator* generator, NoiseFunction* function)
     noiseValidate(generator);
 }
 
-void noiseSetFunctionParams(NoiseGenerator* generator, NoiseFunctionAlgorithm algorithm, double ridge_factor)
+void noiseSetFunctionParams(NoiseGenerator* generator, NoiseFunctionAlgorithm algorithm, double ridge_factor, double curve_factor)
 {
-    NoiseFunction function = {algorithm, ridge_factor};
+    NoiseFunction function = {algorithm, ridge_factor, curve_factor};
     noiseSetFunction(generator, &function);
 }
 
@@ -215,12 +236,13 @@ void noiseForceValue(NoiseGenerator* generator, double value)
 {
     noiseClearLevels(generator);
     generator->height_offset = value;
-    noiseAddLevelSimple(generator, 1.0, 0.0); /* FIXME Should not be needed */
+    noiseAddLevelSimple(generator, 1.0, 0.0, 0.0); /* FIXME Should not be needed */
 }
 
-double noiseGetMaxValue(NoiseGenerator* generator)
+void noiseGetRange(NoiseGenerator* generator, double* minvalue, double* maxvalue)
 {
-    return generator->_max_height;
+    *minvalue = generator->_min_value;
+    *maxvalue = generator->_max_value;
 }
 
 int noiseGetLevelCount(NoiseGenerator* generator)
@@ -244,12 +266,13 @@ void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level)
     }
 }
 
-void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double height)
+void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double minvalue, double maxvalue)
 {
     NoiseLevel level;
 
-    level.scaling = scaling;
-    level.height = height;
+    level.wavelength = scaling;
+    level.minvalue = minvalue;
+    level.amplitude = maxvalue - minvalue;
     level.xoffset = toolsRandom();
     level.yoffset = toolsRandom();
     level.zoffset = toolsRandom();
@@ -257,7 +280,7 @@ void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double heigh
     noiseAddLevel(generator, level);
 }
 
-void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, double scaling_factor, double height_factor, int randomize_offset)
+void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, double scaling_factor, double amplitude_factor, double center_factor, int randomize_offset)
 {
     int i;
 
@@ -270,18 +293,20 @@ void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start
             start_level.zoffset = toolsRandom();
         }
         noiseAddLevel(generator, start_level);
-        start_level.scaling *= scaling_factor;
-        start_level.height *= height_factor;
+        start_level.minvalue += start_level.amplitude * (1.0 - amplitude_factor) * center_factor;
+        start_level.wavelength *= scaling_factor;
+        start_level.amplitude *= amplitude_factor;
     }
 }
 
-void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double height)
+void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double minvalue, double maxvalue)
 {
     NoiseLevel level;
 
-    level.scaling = scaling;
-    level.height = height;
-    noiseAddLevels(generator, level_count, level, 0.5, 0.5, 1);
+    level.wavelength = scaling;
+    level.minvalue = minvalue;
+    level.amplitude = maxvalue - minvalue;
+    noiseAddLevels(generator, level_count, level, 0.5, 0.5, 0.5, 1);
 }
 
 void noiseRemoveLevel(NoiseGenerator* generator, int level)
@@ -319,12 +344,13 @@ void noiseSetLevel(NoiseGenerator* generator, int level, NoiseLevel params)
     }
 }
 
-void noiseSetLevelSimple(NoiseGenerator* generator, int level, double scaling, double height)
+void noiseSetLevelSimple(NoiseGenerator* generator, int level, double scaling, double minvalue, double maxvalue)
 {
     NoiseLevel params;
 
-    params.scaling = scaling;
-    params.height = height;
+    params.wavelength = scaling;
+    params.minvalue = minvalue;
+    params.amplitude = maxvalue - minvalue;
     params.xoffset = toolsRandom();
     params.yoffset = toolsRandom();
     params.zoffset = toolsRandom();
@@ -332,42 +358,62 @@ void noiseSetLevelSimple(NoiseGenerator* generator, int level, double scaling, d
     noiseSetLevel(generator, level, params);
 }
 
-void noiseNormalizeHeight(NoiseGenerator* generator, double min_height, double max_height, int adjust_scaling)
+void noiseNormalizeAmplitude(NoiseGenerator* generator, double minvalue, double maxvalue, int adjust_scaling)
 {
     int level;
-    double height = 0.0;
-    double target_height = max_height - min_height;
+    double current_minvalue, current_maxvalue, current_amplitude;
+    double target_amplitude, factor;
 
     if (generator->level_count == 0)
     {
         return;
     }
 
+    target_amplitude = maxvalue - minvalue;
+    noiseGetRange(generator, &current_minvalue, &current_maxvalue);
+    current_amplitude = current_maxvalue - current_minvalue;
+    factor = target_amplitude / current_amplitude;
+
     for (level = 0; level < generator->level_count; level++)
     {
-        height += generator->levels[level].height;
-    }
-    for (level = 0; level < generator->level_count; level++)
-    {
-        generator->levels[level].height *= target_height / height;
+        generator->levels[level].minvalue = minvalue + (generator->levels[level].minvalue - current_minvalue) * factor;
+        generator->levels[level].amplitude *= factor;
         if (adjust_scaling)
         {
-            generator->levels[level].scaling *= target_height / height;
+            generator->levels[level].wavelength *= factor;
         }
     }
-    generator->height_offset = min_height + target_height / 2.0;
+    /*generator->height_offset = minvalue + (generator->height_offset - current_minvalue) * factor;*/
     noiseValidate(generator);
 }
 
-static inline double _applyRidge(double value, double ridge)
+static inline double _fixValue(double value, double ridge, double curve)
 {
+    if (value < 0.0)
+    {
+        value = 0.0;
+    }
+    else if (value > 1.0)
+    {
+        value = 1.0;
+    }
+
+    if (curve > 0.0)
+    {
+        value = value * (1.0 - curve) + sqrt(value) * curve;
+    }
+    else if (curve < 0.0)
+    {
+        value = value * (1.0 - curve) + value * value * curve;
+    }
+
     if (ridge > 0.0)
     {
-        return fabs(value + 0.5 - ridge) / (1.0 - ridge) - 0.5;
+        return fabs(value - ridge) / (1.0 - ridge);
     }
     else if (ridge < 0.0)
     {
-        return -fabs(value - 0.5 - ridge) / (1.0 + ridge) + 0.5;
+        return 1.0 - fabs(value - 1.0 - ridge) / (1.0 + ridge);
     }
     else
     {
@@ -392,7 +438,7 @@ static inline double _applyRidge(double value, double ridge)
 
 static inline double _get1DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x)
 {
-    return _applyRidge(generator->_func_noise_1d(x / level->scaling + level->xoffset), generator->function.ridge_factor) * level->height;
+    return level->minvalue + _fixValue(generator->_func_noise_1d(x / level->wavelength + level->xoffset), generator->function.ridge_factor, generator->function.curve_factor) * level->amplitude;
 }
 
 double noiseGet1DLevel(NoiseGenerator* generator, int level, double x)
@@ -428,7 +474,7 @@ double noiseGet1DDetail(NoiseGenerator* generator, double x, double detail)
     result = 0.0;
     for (level = 0; level < generator->level_count; level++)
     {
-        height = generator->levels[level].height;
+        height = generator->levels[level].amplitude;
         factor = 1.0;
         if (height < detail * 0.25)
         {
@@ -449,7 +495,7 @@ double noiseGet1DDetail(NoiseGenerator* generator, double x, double detail)
 
 static inline double _get2DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x, double y)
 {
-    return _applyRidge(generator->_func_noise_2d(x / level->scaling + level->xoffset, y / level->scaling + level->yoffset), generator->function.ridge_factor) * level->height;
+    return level->minvalue + _fixValue(generator->_func_noise_2d(x / level->wavelength + level->xoffset, y / level->wavelength + level->yoffset), generator->function.ridge_factor, generator->function.curve_factor) * level->amplitude;
 }
 
 double noiseGet2DLevel(NoiseGenerator* generator, int level, double x, double y)
@@ -485,7 +531,7 @@ double noiseGet2DDetail(NoiseGenerator* generator, double x, double y, double de
     result = 0.0;
     for (level = 0; level < generator->level_count; level++)
     {
-        height = generator->levels[level].height;
+        height = generator->levels[level].amplitude;
         factor = 1.0;
         if (height < detail * 0.25)
         {
@@ -506,7 +552,7 @@ double noiseGet2DDetail(NoiseGenerator* generator, double x, double y, double de
 
 static inline double _get3DLevelValue(NoiseGenerator* generator, NoiseLevel* level, double x, double y, double z)
 {
-    return _applyRidge(generator->_func_noise_3d(x / level->scaling + level->xoffset, y / level->scaling + level->yoffset, z / level->scaling + level->zoffset), generator->function.ridge_factor) * level->height;
+    return level->minvalue + _fixValue(generator->_func_noise_3d(x / level->wavelength + level->xoffset, y / level->wavelength + level->yoffset, z / level->wavelength + level->zoffset), generator->function.ridge_factor, generator->function.curve_factor) * level->amplitude;
 }
 
 double noiseGet3DLevel(NoiseGenerator* generator, int level, double x, double y, double z)
@@ -542,7 +588,7 @@ double noiseGet3DDetail(NoiseGenerator* generator, double x, double y, double z,
     result = 0.0;
     for (level = 0; level < generator->level_count; level++)
     {
-        height = generator->levels[level].height;
+        height = generator->levels[level].amplitude;
         factor = 1.0;
         if (height < detail * 0.25)
         {

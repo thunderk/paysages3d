@@ -11,8 +11,9 @@ static void _validateDefinition(TerrainDefinition* definition)
     noiseValidate(definition->_height_noise);
 
     /* Get minimal and maximal height */
-    definition->_min_height = -noiseGetMaxValue(definition->_height_noise) * definition->height;
-    definition->_max_height = noiseGetMaxValue(definition->_height_noise) * definition->height;
+    noiseGetRange(definition->_height_noise, &definition->_min_height, &definition->_max_height);
+    definition->_min_height *= definition->height;
+    definition->_max_height *= definition->height;
 }
 
 static TerrainDefinition* _createDefinition()

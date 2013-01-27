@@ -2,7 +2,7 @@
 
 /*
  * Perlin noise implementation.
- * 
+ *
  * Based on Ken Perlin implementation.
  */
 
@@ -50,7 +50,7 @@ double noisePerlinGet1DValue(double x)
 	u = rx0 * g1[ p[ bx0 ] ];
 	v = rx1 * g1[ p[ bx1 ] ];
 
-	return lerp(sx, u, v) * 1.068;
+	return lerp(sx, u, v) * 1.068 + 0.5;
 }
 
 double noisePerlinGet2DValue(double x, double y)
@@ -84,7 +84,7 @@ double noisePerlinGet2DValue(double x, double y)
 	q = g2[ b11 ] ; v = at2(rx1,ry1);
 	b = lerp(sx, u, v);
 
-	return lerp(sy, a, b) * 0.709;
+	return lerp(sy, a, b) * 0.709 + 0.5;
 }
 
 double noisePerlinGet3DValue(double x, double y, double z)
@@ -132,7 +132,7 @@ double noisePerlinGet3DValue(double x, double y, double z)
 
 	d = lerp(sy, a, b);
 
-	return lerp(sz, c, d) * 0.661;
+	return lerp(sz, c, d) * 0.661 + 0.5;
 }
 
 static void _normalize2(double v[2])
