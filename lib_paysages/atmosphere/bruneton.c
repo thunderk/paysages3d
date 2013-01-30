@@ -1144,6 +1144,7 @@ Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
 {
     UNUSED(definition);
 
+    /* TODO Water height ? */
     Vector3 x = {0.0, Rg + (max(eye.y, 0.0) + GROUND_OFFSET) * WORLD_SCALING, 0.0};
     Vector3 v = v3Normalize(direction);
     Vector3 s = v3Normalize(v3Sub(sun_position, x));
@@ -1166,10 +1167,22 @@ Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
 Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
 {
     Vector3 eye = renderer->camera_location;
-    Vector3 direction = v3Scale(v3Sub(location, eye), WORLD_SCALING);
     Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), SUN_DISTANCE);
 
-    Vector3 x = {0.0, Rg + (max(eye.y, 0.0) + GROUND_OFFSET) * WORLD_SCALING, 0.0};
+    double yoffset = GROUND_OFFSET - renderer->getWaterHeightInfo(renderer).base_height;
+    eye.y += yoffset;
+    location.y += yoffset;
+    if (eye.y < 0.0)
+    {
+        eye.y = 0.0;
+    }
+    if (location.y < 0.0)
+    {
+        location.y = 0.0;
+    }
+    Vector3 direction = v3Scale(v3Sub(location, eye), WORLD_SCALING);
+
+    Vector3 x = {0.0, Rg + eye.y * WORLD_SCALING, 0.0};
     Vector3 v = v3Normalize(direction);
     Vector3 s = v3Normalize(v3Sub(sun_position, x));
 
@@ -1197,7 +1210,16 @@ void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 
     LightDefinition sun, irradiance;
     double muS;
 
-    double r0 = Rg + (max(lightingGetStatusLocation(status).y, 0.0) + GROUND_OFFSET) * WORLD_SCALING;
+    double altitude = lightingGetStatusLocation(status).y;
+
+    double yoffset = GROUND_OFFSET - renderer->getWaterHeightInfo(renderer).base_height;
+    altitude += yoffset;
+    if (altitude < 0.0)
+    {
+        altitude = 0.0;
+    }
+
+    double r0 = Rg + altitude * WORLD_SCALING;
     Vector3 up = {0.0, 1.0, 0.0};
     Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), SUN_DISTANCE);
     Vector3 x = {0.0, r0, 0.0};

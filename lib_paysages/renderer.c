@@ -6,7 +6,7 @@
 #include "scenery.h"
 
 RayCastingResult _RAYCASTING_NULL = {0};
-HeightInfo _WATER_HEIGHT_INFO = {-1000000.0, -1000000.0, -1000000.0};
+HeightInfo _WATER_HEIGHT_INFO = {0.0, 0.0, 0.0};
 
 static void* _renderFirstPass(void* data)
 {

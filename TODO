@@ -6,7 +6,7 @@ Technology Preview 2 :
    => Allow camera move and zoom.
 - Get rid of noise dialogs, for simpler settings.
 - Finalize Bruneton's model
-   => Fix artifacts on aerial perspective
+   => Fix artifacts on aerial perspective (mostly when sun is near horizon)
    => Fix blue appearance at night
 - Finalize lighting refactoring
    => Restore water filtering
