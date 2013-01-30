@@ -507,6 +507,7 @@ void BasePreview::addToggle(const QString& key, const QString& text, bool init_v
 
 void BasePreview::toggleChangeEvent(QString, bool)
 {
+    redraw();
 }
 
 void BasePreview::redraw()

@@ -13,10 +13,12 @@ public:
     PreviewCloudsCoverage(QWidget* parent, CloudsLayerDefinition* layer):BasePreview(parent)
     {
         _renderer = cloudsCreatePreviewCoverageRenderer();
+        _3d = true;
 
         _original_layer = layer;
         _preview_definition = (CloudsDefinition*)CloudsDefinitionClass.create();
 
+        addToggle("3d", tr("Perspective"), true);
         configScaling(100.0, 1000.0, 20.0, 200.0);
     }
     ~PreviewCloudsCoverage()
@@ -27,7 +29,15 @@ public:
 protected:
     Color getColor(double x, double y)
     {
-        return cloudsGetPreviewCoverage(_renderer, x, y, scaling);
+        return cloudsGetPreviewCoverage(_renderer, x, y, scaling, _3d);
+    }
+    virtual void toggleChangeEvent(QString key, bool value)
+    {
+        if (key == "3d")
+        {
+            _3d = value;
+        }
+        BasePreview::toggleChangeEvent(key, value);
     }
     void updateData()
     {
@@ -40,6 +50,7 @@ private:
     Renderer* _renderer;
     CloudsLayerDefinition* _original_layer;
     CloudsDefinition* _preview_definition;
+    bool _3d;
 };
 
 class PreviewCloudsColor:public BasePreview

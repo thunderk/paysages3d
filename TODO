@@ -9,7 +9,7 @@ Technology Preview 2 :
    => Fix artifacts on aerial perspective
    => Fix blue appearance at night
 - Finalize lighting refactoring
-   => Restore water and cloud filters
+   => Restore water filtering
    => Restore cloud lighting
    => Restore and improve skydome lighting
 - Apply Preetham's model usage

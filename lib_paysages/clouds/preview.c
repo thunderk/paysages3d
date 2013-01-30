@@ -26,19 +26,33 @@ Renderer* cloudsCreatePreviewCoverageRenderer()
     return result;
 }
 
-Color cloudsGetPreviewCoverage(Renderer* renderer, double x, double y, double scaling)
+Color cloudsGetPreviewCoverage(Renderer* renderer, double x, double y, double scaling, int perspective)
 {
-    Vector3 eye, look;
+    if (perspective)
+    {
+        Vector3 eye, look;
 
-    eye.x = 0.0;
-    eye.y = scaling;
-    eye.z = -10.0 * scaling;
-    look.x = x * 0.01 / scaling;
-    look.y = -y * 0.01 / scaling - 0.3;
-    look.z = 1.0;
-    look = v3Normalize(look);
+        eye.x = 0.0;
+        eye.y = scaling;
+        eye.z = -10.0 * scaling;
+        look.x = x * 0.01 / scaling;
+        look.y = -y * 0.01 / scaling - 0.3;
+        look.z = 1.0;
+        look = v3Normalize(look);
 
-    return renderer->clouds->getColor(renderer, COLOR_BLUE, eye, v3Add(eye, v3Scale(look, 1000.0)));
+        return renderer->clouds->getColor(renderer, COLOR_BLUE, eye, v3Add(eye, v3Scale(look, 1000.0)));
+    }
+    else
+    {
+        Vector3 start, end;
+
+        start.x = end.x = x;
+        start.z = end.z = y;
+        start.y = 1000.0;
+        end.y = -1000.0;
+
+        return renderer->clouds->getColor(renderer, COLOR_BLUE, start, end);
+    }
 }
 
 Renderer* cloudsCreatePreviewColorRenderer()
