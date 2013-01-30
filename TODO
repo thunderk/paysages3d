@@ -22,7 +22,6 @@ Technology Preview 2 :
    => Add texture shadowing.
 - Clouds should keep distance to ground.
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
-- Make fileNew work again (call auto presets and randomize all noise offsets).
 - Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).
 
 Technlogy Preview 3 :

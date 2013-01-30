@@ -139,7 +139,7 @@ void FormClouds::layerWriteCurrentTo(void* layer_definition)
 
 void FormClouds::autoPresetSelected(int preset)
 {
-    cloudsAutoPreset(_layer, (CloudsPreset)preset);
+    cloudsLayerAutoPreset(_layer, (CloudsLayerPreset)preset);
     BaseForm::autoPresetSelected(preset);
 }
 

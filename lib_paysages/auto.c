@@ -24,11 +24,7 @@ void autoGenRealisticLandscape(int seed)
     }
     srand(seed);
 
-    /* Cloud layer */
-    CloudsDefinition* clouds = CloudsDefinitionClass.create();
-    layer = layersAddLayer(clouds->layers, NULL);
-    scenerySetClouds(clouds);
-    CloudsDefinitionClass.destroy(clouds);
+    sceneryAutoPreset();
 
     /* Water */
     water = waterCreateDefinition();
@@ -42,6 +38,7 @@ void autoGenRealisticLandscape(int seed)
     layersSetName(textures.layers, layer, "Ground");
     texture = layersGetLayer(textures.layers, layer);
     noiseClearLevels(texture->bump_noise);
+    noiseRandomizeOffsets(texture->bump_noise);
     noiseAddLevelsSimple(texture->bump_noise, 8, 1.0, -0.5, 0.5);
     texture->bump_height = 0.01;
     texture->bump_scaling = 0.045;
@@ -59,6 +56,7 @@ void autoGenRealisticLandscape(int seed)
     zoneAddHeightRangeQuick(texture->zone, 1.0, -6.0, -5.0, 3.0, 15.0);
     zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 0.05, 0.4);
     noiseClearLevels(texture->bump_noise);
+    noiseRandomizeOffsets(texture->bump_noise);
     noiseAddLevelsSimple(texture->bump_noise, 5, 1.0, -0.2, 0.2);
     noiseAddLevelsSimple(texture->bump_noise, 2, 0.03, -0.04, 0.04);
     texture->bump_height = 0.002;

@@ -69,6 +69,8 @@ void waterDeleteDefinition(WaterDefinition* definition)
 
 void waterAutoPreset(WaterDefinition* definition, WaterPreset preset)
 {
+    noiseRandomizeOffsets(definition->_waves_noise);
+
     if (preset == WATER_PRESET_LAKE)
     {
         definition->transparency = 0.5;

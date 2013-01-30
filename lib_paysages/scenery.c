@@ -43,6 +43,13 @@ void sceneryQuit()
     noiseQuit();
 }
 
+void sceneryAutoPreset()
+{
+    terrainAutoPreset(_terrain, TERRAIN_PRESET_STANDARD);
+    atmosphereAutoPreset(_atmosphere, ATMOSPHERE_MODEL_BRUNETON);
+    cloudsAutoPreset(_clouds, CLOUDS_PRESET_PARTLY_CLOUDY);
+}
+
 void scenerySetCustomDataCallback(SceneryCustomDataCallback callback_save, SceneryCustomDataCallback callback_load, void* data)
 {
     _custom_save = callback_save;

@@ -40,6 +40,7 @@ void layersLoad(PackStream* stream, Layers* layers);
 const char* layersGetName(Layers* layers, int layer);
 void layersSetName(Layers* layers, int layer, const char* name);
 
+void layersClear(Layers* layers);
 int layersCount(Layers* layers);
 void* layersGetLayer(Layers* layers, int layer);
 int layersAddLayer(Layers* layers, void* definition);

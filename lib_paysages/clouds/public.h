@@ -22,11 +22,16 @@ typedef enum
 
 typedef enum
 {
-    CLOUDS_PRESET_CIRRUS,
-    CLOUDS_PRESET_CUMULUS,
-    CLOUDS_PRESET_STRATOCUMULUS,
-    CLOUDS_PRESET_STRATUS
+    CLOUDS_PRESET_PARTLY_CLOUDY,
 } CloudsPreset;
+
+typedef enum
+{
+    CLOUDS_LAYER_PRESET_CIRRUS,
+    CLOUDS_LAYER_PRESET_CUMULUS,
+    CLOUDS_LAYER_PRESET_STRATOCUMULUS,
+    CLOUDS_LAYER_PRESET_STRATUS
+} CloudsLayerPreset;
 
 typedef struct
 {
@@ -79,7 +84,8 @@ extern StandardRenderer CloudsRendererClass;
 
 
 LayerType cloudsGetLayerType();
-void cloudsAutoPreset(CloudsLayerDefinition* definition, CloudsPreset preset);
+void cloudsAutoPreset(CloudsDefinition* definition, CloudsPreset preset);
+void cloudsLayerAutoPreset(CloudsLayerDefinition* definition, CloudsLayerPreset preset);
 
 Renderer* cloudsCreatePreviewCoverageRenderer();
 Color cloudsGetPreviewCoverage(Renderer* renderer, double x, double y, double scaling, int perspective);

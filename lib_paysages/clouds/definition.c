@@ -128,7 +128,7 @@ CloudsLayerDefinition* cloudsLayerCreateDefinition()
     result->_shape_noise = noiseCreateGenerator();
     result->_edge_noise = noiseCreateGenerator();
 
-    cloudsAutoPreset(result, CLOUDS_PRESET_CIRRUS);
+    cloudsLayerAutoPreset(result, CLOUDS_LAYER_PRESET_CIRRUS);
 
     return result;
 }

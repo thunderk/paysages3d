@@ -133,6 +133,14 @@ void layersSetName(Layers* layers, int layer, const char* name)
     }
 }
 
+void layersClear(Layers* layers)
+{
+    while (layersCount(layers))
+    {
+        layersDeleteLayer(layers, 0);
+    }
+}
+
 int layersCount(Layers* layers)
 {
     return layers->count;

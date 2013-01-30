@@ -221,9 +221,9 @@ void noiseRandomizeOffsets(NoiseGenerator* generator)
     int i;
     for (i = 0; i < MAX_LEVEL_COUNT; i++)
     {
-        result->levels[i].xoffset = toolsRandom();
-        result->levels[i].yoffset = toolsRandom();
-        result->levels[i].zoffset = toolsRandom();
+        generator->levels[i].xoffset = toolsRandom();
+        generator->levels[i].yoffset = toolsRandom();
+        generator->levels[i].zoffset = toolsRandom();
     }
 }
 

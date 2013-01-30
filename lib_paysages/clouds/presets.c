@@ -1,13 +1,31 @@
 #include "private.h"
 
 #include <math.h>
+#include <stdlib.h>
 
 /*
  * Clouds presets.
  */
 
-void cloudsAutoPreset(CloudsLayerDefinition* definition, CloudsPreset preset)
+void cloudsAutoPreset(CloudsDefinition* definition, CloudsPreset preset)
 {
+    int layer;
+
+    layersClear(definition->layers);
+
+    if (preset == CLOUDS_PRESET_PARTLY_CLOUDY)
+    {
+        layer = layersAddLayer(definition->layers, NULL);
+        cloudsLayerAutoPreset(layersGetLayer(definition->layers, layer), CLOUDS_LAYER_PRESET_CIRRUS);
+    }
+}
+
+void cloudsLayerAutoPreset(CloudsLayerDefinition* definition, CloudsLayerPreset preset)
+{
+    noiseRandomizeOffsets(definition->_coverage_noise);
+    noiseRandomizeOffsets(definition->_edge_noise);
+    noiseRandomizeOffsets(definition->_shape_noise);
+
     definition->material.base.r = 0.7;
     definition->material.base.g = 0.7;
     definition->material.base.b = 0.7;
@@ -15,7 +33,7 @@ void cloudsAutoPreset(CloudsLayerDefinition* definition, CloudsPreset preset)
 
     switch (preset)
     {
-        case CLOUDS_PRESET_CIRRUS:
+        case CLOUDS_LAYER_PRESET_CIRRUS:
             definition->type = CLOUDS_TYPE_CIRRUS;
             definition->lower_altitude = 25.0;
             definition->thickness = 2.0;
@@ -30,7 +48,7 @@ void cloudsAutoPreset(CloudsLayerDefinition* definition, CloudsPreset preset)
             definition->edge_length = 0.8;
             definition->base_coverage = 0.6;
             break;
-        case CLOUDS_PRESET_CUMULUS:
+        case CLOUDS_LAYER_PRESET_CUMULUS:
             definition->type = CLOUDS_TYPE_CUMULUS;
             definition->lower_altitude = 15.0;
             definition->thickness = 15.0;
@@ -45,7 +63,7 @@ void cloudsAutoPreset(CloudsLayerDefinition* definition, CloudsPreset preset)
             definition->edge_length = 0.0;
             definition->base_coverage = 0.7;
             break;
-        case CLOUDS_PRESET_STRATOCUMULUS:
+        case CLOUDS_LAYER_PRESET_STRATOCUMULUS:
             definition->type = CLOUDS_TYPE_STRATOCUMULUS;
             definition->lower_altitude = 5.0;
             definition->thickness = 6.0;
@@ -60,7 +78,7 @@ void cloudsAutoPreset(CloudsLayerDefinition* definition, CloudsPreset preset)
             definition->edge_length = 0.3;
             definition->base_coverage = 0.4;
             break;
-        case CLOUDS_PRESET_STRATUS:
+        case CLOUDS_LAYER_PRESET_STRATUS:
             definition->type = CLOUDS_TYPE_STRATUS;
             definition->lower_altitude = 3.0;
             definition->thickness = 4.0;
