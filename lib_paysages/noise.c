@@ -80,6 +80,7 @@ NoiseGenerator* noiseCreateGenerator()
     result->level_count = 0;
     result->height_offset = 0.0;
 
+    noiseRandomizeOffsets(result);
     noiseValidate(result);
 
     return result;
@@ -215,6 +216,17 @@ void noiseValidate(NoiseGenerator* generator)
     }
 }
 
+void noiseRandomizeOffsets(NoiseGenerator* generator)
+{
+    int i;
+    for (i = 0; i < MAX_LEVEL_COUNT; i++)
+    {
+        result->levels[i].xoffset = toolsRandom();
+        result->levels[i].yoffset = toolsRandom();
+        result->levels[i].zoffset = toolsRandom();
+    }
+}
+
 NoiseFunction noiseGetFunction(NoiseGenerator* generator)
 {
     return generator->function;
@@ -256,10 +268,19 @@ void noiseClearLevels(NoiseGenerator* generator)
     noiseValidate(generator);
 }
 
-void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level)
+void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level, int protect_offsets)
 {
     if (generator->level_count < MAX_LEVEL_COUNT)
     {
+        NoiseLevel baselevel = generator->levels[generator->level_count];
+
+        if (protect_offsets)
+        {
+            level.xoffset = baselevel.xoffset;
+            level.yoffset = baselevel.yoffset;
+            level.zoffset = baselevel.zoffset;
+        }
+
         generator->levels[generator->level_count] = level;
         generator->level_count++;
         noiseValidate(generator);
@@ -273,26 +294,17 @@ void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double minva
     level.wavelength = scaling;
     level.minvalue = minvalue;
     level.amplitude = maxvalue - minvalue;
-    level.xoffset = toolsRandom();
-    level.yoffset = toolsRandom();
-    level.zoffset = toolsRandom();
 
-    noiseAddLevel(generator, level);
+    noiseAddLevel(generator, level, 1);
 }
 
-void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, double scaling_factor, double amplitude_factor, double center_factor, int randomize_offset)
+void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, double scaling_factor, double amplitude_factor, double center_factor)
 {
     int i;
 
     for (i = 0; i < level_count; i++)
     {
-        if (randomize_offset)
-        {
-            start_level.xoffset = toolsRandom();
-            start_level.yoffset = toolsRandom();
-            start_level.zoffset = toolsRandom();
-        }
-        noiseAddLevel(generator, start_level);
+        noiseAddLevel(generator, start_level, 1);
         start_level.minvalue += start_level.amplitude * (1.0 - amplitude_factor) * center_factor;
         start_level.wavelength *= scaling_factor;
         start_level.amplitude *= amplitude_factor;
@@ -306,7 +318,7 @@ void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double sca
     level.wavelength = scaling;
     level.minvalue = minvalue;
     level.amplitude = maxvalue - minvalue;
-    noiseAddLevels(generator, level_count, level, 0.5, 0.5, 0.5, 1);
+    noiseAddLevels(generator, level_count, level, 0.5, 0.5, 0.5);
 }
 
 void noiseRemoveLevel(NoiseGenerator* generator, int level)
@@ -335,27 +347,33 @@ int noiseGetLevel(NoiseGenerator* generator, int level, NoiseLevel* params)
     }
 }
 
-void noiseSetLevel(NoiseGenerator* generator, int level, NoiseLevel params)
+void noiseSetLevel(NoiseGenerator* generator, int index, NoiseLevel level, int protect_offsets)
 {
-    if (level >= 0 && level < generator->level_count)
+    if (index >= 0 && index < generator->level_count)
     {
-        generator->levels[level] = params;
+        NoiseLevel baselevel = generator->levels[index];
+
+        if (protect_offsets)
+        {
+            level.xoffset = baselevel.xoffset;
+            level.yoffset = baselevel.yoffset;
+            level.zoffset = baselevel.zoffset;
+        }
+
+        generator->levels[index] = level;
         noiseValidate(generator);
     }
 }
 
-void noiseSetLevelSimple(NoiseGenerator* generator, int level, double scaling, double minvalue, double maxvalue)
+void noiseSetLevelSimple(NoiseGenerator* generator, int index, double scaling, double minvalue, double maxvalue)
 {
-    NoiseLevel params;
+    NoiseLevel level;
 
-    params.wavelength = scaling;
-    params.minvalue = minvalue;
-    params.amplitude = maxvalue - minvalue;
-    params.xoffset = toolsRandom();
-    params.yoffset = toolsRandom();
-    params.zoffset = toolsRandom();
+    level.wavelength = scaling;
+    level.minvalue = minvalue;
+    level.amplitude = maxvalue - minvalue;
 
-    noiseSetLevel(generator, level, params);
+    noiseSetLevel(generator, index, level, 1);
 }
 
 void noiseNormalizeAmplitude(NoiseGenerator* generator, double minvalue, double maxvalue, int adjust_scaling)

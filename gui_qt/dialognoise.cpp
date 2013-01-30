@@ -283,10 +283,8 @@ void DialogNoise::addLevel()
 
     level.amplitude = 0.1;
     level.wavelength = 0.1;
-    level.xoffset = 0.0;
-    level.yoffset = 0.0;
-    level.zoffset = 0.0;
-    noiseAddLevel(_current, level);
+
+    noiseAddLevel(_current, level, 1);
 
     revertToCurrent();
 
@@ -340,7 +338,7 @@ void DialogNoise::levelChanged(int row)
 void DialogNoise::heightChanged(int value)
 {
     _current_level_params.amplitude = ((double)value) / 1000.0;
-    noiseSetLevel(_current, _current_level, _current_level_params);
+    noiseSetLevel(_current, _current_level, _current_level_params, 1);
     previewLevel->redraw();
     previewTotal->redraw();
 }
@@ -348,7 +346,7 @@ void DialogNoise::heightChanged(int value)
 void DialogNoise::scalingChanged(int value)
 {
     _current_level_params.wavelength = ((double)value) / 1000.0;
-    noiseSetLevel(_current, _current_level, _current_level_params);
+    noiseSetLevel(_current, _current_level, _current_level_params, 1);
     previewLevel->redraw();
     previewTotal->redraw();
 }
