@@ -55,7 +55,7 @@ void noiseClearLevels(NoiseGenerator* generator);
 void noiseAddLevel(NoiseGenerator* generator, NoiseLevel level, int protect_offsets);
 void noiseAddLevelSimple(NoiseGenerator* generator, double scaling, double minvalue, double maxvalue);
 void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start_level, double scaling_factor, double amplitude_factor, double center_factor);
-void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double minvalue, double maxvalue);
+void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double minvalue, double maxvalue, double center_factor);
 void noiseRemoveLevel(NoiseGenerator* generator, int level);
 int noiseGetLevel(NoiseGenerator* generator, int level, NoiseLevel* params);
 void noiseSetLevel(NoiseGenerator* generator, int index, NoiseLevel level, int protect_offsets);

@@ -64,6 +64,11 @@ bool BaseExplorerChunk::maintain()
         _texture_changed = true;
         _lock_data.unlock();
 
+        if (_texture_current_size < 8 && _texture_current_size < _texture_max_size)
+        {
+            maintain();
+        }
+
         return true;
     }
     else
@@ -113,7 +118,10 @@ void BaseExplorerChunk::render(QGLWidget* widget)
     _lock_data.unlock();
 
     // Delegate poly rendering to subclass
-    onRenderEvent(widget);
+    if (!_reset_needed)
+    {
+        onRenderEvent(widget);
+    }
 }
 
 void BaseExplorerChunk::askReset()

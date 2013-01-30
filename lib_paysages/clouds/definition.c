@@ -65,17 +65,17 @@ void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
     noiseClearLevels(definition->_edge_noise);
     noiseClearLevels(definition->_coverage_noise);
 
+    noiseAddLevelsSimple(definition->_coverage_noise, 3, 1.0, 0.0, 1.0, 0.0);
+    noiseSetFunctionParams(definition->_coverage_noise, NOISE_FUNCTION_NAIVE, 0.0, 0.0);
     switch (definition->type)
     {
         case CLOUDS_TYPE_CIRRUS:
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.0, 0.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.5, 1.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 1.0, 0.0);
-            noiseAddLevelsSimple(definition->_coverage_noise, 3, 1.0, -0.5, 0.5);
-            noiseSetFunctionParams(definition->_coverage_noise, NOISE_FUNCTION_SIMPLEX, 0.0, 0.0);
-            noiseAddLevelsSimple(definition->_shape_noise, 3, 1.0, -0.5, 0.5);
+            noiseAddLevelsSimple(definition->_shape_noise, 3, 1.0, 0.0, 1.0, 0.5);
             noiseSetFunctionParams(definition->_shape_noise, NOISE_FUNCTION_SIMPLEX, 0.0, 0.0);
-            noiseAddLevelsSimple(definition->_edge_noise, 4, 1.0, -0.5, 0.5);
+            noiseAddLevelsSimple(definition->_edge_noise, 4, 1.0, -0.5, 0.5, 0.5);
             noiseSetFunctionParams(definition->_edge_noise, NOISE_FUNCTION_SIMPLEX, -0.2, 0.0);
             break;
         case CLOUDS_TYPE_CUMULUS:
@@ -84,9 +84,7 @@ void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.4, 0.8);
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.7, 1.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 1.0, 0.0);
-            noiseAddLevelsSimple(definition->_coverage_noise, 3, 1.0, -0.5, 0.5);
-            noiseSetFunctionParams(definition->_coverage_noise, NOISE_FUNCTION_SIMPLEX, 0.4, 0.0);
-            noiseAddLevelsSimple(definition->_shape_noise, 7, 1.0, -0.5, 0.5);
+            noiseAddLevelsSimple(definition->_shape_noise, 7, 1.0, 0.0, 1.0, 0.5);
             noiseSetFunctionParams(definition->_shape_noise, NOISE_FUNCTION_SIMPLEX, 0.4, 0.0);
             break;
         case CLOUDS_TYPE_STRATOCUMULUS:
@@ -94,11 +92,9 @@ void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.2, 1.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.5, 1.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 1.0, 0.0);
-            noiseAddLevelsSimple(definition->_coverage_noise, 2, 1.0, -0.5, 0.5);
-            noiseSetFunctionParams(definition->_coverage_noise, NOISE_FUNCTION_SIMPLEX, 0.3, 0.0);
-            noiseAddLevelsSimple(definition->_shape_noise, 2, 1.0, -0.5, 0.5);
+            noiseAddLevelsSimple(definition->_shape_noise, 2, 1.0, 0.0, 1.0, 0.5);
             noiseSetFunctionParams(definition->_shape_noise, NOISE_FUNCTION_SIMPLEX, 0.3, 0.0);
-            noiseAddLevelsSimple(definition->_edge_noise, 8, 1.0, -0.5, 0.5);
+            noiseAddLevelsSimple(definition->_edge_noise, 8, 1.0, -0.5, 0.5, 0.5);
             noiseSetFunctionParams(definition->_edge_noise, NOISE_FUNCTION_SIMPLEX, 0.5, 0.0);
             break;
         case CLOUDS_TYPE_STRATUS:
@@ -106,16 +102,17 @@ void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.2, 1.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.8, 1.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 1.0, 0.0);
-            noiseAddLevelsSimple(definition->_coverage_noise, 3, 1.0, -0.5, 0.5);
-            noiseSetFunctionParams(definition->_coverage_noise, NOISE_FUNCTION_SIMPLEX, -0.3, 0.0);
-            noiseAddLevelsSimple(definition->_shape_noise, 3, 1.0, -0.5, 0.5);
+            noiseAddLevelsSimple(definition->_shape_noise, 3, 1.0, 0.0, 1.0, 0.5);
             noiseSetFunctionParams(definition->_shape_noise, NOISE_FUNCTION_SIMPLEX, -0.3, 0.0);
-            noiseAddLevelsSimple(definition->_edge_noise, 4, 1.0, -0.5, 0.5);
+            noiseAddLevelsSimple(definition->_edge_noise, 4, 1.0, -0.5, 0.5, 0.5);
             noiseSetFunctionParams(definition->_edge_noise, NOISE_FUNCTION_SIMPLEX, -0.5, 0.0);
             break;
         default:
             break;
     }
+
+    noiseNormalizeAmplitude(definition->_coverage_noise, 0.0, 1.0, 0);
+    noiseNormalizeAmplitude(definition->_shape_noise, -0.5, 0.5, 0);
 }
 
 CloudsLayerDefinition* cloudsLayerCreateDefinition()

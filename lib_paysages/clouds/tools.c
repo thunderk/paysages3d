@@ -7,55 +7,10 @@
 #include "../renderer.h"
 #include "../tools.h"
 
-static double _standardCoverageFunc(CloudsLayerDefinition* layer, Vector3 position)
-{
-    if (position.y < layer->lower_altitude || position.y >= layer->lower_altitude + layer->thickness)
-    {
-        return 0.0;
-    }
-    else
-    {
-        return layer->base_coverage * curveGetValue(layer->_coverage_by_altitude, (position.y - layer->lower_altitude) / layer->thickness);
-    }
-}
-
-static inline double _getDistanceToBorder(CloudsLayerDefinition* layer, Vector3 position)
-{
-    double density, coverage, val;
-
-    val = noiseGet3DTotal(layer->_shape_noise, position.x / layer->shape_scaling, position.y / layer->shape_scaling, position.z / layer->shape_scaling) / 0.5;
-    coverage = _standardCoverageFunc(layer, position);
-    density = 0.5 * val - 0.5 + coverage;
-
-    if (density <= 0.0)
-    {
-        /* outside the main shape */
-        return density * layer->shape_scaling;
-    }
-    else
-    {
-        /* inside the main shape, using edge noise */
-        density /= coverage;
-        if (density < layer->edge_length)
-        {
-            density /= layer->edge_length;
-
-            val = 0.5 * noiseGet3DTotal(layer->_edge_noise, position.x / layer->edge_scaling, position.y / layer->edge_scaling, position.z / layer->edge_scaling) / 0.5;
-            val = val - 0.5 + density;
-
-            return val * (density * coverage * layer->shape_scaling + (1.0 - density) * layer->edge_scaling);
-        }
-        else
-        {
-            return density * coverage * layer->shape_scaling;
-        }
-    }
-}
-
 static inline Vector3 _getNormal(CloudsLayerDefinition* layer, Vector3 position, double detail)
 {
     Vector3 result = {0.0, 0.0, 0.0};
-    Vector3 dposition;
+    /*Vector3 dposition;
     double val, dval;
 
     val = _getDistanceToBorder(layer, position);
@@ -86,7 +41,7 @@ static inline Vector3 _getNormal(CloudsLayerDefinition* layer, Vector3 position,
 
     dposition.z = position.z - detail;
     dval = val - _getDistanceToBorder(layer, dposition);
-    result.z -= dval;
+    result.z -= dval;*/
 
     return v3Normalize(result);
 }
@@ -153,13 +108,12 @@ static int _optimizeSearchLimits(CloudsLayerDefinition* layer, Vector3* start, V
 }
 
 /**
- * Go through the cloud layer to find segments (parts of the lookup that are inside the cloud).
+ * Go through the cloud layer to find segments (parts of the lookup that are likely to contain cloud).
  *
  * @param definition The cloud layer
  * @param renderer The renderer environment
  * @param start Start position of the lookup (already optimized)
  * @param direction Normalized direction of the lookup
- * @param detail Level of noise detail required
  * @param max_segments Maximum number of segments to collect
  * @param max_inside_length Maximum length to spend inside the cloud
  * @param max_total_length Maximum lookup length
@@ -168,13 +122,13 @@ static int _optimizeSearchLimits(CloudsLayerDefinition* layer, Vector3* start, V
  * @param out_segments Allocated space to fill found segments
  * @return Number of segments found
  */
-static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, Vector3 start, Vector3 direction, double detail, int max_segments, double max_inside_length, double max_total_length, double* inside_length, double* total_length, CloudSegment* out_segments)
+static int _getPrimarySegments(CloudsLayerDefinition* definition, Renderer* renderer, Vector3 start, Vector3 direction, int max_segments, double max_inside_length, double max_total_length, double* inside_length, double* total_length, CloudSegment* out_segments)
 {
     int inside, segment_count;
     double current_total_length, current_inside_length;
-    double step_length, segment_length, remaining_length;
-    double noise_distance, last_noise_distance;
+    double step_length, segment_length;
     Vector3 walker, step, segment_start;
+    CloudsInfo info;
     double render_precision;
 
     if (max_segments <= 0)
@@ -197,69 +151,67 @@ static int _findSegments(CloudsLayerDefinition* definition, Renderer* renderer, 
     current_inside_length = 0.0;
     segment_length = 0.0;
     walker = start;
-    noise_distance = _getDistanceToBorder(definition, start) * render_precision;
-    inside = (noise_distance > 0.0) ? 1 : 0;
+    info = renderer->clouds->getLayerInfo(renderer, definition, start);
+    inside = info.inside;
     step = v3Scale(direction, render_precision);
 
     do
     {
         walker = v3Add(walker, step);
         step_length = v3Norm(step);
-        last_noise_distance = noise_distance;
-        noise_distance = _getDistanceToBorder(definition, walker) * render_precision;
         current_total_length += step_length;
 
         if (current_total_length >= max_total_length || current_inside_length > max_inside_length)
         {
-            noise_distance = 0.0;
+            info.distance_to_edge = 0.0;
+            info.inside = 0;
+        }
+        else
+        {
+            info = renderer->clouds->getLayerInfo(renderer, definition, walker);
         }
 
-        if (noise_distance > 0.0)
+        if (info.inside)
         {
             if (inside)
             {
-                // inside the cloud
+                /* inside the cloud */
                 segment_length += step_length;
                 current_inside_length += step_length;
-                step = v3Scale(direction, (noise_distance < render_precision) ? render_precision : noise_distance);
             }
             else
             {
-                // entering the cloud
-                inside = 1;
-                segment_length = step_length * noise_distance / (noise_distance - last_noise_distance);
-                segment_start = v3Add(walker, v3Scale(direction, -segment_length));
+                /* entering the cloud */
+                segment_length = step_length;
+                segment_start = walker;
                 current_inside_length += segment_length;
-                step = v3Scale(direction, render_precision);
+                /* TODO Refine entry position */
+
+                inside = 1;
             }
         }
         else
         {
             if (inside)
             {
-                // exiting the cloud
-                remaining_length = step_length * last_noise_distance / (last_noise_distance - noise_distance);
-                segment_length += remaining_length;
-                current_inside_length += remaining_length;
+                /* exiting the cloud */
+                segment_length += step_length;
+                current_inside_length += step_length;
 
                 out_segments->start = segment_start;
-                out_segments->end = v3Add(walker, v3Scale(direction, remaining_length - step_length));
+                out_segments->end = walker;
                 out_segments->length = segment_length;
                 out_segments++;
                 if (++segment_count >= max_segments)
                 {
                     break;
                 }
+                /* TODO Refine exit position */
 
                 inside = 0;
-                step = v3Scale(direction, render_precision);
-            }
-            else
-            {
-                // searching for a cloud
-                step = v3Scale(direction, (noise_distance > -render_precision) ? render_precision : -noise_distance);
             }
         }
+        step = v3Scale(direction, (info.distance_to_edge < render_precision) ? render_precision : info.distance_to_edge);
     } while (inside || (walker.y <= definition->lower_altitude + definition->thickness + 0.001 && walker.y >= definition->lower_altitude - 0.001 && current_total_length < max_total_length && current_inside_length < max_inside_length));
 
     *total_length = current_total_length;
@@ -309,8 +261,8 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
 
 Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end)
 {
-    int i, segment_count;
-    double max_length, detail, total_length, inside_length;
+    int segment_count;
+    double max_length, total_length, inside_length;
     Vector3 direction;
     Color col;
     CloudSegment segments[MAX_SEGMENT_COUNT];
@@ -324,21 +276,20 @@ Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* 
     max_length = v3Norm(direction);
     direction = v3Normalize(direction);
 
-    detail = renderer->getPrecision(renderer, start) / definition->shape_scaling;
+    segment_count = _getPrimarySegments(definition, renderer, start, direction, MAX_SEGMENT_COUNT, definition->transparencydepth * (double)renderer->render_quality, max_length, &inside_length, &total_length, segments);
+    /* TODO Crawl in segments for render */
 
-    segment_count = _findSegments(definition, renderer, start, direction, detail, MAX_SEGMENT_COUNT, definition->transparencydepth * (double)renderer->render_quality, max_length, &inside_length, &total_length, segments);
-    for (i = segment_count - 1; i >= 0; i--)
-    {
-        col = _applyLayerLighting(definition, renderer, segments[i].start, detail);
-        col.a = 1.0;
-        col = renderer->atmosphere->applyAerialPerspective(renderer, start, col);
-        col.a = (segments[i].length >= definition->transparencydepth) ? 1.0 : (segments[i].length / definition->transparencydepth);
-        colorMask(&base, &col);
-    }
-    if (inside_length >= definition->transparencydepth)
+    col = definition->material.base;
+    if (definition->transparencydepth == 0 || inside_length >= definition->transparencydepth)
     {
         col.a = 1.0;
     }
+    else
+    {
+        col.a = inside_length / definition->transparencydepth;
+    }
+
+    colorMask(&base, &col);
 
     return base;
 }
@@ -348,9 +299,12 @@ Color cloudsLayerFilterLight(CloudsLayerDefinition* definition, Renderer* render
     double inside_depth, total_depth, factor;
     CloudSegment segments[MAX_SEGMENT_COUNT];
 
-    _optimizeSearchLimits(definition, &location, &light_location);
+    if (!_optimizeSearchLimits(definition, &location, &light_location))
+    {
+        return light;
+    }
 
-    _findSegments(definition, renderer, location, direction_to_light, 0.1, MAX_SEGMENT_COUNT, definition->lighttraversal, v3Norm(v3Sub(light_location, location)), &inside_depth, &total_depth, segments);
+    _getPrimarySegments(definition, renderer, location, direction_to_light, MAX_SEGMENT_COUNT, definition->lighttraversal, v3Norm(v3Sub(light_location, location)), &inside_depth, &total_depth, segments);
 
     if (definition->lighttraversal < 0.0001)
     {
@@ -381,7 +335,16 @@ Color cloudsLayerFilterLight(CloudsLayerDefinition* definition, Renderer* render
  */
 static inline double _getLayerCoverage(CloudsLayerDefinition* layer, double x, double z)
 {
-    return sin(x) * cos(z);
+    if (layer->base_coverage == 0.0)
+    {
+        return 0.0;
+    }
+    else
+    {
+        double coverage = noiseGet2DTotal(layer->_coverage_noise, x / layer->shape_scaling, z / layer->shape_scaling);
+        coverage -= (1.0 - layer->base_coverage);
+        return (coverage <= 0.0) ? 0.0 : coverage;
+    }
 }
 
 /*
@@ -391,7 +354,20 @@ static inline double _getLayerCoverage(CloudsLayerDefinition* layer, double x, d
  */
 static inline double _getLayerDensity(CloudsLayerDefinition* layer, Vector3 location, double coverage)
 {
-    return 1.0;
+    if (coverage == 0.0)
+    {
+        return 0.0;
+    }
+    else if (coverage == 1.0)
+    {
+        return 1.0;
+    }
+    else
+    {
+        double density = noiseGet3DTotal(layer->_shape_noise, location.x / layer->shape_scaling, location.y / layer->shape_scaling, location.z / layer->shape_scaling);
+        density -= (0.5 - coverage);
+        return (density <= 0.0) ? 0.0 : density;
+    }
 }
 
 CloudsInfo cloudsGetLayerInfo(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location)
@@ -401,7 +377,7 @@ CloudsInfo cloudsGetLayerInfo(Renderer* renderer, CloudsLayerDefinition* layer, 
     UNUSED(renderer);
 
     result.density = 0.0;
-    result.distance_to_edge = 1.0;
+    result.distance_to_edge = 0.1;
 
     /* Get coverage info */
     double coverage = _getLayerCoverage(layer, location.x, location.z);

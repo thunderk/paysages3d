@@ -39,7 +39,7 @@ void autoGenRealisticLandscape(int seed)
     texture = layersGetLayer(textures.layers, layer);
     noiseClearLevels(texture->bump_noise);
     noiseRandomizeOffsets(texture->bump_noise);
-    noiseAddLevelsSimple(texture->bump_noise, 8, 1.0, -0.5, 0.5);
+    noiseAddLevelsSimple(texture->bump_noise, 8, 1.0, -0.5, 0.5, 0.5);
     texture->bump_height = 0.01;
     texture->bump_scaling = 0.045;
     texture->material.base.r = 0.6;
@@ -57,8 +57,8 @@ void autoGenRealisticLandscape(int seed)
     zoneAddSlopeRangeQuick(texture->zone, 1.0, 0.0, 0.0, 0.05, 0.4);
     noiseClearLevels(texture->bump_noise);
     noiseRandomizeOffsets(texture->bump_noise);
-    noiseAddLevelsSimple(texture->bump_noise, 5, 1.0, -0.2, 0.2);
-    noiseAddLevelsSimple(texture->bump_noise, 2, 0.03, -0.04, 0.04);
+    noiseAddLevelsSimple(texture->bump_noise, 5, 1.0, -0.2, 0.2, 0.5);
+    noiseAddLevelsSimple(texture->bump_noise, 2, 0.03, -0.04, 0.04, 0.5);
     texture->bump_height = 0.002;
     texture->bump_scaling = 0.03;
     texture->material.base.r = 0.12;

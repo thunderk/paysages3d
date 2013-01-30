@@ -311,14 +311,14 @@ void noiseAddLevels(NoiseGenerator* generator, int level_count, NoiseLevel start
     }
 }
 
-void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double minvalue, double maxvalue)
+void noiseAddLevelsSimple(NoiseGenerator* generator, int level_count, double scaling, double minvalue, double maxvalue, double center_factor)
 {
     NoiseLevel level;
 
     level.wavelength = scaling;
     level.minvalue = minvalue;
     level.amplitude = maxvalue - minvalue;
-    noiseAddLevels(generator, level_count, level, 0.5, 0.5, 0.5);
+    noiseAddLevels(generator, level_count, level, 0.5, 0.5, center_factor);
 }
 
 void noiseRemoveLevel(NoiseGenerator* generator, int level)

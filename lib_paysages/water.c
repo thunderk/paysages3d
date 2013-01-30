@@ -138,11 +138,11 @@ void waterValidateDefinition(WaterDefinition* definition)
     noiseClearLevels(definition->_waves_noise);
     if (definition->waves_height > 0.0)
     {
-        noiseAddLevelsSimple(definition->_waves_noise, 2, scaling, -definition->waves_height * scaling * 0.015, definition->waves_height * scaling * 0.015);
+        noiseAddLevelsSimple(definition->_waves_noise, 2, scaling, -definition->waves_height * scaling * 0.015, definition->waves_height * scaling * 0.015, 0.5);
     }
     if (definition->detail_height > 0.0)
     {
-        noiseAddLevelsSimple(definition->_waves_noise, 3, scaling * 0.1, -definition->detail_height * scaling * 0.015, definition->detail_height * scaling * 0.015);
+        noiseAddLevelsSimple(definition->_waves_noise, 3, scaling * 0.1, -definition->detail_height * scaling * 0.015, definition->detail_height * scaling * 0.015, 0.5);
     }
     noiseSetFunctionParams(definition->_waves_noise, NOISE_FUNCTION_SIMPLEX, -definition->turbulence, 0.0);
     noiseValidate(definition->_waves_noise);

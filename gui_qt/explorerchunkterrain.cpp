@@ -59,6 +59,11 @@ bool ExplorerChunkTerrain::onMaintainEvent()
         _tessellation_current_size = new_tessellation_size;
         _lock_data.unlock();
 
+        if (_tessellation_current_size < 8 && _tessellation_current_size < _tessellation_max_size)
+        {
+            onMaintainEvent();
+        }
+
         return true;
     }
     else

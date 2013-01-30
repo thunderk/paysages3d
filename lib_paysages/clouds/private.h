@@ -4,7 +4,7 @@
 #include "public.h"
 
 #define CLOUDS_MAX_LAYERS 6
-#define MAX_SEGMENT_COUNT 30
+#define MAX_SEGMENT_COUNT 100
 
 typedef struct
 {
