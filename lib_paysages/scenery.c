@@ -46,7 +46,7 @@ void sceneryQuit()
 void sceneryAutoPreset()
 {
     terrainAutoPreset(_terrain, TERRAIN_PRESET_STANDARD);
-    atmosphereAutoPreset(_atmosphere, ATMOSPHERE_MODEL_BRUNETON);
+    atmosphereAutoPreset(_atmosphere, ATMOSPHERE_PRESET_CLEAR_DAY);
     cloudsAutoPreset(_clouds, CLOUDS_PRESET_PARTLY_CLOUDY);
 }
 

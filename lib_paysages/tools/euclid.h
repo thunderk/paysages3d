@@ -74,6 +74,10 @@ Matrix4 m4NewPerspective(double fov_y, double aspect, double near, double far);
 double m4Determinant(Matrix4 m);
 Matrix4 m4Inverse(Matrix4 m);
 
+Vector3 euclidGetNormalFromTriangle(Vector3 center, Vector3 bottom, Vector3 right);
+double euclidGetDistance2D(double x1, double y1, double x2, double y2);
+int euclidRayIntersectSphere(Vector3 ray_point, Vector3 ray_direction, Vector3 sphere_center, double sphere_radius, Vector3* hit1, Vector3* hit2);
+
 #ifdef __cplusplus
 }
 #endif

@@ -10,7 +10,7 @@ void atmosphereAutoPreset(AtmosphereDefinition* definition, AtmospherePreset pre
     definition->sun_color.g = 0.95;
     definition->sun_color.b = 0.9;
     definition->sun_color.a = 1.0;
-    definition->sun_radius = 0.02;
+    definition->sun_radius = 1.0;
     definition->humidity = 0.1;
 
     switch (preset)

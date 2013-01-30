@@ -120,7 +120,6 @@ static Color _fakeGetSkyColor(Renderer* renderer, Vector3 direction)
 static Color _getSkyColor(Renderer* renderer, Vector3 direction)
 {
     AtmosphereDefinition* definition;
-    double dist;
     Vector3 sun_direction, sun_position;
     Color sky_color, sun_color;
 
@@ -128,9 +127,7 @@ static Color _getSkyColor(Renderer* renderer, Vector3 direction)
 
     sun_direction = renderer->atmosphere->getSunDirection(renderer);
     direction = v3Normalize(direction);
-    dist = v3Norm(v3Sub(direction, sun_direction));
-
-    sun_position = v3Scale(sun_direction, 149597870.0);
+    sun_position = v3Scale(sun_direction, SUN_DISTANCE_SCALED);
 
     /* Get base scattering*/
     switch (definition->model)
@@ -146,19 +143,25 @@ static Color _getSkyColor(Renderer* renderer, Vector3 direction)
     }
 
     /* Get sun shape */
-    if (dist < definition->sun_radius)
+    double sun_radius = definition->sun_radius * SUN_RADIUS_SCALED;
+    Vector3 hit1, hit2;
+    int hits = euclidRayIntersectSphere(renderer->camera_location, direction, sun_position, sun_radius, &hit1, &hit2);
+    if (hits > 1)
     {
+        double dist = v3Norm(v3Sub(hit2, hit1)) / sun_radius; /* distance between intersection points (relative to radius) */
+
         sun_color = definition->sun_color;
         sun_color.r *= 100.0;
         sun_color.g *= 100.0;
         sun_color.b *= 100.0;
-        if (dist <= definition->sun_radius * 0.9)
+
+        if (dist > 0.05)
         {
             return sun_color;
         }
         else
         {
-            sun_color.a = (dist - definition->sun_radius * 0.9) / (definition->sun_radius * 0.1);
+            sun_color.a = 1.0 - dist / 0.05;
             colorMask(&sky_color, &sun_color);
             return sky_color;
         }

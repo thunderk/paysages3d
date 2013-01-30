@@ -1,4 +1,4 @@
-#include "public.h"
+#include "private.h"
 
 /*
  * Atmospheric scattering, based on E. Bruneton and F.Neyret work.
@@ -18,7 +18,6 @@
 
 /*********************** Constants ***********************/
 
-#define WORLD_SCALING 0.05
 #define GROUND_OFFSET 0.5
 static const double Rg = 6360.0;
 static const double Rt = 6420.0;
@@ -1168,7 +1167,7 @@ Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color
 {
     Vector3 eye = renderer->camera_location;
     Vector3 direction = v3Scale(v3Sub(location, eye), WORLD_SCALING);
-    Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), 149597870.0);
+    Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), SUN_DISTANCE);
 
     Vector3 x = {0.0, Rg + (max(eye.y, 0.0) + GROUND_OFFSET) * WORLD_SCALING, 0.0};
     Vector3 v = v3Normalize(direction);
@@ -1200,7 +1199,7 @@ void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 
 
     double r0 = Rg + (max(lightingGetStatusLocation(status).y, 0.0) + GROUND_OFFSET) * WORLD_SCALING;
     Vector3 up = {0.0, 1.0, 0.0};
-    Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), 149597870.0);
+    Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), SUN_DISTANCE);
     Vector3 x = {0.0, r0, 0.0};
     Vector3 s = v3Normalize(v3Sub(sun_position, x));
 

@@ -219,7 +219,7 @@ int WidgetCurveEditor::getPointAt(int x, int y)
     {
         curveGetPoint(_curve, i, &point);
         curveToScreen(point.position, point.value, &dx, &dy);
-        ndistance = toolsGetDistance2D((double)x, (double)y, (double)dx, (double)dy);
+        ndistance = euclidGetDistance2D((double)x, (double)y, (double)dx, (double)dy);
         if (nearest < 0 || ndistance < distance)
         {
             distance = ndistance;
