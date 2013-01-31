@@ -24,7 +24,6 @@ Technology Preview 2 :
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
 - Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).
 - Top-down previews and explorer renderings should be camera independant.
-- Explorer should have a waiting message while init.
 - Sun radius is too small.
 
 Technlogy Preview 3 :

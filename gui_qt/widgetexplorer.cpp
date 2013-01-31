@@ -73,8 +73,31 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     _renderer->customData[3] = &_water;
     _renderer->applyTextures = _applyTextures;
 
+    _inited = false;
     _updated = false;
 
+    _average_frame_time = 0.05;
+    _quality = 3;
+    _last_mouse_x = 0;
+    _last_mouse_y = 0;
+
+    startTimer(500);
+}
+
+WidgetExplorer::~WidgetExplorer()
+{
+    stopRendering();
+
+    for (int i = 0; i < _chunks.count(); i++)
+    {
+        delete _chunks[i];
+    }
+    waterDeleteDefinition(&_water);
+    rendererDelete(_renderer);
+}
+
+void WidgetExplorer::startRendering()
+{
     // Add terrain
     int chunks = 20;
     double size = 200.0;
@@ -98,31 +121,8 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
         _updateQueue.append(chunk);
     }
 
-    startThreads();
-    startTimer(500);
-
-    _average_frame_time = 0.05;
-    _quality = 3;
-    _last_mouse_x = 0;
-    _last_mouse_y = 0;
-}
-
-WidgetExplorer::~WidgetExplorer()
-{
-    stopThreads();
-
-    for (int i = 0; i < _chunks.count(); i++)
-    {
-        delete _chunks[i];
-    }
-    waterDeleteDefinition(&_water);
-    rendererDelete(_renderer);
-}
-
-void WidgetExplorer::startThreads()
-{
+    // Start rendering workers
     int nbcore;
-
     _alive = true;
 
     nbcore = QThread::idealThreadCount();
@@ -141,7 +141,7 @@ void WidgetExplorer::startThreads()
     }
 }
 
-void WidgetExplorer::stopThreads()
+void WidgetExplorer::stopRendering()
 {
     for (int i = 0; i < _threads.count(); i++)
     {
@@ -333,6 +333,12 @@ void WidgetExplorer::wheelEvent(QWheelEvent* event)
 
 void WidgetExplorer::timerEvent(QTimerEvent*)
 {
+    if (!_inited)
+    {
+        _inited = true;
+        startRendering();
+    }
+
     if (_updated)
     {
         _updated = false;
@@ -433,6 +439,15 @@ void WidgetExplorer::paintGL()
     if (_average_frame_time < 0.04 && _quality < 10)
     {
         _quality++;
+    }
+
+    // Messages
+    if (!_inited)
+    {
+        glColor3f(0.0, 0.0, 0.0);
+        renderText(6, height() - 10, tr("Please wait while loading scene..."));
+        glColor3f(1.0, 1.0, 1.0);
+        renderText(5, height() - 9, tr("Please wait while loading scene..."));
     }
 
     while ((error_code = glGetError()) != GL_NO_ERROR)

@@ -33,13 +33,14 @@ protected:
     void paintGL();
 
 private:
-    void startThreads();
-    void stopThreads();
+    void startRendering();
+    void stopRendering();
 
     CameraDefinition _current_camera;
     CameraDefinition* _base_camera;
 
     Renderer* _renderer;
+    bool _inited;
     bool _updated;
 
     QVector<BaseExplorerChunk*> _chunks;
