@@ -1166,7 +1166,7 @@ Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3
 
 Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
 {
-    Vector3 eye = renderer->camera_location;
+    Vector3 eye = renderer->getCameraLocation(renderer, location);
     Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), SUN_DISTANCE);
 
     double yoffset = GROUND_OFFSET - renderer->getWaterHeightInfo(renderer).base_height;

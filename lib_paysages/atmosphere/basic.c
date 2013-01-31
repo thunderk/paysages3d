@@ -6,7 +6,7 @@
 
 Color basicApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
 {
-    Vector3 direction = v3Sub(location, renderer->camera_location);
+    Vector3 direction = v3Sub(location, renderer->getCameraLocation(renderer, location));
     double distance = v3Norm(direction);
     AtmosphereDefinition* definition = renderer->atmosphere->definition;
     double near = 10.0 - definition->humidity * 10.0;

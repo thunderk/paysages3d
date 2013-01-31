@@ -47,8 +47,9 @@ static void _renderQuad(TerrainDefinition* definition, Renderer* renderer, doubl
 void terrainRenderSurface(Renderer* renderer)
 {
     int chunk_factor, chunk_count, i;
-    double cx = renderer->camera_location.x;
-    double cz = renderer->camera_location.z;
+    Vector3 cam = renderer->getCameraLocation(renderer, VECTOR_ZERO);
+    double cx = cam.x;
+    double cz = cam.z;
     double min_chunk_size, visible_chunk_size;
     double radius_int, radius_ext, chunk_size;
     double water_height;

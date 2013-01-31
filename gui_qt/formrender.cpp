@@ -16,9 +16,7 @@ public:
     {
         _renderer = rendererCreate();
         _renderer->applyTextures = _applyTextures;
-        _renderer->camera_location.x = 0.0;
-        _renderer->camera_location.y = 50.0;
-        _renderer->camera_location.z = 0.0;
+        _renderer->getCameraLocation = _getCameraLocation;
 
         _textures = texturesCreateDefinition();
         _water = waterCreateDefinition();
@@ -80,6 +78,11 @@ private:
     static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
     {
         return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
+    }
+
+    static Vector3 _getCameraLocation(Renderer* renderer, Vector3 location)
+    {
+        return v3Add(location, v3Scale(VECTOR_UP, 50.0));
     }
 
     static Color _applyAerialPerspective(Renderer*, Vector3, Color base)

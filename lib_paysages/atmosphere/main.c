@@ -120,10 +120,11 @@ static Color _fakeGetSkyColor(Renderer* renderer, Vector3 direction)
 static Color _getSkyColor(Renderer* renderer, Vector3 direction)
 {
     AtmosphereDefinition* definition;
-    Vector3 sun_direction, sun_position;
+    Vector3 sun_direction, sun_position, camera_location;
     Color sky_color, sun_color;
 
     definition = renderer->atmosphere->definition;
+    camera_location = renderer->getCameraLocation(renderer, VECTOR_ZERO);
 
     sun_direction = renderer->atmosphere->getSunDirection(renderer);
     direction = v3Normalize(direction);
@@ -133,10 +134,10 @@ static Color _getSkyColor(Renderer* renderer, Vector3 direction)
     switch (definition->model)
     {
     case ATMOSPHERE_MODEL_BRUNETON:
-        sky_color = brunetonGetSkyColor(definition, renderer->camera_location, direction, sun_position);
+        sky_color = brunetonGetSkyColor(definition, camera_location, direction, sun_position);
         break;
     case ATMOSPHERE_MODEL_PREETHAM:
-        sky_color = preethamGetSkyColor(definition, renderer->camera_location, direction, sun_position);
+        sky_color = preethamGetSkyColor(definition, camera_location, direction, sun_position);
         break;
     default:
         sky_color = COLOR_BLUE;
@@ -145,7 +146,7 @@ static Color _getSkyColor(Renderer* renderer, Vector3 direction)
     /* Get sun shape */
     double sun_radius = definition->sun_radius * SUN_RADIUS_SCALED;
     Vector3 hit1, hit2;
-    int hits = euclidRayIntersectSphere(renderer->camera_location, direction, sun_position, sun_radius, &hit1, &hit2);
+    int hits = euclidRayIntersectSphere(camera_location, direction, sun_position, sun_radius, &hit1, &hit2);
     if (hits > 1)
     {
         double dist = v3Norm(v3Sub(hit2, hit1)) / sun_radius; /* distance between intersection points (relative to radius) */

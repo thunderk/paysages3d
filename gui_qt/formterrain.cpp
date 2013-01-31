@@ -18,7 +18,7 @@ public:
 
         addOsd(QString("geolocation"));
 
-        configScaling(0.5, 200.0, 3.0, 50.0);
+        configScaling(20.0, 1000.0, 20.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:

@@ -18,13 +18,14 @@ struct Renderer
     int render_width;
     int render_height;
     CameraDefinition render_camera;
-    Vector3 camera_location;
 
     /* Render related */
     RenderArea* render_area;
     double render_progress;
     int render_interrupt;
     int is_rendering;
+    Vector3 (*getCameraLocation)(Renderer* renderer, Vector3 target);
+    Vector3 (*getCameraDirection)(Renderer* renderer, Vector3 target);
     double (*getPrecision)(Renderer* renderer, Vector3 location);
     Vector3 (*projectPoint)(Renderer* renderer, Vector3 point);
     Vector3 (*unprojectPoint)(Renderer* renderer, Vector3 point);

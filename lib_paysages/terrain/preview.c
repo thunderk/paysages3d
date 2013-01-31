@@ -49,16 +49,23 @@ static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3 
     lightingPushLight(status, &light);
 }
 
+static Vector3 _getCameraLocation(Renderer* renderer, Vector3 location)
+{
+    UNUSED(renderer);
+    location.x -= 10.0;
+    location.y += 15.0;
+    location.z += 10.0;
+    return location;
+}
+
 Renderer* terrainCreatePreviewRenderer()
 {
     Renderer* result = rendererCreate();
 
     result->render_quality = 3;
     result->applyTextures = _applyTextures;
+    result->getCameraLocation = _getCameraLocation;
     result->atmosphere->getLightingStatus = _getLightingStatus;
-    result->camera_location.x = 0.0;
-    result->camera_location.y = 50.0;
-    result->camera_location.z = 0.0;
 
     if (!_inited)
     {

@@ -22,9 +22,9 @@ SmallMaterialPreview::SmallMaterialPreview(QWidget* parent, SurfaceMaterial* mat
     _material = material;
 
     _renderer = rendererCreate();
-    _renderer->camera_location.x = 0.0;
-    _renderer->camera_location.x = 0.0;
-    _renderer->camera_location.z = 10.0;
+    _renderer->render_camera.location.x = 0.0;
+    _renderer->render_camera.location.x = 0.0;
+    _renderer->render_camera.location.z = 10.0;
 }
 
 SmallMaterialPreview::~SmallMaterialPreview()
@@ -56,7 +56,7 @@ Color SmallMaterialPreview::getColor(double x, double y)
         }
 
         point = v3Normalize(point);
-        color = lightingApplyOneLight(&_light, _renderer->camera_location, point, point, _material);
+        color = lightingApplyOneLight(&_light, _renderer->getCameraLocation(_renderer, point), point, point, _material);
         if (dist > 0.95)
         {
             color.a = (1.0 - dist) / 0.05;

@@ -245,7 +245,7 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
 
     return renderer->applyLightingToSurface(renderer, location, normal, &definition->material);
 
-    lighting = lightingCreateStatus(renderer->lighting, location, renderer->camera_location);
+    lighting = lightingCreateStatus(renderer->lighting, location, renderer->getCameraLocation(renderer, location));
     renderer->atmosphere->getLightingStatus(renderer, lighting, normal, 0);
     col1 = lightingApplyStatus(lighting, normal, &definition->material);
     col2 = lightingApplyStatus(lighting, v3Scale(normal, -1.0), &definition->material);

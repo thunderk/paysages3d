@@ -110,6 +110,9 @@ static double _getHeight(Renderer* renderer, double x, double z, int with_painti
 
 static Color _fakeGetFinalColor(Renderer* renderer, Vector3 location, double precision)
 {
+    UNUSED(renderer);
+    UNUSED(location);
+    UNUSED(precision);
     return COLOR_GREEN;
 }
 
@@ -121,7 +124,7 @@ static Color _getFinalColor(Renderer* renderer, Vector3 location, double precisi
 
     /* TODO Factorize this in scenery renderer */
     color = renderer->atmosphere->applyAerialPerspective(renderer, location, color);
-    color = renderer->clouds->getColor(renderer, color, renderer->camera_location, location);
+    color = renderer->clouds->getColor(renderer, color, renderer->getCameraLocation(renderer, location), location);
 
     return color;
 }

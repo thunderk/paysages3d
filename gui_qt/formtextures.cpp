@@ -27,7 +27,7 @@ public:
 
         addOsd(QString("geolocation"));
 
-        configScaling(0.5, 200.0, 1.0, 50.0);
+        configScaling(20.0, 500.0, 20.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
     ~PreviewTexturesCoverage()
@@ -70,9 +70,9 @@ public:
 
         _renderer = rendererCreate();
         _renderer->render_quality = 3;
-        _renderer->camera_location.x = 0.0;
-        _renderer->camera_location.y = 20.0;
-        _renderer->camera_location.z = 0.0;
+        _renderer->render_camera.location.x = 0.0;
+        _renderer->render_camera.location.y = 20.0;
+        _renderer->render_camera.location.z = 0.0;
 
         _zone = zoneCreate();
 

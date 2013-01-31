@@ -356,7 +356,7 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
 
     color = renderer->applyLightingToSurface(renderer, location, normal, &material);
     color = renderer->atmosphere->applyAerialPerspective(renderer, location, color);
-    color = renderer->clouds->getColor(renderer, color, renderer->camera_location, location);
+    color = renderer->clouds->getColor(renderer, color, renderer->getCameraLocation(renderer, location), location);
 
     result.base = definition->material.base;
     result.final = color;
@@ -371,13 +371,14 @@ Color waterGetColor(WaterDefinition* definition, Renderer* renderer, Vector3 loc
 
 static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* data)
 {
-    return waterGetColor((WaterDefinition*)data, renderer, location, v3Sub(location, renderer->camera_location));
+    return waterGetColor((WaterDefinition*)data, renderer, location, v3Sub(location, renderer->getCameraLocation(renderer, location)));
 }
 
 static Vector3 _getFirstPassVertex(WaterDefinition* definition, double x, double z, double precision)
 {
     Vector3 result;
 
+    UNUSED(precision);
     result.x = x;
     result.y = _getHeight(definition, x, z);
     result.z = z;
@@ -400,8 +401,9 @@ static void _renderQuad(WaterDefinition* definition, Renderer* renderer, double 
 void waterRender(WaterDefinition* definition, Renderer* renderer)
 {
     int chunk_factor, chunk_count, i;
-    double cx = renderer->camera_location.x;
-    double cz = renderer->camera_location.z;
+    Vector3 cam = renderer->getCameraLocation(renderer, VECTOR_ZERO);
+    double cx = cam.x;
+    double cz = cam.z;
     double radius_int, radius_ext, base_chunk_size, chunk_size;
 
     base_chunk_size = 2.0 / (double)renderer->render_quality;

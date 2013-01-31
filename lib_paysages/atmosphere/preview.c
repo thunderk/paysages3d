@@ -148,9 +148,9 @@ Renderer* atmosphereCreatePreviewRenderer()
 {
     Renderer* result = rendererCreate();
 
-    result->camera_location.x = 0.0;
-    result->camera_location.y = 7.0;
-    result->camera_location.z = 0.0;
+    result->render_camera.location.x = 0.0;
+    result->render_camera.location.y = 7.0;
+    result->render_camera.location.z = 0.0;
 
     return result;
 }

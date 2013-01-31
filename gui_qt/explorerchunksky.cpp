@@ -16,7 +16,7 @@ ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, double size, SkyboxOrient
 void ExplorerChunkSky::onRenderEvent(QGLWidget*)
 {
     double size = _box_size;
-    Vector3 camera = renderer()->camera_location;
+    Vector3 camera = renderer()->getCameraLocation(renderer(), VECTOR_ZERO);
 
     glBegin(GL_QUADS);
     switch(_orientation)

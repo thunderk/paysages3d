@@ -231,7 +231,6 @@ Renderer* sceneryCreateStandardRenderer()
     result = rendererCreate();
 
     cameraCopyDefinition(&_camera, &result->render_camera);
-    result->camera_location = _camera.location;
 
     result->rayWalking = _rayWalking;
     result->getWaterHeightInfo = _getWaterHeightInfo;

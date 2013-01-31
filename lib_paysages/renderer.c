@@ -4,9 +4,10 @@
 #include "system.h"
 #include "render.h"
 #include "scenery.h"
+#include "tools.h"
 
-RayCastingResult _RAYCASTING_NULL = {0};
-HeightInfo _WATER_HEIGHT_INFO = {0.0, 0.0, 0.0};
+static RayCastingResult _RAYCASTING_NULL = {0};
+static HeightInfo _WATER_HEIGHT_INFO = {0.0, 0.0, 0.0};
 
 static void* _renderFirstPass(void* data)
 {
@@ -19,21 +20,40 @@ static void* _renderFirstPass(void* data)
 
 static int _addRenderProgress(Renderer* renderer, double progress)
 {
+    UNUSED(progress);
     return !renderer->render_interrupt;
+}
+
+static Vector3 _getCameraLocation(Renderer* renderer, Vector3 target)
+{
+    UNUSED(renderer);
+    UNUSED(target);
+    return renderer->render_camera.location;
+}
+
+static Vector3 _getCameraDirection(Renderer* renderer, Vector3 target)
+{
+    UNUSED(renderer);
+    UNUSED(target);
+    return renderer->render_camera.forward;
 }
 
 static double _getPrecision(Renderer* renderer, Vector3 location)
 {
+    UNUSED(renderer);
+    UNUSED(location);
     return 0.0;
 }
 
 static Vector3 _projectPoint(Renderer* renderer, Vector3 point)
 {
+    UNUSED(renderer);
     return point;
 }
 
 static Vector3 _unprojectPoint(Renderer* renderer, Vector3 point)
 {
+    UNUSED(renderer);
     return point;
 }
 
@@ -71,7 +91,7 @@ static Color _applyTextures(Renderer* renderer, Vector3 location, double precisi
 
 Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material)
 {
-    LightStatus* light = lightingCreateStatus(renderer->lighting, location, renderer->camera_location);
+    LightStatus* light = lightingCreateStatus(renderer->lighting, location, renderer->getCameraLocation(renderer, location));
     renderer->atmosphere->getLightingStatus(renderer, light, normal, 0);
     Color result = lightingApplyStatus(light, normal, material);
     lightingDeleteStatus(light);
@@ -90,12 +110,13 @@ Renderer* rendererCreate()
     result->render_progress = 0.0;
     result->is_rendering = 0;
     result->render_camera = cameraCreateDefinition();
-    result->camera_location = result->render_camera.location;
     result->render_area = renderCreateArea();
 
     renderSetParams(result->render_area, params);
 
     result->addRenderProgress = _addRenderProgress;
+    result->getCameraLocation = _getCameraLocation;
+    result->getCameraDirection = _getCameraDirection;
     result->getPrecision = _getPrecision;
     result->projectPoint = _projectPoint;
     result->unprojectPoint = _unprojectPoint;
@@ -151,7 +172,6 @@ void rendererStart(Renderer* renderer, RenderParams params)
     renderer->render_progress = 0.0;
 
     cameraSetRenderSize(&renderer->render_camera, renderer->render_width, renderer->render_height);
-    renderer->camera_location = renderer->render_camera.location;
 
     renderSetBackgroundColor(renderer->render_area, &COLOR_BLACK);
     renderSetParams(renderer->render_area, params);

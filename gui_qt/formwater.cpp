@@ -27,7 +27,7 @@ public:
         addOsd(QString("geolocation"));
         addToggle("highlight", tr("Coverage highlight"), true);
 
-        configScaling(0.5, 200.0, 3.0, 50.0);
+        configScaling(20.0, 1000.0, 20.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
@@ -117,6 +117,7 @@ protected:
     {
         Vector3 eye, look, location;
 
+        // TODO Camera location
         eye.x = 0.0;
         eye.y = scaling;
         eye.z = -10.0 * scaling;

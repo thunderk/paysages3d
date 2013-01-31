@@ -397,7 +397,6 @@ void WidgetExplorer::paintGL()
     double frame_time;
 
     cameraValidateDefinition(&_current_camera, 1);
-    _renderer->camera_location = _current_camera.location;
 
     start_time = QTime::currentTime();
 
