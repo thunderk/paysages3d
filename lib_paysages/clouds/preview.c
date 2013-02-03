@@ -36,7 +36,7 @@ Color cloudsGetPreviewCoverage(Renderer* renderer, double x, double y, double sc
         eye.y = scaling;
         eye.z = -10.0 * scaling;
         look.x = x * 0.01 / scaling;
-        look.y = -y * 0.01 / scaling - 0.3;
+        look.y = -(y * 0.01 - 0.3) / scaling;
         look.z = 1.0;
         look = v3Normalize(look);
 

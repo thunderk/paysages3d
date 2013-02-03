@@ -144,33 +144,32 @@ static Color _getSkyColor(Renderer* renderer, Vector3 direction)
     }
 
     /* Get sun shape */
-    double sun_radius = definition->sun_radius * SUN_RADIUS_SCALED;
-    Vector3 hit1, hit2;
-    int hits = euclidRayIntersectSphere(camera_location, direction, sun_position, sun_radius, &hit1, &hit2);
-    if (hits > 1)
+    if (v3Dot(sun_direction, direction) >= 0)
     {
-        double dist = v3Norm(v3Sub(hit2, hit1)) / sun_radius; /* distance between intersection points (relative to radius) */
-
-        sun_color = definition->sun_color;
-        sun_color.r *= 100.0;
-        sun_color.g *= 100.0;
-        sun_color.b *= 100.0;
-
-        if (dist > 0.05)
+        double sun_radius = definition->sun_radius * SUN_RADIUS_SCALED * 5.0; /* FIXME Why should we multiply by 5 ? */
+        Vector3 hit1, hit2;
+        int hits = euclidRayIntersectSphere(camera_location, direction, sun_position, sun_radius, &hit1, &hit2);
+        if (hits > 1)
         {
-            return sun_color;
-        }
-        else
-        {
-            sun_color.a = 1.0 - dist / 0.05;
-            colorMask(&sky_color, &sun_color);
-            return sky_color;
+            double dist = v3Norm(v3Sub(hit2, hit1)) / sun_radius; /* distance between intersection points (relative to radius) */
+
+            sun_color = definition->sun_color;
+            sun_color.r *= 100.0;
+            sun_color.g *= 100.0;
+            sun_color.b *= 100.0;
+
+            if (dist > 0.05)
+            {
+                return sun_color;
+            }
+            else
+            {
+                sun_color.a = 1.0 - dist / 0.05;
+                colorMask(&sky_color, &sun_color);
+            }
         }
     }
-    else
-    {
-        return sky_color;
-    }
+    return sky_color;
 }
 
 static Vector3 _getSunDirection(Renderer* renderer)

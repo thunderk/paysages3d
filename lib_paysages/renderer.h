@@ -35,6 +35,7 @@ struct Renderer
 
     /* Shortcuts */
     Color (*applyLightingToSurface)(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material);
+    Color (*applyMediumTraversal)(Renderer* renderer, Vector3 location, Color color);
 
     /* Scenery related */
     RayCastingResult (*rayWalking)(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds);

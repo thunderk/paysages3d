@@ -74,14 +74,16 @@ void terrainHeightmapCopy(TerrainHeightMap* source, TerrainHeightMap* destinatio
 
     for (i = 0; i < destination->fixed_count; i++)
     {
-        TerrainHeightMapChunk* chunk = destination->fixed_data + i;
+        TerrainHeightMapChunk* chunk_source = source->fixed_data + i;
+        TerrainHeightMapChunk* chunk_destination = destination->fixed_data + i;
+        size_t mapsize = sizeof(double) * chunk_source->rect.xsize * chunk_source->rect.zsize;
 
-        chunk->rect = chunk->rect;
-        if (chunk->rect.xsize * chunk->rect.zsize > 0)
+        chunk_destination->rect = chunk_source->rect;
+        if (chunk_source->rect.xsize * chunk_source->rect.zsize > 0)
         {
-            chunk->data = realloc(chunk->data, sizeof(double) * chunk->rect.xsize * chunk->rect.zsize);
+            chunk_destination->data = realloc(chunk_destination->data, mapsize);
+            memcpy(chunk_destination->data, chunk_source->data, mapsize);
         }
-        memcpy(chunk->data, chunk->data, sizeof(double) * chunk->rect.xsize * chunk->rect.zsize);
     }
 
     destination->floating_used = 0;
@@ -219,9 +221,9 @@ static void _prepareBrushStroke(TerrainHeightMap* heightmap, TerrainBrush* brush
             heightmap->floating_data.rect.zsize += gz1 + gz2;
 
             _resetRect(heightmap, 0, new_width - 1, 0, gz1 - 1);
-            _resetRect(heightmap, 0, new_width - 1, new_height - gz2 + 1, new_height - 1);
-            _resetRect(heightmap, 0, gx1 - 1, gz1, new_height - gz2);
-            _resetRect(heightmap, new_width - gx2 + 1, new_width - 1, gz1, new_height - gz2);
+            _resetRect(heightmap, 0, new_width - 1, new_height - gz2, new_height - 1);
+            _resetRect(heightmap, 0, gx1 - 1, gz1, new_height - 1 - gz2);
+            _resetRect(heightmap, new_width - gx2, new_width - 1, gz1, new_height - 1 - gz2);
         }
     }
     else
@@ -244,6 +246,24 @@ static void _prepareBrushStroke(TerrainHeightMap* heightmap, TerrainBrush* brush
     }
 }
 
+size_t terrainGetMemoryStats(TerrainDefinition* definition)
+{
+    TerrainHeightMap* heightmap = definition->height_map;
+    size_t result = 0;
+    int i;
+
+    if (heightmap->floating_used)
+    {
+        result += sizeof(double) * heightmap->floating_data.rect.xsize * heightmap->floating_data.rect.zsize;
+    }
+    for (i = 0; i < heightmap->fixed_count; i++)
+    {
+        result += sizeof(double) * heightmap->fixed_data[i].rect.xsize * heightmap->fixed_data[i].rect.zsize;
+    }
+
+    return result;
+}
+
 void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)
 {
     _prepareBrushStroke(heightmap, brush);
@@ -261,6 +281,25 @@ void terrainBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, Nois
 
 void terrainBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)
 {
+}
+
+void terrainEndBrushStroke(TerrainHeightMap* heightmap)
+{
+    /* Commit floating data to fixed */
+    if (heightmap->floating_used)
+    {
+        /* TODO Find overlapping data and merge with them */
+
+        size_t mapsize = sizeof(double) * heightmap->floating_data.rect.xsize * heightmap->floating_data.rect.zsize;
+        heightmap->fixed_data = realloc(heightmap->fixed_data, sizeof(TerrainHeightMapChunk) * (heightmap->fixed_count + 1));
+        heightmap->fixed_data[heightmap->fixed_count].rect = heightmap->floating_data.rect;
+        heightmap->fixed_data[heightmap->fixed_count].data = malloc(mapsize);
+        memcpy(heightmap->fixed_data[heightmap->fixed_count].data, heightmap->floating_data.data, mapsize);
+
+        heightmap->fixed_count++;
+        heightmap->floating_used = 0;
+        heightmap->floating_data.data = realloc(heightmap->floating_data.data, sizeof(double));
+    }
 }
 
 #if 0

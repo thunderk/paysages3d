@@ -121,10 +121,7 @@ static Color _getFinalColor(Renderer* renderer, Vector3 location, double precisi
     Color color;
 
     color = renderer->applyTextures(renderer, location, precision);
-
-    /* TODO Factorize this in scenery renderer */
-    color = renderer->atmosphere->applyAerialPerspective(renderer, location, color);
-    color = renderer->clouds->getColor(renderer, color, renderer->getCameraLocation(renderer, location), location);
+    color = renderer->applyMediumTraversal(renderer, location, color);
 
     return color;
 }

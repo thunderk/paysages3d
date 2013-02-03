@@ -80,7 +80,7 @@ private:
         return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
     }
 
-    static Vector3 _getCameraLocation(Renderer* renderer, Vector3 location)
+    static Vector3 _getCameraLocation(Renderer*, Vector3 location)
     {
         return v3Add(location, v3Scale(VECTOR_UP, 50.0));
     }

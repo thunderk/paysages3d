@@ -355,8 +355,7 @@ WaterResult waterGetColorDetail(WaterDefinition* definition, Renderer* renderer,
     _applyFoam(definition, location, normal, detail, &material);
 
     color = renderer->applyLightingToSurface(renderer, location, normal, &material);
-    color = renderer->atmosphere->applyAerialPerspective(renderer, location, color);
-    color = renderer->clouds->getColor(renderer, color, renderer->getCameraLocation(renderer, location), location);
+    color = renderer->applyMediumTraversal(renderer, location, color);
 
     result.base = definition->material.base;
     result.final = color;

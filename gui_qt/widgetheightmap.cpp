@@ -17,6 +17,8 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
     setCursor(Qt::CrossCursor);
     startTimer(100);
 
+    _memory_stats = terrainGetMemoryStats(terrain);
+
     _terrain = terrain;
     _renderer = rendererCreate();
     TerrainRendererClass.bind(_renderer, _terrain);
@@ -98,6 +100,36 @@ void WidgetHeightMap::setBrushStrength(double strength)
     updateGL();
 }
 
+QString WidgetHeightMap::getMemoryStats()
+{
+    qint64 memused = _memory_stats;
+    if (memused >= 1024)
+    {
+        memused /= 1024;
+        if (memused >= 1024)
+        {
+            memused /= 1024;
+            if (memused >= 1024)
+            {
+                memused /= 1024;
+                return tr("%1 GB").arg(memused);
+            }
+            else
+            {
+                return tr("%1 MB").arg(memused);
+            }
+        }
+        else
+        {
+            return tr("%1 kB").arg(memused);
+        }
+    }
+    else
+    {
+        return tr("%1 B").arg(memused);
+    }
+}
+
 void WidgetHeightMap::revert()
 {
     _dirty = true;
@@ -121,6 +153,7 @@ void WidgetHeightMap::mousePressEvent(QMouseEvent* event)
 void WidgetHeightMap::mouseReleaseEvent(QMouseEvent*)
 {
     _last_brush_action = 0;
+    terrainEndBrushStroke(_terrain->height_map);
 }
 
 void WidgetHeightMap::mouseMoveEvent(QMouseEvent* event)
@@ -244,6 +277,7 @@ void WidgetHeightMap::paintGL()
     if (_dirty)
     {
         updateVertexInfo();
+        emit heightmapChanged();
         _dirty = false;
     }
 
@@ -358,6 +392,8 @@ void WidgetHeightMap::updateVertexInfo()
     _VertexInfo* old_vertices = _vertices;
     _vertices = new _VertexInfo[rx * rz];
     delete[] old_vertices;
+
+    _memory_stats = terrainGetMemoryStats(_terrain);
 
     // Update positions
     for (int x = 0; x < rx; x++)

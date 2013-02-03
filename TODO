@@ -12,9 +12,7 @@ Technology Preview 2 :
    => Restore water filtering
    => Restore cloud lighting
    => Restore and improve skydome lighting
-- Apply Preetham's model usage
-   => Convert to HDR rendering.
-   => Apply model's aerial perspective.
+- Hide Preetham's model.
 - Find a proper model for night sky (maybe Shirley).
 - Improve textures (current model is greatly incorrect).
    => Separate models (basic texture and covering texture).
@@ -29,6 +27,7 @@ Technology Preview 2 :
 Technlogy Preview 3 :
 - Fully move layer management from BaseForm to BaseFormLayer.
 - Start vegetation system.
+- Add tone-mapping and exposure control to final image.
 - Allow render saving in HDR compatible format.
 - Add clouds to explorer with 3d textures.
 - Add fresnel effect to specular lighting.

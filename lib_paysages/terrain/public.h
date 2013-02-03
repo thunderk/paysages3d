@@ -1,6 +1,7 @@
 #ifndef _PAYSAGES_TERRAIN_PUBLIC_H_
 #define _PAYSAGES_TERRAIN_PUBLIC_H_
 
+#include <stdlib.h>
 #include "../shared/types.h"
 #include "../tools/color.h"
 #include "../tools/euclid.h"
@@ -51,6 +52,7 @@ extern StandardRenderer TerrainRendererClass;
 void terrainAutoPreset(TerrainDefinition* definition, TerrainPreset preset);
 void terrainRenderSurface(Renderer* renderer);
 double terrainGetGridHeight(TerrainDefinition* definition, int x, int z, int with_painting);
+size_t terrainGetMemoryStats(TerrainDefinition* definition);
 
 Renderer* terrainCreatePreviewRenderer();
 Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double detail);
@@ -64,10 +66,12 @@ typedef struct
     double total_radius;
 } TerrainBrush;
 
+/* Heightmap manipulation */
 void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
 void terrainBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
 void terrainBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value);
 void terrainBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
+void terrainEndBrushStroke(TerrainHeightMap* heightmap);
 
 #ifdef __cplusplus
 }

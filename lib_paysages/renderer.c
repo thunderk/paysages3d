@@ -89,13 +89,20 @@ static Color _applyTextures(Renderer* renderer, Vector3 location, double precisi
     return COLOR_TRANSPARENT;
 }
 
-Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material)
+static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material)
 {
     LightStatus* light = lightingCreateStatus(renderer->lighting, location, renderer->getCameraLocation(renderer, location));
     renderer->atmosphere->getLightingStatus(renderer, light, normal, 0);
     Color result = lightingApplyStatus(light, normal, material);
     lightingDeleteStatus(light);
     return result;
+}
+
+static Color _applyMediumTraversal(Renderer* renderer, Vector3 location, Color color)
+{
+    color = renderer->atmosphere->applyAerialPerspective(renderer, location, color);
+    color = renderer->clouds->getColor(renderer, color, renderer->getCameraLocation(renderer, location), location);
+    return color;
 }
 
 Renderer* rendererCreate()
@@ -128,6 +135,7 @@ Renderer* rendererCreate()
     result->applyTextures = _applyTextures;
 
     result->applyLightingToSurface = _applyLightingToSurface;
+    result->applyMediumTraversal = _applyMediumTraversal;
 
     result->lighting = lightingManagerCreate();
 

@@ -24,11 +24,13 @@ private slots:
     void brushSizeChanged(int value);
     void brushSmoothingChanged(int value);
     void brushStrengthChanged(int value);
+    void heightmapChanged();
     //void loadFromFile();
 
 private:
     TerrainDefinition* _value_original;
     TerrainDefinition* _value_modified;
+    QLabel* _info_memory;
     WidgetHeightMap* _3dview;
 };
 

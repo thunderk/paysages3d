@@ -76,5 +76,8 @@ void FormTerrain::configChangeEvent()
 
 void FormTerrain::startPainting()
 {
-    DialogHeightMap::editHeightMap(this, _definition);
+    if (DialogHeightMap::editHeightMap(this, _definition))
+    {
+        configChangeEvent();
+    }
 }

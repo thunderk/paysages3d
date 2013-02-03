@@ -33,8 +33,13 @@ public:
     void setBrushSmoothing(double smoothing);
     void setBrushStrength(double smoothing);
 
+    QString getMemoryStats();
+
 public slots:
     void revert();
+
+signals:
+    void heightmapChanged();
 
 protected:
     void mousePressEvent(QMouseEvent* event);
@@ -56,6 +61,7 @@ private:
     _VertexInfo* _vertices;
 
     bool _dirty;
+    qint64 _memory_stats;
 
     double _average_frame_time;
 

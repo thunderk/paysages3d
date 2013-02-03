@@ -55,6 +55,8 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, TerrainDefinition* terrain) : 
     // Viewer layout (3d display + sliders)
     _3dview = new WidgetHeightMap(viewer, _value_modified);
     viewer_layout->addWidget(_3dview, 0, 0);
+    connect(_3dview, SIGNAL(heightmapChanged()), this, SLOT(heightmapChanged()));
+
     slider = new QSlider(Qt::Horizontal, viewer);
     slider->setRange(0, 1000);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(angleHChanged(int)));
@@ -65,6 +67,9 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, TerrainDefinition* terrain) : 
     viewer_layout->addWidget(slider, 0, 1);
 
     // Panel layout
+    _info_memory = new QLabel(panel);
+    panel->layout()->addWidget(_info_memory);
+
     /*button = new QPushButton(tr("Load from picture file"), panel);
     connect(button, SIGNAL(clicked()), this, SLOT(loadFromFile()));
     panel->layout()->addWidget(button);*/
@@ -173,6 +178,11 @@ void DialogHeightMap::brushSmoothingChanged(int value)
 void DialogHeightMap::brushStrengthChanged(int value)
 {
     _3dview->setBrushStrength((double)value / 2000.0);
+}
+
+void DialogHeightMap::heightmapChanged()
+{
+    _info_memory->setText(tr("Memory used: %1").arg(_3dview->getMemoryStats()));
 }
 
 /*void DialogHeightMap::loadFromFile()
