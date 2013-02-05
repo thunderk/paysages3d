@@ -6,6 +6,10 @@
 #include <QColor>
 #include <QPainter>
 #include <QMessageBox>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QListWidget>
+#include <QPushButton>
 #include "tools.h"
 
 #include "../lib_paysages/scenery.h"
@@ -26,7 +30,6 @@ static void _renderStart(int width, int height, Color background)
 
 static void _renderDraw(int x, int y, Color col)
 {
-    col = colorProfileApply(_current_dialog->_hdr_profile, col);
     _current_dialog->pixbuf->setPixel(x, _current_dialog->pixbuf->height() - 1 - y, colorToQColor(col).rgb());
 }
 
@@ -80,8 +83,6 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     _render_thread = NULL;
     _renderer = renderer;
 
-    _hdr_profile = colorProfileCreate();
-
     setModal(true);
     setWindowTitle(tr("Paysages 3D - Render"));
     setLayout(new QVBoxLayout());
@@ -92,6 +93,7 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     _scroll->setWidget(area);
     layout()->addWidget(_scroll);
 
+    // Status bar
     _info = new QWidget(this);
     _info->setLayout(new QHBoxLayout());
     layout()->addWidget(_info);
@@ -106,8 +108,31 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     _progress->setValue(0);
     _info->layout()->addWidget(_progress);
 
+    // Action bar
+    _actions = new QWidget(this);
+    _actions->setLayout(new QHBoxLayout());
+    layout()->addWidget(_actions);
+
+    _actions->layout()->addWidget(new QLabel(tr("Tone-mapping: "), _actions));
+    _tonemapping_control = new QComboBox(_actions);
+    _tonemapping_control->addItems(QStringList(tr("Uncharted")) << tr("Reinhard"));
+    _actions->layout()->addWidget(_tonemapping_control);
+
+    _actions->layout()->addWidget(new QLabel(tr("Exposure: "), _actions));
+    _exposure_control = new QSlider(Qt::Horizontal, _actions);
+    _exposure_control->setRange(0, 1000);
+    _exposure_control->setValue(200);
+    _actions->layout()->addWidget(_exposure_control);
+
+    _save_button = new QPushButton(QIcon("images/save.png"), tr("Save picture"), _actions);
+    _actions->layout()->addWidget(_save_button);
+
+    // Connections
     connect(this, SIGNAL(renderSizeChanged(int, int)), this, SLOT(applyRenderSize(int, int)));
     connect(this, SIGNAL(progressChanged(double)), this, SLOT(applyProgress(double)));
+    connect(_save_button, SIGNAL(clicked()), this, SLOT(saveRender()));
+    connect(_tonemapping_control, SIGNAL(currentIndexChanged(int)), this, SLOT(toneMappingChanged()));
+    connect(_exposure_control, SIGNAL(valueChanged(int)), this, SLOT(toneMappingChanged()));
 }
 
 DialogRender::~DialogRender()
@@ -119,7 +144,6 @@ DialogRender::~DialogRender()
 
         delete _render_thread;
     }
-    colorProfileDelete(_hdr_profile);
     delete pixbuf;
     delete pixbuf_lock;
 }
@@ -145,6 +169,33 @@ void DialogRender::startRender(RenderParams params)
     _render_thread->start();
 
     exec();
+}
+
+void DialogRender::saveRender()
+{
+    QString filepath;
+
+    filepath = QFileDialog::getSaveFileName(this, tr("Paysages 3D - Choose a filename to save the last render"), QString(), tr("Images (*.png *.jpg)"));
+    if (!filepath.isNull())
+    {
+        if (!filepath.toLower().endsWith(".jpg") && !filepath.toLower().endsWith(".jpeg") && !filepath.toLower().endsWith(".png"))
+        {
+            filepath = filepath.append(".png");
+        }
+        if (renderSaveToFile(_renderer->render_area, (char*)filepath.toStdString().c_str()))
+        {
+            QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
+        }
+        else
+        {
+            QMessageBox::critical(this, "Message", QString(tr("Can't write to file : %1")).arg(filepath));
+        }
+    }
+}
+
+void DialogRender::toneMappingChanged()
+{
+    renderSetToneMapping(_renderer->render_area, (ToneMappingOperator)_tonemapping_control->currentIndex(), ((double)_exposure_control->value()) * 0.01);
 }
 
 void DialogRender::loadLastRender()

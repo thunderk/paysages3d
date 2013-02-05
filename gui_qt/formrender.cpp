@@ -1,7 +1,5 @@
 #include "formrender.h"
 
-#include <QFileDialog>
-#include <QMessageBox>
 #include "dialogrender.h"
 #include "inputcamera.h"
 #include "tools.h"
@@ -120,8 +118,6 @@ FormRender::FormRender(QWidget *parent) :
     connect(button, SIGNAL(clicked()), this, SLOT(startRender()));
     button = addButton(tr("Show last render"));
     connect(button, SIGNAL(clicked()), this, SLOT(showRender()));
-    button = addButton(tr("Save last render"));
-    connect(button, SIGNAL(clicked()), this, SLOT(saveRender()));
 
     revertConfig();
 }
@@ -213,30 +209,5 @@ void FormRender::showRender()
         dialog->loadLastRender();
 
         delete dialog;
-    }
-}
-
-void FormRender::saveRender()
-{
-    if (_renderer_inited)
-    {
-        QString filepath;
-
-        filepath = QFileDialog::getSaveFileName(this, tr("Paysages 3D - Choose a filename to save the last render"), QString(), tr("Images (*.png *.jpg)"));
-        if (!filepath.isNull())
-        {
-            if (!filepath.toLower().endsWith(".jpg") && !filepath.toLower().endsWith(".jpeg") && !filepath.toLower().endsWith(".png"))
-            {
-                filepath = filepath.append(".png");
-            }
-            if (renderSaveToFile(_renderer->render_area, (char*)filepath.toStdString().c_str()))
-            {
-                QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
-            }
-            else
-            {
-                QMessageBox::critical(this, "Message", QString(tr("Can't write to file : %1")).arg(filepath));
-            }
-        }
     }
 }

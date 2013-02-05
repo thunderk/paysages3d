@@ -6,6 +6,8 @@
 #include <QThread>
 #include <QProgressBar>
 #include <QScrollArea>
+#include <QSlider>
+#include <QComboBox>
 #include <QLabel>
 #include <QMutex>
 #include "../lib_paysages/renderer.h"
@@ -26,11 +28,12 @@ public:
     QImage* pixbuf;
     QMutex* pixbuf_lock;
     QWidget* area;
-    ColorProfile* _hdr_profile;
 
 private slots:
     void applyRenderSize(int width, int height);
     void applyProgress(double value);
+    void saveRender();
+    void toneMappingChanged();
 
 signals:
     void renderSizeChanged(int width, int height);
@@ -39,6 +42,10 @@ signals:
 private:
     QScrollArea* _scroll;
     QWidget* _info;
+    QWidget* _actions;
+    QComboBox* _tonemapping_control;
+    QSlider* _exposure_control;
+    QPushButton* _save_button;
     QThread* _render_thread;
     QLabel* _timer;
     Renderer* _renderer;

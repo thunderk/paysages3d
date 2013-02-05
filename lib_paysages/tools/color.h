@@ -44,9 +44,16 @@ double colorGetValue(Color* col);
 
 /* HDR profile for tone-mapping */
 typedef struct ColorProfile ColorProfile;
+typedef enum
+{
+    TONE_MAPPING_UNCHARTED,
+    TONE_MAPPING_REIHNARD
+} ToneMappingOperator;
 
 ColorProfile* colorProfileCreate();
 void colorProfileDelete(ColorProfile* profile);
+
+void colorProfileSetToneMapping(ColorProfile* profile, ToneMappingOperator tonemapper, double exposure);
 
 void colorProfileSave(PackStream* stream, ColorProfile* profile);
 void colorProfileLoad(PackStream* stream, ColorProfile* profile);

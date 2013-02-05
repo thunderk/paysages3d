@@ -83,6 +83,7 @@ int systemSavePictureFile(const char* filepath, PictureCallbackSavePixel callbac
         for (x = 0; x < width; x++)
         {
             result = callback_pixel(data, x, y);
+            colorNormalize(&result);
             rgba = colorTo32BitRGBA(&result);
             pixels[y * width + x] = rgba;
         }

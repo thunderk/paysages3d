@@ -32,6 +32,7 @@ RenderArea* renderCreateArea();
 void renderDeleteArea(RenderArea* area);
 
 void renderSetParams(RenderArea* area, RenderParams params);
+void renderSetToneMapping(RenderArea* area, ToneMappingOperator tonemapper, double exposure);
 void renderSetBackgroundColor(RenderArea* area, Color* col);
 void renderClear(RenderArea* area);
 void renderUpdate(RenderArea* area);

@@ -4,12 +4,17 @@
 #include "baseexplorerchunk.h"
 #include "../lib_paysages/camera.h"
 
-ExplorerChunkTerrain::ExplorerChunkTerrain(Renderer* renderer, double x, double z, double size, int nbchunks) : BaseExplorerChunk(renderer)
+ExplorerChunkTerrain::ExplorerChunkTerrain(Renderer* renderer, double x, double z, double size, int nbchunks, double water_height) : BaseExplorerChunk(renderer)
 {
     _startx = x;
     _startz = z;
     _size = size;
     _overall_step = size * (double)nbchunks;
+
+    _distance_to_camera = 0.0;
+
+    _water_height = water_height;
+    _overwater = false;
 
     _tessellation_max_size = 32;
     _tessellation = new double[(_tessellation_max_size + 1) * (_tessellation_max_size + 1)];
@@ -31,6 +36,7 @@ ExplorerChunkTerrain::~ExplorerChunkTerrain()
 void ExplorerChunkTerrain::onResetEvent()
 {
     _tessellation_current_size = 0;
+    _overwater = false;
 }
 
 bool ExplorerChunkTerrain::onMaintainEvent()
@@ -50,6 +56,10 @@ bool ExplorerChunkTerrain::onMaintainEvent()
                 if (_tessellation_current_size == 0 || i % old_tessellation_inc != 0 || j % old_tessellation_inc != 0)
                 {
                     double height = renderer->terrain->getHeight(renderer, _startx + _tessellation_step * (double)i, _startz + _tessellation_step * (double)j, 1);
+                    if (height >= _water_height)
+                    {
+                        _overwater = true;
+                    }
                     _tessellation[j * (_tessellation_max_size + 1) + i] = height;
                 }
             }
@@ -59,7 +69,7 @@ bool ExplorerChunkTerrain::onMaintainEvent()
         _tessellation_current_size = new_tessellation_size;
         _lock_data.unlock();
 
-        if (_tessellation_current_size < 8 && _tessellation_current_size < _tessellation_max_size)
+        if (_tessellation_current_size < 4 && _tessellation_current_size < _tessellation_max_size)
         {
             onMaintainEvent();
         }
@@ -96,6 +106,9 @@ void ExplorerChunkTerrain::onCameraEvent(CameraDefinition* camera)
         _startz -= _overall_step;
         askReset();
     }
+
+    _distance_to_camera = v3Norm(v3Sub(getCenter(), camera->location));
+    
     _lock_data.unlock();
 }
 
@@ -106,7 +119,7 @@ void ExplorerChunkTerrain::onRenderEvent(QGLWidget*)
     double tsize = 1.0 / (double)_tessellation_max_size;
     _lock_data.unlock();
 
-    if (tessellation_size <= 1)
+    if (tessellation_size <= 1 or not _overwater)
     {
         return;
     }
@@ -131,11 +144,16 @@ double ExplorerChunkTerrain::getDisplayedSizeHint(CameraDefinition* camera)
     double distance;
     Vector3 center;
 
+    if (not _overwater)
+    {
+        return -1000.0;
+    }
+
     center = getCenter();
 
     if (cameraIsBoxInView(camera, center, _size, 40.0, _size))
     {
-        distance = v3Norm(v3Sub(camera->location, center));
+        distance = _distance_to_camera;
         distance = distance < 0.1 ? 0.1 : distance;
         return (int)ceil(120.0 - distance / 1.5);
     }

@@ -65,7 +65,8 @@ void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
     noiseClearLevels(definition->_edge_noise);
     noiseClearLevels(definition->_coverage_noise);
 
-    noiseAddLevelsSimple(definition->_coverage_noise, 3, 1.0, 0.0, 1.0, 0.0);
+    noiseAddLevelsSimple(definition->_coverage_noise, 2, 10.0, 0.0, 1.0, 0.0);
+    noiseAddLevelsSimple(definition->_coverage_noise, 2, 1.0, 0.0, 1.0, 0.0);
     noiseSetFunctionParams(definition->_coverage_noise, NOISE_FUNCTION_NAIVE, 0.0, 0.0);
     switch (definition->type)
     {

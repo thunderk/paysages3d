@@ -14,7 +14,9 @@ void terrainAutoPreset(TerrainDefinition* definition, TerrainPreset preset)
         case TERRAIN_PRESET_STANDARD:
             noiseRandomizeOffsets(definition->_height_noise);
             noiseClearLevels(definition->_height_noise);
-            noiseAddLevelsSimple(definition->_height_noise, resolution, pow(2.0, resolution - 1), -12.5, 12.5, 0.5);
+            noiseAddLevelSimple(definition->_height_noise, pow(2.0, resolution + 1), -15.0, 15.0);
+            noiseAddLevelsSimple(definition->_height_noise, resolution - 2, pow(2.0, resolution - 1), -10.0, 10.0, 0.5);
+            noiseNormalizeAmplitude(definition->_height_noise, -15.0, 15.0, 0);
             noiseSetFunctionParams(definition->_height_noise, NOISE_FUNCTION_SIMPLEX, 0.0, 0.0);
             definition->scaling = 1.0;
             definition->height = 1.0;

@@ -64,7 +64,7 @@ bool BaseExplorerChunk::maintain()
         _texture_changed = true;
         _lock_data.unlock();
 
-        if (_texture_current_size < 8 && _texture_current_size < _texture_max_size)
+        if (_texture_current_size < 4 && _texture_current_size < _texture_max_size)
         {
             maintain();
         }

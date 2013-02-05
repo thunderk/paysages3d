@@ -8,15 +8,21 @@ ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, double size, SkyboxOrient
 {
     _box_size = size;
     _orientation = orientation;
+    _center = VECTOR_ZERO;
 
     setMaxTextureSize(256);
     maintain();
 }
 
+void ExplorerChunkSky::onCameraEvent(CameraDefinition* camera)
+{
+    _center = camera->location;
+}
+
 void ExplorerChunkSky::onRenderEvent(QGLWidget*)
 {
     double size = _box_size;
-    Vector3 camera = renderer()->getCameraLocation(renderer(), VECTOR_ZERO);
+    Vector3 camera = _center;
 
     glBegin(GL_QUADS);
     switch(_orientation)
@@ -72,14 +78,14 @@ void ExplorerChunkSky::onRenderEvent(QGLWidget*)
             glVertex3d(camera.x + size, camera.y + size, camera.z + size);
             break;
         case SKYBOX_BOTTOM:
-            glTexCoord2d(0.0, 0.0);
+            /*glTexCoord2d(0.0, 0.0);
             glVertex3d(camera.x - size, camera.y - size, camera.z - size);
             glTexCoord2d(0.0, 1.0);
             glVertex3d(camera.x - size, camera.y - size, camera.z + size);
             glTexCoord2d(1.0, 1.0);
             glVertex3d(camera.x + size, camera.y - size, camera.z + size);
             glTexCoord2d(1.0, 0.0);
-            glVertex3d(camera.x + size, camera.y - size, camera.z - size);
+            glVertex3d(camera.x + size, camera.y - size, camera.z - size);*/
             break;
     }
     glEnd();

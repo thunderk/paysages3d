@@ -8,7 +8,7 @@
 class ExplorerChunkTerrain:public BaseExplorerChunk
 {
 public:
-    ExplorerChunkTerrain(Renderer* renderer, double x, double z, double size, int nbchunks);
+    ExplorerChunkTerrain(Renderer* renderer, double x, double z, double size, int nbchunks, double water_height);
     ~ExplorerChunkTerrain();
 
     void onCameraEvent(CameraDefinition* camera);
@@ -25,6 +25,10 @@ private:
     double _startz;
     double _size;
     double _overall_step;
+
+    double _distance_to_camera;
+    double _water_height;
+    bool _overwater;
 
     double* _tessellation;
     int _tessellation_max_size;

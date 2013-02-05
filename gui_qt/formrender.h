@@ -28,7 +28,6 @@ protected slots:
 private slots:
     void startRender();
     void showRender();
-    void saveRender();
 
 private:
     RenderParams _params;

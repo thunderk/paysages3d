@@ -9,6 +9,7 @@
 #include <string.h>
 #include <math.h>
 #include "../tools/memory.h"
+#include "../tools.h"
 
 TerrainHeightMap* terrainHeightMapCreate(TerrainDefinition* terrain)
 {
@@ -143,10 +144,35 @@ void terrainHeightmapLoad(PackStream* stream, TerrainHeightMap* heightmap)
 
 static inline int _checkDataHit(TerrainHeightMapChunk* chunk, double x, double z, double* result)
 {
-    if (x > (double)chunk->rect.xstart && x < (double)chunk->rect.xend && z > (double)chunk->rect.zstart && z < (double)chunk->rect.zend)
+    if (x >= (double)chunk->rect.xstart && x <= (double)chunk->rect.xend && z >= (double)chunk->rect.zstart && z <= (double)chunk->rect.zend)
     {
-        /* TODO Get interpolated value */
-        *result = 0.0;
+        double stencil[16];
+        int ix, iz, cx, cz;
+        int xmax = chunk->rect.xsize - 1;
+        int zmax = chunk->rect.zsize - 1;
+        int xlow;
+        int zlow;
+
+        x -= chunk->rect.xstart;
+        z -= chunk->rect.zstart;
+
+        xlow = floor(x);
+        zlow = floor(z);
+
+        for (ix = xlow - 1; ix <= xlow + 2; ix++)
+        {
+            for (iz = zlow - 1; iz <= zlow + 2; iz++)
+            {
+                cx = ix < 0 ? 0 : ix;
+                cx = cx > xmax ? xmax : cx;
+                cz = iz < 0 ? 0 : iz;
+                cz = cz > zmax ? zmax : cz;
+                stencil[(iz - (zlow - 1)) * 4 + ix - (xlow - 1)] = chunk->data[cz * chunk->rect.xsize + cx];
+            }
+        }
+
+        *result = toolsBicubicInterpolate(stencil, x - (double)xlow, z - (double)zlow);
+
         return 1;
     }
     else
@@ -240,7 +266,7 @@ static void _prepareBrushStroke(TerrainHeightMap* heightmap, TerrainBrush* brush
         new_size = sizeof(double) * heightmap->floating_data.rect.xsize * heightmap->floating_data.rect.zsize;
         heightmap->floating_data.data = realloc(heightmap->floating_data.data, new_size);
 
-        _resetRect(heightmap, 0, 0, heightmap->floating_data.rect.xsize - 1, heightmap->floating_data.rect.zsize - 1);
+        _resetRect(heightmap, 0, heightmap->floating_data.rect.xsize - 1, 0, heightmap->floating_data.rect.zsize - 1);
 
         heightmap->floating_used = 1;
     }

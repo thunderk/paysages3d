@@ -184,6 +184,8 @@ struct ColorProfile
 {
     double minvalue;
     double maxvalue;
+    Color (*mapper)(Color col, double exposure);
+    double exposure;
 };
 
 ColorProfile* colorProfileCreate()
@@ -192,6 +194,7 @@ ColorProfile* colorProfileCreate()
 
     profile = malloc(sizeof(ColorProfile));
 
+    colorProfileSetToneMapping(profile, TONE_MAPPING_UNCHARTED, 2.0);
     colorProfileClear(profile);
 
     return profile;
@@ -200,6 +203,52 @@ ColorProfile* colorProfileCreate()
 void colorProfileDelete(ColorProfile* profile)
 {
     free(profile);
+}
+
+static inline double _uncharted2Tonemap(double x)
+{
+    double A = 0.15;
+    double B = 0.50;
+    double C = 0.10;
+    double D = 0.20;
+    double E = 0.02;
+    double F = 0.30;
+
+    return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
+}
+
+static Color _toneMappingUncharted(Color pixel, double exposure)
+{
+    double W = 11.2;
+    double white_scale = 1.0 / _uncharted2Tonemap(W);
+
+    pixel.r = pow(_uncharted2Tonemap(pixel.r * exposure) * white_scale, 1.0 / 2.2);
+    pixel.g = pow(_uncharted2Tonemap(pixel.g * exposure) * white_scale, 1.0 / 2.2);
+    pixel.b = pow(_uncharted2Tonemap(pixel.b * exposure) * white_scale, 1.0 / 2.2);
+
+    return pixel;
+}
+
+static Color _toneMappingReinhard(Color pixel, double exposure)
+{
+    pixel.r = (pixel.r * exposure) / (1.0 + pixel.r * exposure);
+    pixel.g = (pixel.g * exposure) / (1.0 + pixel.g * exposure);
+    pixel.b = (pixel.b * exposure) / (1.0 + pixel.b * exposure);
+
+    return pixel;
+}
+
+void colorProfileSetToneMapping(ColorProfile* profile, ToneMappingOperator tonemapper, double exposure)
+{
+    if (tonemapper == TONE_MAPPING_REIHNARD)
+    {
+        profile->mapper = _toneMappingReinhard;
+    }
+    else
+    {
+        profile->mapper = _toneMappingUncharted;
+    }
+    profile->exposure = exposure;
 }
 
 void colorProfileSave(PackStream* stream, ColorProfile* profile)
@@ -236,37 +285,9 @@ int colorProfileCollect(ColorProfile* profile, Color pixel)
     return changed;
 }
 
-static double _uncharted2Tonemap(double x)
-{
-    double A = 0.15;
-    double B = 0.50;
-    double C = 0.10;
-    double D = 0.20;
-    double E = 0.02;
-    double F = 0.30;
-
-    return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
-}
-
 Color colorProfileApply(ColorProfile* profile, Color pixel)
 {
-    /*pixel.r *= 0.4;
-    pixel.g *= 0.4;
-    pixel.b *= 0.4;
-    pixel.r = pixel.r < 1.413 ? pow(pixel.r * 0.38317, 1.0 / 2.2) : 1.0 - exp(-pixel.r);
-    pixel.g = pixel.g < 1.413 ? pow(pixel.g * 0.38317, 1.0 / 2.2) : 1.0 - exp(-pixel.g);
-    pixel.b = pixel.b < 1.413 ? pow(pixel.b * 0.38317, 1.0 / 2.2) : 1.0 - exp(-pixel.b);
-    return pixel;*/
-
-    double exposure_bias = 2.0;
-    double W = 11.2;
-    double white_scale = 1.0 / _uncharted2Tonemap(W);
-
-    pixel.r = pow(_uncharted2Tonemap(pixel.r * exposure_bias) * white_scale, 1.0 / 2.2);
-    pixel.g = pow(_uncharted2Tonemap(pixel.g * exposure_bias) * white_scale, 1.0 / 2.2);
-    pixel.b = pow(_uncharted2Tonemap(pixel.b * exposure_bias) * white_scale, 1.0 / 2.2);
-
-    return pixel;
+    return profile->mapper(pixel, profile->exposure);
 }
 
 /******************************** ColorGradation ********************************/

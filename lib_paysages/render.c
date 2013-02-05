@@ -44,6 +44,7 @@ typedef struct
 
 struct RenderArea
 {
+    ColorProfile* hdr_mapping;
     RenderParams params;
     int pixel_count;
     RenderFragment* pixels;
@@ -96,6 +97,7 @@ RenderArea* renderCreateArea()
     RenderArea* result;
 
     result = malloc(sizeof(RenderArea));
+    result->hdr_mapping = colorProfileCreate();
     result->params.width = 1;
     result->params.height = 1;
     result->params.antialias = 1;
@@ -123,11 +125,20 @@ RenderArea* renderCreateArea()
 
 void renderDeleteArea(RenderArea* area)
 {
+    colorProfileDelete(area->hdr_mapping);
     mutexDestroy(area->lock);
     free(area->pixels);
     free(area->scanline_up);
     free(area->scanline_down);
     free(area);
+}
+
+static void _setAllDirty(RenderArea* area)
+{
+    area->dirty_left = 0;
+    area->dirty_right = area->params.width * area->params.antialias - 1;
+    area->dirty_down = 0;
+    area->dirty_up = area->params.height * area->params.antialias - 1;
 }
 
 void renderSetParams(RenderArea* area, RenderParams params)
@@ -153,6 +164,13 @@ void renderSetParams(RenderArea* area, RenderParams params)
     area->dirty_count = 0;
 
     renderClear(area);
+}
+
+void renderSetToneMapping(RenderArea* area, ToneMappingOperator tonemapper, double exposure)
+{
+    colorProfileSetToneMapping(area->hdr_mapping, tonemapper, exposure);
+    _setAllDirty(area);
+    renderUpdate(area);
 }
 
 void renderSetBackgroundColor(RenderArea* area, Color* col)
@@ -264,6 +282,8 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
             result.r += col.r / (double)(area->params.antialias * area->params.antialias);
             result.g += col.g / (double)(area->params.antialias * area->params.antialias);
             result.b += col.b / (double)(area->params.antialias * area->params.antialias);
+
+            result = colorProfileApply(area->hdr_mapping, result);
         }
     }
 
@@ -302,14 +322,6 @@ void renderUpdate(RenderArea* area)
     mutexAcquire(area->lock);
     _processDirtyPixels(area);
     mutexRelease(area->lock);
-}
-
-static void _setAllDirty(RenderArea* area)
-{
-    area->dirty_left = 0;
-    area->dirty_right = area->params.width * area->params.antialias - 1;
-    area->dirty_down = 0;
-    area->dirty_up = area->params.height * area->params.antialias - 1;
 }
 
 static inline unsigned int _pushCallback(RenderArea* area, FragmentCallback callback)

@@ -53,6 +53,11 @@ static Color _applyTextures(Renderer* renderer, Vector3 location, double precisi
     return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
 }
 
+static Vector3 _getCameraLocation(Renderer* renderer, Vector3)
+{
+    return ((CameraDefinition*)renderer->customData[2])->location;
+}
+
 WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     QGLWidget(parent)
 {
@@ -70,8 +75,10 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     _renderer = sceneryCreateStandardRenderer();
     _renderer->render_quality = 3;
     _renderer->customData[1] = &_textures;
+    _renderer->customData[2] = _base_camera;
     _renderer->customData[3] = &_water;
     _renderer->applyTextures = _applyTextures;
+    _renderer->getCameraLocation = _getCameraLocation;
 
     _inited = false;
     _updated = false;
@@ -100,14 +107,15 @@ void WidgetExplorer::startRendering()
 {
     // Add terrain
     int chunks = 20;
-    double size = 200.0;
+    double size = 400.0;
     double chunksize = size / (double)chunks;
     double start = -size / 2.0;
+    double water_height = _renderer->getWaterHeightInfo(_renderer).base_height;
     for (int i = 0; i < chunks; i++)
     {
         for (int j = 0; j < chunks; j++)
         {
-            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(_renderer, start + chunksize * (double)i, start + chunksize * (double)j, chunksize, chunks);
+            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(_renderer, start + chunksize * (double)i, start + chunksize * (double)j, chunksize, chunks, water_height);
             _chunks.append(chunk);
             _updateQueue.append(chunk);
         }
@@ -326,7 +334,6 @@ void WidgetExplorer::wheelEvent(QWheelEvent* event)
     {
         cameraStrafeForward(&_current_camera, (double)event->delta() * factor);
         updateGL();
-
     }
     event->accept();
 }
@@ -396,6 +403,7 @@ void WidgetExplorer::paintGL()
     QTime start_time;
     double frame_time;
 
+    cameraCopyDefinition(&_current_camera, &_renderer->render_camera);
     cameraValidateDefinition(&_current_camera, 1);
 
     start_time = QTime::currentTime();
