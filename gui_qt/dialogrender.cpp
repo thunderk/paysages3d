@@ -42,16 +42,19 @@ static void _renderUpdate(double progress)
 class RenderThread:public QThread
 {
 public:
-    RenderThread(Renderer* renderer, RenderParams params):QThread()
+    RenderThread(DialogRender* dialog, Renderer* renderer, RenderParams params):QThread()
     {
+        _dialog = dialog;
         _renderer = renderer;
         _params = params;
     }
     void run()
     {
         rendererStart(_renderer, _params);
+        _dialog->tellRenderEnded();
     }
 private:
+    DialogRender* _dialog;
     Renderer* _renderer;
     RenderParams _params;
 };
@@ -119,7 +122,9 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     _actions->layout()->addWidget(_tonemapping_control);
 
     _actions->layout()->addWidget(new QLabel(tr("Exposure: "), _actions));
+    _actions->hide();
     _exposure_control = new QSlider(Qt::Horizontal, _actions);
+    _exposure_control->setMinimumWidth(200);
     _exposure_control->setRange(0, 1000);
     _exposure_control->setValue(200);
     _actions->layout()->addWidget(_exposure_control);
@@ -130,6 +135,7 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     // Connections
     connect(this, SIGNAL(renderSizeChanged(int, int)), this, SLOT(applyRenderSize(int, int)));
     connect(this, SIGNAL(progressChanged(double)), this, SLOT(applyProgress(double)));
+    connect(this, SIGNAL(renderEnded()), this, SLOT(applyRenderEnded()));
     connect(_save_button, SIGNAL(clicked()), this, SLOT(saveRender()));
     connect(_tonemapping_control, SIGNAL(currentIndexChanged(int)), this, SLOT(toneMappingChanged()));
     connect(_exposure_control, SIGNAL(valueChanged(int)), this, SLOT(toneMappingChanged()));
@@ -158,6 +164,11 @@ void DialogRender::tellProgressChange(double value)
     emit progressChanged(value);
 }
 
+void DialogRender::tellRenderEnded()
+{
+    emit renderEnded();
+}
+
 void DialogRender::startRender(RenderParams params)
 {
     _started = time(NULL);
@@ -165,10 +176,16 @@ void DialogRender::startRender(RenderParams params)
     //applyRenderSize(params.width, params.height);
     rendererSetPreviewCallbacks(_renderer, _renderStart, _renderDraw, _renderUpdate);
 
-    _render_thread = new RenderThread(_renderer, params);
+    _render_thread = new RenderThread(this, _renderer, params);
     _render_thread->start();
 
     exec();
+}
+
+void DialogRender::applyRenderEnded()
+{
+    _info->hide();
+    _actions->show();
 }
 
 void DialogRender::saveRender()
@@ -201,8 +218,8 @@ void DialogRender::toneMappingChanged()
 void DialogRender::loadLastRender()
 {
     //applyRenderSize(_renderer->render_width, _renderer->render_height);
-    _info->hide();
     rendererSetPreviewCallbacks(_renderer, _renderStart, _renderDraw, _renderUpdate);
+    renderEnded();
 
     exec();
 }

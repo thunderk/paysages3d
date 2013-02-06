@@ -22,6 +22,7 @@ public:
 
     void tellRenderSize(int width, int height);
     void tellProgressChange(double value);
+    void tellRenderEnded();
     void startRender(RenderParams params);
     void loadLastRender();
 
@@ -33,11 +34,13 @@ private slots:
     void applyRenderSize(int width, int height);
     void applyProgress(double value);
     void saveRender();
+    void applyRenderEnded();
     void toneMappingChanged();
 
 signals:
     void renderSizeChanged(int width, int height);
     void progressChanged(double value);
+    void renderEnded();
 
 private:
     QScrollArea* _scroll;
