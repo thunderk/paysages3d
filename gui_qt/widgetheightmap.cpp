@@ -237,7 +237,7 @@ void WidgetHeightMap::initializeGL()
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
     glEnable(GL_COLOR_MATERIAL);
-    glColorMaterial(GL_FRONT_AND_BACK, GL_EMISSION);
+    //glColorMaterial(GL_FRONT_AND_BACK, GL_EMISSION);
 
     //glFrontFace(GL_CCW);
     //glCullFace(GL_BACK);
@@ -349,16 +349,9 @@ void WidgetHeightMap::paintGL()
                 {
                     diff = 1.0;
                 }
-                if (vertex->painted)
-                {
-                    glColor3d(0.2 + diff, 0.0, 0.0);
-                }
-                else
-                {
-                    glColor3d(diff, 0.0, 0.0);
-                }
-                glNormal3d(vertex->normal.x, vertex->normal.y, vertex->normal.z);
-                glVertex3d(vertex->point.x, vertex->point.y, vertex->point.z);
+                glColor3f(0.8 + diff, vertex->painted ? 1.0 : 0.8, 0.8);
+                glNormal3f(vertex->normal.x, vertex->normal.y, vertex->normal.z);
+                glVertex3f(vertex->point.x, vertex->point.y, vertex->point.z);
             }
         }
         glEnd();
@@ -402,7 +395,7 @@ void WidgetHeightMap::updateVertexInfo()
 
             vertex->point.y = terrainGetGridHeight(_terrain, dx, dz, 1);
 
-            vertex->painted = terrainIsPainted(_terrain->height_map, x, z);
+            vertex->painted = terrainIsPainted(_terrain->height_map, dx, dz);
         }
     }
 
