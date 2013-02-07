@@ -237,6 +237,7 @@ void WidgetHeightMap::initializeGL()
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
     glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_EMISSION);
 
     //glFrontFace(GL_CCW);
     //glCullFace(GL_BACK);
@@ -328,46 +329,37 @@ void WidgetHeightMap::paintGL()
         glBegin(GL_QUAD_STRIP);
         for (int z = 0; z < rz; z++)
         {
-            _VertexInfo* vertex = _vertices + z * rx + x;
-            double diff_x, diff_z, diff;
+            for (int dx = 1; dx >= 0; dx--)
+            {
+                _VertexInfo* vertex = _vertices + z * rx + x + dx;
+                double diff_x, diff_z, diff;
 
-            diff_x = (vertex + 1)->point.x - _brush_x;
-            diff_z = (vertex + 1)->point.z - _brush_z;
-            diff = sqrt(diff_x * diff_x + diff_z * diff_z);
-            if (diff > _brush_size)
-            {
-                diff = 0.0;
+                diff_x = vertex->point.x - _brush_x;
+                diff_z = vertex->point.z - _brush_z;
+                diff = sqrt(diff_x * diff_x + diff_z * diff_z);
+                if (diff > _brush_size)
+                {
+                    diff = 0.0;
+                }
+                else if (diff > _brush_size * (1.0 - _brush_smoothing))
+                {
+                    diff = 1.0 - (diff - _brush_size * (1.0 - _brush_smoothing)) / (_brush_size * _brush_smoothing);
+                }
+                else
+                {
+                    diff = 1.0;
+                }
+                if (vertex->painted)
+                {
+                    glColor3d(0.2 + diff, 0.0, 0.0);
+                }
+                else
+                {
+                    glColor3d(diff, 0.0, 0.0);
+                }
+                glNormal3d(vertex->normal.x, vertex->normal.y, vertex->normal.z);
+                glVertex3d(vertex->point.x, vertex->point.y, vertex->point.z);
             }
-            else if (diff > _brush_size * (1.0 - _brush_smoothing))
-            {
-                diff = 1.0 - (diff - _brush_size * (1.0 - _brush_smoothing)) / (_brush_size * _brush_smoothing);
-            }
-            else
-            {
-                diff = 1.0;
-            }
-            glColor3d(1.0, 1.0 - diff, 1.0 - diff);
-            glNormal3d((vertex + 1)->normal.x, (vertex + 1)->normal.y, (vertex + 1)->normal.z);
-            glVertex3d((vertex + 1)->point.x, (vertex + 1)->point.y, (vertex + 1)->point.z);
-
-            diff_x = vertex->point.x - _brush_x;
-            diff_z = vertex->point.z - _brush_z;
-            diff = sqrt(diff_x * diff_x + diff_z * diff_z);
-            if (diff > _brush_size)
-            {
-                diff = 0.0;
-            }
-            else if (diff > _brush_size * (1.0 - _brush_smoothing))
-            {
-                diff = 1.0 - (diff - _brush_size * (1.0 - _brush_smoothing)) / (_brush_size * _brush_smoothing);
-            }
-            else
-            {
-                diff = 1.0;
-            }
-            glColor3d(1.0, 1.0 - diff, 1.0 - diff);
-            glNormal3d(vertex->normal.x, vertex->normal.y, vertex->normal.z);
-            glVertex3d(vertex->point.x, vertex->point.y, vertex->point.z);
         }
         glEnd();
     }
@@ -409,6 +401,8 @@ void WidgetHeightMap::updateVertexInfo()
             vertex->point.z = (double)dz;
 
             vertex->point.y = terrainGetGridHeight(_terrain, dx, dz, 1);
+
+            vertex->painted = terrainIsPainted(_terrain->height_map, x, z);
         }
     }
 

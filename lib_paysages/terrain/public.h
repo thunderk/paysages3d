@@ -52,6 +52,7 @@ extern StandardRenderer TerrainRendererClass;
 void terrainAutoPreset(TerrainDefinition* definition, TerrainPreset preset);
 void terrainRenderSurface(Renderer* renderer);
 double terrainGetGridHeight(TerrainDefinition* definition, int x, int z, int with_painting);
+double terrainGetInterpolatedHeight(TerrainDefinition* definition, double x, double z, int with_painting);
 size_t terrainGetMemoryStats(TerrainDefinition* definition);
 
 Renderer* terrainCreatePreviewRenderer();
@@ -67,6 +68,7 @@ typedef struct
 } TerrainBrush;
 
 /* Heightmap manipulation */
+int terrainIsPainted(TerrainHeightMap* heightmap, int x, int z);
 void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
 void terrainBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
 void terrainBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value);

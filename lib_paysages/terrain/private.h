@@ -5,14 +5,17 @@
 
 typedef struct
 {
-    struct {
-        int xstart;
-        int xend;
-        int xsize;
-        int zstart;
-        int zend;
-        int zsize;
-    } rect;
+    int xstart;
+    int xend;
+    int xsize;
+    int zstart;
+    int zend;
+    int zsize;
+} IntegerRect;
+
+typedef struct
+{
+    IntegerRect rect;
     double* data;
 } TerrainHeightMapChunk;
 

@@ -216,21 +216,38 @@ static inline void _resetRect(TerrainHeightMap* heightmap, int x1, int x2, int z
     }
 }
 
+static inline IntegerRect _getBrushRect(TerrainBrush* brush)
+{
+    IntegerRect result;
+    double s = brush->smoothed_size + brush->hard_radius;
+
+    result.xstart = (int)floor(brush->relative_x - s);
+    result.xend = (int)ceil(brush->relative_x + s);
+    result.zstart = (int)floor(brush->relative_z - s);
+    result.zend = (int)ceil(brush->relative_z + s);
+
+    result.xsize = result.xend - result.xstart + 1;
+    result.zsize = result.zend - result.zstart + 1;
+
+    return result;
+}
+
+static inline int _isInRect(IntegerRect rect, int x, int z)
+{
+    return (x >= rect.xstart && x <= rect.xend && z >= rect.zstart && z <= rect.zend);
+}
+
 static void _prepareBrushStroke(TerrainHeightMap* heightmap, TerrainBrush* brush)
 {
-    double s = brush->smoothed_size + brush->hard_radius;
-    int x1 = (int)floor(brush->relative_x - s);
-    int x2 = (int)ceil(brush->relative_x + s);
-    int z1 = (int)floor(brush->relative_z - s);
-    int z2 = (int)ceil(brush->relative_z + s);
+    IntegerRect brush_rect = _getBrushRect(brush);
 
     /* Prepare floating data */
     if (heightmap->floating_used)
     {
-        int gx1 = (x1 < heightmap->floating_data.rect.xstart) ? heightmap->floating_data.rect.xstart - x1 : 0;
-        int gx2 = (x2 > heightmap->floating_data.rect.xend) ? x2 - heightmap->floating_data.rect.xend : 0;
-        int gz1 = (z1 < heightmap->floating_data.rect.zstart) ? heightmap->floating_data.rect.zstart - z1 : 0;
-        int gz2 = (z2 > heightmap->floating_data.rect.zend) ? z2 - heightmap->floating_data.rect.zend : 0;
+        int gx1 = (brush_rect.xstart < heightmap->floating_data.rect.xstart) ? heightmap->floating_data.rect.xstart - brush_rect.xstart : 0;
+        int gx2 = (brush_rect.xend > heightmap->floating_data.rect.xend) ? brush_rect.xend - heightmap->floating_data.rect.xend : 0;
+        int gz1 = (brush_rect.xstart < heightmap->floating_data.rect.zstart) ? heightmap->floating_data.rect.zstart - brush_rect.zstart : 0;
+        int gz2 = (brush_rect.zend > heightmap->floating_data.rect.zend) ? brush_rect.zend - heightmap->floating_data.rect.zend : 0;
         if (gx1 || gx2 || gz1 || gz2)
         {
             /* Floating area needs growing */
@@ -255,18 +272,13 @@ static void _prepareBrushStroke(TerrainHeightMap* heightmap, TerrainBrush* brush
     else
     {
         /* Init floating area */
-        heightmap->floating_data.rect.xstart = x1;
-        heightmap->floating_data.rect.xend = x2;
-        heightmap->floating_data.rect.xsize = x2 - x1 + 1;
-        heightmap->floating_data.rect.zstart = z1;
-        heightmap->floating_data.rect.zend = z2;
-        heightmap->floating_data.rect.zsize = z2 - z1 + 1;
+        heightmap->floating_data.rect = brush_rect;
 
         size_t new_size;
-        new_size = sizeof(double) * heightmap->floating_data.rect.xsize * heightmap->floating_data.rect.zsize;
+        new_size = sizeof(double) * brush_rect.xsize * brush_rect.zsize;
         heightmap->floating_data.data = realloc(heightmap->floating_data.data, new_size);
 
-        _resetRect(heightmap, 0, heightmap->floating_data.rect.xsize - 1, 0, heightmap->floating_data.rect.zsize - 1);
+        _resetRect(heightmap, 0, brush_rect.xsize - 1, 0, brush_rect.zsize - 1);
 
         heightmap->floating_used = 1;
     }
@@ -290,23 +302,136 @@ size_t terrainGetMemoryStats(TerrainDefinition* definition)
     return result;
 }
 
+int terrainIsPainted(TerrainHeightMap* heightmap, int x, int z)
+{
+    int i;
+
+    for (i = 0; i < heightmap->fixed_count; i++)
+    {
+        if (_isInRect(heightmap->fixed_data[i].rect, x, z))
+        {
+            return 1;
+        }
+    }
+
+    if (heightmap->floating_used && _isInRect(heightmap->floating_data.rect, x, z))
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+typedef double (*BrushCallback)(TerrainHeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data);
+
+static inline void _applyBrush(TerrainHeightMap* heightmap, TerrainBrush* brush, double force, void* data, BrushCallback callback)
+{
+    IntegerRect brush_rect = _getBrushRect(brush);
+    int x, z;
+    double dx, dz, distance, influence;
+
+    if (!heightmap->floating_used)
+    {
+        return;
+    }
+
+    for (x = brush_rect.xstart; x <= brush_rect.xend; x++)
+    {
+        dx = (double)x;
+        for (z = brush_rect.zstart; z <= brush_rect.zend; z++)
+        {
+            if (_isInRect(heightmap->floating_data.rect, x, z)) /* TODO Rect intersection */
+            {
+                dz = (double)z;
+                distance = sqrt((brush->relative_x - dx) * (brush->relative_x - dx) + (brush->relative_z - dz) * (brush->relative_z - dz));
+
+                if (distance > brush->hard_radius)
+                {
+                    if (distance <= brush->hard_radius + brush->smoothed_size)
+                    {
+                        influence = (1.0 - (distance - brush->hard_radius) / brush->smoothed_size);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    influence = 1.0;
+                }
+
+                int ix = x - heightmap->floating_data.rect.xstart;
+                int iz = z - heightmap->floating_data.rect.zstart;
+                double base_value = heightmap->floating_data.data[iz * heightmap->floating_data.rect.xsize + ix];
+                heightmap->floating_data.data[iz * heightmap->floating_data.rect.xsize + ix] = callback(heightmap, brush, dx, dz, base_value, influence, force, data);
+            }
+        }
+    }
+}
+
+static double _applyBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
+{
+    UNUSED(heightmap);
+    UNUSED(data);
+    return basevalue + influence * force;
+}
+
 void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)
 {
     _prepareBrushStroke(heightmap, brush);
+    _applyBrush(heightmap, brush, value, NULL, _applyBrushElevation);
+}
+
+static double _applyBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
+{
+    double ideal, factor;
+    ideal = terrainGetInterpolatedHeight(heightmap->terrain, x + brush->total_radius * 0.5, z, 1);
+    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x - brush->total_radius * 0.5, z, 1);
+    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x, z - brush->total_radius * 0.5, 1);
+    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x, z + brush->total_radius * 0.5, 1);
+    ideal /= 4.0;
+    factor = influence * force;
+    if (factor > 1.0)
+    {
+        factor = 0.0;
+    }
+    return basevalue + (ideal - basevalue) * factor;
 }
 
 void terrainBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)
 {
     _prepareBrushStroke(heightmap, brush);
+    _applyBrush(heightmap, brush, value, NULL, _applyBrushSmooth);
+}
+
+static double _applyBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
+{
+    UNUSED(heightmap);
+    return basevalue + noiseGet2DTotal((NoiseGenerator*)data, x / brush->total_radius, z / brush->total_radius) * influence * force * brush->total_radius;
 }
 
 void terrainBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value)
 {
     _prepareBrushStroke(heightmap, brush);
+    _applyBrush(heightmap, brush, value, generator, _applyBrushAddNoise);
+}
+
+static double _applyBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
+{
+    UNUSED(brush);
+    UNUSED(data);
+
+    double ideal = terrainGetInterpolatedHeight(heightmap->terrain, x, z, 1);
+    return basevalue + (ideal - basevalue) * influence * force;
 }
 
 void terrainBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)
 {
+    /* No need to prepare the floating data, it can't grow here */
+    _applyBrush(heightmap, brush, value, NULL, _applyBrushReset);
 }
 
 void terrainEndBrushStroke(TerrainHeightMap* heightmap)
@@ -323,6 +448,7 @@ void terrainEndBrushStroke(TerrainHeightMap* heightmap)
         memcpy(heightmap->fixed_data[heightmap->fixed_count].data, heightmap->floating_data.data, mapsize);
 
         heightmap->fixed_count++;
+
         heightmap->floating_used = 0;
         heightmap->floating_data.data = realloc(heightmap->floating_data.data, sizeof(double));
     }
@@ -448,130 +574,5 @@ void heightmapRevertToTerrain(HeightMap* heightmap, TerrainDefinition* terrain, 
 //            heightmap->data[z * rx + x] = terrainGetHeight(terrain, dx, dz);
         }
     }
-}
-
-
-static inline void _getBrushBoundaries(TerrainBrush* brush, int rx, int rz, int* x1, int* x2, int* z1, int* z2)
-{
-    double cx = brush->relative_x * rx;
-    double cz = brush->relative_z * rz;
-    double s = brush->smoothed_size + brush->hard_radius;
-    double sx = s * rx;
-    double sz = s * rz;
-    *x1 = (int)floor(cx - sx);
-    *x2 = (int)ceil(cx + sx);
-    *z1 = (int)floor(cz - sz);
-    *z2 = (int)ceil(cz + sz);
-    if (*x1 < 0)
-    {
-        *x1 = 0;
-    }
-    else if (*x1 > rx)
-    {
-        *x1 = rx;
-    }
-    if (*x2 < 0)
-    {
-        *x2 = 0;
-    }
-    else if (*x2 > rx)
-    {
-        *x2 = rx;
-    }
-    if (*z1 < 0)
-    {
-        *z1 = 0;
-    }
-    else if (*z1 > rz)
-    {
-        *z1 = rz;
-    }
-    if (*z2 < 0)
-    {
-        *z2 = 0;
-    }
-    else if (*z2 > rz)
-    {
-        *z2 = rz;
-    }
-}
-
-typedef double (*BrushCallback)(HeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data);
-
-static inline void _applyBrush(HeightMap* heightmap, TerrainBrush* brush, double force, void* data, BrushCallback callback)
-{
-    int x, x1, x2, z, z1, z2;
-    double dx, dz, distance, influence;
-
-    _getBrushBoundaries(brush, heightmap->resolution_x - 1, heightmap->resolution_z - 1, &x1, &x2, &z1, &z2);
-
-    for (x = x1; x <= x2; x++)
-    {
-        dx = (double)x / (double)heightmap->resolution_x;
-        for (z = z1; z <= z2; z++)
-        {
-            dz = (double)z / (double)heightmap->resolution_z;
-            distance = sqrt((brush->relative_x - dx) * (brush->relative_x - dx) + (brush->relative_z - dz) * (brush->relative_z - dz));
-
-            if (distance > brush->hard_radius)
-            {
-                if (distance <= brush->hard_radius + brush->smoothed_size)
-                {
-                    influence = (1.0 - (distance - brush->hard_radius) / brush->smoothed_size);
-                }
-                else
-                {
-                    continue;
-                }
-            }
-            else
-            {
-                influence = 1.0;
-            }
-
-            heightmap->data[z * heightmap->resolution_x + x] = callback(heightmap, brush, dx, dz, heightmap->data[z * heightmap->resolution_x + x], influence, force, data);
-        }
-    }
-}
-
-static double _applyBrushElevation(HeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
-{
-    return basevalue + influence * force * brush->total_radius;
-}
-
-void terrainBrushElevation(HeightMap* heightmap, TerrainBrush* brush, double value)
-{
-    _applyBrush(heightmap, brush, value, NULL, _applyBrushElevation);
-}
-
-static double _applyBrushSmooth(HeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
-{
-    double ideal, factor;
-    ideal = heightmapGetValue(heightmap, x + brush->total_radius * 0.5, z);
-    ideal += heightmapGetValue(heightmap, x - brush->total_radius * 0.5, z);
-    ideal += heightmapGetValue(heightmap, x, z - brush->total_radius * 0.5);
-    ideal += heightmapGetValue(heightmap, x, z + brush->total_radius * 0.5);
-    ideal /= 4.0;
-    factor = influence * force;
-    if (factor > 1.0)
-    {
-        factor = 0.0;
-    }
-    return basevalue + (ideal - basevalue) * factor;
-}
-
-void terrainBrushSmooth(HeightMap* heightmap, TerrainBrush* brush, double value)
-{
-    _applyBrush(heightmap, brush, value, NULL, _applyBrushSmooth);
-}
-
-static double _applyBrushAddNoise(HeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
-{
-    return basevalue + noiseGet2DTotal((NoiseGenerator*)data, x / brush->total_radius, z / brush->total_radius) * influence * force * brush->total_radius;
-}
-
-void terrainBrushAddNoise(HeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value)
-{
-    _applyBrush(heightmap, brush, value, generator, _applyBrushAddNoise);
 }
 #endif

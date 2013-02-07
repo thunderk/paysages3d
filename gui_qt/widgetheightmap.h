@@ -11,6 +11,7 @@ typedef struct
 {
     Vector3 point;
     Vector3 normal;
+    int painted;
 } _VertexInfo;
 
 typedef enum

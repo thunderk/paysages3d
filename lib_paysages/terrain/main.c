@@ -95,17 +95,7 @@ static double _fakeGetHeight(Renderer* renderer, double x, double z, int with_pa
 
 static double _getHeight(Renderer* renderer, double x, double z, int with_painting)
 {
-    double height;
-    TerrainDefinition* definition = renderer->terrain->definition;
-    x /= definition->scaling;
-    z /= definition->scaling;
-
-    if (!with_painting || !terrainHeightmapGetHeight(definition->height_map, x, z, &height))
-    {
-        height = noiseGet2DTotal(definition->_height_noise, x, z);
-    }
-
-    return height * definition->height * definition->scaling;
+    return terrainGetInterpolatedHeight(renderer->terrain->definition, x, z, with_painting);
 }
 
 static Color _fakeGetFinalColor(Renderer* renderer, Vector3 location, double precision)
@@ -284,6 +274,20 @@ double terrainGetGridHeight(TerrainDefinition* definition, int x, int z, int wit
     }
 
     return height;
+}
+
+double terrainGetInterpolatedHeight(TerrainDefinition* definition, double x, double z, int with_painting)
+{
+    double height;
+    x /= definition->scaling;
+    z /= definition->scaling;
+
+    if (!with_painting || !terrainHeightmapGetHeight(definition->height_map, x, z, &height))
+    {
+        height = noiseGet2DTotal(definition->_height_noise, x, z);
+    }
+
+    return height * definition->height * definition->scaling;
 }
 
 /******************** Renderer ********************/
