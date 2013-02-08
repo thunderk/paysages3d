@@ -274,6 +274,9 @@ void WidgetHeightMap::paintGL()
     double frame_time;
     int rx, rz;
 
+    rx = HEIGHTMAP_RESOLUTION;
+    rz = HEIGHTMAP_RESOLUTION;
+
     // Update vertex cache
     if (_dirty)
     {
@@ -299,10 +302,17 @@ void WidgetHeightMap::paintGL()
         winY = (float)height() - (float)_last_mouse_y;
         glReadPixels(_last_mouse_x, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 
-        gluUnProject(winX, winY, winZ, modelview, projection, viewport, &point.x, &point.y, &point.z);
+        if (winZ > 0.0 && winZ < 1000.0)
+        {
+            gluUnProject(winX, winY, winZ, modelview, projection, viewport, &point.x, &point.y, &point.z);
 
-        _brush_x = point.x;
-        _brush_z = point.z;
+            if (point.x >= -rx / 2 && point.x <= rx / 2 && point.z >= -rz / 2 && point.z <= rz / 2)
+            {
+                _brush_x = point.x;
+                _brush_z = point.z;
+            }
+        }
+
         _mouse_moved = false;
     }
 
@@ -322,8 +332,6 @@ void WidgetHeightMap::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Height map
-    rx = HEIGHTMAP_RESOLUTION;
-    rz = HEIGHTMAP_RESOLUTION;
     for (int x = 0; x < rx - 1; x++)
     {
         glBegin(GL_QUAD_STRIP);

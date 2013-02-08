@@ -144,7 +144,7 @@ void terrainHeightmapLoad(PackStream* stream, TerrainHeightMap* heightmap)
 
 static inline int _checkDataHit(TerrainHeightMapChunk* chunk, double x, double z, double* result)
 {
-    if (x >= (double)chunk->rect.xstart && x <= (double)chunk->rect.xend && z >= (double)chunk->rect.zstart && z <= (double)chunk->rect.zend)
+    if ((int)floor(x) >= chunk->rect.xstart && (int)floor(x) <= chunk->rect.xend && (int)floor(z) >= (double)chunk->rect.zstart && (int)floor(z) <= (double)chunk->rect.zend)
     {
         double stencil[16];
         int ix, iz, cx, cz;
@@ -185,33 +185,46 @@ int terrainHeightmapGetHeight(TerrainHeightMap* heightmap, double x, double z, d
 {
     int i;
 
-    for (i = 0; i < heightmap->fixed_count; i++)
-    {
-        if (_checkDataHit(heightmap->fixed_data + i, x, z, result))
-        {
-            return 1;
-        }
-    }
-
     if (heightmap->floating_used && _checkDataHit(&heightmap->floating_data, x, z, result))
     {
         return 1;
     }
     else
     {
+        for (i = heightmap->fixed_count - 1; i >= 0; i--)
+        {
+            if (_checkDataHit(heightmap->fixed_data + i, x, z, result))
+            {
+                return 1;
+            }
+        }
         return 0;
     }
 }
 
 static inline void _resetRect(TerrainHeightMap* heightmap, int x1, int x2, int z1, int z2)
 {
-    int x, z;
+    int i, x, z;
+    double result;
 
     for (x = x1; x <= x2; x++)
     {
         for (z = z1; z <= z2; z++)
         {
-            heightmap->floating_data.data[z * heightmap->floating_data.rect.xsize + x] = terrainGetGridHeight(heightmap->terrain, x + heightmap->floating_data.rect.xstart, z + heightmap->floating_data.rect.zstart, 1);
+            /* Search for a previous fixed chunk */
+            for (i = heightmap->fixed_count - 1; i >= 0; i--)
+            {
+                if (_checkDataHit(heightmap->fixed_data + i, x + heightmap->floating_data.rect.xstart, z + heightmap->floating_data.rect.zstart, &result))
+                {
+                    heightmap->floating_data.data[z * heightmap->floating_data.rect.xsize + x] = result;
+                    break;
+                }
+            }
+            if (i < 0)
+            {
+                /* No fixed chunk found */
+                heightmap->floating_data.data[z * heightmap->floating_data.rect.xsize + x] = terrainGetGridHeight(heightmap->terrain, x + heightmap->floating_data.rect.xstart, z + heightmap->floating_data.rect.zstart, 0);
+            }
         }
     }
 }
@@ -246,7 +259,7 @@ static void _prepareBrushStroke(TerrainHeightMap* heightmap, TerrainBrush* brush
     {
         int gx1 = (brush_rect.xstart < heightmap->floating_data.rect.xstart) ? heightmap->floating_data.rect.xstart - brush_rect.xstart : 0;
         int gx2 = (brush_rect.xend > heightmap->floating_data.rect.xend) ? brush_rect.xend - heightmap->floating_data.rect.xend : 0;
-        int gz1 = (brush_rect.xstart < heightmap->floating_data.rect.zstart) ? heightmap->floating_data.rect.zstart - brush_rect.zstart : 0;
+        int gz1 = (brush_rect.zstart < heightmap->floating_data.rect.zstart) ? heightmap->floating_data.rect.zstart - brush_rect.zstart : 0;
         int gz2 = (brush_rect.zend > heightmap->floating_data.rect.zend) ? brush_rect.zend - heightmap->floating_data.rect.zend : 0;
         if (gx1 || gx2 || gz1 || gz2)
         {
@@ -306,20 +319,19 @@ int terrainIsPainted(TerrainHeightMap* heightmap, int x, int z)
 {
     int i;
 
-    for (i = 0; i < heightmap->fixed_count; i++)
-    {
-        if (_isInRect(heightmap->fixed_data[i].rect, x, z))
-        {
-            return 1;
-        }
-    }
-
     if (heightmap->floating_used && _isInRect(heightmap->floating_data.rect, x, z))
     {
         return 1;
     }
     else
     {
+        for (i = 0; i < heightmap->fixed_count; i++)
+        {
+            if (_isInRect(heightmap->fixed_data[i].rect, x, z))
+            {
+                return 1;
+            }
+        }
         return 0;
     }
 }
@@ -453,126 +465,3 @@ void terrainEndBrushStroke(TerrainHeightMap* heightmap)
         heightmap->floating_data.data = realloc(heightmap->floating_data.data, sizeof(double));
     }
 }
-
-#if 0
-static void _loadFromFilePixel(HeightMap* heightmap, int x, int y, Color col)
-{
-    assert(x >= 0 && x < heightmap->resolution_x);
-    assert(y >= 0 && y < heightmap->resolution_z);
-
-    heightmap->data[y * heightmap->resolution_x + x] = (col.r + col.g + col.b) / 3.0;
-}
-
-void heightmapGetLimits(HeightMap* heightmap, double* ymin, double* ymax)
-{
-    double y;
-    int i;
-    *ymin = 1000000.0;
-    *ymax = -1000000.0;
-    /* TODO Keep the value in cache */
-    for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
-    {
-        y = heightmap->data[i];
-        if (y < *ymin)
-        {
-            *ymin = y;
-        }
-        if (y > *ymax)
-        {
-            *ymax = y;
-        }
-    }
-}
-
-double heightmapGetRawValue(HeightMap* heightmap, double x, double z)
-{
-    assert(x >= 0.0 && x <= 1.0);
-    assert(z >= 0.0 && z <= 1.0);
-
-    return heightmap->data[((int)(z * (double)(heightmap->resolution_z - 1))) * heightmap->resolution_x + ((int)(x * (double)(heightmap->resolution_x - 1)))];
-}
-
-double heightmapGetValue(HeightMap* heightmap, double x, double z)
-{
-    int xmax = heightmap->resolution_x - 1;
-    int zmax = heightmap->resolution_z - 1;
-    int xlow;
-    int zlow;
-    double stencil[16];
-    int ix, iz, cx, cz;
-
-    if (x < 0.0)
-    {
-        x = 0.0;
-    }
-    else if (x > 1.0)
-    {
-        x = 1.0;
-    }
-    if (z < 0.0)
-    {
-        z = 0.0;
-    }
-    else if (z > 1.0)
-    {
-        z = 1.0;
-    }
-
-    xlow = floor(x * xmax);
-    zlow = floor(z * zmax);
-
-    for (ix = xlow - 1; ix <= xlow + 2; ix++)
-    {
-        for (iz = zlow - 1; iz <= zlow + 2; iz++)
-        {
-            cx = ix < 0 ? 0 : ix;
-            cx = cx > xmax ? xmax : cx;
-            cz = iz < 0 ? 0 : iz;
-            cz = cz > zmax ? zmax : cz;
-            stencil[(iz - (zlow - 1)) * 4 + ix - (xlow - 1)] = heightmap->data[cz * heightmap->resolution_x + cx];
-        }
-    }
-
-    return toolsBicubicInterpolate(stencil, x * xmax - (double)xlow, z * zmax - (double)zlow);
-}
-
-
-void heightmapImportFromPicture(HeightMap* heightmap, const char* picturepath)
-{
-    systemLoadPictureFile(picturepath, (PictureCallbackLoadStarted)heightmapChangeResolution, (PictureCallbackLoadPixel)_loadFromFilePixel, heightmap);
-}
-
-void heightmapChangeResolution(HeightMap* heightmap, int resolution_x, int resolution_z)
-{
-    int i;
-
-    heightmap->resolution_x = resolution_x;
-    heightmap->resolution_z = resolution_z;
-    heightmap->data = realloc(heightmap->data, sizeof(double) * heightmap->resolution_x * heightmap->resolution_z);
-
-    for (i = 0; i < heightmap->resolution_x * heightmap->resolution_z; i++)
-    {
-        heightmap->data[i] = 0.0;
-    }
-}
-
-void heightmapRevertToTerrain(HeightMap* heightmap, TerrainDefinition* terrain, GeoArea* area)
-{
-    int rx, rz;
-    int x, z;
-    double dx, dz;
-
-    rx = heightmap->resolution_x;
-    rz = heightmap->resolution_z;
-    for (x = 0; x < rx; x++)
-    {
-        for (z = 0; z < rz; z++)
-        {
-            dx = (double)x / (double)(rx - 1);
-            dz = (double)z / (double)(rz - 1);
-            geoareaFromLocal(area, dx, dz, &dx, &dz);
-//            heightmap->data[z * rx + x] = terrainGetHeight(terrain, dx, dz);
-        }
-    }
-}
-#endif
