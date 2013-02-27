@@ -69,13 +69,9 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
 
     if (check_above)
     {
-        water = waterCreateDefinition();
-        sceneryGetWater(&water);
-        water_height = water.height + 0.5;
-        waterDeleteDefinition(&water);
-
         renderer = sceneryCreateStandardRenderer();
         terrain_height = renderer->terrain->getHeight(renderer, definition->location.x, definition->location.z, 1) + 0.5;
+        water_height = renderer->water->getHeightInfo(renderer).max_height + 0.5;
         rendererDelete(renderer);
 
         if (definition->location.y < water_height || definition->location.y < terrain_height)

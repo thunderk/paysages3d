@@ -5,6 +5,7 @@
 #include "atmosphere/public.h"
 #include "clouds/public.h"
 #include "terrain/public.h"
+#include "water/public.h"
 #include "render.h"
 
 #ifdef __cplusplus
@@ -39,7 +40,6 @@ struct Renderer
 
     /* Scenery related */
     RayCastingResult (*rayWalking)(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds);
-    HeightInfo (*getWaterHeightInfo)(Renderer* renderer);
     Color (*applyTextures)(Renderer* renderer, Vector3 location, double precision);
 
     /* Autonomous tools */
@@ -49,6 +49,7 @@ struct Renderer
     AtmosphereRenderer* atmosphere;
     TerrainRenderer* terrain;
     CloudsRenderer* clouds;
+    WaterRenderer* water;
 
     /* Custom data */
     void* customData[10];

@@ -1169,7 +1169,7 @@ Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color
     Vector3 eye = renderer->getCameraLocation(renderer, location);
     Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), SUN_DISTANCE);
 
-    double yoffset = GROUND_OFFSET - renderer->getWaterHeightInfo(renderer).base_height;
+    double yoffset = GROUND_OFFSET - renderer->water->getHeightInfo(renderer).base_height;
     eye.y += yoffset;
     location.y += yoffset;
     if (eye.y < 0.0)
@@ -1212,7 +1212,7 @@ void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 
 
     double altitude = lightingGetStatusLocation(status).y;
 
-    double yoffset = GROUND_OFFSET - renderer->getWaterHeightInfo(renderer).base_height;
+    double yoffset = GROUND_OFFSET - renderer->water->getHeightInfo(renderer).base_height;
     altitude += yoffset;
     if (altitude < 0.0)
     {

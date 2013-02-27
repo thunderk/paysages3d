@@ -3,16 +3,15 @@
 
 #include <QColor>
 #include <QSlider>
-#include <math.h>
 
 #include "../lib_paysages/tools/euclid.h"
 #include "../lib_paysages/tools/lighting.h"
 #include "../lib_paysages/renderer.h"
 #include "../lib_paysages/scenery.h"
-#include "../lib_paysages/water.h"
+#include "../lib_paysages/water/public.h"
 #include "tools.h"
 
-static WaterDefinition _definition;
+static WaterDefinition* _definition;
 
 /**************** Previews ****************/
 class PreviewWaterCoverage:public BasePreview
@@ -20,8 +19,7 @@ class PreviewWaterCoverage:public BasePreview
 public:
     PreviewWaterCoverage(QWidget* parent):BasePreview(parent)
     {
-        _renderer = terrainCreatePreviewRenderer();
-        _water = waterCreateDefinition();
+        _renderer = waterCreatePreviewCoverageRenderer();
         _highlight_enabled = true;
 
         addOsd(QString("geolocation"));
@@ -33,40 +31,11 @@ public:
 protected:
     Color getColor(double x, double y)
     {
-        double height;
-
-        height = _renderer->terrain->getHeight(_renderer, x, y, 1);
-        if (height > _definition.height)
-        {
-            return terrainGetPreviewColor(_renderer, x, y, scaling);
-        }
-        else
-        {
-            Vector3 location, look;
-            Color base;
-
-            location.x = x;
-            location.y = _water.height;
-            location.z = y;
-
-            look.x = 0.0;
-            look.y = -1.0;
-            look.z = 0.0;
-
-            base = waterGetColor(&_water, _renderer, location, look);
-
-            if (_highlight_enabled)
-            {
-                Color mask = {0.5, 0.5, 1.0, 0.5};
-                colorMask(&base, &mask);
-            }
-
-            return base;
-        }
+        return waterGetPreviewCoverage(_renderer, x, y, scaling, _highlight_enabled ? 1 : 0);
     }
     void updateData()
     {
-        waterCopyDefinition(&_definition, &_water);
+        WaterRendererClass.bind(_renderer, _definition);
 
         // TODO Do this only on full refresh
         TerrainDefinition* terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
@@ -84,7 +53,6 @@ protected:
     }
 private:
     Renderer* _renderer;
-    WaterDefinition _water;
     bool _highlight_enabled;
 };
 

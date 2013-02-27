@@ -69,7 +69,7 @@ void terrainRenderSurface(Renderer* renderer)
     radius_ext = min_chunk_size;
     chunk_size = min_chunk_size;
 
-    water_height = renderer->getWaterHeightInfo(renderer).max_height;
+    water_height = renderer->water->getHeightInfo(renderer).max_height;
 
     while (radius_int < 5000.0)
     {

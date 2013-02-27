@@ -7,7 +7,6 @@
 #include "tools.h"
 
 static RayCastingResult _RAYCASTING_NULL = {0};
-static HeightInfo _WATER_HEIGHT_INFO = {0.0, 0.0, 0.0};
 
 static void* _renderFirstPass(void* data)
 {
@@ -79,11 +78,6 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
     return _RAYCASTING_NULL;
 }
 
-static HeightInfo _getWaterHeightInfo(Renderer* renderer)
-{
-    return _WATER_HEIGHT_INFO;
-}
-
 static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
 {
     return COLOR_TRANSPARENT;
@@ -131,7 +125,6 @@ Renderer* rendererCreate()
     result->pushQuad = _pushQuad;
 
     result->rayWalking = _rayWalking;
-    result->getWaterHeightInfo = _getWaterHeightInfo;
     result->applyTextures = _applyTextures;
 
     result->applyLightingToSurface = _applyLightingToSurface;
@@ -142,6 +135,7 @@ Renderer* rendererCreate()
     result->atmosphere = AtmosphereRendererClass.create();
     result->clouds = CloudsRendererClass.create();
     result->terrain = TerrainRendererClass.create();
+    result->water = WaterRendererClass.create();
 
     return result;
 }
@@ -153,6 +147,7 @@ void rendererDelete(Renderer* renderer)
     AtmosphereRendererClass.destroy(renderer->atmosphere);
     CloudsRendererClass.destroy(renderer->clouds);
     TerrainRendererClass.destroy(renderer->terrain);
+    WaterRendererClass.destroy(renderer->water);
 
     renderDeleteArea(renderer->render_area);
 

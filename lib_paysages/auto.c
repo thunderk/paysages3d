@@ -8,7 +8,6 @@
 #include "textures.h"
 #include "scenery.h"
 #include "system.h"
-#include "water.h"
 #include "zone.h"
 
 void autoGenRealisticLandscape(int seed)
@@ -25,12 +24,6 @@ void autoGenRealisticLandscape(int seed)
     srand(seed);
 
     sceneryAutoPreset();
-
-    /* Water */
-    water = waterCreateDefinition();
-    waterAutoPreset(&water, WATER_PRESET_LAKE);
-    scenerySetWater(&water);
-    waterDeleteDefinition(&water);
 
     /* Textures */
     textures = texturesCreateDefinition();
@@ -87,13 +80,4 @@ void autoGenRealisticLandscape(int seed)
     texture->thickness_transparency = 0.015;*/
     scenerySetTextures(&textures);
     texturesDeleteDefinition(&textures);
-
-    /* Atmosphere */
-    /*atmosphere = atmosphereCreateDefinition();
-    atmosphere.distance_near = 20.0;
-    atmosphere.distance_far = 100.0;
-    atmosphere.full_mask = 0.6;
-    atmosphere.auto_lock_on_haze = 1;
-    scenerySetAtmosphere(&atmosphere);
-    atmosphereDeleteDefinition(&atmosphere);*/
 }
