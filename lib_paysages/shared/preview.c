@@ -1,5 +1,4 @@
 #include "preview.h"
-#include "renderer.h"
 
 #include <stdlib.h>
 #include "../renderer.h"
@@ -28,8 +27,8 @@ static void _deleteRenderer(PreviewRenderer* renderer)
 
 static void _setCamera(PreviewRenderer* renderer, Vector3 location, Vector3 target)
 {
-    cameraSetLocation(renderer->renderer->render_camera, location);
-    cameraSetTarget(renderer->renderer->render_camera, target);
+    cameraSetLocation(&renderer->renderer->render_camera, location.x, location.y, location.z);
+    cameraSetTarget(&renderer->renderer->render_camera, target.x, target.y, target.z);
 }
 
 PreviewClass previewCreateClass(FuncPreviewCustomizeRenderer customizeRenderer, FuncPreviewBindDefinition bindDefinition, FuncPreviewGetPixelColor getPixelColor)
