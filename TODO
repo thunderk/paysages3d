@@ -1,4 +1,5 @@
 Technology Preview 2 :
+- Create a StandardPreviewClass (with renderer, updateData, changeView, getColor, choices and toggles).
 - Replace terrain canvas editor by full sculpting editor.
    => Add a generation dialog, with fixed resolution.
    => Store local terrain modifications in fully dynamic canvas.

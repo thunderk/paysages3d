@@ -67,8 +67,6 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     _base_camera = camera;
     cameraCopyDefinition(camera, &_current_camera);
 
-    _water = waterCreateDefinition();
-    sceneryGetWater(&_water);
     _textures = texturesCreateDefinition();
     sceneryGetTextures(&_textures);
 
@@ -76,7 +74,6 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     _renderer->render_quality = 3;
     _renderer->customData[1] = &_textures;
     _renderer->customData[2] = _base_camera;
-    _renderer->customData[3] = &_water;
     _renderer->applyTextures = _applyTextures;
     _renderer->getCameraLocation = _getCameraLocation;
 
@@ -99,7 +96,6 @@ WidgetExplorer::~WidgetExplorer()
     {
         delete _chunks[i];
     }
-    waterDeleteDefinition(&_water);
     rendererDelete(_renderer);
 }
 
@@ -110,7 +106,7 @@ void WidgetExplorer::startRendering()
     double size = 400.0;
     double chunksize = size / (double)chunks;
     double start = -size / 2.0;
-    double water_height = _renderer->getWaterHeightInfo(_renderer).base_height;
+    double water_height = _renderer->water->getHeightInfo(_renderer).base_height;
     for (int i = 0; i < chunks; i++)
     {
         for (int j = 0; j < chunks; j++)
@@ -402,6 +398,7 @@ void WidgetExplorer::paintGL()
     GLenum error_code;
     QTime start_time;
     double frame_time;
+    WaterDefinition* water = _renderer->water->definition;
 
     cameraCopyDefinition(&_current_camera, &_renderer->render_camera);
     cameraValidateDefinition(&_current_camera, 1);
@@ -418,12 +415,12 @@ void WidgetExplorer::paintGL()
 
     // Render water
     glDisable(GL_TEXTURE_2D);
-    glColor3f(_water.material.base.r, _water.material.base.g, _water.material.base.b);
+    glColor3f(water->material.base.r, water->material.base.g, water->material.base.b);
     glBegin(GL_QUADS);
-    glVertex3f(_current_camera.location.x - 500.0, _water.height, _current_camera.location.z - 500.0);
-    glVertex3f(_current_camera.location.x - 500.0, _water.height, _current_camera.location.z + 500.0);
-    glVertex3f(_current_camera.location.x + 500.0, _water.height, _current_camera.location.z + 500.0);
-    glVertex3f(_current_camera.location.x + 500.0, _water.height, _current_camera.location.z - 500.0);
+    glVertex3f(_current_camera.location.x - 500.0, water->height, _current_camera.location.z - 500.0);
+    glVertex3f(_current_camera.location.x - 500.0, water->height, _current_camera.location.z + 500.0);
+    glVertex3f(_current_camera.location.x + 500.0, water->height, _current_camera.location.z + 500.0);
+    glVertex3f(_current_camera.location.x + 500.0, water->height, _current_camera.location.z - 500.0);
     glEnd();
 
     // Render chunks

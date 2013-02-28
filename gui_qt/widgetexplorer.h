@@ -4,7 +4,6 @@
 #include <QGLWidget>
 #include "baseexplorerchunk.h"
 #include "../lib_paysages/camera.h"
-#include "../lib_paysages/water.h"
 #include "../lib_paysages/renderer.h"
 #include "../lib_paysages/textures.h"
 
@@ -48,7 +47,6 @@ private:
     bool _alive;
     QMutex _lock_chunks;
 
-    WaterDefinition _water;
     TexturesDefinition _textures;
 
     double _average_frame_time;

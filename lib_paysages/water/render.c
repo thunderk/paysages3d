@@ -297,7 +297,7 @@ static void _bindRenderer(Renderer* renderer, WaterDefinition* definition)
     lightingManagerRegisterFilter(renderer->lighting, (FuncLightingAlterLight)_alterLight, renderer);
 }
 
-StandardRenderer CloudsRendererClass = {
+StandardRenderer WaterRendererClass = {
     (FuncObjectCreate)_createRenderer,
     (FuncObjectDelete)_deleteRenderer,
     (FuncObjectBind)_bindRenderer

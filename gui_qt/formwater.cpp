@@ -3,6 +3,7 @@
 
 #include <QColor>
 #include <QSlider>
+#include <math.h>
 
 #include "../lib_paysages/tools/euclid.h"
 #include "../lib_paysages/tools/lighting.h"
@@ -64,13 +65,10 @@ public:
         _background = 0;
         _lighting_enabled = false;
 
-        _water = waterCreateDefinition();
-
         _renderer = rendererCreate();
         _renderer->atmosphere->getLightingStatus = _getLightingStatus;
         _renderer->rayWalking = _rayWalking;
-        _renderer->customData[0] = &_water;
-        _renderer->customData[2] = this;
+        _renderer->customData[0] = this;
 
         configScaling(10.0, 1000.0, 10.0, 250.0);
         //configScrolling(-30.0, 30.0, 0.0, -20.0, 20.0, 0.0);
@@ -83,7 +81,8 @@ public:
 protected:
     Color getColor(double x, double y)
     {
-        Vector3 eye, look, location;
+        Vector3 eye, look;
+        double target_x, target_z;
 
         // TODO Camera location
         eye.x = 0.0;
@@ -99,20 +98,19 @@ protected:
             return _rayWalking(_renderer, eye, look, 0, 0, 0, 0).hit_color;
         }
 
-        location.x = eye.x - look.x * eye.y / look.y;
-        location.y = 0.0;
-        location.z = eye.z - look.z * eye.y / look.y;
+        target_x = eye.x - look.x * eye.y / look.y;
+        target_z = eye.z - look.z * eye.y / look.y;
 
-        if (location.z > 0.0)
+        if (target_z > 0.0)
         {
             return _rayWalking(_renderer, eye, look, 0, 0, 0, 0).hit_color;
         }
 
-        return waterGetColor(&_water, _renderer, location, look);
+        return _renderer->water->getResult(_renderer, target_x, target_z).final;
     }
     void updateData()
     {
-        waterCopyDefinition(&_definition, &_water);
+        WaterRendererClass.bind(_renderer, _definition);
         _water.height = 0.0;
     }
     void choiceChangeEvent(const QString& key, int position)
@@ -139,7 +137,7 @@ private:
     static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int, int, int, int)
     {
         RayCastingResult result;
-        PreviewWaterColor* preview = (PreviewWaterColor*)renderer->customData[2];
+        PreviewWaterColor* preview = (PreviewWaterColor*)renderer->customData[0];
         double x, y;
 
         result.hit = 1;
@@ -199,51 +197,51 @@ FormWater::FormWater(QWidget *parent):
     addAutoPreset(tr("Lake surface"));
     addAutoPreset(tr("Standard sea"));
 
-    _definition = waterCreateDefinition();
+    _definition = (WaterDefinition*)WaterDefinitionClass.create();
 
     previewCoverage = new PreviewWaterCoverage(this);
     previewColor = new PreviewWaterColor(this);
     addPreview(previewCoverage, tr("Coverage preview"));
     addPreview(previewColor, tr("Rendered preview"));
 
-    addInputDouble(tr("Height"), &_definition.height, -15.0, 15.0, 0.1, 1.0);
-    addInputMaterial(tr("Surface material"), &_definition.material);
-    addInputColor(tr("Depth color"), &_definition.depth_color);
-    addInputDouble(tr("Transparency"), &_definition.transparency, 0.0, 1.0, 0.001, 0.1);
-    addInputDouble(tr("Reflection"), &_definition.reflection, 0.0, 1.0, 0.001, 0.1);
-    addInputDouble(tr("Transparency distance"), &_definition.transparency_depth, 0.0, 20.0, 0.1, 1.0);
-    addInputDouble(tr("Light-through distance"), &_definition.lighting_depth, 0.0, 20.0, 0.1, 1.0);
-    addInputDouble(tr("Waves scaling"), &_definition.scaling, 0.02, 2.0, 0.02, 0.2);
-    addInputDouble(tr("Waves height"), &_definition.waves_height, 0.0, 2.0, 0.02, 0.2);
-    addInputDouble(tr("Waves detail"), &_definition.detail_height, 0.0, 0.3, 0.003, 0.03);
-    addInputDouble(tr("Waves turbulence"), &_definition.turbulence, 0.0, 0.5, 0.005, 0.05);
-    addInputDouble(tr("Foam coverage"), &_definition.foam_coverage, 0.0, 1.0, 0.01, 0.1);
-    addInputMaterial(tr("Foam material"), &_definition.foam_material);
+    addInputDouble(tr("Height"), &_definition->height, -15.0, 15.0, 0.1, 1.0);
+    addInputMaterial(tr("Surface material"), &_definition->material);
+    addInputColor(tr("Depth color"), &_definition->depth_color);
+    addInputDouble(tr("Transparency"), &_definition->transparency, 0.0, 1.0, 0.001, 0.1);
+    addInputDouble(tr("Reflection"), &_definition->reflection, 0.0, 1.0, 0.001, 0.1);
+    addInputDouble(tr("Transparency distance"), &_definition->transparency_depth, 0.0, 20.0, 0.1, 1.0);
+    addInputDouble(tr("Light-through distance"), &_definition->lighting_depth, 0.0, 20.0, 0.1, 1.0);
+    addInputDouble(tr("Waves scaling"), &_definition->scaling, 0.02, 2.0, 0.02, 0.2);
+    addInputDouble(tr("Waves height"), &_definition->waves_height, 0.0, 2.0, 0.02, 0.2);
+    addInputDouble(tr("Waves detail"), &_definition->detail_height, 0.0, 0.3, 0.003, 0.03);
+    addInputDouble(tr("Waves turbulence"), &_definition->turbulence, 0.0, 0.5, 0.005, 0.05);
+    addInputDouble(tr("Foam coverage"), &_definition->foam_coverage, 0.0, 1.0, 0.01, 0.1);
+    addInputMaterial(tr("Foam material"), &_definition->foam_material);
 
     revertConfig();
 }
 
 void FormWater::revertConfig()
 {
-    sceneryGetWater(&_definition);
+    sceneryGetWater(_definition);
     BaseForm::revertConfig();
 }
 
 void FormWater::applyConfig()
 {
-    scenerySetWater(&_definition);
+    scenerySetWater(_definition);
     BaseForm::applyConfig();
 }
 
 void FormWater::configChangeEvent()
 {
-    waterValidateDefinition(&_definition);
+    WaterDefinitionClass.validate(_definition);
     BaseForm::configChangeEvent();
 }
 
 void FormWater::autoPresetSelected(int preset)
 {
-    waterAutoPreset(&_definition, (WaterPreset)preset);
+    waterAutoPreset(_definition, (WaterPreset)preset);
     BaseForm::autoPresetSelected(preset);
 }
 

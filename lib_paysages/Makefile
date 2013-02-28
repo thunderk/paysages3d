@@ -1,7 +1,7 @@
 BUILDMODE = debug
 BUILDPATH = ../build/${BUILDMODE}
 OBJPATH = ./obj/${BUILDMODE}
-SOURCES = $(wildcard *.c atmosphere/*.c clouds/*.c terrain/*.c water/*.c tools/*.c)
+SOURCES = $(wildcard *.c atmosphere/*.c clouds/*.c terrain/*.c water/*.c tools/*.c shared/*.c)
 OBJECTS = ${SOURCES:%.c=${OBJPATH}/%.o}
 HEADERS = $(wildcard *.h atmosphere/*.h clouds/*.h terrain/*.h water/*.h tools/*.h shared/*.h)
 RESULT = ${BUILDPATH}/libpaysages.so

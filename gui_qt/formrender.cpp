@@ -17,14 +17,12 @@ public:
         _renderer->getCameraLocation = _getCameraLocation;
 
         _textures = texturesCreateDefinition();
-        _water = waterCreateDefinition();
 
         _atmosphere = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
         _terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
+        _water = (WaterDefinition*)WaterDefinitionClass.create();
 
-        _renderer->customData[0] = &_terrain;
-        _renderer->customData[1] = &_textures;
-        _renderer->customData[3] = &_water;
+        _renderer->customData[0] = &_textures;
 
         addOsd(QString("geolocation"));
 
@@ -35,16 +33,12 @@ public:
 protected:
     Color getColor(double x, double y)
     {
-        Vector3 down = {0.0, -1.0, 0.0};
         Vector3 location;
         double height = _renderer->terrain->getHeight(_renderer, x, y, 1);
 
-        if (height < _water.height)
+        if (height < _water->height)
         {
-            location.x = x;
-            location.y = _water.height;
-            location.z = y;
-            return waterGetColor(&_water, _renderer, location, down);
+            return _renderer->water->getResult(_renderer, x, y).final;
         }
         else
         {
@@ -57,7 +51,9 @@ protected:
     void updateData()
     {
         sceneryGetTextures(&_textures);
-        sceneryGetWater(&_water);
+
+        sceneryGetWater(_water);
+        WaterRendererClass.bind(_renderer, _water);
 
         sceneryGetAtmosphere(_atmosphere);
         AtmosphereRendererClass.bind(_renderer, _atmosphere);
@@ -69,13 +65,13 @@ protected:
 private:
     Renderer* _renderer;
     TerrainDefinition* _terrain;
-    WaterDefinition _water;
+    WaterDefinition *_water;
     TexturesDefinition _textures;
     AtmosphereDefinition* _atmosphere;
 
     static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
     {
-        return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
+        return texturesGetColor((TexturesDefinition*)(renderer->customData[0]), renderer, location.x, location.z, precision);
     }
 
     static Vector3 _getCameraLocation(Renderer*, Vector3 location)
