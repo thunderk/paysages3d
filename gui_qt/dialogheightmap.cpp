@@ -77,6 +77,7 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, TerrainDefinition* terrain) : 
     combobox = new QComboBox(panel);
     combobox->addItem(tr("Raise / lower"));
     combobox->addItem(tr("Add noise / smooth"));
+    combobox->addItem(tr("Restore to original"));
     connect(combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(brushModeChanged(int)));
     panel->layout()->addWidget(combobox);
 

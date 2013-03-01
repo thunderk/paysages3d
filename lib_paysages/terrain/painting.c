@@ -436,13 +436,13 @@ static double _applyBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush,
     UNUSED(brush);
     UNUSED(data);
 
-    double ideal = terrainGetInterpolatedHeight(heightmap->terrain, x, z, 1);
+    double ideal = terrainGetInterpolatedHeight(heightmap->terrain, x, z, 0);
     return basevalue + (ideal - basevalue) * influence * force;
 }
 
 void terrainBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double value)
 {
-    /* No need to prepare the floating data, it can't grow here */
+    _prepareBrushStroke(heightmap, brush);
     _applyBrush(heightmap, brush, value, NULL, _applyBrushReset);
 }
 
