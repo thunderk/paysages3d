@@ -1227,19 +1227,13 @@ void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 
 
     muS = v3Dot(up, s);
     sun.color = _transmittanceWithShadow(r0, muS);
-    /*sun.color.r *= 100.0;
-    sun.color.g *= 100.0;
-    sun.color.b *= 100.0;*/
     sun.direction = v3Scale(s, -1.0);
-    sun.reflection = 1.0;
+    sun.reflection = ISun;
     sun.altered = 1;
 
     lightingPushLight(status, &sun);
 
     irradiance.color = _irradiance(_irradianceTexture, r0, muS);
-    /*irradiance.color.r *= 100.0;
-    irradiance.color.g *= 100.0;
-    irradiance.color.b *= 100.0;*/
     irradiance.direction = VECTOR_DOWN;
     irradiance.reflection = 0.0;
     irradiance.altered = 0;

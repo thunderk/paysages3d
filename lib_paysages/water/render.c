@@ -161,18 +161,19 @@ static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 at)
 
     if (at.y < definition->height)
     {
-        if (light->direction.y < 0.00001)
+        if (light->direction.y <= -0.00001)
         {
             factor = (definition->height - at.y) / (-light->direction.y * definition->lighting_depth);
             if (factor > 1.0)
             {
                 factor = 1.0;
             }
-            factor = 1.0 - 0.8 * factor;
+            factor = 1.0 - factor;
 
             light->color.r *= factor;
             light->color.g *= factor;
             light->color.b *= factor;
+            light->reflection *= factor;
 
             return 1;
         }

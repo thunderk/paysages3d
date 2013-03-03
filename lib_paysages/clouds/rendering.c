@@ -54,6 +54,7 @@ static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 locat
     for (i = 0; i < n; i++)
     {
         light->color = cloudsLayerFilterLight(layersGetLayer(definition->layers, i), renderer, light->color, location, v3Add(location, v3Scale(light->direction, -10000.0)), v3Scale(light->direction, -1.0));
+        /* TODO Reduce light->reflection too */
     }
     return n > 0;
 }
