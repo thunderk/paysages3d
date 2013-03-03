@@ -69,12 +69,13 @@ public:
         _renderer->atmosphere->getLightingStatus = _getLightingStatus;
         _renderer->rayWalking = _rayWalking;
         _renderer->customData[0] = this;
+        //cameraSetTarget(&_renderer->render_camera, 0.0, 0.0, 0.0);
 
         configScaling(10.0, 1000.0, 10.0, 250.0);
         //configScrolling(-30.0, 30.0, 0.0, -20.0, 20.0, 0.0);
 
         addChoice("bg", tr("Background"), QStringList(tr("None")) << tr("Grid") << tr("Sinusoid"), 2);
-        addToggle("light", tr("Lighting"), true);
+        addToggle("light", tr("Light reflection"), true);
     }
     int _background;
     bool _lighting_enabled;
@@ -84,7 +85,6 @@ protected:
         Vector3 eye, look;
         double target_x, target_z;
 
-        // TODO Camera location
         eye.x = 0.0;
         eye.y = scaling;
         eye.z = -10.0 * scaling;
@@ -108,10 +108,14 @@ protected:
 
         return _renderer->water->getResult(_renderer, target_x, target_z).final;
     }
+    void cameraEvent()
+    {
+        cameraSetLocation(&_renderer->render_camera, 0.0, scaling, -10.0 * scaling);
+    }
     void updateData()
     {
         WaterRendererClass.bind(_renderer, _definition);
-        _water.height = 0.0;
+        _renderer->water->definition->height = 0.0;
     }
     void choiceChangeEvent(const QString& key, int position)
     {
@@ -132,7 +136,6 @@ protected:
 
 private:
     Renderer* _renderer;
-    WaterDefinition _water;
 
     static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int, int, int, int)
     {
@@ -172,11 +175,11 @@ private:
     static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3, int)
     {
         LightDefinition light;
-        PreviewWaterColor* preview = (PreviewWaterColor*)renderer->customData[2];
+        PreviewWaterColor* preview = (PreviewWaterColor*)renderer->customData[0];
         light.color = COLOR_WHITE;
         light.direction.x = 0.0;
         light.direction.y = -0.4794;
-        light.direction.z = 0.8776;
+        light.direction.z = -0.8776;
         light.altered = 0;
         if (preview->_lighting_enabled)
         {

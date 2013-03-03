@@ -61,7 +61,6 @@ void cameraCopyDefinition(CameraDefinition* source, CameraDefinition* destinatio
 
 void cameraValidateDefinition(CameraDefinition* definition, int check_above)
 {
-    WaterDefinition water;
     Renderer* renderer;
     double water_height, terrain_height, diff;
     Vector3 move;

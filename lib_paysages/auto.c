@@ -12,7 +12,6 @@
 
 void autoGenRealisticLandscape(int seed)
 {
-    WaterDefinition water;
     TexturesDefinition textures;
     TextureLayerDefinition* texture;
     int layer;

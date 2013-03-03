@@ -283,11 +283,10 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
             result.g += col.g / (double)(area->params.antialias * area->params.antialias);
             result.b += col.b / (double)(area->params.antialias * area->params.antialias);
 
-            result = colorProfileApply(area->hdr_mapping, result);
         }
     }
 
-    return result;
+    return colorProfileApply(area->hdr_mapping, result);
 }
 
 static void _processDirtyPixels(RenderArea* area)

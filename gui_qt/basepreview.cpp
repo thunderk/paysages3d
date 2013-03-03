@@ -438,6 +438,10 @@ void BasePreview::updateData()
 {
 }
 
+void BasePreview::cameraEvent()
+{
+}
+
 Color BasePreview::getColor(double, double)
 {
     return COLOR_BLACK;
@@ -692,6 +696,7 @@ void BasePreview::updateScaling()
 
 void BasePreview::updateChunks()
 {
+    cameraEvent();
     _drawing_manager->updateChunks(this);
     _revision++;
 }

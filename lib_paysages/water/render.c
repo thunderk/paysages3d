@@ -6,7 +6,6 @@
 #include "../renderer.h"
 
 static HeightInfo _FAKE_HEIGHT_INFO = {0.0, 0.0, 0.0};
-static WaterResult _FAKE_RESULT = {};
 
 /******************** Fake ********************/
 static HeightInfo _fakeGetHeightInfo(Renderer* renderer)
@@ -26,6 +25,8 @@ static double _fakeGetHeight(Renderer* renderer, double x, double z)
 static WaterResult _fakeGetResult(Renderer* renderer, double x, double z)
 {
     WaterResult result;
+
+    UNUSED(renderer);
 
     result.location.x = x;
     result.location.y = 0.0;
@@ -212,9 +213,8 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     WaterDefinition* definition = renderer->water->definition;
     WaterResult result;
     RayCastingResult refracted;
-    Vector3 location, normal, look;
+    Vector3 location, normal, look_direction;
     Color color;
-    SurfaceMaterial material;
     double detail, depth;
 
     location.x = x;
@@ -229,34 +229,52 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     }
 
     normal = _getNormal(definition, location, detail);
-    look = v3Normalize(renderer->getCameraDirection(renderer, location));
-    result.reflected = renderer->rayWalking(renderer, location, _reflectRay(look, normal), 1, 0, 1, 1).hit_color;
-    refracted = renderer->rayWalking(renderer, location, _refractRay(look, normal), 1, 0, 1, 1);
-    depth = v3Norm(v3Sub(location, refracted.hit_location));
-    if (depth > definition->transparency_depth)
+    look_direction = v3Normalize(v3Sub(location, renderer->getCameraLocation(renderer, location)));
+
+    /* Reflection */
+    if (definition->reflection == 0.0)
     {
-        result.refracted = definition->depth_color;
+        result.reflected = COLOR_BLACK;
     }
     else
     {
-        depth /= definition->transparency_depth;
-        result.refracted.r = refracted.hit_color.r * (1.0 - depth) + definition->depth_color.r * depth;
-        result.refracted.g = refracted.hit_color.g * (1.0 - depth) + definition->depth_color.g * depth;
-        result.refracted.b = refracted.hit_color.b * (1.0 - depth) + definition->depth_color.b * depth;
-        result.refracted.a = 1.0;
+        result.reflected = renderer->rayWalking(renderer, location, _reflectRay(look_direction, normal), 1, 0, 1, 1).hit_color;
     }
 
-    color.r = definition->material.base.r * (1.0 - definition->transparency) + result.reflected.r * definition->reflection + result.refracted.r * definition->transparency;
-    color.g = definition->material.base.g * (1.0 - definition->transparency) + result.reflected.g * definition->reflection + result.refracted.g * definition->transparency;
-    color.b = definition->material.base.b * (1.0 - definition->transparency) + result.reflected.b * definition->reflection + result.refracted.b * definition->transparency;
-    color.a = 1.0;
+    /* Transparency/refraction */
+    if (definition->transparency == 0.0)
+    {
+        result.refracted = COLOR_BLACK;
+    }
+    else
+    {
+        refracted = renderer->rayWalking(renderer, location, _refractRay(look_direction, normal), 1, 0, 1, 1);
+        depth = v3Norm(v3Sub(location, refracted.hit_location));
+        if (depth > definition->transparency_depth)
+        {
+            result.refracted = definition->depth_color;
+        }
+        else
+        {
+            depth /= definition->transparency_depth;
+            result.refracted.r = refracted.hit_color.r * (1.0 - depth) + definition->depth_color.r * depth;
+            result.refracted.g = refracted.hit_color.g * (1.0 - depth) + definition->depth_color.g * depth;
+            result.refracted.b = refracted.hit_color.b * (1.0 - depth) + definition->depth_color.b * depth;
+            result.refracted.a = 1.0;
+        }
+    }
 
-    material = definition->material;
-    material.base = color;
+    /* Lighting from environment */
+    color = renderer->applyLightingToSurface(renderer, location, normal, &definition->material);
 
-    _applyFoam(definition, location, normal, detail, &material);
+    color.r += result.reflected.r * definition->reflection + result.refracted.r * definition->transparency;
+    color.g += result.reflected.g * definition->reflection + result.refracted.g * definition->transparency;
+    color.b += result.reflected.b * definition->reflection + result.refracted.b * definition->transparency;
 
-    color = renderer->applyLightingToSurface(renderer, location, normal, &material);
+    /* Merge with foam */
+//    _applyFoam(definition, location, normal, detail, &material);
+
+    /* Bring color to the camera */
     color = renderer->applyMediumTraversal(renderer, location, color);
 
     result.base = definition->material.base;

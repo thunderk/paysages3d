@@ -51,6 +51,7 @@ public:
 
 protected:
     virtual void updateData();
+    virtual void cameraEvent();
     virtual Color getColor(double x, double y);
 
     void configHdrToneMapping(bool active);

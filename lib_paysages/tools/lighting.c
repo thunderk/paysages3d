@@ -158,7 +158,7 @@ Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 locatio
     /* specular reflection */
     if (material->reflection > 0.0 && light->reflection > 0.0)
     {
-        Vector3 view = view = v3Normalize(v3Sub(location, eye));
+        Vector3 view = v3Normalize(v3Sub(location, eye));
         Vector3 reflect = v3Sub(direction_inv, v3Scale(normal, 2.0 * v3Dot(direction_inv, normal)));
         double specular = v3Dot(reflect, view);
         if (specular > 0.0)
