@@ -141,6 +141,9 @@ static inline Color _getFoamMask(Renderer* renderer, WaterDefinition* definition
 
     /* TODO Re-use base lighting status */
     result = renderer->applyLightingToSurface(renderer, location, normal, &definition->foam_material);
+    result.r *= 2.0;
+    result.g *= 2.0;
+    result.b *= 2.0;
 
     /* TODO This should be configurable */
     if (foam_factor > 0.2)

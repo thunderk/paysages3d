@@ -47,6 +47,7 @@ struct RenderArea
     ColorProfile* hdr_mapping;
     RenderParams params;
     int pixel_count;
+    int pixel_done;
     RenderFragment* pixels;
     ScanPoint* scanline_up;
     ScanPoint* scanline_down;
@@ -73,6 +74,7 @@ typedef struct {
     int endy;
     int finished;
     int interrupt;
+    int pixel_done;
     Thread* thread;
     RenderArea* area;
     Renderer* renderer;
@@ -307,7 +309,8 @@ static void _processDirtyPixels(RenderArea* area)
         }
     }
 
-    area->callback_update(0.0);
+    double progress = 0.1 + ((double)area->pixel_done / (double)area->pixel_count) * 0.9;
+    area->callback_update(progress);
 
     area->dirty_left = area->params.width * area->params.antialias;
     area->dirty_right = -1;
@@ -615,7 +618,7 @@ void* _renderPostProcessChunk(void* data)
                 _setDirtyPixel(chunk->area, x, y);
                 mutexRelease(chunk->area->lock);
             }
-            /* chunk->area->progress_pixels++; */
+            chunk->area->pixel_done++;
         }
         if (chunk->interrupt)
         {
@@ -650,7 +653,7 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
     dy = area->params.height * area->params.antialias / ny;
     x = 0;
     y = 0;
-    /*_progress_pixels = 0;*/
+    area->pixel_done = 0;
 
     for (i = 0; i < nbchunks; i++)
     {
@@ -718,7 +721,6 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
         if (++loops >= 10)
         {
             mutexAcquire(area->lock);
-            /*_progress = (double)_progress_pixels / (double)_pixel_count;*/
             _processDirtyPixels(area);
             mutexRelease(area->lock);
 
@@ -726,7 +728,6 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
         }
     }
 
-    /*_progress = 1.0;*/
     _processDirtyPixels(area);
     area->callback_update(1.0);
 }

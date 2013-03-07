@@ -26,7 +26,6 @@ Technlogy Preview 3 :
 - Create a StandardPreviewClass in C-lib (with renderer, updateData, changeView, getColor, choices and toggles).
 - Fully move layer management from BaseForm to BaseFormLayer.
 - Start vegetation system.
-- Add tone-mapping and exposure control to final image.
 - Allow render saving in HDR compatible format.
 - Add clouds to explorer with 3d textures.
 - Add fresnel effect to specular lighting.

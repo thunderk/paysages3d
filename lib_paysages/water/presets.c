@@ -49,7 +49,7 @@ void waterAutoPreset(WaterDefinition* definition, WaterPreset preset)
     definition->foam_material.base.g = 0.8;
     definition->foam_material.base.b = 0.8;
     definition->foam_material.base.a = 1.0;
-    definition->foam_material.reflection = 0.4;
+    definition->foam_material.reflection = 0.1;
     definition->foam_material.shininess = 1.5;
 
     WaterDefinitionClass.validate(definition);
