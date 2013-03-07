@@ -16,6 +16,7 @@ typedef struct
 
 struct LightingManager
 {
+    int specularity_enabled;
     int callbacks_count;
     LightFilterCallback callbacks[MAX_CALLBACK_COUNT];
 };
@@ -35,6 +36,7 @@ LightingManager* lightingManagerCreate()
 
     result = malloc(sizeof(LightingManager));
     result->callbacks_count = 0;
+    result->specularity_enabled = 1;
 
     return result;
 }
@@ -63,6 +65,11 @@ void lightingManagerRegisterFilter(LightingManager* filter, FuncLightingAlterLig
         filter->callbacks[filter->callbacks_count].data = data;
         filter->callbacks_count++;
     }
+}
+
+void lightingManagerDisableSpecularity(LightingManager* manager)
+{
+    manager->specularity_enabled = 0;
 }
 
 LightStatus* lightingCreateStatus(LightingManager* manager, Vector3 location, Vector3 eye)
@@ -102,6 +109,11 @@ void lightingPushLight(LightStatus* status, LightDefinition* light)
                     final = temp;
                 }
             }
+        }
+
+        if (!status->manager->specularity_enabled)
+        {
+            final.reflection = 0.0;
         }
 
         status->lights[status->light_count++] = final;

@@ -76,6 +76,7 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     _renderer->customData[2] = _base_camera;
     _renderer->applyTextures = _applyTextures;
     _renderer->getCameraLocation = _getCameraLocation;
+    lightingManagerDisableSpecularity(_renderer->lighting);
 
     _inited = false;
     _updated = false;

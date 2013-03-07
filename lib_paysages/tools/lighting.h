@@ -32,6 +32,7 @@ typedef struct LightStatus LightStatus;
 LightingManager* lightingManagerCreate();
 void lightingManagerDelete(LightingManager* filter);
 void lightingManagerRegisterFilter(LightingManager* filter, FuncLightingAlterLight callback, void* data);
+void lightingManagerDisableSpecularity(LightingManager* manager);
 
 LightStatus* lightingCreateStatus(LightingManager* manager, Vector3 location, Vector3 eye);
 void lightingDeleteStatus(LightStatus* status);

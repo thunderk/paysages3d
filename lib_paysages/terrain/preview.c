@@ -34,7 +34,7 @@ static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3 
     light.direction.z = 1.0;
     light.direction = v3Normalize(light.direction);
     light.altered = 1;
-    light.reflection = 1.0;
+    light.reflection = 0.0;
     lightingPushLight(status, &light);
 
     light.color.r = 0.2;

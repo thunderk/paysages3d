@@ -1,5 +1,4 @@
 Technology Preview 2 :
-- Create a StandardPreviewClass (with renderer, updateData, changeView, getColor, choices and toggles).
 - Replace terrain canvas editor by full sculpting editor.
    => Add a generation dialog, with fixed resolution.
    => Store local terrain modifications in fully dynamic canvas.
@@ -10,11 +9,9 @@ Technology Preview 2 :
    => Fix artifacts on aerial perspective (mostly when sun is near horizon)
    => Fix blue appearance at night
 - Finalize lighting refactoring
-   => Restore water filtering
    => Restore cloud lighting
-   => Restore and improve skydome lighting
 - Hide Preetham's model.
-- Find a proper model for night sky (maybe Shirley).
+   => Implement weather effect in Bruneton's model.
 - Improve textures (current model is greatly incorrect).
    => Separate models (basic texture and covering texture).
    => Covering texture height should inpact terrain height.
@@ -22,10 +19,11 @@ Technology Preview 2 :
 - Clouds should keep distance to ground.
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
 - Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).
-- Top-down previews and explorer renderings should be camera independant.
 - Translations.
 
 Technlogy Preview 3 :
+- Find a proper model for night sky (maybe Shirley).
+- Create a StandardPreviewClass in C-lib (with renderer, updateData, changeView, getColor, choices and toggles).
 - Fully move layer management from BaseForm to BaseFormLayer.
 - Start vegetation system.
 - Add tone-mapping and exposure control to final image.
@@ -64,7 +62,6 @@ Technology Preview 4 :
    => Interrupt chunk rendering when quitting dialog
    => Don't display the water if it's below all ground
    => Try to overcome the near frustum cutting
-   => Disable specular lighting (dependant on camera location)
    => Add toggles (for water...)
    => Max texture size should depend on GPU memory available
 - Interrupt preview chunk renderings that will be discarded at commit, or that are no more visible.

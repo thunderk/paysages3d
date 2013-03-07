@@ -15,6 +15,7 @@ public:
         _renderer = rendererCreate();
         _renderer->applyTextures = _applyTextures;
         _renderer->getCameraLocation = _getCameraLocation;
+        lightingManagerDisableSpecularity(_renderer->lighting);
 
         _textures = texturesCreateDefinition();
 

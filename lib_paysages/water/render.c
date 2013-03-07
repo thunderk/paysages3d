@@ -93,9 +93,9 @@ static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal)
     }
 }
 
-static inline void _applyFoam(WaterDefinition* definition, Vector3 location, Vector3 normal, double detail, SurfaceMaterial* material)
+static inline Color _getFoamMask(Renderer* renderer, WaterDefinition* definition, Vector3 location, Vector3 normal, double detail)
 {
-    Color result = definition->foam_material.base;
+    Color result;
     double foam_factor, normal_diff, location_offset;
 
     location_offset = 2.0 * detail;
@@ -135,12 +135,12 @@ static inline void _applyFoam(WaterDefinition* definition, Vector3 location, Vec
 
     if (foam_factor <= 1.0 - definition->foam_coverage)
     {
-        return;
+        return COLOR_TRANSPARENT;
     }
     foam_factor = (foam_factor - (1.0 - definition->foam_coverage)) * definition->foam_coverage;
 
-    material->reflection = foam_factor * definition->foam_material.reflection + (1.0 - foam_factor) * material->reflection;
-    material->shininess = foam_factor * definition->foam_material.shininess + (1.0 - foam_factor) * material->shininess;
+    /* TODO Re-use base lighting status */
+    result = renderer->applyLightingToSurface(renderer, location, normal, &definition->foam_material);
 
     /* TODO This should be configurable */
     if (foam_factor > 0.2)
@@ -151,7 +151,8 @@ static inline void _applyFoam(WaterDefinition* definition, Vector3 location, Vec
     {
         result.a = 0.8 * (foam_factor / 0.2);
     }
-    colorMask(&material->base, &result);
+
+    return result;
 }
 
 static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 at)
@@ -215,7 +216,7 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     WaterResult result;
     RayCastingResult refracted;
     Vector3 location, normal, look_direction;
-    Color color;
+    Color color, foam;
     double detail, depth;
 
     location.x = x;
@@ -273,7 +274,8 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     color.b += result.reflected.b * definition->reflection + result.refracted.b * definition->transparency;
 
     /* Merge with foam */
-//    _applyFoam(definition, location, normal, detail, &material);
+    foam = _getFoamMask(renderer, definition, location, normal, detail);
+    colorMask(&color, &foam);
 
     /* Bring color to the camera */
     color = renderer->applyMediumTraversal(renderer, location, color);
