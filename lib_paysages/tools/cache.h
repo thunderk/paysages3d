@@ -11,7 +11,7 @@ extern "C" {
 
 typedef struct CacheFile CacheFile;
 
-CacheFile* cacheFileCreateAccessor(const char* module, const char* ext, const char* tag1, int tag2, int tag3, int tag4, int tag5);
+CacheFile* cacheFileCreateAccessor(const char* module, const char* ext, const char* tag1, int tag2, int tag3, int tag4, int tag5, int tag6);
 void cacheFileDeleteAccessor(CacheFile* cache);
 int cacheFileIsReadable(CacheFile* cache);
 int cacheFileIsWritable(CacheFile* cache);

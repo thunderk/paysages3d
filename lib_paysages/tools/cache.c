@@ -9,14 +9,14 @@ struct CacheFile
     char* filepath;
 };
 
-CacheFile* cacheFileCreateAccessor(const char* module, const char* ext, const char* tag1, int tag2, int tag3, int tag4, int tag5)
+CacheFile* cacheFileCreateAccessor(const char* module, const char* ext, const char* tag1, int tag2, int tag3, int tag4, int tag5, int tag6)
 {
     CacheFile* result;
 
     result = (CacheFile*)malloc(sizeof(CacheFile));
     result->filepath = malloc(sizeof(char) * 501);
 
-    snprintf(result->filepath, 500, "./cache/%s-%s-%d-%d-%d-%d.%s", module, tag1, tag2, tag3, tag4, tag5, ext);
+    snprintf(result->filepath, 500, "./cache/%s-%s-%d-%d-%d-%d-%d.%s", module, tag1, tag2, tag3, tag4, tag5, tag6, ext);
 
     return result;
 }

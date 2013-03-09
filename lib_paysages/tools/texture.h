@@ -14,6 +14,7 @@ extern "C" {
 
 typedef struct Texture2D Texture2D;
 typedef struct Texture3D Texture3D;
+typedef struct Texture4D Texture4D;
 
 Texture2D* texture2DCreate(int xsize, int ysize);
 void texture2DDelete(Texture2D* tex);
@@ -44,6 +45,21 @@ void texture3DSave(PackStream* stream, Texture3D* tex);
 void texture3DLoad(PackStream* stream, Texture3D* tex);
 void texture3DSaveToFile(Texture3D* tex, const char* filepath);
 void texture3DLoadFromFile(Texture3D* tex, const char* filepath);
+
+Texture4D* texture4DCreate(int xsize, int ysize, int zsize, int wsize);
+void texture4DDelete(Texture4D* tex);
+void texture4DGetSize(Texture4D* tex, int* xsize, int* ysize, int* zsize, int* wsize);
+void texture4DSetPixel(Texture4D* tex, int x, int y, int z, int w, Color col);
+Color texture4DGetPixel(Texture4D* tex, int x, int y, int z, int w);
+Color texture4DGetNearest(Texture4D* tex, double dx, double dy, double dz, double dw);
+Color texture4DGetLinear(Texture4D* tex, double dx, double dy, double dz, double dw);
+Color texture4DGetCubic(Texture4D* tex, double dx, double dy, double dz, double dw);
+void texture4DFill(Texture4D* tex, Color col);
+void texture4DAdd(Texture4D* source, Texture4D* destination);
+void texture4DSave(PackStream* stream, Texture4D* tex);
+void texture4DLoad(PackStream* stream, Texture4D* tex);
+void texture4DSaveToFile(Texture4D* tex, const char* filepath);
+void texture4DLoadFromFile(Texture4D* tex, const char* filepath);
 
 #ifdef __cplusplus
 }
