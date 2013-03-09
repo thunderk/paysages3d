@@ -179,6 +179,25 @@ double colorGetValue(Color* col)
     return max;
 }
 
+double colorGetPower(Color* col)
+{
+    return col->r + col->g + col->b;
+}
+
+void colorLimitPower(Color* col, double max_power)
+{
+    double power = colorGetPower(col);
+
+    if (power > max_power)
+    {
+        double factor = max_power / power;
+
+        col->r *= factor;
+        col->g *= factor;
+        col->b *= factor;
+    }
+}
+
 /******************************** ColorProfile ********************************/
 struct ColorProfile
 {

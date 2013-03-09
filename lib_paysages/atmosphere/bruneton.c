@@ -162,7 +162,7 @@ static Color _texture4D(Texture4D* tex, double r, double mu, double muS, double 
     double uMu = cst.a + (rmu * cst.r + sqrt(delta + cst.g)) / (rho + cst.b) * (0.5 - 1.0 / (double)(RES_MU));
     double uMuS = 0.5 / (double)(RES_MU_S) + (atan(max(muS, -0.1975) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / (double)(RES_MU_S));
 
-    return texture4DGetLinear(tex, uR, uMu, uMuS, nu);
+    return texture4DGetLinear(tex, uMu, uMuS, nu, uR);
 }
 
 /*********************** Physics functions ***********************/
@@ -295,30 +295,29 @@ static Color _transmittanceWithShadow(double r, double mu)
     return mu < -sqrt(1.0 - (Rg / r) * (Rg / r)) ? COLOR_BLACK : _transmittance(r, mu);
 }
 
-static void _texCoordToMuMuSNu(double x, double y, double z, double w, Color dhdH, double* mu, double* muS, double* nu)
+static void _texCoordToMuMuSNu(double x, double y, double z, double r, Color dhdH, double* mu, double* muS, double* nu)
 {
-    /*double d;
+    double d;
 
-    if (y < (double)(RES_MU) / 2.0)
+    x /= (double)RES_MU;
+    y /= (double)RES_MU_S;
+    z /= (double)RES_NU;
+
+    if (x < 0.5)
     {
-        d = 1.0 - y / ((double)(RES_MU) / 2.0 - 1.0);
+        d = 1.0 - x / 0.5;
         d = min(max(dhdH.b, d * dhdH.a), dhdH.a * 0.999);
         *mu = (Rg * Rg - r * r - d * d) / (2.0 * r * d);
         *mu = min(*mu, -sqrt(1.0 - (Rg / r) * (Rg / r)) - 0.001);
     }
     else
     {
-        d = (y - (double)(RES_MU) / 2.0) / ((double)(RES_MU) / 2.0 - 1.0);
+        d = (x - 0.5) / 0.5;
         d = min(max(dhdH.r, d * dhdH.g), dhdH.g * 0.999);
         *mu = (Rt * Rt - r * r - d * d) / (2.0 * r * d);
     }
-    *muS = fmod(x, (double)(RES_MU_S)) / ((double)(RES_MU_S) - 1.0);
-    *muS = tan((2.0 * (*muS) - 1.0 + 0.26) * 1.1) / tan(1.26 * 1.1);
-    *nu = -1.0 + floor(x / (double)(RES_MU_S)) / ((double)(RES_NU) - 1.0) * 2.0;*/
-    
-    *mu = -1.0 + 2.0 * x / (float(RES_MU) - 1.0);
-    *muS = -0.2 + y * 1.2;
-    *nu = -1.0 + floor(x / float(RES_MU_S)) / (float(RES_NU) - 1.0) * 2.0;
+    *muS = tan((2.0 * y - 1.0 + 0.26) * 1.1) / tan(1.26 * 1.1);
+    *nu = -1.0 + z / 2.0;
 }
 
 static void _getIrradianceUV(double r, double muS, double* uMuS, double* uR)
@@ -497,20 +496,23 @@ static int _inscatter1Worker(ParallelWork* work, int layer, void* data)
     Color dhdH;
     _getLayerParams(layer, &r, &dhdH);
 
-    int x, y;
-    for (x = 0; x < RES_MU_S * RES_NU; x++)
+    int x, y, z;
+    for (x = 0; x < RES_MU; x++)
     {
-        for (y = 0; y < RES_MU; y++)
+        for (y = 0; y < RES_MU_S; y++)
         {
-            Color ray = COLOR_BLACK;
-            Color mie = COLOR_BLACK;
-            double mu, muS, nu;
-            _texCoordToMuMuSNu((double)x, (double)y, r, dhdH, &mu, &muS, &nu);
-            _inscatter1(r, mu, muS, nu, &ray, &mie);
-            /* store separately Rayleigh and Mie contributions, WITHOUT the phase function factor
-             * (cf "Angular precision") */
-            texture3DSetPixel(params->ray, x, y, layer, ray);
-            texture3DSetPixel(params->mie, x, y, layer, mie);
+            for (z = 0; z < RES_NU; z++)
+            {
+                Color ray = COLOR_BLACK;
+                Color mie = COLOR_BLACK;
+                double mu, muS, nu;
+                _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
+                _inscatter1(r, mu, muS, nu, &ray, &mie);
+                /* store separately Rayleigh and Mie contributions, WITHOUT the phase function factor
+                 * (cf "Angular precision") */
+                texture4DSetPixel(params->ray, x, y, z, layer, ray);
+                texture4DSetPixel(params->mie, x, y, z, layer, mie);
+            }
         }
     }
     return 1;
@@ -634,16 +636,19 @@ static int _jWorker(ParallelWork* work, int layer, void* data)
     Color dhdH;
     _getLayerParams(layer, &r, &dhdH);
 
-    int x, y;
-    for (x = 0; x < RES_MU_S * RES_NU; x++)
+    int x, y, z;
+    for (x = 0; x < RES_MU; x++)
     {
-        for (y = 0; y < RES_MU; y++)
+        for (y = 0; y < RES_MU_S; y++)
         {
-            Color raymie;
-            double mu, muS, nu;
-            _texCoordToMuMuSNu((double)x, (double)y, r, dhdH, &mu, &muS, &nu);
-            raymie = _inscatterS(r, mu, muS, nu, params->first, params->deltaE, params->deltaSR, params->deltaSM);
-            texture3DSetPixel(params->result, x, y, layer, raymie);
+            for (z = 0; z < RES_NU; z++)
+            {
+                Color raymie;
+                double mu, muS, nu;
+                _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
+                raymie = _inscatterS(r, mu, muS, nu, params->first, params->deltaE, params->deltaSR, params->deltaSM);
+                texture4DSetPixel(params->result, x, y, z, layer, raymie);
+            }
         }
     }
     return 1;
@@ -755,14 +760,17 @@ static int _inscatterNWorker(ParallelWork* work, int layer, void* data)
     Color dhdH;
     _getLayerParams(layer, &r, &dhdH);
 
-    int x, y;
-    for (x = 0; x < RES_MU_S * RES_NU; x++)
+    int x, y, z;
+    for (x = 0; x < RES_MU; x++)
     {
-        for (y = 0; y < RES_MU; y++)
+        for (y = 0; y < RES_MU_S; y++)
         {
-            double mu, muS, nu;
-            _texCoordToMuMuSNu((double)x, (double)y, r, dhdH, &mu, &muS, &nu);
-            texture3DSetPixel(params->destination, x, y, layer, _inscatterN(params->deltaJ, r, mu, muS, nu));
+            for (z = 0; z < RES_NU; z++)
+            {
+                double mu, muS, nu;
+                _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
+                texture4DSetPixel(params->destination, x, y, z, layer, _inscatterN(params->deltaJ, r, mu, muS, nu));
+            }
         }
     }
     return 1;
@@ -785,19 +793,22 @@ static int _copyInscatterNWorker(ParallelWork* work, int layer, void* data)
     Color dhdH;
     _getLayerParams(layer, &r, &dhdH);
 
-    int x, y;
-    for (x = 0; x < RES_MU_S * RES_NU; x++)
+    int x, y, z;
+    for (x = 0; x < RES_MU; x++)
     {
-        for (y = 0; y < RES_MU; y++)
+        for (y = 0; y < RES_MU_S; y++)
         {
-            double mu, muS, nu;
-            _texCoordToMuMuSNu((double)x, (double)y, r, dhdH, &mu, &muS, &nu);
-            Color col1 = texture3DGetPixel(params->source, x, y, layer);
-            Color col2 = texture3DGetPixel(params->destination, x, y, layer);
-            col2.r += col1.r / _phaseFunctionR(nu);
-            col2.g += col1.g / _phaseFunctionR(nu);
-            col2.b += col1.b / _phaseFunctionR(nu);
-            texture3DSetPixel(params->destination, x, y, layer, col2);
+            for (z = 0; z < RES_NU; z++)
+            {
+                double mu, muS, nu;
+                _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
+                Color col1 = texture4DGetPixel(params->source, x, y, z, layer);
+                Color col2 = texture4DGetPixel(params->destination, x, y, z, layer);
+                col2.r += col1.r / _phaseFunctionR(nu);
+                col2.g += col1.g / _phaseFunctionR(nu);
+                col2.b += col1.b / _phaseFunctionR(nu);
+                texture4DSetPixel(params->destination, x, y, z, layer, col2);
+            }
         }
     }
     return 1;
@@ -1042,7 +1053,7 @@ void brunetonInit()
     /* TODO Deletes */
     _transmittanceTexture = texture2DCreate(TRANSMITTANCE_W, TRANSMITTANCE_H);
     _irradianceTexture = texture2DCreate(SKY_W, SKY_H);
-    _inscatterTexture = texture4DCreate(RES_R, RES_MU, RES_MU_S, RES_NU);
+    _inscatterTexture = texture4DCreate(RES_MU, RES_MU_S, RES_NU, RES_R);
 
     /* try loading from cache */
     if (_tryLoadCache2D(_transmittanceTexture, "transmittance", 0)
@@ -1053,9 +1064,9 @@ void brunetonInit()
     }
 
     Texture2D* _deltaETexture = texture2DCreate(SKY_W, SKY_H);
-    Texture4D* _deltaSMTexture = texture4DCreate(RES_R, RES_MU, RES_MU_S, RES_NU);
-    Texture4D* _deltaSRTexture = texture4DCreate(RES_R, RES_MU, RES_MU_S, RES_NU);
-    Texture4D* _deltaJTexture = texture4DCreate(RES_R, RES_MU, RES_MU_S, RES_NU);
+    Texture4D* _deltaSMTexture = texture4DCreate(RES_MU, RES_MU_S, RES_NU, RES_R);
+    Texture4D* _deltaSRTexture = texture4DCreate(RES_MU, RES_MU_S, RES_NU, RES_R);
+    Texture4D* _deltaJTexture = texture4DCreate(RES_MU, RES_MU_S, RES_NU, RES_R);
 
     /* computes transmittance texture T (line 1 in algorithm 4.1) */
     _precomputeTransmittanceTexture();
@@ -1079,13 +1090,13 @@ void brunetonInit()
     texture2DFill(_irradianceTexture, COLOR_BLACK);
 
     /* copies deltaS into inscatter texture S (line 5 in algorithm 4.1) */
-    for (x = 0; x < RES_R; x++)
+    for (x = 0; x < RES_MU; x++)
     {
-        for (y = 0; y < RES_MU; y++)
+        for (y = 0; y < RES_MU_S; y++)
         {
-            for (z = 0; z < RES_MU_S; z++)
+            for (z = 0; z < RES_NU; z++)
             {
-                for (w = 0; w < RES_NU; w++)
+                for (w = 0; w < RES_R; w++)
                 {
                     Color result = texture4DGetPixel(_deltaSRTexture, x, y, z, w);
                     Color mie = texture4DGetPixel(_deltaSMTexture, x, y, z, w);

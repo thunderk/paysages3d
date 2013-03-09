@@ -7,7 +7,6 @@ Technology Preview 2 :
 - Get rid of noise dialogs, for simpler settings.
 - Finalize Bruneton's model
    => Fix artifacts on aerial perspective (mostly when sun is near horizon)
-   => Fix blue appearance at night
 - Finalize lighting refactoring
    => Restore cloud lighting
 - Hide Preetham's model.

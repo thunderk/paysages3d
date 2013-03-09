@@ -42,6 +42,9 @@ void colorMask(Color* base, Color* mask);
 double colorNormalize(Color* col);
 double colorGetValue(Color* col);
 
+double colorGetPower(Color* col);
+void colorLimitPower(Color* col, double max_power);
+
 /* HDR profile for tone-mapping */
 typedef struct ColorProfile ColorProfile;
 typedef enum

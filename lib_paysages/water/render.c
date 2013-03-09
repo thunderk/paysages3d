@@ -253,18 +253,20 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     }
     else
     {
+        Color depth_color = definition->depth_color;
         refracted = renderer->rayWalking(renderer, location, _refractRay(look_direction, normal), 1, 0, 1, 1);
         depth = v3Norm(v3Sub(location, refracted.hit_location));
+        colorLimitPower(&depth_color, colorGetPower(&refracted.hit_color));
         if (depth > definition->transparency_depth)
         {
-            result.refracted = definition->depth_color;
+            result.refracted = depth_color;
         }
         else
         {
             depth /= definition->transparency_depth;
-            result.refracted.r = refracted.hit_color.r * (1.0 - depth) + definition->depth_color.r * depth;
-            result.refracted.g = refracted.hit_color.g * (1.0 - depth) + definition->depth_color.g * depth;
-            result.refracted.b = refracted.hit_color.b * (1.0 - depth) + definition->depth_color.b * depth;
+            result.refracted.r = refracted.hit_color.r * (1.0 - depth) + depth_color.r * depth;
+            result.refracted.g = refracted.hit_color.g * (1.0 - depth) + depth_color.g * depth;
+            result.refracted.b = refracted.hit_color.b * (1.0 - depth) + depth_color.b * depth;
             result.refracted.a = 1.0;
         }
     }
