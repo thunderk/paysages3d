@@ -26,7 +26,7 @@ static const double exposure = 0.4;
 static const double ISun = 100.0;
 static const double AVERAGE_GROUND_REFLECTANCE = 0.1;
 
-#if 0
+#if 1
 #define RES_MU 128
 #define RES_MU_S 32
 #define RES_R 32
@@ -863,14 +863,14 @@ static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, d
             double muS0 = v3Dot(x0, s) / r0;
             /* avoids imprecision problems in transmittance computations based on textures */
             *attenuation = _analyticTransmittance(r, mu, t);
-            if (r0 > Rg + 0.01)
+            if (r0 > Rg + 0.001)
             {
                 /* computes S[L]-T(x,x0)S[L]|x0 */
                 Color attmod = {attenuation->x, attenuation->y, attenuation->z, attenuation->x};
                 Color samp = _texture4D(_inscatterTexture, r0, mu0, muS0, nu);
                 inscatter = _applyInscatter(inscatter, attmod, samp);
                 /* avoids imprecision problems near horizon by interpolating between two points above and below horizon */
-                const double EPS = 0.004;
+                const double EPS = 0.02;
                 double muHoriz = -sqrt(1.0 - (Rg / r) * (Rg / r));
                 if (fabs(mu - muHoriz) < EPS)
                 {
@@ -1151,12 +1151,15 @@ void brunetonInit()
     texture4DDelete(_deltaJTexture);
 }
 
-Color brunetonGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position)
+Color brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 direction, Vector3 sun_position)
 {
-    UNUSED(definition);
-
-    /* TODO Water height ? */
-    Vector3 x = {0.0, Rg + (max(eye.y, 0.0) + GROUND_OFFSET) * WORLD_SCALING, 0.0};
+    double yoffset = GROUND_OFFSET - renderer->water->getHeightInfo(renderer).base_height;
+    eye.y += yoffset;
+    if (eye.y < 0.0)
+    {
+        eye.y = 0.0;
+    }
+    Vector3 x = {0.0, Rg + eye.y * WORLD_SCALING, 0.0};
     Vector3 v = v3Normalize(direction);
     Vector3 s = v3Normalize(v3Sub(sun_position, x));
 

@@ -134,7 +134,7 @@ static Color _getSkyColor(Renderer* renderer, Vector3 direction)
     switch (definition->model)
     {
     case ATMOSPHERE_MODEL_BRUNETON:
-        sky_color = brunetonGetSkyColor(definition, camera_location, direction, sun_position);
+        sky_color = brunetonGetSkyColor(renderer, camera_location, direction, sun_position);
         break;
     case ATMOSPHERE_MODEL_PREETHAM:
         sky_color = preethamGetSkyColor(definition, camera_location, direction, sun_position);
