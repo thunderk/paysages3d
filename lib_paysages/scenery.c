@@ -232,11 +232,15 @@ Renderer* sceneryCreateStandardRenderer()
     result->unprojectPoint = _unprojectPoint;
     result->getPrecision = _getPrecision;
 
-    AtmosphereRendererClass.bind(result, _atmosphere);
-    TerrainRendererClass.bind(result, _terrain);
-    CloudsRendererClass.bind(result, _clouds);
-    WaterRendererClass.bind(result, _water);
+    sceneryBindRenderer(result);
 
     return result;
 }
 
+void sceneryBindRenderer(Renderer* renderer)
+{
+    AtmosphereRendererClass.bind(renderer, _atmosphere);
+    TerrainRendererClass.bind(renderer, _terrain);
+    CloudsRendererClass.bind(renderer, _clouds);
+    WaterRendererClass.bind(renderer, _water);
+}

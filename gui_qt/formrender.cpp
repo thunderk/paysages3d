@@ -12,7 +12,7 @@ class PreviewRenderLandscape:public BasePreview
 public:
     PreviewRenderLandscape(QWidget* parent):BasePreview(parent)
     {
-        _renderer = rendererCreate();
+        _renderer = sceneryCreateStandardRenderer();
         _renderer->applyTextures = _applyTextures;
         _renderer->getCameraLocation = _getCameraLocation;
         lightingManagerDisableSpecularity(_renderer->lighting);
@@ -22,10 +22,14 @@ public:
         _atmosphere = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
         _terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
         _water = (WaterDefinition*)WaterDefinitionClass.create();
+        _clouds = (CloudsDefinition*)CloudsDefinitionClass.create();
 
         _renderer->customData[0] = &_textures;
 
+        _clouds_enabled = true;
+
         addOsd(QString("geolocation"));
+        addToggle("clouds", tr("Clouds"), false);
 
         configHdrToneMapping(true);
         configScaling(0.5, 200.0, 3.0, 50.0);
@@ -53,18 +57,26 @@ protected:
     {
         sceneryGetTextures(&_textures);
 
-        sceneryGetWater(_water);
-        WaterRendererClass.bind(_renderer, _water);
-
-        sceneryGetAtmosphere(_atmosphere);
-        AtmosphereRendererClass.bind(_renderer, _atmosphere);
+        sceneryBindRenderer(_renderer);
         _renderer->atmosphere->applyAerialPerspective = _applyAerialPerspective;
 
-        sceneryGetTerrain(_terrain);
-        TerrainRendererClass.bind(_renderer, _terrain);
+        if (!_clouds_enabled)
+        {
+            CloudsRendererClass.bind(_renderer, _clouds);
+        }
+    }
+    void toggleChangeEvent(QString key, bool value)
+    {
+        if (key == "clouds")
+        {
+            _clouds_enabled = value;
+            redraw();
+        }
     }
 private:
     Renderer* _renderer;
+    bool _clouds_enabled;
+    CloudsDefinition* _clouds;
     TerrainDefinition* _terrain;
     WaterDefinition *_water;
     TexturesDefinition _textures;

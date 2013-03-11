@@ -52,6 +52,7 @@ void scenerySetWater(WaterDefinition* water);
 void sceneryGetWater(WaterDefinition* water);
 
 Renderer* sceneryCreateStandardRenderer();
+void sceneryBindRenderer(Renderer* renderer);
 void sceneryRenderFirstPass(Renderer* renderer);
 
 #ifdef __cplusplus
