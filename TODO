@@ -7,8 +7,6 @@ Technology Preview 2 :
 - Get rid of noise dialogs, for simpler settings.
 - Finalize lighting refactoring
    => Restore cloud lighting
-- Hide Preetham's model.
-   => Implement weather effect in Bruneton's model.
 - Improve textures (current model is greatly incorrect).
    => Separate models (basic texture and covering texture).
    => Covering texture height should inpact terrain height.
