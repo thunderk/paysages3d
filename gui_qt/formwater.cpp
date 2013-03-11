@@ -168,6 +168,21 @@ private:
             result.hit_location.x = x;
             result.hit_location.y = y;
             result.hit_location.z = 0.0;
+
+            if (result.hit_location.y < 0.0)
+            {
+                if (result.hit_location.y < -renderer->water->definition->lighting_depth)
+                {
+                    result.hit_color = COLOR_BLACK;
+                }
+                else
+                {
+                    double attenuation = -result.hit_location.y / renderer->water->definition->lighting_depth;
+                    result.hit_color.r *= 1.0 - attenuation;
+                    result.hit_color.g *= 1.0 - attenuation;
+                    result.hit_color.b *= 1.0 - attenuation;
+                }
+            }
         }
 
         return result;

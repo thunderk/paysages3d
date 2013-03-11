@@ -14,7 +14,6 @@ Technology Preview 2 :
    => Covering texture height should inpact terrain height.
    => Add texture shadowing.
 - Clouds should keep distance to ground.
-- Apply depth filtering to water preview.
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
 - Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).
 - Translations.
