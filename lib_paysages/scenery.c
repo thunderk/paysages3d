@@ -182,7 +182,7 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
     result = renderer->terrain->castRay(renderer, location, direction);
     if (!result.hit)
     {
-        sky_color = renderer->atmosphere->getSkyColor(renderer, direction);
+        sky_color = renderer->atmosphere->getSkyColor(renderer, direction).final;
 
         result.hit = 1;
         result.hit_location = v3Add(location, v3Scale(direction, 1000.0));

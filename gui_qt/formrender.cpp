@@ -92,9 +92,15 @@ private:
         return v3Add(location, v3Scale(VECTOR_UP, 50.0));
     }
 
-    static Color _applyAerialPerspective(Renderer*, Vector3, Color base)
+    static AtmosphereResult _applyAerialPerspective(Renderer*, Vector3, Color base)
     {
-        return base;
+        AtmosphereResult result;
+        result.base = base;
+        result.distance = 0.0;
+        result.inscattering = COLOR_BLACK;
+        result.attenuation = COLOR_BLACK;
+        result.final = base;
+        return result;
     }
 };
 

@@ -17,7 +17,7 @@ static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* da
     direction = v3Sub(location, camera_location);
 
     /* TODO Don't compute result->color if it's fully covered by clouds */
-    result = renderer->atmosphere->getSkyColor(renderer, v3Normalize(direction));
+    result = renderer->atmosphere->getSkyColor(renderer, v3Normalize(direction)).final;
     result = renderer->clouds->getColor(renderer, result, camera_location, v3Add(camera_location, v3Scale(direction, 10.0)));
 
     return result;

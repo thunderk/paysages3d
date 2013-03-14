@@ -12,14 +12,9 @@
 #define SUN_RADIUS 6.955e5
 #define SUN_RADIUS_SCALED (SUN_RADIUS / WORLD_SCALING)
 
-Color basicApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base);
-void basicGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque);
-
 void brunetonInit();
-Color brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 direction, Vector3 sun_position);
-Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base);
+AtmosphereResult brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 direction, Vector3 sun_position, Color base);
+AtmosphereResult brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base);
 void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque);
-
-Color preethamGetSkyColor(AtmosphereDefinition* definition, Vector3 eye, Vector3 direction, Vector3 sun_position);
 
 #endif

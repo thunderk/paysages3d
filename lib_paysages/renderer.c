@@ -94,7 +94,7 @@ static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vecto
 
 static Color _applyMediumTraversal(Renderer* renderer, Vector3 location, Color color)
 {
-    color = renderer->atmosphere->applyAerialPerspective(renderer, location, color);
+    color = renderer->atmosphere->applyAerialPerspective(renderer, location, color).final;
     color = renderer->clouds->getColor(renderer, color, renderer->getCameraLocation(renderer, location), location);
     return color;
 }

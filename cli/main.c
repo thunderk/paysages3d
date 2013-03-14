@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include "../lib_paysages/auto.h"
 #include "../lib_paysages/main.h"
@@ -126,21 +127,29 @@ int main(int argc, char** argv)
         paysagesLoad(conf_file_path);
     }
 
-    renderer = sceneryCreateStandardRenderer();
-    rendererSetPreviewCallbacks(renderer, NULL, NULL, _previewUpdate);
-
     for (outputcount = 0; outputcount < conf_nb_pictures; outputcount++)
     {
-        /*autoSetDaytimeFraction(conf_daytime_start);*/ /* TODO */
+        AtmosphereDefinition* atmo;
+        atmo = AtmosphereDefinitionClass.create();
+        sceneryGetAtmosphere(atmo);
+        atmo->hour = (int)floor(conf_daytime_start * 24.0);
+        atmo->minute = (int)floor(fmod(conf_daytime_start, 1.0 / 24.0) * 24.0 * 60.0);
+        AtmosphereDefinitionClass.validate(atmo);
+        scenerySetAtmosphere(atmo);
+        AtmosphereDefinitionClass.destroy(atmo);
+
+        renderer = sceneryCreateStandardRenderer();
+        rendererSetPreviewCallbacks(renderer, NULL, NULL, _previewUpdate);
 
         sprintf(outputpath, "output/pic%05d.png", outputcount);
         startRender(renderer, outputpath, conf_render_params);
+
+        rendererDelete(renderer);
 
         conf_daytime_start += conf_daytime_step;
     }
 
     printf("Cleaning up ...\n");
-    rendererDelete(renderer);
     paysagesQuit();
 
     printf("\rDone.                         \n");

@@ -134,13 +134,13 @@ Color atmosphereGetPreview(Renderer* renderer, double x, double y, double headin
         hit = m4Transform(rotation, hit);
 
         color = renderer->applyLightingToSurface(renderer, hit, normal, &MOUNT_MATERIAL);
-        return renderer->atmosphere->applyAerialPerspective(renderer, hit, color);
+        return renderer->atmosphere->applyAerialPerspective(renderer, hit, color).final;
     }
     else
     {
         direction = m4Transform(rotation, direction);
 
-        return renderer->atmosphere->getSkyColor(renderer, direction);
+        return renderer->atmosphere->getSkyColor(renderer, direction).final;
     }
 }
 

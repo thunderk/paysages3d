@@ -23,8 +23,7 @@ typedef enum
 
 typedef enum
 {
-    ATMOSPHERE_MODEL_PREETHAM = 0,
-    ATMOSPHERE_MODEL_BRUNETON = 1
+    ATMOSPHERE_MODEL_BRUNETON = 0
 } AtmosphereModel;
 
 typedef struct
@@ -40,9 +39,18 @@ typedef struct
     double _daytime;
 } AtmosphereDefinition;
 
+typedef struct
+{
+    Color base;
+    double distance;
+    Color inscattering;
+    Color attenuation;
+    Color final;
+} AtmosphereResult;
+
 typedef void (*FuncAtmosphereGetLightingStatus)(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque);
-typedef Color (*FuncAtmosphereApplyAerialPerspective)(Renderer* renderer, Vector3 location, Color base);
-typedef Color (*FuncAtmosphereGetSkyColor)(Renderer* renderer, Vector3 direction);
+typedef AtmosphereResult (*FuncAtmosphereApplyAerialPerspective)(Renderer* renderer, Vector3 location, Color base);
+typedef AtmosphereResult (*FuncAtmosphereGetSkyColor)(Renderer* renderer, Vector3 direction);
 typedef Vector3 (*FuncAtmosphereGetSunDirection)(Renderer* renderer);
 
 typedef struct
@@ -61,7 +69,11 @@ extern StandardDefinition AtmosphereDefinitionClass;
 extern StandardRenderer AtmosphereRendererClass;
 
 void atmosphereAutoPreset(AtmosphereDefinition* definition, AtmospherePreset preset);
+
 void atmosphereRenderSkydome(Renderer* renderer);
+
+void atmosphereUpdateResult(AtmosphereResult* result);
+
 Renderer* atmosphereCreatePreviewRenderer();
 Color atmosphereGetPreview(Renderer* renderer, double x, double y, double heading);
 

@@ -8,18 +8,24 @@
 #include "../system.h"
 
 /******************** Fake ********************/
-static Color _fakeApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
+static AtmosphereResult _fakeApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
 {
+    AtmosphereResult result;
     UNUSED(renderer);
     UNUSED(location);
-    return base;
+    result.base = result.final = base;
+    result.inscattering = result.attenuation = COLOR_BLACK;
+    return result;
 }
 
-static Color _fakeGetSkyColor(Renderer* renderer, Vector3 direction)
+static AtmosphereResult _fakeGetSkyColor(Renderer* renderer, Vector3 direction)
 {
+    AtmosphereResult result;
     UNUSED(renderer);
     UNUSED(direction);
-    return COLOR_WHITE;
+    result.base = result.final = COLOR_WHITE;
+    result.inscattering = result.attenuation = COLOR_BLACK;
+    return result;
 }
 
 static void _fakeGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)
@@ -51,68 +57,53 @@ static void _fakeGetLightingStatus(Renderer* renderer, LightStatus* status, Vect
 }
 
 /******************** Real ********************/
-static inline Color _applyWeatherEffects(AtmosphereDefinition* definition, Color base, Color scattered, double distance)
+static inline void _applyWeatherEffects(AtmosphereDefinition* definition, AtmosphereResult* result)
 {
-    double max_power = colorGetPower(&scattered);
-
-    UNUSED(base);
+    double distance = result->distance;
 
     if (distance > 100.0)
     {
         distance = 100.0;
     }
+    distance /= 100.0;
 
-    scattered.r += distance * 0.02 * definition->humidity;
-    scattered.g += distance * 0.02 * definition->humidity;
-    scattered.b += distance * 0.02 * definition->humidity;
+    result->inscattering.r += distance * 0.2 * definition->humidity;
+    result->inscattering.g += distance * 0.2 * definition->humidity;
+    result->inscattering.b += distance * 0.2 * definition->humidity;
 
-    colorLimitPower(&scattered, max_power - max_power * 0.4 * definition->humidity);
+    result->attenuation.r *= 1.0 - distance * definition->humidity;
+    result->attenuation.g *= 1.0 - distance * definition->humidity;
+    result->attenuation.b *= 1.0 - distance * definition->humidity;
 
-    if (definition->humidity > 0.3)
-    {
-        double humidity = (definition->humidity - 0.3) / 0.7;
-        scattered.r += distance * 0.1 * humidity * humidity;
-        scattered.g += distance * 0.1 * humidity * humidity;
-        scattered.b += distance * 0.1 * humidity * humidity;
-
-        colorLimitPower(&scattered, 10.0 - humidity * 4.0);
-        /*scattered.r *= 1.0 - humidity * 0.8;
-        scattered.g *= 1.0 - humidity * 0.8;
-        scattered.b *= 1.0 - humidity * 0.8;*/
-    }
-
-    return scattered;
+    atmosphereUpdateResult(result);
 }
 
-static Color _realApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
+static AtmosphereResult _realApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
 {
     AtmosphereDefinition* definition = renderer->atmosphere->definition;
-    Color changed;
+    AtmosphereResult result;
 
     /* Get base perspective */
     switch (definition->model)
     {
     case ATMOSPHERE_MODEL_BRUNETON:
-        changed = brunetonApplyAerialPerspective(renderer, location, base);
-        break;
-    case ATMOSPHERE_MODEL_PREETHAM:
-        changed = basicApplyAerialPerspective(renderer, location, base);
+        result = brunetonApplyAerialPerspective(renderer, location, base);
         break;
     default:
         ;
     }
 
     /* Apply weather effects */
-    changed = _applyWeatherEffects(definition, base, changed, v3Norm(v3Sub(location, renderer->getCameraLocation(renderer, location))));
+    /*_applyWeatherEffects(definition, &result);*/
 
-    return changed;
+    return result;
 }
 
-static Color _realGetSkyColor(Renderer* renderer, Vector3 direction)
+static AtmosphereResult _realGetSkyColor(Renderer* renderer, Vector3 direction)
 {
     AtmosphereDefinition* definition;
     Vector3 sun_direction, sun_position, camera_location;
-    Color sky_color, sun_color;
+    Color base;
 
     definition = renderer->atmosphere->definition;
     camera_location = renderer->getCameraLocation(renderer, VECTOR_ZERO);
@@ -121,20 +112,8 @@ static Color _realGetSkyColor(Renderer* renderer, Vector3 direction)
     direction = v3Normalize(direction);
     sun_position = v3Scale(sun_direction, SUN_DISTANCE_SCALED);
 
-    /* Get base scattering*/
-    switch (definition->model)
-    {
-    case ATMOSPHERE_MODEL_BRUNETON:
-        sky_color = brunetonGetSkyColor(renderer, camera_location, direction, sun_position);
-        break;
-    case ATMOSPHERE_MODEL_PREETHAM:
-        sky_color = preethamGetSkyColor(definition, camera_location, direction, sun_position);
-        break;
-    default:
-        sky_color = COLOR_BLUE;
-    }
-
     /* Get sun shape */
+    base = COLOR_BLACK;
     if (v3Dot(sun_direction, direction) >= 0)
     {
         double sun_radius = definition->sun_radius * SUN_RADIUS_SCALED * 5.0; /* FIXME Why should we multiply by 5 ? */
@@ -144,27 +123,39 @@ static Color _realGetSkyColor(Renderer* renderer, Vector3 direction)
         {
             double dist = v3Norm(v3Sub(hit2, hit1)) / sun_radius; /* distance between intersection points (relative to radius) */
 
-            sun_color = definition->sun_color;
+            Color sun_color = definition->sun_color;
             sun_color.r *= 100.0;
             sun_color.g *= 100.0;
             sun_color.b *= 100.0;
 
-            if (dist > 0.05)
+            if (dist <= 0.05)
             {
-                return sun_color;
+                sun_color.r *= 1.0 - dist / 0.05;
+                sun_color.g *= 1.0 - dist / 0.05;
+                sun_color.b *= 1.0 - dist / 0.05;
             }
-            else
-            {
-                sun_color.a = 1.0 - dist / 0.05;
-                colorMask(&sky_color, &sun_color);
-            }
+            base = sun_color;
         }
     }
 
-    /* TODO Apply weather effects */
-    sky_color = _applyWeatherEffects(definition, COLOR_BLACK, sky_color, SPHERE_SIZE);
+    /* TODO Get stars */
 
-    return sky_color;
+    /* Get scattering */
+    AtmosphereResult result;
+    Vector3 location = v3Add(camera_location, v3Scale(direction, 6421.0));
+    switch (definition->model)
+    {
+    case ATMOSPHERE_MODEL_BRUNETON:
+        result = brunetonGetSkyColor(renderer, camera_location, direction, sun_position, base);
+        break;
+    default:
+        result = _fakeApplyAerialPerspective(renderer, location, result.base);
+    }
+
+    /* Apply weather effects */
+    /*_applyWeatherEffects(definition, &result);*/
+
+    return result;
 }
 
 static Vector3 _realGetSunDirection(Renderer* renderer)
@@ -175,6 +166,14 @@ static Vector3 _realGetSunDirection(Renderer* renderer)
     result.y = sin(sun_angle);
     result.z = 0.0;
     return result;
+}
+
+void atmosphereUpdateResult(AtmosphereResult* result)
+{
+    result->final.r = result->base.r * result->attenuation.r + result->inscattering.r;
+    result->final.g = result->base.g * result->attenuation.g + result->inscattering.g;
+    result->final.b = result->base.b * result->attenuation.b + result->inscattering.b;
+    result->final.a = 1.0;
 }
 
 /******************** Renderer ********************/
@@ -212,7 +211,7 @@ static void _bindRenderer(Renderer* renderer, AtmosphereDefinition* definition)
             renderer->atmosphere->getLightingStatus = brunetonGetLightingStatus;
             break;
         default:
-            renderer->atmosphere->getLightingStatus = basicGetLightingStatus;
+            renderer->atmosphere->getLightingStatus = _fakeGetLightingStatus;
     }
 }
 

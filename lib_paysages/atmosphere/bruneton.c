@@ -1151,7 +1151,7 @@ void brunetonInit()
     texture4DDelete(_deltaJTexture);
 }
 
-Color brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 direction, Vector3 sun_position)
+AtmosphereResult brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 direction, Vector3 sun_position, Color base)
 {
     double yoffset = GROUND_OFFSET - renderer->water->getHeightInfo(renderer).base_height;
     eye.y += yoffset;
@@ -1167,18 +1167,26 @@ Color brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 direction, Ve
     double mu = v3Dot(x, v) / r;
     double t = -r * mu - sqrt(r * r * (mu * mu - 1.0) + Rg * Rg);
 
+    AtmosphereResult result;
     Vector3 attenuation;
-    Color inscatterColor = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
     Color sunColor = _sunColor(v, s, r, mu); /* L0 */
 
-    sunColor.r = sunColor.r * attenuation.x + inscatterColor.r;
-    sunColor.g = sunColor.g * attenuation.y + inscatterColor.g;
-    sunColor.b = sunColor.b * attenuation.z + inscatterColor.b;
+    result.base.r = base.r + sunColor.r;
+    result.base.g = base.g + sunColor.g;
+    result.base.b = base.b + sunColor.b;
+    result.inscattering = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
+    result.attenuation.r = 1.0;
+    result.attenuation.g = 1.0;
+    result.attenuation.b = 1.0;
+    /* TODO Use atmosphere attenuation */
+    result.distance = SPHERE_SIZE;
 
-    return sunColor; /* Eq (16) */
+    atmosphereUpdateResult(&result);
+
+    return result;
 }
 
-Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
+AtmosphereResult brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
 {
     Vector3 eye = renderer->getCameraLocation(renderer, location);
     Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), SUN_DISTANCE);
@@ -1209,14 +1217,19 @@ Color brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color
     double mu = v3Dot(x, v) / r;
     double t = v3Norm(direction);
 
+    AtmosphereResult result;
     Vector3 attenuation;
-    Color inscatterColor = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
 
-    base.r = base.r * attenuation.x + inscatterColor.r;
-    base.g = base.g * attenuation.y + inscatterColor.g;
-    base.b = base.b * attenuation.z + inscatterColor.b;
+    result.base = base;
+    result.inscattering = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
+    result.attenuation.r = attenuation.x;
+    result.attenuation.g = attenuation.y;
+    result.attenuation.b = attenuation.z;
+    result.distance = t;
 
-    return base; /* Eq (16) */
+    atmosphereUpdateResult(&result);
+
+    return result;
 }
 
 void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)

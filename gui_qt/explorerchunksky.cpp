@@ -141,5 +141,5 @@ Color ExplorerChunkSky::getTextureColor(double x, double y)
     {
         location.y = 0.0;
     }
-    return renderer()->atmosphere->getSkyColor(renderer(), location);
+    return renderer()->atmosphere->getSkyColor(renderer(), location).final;
 }

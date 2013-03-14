@@ -289,7 +289,7 @@ Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* 
         col.a = inside_length / definition->transparencydepth;
     }
 
-    col = renderer->atmosphere->applyAerialPerspective(renderer, start, col);
+    col = renderer->atmosphere->applyAerialPerspective(renderer, start, col).final;
 
     colorMask(&base, &col);
 
