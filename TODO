@@ -1,4 +1,5 @@
 Technology Preview 2 :
+- Better time selection widget for atmosphere.
 - Replace terrain canvas editor by full sculpting editor.
    => Add a generation dialog, with fixed resolution.
    => Store local terrain modifications in fully dynamic canvas.

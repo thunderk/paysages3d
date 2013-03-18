@@ -45,6 +45,7 @@ typedef struct
     double distance;
     Color inscattering;
     Color attenuation;
+    Color mask;
     Color final;
 } AtmosphereResult;
 
@@ -72,6 +73,7 @@ void atmosphereAutoPreset(AtmosphereDefinition* definition, AtmospherePreset pre
 
 void atmosphereRenderSkydome(Renderer* renderer);
 
+void atmosphereInitResult(AtmosphereResult* result);
 void atmosphereUpdateResult(AtmosphereResult* result);
 
 Renderer* atmosphereCreatePreviewRenderer();

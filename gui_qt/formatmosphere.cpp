@@ -84,7 +84,7 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
     //addInputColor(tr("Sun color"), &_definition->sun_color);
     addInputDouble(tr("Sun radius"), &_definition->sun_radius, 0.0, 5.0, 0.05, 0.5);
     //addInputDouble(tr("Influence of skydome on lighting"), &_definition->dome_lighting, 0.0, 2.0, 0.01, 0.1);
-    /*addInputDouble(tr("Humidity"), &_definition->humidity, 0.0, 1.0, 0.01, 0.1);*/
+    addInputDouble(tr("Humidity"), &_definition->humidity, 0.0, 1.0, 0.01, 0.1);
 
     revertConfig();
 }

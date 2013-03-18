@@ -57,23 +57,53 @@ static void _fakeGetLightingStatus(Renderer* renderer, LightStatus* status, Vect
 }
 
 /******************** Real ********************/
+static inline double _getDayFactor(double daytime)
+{
+    daytime = 1.0 - fabs(0.5 - daytime) / 0.5;
+    return daytime < 0.45 ? 0.0 : sqrt((daytime - 0.45) / 0.55);
+}
+
 static inline void _applyWeatherEffects(AtmosphereDefinition* definition, AtmosphereResult* result)
 {
     double distance = result->distance;
+    double max_distance = 100.0 - 90.0 * definition->humidity;
+    double distancefactor, dayfactor;
 
-    if (distance > 100.0)
+    if (distance > max_distance)
     {
-        distance = 100.0;
+        distance = max_distance;
     }
-    distance /= 100.0;
+    distancefactor = (distance > max_distance ? max_distance : distance) / max_distance;
+    /* TODO Get day lighting from model */
+    dayfactor = _getDayFactor(definition->_daytime);
 
-    result->inscattering.r += distance * 0.2 * definition->humidity;
-    result->inscattering.g += distance * 0.2 * definition->humidity;
-    result->inscattering.b += distance * 0.2 * definition->humidity;
+    /* Fog masking */
+    if (definition->humidity > 0.3)
+    {
+        result->mask.r = result->mask.g = result->mask.b = (10.0 - 8.0 * definition->humidity) * dayfactor;
+        result->mask.a = distancefactor * (definition->humidity - 0.3) / 0.7;
+    }
 
-    result->attenuation.r *= 1.0 - distance * definition->humidity;
-    result->attenuation.g *= 1.0 - distance * definition->humidity;
-    result->attenuation.b *= 1.0 - distance * definition->humidity;
+    /* Scattering tweaking */
+    if (definition->humidity < 0.15)
+    {
+        /* Limit scattering on ultra clear day */
+        double force = (0.15 - definition->humidity) / 0.15;
+        colorLimitPower(&result->inscattering, 100.0 - 90.0 * pow(force, 0.1));
+    }
+    else
+    {
+        /* Scattering boost */
+        double force = 1.2 * (definition->humidity < 0.5 ? sqrt((definition->humidity - 0.15) / 0.35) : 1.0 - (definition->humidity - 0.5) / 0.5);
+        result->inscattering.r *= 1.0 + force * distancefactor * (definition->humidity - 0.15) / 0.85;
+        result->inscattering.g *= 1.0 + force * distancefactor * (definition->humidity - 0.15) / 0.85;
+        result->inscattering.b *= 1.0 + force * distancefactor * (definition->humidity - 0.15) / 0.85;
+    }
+
+    /* Attenuation */
+    result->attenuation.r *= 1.0 - 0.4 * distancefactor * definition->humidity;
+    result->attenuation.g *= 1.0 - 0.4 * distancefactor * definition->humidity;
+    result->attenuation.b *= 1.0 - 0.4 * distancefactor * definition->humidity;
 
     atmosphereUpdateResult(result);
 }
@@ -94,7 +124,7 @@ static AtmosphereResult _realApplyAerialPerspective(Renderer* renderer, Vector3 
     }
 
     /* Apply weather effects */
-    /*_applyWeatherEffects(definition, &result);*/
+    _applyWeatherEffects(definition, &result);
 
     return result;
 }
@@ -114,14 +144,14 @@ static AtmosphereResult _realGetSkyColor(Renderer* renderer, Vector3 direction)
 
     /* Get sun shape */
     base = COLOR_BLACK;
-    if (v3Dot(sun_direction, direction) >= 0)
+    /*if (v3Dot(sun_direction, direction) >= 0)
     {
-        double sun_radius = definition->sun_radius * SUN_RADIUS_SCALED * 5.0; /* FIXME Why should we multiply by 5 ? */
+        double sun_radius = definition->sun_radius * SUN_RADIUS_SCALED * 5.0; // FIXME Why should we multiply by 5 ?
         Vector3 hit1, hit2;
         int hits = euclidRayIntersectSphere(camera_location, direction, sun_position, sun_radius, &hit1, &hit2);
         if (hits > 1)
         {
-            double dist = v3Norm(v3Sub(hit2, hit1)) / sun_radius; /* distance between intersection points (relative to radius) */
+            double dist = v3Norm(v3Sub(hit2, hit1)) / sun_radius; // distance between intersection points (relative to radius)
 
             Color sun_color = definition->sun_color;
             sun_color.r *= 100.0;
@@ -136,7 +166,7 @@ static AtmosphereResult _realGetSkyColor(Renderer* renderer, Vector3 direction)
             }
             base = sun_color;
         }
-    }
+    }*/
 
     /* TODO Get stars */
 
@@ -153,7 +183,7 @@ static AtmosphereResult _realGetSkyColor(Renderer* renderer, Vector3 direction)
     }
 
     /* Apply weather effects */
-    /*_applyWeatherEffects(definition, &result);*/
+    _applyWeatherEffects(definition, &result);
 
     return result;
 }
@@ -168,12 +198,24 @@ static Vector3 _realGetSunDirection(Renderer* renderer)
     return result;
 }
 
+void atmosphereInitResult(AtmosphereResult* result)
+{
+    result->base = COLOR_BLACK;
+    result->inscattering = COLOR_BLACK;
+    result->attenuation = COLOR_WHITE;
+    result->mask = COLOR_TRANSPARENT;
+    result->distance = 0.0;
+    result->final = COLOR_BLACK;
+}
+
 void atmosphereUpdateResult(AtmosphereResult* result)
 {
     result->final.r = result->base.r * result->attenuation.r + result->inscattering.r;
     result->final.g = result->base.g * result->attenuation.g + result->inscattering.g;
     result->final.b = result->base.b * result->attenuation.b + result->inscattering.b;
     result->final.a = 1.0;
+
+    colorMask(&result->final, &result->mask);
 }
 
 /******************** Renderer ********************/

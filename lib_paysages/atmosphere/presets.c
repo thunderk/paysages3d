@@ -32,19 +32,19 @@ void atmosphereAutoPreset(AtmosphereDefinition* definition, AtmospherePreset pre
             definition->hour = 8;
             definition->minute = 30;
             definition->dome_lighting = 0.25;
-            definition->humidity = 0.3;
+            definition->humidity = 0.4;
             break;
         case ATMOSPHERE_PRESET_FOGGY:
             definition->hour = 15;
             definition->minute = 0;
             definition->dome_lighting = 0.1;
-            definition->humidity = 0.5;
+            definition->humidity = 0.7;
             break;
         case ATMOSPHERE_PRESET_STORMY:
             definition->hour = 15;
             definition->minute = 0;
             definition->dome_lighting = 0.05;
-            definition->humidity = 0.8;
+            definition->humidity = 0.9;
             break;
         default:
             ;

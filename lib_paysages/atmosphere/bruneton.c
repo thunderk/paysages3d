@@ -919,10 +919,10 @@ static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, d
 }
 
 /* direct sun light for ray x+tv, when sun in direction s (=L0) */
-static Color _sunColor(Vector3 v, Vector3 s, double r, double mu)
+static Color _sunColor(Vector3 v, Vector3 s, double r, double mu, double radius)
 {
     Color transmittance = r <= Rt ? _transmittanceWithShadow(r, mu) : COLOR_WHITE; /* T(x,xo) */
-    double isun = step(cos(M_PI / 180.0), v3Dot(v, s)) * ISun; /* Lsun */
+    double isun = step(cos(radius * M_PI / 180.0), v3Dot(v, s)) * ISun; /* Lsun */
     transmittance.r *= isun;
     transmittance.g *= isun;
     transmittance.b *= isun;
@@ -1169,15 +1169,14 @@ AtmosphereResult brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 di
 
     AtmosphereResult result;
     Vector3 attenuation;
-    Color sunColor = _sunColor(v, s, r, mu); /* L0 */
+    Color sunColor = _sunColor(v, s, r, mu, renderer->atmosphere->definition->sun_radius); /* L0 */
 
-    result.base.r = base.r + sunColor.r;
+    atmosphereInitResult(&result);
+    /*result.base.r = base.r + sunColor.r;
     result.base.g = base.g + sunColor.g;
-    result.base.b = base.b + sunColor.b;
+    result.base.b = base.b + sunColor.b;*/
+    result.base = sunColor;
     result.inscattering = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
-    result.attenuation.r = 1.0;
-    result.attenuation.g = 1.0;
-    result.attenuation.b = 1.0;
     /* TODO Use atmosphere attenuation */
     result.distance = SPHERE_SIZE;
 
@@ -1220,12 +1219,14 @@ AtmosphereResult brunetonApplyAerialPerspective(Renderer* renderer, Vector3 loca
     AtmosphereResult result;
     Vector3 attenuation;
 
+    atmosphereInitResult(&result);
+
     result.base = base;
     result.inscattering = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
     result.attenuation.r = attenuation.x;
     result.attenuation.g = attenuation.y;
     result.attenuation.b = attenuation.z;
-    result.distance = t;
+    result.distance = t / WORLD_SCALING;
 
     atmosphereUpdateResult(&result);
 
