@@ -30,6 +30,9 @@ void displayHelp()
     printf(" -ra x  Render anti-aliasing (int, 1 to 4)\n");
     printf(" -di x  Day start time (double, 0.0 to 1.0)\n");
     printf(" -ds x  Day step time (double)\n");
+    printf(" -cx x  Camera X step (double)\n");
+    printf(" -cy y  Camera Y step (double)\n");
+    printf(" -cz z  Camera Z step (double)\n");
 }
 
 void _previewUpdate(double progress)
@@ -43,9 +46,13 @@ int main(int argc, char** argv)
     Renderer* renderer;
     char* conf_file_path = NULL;
     RenderParams conf_render_params = {800, 600, 1, 5};
+    int conf_first_picture = 0;
     int conf_nb_pictures = 1;
     double conf_daytime_start = 0.4;
     double conf_daytime_step = 0.0;
+    double conf_camera_step_x = 0.0;
+    double conf_camera_step_y = 0.0;
+    double conf_camera_step_z = 0.0;
     int outputcount;
     char outputpath[500];
 
@@ -64,6 +71,13 @@ int main(int argc, char** argv)
             if (argc--)
             {
                 conf_file_path = *(++argv);
+            }
+        }
+        else if (strcmp(*argv, "-s") == 0 || strcmp(*argv, "--start") == 0)
+        {
+            if (argc--)
+            {
+                conf_first_picture = atoi(*(++argv));
             }
         }
         else if (strcmp(*argv, "-n") == 0 || strcmp(*argv, "--count") == 0)
@@ -115,6 +129,27 @@ int main(int argc, char** argv)
                 conf_daytime_step = atof(*(++argv));
             }
         }
+        else if (strcmp(*argv, "-cx") == 0 || strcmp(*argv, "--camerastepx") == 0)
+        {
+            if (argc--)
+            {
+                conf_camera_step_x = atof(*(++argv));
+            }
+        }
+        else if (strcmp(*argv, "-cy") == 0 || strcmp(*argv, "--camerastepy") == 0)
+        {
+            if (argc--)
+            {
+                conf_camera_step_y = atof(*(++argv));
+            }
+        }
+        else if (strcmp(*argv, "-cz") == 0 || strcmp(*argv, "--camerastepz") == 0)
+        {
+            if (argc--)
+            {
+                conf_camera_step_z = atof(*(++argv));
+            }
+        }
 
         argv++;
     }
@@ -127,7 +162,7 @@ int main(int argc, char** argv)
         paysagesLoad(conf_file_path);
     }
 
-    for (outputcount = 0; outputcount < conf_nb_pictures; outputcount++)
+    for (outputcount = 0; outputcount < conf_first_picture + conf_nb_pictures; outputcount++)
     {
         AtmosphereDefinition* atmo;
         atmo = AtmosphereDefinitionClass.create();
@@ -138,11 +173,23 @@ int main(int argc, char** argv)
         scenerySetAtmosphere(atmo);
         AtmosphereDefinitionClass.destroy(atmo);
 
+        CameraDefinition camera;
+        camera = cameraCreateDefinition();
+        sceneryGetCamera(&camera);
+        camera.location.x += conf_camera_step_x;
+        camera.location.y += conf_camera_step_y;
+        camera.location.z += conf_camera_step_z;
+        scenerySetCamera(&camera);
+        cameraDeleteDefinition(&camera);
+
         renderer = sceneryCreateStandardRenderer();
         rendererSetPreviewCallbacks(renderer, NULL, NULL, _previewUpdate);
 
-        sprintf(outputpath, "output/pic%05d.png", outputcount);
-        startRender(renderer, outputpath, conf_render_params);
+        if (outputcount >= conf_first_picture)
+        {
+            sprintf(outputpath, "output/pic%05d.png", outputcount);
+            startRender(renderer, outputpath, conf_render_params);
+        }
 
         rendererDelete(renderer);
 

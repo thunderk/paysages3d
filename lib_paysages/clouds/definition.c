@@ -189,11 +189,11 @@ void _cloudsLayerLoad(PackStream* stream, CloudsLayerDefinition* layer)
     packReadInt(stream, &clouds_type);
     layer->type = (CloudsType)clouds_type;
     packReadDouble(stream, &layer->lower_altitude);
+    packReadDouble(stream, &layer->thickness);
     curveLoad(stream, layer->_coverage_by_altitude);
     noiseLoadGenerator(stream, layer->_coverage_noise);
     noiseLoadGenerator(stream, layer->_shape_noise);
     noiseLoadGenerator(stream, layer->_edge_noise);
-    packReadDouble(stream, &layer->thickness);
     materialLoad(stream, &layer->material);
     packReadDouble(stream, &layer->hardness);
     packReadDouble(stream, &layer->transparencydepth);
