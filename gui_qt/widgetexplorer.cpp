@@ -48,11 +48,6 @@ private:
 
 static QVector<ChunkMaintenanceThread*> _threads;
 
-static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
-{
-    return texturesGetColor((TexturesDefinition*)(renderer->customData[1]), renderer, location.x, location.z, precision);
-}
-
 static Vector3 _getCameraLocation(Renderer* renderer, Vector3)
 {
     return ((CameraDefinition*)renderer->customData[2])->location;
@@ -67,14 +62,9 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     _base_camera = camera;
     cameraCopyDefinition(camera, &_current_camera);
 
-    _textures = texturesCreateDefinition();
-    sceneryGetTextures(&_textures);
-
     _renderer = sceneryCreateStandardRenderer();
     _renderer->render_quality = 3;
-    _renderer->customData[1] = &_textures;
     _renderer->customData[2] = _base_camera;
-    _renderer->applyTextures = _applyTextures;
     _renderer->getCameraLocation = _getCameraLocation;
     lightingManagerDisableSpecularity(_renderer->lighting);
 

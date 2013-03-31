@@ -115,6 +115,15 @@ FormClouds::FormClouds(QWidget *parent):
     setLayers(_definition->layers);
 }
 
+FormClouds::~FormClouds()
+{
+    CloudsDefinitionClass.destroy(_definition);
+    cloudsGetLayerType().callback_delete(_layer);
+
+    delete _previewCoverage;
+    delete _previewColor;
+}
+
 void FormClouds::revertConfig()
 {
     sceneryGetClouds(_definition);
@@ -142,4 +151,3 @@ void FormClouds::autoPresetSelected(int preset)
     cloudsLayerAutoPreset(_layer, (CloudsLayerPreset)preset);
     BaseForm::autoPresetSelected(preset);
 }
-

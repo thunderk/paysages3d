@@ -78,11 +78,6 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
     return _RAYCASTING_NULL;
 }
 
-static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
-{
-    return COLOR_TRANSPARENT;
-}
-
 static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material)
 {
     LightStatus* light = lightingCreateStatus(renderer->lighting, location, renderer->getCameraLocation(renderer, location));
@@ -125,7 +120,6 @@ Renderer* rendererCreate()
     result->pushQuad = _pushQuad;
 
     result->rayWalking = _rayWalking;
-    result->applyTextures = _applyTextures;
 
     result->applyLightingToSurface = _applyLightingToSurface;
     result->applyMediumTraversal = _applyMediumTraversal;
@@ -135,6 +129,7 @@ Renderer* rendererCreate()
     result->atmosphere = AtmosphereRendererClass.create();
     result->clouds = CloudsRendererClass.create();
     result->terrain = TerrainRendererClass.create();
+    result->textures = TexturesRendererClass.create();
     result->water = WaterRendererClass.create();
 
     return result;
@@ -147,6 +142,7 @@ void rendererDelete(Renderer* renderer)
     AtmosphereRendererClass.destroy(renderer->atmosphere);
     CloudsRendererClass.destroy(renderer->clouds);
     TerrainRendererClass.destroy(renderer->terrain);
+    TexturesRendererClass.destroy(renderer->textures);
     WaterRendererClass.destroy(renderer->water);
 
     renderDeleteArea(renderer->render_area);

@@ -4,19 +4,10 @@
 #include "../tools.h"
 #include "../tools/lighting.h"
 #include "../renderer.h"
-#include "../textures.h"
 
 /*
  * Terrain previews.
  */
-
-static TexturesDefinition _textures;
-static int _inited = 0;
-
-static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
-{
-    return texturesGetColor(&_textures, renderer, location.x, location.z, precision);
-}
 
 static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)
 {
@@ -63,25 +54,8 @@ Renderer* terrainCreatePreviewRenderer()
     Renderer* result = rendererCreate();
 
     result->render_quality = 3;
-    result->applyTextures = _applyTextures;
     result->getCameraLocation = _getCameraLocation;
     result->atmosphere->getLightingStatus = _getLightingStatus;
-
-    if (!_inited)
-    {
-        /*LightDefinition light;*/
-        TextureLayerDefinition* texture;
-
-        _inited = 1;
-
-        _textures = texturesCreateDefinition();
-        texture = (TextureLayerDefinition*)layersGetLayer(_textures.layers, layersAddLayer(_textures.layers, NULL));
-        texture->material.base = COLOR_WHITE;
-        texture->material.reflection = 0.3;
-        texture->material.shininess = 2.0;
-        texture->bump_height = 0.0;
-        texturesLayerValidateDefinition(texture);
-    }
 
     return result;
 }

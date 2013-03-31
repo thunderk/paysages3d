@@ -32,7 +32,14 @@ typedef struct
     double _max_height;
 } TerrainDefinition;
 
+typedef struct
+{
+    Vector3 location;
+    Vector3 normal;
+} TerrainResult;
+
 typedef double (*FuncTerrainGetHeight)(Renderer* renderer, double x, double z, int with_painting);
+typedef TerrainResult (*FuncTerrainGetResult)(Renderer* renderer, double x, double z, int with_painting, int with_textures);
 typedef Color (*FuncTerrainGetFinalColor)(Renderer* renderer, Vector3 location, double precision);
 
 typedef struct
@@ -41,6 +48,7 @@ typedef struct
 
     FuncGeneralCastRay castRay;
     FuncTerrainGetHeight getHeight;
+    FuncTerrainGetResult getResult;
     FuncTerrainGetFinalColor getFinalColor;
 
     void* _internal_data;

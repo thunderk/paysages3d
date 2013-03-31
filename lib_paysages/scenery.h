@@ -12,9 +12,9 @@
 #include "atmosphere/public.h"
 #include "clouds/public.h"
 #include "terrain/public.h"
+#include "textures/public.h"
 #include "water/public.h"
 #include "camera.h"
-#include "textures.h"
 #include "renderer.h"
 
 #ifdef __cplusplus

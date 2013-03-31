@@ -93,9 +93,43 @@ static double _fakeGetHeight(Renderer* renderer, double x, double z, int with_pa
     return 0.0;
 }
 
-static double _getHeight(Renderer* renderer, double x, double z, int with_painting)
+static double _realGetHeight(Renderer* renderer, double x, double z, int with_painting)
 {
     return terrainGetInterpolatedHeight(renderer->terrain->definition, x, z, with_painting);
+}
+
+static TerrainResult _fakeGetResult(Renderer* renderer, double x, double z, int with_painting, int with_textures)
+{
+    TerrainResult result;
+
+    UNUSED(renderer);
+    UNUSED(x);
+    UNUSED(z);
+    UNUSED(with_painting);
+    UNUSED(with_textures);
+
+    result.location.x = x;
+    result.location.y = 0.0;
+    result.location.z = z;
+    result.normal = VECTOR_UP;
+
+    return result;
+}
+
+static TerrainResult _realGetResult(Renderer* renderer, double x, double z, int with_painting, int with_textures)
+{
+    TerrainResult result;
+
+    result.location.x = x;
+    result.location.y = renderer->terrain->getHeight(renderer, x, z, with_painting);
+    result.location.z = z;
+
+    if (with_textures)
+    {
+        result = renderer->textures->displaceTerrain(renderer, result);
+    }
+
+    return result;
 }
 
 static Color _fakeGetFinalColor(Renderer* renderer, Vector3 location, double precision)
@@ -106,14 +140,11 @@ static Color _fakeGetFinalColor(Renderer* renderer, Vector3 location, double pre
     return COLOR_GREEN;
 }
 
-static Color _getFinalColor(Renderer* renderer, Vector3 location, double precision)
+static Color _realgetFinalColor(Renderer* renderer, Vector3 location, double precision)
 {
-    Color color;
-
-    color = renderer->applyTextures(renderer, location, precision);
-    color = renderer->applyMediumTraversal(renderer, location, color);
-
-    return color;
+    TerrainResult terrain = renderer->terrain->getResult(renderer, location.x, location.z, 1, 1);
+    TexturesResult textures = renderer->textures->applyToTerrain(renderer, terrain);
+    return renderer->applyMediumTraversal(renderer, textures.final_location, textures.final_color);
 }
 
 static RayCastingResult _fakeCastRay(Renderer* renderer, Vector3 start, Vector3 direction)
@@ -127,7 +158,7 @@ static RayCastingResult _fakeCastRay(Renderer* renderer, Vector3 start, Vector3 
     return result;
 }
 
-static RayCastingResult _castRay(Renderer* renderer, Vector3 start, Vector3 direction)
+static RayCastingResult _realCastRay(Renderer* renderer, Vector3 start, Vector3 direction)
 {
     RayCastingResult result;
     TerrainDefinition* definition = renderer->terrain->definition;
@@ -138,7 +169,7 @@ static RayCastingResult _castRay(Renderer* renderer, Vector3 start, Vector3 dire
     inc_factor = (double)renderer->render_quality;
     inc_base = 1.0;
     inc_value = inc_base / inc_factor;
-    lastdiff = start.y - _getHeight(renderer, start.x, start.z, 1);
+    lastdiff = start.y - _realGetHeight(renderer, start.x, start.z, 1);
 
     length = 0.0;
     do
@@ -146,14 +177,14 @@ static RayCastingResult _castRay(Renderer* renderer, Vector3 start, Vector3 dire
         inc_vector = v3Scale(direction, inc_value);
         length += v3Norm(inc_vector);
         start = v3Add(start, inc_vector);
-        height = _getHeight(renderer, start.x, start.z, 1);
+        height = _realGetHeight(renderer, start.x, start.z, 1);
         diff = start.y - height;
         if (diff < 0.0)
         {
             if (fabs(diff - lastdiff) > 0.00001)
             {
                 start = v3Add(start, v3Scale(inc_vector, -diff / (diff - lastdiff)));
-                start.y = _getHeight(renderer, start.x, start.z, 1);
+                start.y = _realGetHeight(renderer, start.x, start.z, 1);
             }
             else
             {
@@ -161,7 +192,7 @@ static RayCastingResult _castRay(Renderer* renderer, Vector3 start, Vector3 dire
             }
             result.hit = 1;
             result.hit_location = start;
-            result.hit_color = _getFinalColor(renderer, start, renderer->getPrecision(renderer, result.hit_location));
+            result.hit_color = _realgetFinalColor(renderer, start, renderer->getPrecision(renderer, result.hit_location));
             return result;
         }
 
@@ -220,7 +251,7 @@ static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 locat
         inc_vector = v3Scale(direction_to_light, inc_value);
         length += v3Norm(inc_vector);
         location = v3Add(location, inc_vector);
-        height = _getHeight(renderer, location.x, location.z, 1);
+        height = _realGetHeight(renderer, location.x, location.z, 1);
         diff = location.y - height;
         if (diff < 0.0)
         {
@@ -300,6 +331,7 @@ static TerrainRenderer* _createRenderer()
 
     result->castRay = _fakeCastRay;
     result->getHeight = _fakeGetHeight;
+    result->getResult = _fakeGetResult;
     result->getFinalColor = _fakeGetFinalColor;
 
     return result;
@@ -315,9 +347,10 @@ static void _bindRenderer(Renderer* renderer, TerrainDefinition* definition)
 {
     TerrainDefinitionClass.copy(definition, renderer->terrain->definition);
 
-    renderer->terrain->castRay = _castRay;
-    renderer->terrain->getHeight = _getHeight;
-    renderer->terrain->getFinalColor = _getFinalColor;
+    renderer->terrain->castRay = _realCastRay;
+    renderer->terrain->getHeight = _realGetHeight;
+    renderer->terrain->getResult = _realGetResult;
+    renderer->terrain->getFinalColor = _realgetFinalColor;
 
     lightingManagerRegisterFilter(renderer->lighting, (FuncLightingAlterLight)_alterLight, renderer);
 }

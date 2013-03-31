@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "basepreview.h"
 #include "baseformlayer.h"
-#include "../lib_paysages/textures.h"
+#include "../lib_paysages/textures/public.h"
 
 class FormTextures : public BaseFormLayer
 {
@@ -21,10 +21,11 @@ public slots:
 protected:
     virtual void layerReadCurrentFrom(void* layer_definition);
     virtual void layerWriteCurrentTo(void* layer_definition);
+    virtual void autoPresetSelected(int preset);
 
 private:
-    TexturesDefinition _definition;
-    TextureLayerDefinition* _layer;
+    TexturesDefinition* _definition;
+    TexturesLayerDefinition* _layer;
     BasePreview* _previewCoverage;
     BasePreview* _previewColor;
 };

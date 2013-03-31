@@ -108,7 +108,7 @@ void ExplorerChunkTerrain::onCameraEvent(CameraDefinition* camera)
     }
 
     _distance_to_camera = v3Norm(v3Sub(getCenter(), camera->location));
-    
+
     _lock_data.unlock();
 }
 
@@ -166,7 +166,7 @@ double ExplorerChunkTerrain::getDisplayedSizeHint(CameraDefinition* camera)
 Color ExplorerChunkTerrain::getTextureColor(double x, double y)
 {
     Vector3 location = {_startx + x * _size, 0.0, _startz + y * _size};
-    return renderer()->applyTextures(renderer(), location, 0.01);
+    return renderer()->terrain->getFinalColor(renderer(), location, 0.01);
 }
 
 Vector3 ExplorerChunkTerrain::getCenter()

@@ -13,19 +13,10 @@ public:
     PreviewRenderLandscape(QWidget* parent):BasePreview(parent)
     {
         _renderer = sceneryCreateStandardRenderer();
-        _renderer->applyTextures = _applyTextures;
         _renderer->getCameraLocation = _getCameraLocation;
         lightingManagerDisableSpecularity(_renderer->lighting);
 
-        _textures = texturesCreateDefinition();
-
-        _atmosphere = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
-        _terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
-        _water = (WaterDefinition*)WaterDefinitionClass.create();
-        _clouds = (CloudsDefinition*)CloudsDefinitionClass.create();
-
-        _renderer->customData[0] = &_textures;
-
+        _no_clouds = (CloudsDefinition*)CloudsDefinitionClass.create();
         _clouds_enabled = true;
 
         addOsd(QString("geolocation"));
@@ -41,7 +32,7 @@ protected:
         Vector3 location;
         double height = _renderer->terrain->getHeight(_renderer, x, y, 1);
 
-        if (height < _water->height)
+        if (height < _renderer->water->getHeightInfo(_renderer).max_height)
         {
             return _renderer->water->getResult(_renderer, x, y).final;
         }
@@ -55,14 +46,12 @@ protected:
     }
     void updateData()
     {
-        sceneryGetTextures(&_textures);
-
         sceneryBindRenderer(_renderer);
         _renderer->atmosphere->applyAerialPerspective = _applyAerialPerspective;
 
         if (!_clouds_enabled)
         {
-            CloudsRendererClass.bind(_renderer, _clouds);
+            CloudsRendererClass.bind(_renderer, _no_clouds);
         }
     }
     void toggleChangeEvent(QString key, bool value)
@@ -76,16 +65,7 @@ protected:
 private:
     Renderer* _renderer;
     bool _clouds_enabled;
-    CloudsDefinition* _clouds;
-    TerrainDefinition* _terrain;
-    WaterDefinition *_water;
-    TexturesDefinition _textures;
-    AtmosphereDefinition* _atmosphere;
-
-    static Color _applyTextures(Renderer* renderer, Vector3 location, double precision)
-    {
-        return texturesGetColor((TexturesDefinition*)(renderer->customData[0]), renderer, location.x, location.z, precision);
-    }
+    CloudsDefinition* _no_clouds;
 
     static Vector3 _getCameraLocation(Renderer*, Vector3 location)
     {

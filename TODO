@@ -1,23 +1,26 @@
 Technology Preview 2 :
-- Better time selection widget for atmosphere.
-- Replace terrain canvas editor by full sculpting editor.
-   => Add a generation dialog, with fixed resolution.
-   => Store local terrain modifications in fully dynamic canvas.
-   => Add map preview with editor area.
-   => Allow camera move and zoom.
+- Finalize terrain editor.
+   => Add a generation dialog for base noise (overwriting changes).
+   => Implement chunks merging (with max size control).
 - Get rid of noise dialogs, for simpler settings.
-- Finalize lighting refactoring
+- Finalize lighting/clouds refactoring
    => Restore cloud lighting
+   => Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).
 - Improve textures (current model is greatly incorrect).
+   => Convert to new architecture model.
+   => Use triplanar projection.
    => Separate models (basic texture and covering texture).
    => Covering texture height should inpact terrain height.
    => Add texture shadowing.
-- Clouds should keep distance to ground.
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
-- Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).
 - Translations.
 
 Technlogy Preview 3 :
+- Improve terrain 3D editor:
+   => Add a map preview with edit area highlighted.
+   => Allow zooming and simplified camera control.
+- Better time selection widget for atmosphere.
+- Clouds should keep distance to ground.
 - Find a proper model for night sky (maybe Shirley).
 - Create a StandardPreviewClass in C-lib (with renderer, updateData, changeView, getColor, choices and toggles).
 - Fully move layer management from BaseForm to BaseFormLayer.
@@ -27,7 +30,7 @@ Technlogy Preview 3 :
 - Add fresnel effect to specular lighting.
 - Add "hardness to light" and shadow control ("minimum lighting") to material.
 - Start using OpenCL to optimize rendering.
-- Restore render progress.
+- Fully restore render progress (with first pass).
 - Rethink the quality settings and detail smoothing in the distance.
    => When quality setting is set to 10, add boost options
    => Add detail boost (adds granularity)

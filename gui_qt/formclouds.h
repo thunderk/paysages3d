@@ -12,6 +12,7 @@ class FormClouds : public BaseFormLayer
 
 public:
     explicit FormClouds(QWidget *parent = 0);
+    ~FormClouds();
 
 public slots:
     virtual void revertConfig();

@@ -5,7 +5,6 @@
 #include "baseexplorerchunk.h"
 #include "../lib_paysages/camera.h"
 #include "../lib_paysages/renderer.h"
-#include "../lib_paysages/textures.h"
 
 class WidgetExplorer : public QGLWidget
 {
@@ -46,8 +45,6 @@ private:
     QList<BaseExplorerChunk*> _updateQueue;
     bool _alive;
     QMutex _lock_chunks;
-
-    TexturesDefinition _textures;
 
     double _average_frame_time;
     int _quality;

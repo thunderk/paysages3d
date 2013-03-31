@@ -15,12 +15,12 @@ Textures :
   * Textures ranges are now using curves.
 
 Water :
+  * Revamped light-based coloring.
   * Added foam.
 
 Atmosphere :
   * Merged with sky module.
-  * New sky model (based on Preetham's work).
-  * Added sun halo control.
+  * New sky model and aerial perspective (based on Preetham's work).
   * Better previews.
 
 Clouds :

@@ -1,21 +1,13 @@
 #include "formtextures.h"
 
-#include "../lib_paysages/textures.h"
 #include "../lib_paysages/scenery.h"
 #include "tools.h"
-
-typedef struct
-{
-    Curve* height_curve;
-    Curve* slope_curve;
-} TextureSupp;
-static TextureSupp _supp;
 
 /**************** Previews ****************/
 class PreviewTexturesCoverage:public BasePreview
 {
 public:
-    PreviewTexturesCoverage(QWidget* parent, TextureLayerDefinition* layer):BasePreview(parent)
+    PreviewTexturesCoverage(QWidget* parent, TexturesLayerDefinition* layer):BasePreview(parent)
     {
         _terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
 
@@ -23,7 +15,7 @@ public:
         _renderer->render_quality = 3;
 
         _original_layer = layer;
-        _preview_layer = texturesLayerCreateDefinition();
+        //_preview_definition = (TexturesDefinition*)TexturesDefinitionClass.create();
 
         addOsd(QString("geolocation"));
 
@@ -32,7 +24,7 @@ public:
     }
     ~PreviewTexturesCoverage()
     {
-        texturesLayerDeleteDefinition(_preview_layer);
+        //TexturesDefinitionClass.destroy(_preview_layer);
     }
 protected:
     Color getColor(double x, double y)
@@ -42,7 +34,7 @@ protected:
         location.x = x;
         location.y = _renderer->terrain->getHeight(_renderer, x, y, 1);
         location.z = y;
-        result.r = result.g = result.b = texturesGetLayerCoverage(_preview_layer, _renderer, location, this->scaling);
+        //result.r = result.g = result.b = texturesGetLayerCoverage(_preview_layer, _renderer, location, this->scaling);
         return result;
     }
     void updateData()
@@ -50,23 +42,23 @@ protected:
         sceneryGetTerrain(_terrain);
         TerrainRendererClass.bind(_renderer, _terrain);
 
-        texturesLayerCopyDefinition(_original_layer, _preview_layer);
+        //TexturesDefinitionClass.copy(_original_layer, _preview_layer);
     }
 
 private:
     Renderer* _renderer;
-    TextureLayerDefinition* _original_layer;
-    TextureLayerDefinition* _preview_layer;
+    TexturesLayerDefinition* _original_layer;
+    TexturesDefinition* _preview_definition;
     TerrainDefinition* _terrain;
 };
 
 class PreviewTexturesColor:public BasePreview
 {
 public:
-    PreviewTexturesColor(QWidget* parent, TextureLayerDefinition* layer):BasePreview(parent)
+    PreviewTexturesColor(QWidget* parent, TexturesLayerDefinition* layer):BasePreview(parent)
     {
         _original_layer = layer;
-        _preview_layer = texturesLayerCreateDefinition();
+        //_preview_layer = (TexturesLayerDefinition*)TexturesDefinitionClass.create();
 
         _renderer = rendererCreate();
         _renderer->render_quality = 3;
@@ -74,14 +66,12 @@ public:
         _renderer->render_camera.location.y = 20.0;
         _renderer->render_camera.location.z = 0.0;
 
-        _zone = zoneCreate();
-
         configScaling(0.01, 1.0, 0.01, 0.1);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
     ~PreviewTexturesColor()
     {
-        texturesLayerDeleteDefinition(_preview_layer);
+        //TexturesDefinitionClass.destroy(_preview_layer);
     }
 protected:
     Color getColor(double x, double y)
@@ -90,35 +80,32 @@ protected:
         location.x = x;
         location.y = 0.0;
         location.z = y;
-        return texturesGetLayerColor(_preview_layer, _renderer, location, this->scaling);
+        //return texturesGetLayerColor(_preview_layer, _renderer, location, this->scaling);
+        return COLOR_BLACK;
     }
     void updateData()
     {
-        texturesLayerCopyDefinition(_original_layer, _preview_layer);
-        zoneCopy(_zone, _preview_layer->zone);
+        //TexturesDefinitionClass.copy(_original_layer, _preview_layer);
     }
 private:
-    Zone* _zone;
     Renderer* _renderer;
-    TextureLayerDefinition* _original_layer;
-    TextureLayerDefinition* _preview_layer;
+    TexturesLayerDefinition* _original_layer;
+    TexturesLayerDefinition* _preview_layer;
 };
 
 /**************** Form ****************/
 FormTextures::FormTextures(QWidget *parent):
     BaseFormLayer(parent)
 {
-    _definition = texturesCreateDefinition();
-    _layer = texturesLayerCreateDefinition();
-    _supp.height_curve = curveCreate();
-    _supp.slope_curve = curveCreate();
+    _definition = (TexturesDefinition*)TexturesDefinitionClass.create();
+    _layer = (TexturesLayerDefinition*)texturesGetLayerType().callback_create();
 
     _previewCoverage = new PreviewTexturesCoverage(this, _layer);
     _previewColor = new PreviewTexturesColor(this, _layer);
     addPreview(_previewCoverage, tr("Coverage preview"));
     addPreview(_previewColor, tr("Lighted sample"));
 
-    addInputNoise(tr("Surface noise"), _layer->bump_noise);
+    /*addInputNoise(tr("Surface noise"), _layer->bump_noise);
     addInputDouble(tr("Surface noise height"), &_layer->bump_height, 0.0, 0.1, 0.001, 0.01);
     addInputDouble(tr("Surface noise scaling"), &_layer->bump_scaling, 0.003, 0.3, 0.003, 0.03);
     addInputMaterial(tr("Material"), &_layer->material);
@@ -126,45 +113,41 @@ FormTextures::FormTextures(QWidget *parent):
     addInputCurve(tr("Coverage by slope"), _supp.slope_curve, 0.0, 5.0, 0.0, 1.0, tr("Terrain slope"), tr("Texture coverage"));
     addInputDouble(tr("Amplitude for slope coverage"), &_layer->slope_range, 0.001, 0.1, 0.001, 0.01);
     addInputDouble(tr("Layer thickness"), &_layer->thickness, 0.0, 0.1, 0.001, 0.01);
-    addInputDouble(tr("Transparency thickness"), &_layer->thickness_transparency, 0.0, 0.1, 0.001, 0.01);
+    addInputDouble(tr("Transparency thickness"), &_layer->thickness_transparency, 0.0, 0.1, 0.001, 0.01);*/
 
-    setLayers(_definition.layers);
+    setLayers(_definition->layers);
 }
 
 FormTextures::~FormTextures()
 {
-    texturesDeleteDefinition(&_definition);
-    texturesLayerDeleteDefinition(_layer);
-    curveDelete(_supp.height_curve);
-    curveDelete(_supp.slope_curve);
+    TexturesDefinitionClass.destroy(_definition);
+    texturesGetLayerType().callback_delete(_layer);
 }
 
 void FormTextures::revertConfig()
 {
-    sceneryGetTextures(&_definition);
+    sceneryGetTextures(_definition);
     BaseFormLayer::revertConfig();
 }
 
 void FormTextures::applyConfig()
 {
     BaseFormLayer::applyConfig();
-    scenerySetTextures(&_definition);
+    scenerySetTextures(_definition);
 }
 
 void FormTextures::layerReadCurrentFrom(void* layer_definition)
 {
-    TextureLayerDefinition* source = (TextureLayerDefinition*)layer_definition;
-    texturesLayerCopyDefinition(source, _layer);
-
-    zoneGetHeightCurve(source->zone, _supp.height_curve);
-    zoneGetSlopeCurve(source->zone, _supp.slope_curve);
+    texturesGetLayerType().callback_copy((TexturesLayerDefinition*)layer_definition, _layer);
 }
 
 void FormTextures::layerWriteCurrentTo(void* layer_definition)
 {
-    TextureLayerDefinition* destination = (TextureLayerDefinition*)layer_definition;
-    texturesLayerCopyDefinition(_layer, destination);
+    texturesGetLayerType().callback_copy(_layer, (TexturesLayerDefinition*)layer_definition);
+}
 
-    zoneSetHeightCurve(destination->zone, _supp.height_curve);
-    zoneSetSlopeCurve(destination->zone, _supp.slope_curve);
+void FormTextures::autoPresetSelected(int preset)
+{
+    texturesLayerAutoPreset(_layer, (TexturesLayerPreset)preset);
+    BaseForm::autoPresetSelected(preset);
 }
