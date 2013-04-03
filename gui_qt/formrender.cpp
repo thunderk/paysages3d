@@ -75,11 +75,10 @@ private:
     static AtmosphereResult _applyAerialPerspective(Renderer*, Vector3, Color base)
     {
         AtmosphereResult result;
+        atmosphereInitResult(&result);
         result.base = base;
-        result.distance = 0.0;
-        result.inscattering = COLOR_BLACK;
-        result.attenuation = COLOR_BLACK;
         result.final = base;
+        atmosphereUpdateResult(&result);
         return result;
     }
 };

@@ -77,6 +77,8 @@ static TexturesLayerDefinition* _layerCreateDefinition()
 
     result->_displacement_noise = noiseCreateGenerator();
 
+    _layerValidateDefinition(result);
+
     return result;
 }
 

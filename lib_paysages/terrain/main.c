@@ -116,17 +116,96 @@ static TerrainResult _fakeGetResult(Renderer* renderer, double x, double z, int 
     return result;
 }
 
+static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, Vector3 south, Vector3 west)
+{
+    Vector3 dnorth, deast, dsouth, dwest, normal;
+
+    dnorth = v3Sub(north, center);
+    deast = v3Sub(east, center);
+    dsouth = v3Sub(south, center);
+    dwest = v3Sub(west, center);
+
+    normal = v3Cross(deast, dnorth);
+    normal = v3Add(normal, v3Cross(dsouth, deast));
+    normal = v3Add(normal, v3Cross(dwest, dsouth));
+    normal = v3Add(normal, v3Cross(dnorth, dwest));
+
+    return v3Normalize(normal);
+}
+
+static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south)
+{
+    return v3Normalize(v3Cross(v3Sub(south, center), v3Sub(east, center)));
+}
+
 static TerrainResult _realGetResult(Renderer* renderer, double x, double z, int with_painting, int with_textures)
 {
     TerrainResult result;
+    double detail = 0.01;
 
-    result.location.x = x;
-    result.location.y = renderer->terrain->getHeight(renderer, x, z, with_painting);
-    result.location.z = z;
+    /* Normal */
+    Vector3 center, north, east, south, west;
 
+    center.x = x;
+    center.z = z;
+    center.y = renderer->terrain->getHeight(renderer, center.x, center.z, with_painting);
+
+    east.x = x + detail;
+    east.z = z;
+    east.y = renderer->terrain->getHeight(renderer, east.x, east.z, with_painting);
+
+    south.x = x;
+    south.z = z + detail;
+    south.y = renderer->terrain->getHeight(renderer, south.x, south.z, with_painting);
+
+    if (renderer->render_quality > 5)
+    {
+        west.x = x - detail;
+        west.z = z;
+        west.y = renderer->terrain->getHeight(renderer, west.x, west.z, with_painting);
+
+        north.x = x;
+        north.z = z - detail;
+        north.y = renderer->terrain->getHeight(renderer, north.x, north.z, with_painting);
+
+        result.normal = _getNormal4(center, north, east, south, west);
+    }
+    else
+    {
+        result.normal = _getNormal2(center, east, south);
+    }
+
+    /* Location */
+    result.location = center;
+
+    /* Texture displacement */
     if (with_textures)
     {
-        result = renderer->textures->displaceTerrain(renderer, result);
+        center = result.location = renderer->textures->displaceTerrain(renderer, result);
+
+        /* TODO Recompute normal */
+        if (renderer->render_quality > 7)
+        {
+            /* Use 5 points on displaced terrain */
+            east = renderer->textures->displaceTerrain(renderer, _realGetResult(renderer, east.x, east.z, with_painting, 0));
+            south = renderer->textures->displaceTerrain(renderer, _realGetResult(renderer, south.x, south.z, with_painting, 0));
+            west = renderer->textures->displaceTerrain(renderer, _realGetResult(renderer, west.x, west.z, with_painting, 0));
+            north = renderer->textures->displaceTerrain(renderer, _realGetResult(renderer, north.x, north.z, with_painting, 0));
+
+            result.normal = _getNormal4(center, north, east, south, west);
+        }
+        else if (renderer->render_quality > 2)
+        {
+            /* Use 3 points on displaced terrain */
+            east = renderer->textures->displaceTerrain(renderer, _realGetResult(renderer, east.x, east.z, with_painting, 0));
+            south = renderer->textures->displaceTerrain(renderer, _realGetResult(renderer, south.x, south.z, with_painting, 0));
+
+            result.normal = _getNormal2(center, east, south);
+        }
+        else
+        {
+            /* Use texture noise directly, as if terrain was a plane */
+        }
     }
 
     return result;
@@ -140,10 +219,10 @@ static Color _fakeGetFinalColor(Renderer* renderer, Vector3 location, double pre
     return COLOR_GREEN;
 }
 
-static Color _realgetFinalColor(Renderer* renderer, Vector3 location, double precision)
+static Color _realGetFinalColor(Renderer* renderer, Vector3 location, double precision)
 {
-    TerrainResult terrain = renderer->terrain->getResult(renderer, location.x, location.z, 1, 1);
-    TexturesResult textures = renderer->textures->applyToTerrain(renderer, terrain);
+    /* TODO Restore precision control */
+    TexturesResult textures = renderer->textures->applyToTerrain(renderer, location.x, location.z);
     return renderer->applyMediumTraversal(renderer, textures.final_location, textures.final_color);
 }
 
@@ -192,7 +271,7 @@ static RayCastingResult _realCastRay(Renderer* renderer, Vector3 start, Vector3 
             }
             result.hit = 1;
             result.hit_location = start;
-            result.hit_color = _realgetFinalColor(renderer, start, renderer->getPrecision(renderer, result.hit_location));
+            result.hit_color = _realGetFinalColor(renderer, start, renderer->getPrecision(renderer, result.hit_location));
             return result;
         }
 
@@ -350,7 +429,7 @@ static void _bindRenderer(Renderer* renderer, TerrainDefinition* definition)
     renderer->terrain->castRay = _realCastRay;
     renderer->terrain->getHeight = _realGetHeight;
     renderer->terrain->getResult = _realGetResult;
-    renderer->terrain->getFinalColor = _realgetFinalColor;
+    renderer->terrain->getFinalColor = _realGetFinalColor;
 
     lightingManagerRegisterFilter(renderer->lighting, (FuncLightingAlterLight)_alterLight, renderer);
 }

@@ -53,6 +53,16 @@ static Vector3 _getCameraLocation(Renderer* renderer, Vector3)
     return ((CameraDefinition*)renderer->customData[2])->location;
 }
 
+static AtmosphereResult _applyAerialPerspective(Renderer*, Vector3, Color base)
+{
+    AtmosphereResult result;
+    atmosphereInitResult(&result);
+    result.base = base;
+    result.final = base;
+    atmosphereUpdateResult(&result);
+    return result;
+}
+
 WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     QGLWidget(parent)
 {
@@ -66,6 +76,7 @@ WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera):
     _renderer->render_quality = 3;
     _renderer->customData[2] = _base_camera;
     _renderer->getCameraLocation = _getCameraLocation;
+    _renderer->atmosphere->applyAerialPerspective = _applyAerialPerspective;
     lightingManagerDisableSpecularity(_renderer->lighting);
 
     _inited = false;

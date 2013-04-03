@@ -7,7 +7,6 @@ Technology Preview 2 :
    => Restore cloud lighting
    => Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).
 - Improve textures (current model is greatly incorrect).
-   => Convert to new architecture model.
    => Use triplanar projection.
    => Separate models (basic texture and covering texture).
    => Covering texture height should inpact terrain height.

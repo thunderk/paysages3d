@@ -76,8 +76,8 @@ typedef struct
     Color final_color;
 } TexturesResult;
 
-typedef TerrainResult (*FuncTexturesDisplaceTerrain)(Renderer* renderer, TerrainResult terrain);
-typedef TexturesResult (*FuncTexturesApplyToTerrain)(Renderer* renderer, TerrainResult terrain);
+typedef Vector3 (*FuncTexturesDisplaceTerrain)(Renderer* renderer, TerrainResult terrain);
+typedef TexturesResult (*FuncTexturesApplyToTerrain)(Renderer* renderer, double x, double z);
 
 typedef struct
 {

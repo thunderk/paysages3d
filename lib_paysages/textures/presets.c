@@ -2,15 +2,17 @@
 
 void texturesAutoPreset(TexturesDefinition* definition, TexturesPreset preset)
 {
+    int layer;
     layersClear(definition->layers);
 
     if (preset == TEXTURES_PRESET_IRELAND)
     {
+        layer = layersAddLayer(definition->layers, NULL);
     }
-    else if (preset == TEXTURES_PRESET_IRELAND)
+    else if (preset == TEXTURES_PRESET_ALPS)
     {
     }
-    else if (preset == TEXTURES_PRESET_IRELAND)
+    else if (preset == TEXTURES_PRESET_CANYON)
     {
     }
 }
@@ -33,7 +35,7 @@ void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerP
             break;
     }
 
-    cloudsLayerValidateDefinition(definition);
+    texturesGetLayerType().callback_validate(definition);
 }
 
 #if 0
