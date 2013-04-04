@@ -42,7 +42,8 @@ static Vector3 _realDisplaceTerrain(Renderer* renderer, TerrainResult terrain)
         if (layer->displacement_height > 0.0)
         {
             double presence = texturesGetLayerBasePresence(layer, terrain);
-            offset += texturesGetTriplanarNoise(layer->_displacement_noise, terrain.location, terrain.normal) * presence * layer->displacement_height;
+            Vector3 location = {terrain.location.x / layer->displacement_scaling, terrain.location.y / layer->displacement_scaling, terrain.location.z / layer->displacement_scaling};
+            offset += texturesGetTriplanarNoise(layer->_displacement_noise, location, terrain.normal) * presence * layer->displacement_height;
         }
     }
 

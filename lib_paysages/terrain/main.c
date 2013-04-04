@@ -141,7 +141,7 @@ static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south)
 static TerrainResult _realGetResult(Renderer* renderer, double x, double z, int with_painting, int with_textures)
 {
     TerrainResult result;
-    double detail = 0.01;
+    double detail = 0.001; /* TODO */
 
     /* Normal */
     Vector3 center, north, east, south, west;
@@ -158,7 +158,7 @@ static TerrainResult _realGetResult(Renderer* renderer, double x, double z, int 
     south.z = z + detail;
     south.y = renderer->terrain->getHeight(renderer, south.x, south.z, with_painting);
 
-    if (renderer->render_quality > 5)
+    if (renderer->render_quality > 6)
     {
         west.x = x - detail;
         west.z = z;
@@ -181,10 +181,11 @@ static TerrainResult _realGetResult(Renderer* renderer, double x, double z, int 
     /* Texture displacement */
     if (with_textures)
     {
-        center = result.location = renderer->textures->displaceTerrain(renderer, result);
+        center = renderer->textures->displaceTerrain(renderer, result);
+        result.location = center;
 
-        /* TODO Recompute normal */
-        if (renderer->render_quality > 7)
+        /* Recompute normal */
+        if (renderer->render_quality > 6)
         {
             /* Use 5 points on displaced terrain */
             east = renderer->textures->displaceTerrain(renderer, _realGetResult(renderer, east.x, east.z, with_painting, 0));
@@ -204,7 +205,7 @@ static TerrainResult _realGetResult(Renderer* renderer, double x, double z, int 
         }
         else
         {
-            /* Use texture noise directly, as if terrain was a plane */
+            /* TODO Use texture noise directly, as if terrain was a plane */
         }
     }
 
@@ -301,11 +302,7 @@ static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 locat
     double inc_value, inc_base, inc_factor, height, diff, light_factor, smoothing, length;
 
     direction_to_light = v3Scale(light->direction, -1.0);
-    if ((fabs(direction_to_light.x) < 0.0001 && fabs(direction_to_light.z) < 0.0001) || definition->height < 0.001)
-    {
-        return 0;
-    }
-    else if (direction_to_light.y < 0.05)
+    if (direction_to_light.y < -0.05)
     {
         light->color = COLOR_BLACK;
         return 1;
@@ -330,7 +327,7 @@ static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 locat
         inc_vector = v3Scale(direction_to_light, inc_value);
         length += v3Norm(inc_vector);
         location = v3Add(location, inc_vector);
-        height = _realGetHeight(renderer, location.x, location.z, 1);
+        height = renderer->terrain->getResult(renderer, location.x, location.z, 1, 1).location.y;
         diff = location.y - height;
         if (diff < 0.0)
         {

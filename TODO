@@ -6,11 +6,10 @@ Technology Preview 2 :
 - Finalize lighting/clouds refactoring
    => Restore cloud lighting
    => Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).
-- Improve textures (current model is greatly incorrect).
-   => Use triplanar projection.
-   => Separate models (basic texture and covering texture).
-   => Covering texture height should inpact terrain height.
-   => Add texture shadowing.
+- Finish texture refactoring.
+   => Push displaced polygons, but keep undisplaced coordinates for second pass.
+   => Add detail texture.
+   => Displacement on 3d explorer and previews.
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
 - Translations.
 

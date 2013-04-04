@@ -57,7 +57,8 @@ static void _layerValidateDefinition(TexturesLayerDefinition* definition)
     }
 
     noiseClearLevels(definition->_displacement_noise);
-    noiseAddLevelsSimple(definition->_displacement_noise, 3, 1.0, -1.0, 1.0, 0.0);
+    noiseAddLevelsSimple(definition->_displacement_noise, 4, 1.0, -1.0, 1.0, 0.0);
+    noiseNormalizeAmplitude(definition->_displacement_noise, -1.0, 1.0, 0);
     noiseValidate(definition->_displacement_noise);
 }
 
@@ -68,7 +69,7 @@ static TexturesLayerDefinition* _layerCreateDefinition()
     result = malloc(sizeof(TexturesLayerDefinition));
 
     result->terrain_zone = zoneCreate();
-    result->displacement_scaling = 0.1;
+    result->displacement_scaling = 2.0;
     result->displacement_height = 0.1;
     result->displacement_offset = 0.0;
     result->material.base = COLOR_WHITE;
