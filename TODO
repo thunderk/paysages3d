@@ -10,6 +10,7 @@ Technology Preview 2 :
    => Push displaced polygons, but keep undisplaced coordinates for second pass.
    => Add detail texture.
    => Displacement on 3d explorer and previews.
+   => Optimize ray marching (for tracing and shadows), using base terrain and displacement power.
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
 - Translations.
 

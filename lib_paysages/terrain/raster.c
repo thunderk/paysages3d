@@ -31,21 +31,30 @@ static Color _postProcessFragment(Renderer* renderer, Vector3 point, void* data)
 
 static void _renderQuad(Renderer* renderer, double x, double z, double size, double water_height)
 {
-    Vector3 v1, v2, v3, v4;
+    Vector3 ov1, ov2, ov3, ov4;
+    Vector3 dv1, dv2, dv3, dv4;
 
-    /*v1 = _getPoint(definition, renderer, x, z);
-    v2 = _getPoint(definition, renderer, x, z + size);
-    v3 = _getPoint(definition, renderer, x + size, z + size);
-    v4 = _getPoint(definition, renderer, x + size, z);*/
+    ov1.y = ov2.y = ov3.y = ov4.y;
 
-    v1 = renderer->terrain->getResult(renderer, x, z, 1, 1).location;
-    v2 = renderer->terrain->getResult(renderer, x, z + size, 1, 1).location;
-    v3 = renderer->terrain->getResult(renderer, x + size, z + size, 1, 1).location;
-    v4 = renderer->terrain->getResult(renderer, x + size, z, 1, 1).location;
+    ov1.x = x;
+    ov1.z = z;
+    dv1 = renderer->terrain->getResult(renderer, x, z, 1, 1).location;
 
-    if (v1.y > water_height || v2.y > water_height || v3.y > water_height || v4.y > water_height)
+    ov2.x = x;
+    ov2.z = z + size;
+    dv2 = renderer->terrain->getResult(renderer, x, z + size, 1, 1).location;
+
+    ov3.x = x + size;
+    ov3.z = z + size;
+    dv3 = renderer->terrain->getResult(renderer, x + size, z + size, 1, 1).location;
+
+    ov4.x = x + size;
+    ov4.z = z;
+    dv4 = renderer->terrain->getResult(renderer, x + size, z, 1, 1).location;
+
+    if (dv1.y > water_height || dv2.y > water_height || dv3.y > water_height || dv4.y > water_height)
     {
-        renderer->pushQuad(renderer, v1, v2, v3, v4, _postProcessFragment, NULL);
+        renderer->pushDisplacedQuad(renderer, dv1, dv2, dv3, dv4, ov1, ov2, ov3, ov4, _postProcessFragment, NULL);
     }
 }
 

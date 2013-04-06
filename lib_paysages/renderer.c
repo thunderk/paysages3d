@@ -73,6 +73,23 @@ static void _pushQuad(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Ve
     renderer->pushTriangle(renderer, v4, v1, v3, callback, callback_data);
 }
 
+static void _pushDisplacedTriangle(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Vector3 ov1, Vector3 ov2, Vector3 ov3, f_RenderFragmentCallback callback, void* callback_data)
+{
+    Vector3 p1, p2, p3;
+
+    p1 = renderer->projectPoint(renderer, v1);
+    p2 = renderer->projectPoint(renderer, v2);
+    p3 = renderer->projectPoint(renderer, v3);
+
+    renderPushTriangle(renderer->render_area, p1, p2, p3, ov1, ov2, ov3, callback, callback_data);
+}
+
+static void _pushDisplacedQuad(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Vector3 ov1, Vector3 ov2, Vector3 ov3, Vector3 ov4, f_RenderFragmentCallback callback, void* callback_data)
+{
+    renderer->pushDisplacedTriangle(renderer, v2, v3, v1, ov2, ov3, ov1, callback, callback_data);
+    renderer->pushDisplacedTriangle(renderer, v4, v1, v3, ov4, ov1, ov3, callback, callback_data);
+}
+
 static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
 {
     return _RAYCASTING_NULL;
@@ -118,6 +135,8 @@ Renderer* rendererCreate()
     result->unprojectPoint = _unprojectPoint;
     result->pushTriangle = _pushTriangle;
     result->pushQuad = _pushQuad;
+    result->pushDisplacedTriangle = _pushDisplacedTriangle;
+    result->pushDisplacedQuad = _pushDisplacedQuad;
 
     result->rayWalking = _rayWalking;
 
