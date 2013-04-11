@@ -47,7 +47,7 @@ typedef struct
     TexturesMergeMode merge_mode;*/
 
     NoiseGenerator* _displacement_noise;
-    /*NoiseGenerator* _detail_noise;*/
+    NoiseGenerator* _detail_noise;
     /*Curve* _local_slope_condition;*/
 } TexturesLayerDefinition;
 
@@ -56,7 +56,7 @@ typedef struct
     Layers* layers;
 } TexturesDefinition;
 
-typedef struct
+/*typedef struct
 {
     double global_presence;
     double local_presence;
@@ -64,14 +64,14 @@ typedef struct
     Vector3 displaced_normal;
     Color color;
     Color cancelled_color;
-} TexturesLayerResult;
+} TexturesLayerResult;*/
 
 typedef struct
 {
     Vector3 base_location;
     Vector3 base_normal;
-    int layer_count;
-    TexturesLayerResult layers[TEXTURES_MAX_LAYERS];
+    /*int layer_count;
+    TexturesLayerResult layers[TEXTURES_MAX_LAYERS];*/
     Vector3 final_location;
     Color final_color;
 } TexturesResult;

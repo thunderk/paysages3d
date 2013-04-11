@@ -7,7 +7,6 @@ Technology Preview 2 :
    => Restore cloud lighting
    => Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).
 - Finish texture refactoring.
-   => Push displaced polygons, but keep undisplaced coordinates for second pass.
    => Add detail texture.
    => Displacement on 3d explorer and previews.
    => Optimize ray marching (for tracing and shadows), using base terrain and displacement power.

@@ -57,6 +57,19 @@ Renderer* terrainCreatePreviewRenderer()
     result->getCameraLocation = _getCameraLocation;
     result->atmosphere->getLightingStatus = _getLightingStatus;
 
+    TexturesDefinition* textures;
+    textures = TexturesDefinitionClass.create();
+    TexturesLayerDefinition* layer = layersGetLayer(textures->layers, layersAddLayer(textures->layers, NULL));
+    layer->displacement_height = 0.0;
+    layer->material.base = COLOR_WHITE;
+    layer->material.reflection = 0.05;
+    layer->material.shininess = 2.0;
+    noiseClearLevels(layer->_detail_noise);
+
+    TexturesRendererClass.bind(result, textures);
+
+    TexturesDefinitionClass.destroy(textures);
+
     return result;
 }
 

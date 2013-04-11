@@ -3,9 +3,9 @@ CONFIG += qt
 QT += core gui opengl
 DEPENDPATH += .
 INCLUDEPATH += .
-OBJECTS_DIR = ./obj/$$BUILDMODE/
-MOC_DIR = ./moc/$$BUILDMODE/
 DESTDIR = ../build/$$BUILDMODE/
+OBJECTS_DIR = $$DESTDIR/gui_qt/
+MOC_DIR = $$DESTDIR/gui_qt/moc
 CONFIG -= release
 CONFIG += $$BUILDMODE
 

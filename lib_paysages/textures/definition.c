@@ -60,6 +60,11 @@ static void _layerValidateDefinition(TexturesLayerDefinition* definition)
     noiseAddLevelsSimple(definition->_displacement_noise, 4, 1.0, -1.0, 1.0, 0.0);
     noiseNormalizeAmplitude(definition->_displacement_noise, -1.0, 1.0, 0);
     noiseValidate(definition->_displacement_noise);
+
+    noiseClearLevels(definition->_detail_noise);
+    noiseAddLevelsSimple(definition->_detail_noise, 4, 0.1, -1.0, 1.0, 0.0);
+    noiseNormalizeAmplitude(definition->_detail_noise, -0.01, 0.01, 0);
+    noiseValidate(definition->_detail_noise);
 }
 
 static TexturesLayerDefinition* _layerCreateDefinition()
@@ -77,6 +82,7 @@ static TexturesLayerDefinition* _layerCreateDefinition()
     result->material.shininess = 0.0;
 
     result->_displacement_noise = noiseCreateGenerator();
+    result->_detail_noise = noiseCreateGenerator();
 
     _layerValidateDefinition(result);
 
@@ -87,6 +93,7 @@ static void _layerDeleteDefinition(TexturesLayerDefinition* definition)
 {
     zoneDelete(definition->terrain_zone);
     noiseDeleteGenerator(definition->_displacement_noise);
+    noiseDeleteGenerator(definition->_detail_noise);
     free(definition);
 }
 
@@ -99,6 +106,7 @@ static void _layerCopyDefinition(TexturesLayerDefinition* source, TexturesLayerD
     destination->material = source->material;
 
     noiseCopy(source->_displacement_noise, destination->_displacement_noise);
+    noiseCopy(source->_detail_noise, destination->_detail_noise);
 }
 
 static void _layerSave(PackStream* stream, TexturesLayerDefinition* layer)
@@ -110,6 +118,7 @@ static void _layerSave(PackStream* stream, TexturesLayerDefinition* layer)
     materialSave(stream, &layer->material);
 
     noiseSaveGenerator(stream, layer->_displacement_noise);
+    noiseSaveGenerator(stream, layer->_detail_noise);
 }
 
 static void _layerLoad(PackStream* stream, TexturesLayerDefinition* layer)
@@ -121,6 +130,7 @@ static void _layerLoad(PackStream* stream, TexturesLayerDefinition* layer)
     materialLoad(stream, &layer->material);
 
     noiseLoadGenerator(stream, layer->_displacement_noise);
+    noiseLoadGenerator(stream, layer->_detail_noise);
 }
 
 LayerType texturesGetLayerType()

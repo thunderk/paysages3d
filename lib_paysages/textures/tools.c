@@ -1,6 +1,7 @@
 #include "private.h"
 
 #include <assert.h>
+#include <math.h>
 
 /*
  * Get the base presence factor of a layer, not accounting for other layers.

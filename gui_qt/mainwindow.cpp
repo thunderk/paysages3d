@@ -85,34 +85,35 @@ QMainWindow(parent)
     QToolBar* toolbar;
 
     tabs = new QTabWidget(this);
+    tabs->setIconSize(QSize(32, 32));
 
     form = new FormTerrain(tabs);
-    tabs->addTab(form, tr("Terrain"));
+    tabs->addTab(form, QIcon("images/tab_terrain.png"), tr("Terrain"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
     form = new FormTextures(tabs);
-    tabs->addTab(form, tr("Textures"));
+    tabs->addTab(form, QIcon("images/tab_textures.png"), tr("Textures"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
     form = new FormWater(tabs);
-    tabs->addTab(form, tr("Water"));
+    tabs->addTab(form, QIcon("images/tab_water.png"), tr("Water"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
     form = new FormAtmosphere(tabs);
-    tabs->addTab(form, tr("Atmosphere"));
+    tabs->addTab(form, QIcon("images/tab_atmosphere.png"), tr("Atmosphere"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
     form = new FormClouds(tabs);
-    tabs->addTab(form, tr("Clouds"));
+    tabs->addTab(form, QIcon("images/tab_clouds.png"), tr("Clouds"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
     _form_render = new FormRender(tabs);
-    tabs->addTab(_form_render, tr("Render"));
+    tabs->addTab(_form_render, QIcon("images/tab_render.png"), tr("Render"));
     _forms.append(_form_render);
 
     toolbar = new QToolBar(this);
