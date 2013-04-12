@@ -16,6 +16,8 @@ void zoneDelete(Zone* zone);
 void zoneSave(PackStream* stream, Zone* zone);
 void zoneLoad(PackStream* stream, Zone* zone);
 void zoneCopy(Zone* source, Zone* destination);
+void zoneClear(Zone* zone);
+
 void zoneIncludeCircleArea(Zone* zone, double value, double centerx, double centerz, double softradius, double hardradius);
 void zoneExcludeCircleArea(Zone* zone, double centerx, double centerz, double softradius, double hardradius);
 

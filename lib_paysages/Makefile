@@ -14,7 +14,4 @@ ifneq (,${CHECK_OPENCL})
 	CC_FLAGS += -DHAVE_OPENCL=1
 endif
 
-CC_FLAGS += $(shell pkg-config --cflags ${LIBS})
-CC_LDFLAGS += $(shell pkg-config --libs ${LIBS})
-
 include ../common_post.mk

@@ -63,7 +63,7 @@ static void _layerValidateDefinition(TexturesLayerDefinition* definition)
 
     noiseClearLevels(definition->_detail_noise);
     noiseAddLevelsSimple(definition->_detail_noise, 4, 0.1, -1.0, 1.0, 0.0);
-    noiseNormalizeAmplitude(definition->_detail_noise, -0.01, 0.01, 0);
+    noiseNormalizeAmplitude(definition->_detail_noise, -0.005, 0.005, 0);
     noiseValidate(definition->_detail_noise);
 }
 
@@ -74,15 +74,10 @@ static TexturesLayerDefinition* _layerCreateDefinition()
     result = malloc(sizeof(TexturesLayerDefinition));
 
     result->terrain_zone = zoneCreate();
-    result->displacement_scaling = 2.0;
-    result->displacement_height = 0.1;
-    result->displacement_offset = 0.0;
-    result->material.base = COLOR_WHITE;
-    result->material.reflection = 0.0;
-    result->material.shininess = 0.0;
-
     result->_displacement_noise = noiseCreateGenerator();
     result->_detail_noise = noiseCreateGenerator();
+
+    texturesLayerAutoPreset(result, TEXTURES_LAYER_PRESET_ROCK);
 
     _layerValidateDefinition(result);
 

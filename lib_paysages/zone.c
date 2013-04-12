@@ -117,6 +117,14 @@ void zoneCopy(Zone* source, Zone* destination)
     destination->circles_excluded_count = source->circles_excluded_count;
 }
 
+void zoneClear(Zone* zone)
+{
+    curveClear(zone->value_by_height);
+    curveClear(zone->value_by_slope);
+    zone->circles_included_count = 0;
+    zone->circles_excluded_count = 0;
+}
+
 void zoneIncludeCircleArea(Zone* zone, double value, double centerx, double centerz, double softradius, double hardradius)
 {
     Circle circle = {value, centerx, centerz, softradius, hardradius};

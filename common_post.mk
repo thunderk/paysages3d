@@ -8,6 +8,14 @@ ifeq (${BUILDMODE},release)
 	CC_FLAGS += -O3 -DNDEBUG -Wno-unused-variable -Wno-unused-but-set-variable
 endif
 
+ifneq (,${LIBS})
+	CC_FLAGS += $(shell pkg-config --cflags ${LIBS})
+	CC_LDFLAGS += $(shell pkg-config --libs ${LIBS})
+endif
+
+CC_FLAGS += -fPIC -Wall
+CC_LDFLAGS += -fPIC
+
 all:prepare ${RESULT}
 
 prepare:

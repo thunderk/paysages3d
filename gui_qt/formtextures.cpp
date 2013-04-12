@@ -97,6 +97,11 @@ private:
 FormTextures::FormTextures(QWidget *parent):
     BaseFormLayer(parent)
 {
+    addAutoPreset(tr("Rock"));
+    addAutoPreset(tr("Grass"));
+    addAutoPreset(tr("Sand"));
+    addAutoPreset(tr("Snow"));
+
     _definition = (TexturesDefinition*)TexturesDefinitionClass.create();
     _layer = (TexturesLayerDefinition*)texturesGetLayerType().callback_create();
 
@@ -105,13 +110,13 @@ FormTextures::FormTextures(QWidget *parent):
     addPreview(_previewCoverage, tr("Coverage preview"));
     addPreview(_previewColor, tr("Lighted sample"));
 
-    /*addInputNoise(tr("Surface noise"), _layer->bump_noise);
-    addInputDouble(tr("Surface noise height"), &_layer->bump_height, 0.0, 0.1, 0.001, 0.01);
-    addInputDouble(tr("Surface noise scaling"), &_layer->bump_scaling, 0.003, 0.3, 0.003, 0.03);
+    addInputDouble(tr("Displacement height"), &_layer->displacement_height, 0.0, 0.1, 0.001, 0.01);
+    addInputDouble(tr("Displacement scaling"), &_layer->displacement_scaling, 0.003, 0.3, 0.003, 0.03);
     addInputMaterial(tr("Material"), &_layer->material);
-    addInputCurve(tr("Coverage by altitude"), _supp.height_curve, -20.0, 20.0, 0.0, 1.0, tr("Terrain altitude"), tr("Texture coverage"));
-    addInputCurve(tr("Coverage by slope"), _supp.slope_curve, 0.0, 5.0, 0.0, 1.0, tr("Terrain slope"), tr("Texture coverage"));
-    addInputDouble(tr("Amplitude for slope coverage"), &_layer->slope_range, 0.001, 0.1, 0.001, 0.01);
+    /*addInputCurve(tr("Coverage by altitude"), _layer->terrain_zone->value_by_height, -20.0, 20.0, 0.0, 1.0, tr("Terrain altitude"), tr("Texture coverage"));
+    addInputCurve(tr("Coverage by slope"), _layer->terrain_zone->value_by_slope, 0.0, 5.0, 0.0, 1.0, tr("Terrain slope"), tr("Texture coverage"));*/
+
+    /*addInputDouble(tr("Amplitude for slope coverage"), &_layer->slope_range, 0.001, 0.1, 0.001, 0.01);
     addInputDouble(tr("Layer thickness"), &_layer->thickness, 0.0, 0.1, 0.001, 0.01);
     addInputDouble(tr("Transparency thickness"), &_layer->thickness_transparency, 0.0, 0.1, 0.001, 0.01);*/
 
