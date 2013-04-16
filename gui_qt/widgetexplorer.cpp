@@ -8,6 +8,7 @@
 #include <QThread>
 #include "../lib_paysages/scenery.h"
 #include "../lib_paysages/tools/euclid.h"
+#include "../exploring/main.h"
 #include "explorerchunkterrain.h"
 #include "explorerchunksky.h"
 #include "tools.h"
@@ -361,38 +362,13 @@ void WidgetExplorer::timerEvent(QTimerEvent*)
 
 void WidgetExplorer::initializeGL()
 {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-
-    glDisable(GL_LIGHTING);
-
-    glFrontFace(GL_CCW);
-    glCullFace(GL_BACK);
-    glEnable(GL_CULL_FACE);
-
-    glDepthFunc(GL_LESS);
-    glDepthMask(true);
-    glEnable(GL_DEPTH_TEST);
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glEnable(GL_LINE_SMOOTH);
-    glLineWidth(1.0);
-
-    glDisable(GL_FOG);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    exploringInit();
 }
 
 void WidgetExplorer::resizeGL(int w, int h)
 {
     cameraSetRenderSize(&_current_camera, w, h);
-
-    glViewport(0, 0, w, h);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(_current_camera.yfov * 180.0 / M_PI, _current_camera.xratio, _current_camera.znear, _current_camera.zfar);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    exploringSetViewPort(w, h, &_current_camera);
 }
 
 void WidgetExplorer::paintGL()

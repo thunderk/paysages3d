@@ -3,17 +3,20 @@ BUILDPATH=./build/${BUILDMODE}
 
 all:
 	@+cd lib_paysages && make BUILDMODE=${BUILDMODE}
+	@+cd exploring && make BUILDMODE=${BUILDMODE}
 	@+cd cli && make BUILDMODE=${BUILDMODE}
 	@+cd gui_qt && qmake "BUILDMODE=${BUILDMODE}" && make
 
 clean:
 	cd lib_paysages && make clean BUILDMODE=${BUILDMODE}
+	cd exploring && make clean BUILDMODE=${BUILDMODE}
 	cd cli && make clean BUILDMODE=${BUILDMODE}
 	cd gui_qt && qmake "BUILDMODE=${BUILDMODE}" && make clean
 	rm -f ${BUILDPATH}/paysages-qt
 	rm -f ${BUILDPATH}/paysages-cli
+	rm -f ${BUILDPATH}/libpaysages_exploring.so
 	rm -f ${BUILDPATH}/libpaysages.so
-	
+
 release:
 	make BUILDMODE=release all
 
