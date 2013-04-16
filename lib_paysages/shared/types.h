@@ -12,15 +12,6 @@ typedef struct Renderer Renderer;
 
 typedef struct
 {
-    int length;
-    int alloc_length;
-    int item_size;
-    int dirty;
-    void* data;
-} Array;
-
-typedef struct
-{
     int hit;
     Color hit_color;
     Vector3 hit_location;

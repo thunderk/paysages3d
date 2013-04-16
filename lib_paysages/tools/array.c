@@ -1,7 +1,22 @@
 #include "array.h"
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+
+void* naiveArrayInsert(void** array, size_t item_size, int item_count, int location)
+{
+    assert(location >= 0);
+    assert(location <= item_count);
+
+    *array = realloc(*array, item_size * (item_count + 1));
+    if (location < item_count)
+    {
+        memmove(*array + item_size * (location + 1), *array + item_size * location, item_size * (item_count - location));
+    }
+
+    return *array + item_size * location;
+}
 
 void arrayCreate(Array* array, int item_size)
 {

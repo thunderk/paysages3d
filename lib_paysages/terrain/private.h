@@ -13,21 +13,6 @@ typedef struct
     int zsize;
 } IntegerRect;
 
-typedef struct
-{
-    IntegerRect rect;
-    double* data;
-} TerrainHeightMapChunk;
-
-struct TerrainHeightMap
-{
-    TerrainDefinition* terrain;
-    int fixed_count;
-    TerrainHeightMapChunk* fixed_data;
-    int floating_used;
-    TerrainHeightMapChunk floating_data;
-};
-
 TerrainHeightMap* terrainHeightMapCreate(TerrainDefinition* definition);
 void terrainHeightmapDelete(TerrainHeightMap* heightmap);
 void terrainHeightmapCopy(TerrainHeightMap* source, TerrainHeightMap* destination);
