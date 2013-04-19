@@ -2,13 +2,12 @@
 
 #include <QTime>
 #include <QMouseEvent>
+#include <QWidget>
 #include <math.h>
 #include <GL/glu.h>
-#include <qt4/QtGui/qwidget.h>
 #include "tools.h"
 
 #define HEIGHTMAP_RESOLUTION 256
-#define CAMERA_DISTANCE 200.0
 
 WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
     QGLWidget(parent)
@@ -39,7 +38,8 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
     _position_x = 0;
     _position_z = 0;
     _angle_h = 0.0;
-    _angle_v = 0.8;
+    _angle_v = 1.4;
+    _distance = 100.0;
 
     _brush_x = 0.0;
     _brush_z = 0.0;
@@ -365,7 +365,7 @@ void WidgetHeightMap::paintGL()
     // Place camera
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(CAMERA_DISTANCE * cos(_angle_h) * cos(_angle_v), CAMERA_DISTANCE * sin(_angle_v), -CAMERA_DISTANCE * sin(_angle_h) * cos(_angle_v), 0.0, 0.0, 0.0, -cos(_angle_h) * sin(_angle_v), cos(_angle_v), sin(_angle_h) * sin(_angle_v));
+    gluLookAt(_distance * cos(_angle_h) * cos(_angle_v), _distance * sin(_angle_v), -_distance * sin(_angle_h) * cos(_angle_v), 0.0, 0.0, 0.0, -cos(_angle_h) * sin(_angle_v), cos(_angle_v), sin(_angle_h) * sin(_angle_v));
 
     // Place lights
     GLfloat light_position[] = { 40.0, 40.0, 40.0, 0.0 };

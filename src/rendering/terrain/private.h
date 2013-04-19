@@ -18,6 +18,7 @@ void terrainHeightmapDelete(TerrainHeightMap* heightmap);
 void terrainHeightmapCopy(TerrainHeightMap* source, TerrainHeightMap* destination);
 void terrainHeightmapSave(PackStream* stream, TerrainHeightMap* heightmap);
 void terrainHeightmapLoad(PackStream* stream, TerrainHeightMap* heightmap);
-int terrainHeightmapGetHeight(TerrainHeightMap* heightmap, double x, double z, double* result);
+int terrainHeightmapGetInterpolatedHeight(TerrainHeightMap* heightmap, double x, double z, double* result);
+int terrainHeightmapGetGridHeight(TerrainHeightMap* heightmap, int x, int z, double* result);
 
 #endif

@@ -77,6 +77,7 @@ private:
     int _position_z;
     double _angle_h;
     double _angle_v;
+    double _distance;
 
     double _brush_x;
     double _brush_z;

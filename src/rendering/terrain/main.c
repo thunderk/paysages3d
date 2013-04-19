@@ -375,7 +375,7 @@ double terrainGetGridHeight(TerrainDefinition* definition, int x, int z, int wit
 {
     double height;
 
-    if (!with_painting || !terrainHeightmapGetHeight(definition->height_map, (double)x, (double)z, &height))
+    if (!with_painting || !terrainHeightmapGetGridHeight(definition->height_map, x, z, &height))
     {
         height = noiseGet2DTotal(definition->_height_noise, (double)x, (double)z);
     }
@@ -389,7 +389,7 @@ double terrainGetInterpolatedHeight(TerrainDefinition* definition, double x, dou
     x /= definition->scaling;
     z /= definition->scaling;
 
-    if (!with_painting || !terrainHeightmapGetHeight(definition->height_map, x, z, &height))
+    if (!with_painting || !terrainHeightmapGetInterpolatedHeight(definition->height_map, x, z, &height))
     {
         height = noiseGet2DTotal(definition->_height_noise, x, z);
     }

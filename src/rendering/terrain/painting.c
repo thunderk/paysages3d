@@ -22,7 +22,6 @@ typedef struct
 typedef struct
 {
     int z;
-    int memsize;
     int pixel_groups_count;
     HeightMapPixelGroup* pixel_groups;
 } HeightMapRow;
@@ -45,6 +44,7 @@ static void _initData(HeightMapData* data)
 {
     data->rows_count = 0;
     data->rows = malloc(1);
+    data->memsize = 0;
 }
 
 static void _clearData(HeightMapData* data)
@@ -60,6 +60,7 @@ static void _clearData(HeightMapData* data)
     }
     data->rows_count = 0;
     data->rows = realloc(data->rows, 1);
+    data->memsize = 0;
 }
 
 static void _deleteData(HeightMapData* data)
@@ -70,9 +71,36 @@ static void _deleteData(HeightMapData* data)
 
 static void _copyData(HeightMapData* source, HeightMapData* destination)
 {
+    int i, j, n;
+    size_t size;
+
     _clearData(destination);
 
-    /* TODO */
+    destination->rows_count = source->rows_count;
+    if (destination->rows_count > 0)
+    {
+        size = sizeof(HeightMapRow) * destination->rows_count;
+        destination->rows = realloc(destination->rows, size);
+        destination->memsize += size;
+        for (i = 0; i < destination->rows_count; i++)
+        {
+            destination->rows[i].z = source->rows[i].z;
+            destination->rows[i].pixel_groups_count = source->rows[i].pixel_groups_count;
+            size = sizeof(HeightMapPixelGroup) * destination->rows[i].pixel_groups_count;
+            destination->rows[i].pixel_groups = malloc(size);
+            destination->memsize += size;
+            for (j = 0; j < destination->rows[i].pixel_groups_count; j++)
+            {
+                destination->rows[i].pixel_groups[j].xstart = source->rows[i].pixel_groups[j].xstart;
+                destination->rows[i].pixel_groups[j].xend = source->rows[i].pixel_groups[j].xend;
+                n = destination->rows[i].pixel_groups[j].xend - destination->rows[i].pixel_groups[j].xstart;
+                size = sizeof(double) * n;
+                destination->rows[i].pixel_groups[j].height = malloc(size);
+                destination->memsize += size;
+                memcpy(destination->rows[i].pixel_groups[j].height, source->rows[i].pixel_groups[j].height, size);
+            }
+        }
+    }
 }
 
 static void _saveData(PackStream* stream, HeightMapData* data)
@@ -98,25 +126,35 @@ static void _saveData(PackStream* stream, HeightMapData* data)
 static void _loadData(PackStream* stream, HeightMapData* data)
 {
     int i, j, k, n;
+    size_t size;
 
     _clearData(data);
 
     packReadInt(stream, &data->rows_count);
-    data->rows = realloc(data->rows, sizeof(HeightMapRow) * data->rows_count);
-    for (i = 0; i < data->rows_count; i++)
+    if (data->rows_count > 0)
     {
-        packReadInt(stream, &data->rows[i].z);
-        packReadInt(stream, &data->rows[i].pixel_groups_count);
-        data->rows[i].pixel_groups = malloc(sizeof(HeightMapPixelGroup) * data->rows[i].pixel_groups_count);
-        for (j = 0; j < data->rows[i].pixel_groups_count; j++)
+        size = sizeof(HeightMapRow) * data->rows_count;
+        data->rows = realloc(data->rows, size);
+        data->memsize += size;
+        for (i = 0; i < data->rows_count; i++)
         {
-            packReadInt(stream, &data->rows[i].pixel_groups[j].xstart);
-            packReadInt(stream, &data->rows[i].pixel_groups[j].xend);
-            n = data->rows[i].pixel_groups[j].xend - data->rows[i].pixel_groups[j].xstart;
-            data->rows[i].pixel_groups[j].height = malloc(sizeof(double) * n);
-            for (k = 0; k < n; k++)
+            packReadInt(stream, &data->rows[i].z);
+            packReadInt(stream, &data->rows[i].pixel_groups_count);
+            size = sizeof(HeightMapPixelGroup) * data->rows[i].pixel_groups_count;
+            data->rows[i].pixel_groups = malloc(size);
+            data->memsize += size;
+            for (j = 0; j < data->rows[i].pixel_groups_count; j++)
             {
-                packReadDouble(stream, &data->rows[i].pixel_groups[j].height[k]);
+                packReadInt(stream, &data->rows[i].pixel_groups[j].xstart);
+                packReadInt(stream, &data->rows[i].pixel_groups[j].xend);
+                n = data->rows[i].pixel_groups[j].xend - data->rows[i].pixel_groups[j].xstart;
+                size = sizeof(double) * n;
+                data->rows[i].pixel_groups[j].height = malloc(size);
+                data->memsize += size;
+                for (k = 0; k < n; k++)
+                {
+                    packReadDouble(stream, &data->rows[i].pixel_groups[j].height[k]);
+                }
             }
         }
     }
@@ -127,7 +165,7 @@ static void _loadData(PackStream* stream, HeightMapData* data)
  * If the location is not already in the heightmap, it is initialized with the terrain height.
  * This method will grow the heightmap as necessary (if 'grow' is set to false, NULL will be returned on missing pixels).
  */
-static double* _getDataPointer(HeightMapData* data, int x, int z, TerrainDefinition* terrain, int grow)
+static double* _getDataPointer(HeightMapData* data, int x, int z, HeightMapData* fallback, TerrainDefinition* terrain, int grow)
 {
     int i;
 
@@ -152,6 +190,7 @@ static double* _getDataPointer(HeightMapData* data, int x, int z, TerrainDefinit
         row->pixel_groups = malloc(1);
 
         data->rows_count++;
+        data->memsize += sizeof(HeightMapRow);
     }
     else
     {
@@ -192,6 +231,7 @@ static double* _getDataPointer(HeightMapData* data, int x, int z, TerrainDefinit
         pixel = pixel_group->height;
 
         row->pixel_groups_count++;
+        data->memsize += sizeof(HeightMapPixelGroup) + sizeof(double);
     }
     else if (x == pixel_group->xstart - 1)
     {
@@ -203,6 +243,7 @@ static double* _getDataPointer(HeightMapData* data, int x, int z, TerrainDefinit
         /* Extend the rowgroup at start */
         pixel_group->xstart--;
         pixel = naiveArrayInsert((void**)&pixel_group->height, sizeof(double), pixel_group->xend - pixel_group->xstart, 0);
+        data->memsize += sizeof(double);
     }
     else if (x == pixel_group->xend + 1)
     {
@@ -214,6 +255,7 @@ static double* _getDataPointer(HeightMapData* data, int x, int z, TerrainDefinit
         /* Extend the rowgroup at end */
         pixel_group->xend++;
         pixel = naiveArrayInsert((void**)&pixel_group->height, sizeof(double), pixel_group->xend - pixel_group->xstart, pixel_group->xend - pixel_group->xstart);
+        data->memsize += sizeof(double);
     }
     else
     {
@@ -224,9 +266,24 @@ static double* _getDataPointer(HeightMapData* data, int x, int z, TerrainDefinit
     }
 
     /* Reset pixel if it had been added */
-    if (added && terrain)
+    if (added && (terrain || fallback))
     {
-        *pixel = terrainGetGridHeight(terrain, x, z, 0);
+        if (fallback)
+        {
+            double* dpointer = _getDataPointer(fallback, x, z, NULL, terrain, 0);
+            if (dpointer)
+            {
+                *pixel = *dpointer;
+            }
+            else
+            {
+                *pixel = terrainGetGridHeight(terrain, x, z, 0);
+            }
+        }
+        else
+        {
+            *pixel = terrainGetGridHeight(terrain, x, z, 0);
+        }
     }
     return pixel;
 }
@@ -269,53 +326,71 @@ void terrainHeightmapLoad(PackStream* stream, TerrainHeightMap* heightmap)
     _clearData(&heightmap->brush_data);
 }
 
-static inline int _getInterpolatedValue(HeightMapData* data, double x, double z, double* result, TerrainDefinition* terrain)
+int terrainHeightmapGetGridHeight(TerrainHeightMap* heightmap, int x, int z, double* result)
 {
-    /*if ((int)floor(x) >= chunk->rect.xstart && (int)floor(x) <= chunk->rect.xend && (int)floor(z) >= (double)chunk->rect.zstart && (int)floor(z) <= (double)chunk->rect.zend)
+    double* dpointer;
+    dpointer = _getDataPointer(&heightmap->brush_data, x, z, NULL, NULL, 0);
+    if (dpointer)
     {
-        double stencil[16];
-        int ix, iz, cx, cz;
-        int xmax = chunk->rect.xsize - 1;
-        int zmax = chunk->rect.zsize - 1;
-        int xlow;
-        int zlow;
-
-        x -= chunk->rect.xstart;
-        z -= chunk->rect.zstart;
-
-        xlow = floor(x);
-        zlow = floor(z);
-
-        for (ix = xlow - 1; ix <= xlow + 2; ix++)
-        {
-            for (iz = zlow - 1; iz <= zlow + 2; iz++)
-            {
-                cx = ix < 0 ? 0 : ix;
-                cx = cx > xmax ? xmax : cx;
-                cz = iz < 0 ? 0 : iz;
-                cz = cz > zmax ? zmax : cz;
-                stencil[(iz - (zlow - 1)) * 4 + ix - (xlow - 1)] = chunk->data[cz * chunk->rect.xsize + cx];
-            }
-        }
-
-        if (result)
-        {
-            *result = toolsBicubicInterpolate(stencil, x - (double)xlow, z - (double)zlow);
-        }
-
+        *result = *dpointer;
         return 1;
     }
     else
     {
-        return 0;
-    }*/
-    return 0;
+        dpointer = _getDataPointer(&heightmap->merged_data, x, z, NULL, NULL, 0);
+        if (dpointer)
+        {
+            *result = *dpointer;
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
 }
 
-int terrainHeightmapGetHeight(TerrainHeightMap* heightmap, double x, double z, double* result)
+int terrainHeightmapGetInterpolatedHeight(TerrainHeightMap* heightmap, double x, double z, double* result)
 {
-    /* TODO */
-    return 0;
+    int ix, iz;
+    int xlow;
+    int zlow;
+
+    xlow = floor(x);
+    zlow = floor(z);
+
+    int hit = 0;
+    for (ix = xlow - 1; ix <= xlow + 2 && !hit; ix++)
+    {
+        for (iz = zlow - 1; iz <= zlow + 2 && !hit; iz++)
+        {
+            if (_getDataPointer(&heightmap->brush_data, x, z, NULL, NULL, 0) || _getDataPointer(&heightmap->merged_data, x, z, NULL, NULL, 0))
+            {
+                hit = 1;
+            }
+        }
+    }
+
+    if (hit && result)
+    {
+        double stencil[16];
+        double value;
+        for (ix = xlow - 1; ix <= xlow + 2; ix++)
+        {
+            for (iz = zlow - 1; iz <= zlow + 2; iz++)
+            {
+                if (!terrainHeightmapGetGridHeight(heightmap, ix, iz, &value))
+                {
+                    value = terrainGetGridHeight(heightmap->terrain, ix, iz, 0);
+                }
+                stencil[(iz - (zlow - 1)) * 4 + ix - (xlow - 1)] = value;
+            }
+        }
+
+        *result = toolsBicubicInterpolate(stencil, x - (double)xlow, z - (double)zlow);
+    }
+
+    return hit;
 }
 
 static inline IntegerRect _getBrushRect(TerrainBrush* brush)
@@ -341,25 +416,12 @@ static inline int _isInRect(IntegerRect rect, int x, int z)
 
 size_t terrainGetMemoryStats(TerrainDefinition* definition)
 {
-    TerrainHeightMap* heightmap = definition->height_map;
-    size_t result = 0;
-    int i;
-
-    /*if (heightmap->floating_used)
-    {
-        result += sizeof(double) * heightmap->floating_data.rect.xsize * heightmap->floating_data.rect.zsize;
-    }
-    for (i = 0; i < heightmap->fixed_count; i++)
-    {
-        result += sizeof(double) * heightmap->fixed_data[i].rect.xsize * heightmap->fixed_data[i].rect.zsize;
-    }*/
-
-    return result;
+    return definition->height_map->merged_data.memsize + definition->height_map->brush_data.memsize;
 }
 
 int terrainIsPainted(TerrainHeightMap* heightmap, int x, int z)
 {
-    return _getDataPointer(&heightmap->brush_data, x, z, NULL, 0) || _getDataPointer(&heightmap->merged_data, x, z, NULL, 0);
+    return _getDataPointer(&heightmap->brush_data, x, z, NULL, NULL, 0) || _getDataPointer(&heightmap->merged_data, x, z, NULL, NULL, 0);
 }
 
 typedef double (*BrushCallback)(TerrainHeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data);
@@ -394,7 +456,7 @@ static inline void _applyBrush(TerrainHeightMap* heightmap, TerrainBrush* brush,
                 influence = 1.0;
             }
 
-            double* dpointer = _getDataPointer(&heightmap->brush_data, x, z, heightmap->terrain, 1);
+            double* dpointer = _getDataPointer(&heightmap->brush_data, x, z, &heightmap->merged_data, heightmap->terrain, 1);
             *dpointer = callback(heightmap, brush, dx, dz, *dpointer, influence, force, data);
         }
     }
@@ -467,5 +529,20 @@ void terrainBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double 
 
 void terrainEndBrushStroke(TerrainHeightMap* heightmap)
 {
-    /* TODO Merge data */
+    int i, j, k;
+    HeightMapData* data = &heightmap->brush_data;
+
+    for (i = 0; i < data->rows_count; i++)
+    {
+        for (j = 0; j < data->rows[i].pixel_groups_count; j++)
+        {
+            for (k = 0; k < data->rows[i].pixel_groups[j].xend - data->rows[i].pixel_groups[j].xstart; k++)
+            {
+                double* dpointer = _getDataPointer(&heightmap->merged_data, data->rows[i].pixel_groups[j].xstart + k, data->rows[i].z, NULL, NULL, 1);
+                *dpointer = data->rows[i].pixel_groups[j].height[k];
+            }
+        }
+    }
+
+    _clearData(&heightmap->brush_data);
 }
