@@ -93,7 +93,7 @@ static void _copyData(HeightMapData* source, HeightMapData* destination)
             {
                 destination->rows[i].pixel_groups[j].xstart = source->rows[i].pixel_groups[j].xstart;
                 destination->rows[i].pixel_groups[j].xend = source->rows[i].pixel_groups[j].xend;
-                n = destination->rows[i].pixel_groups[j].xend - destination->rows[i].pixel_groups[j].xstart;
+                n = destination->rows[i].pixel_groups[j].xend - destination->rows[i].pixel_groups[j].xstart + 1;
                 size = sizeof(double) * n;
                 destination->rows[i].pixel_groups[j].height = malloc(size);
                 destination->memsize += size;
@@ -197,6 +197,14 @@ static double* _getDataPointer(HeightMapData* data, int x, int z, HeightMapData*
         return NULL;
     }
 
+#ifndef NDEBUG
+    /* Check rows */
+    for (i = 1; i < data->rows_count; i++)
+    {
+        assert(data->rows[i].z > data->rows[i - 1].z);
+    }
+#endif
+
     /* Find pixel group */
     HeightMapPixelGroup* pixel_group = NULL;
     for (i = 0; i < row->pixel_groups_count; i++)
@@ -205,9 +213,15 @@ static double* _getDataPointer(HeightMapData* data, int x, int z, HeightMapData*
         {
             break;
         }
-        if (x >= row->pixel_groups[i].xstart - 1 && x <= row->pixel_groups[i].xend + 1)
+        else if (x <= row->pixel_groups[i].xend + 1)
         {
+            if (x == row->pixel_groups[i].xend + 1 && i < row->pixel_groups_count - 1 && x == row->pixel_groups[i + 1].xstart)
+            {
+                /* Choose next group if it already includes the pixel */
+                i++;
+            }
             pixel_group = row->pixel_groups + i;
+            break;
         }
     }
 
@@ -265,6 +279,22 @@ static double* _getDataPointer(HeightMapData* data, int x, int z, HeightMapData*
         added = 0;
     }
 
+#ifndef NDEBUG
+    /* Check pixel groups */
+    for (i = 0; i < row->pixel_groups_count; i++)
+    {
+        if (i > 0)
+        {
+            assert(row->pixel_groups[i].xstart > row->pixel_groups[i - 1].xend);
+        }
+        if (i < row->pixel_groups_count - 1)
+        {
+            assert(row->pixel_groups[i].xend < row->pixel_groups[i + 1].xstart);
+        }
+        assert(row->pixel_groups[i].xend >= row->pixel_groups[i].xstart);
+    }
+#endif
+
     /* Reset pixel if it had been added */
     if (added && (terrain || fallback))
     {
@@ -275,12 +305,12 @@ static double* _getDataPointer(HeightMapData* data, int x, int z, HeightMapData*
             {
                 *pixel = *dpointer;
             }
-            else
+            else if (terrain)
             {
                 *pixel = terrainGetGridHeight(terrain, x, z, 0);
             }
         }
-        else
+        else if (terrain)
         {
             *pixel = terrainGetGridHeight(terrain, x, z, 0);
         }
@@ -536,7 +566,7 @@ void terrainEndBrushStroke(TerrainHeightMap* heightmap)
     {
         for (j = 0; j < data->rows[i].pixel_groups_count; j++)
         {
-            for (k = 0; k < data->rows[i].pixel_groups[j].xend - data->rows[i].pixel_groups[j].xstart; k++)
+            for (k = 0; k < data->rows[i].pixel_groups[j].xend - data->rows[i].pixel_groups[j].xstart + 1; k++)
             {
                 double* dpointer = _getDataPointer(&heightmap->merged_data, data->rows[i].pixel_groups[j].xstart + k, data->rows[i].z, NULL, NULL, 1);
                 *dpointer = data->rows[i].pixel_groups[j].height[k];
