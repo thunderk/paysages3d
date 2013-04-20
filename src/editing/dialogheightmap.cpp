@@ -18,8 +18,6 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, TerrainDefinition* terrain) : 
     QWidget* mainarea;
     QWidget* buttons;
     QWidget* panel;
-    QWidget* viewer;
-    QGridLayout* viewer_layout;
 
     QLabel* label;
     QSlider* slider;
@@ -42,29 +40,14 @@ DialogHeightMap::DialogHeightMap(QWidget* parent, TerrainDefinition* terrain) : 
     this->layout()->addWidget(buttons);
 
     // Main area layout (viewer + panel)
-    viewer = new QWidget(mainarea);
-    viewer_layout = new QGridLayout();
-    viewer->setLayout(viewer_layout);
-    mainarea->layout()->addWidget(viewer);
+    _3dview = new WidgetHeightMap(mainarea, _value_modified);
+    connect(_3dview, SIGNAL(heightmapChanged()), this, SLOT(heightmapChanged()));
+    mainarea->layout()->addWidget(_3dview);
 
     panel = new QWidget(mainarea);
     panel->setLayout(new QVBoxLayout());
     mainarea->layout()->addWidget(panel);
     mainarea->layout()->setAlignment(panel, Qt::AlignTop);
-
-    // Viewer layout (3d display + sliders)
-    _3dview = new WidgetHeightMap(viewer, _value_modified);
-    viewer_layout->addWidget(_3dview, 0, 0);
-    connect(_3dview, SIGNAL(heightmapChanged()), this, SLOT(heightmapChanged()));
-
-    slider = new QSlider(Qt::Horizontal, viewer);
-    slider->setRange(0, 1000);
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(angleHChanged(int)));
-    viewer_layout->addWidget(slider, 1, 0);
-    slider = new QSlider(Qt::Vertical, viewer);
-    slider->setRange(-300, 700);
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(angleVChanged(int)));
-    viewer_layout->addWidget(slider, 0, 1);
 
     // Panel layout
     _info_memory = new QLabel(panel);
@@ -149,16 +132,6 @@ void DialogHeightMap::revert()
 {
     TerrainDefinitionClass.copy(_value_original, _value_modified);
     _3dview->revert();
-}
-
-void DialogHeightMap::angleHChanged(int value)
-{
-    _3dview->setHorizontalViewAngle(M_PI * ((double)value) / 500.0);
-}
-
-void DialogHeightMap::angleVChanged(int value)
-{
-    _3dview->setVerticalViewAngle(M_PI_2 * ((double)value) / 1000.0);
 }
 
 void DialogHeightMap::brushModeChanged(int value)

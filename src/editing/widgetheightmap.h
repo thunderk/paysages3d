@@ -3,6 +3,7 @@
 
 #include <QGLWidget>
 #include <QDateTime>
+#include "rendering/camera.h"
 #include "rendering/tools/euclid.h"
 #include "rendering/renderer.h"
 #include "rendering/terrain/public.h"
@@ -28,8 +29,6 @@ public:
     WidgetHeightMap(QWidget* parent, TerrainDefinition* terrain);
     ~WidgetHeightMap();
 
-    void setHorizontalViewAngle(double angle_h);
-    void setVerticalViewAngle(double angle_v);
     void setBrushMode(HeightMapBrushMode mode);
     void setBrushSize(double size);
     void setBrushSmoothing(double smoothing);
@@ -73,11 +72,9 @@ private:
     QDateTime _last_time;
     bool _mouse_moved;
 
-    int _position_x;
-    int _position_z;
-    double _angle_h;
-    double _angle_v;
-    double _distance;
+    CameraDefinition _top_camera;
+    CameraDefinition _temp_camera;
+    CameraDefinition _current_camera;
 
     double _brush_x;
     double _brush_z;

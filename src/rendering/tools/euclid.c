@@ -102,6 +102,12 @@ Vector3 v3Cross(Vector3 v1, Vector3 v2)
     return result;
 }
 
+void v3ToEuler(Vector3 v, double* heading, double* attitude)
+{
+    *heading = euclidGet2DAngle(v.x, v.z);
+    *attitude = euclidGet2DAngle(sqrt(v.x * v.x + v.z * v.z), v.y);
+}
+
 void m4Save(PackStream* stream, Matrix4* m)
 {
     packWriteDouble(stream, &m->a);
@@ -403,6 +409,41 @@ Matrix4 m4Inverse(Matrix4 m)
 
         return result;
     }
+}
+
+double euclidGet2DAngle(double x, double y)
+{
+    double nx, ny, d, ret;
+
+    if (x == 0.0)
+    {
+        if (y == 0.0)
+        {
+            return 0.0;
+        }
+        else
+        {
+            if (y < 0.0)
+            {
+                return 3.0 * M_PI_2;
+            }
+            else
+            {
+                return M_PI_2;
+            }
+        }
+    }
+
+    d = sqrt(x * x + y * y);
+    nx = x / d;
+    ny = y / d;
+
+    ret = asin(ny);
+    if (nx < 0.0)
+    {
+        ret = M_PI - ret;
+    }
+    return fmod(ret, 2.0 * M_PI);
 }
 
 Vector3 euclidGetNormalFromTriangle(Vector3 center, Vector3 bottom, Vector3 right)

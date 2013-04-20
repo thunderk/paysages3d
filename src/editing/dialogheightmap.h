@@ -18,8 +18,6 @@ public slots:
     void revert();
 
 private slots:
-    void angleHChanged(int value);
-    void angleVChanged(int value);
     void brushModeChanged(int value);
     void brushSizeChanged(int value);
     void brushSmoothingChanged(int value);

@@ -155,7 +155,8 @@ void cameraSetTarget(CameraDefinition* camera, double x, double y, double z)
     }
     else
     {
-        /* TODO Guess angles */
+        /* Guess angles */
+        v3ToEuler(forward, &camera->yaw, &camera->pitch);
     }
 
     cameraValidateDefinition(camera, 0);

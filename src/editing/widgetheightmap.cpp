@@ -35,11 +35,13 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
     _last_time = QDateTime::currentDateTime();
     _mouse_moved = false;
 
-    _position_x = 0;
-    _position_z = 0;
-    _angle_h = 0.0;
-    _angle_v = 1.4;
-    _distance = 100.0;
+    _current_camera = cameraCreateDefinition();
+    _top_camera = cameraCreateDefinition();
+    _temp_camera = cameraCreateDefinition();
+
+    cameraSetLocation(&_current_camera, 0.0, 80.0, 20.0);
+    cameraSetTarget(&_current_camera, 0.0, 0.0, 0.0);
+    cameraCopyDefinition(&_current_camera, &_top_camera);
 
     _brush_x = 0.0;
     _brush_z = 0.0;
@@ -56,18 +58,6 @@ WidgetHeightMap::~WidgetHeightMap()
     rendererDelete(_renderer);
     noiseDeleteGenerator(_brush_noise);
     delete[] _vertices;
-}
-
-void WidgetHeightMap::setHorizontalViewAngle(double angle_h)
-{
-    _angle_h = angle_h;
-    updateGL();
-}
-
-void WidgetHeightMap::setVerticalViewAngle(double angle_v)
-{
-    _angle_v = angle_v;
-    updateGL();
 }
 
 void WidgetHeightMap::setBrushMode(HeightMapBrushMode mode)
@@ -166,8 +156,9 @@ void WidgetHeightMap::mouseMoveEvent(QMouseEvent* event)
         int move_x = event->x() - _last_mouse_x;
         int move_y = event->y() - _last_mouse_y;
 
-        _angle_h -= (double)move_x * 0.008;
-        _angle_v += (double)move_y * 0.003;
+        // TODO
+        /*_angle_h -= (double)move_x * 0.008;
+        _angle_v += (double)move_y * 0.003;*/
     }
 
     _last_mouse_x = event->x();
@@ -193,8 +184,8 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
         double brush_strength;
         TerrainBrush brush;
 
-        brush.relative_x = _brush_x + (double)_position_x;
-        brush.relative_z = _brush_z + (double)_position_z;
+        brush.relative_x = _brush_x + _current_camera.target.x;
+        brush.relative_z = _brush_z + _current_camera.target.z;
         brush.hard_radius = _brush_size * (1.0 - _brush_smoothing);
         brush.smoothed_size = _brush_size * _brush_smoothing;
         brush.total_radius = brush.hard_radius + brush.smoothed_size;
@@ -230,7 +221,7 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
 
     // Edge scrolling
     // TODO Apply scrolling to vertex info and dirty only needed area
-    double edge_length = 10.0;
+    /*double edge_length = 10.0;
     if (_brush_x > HEIGHTMAP_RESOLUTION / 2.0 - edge_length)
     {
         double dx = HEIGHTMAP_RESOLUTION / 2.0 - edge_length - _brush_x;
@@ -262,7 +253,7 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
 
         _dirty = true;
         updateGL();
-    }
+    }*/
 }
 
 void WidgetHeightMap::initializeGL()
@@ -365,7 +356,7 @@ void WidgetHeightMap::paintGL()
     // Place camera
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(_distance * cos(_angle_h) * cos(_angle_v), _distance * sin(_angle_v), -_distance * sin(_angle_h) * cos(_angle_v), 0.0, 0.0, 0.0, -cos(_angle_h) * sin(_angle_v), cos(_angle_v), sin(_angle_h) * sin(_angle_v));
+    gluLookAt(_current_camera.location.x, _current_camera.location.y, _current_camera.location.z, _current_camera.target.x, _current_camera.target.y, _current_camera.target.z, _current_camera.up.x, _current_camera.up.y, _current_camera.up.z);
 
     // Place lights
     GLfloat light_position[] = { 40.0, 40.0, 40.0, 0.0 };
@@ -388,8 +379,8 @@ void WidgetHeightMap::paintGL()
                 _VertexInfo* vertex = _vertices + z * rx + x + dx;
                 double diff_x, diff_z, diff;
 
-                diff_x = vertex->point.x - (double)_position_x - _brush_x;
-                diff_z = vertex->point.z - (double)_position_z - _brush_z;
+                diff_x = vertex->point.x - _current_camera.target.x - _brush_x;
+                diff_z = vertex->point.z - _current_camera.target.z - _brush_z;
                 diff = sqrt(diff_x * diff_x + diff_z * diff_z);
                 if (diff > _brush_size)
                 {
@@ -405,7 +396,7 @@ void WidgetHeightMap::paintGL()
                 }
                 glColor3f(0.8 + diff, vertex->painted ? 1.0 : 0.8, 0.8);
                 glNormal3f(vertex->normal.x, vertex->normal.y, vertex->normal.z);
-                glVertex3f(vertex->point.x - (double)_position_x, vertex->point.y, vertex->point.z - (double)_position_z);
+                glVertex3f(vertex->point.x - _current_camera.target.x, vertex->point.y, vertex->point.z - _current_camera.target.z);
             }
         }
         glEnd();
@@ -441,8 +432,8 @@ void WidgetHeightMap::updateVertexInfo()
         {
             _VertexInfo* vertex = _vertices + z * rx + x;
 
-            dx = _position_x + x - rx / 2;
-            dz = _position_z + z - rz / 2;
+            dx = _current_camera.target.x + x - rx / 2;
+            dz = _current_camera.target.z + z - rz / 2;
 
             vertex->point.x = (double)dx;
             vertex->point.z = (double)dz;
