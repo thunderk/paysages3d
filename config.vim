@@ -1,23 +1,18 @@
+function! UpdateTags()
+    !ctags --recurse=yes ./src/
+endfunction
+
 function! RunDebug()
-    silent !ctags src/*.c src/shared/*.h
-    silent !cmake -D CMAKE_BUILD_TYPE:STRING=Debug .
-    !make && ./paysages
+    UpdateTags()
+    !make BUILDMODE=debug all run_qt
 endfunction
 
 function! RunRelease()
-    silent !ctags src/*.c src/shared/*.h
-    silent !cmake -D CMAKE_BUILD_TYPE:STRING=Release .
-    !make && ./paysages
+    UpdateTags()
+    !make BUILDMODE=debug all run_qt
 endfunction
 
-function! RunProfile()
-    silent !ctags src/*.c src/shared/*.h
-    silent !cmake -D CMAKE_BUILD_TYPE:STRING=Profile .
-    !make && ./paysages && gprof
-endfunction
-
-map <silent> <F9> :call RunDebug()<CR>
-map <silent> <C-F9> :call RunProfile()<CR>
-map <silent> <A-F9> :call RunRelease()<CR>
-map <silent> <F10> :!eog output/resultaa.png<CR>
+map <silent> <S-F9> :call RunDebug()<CR>
+map <silent> <S-F10> :call RunRelease()<CR>
+map <silent> <F11> :!make tests<CR>
 

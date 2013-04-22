@@ -421,16 +421,13 @@ double euclidGet2DAngle(double x, double y)
         {
             return 0.0;
         }
+        else if (y < 0.0)
+        {
+            return 3.0 * M_PI_2;
+        }
         else
         {
-            if (y < 0.0)
-            {
-                return 3.0 * M_PI_2;
-            }
-            else
-            {
-                return M_PI_2;
-            }
+            return M_PI_2;
         }
     }
 
@@ -443,7 +440,7 @@ double euclidGet2DAngle(double x, double y)
     {
         ret = M_PI - ret;
     }
-    return fmod(ret, 2.0 * M_PI);
+    return ret < 0.0 ? ret + 2.0 * M_PI : ret;
 }
 
 Vector3 euclidGetNormalFromTriangle(Vector3 center, Vector3 bottom, Vector3 right)

@@ -1,9 +1,12 @@
 #ifndef _PAYSAGES_TESTING_COMMON_H_
 #define _PAYSAGES_TESTING_COMMON_H_
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <check.h>
 #include <stdarg.h>
 #include <math.h>
+#include <string.h>
 
 static inline void _add_methods_to_case(TCase* tc, ...)
 {
@@ -33,8 +36,24 @@ static inline int _double_not_equals(double x, double y)
     return fabs(x - y) >= 0.00000000001;
 }
 
-#define _ck_assert_double(F, X, O, Y) ck_assert_msg(F(X, Y), "Assertion '"#X#O#Y"' failed: "#X"==%f, "#Y"==%f", X, Y)
+#define _ck_assert_double(F, X, O, Y) ck_assert_msg(F(X, Y), "Assertion '"#X#O#Y"' failed: "#X"=%f, "#Y"=%f", X, Y)
 #define ck_assert_double_eq(X, Y) _ck_assert_double(_double_equals, X, ==, Y)
 #define ck_assert_double_ne(X, Y) _ck_assert_double(_double_not_equals, X, !=, Y)
+
+
+/***** Generic comparison assertions *****/
+#define DEFINE_COMPARE_ASSERT(_type_, _cmpfunc_, _strfunc_) \
+static inline int _ck_gen_##_type_##_cmp(_type_ X, _type_ Y) { \
+    return _cmpfunc_(X, Y); \
+} \
+static inline char* _ck_gen_##_type_##_str(char* buffer, _type_ X) { \
+    _strfunc_(X, buffer, 99); \
+    buffer[100] = '\0'; \
+    return buffer; \
+}
+#define ck_assert_generic_eq(_type_, X, Y) ck_assert_msg(_ck_gen_##_type_##_cmp(X, Y) == 0, "Assertion '"#X"=="#Y"' failed : "#X"=%s, "#Y"=%s", _ck_gen_##_type_##_str(_ck_gen_strbuf1, X), _ck_gen_##_type_##_str(_ck_gen_strbuf2, Y))
+
+static char _ck_gen_strbuf1[101];
+static char _ck_gen_strbuf2[101];
 
 #endif
