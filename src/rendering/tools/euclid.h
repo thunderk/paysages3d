@@ -89,6 +89,7 @@ Vector3 v3Normalize(Vector3 v);
 double v3Dot(Vector3 v1, Vector3 v2);
 Vector3 v3Cross(Vector3 v1, Vector3 v2);
 VectorSpherical v3ToSpherical(Vector3 v);
+Vector3 v3FromSpherical(VectorSpherical v);
 
 void m4Save(PackStream* stream, Matrix4* m);
 void m4Load(PackStream* stream, Matrix4* m);

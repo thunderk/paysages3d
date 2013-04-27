@@ -13,7 +13,7 @@ START_TEST(test_camera_definition)
     cameraSetTargetCoords(cam, 0.0, 0.0, 0.0);
 
     _checkVector(cameraGetLocation(cam), 0.0, 1.0, 1.0);
-    _checkVector(cameraGetTarget(cam), 0.0, 1.0, 1.0);
+    _checkVector(cameraGetTarget(cam), 0.0, 0.0, 0.0);
 
     cameraDeleteDefinition(cam);
 }

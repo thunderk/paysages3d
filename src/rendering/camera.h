@@ -41,6 +41,7 @@ void cameraSetLocationCoords(CameraDefinition* camera, double x, double y, doubl
 void cameraSetTarget(CameraDefinition* camera, Vector3 target);
 void cameraSetTargetCoords(CameraDefinition* camera, double x, double y, double z);
 void cameraSetRoll(CameraDefinition* camera, double angle);
+void cameraSetZoomToTarget(CameraDefinition* camera, double zoom);
 
 void cameraStrafeForward(CameraDefinition* camera, double value);
 void cameraStrafeRight(CameraDefinition* camera, double value);

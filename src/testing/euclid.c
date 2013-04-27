@@ -66,10 +66,66 @@ START_TEST(test_vectors_spherical)
     VectorSpherical v2;
 
     /* Test conversion to spherical */
+    v1.x = 0.0;
+    v1.y = 0.0;
+    v1.z = 0.0;
+    v2 = v3ToSpherical(v1);
+    ck_assert_double_eq(v2.r, 0.0);
+    ck_assert_double_eq(v2.phi, 0.0);
+    ck_assert_double_eq(v2.theta, 0.0);
+
+    v1.x = 1.0;
+    v1.y = 0.0;
+    v1.z = 0.0;
+    v2 = v3ToSpherical(v1);
+    ck_assert_double_eq(v2.r, 1.0);
+    ck_assert_double_eq(v2.phi, 0.0);
+    ck_assert_double_eq(v2.theta, 0.0);
+
+    v1.x = -1.0;
+    v1.y = 0.0;
+    v1.z = 0.0;
+    v2 = v3ToSpherical(v1);
+    ck_assert_double_eq(v2.r, 1.0);
+    ck_assert_double_eq(v2.phi, M_PI);
+    ck_assert_double_eq(v2.theta, 0.0);
+
+    v1.x = 0.0;
+    v1.y = 1.0;
+    v1.z = 0.0;
+    v2 = v3ToSpherical(v1);
+    ck_assert_double_eq(v2.r, 1.0);
+    ck_assert_double_eq(v2.phi, 0.0);
+    ck_assert_double_eq(v2.theta, M_PI_2);
+
+    v1.x = 0.0;
+    v1.y = -1.0;
+    v1.z = 0.0;
+    v2 = v3ToSpherical(v1);
+    ck_assert_double_eq(v2.r, 1.0);
+    ck_assert_double_eq(v2.phi, 0.0);
+    ck_assert_double_eq(v2.theta, -M_PI_2);
+
+    v1.x = 0.0;
+    v1.y = 0.0;
+    v1.z = 1.0;
+    v2 = v3ToSpherical(v1);
+    ck_assert_double_eq(v2.r, 1.0);
+    ck_assert_double_eq(v2.phi, 3.0 * M_PI_2);
+    ck_assert_double_eq(v2.theta, 0.0);
+
+    v1.x = 0.0;
+    v1.y = 0.0;
+    v1.z = -1.0;
+    v2 = v3ToSpherical(v1);
+    ck_assert_double_eq(v2.r, 1.0);
+    ck_assert_double_eq(v2.phi, M_PI_2);
+    ck_assert_double_eq(v2.theta, 0.0);
+
     v1.x = v1.y = v1.z = 0.5;
     v2 = v3ToSpherical(v1);
     ck_assert_double_eq(v2.r, sqrt(0.5 * 0.5 + 0.5 * 0.5 + 0.5 * 0.5));
-    ck_assert_double_eq(v2.phi, M_PI_4);
+    ck_assert_double_eq(v2.phi, 7.0 * M_PI_4);
     ck_assert_double_eq(v2.theta, M_PI_2 - 0.955316618125);
 }
 END_TEST

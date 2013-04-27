@@ -46,6 +46,7 @@ protected:
     void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
+    void wheelEvent(QWheelEvent* event);
 
     void timerEvent(QTimerEvent* event);
 
@@ -64,6 +65,10 @@ private:
     bool _dirty;
     qint64 _memory_stats;
 
+    double _water_height;
+    bool _water;
+    bool _wireframe;
+
     double _average_frame_time;
 
     int _last_brush_action;
@@ -75,6 +80,7 @@ private:
     CameraDefinition* _top_camera;
     CameraDefinition* _temp_camera;
     CameraDefinition* _current_camera;
+    double _zoom;
 
     double _brush_x;
     double _brush_z;

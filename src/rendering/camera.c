@@ -8,24 +8,21 @@
 
 struct CameraDefinition
 {
+    /* Definition */
     Vector3 location;
-    double yaw;
-    double pitch;
+    VectorSpherical direction;
     double roll;
 
+    /* Projection info */
+    double width;
+    double height;
+    CameraPerspective perspective;
+
+    /* Auto updated */
     Vector3 target;
     Vector3 forward;
     Vector3 right;
     Vector3 up;
-
-    double width;
-    double height;
-    CameraPerspective perspective;
-    double yfov;
-    double xratio;
-    double znear;
-    double zfar;
-
     Matrix4 project;
     Matrix4 unproject;
 };
@@ -33,16 +30,18 @@ struct CameraDefinition
 void cameraSave(PackStream* stream, CameraDefinition* camera)
 {
     v3Save(stream, &camera->location);
-    packWriteDouble(stream, &camera->yaw);
-    packWriteDouble(stream, &camera->pitch);
+    packWriteDouble(stream, &camera->direction.r);
+    packWriteDouble(stream, &camera->direction.phi);
+    packWriteDouble(stream, &camera->direction.theta);
     packWriteDouble(stream, &camera->roll);
 }
 
 void cameraLoad(PackStream* stream, CameraDefinition* camera)
 {
     v3Load(stream, &camera->location);
-    packReadDouble(stream, &camera->yaw);
-    packReadDouble(stream, &camera->pitch);
+    packReadDouble(stream, &camera->direction.r);
+    packReadDouble(stream, &camera->direction.phi);
+    packReadDouble(stream, &camera->direction.theta);
     packReadDouble(stream, &camera->roll);
 
     cameraValidateDefinition(camera, 0);
@@ -57,16 +56,17 @@ CameraDefinition* cameraCreateDefinition()
     definition->location.x = 0.0;
     definition->location.y = 0.0;
     definition->location.z = 0.0;
-    definition->yaw = 0.0;
-    definition->pitch = 0.0;
+    definition->direction.phi = 0.0;
+    definition->direction.theta = 0.0;
+    definition->direction.r = 1.0;
     definition->roll = 0.0;
 
     definition->width = 1.0;
     definition->height = 1.0;
-    definition->yfov = 1.57;
-    definition->xratio = 1.0;
-    definition->znear = 1.0;
-    definition->zfar = 1000.0;
+    definition->perspective.yfov = 1.57;
+    definition->perspective.xratio = 1.0;
+    definition->perspective.znear = 1.0;
+    definition->perspective.zfar = 1000.0;
 
     cameraValidateDefinition(definition, 0);
 
@@ -131,15 +131,15 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
     definition->up.y = 1.0;
     definition->up.z = 0.0;
 
-    rotation = m4NewRotateEuler(definition->yaw, definition->pitch, definition->roll);
+    rotation = m4NewRotateEuler(definition->direction.phi, definition->direction.theta, definition->roll);
 
     definition->forward = m4MultPoint(rotation, definition->forward);
     definition->right = m4MultPoint(rotation, definition->right);
     definition->up = m4MultPoint(rotation, definition->up);
 
-    definition->target = v3Add(definition->location, definition->forward);
+    definition->target = v3Add(definition->location, v3FromSpherical(definition->direction));
 
-    definition->project = m4Mult(m4NewPerspective(definition->yfov, definition->xratio, definition->znear, definition->zfar), m4NewLookAt(definition->location, definition->target, definition->up));
+    definition->project = m4Mult(m4NewPerspective(definition->perspective.yfov, definition->perspective.xratio, definition->perspective.znear, definition->perspective.zfar), m4NewLookAt(definition->location, definition->target, definition->up));
     definition->unproject = m4Inverse(definition->project);
 }
 
@@ -165,7 +165,7 @@ double cameraGetRoll(CameraDefinition* camera)
 
 Vector3 cameraGetDirection(CameraDefinition* camera)
 {
-    return camera->forward;
+    return v3FromSpherical(camera->direction);
 }
 
 Vector3 cameraGetDirectionNormalized(CameraDefinition* camera)
@@ -175,6 +175,7 @@ Vector3 cameraGetDirectionNormalized(CameraDefinition* camera)
 
 VectorSpherical cameraGetDirectionSpherical(CameraDefinition* camera)
 {
+    return camera->direction;
 }
 
 CameraPerspective cameraGetPerspective(CameraDefinition* camera)
@@ -204,27 +205,8 @@ void cameraSetTarget(CameraDefinition* camera, Vector3 target)
     {
         return;
     }
-    forward = v3Normalize(forward);
 
-    if (fabs(forward.x) < 0.0000001 && fabs(forward.z) < 0.0000001)
-    {
-        /* Forward vector is vertical */
-        if (forward.y > 0.0)
-        {
-            camera->pitch = M_PI_2;
-        }
-        else if (forward.y > 0.0)
-        {
-            camera->pitch = -M_PI_2;
-        }
-    }
-    else
-    {
-        /* Guess angles */
-        VectorSpherical spherical = v3ToSpherical(forward);
-        camera->yaw = spherical.phi;
-        camera->pitch = spherical.theta;
-    }
+    camera->direction = v3ToSpherical(forward);
 
     cameraValidateDefinition(camera, 0);
 }
@@ -238,6 +220,14 @@ void cameraSetTargetCoords(CameraDefinition* camera, double x, double y, double 
 void cameraSetRoll(CameraDefinition* camera, double angle)
 {
     camera->roll = angle;
+
+    cameraValidateDefinition(camera, 0);
+}
+
+void cameraSetZoomToTarget(CameraDefinition* camera, double zoom)
+{
+    camera->direction.r = zoom;
+    camera->location = v3Add(camera->target, v3Scale(v3FromSpherical(camera->direction), -1.0));
 
     cameraValidateDefinition(camera, 0);
 }
@@ -265,14 +255,14 @@ void cameraStrafeUp(CameraDefinition* camera, double value)
 
 void cameraRotateYaw(CameraDefinition* camera, double value)
 {
-    camera->yaw += value;
+    camera->direction.phi += value;
 
     cameraValidateDefinition(camera, 0);
 }
 
 void cameraRotatePitch(CameraDefinition* camera, double value)
 {
-    camera->pitch += value;
+    camera->direction.theta += value;
 
     cameraValidateDefinition(camera, 0);
 }
@@ -288,7 +278,7 @@ void cameraSetRenderSize(CameraDefinition* camera, int width, int height)
 {
     camera->width = (double)width;
     camera->height = (double)height;
-    camera->xratio = camera->width / camera->height;
+    camera->perspective.xratio = camera->width / camera->height;
 
     cameraValidateDefinition(camera, 0);
 }
@@ -408,12 +398,36 @@ int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, do
     projected = cameraProject(camera, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
 
-    return xmin <= camera->width && xmax >= 0.0 && ymin <= camera->height && ymax >= 0.0 && zmax >= camera->znear;
+    return xmin <= camera->width && xmax >= 0.0 && ymin <= camera->height && ymax >= 0.0 && zmax >= camera->perspective.znear;
 }
 
 int cameraTransitionToAnother(CameraDefinition* current, CameraDefinition* wanted, double factor)
 {
-    current->location.z += factor;
-    cameraValidateDefinition(current, 0);
-    return 1;
+    double dx, dy, dz, dr, dphi, dtheta, droll;
+
+    dx = wanted->location.x - current->location.x;
+    dy = wanted->location.y - current->location.y;
+    dz = wanted->location.z - current->location.z;
+    dr = wanted->direction.r - current->direction.r;
+    dphi = wanted->direction.phi - current->direction.phi;
+    dtheta = wanted->direction.theta - current->direction.theta;
+    droll = wanted->roll - current->roll;
+
+    if (fabs(dx) < 0.000001 && fabs(dy) < 0.000001 && fabs(dz) < 0.000001 && fabs(dr) < 0.000001 && fabs(dphi) < 0.000001 && fabs(dtheta) < 0.000001 && fabs(droll) < 0.000001)
+    {
+        return 0;
+    }
+    else
+    {
+        current->location.x += dx * factor;
+        current->location.y += dy * factor;
+        current->location.z += dz * factor;
+        current->direction.r += dr * factor;
+        current->direction.phi += dphi * factor;
+        current->direction.theta += dtheta * factor;
+        current->roll += droll * factor;
+
+        cameraValidateDefinition(current, 0);
+        return 1;
+    }
 }

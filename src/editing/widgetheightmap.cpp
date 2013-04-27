@@ -6,6 +6,7 @@
 #include <math.h>
 #include <GL/glu.h>
 #include "tools.h"
+#include "rendering/scenery.h"
 
 #define HEIGHTMAP_RESOLUTION 256
 
@@ -27,6 +28,13 @@ QGLWidget(parent)
 
     _dirty = true;
 
+    _water = true;
+    _wireframe = true;
+    WaterDefinition* water_definition = (WaterDefinition*) WaterDefinitionClass.create();
+    sceneryGetWater(water_definition);
+    _water_height = water_definition->height;
+    WaterDefinitionClass.destroy(water_definition);
+
     _average_frame_time = 0.0;
 
     _last_brush_action = 0;
@@ -38,10 +46,12 @@ QGLWidget(parent)
     _current_camera = cameraCreateDefinition();
     _top_camera = cameraCreateDefinition();
     _temp_camera = cameraCreateDefinition();
+    _zoom = 50.0;
 
-    Vector3 camera_location = {0.0, 80.0, 20.0};
+    Vector3 camera_location = {0.0, 80.0, 10.0};
     cameraSetLocation(_current_camera, camera_location);
     cameraSetTarget(_current_camera, VECTOR_ZERO);
+    cameraSetZoomToTarget(_top_camera, _zoom);
     cameraCopyDefinition(_current_camera, _top_camera);
 
     _brush_x = 0.0;
@@ -130,6 +140,25 @@ void WidgetHeightMap::revert()
 {
     _dirty = true;
     updateGL();
+}
+
+void WidgetHeightMap::wheelEvent(QWheelEvent* event)
+{
+    if (event->orientation() == Qt::Vertical)
+    {
+        _zoom -= 0.05 * (double) event->delta();
+        if (_zoom < 10.0)
+        {
+            _zoom = 10.0;
+        }
+        else if (_zoom > 70.0)
+        {
+            _zoom = 70.0;
+        }
+
+        cameraSetZoomToTarget(_top_camera, _zoom);
+    }
+    event->accept();
 }
 
 void WidgetHeightMap::mousePressEvent(QMouseEvent* event)
@@ -228,7 +257,7 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
     }
 
     // Move camera
-    if (cameraTransitionToAnother(_current_camera, _top_camera, 0.1))
+    if (cameraTransitionToAnother(_current_camera, _top_camera, 0.8))
     {
         updateGL();
     }
@@ -293,8 +322,8 @@ void WidgetHeightMap::initializeGL()
     //glCullFace(GL_BACK);
     glDisable(GL_CULL_FACE);
 
-    glDepthFunc(GL_LESS);
-    glDepthMask(true);
+    glDepthFunc(GL_LEQUAL);
+    glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -419,6 +448,52 @@ void WidgetHeightMap::paintGL()
             }
         }
         glEnd();
+    }
+
+    // Wireframe
+    if (_wireframe)
+    {
+        glDisable(GL_LIGHTING);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(0.8, 0.0, 0.0, 0.1);
+        for (int z = 0; z < rz; z++)
+        {
+            glBegin(GL_LINE_STRIP);
+            for (int x = 0; x < rx; x++)
+            {
+                _VertexInfo* vertex = _vertices + z * rx + x;
+                glVertex3f(vertex->point.x - tx, vertex->point.y, vertex->point.z - tz);
+            }
+            glEnd();
+        }
+        for (int x = 0; x < rx; x++)
+        {
+            glBegin(GL_LINE_STRIP);
+            for (int z = 0; z < rz; z++)
+            {
+                _VertexInfo* vertex = _vertices + z * rx + x;
+                glVertex3f(vertex->point.x - tx, vertex->point.y, vertex->point.z - tz);
+            }
+            glEnd();
+        }
+        glEnable(GL_LIGHTING);
+        glDisable(GL_BLEND);
+    }
+
+    // Water
+    if (_water)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(0.2, 0.3, 0.7, 0.7);
+        glBegin(GL_QUADS);
+        glVertex3f(camera_target.x - 500.0, _water_height, camera_target.z - 500.0);
+        glVertex3f(camera_target.x - 500.0, _water_height, camera_target.z + 500.0);
+        glVertex3f(camera_target.x + 500.0, _water_height, camera_target.z + 500.0);
+        glVertex3f(camera_target.x + 500.0, _water_height, camera_target.z - 500.0);
+        glEnd();
+        glDisable(GL_BLEND);
     }
 
     // Time stats

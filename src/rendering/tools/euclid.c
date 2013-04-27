@@ -105,9 +105,21 @@ Vector3 v3Cross(Vector3 v1, Vector3 v2)
 VectorSpherical v3ToSpherical(Vector3 v)
 {
     VectorSpherical result;
-    result.phi = euclidGet2DAngle(v.x, v.z);
+
+    result.phi = euclidGet2DAngle(v.x, -v.z);
     result.theta = euclidGet2DAngle(sqrt(v.x * v.x + v.z * v.z), v.y);
+    if (v.y < 0.0)
+    {
+        result.theta -= 2.0 * M_PI;
+    }
     result.r = v3Norm(v);
+
+    return result;
+}
+
+Vector3 v3FromSpherical(VectorSpherical v)
+{
+    Vector3 result = {v.r * cos(v.phi) * cos(v.theta), v.r * sin(v.theta), -v.r * sin(v.phi) * cos(v.theta)};
     return result;
 }
 
