@@ -34,7 +34,7 @@ private:
     void startRendering();
     void stopRendering();
 
-    CameraDefinition _current_camera;
+    CameraDefinition* _current_camera;
     CameraDefinition* _base_camera;
 
     Renderer* _renderer;

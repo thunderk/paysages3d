@@ -3,7 +3,6 @@
 
 #include "auto.h"
 #include "system.h"
-#include "camera.h"
 #include "scenery.h"
 #include "render.h"
 #include "main.h"
@@ -13,35 +12,13 @@
 
 void paysagesInit()
 {
-    CameraDefinition camera;
-
     systemInit();
     openclInit();
 
     sceneryInit();
     renderInit();
 
-    camera = cameraCreateDefinition();
-    cameraSetLocation(&camera, -12.0, 5.0, 2.0);
-    cameraSetTarget(&camera, 0.0, 5.0, 0.0);
-    cameraRotateYaw(&camera, 1.0);
-    scenerySetCamera(&camera);
-    cameraDeleteDefinition(&camera);
-
     autoGenRealisticLandscape(0);
-
-    // DEBUG
-    /*double last_height, height, x;
-    last_height = height = 0.0;
-    x = 0.0;
-    while (height <= 1.0 || height >= last_height || last_height < 0.1)
-    {
-        last_height = height;
-        height = terrainGetHeight(x, 0.0);
-        x += 0.1;
-    }
-    cameraSetLocation(x - 2.0, height, 0.0);
-    cameraSetTarget(x - 1.0, height, 0.0);*/
 }
 
 void paysagesQuit()

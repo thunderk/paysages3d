@@ -164,14 +164,14 @@ void MainWindow::refreshAll()
     }
 
     // Refresh preview OSD
-    CameraDefinition camera = cameraCreateDefinition();
+    CameraDefinition* camera = cameraCreateDefinition();
     PreviewOsd* osd = PreviewOsd::getInstance(QString("geolocation"));
     osd->clearItems();
-    sceneryGetCamera(&camera);
+    sceneryGetCamera(camera);
     PreviewOsdItem* item = osd->newItem(50, 50);
-    item->drawCamera(&camera);
+    item->drawCamera(camera);
     item->setToolTip(QString(tr("Camera")));
-    cameraDeleteDefinition(&camera);
+    cameraDeleteDefinition(camera);
 }
 
 void MainWindow::fileNew()
@@ -248,31 +248,34 @@ void MainWindow::quickPreview()
 
 void MainWindow::explore3D()
 {
-    CameraDefinition camera;
+    CameraDefinition* camera;
     int result;
 
-    sceneryGetCamera(&camera);
+    camera = cameraCreateDefinition();
+    sceneryGetCamera(camera);
 
-    DialogExplorer* dialog = new DialogExplorer(this, &camera, true);
+    DialogExplorer* dialog = new DialogExplorer(this, camera, true);
     result = dialog->exec();
 
     delete dialog;
 
     if (result == QDialog::Accepted)
     {
-        scenerySetCamera(&camera);
+        scenerySetCamera(camera);
         refreshAll();
     }
+
+    cameraDeleteDefinition(camera);
 }
 
 void MainWindow::guiSaveCallback(PackStream* stream, void* data)
 {
-    ((MainWindow*)data)->guiSave(stream);
+    ((MainWindow*) data)->guiSave(stream);
 }
 
 void MainWindow::guiLoadCallback(PackStream* stream, void* data)
 {
-    ((MainWindow*)data)->guiLoad(stream);
+    ((MainWindow*) data)->guiLoad(stream);
 }
 
 void MainWindow::guiSave(PackStream* stream)

@@ -11,6 +11,7 @@
 #include <QHash>
 #include "previewosd.h"
 #include "rendering/tools/pack.h"
+#include "rendering/tools/color.h"
 
 class _ContextChoice
 {
@@ -27,7 +28,8 @@ public:
     bool value;
 };
 
-class BasePreview : public QWidget {
+class BasePreview : public QWidget
+{
     Q_OBJECT
 
 public:
@@ -136,12 +138,14 @@ private slots:
 /*** Private section ***/
 class PreviewChunk;
 
-class PreviewDrawingThread : public QThread {
+class PreviewDrawingThread : public QThread
+{
 public:
     PreviewDrawingThread();
     void askStop();
 
-    static inline void usleep(int us) {
+    static inline void usleep(int us)
+    {
         QThread::usleep(us);
     }
 
@@ -152,7 +156,8 @@ private:
     bool _running;
 };
 
-class PreviewDrawingManager {
+class PreviewDrawingManager
+{
 public:
     PreviewDrawingManager();
     void startThreads();

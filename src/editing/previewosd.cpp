@@ -22,17 +22,19 @@ void PreviewOsdItem::setLocation(double x, double y)
 
 void PreviewOsdItem::drawCamera(CameraDefinition* camera)
 {
+    Vector3 camera_location = cameraGetLocation(camera);
+    VectorSpherical camera_direction = cameraGetDirectionSpherical(camera);
     int w2 = width() / 2;
     int h2 = height() / 2;
-    
-    _xlocation = camera->location.x;
-    _ylocation = camera->location.z;
-    
+
+    _xlocation = camera_location.x;
+    _ylocation = camera_location.z;
+
     QPainter painter(this);
     painter.setPen(QPen(Qt::red, 2));
     painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing, true);
-    painter.drawLine(w2, h2, w2 + w2 * cos(camera->yaw - M_PI_4), h2 - h2 * sin(camera->yaw - M_PI_4));
-    painter.drawLine(w2, h2, w2 + w2 * cos(camera->yaw + M_PI_4), h2 - h2 * sin(camera->yaw + M_PI_4));
+    painter.drawLine(w2, h2, w2 + w2 * cos(camera_direction.phi - M_PI_4), h2 - h2 * sin(camera_direction.phi - M_PI_4));
+    painter.drawLine(w2, h2, w2 + w2 * cos(camera_direction.phi + M_PI_4), h2 - h2 * sin(camera_direction.phi + M_PI_4));
 }
 
 void PreviewOsdItem::setToolTip(QString text)
@@ -87,7 +89,7 @@ void PreviewOsd::clearItems()
     }
     _items.clear();
 }
-    
+
 PreviewOsdItem* PreviewOsd::newItem(int width, int height)
 {
     PreviewOsdItem* item = new PreviewOsdItem(width, height);
@@ -106,12 +108,12 @@ PreviewOsdItem* PreviewOsd::newItem(QImage image)
 void PreviewOsd::apply(QImage* mask, double xoffset, double yoffset, double scaling)
 {
     QPainter painter(mask);
-    
+
     for (int i = 0; i < _items.size(); i++)
     {
         PreviewOsdItem* item = _items[i];
-        int x = (int)(mask->width() / 2 - (xoffset - item->xlocation()) / scaling - item->width() / 2);
-        int y = (int)(mask->height() / 2 - (yoffset - item->ylocation()) / scaling - item->height() / 2);
+        int x = (int) (mask->width() / 2 - (xoffset - item->xlocation()) / scaling - item->width() / 2);
+        int y = (int) (mask->height() / 2 - (yoffset - item->ylocation()) / scaling - item->height() / 2);
         painter.drawImage(x, y, *item);
     }
 }

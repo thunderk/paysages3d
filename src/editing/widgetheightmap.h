@@ -72,9 +72,9 @@ private:
     QDateTime _last_time;
     bool _mouse_moved;
 
-    CameraDefinition _top_camera;
-    CameraDefinition _temp_camera;
-    CameraDefinition _current_camera;
+    CameraDefinition* _top_camera;
+    CameraDefinition* _temp_camera;
+    CameraDefinition* _current_camera;
 
     double _brush_x;
     double _brush_z;

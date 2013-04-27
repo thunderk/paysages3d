@@ -31,7 +31,7 @@ private slots:
 
 private:
     RenderParams _params;
-    CameraDefinition _camera;
+    CameraDefinition* _camera;
     Renderer* _renderer;
     bool _renderer_inited;
     BasePreview* _preview_landscape;

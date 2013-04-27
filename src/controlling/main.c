@@ -173,14 +173,13 @@ int main(int argc, char** argv)
         scenerySetAtmosphere(atmo);
         AtmosphereDefinitionClass.destroy(atmo);
 
-        CameraDefinition camera;
+        CameraDefinition* camera;
+        Vector3 step = {conf_camera_step_x, conf_camera_step_y, conf_camera_step_z};
         camera = cameraCreateDefinition();
-        sceneryGetCamera(&camera);
-        camera.location.x += conf_camera_step_x;
-        camera.location.y += conf_camera_step_y;
-        camera.location.z += conf_camera_step_z;
-        scenerySetCamera(&camera);
-        cameraDeleteDefinition(&camera);
+        sceneryGetCamera(camera);
+        cameraSetLocation(camera, v3Add(cameraGetLocation(camera), step));
+        scenerySetCamera(camera);
+        cameraDeleteDefinition(camera);
 
         renderer = sceneryCreateStandardRenderer();
         rendererSetPreviewCallbacks(renderer, NULL, NULL, _previewUpdate);

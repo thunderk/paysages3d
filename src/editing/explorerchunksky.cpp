@@ -16,7 +16,7 @@ ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, double size, SkyboxOrient
 
 void ExplorerChunkSky::onCameraEvent(CameraDefinition* camera)
 {
-    _center = camera->location;
+    _center = cameraGetLocation(camera);
 }
 
 void ExplorerChunkSky::onRenderEvent(QGLWidget*)
@@ -25,68 +25,68 @@ void ExplorerChunkSky::onRenderEvent(QGLWidget*)
     Vector3 camera = _center;
 
     glBegin(GL_QUADS);
-    switch(_orientation)
+    switch (_orientation)
     {
-        case SKYBOX_NORTH:
-            glTexCoord2d(0.0, 0.0);
-            glVertex3d(camera.x - size, camera.y + size, camera.z - size);
-            glTexCoord2d(0.0, 1.0);
-            glVertex3d(camera.x - size, camera.y - size, camera.z - size);
-            glTexCoord2d(1.0, 1.0);
-            glVertex3d(camera.x + size, camera.y - size, camera.z - size);
-            glTexCoord2d(1.0, 0.0);
-            glVertex3d(camera.x + size, camera.y + size, camera.z - size);
-            break;
-        case SKYBOX_SOUTH:
-            glTexCoord2d(0.0, 0.0);
-            glVertex3d(camera.x + size, camera.y + size, camera.z + size);
-            glTexCoord2d(0.0, 1.0);
-            glVertex3d(camera.x + size, camera.y - size, camera.z + size);
-            glTexCoord2d(1.0, 1.0);
-            glVertex3d(camera.x - size, camera.y - size, camera.z + size);
-            glTexCoord2d(1.0, 0.0);
-            glVertex3d(camera.x - size, camera.y + size, camera.z + size);
-            break;
-        case SKYBOX_EAST:
-            glTexCoord2d(0.0, 0.0);
-            glVertex3d(camera.x + size, camera.y + size, camera.z - size);
-            glTexCoord2d(0.0, 1.0);
-            glVertex3d(camera.x + size, camera.y - size, camera.z - size);
-            glTexCoord2d(1.0, 1.0);
-            glVertex3d(camera.x + size, camera.y - size, camera.z + size);
-            glTexCoord2d(1.0, 0.0);
-            glVertex3d(camera.x + size, camera.y + size, camera.z + size);
-            break;
-        case SKYBOX_WEST:
-            glTexCoord2d(0.0, 0.0);
-            glVertex3d(camera.x - size, camera.y + size, camera.z + size);
-            glTexCoord2d(0.0, 1.0);
-            glVertex3d(camera.x - size, camera.y - size, camera.z + size);
-            glTexCoord2d(1.0, 1.0);
-            glVertex3d(camera.x - size, camera.y - size, camera.z - size);
-            glTexCoord2d(1.0, 0.0);
-            glVertex3d(camera.x - size, camera.y + size, camera.z - size);
-            break;
-        case SKYBOX_TOP:
-            glTexCoord2d(0.0, 0.0);
-            glVertex3d(camera.x - size, camera.y + size, camera.z + size);
-            glTexCoord2d(0.0, 1.0);
-            glVertex3d(camera.x - size, camera.y + size, camera.z - size);
-            glTexCoord2d(1.0, 1.0);
-            glVertex3d(camera.x + size, camera.y + size, camera.z - size);
-            glTexCoord2d(1.0, 0.0);
-            glVertex3d(camera.x + size, camera.y + size, camera.z + size);
-            break;
-        case SKYBOX_BOTTOM:
-            /*glTexCoord2d(0.0, 0.0);
-            glVertex3d(camera.x - size, camera.y - size, camera.z - size);
-            glTexCoord2d(0.0, 1.0);
-            glVertex3d(camera.x - size, camera.y - size, camera.z + size);
-            glTexCoord2d(1.0, 1.0);
-            glVertex3d(camera.x + size, camera.y - size, camera.z + size);
-            glTexCoord2d(1.0, 0.0);
-            glVertex3d(camera.x + size, camera.y - size, camera.z - size);*/
-            break;
+    case SKYBOX_NORTH:
+        glTexCoord2d(0.0, 0.0);
+        glVertex3d(camera.x - size, camera.y + size, camera.z - size);
+        glTexCoord2d(0.0, 1.0);
+        glVertex3d(camera.x - size, camera.y - size, camera.z - size);
+        glTexCoord2d(1.0, 1.0);
+        glVertex3d(camera.x + size, camera.y - size, camera.z - size);
+        glTexCoord2d(1.0, 0.0);
+        glVertex3d(camera.x + size, camera.y + size, camera.z - size);
+        break;
+    case SKYBOX_SOUTH:
+        glTexCoord2d(0.0, 0.0);
+        glVertex3d(camera.x + size, camera.y + size, camera.z + size);
+        glTexCoord2d(0.0, 1.0);
+        glVertex3d(camera.x + size, camera.y - size, camera.z + size);
+        glTexCoord2d(1.0, 1.0);
+        glVertex3d(camera.x - size, camera.y - size, camera.z + size);
+        glTexCoord2d(1.0, 0.0);
+        glVertex3d(camera.x - size, camera.y + size, camera.z + size);
+        break;
+    case SKYBOX_EAST:
+        glTexCoord2d(0.0, 0.0);
+        glVertex3d(camera.x + size, camera.y + size, camera.z - size);
+        glTexCoord2d(0.0, 1.0);
+        glVertex3d(camera.x + size, camera.y - size, camera.z - size);
+        glTexCoord2d(1.0, 1.0);
+        glVertex3d(camera.x + size, camera.y - size, camera.z + size);
+        glTexCoord2d(1.0, 0.0);
+        glVertex3d(camera.x + size, camera.y + size, camera.z + size);
+        break;
+    case SKYBOX_WEST:
+        glTexCoord2d(0.0, 0.0);
+        glVertex3d(camera.x - size, camera.y + size, camera.z + size);
+        glTexCoord2d(0.0, 1.0);
+        glVertex3d(camera.x - size, camera.y - size, camera.z + size);
+        glTexCoord2d(1.0, 1.0);
+        glVertex3d(camera.x - size, camera.y - size, camera.z - size);
+        glTexCoord2d(1.0, 0.0);
+        glVertex3d(camera.x - size, camera.y + size, camera.z - size);
+        break;
+    case SKYBOX_TOP:
+        glTexCoord2d(0.0, 0.0);
+        glVertex3d(camera.x - size, camera.y + size, camera.z + size);
+        glTexCoord2d(0.0, 1.0);
+        glVertex3d(camera.x - size, camera.y + size, camera.z - size);
+        glTexCoord2d(1.0, 1.0);
+        glVertex3d(camera.x + size, camera.y + size, camera.z - size);
+        glTexCoord2d(1.0, 0.0);
+        glVertex3d(camera.x + size, camera.y + size, camera.z + size);
+        break;
+    case SKYBOX_BOTTOM:
+        /*glTexCoord2d(0.0, 0.0);
+        glVertex3d(camera.x - size, camera.y - size, camera.z - size);
+        glTexCoord2d(0.0, 1.0);
+        glVertex3d(camera.x - size, camera.y - size, camera.z + size);
+        glTexCoord2d(1.0, 1.0);
+        glVertex3d(camera.x + size, camera.y - size, camera.z + size);
+        glTexCoord2d(1.0, 0.0);
+        glVertex3d(camera.x + size, camera.y - size, camera.z - size);*/
+        break;
     }
     glEnd();
 }
@@ -103,38 +103,38 @@ Color ExplorerChunkSky::getTextureColor(double x, double y)
     x -= 0.5;
     y -= 0.5;
 
-    switch(_orientation)
+    switch (_orientation)
     {
-        case SKYBOX_NORTH:
-            location.x = x;
-            location.y = -y;
-            location.z = -0.5;
-            break;
-        case SKYBOX_SOUTH:
-            location.x = -x;
-            location.y = -y;
-            location.z = 0.5;
-            break;
-        case SKYBOX_EAST:
-            location.x = 0.5;
-            location.y = -y;
-            location.z = x;
-            break;
-        case SKYBOX_WEST:
-            location.x = -0.5;
-            location.y = -y;
-            location.z = -x;
-            break;
-        case SKYBOX_TOP:
-            location.x = x;
-            location.y = 0.5;
-            location.z = -y;
-            break;
-        case SKYBOX_BOTTOM:
-            location.x = x;
-            location.y = -0.5;
-            location.z = y;
-            break;
+    case SKYBOX_NORTH:
+        location.x = x;
+        location.y = -y;
+        location.z = -0.5;
+        break;
+    case SKYBOX_SOUTH:
+        location.x = -x;
+        location.y = -y;
+        location.z = 0.5;
+        break;
+    case SKYBOX_EAST:
+        location.x = 0.5;
+        location.y = -y;
+        location.z = x;
+        break;
+    case SKYBOX_WEST:
+        location.x = -0.5;
+        location.y = -y;
+        location.z = -x;
+        break;
+    case SKYBOX_TOP:
+        location.x = x;
+        location.y = 0.5;
+        location.z = -y;
+        break;
+    case SKYBOX_BOTTOM:
+        location.x = x;
+        location.y = -0.5;
+        location.z = y;
+        break;
     }
     location = v3Normalize(location);
     if (location.y < 0.0)

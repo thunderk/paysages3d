@@ -12,15 +12,16 @@
 #include "rendering/tools/curve.h"
 #include "rendering/tools/color.h"
 #include "rendering/tools/pack.h"
+#include "rendering/tools/lighting.h"
 #include "rendering/noise.h"
 #include "rendering/layers.h"
 
-class BaseForm:public QWidget
+class BaseForm : public QWidget
 {
     Q_OBJECT
 
 public:
-    BaseForm(QWidget* parent, bool auto_apply=false, bool with_layers=false);
+    BaseForm(QWidget* parent, bool auto_apply = false, bool with_layers = false);
     void hideButtons();
     virtual void savePack(PackStream* stream);
     virtual void loadPack(PackStream* stream);

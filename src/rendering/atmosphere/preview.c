@@ -14,20 +14,44 @@ typedef struct
 
 #define MOUNTS_COUNT 11
 static Mount MOUNTS[MOUNTS_COUNT] = {
-    {{2.0, 0.0, -6.0}, 4.0},
-    {{-1.5, 0.0, -8.0}, 4.0},
-    {{3.0, 0.0, -10.0}, 6.0},
-    {{-8.0, 0.0, -15.0}, 6.0},
-    {{10.0, 0.0, -20.0}, 6.0},
-    {{-6.0, 0.0, -30.0}, 8.0},
-    {{15.0, 0.0, -40.0}, 8.0},
-    {{-20.0, 0.0, -50.0}, 8.0},
-    {{10.0, 0.0, -60.0}, 10.0},
-    {{-5.0, 0.0, -80.0}, 10.0},
-    {{30.0, 0.0, -100.0}, 10.0},
+    {
+        {2.0, 0.0, -6.0}, 4.0
+    },
+    {
+        {-1.5, 0.0, -8.0}, 4.0
+    },
+    {
+        {3.0, 0.0, -10.0}, 6.0
+    },
+    {
+        {-8.0, 0.0, -15.0}, 6.0
+    },
+    {
+        {10.0, 0.0, -20.0}, 6.0
+    },
+    {
+        {-6.0, 0.0, -30.0}, 8.0
+    },
+    {
+        {15.0, 0.0, -40.0}, 8.0
+    },
+    {
+        {-20.0, 0.0, -50.0}, 8.0
+    },
+    {
+        {10.0, 0.0, -60.0}, 10.0
+    },
+    {
+        {-5.0, 0.0, -80.0}, 10.0
+    },
+    {
+        {30.0, 0.0, -100.0}, 10.0
+    },
 };
 
-static SurfaceMaterial MOUNT_MATERIAL = {{0.4, 0.4, 0.4, 1.0}, 0.0, 0.0};
+static SurfaceMaterial MOUNT_MATERIAL = {
+    {0.4, 0.4, 0.4, 1.0}, 0.0, 0.0
+};
 
 static inline int _rayIntersectsTriangle(Vector3 p, Vector3 d, Vector3 v0, Vector3 v1, Vector3 v2, Vector3* hit)
 {
@@ -147,10 +171,9 @@ Color atmosphereGetPreview(Renderer* renderer, double x, double y, double headin
 Renderer* atmosphereCreatePreviewRenderer()
 {
     Renderer* result = rendererCreate();
+    Vector3 location = {0.0, 7.0, 0.0};
 
-    result->render_camera.location.x = 0.0;
-    result->render_camera.location.y = 7.0;
-    result->render_camera.location.z = 0.0;
+    cameraSetLocation(result->render_camera, location);
 
     return result;
 }

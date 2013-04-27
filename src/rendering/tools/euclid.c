@@ -102,10 +102,13 @@ Vector3 v3Cross(Vector3 v1, Vector3 v2)
     return result;
 }
 
-void v3ToEuler(Vector3 v, double* heading, double* attitude)
+VectorSpherical v3ToSpherical(Vector3 v)
 {
-    *heading = euclidGet2DAngle(v.x, v.z);
-    *attitude = euclidGet2DAngle(sqrt(v.x * v.x + v.z * v.z), v.y);
+    VectorSpherical result;
+    result.phi = euclidGet2DAngle(v.x, v.z);
+    result.theta = euclidGet2DAngle(sqrt(v.x * v.x + v.z * v.z), v.y);
+    result.r = v3Norm(v);
+    return result;
 }
 
 void m4Save(PackStream* stream, Matrix4* m)
@@ -361,17 +364,17 @@ Matrix4 m4NewPerspective(double fov_y, double aspect, double near, double far)
 double m4Determinant(Matrix4 m)
 {
     return ((m.a * m.f - m.e * m.b)
-          * (m.k * m.p - m.o * m.l)
-          - (m.a * m.j - m.i * m.b)
-          * (m.g * m.p - m.o * m.h)
-          + (m.a * m.n - m.m * m.b)
-          * (m.g * m.l - m.k * m.h)
-          + (m.e * m.j - m.i * m.f)
-          * (m.c * m.p - m.o * m.d)
-          - (m.e * m.n - m.m * m.f)
-          * (m.c * m.l - m.k * m.d)
-          + (m.i * m.n - m.m * m.j)
-          * (m.c * m.h - m.g * m.d));
+            * (m.k * m.p - m.o * m.l)
+            - (m.a * m.j - m.i * m.b)
+            * (m.g * m.p - m.o * m.h)
+            + (m.a * m.n - m.m * m.b)
+            * (m.g * m.l - m.k * m.h)
+            + (m.e * m.j - m.i * m.f)
+            * (m.c * m.p - m.o * m.d)
+            - (m.e * m.n - m.m * m.f)
+            * (m.c * m.l - m.k * m.d)
+            + (m.i * m.n - m.m * m.j)
+            * (m.c * m.h - m.g * m.d));
 }
 
 Matrix4 m4Inverse(Matrix4 m)

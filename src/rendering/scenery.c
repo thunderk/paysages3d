@@ -6,7 +6,7 @@
 #include "system.h"
 
 static AtmosphereDefinition* _atmosphere;
-static CameraDefinition _camera;
+static CameraDefinition* _camera;
 static CloudsDefinition* _clouds;
 static TerrainDefinition* _terrain;
 static TexturesDefinition* _textures;
@@ -34,7 +34,7 @@ void sceneryInit()
 void sceneryQuit()
 {
     AtmosphereDefinitionClass.destroy(_atmosphere);
-    cameraDeleteDefinition(&_camera);
+    cameraDeleteDefinition(_camera);
     CloudsDefinitionClass.destroy(_clouds);
     TerrainDefinitionClass.destroy(_terrain);
     TexturesDefinitionClass.destroy(_textures);
@@ -63,7 +63,7 @@ void scenerySave(PackStream* stream)
 {
     noiseSave(stream);
     AtmosphereDefinitionClass.save(stream, _atmosphere);
-    cameraSave(stream, &_camera);
+    cameraSave(stream, _camera);
     CloudsDefinitionClass.save(stream, _clouds);
     TerrainDefinitionClass.save(stream, _terrain);
     TexturesDefinitionClass.save(stream, _textures);
@@ -81,7 +81,7 @@ void sceneryLoad(PackStream* stream)
 
     noiseLoad(stream);
     AtmosphereDefinitionClass.load(stream, _atmosphere);
-    cameraLoad(stream, &_camera);
+    cameraLoad(stream, _camera);
     CloudsDefinitionClass.load(stream, _clouds);
     TerrainDefinitionClass.load(stream, _terrain);
     TexturesDefinitionClass.load(stream, _textures);
@@ -105,13 +105,13 @@ void sceneryGetAtmosphere(AtmosphereDefinition* atmosphere)
 
 void scenerySetCamera(CameraDefinition* camera)
 {
-    cameraCopyDefinition(camera, &_camera);
-    cameraValidateDefinition(&_camera, 1);
+    cameraCopyDefinition(camera, _camera);
+    cameraValidateDefinition(_camera, 1);
 }
 
 void sceneryGetCamera(CameraDefinition* camera)
 {
-    cameraCopyDefinition(&_camera, camera);
+    cameraCopyDefinition(_camera, camera);
 }
 
 void scenerySetClouds(CloudsDefinition* clouds)
@@ -128,7 +128,7 @@ void scenerySetTerrain(TerrainDefinition* terrain)
 {
     TerrainDefinitionClass.copy(terrain, _terrain);
 
-    cameraValidateDefinition(&_camera, 1);
+    cameraValidateDefinition(_camera, 1);
 }
 
 void sceneryGetTerrain(TerrainDefinition* terrain)
@@ -140,7 +140,7 @@ void scenerySetTextures(TexturesDefinition* textures)
 {
     TexturesDefinitionClass.copy(textures, _textures);
 
-    cameraValidateDefinition(&_camera, 1);
+    cameraValidateDefinition(_camera, 1);
 }
 
 void sceneryGetTextures(TexturesDefinition* textures)
@@ -152,7 +152,7 @@ void scenerySetWater(WaterDefinition* water)
 {
     WaterDefinitionClass.copy(water, _water);
 
-    cameraValidateDefinition(&_camera, 1);
+    cameraValidateDefinition(_camera, 1);
 }
 
 void sceneryGetWater(WaterDefinition* water)
@@ -166,11 +166,6 @@ void sceneryRenderFirstPass(Renderer* renderer)
     waterRenderSurface(renderer);
     atmosphereRenderSkydome(renderer);
 }
-
-
-
-
-
 
 /******* Standard renderer *********/
 static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
@@ -193,23 +188,23 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
 
 static Vector3 _projectPoint(Renderer* renderer, Vector3 point)
 {
-    return cameraProject(&renderer->render_camera, renderer, point);
+    return cameraProject(renderer->render_camera, point);
 }
 
 static Vector3 _unprojectPoint(Renderer* renderer, Vector3 point)
 {
-    return cameraUnproject(&renderer->render_camera, renderer, point);
+    return cameraUnproject(renderer->render_camera, point);
 }
 
 static double _getPrecision(Renderer* renderer, Vector3 location)
 {
     Vector3 projected;
 
-    projected = cameraProject(&renderer->render_camera, renderer, location);
+    projected = cameraProject(renderer->render_camera, location);
     projected.x += 1.0;
     //projected.y += 1.0;
 
-    return v3Norm(v3Sub(cameraUnproject(&renderer->render_camera, renderer, projected), location)); // / (double)render_quality;
+    return v3Norm(v3Sub(cameraUnproject(renderer->render_camera, projected), location)); // / (double)render_quality;
 }
 
 Renderer* sceneryCreateStandardRenderer()
@@ -218,7 +213,7 @@ Renderer* sceneryCreateStandardRenderer()
 
     result = rendererCreate();
 
-    cameraCopyDefinition(&_camera, &result->render_camera);
+    cameraCopyDefinition(_camera, result->render_camera);
 
     result->rayWalking = _rayWalking;
     result->projectPoint = _projectPoint;

@@ -7,16 +7,17 @@
 #include "rendering/scenery.h"
 
 /**************** Previews ****************/
-class PreviewRenderLandscape:public BasePreview
+class PreviewRenderLandscape : public BasePreview
 {
 public:
-    PreviewRenderLandscape(QWidget* parent):BasePreview(parent)
+
+    PreviewRenderLandscape(QWidget* parent) : BasePreview(parent)
     {
         _renderer = sceneryCreateStandardRenderer();
         _renderer->getCameraLocation = _getCameraLocation;
         lightingManagerDisableSpecularity(_renderer->lighting);
 
-        _no_clouds = (CloudsDefinition*)CloudsDefinitionClass.create();
+        _no_clouds = (CloudsDefinition*) CloudsDefinitionClass.create();
         _clouds_enabled = true;
 
         addOsd(QString("geolocation"));
@@ -27,6 +28,7 @@ public:
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
+
     Color getColor(double x, double y)
     {
         Vector3 location;
@@ -44,6 +46,7 @@ protected:
             return _renderer->terrain->getFinalColor(_renderer, location, scaling);
         }
     }
+
     void updateData()
     {
         sceneryBindRenderer(_renderer);
@@ -54,6 +57,7 @@ protected:
             CloudsRendererClass.bind(_renderer, _no_clouds);
         }
     }
+
     void toggleChangeEvent(QString key, bool value)
     {
         if (key == "clouds")
@@ -85,7 +89,7 @@ private:
 
 /**************** Form ****************/
 FormRender::FormRender(QWidget *parent) :
-    BaseForm(parent, true)
+BaseForm(parent, true)
 {
     QPushButton* button;
 
@@ -102,7 +106,7 @@ FormRender::FormRender(QWidget *parent) :
     _preview_landscape = new PreviewRenderLandscape(this);
     addPreview(_preview_landscape, QString(tr("Top-down preview")));
 
-    addInput(new InputCamera(this, tr("Camera"), &_camera));
+    addInput(new InputCamera(this, tr("Camera"), _camera));
     addInputInt(tr("Quality"), &_params.quality, 1, 10, 1, 1);
     addInputInt(tr("Image width"), &_params.width, 100, 2000, 10, 100);
     addInputInt(tr("Image height"), &_params.height, 100, 1200, 10, 100);
@@ -118,6 +122,7 @@ FormRender::FormRender(QWidget *parent) :
 
 FormRender::~FormRender()
 {
+    cameraDeleteDefinition(_camera);
     if (_renderer_inited)
     {
         rendererDelete(_renderer);
@@ -148,19 +153,19 @@ void FormRender::loadPack(PackStream* stream)
 
 void FormRender::revertConfig()
 {
-    sceneryGetCamera(&_camera);
+    sceneryGetCamera(_camera);
     BaseForm::revertConfig();
 }
 
 void FormRender::applyConfig()
 {
-    scenerySetCamera(&_camera);
+    scenerySetCamera(_camera);
     BaseForm::applyConfig();
 }
 
 void FormRender::configChangeEvent()
 {
-    cameraValidateDefinition(&_camera, 1);
+    cameraValidateDefinition(_camera, 1);
     BaseForm::configChangeEvent();
 }
 

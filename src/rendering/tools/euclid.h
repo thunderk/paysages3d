@@ -3,8 +3,36 @@
 
 #include "pack.h"
 
+/*
+ * Cartesian coordinates (X, Y, Z) - right handed :
+ *
+ *        Y (up)
+ *        |
+ *        |
+ *        +----X
+ *       /
+ *      /
+ *     Z
+ *
+ * Spherical coordinates (R, PHI, THETA) :
+ *
+ *   R is the distance to origin
+ *   PHI is typical azimuth
+ *   THETA is elevation angle (not polar angle!)
+ *
+ *   X=1  Y=0  Z=0   =>  PHI=0
+ *   X=0  Y=0  Z=-1  =>  PHI=PI/2
+ *   X=-1 Y=0  Z=0   =>  PHI=PI
+ *   X=0  Y=0  Z=1   =>  PHI=3*PI/2
+ *
+ *   X=1  Y=0  Z=0   =>  THETA=0
+ *   X=0  Y=1  Z=0   =>  THETA=PI/2
+ *   X=0  Y=-1 Z=0   =>  THETA=-PI/2
+ */
+
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 typedef struct
@@ -13,6 +41,13 @@ typedef struct
     double y;
     double z;
 } Vector3;
+
+typedef struct
+{
+    double r;
+    double theta;
+    double phi;
+} VectorSpherical;
 
 typedef struct
 {
@@ -53,7 +88,7 @@ double v3Norm(Vector3 v);
 Vector3 v3Normalize(Vector3 v);
 double v3Dot(Vector3 v1, Vector3 v2);
 Vector3 v3Cross(Vector3 v1, Vector3 v2);
-void v3ToEuler(Vector3 v, double* heading, double* attitude);
+VectorSpherical v3ToSpherical(Vector3 v);
 
 void m4Save(PackStream* stream, Matrix4* m);
 void m4Load(PackStream* stream, Matrix4* m);

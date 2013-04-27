@@ -22,9 +22,8 @@ SmallMaterialPreview::SmallMaterialPreview(QWidget* parent, SurfaceMaterial* mat
     _material = material;
 
     _renderer = rendererCreate();
-    _renderer->render_camera.location.x = 0.0;
-    _renderer->render_camera.location.x = 0.0;
-    _renderer->render_camera.location.z = 10.0;
+    Vector3 camera_location = {0.0, 0.0, 10.0};
+    cameraSetLocation(_renderer->render_camera, camera_location);
 }
 
 SmallMaterialPreview::~SmallMaterialPreview()
@@ -74,20 +73,20 @@ void SmallMaterialPreview::paintEvent(QPaintEvent*)
 
     if (width > height)
     {
-        factor = 2.0 / (double)height;
+        factor = 2.0 / (double) height;
     }
     else
     {
-        factor = 2.0 / (double)width;
+        factor = 2.0 / (double) width;
     }
-    dx = factor * (double)width / 2.0;
-    dy = factor * (double)height / 2.0;
+    dx = factor * (double) width / 2.0;
+    dy = factor * (double) height / 2.0;
 
     for (int x = 0; x < width; x++)
     {
         for (int y = 0; y < height; y++)
         {
-            painter.setPen(colorToQColor(getColor((double)x * factor - dx, (double)y * factor - dy)));
+            painter.setPen(colorToQColor(getColor((double) x * factor - dx, (double) y * factor - dy)));
             painter.drawPoint(x, y);
         }
     }

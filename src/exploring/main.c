@@ -28,11 +28,14 @@ void exploringInit()
 
 void exploringSetViewPort(int width, int height, CameraDefinition* camera)
 {
+    CameraPerspective perspective;
+
     glViewport(0, 0, width, height);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(camera->yfov * 180.0 / M_PI, camera->xratio, camera->znear, camera->zfar);
+    perspective = cameraGetPerspective(camera);
+    gluPerspective(perspective.yfov * 180.0 / M_PI, perspective.xratio, perspective.znear, perspective.zfar);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

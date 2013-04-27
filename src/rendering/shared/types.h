@@ -25,29 +25,6 @@ typedef struct
     double base_height;
 } HeightInfo;
 
-typedef struct
-{
-    Vector3 location;
-    double yaw;
-    double pitch;
-    double roll;
-
-    Vector3 target;
-    Vector3 forward;
-    Vector3 right;
-    Vector3 up;
-
-    double width;
-    double height;
-    double yfov;
-    double xratio;
-    double znear;
-    double zfar;
-
-    Matrix4 project;
-    Matrix4 unproject;
-} CameraDefinition;
-
 typedef void* (*FuncObjectCreate)();
 typedef void (*FuncObjectDelete)(void* object);
 typedef void (*FuncObjectCopy)(void* source, void* destination);

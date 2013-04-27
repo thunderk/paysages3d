@@ -7,10 +7,12 @@
 #include "terrain/public.h"
 #include "textures/public.h"
 #include "water/public.h"
+#include "camera.h"
 #include "render.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 struct Renderer
@@ -19,18 +21,18 @@ struct Renderer
     int render_quality;
     int render_width;
     int render_height;
-    CameraDefinition render_camera;
+    CameraDefinition* render_camera;
 
     /* Render related */
     RenderArea* render_area;
     double render_progress;
     int render_interrupt;
     int is_rendering;
-    Vector3 (*getCameraLocation)(Renderer* renderer, Vector3 target);
-    Vector3 (*getCameraDirection)(Renderer* renderer, Vector3 target);
+    Vector3(*getCameraLocation)(Renderer* renderer, Vector3 target);
+    Vector3(*getCameraDirection)(Renderer* renderer, Vector3 target);
     double (*getPrecision)(Renderer* renderer, Vector3 location);
-    Vector3 (*projectPoint)(Renderer* renderer, Vector3 point);
-    Vector3 (*unprojectPoint)(Renderer* renderer, Vector3 point);
+    Vector3(*projectPoint)(Renderer* renderer, Vector3 point);
+    Vector3(*unprojectPoint)(Renderer* renderer, Vector3 point);
     int (*addRenderProgress)(Renderer* renderer, double progress);
     void (*pushTriangle)(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, f_RenderFragmentCallback callback, void* callback_data);
     void (*pushQuad)(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, f_RenderFragmentCallback callback, void* callback_data);
@@ -38,11 +40,11 @@ struct Renderer
     void (*pushDisplacedQuad)(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Vector3 ov1, Vector3 ov2, Vector3 ov3, Vector3 ov4, f_RenderFragmentCallback callback, void* callback_data);
 
     /* Shortcuts */
-    Color (*applyLightingToSurface)(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material);
-    Color (*applyMediumTraversal)(Renderer* renderer, Vector3 location, Color color);
+    Color(*applyLightingToSurface)(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material);
+    Color(*applyMediumTraversal)(Renderer* renderer, Vector3 location, Color color);
 
     /* Scenery related */
-    RayCastingResult (*rayWalking)(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds);
+    RayCastingResult(*rayWalking)(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds);
 
     /* Autonomous tools */
     LightingManager* lighting;

@@ -15,10 +15,11 @@
 static WaterDefinition* _definition;
 
 /**************** Previews ****************/
-class PreviewWaterCoverage:public BasePreview
+class PreviewWaterCoverage : public BasePreview
 {
 public:
-    PreviewWaterCoverage(QWidget* parent):BasePreview(parent)
+
+    PreviewWaterCoverage(QWidget* parent) : BasePreview(parent)
     {
         _renderer = waterCreatePreviewCoverageRenderer();
         _highlight_enabled = true;
@@ -30,20 +31,23 @@ public:
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:
+
     Color getColor(double x, double y)
     {
         return waterGetPreviewCoverage(_renderer, x, y, scaling, _highlight_enabled ? 1 : 0);
     }
+
     void updateData()
     {
         WaterRendererClass.bind(_renderer, _definition);
 
         // TODO Do this only on full refresh
-        TerrainDefinition* terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
+        TerrainDefinition* terrain = (TerrainDefinition*) TerrainDefinitionClass.create();
         sceneryGetTerrain(terrain);
         TerrainRendererClass.bind(_renderer, terrain);
         TerrainDefinitionClass.destroy(terrain);
     }
+
     void toggleChangeEvent(QString key, bool value)
     {
         if (key == "highlight")
@@ -57,10 +61,11 @@ private:
     bool _highlight_enabled;
 };
 
-class PreviewWaterColor:public BasePreview
+class PreviewWaterColor : public BasePreview
 {
 public:
-    PreviewWaterColor(QWidget* parent):BasePreview(parent)
+
+    PreviewWaterColor(QWidget* parent) : BasePreview(parent)
     {
         _background = 0;
         _lighting_enabled = false;
@@ -80,6 +85,7 @@ public:
     int _background;
     bool _lighting_enabled;
 protected:
+
     Color getColor(double x, double y)
     {
         Vector3 eye, look;
@@ -108,15 +114,19 @@ protected:
 
         return _renderer->water->getResult(_renderer, target_x, target_z).final;
     }
+
     void cameraEvent()
     {
-        cameraSetLocation(&_renderer->render_camera, 0.0, scaling, -10.0 * scaling);
+        Vector3 camera_location = {0.0, scaling, -10.0 * scaling};
+        cameraSetLocation(_renderer->render_camera, camera_location);
     }
+
     void updateData()
     {
         WaterRendererClass.bind(_renderer, _definition);
         _renderer->water->definition->height = 0.0;
     }
+
     void choiceChangeEvent(const QString& key, int position)
     {
         if (key == "bg")
@@ -125,6 +135,7 @@ protected:
             redraw();
         }
     }
+
     void toggleChangeEvent(QString key, bool value)
     {
         if (key == "light")
@@ -140,7 +151,7 @@ private:
     static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int, int, int, int)
     {
         RayCastingResult result;
-        PreviewWaterColor* preview = (PreviewWaterColor*)renderer->customData[0];
+        PreviewWaterColor* preview = (PreviewWaterColor*) renderer->customData[0];
         double x, y;
 
         result.hit = 1;
@@ -157,7 +168,7 @@ private:
             switch (preview->_background)
             {
             case 1:
-                result.hit_color = (((int)ceil(x * 0.2) % 2 == 0) ^ ((int)ceil(y * 0.2 - 0.5) % 2 == 0)) ? COLOR_WHITE : COLOR_BLACK;
+                result.hit_color = (((int) ceil(x * 0.2) % 2 == 0) ^ ((int) ceil(y * 0.2 - 0.5) % 2 == 0)) ? COLOR_WHITE : COLOR_BLACK;
                 break;
             case 2:
                 result.hit_color = (y * 0.1 > x * 0.03 + sin(x - M_PI_2)) ? COLOR_WHITE : COLOR_BLACK;
@@ -187,10 +198,11 @@ private:
 
         return result;
     }
+
     static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3, int)
     {
         LightDefinition light;
-        PreviewWaterColor* preview = (PreviewWaterColor*)renderer->customData[0];
+        PreviewWaterColor* preview = (PreviewWaterColor*) renderer->customData[0];
         light.color = COLOR_WHITE;
         light.direction.x = 0.0;
         light.direction.y = -0.4794;
@@ -209,13 +221,13 @@ private:
 };
 
 /**************** Form ****************/
-FormWater::FormWater(QWidget *parent):
-    BaseForm(parent)
+FormWater::FormWater(QWidget *parent) :
+BaseForm(parent)
 {
     addAutoPreset(tr("Lake surface"));
     addAutoPreset(tr("Standard sea"));
 
-    _definition = (WaterDefinition*)WaterDefinitionClass.create();
+    _definition = (WaterDefinition*) WaterDefinitionClass.create();
 
     previewCoverage = new PreviewWaterCoverage(this);
     previewColor = new PreviewWaterColor(this);
@@ -259,7 +271,7 @@ void FormWater::configChangeEvent()
 
 void FormWater::autoPresetSelected(int preset)
 {
-    waterAutoPreset(_definition, (WaterPreset)preset);
+    waterAutoPreset(_definition, (WaterPreset) preset);
     BaseForm::autoPresetSelected(preset);
 }
 

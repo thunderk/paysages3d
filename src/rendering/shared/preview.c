@@ -13,7 +13,7 @@ static PreviewRenderer* _createRenderer()
 {
     PreviewRenderer* renderer;
 
-    renderer = (PreviewRenderer*)malloc(sizeof(PreviewRenderer));
+    renderer = (PreviewRenderer*)malloc(sizeof (PreviewRenderer));
     renderer->renderer = rendererCreate();
 
     return renderer;
@@ -27,8 +27,8 @@ static void _deleteRenderer(PreviewRenderer* renderer)
 
 static void _setCamera(PreviewRenderer* renderer, Vector3 location, Vector3 target)
 {
-    cameraSetLocation(&renderer->renderer->render_camera, location.x, location.y, location.z);
-    cameraSetTarget(&renderer->renderer->render_camera, target.x, target.y, target.z);
+    cameraSetLocation(renderer->renderer->render_camera, location);
+    cameraSetTarget(renderer->renderer->render_camera, target);
 }
 
 PreviewClass previewCreateClass(FuncPreviewCustomizeRenderer customizeRenderer, FuncPreviewBindDefinition bindDefinition, FuncPreviewGetPixelColor getPixelColor)

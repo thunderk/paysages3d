@@ -1,19 +1,25 @@
 BUILDMODE=debug
 BUILDPATH=./build/${BUILDMODE}
+CC=gcc
+MAKE=make
+
+ifneq (,$(COMPILER))
+	CC=$(COMPILER)
+endif
 
 all:
-	@+cd src/rendering && make BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
-	@+cd src/exploring && make BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
-	@+cd src/controlling && make BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
-	@+cd src/editing && qmake "BUILDMODE=${BUILDMODE}" "PROJECT_PATH=${CURDIR}" && make
-	@+cd src/testing && make BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
+	@+cd src/rendering && $(MAKE) CC=${CC} BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
+	@+cd src/exploring && $(MAKE) CC=${CC} BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
+	@+cd src/controlling && $(MAKE) CC=${CC} BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
+	@+cd src/editing && qmake "BUILDMODE=${BUILDMODE}" "PROJECT_PATH=${CURDIR}" && $(MAKE)
+	@+cd src/testing && $(MAKE) CC=${CC} BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
 
 clean:
-	cd src/rendering && make clean BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
-	cd src/exploring && make clean BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
-	cd src/controlling && make clean BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
-	cd src/editing && qmake "BUILDMODE=${BUILDMODE}" "PROJECT_PATH=${CURDIR}" && make clean
-	cd src/testing && make clean BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
+	cd src/rendering && $(MAKE) clean BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
+	cd src/exploring && $(MAKE) clean BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
+	cd src/controlling && $(MAKE) clean BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
+	cd src/editing && qmake "BUILDMODE=${BUILDMODE}" "PROJECT_PATH=${CURDIR}" && $(MAKE) clean
+	cd src/testing && $(MAKE) clean BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
 	rm -f ${BUILDPATH}/paysages-cli
 	rm -f ${BUILDPATH}/paysages-qt
 	rm -f ${BUILDPATH}/paysages-tests

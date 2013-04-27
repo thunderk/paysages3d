@@ -9,8 +9,8 @@
 
 #define HEIGHTMAP_RESOLUTION 256
 
-WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
-    QGLWidget(parent)
+WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain) :
+QGLWidget(parent)
 {
     setMinimumSize(500, 500);
     setFocusPolicy(Qt::StrongFocus);
@@ -39,9 +39,10 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
     _top_camera = cameraCreateDefinition();
     _temp_camera = cameraCreateDefinition();
 
-    cameraSetLocation(&_current_camera, 0.0, 80.0, 20.0);
-    cameraSetTarget(&_current_camera, 0.0, 0.0, 0.0);
-    cameraCopyDefinition(&_current_camera, &_top_camera);
+    Vector3 camera_location = {0.0, 80.0, 20.0};
+    cameraSetLocation(_current_camera, camera_location);
+    cameraSetTarget(_current_camera, VECTOR_ZERO);
+    cameraCopyDefinition(_current_camera, _top_camera);
 
     _brush_x = 0.0;
     _brush_z = 0.0;
@@ -55,6 +56,9 @@ WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain):
 
 WidgetHeightMap::~WidgetHeightMap()
 {
+    cameraDeleteDefinition(_current_camera);
+    cameraDeleteDefinition(_top_camera);
+    cameraDeleteDefinition(_temp_camera);
     rendererDelete(_renderer);
     noiseDeleteGenerator(_brush_noise);
     delete[] _vertices;
@@ -171,7 +175,7 @@ void WidgetHeightMap::mouseMoveEvent(QMouseEvent* event)
 void WidgetHeightMap::timerEvent(QTimerEvent*)
 {
     QDateTime new_time = QDateTime::currentDateTime();
-    double duration = 0.001 * (double)_last_time.msecsTo(new_time);
+    double duration = 0.001 * (double) _last_time.msecsTo(new_time);
     _last_time = new_time;
 
     if (not underMouse())
@@ -184,8 +188,12 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
         double brush_strength;
         TerrainBrush brush;
 
-        brush.relative_x = _brush_x + _current_camera.target.x;
-        brush.relative_z = _brush_z + _current_camera.target.z;
+        Vector3 camera_target = cameraGetTarget(_current_camera);
+        double tx = camera_target.x;
+        double tz = camera_target.z;
+
+        brush.relative_x = _brush_x + tx;
+        brush.relative_z = _brush_z + tz;
         brush.hard_radius = _brush_size * (1.0 - _brush_smoothing);
         brush.smoothed_size = _brush_size * _brush_smoothing;
         brush.total_radius = brush.hard_radius + brush.smoothed_size;
@@ -194,24 +202,24 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
 
         switch (_brush_mode)
         {
-            case HEIGHTMAP_BRUSH_RAISE:
-                terrainBrushElevation(_terrain->height_map, &brush, brush_strength * _last_brush_action * 20.0);
-                break;
-            case HEIGHTMAP_BRUSH_SMOOTH:
-                if (_last_brush_action < 0)
-                {
-                    terrainBrushSmooth(_terrain->height_map, &brush, brush_strength * 0.1);
-                }
-                else
-                {
-                    terrainBrushAddNoise(_terrain->height_map, &brush, _brush_noise, brush_strength * 10.0);
-                }
-                break;
-            case HEIGHTMAP_BRUSH_RESTORE:
-                terrainBrushReset(_terrain->height_map, &brush, brush_strength);
-                break;
-            default:
-                return;
+        case HEIGHTMAP_BRUSH_RAISE:
+            terrainBrushElevation(_terrain->height_map, &brush, brush_strength * _last_brush_action * 20.0);
+            break;
+        case HEIGHTMAP_BRUSH_SMOOTH:
+            if (_last_brush_action < 0)
+            {
+                terrainBrushSmooth(_terrain->height_map, &brush, brush_strength * 0.1);
+            }
+            else
+            {
+                terrainBrushAddNoise(_terrain->height_map, &brush, _brush_noise, brush_strength * 10.0);
+            }
+            break;
+        case HEIGHTMAP_BRUSH_RESTORE:
+            terrainBrushReset(_terrain->height_map, &brush, brush_strength);
+            break;
+        default:
+            return;
         }
 
         // TODO Only mark dirty the updated area
@@ -219,7 +227,12 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
         updateGL();
     }
 
-    // Edge scrolling
+    // Move camera
+    if (cameraTransitionToAnother(_current_camera, _top_camera, 0.1))
+    {
+        updateGL();
+    }
+
     // TODO Apply scrolling to vertex info and dirty only needed area
     /*double edge_length = 10.0;
     if (_brush_x > HEIGHTMAP_RESOLUTION / 2.0 - edge_length)
@@ -260,8 +273,8 @@ void WidgetHeightMap::initializeGL()
 {
     glClearColor(0.0, 0.0, 0.0, 0.0);
 
-    GLfloat light_diffuse[] = { 0.75, 0.74, 0.7, 1.0 };
-    GLfloat light_specular[] = { 0.0, 0.0, 0.0, 0.0 };
+    GLfloat light_diffuse[] = {0.75, 0.74, 0.7, 1.0};
+    GLfloat light_specular[] = {0.0, 0.0, 0.0, 0.0};
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
     light_diffuse[0] = 0.3;
@@ -335,9 +348,9 @@ void WidgetHeightMap::paintGL()
         glGetDoublev(GL_PROJECTION_MATRIX, projection);
         glGetIntegerv(GL_VIEWPORT, viewport);
 
-        winX = (float)_last_mouse_x;
-        winY = (float)height() - (float)_last_mouse_y;
-        glReadPixels(_last_mouse_x, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+        winX = (float) _last_mouse_x;
+        winY = (float) height() - (float) _last_mouse_y;
+        glReadPixels(_last_mouse_x, (int) winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 
         if (winZ > 0.0 && winZ < 1000.0)
         {
@@ -356,10 +369,13 @@ void WidgetHeightMap::paintGL()
     // Place camera
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(_current_camera.location.x, _current_camera.location.y, _current_camera.location.z, _current_camera.target.x, _current_camera.target.y, _current_camera.target.z, _current_camera.up.x, _current_camera.up.y, _current_camera.up.z);
+    Vector3 camera_location = cameraGetLocation(_current_camera);
+    Vector3 camera_target = cameraGetTarget(_current_camera);
+    Vector3 camera_up = cameraGetUpVector(_current_camera);
+    gluLookAt(camera_location.x, camera_location.y, camera_location.z, camera_target.x, camera_target.y, camera_target.z, camera_up.x, camera_up.y, camera_up.z);
 
     // Place lights
-    GLfloat light_position[] = { 40.0, 40.0, 40.0, 0.0 };
+    GLfloat light_position[] = {40.0, 40.0, 40.0, 0.0};
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     light_position[0] = -40.0;
     light_position[2] = -60.0;
@@ -369,6 +385,9 @@ void WidgetHeightMap::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Height map
+    camera_target = cameraGetTarget(_current_camera);
+    double tx = camera_target.x;
+    double tz = camera_target.z;
     for (int x = 0; x < rx - 1; x++)
     {
         glBegin(GL_QUAD_STRIP);
@@ -379,8 +398,8 @@ void WidgetHeightMap::paintGL()
                 _VertexInfo* vertex = _vertices + z * rx + x + dx;
                 double diff_x, diff_z, diff;
 
-                diff_x = vertex->point.x - _current_camera.target.x - _brush_x;
-                diff_z = vertex->point.z - _current_camera.target.z - _brush_z;
+                diff_x = vertex->point.x - tx - _brush_x;
+                diff_z = vertex->point.z - tz - _brush_z;
                 diff = sqrt(diff_x * diff_x + diff_z * diff_z);
                 if (diff > _brush_size)
                 {
@@ -396,20 +415,20 @@ void WidgetHeightMap::paintGL()
                 }
                 glColor3f(0.8 + diff, vertex->painted ? 1.0 : 0.8, 0.8);
                 glNormal3f(vertex->normal.x, vertex->normal.y, vertex->normal.z);
-                glVertex3f(vertex->point.x - _current_camera.target.x, vertex->point.y, vertex->point.z - _current_camera.target.z);
+                glVertex3f(vertex->point.x - tx, vertex->point.y, vertex->point.z - tz);
             }
         }
         glEnd();
     }
 
     // Time stats
-    frame_time = 0.001 * (double)start_time.msecsTo(QTime::currentTime());
+    frame_time = 0.001 * (double) start_time.msecsTo(QTime::currentTime());
     _average_frame_time = _average_frame_time * 0.8 + frame_time * 0.2;
     //printf("%d %f\n", quality, average_frame_time);
 
     while ((error_code = glGetError()) != GL_NO_ERROR)
     {
-        logDebug(QString("[OpenGL] ERROR : ") + (const char*)gluErrorString(error_code));
+        logDebug(QString("[OpenGL] ERROR : ") + (const char*) gluErrorString(error_code));
     }
 }
 
@@ -426,17 +445,20 @@ void WidgetHeightMap::updateVertexInfo()
     _memory_stats = terrainGetMemoryStats(_terrain);
 
     // Update positions
+    Vector3 camera_target = cameraGetTarget(_current_camera);
+    double tx = camera_target.x;
+    double tz = camera_target.z;
     for (int x = 0; x < rx; x++)
     {
         for (int z = 0; z < rz; z++)
         {
             _VertexInfo* vertex = _vertices + z * rx + x;
 
-            dx = _current_camera.target.x + x - rx / 2;
-            dz = _current_camera.target.z + z - rz / 2;
+            dx = tx + x - rx / 2;
+            dz = tz + z - rz / 2;
 
-            vertex->point.x = (double)dx;
-            vertex->point.z = (double)dz;
+            vertex->point.x = (double) dx;
+            vertex->point.z = (double) dz;
 
             vertex->point.y = terrainGetGridHeight(_terrain, dx, dz, 1);
 

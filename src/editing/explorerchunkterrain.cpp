@@ -9,7 +9,7 @@ ExplorerChunkTerrain::ExplorerChunkTerrain(Renderer* renderer, double x, double 
     _startx = x;
     _startz = z;
     _size = size;
-    _overall_step = size * (double)nbchunks;
+    _overall_step = size * (double) nbchunks;
 
     _distance_to_camera = 0.0;
 
@@ -19,7 +19,7 @@ ExplorerChunkTerrain::ExplorerChunkTerrain(Renderer* renderer, double x, double 
     _tessellation_max_size = 32;
     _tessellation = new double[(_tessellation_max_size + 1) * (_tessellation_max_size + 1)];
     _tessellation_current_size = 0;
-    _tessellation_step = _size / (double)_tessellation_max_size;
+    _tessellation_step = _size / (double) _tessellation_max_size;
 
     setMaxTextureSize(128);
 
@@ -55,7 +55,7 @@ bool ExplorerChunkTerrain::onMaintainEvent()
             {
                 if (_tessellation_current_size == 0 || i % old_tessellation_inc != 0 || j % old_tessellation_inc != 0)
                 {
-                    double height = renderer->terrain->getHeight(renderer, _startx + _tessellation_step * (double)i, _startz + _tessellation_step * (double)j, 1);
+                    double height = renderer->terrain->getHeight(renderer, _startx + _tessellation_step * (double) i, _startz + _tessellation_step * (double) j, 1);
                     if (height >= _water_height)
                     {
                         _overwater = true;
@@ -84,30 +84,32 @@ bool ExplorerChunkTerrain::onMaintainEvent()
 
 void ExplorerChunkTerrain::onCameraEvent(CameraDefinition* camera)
 {
+    Vector3 camera_location = cameraGetLocation(camera);
+
     // Handle position
     _lock_data.lock();
-    if (camera->location.x > _startx + _overall_step * 0.5)
+    if (camera_location.x > _startx + _overall_step * 0.5)
     {
         _startx += _overall_step;
         askReset();
     }
-    if (camera->location.z > _startz + _overall_step * 0.5)
+    if (camera_location.z > _startz + _overall_step * 0.5)
     {
         _startz += _overall_step;
         askReset();
     }
-    if (camera->location.x < _startx - _overall_step * 0.5)
+    if (camera_location.x < _startx - _overall_step * 0.5)
     {
         _startx -= _overall_step;
         askReset();
     }
-    if (camera->location.z < _startz - _overall_step * 0.5)
+    if (camera_location.z < _startz - _overall_step * 0.5)
     {
         _startz -= _overall_step;
         askReset();
     }
 
-    _distance_to_camera = v3Norm(v3Sub(getCenter(), camera->location));
+    _distance_to_camera = v3Norm(v3Sub(getCenter(), camera_location));
 
     _lock_data.unlock();
 }
@@ -116,7 +118,7 @@ void ExplorerChunkTerrain::onRenderEvent(QGLWidget*)
 {
     _lock_data.lock();
     int tessellation_size = _tessellation_current_size;
-    double tsize = 1.0 / (double)_tessellation_max_size;
+    double tsize = 1.0 / (double) _tessellation_max_size;
     _lock_data.unlock();
 
     if (tessellation_size <= 1 or not _overwater)
@@ -124,16 +126,16 @@ void ExplorerChunkTerrain::onRenderEvent(QGLWidget*)
         return;
     }
 
-    int tessellation_inc = _tessellation_max_size / (double)tessellation_size;
+    int tessellation_inc = _tessellation_max_size / (double) tessellation_size;
     for (int j = 0; j < _tessellation_max_size; j += tessellation_inc)
     {
         glBegin(GL_QUAD_STRIP);
         for (int i = 0; i <= _tessellation_max_size; i += tessellation_inc)
         {
-            glTexCoord2d(tsize * (double)i, tsize * (double)j);
-            glVertex3d(_startx + _tessellation_step * (double)i, _tessellation[j * (_tessellation_max_size + 1) + i], _startz + _tessellation_step * (double)j);
-            glTexCoord2d(tsize * (double)i, tsize * (double)(j + tessellation_inc));
-            glVertex3d(_startx + _tessellation_step * (double)i, _tessellation[(j + tessellation_inc) * (_tessellation_max_size + 1) + i], _startz + _tessellation_step * (double)(j + tessellation_inc));
+            glTexCoord2d(tsize * (double) i, tsize * (double) j);
+            glVertex3d(_startx + _tessellation_step * (double) i, _tessellation[j * (_tessellation_max_size + 1) + i], _startz + _tessellation_step * (double) j);
+            glTexCoord2d(tsize * (double) i, tsize * (double) (j + tessellation_inc));
+            glVertex3d(_startx + _tessellation_step * (double) i, _tessellation[(j + tessellation_inc) * (_tessellation_max_size + 1) + i], _startz + _tessellation_step * (double) (j + tessellation_inc));
         }
         glEnd();
     }
@@ -155,7 +157,7 @@ double ExplorerChunkTerrain::getDisplayedSizeHint(CameraDefinition* camera)
     {
         distance = _distance_to_camera;
         distance = distance < 0.1 ? 0.1 : distance;
-        return (int)ceil(120.0 - distance / 1.5);
+        return (int) ceil(120.0 - distance / 1.5);
     }
     else
     {

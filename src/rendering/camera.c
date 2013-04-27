@@ -6,6 +6,30 @@
 #include "scenery.h"
 #include "tools.h"
 
+struct CameraDefinition
+{
+    Vector3 location;
+    double yaw;
+    double pitch;
+    double roll;
+
+    Vector3 target;
+    Vector3 forward;
+    Vector3 right;
+    Vector3 up;
+
+    double width;
+    double height;
+    CameraPerspective perspective;
+    double yfov;
+    double xratio;
+    double znear;
+    double zfar;
+
+    Matrix4 project;
+    Matrix4 unproject;
+};
+
 void cameraSave(PackStream* stream, CameraDefinition* camera)
 {
     v3Save(stream, &camera->location);
@@ -24,32 +48,34 @@ void cameraLoad(PackStream* stream, CameraDefinition* camera)
     cameraValidateDefinition(camera, 0);
 }
 
-CameraDefinition cameraCreateDefinition()
+CameraDefinition* cameraCreateDefinition()
 {
-    CameraDefinition definition;
+    CameraDefinition* definition;
 
-    definition.location.x = 0.0;
-    definition.location.y = 0.0;
-    definition.location.z = 0.0;
-    definition.yaw = 0.0;
-    definition.pitch = 0.0;
-    definition.roll = 0.0;
+    definition = malloc(sizeof (CameraDefinition));
 
-    definition.width = 1.0;
-    definition.height = 1.0;
-    definition.yfov = 1.57;
-    definition.xratio = 1.0;
-    definition.znear = 1.0;
-    definition.zfar = 1000.0;
+    definition->location.x = 0.0;
+    definition->location.y = 0.0;
+    definition->location.z = 0.0;
+    definition->yaw = 0.0;
+    definition->pitch = 0.0;
+    definition->roll = 0.0;
 
-    cameraValidateDefinition(&definition, 0);
+    definition->width = 1.0;
+    definition->height = 1.0;
+    definition->yfov = 1.57;
+    definition->xratio = 1.0;
+    definition->znear = 1.0;
+    definition->zfar = 1000.0;
+
+    cameraValidateDefinition(definition, 0);
 
     return definition;
 }
 
 void cameraDeleteDefinition(CameraDefinition* definition)
 {
-    UNUSED(definition);
+    free(definition);
 }
 
 void cameraCopyDefinition(CameraDefinition* source, CameraDefinition* destination)
@@ -117,22 +143,61 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
     definition->unproject = m4Inverse(definition->project);
 }
 
-void cameraSetLocation(CameraDefinition* camera, double x, double y, double z)
+Vector3 cameraGetLocation(CameraDefinition* camera)
 {
-    camera->location.x = x;
-    camera->location.y = y;
-    camera->location.z = z;
+    return camera->location;
+}
+
+Vector3 cameraGetTarget(CameraDefinition* camera)
+{
+    return camera->target;
+}
+
+Vector3 cameraGetUpVector(CameraDefinition* camera)
+{
+    return camera->up;
+}
+
+double cameraGetRoll(CameraDefinition* camera)
+{
+    return camera->roll;
+}
+
+Vector3 cameraGetDirection(CameraDefinition* camera)
+{
+    return camera->forward;
+}
+
+Vector3 cameraGetDirectionNormalized(CameraDefinition* camera)
+{
+    return camera->forward;
+}
+
+VectorSpherical cameraGetDirectionSpherical(CameraDefinition* camera)
+{
+}
+
+CameraPerspective cameraGetPerspective(CameraDefinition* camera)
+{
+    return camera->perspective;
+}
+
+void cameraSetLocation(CameraDefinition* camera, Vector3 location)
+{
+    camera->location = location;
 
     cameraValidateDefinition(camera, 0);
 }
 
-void cameraSetTarget(CameraDefinition* camera, double x, double y, double z)
+void cameraSetLocationCoords(CameraDefinition* camera, double x, double y, double z)
 {
-    Vector3 forward, target;
+    Vector3 v = {x, y, z};
+    cameraSetLocation(camera, v);
+}
 
-    target.x = x;
-    target.y = y;
-    target.z = z;
+void cameraSetTarget(CameraDefinition* camera, Vector3 target)
+{
+    Vector3 forward;
 
     forward = v3Sub(target, camera->location);
     if (v3Norm(forward) < 0.0000001)
@@ -156,10 +221,18 @@ void cameraSetTarget(CameraDefinition* camera, double x, double y, double z)
     else
     {
         /* Guess angles */
-        v3ToEuler(forward, &camera->yaw, &camera->pitch);
+        VectorSpherical spherical = v3ToSpherical(forward);
+        camera->yaw = spherical.phi;
+        camera->pitch = spherical.theta;
     }
 
     cameraValidateDefinition(camera, 0);
+}
+
+void cameraSetTargetCoords(CameraDefinition* camera, double x, double y, double z)
+{
+    Vector3 v = {x, y, z};
+    cameraSetTarget(camera, v);
 }
 
 void cameraSetRoll(CameraDefinition* camera, double angle)
@@ -220,7 +293,7 @@ void cameraSetRenderSize(CameraDefinition* camera, int width, int height)
     cameraValidateDefinition(camera, 0);
 }
 
-Vector3 cameraProject(CameraDefinition* camera, Renderer* renderer, Vector3 point)
+Vector3 cameraProject(CameraDefinition* camera, Vector3 point)
 {
     point = m4Transform(camera->project, point);
     if (point.z < 1.0)
@@ -233,7 +306,7 @@ Vector3 cameraProject(CameraDefinition* camera, Renderer* renderer, Vector3 poin
     return point;
 }
 
-Vector3 cameraUnproject(CameraDefinition* camera, Renderer* renderer, Vector3 point)
+Vector3 cameraUnproject(CameraDefinition* camera, Vector3 point)
 {
     point.x = (point.x / (0.5 * camera->width) - 1.0);
     point.y = -(point.y / (0.5 * camera->height) - 1.0);
@@ -247,6 +320,7 @@ Vector3 cameraUnproject(CameraDefinition* camera, Renderer* renderer, Vector3 po
  * @param col Color of the polygon.
  * @param callback Post-processing callback.
  */
+
 /*void cameraPushOverlay(CameraDefinition* camera, Color col, f_RenderFragmentCallback callback)
 {
     Vertex v1, v2, v3, v4;
@@ -301,38 +375,45 @@ int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, do
     center.x -= xsize / 2.0;
     center.y -= ysize / 2.0;
     center.z -= zsize / 2.0;
-    projected = cameraProject(camera, NULL, center);
+    projected = cameraProject(camera, center);
     xmin = xmax = projected.x;
     ymin = ymax = projected.y;
     zmax = projected.z;
 
     center.x += xsize;
-    projected = cameraProject(camera, NULL, center);
+    projected = cameraProject(camera, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
 
     center.z += zsize;
-    projected = cameraProject(camera, NULL, center);
+    projected = cameraProject(camera, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
 
     center.x -= xsize;
-    projected = cameraProject(camera, NULL, center);
+    projected = cameraProject(camera, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
 
     center.y += ysize;
-    projected = cameraProject(camera, NULL, center);
+    projected = cameraProject(camera, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
 
     center.x += xsize;
-    projected = cameraProject(camera, NULL, center);
+    projected = cameraProject(camera, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
 
     center.z -= zsize;
-    projected = cameraProject(camera, NULL, center);
+    projected = cameraProject(camera, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
 
     center.x -= xsize;
-    projected = cameraProject(camera, NULL, center);
+    projected = cameraProject(camera, center);
     _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
 
     return xmin <= camera->width && xmax >= 0.0 && ymin <= camera->height && ymax >= 0.0 && zmax >= camera->znear;
+}
+
+int cameraTransitionToAnother(CameraDefinition* current, CameraDefinition* wanted, double factor)
+{
+    current->location.z += factor;
+    cameraValidateDefinition(current, 0);
+    return 1;
 }

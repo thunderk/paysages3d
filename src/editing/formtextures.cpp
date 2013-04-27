@@ -4,12 +4,13 @@
 #include "tools.h"
 
 /**************** Previews ****************/
-class PreviewTexturesCoverage:public BasePreview
+class PreviewTexturesCoverage : public BasePreview
 {
 public:
-    PreviewTexturesCoverage(QWidget* parent, TexturesLayerDefinition* layer):BasePreview(parent)
+
+    PreviewTexturesCoverage(QWidget* parent, TexturesLayerDefinition* layer) : BasePreview(parent)
     {
-        _terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
+        _terrain = (TerrainDefinition*) TerrainDefinitionClass.create();
 
         _renderer = rendererCreate();
         _renderer->render_quality = 3;
@@ -22,11 +23,13 @@ public:
         configScaling(20.0, 500.0, 20.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
+
     ~PreviewTexturesCoverage()
     {
         //TexturesDefinitionClass.destroy(_preview_layer);
     }
 protected:
+
     Color getColor(double x, double y)
     {
         Vector3 location;
@@ -37,6 +40,7 @@ protected:
         //result.r = result.g = result.b = texturesGetLayerCoverage(_preview_layer, _renderer, location, this->scaling);
         return result;
     }
+
     void updateData()
     {
         sceneryGetTerrain(_terrain);
@@ -52,28 +56,31 @@ private:
     TerrainDefinition* _terrain;
 };
 
-class PreviewTexturesColor:public BasePreview
+class PreviewTexturesColor : public BasePreview
 {
 public:
-    PreviewTexturesColor(QWidget* parent, TexturesLayerDefinition* layer):BasePreview(parent)
+
+    PreviewTexturesColor(QWidget* parent, TexturesLayerDefinition* layer) : BasePreview(parent)
     {
         _original_layer = layer;
         //_preview_layer = (TexturesLayerDefinition*)TexturesDefinitionClass.create();
 
         _renderer = rendererCreate();
         _renderer->render_quality = 3;
-        _renderer->render_camera.location.x = 0.0;
-        _renderer->render_camera.location.y = 20.0;
-        _renderer->render_camera.location.z = 0.0;
+
+        Vector3 camera_location = {0.0, 20.0, 0.0};
+        cameraSetLocation(_renderer->render_camera, camera_location);
 
         configScaling(0.01, 1.0, 0.01, 0.1);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
+
     ~PreviewTexturesColor()
     {
         //TexturesDefinitionClass.destroy(_preview_layer);
     }
 protected:
+
     Color getColor(double x, double y)
     {
         Vector3 location;
@@ -83,6 +90,7 @@ protected:
         //return texturesGetLayerColor(_preview_layer, _renderer, location, this->scaling);
         return COLOR_BLACK;
     }
+
     void updateData()
     {
         //TexturesDefinitionClass.copy(_original_layer, _preview_layer);
@@ -94,16 +102,16 @@ private:
 };
 
 /**************** Form ****************/
-FormTextures::FormTextures(QWidget *parent):
-    BaseFormLayer(parent)
+FormTextures::FormTextures(QWidget *parent) :
+BaseFormLayer(parent)
 {
     addAutoPreset(tr("Rock"));
     addAutoPreset(tr("Grass"));
     addAutoPreset(tr("Sand"));
     addAutoPreset(tr("Snow"));
 
-    _definition = (TexturesDefinition*)TexturesDefinitionClass.create();
-    _layer = (TexturesLayerDefinition*)texturesGetLayerType().callback_create();
+    _definition = (TexturesDefinition*) TexturesDefinitionClass.create();
+    _layer = (TexturesLayerDefinition*) texturesGetLayerType().callback_create();
 
     _previewCoverage = new PreviewTexturesCoverage(this, _layer);
     _previewColor = new PreviewTexturesColor(this, _layer);
@@ -143,16 +151,16 @@ void FormTextures::applyConfig()
 
 void FormTextures::layerReadCurrentFrom(void* layer_definition)
 {
-    texturesGetLayerType().callback_copy((TexturesLayerDefinition*)layer_definition, _layer);
+    texturesGetLayerType().callback_copy((TexturesLayerDefinition*) layer_definition, _layer);
 }
 
 void FormTextures::layerWriteCurrentTo(void* layer_definition)
 {
-    texturesGetLayerType().callback_copy(_layer, (TexturesLayerDefinition*)layer_definition);
+    texturesGetLayerType().callback_copy(_layer, (TexturesLayerDefinition*) layer_definition);
 }
 
 void FormTextures::autoPresetSelected(int preset)
 {
-    texturesLayerAutoPreset(_layer, (TexturesLayerPreset)preset);
+    texturesLayerAutoPreset(_layer, (TexturesLayerPreset) preset);
     BaseForm::autoPresetSelected(preset);
 }
