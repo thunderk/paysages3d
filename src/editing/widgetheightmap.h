@@ -43,6 +43,7 @@ signals:
     void heightmapChanged();
 
 protected:
+    void keyPressEvent(QKeyEvent* event);
     void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
@@ -55,6 +56,9 @@ protected:
     void paintGL();
 
 private:
+    void scrollTopCamera(double dx, double dz);
+    void zoomTopCamera(double dzoom);
+
     void updateVertexInfo();
 
 private:
@@ -77,6 +81,8 @@ private:
     QDateTime _last_time;
     bool _mouse_moved;
 
+    double _target_x;
+    double _target_z;
     CameraDefinition* _top_camera;
     CameraDefinition* _temp_camera;
     CameraDefinition* _current_camera;
