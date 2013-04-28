@@ -83,6 +83,9 @@ private:
 
     double _target_x;
     double _target_z;
+    int _last_update_x;
+    int _last_update_z;
+
     CameraDefinition* _top_camera;
     CameraDefinition* _temp_camera;
     CameraDefinition* _current_camera;

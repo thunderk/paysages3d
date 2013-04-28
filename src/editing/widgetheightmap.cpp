@@ -10,7 +10,7 @@
 
 #define HEIGHTMAP_RESOLUTION 256
 
-WidgetHeightMap::WidgetHeightMap(QWidget *parent, TerrainDefinition* terrain) :
+WidgetHeightMap::WidgetHeightMap(QWidget* parent, TerrainDefinition* terrain) :
 QGLWidget(parent)
 {
     setMinimumSize(500, 500);
@@ -45,6 +45,9 @@ QGLWidget(parent)
 
     _target_x = 0.0;
     _target_z = 0.0;
+    _last_update_x = 0;
+    _last_update_z = 0;
+
     _current_camera = cameraCreateDefinition();
     _top_camera = cameraCreateDefinition();
     _temp_camera = cameraCreateDefinition();
@@ -238,6 +241,14 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
     cameraSetZoomToTarget(_top_camera, _zoom);
     if (cameraTransitionToAnother(_current_camera, _top_camera, 0.8))
     {
+        int update_x = (int) (floor(_target_x));
+        int update_z = (int) (floor(_target_z));
+
+        if (update_x - _last_update_x < -10 || update_x - _last_update_x > 10 || update_z - _last_update_z < -10 || update_z - _last_update_z > 10)
+        {
+            _dirty = true;
+        }
+
         updateGL();
     }
 
@@ -252,12 +263,8 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
         double brush_strength;
         TerrainBrush brush;
 
-        Vector3 camera_target = cameraGetTarget(_current_camera);
-        double tx = camera_target.x;
-        double tz = camera_target.z;
-
-        brush.relative_x = _brush_x + tx;
-        brush.relative_z = _brush_z + tz;
+        brush.relative_x = _brush_x + _target_x;
+        brush.relative_z = _brush_z + _target_z;
         brush.hard_radius = _brush_size * (1.0 - _brush_smoothing);
         brush.smoothed_size = _brush_size * _brush_smoothing;
         brush.total_radius = brush.hard_radius + brush.smoothed_size;
@@ -310,7 +317,6 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
     }
     else if (wy > 1.0 - limit)
     {
-
         scrollTopCamera(0.0, force * (wy - (1.0 - limit)) / limit);
     }
 }
@@ -404,11 +410,8 @@ void WidgetHeightMap::paintGL()
         {
             gluUnProject(winX, winY, winZ, modelview, projection, viewport, &point.x, &point.y, &point.z);
 
-            if (point.x >= -rx / 2 && point.x <= rx / 2 && point.z >= -rz / 2 && point.z <= rz / 2)
-            {
-                _brush_x = point.x;
-                _brush_z = point.z;
-            }
+            _brush_x = point.x - _target_x;
+            _brush_z = point.z - _target_z;
         }
 
         _mouse_moved = false;
@@ -460,7 +463,7 @@ void WidgetHeightMap::paintGL()
                 }
                 glColor3f(0.8 + diff, vertex->painted ? 1.0 : 0.8, 0.8);
                 glNormal3f(vertex->normal.x, vertex->normal.y, vertex->normal.z);
-                glVertex3f(vertex->point.x - _target_x, vertex->point.y, vertex->point.z - _target_z);
+                glVertex3f(vertex->point.x, vertex->point.y, vertex->point.z);
             }
         }
         glEnd();
@@ -480,7 +483,7 @@ void WidgetHeightMap::paintGL()
             for (int x = 0; x < rx; x++)
             {
                 _VertexInfo* vertex = _vertices + z * rx + x;
-                glVertex3f(vertex->point.x - _target_x, vertex->point.y, vertex->point.z - _target_z);
+                glVertex3f(vertex->point.x, vertex->point.y, vertex->point.z);
             }
             glEnd();
         }
@@ -490,7 +493,7 @@ void WidgetHeightMap::paintGL()
             for (int z = 0; z < rz; z++)
             {
                 _VertexInfo* vertex = _vertices + z * rx + x;
-                glVertex3f(vertex->point.x - _target_x, vertex->point.y, vertex->point.z - _target_z);
+                glVertex3f(vertex->point.x, vertex->point.y, vertex->point.z);
             }
             glEnd();
         }
@@ -523,7 +526,6 @@ void WidgetHeightMap::paintGL()
 
     while ((error_code = glGetError()) != GL_NO_ERROR)
     {
-
         logDebug(QString("[OpenGL] ERROR : ") + (const char*) gluErrorString(error_code));
     }
 }
@@ -548,10 +550,10 @@ void WidgetHeightMap::zoomTopCamera(double dzoom)
     {
         _zoom = 10.0;
     }
-    else if (_zoom > 70.0)
+    else if (_zoom > 80.0)
     {
 
-        _zoom = 70.0;
+        _zoom = 80.0;
     }
 }
 
@@ -567,6 +569,9 @@ void WidgetHeightMap::updateVertexInfo()
 
     _memory_stats = terrainGetMemoryStats(_terrain);
 
+    _last_update_x = (int) (floor(_target_x));
+    _last_update_z = (int) (floor(_target_z));
+
     // Update positions
     for (int x = 0; x < rx; x++)
     {
@@ -574,8 +579,8 @@ void WidgetHeightMap::updateVertexInfo()
         {
             _VertexInfo* vertex = _vertices + z * rx + x;
 
-            dx = _target_x + x - rx / 2;
-            dz = _target_z + z - rz / 2;
+            dx = _last_update_x + x - rx / 2;
+            dz = _last_update_z + z - rz / 2;
 
             vertex->point.x = (double) dx;
             vertex->point.z = (double) dz;

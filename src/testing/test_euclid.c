@@ -130,5 +130,5 @@ START_TEST(test_vectors_spherical)
 }
 END_TEST
 
-TEST_CASE(euclid, test_euclid_angles, test_vectors_spherical)
+TEST_CASE(euclid, test_euclid_angles, test_vectors, test_vectors_spherical)
 
