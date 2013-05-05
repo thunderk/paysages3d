@@ -42,6 +42,7 @@ void DialogTerrainPainting::revert()
 
 void DialogTerrainPainting::brushConfigChanged()
 {
+    QLabel* label;
     QComboBox* combobox;
     QSlider* slider;
 
@@ -68,6 +69,11 @@ void DialogTerrainPainting::brushConfigChanged()
     }
 
     // Update brush description
+    label = findChild<QLabel*>("label_brush_description");
+    if (label)
+    {
+        label->setText(getHelpText());
+    }
 
     // Update brush preview
 
@@ -95,4 +101,10 @@ void DialogTerrainPainting::heightmapChanged()
             progress->setValue(memused / 1024);
         }
     }
+}
+
+QString DialogTerrainPainting::getHelpText()
+{
+    QString result = _brush.getHelpText();
+    return result;
 }

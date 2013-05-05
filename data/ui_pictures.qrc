@@ -3,5 +3,15 @@
         <file>images/apply.png</file>
         <file>images/cancel.png</file>
         <file>images/revert.png</file>
+        <file>images/explore.png</file>
+        <file>images/render.png</file>
+    </qresource>
+    <qresource prefix="/tabs">
+        <file>images/tab_atmosphere.png</file>
+        <file>images/tab_clouds.png</file>
+        <file>images/tab_render.png</file>
+        <file>images/tab_terrain.png</file>
+        <file>images/tab_textures.png</file>
+        <file>images/tab_water.png</file>
     </qresource>
 </RCC>

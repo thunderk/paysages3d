@@ -508,6 +508,21 @@ void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, dou
     _applyBrush(heightmap, brush, value, NULL, _applyBrushElevation);
 }
 
+static double _applyBrushFlatten(TerrainHeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
+{
+    UNUSED(heightmap);
+    UNUSED(brush);
+    UNUSED(data);
+
+    double ideal = *((double*)data);
+    return basevalue + (ideal - basevalue) * influence * force;
+}
+
+void terrainBrushFlatten(TerrainHeightMap* heightmap, TerrainBrush* brush, double height, double force)
+{
+    _applyBrush(heightmap, brush, force, &height, _applyBrushFlatten);
+}
+
 static double _applyBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
 {
     UNUSED(data);

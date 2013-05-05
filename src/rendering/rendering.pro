@@ -124,3 +124,5 @@ unix:!symbian {
     }
     INSTALLS += target
 }
+
+FORMS +=

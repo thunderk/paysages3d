@@ -3,7 +3,6 @@
 #include <QColor>
 #include <QSlider>
 #include "tools.h"
-#include "dialogheightmap.h"
 #include "terrain/dialogterrainpainting.h"
 #include "rendering/scenery.h"
 
@@ -78,11 +77,9 @@ void FormTerrain::configChangeEvent()
 void FormTerrain::startPainting()
 {
     DialogTerrainPainting* dialog = new DialogTerrainPainting(this, _definition);
-    dialog->exec();
-    delete dialog;
-
-    /*if (DialogHeightMap::editHeightMap(this, _definition))
+    if (dialog->exec())
     {
         configChangeEvent();
-    }*/
+    }
+    delete dialog;
 }

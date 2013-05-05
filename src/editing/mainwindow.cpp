@@ -20,6 +20,8 @@
 #include "formwater.h"
 #include "formrender.h"
 
+#include "terrain/mainterrainform.h"
+
 #include "dialogrender.h"
 #include "dialogexplorer.h"
 
@@ -91,6 +93,8 @@ QMainWindow(parent)
     tabs->addTab(form, QIcon(getDataPath("images/tab_terrain.png")), tr("Terrain"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
+
+    tabs->addTab(new MainTerrainForm(tabs), QIcon(getDataPath("images/tab_terrain.png")), tr("Landscape shape"));
 
     form = new FormTextures(tabs);
     tabs->addTab(form, QIcon(getDataPath("images/tab_textures.png")), tr("Textures"));

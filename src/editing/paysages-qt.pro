@@ -1,3 +1,7 @@
+isEmpty(PROJECT_PATH) {
+PROJECT_PATH = ../..
+}
+
 TEMPLATE = app
 CONFIG += qt
 QT += core gui opengl
@@ -18,9 +22,6 @@ unix:LIBS += -L$$DESTDIR -lpaysages_rendering -lpaysages_exploring
 win32:LIBS += ../libpaysages.a ../libpaysages_exploring.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-2.0
 
 TRANSLATIONS = $$PROJECT_PATH/data/i18n/paysages_fr.ts
-
-#system(lupdate paysages-qt.pro)
-#system(lrelease $$TRANSLATIONS)
 
 HEADERS += \
     widgetheightmap.h \
@@ -65,7 +66,8 @@ HEADERS += \
     baseexplorerchunk.h \
     terrain/dialogterrainpainting.h \
     common/widgetglobalformbuttons.h \
-    terrain/paintingbrush.h
+    terrain/paintingbrush.h \
+    terrain/mainterrainform.h
 
 SOURCES += \
     widgetheightmap.cpp \
@@ -110,11 +112,13 @@ SOURCES += \
     baseexplorerchunk.cpp \
     terrain/dialogterrainpainting.cpp \
     common/widgetglobalformbuttons.cpp \
-    terrain/paintingbrush.cpp
+    terrain/paintingbrush.cpp \
+    terrain/mainterrainform.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \
-    common/widgetglobalformbuttons.ui
+    common/widgetglobalformbuttons.ui \
+    terrain/mainterrainform.ui
 
 RESOURCES += \
     ../../data/ui_pictures.qrc

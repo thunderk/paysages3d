@@ -8,6 +8,7 @@ PaintingBrush::PaintingBrush()
     _size = 0.0;
     _smoothing = 0.0;
     _strength = 0.0;
+    _height = 0.0;
     _noise = noiseCreateGenerator();
     noiseAddLevelsSimple(_noise, 10, 1.0, -0.5, 0.5, 0.5);
 }
@@ -79,6 +80,24 @@ void PaintingBrush::drawPreview(QWidget* widget)
 
 }
 
+QString PaintingBrush::getHelpText()
+{
+    switch (_mode)
+    {
+    case PAINTING_BRUSH_RAISE:
+        return QObject::tr("<strong>Left click</strong>: raise terrain<br><br><strong>Right click</strong>: lower terrain");
+    case PAINTING_BRUSH_SMOOTH:
+        return QObject::tr("<strong>Left click</strong>: add random noise to terrain<br><br><strong>Right click</strong>: smooth details");
+    case PAINTING_BRUSH_FLATTEN:
+        return QObject::tr("<strong>Left click</strong>: flatten at height picked with right click<br><br><strong>Right click</strong>: pick height at center");
+    case PAINTING_BRUSH_FIX_DISCONTINUITIES:
+        return QObject::tr("<strong>Left click</strong>: fix discontinuities in slope");
+    case PAINTING_BRUSH_RESTORE:
+        return QObject::tr("<strong>Left click</strong>: cancel all modifications on terrain");
+    }
+    return QString("");
+}
+
 void PaintingBrush::applyToTerrain(TerrainDefinition* terrain, double x, double z, double duration, bool reverse)
 {
     double brush_strength;
@@ -109,6 +128,16 @@ void PaintingBrush::applyToTerrain(TerrainDefinition* terrain, double x, double 
         else
         {
             terrainBrushAddNoise(terrain->height_map, &brush, _noise, brush_strength * 0.5);
+        }
+        break;
+    case PAINTING_BRUSH_FLATTEN:
+        if (reverse)
+        {
+            _height = terrainGetInterpolatedHeight(terrain, x, z, 1);
+        }
+        else
+        {
+            terrainBrushFlatten(terrain->height_map, &brush, _height, brush_strength);
         }
         break;
     case PAINTING_BRUSH_RESTORE:

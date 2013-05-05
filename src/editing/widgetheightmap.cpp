@@ -462,12 +462,12 @@ void WidgetHeightMap::scrollTopCamera(double dx, double dz)
 {
     if (dx != 0.0)
     {
-        _target_x += dx;
+        _target_x += dx * _zoom * 0.05;
     }
     if (dz != 0.0)
     {
 
-        _target_z += dz;
+        _target_z += dz * _zoom * 0.05;
     }
 }
 

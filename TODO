@@ -10,6 +10,7 @@ Technology Preview 2 :
    => Displacement on 3d explorer and previews.
    => Optimize ray marching (for tracing and shadows), using base terrain and displacement power.
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
+- Compress and ship bruneton cache data.
 - Translations.
 
 Technlogy Preview 3 :

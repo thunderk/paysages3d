@@ -32,6 +32,7 @@ public:
     double getInfluence(double relative_x, double relative_z);
 
     void drawPreview(QWidget* widget);
+    QString getHelpText();
 
     void applyToTerrain(TerrainDefinition* terrain, double x, double z, double duration, bool reverse);
 
@@ -40,6 +41,7 @@ private:
     double _size;
     double _smoothing;
     double _strength;
+    double _height;
     NoiseGenerator* _noise;
 };
 

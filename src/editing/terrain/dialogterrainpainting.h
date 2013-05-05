@@ -24,6 +24,8 @@ public slots:
     void revert();
 
 private:
+    QString getHelpText();
+
     Ui::DialogTerrainPainting *ui;
 
     TerrainDefinition* _terrain_modified;

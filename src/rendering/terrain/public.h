@@ -81,6 +81,7 @@ void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, dou
 void terrainBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
 void terrainBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value);
 void terrainBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
+void terrainBrushFlatten(TerrainHeightMap* heightmap, TerrainBrush* brush, double height, double force);
 void terrainEndBrushStroke(TerrainHeightMap* heightmap);
 
 #ifdef __cplusplus

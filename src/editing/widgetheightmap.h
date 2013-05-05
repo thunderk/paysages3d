@@ -16,13 +16,6 @@ typedef struct
     int painted;
 } _VertexInfo;
 
-typedef enum
-{
-    HEIGHTMAP_BRUSH_RAISE = 0,
-    HEIGHTMAP_BRUSH_SMOOTH = 1,
-    HEIGHTMAP_BRUSH_RESTORE = 2
-} HeightMapBrushMode;
-
 class WidgetHeightMap : public QGLWidget
 {
     Q_OBJECT
