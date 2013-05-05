@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogTerrainPainting</class>
+ <widget class="QDialog" name="DialogTerrainPainting">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>912</width>
+    <height>619</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Paysages 3D - Terrain painting</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="WidgetHeightMap" name="widget_heightmap" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>400</width>
+         <height>400</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="verticalWidget" native="true">
+       <property name="maximumSize">
+        <size>
+         <width>450</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QWidget" name="widget_2" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <layout class="QFormLayout" name="formLayout">
+             <property name="fieldGrowthPolicy">
+              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Brush Tool : </string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="input_brush_mode">
+               <item>
+                <property name="text">
+                 <string>Raise / Lower (F1)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Add noise / Smooth (F2)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Flatten terrain (F3)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Fix discontinuities (F11)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Restore to default (F12)</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Brush size :</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QSlider" name="input_brush_size">
+               <property name="minimum">
+                <number>5</number>
+               </property>
+               <property name="maximum">
+                <number>100</number>
+               </property>
+               <property name="value">
+                <number>20</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>Brush smoothing :</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QSlider" name="input_brush_smoothing">
+               <property name="maximum">
+                <number>100</number>
+               </property>
+               <property name="value">
+                <number>80</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Brush strength :</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QSlider" name="input_brush_strength">
+               <property name="minimum">
+                <number>10</number>
+               </property>
+               <property name="maximum">
+                <number>100</number>
+               </property>
+               <property name="value">
+                <number>20</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string notr="true">{ Brush information }</string>
+             </property>
+             <property name="margin">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <property name="topMargin">
+              <number>8</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="label_7">
+               <property name="text">
+                <string>Brush preview :</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="widget_3" native="true">
+               <property name="minimumSize">
+                <size>
+                 <width>200</width>
+                 <height>200</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <item>
+      <widget class="QProgressBar" name="progress_memory_consumption">
+       <property name="maximumSize">
+        <size>
+         <width>150</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="value">
+        <number>24</number>
+       </property>
+       <property name="textVisible">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_memory_consumption">
+       <property name="text">
+        <string notr="true">{ memory consumption }</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="WidgetGlobalFormButtons" name="widget_4" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>WidgetGlobalFormButtons</class>
+   <extends>QWidget</extends>
+   <header>common/widgetglobalformbuttons.h</header>
+   <container>1</container>
+   <slots>
+    <signal>okClicked()</signal>
+    <signal>revertClicked()</signal>
+    <signal>cancelClicked()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>WidgetHeightMap</class>
+   <extends>QWidget</extends>
+   <header>widgetheightmap.h</header>
+   <container>1</container>
+   <slots>
+    <signal>heightmapChanged()</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>input_brush_mode</tabstop>
+  <tabstop>input_brush_size</tabstop>
+  <tabstop>input_brush_smoothing</tabstop>
+  <tabstop>input_brush_strength</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>input_brush_size</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>DialogTerrainPainting</receiver>
+   <slot>brushConfigChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>676</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>437</x>
+     <y>72</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>input_brush_smoothing</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>DialogTerrainPainting</receiver>
+   <slot>brushConfigChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>728</x>
+     <y>97</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>437</x>
+     <y>102</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>input_brush_strength</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>DialogTerrainPainting</receiver>
+   <slot>brushConfigChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>762</x>
+     <y>135</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>437</x>
+     <y>132</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>input_brush_mode</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>DialogTerrainPainting</receiver>
+   <slot>brushConfigChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>752</x>
+     <y>42</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>437</x>
+     <y>40</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget_heightmap</sender>
+   <signal>heightmapChanged()</signal>
+   <receiver>DialogTerrainPainting</receiver>
+   <slot>heightmapChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>396</x>
+     <y>566</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>445</x>
+     <y>618</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget_4</sender>
+   <signal>okClicked()</signal>
+   <receiver>DialogTerrainPainting</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>816</x>
+     <y>593</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>683</x>
+     <y>615</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget_4</sender>
+   <signal>cancelClicked()</signal>
+   <receiver>DialogTerrainPainting</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>870</x>
+     <y>600</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>711</x>
+     <y>618</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget_4</sender>
+   <signal>revertClicked()</signal>
+   <receiver>DialogTerrainPainting</receiver>
+   <slot>revert()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>827</x>
+     <y>606</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>747</x>
+     <y>618</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>brushConfigChanged()</slot>
+  <slot>heightmapChanged()</slot>
+  <slot>revert()</slot>
+ </slots>
+</ui>

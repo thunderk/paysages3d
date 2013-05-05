@@ -19,6 +19,8 @@ static inline QString getDataPath(QString path)
     return QDir("./data").absoluteFilePath(path);
 }
 
+QString getHumanMemory(qint64 memused);
+
 class DialogWithPreview:public QDialog
 {
     Q_OBJECT

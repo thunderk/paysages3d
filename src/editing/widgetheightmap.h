@@ -3,6 +3,7 @@
 
 #include <QGLWidget>
 #include <QDateTime>
+#include "terrain/paintingbrush.h"
 #include "rendering/camera.h"
 #include "rendering/tools/euclid.h"
 #include "rendering/renderer.h"
@@ -26,15 +27,11 @@ class WidgetHeightMap : public QGLWidget
 {
     Q_OBJECT
 public:
-    WidgetHeightMap(QWidget* parent, TerrainDefinition* terrain);
+    WidgetHeightMap(QWidget* parent);
     ~WidgetHeightMap();
 
-    void setBrushMode(HeightMapBrushMode mode);
-    void setBrushSize(double size);
-    void setBrushSmoothing(double smoothing);
-    void setBrushStrength(double smoothing);
-
-    QString getMemoryStats();
+    void setTerrain(TerrainDefinition* terrain);
+    void setBrush(PaintingBrush* brush);
 
 public slots:
     void revert();
@@ -67,7 +64,6 @@ private:
     _VertexInfo* _vertices;
 
     bool _dirty;
-    qint64 _memory_stats;
 
     double _water_height;
     bool _water;
@@ -91,13 +87,9 @@ private:
     CameraDefinition* _current_camera;
     double _zoom;
 
+    PaintingBrush* _brush;
     double _brush_x;
     double _brush_z;
-    HeightMapBrushMode _brush_mode;
-    double _brush_size;
-    double _brush_smoothing;
-    double _brush_strength;
-    NoiseGenerator* _brush_noise;
 };
 
 #endif

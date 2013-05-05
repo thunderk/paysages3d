@@ -30,7 +30,7 @@ struct CameraDefinition
 void cameraSave(PackStream* stream, CameraDefinition* camera)
 {
     v3Save(stream, &camera->location);
-    packWriteDouble(stream, &camera->direction.r);
+    packWriteDouble(stream , &camera->direction.r);
     packWriteDouble(stream, &camera->direction.phi);
     packWriteDouble(stream, &camera->direction.theta);
     packWriteDouble(stream, &camera->roll);

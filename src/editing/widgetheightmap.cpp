@@ -10,7 +10,7 @@
 
 #define HEIGHTMAP_RESOLUTION 256
 
-WidgetHeightMap::WidgetHeightMap(QWidget* parent, TerrainDefinition* terrain) :
+WidgetHeightMap::WidgetHeightMap(QWidget* parent) :
 QGLWidget(parent)
 {
     setMinimumSize(500, 500);
@@ -19,11 +19,8 @@ QGLWidget(parent)
     setCursor(Qt::CrossCursor);
     startTimer(100);
 
-    _memory_stats = terrainGetMemoryStats(terrain);
-
-    _terrain = terrain;
+    _terrain = NULL;
     _renderer = rendererCreate();
-    TerrainRendererClass.bind(_renderer, _terrain);
     _vertices = new _VertexInfo[HEIGHTMAP_RESOLUTION * HEIGHTMAP_RESOLUTION];
 
     _dirty = true;
@@ -59,14 +56,9 @@ QGLWidget(parent)
     cameraSetZoomToTarget(_top_camera, _zoom);
     cameraCopyDefinition(_current_camera, _top_camera);
 
+    _brush = NULL;
     _brush_x = 0.0;
     _brush_z = 0.0;
-    _brush_mode = HEIGHTMAP_BRUSH_RAISE;
-    _brush_size = 10.0;
-    _brush_smoothing = 0.5;
-    _brush_strength = 1.0;
-    _brush_noise = noiseCreateGenerator();
-    noiseAddLevelsSimple(_brush_noise, 10, 1.0, -0.5, 0.5, 0.5);
 }
 
 WidgetHeightMap::~WidgetHeightMap()
@@ -75,70 +67,21 @@ WidgetHeightMap::~WidgetHeightMap()
     cameraDeleteDefinition(_top_camera);
     cameraDeleteDefinition(_temp_camera);
     rendererDelete(_renderer);
-    noiseDeleteGenerator(_brush_noise);
     delete[] _vertices;
 }
 
-void WidgetHeightMap::setBrushMode(HeightMapBrushMode mode)
+void WidgetHeightMap::setTerrain(TerrainDefinition* terrain)
 {
-    _brush_mode = mode;
-    _brush_x = 0.0;
-    _brush_z = 0.0;
-    updateGL();
+    _terrain = terrain;
+    TerrainRendererClass.bind(_renderer, _terrain);
+
+    revert();
 }
 
-void WidgetHeightMap::setBrushSize(double size)
+void WidgetHeightMap::setBrush(PaintingBrush* brush)
 {
-    _brush_size = size;
-    _brush_x = 0.0;
-    _brush_z = 0.0;
+    _brush = brush;
     updateGL();
-}
-
-void WidgetHeightMap::setBrushSmoothing(double smoothing)
-{
-    _brush_smoothing = smoothing;
-    _brush_x = 0.0;
-    _brush_z = 0.0;
-    updateGL();
-}
-
-void WidgetHeightMap::setBrushStrength(double strength)
-{
-    _brush_strength = strength;
-    _brush_x = 0.0;
-    _brush_z = 0.0;
-    updateGL();
-}
-
-QString WidgetHeightMap::getMemoryStats()
-{
-    qint64 memused = _memory_stats;
-    if (memused >= 1024)
-    {
-        memused /= 1024;
-        if (memused >= 1024)
-        {
-            memused /= 1024;
-            if (memused >= 1024)
-            {
-                memused /= 1024;
-                return tr("%1 GB").arg(memused);
-            }
-            else
-            {
-                return tr("%1 MB").arg(memused);
-            }
-        }
-        else
-        {
-            return tr("%1 kB").arg(memused);
-        }
-    }
-    else
-    {
-        return tr("%1 B").arg(memused);
-    }
 }
 
 void WidgetHeightMap::revert()
@@ -205,7 +148,14 @@ void WidgetHeightMap::mousePressEvent(QMouseEvent* event)
 void WidgetHeightMap::mouseReleaseEvent(QMouseEvent*)
 {
     _last_brush_action = 0;
-    terrainEndBrushStroke(_terrain->height_map);
+    if (_terrain)
+    {
+        terrainEndBrushStroke(_terrain->height_map);
+    }
+    if (_brush)
+    {
+        _brush->randomizeNoise();
+    }
 }
 
 void WidgetHeightMap::mouseMoveEvent(QMouseEvent* event)
@@ -230,6 +180,11 @@ void WidgetHeightMap::mouseMoveEvent(QMouseEvent* event)
 
 void WidgetHeightMap::timerEvent(QTimerEvent*)
 {
+    if (not _terrain)
+    {
+        return;
+    }
+
     QDateTime new_time = QDateTime::currentDateTime();
     double duration = 0.001 * (double) _last_time.msecsTo(new_time);
     _last_time = new_time;
@@ -258,40 +213,9 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
     }
 
     // Apply brush action
-    if (_last_brush_action != 0)
+    if (_last_brush_action != 0 && _brush)
     {
-        double brush_strength;
-        TerrainBrush brush;
-
-        brush.relative_x = _brush_x + _target_x;
-        brush.relative_z = _brush_z + _target_z;
-        brush.hard_radius = _brush_size * (1.0 - _brush_smoothing);
-        brush.smoothed_size = _brush_size * _brush_smoothing;
-        brush.total_radius = brush.hard_radius + brush.smoothed_size;
-
-        brush_strength = _brush_strength * duration / 0.1;
-
-        switch (_brush_mode)
-        {
-        case HEIGHTMAP_BRUSH_RAISE:
-            terrainBrushElevation(_terrain->height_map, &brush, brush_strength * _last_brush_action * 3.0);
-            break;
-        case HEIGHTMAP_BRUSH_SMOOTH:
-            if (_last_brush_action < 0)
-            {
-                terrainBrushSmooth(_terrain->height_map, &brush, brush_strength);
-            }
-            else
-            {
-                terrainBrushAddNoise(_terrain->height_map, &brush, _brush_noise, brush_strength * 0.5);
-            }
-            break;
-        case HEIGHTMAP_BRUSH_RESTORE:
-            terrainBrushReset(_terrain->height_map, &brush, brush_strength);
-            break;
-        default:
-            return;
-        }
+        _brush->applyToTerrain(_terrain, _brush_x + _target_x, _brush_z + _target_z, duration, _last_brush_action < 0);
 
         // TODO Only mark dirty the updated area
         _dirty = true;
@@ -378,6 +302,11 @@ void WidgetHeightMap::paintGL()
     double frame_time;
     int rx, rz;
 
+    if (not _terrain)
+    {
+        return;
+    }
+
     rx = HEIGHTMAP_RESOLUTION;
     rz = HEIGHTMAP_RESOLUTION;
 
@@ -444,24 +373,23 @@ void WidgetHeightMap::paintGL()
             for (int dx = 1; dx >= 0; dx--)
             {
                 _VertexInfo* vertex = _vertices + z * rx + x + dx;
-                double diff_x, diff_z, diff;
+                double brush_influence;
 
-                diff_x = vertex->point.x - _target_x - _brush_x;
-                diff_z = vertex->point.z - _target_z - _brush_z;
-                diff = sqrt(diff_x * diff_x + diff_z * diff_z);
-                if (diff > _brush_size)
+                if (_brush)
                 {
-                    diff = 0.0;
-                }
-                else if (diff > _brush_size * (1.0 - _brush_smoothing))
-                {
-                    diff = 1.0 - (diff - _brush_size * (1.0 - _brush_smoothing)) / (_brush_size * _brush_smoothing);
+                    double diff_x, diff_z;
+
+                    diff_x = vertex->point.x - _target_x - _brush_x;
+                    diff_z = vertex->point.z - _target_z - _brush_z;
+
+                    brush_influence = _brush->getInfluence(diff_x, diff_z);
                 }
                 else
                 {
-                    diff = 1.0;
+                    brush_influence = 0.0;
                 }
-                glColor3f(0.8 + diff, vertex->painted ? 1.0 : 0.8, 0.8);
+
+                glColor3f(0.8 + brush_influence, vertex->painted ? 1.0 : 0.8, 0.8);
                 glNormal3f(vertex->normal.x, vertex->normal.y, vertex->normal.z);
                 glVertex3f(vertex->point.x, vertex->point.y, vertex->point.z);
             }
@@ -566,8 +494,6 @@ void WidgetHeightMap::updateVertexInfo()
     _VertexInfo* old_vertices = _vertices;
     _vertices = new _VertexInfo[rx * rz];
     delete[] old_vertices;
-
-    _memory_stats = terrainGetMemoryStats(_terrain);
 
     _last_update_x = (int) (floor(_target_x));
     _last_update_z = (int) (floor(_target_z));

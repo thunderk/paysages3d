@@ -17,9 +17,104 @@ LIBS += -lGLU
 unix:LIBS += -L$$DESTDIR -lpaysages_rendering -lpaysages_exploring
 win32:LIBS += ../libpaysages.a ../libpaysages_exploring.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-2.0
 
-HEADERS += $$files(*.h) $$files(../rendering/*.h) $$files(../rendering/shared/*.h) $$files(../exploring/*.h)
-SOURCES += $$files(*.cpp)
 TRANSLATIONS = $$PROJECT_PATH/data/i18n/paysages_fr.ts
 
 #system(lupdate paysages-qt.pro)
 #system(lrelease $$TRANSLATIONS)
+
+HEADERS += \
+    widgetheightmap.h \
+    widgetexplorer.h \
+    widgetcurveeditor.h \
+    tools.h \
+    previewosd.h \
+    previewmaterial.h \
+    previewcolorgradation.h \
+    mainwindow.h \
+    inputnoise.h \
+    inputmaterial.h \
+    inputlayers.h \
+    inputint.h \
+    inputenum.h \
+    inputdouble.h \
+    inputcurve.h \
+    inputcolorgradation.h \
+    inputcolor.h \
+    inputcamera.h \
+    inputboolean.h \
+    formwater.h \
+    formtextures.h \
+    formterrain.h \
+    formrender.h \
+    formmaterial.h \
+    formclouds.h \
+    formatmosphere.h \
+    explorerchunkterrain.h \
+    explorerchunksky.h \
+    dialogrender.h \
+    dialognoise.h \
+    dialogmaterial.h \
+    dialoglayers.h \
+    dialogexplorer.h \
+    dialogcurve.h \
+    dialogcolorgradation.h \
+    basepreview.h \
+    baseinput.h \
+    baseformlayer.h \
+    baseform.h \
+    baseexplorerchunk.h \
+    terrain/dialogterrainpainting.h \
+    common/widgetglobalformbuttons.h \
+    terrain/paintingbrush.h
+
+SOURCES += \
+    widgetheightmap.cpp \
+    widgetexplorer.cpp \
+    widgetcurveeditor.cpp \
+    tools.cpp \
+    previewosd.cpp \
+    previewmaterial.cpp \
+    previewcolorgradation.cpp \
+    mainwindow.cpp \
+    inputnoise.cpp \
+    inputmaterial.cpp \
+    inputlayers.cpp \
+    inputint.cpp \
+    inputenum.cpp \
+    inputdouble.cpp \
+    inputcurve.cpp \
+    inputcolorgradation.cpp \
+    inputcolor.cpp \
+    inputcamera.cpp \
+    inputboolean.cpp \
+    formwater.cpp \
+    formtextures.cpp \
+    formterrain.cpp \
+    formrender.cpp \
+    formmaterial.cpp \
+    formclouds.cpp \
+    formatmosphere.cpp \
+    explorerchunkterrain.cpp \
+    explorerchunksky.cpp \
+    dialogrender.cpp \
+    dialognoise.cpp \
+    dialogmaterial.cpp \
+    dialoglayers.cpp \
+    dialogexplorer.cpp \
+    dialogcurve.cpp \
+    dialogcolorgradation.cpp \
+    basepreview.cpp \
+    baseinput.cpp \
+    baseformlayer.cpp \
+    baseform.cpp \
+    baseexplorerchunk.cpp \
+    terrain/dialogterrainpainting.cpp \
+    common/widgetglobalformbuttons.cpp \
+    terrain/paintingbrush.cpp
+
+FORMS += \
+    terrain/dialogterrainpainting.ui \
+    common/widgetglobalformbuttons.ui
+
+RESOURCES += \
+    ../../data/ui_pictures.qrc

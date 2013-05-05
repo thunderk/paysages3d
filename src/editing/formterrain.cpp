@@ -4,6 +4,7 @@
 #include <QSlider>
 #include "tools.h"
 #include "dialogheightmap.h"
+#include "terrain/dialogterrainpainting.h"
 #include "rendering/scenery.h"
 
 static TerrainDefinition* _definition;
@@ -76,8 +77,12 @@ void FormTerrain::configChangeEvent()
 
 void FormTerrain::startPainting()
 {
-    if (DialogHeightMap::editHeightMap(this, _definition))
+    DialogTerrainPainting* dialog = new DialogTerrainPainting(this, _definition);
+    dialog->exec();
+    delete dialog;
+
+    /*if (DialogHeightMap::editHeightMap(this, _definition))
     {
         configChangeEvent();
-    }
+    }*/
 }

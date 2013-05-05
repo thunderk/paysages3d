@@ -1,7 +1,6 @@
 Technology Preview 2 :
 - Finalize terrain editor.
    => Add a generation dialog for base noise (overwriting changes).
-   => Implement chunks merging (with max size control).
 - Get rid of noise dialogs, for simpler settings.
 - Finalize lighting/clouds refactoring
    => Restore cloud lighting
@@ -14,10 +13,8 @@ Technology Preview 2 :
 - Translations.
 
 Technlogy Preview 3 :
-- Start using unit testing.
-- Improve terrain 3D editor:
-   => Add a map preview with edit area highlighted.
-   => Allow zooming and simplified camera control.
+- Start an undo/redo system ?
+- Add a map preview to terrain editor.
 - Better time selection widget for atmosphere.
 - Clouds should keep distance to ground.
 - Find a proper model for night sky (maybe Shirley).

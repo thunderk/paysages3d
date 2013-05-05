@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/buttons/logo">
+        <file>images/apply.png</file>
+        <file>images/cancel.png</file>
+        <file>images/revert.png</file>
+    </qresource>
+</RCC>
