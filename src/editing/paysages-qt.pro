@@ -45,7 +45,6 @@ HEADERS += \
     inputboolean.h \
     formwater.h \
     formtextures.h \
-    formterrain.h \
     formrender.h \
     formmaterial.h \
     formclouds.h \
@@ -67,7 +66,9 @@ HEADERS += \
     terrain/dialogterrainpainting.h \
     common/widgetglobalformbuttons.h \
     terrain/paintingbrush.h \
-    terrain/mainterrainform.h
+    terrain/mainterrainform.h \
+    common/freeformhelper.h \
+    terrain/previewterrainshape.h
 
 SOURCES += \
     widgetheightmap.cpp \
@@ -91,7 +92,6 @@ SOURCES += \
     inputboolean.cpp \
     formwater.cpp \
     formtextures.cpp \
-    formterrain.cpp \
     formrender.cpp \
     formmaterial.cpp \
     formclouds.cpp \
@@ -113,7 +113,9 @@ SOURCES += \
     terrain/dialogterrainpainting.cpp \
     common/widgetglobalformbuttons.cpp \
     terrain/paintingbrush.cpp \
-    terrain/mainterrainform.cpp
+    terrain/mainterrainform.cpp \
+    common/freeformhelper.cpp \
+    terrain/previewterrainshape.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \

@@ -15,7 +15,6 @@
 #include "basepreview.h"
 #include "formclouds.h"
 #include "formatmosphere.h"
-#include "formterrain.h"
 #include "formtextures.h"
 #include "formwater.h"
 #include "formrender.h"
@@ -88,11 +87,6 @@ QMainWindow(parent)
 
     tabs = new QTabWidget(this);
     tabs->setIconSize(QSize(32, 32));
-
-    form = new FormTerrain(tabs);
-    tabs->addTab(form, QIcon(getDataPath("images/tab_terrain.png")), tr("Terrain"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
-    _forms.append(form);
 
     tabs->addTab(new MainTerrainForm(tabs), QIcon(getDataPath("images/tab_terrain.png")), tr("Landscape shape"));
 
@@ -242,7 +236,7 @@ void MainWindow::fileLoad()
 
 void MainWindow::showAboutDialog()
 {
-    QMessageBox::about(this, tr("Paysages 3D"), tr("A 3D landscape editing and rendering software.\n\nAuthors :\nProgramming - Michael Lemaire\n\nCredits :\nQt - http://qt.nokia.com/\nDevIL - http://openil.sourceforge.net/\nGLib - http://www.gtk.org/\n"));
+    QMessageBox::about(this, tr("Paysages 3D"), tr("A 3D landscape editing and rendering software.\n\nAuthors :\nProgramming - Michael Lemaire\n\nCredits :\nQt - http://qt-project.org/\nDevIL - http://openil.sourceforge.net/\nGLib - http://www.gtk.org/\n"));
 }
 
 void MainWindow::quickPreview()

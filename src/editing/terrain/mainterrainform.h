@@ -2,6 +2,8 @@
 #define MAINTERRAINFORM_H
 
 #include <QWidget>
+#include "common/freeformhelper.h"
+#include "rendering/terrain/public.h"
 
 namespace Ui {
 class MainTerrainForm;
@@ -14,9 +16,23 @@ class MainTerrainForm : public QWidget
 public:
     explicit MainTerrainForm(QWidget *parent = 0);
     ~MainTerrainForm();
-    
+
+    inline TerrainDefinition* getTerrainDefinition() {return _terrain;}
+
+public slots:
+    void refreshFromLocalData();
+    void refreshFromFellowData();
+    void updateLocalDataFromScenery();
+    void commitLocalDataToScenery();
+
+    void buttonPaintingPressed();
+    void buttonTexturesPressed();
+
 private:
     Ui::MainTerrainForm *ui;
+    FreeFormHelper* _form_helper;
+
+    TerrainDefinition* _terrain;
 };
 
 #endif // MAINTERRAINFORM_H
