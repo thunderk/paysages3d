@@ -3,6 +3,7 @@
 
 #include <QSlider>
 #include <QPushButton>
+#include "widgetsliderdecimal.h"
 #include "../basepreview.h"
 
 class FreeFormHelper:public QObject
@@ -18,7 +19,7 @@ public:
     void addPreview(BasePreview* preview);
     void addPreview(QString widget_name);
 
-    void addDoubleInputSlider(QSlider* slider, double* value, double min=0.0, double max=1.0, double small_step=0.0, double large_step=0.0);
+    void addDoubleInputSlider(WidgetSliderDecimal* slider, double* value, double min=0.0, double max=1.0, double small_step=0.0, double large_step=0.0);
     void addDoubleInputSlider(QString widget_name, double* value, double min=0.0, double max=1.0, double small_step=0.0, double large_step=0.0);
 
     void setApplyButton(QPushButton* button);
@@ -39,7 +40,6 @@ public:
     void openDialog(QDialog* dialog);
 
 signals:
-    void dataChanged();
     void revertClicked();
     void applyClicked();
 
@@ -52,6 +52,7 @@ public slots:
     void processDataChange();
     void processRevertClicked();
     void processApplyClicked();
+    void processDecimalChange(double value);
 
 private:
     QWidget* _form_widget;

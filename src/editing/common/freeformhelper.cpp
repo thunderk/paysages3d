@@ -1,7 +1,10 @@
 #include "freeformhelper.h"
 
 #include <QDialog>
+#include <QVariant>
 #include <cmath>
+
+Q_DECLARE_METATYPE(double*)
 
 FreeFormHelper::FreeFormHelper(QWidget* form_widget)
     :QObject()
@@ -42,21 +45,22 @@ void FreeFormHelper::addPreview(QString widget_name)
     addPreview(_form_widget->findChild<BasePreview*>(widget_name));
 }
 
-void FreeFormHelper::addDoubleInputSlider(QSlider* slider, double* value, double min, double max, double small_step, double large_step)
+void FreeFormHelper::addDoubleInputSlider(WidgetSliderDecimal* slider, double* value, double min, double max, double small_step, double large_step)
 {
-    if (slider && slider->inherits("QSlider"))
+    if (slider && slider->inherits("WidgetSliderDecimal"))
     {
-        slider->setMinimum(0);
-        slider->setMaximum(round((max - min) / small_step));
-        slider->setValue(round((*value - min) / small_step));
+        slider->setDecimalRange(min, max, small_step, large_step);
+        slider->setDecimalValue(*value);
 
-        slider->setTickInterval(round(large_step / small_step));
+        slider->setProperty("data_pointer", QVariant::fromValue<double*>(value));
+
+        connect(slider, SIGNAL(decimalValueChanged(double)), this, SLOT(processDecimalChange(double)));
     }
 }
 
 void FreeFormHelper::addDoubleInputSlider(QString widget_name, double* value, double min, double max, double small_step, double large_step)
 {
-    addDoubleInputSlider(_form_widget->findChild<QSlider*>(widget_name), value, min, max, small_step, large_step);
+    addDoubleInputSlider(_form_widget->findChild<WidgetSliderDecimal*>(widget_name), value, min, max, small_step, large_step);
 }
 
 void FreeFormHelper::setApplyButton(QPushButton* button)
@@ -166,5 +170,23 @@ void FreeFormHelper::processApplyClicked()
     if (_button_revert)
     {
         _button_revert->setEnabled(false);
+    }
+}
+
+void FreeFormHelper::processDecimalChange(double value)
+{
+    QObject* signal_sender = sender();
+
+    if (signal_sender && signal_sender->inherits("WidgetSliderDecimal"))
+    {
+        WidgetSliderDecimal* slider = (WidgetSliderDecimal*)signal_sender;
+        double* pointer = slider->property("data_pointer").value<double*>();
+
+        if (pointer)
+        {
+            *pointer = value;
+        }
+
+        processDataChange();
     }
 }
