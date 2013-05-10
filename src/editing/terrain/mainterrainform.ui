@@ -24,6 +24,9 @@
        <property name="title">
         <string>Infinite base shape</string>
        </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
        <layout class="QVBoxLayout" name="verticalLayout_9">
         <item>
          <widget class="QLabel" name="label_5">
@@ -76,6 +79,9 @@
        <property name="title">
         <string>Manual modifications</string>
        </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -114,6 +120,9 @@
       <widget class="QGroupBox" name="groupBox_1">
        <property name="title">
         <string>Global modifiers</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
@@ -181,6 +190,9 @@
        <property name="title">
         <string>Rendering control</string>
        </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
        <layout class="QVBoxLayout" name="verticalLayout_7">
         <item>
          <layout class="QFormLayout" name="formLayout_3">
@@ -216,6 +228,9 @@
       <widget class="QGroupBox" name="groupBox_7">
        <property name="title">
         <string>Links to other modules</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
@@ -318,6 +333,9 @@
        <property name="title">
         <string>Result preview</string>
        </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <widget class="BasePreview" name="preview_shape" native="true">
@@ -383,6 +401,9 @@
       <widget class="QGroupBox" name="groupBox_4">
        <property name="title">
         <string>Actions</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>

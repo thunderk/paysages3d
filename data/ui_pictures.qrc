@@ -5,6 +5,7 @@
         <file>images/revert.png</file>
         <file>images/explore.png</file>
         <file>images/render.png</file>
+        <file>images/about.png</file>
     </qresource>
     <qresource prefix="/tabs">
         <file>images/tab_atmosphere.png</file>

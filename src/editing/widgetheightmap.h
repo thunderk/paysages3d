@@ -28,6 +28,8 @@ public:
 
 public slots:
     void revert();
+    void toggleWater(bool enabled);
+    void toggleGrid(bool enabled);
 
 signals:
     void heightmapChanged();

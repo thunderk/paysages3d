@@ -1,4 +1,4 @@
-BUILDMODE=debug
+BUILDMODE=release
 BUILDPATH=./build/${BUILDMODE}
 CC=gcc
 MAKE=make
@@ -25,6 +25,9 @@ clean:
 	rm -f ${BUILDPATH}/paysages-tests
 	rm -f ${BUILDPATH}/libpaysages_exploring.so
 	rm -f ${BUILDPATH}/libpaysages_rendering.so
+
+debug:
+	make BUILDMODE=debug all
 
 release:
 	make BUILDMODE=release all

@@ -90,6 +90,18 @@ void WidgetHeightMap::revert()
     updateGL();
 }
 
+void WidgetHeightMap::toggleWater(bool enabled)
+{
+    _water = enabled;
+    updateGL();
+}
+
+void WidgetHeightMap::toggleGrid(bool enabled)
+{
+    _wireframe = enabled;
+    updateGL();
+}
+
 void WidgetHeightMap::keyPressEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_Up)
@@ -124,11 +136,18 @@ void WidgetHeightMap::keyPressEvent(QKeyEvent* event)
 
 void WidgetHeightMap::wheelEvent(QWheelEvent* event)
 {
-    if (event->orientation() == Qt::Vertical)
+    if (event->modifiers() == Qt::NoModifier)
     {
-        zoomTopCamera(-0.05 * (double) event->delta());
+        if (event->orientation() == Qt::Vertical)
+        {
+            zoomTopCamera(-0.05 * (double) event->delta());
+        }
+        event->accept();
     }
-    event->accept();
+    else
+    {
+        event->ignore();
+    }
 }
 
 void WidgetHeightMap::mousePressEvent(QMouseEvent* event)

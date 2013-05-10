@@ -17,6 +17,10 @@ public:
     explicit DialogTerrainPainting(QWidget *parent, TerrainDefinition* terrain);
     ~DialogTerrainPainting();
 
+protected:
+    virtual void keyReleaseEvent(QKeyEvent* event);
+    virtual void wheelEvent(QWheelEvent* event);
+
 public slots:
     void brushConfigChanged();
     void heightmapChanged();
