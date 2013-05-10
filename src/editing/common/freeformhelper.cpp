@@ -32,17 +32,18 @@ void FreeFormHelper::startManaging()
     emit needReverting();
 }
 
-void FreeFormHelper::addPreview(BasePreview* preview)
+void FreeFormHelper::addPreview(BasePreview* preview, PreviewRenderer* renderer)
 {
     if (preview && preview->inherits("BasePreview"))
     {
         _previews.append(preview);
+        preview->setRenderer(renderer);
     }
 }
 
-void FreeFormHelper::addPreview(QString widget_name)
+void FreeFormHelper::addPreview(QString widget_name, PreviewRenderer* renderer)
 {
-    addPreview(_form_widget->findChild<BasePreview*>(widget_name));
+    addPreview(_form_widget->findChild<BasePreview*>(widget_name), renderer);
 }
 
 void FreeFormHelper::addDoubleInputSlider(WidgetSliderDecimal* slider, double* value, double min, double max, double small_step, double large_step)

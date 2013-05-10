@@ -2,6 +2,7 @@
 #include "ui_mainterrainform.h"
 
 #include "dialogterrainpainting.h"
+#include "previewterrainshape.h"
 #include "tools.h"
 #include "rendering/scenery.h"
 
@@ -15,7 +16,8 @@ MainTerrainForm::MainTerrainForm(QWidget *parent) :
 
     _form_helper = new FreeFormHelper(this);
 
-    _form_helper->addPreview("preview_shape");
+    _renderer_shape = new PreviewTerrainShape(_terrain);
+    _form_helper->addPreview("preview_shape", _renderer_shape);
 
     _form_helper->addDoubleInputSlider("input_scaling", &_terrain->scaling, 0.1, 3.0, 0.03, 0.3);
     _form_helper->addDoubleInputSlider("input_height", &_terrain->height, 0.0, 3.0, 0.01, 0.1);
@@ -34,6 +36,7 @@ MainTerrainForm::~MainTerrainForm()
 {
     delete _form_helper;
     delete ui;
+    delete _renderer_shape;
 
     TerrainDefinitionClass.destroy(_terrain);
 }

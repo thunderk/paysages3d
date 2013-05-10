@@ -1,21 +1,23 @@
 #ifndef PREVIEWTERRAINSHAPE_H
 #define PREVIEWTERRAINSHAPE_H
 
-#include "basepreview.h"
+#include "common/previewrenderer.h"
 #include "rendering/renderer.h"
+#include "rendering/terrain/public.h"
 
-class PreviewTerrainShape : public BasePreview
+class PreviewTerrainShape : public PreviewRenderer
 {
     Q_OBJECT
 public:
-    explicit PreviewTerrainShape(QWidget *parent = 0);
+    explicit PreviewTerrainShape(TerrainDefinition* terrain);
 
 protected:
-    virtual Color getColor(double x, double y);
-    virtual void updateData();
+    virtual void bindEvent(BasePreview* preview);
+    virtual void updateEvent();
+    virtual Color getColor2D(double x, double y, double scaling);
 
 private:
-    Renderer* _renderer;
+    TerrainDefinition* _terrain;
 };
 
 #endif // PREVIEWTERRAINSHAPE_H

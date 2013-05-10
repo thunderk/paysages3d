@@ -1,22 +1,30 @@
 #include "previewterrainshape.h"
 
-PreviewTerrainShape::PreviewTerrainShape(QWidget *parent) :
-    BasePreview(parent)
+#include "basepreview.h"
+
+PreviewTerrainShape::PreviewTerrainShape(TerrainDefinition* terrain)
 {
-    _renderer = terrainCreatePreviewRenderer();
+    _terrain = terrain;
 
-    addOsd(QString("geolocation"));
-
-    configScaling(20.0, 1000.0, 20.0, 50.0);
-    configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
+    // TODO Don't delete the base renderer, just alter it
+    rendererDelete(renderer);
+    renderer = terrainCreatePreviewRenderer();
 }
 
-Color PreviewTerrainShape::getColor(double x, double y)
+void PreviewTerrainShape::bindEvent(BasePreview* preview)
 {
-    return terrainGetPreviewColor(_renderer, x, y, scaling);
+    preview->addOsd(QString("geolocation"));
+
+    preview->configScaling(20.0, 1000.0, 20.0, 50.0);
+    preview->configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
 }
 
-void PreviewTerrainShape::updateData()
+void PreviewTerrainShape::updateEvent()
 {
-    //TerrainRendererClass.bind(_renderer, _definition);
+    TerrainRendererClass.bind(renderer, _terrain);
+}
+
+Color PreviewTerrainShape::getColor2D(double x, double y, double scaling)
+{
+    return terrainGetPreviewColor(renderer, x, y, scaling);
 }

@@ -10,6 +10,7 @@
 #include <QLabel>
 #include <QHash>
 #include "previewosd.h"
+#include "common/previewrenderer.h"
 #include "rendering/tools/pack.h"
 #include "rendering/tools/color.h"
 
@@ -36,6 +37,8 @@ public:
     BasePreview(QWidget* parent);
     ~BasePreview();
 
+    void setRenderer(PreviewRenderer* renderer);
+
     virtual void savePack(PackStream* stream);
     virtual void loadPack(PackStream* stream);
 
@@ -51,22 +54,22 @@ public:
 
     QColor getPixelColor(int x, int y);
 
-protected:
-    virtual void updateData();
-    virtual void cameraEvent();
-    virtual Color getColor(double x, double y);
+    void addOsd(QString name);
 
     void configHdrToneMapping(bool active);
     void configScaling(double min, double max, double step, double init, bool logarithmic = true);
     void configScrolling(double xmin, double xmax, double xinit, double ymin, double ymax, double yinit);
-
-    void addOsd(QString name);
 
     void addChoice(const QString& key, const QString& title, const QStringList& choices, int init_value);
     virtual void choiceChangeEvent(const QString& key, int position);
 
     void addToggle(const QString& key, const QString& text, bool init_value);
     virtual void toggleChangeEvent(QString key, bool value);
+
+protected:
+    virtual void updateData();
+    virtual void cameraEvent();
+    virtual Color getColor(double x, double y);
 
     double xoffset;
     double yoffset;
@@ -95,6 +98,8 @@ private:
     QHash<QString, _ContextToggle> _toggles;
 
     QLabel* _info;
+
+    PreviewRenderer* _renderer;
 
     int _width;
     int _height;

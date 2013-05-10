@@ -33,6 +33,8 @@ private:
     FreeFormHelper* _form_helper;
 
     TerrainDefinition* _terrain;
+
+    PreviewRenderer* _renderer_shape;
 };
 
 #endif // MAINTERRAINFORM_H

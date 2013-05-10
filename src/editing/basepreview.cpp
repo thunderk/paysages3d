@@ -354,6 +354,8 @@ QWidget(parent)
     _transactions_count = 0;
     _redraw_requested = false;
 
+    _renderer = NULL;
+
     _info = new QLabel(this);
     _info->setVisible(false);
     _info->setStyleSheet("QLabel { background-color: white; color: black; }");
@@ -383,6 +385,12 @@ BasePreview::~BasePreview()
     delete _info;
     delete _pixbuf;
     delete _lock_drawing;
+}
+
+void BasePreview::setRenderer(PreviewRenderer* renderer)
+{
+    _renderer = renderer;
+    _renderer->bindEvent(this);
 }
 
 void BasePreview::configHdrToneMapping(bool active)
@@ -436,15 +444,26 @@ void BasePreview::reviveAll()
 
 void BasePreview::updateData()
 {
+    if (_renderer)
+    {
+        _renderer->updateEvent();
+    }
 }
 
 void BasePreview::cameraEvent()
 {
 }
 
-Color BasePreview::getColor(double, double)
+Color BasePreview::getColor(double x, double y)
 {
-    return COLOR_BLACK;
+    if (_renderer)
+    {
+        return _renderer->getColor2D(x, y, scaling);
+    }
+    else
+    {
+        return COLOR_BLACK;
+    }
 }
 
 void BasePreview::configScaling(double min, double max, double step, double init, bool logarithmic)

@@ -69,7 +69,8 @@ HEADERS += \
     terrain/mainterrainform.h \
     common/freeformhelper.h \
     terrain/previewterrainshape.h \
-    common/widgetsliderdecimal.h
+    common/widgetsliderdecimal.h \
+    common/previewrenderer.h
 
 SOURCES += \
     widgetheightmap.cpp \
@@ -117,7 +118,8 @@ SOURCES += \
     terrain/mainterrainform.cpp \
     common/freeformhelper.cpp \
     terrain/previewterrainshape.cpp \
-    common/widgetsliderdecimal.cpp
+    common/widgetsliderdecimal.cpp \
+    common/previewrenderer.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \

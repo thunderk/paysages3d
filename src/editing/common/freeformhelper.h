@@ -16,8 +16,8 @@ public:
 
     void startManaging();
 
-    void addPreview(BasePreview* preview);
-    void addPreview(QString widget_name);
+    void addPreview(BasePreview* preview, PreviewRenderer* renderer);
+    void addPreview(QString widget_name, PreviewRenderer* renderer);
 
     void addDoubleInputSlider(WidgetSliderDecimal* slider, double* value, double min=0.0, double max=1.0, double small_step=0.0, double large_step=0.0);
     void addDoubleInputSlider(QString widget_name, double* value, double min=0.0, double max=1.0, double small_step=0.0, double large_step=0.0);
