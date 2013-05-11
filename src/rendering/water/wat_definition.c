@@ -22,7 +22,6 @@ static WaterDefinition* _createDefinition()
 {
     WaterDefinition* definition = malloc(sizeof(WaterDefinition));
 
-    definition->height = -4.0;
     definition->_waves_noise = noiseCreateGenerator();
 
     waterAutoPreset(definition, WATER_PRESET_LAKE);
@@ -48,7 +47,6 @@ static void _copyDefinition(WaterDefinition* source, WaterDefinition* destinatio
 
 static void _saveDefinition(PackStream* stream, WaterDefinition* definition)
 {
-    packWriteDouble(stream, &definition->height);
     materialSave(stream, &definition->material);
     colorSave(stream, &definition->depth_color);
     packWriteDouble(stream, &definition->transparency_depth);
@@ -69,7 +67,6 @@ static void _saveDefinition(PackStream* stream, WaterDefinition* definition)
 
 static void _loadDefinition(PackStream* stream, WaterDefinition* definition)
 {
-    packReadDouble(stream, &definition->height);
     materialLoad(stream, &definition->material);
     colorLoad(stream, &definition->depth_color);
     packReadDouble(stream, &definition->transparency_depth);

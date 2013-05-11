@@ -14,7 +14,7 @@ Color waterGetPreviewCoverage(Renderer* renderer, double x, double y, double sca
     double height;
 
     height = renderer->terrain->getHeight(renderer, x, y, 1);
-    if (height > renderer->water->definition->height)
+    if (height > renderer->terrain->getWaterHeight(renderer))
     {
         return terrainGetPreviewColor(renderer, x, y, scaling);
     }

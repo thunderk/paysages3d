@@ -42,12 +42,12 @@ static WaterResult _fakeGetResult(Renderer* renderer, double x, double z)
 }
 
 /******************** Helpers ********************/
-static inline double _getHeight(WaterDefinition* definition, double x, double z)
+static inline double _getHeight(WaterDefinition* definition, double base_height, double x, double z)
 {
-    return definition->height + noiseGet2DTotal(definition->_waves_noise, x, z);
+    return base_height + noiseGet2DTotal(definition->_waves_noise, x, z);
 }
 
-static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, double detail)
+static inline Vector3 _getNormal(WaterDefinition* definition, double base_height, Vector3 base, double detail)
 {
     Vector3 back, right;
     double x, z;
@@ -56,12 +56,12 @@ static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, doub
     z = base.z;
 
     back.x = x;
-    back.y = _getHeight(definition, x, z + detail);
+    back.y = _getHeight(definition, base_height, x, z + detail);
     back.z = z + detail;
     back = v3Sub(back, base);
 
     right.x = x + detail;
-    right.y = _getHeight(definition, x + detail, z);
+    right.y = _getHeight(definition, base_height, x + detail, z);
     right.z = z;
     right = v3Sub(right, base);
 
@@ -97,31 +97,33 @@ static inline Color _getFoamMask(Renderer* renderer, WaterDefinition* definition
 {
     Color result;
     double foam_factor, normal_diff, location_offset;
+    double base_height;
 
+    base_height = renderer->terrain->getWaterHeight(renderer);
     location_offset = 2.0 * detail;
 
     foam_factor = 0.0;
     location.x += location_offset;
-    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, location, detail));
+    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, base_height, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.x -= location_offset * 2.0;
-    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, location, detail));
+    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, base_height, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.x += location_offset;
     location.z -= location_offset;
-    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, location, detail));
+    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, base_height, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.z += location_offset * 2.0;
-    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, location, detail));
+    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, base_height, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
@@ -162,12 +164,14 @@ static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 at)
 {
     WaterDefinition* definition = renderer->water->definition;
     double factor;
+    double base_height;
 
-    if (at.y < definition->height)
+    base_height = renderer->terrain->getWaterHeight(renderer);
+    if (at.y < base_height)
     {
         if (light->direction.y <= -0.00001)
         {
-            factor = (definition->height - at.y) / (-light->direction.y * definition->lighting_depth);
+            factor = (base_height - at.y) / (-light->direction.y * definition->lighting_depth);
             if (factor > 1.0)
             {
                 factor = 1.0;
@@ -200,17 +204,17 @@ static HeightInfo _realGetHeightInfo(Renderer* renderer)
     HeightInfo info;
     double noise_minvalue, noise_maxvalue;
 
-    info.base_height = definition->height;
+    info.base_height = renderer->terrain->getWaterHeight(renderer);
     noiseGetRange(definition->_waves_noise, &noise_minvalue, &noise_maxvalue);
-    info.min_height = definition->height + noise_minvalue;
-    info.max_height = definition->height + noise_maxvalue;
+    info.min_height = info.base_height + noise_minvalue;
+    info.max_height = info.base_height + noise_maxvalue;
 
     return info;
 }
 
 static double _realGetHeight(Renderer* renderer, double x, double z)
 {
-    return _getHeight(renderer->water->definition, x, z);
+    return _getHeight(renderer->water->definition, renderer->terrain->getWaterHeight(renderer), x, z);
 }
 
 static WaterResult _realGetResult(Renderer* renderer, double x, double z)
@@ -220,10 +224,12 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     RayCastingResult refracted;
     Vector3 location, normal, look_direction;
     Color color, foam;
-    double detail, depth;
+    double base_height, detail, depth;
+
+    base_height = renderer->terrain->getWaterHeight(renderer);
 
     location.x = x;
-    location.y = _getHeight(definition, x, z);
+    location.y = _getHeight(definition, base_height, x, z);
     location.z = z;
     result.location = location;
 
@@ -233,7 +239,7 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
         detail = 0.00001;
     }
 
-    normal = _getNormal(definition, location, detail);
+    normal = _getNormal(definition, base_height, location, detail);
     look_direction = v3Normalize(v3Sub(location, renderer->getCameraLocation(renderer, location)));
 
     /* Reflection */

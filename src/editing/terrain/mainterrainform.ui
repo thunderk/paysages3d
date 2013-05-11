@@ -250,7 +250,7 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="WidgetSliderDecimal" name="horizontalSlider_4">
+               <widget class="WidgetSliderDecimal" name="input_water_height">
                 <property name="maximumSize">
                  <size>
                   <width>400</width>

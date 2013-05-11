@@ -27,9 +27,9 @@ QGLWidget(parent)
 
     _water = true;
     _wireframe = true;
-    WaterDefinition* water_definition = (WaterDefinition*) WaterDefinitionClass.create();
+    WaterDefinition* water_definition = (WaterDefinition*)WaterDefinitionClass.create();
     sceneryGetWater(water_definition);
-    _water_height = water_definition->height;
+    _water_height = _renderer->terrain->getWaterHeight(_renderer);
     WaterDefinitionClass.destroy(water_definition);
 
     _average_frame_time = 0.0;
@@ -74,6 +74,7 @@ void WidgetHeightMap::setTerrain(TerrainDefinition* terrain)
 {
     _terrain = terrain;
     TerrainRendererClass.bind(_renderer, _terrain);
+    _water_height = _renderer->terrain->getWaterHeight(_renderer);
 
     revert();
 }

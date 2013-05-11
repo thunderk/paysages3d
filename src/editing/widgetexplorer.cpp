@@ -399,13 +399,14 @@ void WidgetExplorer::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render water
+    double water_height = _renderer->terrain->getWaterHeight(_renderer);
     glDisable(GL_TEXTURE_2D);
     glColor3f(water->material.base.r, water->material.base.g, water->material.base.b);
     glBegin(GL_QUADS);
-    glVertex3f(camera_location.x - 500.0, water->height, camera_location.z - 500.0);
-    glVertex3f(camera_location.x - 500.0, water->height, camera_location.z + 500.0);
-    glVertex3f(camera_location.x + 500.0, water->height, camera_location.z + 500.0);
-    glVertex3f(camera_location.x + 500.0, water->height, camera_location.z - 500.0);
+    glVertex3f(camera_location.x - 500.0, water_height, camera_location.z - 500.0);
+    glVertex3f(camera_location.x - 500.0, water_height, camera_location.z + 500.0);
+    glVertex3f(camera_location.x + 500.0, water_height, camera_location.z + 500.0);
+    glVertex3f(camera_location.x + 500.0, water_height, camera_location.z - 500.0);
     glEnd();
 
     // Render chunks

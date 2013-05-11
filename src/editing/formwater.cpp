@@ -121,10 +121,15 @@ protected:
         cameraSetLocation(_renderer->render_camera, camera_location);
     }
 
+    static double _getWaterHeight(Renderer* renderer)
+    {
+        return 0.0;
+    }
+
     void updateData()
     {
         WaterRendererClass.bind(_renderer, _definition);
-        _renderer->water->definition->height = 0.0;
+        _renderer->terrain->getWaterHeight = _getWaterHeight;
     }
 
     void choiceChangeEvent(const QString& key, int position)
@@ -234,7 +239,7 @@ BaseForm(parent)
     addPreview(previewCoverage, tr("Coverage preview"));
     addPreview(previewColor, tr("Rendered preview"));
 
-    addInputDouble(tr("Height"), &_definition->height, -15.0, 15.0, 0.1, 1.0);
+    //addInputDouble(tr("Height"), &_definition->height, -15.0, 15.0, 0.1, 1.0);
     addInputMaterial(tr("Surface material"), &_definition->material);
     addInputColor(tr("Depth color"), &_definition->depth_color);
     addInputDouble(tr("Transparency"), &_definition->transparency, 0.0, 1.0, 0.001, 0.1);

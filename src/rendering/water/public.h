@@ -20,7 +20,6 @@ typedef enum
 
 typedef struct
 {
-    double height;
     double transparency;
     double reflection;
     SurfaceMaterial material;

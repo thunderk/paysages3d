@@ -307,12 +307,12 @@ static double* _getDataPointer(HeightMapData* data, int x, int z, HeightMapData*
             }
             else if (terrain)
             {
-                *pixel = terrainGetGridHeight(terrain, x, z, 0);
+                *pixel = terrainGetGridHeight(terrain, x, z, 0) / (terrain->height * terrain->scaling);
             }
         }
         else if (terrain)
         {
-            *pixel = terrainGetGridHeight(terrain, x, z, 0);
+            *pixel = terrainGetGridHeight(terrain, x, z, 0) / (terrain->height * terrain->scaling);
         }
     }
     return pixel;
@@ -411,7 +411,7 @@ int terrainHeightmapGetInterpolatedHeight(TerrainHeightMap* heightmap, double x,
             {
                 if (!terrainHeightmapGetGridHeight(heightmap, ix, iz, &value))
                 {
-                    value = terrainGetGridHeight(heightmap->terrain, ix, iz, 0);
+                    value = terrainGetGridHeight(heightmap->terrain, ix, iz, 0) / (heightmap->terrain->scaling * heightmap->terrain->height);
                 }
                 stencil[(iz - (zlow - 1)) * 4 + ix - (xlow - 1)] = value;
             }
@@ -461,6 +461,8 @@ static inline void _applyBrush(TerrainHeightMap* heightmap, TerrainBrush* brush,
     IntegerRect brush_rect = _getBrushRect(brush);
     int x, z;
     double dx, dz, distance, influence;
+
+    force /= (heightmap->terrain->height * heightmap->terrain->scaling);
 
     for (x = brush_rect.xstart; x <= brush_rect.xend; x++)
     {

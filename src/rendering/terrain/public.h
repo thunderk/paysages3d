@@ -26,6 +26,8 @@ typedef struct
 
     TerrainHeightMap* height_map;
 
+    double water_height;
+
     double _detail;
     NoiseGenerator* _height_noise;
     double _min_height;
@@ -40,7 +42,8 @@ typedef struct
 
 typedef double (*FuncTerrainGetHeight)(Renderer* renderer, double x, double z, int with_painting);
 typedef TerrainResult (*FuncTerrainGetResult)(Renderer* renderer, double x, double z, int with_painting, int with_textures);
-typedef Color (*FuncTerrainGetFinalColor)(Renderer* renderer, Vector3 location, double precision);
+typedef Color(*FuncTerrainGetFinalColor)(Renderer* renderer, Vector3 location, double precision);
+typedef double (*FuncGetWaterHeight)(Renderer* renderer);
 
 typedef struct
 {
@@ -50,6 +53,7 @@ typedef struct
     FuncTerrainGetHeight getHeight;
     FuncTerrainGetResult getResult;
     FuncTerrainGetFinalColor getFinalColor;
+    FuncGetWaterHeight getWaterHeight;
 
     void* _internal_data;
 } TerrainRenderer;
