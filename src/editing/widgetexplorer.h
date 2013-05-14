@@ -10,7 +10,7 @@ class WidgetExplorer : public QGLWidget
 {
     Q_OBJECT
 public:
-    WidgetExplorer(QWidget* parent, CameraDefinition* camera);
+    WidgetExplorer(QWidget* parent, CameraDefinition* camera, Renderer* renderer=0);
     ~WidgetExplorer();
 
     void performChunksMaintenance();
@@ -38,6 +38,7 @@ private:
     CameraDefinition* _base_camera;
 
     Renderer* _renderer;
+    bool _renderer_created;
     bool _inited;
     bool _updated;
 

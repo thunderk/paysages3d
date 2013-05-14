@@ -3,6 +3,10 @@
 #include <QDialog>
 #include <QVariant>
 #include <cmath>
+#include "dialogrender.h"
+#include "dialogexplorer.h"
+#include "rendering/scenery.h"
+#include "rendering/renderer.h"
 
 Q_DECLARE_METATYPE(double*)
 
@@ -26,6 +30,7 @@ void FreeFormHelper::startManaging()
     connect(this, SIGNAL(needGlobalRefreshing()), _form_widget, SLOT(refreshFromFellowData()));
     connect(this, SIGNAL(needReverting()), _form_widget, SLOT(updateLocalDataFromScenery()));
     connect(this, SIGNAL(needCommitting()), _form_widget, SLOT(commitLocalDataToScenery()));
+    connect(this, SIGNAL(needAlterRenderer(Renderer*)), _form_widget, SLOT(alterRenderer(Renderer*)));
 
     emit needLocalRefreshing();
     emit needGlobalRefreshing();
@@ -50,6 +55,8 @@ void FreeFormHelper::addDoubleInputSlider(WidgetSliderDecimal* slider, double* v
 {
     if (slider && slider->inherits("WidgetSliderDecimal"))
     {
+        _inputs_decimal.append(slider);
+
         slider->setDecimalRange(min, max, small_step, large_step);
         slider->setDecimalValue(*value);
 
@@ -94,6 +101,36 @@ void FreeFormHelper::setRevertButton(QPushButton* button)
 void FreeFormHelper::setRevertButton(QString widget_name)
 {
     setRevertButton(_form_widget->findChild<QPushButton*>(widget_name));
+}
+
+void FreeFormHelper::setExploreButton(QPushButton* button)
+{
+    if (button && button->inherits("QPushButton"))
+    {
+        _button_explore = button;
+
+        connect(button, SIGNAL(clicked()), this, SLOT(processExploreClicked()));
+    }
+}
+
+void FreeFormHelper::setExploreButton(QString widget_name)
+{
+    setExploreButton(_form_widget->findChild<QPushButton*>(widget_name));
+}
+
+void FreeFormHelper::setRenderButton(QPushButton* button)
+{
+    if (button && button->inherits("QPushButton"))
+    {
+        _button_render = button;
+
+        connect(button, SIGNAL(clicked()), this, SLOT(processRenderClicked()));
+    }
+}
+
+void FreeFormHelper::setRenderButton(QString widget_name)
+{
+    setRenderButton(_form_widget->findChild<QPushButton*>(widget_name));
 }
 
 void FreeFormHelper::setLabelText(QLabel* label, QString text)
@@ -141,6 +178,22 @@ void FreeFormHelper::processRevertClicked()
 {
     emit needReverting();
 
+    for (int i = 0; i < _previews.size(); i++)
+    {
+        _previews[i]->redraw();
+    }
+
+    for (int i = 0; i < _inputs_decimal.size(); i++)
+    {
+        WidgetSliderDecimal* slider = _inputs_decimal.at(i);
+        double* pointer = slider->property("data_pointer").value<double*>();
+
+        if (pointer)
+        {
+            slider->setDecimalValue(*pointer);
+        }
+    }
+
     _data_changed = false;
     if (_button_apply)
     {
@@ -149,11 +202,6 @@ void FreeFormHelper::processRevertClicked()
     if (_button_revert)
     {
         _button_revert->setEnabled(false);
-    }
-
-    for (int i = 0; i < _previews.size(); i++)
-    {
-        _previews[i]->redraw();
     }
 
     emit needLocalRefreshing();
@@ -172,6 +220,42 @@ void FreeFormHelper::processApplyClicked()
     {
         _button_revert->setEnabled(false);
     }
+}
+
+void FreeFormHelper::processExploreClicked()
+{
+    Renderer* renderer;
+
+    renderer = sceneryCreateStandardRenderer();
+
+    emit needAlterRenderer(renderer);
+
+    CameraDefinition* camera = cameraCreateDefinition();
+    sceneryGetCamera(camera);
+
+    DialogExplorer* dialog = new DialogExplorer(_form_widget, camera, false, renderer);
+    dialog->exec();
+    delete dialog;
+
+    rendererDelete(renderer);
+    cameraDeleteDefinition(camera);
+}
+
+void FreeFormHelper::processRenderClicked()
+{
+    Renderer* renderer;
+
+    renderer = sceneryCreateStandardRenderer();
+
+    emit needAlterRenderer(renderer);
+
+    DialogRender* dialog = new DialogRender(_form_widget, renderer);
+    RenderParams params = {400, 300, 1, 3};
+    dialog->startRender(params);
+
+    delete dialog;
+
+    rendererDelete(renderer);
 }
 
 void FreeFormHelper::processDecimalChange(double value)

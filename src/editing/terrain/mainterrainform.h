@@ -24,6 +24,7 @@ public slots:
     void refreshFromFellowData();
     void updateLocalDataFromScenery();
     void commitLocalDataToScenery();
+    void alterRenderer(Renderer* renderer);
 
     void buttonPaintingPressed();
     void buttonTexturesPressed();

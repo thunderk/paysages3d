@@ -66,7 +66,7 @@ static AtmosphereResult _applyAerialPerspective(Renderer*, Vector3, Color base)
     return result;
 }
 
-WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera) :
+WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera, Renderer* renderer) :
 QGLWidget(parent)
 {
     setMinimumSize(400, 300);
@@ -76,7 +76,16 @@ QGLWidget(parent)
     _base_camera = camera;
     cameraCopyDefinition(camera, _current_camera);
 
-    _renderer = sceneryCreateStandardRenderer();
+    if (renderer)
+    {
+        _renderer = renderer;
+        _renderer_created = false;
+    }
+    else
+    {
+        _renderer = sceneryCreateStandardRenderer();
+        _renderer_created = true;
+    }
     _renderer->render_quality = 3;
     _renderer->customData[2] = _base_camera;
     _renderer->getCameraLocation = _getCameraLocation;
@@ -102,8 +111,12 @@ WidgetExplorer::~WidgetExplorer()
     {
         delete _chunks[i];
     }
-    rendererDelete(_renderer);
     cameraDeleteDefinition(_current_camera);
+
+    if (_renderer_created)
+    {
+        rendererDelete(_renderer);
+    }
 }
 
 void WidgetExplorer::startRendering()

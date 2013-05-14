@@ -26,6 +26,8 @@ MainTerrainForm::MainTerrainForm(QWidget *parent) :
 
     _form_helper->setApplyButton("button_apply");
     _form_helper->setRevertButton("button_revert");
+    _form_helper->setExploreButton("button_explore");
+    _form_helper->setRenderButton("button_render");
 
     connect(findChild<QPushButton*>("button_dialog_painting"), SIGNAL(clicked()), this, SLOT(buttonPaintingPressed()));
     connect(findChild<QPushButton*>("button_goto_textures"), SIGNAL(clicked()), this, SLOT(buttonTexturesPressed()));
@@ -68,6 +70,11 @@ void MainTerrainForm::updateLocalDataFromScenery()
 void MainTerrainForm::commitLocalDataToScenery()
 {
     scenerySetTerrain(_terrain);
+}
+
+void MainTerrainForm::alterRenderer(Renderer* renderer)
+{
+    TerrainRendererClass.bind(renderer, _terrain);
 }
 
 void MainTerrainForm::buttonPaintingPressed()

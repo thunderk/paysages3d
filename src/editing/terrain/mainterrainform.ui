@@ -360,7 +360,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_3">
+         <widget class="QPushButton" name="button_render">
           <property name="text">
            <string>Render preview</string>
           </property>
@@ -371,7 +371,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_4">
+         <widget class="QPushButton" name="button_explore">
           <property name="text">
            <string>Explore in 3D</string>
           </property>

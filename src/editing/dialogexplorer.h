@@ -9,7 +9,7 @@ class DialogExplorer : public QDialog
 {
     Q_OBJECT
 public:
-    explicit DialogExplorer(QWidget *parent, CameraDefinition* camera, bool camera_validable);
+    explicit DialogExplorer(QWidget *parent, CameraDefinition* camera, bool camera_validable=false, Renderer* renderer=0);
     ~DialogExplorer();
 
 protected slots:

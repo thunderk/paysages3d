@@ -47,11 +47,14 @@ signals:
     void needGlobalRefreshing();
     void needReverting();
     void needCommitting();
+    void needAlterRenderer(Renderer* renderer);
 
 public slots:
     void processDataChange();
     void processRevertClicked();
     void processApplyClicked();
+    void processExploreClicked();
+    void processRenderClicked();
     void processDecimalChange(double value);
 
 private:
@@ -60,6 +63,7 @@ private:
     bool _data_changed;
 
     QVector<BasePreview*> _previews;
+    QVector<WidgetSliderDecimal*> _inputs_decimal;
 
     QPushButton* _button_apply;
     QPushButton* _button_revert;

@@ -5,7 +5,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
-DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool camera_validable) : QDialog(parent)
+DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool camera_validable, Renderer* renderer) : QDialog(parent)
 {
     QWidget* panel;
     QPushButton* button;
@@ -14,7 +14,7 @@ DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool c
     setWindowTitle(tr("Paysages 3D - Explore"));
     setLayout(new QHBoxLayout());
 
-    _wanderer = new WidgetExplorer(this, camera);
+    _wanderer = new WidgetExplorer(this, camera, renderer);
     layout()->addWidget(_wanderer);
 
     panel = new QWidget(this);
