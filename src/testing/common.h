@@ -35,10 +35,30 @@ static inline int _double_not_equals(double x, double y)
 {
     return fabs(x - y) >= 0.00000000001;
 }
+static inline int _double_greater(double x, double y)
+{
+    return _double_not_equals(x, y) || (x > y);
+}
+static inline int _double_greater_or_equal(double x, double y)
+{
+    return _double_equals(x, y) || (x >= y);
+}
+static inline int _double_less(double x, double y)
+{
+    return _double_not_equals(x, y) || (x < y);
+}
+static inline int _double_less_or_equal(double x, double y)
+{
+    return _double_equals(x, y) || (x <= y);
+}
 
 #define _ck_assert_double(F, X, O, Y) ck_assert_msg(F(X, Y), "Assertion '"#X#O#Y"' failed: "#X"=%f, "#Y"=%f", X, Y)
 #define ck_assert_double_eq(X, Y) _ck_assert_double(_double_equals, X, ==, Y)
 #define ck_assert_double_ne(X, Y) _ck_assert_double(_double_not_equals, X, !=, Y)
+#define ck_assert_double_gt(X, Y) _ck_assert_double(_double_greater, X, >, Y)
+#define ck_assert_double_lt(X, Y) _ck_assert_double(_double_greater_or_equal, X, >=, Y)
+#define ck_assert_double_gte(X, Y) _ck_assert_double(_double_less, X, <, Y)
+#define ck_assert_double_lte(X, Y) _ck_assert_double(_double_less_or_equal, X, <=, Y)
 
 
 /***** Generic comparison assertions *****/
@@ -55,5 +75,10 @@ static inline char* _ck_gen_##_type_##_str(char* buffer, _type_ X) { \
 
 static char _ck_gen_strbuf1[101];
 static char _ck_gen_strbuf2[101];
+
+
+/***** Some builtin comparisons *****/
+#define ck_assert_double_in_range(_double_, _x_, _y_) ck_assert_double_gte(_double_, _x_);ck_assert_double_lte(_double_, _y_)
+#define ck_assert_vector_values(_vector_, _x_, _y_, _z_) ck_assert_double_eq(_vector_.x, _x_);ck_assert_double_eq(_vector_.y, _y_);ck_assert_double_eq(_vector_.z, _z_)
 
 #endif

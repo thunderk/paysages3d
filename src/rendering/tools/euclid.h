@@ -77,6 +77,11 @@ extern Vector3 VECTOR_SOUTH;
 extern Vector3 VECTOR_EAST;
 extern Vector3 VECTOR_WEST;
 
+static inline Vector3 v3(double x, double y, double z)
+{
+    Vector3 result = {x, y, z};
+    return result;
+};
 void v3Save(PackStream* stream, Vector3* v);
 void v3Load(PackStream* stream, Vector3* v);
 Vector3 v3Translate(Vector3 v1, double x, double y, double z);

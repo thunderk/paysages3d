@@ -59,15 +59,8 @@ typedef struct
     Layers* layers;
 } CloudsDefinition;
 
-typedef struct
-{
-    int inside;
-    double density;
-    double distance_to_edge;
-} CloudsInfo;
-
 typedef Color (*FuncCloudsGetColor)(Renderer* renderer, Color base, Vector3 start, Vector3 end);
-typedef CloudsInfo (*FuncCloudsGetLayerInfo)(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location);
+typedef double (*FuncCloudsGetLayerDensity)(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location);
 
 typedef struct
 {
@@ -75,7 +68,7 @@ typedef struct
 
     FuncCloudsGetColor getColor;
     FuncLightingAlterLight alterLight;
-    FuncCloudsGetLayerInfo getLayerInfo;
+    FuncCloudsGetLayerDensity getLayerDensity;
 } CloudsRenderer;
 
 
