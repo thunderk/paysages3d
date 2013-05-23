@@ -1,0 +1,12 @@
+build/
+data/i18n/paysages_*.qm
+gmon.out
+nbproject/
+output/
+src/editing/Makefile
+*.pro.user
+qrc_*.cpp
+ui_*.h
+tags
+.session.vim
+
