@@ -1,4 +1,5 @@
 build/
+cache/
 data/i18n/paysages_*.qm
 gmon.out
 nbproject/
