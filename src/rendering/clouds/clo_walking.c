@@ -136,8 +136,8 @@ int cloudsGetLayerPrimarySegments(Renderer* renderer, CloudsLayerDefinition* lay
                 /* exiting the cloud */
                 segment_length += step_length;
 
-                out_segments->enter = segment_start;
-                out_segments->exit = walker;
+                out_segments->entry_point = segment_start;
+                out_segments->exit_point = walker;
                 out_segments->length = segment_length;
                 out_segments++;
                 if (++segment_count >= max_segments)
@@ -154,4 +154,8 @@ int cloudsGetLayerPrimarySegments(Renderer* renderer, CloudsLayerDefinition* lay
     while (inside || (walker.y <= layer->lower_altitude + layer->thickness + 0.001 && walker.y >= layer->lower_altitude - 0.001 && progress < diff_length));
 
     return segment_count;
+}
+
+int cloudsGetLayerSecondarySampling(Renderer* renderer, CloudsLayerDefinition* layer, CloudPrimarySegment* segment, int max_control_points, CloudSecondaryControlPoint* out_control_points)
+{
 }

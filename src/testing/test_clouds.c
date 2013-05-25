@@ -221,18 +221,18 @@ START_TEST(test_clouds_primary_segments)
     ck_assert_int_eq(segment_count, 2);
     for (i = 0; i < segment_count; i++)
     {
-        ck_assert_double_eq(segments[i].enter.y, 0.0);
-        ck_assert_double_eq(segments[i].enter.z, 0.0);
-        ck_assert_double_eq(segments[i].exit.y, 0.0);
-        ck_assert_double_eq(segments[i].exit.z, 0.0);
+        ck_assert_double_eq(segments[i].entry_point.y, 0.0);
+        ck_assert_double_eq(segments[i].entry_point.z, 0.0);
+        ck_assert_double_eq(segments[i].exit_point.y, 0.0);
+        ck_assert_double_eq(segments[i].exit_point.z, 0.0);
     }
-    ck_assert_double_in_range(segments[0].enter.x, -0.5, 0.0);
-    ck_assert_double_in_range(segments[0].exit.x, 0.5, 1.0);
-    ck_assert_double_in_range(segments[0].length, 0.5, 1.5);
-    ck_assert_double_gte(segments[1].enter.x, segments[0].exit.x);
-    ck_assert_double_in_range(segments[1].enter.x, 0.5, 1.0);
-    ck_assert_double_in_range(segments[1].exit.x, 1.5, 2.0);
-    ck_assert_double_in_range(segments[1].length, 0.5, 1.5);
+    ck_assert_double_in_range(segments[0].entry_point.x, -0.4, 0.0);
+    ck_assert_double_in_range(segments[0].exit_point.x, 0.5, 1.0);
+    ck_assert_double_in_range(segments[0].length, 0.5, 1.3);
+    ck_assert_double_gte(segments[1].entry_point.x, segments[0].exit_point.x);
+    ck_assert_double_in_range(segments[1].entry_point.x, 0.5, 1.0);
+    ck_assert_double_in_range(segments[1].exit_point.x, 1.5, 1.9);
+    ck_assert_double_in_range(segments[1].length, 0.5, 1.3);
 
     cloudsGetLayerType().callback_delete(layer);
     rendererDelete(renderer);
