@@ -17,20 +17,20 @@ MainTerrainForm::MainTerrainForm(QWidget *parent) :
     _form_helper = new FreeFormHelper(this);
 
     _renderer_shape = new PreviewTerrainShape(_terrain);
-    _form_helper->addPreview("preview_shape", _renderer_shape);
+    _form_helper->addPreview(ui->preview_shape, _renderer_shape);
 
-    _form_helper->addDoubleInputSlider("input_scaling", &_terrain->scaling, 0.1, 3.0, 0.03, 0.3);
-    _form_helper->addDoubleInputSlider("input_height", &_terrain->height, 1.0, 45.0, 0.3, 3.0);
-    _form_helper->addDoubleInputSlider("input_shadow_smoothing", &_terrain->shadow_smoothing, 0.0, 0.3, 0.003, 0.03);
-    _form_helper->addDoubleInputSlider("input_water_height", &_terrain->water_height, -2.0, 2.0, 0.01, 0.1);
+    _form_helper->addDoubleInputSlider(ui->input_scaling, &_terrain->scaling, 0.1, 3.0, 0.03, 0.3);
+    _form_helper->addDoubleInputSlider(ui->input_height, &_terrain->height, 1.0, 45.0, 0.3, 3.0);
+    _form_helper->addDoubleInputSlider(ui->input_shadow_smoothing, &_terrain->shadow_smoothing, 0.0, 0.3, 0.003, 0.03);
+    _form_helper->addDoubleInputSlider(ui->input_water_height, &_terrain->water_height, -2.0, 2.0, 0.01, 0.1);
 
-    _form_helper->setApplyButton("button_apply");
-    _form_helper->setRevertButton("button_revert");
-    _form_helper->setExploreButton("button_explore");
-    _form_helper->setRenderButton("button_render");
+    _form_helper->setApplyButton(ui->button_apply);
+    _form_helper->setRevertButton(ui->button_revert);
+    _form_helper->setExploreButton(ui->button_explore);
+    _form_helper->setRenderButton(ui->button_render);
 
-    connect(findChild<QPushButton*>("button_dialog_painting"), SIGNAL(clicked()), this, SLOT(buttonPaintingPressed()));
-    connect(findChild<QPushButton*>("button_goto_textures"), SIGNAL(clicked()), this, SLOT(buttonTexturesPressed()));
+    connect(ui->button_dialog_painting, SIGNAL(clicked()), this, SLOT(buttonPaintingPressed()));
+    connect(ui->button_goto_textures, SIGNAL(clicked()), this, SLOT(buttonTexturesPressed()));
 
     _form_helper->startManaging();
 }
