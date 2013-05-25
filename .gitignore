@@ -6,6 +6,7 @@ nbproject/
 output/
 src/editing/Makefile
 *.pro.user
+*.pro.user.*
 qrc_*.cpp
 ui_*.h
 tags
