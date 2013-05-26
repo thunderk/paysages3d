@@ -89,22 +89,16 @@ static Color _applyLayerLighting(CloudsLayerDefinition* definition, Renderer* re
 
 Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end)
 {
-    int segment_count;
-    Color col;
-    CloudPrimarySegment segments[MAX_SEGMENT_COUNT];
+    Color col = COLOR_TRANSPARENT;
 
-    segment_count = cloudsGetLayerPrimarySegments(renderer, definition, start, end, MAX_SEGMENT_COUNT, segments);
-    /* TODO Crawl in segments for render */
-
-    col = definition->material.base;
-    /*if (definition->transparencydepth == 0 || inside_length >= definition->transparencydepth)
+    if (!cloudsOptimizeWalkingBounds(definition, &start, &end))
     {
-        col.a = 1.0;
+        return base;
     }
-    else
-    {
-        col.a = inside_length / definition->transparencydepth;
-    }*/
+
+    /* TODO Walk through the cloud */
+
+    /*segment_count = cloudsGetLayerPrimarySegments(renderer, definition, start, end, MAX_SEGMENT_COUNT, segments);*/
 
     col = renderer->atmosphere->applyAerialPerspective(renderer, start, col).final;
     col.a = 0.0;

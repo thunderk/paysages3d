@@ -200,7 +200,7 @@ static double _getLayerDensitySinX(Renderer* renderer, CloudsLayerDefinition* la
     return (density > 0.0) ? density : 0.0;
 }
 
-START_TEST(test_clouds_primary_segments)
+/*START_TEST(test_clouds_primary_segments)
 {
     int segment_count, i;
     CloudPrimarySegment segments[10];
@@ -237,16 +237,8 @@ START_TEST(test_clouds_primary_segments)
     cloudsGetLayerType().callback_delete(layer);
     rendererDelete(renderer);
 }
-END_TEST
+END_TEST*/
 
-START_TEST(test_clouds_preview_color)
-{
-    Renderer* renderer = cloudsCreatePreviewColorRenderer();
-
-    /* TODO Test the density overriding */
-
-    rendererDelete(renderer);
-}
-END_TEST
-
-TEST_CASE(clouds, test_clouds_density, test_clouds_walking_boundaries, test_clouds_primary_segments, test_clouds_preview_color)
+TEST_CASE(clouds,
+          test_clouds_density,
+          test_clouds_walking_boundaries)

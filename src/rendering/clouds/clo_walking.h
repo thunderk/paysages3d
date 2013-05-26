@@ -5,7 +5,7 @@
 #include "../tools/euclid.h"
 
 /**
- * Functions to walk through a cloud layer (sampling).
+ * Functions to walk through a cloud layer.
  */
 
 #ifdef __cplusplus
@@ -13,26 +13,47 @@ extern "C"
 {
 #endif
 
+/**
+ * Information on a segment yielded by walking.
+ */
 typedef struct
 {
-    Vector3 entry_point;
-    Vector3 exit_point;
-    double length;
-} CloudPrimarySegment;
+    Renderer* renderer;
+    CloudsLayerDefinition* layer;
 
+    double walked_distance;
+    Vector3 start;
+    Vector3 end;
+    double length;
+
+    int refined;
+    int subdivision_level;
+    double precision_asked;
+
+    void* data;
+} CloudWalkingInfo;
+
+/**
+ * Control of the next walking order.
+ */
+typedef enum
+{
+    CLOUD_WALKING_CONTINUE,
+    CLOUD_WALKING_STOP,
+    CLOUD_WALKING_REFINE,
+    CLOUD_WALKING_SUBDIVIDE
+} CloudWalkingOrder;
+
+/**
+ * Additional info for walking orders.
+ */
 typedef struct
 {
-    /** Distance factor of the control point from the segment start */
-    double distance;
-    /** Location of the control point */
-    Vector3 location;
-    /** Global density at the control point (no edge noise applied) */
-    double global_density;
-    /** Particle dentisy at the control point, using edge noise */
-    double particle_density;
-    /** Estimated distance to nearest cloud exit */
-    double nearest_exit_distance;
-} CloudSecondaryControlPoint;
+    double precision;
+    int max_segments;
+} CloudWalkingOrderInfo;
+
+typedef CloudWalkingOrder(*FuncCloudSegmentCallback)(CloudWalkingInfo* segment, CloudWalkingOrderInfo* order);
 
 /**
  * Optimize the search limits in a layer.
@@ -45,29 +66,18 @@ typedef struct
 int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* layer, Vector3* start, Vector3* end);
 
 /**
- * Go through the cloud layer to find segments (parts of the lookup that are likely to contain cloud).
+ * Start walking through a segment.
  *
+ * For better performance, the segment should by optimized using cloudsOptimizeWalkingBounds.
+ * The callback will be called with each segment found, giving info and asking for desired alteration on walking.
  * @param renderer The renderer environment
  * @param layer The cloud layer
- * @param start Start position of the lookup
- * @param end End position of the lookup
- * @param max_segments Maximum number of segments to collect
- * @param out_segments Allocated space to fill found segments (must be at least 'max_segments' long)
- * @return Number of segments found
+ * @param start Start position of the lookup, already optimized
+ * @param end End position of the lookup, already optimized
+ * @param callback Callback to be called with each found segment
+ * @param data User data that will be passed back in the callback
  */
-int cloudsGetLayerPrimarySegments(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 start, Vector3 end, int max_segments, CloudPrimarySegment* out_segments);
-
-/**
- * Sample a primary segment with refined details, collecting material interaction.
- *
- * @param renderer The renderer environment
- * @param layer The cloud layer
- * @param segment The primary segment to sample
- * @param max_control_points Maximum number of control points to sample
- * @param out_control_points Allocated space to fill with secondary control points (must be at least 'max_control_points' long)
- * @return Number of control points sampled
- */
-int cloudsGetLayerSecondarySampling(Renderer* renderer, CloudsLayerDefinition* layer, CloudPrimarySegment* segment, int max_control_points, CloudSecondaryControlPoint* out_control_points);
+void cloudsStartWalking(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 start, Vector3 end, FuncCloudSegmentCallback callback, void* data);
 
 #ifdef __cplusplus
 }
