@@ -15,11 +15,7 @@ DialogTerrainPainting::DialogTerrainPainting(QWidget*parent, TerrainDefinition* 
     _terrain_original = terrain;
     _terrain_modified = (TerrainDefinition*)TerrainDefinitionClass.create();
 
-    QWidget* widget = findChild<QWidget*>("widget_commands");
-    if (widget)
-    {
-        widget->hide();
-    }
+    ui->widget_commands->hide();
 
     revert();
 
@@ -33,43 +29,26 @@ DialogTerrainPainting::~DialogTerrainPainting()
 
 void DialogTerrainPainting::keyReleaseEvent(QKeyEvent* event)
 {
-    QComboBox* input_brush_mode = findChild<QComboBox*>("input_brush_mode");
-
     switch (event->key())
     {
     case Qt::Key_F2:
-        if (input_brush_mode)
-        {
-            input_brush_mode->setCurrentIndex(0);
-        }
+        ui->input_brush_mode->setCurrentIndex(0);
         event->accept();
         break;
     case Qt::Key_F3:
-        if (input_brush_mode)
-        {
-            input_brush_mode->setCurrentIndex(1);
-        }
+        ui->input_brush_mode->setCurrentIndex(1);
         event->accept();
         break;
     case Qt::Key_F4:
-        if (input_brush_mode)
-        {
-            input_brush_mode->setCurrentIndex(2);
-        }
+        ui->input_brush_mode->setCurrentIndex(2);
         event->accept();
         break;
     case Qt::Key_F11:
-        if (input_brush_mode)
-        {
-            input_brush_mode->setCurrentIndex(3);
-        }
+        ui->input_brush_mode->setCurrentIndex(3);
         event->accept();
         break;
     case Qt::Key_F12:
-        if (input_brush_mode)
-        {
-            input_brush_mode->setCurrentIndex(4);
-        }
+        ui->input_brush_mode->setCurrentIndex(4);
         event->accept();
         break;
     default:
@@ -79,32 +58,19 @@ void DialogTerrainPainting::keyReleaseEvent(QKeyEvent* event)
 
 void DialogTerrainPainting::wheelEvent(QWheelEvent* event)
 {
-    QSlider* input_brush_size = findChild<QSlider*>("input_brush_size");
-    QSlider* input_brush_smoothing = findChild<QSlider*>("input_brush_smoothing");
-    QSlider* input_brush_strength = findChild<QSlider*>("input_brush_strength");
-
     if (event->modifiers() & Qt::ControlModifier)
     {
-        if (input_brush_size)
-        {
-            input_brush_size->setValue(input_brush_size->value() + (event->delta() > 0 ? 1 : -1));
-        }
+        ui->input_brush_size->setValue(ui->input_brush_size->value() + (event->delta() > 0 ? 1 : -1));
         event->accept();
     }
     else if (event->modifiers() & Qt::ShiftModifier)
     {
-        if (input_brush_strength)
-        {
-            input_brush_strength->setValue(input_brush_strength->value() + (event->delta() > 0 ? 1 : -1));
-        }
+        ui->input_brush_strength->setValue(ui->input_brush_strength->value() + (event->delta() > 0 ? 1 : -1));
         event->accept();
     }
     else if (event->modifiers() & Qt::AltModifier)
     {
-        if (input_brush_smoothing)
-        {
-            input_brush_smoothing->setValue(input_brush_smoothing->value() + (event->delta() > 0 ? 1 : -1));
-        }
+        ui->input_brush_smoothing->setValue(ui->input_brush_smoothing->value() + (event->delta() > 0 ? 1 : -1));
         event->accept();
     }
     else
@@ -123,75 +89,34 @@ void DialogTerrainPainting::revert()
 {
     TerrainDefinitionClass.copy(_terrain_original, _terrain_modified);
 
-    WidgetHeightMap* heightmap = findChild<WidgetHeightMap*>("widget_heightmap");
-    if (heightmap)
-    {
-        heightmap->setTerrain(_terrain_modified);
-        heightmap->setBrush(&_brush);
-    }
+    ui->widget_heightmap->setTerrain(_terrain_modified);
+    ui->widget_heightmap->setBrush(&_brush);
 }
 
 void DialogTerrainPainting::brushConfigChanged()
 {
-    QLabel* label;
-    QComboBox* combobox;
-    QSlider* slider;
-
     // Fill brush object
-    combobox = findChild<QComboBox*>("input_brush_mode");
-    if (combobox)
-    {
-        _brush.setMode((PaintingBrushMode)combobox->currentIndex());
-    }
-    slider = findChild<QSlider*>("input_brush_size");
-    if (slider)
-    {
-        _brush.setSize(slider);
-    }
-    slider = findChild<QSlider*>("input_brush_smoothing");
-    if (slider)
-    {
-        _brush.setSmoothing(slider);
-    }
-    slider = findChild<QSlider*>("input_brush_strength");
-    if (slider)
-    {
-        _brush.setStrength(slider);
-    }
+    _brush.setMode((PaintingBrushMode) ui->input_brush_mode->currentIndex());
+    _brush.setSize(ui->input_brush_size);
+    _brush.setSmoothing(ui->input_brush_smoothing);
+    _brush.setStrength(ui->input_brush_strength);
 
     // Update brush description
-    label = findChild<QLabel*>("label_brush_description");
-    if (label)
-    {
-        label->setText(getHelpText());
-    }
+    ui->label_brush_description->setText(getHelpText());
 
     // Update brush preview
+    // TODO
 
     // Tell to 3D widget
-    WidgetHeightMap* heightmap = findChild<WidgetHeightMap*>("widget_heightmap");
-    if (heightmap)
-    {
-        heightmap->setBrush(&_brush);
-    }
+    ui->widget_heightmap->setBrush(&_brush);
 }
 
 void DialogTerrainPainting::heightmapChanged()
 {
-    QLabel* label = findChild<QLabel*>("label_memory_consumption");
-    if (label)
-    {
-        qint64 memused = terrainGetMemoryStats(_terrain_modified);
-        label->setText(tr("Memory used: %1").arg(getHumanMemory(memused)));
-
-        // TODO Find available memory
-        QProgressBar* progress = findChild<QProgressBar*>("progress_memory_consumption");
-        if (progress)
-        {
-            progress->setMaximum(1024);
-            progress->setValue(memused / 1024);
-        }
-    }
+    qint64 memused = terrainGetMemoryStats(_terrain_modified);
+    ui->label_memory_consumption->setText(tr("Memory used: %1").arg(getHumanMemory(memused)));
+    ui->progress_memory_consumption->setMaximum(1024);
+    ui->progress_memory_consumption->setValue(memused / 1024);
 }
 
 QString DialogTerrainPainting::getHelpText()

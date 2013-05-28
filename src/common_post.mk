@@ -14,7 +14,7 @@ ifneq (,${LIBS})
 endif
 
 CC_FLAGS += -fPIC -Wall -I${PROJECT_PATH}/src
-CC_LDFLAGS += -fPIC
+CC_LDFLAGS += -fPIC -lm
 
 all:prepare ${RESULT}
 

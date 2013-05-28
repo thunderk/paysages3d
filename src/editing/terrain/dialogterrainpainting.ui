@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1116</width>
-    <height>726</height>
+    <width>1145</width>
+    <height>777</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -831,8 +831,8 @@
    <slot>brushConfigChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>752</x>
-     <y>42</y>
+     <x>1115</x>
+     <y>53</y>
     </hint>
     <hint type="destinationlabel">
      <x>437</x>
@@ -847,8 +847,8 @@
    <slot>brushConfigChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>919</x>
-     <y>115</y>
+     <x>1115</x>
+     <y>143</y>
     </hint>
     <hint type="destinationlabel">
      <x>437</x>
@@ -879,8 +879,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>875</x>
-     <y>580</y>
+     <x>1134</x>
+     <y>766</y>
     </hint>
     <hint type="destinationlabel">
      <x>711</x>
@@ -895,8 +895,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>943</x>
-     <y>587</y>
+     <x>1134</x>
+     <y>766</y>
     </hint>
     <hint type="destinationlabel">
      <x>683</x>
@@ -911,8 +911,8 @@
    <slot>revert()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>943</x>
-     <y>587</y>
+     <x>1134</x>
+     <y>766</y>
     </hint>
     <hint type="destinationlabel">
      <x>747</x>
@@ -927,12 +927,12 @@
    <slot>toggleWater(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>40</x>
-     <y>21</y>
+     <x>60</x>
+     <y>43</y>
     </hint>
     <hint type="destinationlabel">
-     <x>39</x>
-     <y>160</y>
+     <x>58</x>
+     <y>480</y>
     </hint>
    </hints>
   </connection>
@@ -943,12 +943,12 @@
    <slot>toggleGrid(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>102</x>
-     <y>17</y>
+     <x>161</x>
+     <y>40</y>
     </hint>
     <hint type="destinationlabel">
-     <x>102</x>
-     <y>143</y>
+     <x>121</x>
+     <y>463</y>
     </hint>
    </hints>
   </connection>
@@ -972,15 +972,15 @@
    <sender>pushButton</sender>
    <signal>toggled(bool)</signal>
    <receiver>widget_commands</receiver>
-   <slot>setShown(bool)</slot>
+   <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>516</x>
-     <y>20</y>
+     <x>734</x>
+     <y>40</y>
     </hint>
     <hint type="destinationlabel">
-     <x>517</x>
-     <y>50</y>
+     <x>536</x>
+     <y>104</y>
     </hint>
    </hints>
   </connection>

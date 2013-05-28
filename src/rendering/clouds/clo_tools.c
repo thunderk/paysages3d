@@ -97,7 +97,6 @@ Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* 
     /* TODO Crawl in segments for render */
 
     col = definition->material.base;
-    col.a = 0.0;
     /*if (definition->transparencydepth == 0 || inside_length >= definition->transparencydepth)
     {
         col.a = 1.0;
@@ -108,6 +107,7 @@ Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* 
     }*/
 
     col = renderer->atmosphere->applyAerialPerspective(renderer, start, col).final;
+    col.a = 0.0;
 
     colorMask(&base, &col);
 
