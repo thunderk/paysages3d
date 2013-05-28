@@ -4,6 +4,7 @@
 #include "../tools.h"
 #include "../renderer.h"
 #include "clo_density.h"
+#include "clo_walking.h"
 
 /******************** Fake ********************/
 static int _fakeAlterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
@@ -25,13 +26,9 @@ static Color _fakeGetColor(Renderer* renderer, Color base, Vector3 start, Vector
 }
 
 /******************** Real ********************/
-/*static int _cmpLayer(const void* layer1, const void* layer2)
-{
-    return (((CloudsLayerDefinition*)layer1)->lower_altitude > ((CloudsLayerDefinition*)layer2)->lower_altitude) ? -1 : 1;
-}*/
-
 static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
 {
+#if 0
     CloudsDefinition* definition = renderer->clouds->definition;
     int i, n;
 
@@ -43,6 +40,18 @@ static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 locat
         /* TODO Reduce light->reflection too */
     }
     return n > 0;
+#endif
+    return 0;
+}
+
+typedef struct
+{
+    Color result;
+} AccumulatedMaterialData;
+
+static void _walkerMaterialCallback(CloudsWalker* walker)
+{
+    /*AccumulatedMaterialData* data = (AccumulatedMaterialData*)segment->data;*/
 }
 
 static Color _getColor(Renderer* renderer, Color base, Vector3 start, Vector3 end)
@@ -59,7 +68,27 @@ static Color _getColor(Renderer* renderer, Color base, Vector3 start, Vector3 en
     /* TODO Iter layers in sorted order */
     for (i = 0; i < n; i++)
     {
-        base = cloudsApplyLayer(layersGetLayer(definition->layers, i), base, renderer, start, end);
+        CloudsLayerDefinition* layer = (CloudsLayerDefinition*)layersGetLayer(renderer->clouds->definition->layers, i);
+        Vector3 ostart, oend;
+
+        ostart = start;
+        oend = end;
+        if (!cloudsOptimizeWalkingBounds(layer, &ostart, &oend))
+        {
+            continue;
+        }
+        else
+        {
+            CloudsWalker* walker;
+            AccumulatedMaterialData data;
+            data.result = COLOR_TRANSPARENT;
+
+            walker = cloudsCreateWalker(renderer, layer, start, end);
+            cloudsStartWalking(walker, _walkerMaterialCallback, &data);
+            cloudsDeleteWalker(walker);
+
+            colorMask(&base, &data.result);
+        }
     }
 
     return base;

@@ -2,6 +2,27 @@
 
 #include "../renderer.h"
 
+/**
+ * Control of the next walking order.
+ */
+typedef enum
+{
+    CLOUD_WALKING_CONTINUE,
+    CLOUD_WALKING_STOP,
+    CLOUD_WALKING_REFINE,
+    CLOUD_WALKING_SUBDIVIDE
+} CloudWalkingOrder;
+
+/**
+ * Additional info for walking orders.
+ */
+typedef struct
+{
+    CloudWalkingOrder order;
+    double precision;
+    int max_segments;
+} CloudWalkingNextAction;
+
 
 int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* layer, Vector3* start, Vector3* end)
 {
@@ -53,4 +74,36 @@ int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* layer, Vector3* start, Ve
     }
 
     return 1;
+}
+
+CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 start, Vector3 end)
+{
+}
+
+void cloudsDeleteWalker(CloudsWalker* walker)
+{
+}
+
+void cloudsWalkerPerformStep(CloudsWalker* walker)
+{
+}
+
+void cloudsWalkerOrderStop(CloudsWalker* walker)
+{
+}
+
+void cloudsWalkerOrderRefine(CloudsWalker* walker, double precision)
+{
+}
+
+void cloudsWalkerOrderSubdivide(CloudsWalker* walker, double max_segments)
+{
+}
+
+CloudWalkerStepInfo* cloudsWalkerGetLastSegment(CloudsWalker* walker)
+{
+}
+
+void cloudsStartWalking(CloudsWalker* walker, FuncCloudsWalkingCallback callback, void* data)
+{
 }
