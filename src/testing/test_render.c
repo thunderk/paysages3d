@@ -20,7 +20,7 @@ static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* da
     {
         z = 0.2 + z;
     }
-    if (x > 0.1 ^ z > 0.1)
+    if ((x > 0.1) ^ (z > 0.1))
     {
         return COLOR_WHITE;
     }
