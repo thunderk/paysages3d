@@ -8,6 +8,8 @@
 #include <math.h>
 #include <string.h>
 
+extern int tests_cpu_count;
+
 static inline void _add_methods_to_case(TCase* tc, ...)
 {
     void* method;

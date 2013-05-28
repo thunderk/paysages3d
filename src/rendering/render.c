@@ -382,12 +382,16 @@ static void _scanGetDiff(ScanPoint* v1, ScanPoint* v2, ScanPoint* result)
 
 static void _scanInterpolate(ScanPoint* v1, ScanPoint* diff, double value, ScanPoint* result)
 {
+    double v1depth = v1->pixel.z;
+    double v2depth = (v1->pixel.z + diff->pixel.z);
+    double factor = ((1.0 - value) / v1depth + value / v2depth);
+
     result->pixel.x = v1->pixel.x + diff->pixel.x * value;
     result->pixel.y = v1->pixel.y + diff->pixel.y * value;
-    result->pixel.z = v1->pixel.z + diff->pixel.z * value;
-    result->location.x = v1->location.x + diff->location.x * value;
-    result->location.y = v1->location.y + diff->location.y * value;
-    result->location.z = v1->location.z + diff->location.z * value;
+    result->pixel.z = ((1.0 - value) * (v1->pixel.z / v1depth) + value * (v1->pixel.z + diff->pixel.z) / v2depth) / factor;
+    result->location.x = ((1.0 - value) * (v1->location.x / v1depth) + value * (v1->location.x + diff->location.x) / v2depth) / factor;
+    result->location.y = ((1.0 - value) * (v1->location.y / v1depth) + value * (v1->location.y + diff->location.y) / v2depth) / factor;
+    result->location.z = ((1.0 - value) * (v1->location.z / v1depth) + value * (v1->location.z + diff->location.z) / v2depth) / factor;
     result->callback = v1->callback;
 }
 
