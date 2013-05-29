@@ -26,9 +26,9 @@ typedef struct
     Vector3 end;
     double length;
 
-    int refined;
+    /*int refined;
     int subdivision_level;
-    double precision_asked;
+    double precision_asked;*/
 
     void* data;
 } CloudWalkerStepInfo;
@@ -66,11 +66,20 @@ CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudsLayerDefinition* laye
 void cloudsDeleteWalker(CloudsWalker* walker);
 
 /**
+ * Define the segment size for next steps.
+ *
+ * @param walker The walker to configure
+ * @param step The step length, negative for automatic
+ */
+void cloudsSetStepSize(CloudsWalker* walker, double step);
+
+/**
  * Perform a single step.
  *
  * @param walker The walker to use
+ * @return 1 to continue the loop, 0 to stop
  */
-void cloudsWalkerPerformStep(CloudsWalker* walker);
+int cloudsWalkerPerformStep(CloudsWalker* walker);
 
 /**
  * Order the walker to stop.

@@ -202,6 +202,7 @@ static double _getLayerDensitySinX(Renderer* renderer, CloudsLayerDefinition* la
 
 START_TEST(test_clouds_walking)
 {
+    /* Init */
     CloudsLayerDefinition* layer;
     layer = cloudsGetLayerType().callback_create();
     layer->lower_altitude = -1.0;
@@ -214,7 +215,35 @@ START_TEST(test_clouds_walking)
     renderer->render_quality = 8;
     renderer->clouds->getLayerDensity = _getLayerDensitySinX;
 
-    // TODO
+    CloudsWalker* walker = cloudsCreateWalker(renderer, layer, v3(-0.4, 0.0, 0.0), v3(10.0, 0.0, 0.0));
+    CloudWalkerStepInfo* segment;
+    int result;
+
+    /* First step */
+    cloudsSetStepSize(walker, 0.3);
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_double_eq(segment->walked_distance, 0.0);
+    ck_assert_vector_values(segment->start, -0.4, 0.0, 0.0);
+    ck_assert_vector_values(segment->end, -0.1, 0.0, 0.0);
+    ck_assert_double_eq(segment->length, 0.3);
+
+    /* Second step */
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_double_eq(segment->walked_distance, 0.3);
+    ck_assert_vector_values(segment->start, -0.1, 0.0, 0.0);
+    ck_assert_vector_values(segment->end, 0.2, 0.0, 0.0);
+    ck_assert_double_eq(segment->length, 0.3);
+
+    /* Order to refine second step around the entry point */
+    cloudsWalkerOrderRefine(walker, 0.01);
+    /* TODO */
+
+    /* Clean up */
+    cloudsDeleteWalker(walker);
 
     cloudsGetLayerType().callback_delete(layer);
     rendererDelete(renderer);
