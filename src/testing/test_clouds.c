@@ -224,23 +224,38 @@ START_TEST(test_clouds_walking)
     result = cloudsWalkerPerformStep(walker);
     segment = cloudsWalkerGetLastSegment(walker);
     ck_assert_int_eq(result, 1);
-    ck_assert_double_eq(segment->walked_distance, 0.0);
-    ck_assert_vector_values(segment->start, -0.4, 0.0, 0.0);
-    ck_assert_vector_values(segment->end, -0.1, 0.0, 0.0);
     ck_assert_double_eq(segment->length, 0.3);
+    ck_assert_double_eq(segment->start.distance_from_start, 0.0);
+    ck_assert_vector_values(segment->start.location, -0.4, 0.0, 0.0);
+    ck_assert_double_eq(segment->start.global_density, 0.0);
+    ck_assert_double_eq(segment->end.distance_from_start, 0.3);
+    ck_assert_vector_values(segment->end.location, -0.1, 0.0, 0.0);
+    ck_assert_double_eq(segment->end.global_density, 0.0);
 
     /* Second step */
     result = cloudsWalkerPerformStep(walker);
     segment = cloudsWalkerGetLastSegment(walker);
     ck_assert_int_eq(result, 1);
-    ck_assert_double_eq(segment->walked_distance, 0.3);
-    ck_assert_vector_values(segment->start, -0.1, 0.0, 0.0);
-    ck_assert_vector_values(segment->end, 0.2, 0.0, 0.0);
     ck_assert_double_eq(segment->length, 0.3);
+    ck_assert_double_eq(segment->start.distance_from_start, 0.3);
+    ck_assert_vector_values(segment->start.location, -0.1, 0.0, 0.0);
+    ck_assert_double_eq(segment->start.global_density, 0.0);
+    ck_assert_double_eq(segment->end.distance_from_start, 0.6);
+    ck_assert_vector_values(segment->end.location, 0.2, 0.0, 0.0);
+    ck_assert_double_gt(segment->end.global_density, 0.9);
 
     /* Order to refine second step around the entry point */
     cloudsWalkerOrderRefine(walker, 0.01);
-    /* TODO */
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_double_in_range(segment->length, 0.19, 0.21);
+    ck_assert_double_in_range(segment->start.distance_from_start, 0.39, 0.41);
+    ck_assert_double_in_range(segment->start.location.x, -0.01, 0.01);
+    /* TODO Check segment->start.global_density */
+    ck_assert_double_eq(segment->end.distance_from_start, 0.6);
+    ck_assert_vector_values(segment->end.location, 0.2, 0.0, 0.0);
+    ck_assert_double_gt(segment->end.global_density, 0.9);
 
     /* Clean up */
     cloudsDeleteWalker(walker);

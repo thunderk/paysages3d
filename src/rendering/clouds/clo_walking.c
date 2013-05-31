@@ -36,6 +36,7 @@ struct CloudsWalker
     double max_length;
     double step_size;
 
+    int started;
     CloudWalkerStepInfo last_segment;
 
     CloudWalkingNextAction next_action;
@@ -107,10 +108,9 @@ CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudsLayerDefinition* laye
     result->cursor = 0.0;
     result->step_size = 1.0;
 
+    result->started = 0;
     result->last_segment.renderer = renderer;
     result->last_segment.layer = layer;
-    result->last_segment.walked_distance = 0.0;
-    result->last_segment.end = start;
 
     result->next_action.order = CLOUD_WALKING_CONTINUE;
 
@@ -128,8 +128,64 @@ void cloudsSetStepSize(CloudsWalker* walker, double step)
     walker->step_size = step;
 }
 
+static void _getPoint(CloudsWalker* walker, double cursor, CloudWalkerPoint* out_point)
+{
+    out_point->distance_from_start = cursor;
+    out_point->location = v3Add(walker->start, v3Scale(walker->diff, out_point->distance_from_start / walker->max_length));
+
+    Renderer* renderer = walker->last_segment.renderer;
+    CloudsLayerDefinition* layer = walker->last_segment.layer;
+    out_point->global_density = renderer->clouds->getLayerDensity(renderer, layer, out_point->location);
+}
+
+static void _refineSegment(CloudsWalker* walker, double start_cursor, double start_density, double end_cursor, double end_density, double precision, CloudWalkerPoint* result)
+{
+    CloudWalkerPoint middle;
+
+    _getPoint(walker, (start_cursor + end_cursor) / 2.0, &middle);
+
+    if (start_density == 0.0)
+    {
+        /* Looking for entry */
+        if (middle.global_density == 0.0)
+        {
+            _refineSegment(walker, middle.distance_from_start, middle.global_density, end_cursor, end_density, precision, result);
+        }
+        else if (middle.distance_from_start - start_cursor > precision)
+        {
+            _refineSegment(walker, start_cursor, start_density, middle.distance_from_start, middle.global_density, precision, result);
+        }
+        else
+        {
+            *result = middle;
+        }
+    }
+    else
+    {
+        /* Looking for exit */
+        if (middle.global_density == 0.0)
+        {
+            _refineSegment(walker, start_cursor, start_density, middle.distance_from_start, middle.global_density, precision, result);
+        }
+        else if (end_cursor - middle.distance_from_start > precision)
+        {
+            _refineSegment(walker, middle.distance_from_start, middle.global_density, end_cursor, end_density, precision, result);
+        }
+        else
+        {
+            *result = middle;
+        }
+    }
+}
+
 int cloudsWalkerPerformStep(CloudsWalker* walker)
 {
+    if (!walker->started)
+    {
+        _getPoint(walker, 0.0, &walker->last_segment.end);
+        walker->started = 1;
+    }
+
     if (walker->next_action.order == CLOUD_WALKING_STOP || walker->cursor >= walker->max_length)
     {
         walker->next_action.order = CLOUD_WALKING_STOP;
@@ -139,13 +195,26 @@ int cloudsWalkerPerformStep(CloudsWalker* walker)
     {
         /* TODO Limit to end */
         walker->last_segment.start = walker->last_segment.end;
-        walker->last_segment.walked_distance = walker->cursor;
 
         walker->cursor += walker->step_size;
 
-        walker->last_segment.end = v3Add(walker->start, v3Scale(walker->diff, walker->cursor / walker->max_length));
+        _getPoint(walker, walker->cursor, &walker->last_segment.end);
         walker->last_segment.length = walker->step_size;
 
+        return 1;
+    }
+    else if (walker->next_action.order == CLOUD_WALKING_REFINE)
+    {
+        /* Refine segment with dichotomy */
+        _refineSegment(walker,
+                       walker->last_segment.start.distance_from_start,
+                       walker->last_segment.start.global_density,
+                       walker->last_segment.end.distance_from_start,
+                       walker->last_segment.end.global_density,
+                       walker->next_action.precision,
+                       &walker->last_segment.start);
+        walker->last_segment.length = walker->last_segment.end.distance_from_start - walker->last_segment.start.distance_from_start;
+        walker->next_action.order = CLOUD_WALKING_CONTINUE;
         return 1;
     }
     else

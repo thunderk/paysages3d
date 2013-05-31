@@ -13,6 +13,13 @@ extern "C"
 {
 #endif
 
+typedef struct
+{
+    double distance_from_start;
+    Vector3 location;
+    double global_density;
+} CloudWalkerPoint;
+
 /**
  * Information on a segment yielded by walking.
  */
@@ -21,9 +28,8 @@ typedef struct
     Renderer* renderer;
     CloudsLayerDefinition* layer;
 
-    double walked_distance;
-    Vector3 start;
-    Vector3 end;
+    CloudWalkerPoint start;
+    CloudWalkerPoint end;
     double length;
 
     /*int refined;
@@ -91,6 +97,9 @@ void cloudsWalkerOrderStop(CloudsWalker* walker);
 /**
  * Order the walker to refine the search for cloud entry or exit.
  *
+ * The refinement will next yield a shorter version of the segment, containing only the cloud-inside portion, with a
+ * tolerance fixed by precision. For an entry point, this will discard the part before cloud entry. For en exit point,
+ * the portion after this point will be part of the next step, as normal walking resumes.
  * @param walker The walker to use
  * @param precision Precision wanted for the refinement
  */
