@@ -1,5 +1,6 @@
 #include "private.h"
 
+#include <assert.h>
 #include <stdlib.h>
 #include "../tools.h"
 #include "../renderer.h"
@@ -26,32 +27,117 @@ static Color _fakeGetColor(Renderer* renderer, Color base, Vector3 start, Vector
 }
 
 /******************** Real ********************/
+typedef struct
+{
+    double light_power;
+    double out_scattering; /* Amount of light scattered away by heavy particles */
+} AccumulatedLightData;
+
+static void _walkerFilterCallback(CloudsWalker* walker)
+{
+    CloudWalkerStepInfo* segment = cloudsWalkerGetLastSegment(walker);
+    AccumulatedLightData* data = (AccumulatedLightData*)segment->data;
+
+    assert(data != NULL);
+
+    double density_integral = segment->length * (segment->start.global_density + segment->end.global_density) / 2.0;
+
+    data->out_scattering += 0.3 * density_integral;
+
+    if (data->out_scattering > data->light_power)
+    {
+        cloudsWalkerOrderStop(walker);
+    }
+}
+
 static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
 {
-#if 0
     CloudsDefinition* definition = renderer->clouds->definition;
     int i, n;
+
+    AccumulatedLightData data;
+    data.out_scattering = 0.0;
+    data.light_power = colorGetPower(&light->color);
 
     /* TODO Iter layers in sorted order */
     n = layersCount(definition->layers);
     for (i = 0; i < n; i++)
     {
-        light->color = cloudsLayerFilterLight(layersGetLayer(definition->layers, i), renderer, light->color, location, v3Add(location, v3Scale(light->direction, -10000.0)), v3Scale(light->direction, -1.0));
-        /* TODO Reduce light->reflection too */
+        CloudsLayerDefinition* layer = (CloudsLayerDefinition*)layersGetLayer(renderer->clouds->definition->layers, i);
+        Vector3 ostart, oend;
+
+        ostart = location;
+        oend = v3Add(location, v3Scale(light->direction, -10000.0));
+        if (!cloudsOptimizeWalkingBounds(layer, &ostart, &oend))
+        {
+            continue;
+        }
+        else
+        {
+            CloudsWalker* walker;
+
+            walker = cloudsCreateWalker(renderer, layer, ostart, oend);
+            cloudsWalkerSetStepSize(walker, -1.0);
+            cloudsStartWalking(walker, _walkerFilterCallback, &data);
+            cloudsDeleteWalker(walker);
+        }
     }
-    return n > 0;
-#endif
-    return 0;
+
+    double max_power = colorGetPower(&light->color) - data.out_scattering;
+    if (max_power < 0.0)
+    {
+        light->color = COLOR_BLACK;
+    }
+    else
+    {
+        colorLimitPower(&light->color, max_power);
+    }
+
+    return data.out_scattering > 0.0;
 }
 
 typedef struct
 {
-    Color result;
+    double out_scattering; /* Amount of light scattered away by heavy particles */
+    Color in_scattering; /* Amount of light redirected toward the viewer */
 } AccumulatedMaterialData;
+
+static inline void _applyOutScattering(Color* col, double out_scattering)
+{
+    if (out_scattering >= 1.0)
+    {
+        col->r = col->g = col->b = 0.0;
+    }
+    else
+    {
+        col->r *= (1.0 - out_scattering);
+        col->g *= (1.0 - out_scattering);
+        col->b *= (1.0 - out_scattering);
+    }
+}
 
 static void _walkerMaterialCallback(CloudsWalker* walker)
 {
-    /*AccumulatedMaterialData* data = (AccumulatedMaterialData*)segment->data;*/
+    CloudWalkerStepInfo* segment = cloudsWalkerGetLastSegment(walker);
+    AccumulatedMaterialData* data = (AccumulatedMaterialData*)segment->data;
+    Renderer* renderer = segment->renderer;
+    CloudsLayerDefinition* layer = segment->layer;
+
+    assert(data != NULL);
+
+    double density_integral = segment->length * (segment->start.global_density + segment->end.global_density) / 2.0;
+
+    data->out_scattering += 0.5 * density_integral;
+
+    Color in_scattering = renderer->applyLightingToSurface(renderer, segment->start.location, VECTOR_UP, &layer->material);
+    in_scattering.r *= density_integral * 5.0;
+    in_scattering.g *= density_integral * 5.0;
+    in_scattering.b *= density_integral * 5.0;
+    _applyOutScattering(&in_scattering, data->out_scattering);
+
+    data->in_scattering.r += in_scattering.r;
+    data->in_scattering.g += in_scattering.g;
+    data->in_scattering.b += in_scattering.b;
 }
 
 static Color _getColor(Renderer* renderer, Color base, Vector3 start, Vector3 end)
@@ -81,13 +167,25 @@ static Color _getColor(Renderer* renderer, Color base, Vector3 start, Vector3 en
         {
             CloudsWalker* walker;
             AccumulatedMaterialData data;
-            data.result = COLOR_TRANSPARENT;
+            data.out_scattering = 0.0;
+            data.in_scattering = COLOR_BLACK;
 
-            walker = cloudsCreateWalker(renderer, layer, start, end);
+            walker = cloudsCreateWalker(renderer, layer, ostart, oend);
+            cloudsWalkerSetStepSize(walker, -1.0);
             cloudsStartWalking(walker, _walkerMaterialCallback, &data);
             cloudsDeleteWalker(walker);
 
-            colorMask(&base, &data.result);
+            /* Apply final out_scattering to base */
+            _applyOutScattering(&base, data.out_scattering);
+
+            /* Apply in_scattering */
+            base.r += data.in_scattering.r;
+            base.g += data.in_scattering.g;
+            base.b += data.in_scattering.b;
+
+            /* Apply aerial perspective approximation */
+            /* TODO This should be done at cloud entry */
+            base = renderer->applyMediumTraversal(renderer, ostart, base);
         }
     }
 

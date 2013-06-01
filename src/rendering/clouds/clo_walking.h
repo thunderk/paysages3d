@@ -32,8 +32,8 @@ typedef struct
     CloudWalkerPoint end;
     double length;
 
-    /*int refined;
-    int subdivision_level;
+    int refined;
+    /*int subdivision_level;
     double precision_asked;*/
 
     void* data;
@@ -77,7 +77,7 @@ void cloudsDeleteWalker(CloudsWalker* walker);
  * @param walker The walker to configure
  * @param step The step length, negative for automatic
  */
-void cloudsSetStepSize(CloudsWalker* walker, double step);
+void cloudsWalkerSetStepSize(CloudsWalker* walker, double step);
 
 /**
  * Perform a single step.

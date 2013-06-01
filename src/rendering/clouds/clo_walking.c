@@ -122,10 +122,17 @@ void cloudsDeleteWalker(CloudsWalker* walker)
     free(walker);
 }
 
-void cloudsSetStepSize(CloudsWalker* walker, double step)
+void cloudsWalkerSetStepSize(CloudsWalker* walker, double step)
 {
-    /* TODO Negative step => automatic */
-    walker->step_size = step;
+    if (step > 0.0)
+    {
+        walker->step_size = step;
+    }
+    else
+    {
+        /* TODO Automatic settings (using rendering quality and cloud feature size) */
+        walker->step_size = 1.0;
+    }
 }
 
 static void _getPoint(CloudsWalker* walker, double cursor, CloudWalkerPoint* out_point)
@@ -147,33 +154,33 @@ static void _refineSegment(CloudsWalker* walker, double start_cursor, double sta
     if (start_density == 0.0)
     {
         /* Looking for entry */
-        if (middle.global_density == 0.0)
+        if (middle.distance_from_start - start_cursor < precision)
+        {
+            *result = middle;
+        }
+        else if (middle.global_density == 0.0)
         {
             _refineSegment(walker, middle.distance_from_start, middle.global_density, end_cursor, end_density, precision, result);
         }
-        else if (middle.distance_from_start - start_cursor > precision)
-        {
-            _refineSegment(walker, start_cursor, start_density, middle.distance_from_start, middle.global_density, precision, result);
-        }
         else
         {
-            *result = middle;
+            _refineSegment(walker, start_cursor, start_density, middle.distance_from_start, middle.global_density, precision, result);
         }
     }
     else
     {
         /* Looking for exit */
-        if (middle.global_density == 0.0)
+        if (end_cursor - middle.distance_from_start < precision)
+        {
+            *result = middle;
+        }
+        else if (middle.global_density == 0.0)
         {
             _refineSegment(walker, start_cursor, start_density, middle.distance_from_start, middle.global_density, precision, result);
         }
-        else if (end_cursor - middle.distance_from_start > precision)
-        {
-            _refineSegment(walker, middle.distance_from_start, middle.global_density, end_cursor, end_density, precision, result);
-        }
         else
         {
-            *result = middle;
+            _refineSegment(walker, middle.distance_from_start, middle.global_density, end_cursor, end_density, precision, result);
         }
     }
 }
@@ -200,6 +207,7 @@ int cloudsWalkerPerformStep(CloudsWalker* walker)
 
         _getPoint(walker, walker->cursor, &walker->last_segment.end);
         walker->last_segment.length = walker->step_size;
+        walker->last_segment.refined = 0;
 
         return 1;
     }
@@ -212,9 +220,12 @@ int cloudsWalkerPerformStep(CloudsWalker* walker)
                        walker->last_segment.end.distance_from_start,
                        walker->last_segment.end.global_density,
                        walker->next_action.precision,
-                       &walker->last_segment.start);
+                       (walker->last_segment.start.global_density == 0.0) ? (&walker->last_segment.start) : (&walker->last_segment.end));
         walker->last_segment.length = walker->last_segment.end.distance_from_start - walker->last_segment.start.distance_from_start;
+        walker->last_segment.refined = 1;
+
         walker->next_action.order = CLOUD_WALKING_CONTINUE;
+
         return 1;
     }
     else
@@ -248,6 +259,7 @@ CloudWalkerStepInfo* cloudsWalkerGetLastSegment(CloudsWalker* walker)
 
 void cloudsStartWalking(CloudsWalker* walker, FuncCloudsWalkingCallback callback, void* data)
 {
+    walker->last_segment.data = data;
     while (cloudsWalkerPerformStep(walker))
     {
         callback(walker);
