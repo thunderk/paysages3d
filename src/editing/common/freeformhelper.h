@@ -1,10 +1,11 @@
 #ifndef FREEFORMHELPER_H
 #define FREEFORMHELPER_H
 
-#include <QSlider>
-#include <QPushButton>
 #include "widgetsliderdecimal.h"
 #include "../basepreview.h"
+
+class QSlider;
+class QPushButton;
 
 class FreeFormHelper:public QObject
 {
@@ -56,6 +57,9 @@ public slots:
     void processExploreClicked();
     void processRenderClicked();
     void processDecimalChange(double value);
+
+protected:
+    bool eventFilter(QObject* object, QEvent* event);
 
 private:
     QWidget* _form_widget;

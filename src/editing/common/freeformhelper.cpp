@@ -2,11 +2,16 @@
 
 #include <QDialog>
 #include <QVariant>
+#include <QResizeEvent>
+#include <QSlider>
+#include <QPushButton>
 #include <cmath>
+#include <qt4/QtGui/qwidget.h>
 #include "dialogrender.h"
 #include "dialogexplorer.h"
 #include "rendering/scenery.h"
 #include "rendering/renderer.h"
+#include "tools.h"
 
 Q_DECLARE_METATYPE(double*)
 
@@ -24,8 +29,43 @@ FreeFormHelper::~FreeFormHelper()
 {
 }
 
+bool FreeFormHelper::eventFilter(QObject* object, QEvent* event)
+{
+    if (event->type() == QEvent::Resize && object == _form_widget)
+    {
+        QSize form_size = ((QResizeEvent*) event)->size();
+        QSize preview_size;
+
+        if (form_size.width() > 1400 && form_size.height() > 900)
+        {
+            preview_size = QSize(300, 300);
+        }
+        else if (form_size.width() < 1000 || form_size.height() < 700)
+        {
+            preview_size = QSize(160, 160);
+        }
+        else
+        {
+            preview_size = QSize(220, 220);
+        }
+
+        for (int i = 0; i < _previews.size(); i++)
+        {
+            if (_previews[i]->size() != preview_size)
+            {
+                _previews[i]->setMinimumSize(preview_size);
+                _previews[i]->setMaximumSize(preview_size);
+                _previews[i]->resize(preview_size);
+            }
+        }
+    }
+    return false;
+}
+
 void FreeFormHelper::startManaging()
 {
+    _form_widget->installEventFilter(this);
+
     connect(this, SIGNAL(needLocalRefreshing()), _form_widget, SLOT(refreshFromLocalData()));
     connect(this, SIGNAL(needGlobalRefreshing()), _form_widget, SLOT(refreshFromFellowData()));
     connect(this, SIGNAL(needReverting()), _form_widget, SLOT(updateLocalDataFromScenery()));
