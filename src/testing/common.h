@@ -27,6 +27,11 @@ static inline void _add_methods_to_case(TCase* tc, ...)
     suite_add_tcase(s, tc); \
 }
 
+/***** Boolean assertions *****/
+#define ck_assert_true(_X_) ck_assert_int_ne((_X_), 0)
+#define ck_assert_false(_X_) ck_assert_int_eq((_X_), 0)
+
+/***** Floating point assertions *****/
 static inline int _double_equals(double x, double y)
 {
     return fabs(x - y) < 0.00000000001;

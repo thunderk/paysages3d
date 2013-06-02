@@ -80,12 +80,6 @@ LayerType cloudsGetLayerType();
 void cloudsAutoPreset(CloudsDefinition* definition, CloudsPreset preset);
 void cloudsLayerAutoPreset(CloudsLayerDefinition* definition, CloudsLayerPreset preset);
 
-Renderer* cloudsCreatePreviewCoverageRenderer();
-Color cloudsGetPreviewCoverage(Renderer* renderer, double x, double y, double scaling, int perspective);
-
-Renderer* cloudsCreatePreviewColorRenderer();
-Color cloudsGetPreviewColor(Renderer* renderer, double x, double y);
-
 #ifdef __cplusplus
 }
 #endif

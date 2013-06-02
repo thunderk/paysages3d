@@ -15,10 +15,33 @@ extern "C"
 
 typedef struct
 {
-    Vector3 enter;
-    Vector3 exit;
+    double distance_from_start;
+    Vector3 location;
+    double global_density;
+} CloudWalkerPoint;
+
+/**
+ * Information on a segment yielded by walking.
+ */
+typedef struct
+{
+    Renderer* renderer;
+    CloudsLayerDefinition* layer;
+
+    CloudWalkerPoint start;
+    CloudWalkerPoint end;
     double length;
-} CloudPrimarySegment;
+
+    int refined;
+    /*int subdivision_level;
+    double precision_asked;*/
+
+    void* data;
+} CloudWalkerStepInfo;
+
+typedef struct CloudsWalker CloudsWalker;
+
+typedef void (*FuncCloudsWalkingCallback)(CloudsWalker* walker);
 
 /**
  * Optimize the search limits in a layer.
@@ -31,17 +54,81 @@ typedef struct
 int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* layer, Vector3* start, Vector3* end);
 
 /**
- * Go through the cloud layer to find segments (parts of the lookup that are likely to contain cloud).
+ * Create a cloud walker.
  *
- * @param renderer The renderer environment
- * @param layer The cloud layer
- * @param start Start position of the lookup
- * @param end End position of the lookup
- * @param max_segments Maximum number of segments to collect
- * @param out_segments Allocated space to fill found segments
- * @return Number of segments found
+ * For better performance, the segment should by optimized using cloudsOptimizeWalkingBounds.
+ * @param renderer Renderer context
+ * @param layer The cloud layer to traverse
+ * @param start Start of the walk
+ * @param end End of the walk
  */
-int cloudsGetLayerPrimarySegments(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 start, Vector3 end, int max_segments, CloudPrimarySegment* out_segments);
+CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 start, Vector3 end);
+
+/**
+ * Delete a cloud walker.
+ *
+ * @param walker The walker to free
+ */
+void cloudsDeleteWalker(CloudsWalker* walker);
+
+/**
+ * Define the segment size for next steps.
+ *
+ * @param walker The walker to configure
+ * @param step The step length, negative for automatic
+ */
+void cloudsWalkerSetStepSize(CloudsWalker* walker, double step);
+
+/**
+ * Perform a single step.
+ *
+ * @param walker The walker to use
+ * @return 1 to continue the loop, 0 to stop
+ */
+int cloudsWalkerPerformStep(CloudsWalker* walker);
+
+/**
+ * Order the walker to stop.
+ *
+ * @param walker The walker to use
+ */
+void cloudsWalkerOrderStop(CloudsWalker* walker);
+
+/**
+ * Order the walker to refine the search for cloud entry or exit.
+ *
+ * The refinement will next yield a shorter version of the segment, containing only the cloud-inside portion, with a
+ * tolerance fixed by precision. For an entry point, this will discard the part before cloud entry. For en exit point,
+ * the portion after this point will be part of the next step, as normal walking resumes.
+ * @param walker The walker to use
+ * @param precision Precision wanted for the refinement
+ */
+void cloudsWalkerOrderRefine(CloudsWalker* walker, double precision);
+
+/**
+ * Order the walker to subdivide the previous segment in smaller segments.
+ *
+ * @param walker The walker to use
+ * @param max_segments Maximal number of segments
+ */
+void cloudsWalkerOrderSubdivide(CloudsWalker* walker, double max_segments);
+
+/**
+ * Get the last segment information.
+ *
+ * @param walker The walker to use
+ */
+CloudWalkerStepInfo* cloudsWalkerGetLastSegment(CloudsWalker* walker);
+
+/**
+ * Start walking automatically through a segment.
+ *
+ * The callback will be called with each segment found, giving info and asking for desired alteration on walking.
+ * @param walker The walker to use
+ * @param callback Callback to be called with each found segment
+ * @param data User data that will be passed back in the callback
+ */
+void cloudsStartWalking(CloudsWalker* walker, FuncCloudsWalkingCallback callback, void* data);
 
 #ifdef __cplusplus
 }
