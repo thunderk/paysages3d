@@ -18,7 +18,7 @@ Color _fakeApplyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 
     return COLOR_WHITE;
 }
 
-Renderer* cloudsCreatePreviewCoverageRenderer()
+Renderer* cloudsPreviewCoverageCreateRenderer()
 {
     Renderer* result = rendererCreate();
     result->render_quality = 5;
@@ -26,7 +26,15 @@ Renderer* cloudsCreatePreviewCoverageRenderer()
     return result;
 }
 
-Color cloudsGetPreviewCoverage(Renderer* renderer, double x, double y, double scaling, int perspective)
+void cloudsPreviewCoverageBindLayer(Renderer* renderer, CloudsLayerDefinition* layer)
+{
+    CloudsDefinition* definition = (CloudsDefinition*)CloudsDefinitionClass.create();
+    layersAddLayer(definition->layers, layer);
+    CloudsRendererClass.bind(renderer, definition);
+    CloudsDefinitionClass.destroy(definition);
+}
+
+Color cloudsPreviewCoverageGetPixel(Renderer* renderer, double x, double y, double scaling, int perspective)
 {
     if (perspective)
     {
@@ -55,25 +63,91 @@ Color cloudsGetPreviewCoverage(Renderer* renderer, double x, double y, double sc
     }
 }
 
-Renderer* cloudsCreatePreviewColorRenderer()
+static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)
+{
+    LightDefinition light;
+
+    UNUSED(renderer);
+    UNUSED(normal);
+    UNUSED(opaque);
+
+    light.color.r = 1.0;
+    light.color.g = 1.0;
+    light.color.b = 1.0;
+    light.direction.x = -1.0;
+    light.direction.y = -0.5;
+    light.direction.z = 1.0;
+    light.direction = v3Normalize(light.direction);
+    light.altered = 1;
+    light.reflection = 0.0;
+    lightingPushLight(status, &light);
+
+    light.color.r = 0.2;
+    light.color.g = 0.2;
+    light.color.b = 0.2;
+    light.direction.x = 1.0;
+    light.direction.y = -0.5;
+    light.direction.z = -1.0;
+    light.direction = v3Normalize(light.direction);
+    light.altered = 0;
+    light.reflection = 0.0;
+    lightingPushLight(status, &light);
+}
+
+Renderer* cloudsPreviewMaterialCreateRenderer()
 {
     Renderer* result = rendererCreate();
     result->render_quality = 8;
+    result->atmosphere->getLightingStatus = _getLightingStatus;
     return result;
 }
 
-Color cloudsGetPreviewColor(Renderer* renderer, double x, double y)
+static double _getDensity(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location)
+{
+    UNUSED(renderer);
+    UNUSED(layer);
+
+    double distance = v3Norm(location);
+    if (distance > 1.0)
+    {
+        return 0.0;
+    }
+    else if (distance < 0.8)
+    {
+        return 1.0;
+    }
+    else
+    {
+        return (1.0 - distance) / 0.2;
+    }
+}
+
+void cloudsPreviewMaterialBindLayer(Renderer* renderer, CloudsLayerDefinition* layer)
+{
+    CloudsDefinition* definition = (CloudsDefinition*)CloudsDefinitionClass.create();
+    layersAddLayer(definition->layers, layer);
+    CloudsRendererClass.bind(renderer, definition);
+    CloudsDefinitionClass.destroy(definition);
+
+    layer = layersGetLayer(renderer->clouds->definition->layers, 0);
+    layer->lower_altitude = -1.0;
+    layer->thickness = 2.0;
+
+    renderer->clouds->getLayerDensity = _getDensity;
+}
+
+Color cloudsPreviewMaterialGetPixel(Renderer* renderer, double x, double y)
 {
     Vector3 start, end;
-    double thickness = 0.5;
+    double thickness = 2.0;
 
     start.x = x * thickness * 0.5;
-    start.y = -y * thickness * 0.5;
-    start.z = thickness * 0.5;
+    start.z = y * thickness * 0.5;
+    start.y = thickness * 0.5;
 
     end.x = start.x;
-    end.y = start.y;
-    end.z = -start.z;
+    end.z = start.z;
+    end.y = -start.y;
 
     return renderer->clouds->getColor(renderer, COLOR_BLUE, start, end);
 }

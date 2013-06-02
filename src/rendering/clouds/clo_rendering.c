@@ -185,7 +185,7 @@ static Color _getColor(Renderer* renderer, Color base, Vector3 start, Vector3 en
 
             /* Apply aerial perspective approximation */
             /* TODO This should be done at cloud entry */
-            base = renderer->applyMediumTraversal(renderer, ostart, base);
+            base = renderer->atmosphere->applyAerialPerspective(renderer, ostart, base).final;
         }
     }
 

@@ -1,5 +1,6 @@
 #include "formclouds.h"
 
+#include "rendering/clouds/clo_preview.h"
 #include "rendering/tools/color.h"
 #include "rendering/tools/euclid.h"
 #include "rendering/scenery.h"
@@ -12,24 +13,22 @@ class PreviewCloudsCoverage:public BasePreview
 public:
     PreviewCloudsCoverage(QWidget* parent, CloudsLayerDefinition* layer):BasePreview(parent)
     {
-        _renderer = cloudsCreatePreviewCoverageRenderer();
+        _renderer = cloudsPreviewCoverageCreateRenderer();
         _3d = true;
 
         _original_layer = layer;
-        _preview_definition = (CloudsDefinition*)CloudsDefinitionClass.create();
 
         addToggle("3d", tr("Perspective"), true);
         configScaling(100.0, 1000.0, 20.0, 200.0);
     }
     ~PreviewCloudsCoverage()
     {
-        CloudsDefinitionClass.destroy(_preview_definition);
         rendererDelete(_renderer);
     }
 protected:
     Color getColor(double x, double y)
     {
-        return cloudsGetPreviewCoverage(_renderer, x, y, scaling, _3d);
+        return cloudsPreviewCoverageGetPixel(_renderer, x, y, scaling, _3d);
     }
     virtual void toggleChangeEvent(QString key, bool value)
     {
@@ -41,15 +40,12 @@ protected:
     }
     void updateData()
     {
-        layersDeleteLayer(_preview_definition->layers, 0);
-        layersAddLayer(_preview_definition->layers, _original_layer);
-        CloudsRendererClass.bind(_renderer, _preview_definition);
+        cloudsPreviewCoverageBindLayer(_renderer, _original_layer);
     }
 
 private:
     Renderer* _renderer;
     CloudsLayerDefinition* _original_layer;
-    CloudsDefinition* _preview_definition;
     bool _3d;
 };
 
@@ -59,27 +55,28 @@ public:
     PreviewCloudsColor(QWidget* parent, CloudsLayerDefinition* layer):BasePreview(parent)
     {
         _original_layer = layer;
-        _preview_definition = (CloudsDefinition*)CloudsDefinitionClass.create();
 
-        _renderer = cloudsCreatePreviewColorRenderer();
+        _renderer = cloudsPreviewMaterialCreateRenderer();
 
         configScaling(0.5, 2.0, 0.1, 2.0);
+    }
+
+    ~PreviewCloudsColor()
+    {
+        rendererDelete(_renderer);
     }
 protected:
     Color getColor(double x, double y)
     {
-        return cloudsGetPreviewColor(_renderer, x, y);
+        return cloudsPreviewMaterialGetPixel(_renderer, x, y);
     }
     void updateData()
     {
-        layersDeleteLayer(_preview_definition->layers, 0);
-        layersAddLayer(_preview_definition->layers, _original_layer);
-        CloudsRendererClass.bind(_renderer, _preview_definition);
+        cloudsPreviewMaterialBindLayer(_renderer, _original_layer);
     }
 private:
     Renderer* _renderer;
     CloudsLayerDefinition* _original_layer;
-    CloudsDefinition* _preview_definition;
 };
 
 /**************** Form ****************/
