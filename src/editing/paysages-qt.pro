@@ -24,7 +24,7 @@ win32:LIBS += ../libpaysages.a ../libpaysages_exploring.a -lDevIL -lILU -lILUT -
 TRANSLATIONS = $$PROJECT_PATH/data/i18n/paysages_fr.ts
 
 HEADERS += \
-    widgetheightmap.h \
+    terrain/widgetheightmap.h \
     widgetexplorer.h \
     widgetcurveeditor.h \
     tools.h \
@@ -73,7 +73,7 @@ HEADERS += \
     common/previewrenderer.h
 
 SOURCES += \
-    widgetheightmap.cpp \
+    terrain/widgetheightmap.cpp \
     widgetexplorer.cpp \
     widgetcurveeditor.cpp \
     tools.cpp \
