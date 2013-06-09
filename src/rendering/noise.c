@@ -229,6 +229,13 @@ void noiseSetFunction(NoiseGenerator* generator, NoiseFunction* function)
     noiseValidate(generator);
 }
 
+void noiseSetCustomFunction(NoiseGenerator* generator, double (*func1d)(double x), double (*func2d)(double x, double y), double (*func3d)(double x, double y, double z))
+{
+    generator->_func_noise_1d = func1d;
+    generator->_func_noise_2d = func2d;
+    generator->_func_noise_3d = func3d;
+}
+
 void noiseSetFunctionParams(NoiseGenerator* generator, NoiseFunctionAlgorithm algorithm, double ridge_factor, double curve_factor)
 {
     NoiseFunction function = {algorithm, ridge_factor, curve_factor};
