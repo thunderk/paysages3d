@@ -20,7 +20,7 @@ MainTerrainForm::MainTerrainForm(QWidget *parent) :
     _form_helper->addPreview(ui->preview_shape, _renderer_shape);
 
     _form_helper->addDoubleInputSlider(ui->input_scaling, &_terrain->scaling, 0.1, 3.0, 0.03, 0.3);
-    _form_helper->addDoubleInputSlider(ui->input_height, &_terrain->height, 1.0, 45.0, 0.3, 3.0);
+    _form_helper->addDoubleInputSlider(ui->input_height, &_terrain->height, 1.0, 90.0, 0.5, 5.0);
     _form_helper->addDoubleInputSlider(ui->input_shadow_smoothing, &_terrain->shadow_smoothing, 0.0, 0.3, 0.003, 0.03);
     _form_helper->addDoubleInputSlider(ui->input_water_height, &_terrain->water_height, -2.0, 2.0, 0.01, 0.1);
 
