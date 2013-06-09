@@ -29,7 +29,7 @@ QGLWidget(parent)
     _wireframe = true;
     WaterDefinition* water_definition = (WaterDefinition*)WaterDefinitionClass.create();
     sceneryGetWater(water_definition);
-    _water_height = _renderer->terrain->getWaterHeight(_renderer);
+    _water_height = 0.0;
     WaterDefinitionClass.destroy(water_definition);
 
     _average_frame_time = 0.0;
@@ -74,7 +74,7 @@ void WidgetHeightMap::setTerrain(TerrainDefinition* terrain)
 {
     _terrain = terrain;
     TerrainRendererClass.bind(_renderer, _terrain);
-    _water_height = _renderer->terrain->getWaterHeight(_renderer);
+    _water_height = _renderer->terrain->getWaterHeight(_renderer) / _terrain->scaling;
 
     revert();
 }
@@ -210,7 +210,7 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
     _last_time = new_time;
 
     // Update top camera
-    Vector3 target = {_target_x, terrainGetInterpolatedHeight(_terrain, _target_x, _target_z, 1), _target_z};
+    Vector3 target = {_target_x, terrainGetInterpolatedHeight(_terrain, _target_x, _target_z, 1, 1), _target_z};
     cameraSetLocationCoords(_top_camera, target.x, target.y + 1.0, target.z + 0.1);
     cameraSetTarget(_top_camera, target);
     cameraSetZoomToTarget(_top_camera, _zoom);
@@ -531,7 +531,7 @@ void WidgetHeightMap::updateVertexInfo()
             vertex->point.x = (double) dx;
             vertex->point.z = (double) dz;
 
-            vertex->point.y = terrainGetGridHeight(_terrain, dx, dz, 1);
+            vertex->point.y = terrainGetGridHeight(_terrain, dx, dz, 1) * _terrain->height;
 
             vertex->painted = terrainIsPainted(_terrain->height_map, dx, dz);
         }

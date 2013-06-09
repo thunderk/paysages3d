@@ -105,10 +105,10 @@ double terrainGetGridHeight(TerrainDefinition* definition, int x, int z, int wit
         height = noiseGet2DTotal(definition->_height_noise, (double)x, (double)z);
     }
 
-    return height * definition->height * definition->scaling;
+    return height;
 }
 
-double terrainGetInterpolatedHeight(TerrainDefinition* definition, double x, double z, int with_painting)
+double terrainGetInterpolatedHeight(TerrainDefinition* definition, double x, double z, int scaled, int with_painting)
 {
     double height;
     x /= definition->scaling;
@@ -119,5 +119,12 @@ double terrainGetInterpolatedHeight(TerrainDefinition* definition, double x, dou
         height = noiseGet2DTotal(definition->_height_noise, x, z);
     }
 
-    return height * definition->height * definition->scaling;
+    if (scaled)
+    {
+        return height * definition->height * definition->scaling;
+    }
+    else
+    {
+        return height;
+    }
 }

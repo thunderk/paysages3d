@@ -18,7 +18,7 @@ static double _fakeGetHeight(Renderer* renderer, double x, double z, int with_pa
 
 static double _realGetHeight(Renderer* renderer, double x, double z, int with_painting)
 {
-    return terrainGetInterpolatedHeight(renderer->terrain->definition, x, z, with_painting);
+    return terrainGetInterpolatedHeight(renderer->terrain->definition, x, z, 1, with_painting);
 }
 
 static TerrainResult _fakeGetResult(Renderer* renderer, double x, double z, int with_painting, int with_textures)
