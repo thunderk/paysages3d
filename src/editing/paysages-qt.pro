@@ -71,7 +71,8 @@ HEADERS += \
     common/widgetsliderdecimal.h \
     common/previewrenderer.h \
     terrain/widgetterrainbasenoisepreview.h \
-    common/mainwindow.h
+    common/mainwindow.h \
+    terrain/dialogbaseterrainnoise.h
 
 SOURCES += \
     terrain/widgetheightmap.cpp \
@@ -121,13 +122,15 @@ SOURCES += \
     common/widgetsliderdecimal.cpp \
     common/previewrenderer.cpp \
     terrain/widgetterrainbasenoisepreview.cpp \
-    common/mainwindow.cpp
+    common/mainwindow.cpp \
+    terrain/dialogbaseterrainnoise.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \
     common/widgetglobalformbuttons.ui \
     terrain/mainterrainform.ui \
-    common/mainwindow.ui
+    common/mainwindow.ui \
+    terrain/dialogbaseterrainnoise.ui
 
 RESOURCES += \
     ../../data/ui_pictures.qrc

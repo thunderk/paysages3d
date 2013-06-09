@@ -1,6 +1,8 @@
 #include "mainterrainform.h"
 #include "ui_mainterrainform.h"
 
+#include <QMessageBox>
+#include "dialogbaseterrainnoise.h"
 #include "dialogterrainpainting.h"
 #include "previewterrainshape.h"
 #include "tools.h"
@@ -29,6 +31,7 @@ MainTerrainForm::MainTerrainForm(QWidget *parent) :
     _form_helper->setExploreButton(ui->button_explore);
     _form_helper->setRenderButton(ui->button_render);
 
+    connect(ui->button_dialog_basenoise, SIGNAL(clicked()), this, SLOT(buttonBaseNoisePressed()));
     connect(ui->button_dialog_painting, SIGNAL(clicked()), this, SLOT(buttonPaintingPressed()));
     connect(ui->button_goto_textures, SIGNAL(clicked()), this, SLOT(buttonTexturesPressed()));
 
@@ -77,6 +80,27 @@ void MainTerrainForm::commitLocalDataToScenery()
 void MainTerrainForm::alterRenderer(Renderer* renderer)
 {
     TerrainRendererClass.bind(renderer, _terrain);
+}
+
+void MainTerrainForm::buttonBaseNoisePressed()
+{
+    int erase;
+    if (terrainGetMemoryStats(_terrain) > 0)
+    {
+        erase = QMessageBox::question(this, tr("Paysages 3D - Base noise edition"), tr("You have manual modifications on this terrain, regenerating base noise may produce weird results."), tr("Keep my changes anyway"), tr("Erase my changes"));
+    }
+    else
+    {
+        erase = 0;
+    }
+
+    if (DialogBaseTerrainNoise::editNoise(this, _terrain->_height_noise))
+    {
+        if (erase)
+        {
+            terrainClearPainting(_terrain->height_map);
+        }
+    }
 }
 
 void MainTerrainForm::buttonPaintingPressed()

@@ -44,7 +44,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="button_dialog_basenoise">
             <property name="text">
              <string>Generate base noise</string>
             </property>

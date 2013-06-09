@@ -454,6 +454,12 @@ int terrainIsPainted(TerrainHeightMap* heightmap, int x, int z)
     return _getDataPointer(&heightmap->brush_data, x, z, NULL, NULL, 0) || _getDataPointer(&heightmap->merged_data, x, z, NULL, NULL, 0);
 }
 
+void terrainClearPainting(TerrainHeightMap* heightmap)
+{
+    _clearData(&heightmap->merged_data);
+    _clearData(&heightmap->brush_data);
+}
+
 typedef double (*BrushCallback)(TerrainHeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data);
 
 static inline void _applyBrush(TerrainHeightMap* heightmap, TerrainBrush* brush, double force, void* data, BrushCallback callback)
