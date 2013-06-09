@@ -22,7 +22,7 @@ MainTerrainForm::MainTerrainForm(QWidget *parent) :
     _form_helper->addDoubleInputSlider(ui->input_scaling, &_terrain->scaling, 0.1, 3.0, 0.03, 0.3);
     _form_helper->addDoubleInputSlider(ui->input_height, &_terrain->height, 1.0, 90.0, 0.5, 5.0);
     _form_helper->addDoubleInputSlider(ui->input_shadow_smoothing, &_terrain->shadow_smoothing, 0.0, 0.3, 0.003, 0.03);
-    _form_helper->addDoubleInputSlider(ui->input_water_height, &_terrain->water_height, -2.0, 2.0, 0.01, 0.1);
+    _form_helper->addDoubleInputSlider(ui->input_water_height, &_terrain->water_height, -1.0, 1.0, 0.01, 0.1);
 
     _form_helper->setApplyButton(ui->button_apply);
     _form_helper->setRevertButton(ui->button_revert);
@@ -55,6 +55,8 @@ void MainTerrainForm::refreshFromLocalData()
     {
         _form_helper->setLabelText("label_painting_info", tr("No manual scuplting done"));
     }
+
+    ui->widget_base_noise_preview->setNoise(_terrain->_height_noise);
 }
 
 void MainTerrainForm::refreshFromFellowData()

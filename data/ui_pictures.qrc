@@ -6,6 +6,9 @@
         <file>images/explore.png</file>
         <file>images/render.png</file>
         <file>images/about.png</file>
+        <file>images/load.png</file>
+        <file>images/new.png</file>
+        <file>images/save.png</file>
     </qresource>
     <qresource prefix="/tabs">
         <file>images/tab_atmosphere.png</file>
@@ -14,5 +17,11 @@
         <file>images/tab_terrain.png</file>
         <file>images/tab_textures.png</file>
         <file>images/tab_water.png</file>
+    </qresource>
+    <qresource prefix="/logo">
+        <file>images/logo_16.png</file>
+        <file>images/logo_32.png</file>
+        <file>images/logo_64.png</file>
+        <file>images/logo_256.png</file>
     </qresource>
 </RCC>

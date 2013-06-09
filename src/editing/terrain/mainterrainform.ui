@@ -54,7 +54,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="widget" native="true">
+           <widget class="WidgetTerrainBaseNoisePreview" name="widget_base_noise_preview" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>1</horstretch>
@@ -446,6 +446,12 @@
    <class>WidgetSliderDecimal</class>
    <extends>QSlider</extends>
    <header>common/widgetsliderdecimal.h</header>
+  </customwidget>
+  <customwidget>
+   <class>WidgetTerrainBaseNoisePreview</class>
+   <extends>QWidget</extends>
+   <header>terrain/widgetterrainbasenoisepreview.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

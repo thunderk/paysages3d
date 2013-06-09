@@ -15,9 +15,12 @@ protected:
     virtual void bindEvent(BasePreview* preview);
     virtual void updateEvent();
     virtual Color getColor2D(double x, double y, double scaling);
+    virtual void toggleChangeEvent(QString key, bool value);
 
 private:
     TerrainDefinition* _terrain;
+    bool _highlight_enabled;
+    double _water_height;
 };
 
 #endif // PREVIEWTERRAINSHAPE_H

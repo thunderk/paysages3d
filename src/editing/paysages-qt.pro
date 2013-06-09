@@ -31,7 +31,6 @@ HEADERS += \
     previewosd.h \
     previewmaterial.h \
     previewcolorgradation.h \
-    mainwindow.h \
     inputnoise.h \
     inputmaterial.h \
     inputlayers.h \
@@ -70,7 +69,9 @@ HEADERS += \
     common/freeformhelper.h \
     terrain/previewterrainshape.h \
     common/widgetsliderdecimal.h \
-    common/previewrenderer.h
+    common/previewrenderer.h \
+    terrain/widgetterrainbasenoisepreview.h \
+    common/mainwindow.h
 
 SOURCES += \
     terrain/widgetheightmap.cpp \
@@ -80,7 +81,6 @@ SOURCES += \
     previewosd.cpp \
     previewmaterial.cpp \
     previewcolorgradation.cpp \
-    mainwindow.cpp \
     inputnoise.cpp \
     inputmaterial.cpp \
     inputlayers.cpp \
@@ -119,12 +119,15 @@ SOURCES += \
     common/freeformhelper.cpp \
     terrain/previewterrainshape.cpp \
     common/widgetsliderdecimal.cpp \
-    common/previewrenderer.cpp
+    common/previewrenderer.cpp \
+    terrain/widgetterrainbasenoisepreview.cpp \
+    common/mainwindow.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \
     common/widgetglobalformbuttons.ui \
-    terrain/mainterrainform.ui
+    terrain/mainterrainform.ui \
+    common/mainwindow.ui
 
 RESOURCES += \
     ../../data/ui_pictures.qrc

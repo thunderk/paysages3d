@@ -1,16 +1,25 @@
-#ifndef _PAYSAGES_QT_MAINWINDOW_H_
-#define _PAYSAGES_QT_MAINWINDOW_H_
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "formrender.h"
+#include <QVector>
 #include "rendering/tools/pack.h"
+
+class BaseForm;
+class FormRender;
+
+namespace Ui {
+class MainWindow;
+}
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+    
 public:
     explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
+
     virtual bool event(QEvent* event);
 
     static void guiSaveCallback(PackStream* stream, void* data);
@@ -26,9 +35,14 @@ public slots:
     void showAboutDialog();
 
     void quickPreview();
+    void finalRender();
+    void showLastRender();
+
     void explore3D();
 
 private:
+    Ui::MainWindow *ui;
+
     void guiSave(PackStream* stream);
     void guiLoad(PackStream* stream);
 
@@ -36,4 +50,4 @@ private:
     FormRender* _form_render;
 };
 
-#endif
+#endif // MAINWINDOW_H
