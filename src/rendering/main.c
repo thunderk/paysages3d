@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "auto.h"
+#include "tools/data.h"
 #include "system.h"
 #include "scenery.h"
 #include "render.h"
@@ -13,6 +14,12 @@
 void paysagesInit()
 {
     systemInit();
+    if (!dataInit())
+    {
+        /* TODO Add error callback (for interface) */
+        fprintf(stderr, "ERROR : Can't locate data files.\n");
+        exit(1);
+    }
     openclInit();
 
     sceneryInit();
