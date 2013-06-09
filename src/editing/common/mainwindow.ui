@@ -19,6 +19,18 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QWidget" name="tool_panel" native="true">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -302,7 +314,10 @@
    <addaction name="action_file_load"/>
    <addaction name="separator"/>
    <addaction name="action_explore"/>
+   <addaction name="action_quick_render"/>
    <addaction name="action_final_render"/>
+   <addaction name="separator"/>
+   <addaction name="action_about"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

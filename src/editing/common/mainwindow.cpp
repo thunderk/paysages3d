@@ -63,7 +63,8 @@ int main(int argc, char** argv)
     BasePreview::initDrawers();
 
     window = new MainWindow();
-    window->showMaximized();
+    window->show();
+    //window->showMaximized();
     splash->finish(window);
 
     delete splash;
@@ -119,7 +120,8 @@ MainWindow::MainWindow(QWidget *parent) :
     _forms.append(_form_render);
 
     // TODO Decide this according to platform / screen size
-    ui->toolBar->hide();
+    //ui->toolBar->hide();
+    ui->tool_panel->hide();
     ui->menuBar->hide();
 
     scenerySetCustomDataCallback(MainWindow::guiSaveCallback, MainWindow::guiLoadCallback, this);
