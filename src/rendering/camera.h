@@ -35,6 +35,7 @@ Vector3 cameraGetDirection(CameraDefinition* camera);
 Vector3 cameraGetDirectionNormalized(CameraDefinition* camera);
 VectorSpherical cameraGetDirectionSpherical(CameraDefinition* camera);
 CameraPerspective cameraGetPerspective(CameraDefinition* camera);
+double cameraGetRealDepth(CameraDefinition* camera, Vector3 projected);
 
 void cameraSetLocation(CameraDefinition* camera, Vector3 location);
 void cameraSetLocationCoords(CameraDefinition* camera, double x, double y, double z);

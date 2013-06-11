@@ -5,6 +5,7 @@
 #include <math.h>
 
 #include "renderer.h"
+#include "camera.h"
 #include "system.h"
 
 typedef struct
@@ -381,10 +382,10 @@ static void _scanGetDiff(ScanPoint* v1, ScanPoint* v2, ScanPoint* result)
     result->callback = v1->callback;
 }
 
-static void _scanInterpolate(ScanPoint* v1, ScanPoint* diff, double value, ScanPoint* result)
+static void _scanInterpolate(CameraDefinition* camera, ScanPoint* v1, ScanPoint* diff, double value, ScanPoint* result)
 {
-    double v1depth = v1->pixel.z;
-    double v2depth = (v1->pixel.z + diff->pixel.z);
+    double v1depth = cameraGetRealDepth(camera, v1->pixel);
+    double v2depth = cameraGetRealDepth(camera, v3Add(v1->pixel, diff->pixel));
     double factor = ((1.0 - value) / v1depth + value / v2depth);
 
     result->pixel.x = v1->pixel.x + diff->pixel.x * value;
@@ -481,7 +482,7 @@ static void _pushScanLineEdge(RenderArea* area, ScanPoint* point1, ScanPoint* po
                 fx = point2->pixel.x;
             }
             fx = fx - point1->pixel.x;
-            _scanInterpolate(point1, &diff, fx / dx, &point);
+            _scanInterpolate(area->renderer->render_camera, point1, &diff, fx / dx, &point);
 
             /*point.pixel.x = (double)curx;*/
 
@@ -539,7 +540,7 @@ static void _renderScanLines(RenderArea* area)
                 fy = fy - down.pixel.y;
 
                 current.y = cury;
-                _scanInterpolate(&down, &diff, fy / dy, &current);
+                _scanInterpolate(area->renderer->render_camera, &down, &diff, fy / dy, &current);
 
                 _pushFragment(area, current.x, current.y, current.pixel.z, (cury == starty || cury == endy), current.location, current.callback);
             }
