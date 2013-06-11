@@ -35,14 +35,14 @@ void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerP
     switch (preset)
     {
         case TEXTURES_LAYER_PRESET_ROCK:
-            definition->displacement_height = 0.1;
+            definition->displacement_height = 0.3;
             definition->displacement_scaling = 2.0;
             definition->displacement_offset = 0.0;
             definition->material.base.r = 0.6;
             definition->material.base.g = 0.55;
             definition->material.base.b = 0.57;
-            definition->material.reflection = 0.02;
-            definition->material.shininess = 3.0;
+            definition->material.reflection = 0.006;
+            definition->material.shininess = 6.0;
             break;
         case TEXTURES_LAYER_PRESET_GRASS:
             zoneAddHeightRangeQuick(definition->terrain_zone, 1.0, -6.0, -5.0, 3.0, 15.0);
@@ -53,8 +53,8 @@ void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerP
             definition->material.base.r = 0.12;
             definition->material.base.g = 0.19;
             definition->material.base.b = 0.035;
-            definition->material.reflection = 0.003;
-            definition->material.shininess = 2.0;
+            definition->material.reflection = 0.001;
+            definition->material.shininess = 4.0;
             break;
         case TEXTURES_LAYER_PRESET_SAND:
             zoneAddHeightRangeQuick(definition->terrain_zone, 1.0, -5.5, -4.5, -4.0, -3.0);
