@@ -57,13 +57,13 @@ static void _layerValidateDefinition(TexturesLayerDefinition* definition)
     }
 
     noiseClearLevels(definition->_displacement_noise);
-    noiseAddLevelsSimple(definition->_displacement_noise, 7, 1.0, -1.0, 1.0, 0.0);
+    noiseAddLevelsSimple(definition->_displacement_noise, 9, 1.0, -1.0, 1.0, 0.0);
     noiseNormalizeAmplitude(definition->_displacement_noise, -1.0, 1.0, 0);
     noiseValidate(definition->_displacement_noise);
 
     noiseClearLevels(definition->_detail_noise);
-    noiseAddLevelsSimple(definition->_detail_noise, 5, 0.1, -1.0, 1.0, 0.0);
-    noiseNormalizeAmplitude(definition->_detail_noise, -0.01, 0.01, 0);
+    noiseAddLevelsSimple(definition->_detail_noise, 7, 0.01, -1.0, 1.0, 0.0);
+    noiseNormalizeAmplitude(definition->_detail_noise, -0.008, 0.008, 0);
     noiseValidate(definition->_detail_noise);
 }
 
