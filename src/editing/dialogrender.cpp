@@ -186,6 +186,8 @@ void DialogRender::applyRenderEnded()
 {
     _info->hide();
     _actions->show();
+
+    area->update();
 }
 
 void DialogRender::saveRender()
