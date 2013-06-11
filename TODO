@@ -1,4 +1,5 @@
 Technology Preview 2 :
+- Implement perspective correction for coordinate mapping of rasterized polygons.
 - Finalize terrain editor.
    => Add a generation dialog for base noise (overwriting changes).
 - Get rid of noise dialogs, for simpler settings.
@@ -15,6 +16,7 @@ Technology Preview 2 :
 
 Technlogy Preview 3 :
 - Start an undo/redo system ?
+- Alter aerial perspective using estimation of the amount of light left after cloud layers traversal.
 - Add a map preview to terrain editor.
 - Better time selection widget for atmosphere.
 - Clouds should keep distance to ground.

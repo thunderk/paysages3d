@@ -27,13 +27,13 @@ static TerrainDefinition* _createDefinition()
 {
     TerrainDefinition* definition = malloc(sizeof(TerrainDefinition));
 
-    definition->height = 0.0;
+    definition->height = 1.0;
     definition->scaling = 1.0;
     definition->shadow_smoothing = 0.0;
 
     definition->height_map = terrainHeightMapCreate(definition);
 
-    definition->water_height = -0.8;
+    definition->water_height = -0.3;
 
     definition->_height_noise = noiseCreateGenerator();
 

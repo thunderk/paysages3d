@@ -1,10 +1,10 @@
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 
 #include <QApplication>
 #include <QMenuBar>
 #include <QMenu>
 #include <QIcon>
-#include <QToolBar>
 #include <QFileDialog>
 #include <QTabWidget>
 #include <QTranslator>
@@ -64,6 +64,7 @@ int main(int argc, char** argv)
 
     window = new MainWindow();
     window->show();
+    //window->showMaximized();
     splash->finish(window);
 
     delete splash;
@@ -79,66 +80,58 @@ int main(int argc, char** argv)
 }
 
 MainWindow::MainWindow(QWidget *parent) :
-QMainWindow(parent)
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
 {
+    ui->setupUi(this);
+
     BaseForm* form;
-    QTabWidget* tabs;
-    QToolBar* toolbar;
 
-    tabs = new QTabWidget(this);
-    tabs->setIconSize(QSize(32, 32));
+    connect(ui->action_explore, SIGNAL(triggered()), this, SLOT(explore3D()));
+    connect(ui->action_quick_render, SIGNAL(triggered()), this, SLOT(quickPreview()));
+    connect(ui->action_final_render, SIGNAL(triggered()), this, SLOT(finalRender()));
+    connect(ui->action_file_new, SIGNAL(triggered()), this, SLOT(fileNew()));
+    connect(ui->action_file_save, SIGNAL(triggered()), this, SLOT(fileSave()));
+    connect(ui->action_file_load, SIGNAL(triggered()), this, SLOT(fileLoad()));
+    connect(ui->action_about, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
 
-    tabs->addTab(new MainTerrainForm(tabs), QIcon(getDataPath("images/tab_terrain.png")), tr("Landscape shape"));
-
-    form = new FormTextures(tabs);
-    tabs->addTab(form, QIcon(getDataPath("images/tab_textures.png")), tr("Textures"));
+    form = new FormTextures(ui->tabs);
+    ui->tabs->addTab(form, QIcon(getDataPath("images/tab_textures.png")), tr("Textures"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
-    form = new FormWater(tabs);
-    tabs->addTab(form, QIcon(getDataPath("images/tab_water.png")), tr("Water"));
+    form = new FormWater(ui->tabs);
+    ui->tabs->addTab(form, QIcon(getDataPath("images/tab_water.png")), tr("Water"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
-    form = new FormAtmosphere(tabs);
-    tabs->addTab(form, QIcon(getDataPath("images/tab_atmosphere.png")), tr("Atmosphere"));
+    form = new FormAtmosphere(ui->tabs);
+    ui->tabs->addTab(form, QIcon(getDataPath("images/tab_atmosphere.png")), tr("Atmosphere"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
-    form = new FormClouds(tabs);
-    tabs->addTab(form, QIcon(getDataPath("images/tab_clouds.png")), tr("Clouds"));
+    form = new FormClouds(ui->tabs);
+    ui->tabs->addTab(form, QIcon(getDataPath("images/tab_clouds.png")), tr("Clouds"));
     QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
     _forms.append(form);
 
-    _form_render = new FormRender(tabs);
-    tabs->addTab(_form_render, QIcon(getDataPath("images/tab_render.png")), tr("Render"));
+    _form_render = new FormRender(ui->tabs);
+    ui->tabs->addTab(_form_render, QIcon(getDataPath("images/tab_render.png")), tr("Render"));
     _forms.append(_form_render);
 
-    toolbar = new QToolBar(this);
-    toolbar->setOrientation(Qt::Vertical);
-    toolbar->setAllowedAreas(Qt::LeftToolBarArea);
-    toolbar->setMovable(false);
-    toolbar->setFloatable(false);
-    toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    toolbar->toggleViewAction()->setEnabled(false);
-    toolbar->setIconSize(QSize(32, 32));
-    addToolBar(Qt::LeftToolBarArea, toolbar);
-
-    toolbar->addAction(QIcon(getDataPath("images/new.png")), tr("&New"), this, SLOT(fileNew()))->setShortcut(QKeySequence(tr("Crtl+N")));
-    toolbar->addAction(QIcon(getDataPath("images/save.png")), tr("&Save"), this, SLOT(fileSave()))->setShortcut(QKeySequence(tr("Crtl+S")));
-    toolbar->addAction(QIcon(getDataPath("images/load.png")), tr("&Load"), this, SLOT(fileLoad()))->setShortcut(QKeySequence(tr("Crtl+L")));
-    toolbar->addAction(QIcon(getDataPath("images/explore.png")), tr("&Explore (F2)"), this, SLOT(explore3D()))->setShortcut(QKeySequence(tr("F2")));
-    toolbar->addAction(QIcon(getDataPath("images/render.png")), tr("&Quick\nrender (F5)"), this, SLOT(quickPreview()))->setShortcut(QKeySequence(tr("F5")));
-    toolbar->addAction(QIcon(getDataPath("images/about.png")), tr("&About"), this, SLOT(showAboutDialog()));
-
-    setCentralWidget(tabs);
-
-    setWindowTitle("Paysages 3D");
-    setWindowIcon(QIcon(getDataPath("images/logo_32.png")));
+    // TODO Decide this according to platform / screen size
+    //ui->toolBar->hide();
+    ui->tool_panel->hide();
+    ui->menuBar->hide();
 
     scenerySetCustomDataCallback(MainWindow::guiSaveCallback, MainWindow::guiLoadCallback, this);
 
     refreshAll();
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
 }
 
 bool MainWindow::event(QEvent* event)
@@ -160,6 +153,7 @@ void MainWindow::refreshAll()
     {
         _forms[i]->revertConfig();
     }
+    // TODO Refresh free forms
 
     // Refresh preview OSD
     CameraDefinition* camera = cameraCreateDefinition();
@@ -242,6 +236,16 @@ void MainWindow::showAboutDialog()
 void MainWindow::quickPreview()
 {
     _form_render->startQuickRender();
+}
+
+void MainWindow::finalRender()
+{
+    _form_render->startRender();
+}
+
+void MainWindow::showLastRender()
+{
+    _form_render->showRender();
 }
 
 void MainWindow::explore3D()

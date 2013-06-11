@@ -19,7 +19,7 @@ void terrainAutoPreset(TerrainDefinition* definition, TerrainPreset preset)
         noiseNormalizeAmplitude(definition->_height_noise, -1.0, 1.0, 0);
         noiseSetFunctionParams(definition->_height_noise, NOISE_FUNCTION_SIMPLEX, 0.0, 0.0);
         definition->scaling = 1.0;
-        definition->height = 15.0;
+        definition->height = 30.0;
         definition->shadow_smoothing = 0.03;
         break;
     default:

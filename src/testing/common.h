@@ -29,6 +29,11 @@ static inline void _add_methods_to_case(TCase* tc, ...)
     suite_add_tcase(s, tc); \
 }
 
+/***** Boolean assertions *****/
+#define ck_assert_true(_X_) ck_assert_int_ne((_X_), 0)
+#define ck_assert_false(_X_) ck_assert_int_eq((_X_), 0)
+
+/***** Floating point assertions *****/
 static inline int _double_equals(double x, double y)
 {
     return fabs(x - y) < 0.00000000001;
@@ -39,7 +44,7 @@ static inline int _double_not_equals(double x, double y)
 }
 static inline int _double_greater(double x, double y)
 {
-    return _double_not_equals(x, y) || (x > y);
+    return _double_not_equals(x, y) && (x > y);
 }
 static inline int _double_greater_or_equal(double x, double y)
 {
@@ -47,7 +52,7 @@ static inline int _double_greater_or_equal(double x, double y)
 }
 static inline int _double_less(double x, double y)
 {
-    return _double_not_equals(x, y) || (x < y);
+    return _double_not_equals(x, y) && (x < y);
 }
 static inline int _double_less_or_equal(double x, double y)
 {
@@ -58,8 +63,8 @@ static inline int _double_less_or_equal(double x, double y)
 #define ck_assert_double_eq(X, Y) _ck_assert_double(_double_equals, X, ==, Y)
 #define ck_assert_double_ne(X, Y) _ck_assert_double(_double_not_equals, X, !=, Y)
 #define ck_assert_double_gt(X, Y) _ck_assert_double(_double_greater, X, >, Y)
-#define ck_assert_double_lt(X, Y) _ck_assert_double(_double_greater_or_equal, X, >=, Y)
-#define ck_assert_double_gte(X, Y) _ck_assert_double(_double_less, X, <, Y)
+#define ck_assert_double_lt(X, Y) _ck_assert_double(_double_less, X, <, Y)
+#define ck_assert_double_gte(X, Y) _ck_assert_double(_double_greater_or_equal, X, >=, Y)
 #define ck_assert_double_lte(X, Y) _ck_assert_double(_double_less_or_equal, X, <=, Y)
 
 

@@ -202,17 +202,8 @@ void noiseValidate(NoiseGenerator* generator)
     generator->_max_value = generator->height_offset;
     for (x = 0; x < generator->level_count; x++)
     {
-        double min_value = generator->levels[x].minvalue;
-        double max_value = min_value + generator->levels[x].amplitude;
-
-        if (min_value < generator->_min_value)
-        {
-            generator->_min_value = min_value;
-        }
-        if (max_value > generator->_max_value)
-        {
-            generator->_max_value = max_value;
-        }
+        generator->_min_value += generator->levels[x].minvalue;
+        generator->_max_value += generator->levels[x].minvalue + generator->levels[x].amplitude;
     }
 }
 
@@ -394,14 +385,14 @@ void noiseNormalizeAmplitude(NoiseGenerator* generator, double minvalue, double 
 
     for (level = 0; level < generator->level_count; level++)
     {
-        generator->levels[level].minvalue = minvalue + (generator->levels[level].minvalue - current_minvalue) * factor;
+        generator->levels[level].minvalue *= factor;
         generator->levels[level].amplitude *= factor;
         if (adjust_scaling)
         {
             generator->levels[level].wavelength *= factor;
         }
     }
-    /*generator->height_offset = minvalue + (generator->height_offset - current_minvalue) * factor;*/
+    generator->height_offset = minvalue + (generator->height_offset - current_minvalue) * factor;
     noiseValidate(generator);
 }
 

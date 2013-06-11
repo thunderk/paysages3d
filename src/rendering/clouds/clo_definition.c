@@ -112,7 +112,7 @@ void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
             break;
     }
 
-    noiseNormalizeAmplitude(definition->_coverage_noise, 0.0, 1.0, 0);
+    noiseNormalizeAmplitude(definition->_coverage_noise, -1.0, 3.0, 0);
     noiseNormalizeAmplitude(definition->_shape_noise, -0.5, 0.5, 0);
 }
 

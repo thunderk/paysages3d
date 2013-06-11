@@ -81,6 +81,7 @@ typedef struct
 
 /* Heightmap manipulation */
 int terrainIsPainted(TerrainHeightMap* heightmap, int x, int z);
+void terrainClearPainting(TerrainHeightMap* heightmap);
 void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
 void terrainBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
 void terrainBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value);

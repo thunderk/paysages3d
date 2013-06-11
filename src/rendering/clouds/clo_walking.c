@@ -2,6 +2,47 @@
 
 #include "../renderer.h"
 
+/**
+ * Control of the next walking order.
+ */
+typedef enum
+{
+    CLOUD_WALKING_CONTINUE,
+    CLOUD_WALKING_STOP,
+    CLOUD_WALKING_REFINE,
+    CLOUD_WALKING_SUBDIVIDE
+} CloudWalkingOrder;
+
+/**
+ * Additional info for walking orders.
+ */
+typedef struct
+{
+    CloudWalkingOrder order;
+    double precision;
+    int max_segments;
+} CloudWalkingNextAction;
+
+/*
+ * Private structure for the walker.
+ */
+struct CloudsWalker
+{
+    Vector3 start;
+    Vector3 end;
+    Vector3 diff;
+
+    double cursor;
+    double max_length;
+    double step_size;
+
+    int started;
+    CloudWalkerStepInfo last_segment;
+
+    CloudWalkingNextAction next_action;
+};
+
+
 int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* layer, Vector3* start, Vector3* end)
 {
     Vector3 diff;
@@ -51,107 +92,176 @@ int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* layer, Vector3* start, Ve
         }
     }
 
-    /* TODO Limit the search length */
     return 1;
 }
 
-int cloudsGetLayerPrimarySegments(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 start, Vector3 end, int max_segments, CloudPrimarySegment* out_segments)
+CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 start, Vector3 end)
 {
-    int inside, segment_count;
-    double step_length, segment_length;
-    Vector3 diff, walker, segment_start;
-    double render_precision, density;
-    double diff_length, progress;
+    CloudsWalker* result;
 
-    if (max_segments <= 0)
+    result = (CloudsWalker*)malloc(sizeof (CloudsWalker));
+
+    result->start = start;
+    result->end = end;
+    result->diff = v3Sub(end, start);
+    result->max_length = v3Norm(result->diff);
+    result->cursor = 0.0;
+    result->step_size = 1.0;
+
+    result->started = 0;
+    result->last_segment.renderer = renderer;
+    result->last_segment.layer = layer;
+
+    result->next_action.order = CLOUD_WALKING_CONTINUE;
+
+    return result;
+}
+
+void cloudsDeleteWalker(CloudsWalker* walker)
+{
+    free(walker);
+}
+
+void cloudsWalkerSetStepSize(CloudsWalker* walker, double step)
+{
+    if (step > 0.0)
     {
-        return 0;
+        walker->step_size = step;
     }
-
-    if (!cloudsOptimizeWalkingBounds(layer, &start, &end))
+    else
     {
-        return 0;
+        /* TODO Automatic settings (using rendering quality and cloud feature size) */
+        walker->step_size = 1.0;
     }
+}
 
-    diff = v3Sub(end, start);
-    diff_length = v3Norm(diff);
+static void _getPoint(CloudsWalker* walker, double cursor, CloudWalkerPoint* out_point)
+{
+    out_point->distance_from_start = cursor;
+    out_point->location = v3Add(walker->start, v3Scale(walker->diff, out_point->distance_from_start / walker->max_length));
 
-    if (diff_length < 0.000001)
+    Renderer* renderer = walker->last_segment.renderer;
+    CloudsLayerDefinition* layer = walker->last_segment.layer;
+    out_point->global_density = renderer->clouds->getLayerDensity(renderer, layer, out_point->location);
+}
+
+static void _refineSegment(CloudsWalker* walker, double start_cursor, double start_density, double end_cursor, double end_density, double precision, CloudWalkerPoint* result)
+{
+    CloudWalkerPoint middle;
+
+    _getPoint(walker, (start_cursor + end_cursor) / 2.0, &middle);
+
+    if (start_density == 0.0)
     {
-        return 0;
-    }
-
-    render_precision = 1.005 - 0.01 * (double)(renderer->render_quality * renderer->render_quality);
-    /*if (render_precision > max_total_length / 10.0)
-    {
-        render_precision = max_total_length / 10.0;
-    }
-    else if (render_precision < max_total_length / 10000.0)
-    {
-        render_precision = max_total_length / 10000.0;
-    }*/
-
-    segment_count = 0;
-    segment_length = 0.0;
-    density = renderer->clouds->getLayerDensity(renderer, layer, start);
-    progress = 0.0;
-    step_length = render_precision;
-    inside = (density > 0.0);
-
-    do
-    {
-        progress += step_length;
-        walker = v3Add(start, v3Scale(diff, progress / diff_length));
-
-        if (progress >= diff_length)
+        /* Looking for entry */
+        if (middle.distance_from_start - start_cursor < precision)
         {
-            density = 0.0;
+            *result = middle;
+        }
+        else if (middle.global_density == 0.0)
+        {
+            _refineSegment(walker, middle.distance_from_start, middle.global_density, end_cursor, end_density, precision, result);
         }
         else
         {
-            density = renderer->clouds->getLayerDensity(renderer, layer, walker);
+            _refineSegment(walker, start_cursor, start_density, middle.distance_from_start, middle.global_density, precision, result);
         }
-
-        if (density > 0.0)
+    }
+    else
+    {
+        /* Looking for exit */
+        if (end_cursor - middle.distance_from_start < precision)
         {
-            if (inside)
-            {
-                /* inside the cloud */
-                segment_length += step_length;
-            }
-            else
-            {
-                /* entering the cloud */
-                segment_length = step_length;
-                segment_start = v3Add(start, v3Scale(diff, (progress - step_length) / diff_length));
-                /* TODO Refine entry position */
-
-                inside = 1;
-            }
+            *result = middle;
+        }
+        else if (middle.global_density == 0.0)
+        {
+            _refineSegment(walker, start_cursor, start_density, middle.distance_from_start, middle.global_density, precision, result);
         }
         else
         {
-            if (inside)
-            {
-                /* exiting the cloud */
-                segment_length += step_length;
-
-                out_segments->enter = segment_start;
-                out_segments->exit = walker;
-                out_segments->length = segment_length;
-                out_segments++;
-                if (++segment_count >= max_segments)
-                {
-                    break;
-                }
-                /* TODO Refine exit position */
-
-                inside = 0;
-            }
+            _refineSegment(walker, middle.distance_from_start, middle.global_density, end_cursor, end_density, precision, result);
         }
-        /* step = v3Scale(direction, (info.distance_to_edge < render_precision) ? render_precision : info.distance_to_edge); */
     }
-    while (inside || (walker.y <= layer->lower_altitude + layer->thickness + 0.001 && walker.y >= layer->lower_altitude - 0.001 && progress < diff_length));
+}
 
-    return segment_count;
+int cloudsWalkerPerformStep(CloudsWalker* walker)
+{
+    if (!walker->started)
+    {
+        _getPoint(walker, 0.0, &walker->last_segment.end);
+        walker->started = 1;
+    }
+
+    if (walker->next_action.order == CLOUD_WALKING_STOP || walker->cursor >= walker->max_length)
+    {
+        walker->next_action.order = CLOUD_WALKING_STOP;
+        return 0;
+    }
+    else if (walker->next_action.order == CLOUD_WALKING_CONTINUE)
+    {
+        /* TODO Limit to end */
+        walker->last_segment.start = walker->last_segment.end;
+
+        walker->cursor += walker->step_size;
+
+        _getPoint(walker, walker->cursor, &walker->last_segment.end);
+        walker->last_segment.length = walker->step_size;
+        walker->last_segment.refined = 0;
+
+        return 1;
+    }
+    else if (walker->next_action.order == CLOUD_WALKING_REFINE)
+    {
+        /* Refine segment with dichotomy */
+        _refineSegment(walker,
+                       walker->last_segment.start.distance_from_start,
+                       walker->last_segment.start.global_density,
+                       walker->last_segment.end.distance_from_start,
+                       walker->last_segment.end.global_density,
+                       walker->next_action.precision,
+                       (walker->last_segment.start.global_density == 0.0) ? (&walker->last_segment.start) : (&walker->last_segment.end));
+        walker->last_segment.length = walker->last_segment.end.distance_from_start - walker->last_segment.start.distance_from_start;
+        walker->last_segment.refined = 1;
+
+        walker->next_action.order = CLOUD_WALKING_CONTINUE;
+
+        return 1;
+    }
+    else
+    {
+        /* TODO */
+        return 0;
+    }
+}
+
+void cloudsWalkerOrderStop(CloudsWalker* walker)
+{
+    walker->next_action.order = CLOUD_WALKING_STOP;
+}
+
+void cloudsWalkerOrderRefine(CloudsWalker* walker, double precision)
+{
+    walker->next_action.order = CLOUD_WALKING_REFINE;
+    walker->next_action.precision = precision;
+}
+
+void cloudsWalkerOrderSubdivide(CloudsWalker* walker, double max_segments)
+{
+    walker->next_action.order = CLOUD_WALKING_SUBDIVIDE;
+    walker->next_action.max_segments = max_segments;
+}
+
+CloudWalkerStepInfo* cloudsWalkerGetLastSegment(CloudsWalker* walker)
+{
+    return &walker->last_segment;
+}
+
+void cloudsStartWalking(CloudsWalker* walker, FuncCloudsWalkingCallback callback, void* data)
+{
+    walker->last_segment.data = data;
+    while (cloudsWalkerPerformStep(walker))
+    {
+        callback(walker);
+    }
 }

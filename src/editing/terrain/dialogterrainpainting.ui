@@ -789,7 +789,7 @@
   <customwidget>
    <class>WidgetHeightMap</class>
    <extends>QWidget</extends>
-   <header>widgetheightmap.h</header>
+   <header>terrain/widgetheightmap.h</header>
    <container>1</container>
    <slots>
     <signal>heightmapChanged()</signal>

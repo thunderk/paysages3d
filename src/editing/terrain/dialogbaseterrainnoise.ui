@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogBaseTerrainNoise</class>
+ <widget class="QDialog" name="DialogBaseTerrainNoise">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Paysages 3D - Base terrain noise</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="WidgetGlobalFormButtons" name="widget" native="true"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>WidgetGlobalFormButtons</class>
+   <extends>QWidget</extends>
+   <header>common/widgetglobalformbuttons.h</header>
+   <container>1</container>
+   <slots>
+    <signal>okClicked()</signal>
+    <signal>revertClicked()</signal>
+    <signal>cancelClicked()</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

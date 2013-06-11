@@ -35,8 +35,8 @@ QGLWidget(parent)
     _average_frame_time = 0.0;
 
     _last_brush_action = 0;
-    _last_mouse_x = 0;
-    _last_mouse_y = 0;
+    _last_mouse_x = 250;
+    _last_mouse_y = 250;
     _last_time = QDateTime::currentDateTime();
     _mouse_moved = false;
 

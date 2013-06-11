@@ -26,6 +26,7 @@ public slots:
     void commitLocalDataToScenery();
     void alterRenderer(Renderer* renderer);
 
+    void buttonBaseNoisePressed();
     void buttonPaintingPressed();
     void buttonTexturesPressed();
 

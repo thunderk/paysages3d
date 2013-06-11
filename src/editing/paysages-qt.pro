@@ -24,14 +24,13 @@ win32:LIBS += ../libpaysages.a ../libpaysages_exploring.a -lDevIL -lILU -lILUT -
 TRANSLATIONS = $$PROJECT_PATH/data/i18n/paysages_fr.ts
 
 HEADERS += \
-    widgetheightmap.h \
+    terrain/widgetheightmap.h \
     widgetexplorer.h \
     widgetcurveeditor.h \
     tools.h \
     previewosd.h \
     previewmaterial.h \
     previewcolorgradation.h \
-    mainwindow.h \
     inputnoise.h \
     inputmaterial.h \
     inputlayers.h \
@@ -70,17 +69,19 @@ HEADERS += \
     common/freeformhelper.h \
     terrain/previewterrainshape.h \
     common/widgetsliderdecimal.h \
-    common/previewrenderer.h
+    common/previewrenderer.h \
+    terrain/widgetterrainbasenoisepreview.h \
+    common/mainwindow.h \
+    terrain/dialogbaseterrainnoise.h
 
 SOURCES += \
-    widgetheightmap.cpp \
+    terrain/widgetheightmap.cpp \
     widgetexplorer.cpp \
     widgetcurveeditor.cpp \
     tools.cpp \
     previewosd.cpp \
     previewmaterial.cpp \
     previewcolorgradation.cpp \
-    mainwindow.cpp \
     inputnoise.cpp \
     inputmaterial.cpp \
     inputlayers.cpp \
@@ -119,12 +120,17 @@ SOURCES += \
     common/freeformhelper.cpp \
     terrain/previewterrainshape.cpp \
     common/widgetsliderdecimal.cpp \
-    common/previewrenderer.cpp
+    common/previewrenderer.cpp \
+    terrain/widgetterrainbasenoisepreview.cpp \
+    common/mainwindow.cpp \
+    terrain/dialogbaseterrainnoise.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \
     common/widgetglobalformbuttons.ui \
-    terrain/mainterrainform.ui
+    terrain/mainterrainform.ui \
+    common/mainwindow.ui \
+    terrain/dialogbaseterrainnoise.ui
 
 RESOURCES += \
     ../../data/ui_pictures.qrc

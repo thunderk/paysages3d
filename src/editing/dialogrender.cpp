@@ -133,7 +133,7 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
     _actions->layout()->addWidget(_save_button);
 
     // Connections
-    connect(this, SIGNAL(renderSizeChanged(int, int)), this, SLOT(applyRenderSize(int, int)));
+    //connect(this, SIGNAL(renderSizeChanged(int, int)), this, SLOT(applyRenderSize(int, int)));
     connect(this, SIGNAL(progressChanged(double)), this, SLOT(applyProgress(double)));
     connect(this, SIGNAL(renderEnded()), this, SLOT(applyRenderEnded()));
     connect(_save_button, SIGNAL(clicked()), this, SLOT(saveRender()));
@@ -173,7 +173,7 @@ void DialogRender::startRender(RenderParams params)
 {
     _started = time(NULL);
 
-    //applyRenderSize(params.width, params.height);
+    applyRenderSize(params.width, params.height);
     rendererSetPreviewCallbacks(_renderer, _renderStart, _renderDraw, _renderUpdate);
 
     _render_thread = new RenderThread(this, _renderer, params);
@@ -217,9 +217,10 @@ void DialogRender::toneMappingChanged()
 
 void DialogRender::loadLastRender()
 {
-    //applyRenderSize(_renderer->render_width, _renderer->render_height);
+    applyRenderSize(_renderer->render_width, _renderer->render_height);
     rendererSetPreviewCallbacks(_renderer, _renderStart, _renderDraw, _renderUpdate);
     renderEnded();
+    toneMappingChanged();
 
     exec();
 }

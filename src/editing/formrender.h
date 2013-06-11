@@ -21,13 +21,11 @@ public slots:
     virtual void revertConfig();
     virtual void applyConfig();
     void startQuickRender();
+    void startRender();
+    void showRender();
 
 protected slots:
     virtual void configChangeEvent();
-
-private slots:
-    void startRender();
-    void showRender();
 
 private:
     RenderParams _params;
