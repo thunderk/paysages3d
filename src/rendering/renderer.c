@@ -122,7 +122,7 @@ Renderer* rendererCreate()
     result->render_progress = 0.0;
     result->is_rendering = 0;
     result->render_camera = cameraCreateDefinition();
-    result->render_area = renderCreateArea();
+    result->render_area = renderCreateArea(result);
 
     renderSetParams(result->render_area, params);
 
@@ -213,7 +213,7 @@ void rendererStart(Renderer* renderer, RenderParams params)
     threadJoin(thread);
 
     renderer->is_rendering = 1;
-    renderPostProcess(renderer->render_area, renderer, core_count);
+    renderPostProcess(renderer->render_area, core_count);
     renderer->is_rendering = 0;
 }
 

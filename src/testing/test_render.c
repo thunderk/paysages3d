@@ -49,7 +49,7 @@ START_TEST(test_render_quad)
     renderClear(renderer->render_area);
 
     renderer->pushQuad(renderer, v3(-1.0, 0.0, 1.0), v3(-1.0, 0.0, -1.0), v3(1.0, 0.0, -1.0), v3(1.0, 0.0, 1.0), _postProcessFragment, NULL);
-    renderPostProcess(renderer->render_area, renderer, tests_cpu_count);
+    renderPostProcess(renderer->render_area, tests_cpu_count);
 
     renderSaveToFile(renderer->render_area, "./output/test_render_quad.png");
 

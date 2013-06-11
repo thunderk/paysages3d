@@ -45,6 +45,7 @@ typedef struct
 struct RenderArea
 {
     ColorProfile* hdr_mapping;
+    Renderer* renderer;
     RenderParams params;
     int pixel_count;
     int pixel_done;
@@ -77,7 +78,6 @@ typedef struct {
     int pixel_done;
     Thread* thread;
     RenderArea* area;
-    Renderer* renderer;
 } RenderChunk;
 
 #define RENDER_INVERSE 1
@@ -94,11 +94,12 @@ void renderQuit()
 {
 }
 
-RenderArea* renderCreateArea()
+RenderArea* renderCreateArea(Renderer* renderer)
 {
     RenderArea* result;
 
     result = malloc(sizeof(RenderArea));
+    result->renderer = renderer;
     result->hdr_mapping = colorProfileCreate();
     result->params.width = 1;
     result->params.height = 1;
@@ -605,7 +606,7 @@ void* _renderPostProcessChunk(void* data)
                 callback = chunk->area->fragment_callbacks[fragment->flags.callback];
                 if (callback.function)
                 {
-                    col = callback.function(chunk->renderer, fragment->data.location, callback.data);
+                    col = callback.function(chunk->area->renderer, fragment->data.location, callback.data);
                     /*colorNormalize(&col);*/
                 }
                 else
@@ -635,7 +636,7 @@ void* _renderPostProcessChunk(void* data)
 }
 
 #define MAX_CHUNKS 8
-void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
+void renderPostProcess(RenderArea* area, int nbchunks)
 {
     volatile RenderChunk chunks[MAX_CHUNKS];
     int i;
@@ -663,12 +664,11 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
     {
         chunks[i].thread = NULL;
         chunks[i].area = area;
-        chunks[i].renderer = renderer;
     }
 
     running = 0;
     loops = 0;
-    while ((y < ny && !renderer->render_interrupt) || running > 0)
+    while ((y < ny && !area->renderer->render_interrupt) || running > 0)
     {
         timeSleepMs(100);
 
@@ -682,13 +682,13 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
                     chunks[i].thread = NULL;
                     running--;
                 }
-                else if (renderer->render_interrupt)
+                else if (area->renderer->render_interrupt)
                 {
                     chunks[i].interrupt = 1;
                 }
             }
 
-            if (y < ny && !chunks[i].thread && !renderer->render_interrupt)
+            if (y < ny && !chunks[i].thread && !area->renderer->render_interrupt)
             {
                 chunks[i].finished = 0;
                 chunks[i].interrupt = 0;
