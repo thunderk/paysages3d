@@ -183,6 +183,15 @@ CameraPerspective cameraGetPerspective(CameraDefinition* camera)
     return camera->perspective;
 }
 
+double cameraGetRealDepth(CameraDefinition* camera, Vector3 projected)
+{
+    /* TODO Optimize this */
+    Matrix4 m = m4NewPerspective(camera->perspective.yfov, camera->perspective.xratio, camera->perspective.znear, camera->perspective.zfar);
+    projected.x = (projected.x / (0.5 * camera->width) - 1.0);
+    projected.y = -(projected.y / (0.5 * camera->height) - 1.0);
+    return m4Transform(m4Inverse(m), projected).z;
+}
+
 void cameraSetLocation(CameraDefinition* camera, Vector3 location)
 {
     camera->location = location;
@@ -300,6 +309,11 @@ Vector3 cameraUnproject(CameraDefinition* camera, Vector3 point)
 {
     point.x = (point.x / (0.5 * camera->width) - 1.0);
     point.y = -(point.y / (0.5 * camera->height) - 1.0);
+    if (point.z < 1.0)
+    {
+        point.x = -point.x;
+        point.y = -point.y;
+    }
     return m4Transform(camera->unproject, point);
 }
 

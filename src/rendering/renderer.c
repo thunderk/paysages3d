@@ -40,7 +40,6 @@ static Vector3 _getCameraDirection(Renderer* renderer, Vector3 target)
 
 static double _getPrecision(Renderer* renderer, Vector3 location)
 {
-
     UNUSED(renderer);
     UNUSED(location);
     return 0.0;
@@ -48,21 +47,16 @@ static double _getPrecision(Renderer* renderer, Vector3 location)
 
 static Vector3 _projectPoint(Renderer* renderer, Vector3 point)
 {
-
-    UNUSED(renderer);
-    return point;
+    return cameraProject(renderer->render_camera, point);
 }
 
 static Vector3 _unprojectPoint(Renderer* renderer, Vector3 point)
 {
-
-    UNUSED(renderer);
-    return point;
+    return cameraUnproject(renderer->render_camera, point);
 }
 
 static void _pushTriangle(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, f_RenderFragmentCallback callback, void* callback_data)
 {
-
     Vector3 p1, p2, p3;
 
     p1 = renderer->projectPoint(renderer, v1);
@@ -74,14 +68,12 @@ static void _pushTriangle(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3
 
 static void _pushQuad(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, f_RenderFragmentCallback callback, void* callback_data)
 {
-
     renderer->pushTriangle(renderer, v2, v3, v1, callback, callback_data);
     renderer->pushTriangle(renderer, v4, v1, v3, callback, callback_data);
 }
 
 static void _pushDisplacedTriangle(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Vector3 ov1, Vector3 ov2, Vector3 ov3, f_RenderFragmentCallback callback, void* callback_data)
 {
-
     Vector3 p1, p2, p3;
 
     p1 = renderer->projectPoint(renderer, v1);
@@ -93,20 +85,17 @@ static void _pushDisplacedTriangle(Renderer* renderer, Vector3 v1, Vector3 v2, V
 
 static void _pushDisplacedQuad(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Vector3 ov1, Vector3 ov2, Vector3 ov3, Vector3 ov4, f_RenderFragmentCallback callback, void* callback_data)
 {
-
     renderer->pushDisplacedTriangle(renderer, v2, v3, v1, ov2, ov3, ov1, callback, callback_data);
     renderer->pushDisplacedTriangle(renderer, v4, v1, v3, ov4, ov1, ov3, callback, callback_data);
 }
 
 static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
 {
-
     return _RAYCASTING_NULL;
 }
 
 static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material)
 {
-
     LightStatus* light = lightingCreateStatus(renderer->lighting, location, renderer->getCameraLocation(renderer, location));
     renderer->atmosphere->getLightingStatus(renderer, light, normal, 0);
     Color result = lightingApplyStatus(light, normal, material);
@@ -116,7 +105,6 @@ static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vecto
 
 static Color _applyMediumTraversal(Renderer* renderer, Vector3 location, Color color)
 {
-
     color = renderer->atmosphere->applyAerialPerspective(renderer, location, color).final;
     color = renderer->clouds->getColor(renderer, color, renderer->getCameraLocation(renderer, location), location);
     return color;
@@ -124,7 +112,6 @@ static Color _applyMediumTraversal(Renderer* renderer, Vector3 location, Color c
 
 Renderer* rendererCreate()
 {
-
     Renderer* result = malloc(sizeof (Renderer));
     RenderParams params = {1, 1, 1, 5};
 
@@ -135,7 +122,7 @@ Renderer* rendererCreate()
     result->render_progress = 0.0;
     result->is_rendering = 0;
     result->render_camera = cameraCreateDefinition();
-    result->render_area = renderCreateArea();
+    result->render_area = renderCreateArea(result);
 
     renderSetParams(result->render_area, params);
 
@@ -168,7 +155,6 @@ Renderer* rendererCreate()
 
 void rendererDelete(Renderer* renderer)
 {
-
     cameraDeleteDefinition(renderer->render_camera);
     lightingManagerDelete(renderer->lighting);
 
@@ -185,7 +171,6 @@ void rendererDelete(Renderer* renderer)
 
 void rendererSetPreviewCallbacks(Renderer* renderer, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update)
 {
-
     renderSetPreviewCallbacks(renderer->render_area, start, draw, update);
 }
 
@@ -228,7 +213,7 @@ void rendererStart(Renderer* renderer, RenderParams params)
     threadJoin(thread);
 
     renderer->is_rendering = 1;
-    renderPostProcess(renderer->render_area, renderer, core_count);
+    renderPostProcess(renderer->render_area, core_count);
     renderer->is_rendering = 0;
 }
 

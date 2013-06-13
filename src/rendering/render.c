@@ -5,6 +5,7 @@
 #include <math.h>
 
 #include "renderer.h"
+#include "camera.h"
 #include "system.h"
 
 typedef struct
@@ -45,6 +46,7 @@ typedef struct
 struct RenderArea
 {
     ColorProfile* hdr_mapping;
+    Renderer* renderer;
     RenderParams params;
     int pixel_count;
     int pixel_done;
@@ -77,7 +79,6 @@ typedef struct {
     int pixel_done;
     Thread* thread;
     RenderArea* area;
-    Renderer* renderer;
 } RenderChunk;
 
 #define RENDER_INVERSE 1
@@ -94,11 +95,12 @@ void renderQuit()
 {
 }
 
-RenderArea* renderCreateArea()
+RenderArea* renderCreateArea(Renderer* renderer)
 {
     RenderArea* result;
 
     result = malloc(sizeof(RenderArea));
+    result->renderer = renderer;
     result->hdr_mapping = colorProfileCreate();
     result->params.width = 1;
     result->params.height = 1;
@@ -380,14 +382,18 @@ static void _scanGetDiff(ScanPoint* v1, ScanPoint* v2, ScanPoint* result)
     result->callback = v1->callback;
 }
 
-static void _scanInterpolate(ScanPoint* v1, ScanPoint* diff, double value, ScanPoint* result)
+static void _scanInterpolate(CameraDefinition* camera, ScanPoint* v1, ScanPoint* diff, double value, ScanPoint* result)
 {
+    double v1depth = cameraGetRealDepth(camera, v1->pixel);
+    double v2depth = cameraGetRealDepth(camera, v3Add(v1->pixel, diff->pixel));
+    double factor = ((1.0 - value) / v1depth + value / v2depth);
+
     result->pixel.x = v1->pixel.x + diff->pixel.x * value;
     result->pixel.y = v1->pixel.y + diff->pixel.y * value;
     result->pixel.z = v1->pixel.z + diff->pixel.z * value;
-    result->location.x = v1->location.x + diff->location.x * value;
-    result->location.y = v1->location.y + diff->location.y * value;
-    result->location.z = v1->location.z + diff->location.z * value;
+    result->location.x = ((1.0 - value) * (v1->location.x / v1depth) + value * (v1->location.x + diff->location.x) / v2depth) / factor;
+    result->location.y = ((1.0 - value) * (v1->location.y / v1depth) + value * (v1->location.y + diff->location.y) / v2depth) / factor;
+    result->location.z = ((1.0 - value) * (v1->location.z / v1depth) + value * (v1->location.z + diff->location.z) / v2depth) / factor;
     result->callback = v1->callback;
 }
 
@@ -476,7 +482,7 @@ static void _pushScanLineEdge(RenderArea* area, ScanPoint* point1, ScanPoint* po
                 fx = point2->pixel.x;
             }
             fx = fx - point1->pixel.x;
-            _scanInterpolate(point1, &diff, fx / dx, &point);
+            _scanInterpolate(area->renderer->render_camera, point1, &diff, fx / dx, &point);
 
             /*point.pixel.x = (double)curx;*/
 
@@ -534,7 +540,7 @@ static void _renderScanLines(RenderArea* area)
                 fy = fy - down.pixel.y;
 
                 current.y = cury;
-                _scanInterpolate(&down, &diff, fy / dy, &current);
+                _scanInterpolate(area->renderer->render_camera, &down, &diff, fy / dy, &current);
 
                 _pushFragment(area, current.x, current.y, current.pixel.z, (cury == starty || cury == endy), current.location, current.callback);
             }
@@ -601,7 +607,7 @@ void* _renderPostProcessChunk(void* data)
                 callback = chunk->area->fragment_callbacks[fragment->flags.callback];
                 if (callback.function)
                 {
-                    col = callback.function(chunk->renderer, fragment->data.location, callback.data);
+                    col = callback.function(chunk->area->renderer, fragment->data.location, callback.data);
                     /*colorNormalize(&col);*/
                 }
                 else
@@ -631,7 +637,7 @@ void* _renderPostProcessChunk(void* data)
 }
 
 #define MAX_CHUNKS 8
-void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
+void renderPostProcess(RenderArea* area, int nbchunks)
 {
     volatile RenderChunk chunks[MAX_CHUNKS];
     int i;
@@ -659,12 +665,11 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
     {
         chunks[i].thread = NULL;
         chunks[i].area = area;
-        chunks[i].renderer = renderer;
     }
 
     running = 0;
     loops = 0;
-    while ((y < ny && !renderer->render_interrupt) || running > 0)
+    while ((y < ny && !area->renderer->render_interrupt) || running > 0)
     {
         timeSleepMs(100);
 
@@ -678,13 +683,13 @@ void renderPostProcess(RenderArea* area, Renderer* renderer, int nbchunks)
                     chunks[i].thread = NULL;
                     running--;
                 }
-                else if (renderer->render_interrupt)
+                else if (area->renderer->render_interrupt)
                 {
                     chunks[i].interrupt = 1;
                 }
             }
 
-            if (y < ny && !chunks[i].thread && !renderer->render_interrupt)
+            if (y < ny && !chunks[i].thread && !area->renderer->render_interrupt)
             {
                 chunks[i].finished = 0;
                 chunks[i].interrupt = 0;

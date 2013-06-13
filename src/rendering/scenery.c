@@ -186,16 +186,6 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
     return result;
 }
 
-static Vector3 _projectPoint(Renderer* renderer, Vector3 point)
-{
-    return cameraProject(renderer->render_camera, point);
-}
-
-static Vector3 _unprojectPoint(Renderer* renderer, Vector3 point)
-{
-    return cameraUnproject(renderer->render_camera, point);
-}
-
 static double _getPrecision(Renderer* renderer, Vector3 location)
 {
     Vector3 projected;
@@ -216,8 +206,6 @@ Renderer* sceneryCreateStandardRenderer()
     cameraCopyDefinition(_camera, result->render_camera);
 
     result->rayWalking = _rayWalking;
-    result->projectPoint = _projectPoint;
-    result->unprojectPoint = _unprojectPoint;
     result->getPrecision = _getPrecision;
 
     sceneryBindRenderer(result);
