@@ -309,6 +309,11 @@ Vector3 cameraUnproject(CameraDefinition* camera, Vector3 point)
 {
     point.x = (point.x / (0.5 * camera->width) - 1.0);
     point.y = -(point.y / (0.5 * camera->height) - 1.0);
+    if (point.z < 1.0)
+    {
+        point.x = -point.x;
+        point.y = -point.y;
+    }
     return m4Transform(camera->unproject, point);
 }
 

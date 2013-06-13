@@ -29,6 +29,9 @@ START_TEST(test_camera_projection)
     Vector3 point = cameraProject(cam, v3(12.0, 5.2, -6.3));
     point = cameraUnproject(cam, point);
     ck_assert_vector_values(point, 12.0, 5.2, -6.3);
+    point = cameraProject(cam, v3(-25.1, 8.3, 1.3));
+    point = cameraUnproject(cam, point);
+    ck_assert_vector_values(point, -25.1, 8.3, 1.3);
 
     cameraDeleteDefinition(cam);
 }
@@ -44,6 +47,10 @@ START_TEST(test_camera_depth)
 
     /* Test the real depth getter */
     Vector3 point = cameraProject(cam, v3(12.5, 0.0, 0.0));
+    ck_assert_double_eq(cameraGetRealDepth(cam, point), 12.5);
+    point = cameraProject(cam, v3(12.5, 8.0, -3.0));
+    ck_assert_double_eq(cameraGetRealDepth(cam, point), 12.5);
+    point = cameraProject(cam, v3(12.5, 12.0, 58.0));
     ck_assert_double_eq(cameraGetRealDepth(cam, point), 12.5);
 
     cameraDeleteDefinition(cam);
