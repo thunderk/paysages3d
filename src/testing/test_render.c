@@ -32,11 +32,13 @@ static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* da
 
 START_TEST(test_render_quad)
 {
+    Color col;
     Renderer* renderer = rendererCreate();
 
     renderer->render_width = 800;
     renderer->render_height = 600;
     renderer->render_quality = 1;
+    renderSetToneMapping(renderer->render_area, TONE_MAPPING_CLAMP, 0.0);
 
     cameraSetLocationCoords(renderer->render_camera, 0.0, 0.5, 2.0);
     cameraSetTargetCoords(renderer->render_camera, 0.0, 0.5, 0.0);
@@ -50,6 +52,15 @@ START_TEST(test_render_quad)
 
     renderer->pushQuad(renderer, v3(-1.0, 0.0, 1.0), v3(-1.0, 0.0, -1.0), v3(1.0, 0.0, -1.0), v3(1.0, 0.0, 1.0), _postProcessFragment, NULL);
     renderPostProcess(renderer->render_area, tests_cpu_count);
+
+    col = renderGetPixel(renderer->render_area, 399, 599 - 435);
+    ck_assert_color_values(col, 1.0, 1.0, 1.0, 1.0);
+    col = renderGetPixel(renderer->render_area, 399, 599 - 436);
+    ck_assert_color_values(col, 0.0, 0.0, 0.0, 1.0);
+    col = renderGetPixel(renderer->render_area, 400, 599 - 435);
+    ck_assert_color_values(col, 0.0, 0.0, 0.0, 1.0);
+    col = renderGetPixel(renderer->render_area, 400, 599 - 436);
+    ck_assert_color_values(col, 1.0, 1.0, 1.0, 1.0);
 
     renderSaveToFile(renderer->render_area, "./output/test_render_quad.png");
 

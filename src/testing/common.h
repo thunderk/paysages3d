@@ -87,5 +87,6 @@ static char _ck_gen_strbuf2[101];
 /***** Some builtin comparisons *****/
 #define ck_assert_double_in_range(_double_, _x_, _y_) ck_assert_double_gte(_double_, _x_);ck_assert_double_lte(_double_, _y_)
 #define ck_assert_vector_values(_vector_, _x_, _y_, _z_) ck_assert_double_eq(_vector_.x, _x_);ck_assert_double_eq(_vector_.y, _y_);ck_assert_double_eq(_vector_.z, _z_)
+#define ck_assert_color_values(_color_, _r_, _g_, _b_, _a_) ck_assert_double_eq(_color_.r, _r_);ck_assert_double_eq(_color_.g, _g_);ck_assert_double_eq(_color_.b, _b_);ck_assert_double_eq(_color_.a, _a_)
 
 #endif

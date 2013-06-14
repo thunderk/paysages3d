@@ -50,7 +50,8 @@ typedef struct ColorProfile ColorProfile;
 typedef enum
 {
     TONE_MAPPING_UNCHARTED,
-    TONE_MAPPING_REIHNARD
+    TONE_MAPPING_REIHNARD,
+    TONE_MAPPING_CLAMP
 } ToneMappingOperator;
 
 ColorProfile* colorProfileCreate();

@@ -257,15 +257,27 @@ static Color _toneMappingReinhard(Color pixel, double exposure)
     return pixel;
 }
 
+static Color _toneMappingClamp(Color pixel, double exposure)
+{
+    UNUSED(exposure);
+
+    pixel.r = pixel.r > 1.0 ? 1.0 : pixel.r;
+    pixel.g = pixel.g > 1.0 ? 1.0 : pixel.g;
+    pixel.b = pixel.b > 1.0 ? 1.0 : pixel.b;
+
+    return pixel;
+}
+
 void colorProfileSetToneMapping(ColorProfile* profile, ToneMappingOperator tonemapper, double exposure)
 {
-    if (tonemapper == TONE_MAPPING_REIHNARD)
+    switch (tonemapper)
     {
-        profile->mapper = _toneMappingReinhard;
-    }
-    else
-    {
-        profile->mapper = _toneMappingUncharted;
+        case TONE_MAPPING_REIHNARD:
+            profile->mapper = _toneMappingReinhard;
+        case TONE_MAPPING_UNCHARTED:
+            profile->mapper = _toneMappingUncharted;
+        default:
+            profile->mapper = _toneMappingClamp;
     }
     profile->exposure = exposure;
 }

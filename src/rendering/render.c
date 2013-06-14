@@ -584,6 +584,17 @@ void renderPushTriangle(RenderArea* area, Vector3 pixel1, Vector3 pixel2, Vector
     mutexRelease(area->lock);
 }
 
+Color renderGetPixel(RenderArea* area, int x, int y)
+{
+    Color result;
+
+    mutexAcquire(area->lock);
+    result = _getFinalPixel(area, x, y);
+    mutexRelease(area->lock);
+
+    return result;
+}
+
 void* _renderPostProcessChunk(void* data)
 {
     int x, y;
