@@ -59,7 +59,7 @@ static inline int _double_less_or_equal(double x, double y)
     return _double_equals(x, y) || (x <= y);
 }
 
-#define _ck_assert_double(F, X, O, Y) ck_assert_msg(F(X, Y), "Assertion '"#X#O#Y"' failed: "#X"=%f, "#Y"=%f", X, Y)
+#define _ck_assert_double(F, X, O, Y) ck_assert_msg(F(X, Y), "Assertion '"#X#O#Y"' failed: "#X"=%.12f, "#Y"=%.12f", X, Y)
 #define ck_assert_double_eq(X, Y) _ck_assert_double(_double_equals, X, ==, Y)
 #define ck_assert_double_ne(X, Y) _ck_assert_double(_double_not_equals, X, !=, Y)
 #define ck_assert_double_gt(X, Y) _ck_assert_double(_double_greater, X, >, Y)

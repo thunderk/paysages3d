@@ -32,8 +32,7 @@ debug:
 release:
 	make BUILDMODE=release all
 
-tests:
-	make BUILDMODE=${BUILDMODE} all
+tests: all
 	LD_LIBRARY_PATH=${BUILDPATH} CK_DEFAULT_TIMEOUT=30 ${BUILDPATH}/paysages-tests
 
 run_cli: all
