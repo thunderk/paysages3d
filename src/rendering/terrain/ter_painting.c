@@ -307,12 +307,12 @@ static double* _getDataPointer(HeightMapData* data, int x, int z, HeightMapData*
             }
             else if (terrain)
             {
-                *pixel = terrainGetGridHeight(terrain, x, z, 0) / (terrain->height * terrain->scaling);
+                *pixel = terrainGetGridHeight(terrain, x, z, 0);
             }
         }
         else if (terrain)
         {
-            *pixel = terrainGetGridHeight(terrain, x, z, 0) / (terrain->height * terrain->scaling);
+            *pixel = terrainGetGridHeight(terrain, x, z, 0);
         }
     }
     return pixel;
@@ -411,7 +411,7 @@ int terrainHeightmapGetInterpolatedHeight(TerrainHeightMap* heightmap, double x,
             {
                 if (!terrainHeightmapGetGridHeight(heightmap, ix, iz, &value))
                 {
-                    value = terrainGetGridHeight(heightmap->terrain, ix, iz, 0) / (heightmap->terrain->scaling * heightmap->terrain->height);
+                    value = terrainGetGridHeight(heightmap->terrain, ix, iz, 0);
                 }
                 stencil[(iz - (zlow - 1)) * 4 + ix - (xlow - 1)] = value;
             }
@@ -468,7 +468,7 @@ static inline void _applyBrush(TerrainHeightMap* heightmap, TerrainBrush* brush,
     int x, z;
     double dx, dz, distance, influence;
 
-    force /= (heightmap->terrain->height * heightmap->terrain->scaling);
+    force /= heightmap->terrain->height;
 
     for (x = brush_rect.xstart; x <= brush_rect.xend; x++)
     {
@@ -536,10 +536,10 @@ static double _applyBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush
     UNUSED(data);
 
     double ideal, factor;
-    ideal = terrainGetInterpolatedHeight(heightmap->terrain, x + brush->total_radius * 0.5, z, 1);
-    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x - brush->total_radius * 0.5, z, 1);
-    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x, z - brush->total_radius * 0.5, 1);
-    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x, z + brush->total_radius * 0.5, 1);
+    ideal = terrainGetInterpolatedHeight(heightmap->terrain, (x + brush->total_radius * 0.5) * heightmap->terrain->scaling, z * heightmap->terrain->scaling, 0, 1);
+    ideal += terrainGetInterpolatedHeight(heightmap->terrain, (x - brush->total_radius * 0.5) * heightmap->terrain->scaling, z * heightmap->terrain->scaling, 0, 1);
+    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x * heightmap->terrain->scaling, (z - brush->total_radius * 0.5) * heightmap->terrain->scaling, 0, 1);
+    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x * heightmap->terrain->scaling, (z + brush->total_radius * 0.5) * heightmap->terrain->scaling, 0, 1);
     ideal /= 4.0;
     factor = influence * force;
     if (factor > 1.0)
@@ -571,7 +571,7 @@ static double _applyBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush,
     UNUSED(brush);
     UNUSED(data);
 
-    double ideal = terrainGetInterpolatedHeight(heightmap->terrain, x, z, 0);
+    double ideal = terrainGetInterpolatedHeight(heightmap->terrain, x * heightmap->terrain->scaling, z * heightmap->terrain->scaling, 0, 0);
     return basevalue + (ideal - basevalue) * influence * force;
 }
 

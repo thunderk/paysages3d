@@ -46,6 +46,7 @@ void noiseCopy(NoiseGenerator* source, NoiseGenerator* destination);
 void noiseValidate(NoiseGenerator* generator);
 void noiseRandomizeOffsets(NoiseGenerator* generator);
 NoiseFunction noiseGetFunction(NoiseGenerator* generator);
+void noiseSetCustomFunction(NoiseGenerator* generator, double (*func1d)(double x), double (*func2d)(double x, double y), double (*func3d)(double x, double y, double z));
 void noiseSetFunction(NoiseGenerator* generator, NoiseFunction* function);
 void noiseSetFunctionParams(NoiseGenerator* generator, NoiseFunctionAlgorithm algorithm, double ridge_factor, double curve_factor);
 void noiseForceValue(NoiseGenerator* generator, double value);

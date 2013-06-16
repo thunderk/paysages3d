@@ -123,7 +123,7 @@ void PaintingBrush::applyToTerrain(TerrainDefinition* terrain, double x, double 
     case PAINTING_BRUSH_SMOOTH:
         if (reverse)
         {
-            terrainBrushSmooth(terrain->height_map, &brush, brush_strength);
+            terrainBrushSmooth(terrain->height_map, &brush, brush_strength * 30.0);
         }
         else
         {
@@ -133,15 +133,15 @@ void PaintingBrush::applyToTerrain(TerrainDefinition* terrain, double x, double 
     case PAINTING_BRUSH_FLATTEN:
         if (reverse)
         {
-            _height = terrainGetInterpolatedHeight(terrain, x, z, 1);
+            _height = terrainGetInterpolatedHeight(terrain, x * terrain->scaling, z * terrain->scaling, 0, 1);
         }
         else
         {
-            terrainBrushFlatten(terrain->height_map, &brush, _height, brush_strength);
+            terrainBrushFlatten(terrain->height_map, &brush, _height, brush_strength * 30.0);
         }
         break;
     case PAINTING_BRUSH_RESTORE:
-        terrainBrushReset(terrain->height_map, &brush, brush_strength);
+        terrainBrushReset(terrain->height_map, &brush, brush_strength * 30.0);
         break;
     default:
         return;
