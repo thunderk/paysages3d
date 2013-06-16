@@ -13,7 +13,6 @@
 #include "tools.h"
 
 #include "rendering/scenery.h"
-#include "rendering/auto.h"
 
 static DialogRender* _current_dialog;
 

@@ -116,9 +116,9 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
         }
     }
 
-    if (definition->location.y > 100.0)
+    if (definition->location.y > 300.0)
     {
-        definition->location.y = 100.0;
+        definition->location.y = 300.0;
     }
 
     definition->forward.x = 1.0;

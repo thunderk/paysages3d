@@ -1,4 +1,6 @@
 Technology Preview 2 :
+- Investigate the preview render threads dying.
+- Add initial terrain offset so that the (0,0) coordinates are above water.
 - Finalize terrain editor.
    => Add a generation dialog for base noise (overwriting changes).
 - Get rid of noise dialogs, for simpler settings.

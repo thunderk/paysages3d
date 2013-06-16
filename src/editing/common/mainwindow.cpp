@@ -25,7 +25,6 @@
 #include "dialogexplorer.h"
 
 #include "rendering/main.h"
-#include "rendering/auto.h"
 #include "rendering/scenery.h"
 #include "tools.h"
 
@@ -126,6 +125,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     scenerySetCustomDataCallback(MainWindow::guiSaveCallback, MainWindow::guiLoadCallback, this);
 
+    // FIXME AutoPreset has already been called by paysagesInit but we need to redo it here because
+    //   the auto apply on FormRender overwrites the camera. Delete this when the render form is no longer a BaseForm.
+    sceneryAutoPreset(0);
     refreshAll();
 }
 
@@ -170,7 +172,7 @@ void MainWindow::fileNew()
 {
     if (QMessageBox::question(this, tr("Paysages 3D - New scenery"), tr("Do you want to start a new scenery ? Any unsaved changes will be lost."), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
-        autoGenRealisticLandscape(0);
+        sceneryAutoPreset(0);
         refreshAll();
     }
 }

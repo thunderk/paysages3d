@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "auto.h"
 #include "tools/data.h"
 #include "system.h"
 #include "scenery.h"
@@ -24,8 +23,6 @@ void paysagesInit()
 
     sceneryInit();
     renderInit();
-
-    autoGenRealisticLandscape(0);
 }
 
 void paysagesQuit()

@@ -1,5 +1,6 @@
 #include "scenery.h"
 
+#include <time.h>
 #include "tools/color.h"
 #include "tools/euclid.h"
 #include "render.h"
@@ -29,6 +30,8 @@ void sceneryInit()
 
     _custom_save = NULL;
     _custom_load = NULL;
+
+    sceneryAutoPreset(0);
 }
 
 void sceneryQuit()
@@ -43,13 +46,23 @@ void sceneryQuit()
     noiseQuit();
 }
 
-void sceneryAutoPreset()
+void sceneryAutoPreset(int seed)
 {
+    if (!seed)
+    {
+        seed = time(NULL);
+    }
+    srand(seed);
+
     terrainAutoPreset(_terrain, TERRAIN_PRESET_STANDARD);
     texturesAutoPreset(_textures, TEXTURES_PRESET_IRELAND);
     atmosphereAutoPreset(_atmosphere, ATMOSPHERE_PRESET_CLEAR_DAY);
     waterAutoPreset(_water, WATER_PRESET_LAKE);
     cloudsAutoPreset(_clouds, CLOUDS_PRESET_PARTLY_CLOUDY);
+
+    cameraSetLocation(_camera, VECTOR_ZERO);
+    cameraSetTarget(_camera, VECTOR_NORTH);
+    cameraValidateDefinition(_camera, 1);
 }
 
 void scenerySetCustomDataCallback(SceneryCustomDataCallback callback_save, SceneryCustomDataCallback callback_load, void* data)
@@ -203,8 +216,6 @@ Renderer* sceneryCreateStandardRenderer()
 
     result = rendererCreate();
 
-    cameraCopyDefinition(_camera, result->render_camera);
-
     result->rayWalking = _rayWalking;
     result->getPrecision = _getPrecision;
 
@@ -215,6 +226,7 @@ Renderer* sceneryCreateStandardRenderer()
 
 void sceneryBindRenderer(Renderer* renderer)
 {
+    cameraCopyDefinition(_camera, renderer->render_camera);
     AtmosphereRendererClass.bind(renderer, _atmosphere);
     TerrainRendererClass.bind(renderer, _terrain);
     TexturesRendererClass.bind(renderer, _textures);
