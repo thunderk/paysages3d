@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     QTranslator qtTranslator;
     QTranslator myTranslator;
 
-    if (myTranslator.load("paysages_" + QLocale::system().name(), "./data/i18n"))
+    if (myTranslator.load("paysages_" + QLocale::system().name(), "./data/i18n") || myTranslator.load("paysages_" + QLocale::system().name(), "/usr/share/paysages3d/i18n"))
     {
         app.installTranslator(&myTranslator);
 

@@ -8,10 +8,10 @@ LIBS += glib-2.0 gthread-2.0 IL ILU
 CC_FLAGS += -DHAVE_GLIB=1
 CC_LDFLAGS += -shared
 
-CHECK_OPENCL = $(shell pkg-config --modversion --silence-errors OpenCL)
-ifneq (,${CHECK_OPENCL})
-	LIBS += OpenCL
-	CC_FLAGS += -DHAVE_OPENCL=1
-endif
+#CHECK_OPENCL = $(shell pkg-config --modversion --silence-errors OpenCL)
+#ifneq (,${CHECK_OPENCL})
+#	LIBS += OpenCL
+#	CC_FLAGS += -DHAVE_OPENCL=1
+#endif
 
 include ../common_post.mk

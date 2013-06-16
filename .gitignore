@@ -11,4 +11,8 @@ qrc_*.cpp
 ui_*.h
 tags
 .session.vim
-
+*-stamp
+debian/*.log
+debian/files
+debian/*.substvars
+debian/paysages3d

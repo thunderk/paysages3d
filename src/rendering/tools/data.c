@@ -30,5 +30,5 @@ static int _tryDataPath(const char* path)
 
 int dataInit()
 {
-    return _tryDataPath("./data");
+    return _tryDataPath("./data") || _tryDataPath("/usr/share/paysages3d");
 }

@@ -50,4 +50,20 @@ profile:
 	opannotate --source --output-dir=annotated ${BUILDPATH}/libpaysages.so --base-dirs=. --search-dirs=lib_paysages
 	opreport -l ${BUILDPATH}/libpaysages.so -c -g | less
 
+install:release
+	mkdir -p ${DESTDIR}/usr/bin
+	mkdir -p ${DESTDIR}/usr/lib
+	mkdir -p ${DESTDIR}/usr/share/paysages3d
+	cp build/release/paysages-qt ${DESTDIR}/usr/bin/paysages3d
+	cp build/release/libpaysages_exploring.so ${DESTDIR}/usr/lib/
+	cp build/release/libpaysages_rendering.so ${DESTDIR}/usr/lib/
+	cp data/.paysages_data ${DESTDIR}/usr/share/paysages3d/
+	cp -r data/i18n ${DESTDIR}/usr/share/paysages3d/
+	cp -r data/images ${DESTDIR}/usr/share/paysages3d/
+	cp cache/*.cache ${DESTDIR}/usr/share/paysages3d/
+
+deb:
+	DEBFULLNAME="Michael Lemaire" DEBEMAIL=paysages@thunderk.net dch -i -p -u low -D stable
+	debuild -b -us -uc
+
 .PHONY:all clean release

@@ -16,7 +16,15 @@ static inline QColor colorToQColor(Color color)
 
 static inline QString getDataPath(QString path)
 {
-    return QDir("./data").absoluteFilePath(path);
+    QFile datafile(QDir("/usr/share/paysages3d/").absoluteFilePath(path));
+    if (datafile.exists())
+    {
+        return datafile.fileName();
+    }
+    else
+    {
+        return QDir("./data").absoluteFilePath(path);
+    }
 }
 
 QString getHumanMemory(qint64 memused);
