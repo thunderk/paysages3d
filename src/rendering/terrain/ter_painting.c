@@ -571,7 +571,7 @@ static double _applyBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush,
     UNUSED(brush);
     UNUSED(data);
 
-    double ideal = terrainGetInterpolatedHeight(heightmap->terrain, x, z, 0, 0);
+    double ideal = terrainGetInterpolatedHeight(heightmap->terrain, x * heightmap->terrain->scaling, z * heightmap->terrain->scaling, 0, 0);
     return basevalue + (ideal - basevalue) * influence * force;
 }
 
