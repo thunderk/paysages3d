@@ -536,10 +536,10 @@ static double _applyBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush
     UNUSED(data);
 
     double ideal, factor;
-    ideal = terrainGetInterpolatedHeight(heightmap->terrain, x + brush->total_radius * 0.5, z, 0, 1);
-    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x - brush->total_radius * 0.5, z, 0, 1);
-    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x, z - brush->total_radius * 0.5, 0, 1);
-    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x, z + brush->total_radius * 0.5, 0, 1);
+    ideal = terrainGetInterpolatedHeight(heightmap->terrain, (x + brush->total_radius * 0.5) * heightmap->terrain->scaling, z * heightmap->terrain->scaling, 0, 1);
+    ideal += terrainGetInterpolatedHeight(heightmap->terrain, (x - brush->total_radius * 0.5) * heightmap->terrain->scaling, z * heightmap->terrain->scaling, 0, 1);
+    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x * heightmap->terrain->scaling, (z - brush->total_radius * 0.5) * heightmap->terrain->scaling, 0, 1);
+    ideal += terrainGetInterpolatedHeight(heightmap->terrain, x * heightmap->terrain->scaling, (z + brush->total_radius * 0.5) * heightmap->terrain->scaling, 0, 1);
     ideal /= 4.0;
     factor = influence * force;
     if (factor > 1.0)

@@ -91,47 +91,6 @@ START_TEST(test_terrain_painting_grid)
 }
 END_TEST
 
-START_TEST(test_terrain_painting_brush_elevation)
-{
-    /* Set up */
-    TerrainDefinition* terrain = _setUpDefinition();
-
-    /* Test */
-    /* TODO */
-
-    /* Tear down */
-    _tearDownDefinition(terrain);
-}
-END_TEST
-
-START_TEST(test_terrain_painting_brush_noise)
-{
-    /* Set up */
-    TerrainDefinition* terrain = _setUpDefinition();
-
-    /* Test */
-    /* TODO */
-
-    /* Tear down */
-    _tearDownDefinition(terrain);
-}
-
-END_TEST
-
-START_TEST(test_terrain_painting_brush_smooth)
-{
-    /* Set up */
-    TerrainDefinition* terrain = _setUpDefinition();
-
-    /* Test */
-    /* TODO */
-
-    /* Tear down */
-    _tearDownDefinition(terrain);
-}
-
-END_TEST
-
 static void _checkBrushResultSides(TerrainDefinition* terrain, TerrainBrush* brush, double center, double midhard, double hard, double midsoft, double soft, double exter, double neg_midhard, double neg_hard, double neg_midsoft, double neg_soft, double neg_exter)
 {
     UNUSED(brush);
@@ -150,7 +109,6 @@ static void _checkBrushResultSides(TerrainDefinition* terrain, TerrainBrush* bru
     ck_assert_double_eq(terrainGetGridHeight(terrain, -4, 0, 1), neg_soft);
     ck_assert_double_eq(terrainGetGridHeight(terrain, -5, 0, 1), neg_exter);
 }
-
 
 static void _checkBrushResult(TerrainDefinition* terrain, TerrainBrush* brush, double center, double midhard, double hard, double midsoft, double soft, double exter, int mirror)
 {
@@ -206,7 +164,6 @@ START_TEST(test_terrain_painting_brush_flatten)
     /* Tear down */
     _tearDownDefinition(terrain);
 }
-
 END_TEST
 
 START_TEST(test_terrain_painting_brush_reset)
@@ -275,9 +232,6 @@ END_TEST
 
 TEST_CASE(terrain_painting,
           test_terrain_painting_grid,
-          test_terrain_painting_brush_elevation,
-          test_terrain_painting_brush_noise,
-          test_terrain_painting_brush_smooth,
           test_terrain_painting_brush_flatten,
           test_terrain_painting_brush_reset)
 
