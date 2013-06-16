@@ -133,7 +133,7 @@ void PaintingBrush::applyToTerrain(TerrainDefinition* terrain, double x, double 
     case PAINTING_BRUSH_FLATTEN:
         if (reverse)
         {
-            _height = terrainGetInterpolatedHeight(terrain, x, z, 0, 1);
+            _height = terrainGetInterpolatedHeight(terrain, x * terrain->scaling, z * terrain->scaling, 0, 1);
         }
         else
         {

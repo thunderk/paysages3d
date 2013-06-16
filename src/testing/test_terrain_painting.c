@@ -91,5 +91,189 @@ START_TEST(test_terrain_painting_grid)
 }
 END_TEST
 
-TEST_CASE(terrain_painting, test_terrain_painting_grid)
+START_TEST(test_terrain_painting_brush_elevation)
+{
+    /* Set up */
+    TerrainDefinition* terrain = _setUpDefinition();
+
+    /* Test */
+    /* TODO */
+
+    /* Tear down */
+    _tearDownDefinition(terrain);
+}
+END_TEST
+
+START_TEST(test_terrain_painting_brush_noise)
+{
+    /* Set up */
+    TerrainDefinition* terrain = _setUpDefinition();
+
+    /* Test */
+    /* TODO */
+
+    /* Tear down */
+    _tearDownDefinition(terrain);
+}
+
+END_TEST
+
+START_TEST(test_terrain_painting_brush_smooth)
+{
+    /* Set up */
+    TerrainDefinition* terrain = _setUpDefinition();
+
+    /* Test */
+    /* TODO */
+
+    /* Tear down */
+    _tearDownDefinition(terrain);
+}
+
+END_TEST
+
+START_TEST(test_terrain_painting_brush_flatten)
+{
+    /* Set up */
+    TerrainDefinition* terrain = _setUpDefinition();
+    TerrainBrush brush;
+    terrain->height = 1.0;
+    terrain->scaling = 1.0;
+    noiseForceValue(terrain->_height_noise, 0.0);
+
+    /* Test flattening center at 0.5 */
+    ck_assert_double_eq(terrainGetGridHeight(terrain, -1, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 0, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 1, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 2, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 3, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 4, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 5, 0, 1), 0.0);
+    brush.relative_x = 0.0;
+    brush.relative_z = 0.0;
+    brush.hard_radius = 2.0;
+    brush.smoothed_size = 2.0;
+    brush.total_radius = 4.0;
+    terrainBrushFlatten(terrain->height_map, &brush, 0.5, 1.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, -1, 0, 1), 0.5);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 0, 0, 1), 0.5);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 1, 0, 1), 0.5);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 2, 0, 1), 0.5);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 3, 0, 1), 0.25);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 4, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 5, 0, 1), 0.0);
+
+    /* Test brush strength */
+    terrainClearPainting(terrain->height_map);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, -1, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 0, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 1, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 2, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 3, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 4, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 5, 0, 1), 0.0);
+    brush.relative_x = 0.0;
+    brush.relative_z = 0.0;
+    brush.hard_radius = 2.0;
+    brush.smoothed_size = 2.0;
+    brush.total_radius = 4.0;
+    terrainBrushFlatten(terrain->height_map, &brush, 0.5, 0.01);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, -1, 0, 1), 0.005);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 0, 0, 1), 0.005);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 1, 0, 1), 0.005);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 2, 0, 1), 0.005);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 3, 0, 1), 0.0025);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 4, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 5, 0, 1), 0.0);
+
+    /* Test cumulative effect */
+    brush.relative_x = 0.0;
+    brush.relative_z = 0.0;
+    brush.hard_radius = 2.0;
+    brush.smoothed_size = 2.0;
+    brush.total_radius = 4.0;
+    terrainBrushFlatten(terrain->height_map, &brush, 0.5, 0.01);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, -1, 0, 1), 0.00995);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 0, 0, 1), 0.00995);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 1, 0, 1), 0.00995);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 2, 0, 1), 0.00995);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 3, 0, 1), 0.0049875);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 4, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 5, 0, 1), 0.0);
+
+    /* Test with height modifier */
+    terrain->height = 10.0;
+    terrainClearPainting(terrain->height_map);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, -1, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 0, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 1, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 2, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 3, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 4, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 5, 0, 1), 0.0);
+    brush.relative_x = 0.0;
+    brush.relative_z = 0.0;
+    brush.hard_radius = 2.0;
+    brush.smoothed_size = 2.0;
+    brush.total_radius = 4.0;
+    terrainBrushFlatten(terrain->height_map, &brush, 0.5, 1.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, -1, 0, 1), 0.05);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 0, 0, 1), 0.05);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 1, 0, 1), 0.05);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 2, 0, 1), 0.05);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 3, 0, 1), 0.025);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 4, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 5, 0, 1), 0.0);
+
+    /* Test with scaling modifier */
+    terrain->height = 10.0;
+    terrain->scaling = 2.0;
+    terrainClearPainting(terrain->height_map);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, -1, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 0, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 1, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 2, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 3, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 4, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 5, 0, 1), 0.0);
+    brush.relative_x = 0.0;
+    brush.relative_z = 0.0;
+    brush.hard_radius = 2.0;
+    brush.smoothed_size = 2.0;
+    brush.total_radius = 4.0;
+    terrainBrushFlatten(terrain->height_map, &brush, 0.5, 1.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, -1, 0, 1), 0.05);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 0, 0, 1), 0.05);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 1, 0, 1), 0.05);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 2, 0, 1), 0.05);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 3, 0, 1), 0.025);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 4, 0, 1), 0.0);
+    ck_assert_double_eq(terrainGetGridHeight(terrain, 5, 0, 1), 0.0);
+
+    /* Tear down */
+    _tearDownDefinition(terrain);
+}
+
+END_TEST
+
+START_TEST(test_terrain_painting_brush_reset)
+{
+    /* Set up */
+    TerrainDefinition* terrain = _setUpDefinition();
+
+    /* Test */
+    /* TODO */
+
+    /* Tear down */
+    _tearDownDefinition(terrain);
+}
+END_TEST
+
+TEST_CASE(terrain_painting,
+          test_terrain_painting_grid,
+          test_terrain_painting_brush_elevation,
+          test_terrain_painting_brush_noise,
+          test_terrain_painting_brush_smooth,
+          test_terrain_painting_brush_flatten,
+          test_terrain_painting_brush_reset)
 
