@@ -274,8 +274,10 @@ void colorProfileSetToneMapping(ColorProfile* profile, ToneMappingOperator tonem
     {
         case TONE_MAPPING_REIHNARD:
             profile->mapper = _toneMappingReinhard;
+            break;
         case TONE_MAPPING_UNCHARTED:
             profile->mapper = _toneMappingUncharted;
+            break;
         default:
             profile->mapper = _toneMappingClamp;
     }
