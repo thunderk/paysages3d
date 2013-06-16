@@ -1,5 +1,4 @@
 Technology Preview 2 :
-- Implement perspective correction for coordinate mapping of rasterized polygons.
 - Finalize terrain editor.
    => Add a generation dialog for base noise (overwriting changes).
 - Get rid of noise dialogs, for simpler settings.
