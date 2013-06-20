@@ -28,6 +28,8 @@
 #include "rendering/scenery.h"
 #include "tools.h"
 
+MainWindow* MainWindow::_instance = NULL;
+
 int main(int argc, char** argv)
 {
     MainWindow* window;
@@ -78,10 +80,11 @@ int main(int argc, char** argv)
     return result;
 }
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
+MainWindow::MainWindow() :
+    QMainWindow(),
     ui(new Ui::MainWindow)
 {
+    _instance = this;
     ui->setupUi(this);
 
     BaseForm* form;
@@ -155,7 +158,6 @@ void MainWindow::refreshAll()
     {
         _forms[i]->revertConfig();
     }
-    // TODO Refresh free forms
 
     // Refresh preview OSD
     CameraDefinition* camera = cameraCreateDefinition();
@@ -166,6 +168,8 @@ void MainWindow::refreshAll()
     item->drawCamera(camera);
     item->setToolTip(QString(tr("Camera")));
     cameraDeleteDefinition(camera);
+
+    emit refreshed();
 }
 
 void MainWindow::openTab(int position)

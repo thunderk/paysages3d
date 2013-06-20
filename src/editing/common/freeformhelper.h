@@ -53,6 +53,7 @@ signals:
 
 public slots:
     void processDataChange();
+    void processGlobalRefresh();
     void processRevertClicked();
     void processApplyClicked();
     void processExploreClicked();

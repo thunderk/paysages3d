@@ -66,6 +66,7 @@ bool FreeFormHelper::eventFilter(QObject* object, QEvent* event)
 void FreeFormHelper::startManaging()
 {
     _form_widget->installEventFilter(this);
+    connect(MainWindow::instance(), SIGNAL(refreshed()), this, SLOT(processGlobalRefresh()));
 
     connect(this, SIGNAL(needLocalRefreshing()), _form_widget, SLOT(refreshFromLocalData()));
     connect(this, SIGNAL(needGlobalRefreshing()), _form_widget, SLOT(refreshFromFellowData()));
@@ -73,9 +74,7 @@ void FreeFormHelper::startManaging()
     connect(this, SIGNAL(needCommitting()), _form_widget, SLOT(commitLocalDataToScenery()));
     connect(this, SIGNAL(needAlterRenderer(Renderer*)), _form_widget, SLOT(alterRenderer(Renderer*)));
 
-    emit needLocalRefreshing();
-    emit needGlobalRefreshing();
-    emit needReverting();
+    processGlobalRefresh();
 }
 
 void FreeFormHelper::addPreview(BasePreview* preview, PreviewRenderer* renderer)
@@ -197,11 +196,7 @@ void FreeFormHelper::openDialog(QDialog* dialog)
 
 void FreeFormHelper::gotoMainTab(int position)
 {
-    QWidget* window = _form_widget->window();
-    if (window->inherits("MainWindow"))
-    {
-        ((MainWindow*)window)->openTab(position);
-    }
+    MainWindow::instance()->openTab(position);
 }
 
 void FreeFormHelper::processDataChange()
@@ -222,6 +217,13 @@ void FreeFormHelper::processDataChange()
     }
 
     emit needLocalRefreshing();
+}
+
+void FreeFormHelper::processGlobalRefresh()
+{
+    emit needGlobalRefreshing();
+
+    processRevertClicked();
 }
 
 void FreeFormHelper::processRevertClicked()
@@ -261,15 +263,7 @@ void FreeFormHelper::processApplyClicked()
 {
     emit needCommitting();
 
-    _data_changed = false;
-    if (_button_apply)
-    {
-        _button_apply->setEnabled(false);
-    }
-    if (_button_revert)
-    {
-        _button_revert->setEnabled(false);
-    }
+    MainWindow::instance()->refreshAll();
 }
 
 void FreeFormHelper::processExploreClicked()

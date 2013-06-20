@@ -12,18 +12,26 @@ namespace Ui {
 class MainWindow;
 }
 
+class MainWindow;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    MainWindow();
     ~MainWindow();
 
     virtual bool event(QEvent* event);
 
+    static inline MainWindow* instance()
+    {
+        return _instance;
+    }
     static void guiSaveCallback(PackStream* stream, void* data);
     static void guiLoadCallback(PackStream* stream, void* data);
+
+protected:
 
 public slots:
     void refreshAll();
@@ -42,7 +50,11 @@ public slots:
 
     void explore3D();
 
+signals:
+    void refreshed();
+
 private:
+    static MainWindow* _instance;
     Ui::MainWindow *ui;
 
     void guiSave(PackStream* stream);

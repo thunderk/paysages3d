@@ -1429,7 +1429,7 @@ Maintenir Ctrl : Plus rapide</translation>
     <message>
         <location filename="../../src/editing/terrain/mainterrainform.ui" line="14"/>
         <source>Terrain editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editeur de terrain</translation>
     </message>
     <message>
         <location filename="../../src/editing/terrain/mainterrainform.ui" line="122"/>
@@ -1472,67 +1472,77 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation>Altitude relative de la couche d&apos;eau</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.ui" line="284"/>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="296"/>
         <source>Go to textures to add small height displacements (rocks...)</source>
         <translation>Aller aux textures pour ajouter des détails (roches...)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.ui" line="334"/>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="346"/>
         <source>Result preview</source>
         <translation>Prévisualisation du résultat</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.ui" line="365"/>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="377"/>
         <source>Render preview</source>
         <translation>Rendu rapide</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.ui" line="376"/>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="388"/>
         <source>Explore in 3D</source>
         <translation>Explorer en 3D</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.ui" line="403"/>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="415"/>
         <source>Actions</source>
         <translation>Actions</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.ui" line="412"/>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="424"/>
         <source>Revert modifications</source>
         <translation>Annuler les modifications</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.ui" line="423"/>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="435"/>
         <source>Apply modifications</source>
         <translation>Valider les modifications</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="55"/>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="59"/>
         <source>Memory used by sculpted data: %1</source>
         <translation>Mémoire utilisée par les zones sculptées : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="59"/>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="63"/>
         <source>No manual scuplting done</source>
         <translation>Aucune zone n&apos;a été sculptée</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="90"/>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="78"/>
+        <source>No displacement textures</source>
+        <translation>Aucune texture de détail</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="82"/>
+        <source>Maximal displacement : %1% of total height</source>
+        <translation>Déplacement maximal par textures : %1% du dénivelé total</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="106"/>
         <source>Paysages 3D - Base noise edition</source>
         <translation>Paysages 3D - Edition de la forme de base</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="90"/>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="106"/>
         <source>You have manual modifications on this terrain, regenerating base noise may produce weird results.</source>
         <translation>Vous avez des modifications manuelles sur le terrain, modifier la forme de base peut produire des discontinuités.</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="90"/>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="106"/>
         <source>Keep my changes anyway</source>
         <translation>Garder mes changements</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="90"/>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="106"/>
         <source>Erase my changes</source>
         <translation>Effacer mes changements</translation>
     </message>
@@ -1766,87 +1776,87 @@ rapide (F5)</translation>
         <translation>Caméra</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="173"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="178"/>
         <source>Do you want to start a new scenery ? Any unsaved changes will be lost.</source>
         <translation>Voulez-vous commencer un nouveau paysage ? Les modifications non sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="173"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="178"/>
         <source>Paysages 3D - New scenery</source>
         <translation>Paysages 3D - Nouvelle scène</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="182"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="187"/>
         <source>Paysages 3D - Choose a file to save the scenery</source>
         <translation>Paysages 3D - Choisissez un fichier pour enregistrer la scène</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="182"/>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="208"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="187"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="213"/>
         <source>Paysages 3D Scenery (*.p3d)</source>
         <translation>Scène Paysages 3D (*.p3d)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="196"/>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="199"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="201"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="204"/>
         <source>Paysages 3D - File saving error</source>
         <translation>Paysages 3D - Erreur d&apos;enregistrement</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="196"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="201"/>
         <source>Can&apos;t write specified file : %1</source>
         <translation>Impossible d&apos;écrire dans le fichier : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="199"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="204"/>
         <source>Unexpected error while saving file : %1</source>
         <translation>Erreur inconnue durant l&apos;enregistrement : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="206"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="211"/>
         <source>Do you want to load a scenery from file ? Any unsaved changes will be lost.</source>
         <translation>Voulez-vous charger une scène ? Les modifications non sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="206"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="211"/>
         <source>Paysages 3D - Load scenery</source>
         <translation>Paysages 3D - Charger une scène</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="208"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="213"/>
         <source>Paysages 3D - Choose a scenery file to load</source>
         <translation>Paysages 3D - Choisissez un fichier de scène à charger</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="218"/>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="221"/>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="224"/>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="227"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="223"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="226"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="229"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="232"/>
         <source>Paysages 3D - File loading error</source>
         <translation>Paysages 3D - Erreur de chargement</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="218"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="223"/>
         <source>Can&apos;t read specified file : %1</source>
         <translation>Impossible de lire le fichier  : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="221"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="226"/>
         <source>This file doesn&apos;t look like a Paysages 3D file : %1</source>
         <translation>Le fichier ne semble pas être au format Paysages 3D : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="224"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="229"/>
         <source>This file was created with an incompatible Paysages 3D version : %1</source>
         <translation>Le fichier a été créé avec une version incompatible de Paysages 3D : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="227"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="232"/>
         <source>Unexpected error while loading file : %1</source>
         <translation>Erreur inconnue lors du chargement : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="235"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="240"/>
         <source>A 3D landscape editing and rendering software.
 
 Authors :
@@ -1981,7 +1991,7 @@ GLib - http://www.gtk.org</translation>
     </message>
     <message>
         <location filename="../../src/editing/common/mainwindow.ui" line="14"/>
-        <location filename="../../src/editing/common/mainwindow.cpp" line="235"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="240"/>
         <source>Paysages 3D</source>
         <translation>Paysages 3D</translation>
     </message>
