@@ -30,7 +30,8 @@ void PaintingBrush::setSize(double value)
 
 void PaintingBrush::setSize(QAbstractSlider* slider)
 {
-    setSize(20.0 * (double)slider->value() / (double)slider->maximum());
+    double value = (double)slider->value() / (double)slider->maximum();
+    setSize(2.0 + value * value * 28.0);
 }
 
 void PaintingBrush::setSmoothing(double value)
@@ -50,7 +51,7 @@ void PaintingBrush::setStrength(double value)
 
 void PaintingBrush::setStrength(QAbstractSlider* slider)
 {
-    setStrength((double)slider->value() / (double)slider->maximum());
+    setStrength(0.1 + 0.9 * (double)slider->value() / (double)slider->maximum());
 }
 
 void PaintingBrush::randomizeNoise()
@@ -91,7 +92,7 @@ QString PaintingBrush::getHelpText()
     case PAINTING_BRUSH_FLATTEN:
         return QObject::tr("<strong>Left click</strong>: flatten at height picked with right click<br><br><strong>Right click</strong>: pick height at center");
     case PAINTING_BRUSH_RESTORE:
-        return QObject::tr("<strong>Left click</strong>: cancel all modifications on terrain");
+        return QObject::tr("<strong>Left click</strong>: remove your manual modifications from terrain");
     }
     return QString("");
 }
