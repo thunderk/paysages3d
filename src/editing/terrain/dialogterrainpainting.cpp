@@ -12,6 +12,9 @@ DialogTerrainPainting::DialogTerrainPainting(QWidget*parent, TerrainDefinition* 
 {
     ui->setupUi(this);
 
+    // TEMP
+    ui->brush_preview->hide();
+
     _terrain_original = terrain;
     _terrain_modified = (TerrainDefinition*)TerrainDefinitionClass.create();
 
@@ -43,12 +46,8 @@ void DialogTerrainPainting::keyReleaseEvent(QKeyEvent* event)
         ui->input_brush_mode->setCurrentIndex(2);
         event->accept();
         break;
-    case Qt::Key_F11:
-        ui->input_brush_mode->setCurrentIndex(3);
-        event->accept();
-        break;
     case Qt::Key_F12:
-        ui->input_brush_mode->setCurrentIndex(4);
+        ui->input_brush_mode->setCurrentIndex(3);
         event->accept();
         break;
     default:

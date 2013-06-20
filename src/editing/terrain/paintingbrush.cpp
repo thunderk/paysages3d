@@ -90,8 +90,6 @@ QString PaintingBrush::getHelpText()
         return QObject::tr("<strong>Left click</strong>: add random noise to terrain<br><br><strong>Right click</strong>: smooth details");
     case PAINTING_BRUSH_FLATTEN:
         return QObject::tr("<strong>Left click</strong>: flatten at height picked with right click<br><br><strong>Right click</strong>: pick height at center");
-    case PAINTING_BRUSH_FIX_DISCONTINUITIES:
-        return QObject::tr("<strong>Left click</strong>: fix discontinuities in slope");
     case PAINTING_BRUSH_RESTORE:
         return QObject::tr("<strong>Left click</strong>: cancel all modifications on terrain");
     }
@@ -127,7 +125,7 @@ void PaintingBrush::applyToTerrain(TerrainDefinition* terrain, double x, double 
         }
         else
         {
-            terrainBrushAddNoise(terrain->height_map, &brush, _noise, brush_strength * 0.5);
+            terrainBrushAddNoise(terrain->height_map, &brush, _noise, brush_strength * 0.3);
         }
         break;
     case PAINTING_BRUSH_FLATTEN:
