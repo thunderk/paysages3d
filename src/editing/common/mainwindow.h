@@ -15,7 +15,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -27,6 +27,8 @@ public:
 
 public slots:
     void refreshAll();
+
+    void openTab(int position);
 
     void fileNew();
     void fileSave();

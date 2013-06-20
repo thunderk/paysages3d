@@ -39,6 +39,7 @@ public:
     void setLabelText(QString widget_name, QString text);
 
     void openDialog(QDialog* dialog);
+    void gotoMainTab(int position);
 
 signals:
     void revertClicked();
@@ -75,4 +76,4 @@ private:
     QPushButton* _button_render;
 };
 
-#endif // FREEFORMHELPER_H
+#endif

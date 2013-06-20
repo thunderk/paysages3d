@@ -168,6 +168,11 @@ void MainWindow::refreshAll()
     cameraDeleteDefinition(camera);
 }
 
+void MainWindow::openTab(int position)
+{
+    ui->tabs->setCurrentIndex(position);
+}
+
 void MainWindow::fileNew()
 {
     if (QMessageBox::question(this, tr("Paysages 3D - New scenery"), tr("Do you want to start a new scenery ? Any unsaved changes will be lost."), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)

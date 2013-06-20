@@ -1,12 +1,13 @@
 #include "freeformhelper.h"
 
+#include <cmath>
 #include <QDialog>
 #include <QVariant>
 #include <QResizeEvent>
 #include <QSlider>
 #include <QPushButton>
-#include <cmath>
-#include <qt4/QtGui/qwidget.h>
+#include <QWidget>
+#include "mainwindow.h"
 #include "dialogrender.h"
 #include "dialogexplorer.h"
 #include "rendering/scenery.h"
@@ -191,6 +192,15 @@ void FreeFormHelper::openDialog(QDialog* dialog)
     if (dialog->exec())
     {
         processDataChange();
+    }
+}
+
+void FreeFormHelper::gotoMainTab(int position)
+{
+    QWidget* window = _form_widget->window();
+    if (window->inherits("MainWindow"))
+    {
+        ((MainWindow*)window)->openTab(position);
     }
 }
 

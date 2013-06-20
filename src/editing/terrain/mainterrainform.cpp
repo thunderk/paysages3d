@@ -127,5 +127,6 @@ void MainTerrainForm::buttonPaintingPressed()
 
 void MainTerrainForm::buttonTexturesPressed()
 {
-    // TODO Switch to textures tab
+    // Switch to textures tab
+    _form_helper->gotoMainTab(1);
 }
