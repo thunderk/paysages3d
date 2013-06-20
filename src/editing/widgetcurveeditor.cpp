@@ -1,8 +1,8 @@
 #include "widgetcurveeditor.h"
 
 #include <QPainter>
+#include <QPaintEngine>
 #include <QMouseEvent>
-#include <qt4/QtGui/qpaintengine.h>
 #include "rendering/tools.h"
 
 WidgetCurveEditor::WidgetCurveEditor(QWidget *parent, double xmin, double xmax, double ymin, double ymax) : QWidget(parent)
