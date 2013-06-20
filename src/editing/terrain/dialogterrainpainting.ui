@@ -46,6 +46,13 @@
            <number>20</number>
           </property>
           <item>
+           <widget class="QLabel" name="label_21">
+            <property name="text">
+             <string>Display :</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="checkBox">
             <property name="text">
              <string>Water</string>
@@ -59,6 +66,16 @@
            <widget class="QCheckBox" name="checkBox_2">
             <property name="text">
              <string>Grid</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBox_3">
+            <property name="text">
+             <string>Painted area</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -795,6 +812,7 @@
     <signal>heightmapChanged()</signal>
     <slot>toggleWater(bool)</slot>
     <slot>toggleGrid(bool)</slot>
+    <slot>togglePaintedArea(bool)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -927,7 +945,7 @@
    <slot>toggleWater(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>60</x>
+     <x>153</x>
      <y>43</y>
     </hint>
     <hint type="destinationlabel">
@@ -943,8 +961,8 @@
    <slot>toggleGrid(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>161</x>
-     <y>40</y>
+     <x>234</x>
+     <y>43</y>
     </hint>
     <hint type="destinationlabel">
      <x>121</x>
@@ -981,6 +999,22 @@
     <hint type="destinationlabel">
      <x>536</x>
      <y>104</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widget_heightmap</receiver>
+   <slot>togglePaintedArea(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>307</x>
+     <y>33</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>377</x>
+     <y>519</y>
     </hint>
    </hints>
   </connection>

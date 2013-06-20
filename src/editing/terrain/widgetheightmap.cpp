@@ -27,6 +27,7 @@ QGLWidget(parent)
 
     _water = true;
     _wireframe = true;
+    _painted_area = true;
     WaterDefinition* water_definition = (WaterDefinition*)WaterDefinitionClass.create();
     sceneryGetWater(water_definition);
     _water_height = 0.0;
@@ -100,6 +101,12 @@ void WidgetHeightMap::toggleWater(bool enabled)
 void WidgetHeightMap::toggleGrid(bool enabled)
 {
     _wireframe = enabled;
+    updateGL();
+}
+
+void WidgetHeightMap::togglePaintedArea(bool enabled)
+{
+    _painted_area = enabled;
     updateGL();
 }
 
@@ -409,7 +416,7 @@ void WidgetHeightMap::paintGL()
                     brush_influence = 0.0;
                 }
 
-                glColor3f(0.8 + brush_influence, vertex->painted ? 1.0 : 0.8, 0.8);
+                glColor3f(0.8 + brush_influence, (_painted_area && vertex->painted) ? 1.0 : 0.8, 0.8);
                 glNormal3f(vertex->normal.x, vertex->normal.y, vertex->normal.z);
                 glVertex3f(vertex->point.x, vertex->point.y, vertex->point.z);
             }

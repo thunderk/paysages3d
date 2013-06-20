@@ -30,6 +30,7 @@ public slots:
     void revert();
     void toggleWater(bool enabled);
     void toggleGrid(bool enabled);
+    void togglePaintedArea(bool enabled);
 
 signals:
     void heightmapChanged();
@@ -63,6 +64,7 @@ private:
     double _water_height;
     bool _water;
     bool _wireframe;
+    bool _painted_area;
 
     double _average_frame_time;
 
