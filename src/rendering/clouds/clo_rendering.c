@@ -129,7 +129,7 @@ static void _walkerMaterialCallback(CloudsWalker* walker)
 
     data->out_scattering += 0.5 * density_integral;
 
-    Color in_scattering = renderer->applyLightingToSurface(renderer, segment->start.location, VECTOR_UP, &layer->material);
+    Color in_scattering = renderer->applyLightingToSurface(renderer, segment->start.location, VECTOR_ZERO, &layer->material);
     in_scattering.r *= density_integral * 5.0;
     in_scattering.g *= density_integral * 5.0;
     in_scattering.b *= density_integral * 5.0;

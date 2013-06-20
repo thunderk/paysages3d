@@ -175,7 +175,7 @@ Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 locatio
         double specular = v3Dot(reflect, view);
         if (specular > 0.0)
         {
-            specular = pow(specular, material->shininess) * material->reflection * light->reflection;
+            specular = pow(specular, material->shininess) * material->reflection * light->reflection * normal_norm;
             if (specular > 0.0)
             {
                 result.r += specular * light_color.r;
