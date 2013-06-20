@@ -32,3 +32,20 @@ double texturesGetTriplanarNoise(NoiseGenerator* noise, Vector3 location, Vector
 
     return noiseXY * mXY + noiseXZ * mXZ + noiseYZ * mYZ;
 }
+
+double texturesGetMaximalDisplacement(TexturesDefinition* textures)
+{
+    int i, n;
+    double disp = 0.0;
+    n = layersCount(textures->layers);
+    for (i = 0; i < n; i++)
+    {
+        TexturesLayerDefinition* layer = layersGetLayer(textures->layers, i);
+
+        if (layer->displacement_height > 0.0)
+        {
+            disp += layer->displacement_height;
+        }
+    }
+    return disp;
+}

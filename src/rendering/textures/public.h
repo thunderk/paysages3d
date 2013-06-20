@@ -96,6 +96,8 @@ LayerType texturesGetLayerType();
 void texturesAutoPreset(TexturesDefinition* definition, TexturesPreset preset);
 void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerPreset preset);
 
+double texturesGetMaximalDisplacement(TexturesDefinition* textures);
+
 /*Renderer* cloudsCreatePreviewCoverageRenderer();
 Color cloudsGetPreviewCoverage(Renderer* renderer, double x, double y, double scaling, int perspective);
 

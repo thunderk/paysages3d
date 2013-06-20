@@ -274,7 +274,6 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
 
 void WidgetHeightMap::initializeGL()
 {
-
     glClearColor(0.0, 0.0, 0.0, 0.0);
 
     GLfloat light_diffuse[] = {0.75, 0.74, 0.7, 1.0};
@@ -312,7 +311,6 @@ void WidgetHeightMap::initializeGL()
 
 void WidgetHeightMap::resizeGL(int w, int h)
 {
-
     glViewport(0, 0, w, h);
 
     glMatrixMode(GL_PROJECTION);

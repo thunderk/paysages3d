@@ -7,6 +7,7 @@
 #include "previewterrainshape.h"
 #include "tools.h"
 #include "rendering/scenery.h"
+#include "rendering/textures/public.h"
 
 MainTerrainForm::MainTerrainForm(QWidget *parent) :
     QWidget(parent),
@@ -67,7 +68,19 @@ void MainTerrainForm::refreshFromLocalData()
 
 void MainTerrainForm::refreshFromFellowData()
 {
-    // TODO Refresh texture info
+    TexturesDefinition* textures = (TexturesDefinition*)TexturesDefinitionClass.create();
+    sceneryGetTextures(textures);
+    double disp = texturesGetMaximalDisplacement(textures);
+    TexturesDefinitionClass.destroy(textures);
+
+    if (disp == 0.0)
+    {
+        ui->label_info_textures->setText(tr("No displacement textures"));
+    }
+    else
+    {
+        ui->label_info_textures->setText(tr("Maximal displacement : %1% of total height").arg(100.0 * disp / _terrain->height, 0, 'f', 1));
+    }
 }
 
 void MainTerrainForm::updateLocalDataFromScenery()

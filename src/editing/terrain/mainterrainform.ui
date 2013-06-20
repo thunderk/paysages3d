@@ -298,7 +298,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="label_7">
+               <widget class="QLabel" name="label_info_textures">
                 <property name="text">
                  <string notr="true">{ textures info }</string>
                 </property>
