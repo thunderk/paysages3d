@@ -682,7 +682,7 @@ void renderPostProcess(RenderArea* area, int nbchunks)
     loops = 0;
     while ((y < ny && !area->renderer->render_interrupt) || running > 0)
     {
-        timeSleepMs(100);
+        timeSleepMs(50);
 
         for (i = 0; i < nbchunks; i++)
         {
