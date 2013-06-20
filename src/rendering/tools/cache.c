@@ -72,14 +72,14 @@ int cacheFileIsWritable(CacheFile* cache)
 
 const char* cacheFileGetPath(CacheFile* cache)
 {
-    FILE* f = fopen(cache->filepath, "rb");
+    FILE* f = fopen(cache->datapath, "rb");
     if (f)
     {
         fclose(f);
-        return cache->filepath;
+        return cache->datapath;
     }
     else
     {
-        return cache->datapath;
+        return cache->filepath;
     }
 }
