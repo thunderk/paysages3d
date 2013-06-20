@@ -16,6 +16,9 @@ MainTerrainForm::MainTerrainForm(QWidget *parent) :
 
     ui->setupUi(this);
 
+    // TEMP
+    ui->button_dialog_basenoise->hide();
+
     _form_helper = new FreeFormHelper(this);
 
     _renderer_shape = new PreviewTerrainShape(_terrain);

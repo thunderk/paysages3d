@@ -93,6 +93,14 @@
     </message>
 </context>
 <context>
+    <name>DialogBaseTerrainNoise</name>
+    <message>
+        <location filename="../../src/editing/terrain/dialogbaseterrainnoise.ui" line="17"/>
+        <source>Paysages 3D - Base terrain noise</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DialogColorGradation</name>
     <message>
         <location filename="../../src/editing/dialogcolorgradation.cpp" line="36"/>
@@ -364,57 +372,57 @@ Maintenir Ctrl : Plus lent</translation>
 <context>
     <name>DialogRender</name>
     <message>
-        <location filename="../../src/editing/dialogrender.cpp" line="90"/>
+        <location filename="../../src/editing/dialogrender.cpp" line="89"/>
         <source>Paysages 3D - Render</source>
         <translation>Paysages 3D - Rendu</translation>
     </message>
     <message>
-        <location filename="../../src/editing/dialogrender.cpp" line="119"/>
+        <location filename="../../src/editing/dialogrender.cpp" line="118"/>
         <source>Tone-mapping: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/dialogrender.cpp" line="121"/>
+        <location filename="../../src/editing/dialogrender.cpp" line="120"/>
         <source>Uncharted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/dialogrender.cpp" line="121"/>
+        <location filename="../../src/editing/dialogrender.cpp" line="120"/>
         <source>Reinhard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/dialogrender.cpp" line="124"/>
+        <location filename="../../src/editing/dialogrender.cpp" line="123"/>
         <source>Exposure: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/dialogrender.cpp" line="132"/>
+        <location filename="../../src/editing/dialogrender.cpp" line="131"/>
         <source>Save picture</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/dialogrender.cpp" line="195"/>
+        <location filename="../../src/editing/dialogrender.cpp" line="196"/>
         <source>Paysages 3D - Choose a filename to save the last render</source>
         <translation type="unfinished">Paysages 3D - Choisissez un nom de fichier pour le rendu</translation>
     </message>
     <message>
-        <location filename="../../src/editing/dialogrender.cpp" line="195"/>
+        <location filename="../../src/editing/dialogrender.cpp" line="196"/>
         <source>Images (*.png *.jpg)</source>
         <translation type="unfinished">Images (*.png *.jpg)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/dialogrender.cpp" line="204"/>
+        <location filename="../../src/editing/dialogrender.cpp" line="205"/>
         <source>The picture %1 has been saved.</source>
         <translation type="unfinished">L&apos;image %1 a été sauvegardée.</translation>
     </message>
     <message>
-        <location filename="../../src/editing/dialogrender.cpp" line="208"/>
+        <location filename="../../src/editing/dialogrender.cpp" line="209"/>
         <source>Can&apos;t write to file : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/dialogrender.cpp" line="241"/>
+        <location filename="../../src/editing/dialogrender.cpp" line="243"/>
         <source>%1:%2.%3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -424,62 +432,217 @@ Maintenir Ctrl : Plus lent</translation>
     <message>
         <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="20"/>
         <source>Paysages 3D - Terrain painting</source>
-        <translation type="unfinished"></translation>
+        <translation>Paysages 3D - Modelage du terrain</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="67"/>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="51"/>
+        <source>Display :</source>
+        <translation>Afficher : </translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="58"/>
+        <source>Water</source>
+        <translation>Eau</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="68"/>
+        <source>Grid</source>
+        <translation>Grille</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="78"/>
+        <source>Painted area</source>
+        <translation>Zone modifiée</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="101"/>
+        <source>Commands</source>
+        <translation>Commandes</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="144"/>
+        <source>Shortcuts</source>
+        <translation>Raccourcis</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="158"/>
+        <source>Switch to raise/lower tool</source>
+        <translation>Activer l&apos;outil élévation</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="174"/>
+        <source>F3</source>
+        <translation>F3</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="184"/>
+        <source>Show these commands</source>
+        <translation>Afficher ces commandes</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="200"/>
+        <source>F4</source>
+        <translation>F4</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="216"/>
+        <source>F1</source>
+        <translation>F1</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="232"/>
+        <source>F2</source>
+        <translation>F2</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="242"/>
+        <source>Switch to noise/smooth tool</source>
+        <translation>Activer l&apos;outil détail/lissage</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="252"/>
+        <source>Switch to flatten tool</source>
+        <translation>Activer l&apos;outil nivellement</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="268"/>
+        <source>F12</source>
+        <translation>F12</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="278"/>
+        <source>Switch to restore tool</source>
+        <translation>Activer l&apos;outil restauration</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="306"/>
+        <source>Brush control</source>
+        <translation>Contrôle du pinceau</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="320"/>
+        <source>Set brush smoothing</source>
+        <translation>Modifier le lissage des bords</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="336"/>
+        <source>SHIFT + Mouse wheel</source>
+        <translation>Maj + Molette de souris</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="346"/>
+        <source>Set brush size</source>
+        <translation>Modifier la taille</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="362"/>
+        <source>CTRL + Mouse wheel</source>
+        <translation>Ctrl + Molette de souris</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="378"/>
+        <source>ALT + Mouse wheel</source>
+        <translation>Alt + Molette de souris</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="388"/>
+        <source>Set brush strength</source>
+        <translation>Modifier la force d&apos;effet</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="416"/>
+        <source>Camera control</source>
+        <translation>Contrôle de la caméra</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="436"/>
+        <source>Mouse wheel</source>
+        <translation>Molette de souris</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="452"/>
+        <source>Borders</source>
+        <translation>Bords de l&apos;affichage 3D</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="462"/>
+        <source>Scroll view</source>
+        <translation>Déplacer la vue</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="472"/>
+        <source>Zoom</source>
+        <translation>Zoomer</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="526"/>
         <source>Brush Tool : </source>
-        <translation type="unfinished"></translation>
+        <translation>Outil de modelage : </translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="75"/>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="534"/>
+        <source>Raise / Lower (F2)</source>
+        <translation>Elever / Abaisser (F2)</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="539"/>
+        <source>Add noise / Smooth (F3)</source>
+        <translation>Ajout de détail / Lissage (F3)</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="544"/>
+        <source>Flatten terrain (F4)</source>
+        <translation>Niveler à une altitude (F4)</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="549"/>
+        <source>Restore to base shape (F12)</source>
+        <translation>Restaurer la forme de base (F12)</translation>
+    </message>
+    <message>
         <source>Raise / Lower (F1)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Lever / Abaisser (F1)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="80"/>
         <source>Add noise / Smooth (F2)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ajout de détail / Lissage (F2)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="85"/>
         <source>Flatten terrain (F3)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Niveler à une altitude (F3)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="90"/>
         <source>Fix discontinuities (F11)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Lisser les discontinuités (F11)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="95"/>
         <source>Restore to default (F12)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Restaurer la forme de base (F12)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="103"/>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="557"/>
         <source>Brush size :</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille du pinceau : </translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="126"/>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="577"/>
         <source>Brush smoothing :</source>
-        <translation type="unfinished"></translation>
+        <translation>Lissage des bords du pinceau : </translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="146"/>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="597"/>
         <source>Brush strength :</source>
-        <translation type="unfinished"></translation>
+        <translation>Force d&apos;effet du pinceau : </translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="204"/>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.ui" line="653"/>
         <source>Brush preview :</source>
-        <translation type="unfinished"></translation>
+        <translation>Aperçu du pinceau :</translation>
     </message>
     <message>
-        <location filename="../../src/editing/terrain/dialogterrainpainting.cpp" line="94"/>
+        <location filename="../../src/editing/terrain/dialogterrainpainting.cpp" line="116"/>
         <source>Memory used: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mémoire vive utilisée : %1</translation>
     </message>
 </context>
 <context>
@@ -618,7 +781,7 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormClouds</name>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="99"/>
+        <location filename="../../src/editing/formclouds.cpp" line="96"/>
         <source>Layer coverage (no lighting)</source>
         <translation>Couverture de la couche (sans éclairage)</translation>
     </message>
@@ -639,7 +802,7 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Altitude de fin</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="103"/>
+        <location filename="../../src/editing/formclouds.cpp" line="100"/>
         <source>Lower altitude</source>
         <translation type="unfinished"></translation>
     </message>
@@ -656,7 +819,7 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Echelle</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="109"/>
+        <location filename="../../src/editing/formclouds.cpp" line="106"/>
         <source>Material</source>
         <translation type="unfinished"></translation>
     </message>
@@ -673,81 +836,81 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Concentration de la réflexion de lumière</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="100"/>
+        <location filename="../../src/editing/formclouds.cpp" line="97"/>
         <source>Appearance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="104"/>
+        <location filename="../../src/editing/formclouds.cpp" line="101"/>
         <source>Layer thickness</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="105"/>
+        <location filename="../../src/editing/formclouds.cpp" line="102"/>
         <source>Max coverage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="106"/>
+        <location filename="../../src/editing/formclouds.cpp" line="103"/>
         <source>Shape scaling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="89"/>
-        <location filename="../../src/editing/formclouds.cpp" line="102"/>
+        <location filename="../../src/editing/formclouds.cpp" line="86"/>
+        <location filename="../../src/editing/formclouds.cpp" line="99"/>
         <source>Cirrus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="90"/>
-        <location filename="../../src/editing/formclouds.cpp" line="102"/>
+        <location filename="../../src/editing/formclouds.cpp" line="87"/>
+        <location filename="../../src/editing/formclouds.cpp" line="99"/>
         <source>Cumulus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="91"/>
-        <location filename="../../src/editing/formclouds.cpp" line="102"/>
+        <location filename="../../src/editing/formclouds.cpp" line="88"/>
+        <location filename="../../src/editing/formclouds.cpp" line="99"/>
         <source>Stratocumulus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="92"/>
-        <location filename="../../src/editing/formclouds.cpp" line="102"/>
+        <location filename="../../src/editing/formclouds.cpp" line="89"/>
+        <location filename="../../src/editing/formclouds.cpp" line="99"/>
         <source>Stratus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="102"/>
+        <location filename="../../src/editing/formclouds.cpp" line="99"/>
         <source>Clouds model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="107"/>
+        <location filename="../../src/editing/formclouds.cpp" line="104"/>
         <source>Edge scaling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="108"/>
+        <location filename="../../src/editing/formclouds.cpp" line="105"/>
         <source>Edge length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="110"/>
+        <location filename="../../src/editing/formclouds.cpp" line="107"/>
         <source>Hardness to light</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="111"/>
+        <location filename="../../src/editing/formclouds.cpp" line="108"/>
         <source>Transparency depth</source>
         <translation>Distance de transparence</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="112"/>
+        <location filename="../../src/editing/formclouds.cpp" line="109"/>
         <source>Light traversal depth</source>
         <translation>Distance de traversée de la lumière</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formclouds.cpp" line="113"/>
+        <location filename="../../src/editing/formclouds.cpp" line="110"/>
         <source>Minimum lighting</source>
         <translation>Eclairage minimal</translation>
     </message>
@@ -919,9 +1082,8 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Aperçu du rendu (sans ombres)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formterrain.cpp" line="49"/>
         <source>Lighted preview (no texture)</source>
-        <translation>Aperçu éclairé (sans texture)</translation>
+        <translation type="obsolete">Aperçu éclairé (sans texture)</translation>
     </message>
     <message>
         <source>Noise</source>
@@ -932,24 +1094,20 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Hauteur</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formterrain.cpp" line="43"/>
         <source>Paint</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Modeler le terrain</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formterrain.cpp" line="52"/>
         <source>Scaling</source>
-        <translation>Echelle</translation>
+        <translation type="obsolete">Echelle</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formterrain.cpp" line="53"/>
         <source>Height modifier</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Dénivelé total</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formterrain.cpp" line="54"/>
         <source>Shadow smoothing</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Lissage des ombres</translation>
     </message>
 </context>
 <context>
@@ -1063,7 +1221,7 @@ Maintenir Ctrl : Plus rapide</translation>
 <context>
     <name>FormWater</name>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="234"/>
+        <location filename="../../src/editing/formwater.cpp" line="239"/>
         <source>Coverage preview</source>
         <translation>Aperçu de la couverture</translation>
     </message>
@@ -1072,9 +1230,8 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Aperçu du rendu (sans/avec éclairage)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="237"/>
         <source>Height</source>
-        <translation>Hauteur</translation>
+        <translation type="obsolete">Hauteur</translation>
     </message>
     <message>
         <source>Surface color</source>
@@ -1089,67 +1246,67 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Concentration de la lumière réfléchie</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="238"/>
+        <location filename="../../src/editing/formwater.cpp" line="243"/>
         <source>Surface material</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="240"/>
+        <location filename="../../src/editing/formwater.cpp" line="245"/>
         <source>Transparency</source>
         <translation>Transparence</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="241"/>
+        <location filename="../../src/editing/formwater.cpp" line="246"/>
         <source>Reflection</source>
         <translation>Reflets</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="242"/>
+        <location filename="../../src/editing/formwater.cpp" line="247"/>
         <source>Transparency distance</source>
         <translation>Distance maximale de transparence</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="239"/>
+        <location filename="../../src/editing/formwater.cpp" line="244"/>
         <source>Depth color</source>
         <translation>Couleur en profondeur</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="227"/>
+        <location filename="../../src/editing/formwater.cpp" line="232"/>
         <source>Lake surface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="228"/>
+        <location filename="../../src/editing/formwater.cpp" line="233"/>
         <source>Standard sea</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="235"/>
+        <location filename="../../src/editing/formwater.cpp" line="240"/>
         <source>Rendered preview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="243"/>
+        <location filename="../../src/editing/formwater.cpp" line="248"/>
         <source>Light-through distance</source>
         <translation>Distance de filtrage de la lumière</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="246"/>
+        <location filename="../../src/editing/formwater.cpp" line="251"/>
         <source>Waves detail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="247"/>
+        <location filename="../../src/editing/formwater.cpp" line="252"/>
         <source>Waves turbulence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="248"/>
+        <location filename="../../src/editing/formwater.cpp" line="253"/>
         <source>Foam coverage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="249"/>
+        <location filename="../../src/editing/formwater.cpp" line="254"/>
         <source>Foam material</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1158,12 +1315,12 @@ Maintenir Ctrl : Plus rapide</translation>
         <translation type="obsolete">Bruit des vagues</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="245"/>
+        <location filename="../../src/editing/formwater.cpp" line="250"/>
         <source>Waves height</source>
         <translation>Hauteur des vagues</translation>
     </message>
     <message>
-        <location filename="../../src/editing/formwater.cpp" line="244"/>
+        <location filename="../../src/editing/formwater.cpp" line="249"/>
         <source>Waves scaling</source>
         <translation>Echelle des vagues</translation>
     </message>
@@ -1243,146 +1400,474 @@ Maintenir Ctrl : Plus rapide</translation>
     </message>
 </context>
 <context>
-    <name>MainWindow</name>
+    <name>MainTerrainForm</name>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="91"/>
-        <source>Terrain</source>
-        <translation>Terrain</translation>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="25"/>
+        <source>Infinite base shape</source>
+        <translation>Forme infinie de base</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="96"/>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="34"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;This is the base shape for your landscape, infinitely generated from a random mathematical function. You can then customize this raw shape by sculpting it, and adding displacement textures.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Ceci est la forme de base de votre terrain, générée de façon infinie par une fonction mathématique. Vous pouvez personnaliser cette forme brute en la sculptant directement, et en lui ajoutant des textures de modification.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="49"/>
+        <source>Generate base noise</source>
+        <translation>Générer une forme de base</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="80"/>
+        <source>Manual modifications</source>
+        <translation>Modifications manuelles</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="97"/>
+        <source>Sculpt the terrain shape</source>
+        <translation>Sculpter le terrain</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="14"/>
+        <source>Terrain editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="122"/>
+        <source>Global modifiers</source>
+        <translation>Contrôle d&apos;échelle</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="131"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;These modifiers change the base shape and manual modifications altogether.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Ces contrôles modifient la forme de base et vos modifications manuelles en même temps, pour rester cohérent.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="146"/>
+        <source>Scaling</source>
+        <translation>Echelle globale</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="166"/>
+        <source>Height</source>
+        <translation>Dénivelé total</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="191"/>
+        <source>Rendering control</source>
+        <translation>Contrôle du rendu</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="205"/>
+        <source>Shadow smoothing</source>
+        <translation>Lissage des ombres</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="230"/>
+        <source>Links to other modules</source>
+        <translation>Liens vers les autres modules</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="248"/>
+        <source>Relative water height</source>
+        <translation>Altitude relative de la couche d&apos;eau</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="284"/>
+        <source>Go to textures to add small height displacements (rocks...)</source>
+        <translation>Aller aux textures pour ajouter des détails (roches...)</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="334"/>
+        <source>Result preview</source>
+        <translation>Prévisualisation du résultat</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="365"/>
+        <source>Render preview</source>
+        <translation>Rendu rapide</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="376"/>
+        <source>Explore in 3D</source>
+        <translation>Explorer en 3D</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="403"/>
+        <source>Actions</source>
+        <translation>Actions</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="412"/>
+        <source>Revert modifications</source>
+        <translation>Annuler les modifications</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.ui" line="423"/>
+        <source>Apply modifications</source>
+        <translation>Valider les modifications</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="55"/>
+        <source>Memory used by sculpted data: %1</source>
+        <translation>Mémoire utilisée par les zones sculptées : %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="59"/>
+        <source>No manual scuplting done</source>
+        <translation>Aucune zone n&apos;a été sculptée</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="90"/>
+        <source>Paysages 3D - Base noise edition</source>
+        <translation>Paysages 3D - Edition de la forme de base</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="90"/>
+        <source>You have manual modifications on this terrain, regenerating base noise may produce weird results.</source>
+        <translation>Vous avez des modifications manuelles sur le terrain, modifier la forme de base peut produire des discontinuités.</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="90"/>
+        <source>Keep my changes anyway</source>
+        <translation>Garder mes changements</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/terrain/mainterrainform.cpp" line="90"/>
+        <source>Erase my changes</source>
+        <translation>Effacer mes changements</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <source>Terrain</source>
+        <translation type="obsolete">Terrain</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="98"/>
         <source>Textures</source>
         <translation>Textures</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="101"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="103"/>
         <source>Water</source>
         <translation>Eau</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="106"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="108"/>
         <source>Atmosphere</source>
         <translation>Atmosphère</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="131"/>
         <source>&amp;Load</source>
-        <translation>&amp;Ouvrir</translation>
+        <translation type="obsolete">&amp;Ouvrir</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="131"/>
         <source>Crtl+L</source>
-        <translation>Ctrl+O</translation>
+        <translation type="obsolete">Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="132"/>
         <source>&amp;Explore (F2)</source>
-        <translation>&amp;Explorer (F2)</translation>
+        <translation type="obsolete">&amp;Explorer (F2)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="132"/>
+        <location filename="../../src/editing/common/mainwindow.ui" line="40"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Paysages 3D&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/logo/images/logo_32.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="68"/>
+        <source>Preview</source>
+        <translation>Pré-rendu</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="78"/>
+        <source>3D</source>
+        <translation>3D</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="85"/>
+        <source>Top</source>
+        <translation>Dessus</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="158"/>
+        <location filename="../../src/editing/common/mainwindow.ui" line="341"/>
+        <source>Actions</source>
+        <translation>Actions</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="164"/>
+        <location filename="../../src/editing/common/mainwindow.ui" line="364"/>
+        <source>Explore in 3D</source>
+        <translation>Explorer en 3D</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="171"/>
+        <location filename="../../src/editing/common/mainwindow.ui" line="370"/>
         <source>F2</source>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="133"/>
+        <location filename="../../src/editing/common/mainwindow.ui" line="205"/>
+        <location filename="../../src/editing/common/mainwindow.ui" line="333"/>
+        <source>File</source>
+        <translation>Fichier</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="211"/>
+        <source>New</source>
+        <translation>Nouveau</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="222"/>
+        <source>Save</source>
+        <translation>Enregistrer</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="233"/>
+        <source>Load</source>
+        <translation>Charger</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="277"/>
+        <source>Lanscape shape</source>
+        <translation>Forme du terrain</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="286"/>
+        <source>toolBar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="350"/>
+        <source>Help</source>
+        <translation>Aide</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="367"/>
+        <source>Start exploring your scenery in real-time 3D</source>
+        <translation>Lancer l&apos;exploration de votre scène en 3D</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="379"/>
+        <source>New scene</source>
+        <translation>Nouvelle scène</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="382"/>
+        <source>Create a virgin scene</source>
+        <translation>Créer une nouvelle scène vierge</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="385"/>
+        <source>Ctrl+N</source>
+        <translation>Ctrl+N</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="394"/>
+        <source>Load scene</source>
+        <translation>Charger une scène</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="397"/>
+        <source>Load a scenery from a file</source>
+        <translation>Charger une scène complète depuis un fichier</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="400"/>
+        <source>Ctrl+O</source>
+        <translation>Ctrl+O</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="409"/>
+        <source>Save scene</source>
+        <translation>Enregistrer la scène</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="412"/>
+        <source>Save a scenery to a file</source>
+        <translation>Enregistrer la scène courante dans un fichier</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="415"/>
+        <source>Ctrl+S</source>
+        <translation>Ctrl+S</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="424"/>
+        <source>Quick render</source>
+        <translation>Rendu rapide</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="427"/>
+        <source>Start a quick render</source>
+        <translation>Lance un rendu rapide en basse qualité</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="439"/>
+        <source>Final render</source>
+        <translation>Rendu final</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="442"/>
+        <source>Start the final rendering processs</source>
+        <translation>Lance le processus de rendu final</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="445"/>
+        <source>Ctrl+F5</source>
+        <translation>Ctrl+F5</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="454"/>
+        <source>About</source>
+        <translation>A propos</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="457"/>
+        <source>Display information on this software</source>
+        <translation>Affiche des informations sur ce logiciel</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="460"/>
+        <source>F1</source>
+        <translation>F1</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="469"/>
+        <source>Show last render</source>
+        <translation>Voir le dernier rendu</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="472"/>
+        <source>Display the last render done</source>
+        <translation>Affiche la dernière image rendue</translation>
+    </message>
+    <message>
+        <location filename="../../src/editing/common/mainwindow.ui" line="475"/>
+        <source>F6</source>
+        <translation>F6</translation>
+    </message>
+    <message>
         <source>&amp;Quick
 render (F5)</source>
-        <translation>&amp;Rendu
+        <translation type="obsolete">&amp;Rendu
 rapide (F5)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="133"/>
+        <location filename="../../src/editing/common/mainwindow.ui" line="430"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="173"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="167"/>
         <source>Camera</source>
-        <translation type="unfinished">Caméra</translation>
+        <translation>Caméra</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="179"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="173"/>
         <source>Do you want to start a new scenery ? Any unsaved changes will be lost.</source>
         <translation>Voulez-vous commencer un nouveau paysage ? Les modifications non sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="179"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="173"/>
         <source>Paysages 3D - New scenery</source>
         <translation>Paysages 3D - Nouvelle scène</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="188"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="182"/>
         <source>Paysages 3D - Choose a file to save the scenery</source>
         <translation>Paysages 3D - Choisissez un fichier pour enregistrer la scène</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="188"/>
-        <location filename="../../src/editing/mainwindow.cpp" line="214"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="182"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="208"/>
         <source>Paysages 3D Scenery (*.p3d)</source>
         <translation>Scène Paysages 3D (*.p3d)</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="202"/>
-        <location filename="../../src/editing/mainwindow.cpp" line="205"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="196"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="199"/>
         <source>Paysages 3D - File saving error</source>
-        <translation type="unfinished"></translation>
+        <translation>Paysages 3D - Erreur d&apos;enregistrement</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="202"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="196"/>
         <source>Can&apos;t write specified file : %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;écrire dans le fichier : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="205"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="199"/>
         <source>Unexpected error while saving file : %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur inconnue durant l&apos;enregistrement : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="212"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="206"/>
         <source>Do you want to load a scenery from file ? Any unsaved changes will be lost.</source>
         <translation>Voulez-vous charger une scène ? Les modifications non sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="212"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="206"/>
         <source>Paysages 3D - Load scenery</source>
         <translation>Paysages 3D - Charger une scène</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="214"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="208"/>
         <source>Paysages 3D - Choose a scenery file to load</source>
         <translation>Paysages 3D - Choisissez un fichier de scène à charger</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="224"/>
-        <location filename="../../src/editing/mainwindow.cpp" line="227"/>
-        <location filename="../../src/editing/mainwindow.cpp" line="230"/>
-        <location filename="../../src/editing/mainwindow.cpp" line="233"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="218"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="221"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="224"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="227"/>
         <source>Paysages 3D - File loading error</source>
-        <translation type="unfinished"></translation>
+        <translation>Paysages 3D - Erreur de chargement</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="224"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="218"/>
         <source>Can&apos;t read specified file : %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier  : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="227"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="221"/>
         <source>This file doesn&apos;t look like a Paysages 3D file : %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier ne semble pas être au format Paysages 3D : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="230"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="224"/>
         <source>This file was created with an incompatible Paysages 3D version : %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier a été créé avec une version incompatible de Paysages 3D : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="233"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="227"/>
         <source>Unexpected error while loading file : %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur inconnue lors du chargement : %1</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="241"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="235"/>
+        <source>A 3D landscape editing and rendering software.
+
+Authors :
+Programming - Michael Lemaire
+
+Credits :
+Qt - http://qt-project.org/
+DevIL - http://openil.sourceforge.net/
+GLib - http://www.gtk.org/
+</source>
+        <translation>Un logiciel d&apos;édition et de rendu de décors naturels en 3D.
+
+Auteurs :
+Programmation - Michael Lemaire
+
+Crédits :
+Qt - http://qt-project.org/
+DevIL - http://openil.sourceforge.net/
+GLib - http://www.gtk.org</translation>
+    </message>
+    <message>
         <source>A 3D landscape editing and rendering software.
 
 Authors :
@@ -1393,14 +1878,22 @@ Qt - http://qt.nokia.com/
 DevIL - http://openil.sourceforge.net/
 GLib - http://www.gtk.org/
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Un logiciel d&apos;édition et de rendu de décors naturels en 3D.
+
+Auteurs :
+Programmation - Michael Lemaire
+
+Crédits :
+Qt - http://qt.nokia.com/
+DevIL - http://openil.sourceforge.net/
+GLib - http://www.gtk.org</translation>
     </message>
     <message>
         <source>Sky</source>
         <translation type="obsolete">Ciel</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="111"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="113"/>
         <source>Clouds</source>
         <translation>Nuages</translation>
     </message>
@@ -1409,7 +1902,8 @@ GLib - http://www.gtk.org/
         <translation type="obsolete">Eclairage</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="116"/>
+        <location filename="../../src/editing/common/mainwindow.ui" line="178"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="118"/>
         <source>Render</source>
         <translation>Rendu</translation>
     </message>
@@ -1418,24 +1912,20 @@ GLib - http://www.gtk.org/
         <translation type="obsolete">&amp;Scène</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="129"/>
         <source>&amp;New</source>
-        <translation>&amp;Nouveau</translation>
+        <translation type="obsolete">&amp;Nouveau</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="129"/>
         <source>Crtl+N</source>
-        <translation>Ctrl+N</translation>
+        <translation type="obsolete">Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="130"/>
         <source>&amp;Save</source>
-        <translation>&amp;Sauvegarder</translation>
+        <translation type="obsolete">&amp;Sauvegarder</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="130"/>
         <source>Crtl+S</source>
-        <translation>Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <source>&amp;Open</source>
@@ -1470,9 +1960,8 @@ GLib - http://www.gtk.org/
         <translation type="obsolete">Ai&amp;de</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="134"/>
         <source>&amp;About</source>
-        <translation>&amp;A propos</translation>
+        <translation type="obsolete">&amp;A propos</translation>
     </message>
     <message>
         <source>New lanscape</source>
@@ -1491,7 +1980,8 @@ GLib - http://www.gtk.org/
         <translation type="obsolete">Voulez-vous charger un paysage ? Les modifications nons sauvegardées seront perdues.</translation>
     </message>
     <message>
-        <location filename="../../src/editing/mainwindow.cpp" line="241"/>
+        <location filename="../../src/editing/common/mainwindow.ui" line="14"/>
+        <location filename="../../src/editing/common/mainwindow.cpp" line="235"/>
         <source>Paysages 3D</source>
         <translation>Paysages 3D</translation>
     </message>
@@ -1537,7 +2027,7 @@ Développement - Michaël LEMAIRE</translation>
     <message>
         <location filename="../../src/editing/formwater.cpp" line="82"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Grille</translation>
     </message>
     <message>
         <location filename="../../src/editing/formwater.cpp" line="82"/>
@@ -1561,56 +2051,55 @@ Développement - Michaël LEMAIRE</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/editing/terrain/paintingbrush.cpp" line="87"/>
-        <source>&lt;strong&gt;Left click&lt;/strong&gt;: raise terrain&lt;br&gt;&lt;br&gt;&lt;strong&gt;Right click&lt;/strong&gt;: lower terrain</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/editing/terrain/paintingbrush.cpp" line="89"/>
-        <source>&lt;strong&gt;Left click&lt;/strong&gt;: add random noise to terrain&lt;br&gt;&lt;br&gt;&lt;strong&gt;Right click&lt;/strong&gt;: smooth details</source>
-        <translation type="unfinished"></translation>
+        <source>&lt;strong&gt;Left click&lt;/strong&gt;: raise terrain&lt;br&gt;&lt;br&gt;&lt;strong&gt;Right click&lt;/strong&gt;: lower terrain</source>
+        <translation>&lt;strong&gt;Clic gauche&lt;/strong&gt;: élever le terrain&lt;br&gt;&lt;br&gt;&lt;strong&gt;Clic droit&lt;/strong&gt;: abaisser le terrain</translation>
     </message>
     <message>
         <location filename="../../src/editing/terrain/paintingbrush.cpp" line="91"/>
-        <source>&lt;strong&gt;Left click&lt;/strong&gt;: flatten at height picked with right click&lt;br&gt;&lt;br&gt;&lt;strong&gt;Right click&lt;/strong&gt;: pick height at center</source>
-        <translation type="unfinished"></translation>
+        <source>&lt;strong&gt;Left click&lt;/strong&gt;: add random noise to terrain&lt;br&gt;&lt;br&gt;&lt;strong&gt;Right click&lt;/strong&gt;: smooth details</source>
+        <translation>&lt;strong&gt;Clic gauche&lt;/strong&gt;: ajouter du bruit aléatoire&lt;br&gt;&lt;br&gt;&lt;strong&gt;Clic droit&lt;/strong&gt;: lisser les détails</translation>
     </message>
     <message>
         <location filename="../../src/editing/terrain/paintingbrush.cpp" line="93"/>
-        <source>&lt;strong&gt;Left click&lt;/strong&gt;: fix discontinuities in slope</source>
-        <translation type="unfinished"></translation>
+        <source>&lt;strong&gt;Left click&lt;/strong&gt;: flatten at height picked with right click&lt;br&gt;&lt;br&gt;&lt;strong&gt;Right click&lt;/strong&gt;: pick height at center</source>
+        <translation>&lt;strong&gt;Clic gauche&lt;/strong&gt;: Niveler le terrain à l&apos;altitude définie par clic droit&lt;br&gt;&lt;br&gt;&lt;strong&gt;Clic droit&lt;/strong&gt;: choisir l&apos;altitude de nivelage</translation>
     </message>
     <message>
         <location filename="../../src/editing/terrain/paintingbrush.cpp" line="95"/>
-        <source>&lt;strong&gt;Left click&lt;/strong&gt;: cancel all modifications on terrain</source>
-        <translation type="unfinished"></translation>
+        <source>&lt;strong&gt;Left click&lt;/strong&gt;: remove your manual modifications from terrain</source>
+        <translation>&lt;strong&gt;Clic gauche&lt;/strong&gt;: enlève vos modifications manuelles du terrain</translation>
+    </message>
+    <message>
+        <source>&lt;strong&gt;Left click&lt;/strong&gt;: fix discontinuities in slope</source>
+        <translation type="obsolete">&lt;strong&gt;Clic gauche&lt;/strong&gt;: lisser les discontinuités de pente</translation>
     </message>
     <message>
         <location filename="../../src/editing/tools.cpp" line="31"/>
         <source>%1 GB</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Go</translation>
     </message>
     <message>
         <location filename="../../src/editing/tools.cpp" line="35"/>
         <source>%1 MB</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Mo</translation>
     </message>
     <message>
         <location filename="../../src/editing/tools.cpp" line="40"/>
         <source>%1 kB</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ko</translation>
     </message>
     <message>
         <location filename="../../src/editing/tools.cpp" line="45"/>
         <source>%1 B</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 octets</translation>
     </message>
 </context>
 <context>
     <name>WidgetExplorer</name>
     <message>
-        <location filename="../../src/editing/widgetexplorer.cpp" line="437"/>
-        <location filename="../../src/editing/widgetexplorer.cpp" line="439"/>
+        <location filename="../../src/editing/widgetexplorer.cpp" line="451"/>
+        <location filename="../../src/editing/widgetexplorer.cpp" line="453"/>
         <source>Please wait while loading scene...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1625,17 +2114,17 @@ Développement - Michaël LEMAIRE</translation>
     <message>
         <location filename="../../src/editing/common/widgetglobalformbuttons.ui" line="32"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../../src/editing/common/widgetglobalformbuttons.ui" line="49"/>
         <source>Revert modifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Défaire les modifications</translation>
     </message>
     <message>
         <location filename="../../src/editing/common/widgetglobalformbuttons.ui" line="66"/>
         <source>Validate</source>
-        <translation type="unfinished">Valider</translation>
+        <translation>Valider</translation>
     </message>
 </context>
 </TS>
