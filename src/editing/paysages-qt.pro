@@ -15,11 +15,10 @@ CONFIG += $$BUILDMODE
 INCLUDEPATH += $$PROJECT_PATH/src/
 
 release:DEFINES += NDEBUG
-release:QMAKE_CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter -Wno-unused-but-set-variable
+release:QMAKE_CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter
 
-LIBS += -lGLU
-unix:LIBS += -L$$DESTDIR -lpaysages_rendering -lpaysages_exploring
-win32:LIBS += ../libpaysages.a ../libpaysages_exploring.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-2.0
+unix:LIBS += -L$$DESTDIR -lpaysages_rendering -lpaysages_exploring -lGLU
+win32:LIBS += $$PROJECT_PATH/libpaysages.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-2.0
 
 TRANSLATIONS = $$PROJECT_PATH/data/i18n/paysages_fr.ts
 

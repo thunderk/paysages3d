@@ -9,10 +9,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-
-#include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
 
 #define B 0x100
 #define BM 0xff
@@ -161,20 +158,20 @@ void noisePerlinInit(void)
 	for (i = 0 ; i < B ; i++) {
 		p[i] = i;
 
-		g1[i] = (double)((random() % (B + B)) - B) / B;
+		g1[i] = (double)((rand() % (B + B)) - B) / B;
 
 		for (j = 0 ; j < 2 ; j++)
-			g2[i][j] = (double)((random() % (B + B)) - B) / B;
+			g2[i][j] = (double)((rand() % (B + B)) - B) / B;
 		_normalize2(g2[i]);
 
 		for (j = 0 ; j < 3 ; j++)
-			g3[i][j] = (double)((random() % (B + B)) - B) / B;
+			g3[i][j] = (double)((rand() % (B + B)) - B) / B;
 		_normalize3(g3[i]);
 	}
 
 	while (--i) {
 		k = p[i];
-		p[i] = p[j = random() % B];
+		p[i] = p[j = rand() % B];
 		p[j] = k;
 	}
 
