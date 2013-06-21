@@ -3,7 +3,6 @@
 #include <string.h>
 #include <math.h>
 
-#include "rendering/auto.h"
 #include "rendering/main.h"
 #include "rendering/render.h"
 #include "rendering/scenery.h"
