@@ -7,6 +7,6 @@ Standards-Version: 3.7.3
 
 Package: paysages3d
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, libglib2.0-0, libqt5core5, libqt5gui5, libqt5opengl5, libdevil1c2
+Depends: ${shlibs:Depends}, ${misc:Depends}, libglib2.0-0, libdevil1c2, libqtcore4, libqtgui4, libqt4-opengl
 Description: Paysages 3D is a landscape synthesizer and renderer
  Paysages 3D is a work-in-progress 3D software, allowing to model, preview, and render vast natural sceneries, with ground, sky, clouds...

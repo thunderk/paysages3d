@@ -63,7 +63,7 @@ install:release
 	cp cache/*.cache ${DESTDIR}/usr/share/paysages3d/
 
 deb:
-	apt-get install pbuilder build-essential libdevil-dev libglib2.0-dev qt4-dev-tools
+	apt-get install pbuilder build-essential check libdevil-dev libglib2.0-dev qt4-dev-tools
 	DEBFULLNAME="Michael Lemaire" DEBEMAIL=paysages@thunderk.net dch -i -p -u low -D stable
 	debuild -b -us -uc
 
