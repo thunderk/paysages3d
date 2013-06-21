@@ -149,21 +149,47 @@ void packReadInt(PackStream* stream, int* value)
 void packWriteString(PackStream* stream, char* value, int max_length)
 {
     int written;
-    int len = strnlen(value, max_length - 1) + 1;
+    int len = 0;
+    while (len < max_length - 1 && value[len] != '\0')
+    {
+        len++;
+    }
     packWriteInt(stream, &len);
-    written = fwrite(value, 1, len, stream->fd);
-    assert(written == len);
+    if (len > 0)
+    {
+        written = fwrite(value, 1, len, stream->fd);
+        assert(written == len);
+    }
 }
 
 void packReadString(PackStream* stream, char* value, int max_length)
 {
     int read;
-    int len;
+    int len, clen;
+
     packReadInt(stream, &len);
-    if (len > max_length)
+
+    if (len > max_length - 1)
     {
-        len = max_length;
+        clen = max_length - 1;
     }
-    read = fread(value, 1, len, stream->fd);
-    assert(read == len);
+    else
+    {
+        clen = len;
+    }
+
+    if (clen > 0)
+    {
+        read = fread(value, 1, clen, stream->fd);
+        assert(read == clen);
+        value[clen] = '\0';
+
+        if (clen < len)
+        {
+            /* Read rest of the string, discarding it */
+            char* buffer = malloc(len - clen);
+            fread(buffer, 1, len - clen, stream->fd);
+            free(buffer);
+        }
+    }
 }

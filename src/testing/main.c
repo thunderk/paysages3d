@@ -12,6 +12,7 @@ extern void test_render_case(Suite* s);
 extern void test_noise_case(Suite* s);
 extern void test_terrain_painting_case(Suite* s);
 extern void test_bruneton_case(Suite* s);
+extern void test_pack_case(Suite* s);
 
 int main(int argc, char** argv)
 {
@@ -30,6 +31,7 @@ int main(int argc, char** argv)
     test_noise_case(s);
     test_terrain_painting_case(s);
     test_bruneton_case(s);
+    test_pack_case(s);
 
     SRunner *sr = srunner_create(s);
     srunner_run_all(sr, CK_NORMAL);
