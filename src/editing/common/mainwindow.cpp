@@ -121,6 +121,8 @@ MainWindow::MainWindow() :
     ui->tabs->addTab(_form_render, QIcon(getDataPath("images/tab_render.png")), tr("Render"));
     _forms.append(_form_render);
 
+    ui->tabs->setCurrentIndex(0);
+
     // TODO Decide this according to platform / screen size
     //ui->toolBar->hide();
     ui->tool_panel->hide();

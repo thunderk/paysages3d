@@ -1,9 +1,6 @@
 Technology Preview 2 :
 - Investigate the preview render threads dying.
 - Add initial terrain offset so that the (0,0) coordinates are above water.
-- Finalize terrain editor.
-   => Add a generation dialog for base noise (overwriting changes).
-- Get rid of noise dialogs, for simpler settings.
 - Finalize lighting/clouds refactoring
    => Restore cloud lighting
    => Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).
@@ -17,15 +14,15 @@ Technology Preview 2 :
 - Translations.
 
 Technlogy Preview 3 :
-- Start an undo/redo system ?
+- FOCUS : Streamlining, with undo system
+- FOCUS : Vegetation
+- FOCUS : Night sky
 - Alter aerial perspective using estimation of the amount of light left after cloud layers traversal.
 - Add a map preview to terrain editor.
 - Better time selection widget for atmosphere.
 - Clouds should keep distance to ground.
-- Find a proper model for night sky (maybe Shirley).
 - Create a StandardPreviewClass in C-lib (with renderer, updateData, changeView, getColor, choices and toggles).
 - Fully move layer management from BaseForm to BaseFormLayer.
-- Start vegetation system.
 - Allow render saving in HDR compatible format.
 - Add clouds to explorer with 3d textures.
 - Add fresnel effect to specular lighting.
