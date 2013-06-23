@@ -9,6 +9,11 @@
         <file>images/load.png</file>
         <file>images/new.png</file>
         <file>images/save.png</file>
+        <file>images/layer_add.png</file>
+        <file>images/layer_del.png</file>
+        <file>images/layer_down.png</file>
+        <file>images/layer_rename.png</file>
+        <file>images/layer_up.png</file>
     </qresource>
     <qresource prefix="/tabs">
         <file>images/tab_atmosphere.png</file>

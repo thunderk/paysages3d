@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1079</width>
-    <height>720</height>
+    <width>1181</width>
+    <height>693</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -293,7 +293,7 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>Go to textures to add small height displacements (rocks...)</string>
+                 <string>Go to textures to add relief effect (rocks...)</string>
                 </property>
                </widget>
               </item>

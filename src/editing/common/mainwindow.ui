@@ -135,8 +135,6 @@
            </widget>
           </item>
          </layout>
-         <zorder>widget</zorder>
-         <zorder>widget</zorder>
         </widget>
        </item>
        <item>
@@ -260,7 +258,7 @@
     <item>
      <widget class="QTabWidget" name="tabs">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="iconSize">
        <size>
@@ -275,6 +273,15 @@
        </attribute>
        <attribute name="title">
         <string>Lanscape shape</string>
+       </attribute>
+      </widget>
+      <widget class="MainTexturesForm" name="tab">
+       <attribute name="icon">
+        <iconset resource="../../../data/ui_pictures.qrc">
+         <normaloff>:/tabs/images/tab_textures.png</normaloff>:/tabs/images/tab_textures.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string>Textures</string>
        </attribute>
       </widget>
      </widget>
@@ -483,6 +490,12 @@
    <header>terrain/mainterrainform.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>MainTexturesForm</class>
+   <extends>QWidget</extends>
+   <header>textures/maintexturesform.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources>
   <include location="../../../data/ui_pictures.qrc"/>
@@ -515,8 +528,8 @@
      <y>425</y>
     </hint>
     <hint type="destinationlabel">
-     <x>213</x>
-     <y>425</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>
