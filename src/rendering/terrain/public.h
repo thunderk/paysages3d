@@ -62,7 +62,6 @@ extern StandardDefinition TerrainDefinitionClass;
 extern StandardRenderer TerrainRendererClass;
 
 void terrainAutoPreset(TerrainDefinition* definition, TerrainPreset preset);
-void terrainRenderSurface(Renderer* renderer);
 double terrainGetGridHeight(TerrainDefinition* definition, int x, int z, int with_painting);
 double terrainGetInterpolatedHeight(TerrainDefinition* definition, double x, double z, int scaled, int with_painting);
 size_t terrainGetMemoryStats(TerrainDefinition* definition);
