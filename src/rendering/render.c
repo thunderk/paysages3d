@@ -311,8 +311,7 @@ static void _processDirtyPixels(RenderArea* area)
         }
     }
 
-    double progress = 0.1 + ((double)area->pixel_done / (double)area->pixel_count) * 0.9;
-    area->callback_update(progress);
+    area->callback_update(area->renderer->render_progress);
 
     area->dirty_left = area->params.width * area->params.antialias;
     area->dirty_right = -1;
@@ -699,6 +698,8 @@ void renderPostProcess(RenderArea* area, int nbchunks)
                     chunks[i].interrupt = 1;
                 }
             }
+
+            area->renderer->render_progress = 0.1 + ((double)area->pixel_done / (double)area->pixel_count) * 0.9;
 
             if (y < ny && !chunks[i].thread && !area->renderer->render_interrupt)
             {

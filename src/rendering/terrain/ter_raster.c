@@ -154,13 +154,14 @@ void terrainGetTessellationInfo(Renderer* renderer, FuncTerrainTessellationCallb
     radius_int = 0.0;
     radius_ext = base_chunk_size;
     chunk_size = base_chunk_size;
-    progress = 0.0; /* TODO */
+    progress = 0.0;
 
     double cx = cam.x - fmod(cam.x, base_chunk_size);
     double cz = cam.z - fmod(cam.x, base_chunk_size);
 
     while (radius_int < 5000.0)
     {
+        progress = radius_int / 5000.0;
         for (i = 0; i < chunk_count - 1; i++)
         {
             _getChunk(renderer, &chunk, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size, displaced);
@@ -203,10 +204,13 @@ void terrainGetTessellationInfo(Renderer* renderer, FuncTerrainTessellationCallb
 static int _standardTessellationCallback(Renderer* renderer, TerrainChunkInfo* chunk, double progress)
 {
     terrainTessellateChunk(renderer, chunk, chunk->detail_hint);
+    renderer->render_progress = 0.05 * progress;
     return !renderer->render_interrupt;
 }
 
 void terrainRenderSurface(Renderer* renderer)
 {
+    renderer->render_progress = 0.0;
     terrainGetTessellationInfo(renderer, _standardTessellationCallback, 0);
+    renderer->render_progress = 0.05;
 }
