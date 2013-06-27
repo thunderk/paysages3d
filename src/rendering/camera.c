@@ -5,6 +5,7 @@
 #include "render.h"
 #include "scenery.h"
 #include "tools.h"
+#include "tools/boundingbox.h"
 
 struct CameraDefinition
 {
@@ -361,58 +362,49 @@ Vector3 cameraUnproject(CameraDefinition* camera, Vector3 point)
     renderPushQuad(&v1, &v2, &v3, &v4);
 }*/
 
-static inline void _updateBox(Vector3* point, double* xmin, double* xmax, double* ymin, double* ymax, double* zmax)
-{
-    *xmin = (*xmin < point->x) ? *xmin : point->x;
-    *ymin = (*ymin < point->y) ? *ymin : point->y;
-
-    *xmax = (*xmax > point->x) ? *xmax : point->x;
-    *ymax = (*ymax > point->y) ? *ymax : point->y;
-    *zmax = (*zmax > point->z) ? *zmax : point->z;
-}
-
 int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, double ysize, double zsize)
 {
-    Vector3 projected;
-    double xmin, xmax, ymin, ymax, zmax;
+    BoundingBox box;
 
-    center.x -= xsize / 2.0;
-    center.y -= ysize / 2.0;
-    center.z -= zsize / 2.0;
-    projected = cameraProject(camera, center);
-    xmin = xmax = projected.x;
-    ymin = ymax = projected.y;
-    zmax = projected.z;
+    boundingBoxReset(&box);
 
-    center.x += xsize;
-    projected = cameraProject(camera, center);
-    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+    boundingBoxPushPoint(&box, v3Add(center, v3(-xsize, -ysize, -zsize)));
+    boundingBoxPushPoint(&box, v3Add(center, v3(xsize, ysize, zsize)));
 
-    center.z += zsize;
-    projected = cameraProject(camera, center);
-    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+    return cameraIsUnprojectedBoxInView(camera, &box);
+}
 
-    center.x -= xsize;
-    projected = cameraProject(camera, center);
-    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+int cameraIsUnprojectedBoxInView(CameraDefinition* camera, BoundingBox* box)
+{
+    BoundingBox projected;
 
-    center.y += ysize;
-    projected = cameraProject(camera, center);
-    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+    boundingBoxReset(&projected);
 
-    center.x += xsize;
-    projected = cameraProject(camera, center);
-    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+    boundingBoxPushPoint(&projected, cameraProject(camera, v3(box->xmin, box->ymin, box->zmin)));
+    boundingBoxPushPoint(&projected, cameraProject(camera, v3(box->xmax, box->ymin, box->zmin)));
+    boundingBoxPushPoint(&projected, cameraProject(camera, v3(box->xmin, box->ymax, box->zmin)));
+    boundingBoxPushPoint(&projected, cameraProject(camera, v3(box->xmax, box->ymax, box->zmin)));
+    boundingBoxPushPoint(&projected, cameraProject(camera, v3(box->xmin, box->ymin, box->zmax)));
+    boundingBoxPushPoint(&projected, cameraProject(camera, v3(box->xmax, box->ymin, box->zmax)));
+    boundingBoxPushPoint(&projected, cameraProject(camera, v3(box->xmin, box->ymax, box->zmax)));
+    boundingBoxPushPoint(&projected, cameraProject(camera, v3(box->xmax, box->ymax, box->zmax)));
 
-    center.z -= zsize;
-    projected = cameraProject(camera, center);
-    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+    return cameraIsProjectedBoxInView(camera, &projected);
+}
 
-    center.x -= xsize;
-    projected = cameraProject(camera, center);
-    _updateBox(&projected, &xmin, &xmax, &ymin, &ymax, &zmax);
+int cameraIsProjectedBoxInView(CameraDefinition* camera, BoundingBox* box)
+{
+    if (box->xmin <= camera->width && box->xmax >= 0.0 && box->ymin <= camera->height && box->ymax >= 0.0 && box->zmax >= camera->perspective.znear)
+    {
+        double dx = box->xmax - box->xmin;
+        double dy = box->ymax - box->ymin;
 
-    return xmin <= camera->width && xmax >= 0.0 && ymin <= camera->height && ymax >= 0.0 && zmax >= camera->perspective.znear;
+        return (int)ceil(dx) * (int)ceil(dy);
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 int cameraTransitionToAnother(CameraDefinition* current, CameraDefinition* wanted, double factor)

@@ -3,6 +3,7 @@
 
 #include "tools/pack.h"
 #include "tools/euclid.h"
+#include "tools/boundingbox.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -57,6 +58,8 @@ Vector3 cameraProject(CameraDefinition* camera, Vector3 point);
 Vector3 cameraUnproject(CameraDefinition* camera, Vector3 point);
 /*void cameraPushOverlay(CameraDefinition* camera, Color col, f_RenderFragmentCallback callback);*/
 int cameraIsBoxInView(CameraDefinition* camera, Vector3 center, double xsize, double ysize, double zsize);
+int cameraIsUnprojectedBoxInView(CameraDefinition* camera, BoundingBox* box);
+int cameraIsProjectedBoxInView(CameraDefinition* camera, BoundingBox* box);
 
 int cameraTransitionToAnother(CameraDefinition* current, CameraDefinition* wanted, double factor);
 
