@@ -84,7 +84,7 @@ void terrainTessellateChunk(Renderer* renderer, TerrainChunkInfo* chunk, int det
     }
 }
 
-static void _getChunk(Renderer* renderer, TerrainChunkInfo* chunk, double x, double z, double size, double water_height, int displaced)
+static void _getChunk(Renderer* renderer, TerrainChunkInfo* chunk, double x, double z, double size, int displaced)
 {
     chunk->point_nw = renderer->terrain->getResult(renderer, x, z, 1, displaced).location;
     chunk->point_sw = renderer->terrain->getResult(renderer, x, z + size, 1, displaced).location;
@@ -159,31 +159,29 @@ void terrainGetTessellationInfo(Renderer* renderer, FuncTerrainTessellationCallb
     double cx = cam.x - fmod(cam.x, base_chunk_size);
     double cz = cam.z - fmod(cam.x, base_chunk_size);
 
-    double water_height = renderer->water->getHeightInfo(renderer).min_height;
-
     while (radius_int < 5000.0)
     {
         for (i = 0; i < chunk_count - 1; i++)
         {
-            _getChunk(renderer, &chunk, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size, water_height, displaced);
+            _getChunk(renderer, &chunk, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size, displaced);
             if (!callback(renderer, &chunk, progress))
             {
                 return;
             }
 
-            _getChunk(renderer, &chunk, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size, water_height, displaced);
+            _getChunk(renderer, &chunk, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size, displaced);
             if (!callback(renderer, &chunk, progress))
             {
                 return;
             }
 
-            _getChunk(renderer, &chunk, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size, water_height, displaced);
+            _getChunk(renderer, &chunk, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size, displaced);
             if (!callback(renderer, &chunk, progress))
             {
                 return;
             }
 
-            _getChunk(renderer, &chunk, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size, water_height, displaced);
+            _getChunk(renderer, &chunk, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size, displaced);
             if (!callback(renderer, &chunk, progress))
             {
                 return;
