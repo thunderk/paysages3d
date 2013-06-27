@@ -125,7 +125,7 @@ static void _getChunk(Renderer* renderer, TerrainChunkInfo* chunk, double x, dou
     int coverage = cameraIsUnprojectedBoxInView(renderer->render_camera, &box);
     if (coverage > 0)
     {
-        chunk->detail_hint = (int)ceil(sqrt((double)coverage) / (double)(21 - 2 * renderer->render_quality));
+        chunk->detail_hint = (int)ceil(sqrt((double)coverage) / (double)(25 - 2 * renderer->render_quality));
         if (chunk->detail_hint > 5 * renderer->render_quality)
         {
             chunk->detail_hint = 5 * renderer->render_quality;
