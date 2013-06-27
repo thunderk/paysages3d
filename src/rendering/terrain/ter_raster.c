@@ -3,6 +3,8 @@
 #include "ter_raster.h"
 
 #include <stdlib.h>
+#include <math.h>
+#include "../tools/boundingbox.h"
 #include "../renderer.h"
 
 /*
@@ -61,8 +63,25 @@ static void _renderQuad(Renderer* renderer, double x, double z, double size, dou
 
 void terrainTessellateChunk(Renderer* renderer, TerrainChunkInfo* chunk, int detail)
 {
-    /* TODO Tessellate ! */
-    _renderQuad(renderer, chunk->point_nw.x, chunk->point_nw.z, chunk->point_ne.x - chunk->point_nw.x, renderer->water->getHeightInfo(renderer).min_height);
+    if (detail < 1)
+    {
+        return;
+    }
+
+    double water_height = renderer->water->getHeightInfo(renderer).min_height;
+
+    double startx = chunk->point_nw.x;
+    double startz = chunk->point_nw.z;
+    double size = (chunk->point_ne.x - chunk->point_nw.x) / (double)detail;
+    int i, j;
+
+    for (i = 0; i < detail; i++)
+    {
+        for (j = 0; j < detail; j++)
+        {
+            _renderQuad(renderer, startx + (double)i * size, startz + (double)j * size, size, water_height);
+        }
+    }
 }
 
 static void _getChunk(Renderer* renderer, TerrainChunkInfo* chunk, double x, double z, double size, double water_height, int displaced)
@@ -72,15 +91,49 @@ static void _getChunk(Renderer* renderer, TerrainChunkInfo* chunk, double x, dou
     chunk->point_se = renderer->terrain->getResult(renderer, x + size, z + size, 1, displaced).location;
     chunk->point_ne = renderer->terrain->getResult(renderer, x + size, z, 1, displaced).location;
 
-    /* TODO If displaced == 0, the detail_hint may be inaccurate (water and screen culling) */
-
-    if (chunk->point_nw.y >= water_height || chunk->point_sw.y >= water_height || chunk->point_se.y >= water_height || chunk->point_ne.y >= water_height)
+    double displacement_power;
+    if (displaced)
     {
-        /* TODO */
-        chunk->detail_hint = 5;
+        displacement_power = 0.0;
     }
     else
     {
+        displacement_power = texturesGetMaximalDisplacement(renderer->textures->definition);
+    }
+
+    BoundingBox box;
+    boundingBoxReset(&box);
+    if (displacement_power > 0.0)
+    {
+        boundingBoxPushPoint(&box, v3Add(chunk->point_nw, v3(-displacement_power, displacement_power, -displacement_power)));
+        boundingBoxPushPoint(&box, v3Add(chunk->point_nw, v3(-displacement_power, -displacement_power, -displacement_power)));
+        boundingBoxPushPoint(&box, v3Add(chunk->point_sw, v3(-displacement_power, displacement_power, displacement_power)));
+        boundingBoxPushPoint(&box, v3Add(chunk->point_sw, v3(-displacement_power, -displacement_power, displacement_power)));
+        boundingBoxPushPoint(&box, v3Add(chunk->point_se, v3(displacement_power, displacement_power, displacement_power)));
+        boundingBoxPushPoint(&box, v3Add(chunk->point_se, v3(displacement_power, -displacement_power, displacement_power)));
+        boundingBoxPushPoint(&box, v3Add(chunk->point_ne, v3(displacement_power, displacement_power, -displacement_power)));
+        boundingBoxPushPoint(&box, v3Add(chunk->point_ne, v3(displacement_power, -displacement_power, -displacement_power)));
+    }
+    else
+    {
+        boundingBoxPushPoint(&box, chunk->point_nw);
+        boundingBoxPushPoint(&box, chunk->point_sw);
+        boundingBoxPushPoint(&box, chunk->point_se);
+        boundingBoxPushPoint(&box, chunk->point_ne);
+    }
+
+    int coverage = cameraIsUnprojectedBoxInView(renderer->render_camera, &box);
+    if (coverage > 0)
+    {
+        chunk->detail_hint = (int)ceil(sqrt((double)coverage) / (double)(21 - 2 * renderer->render_quality));
+        if (chunk->detail_hint > 5 * renderer->render_quality)
+        {
+            chunk->detail_hint = 5 * renderer->render_quality;
+        }
+    }
+    else
+    {
+        /* Not in view */
         chunk->detail_hint = -1;
     }
 }
@@ -90,9 +143,6 @@ void terrainGetTessellationInfo(Renderer* renderer, FuncTerrainTessellationCallb
     TerrainChunkInfo chunk;
     int chunk_factor, chunk_count, i;
     Vector3 cam = renderer->getCameraLocation(renderer, VECTOR_ZERO);
-    double cx = cam.x;
-    double cz = cam.z;
-    double water_height;
     double progress;
     double radius_int, radius_ext;
     double base_chunk_size, chunk_size;
@@ -106,7 +156,10 @@ void terrainGetTessellationInfo(Renderer* renderer, FuncTerrainTessellationCallb
     chunk_size = base_chunk_size;
     progress = 0.0; /* TODO */
 
-    water_height = renderer->water->getHeightInfo(renderer).min_height;
+    double cx = cam.x - fmod(cam.x, base_chunk_size);
+    double cz = cam.z - fmod(cam.x, base_chunk_size);
+
+    double water_height = renderer->water->getHeightInfo(renderer).min_height;
 
     while (radius_int < 5000.0)
     {
