@@ -26,5 +26,7 @@ void terrainAutoPreset(TerrainDefinition* definition, TerrainPreset preset)
         ;
     }
 
+    terrainClearPainting(definition->height_map);
+
     TerrainDefinitionClass.validate(definition);
 }
