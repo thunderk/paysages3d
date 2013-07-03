@@ -3,7 +3,7 @@
 #ifndef _PAYSAGES_ATMOSPHERE_PRIVATE_H_
 #define _PAYSAGES_ATMOSPHERE_PRIVATE_H_
 
-#define SPHERE_SIZE 10000.0
+#define SPHERE_SIZE 20000.0
 
 /* Factor to convert software units to kilometers */
 #define WORLD_SCALING 0.05

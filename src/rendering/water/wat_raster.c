@@ -54,7 +54,7 @@ void waterRenderSurface(Renderer* renderer)
     radius_ext = base_chunk_size;
     chunk_size = base_chunk_size;
 
-    while (radius_int < 5000.0)
+    while (radius_int < 20000.0)
     {
         if (!renderer->addRenderProgress(renderer, 0.0))
         {

@@ -159,9 +159,9 @@ void terrainGetTessellationInfo(Renderer* renderer, FuncTerrainTessellationCallb
     double cx = cam.x - fmod(cam.x, base_chunk_size);
     double cz = cam.z - fmod(cam.x, base_chunk_size);
 
-    while (radius_int < 5000.0)
+    while (radius_int < 20000.0)
     {
-        progress = radius_int / 5000.0;
+        progress = radius_int / 20000.0;
         for (i = 0; i < chunk_count - 1; i++)
         {
             _getChunk(renderer, &chunk, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size, displaced);
