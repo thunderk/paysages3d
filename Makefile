@@ -26,6 +26,9 @@ clean:
 	rm -f ${BUILDPATH}/libpaysages_exploring.so
 	rm -f ${BUILDPATH}/libpaysages_rendering.so
 
+docs:
+	doxygen Doxyfile
+
 debug:
 	make BUILDMODE=debug all
 
