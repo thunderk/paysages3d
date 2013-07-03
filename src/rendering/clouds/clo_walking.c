@@ -35,9 +35,14 @@ struct CloudsWalker
     double cursor;
     double max_length;
     double step_size;
+    int skip_void;
 
     int started;
     CloudWalkerStepInfo last_segment;
+
+    int subdivision_current;
+    int subdivision_count;
+    CloudWalkerStepInfo subdivision_parent;
 
     CloudWalkingNextAction next_action;
 };
@@ -107,8 +112,10 @@ CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudsLayerDefinition* laye
     result->max_length = v3Norm(result->diff);
     result->cursor = 0.0;
     result->step_size = 1.0;
+    result->skip_void = 0;
 
     result->started = 0;
+    result->subdivision_count = 0;
     result->last_segment.renderer = renderer;
     result->last_segment.layer = layer;
 
@@ -133,6 +140,11 @@ void cloudsWalkerSetStepSize(CloudsWalker* walker, double step)
         /* TODO Automatic settings (using rendering quality and cloud feature size) */
         walker->step_size = 1.0;
     }
+}
+
+void cloudsWalkerSetVoidSkipping(CloudsWalker* walker, int enabled)
+{
+    walker->skip_void = enabled;
 }
 
 static void _getPoint(CloudsWalker* walker, double cursor, CloudWalkerPoint* out_point)
@@ -187,52 +199,114 @@ static void _refineSegment(CloudsWalker* walker, double start_cursor, double sta
 
 int cloudsWalkerPerformStep(CloudsWalker* walker)
 {
+    int result = -1;
+
     if (!walker->started)
     {
         _getPoint(walker, 0.0, &walker->last_segment.end);
         walker->started = 1;
     }
 
-    if (walker->next_action.order == CLOUD_WALKING_STOP || walker->cursor >= walker->max_length)
+    while (result < 0)
     {
-        walker->next_action.order = CLOUD_WALKING_STOP;
-        return 0;
+        if (walker->next_action.order == CLOUD_WALKING_STOP || walker->cursor >= walker->max_length)
+        {
+            walker->next_action.order = CLOUD_WALKING_STOP;
+            result = 0;
+        }
+        else if (walker->subdivision_count > 0)
+        {
+            if (walker->subdivision_current >= walker->subdivision_count)
+            {
+                /* Exit subdivision */
+                walker->subdivision_count = 0;
+                walker->last_segment = walker->subdivision_parent;
+                walker->next_action.order = CLOUD_WALKING_CONTINUE;
+                walker->cursor = walker->subdivision_parent.end.distance_from_start;
+
+                /* Recursive call to progress */
+                result = cloudsWalkerPerformStep(walker);
+            }
+            else
+            {
+                /* Continue subdivision */
+                walker->last_segment.start = walker->last_segment.end;
+
+                walker->cursor += walker->subdivision_parent.length / (double)walker->subdivision_count;
+
+                _getPoint(walker, walker->cursor, &walker->last_segment.end);
+                walker->last_segment.length = walker->subdivision_parent.length / (double)walker->subdivision_count;
+                walker->last_segment.refined = 0;
+                walker->last_segment.subdivided = walker->subdivision_count;
+
+                walker->subdivision_current++;
+
+                result = 1;
+            }
+        }
+        else if (walker->next_action.order == CLOUD_WALKING_CONTINUE)
+        {
+            /* TODO Limit to lookup end */
+            walker->last_segment.start = walker->last_segment.end;
+
+            walker->cursor += walker->step_size;
+
+            _getPoint(walker, walker->cursor, &walker->last_segment.end);
+            walker->last_segment.length = walker->step_size;
+            walker->last_segment.refined = 0;
+            walker->last_segment.subdivided = 0;
+
+            result = 1;
+        }
+        else if (walker->next_action.order == CLOUD_WALKING_REFINE)
+        {
+            /* Refine segment with dichotomy */
+            _refineSegment(walker,
+                           walker->last_segment.start.distance_from_start,
+                           walker->last_segment.start.global_density,
+                           walker->last_segment.end.distance_from_start,
+                           walker->last_segment.end.global_density,
+                           walker->next_action.precision,
+                           (walker->last_segment.start.global_density == 0.0) ? (&walker->last_segment.start) : (&walker->last_segment.end));
+            walker->last_segment.length = walker->last_segment.end.distance_from_start - walker->last_segment.start.distance_from_start;
+            walker->last_segment.refined = 1;
+            walker->last_segment.subdivided = 0;
+
+            walker->next_action.order = CLOUD_WALKING_CONTINUE;
+
+            result = 1;
+        }
+        else if (walker->next_action.order == CLOUD_WALKING_SUBDIVIDE)
+        {
+            /* Starting subdivision */
+            walker->subdivision_count = walker->next_action.max_segments;
+            walker->subdivision_current = 0;
+            walker->subdivision_parent = walker->last_segment;
+            walker->cursor = walker->subdivision_parent.start.distance_from_start;
+
+            /* Copy parent segment start, to be used as first subdivided segment start */
+            walker->last_segment.end = walker->subdivision_parent.start;
+
+            /* Recursive call to get first subdivided segment */
+            cloudsWalkerPerformStep(walker);
+
+            result = 1;
+        }
+        else
+        {
+            /* Unknown order... */
+            result = 0;
+        }
+
+        /* Check if we need to loop */
+        if (result > 0 && walker->skip_void && walker->last_segment.start.global_density == 0.0 && walker->last_segment.end.global_density == 0.0)
+        {
+            /* Last segment is considered void, and skipping is enabled */
+            result = -1;
+        }
     }
-    else if (walker->next_action.order == CLOUD_WALKING_CONTINUE)
-    {
-        /* TODO Limit to end */
-        walker->last_segment.start = walker->last_segment.end;
 
-        walker->cursor += walker->step_size;
-
-        _getPoint(walker, walker->cursor, &walker->last_segment.end);
-        walker->last_segment.length = walker->step_size;
-        walker->last_segment.refined = 0;
-
-        return 1;
-    }
-    else if (walker->next_action.order == CLOUD_WALKING_REFINE)
-    {
-        /* Refine segment with dichotomy */
-        _refineSegment(walker,
-                       walker->last_segment.start.distance_from_start,
-                       walker->last_segment.start.global_density,
-                       walker->last_segment.end.distance_from_start,
-                       walker->last_segment.end.global_density,
-                       walker->next_action.precision,
-                       (walker->last_segment.start.global_density == 0.0) ? (&walker->last_segment.start) : (&walker->last_segment.end));
-        walker->last_segment.length = walker->last_segment.end.distance_from_start - walker->last_segment.start.distance_from_start;
-        walker->last_segment.refined = 1;
-
-        walker->next_action.order = CLOUD_WALKING_CONTINUE;
-
-        return 1;
-    }
-    else
-    {
-        /* TODO */
-        return 0;
-    }
+    return result;
 }
 
 void cloudsWalkerOrderStop(CloudsWalker* walker)
@@ -242,14 +316,20 @@ void cloudsWalkerOrderStop(CloudsWalker* walker)
 
 void cloudsWalkerOrderRefine(CloudsWalker* walker, double precision)
 {
-    walker->next_action.order = CLOUD_WALKING_REFINE;
-    walker->next_action.precision = precision;
+    if (walker->subdivision_count == 0)
+    {
+        walker->next_action.order = CLOUD_WALKING_REFINE;
+        walker->next_action.precision = precision;
+    }
 }
 
 void cloudsWalkerOrderSubdivide(CloudsWalker* walker, double max_segments)
 {
-    walker->next_action.order = CLOUD_WALKING_SUBDIVIDE;
-    walker->next_action.max_segments = max_segments;
+    if (walker->subdivision_count == 0)
+    {
+        walker->next_action.order = CLOUD_WALKING_SUBDIVIDE;
+        walker->next_action.max_segments = max_segments;
+    }
 }
 
 CloudWalkerStepInfo* cloudsWalkerGetLastSegment(CloudsWalker* walker)

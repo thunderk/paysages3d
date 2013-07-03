@@ -33,8 +33,7 @@ typedef struct
     double length;
 
     int refined;
-    /*int subdivision_level;
-    double precision_asked;*/
+    int subdivided;
 
     void* data;
 } CloudWalkerStepInfo;
@@ -80,6 +79,14 @@ void cloudsDeleteWalker(CloudsWalker* walker);
 void cloudsWalkerSetStepSize(CloudsWalker* walker, double step);
 
 /**
+ * Set the void skipping mode.
+ *
+ * @param walker The walker to configure
+ * @param enabled 1 to enable the void skipping, 0 to disable
+ */
+void cloudsWalkerSetVoidSkipping(CloudsWalker* walker, int enabled);
+
+/**
  * Perform a single step.
  *
  * @param walker The walker to use
@@ -108,6 +115,8 @@ void cloudsWalkerOrderRefine(CloudsWalker* walker, double precision);
 /**
  * Order the walker to subdivide the previous segment in smaller segments.
  *
+ * Next steps will yield subdivided segments. Once subdivided segments have been processed, normal walking
+ * will resume automatically.
  * @param walker The walker to use
  * @param max_segments Maximal number of segments
  */

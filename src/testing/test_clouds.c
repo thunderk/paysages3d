@@ -215,7 +215,7 @@ START_TEST(test_clouds_walking)
     renderer->render_quality = 8;
     renderer->clouds->getLayerDensity = _getLayerDensitySinX;
 
-    CloudsWalker* walker = cloudsCreateWalker(renderer, layer, v3(-0.4, 0.0, 0.0), v3(10.0, 0.0, 0.0));
+    CloudsWalker* walker = cloudsCreateWalker(renderer, layer, v3(-0.4, 0.0, 0.0), v3(1.75, 0.0, 0.0));
     CloudWalkerStepInfo* segment;
     int result;
 
@@ -225,6 +225,7 @@ START_TEST(test_clouds_walking)
     segment = cloudsWalkerGetLastSegment(walker);
     ck_assert_int_eq(result, 1);
     ck_assert_false(segment->refined);
+    ck_assert_false(segment->subdivided);
     ck_assert_double_eq(segment->length, 0.3);
     ck_assert_double_eq(segment->start.distance_from_start, 0.0);
     ck_assert_vector_values(segment->start.location, -0.4, 0.0, 0.0);
@@ -238,6 +239,7 @@ START_TEST(test_clouds_walking)
     segment = cloudsWalkerGetLastSegment(walker);
     ck_assert_int_eq(result, 1);
     ck_assert_false(segment->refined);
+    ck_assert_false(segment->subdivided);
     ck_assert_double_eq(segment->length, 0.3);
     ck_assert_double_eq(segment->start.distance_from_start, 0.3);
     ck_assert_vector_values(segment->start.location, -0.1, 0.0, 0.0);
@@ -252,6 +254,7 @@ START_TEST(test_clouds_walking)
     segment = cloudsWalkerGetLastSegment(walker);
     ck_assert_int_eq(result, 1);
     ck_assert_true(segment->refined);
+    ck_assert_false(segment->subdivided);
     ck_assert_double_in_range(segment->length, 0.19, 0.20);
     ck_assert_double_in_range(segment->start.distance_from_start, 0.40, 0.41);
     ck_assert_double_in_range(segment->start.location.x, 0.0, 0.01);
@@ -266,6 +269,7 @@ START_TEST(test_clouds_walking)
     segment = cloudsWalkerGetLastSegment(walker);
     ck_assert_int_eq(result, 1);
     ck_assert_false(segment->refined);
+    ck_assert_false(segment->subdivided);
     ck_assert_double_eq(segment->length, 0.4);
     ck_assert_double_eq(segment->start.distance_from_start, 0.6);
     ck_assert_vector_values(segment->start.location, 0.2, 0.0, 0.0);
@@ -280,13 +284,127 @@ START_TEST(test_clouds_walking)
     segment = cloudsWalkerGetLastSegment(walker);
     ck_assert_int_eq(result, 1);
     ck_assert_true(segment->refined);
+    ck_assert_false(segment->subdivided);
     ck_assert_double_in_range(segment->length, 0.3, 0.301);
     ck_assert_double_eq(segment->start.distance_from_start, 0.6);
     ck_assert_vector_values(segment->start.location, 0.2, 0.0, 0.0);
     ck_assert_double_gt(segment->start.global_density, 0.9);
     ck_assert_double_in_range(segment->end.distance_from_start, 0.9, 0.901);
     ck_assert_double_in_range(segment->end.location.x, 0.5, 0.501);
-    ck_assert_double_lt(segment->end.global_density, 0.1);
+    ck_assert_double_eq(segment->end.global_density, 0.0);
+
+    /* Find next entry point by skipping blank */
+    cloudsWalkerSetVoidSkipping(walker, 1);
+    cloudsWalkerSetStepSize(walker, 0.2);
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_false(segment->refined);
+    ck_assert_false(segment->subdivided);
+    ck_assert_double_eq(segment->length, 0.2);
+    ck_assert_double_in_range(segment->start.distance_from_start, 1.2, 1.4);
+    ck_assert_double_in_range(segment->start.location.x, 0.8, 1.0);
+    ck_assert_double_eq(segment->start.global_density, 0.0);
+    ck_assert_double_in_range(segment->end.distance_from_start, 1.4, 1.6);
+    ck_assert_double_in_range(segment->end.location.x, 1.0, 1.2);
+    ck_assert_double_gt(segment->end.global_density, 0.0);
+
+    /* Refine entry point */
+    cloudsWalkerOrderRefine(walker, 0.01);
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_true(segment->refined);
+    ck_assert_false(segment->subdivided);
+    ck_assert_double_in_range(segment->length, 0.0, 0.2);
+    ck_assert_double_in_range(segment->start.distance_from_start, 1.4, 1.41);
+    ck_assert_double_in_range(segment->start.location.x, 1.0, 1.01);
+    ck_assert_double_gt(segment->start.global_density, 0.0);
+    ck_assert_double_in_range(segment->end.distance_from_start, 1.41, 1.6);
+    ck_assert_double_in_range(segment->end.location.x, 1.01, 1.2);
+    ck_assert_double_gt(segment->end.global_density, 0.0);
+
+    /* Subdivide entry for more detail */
+    CloudWalkerStepInfo parent = *segment;
+    cloudsWalkerOrderSubdivide(walker, 3);
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_false(segment->refined);
+    ck_assert_true(segment->subdivided);
+    ck_assert_double_eq(segment->length, parent.length / 3.0);
+    ck_assert_double_eq(segment->start.distance_from_start, parent.start.distance_from_start);
+    ck_assert_double_eq(segment->start.location.x, parent.start.location.x);
+    ck_assert_double_eq(segment->end.distance_from_start, parent.start.distance_from_start + segment->length);
+    ck_assert_double_eq(segment->end.location.x, parent.start.location.x + segment->length);
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_false(segment->refined);
+    ck_assert_true(segment->subdivided);
+    ck_assert_double_eq(segment->length, parent.length / 3.0);
+    ck_assert_double_eq(segment->start.distance_from_start, parent.start.distance_from_start + segment->length);
+    ck_assert_double_eq(segment->start.location.x, parent.start.location.x + segment->length);
+    ck_assert_double_eq(segment->end.distance_from_start, parent.start.distance_from_start + 2.0 * segment->length);
+    ck_assert_double_eq(segment->end.location.x, parent.start.location.x + 2.0 * segment->length);
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_false(segment->refined);
+    ck_assert_true(segment->subdivided);
+    ck_assert_double_eq(segment->length, parent.length / 3.0);
+    ck_assert_double_eq(segment->start.distance_from_start, parent.start.distance_from_start + 2.0 * segment->length);
+    ck_assert_double_eq(segment->start.location.x, parent.start.location.x + 2.0 * segment->length);
+    ck_assert_double_eq(segment->end.distance_from_start, parent.end.distance_from_start);
+    ck_assert_double_eq(segment->end.location.x, parent.end.location.x);
+
+    /* After subdividing, normal walking resumes */
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_false(segment->refined);
+    ck_assert_false(segment->subdivided);
+    ck_assert_double_eq(segment->length, 0.2);
+    ck_assert_double_in_range(segment->start.distance_from_start, 1.41, 1.6);
+    ck_assert_double_in_range(segment->start.location.x, 1.01, 1.2);
+    ck_assert_double_gt(segment->start.global_density, 0.0);
+    ck_assert_double_in_range(segment->end.distance_from_start, 1.61, 1.8);
+    ck_assert_double_in_range(segment->end.location.x, 1.21, 1.4);
+    ck_assert_double_gt(segment->end.global_density, 0.0);
+
+    /* Exiting cloud again */
+    cloudsWalkerSetStepSize(walker, 0.3);
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_false(segment->refined);
+    ck_assert_false(segment->subdivided);
+    ck_assert_double_eq(segment->length, 0.3);
+    ck_assert_double_in_range(segment->start.distance_from_start, 1.61, 1.8);
+    ck_assert_double_in_range(segment->start.location.x, 1.21, 1.4);
+    ck_assert_double_gt(segment->start.global_density, 0.0);
+    ck_assert_double_in_range(segment->end.distance_from_start, 1.91, 2.1);
+    ck_assert_double_in_range(segment->end.location.x, 1.5, 1.7);
+    ck_assert_double_eq(segment->end.global_density, 0.0);
+
+    /* A step in the void without skipping */
+    cloudsWalkerSetVoidSkipping(walker, 0);
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_false(segment->refined);
+    ck_assert_false(segment->subdivided);
+    ck_assert_double_eq(segment->length, 0.3);
+    ck_assert_double_in_range(segment->start.distance_from_start, 1.91, 2.1);
+    ck_assert_double_in_range(segment->start.location.x, 1.5, 1.7);
+    ck_assert_double_eq(segment->start.global_density, 0.0);
+    ck_assert_double_in_range(segment->end.distance_from_start, 2.21, 2.4);
+    ck_assert_double_in_range(segment->end.location.x, 1.8, 2.0);
+    ck_assert_double_eq(segment->end.global_density, 0.0);
+
+    /* Walker reached the lookup segment's end, it should stop */
+    result = cloudsWalkerPerformStep(walker);
+    ck_assert_int_eq(result, 0);
 
     /* Clean up */
     cloudsDeleteWalker(walker);
