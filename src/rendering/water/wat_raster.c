@@ -38,8 +38,6 @@ void waterRenderSurface(Renderer* renderer)
 {
     int chunk_factor, chunk_count, i;
     Vector3 cam = renderer->getCameraLocation(renderer, VECTOR_ZERO);
-    double cx = cam.x;
-    double cz = cam.z;
     double radius_int, radius_ext, base_chunk_size, chunk_size;
 
     base_chunk_size = 2.0 / (double)renderer->render_quality;
@@ -53,6 +51,9 @@ void waterRenderSurface(Renderer* renderer)
     radius_int = 0.0;
     radius_ext = base_chunk_size;
     chunk_size = base_chunk_size;
+
+    double cx = cam.x - fmod(cam.x, base_chunk_size);
+    double cz = cam.z - fmod(cam.x, base_chunk_size);
 
     while (radius_int < 20000.0)
     {
