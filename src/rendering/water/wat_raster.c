@@ -2,8 +2,10 @@
 #include "private.h"
 
 #include <stdlib.h>
+#include <math.h>
 #include "../renderer.h"
 #include "../tools.h"
+#include "../tools/parallel.h"
 
 static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* data)
 {
@@ -34,8 +36,41 @@ static void _renderQuad(Renderer* renderer, double x, double z, double size)
     renderer->pushQuad(renderer, v1, v2, v3, v4, _postProcessFragment, NULL);
 }
 
+typedef struct
+{
+    Renderer* renderer;
+    int i;
+    double cx;
+    double cz;
+    double radius_int;
+    double chunk_size;
+    double radius_ext;
+} ParallelRasterInfo;
+
+static int _parallelJobCallback(ParallelQueue* queue, int job_id, void* data, int stopping)
+{
+    ParallelRasterInfo* info = (ParallelRasterInfo*)data;
+    UNUSED(queue);
+    UNUSED(job_id);
+
+    if (!stopping)
+    {
+        _renderQuad(info->renderer, info->cx - info->radius_ext + info->chunk_size * info->i, info->cz - info->radius_ext, info->chunk_size);
+        _renderQuad(info->renderer, info->cx + info->radius_int, info->cz - info->radius_ext + info->chunk_size * info->i, info->chunk_size);
+        _renderQuad(info->renderer, info->cx + info->radius_int - info->chunk_size * info->i, info->cz + info->radius_int, info->chunk_size);
+        _renderQuad(info->renderer, info->cx - info->radius_ext, info->cz + info->radius_int - info->chunk_size * info->i, info->chunk_size);
+    }
+
+    free(data);
+    return 0;
+}
+
 void waterRenderSurface(Renderer* renderer)
 {
+    ParallelRasterInfo* info;
+    ParallelQueue* queue;
+    queue = parallelQueueCreate(0);
+
     int chunk_factor, chunk_count, i;
     Vector3 cam = renderer->getCameraLocation(renderer, VECTOR_ZERO);
     double radius_int, radius_ext, base_chunk_size, chunk_size;
@@ -64,10 +99,20 @@ void waterRenderSurface(Renderer* renderer)
 
         for (i = 0; i < chunk_count - 1; i++)
         {
-            _renderQuad(renderer, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size);
-            _renderQuad(renderer, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size);
-            _renderQuad(renderer, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size);
-            _renderQuad(renderer, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size);
+            info = malloc(sizeof(ParallelRasterInfo));
+
+            info->renderer = renderer;
+            info->cx = cx;
+            info->cz = cz;
+            info->i = i;
+            info->radius_int = radius_int;
+            info->radius_ext = radius_ext;
+            info->chunk_size = chunk_size;
+
+            if (!parallelQueueAddJob(queue, _parallelJobCallback, info))
+            {
+                free(info);
+            }
         }
 
         if (radius_int > 20.0 && chunk_count % 64 == 0 && (double)chunk_factor < radius_int / 20.0)
@@ -80,4 +125,7 @@ void waterRenderSurface(Renderer* renderer)
         radius_int = radius_ext;
         radius_ext += chunk_size;
     }
+
+    parallelQueueWait(queue);
+    parallelQueueDelete(queue);
 }
