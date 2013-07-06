@@ -47,11 +47,9 @@ Technology Preview 4 :
 - Use bicubic interpolation for antialiasing.
 - Allow for larger renders/antialias (will need several two-pass chunks).
 - Add a progress indicator on previews.
-- Multi threaded first pass.
 - Mark modified tabs and ask for losing modifications (idem for layers).
 - Fix potential holes in land rendering.
 - Progressive final render (increasing resolution, for second pass only).
-- Water and terrain LOD moves with the camera, fix it like in the wanderer.
 - Improve 3d explorer
    => Restore LOD and intelligent poly count (and raise max tessellation)
    => Better handling of high altitude

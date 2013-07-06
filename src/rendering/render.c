@@ -51,12 +51,8 @@ struct RenderArea
     int pixel_count;
     int pixel_done;
     RenderFragment* pixels;
-    ScanPoint* scanline_up;
-    ScanPoint* scanline_down;
     int fragment_callbacks_count;
     FragmentCallback fragment_callbacks[64];
-    int scanline_left;
-    int scanline_right;
     Color background_color;
     volatile int dirty_left;
     volatile int dirty_right;
@@ -69,7 +65,16 @@ struct RenderArea
     RenderCallbackUpdate callback_update;
 };
 
-typedef struct {
+typedef struct
+{
+    ScanPoint* up;
+    ScanPoint* down;
+    int left;
+    int right;
+} RenderScanlines;
+
+typedef struct
+{
     int startx;
     int endx;
     int starty;
@@ -109,10 +114,6 @@ RenderArea* renderCreateArea(Renderer* renderer)
     result->pixel_count = 1;
     result->pixels = malloc(sizeof(RenderFragment));
     result->fragment_callbacks_count = 0;
-    result->scanline_up = malloc(sizeof(ScanPoint));
-    result->scanline_down = malloc(sizeof(ScanPoint));
-    result->scanline_left = 0;
-    result->scanline_right = 0;
     result->background_color = COLOR_TRANSPARENT;
     result->dirty_left = 1;
     result->dirty_right = -1;
@@ -132,8 +133,6 @@ void renderDeleteArea(RenderArea* area)
     colorProfileDelete(area->hdr_mapping);
     mutexDestroy(area->lock);
     free(area->pixels);
-    free(area->scanline_up);
-    free(area->scanline_down);
     free(area);
 }
 
@@ -156,11 +155,6 @@ void renderSetParams(RenderArea* area, RenderParams params)
     area->pixels = realloc(area->pixels, sizeof(RenderFragment) * width * height);
     area->pixel_count = width * height;
 
-    area->scanline_left = 0;
-    area->scanline_right = width - 1;
-    area->scanline_up = realloc(area->scanline_up, sizeof(ScanPoint) * width);
-    area->scanline_down = realloc(area->scanline_down, sizeof(ScanPoint) * width);
-
     area->dirty_left = width;
     area->dirty_right = -1;
     area->dirty_down = height;
@@ -180,18 +174,6 @@ void renderSetToneMapping(RenderArea* area, ToneMappingOperator tonemapper, doub
 void renderSetBackgroundColor(RenderArea* area, Color* col)
 {
     area->background_color = *col;
-}
-
-static void _clearScanLines(RenderArea* area)
-{
-    int x;
-    for (x = area->scanline_left; x <= area->scanline_right; x++)
-    {
-        area->scanline_up[x].y = -1;
-        area->scanline_down[x].y = area->params.height * area->params.antialias;
-    }
-    area->scanline_left = area->params.width * area->params.antialias;
-    area->scanline_right = -1;
 }
 
 void renderClear(RenderArea* area)
@@ -217,10 +199,6 @@ void renderClear(RenderArea* area)
             pixel->data.color.b = area->background_color.b;
         }
     }
-
-    area->scanline_left = 0;
-    area->scanline_right = area->params.width * area->params.antialias - 1;
-    _clearScanLines(area);
 
     area->callback_start(area->params.width, area->params.height, area->background_color);
 
@@ -396,7 +374,7 @@ static void _scanInterpolate(CameraDefinition* camera, ScanPoint* v1, ScanPoint*
     result->callback = v1->callback;
 }
 
-static void _pushScanPoint(RenderArea* area, ScanPoint* point)
+static void _pushScanPoint(RenderArea* area, RenderScanlines* scanlines, ScanPoint* point)
 {
     point->x = (int)floor(point->pixel.x);
     point->y = (int)floor(point->pixel.y);
@@ -406,36 +384,36 @@ static void _pushScanPoint(RenderArea* area, ScanPoint* point)
         return;
     }
 
-    if (point->x > area->scanline_right)
+    if (point->x > scanlines->right)
     {
-        area->scanline_right = point->x;
-        area->scanline_up[area->scanline_right] = *point;
-        area->scanline_down[area->scanline_right] = *point;
-        if (point->x < area->scanline_left)
+        scanlines->right = point->x;
+        scanlines->up[scanlines->right] = *point;
+        scanlines->down[scanlines->right] = *point;
+        if (point->x < scanlines->left)
         {
-            area->scanline_left = point->x;
+            scanlines->left = point->x;
         }
     }
-    else if (point->x < area->scanline_left)
+    else if (point->x < scanlines->left)
     {
-        area->scanline_left = point->x;
-        area->scanline_up[area->scanline_left] = *point;
-        area->scanline_down[area->scanline_left] = *point;
+        scanlines->left = point->x;
+        scanlines->up[scanlines->left] = *point;
+        scanlines->down[scanlines->left] = *point;
     }
     else
     {
-        if (point->y > area->scanline_up[point->x].y)
+        if (point->y > scanlines->up[point->x].y)
         {
-            area->scanline_up[point->x] = *point;
+            scanlines->up[point->x] = *point;
         }
-        if (point->y < area->scanline_down[point->x].y)
+        if (point->y < scanlines->down[point->x].y)
         {
-            area->scanline_down[point->x] = *point;
+            scanlines->down[point->x] = *point;
         }
     }
 }
 
-static void _pushScanLineEdge(RenderArea* area, ScanPoint* point1, ScanPoint* point2)
+static void _pushScanLineEdge(RenderArea* area, RenderScanlines* scanlines, ScanPoint* point1, ScanPoint* point2)
 {
     double dx, fx;
     ScanPoint diff, point;
@@ -445,7 +423,7 @@ static void _pushScanLineEdge(RenderArea* area, ScanPoint* point1, ScanPoint* po
 
     if (endx < startx)
     {
-        _pushScanLineEdge(area, point2, point1);
+        _pushScanLineEdge(area, scanlines, point2, point1);
     }
     else if (endx < 0 || startx >= area->params.width * area->params.antialias)
     {
@@ -453,8 +431,8 @@ static void _pushScanLineEdge(RenderArea* area, ScanPoint* point1, ScanPoint* po
     }
     else if (startx == endx)
     {
-        _pushScanPoint(area, point1);
-        _pushScanPoint(area, point2);
+        _pushScanPoint(area, scanlines, point1);
+        _pushScanPoint(area, scanlines, point2);
     }
     else
     {
@@ -485,24 +463,24 @@ static void _pushScanLineEdge(RenderArea* area, ScanPoint* point1, ScanPoint* po
 
             /*point.pixel.x = (double)curx;*/
 
-            _pushScanPoint(area, &point);
+            _pushScanPoint(area, scanlines, &point);
         }
     }
 }
 
-static void _renderScanLines(RenderArea* area)
+static void _renderScanLines(RenderArea* area, RenderScanlines* scanlines)
 {
     int x, starty, endy, cury;
     ScanPoint diff;
     double dy, fy;
     ScanPoint up, down, current;
 
-    if (area->scanline_right > 0)
+    if (scanlines->right > 0)
     {
-        for (x = area->scanline_left; x <= area->scanline_right; x++)
+        for (x = scanlines->left; x <= scanlines->right; x++)
         {
-            up = area->scanline_up[x];
-            down = area->scanline_down[x];
+            up = scanlines->up[x];
+            down = scanlines->down[x];
 
             starty = down.y;
             endy = up.y;
@@ -560,27 +538,51 @@ void renderPushTriangle(RenderArea* area, Vector3 pixel1, Vector3 pixel2, Vector
         return;
     }
 
+    /* Prepare fragment callback */
+    mutexAcquire(area->lock);
+    point1.callback = _pushCallback(area, fragment_callback);
+    mutexRelease(area->lock);
+
+    /* Prepare vertices */
     point1.pixel = pixel1;
     point1.location = location1;
-    point1.callback = _pushCallback(area, fragment_callback);
 
     point2.pixel = pixel2;
     point2.location = location2;
-    point2.callback = _pushCallback(area, fragment_callback);
+    point2.callback = point1.callback;
 
     point3.pixel = pixel3;
     point3.location = location3;
-    point3.callback = _pushCallback(area, fragment_callback);
+    point3.callback = point1.callback;
 
-    _clearScanLines(area);
+    /* Prepare scanlines */
+    RenderScanlines scanlines;
+    int x;
+    int width = area->params.width * area->params.antialias;
+    scanlines.left = width;
+    scanlines.right = -1;
+    scanlines.up = malloc(sizeof(ScanPoint) * width);
+    scanlines.down = malloc(sizeof(ScanPoint) * width);
+    for (x = 0; x < width; x++)
+    {
+        /* TODO Do not initialize whole width each time, init only when needed on point push */
+        scanlines.up[x].y = -1;
+        scanlines.down[x].y = area->params.height * area->params.antialias;
+    }
 
-    _pushScanLineEdge(area, &point1, &point2);
-    _pushScanLineEdge(area, &point2, &point3);
-    _pushScanLineEdge(area, &point3, &point1);
+    /* Render edges in scanlines */
+    _pushScanLineEdge(area, &scanlines, &point1, &point2);
+    _pushScanLineEdge(area, &scanlines, &point2, &point3);
+    _pushScanLineEdge(area, &scanlines, &point3, &point1);
 
+    /* Commit scanlines to area */
     mutexAcquire(area->lock);
-    _renderScanLines(area);
+    _renderScanLines(area, &scanlines);
     mutexRelease(area->lock);
+
+    /* Free scalines */
+    free(scanlines.up);
+    free(scanlines.down);
 }
 
 Color renderGetPixel(RenderArea* area, int x, int y)
