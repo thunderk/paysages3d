@@ -292,6 +292,14 @@ void parallelQueueInterrupt(ParallelQueue* queue)
     }
 }
 
+void parallelQueueWait(ParallelQueue* queue)
+{
+    while (queue->jobs_count > 0)
+    {
+        timeSleepMs(100);
+    }
+}
+
 int parallelQueueAddJob(ParallelQueue* queue, FuncParallelJob func_process, void* data)
 {
     if (queue->stopping)

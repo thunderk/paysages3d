@@ -76,6 +76,14 @@ void parallelQueueDelete(ParallelQueue* queue);
 void parallelQueueInterrupt(ParallelQueue* queue);
 
 /**
+ * Wait for all jobs to finish.
+ *
+ * This function will return as soon as there is no pending jobs. It is recommended to stop feeding the queue, or this
+ * function may never return.
+ */
+void parallelQueueWait(ParallelQueue* queue);
+
+/**
  * Add a job to the queue.
  *
  * Don't call this method concurrently from several threads.
