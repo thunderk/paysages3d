@@ -4,7 +4,9 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include "../tools.h"
 #include "../tools/boundingbox.h"
+#include "../tools/parallel.h"
 #include "../renderer.h"
 
 /*
@@ -13,6 +15,8 @@
 
 static inline Vector3 _getPoint(TerrainDefinition* definition, Renderer* renderer, double x, double z)
 {
+    UNUSED(definition);
+
     Vector3 result;
 
     result.x = x;
@@ -201,16 +205,55 @@ void terrainGetTessellationInfo(Renderer* renderer, FuncTerrainTessellationCallb
     }
 }
 
+typedef struct
+{
+    Renderer* renderer;
+    TerrainChunkInfo chunk;
+} ParallelRasterInfo;
+
+static int _parallelJobCallback(ParallelQueue* queue, int job_id, void* data, int stopping)
+{
+    ParallelRasterInfo* info = (ParallelRasterInfo*)data;
+    UNUSED(queue);
+    UNUSED(job_id);
+
+    if (!stopping)
+    {
+        terrainTessellateChunk(info->renderer, &info->chunk, info->chunk.detail_hint);
+    }
+
+    free(data);
+    return 0;
+}
+
 static int _standardTessellationCallback(Renderer* renderer, TerrainChunkInfo* chunk, double progress)
 {
-    terrainTessellateChunk(renderer, chunk, chunk->detail_hint);
+    ParallelRasterInfo* info = malloc(sizeof(ParallelRasterInfo));
+
+    info->renderer = renderer;
+    info->chunk = *chunk;
+
+    if (!parallelQueueAddJob(renderer->customData[0], _parallelJobCallback, info))
+    {
+        free(info);
+    }
+
     renderer->render_progress = 0.05 * progress;
     return !renderer->render_interrupt;
 }
 
 void terrainRenderSurface(Renderer* renderer)
 {
+    ParallelQueue* queue;
+    queue = parallelQueueCreate(0);
+
+    /* TODO Do not use custom data, it could already be used by another module */
+    renderer->customData[0] = queue;
+
     renderer->render_progress = 0.0;
     terrainGetTessellationInfo(renderer, _standardTessellationCallback, 0);
     renderer->render_progress = 0.05;
+
+    parallelQueueWait(queue);
+    parallelQueueDelete(queue);
 }
