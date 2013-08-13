@@ -4,28 +4,39 @@
 
 double cloudsGetLayerCoverage(CloudsLayerDefinition* layer, Vector3 location)
 {
-    if (layer->base_coverage == 0.0)
+    if (layer->base_coverage <= 0.0)
     {
         return 0.0;
     }
     else
     {
-        double coverage = noiseGet2DTotal(layer->_coverage_noise, location.x / layer->shape_scaling, location.z / layer->shape_scaling);
+        double coverage = 0.5 + noiseGet2DTotal(layer->_coverage_noise, location.x / layer->shape_scaling, location.z / layer->shape_scaling);
         coverage -= (1.0 - layer->base_coverage);
 
         coverage *= curveGetValue(layer->_coverage_by_altitude, (location.y - layer->lower_altitude) / layer->thickness);
 
-        return (coverage <= 0.0) ? 0.0 : coverage;
+        if (coverage < 0.0)
+        {
+            return 0.0;
+        }
+        else if (coverage >= 1.0)
+        {
+            return 1.0;
+        }
+        else
+        {
+            return coverage;
+        }
     }
 }
 
 double cloudsGetLayerDensity(CloudsLayerDefinition* layer, Vector3 location, double coverage)
 {
-    if (coverage == 0.0)
+    if (coverage <= 0.0)
     {
         return 0.0;
     }
-    else if (coverage == 1.0)
+    else if (coverage >= 1.0)
     {
         return 1.0;
     }
@@ -39,11 +50,11 @@ double cloudsGetLayerDensity(CloudsLayerDefinition* layer, Vector3 location, dou
 
 double cloudsGetEdgeDensity(CloudsLayerDefinition* layer, Vector3 location, double layer_density)
 {
-    if (layer_density == 0.0)
+    if (layer_density <= 0.0)
     {
         return 0.0;
     }
-    else if (layer_density == 1.0)
+    else if (layer_density >= 1.0)
     {
         return 1.0;
     }
