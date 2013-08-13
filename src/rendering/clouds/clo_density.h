@@ -13,7 +13,7 @@ extern "C"
 #endif
 
 /**
- * Get the local coverage of a cloud layer [0.0;1.0]
+ * Get the coverage of a cloud layer [0.0;1.0]
  *
  * 0.0 means no cloud is present.
  * 1.0 means full layer.
@@ -21,12 +21,17 @@ extern "C"
 double cloudsGetLayerCoverage(CloudsLayerDefinition* layer, Vector3 location);
 
 /**
- * Get the local density of a cloud layer at a given point [0.0;1.0].
+ * Get the global density of a cloud layer at a given point [0.0;1.0].
  *
  * 0.0 means no cloud is present.
  * 1.0 means full density (deep inside cloud).
  */
 double cloudsGetLayerDensity(CloudsLayerDefinition* layer, Vector3 location, double coverage);
+
+/**
+ * Get the local density of a cloud layer at a given point inside an edge [0.0;1.0].
+ */
+double cloudsGetEdgeDensity(CloudsLayerDefinition* layer, Vector3 location, double layer_density);
 
 /*
  * Bind fake density functions to a renderer.

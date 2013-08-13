@@ -18,6 +18,7 @@ typedef struct
     double distance_from_start;
     Vector3 location;
     double global_density;
+    double local_density;
 } CloudWalkerPoint;
 
 /**
@@ -85,6 +86,16 @@ void cloudsWalkerSetStepSize(CloudsWalker* walker, double step);
  * @param enabled 1 to enable the void skipping, 0 to disable
  */
 void cloudsWalkerSetVoidSkipping(CloudsWalker* walker, int enabled);
+
+/**
+ * Toggle the local density computing.
+ *
+ * When this option is set, the CloudWalkerStepInfo will contain information about local density.
+ * The automatic setting will set to 1 on subdivided steps, and 0 elsewhere.
+ * @param walker The walker to configure
+ * @param enabled 1 to enable local density, 0 to disable it, -1 for automatic setting.
+ */
+void cloudsWalkerToggleLocalDensity(CloudsWalker* walker, int enabled);
 
 /**
  * Perform a single step.

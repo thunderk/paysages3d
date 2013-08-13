@@ -200,6 +200,15 @@ static double _getLayerDensitySinX(Renderer* renderer, CloudsLayerDefinition* la
     return (density > 0.0) ? density : 0.0;
 }
 
+static double _getEdgeDensitySquared(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location, double edge_density)
+{
+    UNUSED(renderer);
+    UNUSED(layer);
+    UNUSED(location);
+    return edge_density * edge_density;
+}
+
+
 START_TEST(test_clouds_walking)
 {
     /* Init */
@@ -414,7 +423,52 @@ START_TEST(test_clouds_walking)
 }
 END_TEST
 
+START_TEST(test_clouds_walking_local)
+{
+    /* Init */
+    CloudsLayerDefinition* layer;
+    layer = cloudsGetLayerType().callback_create();
+    layer->lower_altitude = -1.0;
+    layer->thickness = 2.0;
+    cloudsGetLayerType().callback_validate(layer);
+
+    Renderer* renderer;
+    renderer = rendererCreate();
+
+    renderer->render_quality = 8;
+    renderer->clouds->getLayerDensity = _getLayerDensitySinX;
+    renderer->clouds->getEdgeDensity = _getEdgeDensitySquared;
+
+    CloudsWalker* walker = cloudsCreateWalker(renderer, layer, v3(0.0, 0.0, 0.0), v3(1.0, 0.0, 0.0));
+    CloudWalkerStepInfo* segment;
+    int result;
+
+    /* Test that local density is off by default */
+    cloudsWalkerSetStepSize(walker, 0.3);
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_double_eq(segment->length, 0.3);
+    ck_assert_double_eq(segment->start.global_density, 0.0);
+    ck_assert_double_eq(segment->start.local_density, 0.0);
+    ck_assert_double_eq(segment->end.global_density, 0.951056516295);
+    ck_assert_double_eq(segment->end.local_density, 0.0);
+
+    /* Test it's automatically enabled on subdivision */
+    cloudsWalkerOrderSubdivide(walker, 2);
+    result = cloudsWalkerPerformStep(walker);
+    segment = cloudsWalkerGetLastSegment(walker);
+    ck_assert_int_eq(result, 1);
+    ck_assert_double_eq(segment->length, 0.15);
+    ck_assert_double_eq(segment->start.global_density, 0.0);
+    ck_assert_double_eq(segment->start.local_density, 0.0);
+    ck_assert_double_eq(segment->end.global_density, 0.809016994375);
+    ck_assert_double_eq(segment->end.local_density, 0.654508497187);
+}
+END_TEST
+
 TEST_CASE(clouds,
           test_clouds_density,
+          test_clouds_walking,
           test_clouds_walking_boundaries,
-          test_clouds_walking)
+          test_clouds_walking_local)

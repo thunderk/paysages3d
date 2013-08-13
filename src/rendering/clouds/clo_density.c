@@ -37,6 +37,24 @@ double cloudsGetLayerDensity(CloudsLayerDefinition* layer, Vector3 location, dou
     }
 }
 
+double cloudsGetEdgeDensity(CloudsLayerDefinition* layer, Vector3 location, double layer_density)
+{
+    if (layer_density == 0.0)
+    {
+        return 0.0;
+    }
+    else if (layer_density == 1.0)
+    {
+        return 1.0;
+    }
+    else
+    {
+        double density = noiseGet3DTotal(layer->_edge_noise, location.x / layer->edge_scaling, location.y / layer->edge_scaling, location.z / layer->edge_scaling);
+        density -= (0.5 - layer_density);
+        return (density <= 0.0) ? 0.0 : density;
+    }
+}
+
 static double _fakeGetDensity(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location)
 {
     UNUSED(layer);
@@ -46,9 +64,20 @@ static double _fakeGetDensity(Renderer* renderer, CloudsLayerDefinition* layer, 
     return 0.0;
 }
 
+static double _fakeGetEdgeDensity(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location, double layer_density)
+{
+    UNUSED(layer);
+    UNUSED(renderer);
+    UNUSED(location);
+    UNUSED(layer_density);
+
+    return 0.0;
+}
+
 void cloudsBindFakeDensityToRenderer(CloudsRenderer* renderer)
 {
     renderer->getLayerDensity = _fakeGetDensity;
+    renderer->getEdgeDensity = _fakeGetEdgeDensity;
 }
 
 static double _realGetDensity(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location)
@@ -60,7 +89,15 @@ static double _realGetDensity(Renderer* renderer, CloudsLayerDefinition* layer, 
     return cloudsGetLayerDensity(layer, location, coverage);
 }
 
+static double _realGetEdgeDensity(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location, double layer_density)
+{
+    UNUSED(renderer);
+
+    return cloudsGetEdgeDensity(layer, location, layer_density);
+}
+
 void cloudsBindRealDensityToRenderer(CloudsRenderer* renderer)
 {
     renderer->getLayerDensity = _realGetDensity;
+    renderer->getEdgeDensity = _realGetEdgeDensity;
 }

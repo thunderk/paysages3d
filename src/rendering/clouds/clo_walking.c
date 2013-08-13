@@ -36,6 +36,7 @@ struct CloudsWalker
     double max_length;
     double step_size;
     int skip_void;
+    int local_density;
 
     int started;
     CloudWalkerStepInfo last_segment;
@@ -113,6 +114,7 @@ CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudsLayerDefinition* laye
     result->cursor = 0.0;
     result->step_size = 1.0;
     result->skip_void = 0;
+    result->local_density = -1;
 
     result->started = 0;
     result->subdivision_count = 0;
@@ -138,8 +140,13 @@ void cloudsWalkerSetStepSize(CloudsWalker* walker, double step)
     else
     {
         /* TODO Automatic settings (using rendering quality and cloud feature size) */
-        walker->step_size = 1.0;
+        walker->step_size = 5.0 / (double)walker->last_segment.renderer->render_quality;
     }
+}
+
+void cloudsWalkerToggleLocalDensity(CloudsWalker* walker, int enabled)
+{
+    walker->local_density = enabled;
 }
 
 void cloudsWalkerSetVoidSkipping(CloudsWalker* walker, int enabled)
@@ -155,6 +162,15 @@ static void _getPoint(CloudsWalker* walker, double cursor, CloudWalkerPoint* out
     Renderer* renderer = walker->last_segment.renderer;
     CloudsLayerDefinition* layer = walker->last_segment.layer;
     out_point->global_density = renderer->clouds->getLayerDensity(renderer, layer, out_point->location);
+
+    if (walker->local_density > 0 || (walker->local_density < 0 && walker->subdivision_count > 0))
+    {
+        out_point->local_density = renderer->clouds->getEdgeDensity(renderer, layer, out_point->location, out_point->global_density);
+    }
+    else
+    {
+        out_point->local_density = 0.0;
+    }
 }
 
 static void _refineSegment(CloudsWalker* walker, double start_cursor, double start_density, double end_cursor, double end_density, double precision, CloudWalkerPoint* result)

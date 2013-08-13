@@ -125,7 +125,20 @@ static void _walkerMaterialCallback(CloudsWalker* walker)
 
     assert(data != NULL);
 
-    double density_integral = segment->length * (segment->start.global_density + segment->end.global_density) / 2.0;
+    double density_integral;
+    if (segment->subdivided)
+    {
+        density_integral = segment->length * (segment->start.local_density + segment->end.local_density) / 2.0;
+    }
+    else
+    {
+        if ((segment->start.global_density > 0.0 || segment->end.global_density > 0.0) && (segment->start.global_density < 1.0 || segment->end.global_density < 1.0))
+        {
+            cloudsWalkerOrderSubdivide(walker, renderer->render_quality + 3);
+            return;
+        }
+        density_integral = segment->length * (segment->start.global_density + segment->end.global_density) / 2.0;
+    }
 
     data->out_scattering += 0.5 * density_integral;
 
