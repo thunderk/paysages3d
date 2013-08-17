@@ -11,7 +11,9 @@
 
 SmallMaterialPreview::SmallMaterialPreview(QWidget* parent, SurfaceMaterial* material) : QWidget(parent)
 {
-    _light.color = COLOR_WHITE;
+    _light.color.r = 3.0;
+    _light.color.g = 3.0;
+    _light.color.b = 3.0;
     _light.direction.x = -0.5;
     _light.direction.y = -0.5;
     _light.direction.z = -0.5;
@@ -24,11 +26,15 @@ SmallMaterialPreview::SmallMaterialPreview(QWidget* parent, SurfaceMaterial* mat
     _renderer = rendererCreate();
     Vector3 camera_location = {0.0, 0.0, 10.0};
     cameraSetLocation(_renderer->render_camera, camera_location);
+
+    _color_profile = colorProfileCreate();
+    colorProfileSetToneMapping(_color_profile, TONE_MAPPING_UNCHARTED, 1.0);
 }
 
 SmallMaterialPreview::~SmallMaterialPreview()
 {
     rendererDelete(_renderer);
+    colorProfileDelete(_color_profile);
 }
 
 Color SmallMaterialPreview::getColor(double x, double y)
@@ -60,7 +66,7 @@ Color SmallMaterialPreview::getColor(double x, double y)
         {
             color.a = (1.0 - dist) / 0.05;
         }
-        return color;
+        return colorProfileApply(_color_profile, color);
     }
 }
 

@@ -21,6 +21,7 @@ private:
     SurfaceMaterial* _material;
     LightDefinition _light;
     Renderer* _renderer;
+    ColorProfile* _color_profile;
 };
 
 class PreviewMaterial:public BasePreview
