@@ -39,19 +39,18 @@ tests: all
 	LD_LIBRARY_PATH=${BUILDPATH} CK_DEFAULT_TIMEOUT=30 ${BUILDPATH}/paysages-tests
 
 run_cli: all
-	LD_LIBRARY_PATH=${BUILDPATH} ${BUILDPATH}/paysages-cli
+	LD_LIBRARY_PATH=${BUILDPATH} ${RUNNER} ${BUILDPATH}/paysages-cli
 
-run_qt: all
-	LD_LIBRARY_PATH=${BUILDPATH} ${BUILDPATH}/paysages-qt
+run: all
+	LD_LIBRARY_PATH=${BUILDPATH} ${RUNNER} ${BUILDPATH}/paysages-qt
 
-profile:
-	sudo opcontrol --setup --no-vmlinux --event=CPU_CLK_UNHALTED:3000000:0:1:1 --buffer-size=65536 --callgraph=5 --separate=none
-	sudo opcontrol --reset
-	sudo opcontrol --start
-	LD_LIBRARY_PATH=${BUILDPATH} ${BUILDPATH}/paysages-qt || true
-	sudo opcontrol --shutdown
-	opannotate --source --output-dir=annotated ${BUILDPATH}/libpaysages.so --base-dirs=. --search-dirs=lib_paysages
-	opreport -l ${BUILDPATH}/libpaysages.so -c -g | less
+profile: debug
+	LD_LIBRARY_PATH=build/debug perf record -g fp ./build/debug/paysages-qt
+	perf report -g
+
+profile_cli: debug
+	LD_LIBRARY_PATH=build/debug perf record -g fp ./build/debug/paysages-cli
+	perf report -g
 
 install:release
 	mkdir -p ${DESTDIR}/usr/bin

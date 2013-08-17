@@ -1,8 +1,8 @@
 OBJECTS = ${SOURCES:%.c=${OBJPATH}/%.o}
 
 ifeq (${BUILDMODE},debug)
-	CC_FLAGS += -g -pg
-	CC_LDFLAGS += -g -pg
+	CC_FLAGS += -g
+	CC_LDFLAGS += -g
 endif
 ifeq (${BUILDMODE},release)
 	CC_FLAGS += -O3 -DNDEBUG -Wno-unused-variable -Wno-unused-but-set-variable
