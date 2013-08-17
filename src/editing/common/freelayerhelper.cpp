@@ -67,12 +67,26 @@ void FreeLayerHelper::setDelButton(QPushButton* button)
 
 void FreeLayerHelper::setDownButton(QPushButton* button)
 {
-    connect(button, SIGNAL(clicked()), this, SLOT(moveLayerDown()));
+    if (_reverse)
+    {
+        connect(button, SIGNAL(clicked()), this, SLOT(moveLayerDown()));
+    }
+    else
+    {
+        connect(button, SIGNAL(clicked()), this, SLOT(moveLayerUp()));
+    }
 }
 
 void FreeLayerHelper::setUpButton(QPushButton* button)
 {
-    connect(button, SIGNAL(clicked()), this, SLOT(moveLayerUp()));
+    if (_reverse)
+    {
+        connect(button, SIGNAL(clicked()), this, SLOT(moveLayerUp()));
+    }
+    else
+    {
+        connect(button, SIGNAL(clicked()), this, SLOT(moveLayerDown()));
+    }
 }
 
 void FreeLayerHelper::addLayer()
@@ -88,16 +102,30 @@ void FreeLayerHelper::deleteLayer()
     {
         layersDeleteLayer(_layers, _selected);
         emit(layersChanged());
+        refreshLayers();
     }
-    refreshLayers();
 }
 
 void FreeLayerHelper::moveLayerDown()
 {
+    if (_selected > 0)
+    {
+        layersMove(_layers, _selected, _selected - 1);
+        _selected--;
+        emit(layersChanged());
+        refreshLayers();
+    }
 }
 
 void FreeLayerHelper::moveLayerUp()
 {
+    if (_selected >= 0 && _selected < layersCount(_layers) - 1)
+    {
+        layersMove(_layers, _selected, _selected + 1);
+        _selected++;
+        emit(layersChanged());
+        refreshLayers();
+    }
 }
 
 void FreeLayerHelper::tableSelectionChanged(int row, int)

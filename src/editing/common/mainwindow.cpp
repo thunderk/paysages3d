@@ -15,7 +15,6 @@
 #include "basepreview.h"
 #include "formclouds.h"
 #include "formatmosphere.h"
-#include "formtextures.h"
 #include "formwater.h"
 #include "formrender.h"
 
@@ -92,15 +91,11 @@ MainWindow::MainWindow() :
     connect(ui->action_explore, SIGNAL(triggered()), this, SLOT(explore3D()));
     connect(ui->action_quick_render, SIGNAL(triggered()), this, SLOT(quickPreview()));
     connect(ui->action_final_render, SIGNAL(triggered()), this, SLOT(finalRender()));
+    connect(ui->action_last_render, SIGNAL(triggered()), this, SLOT(showLastRender()));
     connect(ui->action_file_new, SIGNAL(triggered()), this, SLOT(fileNew()));
     connect(ui->action_file_save, SIGNAL(triggered()), this, SLOT(fileSave()));
     connect(ui->action_file_load, SIGNAL(triggered()), this, SLOT(fileLoad()));
     connect(ui->action_about, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
-
-    form = new FormTextures(ui->tabs);
-    ui->tabs->addTab(form, QIcon(getDataPath("images/tab_textures.png")), tr("Textures"));
-    QObject::connect(form, SIGNAL(configApplied()), this, SLOT(refreshAll()), Qt::QueuedConnection);
-    _forms.append(form);
 
     form = new FormWater(ui->tabs);
     ui->tabs->addTab(form, QIcon(getDataPath("images/tab_water.png")), tr("Water"));

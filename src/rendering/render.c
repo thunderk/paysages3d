@@ -86,8 +86,6 @@ typedef struct
     RenderArea* area;
 } RenderChunk;
 
-#define RENDER_INVERSE 1
-
 static void _callbackStart(int width, int height, Color background) {}
 static void _callbackDraw(int x, int y, Color col) {}
 static void _callbackUpdate(double progress) {}
@@ -602,13 +600,9 @@ void* _renderPostProcessChunk(void* data)
     RenderFragment* fragment;
     RenderChunk* chunk = (RenderChunk*)data;
 
-#ifdef RENDER_INVERSE
-    for (y = chunk->area->params.height * chunk->area->params.antialias - 1 - chunk->starty; y >= chunk->area->params.height * chunk->area->params.antialias - 1 - chunk->endy; y--)
-#else
-    for (y = chunk->starty; y <= chunk->endy; y++)
-#endif
-    {
-        for (x = chunk->startx; x <= chunk->endx; x++)
+    for (x = chunk->startx; x <= chunk->endx; x++)
+{
+        for (y = chunk->starty; y <= chunk->endy; y++)
         {
             fragment = chunk->area->pixels + (y * chunk->area->params.width * chunk->area->params.antialias + x);
             if (fragment->flags.dirty)
@@ -681,7 +675,7 @@ void renderPostProcess(RenderArea* area, int nbchunks)
 
     running = 0;
     loops = 0;
-    while ((y < ny && !area->renderer->render_interrupt) || running > 0)
+    while ((x < nx && !area->renderer->render_interrupt) || running > 0)
     {
         timeSleepMs(50);
 
@@ -703,7 +697,7 @@ void renderPostProcess(RenderArea* area, int nbchunks)
 
             area->renderer->render_progress = 0.1 + ((double)area->pixel_done / (double)area->pixel_count) * 0.9;
 
-            if (y < ny && !chunks[i].thread && !area->renderer->render_interrupt)
+            if (x < nx && !chunks[i].thread && !area->renderer->render_interrupt)
             {
                 chunks[i].finished = 0;
                 chunks[i].interrupt = 0;
@@ -729,10 +723,10 @@ void renderPostProcess(RenderArea* area, int nbchunks)
                 chunks[i].thread = threadCreate(_renderPostProcessChunk, (void*)(chunks + i));
                 running++;
 
-                if (++x >= nx)
+                if (++y >= ny)
                 {
-                    y++;
-                    x = 0;
+                    x++;
+                    y = 0;
                 }
             }
         }

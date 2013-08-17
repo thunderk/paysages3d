@@ -12,13 +12,6 @@ MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui
 
     ui->setupUi(this);
 
-    form_helper = new FreeFormHelper(this);
-    form_helper->setApplyButton(ui->button_apply);
-    form_helper->setRevertButton(ui->button_revert);
-    form_helper->setExploreButton(ui->button_explore);
-    form_helper->setRenderButton(ui->button_render);
-    form_helper->startManaging();
-
     layer_helper = new FreeLayerHelper(textures->layers, true);
     layer_helper->setLayerTable(ui->layersGrid);
     layer_helper->setAddButton(ui->layer_add);
@@ -26,8 +19,16 @@ MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui
     layer_helper->setDownButton(ui->layer_down);
     layer_helper->setUpButton(ui->layer_up);
     connect(layer_helper, SIGNAL(tableUpdateNeeded()), this, SLOT(updateLayers()));
-    connect(layer_helper, SIGNAL(layersChanged()), form_helper, SLOT(processDataChange()));
     connect(layer_helper, SIGNAL(selectionChanged(int)), this, SLOT(selectLayer(int)));
+
+    form_helper = new FreeFormHelper(this);
+    form_helper->setApplyButton(ui->button_apply);
+    form_helper->setRevertButton(ui->button_revert);
+    form_helper->setExploreButton(ui->button_explore);
+    form_helper->setRenderButton(ui->button_render);
+    form_helper->startManaging();
+
+    connect(layer_helper, SIGNAL(layersChanged()), form_helper, SLOT(processDataChange()));
 }
 
 MainTexturesForm::~MainTexturesForm()

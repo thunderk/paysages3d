@@ -14,6 +14,7 @@
         <file>images/layer_down.png</file>
         <file>images/layer_rename.png</file>
         <file>images/layer_up.png</file>
+        <file>images/auto.png</file>
     </qresource>
     <qresource prefix="/tabs">
         <file>images/tab_atmosphere.png</file>
