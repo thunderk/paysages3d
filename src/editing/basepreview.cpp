@@ -690,15 +690,22 @@ void BasePreview::resizeEvent(QResizeEvent* event)
 void BasePreview::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    painter.drawImage(0, 0, *this->_pixbuf);
-
-    QImage osd(_pixbuf->size(), _pixbuf->format());
-    osd.fill(0x00000000);
-    for (int i = 0; i < _osd.size(); i++)
+    if (isEnabled())
     {
-        _osd[i]->apply(&osd, xoffset, yoffset, scaling);
+        painter.drawImage(0, 0, *this->_pixbuf);
+
+        QImage osd(_pixbuf->size(), _pixbuf->format());
+        osd.fill(0x00000000);
+        for (int i = 0; i < _osd.size(); i++)
+        {
+            _osd[i]->apply(&osd, xoffset, yoffset, scaling);
+        }
+        painter.drawImage(0, 0, osd);
     }
-    painter.drawImage(0, 0, osd);
+    else
+    {
+        painter.fillRect(rect(), QColor(100, 100, 100));
+    }
 }
 
 void BasePreview::updateScaling()

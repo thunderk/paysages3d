@@ -149,6 +149,8 @@ void FreeFormHelper::setExploreButton(QPushButton* button)
     {
         _button_explore = button;
 
+        button->setToolTip(tr("Explore the scenery in 3D, with current changes applied"));
+
         connect(button, SIGNAL(clicked()), this, SLOT(processExploreClicked()));
     }
 }
@@ -163,6 +165,8 @@ void FreeFormHelper::setRenderButton(QPushButton* button)
     if (button && button->inherits("QPushButton"))
     {
         _button_render = button;
+
+        button->setToolTip(tr("Quick render preview, with current changes applied"));
 
         connect(button, SIGNAL(clicked()), this, SLOT(processRenderClicked()));
     }

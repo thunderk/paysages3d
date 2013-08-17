@@ -124,9 +124,9 @@ MainWindow::MainWindow() :
     ui->tabs->setCurrentIndex(0);
 
     // TODO Decide this according to platform / screen size
-    //ui->toolBar->hide();
+    ui->toolBar->hide();
     ui->tool_panel->hide();
-    ui->menuBar->hide();
+    //ui->menuBar->hide();
 
     scenerySetCustomDataCallback(MainWindow::guiSaveCallback, MainWindow::guiLoadCallback, this);
 

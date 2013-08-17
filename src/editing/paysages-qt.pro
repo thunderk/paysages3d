@@ -72,7 +72,8 @@ HEADERS += \
     terrain/widgetterrainbasenoisepreview.h \
     common/mainwindow.h \
     terrain/dialogbaseterrainnoise.h \
-    textures/maintexturesform.h
+    textures/maintexturesform.h \
+    common/freelayerhelper.h
 
 SOURCES += \
     terrain/widgetheightmap.cpp \
@@ -124,7 +125,8 @@ SOURCES += \
     terrain/widgetterrainbasenoisepreview.cpp \
     common/mainwindow.cpp \
     terrain/dialogbaseterrainnoise.cpp \
-    textures/maintexturesform.cpp
+    textures/maintexturesform.cpp \
+    common/freelayerhelper.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \
