@@ -104,17 +104,17 @@ static inline int _fastfloor(double x)
     return x < xi ? xi - 1 : xi;
 }
 
-static double _dot2(Grad3 g, double x, double y)
+static inline double _dot2(Grad3 g, double x, double y)
 {
     return g.x * x + g.y * y;
 }
 
-static double _dot3(Grad3 g, double x, double y, double z)
+static inline double _dot3(Grad3 g, double x, double y, double z)
 {
     return g.x * x + g.y * y + g.z * z;
 }
 
-static double _dot4(Grad4 g, double x, double y, double z, double w)
+static inline double _dot4(Grad4 g, double x, double y, double z, double w)
 {
     return g.x * x + g.y * y + g.z * z + g.w * w;
 }
