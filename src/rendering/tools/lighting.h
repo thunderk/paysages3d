@@ -11,9 +11,16 @@ extern "C" {
 
 typedef struct
 {
-    Color base;
+    double hue;
+    double diffuse;
+    double hardness;
+
     double reflection;
     double shininess;
+
+    double receive_shadows;
+
+    Color base;
 } SurfaceMaterial;
 
 typedef struct

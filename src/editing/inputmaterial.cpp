@@ -4,16 +4,17 @@
 #include <QPushButton>
 #include <QPainter>
 #include <QColorDialog>
-#include "dialogmaterial.h"
-#include "previewmaterial.h"
+
+#include "editing/lighting/DialogMaterialEditor.h"
+#include "editing/previewmaterial.h"
 
 InputMaterial::InputMaterial(QWidget* form, QString label, SurfaceMaterial* value) : BaseInput(form, label)
 {
     _value = value;
-    
+
     _preview = new SmallMaterialPreview(form, value);
     _preview->setMinimumSize(100, 40);
-    
+
     _control = new QPushButton(tr("Edit"), form);
     _control->setMaximumWidth(150);
 
@@ -39,7 +40,7 @@ void InputMaterial::revert()
 
 void InputMaterial::editMaterial()
 {
-    if (DialogMaterial::getMaterial(_control, _value))
+    if (DialogMaterialEditor::getMaterial(_control, _value))
     {
         applyValue();
     }

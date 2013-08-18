@@ -22,7 +22,8 @@ private slots:
     void chooseColor();
 
 private:
-    Color* _value;
+    Color* _original;
+    Color _edited;
 };
 
 #endif

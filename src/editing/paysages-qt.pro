@@ -44,14 +44,12 @@ HEADERS += \
     formwater.h \
     formtextures.h \
     formrender.h \
-    formmaterial.h \
     formclouds.h \
     formatmosphere.h \
     explorerchunkterrain.h \
     explorerchunksky.h \
     dialogrender.h \
     dialognoise.h \
-    dialogmaterial.h \
     dialoglayers.h \
     dialogexplorer.h \
     dialogcurve.h \
@@ -73,7 +71,11 @@ HEADERS += \
     common/mainwindow.h \
     terrain/dialogbaseterrainnoise.h \
     textures/maintexturesform.h \
-    common/freelayerhelper.h
+    common/freelayerhelper.h \
+    lighting/DialogMaterialEditor.h \
+    common/DrawingWidget.h \
+    lighting/SmallPreviewColor.h \
+    lighting/SmallPreviewHues.h
 
 SOURCES += \
     terrain/widgetheightmap.cpp \
@@ -97,14 +99,12 @@ SOURCES += \
     formwater.cpp \
     formtextures.cpp \
     formrender.cpp \
-    formmaterial.cpp \
     formclouds.cpp \
     formatmosphere.cpp \
     explorerchunkterrain.cpp \
     explorerchunksky.cpp \
     dialogrender.cpp \
     dialognoise.cpp \
-    dialogmaterial.cpp \
     dialoglayers.cpp \
     dialogexplorer.cpp \
     dialogcurve.cpp \
@@ -126,7 +126,11 @@ SOURCES += \
     common/mainwindow.cpp \
     terrain/dialogbaseterrainnoise.cpp \
     textures/maintexturesform.cpp \
-    common/freelayerhelper.cpp
+    common/freelayerhelper.cpp \
+    lighting/DialogMaterialEditor.cpp \
+    common/DrawingWidget.cpp \
+    lighting/SmallPreviewColor.cpp \
+    lighting/SmallPreviewHues.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \
@@ -134,7 +138,8 @@ FORMS += \
     terrain/mainterrainform.ui \
     common/mainwindow.ui \
     terrain/dialogbaseterrainnoise.ui \
-    textures/maintexturesform.ui
+    textures/maintexturesform.ui \
+    lighting/DialogMaterialEditor.ui
 
 RESOURCES += \
     ../../data/ui_pictures.qrc

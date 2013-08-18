@@ -4,29 +4,15 @@
 #include <QPushButton>
 #include <QPainter>
 #include <QColorDialog>
-#include "tools.h"
 
-class ColorPreview:public QWidget
-{
-public:
-    ColorPreview(QWidget* parent):
-        QWidget(parent)
-    {
-    }
-
-    void paintEvent(QPaintEvent*)
-    {
-        QPainter painter(this);
-        painter.fillRect(this->rect(), col);
-    }
-    QColor col;
-};
+#include "editing/lighting/SmallPreviewColor.h"
+#include "editing/tools.h"
 
 InputColor::InputColor(QWidget* form, QString label, Color* value):
     BaseInput(form, label),
-    _value(value)
+    _original(value)
 {
-    _preview = new ColorPreview(form);
+    _preview = new SmallPreviewColor(form, &_edited);
     _preview->setMinimumSize(50, 20);
     _control = new QPushButton(tr("Edit"), form);
     _control->setMaximumWidth(150);
@@ -42,25 +28,24 @@ void InputColor::updatePreview()
 
 void InputColor::applyValue()
 {
-    _value->r = ((ColorPreview*)_preview)->col.redF();
-    _value->g = ((ColorPreview*)_preview)->col.greenF();
-    _value->b = ((ColorPreview*)_preview)->col.blueF();
-    _value->a = 1.0;
+    *_original = _edited;
     BaseInput::applyValue();
 }
 
 void InputColor::revert()
 {
-    ((ColorPreview*)_preview)->col = colorToQColor(*_value);
+    _edited = *_original;
     BaseInput::revert();
 }
 
 void InputColor::chooseColor()
 {
-    QColor col = QColorDialog::getColor(((ColorPreview*)_preview)->col, _control);
+    QColor col = QColorDialog::getColor(colorToQColor(_edited), _control);
     if (col.isValid())
     {
-        ((ColorPreview*)_preview)->col = col;
+        _edited.r = col.redF();
+        _edited.g = col.greenF();
+        _edited.b = col.blueF();
         applyValue();
     }
 }

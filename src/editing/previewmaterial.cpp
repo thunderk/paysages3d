@@ -7,9 +7,8 @@
 #include "rendering/tools/lighting.h"
 #include "rendering/tools/color.h"
 
-/***** Small static preview *****/
-
-SmallMaterialPreview::SmallMaterialPreview(QWidget* parent, SurfaceMaterial* material) : QWidget(parent)
+/***** Shared renderer *****/
+MaterialPreviewRenderer::MaterialPreviewRenderer(SurfaceMaterial* material)
 {
     _light.color.r = 3.0;
     _light.color.g = 3.0;
@@ -23,21 +22,24 @@ SmallMaterialPreview::SmallMaterialPreview(QWidget* parent, SurfaceMaterial* mat
 
     _material = material;
 
-    _renderer = rendererCreate();
     Vector3 camera_location = {0.0, 0.0, 10.0};
-    cameraSetLocation(_renderer->render_camera, camera_location);
+    cameraSetLocation(renderer->render_camera, camera_location);
 
     _color_profile = colorProfileCreate();
     colorProfileSetToneMapping(_color_profile, TONE_MAPPING_UNCHARTED, 1.0);
 }
 
-SmallMaterialPreview::~SmallMaterialPreview()
+MaterialPreviewRenderer::~MaterialPreviewRenderer()
 {
-    rendererDelete(_renderer);
     colorProfileDelete(_color_profile);
 }
 
-Color SmallMaterialPreview::getColor(double x, double y)
+void MaterialPreviewRenderer::bindEvent(BasePreview* preview)
+{
+    preview->configScaling(0.05, 2.0, 0.05, 2.0);
+}
+
+Color MaterialPreviewRenderer::getColor2D(double x, double y, double)
 {
     double dist = sqrt(x * x + y * y);
     Vector3 point;
@@ -61,13 +63,26 @@ Color SmallMaterialPreview::getColor(double x, double y)
         }
 
         point = v3Normalize(point);
-        color = lightingApplyOneLight(&_light, _renderer->getCameraLocation(_renderer, point), point, point, _material);
+        color = lightingApplyOneLight(&_light, renderer->getCameraLocation(renderer, point), point, point, _material);
         if (dist > 0.95)
         {
             color.a = (1.0 - dist) / 0.05;
         }
         return colorProfileApply(_color_profile, color);
     }
+}
+
+/***** Small static preview *****/
+
+SmallMaterialPreview::SmallMaterialPreview(QWidget* parent, SurfaceMaterial* material):
+QWidget(parent),
+_renderer(material)
+{
+}
+
+Color SmallMaterialPreview::getColor(double x, double y)
+{
+    return _renderer.getColor2D(x, y, 1.0);
 }
 
 void SmallMaterialPreview::paintEvent(QPaintEvent*)
@@ -92,28 +107,8 @@ void SmallMaterialPreview::paintEvent(QPaintEvent*)
     {
         for (int y = 0; y < height; y++)
         {
-            painter.setPen(colorToQColor(getColor((double) x * factor - dx, (double) y * factor - dy)));
+            painter.setPen(colorToQColor(_renderer.getColor2D((double) x * factor - dx, (double) y * factor - dy, 1.0)));
             painter.drawPoint(x, y);
         }
     }
-}
-
-/***** Large dynamic preview *****/
-
-PreviewMaterial::PreviewMaterial(QWidget* parent, SurfaceMaterial* material) : BasePreview(parent)
-{
-    _small = new SmallMaterialPreview(this, material);
-    _small->hide();
-
-    configScaling(0.05, 2.0, 0.05, 2.0);
-}
-
-PreviewMaterial::~PreviewMaterial()
-{
-    delete _small;
-}
-
-Color PreviewMaterial::getColor(double x, double y)
-{
-    return _small->getColor(x, y);
 }
