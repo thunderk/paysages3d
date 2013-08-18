@@ -327,7 +327,7 @@ int PreviewDrawingManager::chunkCount()
 
 /*************** BasePreview ***************/
 BasePreview::BasePreview(QWidget* parent) :
-QWidget(parent)
+DrawingWidget(parent)
 {
     this->_lock_drawing = new QMutex();
 
@@ -687,12 +687,11 @@ void BasePreview::resizeEvent(QResizeEvent* event)
     this->_lock_drawing->unlock();
 }
 
-void BasePreview::paintEvent(QPaintEvent*)
+void BasePreview::doDrawing(QPainter* painter)
 {
-    QPainter painter(this);
     if (isEnabled())
     {
-        painter.drawImage(0, 0, *this->_pixbuf);
+        painter->drawImage(0, 0, *this->_pixbuf);
 
         QImage osd(_pixbuf->size(), _pixbuf->format());
         osd.fill(0x00000000);
@@ -700,11 +699,11 @@ void BasePreview::paintEvent(QPaintEvent*)
         {
             _osd[i]->apply(&osd, xoffset, yoffset, scaling);
         }
-        painter.drawImage(0, 0, osd);
+        painter->drawImage(0, 0, osd);
     }
     else
     {
-        painter.fillRect(rect(), QColor(100, 100, 100));
+        painter->fillRect(rect(), QColor(100, 100, 100));
     }
 }
 

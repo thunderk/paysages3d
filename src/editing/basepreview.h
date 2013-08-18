@@ -3,14 +3,16 @@
 
 #include <QMutex>
 #include <QImage>
-#include <QWidget>
 #include <QThread>
 #include <QVector>
 #include <QList>
 #include <QLabel>
 #include <QHash>
-#include "previewosd.h"
-#include "common/previewrenderer.h"
+
+#include "editing/previewosd.h"
+#include "editing/common/DrawingWidget.h"
+#include "editing/common/previewrenderer.h"
+
 #include "rendering/tools/pack.h"
 #include "rendering/tools/color.h"
 
@@ -29,7 +31,9 @@ public:
     bool value;
 };
 
-class BasePreview : public QWidget
+class QPainter;
+
+class BasePreview : public DrawingWidget
 {
     Q_OBJECT
 
@@ -83,7 +87,8 @@ private:
     void timerEvent(QTimerEvent* event);
     void showEvent(QShowEvent* event);
     void resizeEvent(QResizeEvent* event);
-    void paintEvent(QPaintEvent* event);
+
+    void doDrawing(QPainter* painter);
 
     void contextMenuEvent(QContextMenuEvent* event);
     void mousePressEvent(QMouseEvent* event);

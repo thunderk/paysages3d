@@ -5,7 +5,7 @@
 #include "tools.h"
 
 WidgetTerrainBaseNoisePreview::WidgetTerrainBaseNoisePreview(QWidget* parent) :
-    QWidget(parent)
+    DrawingWidget(parent)
 {
     _noise = NULL;
 }
@@ -16,18 +16,17 @@ void WidgetTerrainBaseNoisePreview::setNoise(NoiseGenerator* noise)
     update();
 }
 
-void WidgetTerrainBaseNoisePreview::paintEvent(QPaintEvent* event)
+void WidgetTerrainBaseNoisePreview::doDrawing(QPainter* painter)
 {
-    QPainter painter(this);
-
-    painter.setBrush(Qt::SolidPattern);
-    painter.drawRect(rect());
+    painter->setBrush(Qt::SolidPattern);
+    painter->drawRect(rect());
 
     int height = this->height();
 
     if (_noise)
     {
-        QRect boundaries = event->region().boundingRect();
+        //QRect boundaries = event->region().boundingRect();
+        QRect boundaries = rect(); // TODO Limit to updated region
         double value, factor;
         double minvalue, maxvalue;
 
@@ -38,8 +37,8 @@ void WidgetTerrainBaseNoisePreview::paintEvent(QPaintEvent* event)
         {
             value = noiseGet1DTotal(_noise, 100.0 * ((double)x) / factor);
 
-            painter.setPen(Qt::white);
-            painter.drawLine(x, height - 1 - (value - minvalue) * factor, x, height - 1);
+            painter->setPen(Qt::white);
+            painter->drawLine(x, height - 1 - (value - minvalue) * factor, x, height - 1);
         }
     }
 }

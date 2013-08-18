@@ -1,10 +1,13 @@
 #ifndef _PAYSAGES_EDITING_TERRAIN_WIDGETTERRAINBASENOISEPREVIEW_H_
 #define _PAYSAGES_EDITING_TERRAIN_WIDGETTERRAINBASENOISEPREVIEW_H_
 
-#include <QWidget>
+#include "editing/common/DrawingWidget.h"
+
 #include "rendering/noise.h"
 
-class WidgetTerrainBaseNoisePreview : public QWidget
+class QPainter;
+
+class WidgetTerrainBaseNoisePreview : public DrawingWidget
 {
     Q_OBJECT
 public:
@@ -13,11 +16,7 @@ public:
     void setNoise(NoiseGenerator* noise);
 
 protected:
-    virtual void paintEvent(QPaintEvent* event);
-
-signals:
-    
-public slots:
+    virtual void doDrawing(QPainter* painter);
 
 private:
     NoiseGenerator* _noise;
