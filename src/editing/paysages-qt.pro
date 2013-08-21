@@ -75,7 +75,8 @@ HEADERS += \
     lighting/DialogMaterialEditor.h \
     common/DrawingWidget.h \
     lighting/SmallPreviewColor.h \
-    lighting/SmallPreviewHues.h
+    lighting/SmallPreviewHues.h \
+    textures/PreviewLayerCoverage.h
 
 SOURCES += \
     terrain/widgetheightmap.cpp \
@@ -130,7 +131,8 @@ SOURCES += \
     lighting/DialogMaterialEditor.cpp \
     common/DrawingWidget.cpp \
     lighting/SmallPreviewColor.cpp \
-    lighting/SmallPreviewHues.cpp
+    lighting/SmallPreviewHues.cpp \
+    textures/PreviewLayerCoverage.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \

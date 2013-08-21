@@ -10,6 +10,7 @@ class MainTexturesForm;
 
 class FreeFormHelper;
 class FreeLayerHelper;
+class PreviewLayerCoverage;
 
 class MainTexturesForm : public QWidget
 {
@@ -28,12 +29,14 @@ public slots:
 
     void updateLayers();
     void selectLayer(int layer);
+    void selectPreset(int preset);
 
 private:
     Ui::MainTexturesForm *ui;
     TexturesDefinition* textures;
     FreeFormHelper* form_helper;
     FreeLayerHelper* layer_helper;
+    PreviewLayerCoverage* preview_layer_coverage;
 };
 
 #endif // MAINTEXTURESFORM_H

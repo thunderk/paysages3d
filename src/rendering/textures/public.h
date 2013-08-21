@@ -98,12 +98,6 @@ void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerP
 
 double texturesGetMaximalDisplacement(TexturesDefinition* textures);
 
-/*Renderer* cloudsCreatePreviewCoverageRenderer();
-Color cloudsGetPreviewCoverage(Renderer* renderer, double x, double y, double scaling, int perspective);
-
-Renderer* cloudsCreatePreviewColorRenderer();
-Color cloudsGetPreviewColor(Renderer* renderer, double x, double y);*/
-
 #ifdef __cplusplus
 }
 #endif

@@ -5,6 +5,7 @@
 #include "../common/freelayerhelper.h"
 #include "rendering/scenery.h"
 #include "previewmaterial.h"
+#include "editing/textures/PreviewLayerCoverage.h"
 
 MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui::MainTexturesForm)
 {
@@ -27,6 +28,10 @@ MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui
     form_helper->setExploreButton(ui->button_explore);
     form_helper->setRenderButton(ui->button_render);
     form_helper->startManaging();
+
+    preview_layer_coverage = new PreviewLayerCoverage();
+    preview_layer_coverage->setTextures(textures);
+    form_helper->addPreview(ui->preview_coverage, preview_layer_coverage);
 
     connect(layer_helper, SIGNAL(layersChanged()), form_helper, SLOT(processDataChange()));
 }
@@ -79,6 +84,11 @@ void MainTexturesForm::selectLayer(int layer)
     {
         ui->preview_coverage->setEnabled(true);
         ui->preview_texture->setEnabled(true);
+
+        preview_layer_coverage->setLayer(layer);
+
+        ui->preview_coverage->redraw();
+        ui->preview_texture->redraw();
     }
 }
 
