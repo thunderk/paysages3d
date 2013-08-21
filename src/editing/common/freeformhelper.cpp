@@ -7,6 +7,7 @@
 #include <QSlider>
 #include <QPushButton>
 #include <QWidget>
+#include <QInputDialog>
 #include "mainwindow.h"
 #include "dialogrender.h"
 #include "dialogexplorer.h"
@@ -24,6 +25,7 @@ FreeFormHelper::FreeFormHelper(QWidget* form_widget)
 
     _button_apply = NULL;
     _button_revert = NULL;
+    _button_presets = NULL;
 }
 
 FreeFormHelper::~FreeFormHelper()
@@ -79,115 +81,86 @@ void FreeFormHelper::startManaging()
 
 void FreeFormHelper::addPreview(BasePreview* preview, PreviewRenderer* renderer)
 {
-    if (preview && preview->inherits("BasePreview"))
-    {
-        _previews.append(preview);
-        preview->setRenderer(renderer);
-    }
-}
-
-void FreeFormHelper::addPreview(QString widget_name, PreviewRenderer* renderer)
-{
-    addPreview(_form_widget->findChild<BasePreview*>(widget_name), renderer);
+    _previews.append(preview);
+    preview->setRenderer(renderer);
 }
 
 void FreeFormHelper::addDoubleInputSlider(WidgetSliderDecimal* slider, double* value, double min, double max, double small_step, double large_step)
 {
-    if (slider && slider->inherits("WidgetSliderDecimal"))
-    {
-        _inputs_decimal.append(slider);
+    _inputs_decimal.append(slider);
 
-        slider->setDecimalRange(min, max, small_step, large_step);
-        slider->setDecimalValue(*value);
+    slider->setDecimalRange(min, max, small_step, large_step);
+    slider->setDecimalValue(*value);
 
-        slider->setProperty("data_pointer", QVariant::fromValue<double*>(value));
+    slider->setProperty("data_pointer", QVariant::fromValue<double*>(value));
 
-        connect(slider, SIGNAL(decimalValueChanged(double)), this, SLOT(processDecimalChange(double)));
-    }
-}
-
-void FreeFormHelper::addDoubleInputSlider(QString widget_name, double* value, double min, double max, double small_step, double large_step)
-{
-    addDoubleInputSlider(_form_widget->findChild<WidgetSliderDecimal*>(widget_name), value, min, max, small_step, large_step);
+    connect(slider, SIGNAL(decimalValueChanged(double)), this, SLOT(processDecimalChange(double)));
 }
 
 void FreeFormHelper::setApplyButton(QPushButton* button)
 {
-    if (button && button->inherits("QPushButton"))
-    {
-        _button_apply = button;
-        button->setEnabled(_data_changed);
+    _button_apply = button;
+    button->setEnabled(_data_changed);
 
-        connect(button, SIGNAL(clicked()), this, SLOT(processApplyClicked()));
-    }
-}
-
-void FreeFormHelper::setApplyButton(QString widget_name)
-{
-    setApplyButton(_form_widget->findChild<QPushButton*>(widget_name));
+    connect(button, SIGNAL(clicked()), this, SLOT(processApplyClicked()));
 }
 
 void FreeFormHelper::setRevertButton(QPushButton* button)
 {
-    if (button && button->inherits("QPushButton"))
-    {
-        _button_revert = button;
-        button->setEnabled(_data_changed);
+    _button_revert = button;
+    button->setEnabled(_data_changed);
 
-        connect(button, SIGNAL(clicked()), this, SLOT(processRevertClicked()));
-    }
-}
-
-void FreeFormHelper::setRevertButton(QString widget_name)
-{
-    setRevertButton(_form_widget->findChild<QPushButton*>(widget_name));
+    connect(button, SIGNAL(clicked()), this, SLOT(processRevertClicked()));
 }
 
 void FreeFormHelper::setExploreButton(QPushButton* button)
 {
-    if (button && button->inherits("QPushButton"))
-    {
-        _button_explore = button;
+    _button_explore = button;
 
-        button->setToolTip(tr("Explore the scenery in 3D, with current changes applied"));
+    button->setToolTip(tr("Explore the scenery in 3D, with current changes applied"));
 
-        connect(button, SIGNAL(clicked()), this, SLOT(processExploreClicked()));
-    }
-}
-
-void FreeFormHelper::setExploreButton(QString widget_name)
-{
-    setExploreButton(_form_widget->findChild<QPushButton*>(widget_name));
+    connect(button, SIGNAL(clicked()), this, SLOT(processExploreClicked()));
 }
 
 void FreeFormHelper::setRenderButton(QPushButton* button)
 {
-    if (button && button->inherits("QPushButton"))
-    {
-        _button_render = button;
+    _button_render = button;
 
-        button->setToolTip(tr("Quick render preview, with current changes applied"));
+    button->setToolTip(tr("Quick render preview, with current changes applied"));
 
-        connect(button, SIGNAL(clicked()), this, SLOT(processRenderClicked()));
-    }
-}
-
-void FreeFormHelper::setRenderButton(QString widget_name)
-{
-    setRenderButton(_form_widget->findChild<QPushButton*>(widget_name));
+    connect(button, SIGNAL(clicked()), this, SLOT(processRenderClicked()));
 }
 
 void FreeFormHelper::setLabelText(QLabel* label, QString text)
 {
-    if (label && label->inherits("QLabel"))
-    {
-        label->setText(text);
-    }
+    label->setText(text);
 }
 
-void FreeFormHelper::setLabelText(QString widget_name, QString text)
+void FreeFormHelper::addPreset(const QString& name)
 {
-    setLabelText(_form_widget->findChild<QLabel*>(widget_name), text);
+    _presets << name;
+}
+
+void FreeFormHelper::setPresetButton(QPushButton* button)
+{
+    _button_presets = button;
+    connect(button, SIGNAL(clicked()), this, SLOT(processPresetClicked()));
+}
+
+void FreeFormHelper::processPresetClicked()
+{
+    bool ok;
+    QString item = QInputDialog::getItem(_form_widget, tr("Choose a preset"), tr("Preset settings : "), _presets, 0, false, &ok);
+
+    if (ok && !item.isEmpty())
+    {
+        int preset = _presets.indexOf(item);
+        if (preset >= 0)
+        {
+            emit presetSelected(preset);
+            emit needLocalRefreshing();
+        }
+    }
 }
 
 void FreeFormHelper::openDialog(QDialog* dialog)

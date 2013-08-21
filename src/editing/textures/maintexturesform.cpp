@@ -33,6 +33,12 @@ MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui
     preview_layer_coverage->setTextures(textures);
     form_helper->addPreview(ui->preview_coverage, preview_layer_coverage);
 
+    form_helper->addPreset(tr("Rocks with grass"));
+    form_helper->addPreset(tr("Snow covered mountains"));
+    form_helper->addPreset(tr("Arid canyons"));
+    form_helper->setPresetButton(ui->button_preset);
+    connect(form_helper, SIGNAL(presetSelected(int)), this, SLOT(selectPreset(int)));
+
     connect(layer_helper, SIGNAL(layersChanged()), form_helper, SLOT(processDataChange()));
 }
 
@@ -90,6 +96,11 @@ void MainTexturesForm::selectLayer(int layer)
         ui->preview_coverage->redraw();
         ui->preview_texture->redraw();
     }
+}
+
+void MainTexturesForm::selectPreset(int preset)
+{
+    texturesAutoPreset(textures, (TexturesPreset)preset);
 }
 
 void MainTexturesForm::updateLocalDataFromScenery()

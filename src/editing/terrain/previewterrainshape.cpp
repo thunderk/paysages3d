@@ -17,7 +17,7 @@ void PreviewTerrainShape::bindEvent(BasePreview* preview)
     preview->addOsd(QString("geolocation"));
     //preview->addToggle("highlight", tr("Coverage highlight"), true);
 
-    preview->configScaling(20.0, 1000.0, 20.0, 50.0);
+    preview->configScaling(20.0, 1000.0, 20.0, 200.0);
     preview->configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
 }
 

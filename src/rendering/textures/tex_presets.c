@@ -16,8 +16,14 @@ void texturesAutoPreset(TexturesDefinition* definition, TexturesPreset preset)
         layersSetName(definition->layers, 1, "Grass");
     }
     else if (preset == TEXTURES_PRESET_ALPS)
-    {
-        /* TODO */
+{
+        layer = layersGetLayer(definition->layers, layersAddLayer(definition->layers, NULL));
+        texturesLayerAutoPreset(layer, TEXTURES_LAYER_PRESET_ROCK);
+        layersSetName(definition->layers, 0, "Ground");
+
+        layer = layersGetLayer(definition->layers, layersAddLayer(definition->layers, NULL));
+        texturesLayerAutoPreset(layer, TEXTURES_LAYER_PRESET_SNOW);
+        layersSetName(definition->layers, 1, "Snow");
     }
     else if (preset == TEXTURES_PRESET_CANYON)
     {

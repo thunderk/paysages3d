@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>DialogMaterialEditor</class>
  <widget class="QDialog" name="DialogMaterialEditor">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +14,10 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Paysages 3D - Material editor</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
@@ -37,9 +43,6 @@
           </property>
           <property name="text">
            <string>This controls the way the surface diffuses its inner color in all directions, when a light source reaches it</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -154,9 +157,6 @@
           </property>
           <property name="text">
            <string>Amount and direction of light that is directly reflected from an incoming source (useful for shiny things)</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
           </property>
          </widget>
         </item>

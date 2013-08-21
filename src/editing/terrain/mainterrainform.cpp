@@ -56,11 +56,11 @@ void MainTerrainForm::refreshFromLocalData()
     qint64 memused = terrainGetMemoryStats(_terrain);
     if (memused > 0)
     {
-        _form_helper->setLabelText("label_painting_info", tr("Memory used by sculpted data: %1").arg(getHumanMemory(memused)));
+        _form_helper->setLabelText(ui->label_painting_info, tr("Memory used by sculpted data: %1").arg(getHumanMemory(memused)));
     }
     else
     {
-        _form_helper->setLabelText("label_painting_info", tr("No manual scuplting done"));
+        _form_helper->setLabelText(ui->label_painting_info, tr("No manual scuplting done"));
     }
 
     ui->widget_base_noise_preview->setNoise(_terrain->_height_noise);

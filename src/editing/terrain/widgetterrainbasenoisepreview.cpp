@@ -18,8 +18,8 @@ void WidgetTerrainBaseNoisePreview::setNoise(NoiseGenerator* noise)
 
 void WidgetTerrainBaseNoisePreview::doDrawing(QPainter* painter)
 {
-    painter->setBrush(Qt::SolidPattern);
-    painter->drawRect(rect());
+    painter->fillRect(rect(), QColor(20, 40, 80));
+    painter->setPen(QColor(220, 210, 180));
 
     int height = this->height();
 
@@ -37,7 +37,6 @@ void WidgetTerrainBaseNoisePreview::doDrawing(QPainter* painter)
         {
             value = noiseGet1DTotal(_noise, 100.0 * ((double)x) / factor);
 
-            painter->setPen(Qt::white);
             painter->drawLine(x, height - 1 - (value - minvalue) * factor, x, height - 1);
         }
     }

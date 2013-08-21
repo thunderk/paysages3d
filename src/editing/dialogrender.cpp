@@ -58,10 +58,10 @@ private:
     RenderParams _params;
 };
 
-class RenderArea:public QWidget
+class _RenderArea:public QWidget
 {
 public:
-    RenderArea(QWidget* parent):
+    _RenderArea(QWidget* parent):
         QWidget(parent)
     {
         setMinimumSize(800, 600);
@@ -91,7 +91,7 @@ DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
 
     _scroll = new QScrollArea(this);
     _scroll->setAlignment(Qt::AlignCenter);
-    area = new RenderArea(_scroll);
+    area = new _RenderArea(_scroll);
     _scroll->setWidget(area);
     layout()->addWidget(_scroll);
 

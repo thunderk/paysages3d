@@ -27,7 +27,7 @@ public:
         addOsd(QString("geolocation"));
         addToggle("highlight", tr("Coverage highlight"), true);
 
-        configScaling(20.0, 1000.0, 20.0, 50.0);
+        configScaling(20.0, 1000.0, 20.0, 200.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
 protected:

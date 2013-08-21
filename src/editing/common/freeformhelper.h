@@ -1,6 +1,9 @@
 #ifndef FREEFORMHELPER_H
 #define FREEFORMHELPER_H
 
+#include <QVector>
+#include <QStringList>
+
 #include "widgetsliderdecimal.h"
 #include "../basepreview.h"
 
@@ -18,25 +21,15 @@ public:
     void startManaging();
 
     void addPreview(BasePreview* preview, PreviewRenderer* renderer);
-    void addPreview(QString widget_name, PreviewRenderer* renderer);
-
     void addDoubleInputSlider(WidgetSliderDecimal* slider, double* value, double min=0.0, double max=1.0, double small_step=0.0, double large_step=0.0);
-    void addDoubleInputSlider(QString widget_name, double* value, double min=0.0, double max=1.0, double small_step=0.0, double large_step=0.0);
-
     void setApplyButton(QPushButton* button);
-    void setApplyButton(QString widget_name);
-
     void setRevertButton(QPushButton* button);
-    void setRevertButton(QString widget_name);
-
     void setExploreButton(QPushButton* button);
-    void setExploreButton(QString widget_name);
-
     void setRenderButton(QPushButton* button);
-    void setRenderButton(QString widget_name);
-
     void setLabelText(QLabel* label, QString text);
-    void setLabelText(QString widget_name, QString text);
+
+    void setPresetButton(QPushButton* button);
+    void addPreset(const QString& name);
 
     void openDialog(QDialog* dialog);
     void gotoMainTab(int position);
@@ -44,6 +37,8 @@ public:
 signals:
     void revertClicked();
     void applyClicked();
+
+    void presetSelected(int position);
 
     void needLocalRefreshing();
     void needGlobalRefreshing();
@@ -59,6 +54,7 @@ public slots:
     void processExploreClicked();
     void processRenderClicked();
     void processDecimalChange(double value);
+    void processPresetClicked();
 
 protected:
     bool eventFilter(QObject* object, QEvent* event);
@@ -67,6 +63,9 @@ private:
     QWidget* _form_widget;
 
     bool _data_changed;
+
+    QPushButton* _button_presets;
+    QStringList _presets;
 
     QVector<BasePreview*> _previews;
     QVector<WidgetSliderDecimal*> _inputs_decimal;
