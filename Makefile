@@ -1,39 +1,58 @@
 BUILDMODE=release
 BUILDPATH=./build/${BUILDMODE}
 CC=gcc
-MAKE=make
+MAKE=make -f Makefile.${BUILDMODE}
 
 ifneq (,$(COMPILER))
 	CC=$(COMPILER)
 endif
 
-all:
-	@+cd src/rendering && $(MAKE) CC=${CC} BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
-	@+cd src/exploring && $(MAKE) CC=${CC} BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
-	@+cd src/controlling && $(MAKE) CC=${CC} BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
-	@+cd src/editing && qmake "BUILDMODE=${BUILDMODE}" "PROJECT_PATH=${CURDIR}" && $(MAKE)
-	@+cd src/testing && $(MAKE) CC=${CC} BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
+all:dirs makefiles
+	@+cd src/rendering && $(MAKE)
+	@+cd src/exploring && $(MAKE)
+	@+cd src/controlling && $(MAKE)
+	@+cd src/editing && $(MAKE)
+	@+cd src/testing && $(MAKE)
+
+dirs:
+	mkdir -p ${BUILDPATH}/rendering
+	mkdir -p ${BUILDPATH}/exploring
+	mkdir -p ${BUILDPATH}/controlling
+	mkdir -p ${BUILDPATH}/editing
+	mkdir -p ${BUILDPATH}/testing
+
+makefiles:
+	@+cd src/rendering && qmake rendering.pro "CONFIG=$(BUILDMODE)" -r -spec linux-clang
+	@+cd src/exploring && qmake exploring.pro "CONFIG=$(BUILDMODE)" -r -spec linux-clang
+	@+cd src/controlling && qmake controlling.pro "CONFIG=$(BUILDMODE)" -r -spec linux-clang
+	@+cd src/editing && qmake editing.pro "CONFIG=${BUILDMODE}" -r -spec linux-clang
+	@+cd src/testing && qmake testing.pro "CONFIG=$(BUILDMODE)" -r -spec linux-clang
 
 clean:
-	cd src/rendering && $(MAKE) clean BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
-	cd src/exploring && $(MAKE) clean BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
-	cd src/controlling && $(MAKE) clean BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
-	cd src/editing && qmake "BUILDMODE=${BUILDMODE}" "PROJECT_PATH=${CURDIR}" && $(MAKE) clean
-	cd src/testing && $(MAKE) clean BUILDMODE=${BUILDMODE} PROJECT_PATH=${CURDIR}
+	@+cd src/rendering && qmake "CONFIG=$(BUILDMODE)" && $(MAKE) clean
+	@+cd src/exploring && qmake "CONFIG=$(BUILDMODE)" && $(MAKE) clean
+	@+cd src/controlling && qmake "CONFIG=$(BUILDMODE)" && $(MAKE) clean
+	@+cd src/editing && qmake "CONFIG=${BUILDMODE}" && $(MAKE) clean
+	@+cd src/testing && qmake "CONFIG=$(BUILDMODE)" && $(MAKE) clean
+	rm -f src/rendering/Makefile
+	rm -f src/exploring/Makefile
+	rm -f src/controlling/Makefile
+	rm -f src/editing/Makefile
+	rm -f src/testing/Makefile
 	rm -f ${BUILDPATH}/paysages-cli
-	rm -f ${BUILDPATH}/paysages-qt
+	rm -f ${BUILDPATH}/paysages-gui
 	rm -f ${BUILDPATH}/paysages-tests
-	rm -f ${BUILDPATH}/libpaysages_exploring.so
-	rm -f ${BUILDPATH}/libpaysages_rendering.so
+	rm -f ${BUILDPATH}/libpaysages_exploring.so*
+	rm -f ${BUILDPATH}/libpaysages_rendering.so*
 
 docs:
 	doxygen Doxyfile
 
 debug:
-	make BUILDMODE=debug all
+	+make BUILDMODE=debug all
 
 release:
-	make BUILDMODE=release all
+	+make BUILDMODE=release all
 
 tests: all
 	LD_LIBRARY_PATH=${BUILDPATH} CK_DEFAULT_TIMEOUT=30 ${BUILDPATH}/paysages-tests
@@ -42,10 +61,10 @@ run_cli: all
 	LD_LIBRARY_PATH=${BUILDPATH} ${RUNNER} ${BUILDPATH}/paysages-cli
 
 run: all
-	LD_LIBRARY_PATH=${BUILDPATH} ${RUNNER} ${BUILDPATH}/paysages-qt
+	LD_LIBRARY_PATH=${BUILDPATH} ${RUNNER} ${BUILDPATH}/paysages-gui
 
 profile: debug
-	LD_LIBRARY_PATH=build/debug perf record -g fp ./build/debug/paysages-qt
+	LD_LIBRARY_PATH=build/debug perf record -g fp ./build/debug/paysages-gui
 	perf report -g
 
 profile_cli: debug
@@ -56,7 +75,7 @@ install:release
 	mkdir -p ${DESTDIR}/usr/bin
 	mkdir -p ${DESTDIR}/usr/lib
 	mkdir -p ${DESTDIR}/usr/share/paysages3d
-	cp build/release/paysages-qt ${DESTDIR}/usr/bin/paysages3d
+	cp build/release/paysages-gui ${DESTDIR}/usr/bin/paysages3d
 	cp build/release/libpaysages_exploring.so ${DESTDIR}/usr/lib/
 	cp build/release/libpaysages_rendering.so ${DESTDIR}/usr/lib/
 	cp data/.paysages_data ${DESTDIR}/usr/share/paysages3d/

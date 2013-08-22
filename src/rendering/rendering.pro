@@ -1,17 +1,30 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2013-05-01T12:27:33
-#
-#-------------------------------------------------
-
-QT       -= core gui
-
-TARGET = rendering
 TEMPLATE = lib
+CONFIG += console
+CONFIG -= app_bundle
+CONFIG -= qt
 
-DEFINES += RENDERING_LIBRARY
+TARGET = paysages_rendering
+INCLUDEPATH += ..
 
-SOURCES += \
+CONFIG(debug) {
+    DESTDIR = ../../build/debug/
+    MAKEFILE = Makefile.debug
+} else {
+    DESTDIR = ../../build/release/
+    MAKEFILE = Makefile.release
+}
+
+OBJECTS_DIR = $$DESTDIR/rendering/
+
+release:DEFINES += NDEBUG
+
+linux-clang {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += glib-2.0 gthread-2.0 IL ILU
+}
+DEFINES += HAVE_GLIB=1
+
+SOURCES += main.c \
     zone.c \
     tools.c \
     system.c \
@@ -23,23 +36,23 @@ SOURCES += \
     noiseperlin.c \
     noisenaive.c \
     noise.c \
-    main.c \
     layers.c \
     geoarea.c \
     camera.c \
-    auto.c \
     atmosphere/atm_render.c \
     atmosphere/atm_raster.c \
     atmosphere/atm_preview.c \
     atmosphere/atm_presets.c \
     atmosphere/atm_definition.c \
     atmosphere/atm_bruneton.c \
-    clouds/clo_tools.c \
+    clouds/clo_walking.c \
     clouds/clo_rendering.c \
     clouds/clo_preview.c \
     clouds/clo_presets.c \
+    clouds/clo_density.c \
     clouds/clo_definition.c \
     shared/preview.c \
+    terrain/ter_render.c \
     terrain/ter_raster.c \
     terrain/ter_preview.c \
     terrain/ter_presets.c \
@@ -56,9 +69,11 @@ SOURCES += \
     tools/memory.c \
     tools/lighting.c \
     tools/euclid.c \
+    tools/data.c \
     tools/curve.c \
     tools/color.c \
     tools/cache.c \
+    tools/boundingbox.c \
     tools/array.c \
     water/wat_render.c \
     water/wat_raster.c \
@@ -82,15 +97,19 @@ HEADERS += \
     layers.h \
     geoarea.h \
     camera.h \
-    auto.h \
     atmosphere/public.h \
     atmosphere/private.h \
     clouds/public.h \
     clouds/private.h \
+    clouds/clo_walking.h \
+    clouds/clo_preview.h \
+    clouds/clo_density.h \
     shared/types.h \
     shared/preview.h \
+    terrain/ter_raster.h \
     terrain/public.h \
     terrain/private.h \
+    textures/tex_preview.h \
     textures/public.h \
     textures/private.h \
     tools/texture.h \
@@ -99,30 +118,12 @@ HEADERS += \
     tools/memory.h \
     tools/lighting.h \
     tools/euclid.h \
+    tools/data.h \
     tools/curve.h \
     tools/color.h \
     tools/cache.h \
+    tools/boundingbox.h \
     tools/array.h \
     water/public.h \
     water/private.h
 
-symbian {
-    MMP_RULES += EXPORTUNFROZEN
-    TARGET.UID3 = 0xEC48CBFE
-    TARGET.CAPABILITY = 
-    TARGET.EPOCALLOWDLLDATA = 1
-    addFiles.sources = rendering.dll
-    addFiles.path = !:/sys/bin
-    DEPLOYMENT += addFiles
-}
-
-unix:!symbian {
-    maemo5 {
-        target.path = /opt/usr/lib
-    } else {
-        target.path = /usr/lib
-    }
-    INSTALLS += target
-}
-
-FORMS +=

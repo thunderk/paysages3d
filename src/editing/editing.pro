@@ -1,26 +1,29 @@
-isEmpty(PROJECT_PATH) {
-PROJECT_PATH = ../..
-}
-
 TEMPLATE = app
 CONFIG += qt
+
 QT += core gui opengl
-DEPENDPATH += .
-INCLUDEPATH += .
-DESTDIR = $$PROJECT_PATH/build/$$BUILDMODE/
+
+TARGET = paysages-gui
+INCLUDEPATH += ..
+
+CONFIG(debug) {
+    DESTDIR = ../../build/debug/
+    MAKEFILE = Makefile.debug
+} else {
+    DESTDIR = ../../build/release/
+    MAKEFILE = Makefile.release
+}
+
 OBJECTS_DIR = $$DESTDIR/editing/
 MOC_DIR = $$OBJECTS_DIR/moc/
-CONFIG -= release
-CONFIG += $$BUILDMODE
-INCLUDEPATH += $$PROJECT_PATH/src/
 
 release:DEFINES += NDEBUG
-release:QMAKE_CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter
 
-unix:LIBS += -L$$DESTDIR -lpaysages_rendering -lpaysages_exploring -lGLU
-win32:LIBS += $$PROJECT_PATH/libpaysages.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-2.0
+DEPENDPATH += ..
+linux-clang:LIBS += -L$$DESTDIR -lpaysages_rendering -lpaysages_exploring -lGLU
+win32:LIBS += ../../libpaysages.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-2.0
 
-TRANSLATIONS = $$PROJECT_PATH/data/i18n/paysages_fr.ts
+TRANSLATIONS = ../../data/i18n/paysages_fr.ts
 
 HEADERS += \
     terrain/widgetheightmap.h \

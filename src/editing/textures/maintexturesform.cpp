@@ -71,7 +71,11 @@ void MainTexturesForm::updateLayers()
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         ui->layersGrid->setItem(n - 1 - i, 1, item);
 
-        ui->layersGrid->setCellWidget(n - 1 - i, 2, new SmallMaterialPreview(ui->layersGrid, &layer->material));
+        QWidget* widget = new SmallMaterialPreview(ui->layersGrid, &layer->material);
+        //widget->setMinimumSize(50, 50);
+        ui->layersGrid->setCellWidget(n - 1 - i, 2, widget);
+
+        ui->layersGrid->setRowHeight(n - 1 - i, 50);
     }
 
     ui->preview_cumul->setEnabled(n > 0);
