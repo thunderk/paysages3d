@@ -1,5 +1,6 @@
 BUILDMODE=release
 BUILDPATH=./build/${BUILDMODE}
+QBUILDMODE=declarative_${BUILDMODE}
 CC=gcc
 MAKE=make -f Makefile.${BUILDMODE}
 
@@ -22,28 +23,31 @@ dirs:
 	mkdir -p ${BUILDPATH}/testing
 
 makefiles:
-	@+cd src/rendering && qmake rendering.pro "CONFIG=$(BUILDMODE)" -r -spec linux-clang
-	@+cd src/exploring && qmake exploring.pro "CONFIG=$(BUILDMODE)" -r -spec linux-clang
-	@+cd src/controlling && qmake controlling.pro "CONFIG=$(BUILDMODE)" -r -spec linux-clang
-	@+cd src/editing && qmake editing.pro "CONFIG=${BUILDMODE}" -r -spec linux-clang
-	@+cd src/testing && qmake testing.pro "CONFIG=$(BUILDMODE)" -r -spec linux-clang
+	@+cd src/rendering && qmake rendering.pro "CONFIG=$(QBUILDMODE)" -r -spec linux-clang
+	@+cd src/exploring && qmake exploring.pro "CONFIG=$(QBUILDMODE)" -r -spec linux-clang
+	@+cd src/controlling && qmake controlling.pro "CONFIG=$(QBUILDMODE)" -r -spec linux-clang
+	@+cd src/editing && qmake editing.pro "CONFIG=${QBUILDMODE}" -r -spec linux-clang
+	@+cd src/testing && qmake testing.pro "CONFIG=$(QBUILDMODE)" -r -spec linux-clang
 
 clean:
-	@+cd src/rendering && qmake "CONFIG=$(BUILDMODE)" && $(MAKE) clean
-	@+cd src/exploring && qmake "CONFIG=$(BUILDMODE)" && $(MAKE) clean
-	@+cd src/controlling && qmake "CONFIG=$(BUILDMODE)" && $(MAKE) clean
-	@+cd src/editing && qmake "CONFIG=${BUILDMODE}" && $(MAKE) clean
-	@+cd src/testing && qmake "CONFIG=$(BUILDMODE)" && $(MAKE) clean
-	rm -f src/rendering/Makefile
-	rm -f src/exploring/Makefile
-	rm -f src/controlling/Makefile
-	rm -f src/editing/Makefile
-	rm -f src/testing/Makefile
+	@+cd src/rendering && qmake "CONFIG=$(QBUILDMODE)" && $(MAKE) clean
+	@+cd src/exploring && qmake "CONFIG=$(QBUILDMODE)" && $(MAKE) clean
+	@+cd src/controlling && qmake "CONFIG=$(QBUILDMODE)" && $(MAKE) clean
+	@+cd src/editing && qmake "CONFIG=${QBUILDMODE}" && $(MAKE) clean
+	@+cd src/testing && qmake "CONFIG=$(QBUILDMODE)" && $(MAKE) clean
 	rm -f ${BUILDPATH}/paysages-cli
 	rm -f ${BUILDPATH}/paysages-gui
 	rm -f ${BUILDPATH}/paysages-tests
 	rm -f ${BUILDPATH}/libpaysages_exploring.so*
 	rm -f ${BUILDPATH}/libpaysages_rendering.so*
+ifeq (${BUILDMODE}, release)
+	+make BUILDMODE=debug clean
+	rm -f src/rendering/Makefile*
+	rm -f src/exploring/Makefile*
+	rm -f src/controlling/Makefile*
+	rm -f src/editing/Makefile*
+	rm -f src/testing/Makefile*
+endif
 
 docs:
 	doxygen Doxyfile
