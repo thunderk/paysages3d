@@ -1,23 +1,14 @@
+include(../common.pri)
+
 TEMPLATE = app
 CONFIG += qt
 
 QT += core gui opengl
 
 TARGET = paysages-gui
-INCLUDEPATH += ..
-
-CONFIG(debug) {
-    DESTDIR = ../../build/debug/
-    MAKEFILE = Makefile.debug
-} else {
-    DESTDIR = ../../build/release/
-    MAKEFILE = Makefile.release
-}
 
 OBJECTS_DIR = $$DESTDIR/editing/
 MOC_DIR = $$OBJECTS_DIR/moc/
-
-release:DEFINES += NDEBUG
 
 DEPENDPATH += ..
 linux-clang:LIBS += -L$$DESTDIR -lpaysages_rendering -lpaysages_exploring -lGLU

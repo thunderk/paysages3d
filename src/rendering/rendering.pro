@@ -1,22 +1,13 @@
+include(../common.pri)
+
 TEMPLATE = lib
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
 TARGET = paysages_rendering
-INCLUDEPATH += ..
-
-CONFIG(debug) {
-    DESTDIR = ../../build/debug/
-    MAKEFILE = Makefile.debug
-} else {
-    DESTDIR = ../../build/release/
-    MAKEFILE = Makefile.release
-}
 
 OBJECTS_DIR = $$DESTDIR/rendering/
-
-release:DEFINES += NDEBUG
 
 linux-clang {
     CONFIG += link_pkgconfig
