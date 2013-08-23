@@ -6,6 +6,8 @@
 #include "rendering/scenery.h"
 #include "previewmaterial.h"
 #include "editing/textures/PreviewLayerCoverage.h"
+#include "editing/textures/PreviewLayerLook.h"
+#include "editing/textures/PreviewCumul.h"
 
 MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui::MainTexturesForm)
 {
@@ -32,6 +34,14 @@ MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui
     preview_layer_coverage = new PreviewLayerCoverage();
     preview_layer_coverage->setTextures(textures);
     form_helper->addPreview(ui->preview_coverage, preview_layer_coverage);
+
+    preview_layer_look = new PreviewLayerLook();
+    preview_layer_look->setTextures(textures);
+    form_helper->addPreview(ui->preview_texture, preview_layer_look);
+
+    preview_cumul = new PreviewCumul();
+    preview_cumul->setTextures(textures);
+    form_helper->addPreview(ui->preview_cumul, preview_cumul);
 
     form_helper->addPreset(tr("Rocks with grass"));
     form_helper->addPreset(tr("Snow covered mountains"));

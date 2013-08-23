@@ -11,6 +11,8 @@ class MainTexturesForm;
 class FreeFormHelper;
 class FreeLayerHelper;
 class PreviewLayerCoverage;
+class PreviewLayerLook;
+class PreviewCumul;
 
 class MainTexturesForm : public QWidget
 {
@@ -37,6 +39,8 @@ private:
     FreeFormHelper* form_helper;
     FreeLayerHelper* layer_helper;
     PreviewLayerCoverage* preview_layer_coverage;
+    PreviewLayerLook* preview_layer_look;
+    PreviewCumul* preview_cumul;
 };
 
 #endif // MAINTEXTURESFORM_H

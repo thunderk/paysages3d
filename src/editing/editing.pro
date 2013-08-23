@@ -70,7 +70,9 @@ HEADERS += \
     common/DrawingWidget.h \
     lighting/SmallPreviewColor.h \
     lighting/SmallPreviewHues.h \
-    textures/PreviewLayerCoverage.h
+    textures/PreviewLayerCoverage.h \
+    textures/PreviewLayerLook.h \
+    textures/PreviewCumul.h
 
 SOURCES += \
     terrain/widgetheightmap.cpp \
@@ -126,7 +128,9 @@ SOURCES += \
     common/DrawingWidget.cpp \
     lighting/SmallPreviewColor.cpp \
     lighting/SmallPreviewHues.cpp \
-    textures/PreviewLayerCoverage.cpp
+    textures/PreviewLayerCoverage.cpp \
+    textures/PreviewLayerLook.cpp \
+    textures/PreviewCumul.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \

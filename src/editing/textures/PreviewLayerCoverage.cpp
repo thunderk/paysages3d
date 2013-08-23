@@ -35,4 +35,8 @@ Color PreviewLayerCoverage::getColor2D(double x, double y, double scaling)
     {
         return TexturesPreviewLayerCoverage_getColor(renderer, x, y, scaling, layer);
     }
+    else
+    {
+        return COLOR_BLACK;
+    }
 }

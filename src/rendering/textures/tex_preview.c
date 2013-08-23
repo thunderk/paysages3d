@@ -7,7 +7,7 @@
 void TexturesPreviewLayerCoverage_bind(Renderer* renderer, TexturesDefinition* definition)
 {
     TerrainDefinition* terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
-    sceneryGetTerrain(renderer->terrain->definition);
+    sceneryGetTerrain(terrain);
     TerrainRendererClass.bind(renderer, terrain);
     TerrainDefinitionClass.destroy(terrain);
 
@@ -38,4 +38,36 @@ Color TexturesPreviewLayerCoverage_getColor(Renderer* renderer, double x, double
     }
 
     return result;
+}
+
+void TexturesPreviewLayerLook_bind(Renderer* renderer, TexturesDefinition* definition)
+{
+    TexturesRendererClass.bind(renderer, definition);
+}
+
+Color TexturesPreviewLayerLook_getColor(Renderer* renderer, double x, double y, double scaling, int layer)
+{
+    UNUSED(scaling);
+    UNUSED(layer);
+
+    return renderer->textures->applyToTerrain(renderer, x, y).final_color;
+}
+
+
+void TexturesPreviewCumul_bind(Renderer* renderer, TexturesDefinition* definition)
+{
+    TerrainDefinition* terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
+    sceneryGetTerrain(terrain);
+    TerrainRendererClass.bind(renderer, terrain);
+    TerrainDefinitionClass.destroy(terrain);
+
+    TexturesRendererClass.bind(renderer, definition);
+}
+
+Color TexturesPreviewCumul_getColor(Renderer* renderer, double x, double y, double scaling, int layer)
+{
+    UNUSED(scaling);
+    UNUSED(layer);
+
+    return renderer->textures->applyToTerrain(renderer, x, y).final_color;
 }

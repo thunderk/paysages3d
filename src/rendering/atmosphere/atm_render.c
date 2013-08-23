@@ -36,9 +36,9 @@ static void _fakeGetLightingStatus(Renderer* renderer, LightStatus* status, Vect
     UNUSED(normal);
     UNUSED(opaque);
 
-    light.color.r = 0.8;
-    light.color.g = 0.8;
-    light.color.b = 0.8;
+    light.color.r = 1.0;
+    light.color.g = 1.0;
+    light.color.b = 1.0;
     light.direction.x = -0.7;
     light.direction.y = -0.7;
     light.direction.z = 0.7;

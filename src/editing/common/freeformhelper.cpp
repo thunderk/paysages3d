@@ -43,7 +43,7 @@ bool FreeFormHelper::eventFilter(QObject* object, QEvent* event)
         {
             preview_size = QSize(320, 320);
         }
-        else if (form_size.width() < 1000 || form_size.height() < 700)
+        else if (form_size.width() < 1100 || form_size.height() < 750)
         {
             preview_size = QSize(200, 200);
         }
