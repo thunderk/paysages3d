@@ -1,5 +1,7 @@
 #include "formrender.h"
 
+#include <QPushButton>
+
 #include "dialogrender.h"
 #include "inputcamera.h"
 #include "tools.h"

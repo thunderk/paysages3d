@@ -2,8 +2,6 @@
 #define _PAYSAGES_QT_BASEFORM_H_
 
 #include <QWidget>
-#include <QPushButton>
-#include <QComboBox>
 #include <QStringList>
 #include "basepreview.h"
 #include "baseinput.h"
@@ -15,6 +13,9 @@
 #include "rendering/tools/lighting.h"
 #include "rendering/noise.h"
 #include "rendering/layers.h"
+
+class QPushButton;
+class QComboBox;
 
 class BaseForm : public QWidget
 {

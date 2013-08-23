@@ -1,5 +1,8 @@
 #include "baseinput.h"
 
+#include <QWidget>
+#include <QLabel>
+
 BaseInput::BaseInput(QWidget* form, QString label):
     QObject(form)
 {

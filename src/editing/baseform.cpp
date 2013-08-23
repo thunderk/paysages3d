@@ -16,6 +16,8 @@
 #include <QLabel>
 #include <QVariant>
 #include <QInputDialog>
+#include <QComboBox>
+#include <QPushButton>
 
 BaseForm::BaseForm(QWidget* parent, bool auto_apply, bool with_layers) : QWidget(parent)
 {
