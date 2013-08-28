@@ -56,27 +56,25 @@ typedef struct
     Layers* layers;
 } TexturesDefinition;
 
-/*typedef struct
+typedef struct
 {
-    double global_presence;
-    double local_presence;
-    Vector3 displaced_location;
-    Vector3 displaced_normal;
+    TexturesLayerDefinition* layer;
+    double presence;
     Color color;
-    Color cancelled_color;
-} TexturesLayerResult;*/
+} TexturesLayerResult;
 
 typedef struct
 {
     Vector3 base_location;
     Vector3 base_normal;
-    /*int layer_count;
-    TexturesLayerResult layers[TEXTURES_MAX_LAYERS];*/
+    int layer_count;
+    TexturesLayerResult layers[TEXTURES_MAX_LAYERS];
     Vector3 final_location;
     Color final_color;
 } TexturesResult;
 
 typedef Vector3 (*FuncTexturesDisplaceTerrain)(Renderer* renderer, TerrainResult terrain);
+typedef double (*FuncTexturesGetBasePresence)(Renderer* renderer, int layer, TerrainResult terrain);
 typedef TexturesResult (*FuncTexturesApplyToTerrain)(Renderer* renderer, double x, double z);
 
 typedef struct
@@ -84,6 +82,7 @@ typedef struct
     TexturesDefinition* definition;
 
     FuncTexturesDisplaceTerrain displaceTerrain;
+    FuncTexturesGetBasePresence getBasePresence;
     FuncTexturesApplyToTerrain applyToTerrain;
 } TexturesRenderer;
 

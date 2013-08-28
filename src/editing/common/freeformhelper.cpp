@@ -147,22 +147,6 @@ void FreeFormHelper::setPresetButton(QPushButton* button)
     connect(button, SIGNAL(clicked()), this, SLOT(processPresetClicked()));
 }
 
-void FreeFormHelper::processPresetClicked()
-{
-    bool ok;
-    QString item = QInputDialog::getItem(_form_widget, tr("Choose a preset"), tr("Preset settings : "), _presets, 0, false, &ok);
-
-    if (ok && !item.isEmpty())
-    {
-        int preset = _presets.indexOf(item);
-        if (preset >= 0)
-        {
-            emit presetSelected(preset);
-            emit needLocalRefreshing();
-        }
-    }
-}
-
 void FreeFormHelper::openDialog(QDialog* dialog)
 {
     if (dialog->exec())
@@ -294,5 +278,21 @@ void FreeFormHelper::processDecimalChange(double value)
         }
 
         processDataChange();
+    }
+}
+
+void FreeFormHelper::processPresetClicked()
+{
+    bool ok;
+    QString item = QInputDialog::getItem(_form_widget, tr("Choose a preset"), tr("Preset settings : "), _presets, 0, false, &ok);
+
+    if (ok && !item.isEmpty())
+    {
+        int preset = _presets.indexOf(item);
+        if (preset >= 0)
+        {
+            emit presetSelected(preset);
+            processDataChange();
+        }
     }
 }

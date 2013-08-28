@@ -40,9 +40,19 @@ Color TexturesPreviewLayerCoverage_getColor(Renderer* renderer, double x, double
     return result;
 }
 
+static double _getPresenceFull(Renderer* renderer, int layer, TerrainResult terrain)
+{
+    UNUSED(renderer);
+    UNUSED(layer);
+    UNUSED(terrain);
+
+    return 1.0;
+}
+
 void TexturesPreviewLayerLook_bind(Renderer* renderer, TexturesDefinition* definition)
 {
     TexturesRendererClass.bind(renderer, definition);
+    renderer->textures->getBasePresence = _getPresenceFull;
 }
 
 Color TexturesPreviewLayerLook_getColor(Renderer* renderer, double x, double y, double scaling, int layer)
@@ -50,7 +60,15 @@ Color TexturesPreviewLayerLook_getColor(Renderer* renderer, double x, double y, 
     UNUSED(scaling);
     UNUSED(layer);
 
-    return renderer->textures->applyToTerrain(renderer, x, y).final_color;
+    TexturesResult result = renderer->textures->applyToTerrain(renderer, x, y);
+    if (layer >= 0 && layer < result.layer_count)
+    {
+        return result.layers[layer].color;
+    }
+    else
+    {
+        return COLOR_BLACK;
+    }
 }
 
 

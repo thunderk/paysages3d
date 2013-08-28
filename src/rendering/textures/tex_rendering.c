@@ -104,12 +104,11 @@ static Vector3 _realDisplaceTerrain(Renderer* renderer, TerrainResult terrain)
     return v3Add(terrain.location, v3Scale(v3Normalize(terrain.normal), offset));
 }
 
-typedef struct
+static double _realGetBasePresence(Renderer* renderer, int layer, TerrainResult terrain)
 {
-    TexturesLayerDefinition* layer;
-    double presence;
-    Color color;
-} TexturesIntermediaryResult;
+    TexturesLayerDefinition* layerdef = layersGetLayer(renderer->textures->definition->layers, layer);
+    return texturesGetLayerBasePresence(layerdef, terrain);
+}
 
 static TexturesResult _realApplyToTerrain(Renderer* renderer, double x, double z)
 {
@@ -122,19 +121,24 @@ static TexturesResult _realApplyToTerrain(Renderer* renderer, double x, double z
     /* TODO Displaced textures had their presence already computed before, store that result and use it */
 
     /* Find presence of each layer */
-    TexturesIntermediaryResult layers_info[TEXTURES_MAX_LAYERS];
     int i, n;
     n = layersCount(textures->layers);
     for (i = 0; i < n; i++)
     {
-        layers_info[i].layer = layersGetLayer(textures->layers, i);
-        layers_info[i].presence = texturesGetLayerBasePresence(layers_info[i].layer, terrain);
-        if (layers_info[i].presence > 0.0)
+        TexturesLayerResult* info = result.layers + i;
+        info->layer = layersGetLayer(textures->layers, i);
+        info->presence = renderer->textures->getBasePresence(renderer, i, terrain);
+        if (info->presence > 0.0)
         {
-            Vector3 normal = _getDetailNormal(renderer, terrain.location, terrain.normal, layers_info[i].layer);
-            layers_info[i].color = renderer->applyLightingToSurface(renderer, terrain.location, normal, &layers_info[i].layer->material);
+            Vector3 normal = _getDetailNormal(renderer, terrain.location, terrain.normal, info->layer);
+            info->color = renderer->applyLightingToSurface(renderer, terrain.location, normal, &info->layer->material);
+        }
+        else
+        {
+            info->color = COLOR_TRANSPARENT;
         }
     }
+    result.layer_count = n;
 
     result.base_location = terrain.location;
     result.base_normal = terrain.normal;
@@ -142,10 +146,10 @@ static TexturesResult _realApplyToTerrain(Renderer* renderer, double x, double z
     result.final_color = COLOR_GREEN;
     for (i = 0; i < n; i++)
     {
-        if (layers_info[i].presence > 0.0)
+        if (result.layers[i].presence > 0.0)
         {
-            layers_info[i].color.a = layers_info[i].presence;
-            colorMask(&result.final_color, &layers_info[i].color);
+            result.layers[i].color.a = result.layers[i].presence;
+            colorMask(&result.final_color, &result.layers[i].color);
         }
     }
 
@@ -160,6 +164,15 @@ static Vector3 _fakeDisplaceTerrain(Renderer* renderer, TerrainResult terrain)
     return terrain.location;
 }
 
+static double _fakeGetBasePresence(Renderer* renderer, int layer, TerrainResult terrain)
+{
+    UNUSED(renderer);
+    UNUSED(layer);
+    UNUSED(terrain);
+
+    return 1.0;
+}
+
 static TexturesResult _fakeApplyToTerrain(Renderer* renderer, double x, double z)
 {
     UNUSED(renderer);
@@ -170,7 +183,7 @@ static TexturesResult _fakeApplyToTerrain(Renderer* renderer, double x, double z
     result.base_location.y = 0.0;
     result.base_location.z = z;
     result.base_normal = VECTOR_UP;
-    /*result.layer_count = 0;*/
+    result.layer_count = 0;
     result.final_location = result.base_location;
     result.final_color = COLOR_WHITE;
 
@@ -186,6 +199,7 @@ static TexturesRenderer* _createRenderer()
     result->definition = TexturesDefinitionClass.create();
 
     result->displaceTerrain = _fakeDisplaceTerrain;
+    result->getBasePresence = _fakeGetBasePresence;
     result->applyToTerrain = _fakeApplyToTerrain;
 
     return result;
@@ -202,6 +216,7 @@ static void _bindRenderer(Renderer* renderer, TexturesDefinition* definition)
     TexturesDefinitionClass.copy(definition, renderer->textures->definition);
 
     renderer->textures->displaceTerrain = _realDisplaceTerrain;
+    renderer->textures->getBasePresence = _realGetBasePresence;
     renderer->textures->applyToTerrain = _realApplyToTerrain;
 }
 

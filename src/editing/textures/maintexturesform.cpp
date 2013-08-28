@@ -106,6 +106,7 @@ void MainTexturesForm::selectLayer(int layer)
         ui->preview_texture->setEnabled(true);
 
         preview_layer_coverage->setLayer(layer);
+        preview_layer_look->setLayer(layer);
 
         ui->preview_coverage->redraw();
         ui->preview_texture->redraw();
