@@ -3,6 +3,7 @@
 #include <time.h>
 #include "tools/color.h"
 #include "tools/euclid.h"
+#include "terrain/ter_raster.h"
 #include "render.h"
 #include "system.h"
 

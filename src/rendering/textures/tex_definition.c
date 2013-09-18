@@ -65,6 +65,8 @@ static void _layerValidateDefinition(TexturesLayerDefinition* definition)
     noiseAddLevelsSimple(definition->_detail_noise, 7, 0.01, -1.0, 1.0, 0.0);
     noiseNormalizeAmplitude(definition->_detail_noise, -0.008, 0.008, 0);
     noiseValidate(definition->_detail_noise);
+
+    materialValidate(&definition->material);
 }
 
 static TexturesLayerDefinition* _layerCreateDefinition()

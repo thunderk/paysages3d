@@ -11,16 +11,15 @@ extern "C" {
 
 typedef struct
 {
-    double hue;
-    double diffuse;
-    double hardness;
+    ColorHSL base;
 
+    double hardness;
     double reflection;
     double shininess;
 
     double receive_shadows;
 
-    Color base;
+    Color _rgb;
 } SurfaceMaterial;
 
 typedef struct
@@ -51,6 +50,7 @@ Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 locatio
 
 void materialSave(PackStream* stream, SurfaceMaterial* material);
 void materialLoad(PackStream* stream, SurfaceMaterial* material);
+void materialValidate(SurfaceMaterial* material);
 
 #ifdef __cplusplus
 }

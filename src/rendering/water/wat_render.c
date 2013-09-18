@@ -291,7 +291,7 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     /* Bring color to the camera */
     color = renderer->applyMediumTraversal(renderer, location, color);
 
-    result.base = definition->material.base;
+    result.base = definition->material._rgb;
     result.final = color;
 
     return result;

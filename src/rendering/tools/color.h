@@ -27,6 +27,7 @@ extern Color COLOR_GREY;
 /* Color */
 void colorSave(PackStream* stream, Color* col);
 void colorLoad(PackStream* stream, Color* col);
+Color colorFromValues(double r, double g, double b, double a);
 
 unsigned int colorTo32BitRGBA(Color* col);
 unsigned int colorTo32BitBGRA(Color* col);
@@ -89,6 +90,20 @@ void colorGradationQuickAdd(ColorGradation* gradation, double value, Color* col)
 void colorGradationQuickAddRgb(ColorGradation* gradation, double value, double r, double g, double b);
 
 Color colorGradationGet(ColorGradation* gradation, double value);
+
+/* HSL color space */
+typedef struct
+{
+    double h;
+    double s;
+    double l;
+    double a;
+} ColorHSL;
+
+Color colorFromHSL(ColorHSL col);
+ColorHSL colorToHSL(Color col);
+
+ColorHSL colorHSLFromValues(double h, double s, double l, double a);
 
 #ifdef __cplusplus
 }

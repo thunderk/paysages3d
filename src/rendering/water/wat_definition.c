@@ -16,6 +16,9 @@ static void _validateDefinition(WaterDefinition* definition)
     }
     noiseSetFunctionParams(definition->_waves_noise, NOISE_FUNCTION_SIMPLEX, -definition->turbulence, 0.0);
     noiseValidate(definition->_waves_noise);
+
+    materialValidate(&definition->material);
+    materialValidate(&definition->foam_material);
 }
 
 static WaterDefinition* _createDefinition()
