@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1090</width>
+    <width>1091</width>
     <height>627</height>
    </rect>
   </property>
@@ -58,34 +58,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="diffuseFactorLabel">
-            <property name="text">
-             <string>Diffuse factor</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="hardnessToLightLabel">
-            <property name="text">
-             <string>Hardness to light</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="WidgetSliderDecimal" name="slider_diffuse">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="WidgetSliderDecimal" name="slider_hardness">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
@@ -120,6 +92,48 @@
              </layout>
             </item>
            </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="diffuseFactorLabel">
+            <property name="text">
+             <string>Colorfulness (saturation)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="WidgetSliderDecimal" name="slider_saturation">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="diffuseFactorLabel_2">
+            <property name="text">
+             <string>Diffuse factor (lightness)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="WidgetSliderDecimal" name="slider_lightness">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="hardnessToLightLabel">
+            <property name="text">
+             <string>Hardness to light</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="WidgetSliderDecimal" name="slider_hardness">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

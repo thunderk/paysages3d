@@ -26,10 +26,7 @@ void cloudsLayerAutoPreset(CloudsLayerDefinition* definition, CloudsLayerPreset 
     noiseRandomizeOffsets(definition->_edge_noise);
     noiseRandomizeOffsets(definition->_shape_noise);
 
-    definition->material.base.r = 0.7;
-    definition->material.base.g = 0.7;
-    definition->material.base.b = 0.7;
-    definition->material.base.a = 1.0;
+    definition->material.base = colorToHSL(colorFromValues(0.7, 0.7, 0.7, 1.0));
 
     switch (preset)
     {

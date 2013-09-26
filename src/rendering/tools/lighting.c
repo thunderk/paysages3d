@@ -162,9 +162,9 @@ Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 locatio
     diffuse = (diffuse + (1.0 - normal_norm)) / (1.0 + (1.0 - normal_norm));
     if (diffuse > 0.0)
     {
-        result.r += diffuse * material->base.r * light_color.r;
-        result.g += diffuse * material->base.g * light_color.g;
-        result.b += diffuse * material->base.b * light_color.b;
+        result.r += diffuse * material->_rgb.r * light_color.r;
+        result.g += diffuse * material->_rgb.g * light_color.g;
+        result.b += diffuse * material->_rgb.b * light_color.b;
     }
 
     /* specular reflection */
@@ -215,14 +215,33 @@ Vector3 lightingGetStatusLocation(LightStatus* status)
 
 void materialSave(PackStream* stream, SurfaceMaterial* material)
 {
-    colorSave(stream, &material->base);
+    packWriteDouble(stream, &material->base.h);
+    packWriteDouble(stream, &material->base.l);
+    packWriteDouble(stream, &material->base.s);
+
+    packWriteDouble(stream, &material->hardness);
     packWriteDouble(stream, &material->reflection);
     packWriteDouble(stream, &material->shininess);
+
+    packWriteDouble(stream, &material->receive_shadows);
 }
 
 void materialLoad(PackStream* stream, SurfaceMaterial* material)
 {
-    colorLoad(stream, &material->base);
+    packReadDouble(stream, &material->base.h);
+    packReadDouble(stream, &material->base.l);
+    packReadDouble(stream, &material->base.s);
+
+    packReadDouble(stream, &material->hardness);
     packReadDouble(stream, &material->reflection);
     packReadDouble(stream, &material->shininess);
+
+    packReadDouble(stream, &material->receive_shadows);
+
+    materialValidate(material);
+}
+
+void materialValidate(SurfaceMaterial* material)
+{
+    material->_rgb = colorFromHSL(material->base);
 }

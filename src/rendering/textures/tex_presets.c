@@ -44,9 +44,7 @@ void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerP
             definition->displacement_height = 0.3;
             definition->displacement_scaling = 2.0;
             definition->displacement_offset = 0.0;
-            definition->material.base.r = 0.6;
-            definition->material.base.g = 0.55;
-            definition->material.base.b = 0.57;
+            definition->material.base = colorToHSL(colorFromValues(0.6, 0.55, 0.57, 1.0));
             definition->material.reflection = 0.006;
             definition->material.shininess = 6.0;
             break;
@@ -56,9 +54,7 @@ void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerP
             definition->displacement_height = 0.0;
             definition->displacement_scaling = 1.0;
             definition->displacement_offset = 0.0;
-            definition->material.base.r = 0.12;
-            definition->material.base.g = 0.19;
-            definition->material.base.b = 0.035;
+            definition->material.base = colorToHSL(colorFromValues(0.12, 0.19, 0.035, 1.0));
             definition->material.reflection = 0.001;
             definition->material.shininess = 4.0;
             break;
@@ -68,9 +64,7 @@ void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerP
             definition->displacement_height = 0.0;
             definition->displacement_scaling = 1.0;
             definition->displacement_offset = 0.0;
-            definition->material.base.r = 0.30;
-            definition->material.base.g = 0.28;
-            definition->material.base.b = 0.02;
+            definition->material.base = colorToHSL(colorFromValues(0.30, 0.28, 0.02, 1.0));
             definition->material.reflection = 0.008;
             definition->material.shininess = 6.0;
             break;
@@ -80,9 +74,7 @@ void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerP
             definition->displacement_height = 0.0;
             definition->displacement_scaling = 1.0;
             definition->displacement_offset = 0.0;
-            definition->material.base.r = 1.0;
-            definition->material.base.g = 1.0;
-            definition->material.base.b = 1.0;
+            definition->material.base = colorToHSL(colorFromValues(1.0, 1.0, 1.0, 1.0));
             definition->material.reflection = 0.25;
             definition->material.shininess = 0.6;
             break;

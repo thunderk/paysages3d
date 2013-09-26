@@ -414,7 +414,7 @@ void WidgetExplorer::paintGL()
     // Render water
     double water_height = _renderer->terrain->getWaterHeight(_renderer);
     glDisable(GL_TEXTURE_2D);
-    glColor3f(water->material.base.r, water->material.base.g, water->material.base.b);
+    glColor3f(water->material._rgb.r, water->material._rgb.g, water->material._rgb.b);
     glBegin(GL_QUADS);
     glVertex3f(camera_location.x - 500.0, water_height, camera_location.z - 500.0);
     glVertex3f(camera_location.x - 500.0, water_height, camera_location.z + 500.0);

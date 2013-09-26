@@ -32,34 +32,46 @@ void colorLoad(PackStream* stream, Color* col)
     packReadDouble(stream, &col->a);
 }
 
+Color colorFromValues(double r, double g, double b, double a)
+{
+    Color result;
+
+    result.r = r;
+    result.g = g;
+    result.b = b;
+    result.a = a;
+
+    return result;
+}
+
 unsigned int colorTo32BitRGBA(Color* col)
 {
-    return (((unsigned int)(col->a * 255.0)) << 24) | (((unsigned int)(col->b * 255.0)) << 16) | (((unsigned int)(col->g * 255.0)) << 8) | ((unsigned int)(col->r * 255.0));
+    return (((unsigned int) (col->a * 255.0)) << 24) | (((unsigned int) (col->b * 255.0)) << 16) | (((unsigned int) (col->g * 255.0)) << 8) | ((unsigned int) (col->r * 255.0));
 }
 
 unsigned int colorTo32BitBGRA(Color* col)
 {
-    return (((unsigned int)(col->a * 255.0)) << 24) | (((unsigned int)(col->r * 255.0)) << 16) | (((unsigned int)(col->g * 255.0)) << 8) | ((unsigned int)(col->b * 255.0));
+    return (((unsigned int) (col->a * 255.0)) << 24) | (((unsigned int) (col->r * 255.0)) << 16) | (((unsigned int) (col->g * 255.0)) << 8) | ((unsigned int) (col->b * 255.0));
 }
 
 unsigned int colorTo32BitARGB(Color* col)
 {
-    return (((unsigned int)(col->b * 255.0)) << 24) | (((unsigned int)(col->g * 255.0)) << 16) | (((unsigned int)(col->r * 255.0)) << 8) | ((unsigned int)(col->a * 255.0));
+    return (((unsigned int) (col->b * 255.0)) << 24) | (((unsigned int) (col->g * 255.0)) << 16) | (((unsigned int) (col->r * 255.0)) << 8) | ((unsigned int) (col->a * 255.0));
 }
 
 unsigned int colorTo32BitABGR(Color* col)
 {
-    return (((unsigned int)(col->r * 255.0)) << 24) | (((unsigned int)(col->g * 255.0)) << 16) | (((unsigned int)(col->b * 255.0)) << 8) | ((unsigned int)(col->a * 255.0));
+    return (((unsigned int) (col->r * 255.0)) << 24) | (((unsigned int) (col->g * 255.0)) << 16) | (((unsigned int) (col->b * 255.0)) << 8) | ((unsigned int) (col->a * 255.0));
 }
 
 Color colorFrom32BitRGBA(unsigned int col)
 {
     Color result;
 
-    result.r = ((double)(col & 0x000000FF)) / 255.0;
-    result.g = ((double)((col & 0x0000FF00) >> 8)) / 255.0;
-    result.b = ((double)((col & 0x00FF0000) >> 16)) / 255.0;
-    result.a = ((double)((col & 0xFF000000) >> 24)) / 255.0;
+    result.r = ((double) (col & 0x000000FF)) / 255.0;
+    result.g = ((double) ((col & 0x0000FF00) >> 8)) / 255.0;
+    result.b = ((double) ((col & 0x00FF0000) >> 16)) / 255.0;
+    result.a = ((double) ((col & 0xFF000000) >> 24)) / 255.0;
 
     return result;
 }
@@ -68,10 +80,10 @@ Color colorFrom32BitBGRA(unsigned int col)
 {
     Color result;
 
-    result.b = ((double)(col & 0x000000FF)) / 255.0;
-    result.g = ((double)((col & 0x0000FF00) >> 8)) / 255.0;
-    result.r = ((double)((col & 0x00FF0000) >> 16)) / 255.0;
-    result.a = ((double)((col & 0xFF000000) >> 24)) / 255.0;
+    result.b = ((double) (col & 0x000000FF)) / 255.0;
+    result.g = ((double) ((col & 0x0000FF00) >> 8)) / 255.0;
+    result.r = ((double) ((col & 0x00FF0000) >> 16)) / 255.0;
+    result.a = ((double) ((col & 0xFF000000) >> 24)) / 255.0;
 
     return result;
 }
@@ -80,10 +92,10 @@ Color colorFrom32BitARGB(unsigned int col)
 {
     Color result;
 
-    result.a = ((double)(col & 0x000000FF)) / 255.0;
-    result.r = ((double)((col & 0x0000FF00) >> 8)) / 255.0;
-    result.g = ((double)((col & 0x00FF0000) >> 16)) / 255.0;
-    result.b = ((double)((col & 0xFF000000) >> 24)) / 255.0;
+    result.a = ((double) (col & 0x000000FF)) / 255.0;
+    result.r = ((double) ((col & 0x0000FF00) >> 8)) / 255.0;
+    result.g = ((double) ((col & 0x00FF0000) >> 16)) / 255.0;
+    result.b = ((double) ((col & 0xFF000000) >> 24)) / 255.0;
 
     return result;
 }
@@ -92,10 +104,10 @@ Color colorFrom32BitABGR(unsigned int col)
 {
     Color result;
 
-    result.a = ((double)(col & 0x000000FF)) / 255.0;
-    result.b = ((double)((col & 0x0000FF00) >> 8)) / 255.0;
-    result.g = ((double)((col & 0x00FF0000) >> 16)) / 255.0;
-    result.r = ((double)((col & 0xFF000000) >> 24)) / 255.0;
+    result.a = ((double) (col & 0x000000FF)) / 255.0;
+    result.b = ((double) ((col & 0x0000FF00) >> 8)) / 255.0;
+    result.g = ((double) ((col & 0x00FF0000) >> 16)) / 255.0;
+    result.r = ((double) ((col & 0xFF000000) >> 24)) / 255.0;
 
     return result;
 }
@@ -203,7 +215,7 @@ struct ColorProfile
 {
     double minvalue;
     double maxvalue;
-    Color (*mapper)(Color col, double exposure);
+    Color(*mapper)(Color col, double exposure);
     double exposure;
 };
 
@@ -211,7 +223,7 @@ ColorProfile* colorProfileCreate()
 {
     ColorProfile* profile;
 
-    profile = malloc(sizeof(ColorProfile));
+    profile = malloc(sizeof (ColorProfile));
 
     colorProfileSetToneMapping(profile, TONE_MAPPING_UNCHARTED, 2.0);
     colorProfileClear(profile);
@@ -233,7 +245,7 @@ static inline double _uncharted2Tonemap(double x)
     double E = 0.02;
     double F = 0.30;
 
-    return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
+    return ((x * (A * x + C * B) + D * E) / (x * (A * x + B) + D * F)) - E / F;
 }
 
 static Color _toneMappingUncharted(Color pixel, double exposure)
@@ -272,14 +284,14 @@ void colorProfileSetToneMapping(ColorProfile* profile, ToneMappingOperator tonem
 {
     switch (tonemapper)
     {
-        case TONE_MAPPING_REIHNARD:
-            profile->mapper = _toneMappingReinhard;
-            break;
-        case TONE_MAPPING_UNCHARTED:
-            profile->mapper = _toneMappingUncharted;
-            break;
-        default:
-            profile->mapper = _toneMappingClamp;
+    case TONE_MAPPING_REIHNARD:
+        profile->mapper = _toneMappingReinhard;
+        break;
+    case TONE_MAPPING_UNCHARTED:
+        profile->mapper = _toneMappingUncharted;
+        break;
+    default:
+        profile->mapper = _toneMappingClamp;
     }
     profile->exposure = exposure;
 }
@@ -335,7 +347,7 @@ ColorGradation* colorGradationCreate()
 {
     ColorGradation* result;
 
-    result = malloc(sizeof(ColorGradation));
+    result = malloc(sizeof (ColorGradation));
     result->red = curveCreate();
     result->green = curveCreate();
     result->blue = curveCreate();
@@ -441,3 +453,88 @@ Color colorGradationGet(ColorGradation* gradation, double value)
     return result;
 }
 
+/******************************** HSL Color Space ********************************/
+static double _hue2rgb(double p, double q, double t)
+{
+    if (t < 0.0) t += 1;
+    if (t > 1.0) t -= 1;
+    if (t < 1.0 / 6.0) return p + (q - p) * 6.0 * t;
+    if (t < 1.0 / 2.0) return q;
+    if (t < 2.0 / 3.0) return p + (q - p) * (2.0 / 3.0 - t) * 6.0;
+    return p;
+}
+
+Color colorFromHSL(ColorHSL col)
+{
+    Color result;
+
+    if (col.s == 0)
+    {
+        result.r = result.g = result.b = col.l;
+    }
+    else
+    {
+        double q = col.l < 0.5 ? col.l * (1.0 + col.s) : col.l + col.s - col.l * col.s;
+        double p = 2 * col.l - q;
+        result.r = _hue2rgb(p, q, col.h + 1.0 / 3.0);
+        result.g = _hue2rgb(p, q, col.h);
+        result.b = _hue2rgb(p, q, col.h - 1.0 / 3.0);
+    }
+
+    result.a = col.a;
+
+    return result;
+}
+
+ColorHSL colorToHSL(Color col)
+{
+    ColorHSL result;
+    double min, max;
+
+    max = col.r > col.g ? col.r : col.g;
+    max = col.b > max ? col.b : max;
+
+    min = col.r < col.g ? col.r : col.g;
+    min = col.b < min ? col.b : min;
+
+    result.h = result.s = result.l = (max + min) / 2.0;
+
+    if (max == min)
+    {
+        result.h = result.s = 0.0;
+    }
+    else
+    {
+        double d = max - min;
+        result.s = result.l > 0.5 ? d / (2.0 - max - min) : d / (max + min);
+        if (max == col.r)
+        {
+            result.h = (col.g - col.b) / d + (col.g < col.b ? 6.0 : 0);
+        }
+        else if (max == col.g)
+        {
+            result.h = (col.b - col.r) / d + 2.0;
+        }
+        else
+        {
+            result.h = (col.r - col.g) / d + 4.0;
+        }
+        result.h /= 6.0;
+    }
+
+    result.a = col.a;
+
+    return result;
+}
+
+ColorHSL colorHSLFromValues(double h, double s, double l, double a)
+{
+    ColorHSL result;
+
+    result.h = h;
+    result.s = s;
+    result.l = l;
+    result.a = a;
+
+    return result;
+}
