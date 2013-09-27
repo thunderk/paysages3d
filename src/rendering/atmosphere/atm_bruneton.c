@@ -9,12 +9,12 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "../system.h"
-#include "../tools.h"
-#include "../tools/cache.h"
-#include "../tools/texture.h"
-#include "../tools/parallel.h"
-#include "../renderer.h"
+#include "rendering/system.h"
+#include "rendering/tools.h"
+#include "rendering/tools/cache.h"
+#include "rendering/tools/texture.h"
+#include "rendering/tools/parallel.h"
+#include "rendering/renderer.h"
 
 /*********************** Constants ***********************/
 
@@ -1155,6 +1155,8 @@ void brunetonInit()
 
 AtmosphereResult brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 direction, Vector3 sun_position, Color base)
 {
+    UNUSED(base);
+
     double yoffset = GROUND_OFFSET - renderer->water->getHeightInfo(renderer).base_height;
     eye.y += yoffset;
     if (eye.y < 0.0)
@@ -1237,6 +1239,9 @@ AtmosphereResult brunetonApplyAerialPerspective(Renderer* renderer, Vector3 loca
 
 void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)
 {
+    UNUSED(normal);
+    UNUSED(opaque);
+
     LightDefinition sun, irradiance;
     double muS;
 

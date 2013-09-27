@@ -1,11 +1,12 @@
 #include "scenery.h"
 
 #include <time.h>
-#include "tools/color.h"
-#include "tools/euclid.h"
-#include "terrain/ter_raster.h"
-#include "render.h"
-#include "system.h"
+#include "rendering/terrain/ter_raster.h"
+#include "rendering/tools.h"
+#include "rendering/tools/color.h"
+#include "rendering/tools/euclid.h"
+#include "rendering/render.h"
+#include "rendering/system.h"
 
 static AtmosphereDefinition* _atmosphere;
 static CameraDefinition* _camera;
@@ -186,6 +187,11 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
 {
     RayCastingResult result;
     Color sky_color;
+
+    UNUSED(terrain);
+    UNUSED(water);
+    UNUSED(sky);
+    UNUSED(clouds);
 
     result = renderer->terrain->castRay(renderer, location, direction);
     if (!result.hit)

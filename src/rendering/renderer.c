@@ -91,6 +91,13 @@ static void _pushDisplacedQuad(Renderer* renderer, Vector3 v1, Vector3 v2, Vecto
 
 static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
 {
+    UNUSED(renderer);
+    UNUSED(location);
+    UNUSED(direction);
+    UNUSED(terrain);
+    UNUSED(water);
+    UNUSED(sky);
+    UNUSED(clouds);
     return _RAYCASTING_NULL;
 }
 
