@@ -1,10 +1,10 @@
 #ifndef _PAYSAGES_TEXTURES_PUBLIC_H_
 #define _PAYSAGES_TEXTURES_PUBLIC_H_
 
-#include "../layers.h"
-#include "../zone.h"
-#include "../tools/lighting.h"
-#include "../terrain/public.h"
+#include "rendering/layers.h"
+#include "rendering/tools/zone.h"
+#include "rendering/tools/lighting.h"
+#include "rendering/terrain/public.h"
 
 #ifdef __cplusplus
 extern "C" {

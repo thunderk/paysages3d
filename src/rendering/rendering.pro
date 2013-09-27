@@ -16,7 +16,6 @@ linux-clang {
 DEFINES += HAVE_GLIB=1
 
 SOURCES += main.c \
-    zone.c \
     tools.c \
     system.c \
     scenery.c \
@@ -54,6 +53,7 @@ SOURCES += main.c \
     textures/tex_preview.c \
     textures/tex_presets.c \
     textures/tex_definition.c \
+    tools/zone.c \
     tools/texture.c \
     tools/parallel.c \
     tools/pack.c \
@@ -73,7 +73,6 @@ SOURCES += main.c \
     water/wat_definition.c
 
 HEADERS += \
-    zone.h \
     tools.h \
     system.h \
     scenery.h \
@@ -103,6 +102,7 @@ HEADERS += \
     textures/tex_preview.h \
     textures/public.h \
     textures/private.h \
+    tools/zone.h \
     tools/texture.h \
     tools/parallel.h \
     tools/pack.h \

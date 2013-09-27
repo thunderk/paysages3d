@@ -1,9 +1,13 @@
-#ifndef _PAYSAGES_ZONE_H_
-#define _PAYSAGES_ZONE_H_
+#ifndef _RENDERING_TOOLS_ZONE_H_
+#define _RENDERING_TOOLS_ZONE_H_
 
-#include "tools/euclid.h"
-#include "tools/curve.h"
-#include "tools/pack.h"
+/**
+ * Definition of a geographic area.
+ */
+
+#include "rendering/tools/euclid.h"
+#include "rendering/tools/curve.h"
+#include "rendering/tools/pack.h"
 
 #ifdef __cplusplus
 extern "C" {
