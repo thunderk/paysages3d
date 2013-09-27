@@ -69,6 +69,8 @@ size_t terrainGetMemoryStats(TerrainDefinition* definition);
 Renderer* terrainCreatePreviewRenderer();
 Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double detail);
 
+HeightInfo terrainGetHeightInfo(TerrainDefinition* definition);
+
 typedef struct
 {
     double relative_x;

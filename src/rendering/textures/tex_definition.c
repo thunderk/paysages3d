@@ -1,4 +1,5 @@
 #include "private.h"
+#include "scenery.h"
 
 #include <stdlib.h>
 
@@ -67,6 +68,11 @@ static void _layerValidateDefinition(TexturesLayerDefinition* definition)
     noiseValidate(definition->_detail_noise);
 
     materialValidate(&definition->material);
+
+    /* Update zone height range */
+    TerrainDefinition* terrain = sceneryGetTerrainDirect();
+    HeightInfo height_info = terrainGetHeightInfo(terrain);
+    zoneSetRelativeHeight(definition->terrain_zone, height_info.min_height, height_info.base_height, height_info.max_height);
 }
 
 static TexturesLayerDefinition* _layerCreateDefinition()

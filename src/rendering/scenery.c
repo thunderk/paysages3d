@@ -57,7 +57,7 @@ void sceneryAutoPreset(int seed)
     srand(seed);
 
     terrainAutoPreset(_terrain, TERRAIN_PRESET_STANDARD);
-    texturesAutoPreset(_textures, TEXTURES_PRESET_IRELAND);
+    texturesAutoPreset(_textures, TEXTURES_PRESET_FULL);
     atmosphereAutoPreset(_atmosphere, ATMOSPHERE_PRESET_CLEAR_DAY);
     waterAutoPreset(_water, WATER_PRESET_LAKE);
     cloudsAutoPreset(_clouds, CLOUDS_PRESET_PARTLY_CLOUDY);
@@ -149,6 +149,11 @@ void scenerySetTerrain(TerrainDefinition* terrain)
 void sceneryGetTerrain(TerrainDefinition* terrain)
 {
     TerrainDefinitionClass.copy(_terrain, terrain);
+}
+
+TerrainDefinition* sceneryGetTerrainDirect()
+{
+    return _terrain;
 }
 
 void scenerySetTextures(TexturesDefinition* textures)

@@ -44,6 +44,7 @@ void sceneryGetClouds(CloudsDefinition* clouds);
 
 void scenerySetTerrain(TerrainDefinition* terrain);
 void sceneryGetTerrain(TerrainDefinition* terrain);
+TerrainDefinition* sceneryGetTerrainDirect();
 
 void scenerySetTextures(TexturesDefinition* textures);
 void sceneryGetTextures(TexturesDefinition* textures);

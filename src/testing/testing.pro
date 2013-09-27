@@ -25,7 +25,8 @@ SOURCES += main.c \
     test_euclid.c \
     test_clouds.c \
     test_camera.c \
-    test_bruneton.c
+    test_bruneton.c \
+    test_zone.c
 
 HEADERS += \
     common.h

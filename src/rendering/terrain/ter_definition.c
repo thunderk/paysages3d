@@ -128,3 +128,15 @@ double terrainGetInterpolatedHeight(TerrainDefinition* definition, double x, dou
         return height;
     }
 }
+
+HeightInfo terrainGetHeightInfo(TerrainDefinition* definition)
+{
+    HeightInfo result;
+
+    result.min_height = definition->_min_height;
+    result.max_height = definition->_max_height;
+    /* TODO This is duplicated in ter_render.c (_realGetWaterHeight) */
+    result.base_height = definition->water_height * definition->height * definition->scaling;
+
+    return result;
+}
