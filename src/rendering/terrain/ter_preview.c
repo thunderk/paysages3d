@@ -59,11 +59,13 @@ Renderer* terrainCreatePreviewRenderer()
 
     TexturesDefinition* textures;
     textures = TexturesDefinitionClass.create();
+    layersClear(textures->layers);
     TexturesLayerDefinition* layer = layersGetLayer(textures->layers, layersAddLayer(textures->layers, NULL));
     layer->displacement_height = 0.0;
     layer->material.base = colorToHSL(COLOR_WHITE);
     layer->material.reflection = 0.05;
     layer->material.shininess = 2.0;
+    TexturesDefinitionClass.validate(textures);
     noiseClearLevels(layer->_detail_noise);
 
     TexturesRendererClass.bind(result, textures);
