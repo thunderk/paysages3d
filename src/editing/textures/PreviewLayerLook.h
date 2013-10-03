@@ -8,6 +8,9 @@ class BasePreview;
 class PreviewLayerLook : public PreviewRenderer
 {
 public:
+    explicit PreviewLayerLook(QObject *parent = 0):
+        PreviewRenderer(parent),textures(0){}
+
     void setTextures(TexturesDefinition* textures);
     void setLayer(int layer);
 
@@ -17,7 +20,7 @@ protected:
     virtual Color getColor2D(double x, double y, double scaling);
 
 private:
-    TexturesDefinition* textures = 0;
+    TexturesDefinition* textures;
     int layer;
 };
 
