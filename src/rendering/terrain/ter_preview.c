@@ -61,6 +61,7 @@ Renderer* terrainCreatePreviewRenderer()
     textures = TexturesDefinitionClass.create();
     layersClear(textures->layers);
     TexturesLayerDefinition* layer = layersGetLayer(textures->layers, layersAddLayer(textures->layers, NULL));
+    zoneClear(layer->terrain_zone);
     layer->displacement_height = 0.0;
     layer->material.base = colorToHSL(COLOR_WHITE);
     layer->material.reflection = 0.05;
