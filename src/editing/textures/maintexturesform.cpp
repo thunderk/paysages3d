@@ -43,9 +43,10 @@ MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui
     preview_cumul->setTextures(textures);
     form_helper->addPreview(ui->preview_cumul, preview_cumul);
 
+    form_helper->addPreset(tr("Complex terrain"));
     form_helper->addPreset(tr("Rocks with grass"));
     form_helper->addPreset(tr("Snow covered mountains"));
-    form_helper->addPreset(tr("Arid canyons"));
+    //form_helper->addPreset(tr("Arid canyons"));
     form_helper->setPresetButton(ui->button_preset);
     connect(form_helper, SIGNAL(presetSelected(int)), this, SLOT(selectPreset(int)));
 
