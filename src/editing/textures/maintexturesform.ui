@@ -349,43 +349,43 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QPushButton" name="button_render">
-          <property name="text">
-           <string>Render preview</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
-            <normaloff>:/buttons/logo/images/render.png</normaloff>:/buttons/logo/images/render.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="button_explore">
-          <property name="text">
-           <string>Explore in 3D</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
-            <normaloff>:/buttons/logo/images/explore.png</normaloff>:/buttons/logo/images/explore.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
        </layout>
       </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="button_explore">
+       <property name="text">
+        <string>Explore in 3D</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../../data/ui_pictures.qrc">
+         <normaloff>:/buttons/logo/images/explore.png</normaloff>:/buttons/logo/images/explore.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="button_render">
+       <property name="text">
+        <string>Render preview</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../../data/ui_pictures.qrc">
+         <normaloff>:/buttons/logo/images/render.png</normaloff>:/buttons/logo/images/render.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
       <widget class="QGroupBox" name="groupBox_4">

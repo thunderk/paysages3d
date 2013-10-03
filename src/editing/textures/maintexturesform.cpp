@@ -8,6 +8,7 @@
 #include "editing/textures/PreviewLayerCoverage.h"
 #include "editing/textures/PreviewLayerLook.h"
 #include "editing/textures/PreviewCumul.h"
+#include "editing/textures/DialogTexturesLayer.h"
 
 MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui::MainTexturesForm)
 {
@@ -21,8 +22,10 @@ MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui
     layer_helper->setDelButton(ui->layer_del);
     layer_helper->setDownButton(ui->layer_down);
     layer_helper->setUpButton(ui->layer_up);
+    layer_helper->setEditButton(ui->layer_edit);
     connect(layer_helper, SIGNAL(tableUpdateNeeded()), this, SLOT(updateLayers()));
     connect(layer_helper, SIGNAL(selectionChanged(int)), this, SLOT(selectLayer(int)));
+    connect(layer_helper, SIGNAL(editRequired(int)), this, SLOT(editLayer(int)));
 
     form_helper = new FreeFormHelper(this);
     form_helper->setApplyButton(ui->button_apply);
@@ -112,6 +115,12 @@ void MainTexturesForm::selectLayer(int layer)
         ui->preview_coverage->redraw();
         ui->preview_texture->redraw();
     }
+}
+
+void MainTexturesForm::editLayer(int layer)
+{
+    DialogTexturesLayer dialog(this, textures, layer);
+    dialog.exec();
 }
 
 void MainTexturesForm::selectPreset(int preset)

@@ -31,6 +31,7 @@ public slots:
 
     void updateLayers();
     void selectLayer(int layer);
+    void editLayer(int layer);
     void selectPreset(int preset);
 
 private:

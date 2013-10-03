@@ -20,17 +20,20 @@ public:
     void setDelButton(QPushButton* button);
     void setDownButton(QPushButton* button);
     void setUpButton(QPushButton* button);
+    void setEditButton(QPushButton* button);
 
 signals:
     void selectionChanged(int layer);
     void layersChanged();
     void tableUpdateNeeded();
+    void editRequired(int layer);
 
 public slots:
     void addLayer();
     void deleteLayer();
     void moveLayerDown();
     void moveLayerUp();
+    void startEditing();
     void tableSelectionChanged(int row, int col);
 
 private:

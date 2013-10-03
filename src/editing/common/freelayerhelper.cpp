@@ -89,6 +89,11 @@ void FreeLayerHelper::setUpButton(QPushButton* button)
     }
 }
 
+void FreeLayerHelper::setEditButton(QPushButton* button)
+{
+    connect(button, SIGNAL(clicked()), this, SLOT(startEditing()));
+}
+
 void FreeLayerHelper::addLayer()
 {
     _selected = layersAddLayer(_layers, NULL);
@@ -125,6 +130,14 @@ void FreeLayerHelper::moveLayerUp()
         _selected++;
         emit(layersChanged());
         refreshLayers();
+    }
+}
+
+void FreeLayerHelper::startEditing()
+{
+    if (_selected >= 0 && _selected < layersCount(_layers))
+    {
+        emit(editRequired(_selected));
     }
 }
 

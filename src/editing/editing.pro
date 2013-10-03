@@ -72,7 +72,8 @@ HEADERS += \
     lighting/SmallPreviewHues.h \
     textures/PreviewLayerCoverage.h \
     textures/PreviewLayerLook.h \
-    textures/PreviewCumul.h
+    textures/PreviewCumul.h \
+    textures/DialogTexturesLayer.h
 
 SOURCES += \
     terrain/widgetheightmap.cpp \
@@ -130,7 +131,8 @@ SOURCES += \
     lighting/SmallPreviewHues.cpp \
     textures/PreviewLayerCoverage.cpp \
     textures/PreviewLayerLook.cpp \
-    textures/PreviewCumul.cpp
+    textures/PreviewCumul.cpp \
+    textures/DialogTexturesLayer.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \
@@ -139,7 +141,8 @@ FORMS += \
     common/mainwindow.ui \
     terrain/dialogbaseterrainnoise.ui \
     textures/maintexturesform.ui \
-    lighting/DialogMaterialEditor.ui
+    lighting/DialogMaterialEditor.ui \
+    textures/DialogTexturesLayer.ui
 
 RESOURCES += \
     ../../data/ui_pictures.qrc
