@@ -42,7 +42,7 @@ public:
 
     inline bool isOnFront()
     {
-        return _preview->isVisible() && _preview->window()->isActiveWindow();
+        return _preview->isVisible();// && _preview->window()->isActiveWindow();
     }
 
     bool isFrom(BasePreview* preview)

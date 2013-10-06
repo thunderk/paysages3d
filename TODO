@@ -1,5 +1,4 @@
 Technology Preview 2 :
-- Investigate the preview render threads dying.
 - Add initial terrain offset so that the (0,0) coordinates are above water.
 - Finalize lighting/clouds refactoring
    => Restore cloud lighting
@@ -17,6 +16,7 @@ Technlogy Preview 3 :
 - FOCUS : Streamlining, with undo system
 - FOCUS : Vegetation
 - FOCUS : Night sky
+- Implement copy-on-write on definitions (to avoid copying whole heightmaps for instance).
 - Alter aerial perspective using estimation of the amount of light left after cloud layers traversal.
 - Add a map preview to terrain editor.
 - Better time selection widget for atmosphere.
