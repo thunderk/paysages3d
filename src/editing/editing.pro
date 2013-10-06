@@ -1,5 +1,3 @@
-include(../common.pri)
-
 TEMPLATE = app
 CONFIG += qt
 
@@ -7,14 +5,22 @@ QT += core gui opengl
 
 TARGET = paysages-gui
 
-OBJECTS_DIR = $$DESTDIR/editing/
-MOC_DIR = $$OBJECTS_DIR/moc/
-
-DEPENDPATH += ..
-linux-clang:LIBS += -L$$DESTDIR -lpaysages_rendering -lpaysages_exploring -lGLU
+linux-clang:LIBS += -lGLU
 win32:LIBS += ../../libpaysages.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-2.0
 
-TRANSLATIONS = ../../data/i18n/paysages_fr.ts
+CONFIG(release, debug|release): DEFINES += NDEBUG
+
+INCLUDEPATH += $$PWD/..
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../exploring/release/ -lpaysages_exploring
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../exploring/debug/ -lpaysages_exploring
+else:unix: LIBS += -L$$OUT_PWD/../exploring/ -lpaysages_exploring
+DEPENDPATH += $$PWD/../exploring
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../rendering/release/ -lpaysages_rendering
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../rendering/debug/ -lpaysages_rendering
+else:unix: LIBS += -L$$OUT_PWD/../rendering/ -lpaysages_rendering
+DEPENDPATH += $$PWD/../rendering
 
 HEADERS += \
     terrain/widgetheightmap.h \
@@ -146,3 +152,5 @@ FORMS += \
 
 RESOURCES += \
     ../../data/ui_pictures.qrc
+
+TRANSLATIONS = ../../data/i18n/paysages_fr.ts

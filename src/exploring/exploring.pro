@@ -1,21 +1,14 @@
-include(../common.pri)
+QT += opengl
 
 TEMPLATE = lib
 CONFIG += console
-CONFIG -= app_bundle
-CONFIG -= qt
 
 TARGET = paysages_exploring
 
-OBJECTS_DIR = $$DESTDIR/exploring/
+CONFIG(release, debug|release): DEFINES += NDEBUG
 
-SOURCES += main.c \
-    terrain.c \
-    sky.c \
-    chunk.c
+INCLUDEPATH += $$PWD/..
 
-HEADERS += main.h \
-    terrain.h \
-    sky.h \
-    chunk.h
+SOURCES += main.c
 
+HEADERS += main.h

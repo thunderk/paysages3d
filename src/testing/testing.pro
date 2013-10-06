@@ -1,5 +1,3 @@
-include(../common.pri)
-
 TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
@@ -7,15 +5,19 @@ CONFIG -= qt
 
 TARGET = paysages-tests
 
-OBJECTS_DIR = $$DESTDIR/testing/
+CONFIG(release, debug|release): DEFINES += NDEBUG
 
 linux-clang {
     CONFIG += link_pkgconfig
     PKGCONFIG += check
 }
 
-DEPENDPATH += ..
-linux-clang:LIBS += -L$$DESTDIR -lpaysages_rendering
+INCLUDEPATH += $$PWD/..
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../rendering/release/ -lpaysages_rendering
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../rendering/debug/ -lpaysages_rendering
+else:unix: LIBS += -L$$OUT_PWD/../rendering/ -lpaysages_rendering
+DEPENDPATH += $$PWD/../rendering
 
 SOURCES += main.c \
     test_terrain_painting.c \
@@ -30,4 +32,3 @@ SOURCES += main.c \
 
 HEADERS += \
     common.h
-

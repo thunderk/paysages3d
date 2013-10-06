@@ -1,5 +1,3 @@
-include(../common.pri)
-
 TEMPLATE = lib
 CONFIG += console
 CONFIG -= app_bundle
@@ -7,13 +5,14 @@ CONFIG -= qt
 
 TARGET = paysages_rendering
 
-OBJECTS_DIR = $$DESTDIR/rendering/
+INCLUDEPATH += $$PWD/..
 
 linux-clang {
     CONFIG += link_pkgconfig
     PKGCONFIG += glib-2.0 gthread-2.0 IL ILU
 }
 DEFINES += HAVE_GLIB=1
+CONFIG(release, debug|release): DEFINES += NDEBUG
 
 SOURCES += main.c \
     tools.c \
