@@ -71,20 +71,20 @@ static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3 
     UNUSED(normal);
     UNUSED(opaque);
 
-    light.color.r = 1.0;
-    light.color.g = 1.0;
-    light.color.b = 1.0;
+    light.color.r = 0.5;
+    light.color.g = 0.5;
+    light.color.b = 0.5;
     light.direction.x = -1.0;
-    light.direction.y = -0.5;
+    light.direction.y = 0.5;
     light.direction.z = 1.0;
     light.direction = v3Normalize(light.direction);
     light.altered = 1;
     light.reflection = 0.0;
     lightingPushLight(status, &light);
 
-    light.color.r = 0.2;
-    light.color.g = 0.2;
-    light.color.b = 0.2;
+    light.color.r = 0.1;
+    light.color.g = 0.1;
+    light.color.b = 0.1;
     light.direction.x = 1.0;
     light.direction.y = -0.5;
     light.direction.z = -1.0;
@@ -97,7 +97,7 @@ static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3 
 Renderer* cloudsPreviewMaterialCreateRenderer()
 {
     Renderer* result = rendererCreate();
-    result->render_quality = 8;
+    result->render_quality = 6;
     result->atmosphere->getLightingStatus = _getLightingStatus;
     return result;
 }
@@ -107,7 +107,7 @@ static double _getDensity(Renderer* renderer, CloudsLayerDefinition* layer, Vect
     UNUSED(renderer);
     UNUSED(layer);
 
-    double distance = v3Norm(location);
+    double distance = 2.0 * v3Norm(location) / layer->thickness;
     if (distance > 1.0)
     {
         return 0.0;
@@ -130,8 +130,8 @@ void cloudsPreviewMaterialBindLayer(Renderer* renderer, CloudsLayerDefinition* l
     CloudsDefinitionClass.destroy(definition);
 
     layer = layersGetLayer(renderer->clouds->definition->layers, 0);
-    layer->lower_altitude = -1.0;
-    layer->thickness = 2.0;
+    layer->thickness = layer->shape_scaling;
+    layer->lower_altitude = -layer->thickness / 2.0;
 
     renderer->clouds->getLayerDensity = _getDensity;
 }
@@ -139,7 +139,8 @@ void cloudsPreviewMaterialBindLayer(Renderer* renderer, CloudsLayerDefinition* l
 Color cloudsPreviewMaterialGetPixel(Renderer* renderer, double x, double y)
 {
     Vector3 start, end;
-    double thickness = 2.0;
+    CloudsLayerDefinition* layer = layersGetLayer(renderer->clouds->definition->layers, 0);
+    double thickness = layer->thickness;
 
     start.x = x * thickness * 0.5;
     start.z = y * thickness * 0.5;
