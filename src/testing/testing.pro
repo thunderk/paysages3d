@@ -7,7 +7,7 @@ TARGET = paysages-tests
 
 CONFIG(release, debug|release): DEFINES += NDEBUG
 
-linux-clang {
+unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += check
 }

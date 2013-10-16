@@ -7,7 +7,7 @@ TARGET = paysages_rendering
 
 INCLUDEPATH += $$PWD/..
 
-linux-clang {
+unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += glib-2.0 gthread-2.0 IL ILU
 }
