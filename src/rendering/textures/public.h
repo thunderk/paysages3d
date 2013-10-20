@@ -1,6 +1,7 @@
 #ifndef _PAYSAGES_TEXTURES_PUBLIC_H_
 #define _PAYSAGES_TEXTURES_PUBLIC_H_
 
+#include "../rendering_global.h"
 #include "rendering/layers.h"
 #include "rendering/tools/zone.h"
 #include "rendering/tools/lighting.h"
@@ -89,15 +90,15 @@ typedef struct
 } TexturesRenderer;
 
 
-extern StandardDefinition TexturesDefinitionClass;
-extern StandardRenderer TexturesRendererClass;
+RENDERINGSHARED_EXPORT extern StandardDefinition TexturesDefinitionClass;
+RENDERINGSHARED_EXPORT extern StandardRenderer TexturesRendererClass;
 
 
-LayerType texturesGetLayerType();
-void texturesAutoPreset(TexturesDefinition* definition, TexturesPreset preset);
-void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerPreset preset);
+RENDERINGSHARED_EXPORT LayerType texturesGetLayerType();
+RENDERINGSHARED_EXPORT void texturesAutoPreset(TexturesDefinition* definition, TexturesPreset preset);
+RENDERINGSHARED_EXPORT void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerPreset preset);
 
-double texturesGetMaximalDisplacement(TexturesDefinition* textures);
+RENDERINGSHARED_EXPORT double texturesGetMaximalDisplacement(TexturesDefinition* textures);
 
 #ifdef __cplusplus
 }

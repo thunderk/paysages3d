@@ -1,3 +1,4 @@
+#include "clo_preview.h"
 #include "private.h"
 
 #include "../tools/euclid.h"

@@ -1,6 +1,8 @@
 #ifndef _RENDERING_TERRAIN_RASTER_H_
 #define _RENDERING_TERRAIN_RASTER_H_
 
+#include "../rendering_global.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -21,19 +23,19 @@ typedef int (*FuncTerrainTessellationCallback)(Renderer* renderer, TerrainChunkI
  *
  * The terrain will be broken in chunks, most detailed near the camera.
  */
-void terrainGetTessellationInfo(Renderer* renderer, FuncTerrainTessellationCallback callback, int displaced);
+RENDERINGSHARED_EXPORT void terrainGetTessellationInfo(Renderer* renderer, FuncTerrainTessellationCallback callback, int displaced);
 
 /**
  * Tessellate a terrain chunk, pushing the quads in the render area.
  */
-void terrainTessellateChunk(Renderer* renderer, TerrainChunkInfo* chunk, int detail);
+RENDERINGSHARED_EXPORT void terrainTessellateChunk(Renderer* renderer, TerrainChunkInfo* chunk, int detail);
 
 /**
  * Start the final rasterization of terrain.
  *
  * This will push the rasterized quads in the render area, waiting for post process.
  */
-void terrainRenderSurface(Renderer* renderer);
+RENDERINGSHARED_EXPORT void terrainRenderSurface(Renderer* renderer);
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,7 @@
 #ifndef _PAYSAGES_CLOUDS_PUBLIC_H_
 #define _PAYSAGES_CLOUDS_PUBLIC_H_
 
+#include "../rendering_global.h"
 #include "../shared/types.h"
 #include "../tools/lighting.h"
 #include "../tools/curve.h"
@@ -74,13 +75,12 @@ typedef struct
 } CloudsRenderer;
 
 
-extern StandardDefinition CloudsDefinitionClass;
-extern StandardRenderer CloudsRendererClass;
+RENDERINGSHARED_EXPORT extern StandardDefinition CloudsDefinitionClass;
+RENDERINGSHARED_EXPORT extern StandardRenderer CloudsRendererClass;
 
-
-LayerType cloudsGetLayerType();
-void cloudsAutoPreset(CloudsDefinition* definition, CloudsPreset preset);
-void cloudsLayerAutoPreset(CloudsLayerDefinition* definition, CloudsLayerPreset preset);
+RENDERINGSHARED_EXPORT LayerType cloudsGetLayerType();
+RENDERINGSHARED_EXPORT void cloudsAutoPreset(CloudsDefinition* definition, CloudsPreset preset);
+RENDERINGSHARED_EXPORT void cloudsLayerAutoPreset(CloudsLayerDefinition* definition, CloudsLayerPreset preset);
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,7 @@
 #ifndef _PAYSAGES_TOOLS_EUCLID_H_
 #define _PAYSAGES_TOOLS_EUCLID_H_
 
+#include "../rendering_global.h"
 #include "pack.h"
 
 /*
@@ -69,57 +70,57 @@ typedef struct
     double p;
 } Matrix4;
 
-extern Vector3 VECTOR_ZERO;
-extern Vector3 VECTOR_DOWN;
-extern Vector3 VECTOR_UP;
-extern Vector3 VECTOR_NORTH;
-extern Vector3 VECTOR_SOUTH;
-extern Vector3 VECTOR_EAST;
-extern Vector3 VECTOR_WEST;
+RENDERINGSHARED_EXPORT extern Vector3 VECTOR_ZERO;
+RENDERINGSHARED_EXPORT extern Vector3 VECTOR_DOWN;
+RENDERINGSHARED_EXPORT extern Vector3 VECTOR_UP;
+RENDERINGSHARED_EXPORT extern Vector3 VECTOR_NORTH;
+RENDERINGSHARED_EXPORT extern Vector3 VECTOR_SOUTH;
+RENDERINGSHARED_EXPORT extern Vector3 VECTOR_EAST;
+RENDERINGSHARED_EXPORT extern Vector3 VECTOR_WEST;
 
 static inline Vector3 v3(double x, double y, double z)
 {
     Vector3 result = {x, y, z};
     return result;
 };
-void v3Save(PackStream* stream, Vector3* v);
-void v3Load(PackStream* stream, Vector3* v);
-Vector3 v3Translate(Vector3 v1, double x, double y, double z);
-Vector3 v3Add(Vector3 v1, Vector3 v2);
-Vector3 v3Sub(Vector3 v1, Vector3 v2);
-Vector3 v3Neg(Vector3 v);
-Vector3 v3Scale(Vector3 v, double scale);
-double v3Norm(Vector3 v);
-Vector3 v3Normalize(Vector3 v);
-double v3Dot(Vector3 v1, Vector3 v2);
-Vector3 v3Cross(Vector3 v1, Vector3 v2);
-VectorSpherical v3ToSpherical(Vector3 v);
-Vector3 v3FromSpherical(VectorSpherical v);
+RENDERINGSHARED_EXPORT void v3Save(PackStream* stream, Vector3* v);
+RENDERINGSHARED_EXPORT void v3Load(PackStream* stream, Vector3* v);
+RENDERINGSHARED_EXPORT Vector3 v3Translate(Vector3 v1, double x, double y, double z);
+RENDERINGSHARED_EXPORT Vector3 v3Add(Vector3 v1, Vector3 v2);
+RENDERINGSHARED_EXPORT Vector3 v3Sub(Vector3 v1, Vector3 v2);
+RENDERINGSHARED_EXPORT Vector3 v3Neg(Vector3 v);
+RENDERINGSHARED_EXPORT Vector3 v3Scale(Vector3 v, double scale);
+RENDERINGSHARED_EXPORT double v3Norm(Vector3 v);
+RENDERINGSHARED_EXPORT Vector3 v3Normalize(Vector3 v);
+RENDERINGSHARED_EXPORT double v3Dot(Vector3 v1, Vector3 v2);
+RENDERINGSHARED_EXPORT Vector3 v3Cross(Vector3 v1, Vector3 v2);
+RENDERINGSHARED_EXPORT VectorSpherical v3ToSpherical(Vector3 v);
+RENDERINGSHARED_EXPORT Vector3 v3FromSpherical(VectorSpherical v);
 
-void m4Save(PackStream* stream, Matrix4* m);
-void m4Load(PackStream* stream, Matrix4* m);
-Matrix4 m4NewIdentity();
-Matrix4 m4Mult(Matrix4 m1, Matrix4 m2);
-Vector3 m4MultPoint(Matrix4 m, Vector3 v);
-Vector3 m4Transform(Matrix4 m, Vector3 v);
-Matrix4 m4Transpose(Matrix4 m);
-Matrix4 m4NewScale(double x, double y, double z);
-Matrix4 m4NewTranslate(double x, double y, double z);
-Matrix4 m4NewRotateX(double angle);
-Matrix4 m4NewRotateY(double angle);
-Matrix4 m4NewRotateZ(double angle);
-Matrix4 m4NewRotateAxis(double angle, Vector3 axis);
-Matrix4 m4NewRotateEuler(double heading, double attitude, double bank);
-Matrix4 m4NewRotateTripleAxis(Vector3 x, Vector3 y, Vector3 z);
-Matrix4 m4NewLookAt(Vector3 eye, Vector3 at, Vector3 up);
-Matrix4 m4NewPerspective(double fov_y, double aspect, double near, double far);
-double m4Determinant(Matrix4 m);
-Matrix4 m4Inverse(Matrix4 m);
+RENDERINGSHARED_EXPORT void m4Save(PackStream* stream, Matrix4* m);
+RENDERINGSHARED_EXPORT void m4Load(PackStream* stream, Matrix4* m);
+RENDERINGSHARED_EXPORT Matrix4 m4NewIdentity();
+RENDERINGSHARED_EXPORT Matrix4 m4Mult(Matrix4 m1, Matrix4 m2);
+RENDERINGSHARED_EXPORT Vector3 m4MultPoint(Matrix4 m, Vector3 v);
+RENDERINGSHARED_EXPORT Vector3 m4Transform(Matrix4 m, Vector3 v);
+RENDERINGSHARED_EXPORT Matrix4 m4Transpose(Matrix4 m);
+RENDERINGSHARED_EXPORT Matrix4 m4NewScale(double x, double y, double z);
+RENDERINGSHARED_EXPORT Matrix4 m4NewTranslate(double x, double y, double z);
+RENDERINGSHARED_EXPORT Matrix4 m4NewRotateX(double angle);
+RENDERINGSHARED_EXPORT Matrix4 m4NewRotateY(double angle);
+RENDERINGSHARED_EXPORT Matrix4 m4NewRotateZ(double angle);
+RENDERINGSHARED_EXPORT Matrix4 m4NewRotateAxis(double angle, Vector3 axis);
+RENDERINGSHARED_EXPORT Matrix4 m4NewRotateEuler(double heading, double attitude, double bank);
+RENDERINGSHARED_EXPORT Matrix4 m4NewRotateTripleAxis(Vector3 x, Vector3 y, Vector3 z);
+RENDERINGSHARED_EXPORT Matrix4 m4NewLookAt(Vector3 eye, Vector3 at, Vector3 up);
+RENDERINGSHARED_EXPORT Matrix4 m4NewPerspective(double fov_y, double aspect, double near, double far);
+RENDERINGSHARED_EXPORT double m4Determinant(Matrix4 m);
+RENDERINGSHARED_EXPORT Matrix4 m4Inverse(Matrix4 m);
 
-double euclidGet2DAngle(double x, double y);
-Vector3 euclidGetNormalFromTriangle(Vector3 center, Vector3 bottom, Vector3 right);
-double euclidGetDistance2D(double x1, double y1, double x2, double y2);
-int euclidRayIntersectSphere(Vector3 ray_point, Vector3 ray_direction, Vector3 sphere_center, double sphere_radius, Vector3* hit1, Vector3* hit2);
+RENDERINGSHARED_EXPORT double euclidGet2DAngle(double x, double y);
+RENDERINGSHARED_EXPORT Vector3 euclidGetNormalFromTriangle(Vector3 center, Vector3 bottom, Vector3 right);
+RENDERINGSHARED_EXPORT double euclidGetDistance2D(double x1, double y1, double x2, double y2);
+RENDERINGSHARED_EXPORT int euclidRayIntersectSphere(Vector3 ray_point, Vector3 ray_direction, Vector3 sphere_center, double sphere_radius, Vector3* hit1, Vector3* hit2);
 
 #ifdef __cplusplus
 }

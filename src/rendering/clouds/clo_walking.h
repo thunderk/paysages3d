@@ -51,7 +51,7 @@ typedef void (*FuncCloudsWalkingCallback)(CloudsWalker* walker);
  * @param end End of the search to optimize
  * @return 0 if the search is useless
  */
-int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* layer, Vector3* start, Vector3* end);
+RENDERINGSHARED_EXPORT int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* layer, Vector3* start, Vector3* end);
 
 /**
  * Create a cloud walker.
@@ -62,14 +62,14 @@ int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* layer, Vector3* start, Ve
  * @param start Start of the walk
  * @param end End of the walk
  */
-CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 start, Vector3 end);
+RENDERINGSHARED_EXPORT CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 start, Vector3 end);
 
 /**
  * Delete a cloud walker.
  *
  * @param walker The walker to free
  */
-void cloudsDeleteWalker(CloudsWalker* walker);
+RENDERINGSHARED_EXPORT void cloudsDeleteWalker(CloudsWalker* walker);
 
 /**
  * Define the segment size for next steps.
@@ -77,7 +77,7 @@ void cloudsDeleteWalker(CloudsWalker* walker);
  * @param walker The walker to configure
  * @param step The step length, negative for automatic
  */
-void cloudsWalkerSetStepSize(CloudsWalker* walker, double step);
+RENDERINGSHARED_EXPORT void cloudsWalkerSetStepSize(CloudsWalker* walker, double step);
 
 /**
  * Set the void skipping mode.
@@ -85,7 +85,7 @@ void cloudsWalkerSetStepSize(CloudsWalker* walker, double step);
  * @param walker The walker to configure
  * @param enabled 1 to enable the void skipping, 0 to disable
  */
-void cloudsWalkerSetVoidSkipping(CloudsWalker* walker, int enabled);
+RENDERINGSHARED_EXPORT void cloudsWalkerSetVoidSkipping(CloudsWalker* walker, int enabled);
 
 /**
  * Toggle the local density computing.
@@ -95,7 +95,7 @@ void cloudsWalkerSetVoidSkipping(CloudsWalker* walker, int enabled);
  * @param walker The walker to configure
  * @param enabled 1 to enable local density, 0 to disable it, -1 for automatic setting.
  */
-void cloudsWalkerToggleLocalDensity(CloudsWalker* walker, int enabled);
+RENDERINGSHARED_EXPORT void cloudsWalkerToggleLocalDensity(CloudsWalker* walker, int enabled);
 
 /**
  * Perform a single step.
@@ -103,14 +103,14 @@ void cloudsWalkerToggleLocalDensity(CloudsWalker* walker, int enabled);
  * @param walker The walker to use
  * @return 1 to continue the loop, 0 to stop
  */
-int cloudsWalkerPerformStep(CloudsWalker* walker);
+RENDERINGSHARED_EXPORT int cloudsWalkerPerformStep(CloudsWalker* walker);
 
 /**
  * Order the walker to stop.
  *
  * @param walker The walker to use
  */
-void cloudsWalkerOrderStop(CloudsWalker* walker);
+RENDERINGSHARED_EXPORT void cloudsWalkerOrderStop(CloudsWalker* walker);
 
 /**
  * Order the walker to refine the search for cloud entry or exit.
@@ -121,7 +121,7 @@ void cloudsWalkerOrderStop(CloudsWalker* walker);
  * @param walker The walker to use
  * @param precision Precision wanted for the refinement
  */
-void cloudsWalkerOrderRefine(CloudsWalker* walker, double precision);
+RENDERINGSHARED_EXPORT void cloudsWalkerOrderRefine(CloudsWalker* walker, double precision);
 
 /**
  * Order the walker to subdivide the previous segment in smaller segments.
@@ -131,14 +131,14 @@ void cloudsWalkerOrderRefine(CloudsWalker* walker, double precision);
  * @param walker The walker to use
  * @param max_segments Maximal number of segments
  */
-void cloudsWalkerOrderSubdivide(CloudsWalker* walker, double max_segments);
+RENDERINGSHARED_EXPORT void cloudsWalkerOrderSubdivide(CloudsWalker* walker, double max_segments);
 
 /**
  * Get the last segment information.
  *
  * @param walker The walker to use
  */
-CloudWalkerStepInfo* cloudsWalkerGetLastSegment(CloudsWalker* walker);
+RENDERINGSHARED_EXPORT CloudWalkerStepInfo* cloudsWalkerGetLastSegment(CloudsWalker* walker);
 
 /**
  * Start walking automatically through a segment.
@@ -148,7 +148,7 @@ CloudWalkerStepInfo* cloudsWalkerGetLastSegment(CloudsWalker* walker);
  * @param callback Callback to be called with each found segment
  * @param data User data that will be passed back in the callback
  */
-void cloudsStartWalking(CloudsWalker* walker, FuncCloudsWalkingCallback callback, void* data);
+RENDERINGSHARED_EXPORT void cloudsStartWalking(CloudsWalker* walker, FuncCloudsWalkingCallback callback, void* data);
 
 #ifdef __cplusplus
 }

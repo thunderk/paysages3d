@@ -3,6 +3,7 @@
 
 /* Factorized layer management (with names) */
 
+#include "rendering_global.h"
 #include "tools/pack.h"
 
 #ifdef __cplusplus
@@ -27,25 +28,25 @@ typedef struct {
 
 typedef struct Layers Layers;
 
-Layers* layersCreate(LayerType type, int max_layer_count);
-Layers* layersCreateCopy(Layers* original);
-void layersDelete(Layers* layers);
+RENDERINGSHARED_EXPORT Layers* layersCreate(LayerType type, int max_layer_count);
+RENDERINGSHARED_EXPORT Layers* layersCreateCopy(Layers* original);
+RENDERINGSHARED_EXPORT void layersDelete(Layers* layers);
 
-void layersCopy(Layers* source, Layers* destination);
-void layersValidate(Layers* layers);
+RENDERINGSHARED_EXPORT void layersCopy(Layers* source, Layers* destination);
+RENDERINGSHARED_EXPORT void layersValidate(Layers* layers);
 
-void layersSave(PackStream* stream, Layers* layers);
-void layersLoad(PackStream* stream, Layers* layers);
+RENDERINGSHARED_EXPORT void layersSave(PackStream* stream, Layers* layers);
+RENDERINGSHARED_EXPORT void layersLoad(PackStream* stream, Layers* layers);
 
-const char* layersGetName(Layers* layers, int layer);
-void layersSetName(Layers* layers, int layer, const char* name);
+RENDERINGSHARED_EXPORT const char* layersGetName(Layers* layers, int layer);
+RENDERINGSHARED_EXPORT void layersSetName(Layers* layers, int layer, const char* name);
 
-void layersClear(Layers* layers);
-int layersCount(Layers* layers);
-void* layersGetLayer(Layers* layers, int layer);
-int layersAddLayer(Layers* layers, void* definition);
-void layersDeleteLayer(Layers* layers, int layer);
-void layersMove(Layers* layers, int layer, int new_position);
+RENDERINGSHARED_EXPORT void layersClear(Layers* layers);
+RENDERINGSHARED_EXPORT int layersCount(Layers* layers);
+RENDERINGSHARED_EXPORT void* layersGetLayer(Layers* layers, int layer);
+RENDERINGSHARED_EXPORT int layersAddLayer(Layers* layers, void* definition);
+RENDERINGSHARED_EXPORT void layersDeleteLayer(Layers* layers, int layer);
+RENDERINGSHARED_EXPORT void layersMove(Layers* layers, int layer, int new_position);
 
 #ifdef __cplusplus
 }

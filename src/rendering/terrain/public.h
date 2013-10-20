@@ -1,6 +1,7 @@
 #ifndef _PAYSAGES_TERRAIN_PUBLIC_H_
 #define _PAYSAGES_TERRAIN_PUBLIC_H_
 
+#include "../rendering_global.h"
 #include <stdlib.h>
 #include "../shared/types.h"
 #include "../tools/color.h"
@@ -58,18 +59,18 @@ typedef struct
     void* _internal_data;
 } TerrainRenderer;
 
-extern StandardDefinition TerrainDefinitionClass;
-extern StandardRenderer TerrainRendererClass;
+RENDERINGSHARED_EXPORT extern StandardDefinition TerrainDefinitionClass;
+RENDERINGSHARED_EXPORT extern StandardRenderer TerrainRendererClass;
 
-void terrainAutoPreset(TerrainDefinition* definition, TerrainPreset preset);
-double terrainGetGridHeight(TerrainDefinition* definition, int x, int z, int with_painting);
-double terrainGetInterpolatedHeight(TerrainDefinition* definition, double x, double z, int scaled, int with_painting);
-size_t terrainGetMemoryStats(TerrainDefinition* definition);
+RENDERINGSHARED_EXPORT void terrainAutoPreset(TerrainDefinition* definition, TerrainPreset preset);
+RENDERINGSHARED_EXPORT double terrainGetGridHeight(TerrainDefinition* definition, int x, int z, int with_painting);
+RENDERINGSHARED_EXPORT double terrainGetInterpolatedHeight(TerrainDefinition* definition, double x, double z, int scaled, int with_painting);
+RENDERINGSHARED_EXPORT size_t terrainGetMemoryStats(TerrainDefinition* definition);
 
-Renderer* terrainCreatePreviewRenderer();
-Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double detail);
+RENDERINGSHARED_EXPORT Renderer* terrainCreatePreviewRenderer();
+RENDERINGSHARED_EXPORT Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double detail);
 
-HeightInfo terrainGetHeightInfo(TerrainDefinition* definition);
+RENDERINGSHARED_EXPORT HeightInfo terrainGetHeightInfo(TerrainDefinition* definition);
 
 typedef struct
 {
@@ -81,14 +82,14 @@ typedef struct
 } TerrainBrush;
 
 /* Heightmap manipulation */
-int terrainIsPainted(TerrainHeightMap* heightmap, int x, int z);
-void terrainClearPainting(TerrainHeightMap* heightmap);
-void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
-void terrainBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
-void terrainBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value);
-void terrainBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
-void terrainBrushFlatten(TerrainHeightMap* heightmap, TerrainBrush* brush, double height, double force);
-void terrainEndBrushStroke(TerrainHeightMap* heightmap);
+RENDERINGSHARED_EXPORT int terrainIsPainted(TerrainHeightMap* heightmap, int x, int z);
+RENDERINGSHARED_EXPORT void terrainClearPainting(TerrainHeightMap* heightmap);
+RENDERINGSHARED_EXPORT void terrainBrushElevation(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
+RENDERINGSHARED_EXPORT void terrainBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
+RENDERINGSHARED_EXPORT void terrainBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value);
+RENDERINGSHARED_EXPORT void terrainBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
+RENDERINGSHARED_EXPORT void terrainBrushFlatten(TerrainHeightMap* heightmap, TerrainBrush* brush, double height, double force);
+RENDERINGSHARED_EXPORT void terrainEndBrushStroke(TerrainHeightMap* heightmap);
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,7 @@
 #ifndef _PAYSAGES_TOOLS_ARRAY_H_
 #define _PAYSAGES_TOOLS_ARRAY_H_
 
+#include "../rendering_global.h"
 #include "../shared/types.h"
 #include <stdlib.h>
 
@@ -13,7 +14,7 @@ extern "C" {
 /*
  * Insert an item at a given position, rallocating the array, moving data and returning a pointer to the inserted element.
  */
-void* naiveArrayInsert(void** array, size_t item_size, int item_count, int location);
+RENDERINGSHARED_EXPORT void* naiveArrayInsert(void** array, size_t item_size, int item_count, int location);
 
 /**************** Array object ****************/
 
@@ -26,13 +27,13 @@ typedef struct
     void* data;
 } Array;
 
-void arrayCreate(Array* array, int item_size);
-void arrayDelete(Array* array);
-void* arrayAppend(Array* array, void* item);
-void arrayInsert(Array* array, void* item, int position);
-void arrayReplace(Array* array, void* item, int position);
-void arrayLStrip(Array* array, int count);
-void arrayClear(Array* array);
+RENDERINGSHARED_EXPORT void arrayCreate(Array* array, int item_size);
+RENDERINGSHARED_EXPORT void arrayDelete(Array* array);
+RENDERINGSHARED_EXPORT void* arrayAppend(Array* array, void* item);
+RENDERINGSHARED_EXPORT void arrayInsert(Array* array, void* item, int position);
+RENDERINGSHARED_EXPORT void arrayReplace(Array* array, void* item, int position);
+RENDERINGSHARED_EXPORT void arrayLStrip(Array* array, int count);
+RENDERINGSHARED_EXPORT void arrayClear(Array* array);
 
 #ifdef __cplusplus
 }

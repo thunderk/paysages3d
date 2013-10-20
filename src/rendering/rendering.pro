@@ -1,13 +1,14 @@
-TEMPLATE = lib
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
+TEMPLATE = lib
 TARGET = paysages_rendering
 
-INCLUDEPATH += $$PWD/..
-
+DEFINES += RENDERING_LIBRARY
 CONFIG(release, debug|release): DEFINES += NDEBUG
+
+INCLUDEPATH += $$PWD/..
 
 SOURCES += main.c \
     tools.c \
@@ -110,7 +111,8 @@ HEADERS += \
     tools/boundingbox.h \
     tools/array.h \
     water/public.h \
-    water/private.h
+    water/private.h \
+    rendering_global.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../system/debug/ -lpaysages_system

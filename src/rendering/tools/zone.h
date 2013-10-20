@@ -5,6 +5,7 @@
  * Definition of a geographic area.
  */
 
+#include "../rendering_global.h"
 #include "rendering/tools/euclid.h"
 #include "rendering/tools/curve.h"
 #include "rendering/tools/pack.h"
@@ -15,28 +16,28 @@ extern "C" {
 
 typedef struct Zone Zone;
 
-Zone* zoneCreate();
-void zoneDelete(Zone* zone);
-void zoneSave(PackStream* stream, Zone* zone);
-void zoneLoad(PackStream* stream, Zone* zone);
-void zoneCopy(Zone* source, Zone* destination);
-void zoneClear(Zone* zone);
+RENDERINGSHARED_EXPORT Zone* zoneCreate();
+RENDERINGSHARED_EXPORT void zoneDelete(Zone* zone);
+RENDERINGSHARED_EXPORT void zoneSave(PackStream* stream, Zone* zone);
+RENDERINGSHARED_EXPORT void zoneLoad(PackStream* stream, Zone* zone);
+RENDERINGSHARED_EXPORT void zoneCopy(Zone* source, Zone* destination);
+RENDERINGSHARED_EXPORT void zoneClear(Zone* zone);
 
-void zoneSetAbsoluteHeight(Zone* zone);
-void zoneSetRelativeHeight(Zone* zone, double min, double middle, double max);
+RENDERINGSHARED_EXPORT void zoneSetAbsoluteHeight(Zone* zone);
+RENDERINGSHARED_EXPORT void zoneSetRelativeHeight(Zone* zone, double min, double middle, double max);
 
-void zoneIncludeCircleArea(Zone* zone, double value, double centerx, double centerz, double softradius, double hardradius);
-void zoneExcludeCircleArea(Zone* zone, double centerx, double centerz, double softradius, double hardradius);
+RENDERINGSHARED_EXPORT void zoneIncludeCircleArea(Zone* zone, double value, double centerx, double centerz, double softradius, double hardradius);
+RENDERINGSHARED_EXPORT void zoneExcludeCircleArea(Zone* zone, double centerx, double centerz, double softradius, double hardradius);
 
-void zoneGetHeightCurve(Zone* zone, Curve* curve);
-void zoneSetHeightCurve(Zone* zone, Curve* curve);
-void zoneAddHeightRangeQuick(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax);
+RENDERINGSHARED_EXPORT void zoneGetHeightCurve(Zone* zone, Curve* curve);
+RENDERINGSHARED_EXPORT void zoneSetHeightCurve(Zone* zone, Curve* curve);
+RENDERINGSHARED_EXPORT void zoneAddHeightRangeQuick(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax);
 
-void zoneGetSlopeCurve(Zone* zone, Curve* curve);
-void zoneSetSlopeCurve(Zone* zone, Curve* curve);
-void zoneAddSlopeRangeQuick(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax);
+RENDERINGSHARED_EXPORT void zoneGetSlopeCurve(Zone* zone, Curve* curve);
+RENDERINGSHARED_EXPORT void zoneSetSlopeCurve(Zone* zone, Curve* curve);
+RENDERINGSHARED_EXPORT void zoneAddSlopeRangeQuick(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax);
 
-double zoneGetValue(Zone* zone, Vector3 location, Vector3 normal);
+RENDERINGSHARED_EXPORT double zoneGetValue(Zone* zone, Vector3 location, Vector3 normal);
 
 #ifdef __cplusplus
 }

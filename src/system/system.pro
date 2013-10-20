@@ -6,18 +6,19 @@
 
 #QT       -= gui
 
-TARGET = paysages_system
 TEMPLATE = lib
+TARGET = paysages_system
 
 DEFINES += SYSTEM_LIBRARY
+CONFIG(release, debug|release): DEFINES += NDEBUG
 
 SOURCES += \
     PictureFile.cpp \
     Thread.cpp \
     Mutex.cpp
 
-HEADERS +=\
-        system_global.h \
+HEADERS += \
+    system_global.h \
     PictureFile.h \
     Thread.h \
     Mutex.h

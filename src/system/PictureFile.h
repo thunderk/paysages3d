@@ -35,7 +35,7 @@ typedef struct
 #endif
 
 typedef Color (*PictureCallbackSavePixel)(void* data, int x, int y);
-int systemSavePictureFile(const char* filepath, PictureCallbackSavePixel callback_pixel, void* data, int width, int height);
+SYSTEMSHARED_EXPORT int systemSavePictureFile(const char* filepath, PictureCallbackSavePixel callback_pixel, void* data, int width, int height);
 
 #ifdef __cplusplus
 }

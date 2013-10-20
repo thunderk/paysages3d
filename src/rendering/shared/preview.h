@@ -5,6 +5,7 @@
  * Preview management.
  */
 
+#include "../rendering_global.h"
 #include "types.h"
 
 #ifdef __cplusplus
@@ -28,7 +29,7 @@ typedef struct {
     FuncPreviewGetPixelColor getPixelColor;
 } PreviewClass;
 
-PreviewClass previewCreateClass(FuncPreviewCustomizeRenderer customizeRenderer, FuncPreviewBindDefinition bindDefinition, FuncPreviewGetPixelColor getPixelColor);
+RENDERINGSHARED_EXPORT PreviewClass previewCreateClass(FuncPreviewCustomizeRenderer customizeRenderer, FuncPreviewBindDefinition bindDefinition, FuncPreviewGetPixelColor getPixelColor);
 
 #ifdef __cplusplus
 }

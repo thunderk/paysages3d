@@ -6,11 +6,12 @@ SUBDIRS = \
     rendering \
     exploring \
     editing \
-    controlling \
-    testing
+    controlling
+
+unix:SUBDIRS += testing
 
 rendering.depends = system
 exploring.depends = rendering
 editing.depends = exploring rendering
 controlling.depends = rendering
-testing.depends = rendering
+unix:testing.depends = rendering

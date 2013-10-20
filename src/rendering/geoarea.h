@@ -3,6 +3,7 @@
 
 /* Geographic area definition */
 
+#include "rendering_global.h"
 #include "tools/pack.h"
 
 #ifdef __cplusplus
@@ -17,16 +18,16 @@ typedef struct
     double size_z;
 } GeoArea;
 
-GeoArea geoareaCreate();
-void geoareaDelete(GeoArea* geoarea);
-void geoareaCopy(GeoArea* source, GeoArea* destination);
-void geoareaValidate(GeoArea* geoarea);
+RENDERINGSHARED_EXPORT GeoArea geoareaCreate();
+RENDERINGSHARED_EXPORT void geoareaDelete(GeoArea* geoarea);
+RENDERINGSHARED_EXPORT void geoareaCopy(GeoArea* source, GeoArea* destination);
+RENDERINGSHARED_EXPORT void geoareaValidate(GeoArea* geoarea);
 
-void geoareaSave(PackStream* stream, GeoArea* geoarea);
-void geoareaLoad(PackStream* stream, GeoArea* geoarea);
+RENDERINGSHARED_EXPORT void geoareaSave(PackStream* stream, GeoArea* geoarea);
+RENDERINGSHARED_EXPORT void geoareaLoad(PackStream* stream, GeoArea* geoarea);
 
-void geoareaToLocal(GeoArea* geoarea, double absolute_x, double absolute_z, double* local_x, double* local_z);
-void geoareaFromLocal(GeoArea* geoarea, double local_x, double local_z, double* absolute_x, double* absolute_z);
+RENDERINGSHARED_EXPORT void geoareaToLocal(GeoArea* geoarea, double absolute_x, double absolute_z, double* local_x, double* local_z);
+RENDERINGSHARED_EXPORT void geoareaFromLocal(GeoArea* geoarea, double local_x, double local_z, double* absolute_x, double* absolute_z);
 
 #ifdef __cplusplus
 }

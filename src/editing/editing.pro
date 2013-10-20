@@ -6,21 +6,10 @@ QT += core gui opengl
 TARGET = paysages-gui
 
 unix:LIBS += -lGLU
-win32:LIBS += ../../libpaysages.a
 
 CONFIG(release, debug|release): DEFINES += NDEBUG
 
 INCLUDEPATH += $$PWD/..
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../exploring/release/ -lpaysages_exploring
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../exploring/debug/ -lpaysages_exploring
-else:unix: LIBS += -L$$OUT_PWD/../exploring/ -lpaysages_exploring
-DEPENDPATH += $$PWD/../exploring
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../rendering/release/ -lpaysages_rendering
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../rendering/debug/ -lpaysages_rendering
-else:unix: LIBS += -L$$OUT_PWD/../rendering/ -lpaysages_rendering
-DEPENDPATH += $$PWD/../rendering
 
 HEADERS += \
     terrain/widgetheightmap.h \
@@ -160,3 +149,16 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../system/debug/ -l
 else:unix: LIBS += -L$$OUT_PWD/../system/ -lpaysages_system
 INCLUDEPATH += $$PWD/../system
 DEPENDPATH += $$PWD/../system
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../exploring/release/ -lpaysages_exploring
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../exploring/debug/ -lpaysages_exploring
+else:unix: LIBS += -L$$OUT_PWD/../exploring/ -lpaysages_exploring
+INCLUDEPATH += $$PWD/../exploring
+DEPENDPATH += $$PWD/../exploring
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../rendering/release/ -lpaysages_rendering
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../rendering/debug/ -lpaysages_rendering
+else:unix: LIBS += -L$$OUT_PWD/../rendering/ -lpaysages_rendering
+INCLUDEPATH += $$PWD/../rendering
+DEPENDPATH += $$PWD/../rendering
+

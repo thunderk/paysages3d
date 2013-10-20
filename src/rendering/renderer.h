@@ -1,6 +1,7 @@
 #ifndef _PAYSAGES_RENDERER_H_
 #define _PAYSAGES_RENDERER_H_
 
+#include "rendering_global.h"
 #include "shared/types.h"
 #include "atmosphere/public.h"
 #include "clouds/public.h"
@@ -60,11 +61,11 @@ struct Renderer
     void* customData[10];
 };
 
-Renderer* rendererCreate();
-void rendererDelete(Renderer* renderer);
-void rendererSetPreviewCallbacks(Renderer* renderer, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update);
-void rendererStart(Renderer* renderer, RenderParams params);
-void rendererInterrupt(Renderer* renderer);
+RENDERINGSHARED_EXPORT Renderer* rendererCreate();
+RENDERINGSHARED_EXPORT void rendererDelete(Renderer* renderer);
+RENDERINGSHARED_EXPORT void rendererSetPreviewCallbacks(Renderer* renderer, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update);
+RENDERINGSHARED_EXPORT void rendererStart(Renderer* renderer, RenderParams params);
+RENDERINGSHARED_EXPORT void rendererInterrupt(Renderer* renderer);
 
 #ifdef __cplusplus
 }

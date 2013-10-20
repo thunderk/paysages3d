@@ -1,6 +1,7 @@
 #ifndef _PAYSAGES_ATMOSPHERE_PUBLIC_H_
 #define _PAYSAGES_ATMOSPHERE_PUBLIC_H_
 
+#include "../rendering_global.h"
 #include "../tools/lighting.h"
 #include "../tools/euclid.h"
 #include "../tools/color.h"
@@ -66,18 +67,18 @@ typedef struct
     /*void* _internal_data;*/
 } AtmosphereRenderer;
 
-extern StandardDefinition AtmosphereDefinitionClass;
-extern StandardRenderer AtmosphereRendererClass;
+RENDERINGSHARED_EXPORT extern StandardDefinition AtmosphereDefinitionClass;
+RENDERINGSHARED_EXPORT extern StandardRenderer AtmosphereRendererClass;
 
-void atmosphereAutoPreset(AtmosphereDefinition* definition, AtmospherePreset preset);
+RENDERINGSHARED_EXPORT void atmosphereAutoPreset(AtmosphereDefinition* definition, AtmospherePreset preset);
 
-void atmosphereRenderSkydome(Renderer* renderer);
+RENDERINGSHARED_EXPORT void atmosphereRenderSkydome(Renderer* renderer);
 
-void atmosphereInitResult(AtmosphereResult* result);
-void atmosphereUpdateResult(AtmosphereResult* result);
+RENDERINGSHARED_EXPORT void atmosphereInitResult(AtmosphereResult* result);
+RENDERINGSHARED_EXPORT void atmosphereUpdateResult(AtmosphereResult* result);
 
-Renderer* atmosphereCreatePreviewRenderer();
-Color atmosphereGetPreview(Renderer* renderer, double x, double y, double heading);
+RENDERINGSHARED_EXPORT Renderer* atmosphereCreatePreviewRenderer();
+RENDERINGSHARED_EXPORT Color atmosphereGetPreview(Renderer* renderer, double x, double y, double heading);
 
 #ifdef __cplusplus
 }

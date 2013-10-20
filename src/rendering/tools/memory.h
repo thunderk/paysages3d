@@ -5,12 +5,14 @@
  * Memory tools.
  */
 
+#include "../rendering_global.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void* memory2dRealloc(void* data, int datasize, int oldxsize, int oldysize, int newxsize, int newysize, int xoffset, int yoffset);
-void memory2dScrolling(void* data, int datasize, int xsize, int ysize, int xoffset, int yoffset);
+RENDERINGSHARED_EXPORT void* memory2dRealloc(void* data, int datasize, int oldxsize, int oldysize, int newxsize, int newysize, int xoffset, int yoffset);
+RENDERINGSHARED_EXPORT void memory2dScrolling(void* data, int datasize, int xsize, int ysize, int xoffset, int yoffset);
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,7 @@
 #ifndef _PAYSAGES_WATER_PUBLIC_H_
 #define _PAYSAGES_WATER_PUBLIC_H_
 
+#include "../rendering_global.h"
 #include "../shared/types.h"
 #include "../tools/lighting.h"
 #include "../tools/curve.h"
@@ -62,17 +63,17 @@ typedef struct
 } WaterRenderer;
 
 
-extern StandardDefinition WaterDefinitionClass;
-extern StandardRenderer WaterRendererClass;
+RENDERINGSHARED_EXPORT extern StandardDefinition WaterDefinitionClass;
+RENDERINGSHARED_EXPORT extern StandardRenderer WaterRendererClass;
 
-void waterRenderSurface(Renderer* renderer);
-void waterAutoPreset(WaterDefinition* definition, WaterPreset preset);
+RENDERINGSHARED_EXPORT void waterRenderSurface(Renderer* renderer);
+RENDERINGSHARED_EXPORT void waterAutoPreset(WaterDefinition* definition, WaterPreset preset);
 
-Renderer* waterCreatePreviewCoverageRenderer();
-Color waterGetPreviewCoverage(Renderer* renderer, double x, double y, double scaling, int highlight_enabled);
+RENDERINGSHARED_EXPORT Renderer* waterCreatePreviewCoverageRenderer();
+RENDERINGSHARED_EXPORT Color waterGetPreviewCoverage(Renderer* renderer, double x, double y, double scaling, int highlight_enabled);
 
-Renderer* waterCreatePreviewColorRenderer();
-Color waterGetPreviewColor(Renderer* renderer, double x, double y, double scaling);
+RENDERINGSHARED_EXPORT Renderer* waterCreatePreviewColorRenderer();
+RENDERINGSHARED_EXPORT Color waterGetPreviewColor(Renderer* renderer, double x, double y, double scaling);
 
 #ifdef __cplusplus
 }

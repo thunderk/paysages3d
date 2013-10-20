@@ -1,6 +1,8 @@
 #ifndef _PAYSAGES_TOOLS_PARALLEL_H_
 #define _PAYSAGES_TOOLS_PARALLEL_H_
 
+#include "../rendering_global.h"
+
 /*
  * Parallel processing helpers.
  *
@@ -25,7 +27,7 @@ typedef int (*ParallelUnitFunction)(ParallelWork* work, int unit, void* data);
  * @param data Custom data that will be passed to the callback.
  * @return The newly allocated handler.
  */
-ParallelWork* parallelWorkCreate(ParallelUnitFunction func, int units, void* data);
+RENDERINGSHARED_EXPORT ParallelWork* parallelWorkCreate(ParallelUnitFunction func, int units, void* data);
 
 /**
  * Delete a parallel work handler.
@@ -33,7 +35,7 @@ ParallelWork* parallelWorkCreate(ParallelUnitFunction func, int units, void* dat
  * The work must be terminated or fully interrupted before calling this.
  * @param work The handler to free.
  */
-void parallelWorkDelete(ParallelWork* work);
+RENDERINGSHARED_EXPORT void parallelWorkDelete(ParallelWork* work);
 
 /**
  * Start working on the units.
@@ -41,7 +43,7 @@ void parallelWorkDelete(ParallelWork* work);
  * @param work The handler.
  * @param workers Number of threads to spaws, -1 for an optimal number.
  */
-int parallelWorkPerform(ParallelWork* work, int workers);
+RENDERINGSHARED_EXPORT int parallelWorkPerform(ParallelWork* work, int workers);
 
 
 
@@ -55,7 +57,7 @@ typedef int (*FuncParallelJob)(ParallelQueue* queue, int job_id, void* data, int
  * @param collect True to collect finished jobs and wait for a call to parallelQueueCollectJobs, False to discard finished jobs.
  * @return The newly allocated queue.
  */
-ParallelQueue* parallelQueueCreate(int collect);
+RENDERINGSHARED_EXPORT ParallelQueue* parallelQueueCreate(int collect);
 
 /**
  * Delete a parallel queue.
@@ -64,7 +66,7 @@ ParallelQueue* parallelQueueCreate(int collect);
  * If the queue is in collect mode, you should call parallelQueueInterrupt, then parallelQueueCollectJobs, before calling this.
  * @param queue The queue to free.
  */
-void parallelQueueDelete(ParallelQueue* queue);
+RENDERINGSHARED_EXPORT void parallelQueueDelete(ParallelQueue* queue);
 
 /**
  * Interrupt the queue processing.
@@ -73,7 +75,7 @@ void parallelQueueDelete(ParallelQueue* queue);
  * refuse future jobs.
  * @param queue The queue to interrupt.
  */
-void parallelQueueInterrupt(ParallelQueue* queue);
+RENDERINGSHARED_EXPORT void parallelQueueInterrupt(ParallelQueue* queue);
 
 /**
  * Wait for all jobs to finish.
@@ -81,7 +83,7 @@ void parallelQueueInterrupt(ParallelQueue* queue);
  * This function will return as soon as there is no pending jobs. It is recommended to stop feeding the queue, or this
  * function may never return.
  */
-void parallelQueueWait(ParallelQueue* queue);
+RENDERINGSHARED_EXPORT void parallelQueueWait(ParallelQueue* queue);
 
 /**
  * Add a job to the queue.
@@ -92,7 +94,7 @@ void parallelQueueWait(ParallelQueue* queue);
  * @param data The data that will be passed to the callback.
  * @return The job ID, 0 if the queue doesn't accept jobs.
  */
-int parallelQueueAddJob(ParallelQueue* queue, FuncParallelJob func_process, void* data);
+RENDERINGSHARED_EXPORT int parallelQueueAddJob(ParallelQueue* queue, FuncParallelJob func_process, void* data);
 
 /**
  * Collect finished jobs.
@@ -102,7 +104,7 @@ int parallelQueueAddJob(ParallelQueue* queue, FuncParallelJob func_process, void
  * @param func_collect The callback for collect.
  * @return The number of collected jobs.
  */
-int parallelQueueCollectJobs(FuncParallelJob func_collect);
+RENDERINGSHARED_EXPORT int parallelQueueCollectJobs(FuncParallelJob func_collect);
 
 #ifdef __cplusplus
 }

@@ -3,15 +3,16 @@
 
 /* OpenCL usage */
 
+#include "rendering_global.h"
+#include "noise.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "noise.h"
-
-void openclInit();
-int openclAvailable();
-void openclQuit();
+RENDERINGSHARED_EXPORT void openclInit();
+RENDERINGSHARED_EXPORT int openclAvailable();
+RENDERINGSHARED_EXPORT void openclQuit();
 
 #ifdef __cplusplus
 }

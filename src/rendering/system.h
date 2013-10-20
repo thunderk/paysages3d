@@ -3,16 +3,17 @@
 
 /* Library dependent features */
 
+#include "rendering_global.h"
 #include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void systemInit();
-int systemGetCoreCount();
+RENDERINGSHARED_EXPORT void systemInit();
+RENDERINGSHARED_EXPORT int systemGetCoreCount();
 
-int systemGetFileSize(const char* path);
+RENDERINGSHARED_EXPORT int systemGetFileSize(const char* path);
 
 #ifdef __cplusplus
 }
