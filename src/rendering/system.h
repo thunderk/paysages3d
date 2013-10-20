@@ -9,8 +9,6 @@
 extern "C" {
 #endif
 
-typedef void* (*ThreadFunction)(void* data);
-
 void systemInit();
 int systemGetCoreCount();
 
@@ -18,23 +16,6 @@ int systemGetFileSize(const char* path);
 
 #ifdef HAVE_GLIB
 #include <glib.h>
-
-typedef GThread Thread;
-
-static inline Thread* threadCreate(ThreadFunction function, void* data)
-{
-#ifdef GLIB_VERSION_2_32
-    return g_thread_new("thread", (GThreadFunc)function, data);
-#else
-    GError* error;
-    return g_thread_create((GThreadFunc)function, data, 1, &error);
-#endif
-}
-
-static inline void* threadJoin(Thread* thread)
-{
-    return g_thread_join(thread);
-}
 
 typedef GMutex Mutex;
 

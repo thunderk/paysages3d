@@ -5,6 +5,7 @@
 #include "render.h"
 #include "scenery.h"
 #include "tools.h"
+#include "Thread.h"
 
 static RayCastingResult _RAYCASTING_NULL = {0};
 

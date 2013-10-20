@@ -8,6 +8,7 @@
 #include "camera.h"
 #include "system.h"
 #include "PictureFile.h"
+#include "Thread.h"
 
 typedef struct
 {

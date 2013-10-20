@@ -12,11 +12,13 @@ TEMPLATE = lib
 DEFINES += SYSTEM_LIBRARY
 
 SOURCES += \
-    PictureFile.cpp
+    PictureFile.cpp \
+    Thread.cpp
 
 HEADERS +=\
         system_global.h \
-    PictureFile.h
+    PictureFile.h \
+    Thread.h
 
 unix:!symbian {
     maemo5 {

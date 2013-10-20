@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include "../system.h"
+#include "Thread.h"
 
 #define PARALLEL_MAX_THREADS 20
 

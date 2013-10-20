@@ -1,8 +1,9 @@
 #ifndef PICTUREFILE_H
 #define PICTUREFILE_H
 
-#ifdef __cplusplus
 #include "system_global.h"
+
+#ifdef __cplusplus
 
 namespace paysages
 {

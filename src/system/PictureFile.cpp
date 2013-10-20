@@ -7,6 +7,8 @@ PictureFile::PictureFile()
 {
 }
 
+// Transitional C-API
+
 int systemSavePictureFile(const char* filepath, PictureCallbackSavePixel callback_pixel, void* data, int width, int height)
 {
     QImage result(width, height, QImage::Format_ARGB32);
