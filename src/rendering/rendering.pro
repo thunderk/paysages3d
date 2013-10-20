@@ -9,7 +9,7 @@ INCLUDEPATH += $$PWD/..
 
 unix {
     CONFIG += link_pkgconfig
-    PKGCONFIG += glib-2.0 gthread-2.0 IL ILU
+    PKGCONFIG += glib-2.0 gthread-2.0
 }
 DEFINES += HAVE_GLIB=1
 CONFIG(release, debug|release): DEFINES += NDEBUG
@@ -117,3 +117,8 @@ HEADERS += \
     water/public.h \
     water/private.h
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../system/release/ -lpaysages_system
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../system/debug/ -lpaysages_system
+else:unix: LIBS += -L$$OUT_PWD/../system/ -lpaysages_system
+INCLUDEPATH += $$PWD/../system
+DEPENDPATH += $$PWD/../system

@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <math.h>
 #include "../system.h"
+#include "PictureFile.h"
 
 struct Texture2D
 {
@@ -194,19 +195,6 @@ void texture2DLoad(PackStream* stream, Texture2D* tex)
 void texture2DSaveToFile(Texture2D* tex, const char* filepath)
 {
     systemSavePictureFile(filepath, (PictureCallbackSavePixel)texture2DGetPixel, tex, tex->xsize, tex->ysize);
-}
-
-static void _callbackTex2dLoad(Texture2D* tex, int x, int y, Color col)
-{
-    if (x >= 0 && x < tex->xsize && y >= 0 && y < tex->ysize)
-    {
-        tex->data[y * tex->xsize + x] = col;
-    }
-}
-
-void texture2DLoadFromFile(Texture2D* tex, const char* filepath)
-{
-    systemLoadPictureFile(filepath, NULL, (PictureCallbackLoadPixel)_callbackTex2dLoad, tex);
 }
 
 
@@ -401,22 +389,6 @@ static Color _callbackTex3dSave(Texture3D* tex, int x, int y)
 void texture3DSaveToFile(Texture3D* tex, const char* filepath)
 {
     systemSavePictureFile(filepath, (PictureCallbackSavePixel)_callbackTex3dSave, tex, tex->xsize, tex->ysize * tex->zsize);
-}
-
-static void _callbackTex3dLoad(Texture3D* tex, int x, int y, Color col)
-{
-    int z = y / tex->ysize;
-    y = y % tex->ysize;
-
-    if (x >= 0 && x < tex->xsize && y >= 0 && y < tex->ysize && z >= 0 && z < tex->zsize)
-    {
-        tex->data[z * tex->xsize * tex->ysize + y * tex->xsize + x] = col;
-    }
-}
-
-void texture3DLoadFromFile(Texture3D* tex, const char* filepath)
-{
-    systemLoadPictureFile(filepath, NULL, (PictureCallbackLoadPixel)_callbackTex3dLoad, tex);
 }
 
 
@@ -648,23 +620,4 @@ static Color _callbackTex4dSave(Texture4D* tex, int x, int y)
 void texture4DSaveToFile(Texture4D* tex, const char* filepath)
 {
     systemSavePictureFile(filepath, (PictureCallbackSavePixel)_callbackTex4dSave, tex, tex->xsize * tex->wsize, tex->ysize * tex->zsize);
-}
-
-static void _callbackTex4dLoad(Texture4D* tex, int x, int y, Color col)
-{
-    int w = x / tex->xsize;
-    x = x % tex->xsize;
-
-    int z = y / tex->ysize;
-    y = y % tex->ysize;
-
-    if (x >= 0 && x < tex->xsize && y >= 0 && y < tex->ysize && z >= 0 && z < tex->zsize && w >= 0 && w < tex->wsize)
-    {
-        tex->data[w * tex->xsize * tex->ysize * tex->zsize + z * tex->xsize * tex->ysize + y * tex->xsize + x] = col;
-    }
-}
-
-void texture4DLoadFromFile(Texture4D* tex, const char* filepath)
-{
-    systemLoadPictureFile(filepath, NULL, (PictureCallbackLoadPixel)_callbackTex4dLoad, tex);
 }

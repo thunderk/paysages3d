@@ -1,3 +1,16 @@
 TEMPLATE = subdirs
+CONFIG += ordered
 
-SUBDIRS = rendering exploring editing controlling testing
+SUBDIRS = \
+    system \
+    rendering \
+    exploring \
+    editing \
+    controlling \
+    testing
+
+rendering.depends = system
+exploring.depends = rendering
+editing.depends = exploring rendering
+controlling.depends = rendering
+testing.depends = rendering

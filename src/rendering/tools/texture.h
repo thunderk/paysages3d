@@ -29,7 +29,6 @@ void texture2DAdd(Texture2D* source, Texture2D* destination);
 void texture2DSave(PackStream* stream, Texture2D* tex);
 void texture2DLoad(PackStream* stream, Texture2D* tex);
 void texture2DSaveToFile(Texture2D* tex, const char* filepath);
-void texture2DLoadFromFile(Texture2D* tex, const char* filepath);
 
 Texture3D* texture3DCreate(int xsize, int ysize, int zsize);
 void texture3DDelete(Texture3D* tex);
@@ -44,7 +43,6 @@ void texture3DAdd(Texture3D* source, Texture3D* destination);
 void texture3DSave(PackStream* stream, Texture3D* tex);
 void texture3DLoad(PackStream* stream, Texture3D* tex);
 void texture3DSaveToFile(Texture3D* tex, const char* filepath);
-void texture3DLoadFromFile(Texture3D* tex, const char* filepath);
 
 Texture4D* texture4DCreate(int xsize, int ysize, int zsize, int wsize);
 void texture4DDelete(Texture4D* tex);
@@ -59,7 +57,6 @@ void texture4DAdd(Texture4D* source, Texture4D* destination);
 void texture4DSave(PackStream* stream, Texture4D* tex);
 void texture4DLoad(PackStream* stream, Texture4D* tex);
 void texture4DSaveToFile(Texture4D* tex, const char* filepath);
-void texture4DLoadFromFile(Texture4D* tex, const char* filepath);
 
 #ifdef __cplusplus
 }

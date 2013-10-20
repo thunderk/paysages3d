@@ -8,6 +8,7 @@
 extern "C" {
 #endif
 
+#define TYPEDEF_COLOR
 typedef struct
 {
     double r;

@@ -6,7 +6,7 @@ QT += core gui opengl
 TARGET = paysages-gui
 
 unix:LIBS += -lGLU
-win32:LIBS += ../../libpaysages.a -lDevIL -lILU -lILUT -lglib-2.0 -lgthread-2.0
+win32:LIBS += ../../libpaysages.a -lglib-2.0 -lgthread-2.0
 
 CONFIG(release, debug|release): DEFINES += NDEBUG
 
@@ -154,3 +154,9 @@ RESOURCES += \
     ../../data/ui_pictures.qrc
 
 TRANSLATIONS = ../../data/i18n/paysages_fr.ts
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../system/release/ -lpaysages_system
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../system/debug/ -lpaysages_system
+else:unix: LIBS += -L$$OUT_PWD/../system/ -lpaysages_system
+INCLUDEPATH += $$PWD/../system
+DEPENDPATH += $$PWD/../system

@@ -7,6 +7,7 @@
 #include "renderer.h"
 #include "camera.h"
 #include "system.h"
+#include "PictureFile.h"
 
 typedef struct
 {
