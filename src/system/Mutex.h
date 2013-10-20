@@ -15,7 +15,7 @@ namespace system
 /*!
  * \brief System mutex
  */
-class Mutex: private QMutex
+class SYSTEMSHARED_EXPORT Mutex: private QMutex
 {
 public:
     /*!
@@ -39,10 +39,10 @@ extern "C" {
 typedef struct Mutex Mutex;
 #endif
 
-Mutex* mutexCreate();
-void mutexDestroy(Mutex* mutex);
-void mutexAcquire(Mutex* mutex);
-void mutexRelease(Mutex* mutex);
+SYSTEMSHARED_EXPORT Mutex* mutexCreate();
+SYSTEMSHARED_EXPORT void mutexDestroy(Mutex* mutex);
+SYSTEMSHARED_EXPORT void mutexAcquire(Mutex* mutex);
+SYSTEMSHARED_EXPORT void mutexRelease(Mutex* mutex);
 
 #ifdef __cplusplus
 }

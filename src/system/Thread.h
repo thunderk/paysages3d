@@ -17,7 +17,7 @@ namespace system
 /*!
  * \brief System thread
  */
-class Thread: private QThread
+class SYSTEMSHARED_EXPORT Thread: private QThread
 {
 public:
     /*!
@@ -61,10 +61,10 @@ extern "C" {
 typedef struct Thread Thread;
 #endif
 
-Thread* threadCreate(ThreadFunction function, void* data);
-void* threadJoin(Thread* thread);
+SYSTEMSHARED_EXPORT Thread* threadCreate(ThreadFunction function, void* data);
+SYSTEMSHARED_EXPORT void* threadJoin(Thread* thread);
 
-void timeSleepMs(unsigned long ms);
+SYSTEMSHARED_EXPORT void timeSleepMs(unsigned long ms);
 
 #ifdef __cplusplus
 }
