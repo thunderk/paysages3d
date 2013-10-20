@@ -3,6 +3,7 @@
 #include <assert.h>
 #include "../system.h"
 #include "Thread.h"
+#include "Mutex.h"
 
 #define PARALLEL_MAX_THREADS 20
 

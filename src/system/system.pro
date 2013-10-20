@@ -13,12 +13,14 @@ DEFINES += SYSTEM_LIBRARY
 
 SOURCES += \
     PictureFile.cpp \
-    Thread.cpp
+    Thread.cpp \
+    Mutex.cpp
 
 HEADERS +=\
         system_global.h \
     PictureFile.h \
-    Thread.h
+    Thread.h \
+    Mutex.h
 
 unix:!symbian {
     maemo5 {

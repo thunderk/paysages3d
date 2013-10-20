@@ -9,6 +9,7 @@
 #include "system.h"
 #include "PictureFile.h"
 #include "Thread.h"
+#include "Mutex.h"
 
 typedef struct
 {
