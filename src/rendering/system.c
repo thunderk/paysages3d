@@ -47,9 +47,6 @@ static int _getCoreCount()
 
 void systemInit()
 {
-#ifndef GLIB_VERSION_2_32
-    g_thread_init(NULL);
-#endif
     _core_count = _getCoreCount();
 }
 

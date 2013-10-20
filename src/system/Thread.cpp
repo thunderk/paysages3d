@@ -43,3 +43,8 @@ void* threadJoin(Thread* thread)
 
     return result;
 }
+
+void timeSleepMs(unsigned long ms)
+{
+    QThread::msleep(ms);
+}

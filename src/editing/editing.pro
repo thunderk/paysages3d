@@ -6,7 +6,7 @@ QT += core gui opengl
 TARGET = paysages-gui
 
 unix:LIBS += -lGLU
-win32:LIBS += ../../libpaysages.a -lglib-2.0 -lgthread-2.0
+win32:LIBS += ../../libpaysages.a
 
 CONFIG(release, debug|release): DEFINES += NDEBUG
 

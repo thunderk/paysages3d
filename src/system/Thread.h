@@ -64,6 +64,8 @@ typedef struct Thread Thread;
 Thread* threadCreate(ThreadFunction function, void* data);
 void* threadJoin(Thread* thread);
 
+void timeSleepMs(unsigned long ms);
+
 #ifdef __cplusplus
 }
 #endif

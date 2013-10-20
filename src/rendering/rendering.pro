@@ -7,11 +7,6 @@ TARGET = paysages_rendering
 
 INCLUDEPATH += $$PWD/..
 
-unix {
-    CONFIG += link_pkgconfig
-    PKGCONFIG += glib-2.0 gthread-2.0
-}
-DEFINES += HAVE_GLIB=1
 CONFIG(release, debug|release): DEFINES += NDEBUG
 
 SOURCES += main.c \

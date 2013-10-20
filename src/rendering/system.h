@@ -14,15 +14,6 @@ int systemGetCoreCount();
 
 int systemGetFileSize(const char* path);
 
-#ifdef HAVE_GLIB
-#include <glib.h>
-
-static inline void timeSleepMs(unsigned long ms)
-{
-    g_usleep(ms * 1000);
-}
-#endif
-
 #ifdef __cplusplus
 }
 #endif
