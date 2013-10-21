@@ -1,5 +1,6 @@
 BUILDMODE=release
 BUILDPATH=./build/${BUILDMODE}
+LIBRARY_PATH=${BUILDPATH}/rendering:${BUILDPATH}/exploring:${BUILDPATH}/system
 
 all:build
 
@@ -32,13 +33,13 @@ release:
 	+make BUILDMODE=release all
 
 tests:build
-	LD_LIBRARY_PATH=${BUILDPATH}/rendering CK_DEFAULT_TIMEOUT=30 ${BUILDPATH}/testing/paysages-tests
+	LD_LIBRARY_PATH=$(LIBRARY_PATH) CK_DEFAULT_TIMEOUT=30 ${BUILDPATH}/testing/paysages-tests
 
 run_cli:build
-	LD_LIBRARY_PATH=${BUILDPATH}/rendering ${RUNNER} ${BUILDPATH}/controlling/paysages-cli
+	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/controlling/paysages-cli
 
 run:build
-	LD_LIBRARY_PATH=${BUILDPATH}/rendering:${BUILDPATH}/exploring ${RUNNER} ${BUILDPATH}/editing/paysages-gui
+	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/editing/paysages-gui
 
 profile:debug
 	LD_LIBRARY_PATH=build/debug/rendering:build/debug/exploring perf record -g fp ./build/debug/paysages-gui
