@@ -51,7 +51,7 @@ profile_cli:debug
 
 package:release
 	rm -rf paysages3d-linux
-	rm -f paysages3d-linux.tar.gz
+	rm -f paysages3d-linux.tar.bz2
 	mkdir paysages3d-linux
 	mkdir paysages3d-linux/lib
 	mkdir paysages3d-linux/cache
@@ -64,6 +64,9 @@ package:release
 	cp -r cache/*.cache paysages3d-linux/cache/
 	cp dist/paysages3d.sh paysages3d-linux/
 	chmod +x paysages3d-linux/paysages3d.sh
+	cp dist/collectlib.sh paysages3d-linux/
+	chmod +x paysages3d-linux/collectlib.sh
+	cd paysages3d-linux && ./collectlib.sh && rm collectlib.sh && cd -
 	tar -cjvvf paysages3d-linux.tar.bz2  paysages3d-linux/
 
 .PHONY:all clean release build
