@@ -49,21 +49,21 @@ profile_cli:debug
 	LD_LIBRARY_PATH=build/debug/rendering perf record -g fp ./build/debug/paysages-cli
 	perf report -g
 
-install:release
-	mkdir -p ${DESTDIR}/usr/bin
-	mkdir -p ${DESTDIR}/usr/lib
-	mkdir -p ${DESTDIR}/usr/share/paysages3d
-	cp build/release/editing/paysages-gui ${DESTDIR}/usr/bin/paysages3d
-	cp build/release/exploring/libpaysages_exploring.so ${DESTDIR}/usr/lib/
-	cp build/release/rendering/libpaysages_rendering.so ${DESTDIR}/usr/lib/
-	cp data/.paysages_data ${DESTDIR}/usr/share/paysages3d/
-	cp -r data/i18n ${DESTDIR}/usr/share/paysages3d/
-	cp -r data/images ${DESTDIR}/usr/share/paysages3d/
-	cp cache/*.cache ${DESTDIR}/usr/share/paysages3d/
-
-deb:
-	apt-get install pbuilder build-essential check qt4-dev-tools
-	DEBFULLNAME="Michael Lemaire" DEBEMAIL=paysages@thunderk.net dch -i -p -u low -D stable
-	debuild -b -us -uc
+package:release
+	rm -rf paysages3d-linux
+	rm -f paysages3d-linux.tar.gz
+	mkdir paysages3d-linux
+	mkdir paysages3d-linux/lib
+	mkdir paysages3d-linux/cache
+	cp $(BUILDPATH)/system/libpaysages_system.so* paysages3d-linux/lib/
+	cp $(BUILDPATH)/rendering/libpaysages_rendering.so* paysages3d-linux/lib/
+	cp $(BUILDPATH)/exploring/libpaysages_exploring.so* paysages3d-linux/lib/
+	cp $(BUILDPATH)/editing/paysages-gui paysages3d-linux/lib/
+	chmod +x paysages3d-linux/lib/paysages-gui
+	cp -r data paysages3d-linux/
+	cp -r cache/*.cache paysages3d-linux/cache/
+	cp dist/paysages3d.sh paysages3d-linux/
+	chmod +x paysages3d-linux/paysages3d.sh
+	tar -cjvvf paysages3d-linux.tar.bz2  paysages3d-linux/
 
 .PHONY:all clean release build

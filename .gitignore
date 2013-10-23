@@ -18,3 +18,5 @@ ui_*.h
 /debian/*.substvars
 /debian/paysages3d
 /*.trace
+/paysages3d-linux/
+/paysages3d-linux.tar.bz2
