@@ -6,7 +6,6 @@
 #include "rendering/tools/color.h"
 #include "rendering/tools/euclid.h"
 #include "rendering/render.h"
-#include "rendering/system.h"
 
 static AtmosphereDefinition* _atmosphere;
 static CameraDefinition* _camera;

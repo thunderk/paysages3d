@@ -1,11 +1,11 @@
 #include "renderer.h"
 
 #include "tools/lighting.h"
-#include "system.h"
+#include "System.h"
+#include "Thread.h"
 #include "render.h"
 #include "scenery.h"
 #include "tools.h"
-#include "Thread.h"
 
 static RayCastingResult _RAYCASTING_NULL = {0};
 

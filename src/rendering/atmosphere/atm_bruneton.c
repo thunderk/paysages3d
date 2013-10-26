@@ -9,7 +9,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "rendering/system.h"
+#include "System.h"
 #include "rendering/tools.h"
 #include "rendering/tools/cache.h"
 #include "rendering/tools/texture.h"

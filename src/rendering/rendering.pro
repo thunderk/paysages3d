@@ -12,7 +12,6 @@ INCLUDEPATH += $$PWD/..
 
 SOURCES += main.c \
     tools.c \
-    system.c \
     scenery.c \
     renderer.c \
     render.c \
@@ -69,7 +68,6 @@ SOURCES += main.c \
 
 HEADERS += \
     tools.h \
-    system.h \
     scenery.h \
     renderer.h \
     render.h \

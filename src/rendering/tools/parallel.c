@@ -1,7 +1,8 @@
 #include "parallel.h"
 
 #include <assert.h>
-#include "../system.h"
+#include <stdlib.h>
+#include "System.h"
 #include "Thread.h"
 #include "Mutex.h"
 

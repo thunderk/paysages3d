@@ -5,7 +5,6 @@
 #include <string.h>
 #include "../tools.h"
 #include "../renderer.h"
-#include "../system.h"
 
 /******************** Fake ********************/
 static AtmosphereResult _fakeApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)

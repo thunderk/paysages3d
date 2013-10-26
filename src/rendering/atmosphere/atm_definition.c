@@ -5,7 +5,6 @@
 #include <string.h>
 #include "../tools.h"
 #include "../renderer.h"
-#include "../system.h"
 
 static int _inited = 0;
 

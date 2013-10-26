@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "rendering/main.h"
-#include "rendering/system.h"
+#include "System.h"
 
 int tests_cpu_count;
 extern void test_euclid_case(Suite* s);

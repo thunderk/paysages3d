@@ -9,7 +9,7 @@
 #include <assert.h>
 #include <math.h>
 #include "tools.h"
-#include "rendering/system.h"
+#include "System.h"
 
 /*************** PreviewChunk ***************/
 class PreviewChunk
@@ -168,7 +168,7 @@ void PreviewDrawingThread::run()
 /*************** PreviewDrawingManager ***************/
 PreviewDrawingManager::PreviewDrawingManager()
 {
-    _thread_count = systemGetCoreCount();
+    _thread_count = System::getCoreCount();
 }
 
 void PreviewDrawingManager::startThreads()

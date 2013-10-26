@@ -15,13 +15,15 @@ CONFIG(release, debug|release): DEFINES += NDEBUG
 SOURCES += \
     PictureFile.cpp \
     Thread.cpp \
-    Mutex.cpp
+    Mutex.cpp \
+    System.cpp
 
 HEADERS += \
     system_global.h \
     PictureFile.h \
     Thread.h \
-    Mutex.h
+    Mutex.h \
+    System.h
 
 unix:!symbian {
     maemo5 {

@@ -1,5 +1,5 @@
 #include "testing/common.h"
-#include "rendering/system.h"
+#include "System.h"
 #include "rendering/scenery.h"
 
 #define OUTPUT_WIDTH 400

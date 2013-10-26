@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "tools/data.h"
-#include "system.h"
 #include "scenery.h"
 #include "render.h"
 #include "main.h"
@@ -12,7 +11,6 @@
 
 void paysagesInit()
 {
-    systemInit();
     if (!dataInit())
     {
         /* TODO Add error callback (for interface) */

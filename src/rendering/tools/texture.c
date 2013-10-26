@@ -2,7 +2,7 @@
 
 #include <assert.h>
 #include <math.h>
-#include "../system.h"
+#include "System.h"
 #include "PictureFile.h"
 
 struct Texture2D
