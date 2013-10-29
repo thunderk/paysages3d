@@ -3,7 +3,7 @@
 
 #include "../common/freeformhelper.h"
 #include "../common/freelayerhelper.h"
-#include "rendering/scenery.h"
+#include "Scenery.h"
 #include "previewmaterial.h"
 #include "editing/textures/PreviewLayerCoverage.h"
 #include "editing/textures/PreviewLayerLook.h"

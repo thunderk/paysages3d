@@ -6,7 +6,7 @@
 #include "inputcamera.h"
 #include "tools.h"
 #include "rendering/render.h"
-#include "rendering/scenery.h"
+#include "Scenery.h"
 
 /**************** Previews ****************/
 class PreviewRenderLandscape : public BasePreview

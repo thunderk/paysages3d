@@ -3,10 +3,10 @@
 #include <QGLWidget>
 #include <QKeyEvent>
 #include <QTime>
-#include <math.h>
+#include <cmath>
 #include <GL/glu.h>
 #include <QThread>
-#include "rendering/scenery.h"
+#include "Scenery.h"
 #include "rendering/tools/euclid.h"
 #include "../exploring/main.h"
 #include "explorerchunkterrain.h"

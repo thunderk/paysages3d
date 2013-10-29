@@ -4,7 +4,7 @@
 #include "System.h"
 #include "Thread.h"
 #include "render.h"
-#include "scenery.h"
+#include "Scenery.h"
 #include "tools.h"
 
 static RayCastingResult _RAYCASTING_NULL = {0};

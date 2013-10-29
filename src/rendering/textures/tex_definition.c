@@ -1,5 +1,5 @@
 #include "private.h"
-#include "scenery.h"
+#include "Scenery.h"
 
 #include <stdlib.h>
 

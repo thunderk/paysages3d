@@ -6,7 +6,7 @@
 #include <math.h>
 #include <GL/glu.h>
 #include "tools.h"
-#include "rendering/scenery.h"
+#include "Scenery.h"
 
 #define HEIGHTMAP_RESOLUTION 256
 

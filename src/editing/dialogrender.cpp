@@ -12,7 +12,7 @@
 #include <QPushButton>
 #include "tools.h"
 
-#include "rendering/scenery.h"
+#include "Scenery.h"
 
 static DialogRender* _current_dialog;
 

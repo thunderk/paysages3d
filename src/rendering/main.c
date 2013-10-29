@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "tools/data.h"
-#include "scenery.h"
+#include "Scenery.h"
 #include "render.h"
 #include "main.h"
 #include "opencl.h"

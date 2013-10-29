@@ -8,7 +8,7 @@
 #include "rendering/tools/euclid.h"
 #include "rendering/tools/lighting.h"
 #include "rendering/renderer.h"
-#include "rendering/scenery.h"
+#include "Scenery.h"
 #include "rendering/water/public.h"
 #include "tools.h"
 

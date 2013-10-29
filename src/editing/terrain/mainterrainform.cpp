@@ -6,7 +6,7 @@
 #include "dialogterrainpainting.h"
 #include "previewterrainshape.h"
 #include "tools.h"
-#include "rendering/scenery.h"
+#include "Scenery.h"
 #include "rendering/textures/public.h"
 
 MainTerrainForm::MainTerrainForm(QWidget *parent) :

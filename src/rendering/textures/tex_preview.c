@@ -1,7 +1,7 @@
 #include "tex_preview.h"
 #include "private.h"
 
-#include "rendering/scenery.h"
+#include "Scenery.h"
 #include "rendering/tools.h"
 
 void TexturesPreviewLayerCoverage_bind(Renderer* renderer, TexturesDefinition* definition)

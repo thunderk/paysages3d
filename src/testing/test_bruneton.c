@@ -1,6 +1,6 @@
 #include "testing/common.h"
 #include "System.h"
-#include "rendering/scenery.h"
+#include "rendering/Scenery.h"
 
 #define OUTPUT_WIDTH 400
 #define OUTPUT_HEIGHT 300

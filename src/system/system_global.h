@@ -28,6 +28,6 @@ namespace paysages
 using namespace paysages::system;
 #endif
 
-/* Global import */
+/* Global imports */
 
 #endif // SYSTEM_GLOBAL_H

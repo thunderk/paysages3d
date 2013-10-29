@@ -24,7 +24,7 @@
 #include "dialogexplorer.h"
 
 #include "rendering/main.h"
-#include "rendering/scenery.h"
+#include "Scenery.h"
 #include "tools.h"
 
 MainWindow* MainWindow::_instance = NULL;

@@ -1,6 +1,6 @@
 #include "formtextures.h"
 
-#include "rendering/scenery.h"
+#include "Scenery.h"
 #include "tools.h"
 
 /**************** Previews ****************/

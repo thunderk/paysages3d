@@ -5,7 +5,7 @@
 
 #include "rendering/main.h"
 #include "rendering/render.h"
-#include "rendering/scenery.h"
+#include "rendering/Scenery.h"
 
 void startRender(Renderer* renderer, char* outputpath, RenderParams params)
 {

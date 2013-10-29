@@ -11,7 +11,7 @@
 #include "mainwindow.h"
 #include "dialogrender.h"
 #include "dialogexplorer.h"
-#include "rendering/scenery.h"
+#include "Scenery.h"
 #include "rendering/renderer.h"
 #include "tools.h"
 

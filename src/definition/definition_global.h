@@ -1,5 +1,5 @@
-#ifndef RENDERING_GLOBAL_H
-#define RENDERING_GLOBAL_H
+#ifndef DEFINITION_GLOBAL_H
+#define DEFINITION_GLOBAL_H
 
 /* Shared object helpers */
 #ifdef __cplusplus
@@ -13,23 +13,21 @@
 #    define Q_DECL_IMPORT
 #  endif
 #endif
-#if defined(RENDERING_LIBRARY)
-#  define RENDERINGSHARED_EXPORT Q_DECL_EXPORT
+#if defined(DEFINITION_LIBRARY)
+#  define DEFINITIONSHARED_EXPORT Q_DECL_EXPORT
 #else
-#  define RENDERINGSHARED_EXPORT Q_DECL_IMPORT
+#  define DEFINITIONSHARED_EXPORT Q_DECL_IMPORT
 #endif
 
 /* Namespace using */
 #ifdef __cplusplus
 namespace paysages
 {
-    namespace system {}
-    namespace rendering {}
+    namespace definition {}
 }
 using namespace paysages::system;
-using namespace paysages::rendering;
 #endif
 
-/* Global import */
+/* Global imports */
 
-#endif // RENDERING_GLOBAL_H
+#endif // DEFINITION_GLOBAL_H

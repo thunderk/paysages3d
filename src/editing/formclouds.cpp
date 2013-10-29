@@ -3,7 +3,7 @@
 #include "rendering/clouds/clo_preview.h"
 #include "rendering/tools/color.h"
 #include "rendering/tools/euclid.h"
-#include "rendering/scenery.h"
+#include "Scenery.h"
 
 #include "tools.h"
 

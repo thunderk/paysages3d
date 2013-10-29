@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "render.h"
-#include "scenery.h"
+#include "Scenery.h"
 #include "tools.h"
 #include "tools/boundingbox.h"
 
@@ -95,6 +95,7 @@ void cameraValidateDefinition(CameraDefinition* definition, int check_above)
 
     if (check_above)
     {
+        /* TODO Don't create a renderer for this ! */
         renderer = sceneryCreateStandardRenderer();
         terrain_height = renderer->terrain->getHeight(renderer, definition->location.x, definition->location.z, 1) + 0.5;
         water_height = renderer->water->getHeightInfo(renderer).max_height + 0.5;

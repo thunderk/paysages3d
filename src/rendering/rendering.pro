@@ -1,6 +1,5 @@
 CONFIG += console
 CONFIG -= app_bundle
-CONFIG -= qt
 
 TEMPLATE = lib
 TARGET = paysages_rendering
@@ -12,7 +11,6 @@ INCLUDEPATH += $$PWD/..
 
 SOURCES += main.c \
     tools.c \
-    scenery.c \
     renderer.c \
     render.c \
     opencl.c \
@@ -64,11 +62,11 @@ SOURCES += main.c \
     water/wat_raster.c \
     water/wat_preview.c \
     water/wat_presets.c \
-    water/wat_definition.c
+    water/wat_definition.c \
+    Scenery.cpp
 
 HEADERS += \
     tools.h \
-    scenery.h \
     renderer.h \
     render.h \
     opencl.h \
@@ -110,7 +108,8 @@ HEADERS += \
     tools/array.h \
     water/public.h \
     water/private.h \
-    rendering_global.h
+    rendering_global.h \
+    Scenery.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../system/debug/ -lpaysages_system

@@ -7,7 +7,7 @@
 #include <math.h>
 
 #include "rendering/atmosphere/public.h"
-#include "rendering/scenery.h"
+#include "Scenery.h"
 #include "rendering/renderer.h"
 
 static AtmosphereDefinition* _definition;
