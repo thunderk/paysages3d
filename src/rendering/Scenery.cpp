@@ -233,7 +233,14 @@ void sceneryGetTerrain(TerrainDefinition* terrain)
 
 TerrainDefinition* sceneryGetTerrainDirect()
 {
-    return _main_scenery->getTerrain();
+    if (_main_scenery)
+    {
+        return _main_scenery->getTerrain();
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 void scenerySetTextures(TexturesDefinition* textures)

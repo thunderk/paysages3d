@@ -71,8 +71,11 @@ static void _layerValidateDefinition(TexturesLayerDefinition* definition)
 
     /* Update zone height range */
     TerrainDefinition* terrain = sceneryGetTerrainDirect();
-    HeightInfo height_info = terrainGetHeightInfo(terrain);
-    zoneSetRelativeHeight(definition->terrain_zone, height_info.min_height, height_info.base_height, height_info.max_height);
+    if (terrain)
+    {
+        HeightInfo height_info = terrainGetHeightInfo(terrain);
+        zoneSetRelativeHeight(definition->terrain_zone, height_info.min_height, height_info.base_height, height_info.max_height);
+    }
 }
 
 static TexturesLayerDefinition* _layerCreateDefinition()
