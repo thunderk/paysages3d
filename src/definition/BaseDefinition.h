@@ -2,9 +2,9 @@
 #define BASEDEFINITION_H
 
 #include "definition_global.h"
-#include <QVector>
 
-class PackStream;
+#include <QList>
+#include "PackStream.h" // TODO Delete when c++ migration is done
 
 namespace paysages {
 namespace definition {
@@ -18,15 +18,17 @@ public:
     BaseDefinition(BaseDefinition* parent);
     virtual ~BaseDefinition();
 
-    void addChild(BaseDefinition* child);
-    void removeChild(BaseDefinition* child);
-
     virtual void save(PackStream* pack);
     virtual void load(PackStream* pack);
 
+protected:
+    void addChild(BaseDefinition* child);
+    void removeChild(BaseDefinition* child);
+
 private:
     BaseDefinition* parent;
-    QVector<BaseDefinition*> children;
+    BaseDefinition* root;
+    QList<BaseDefinition*> children;
 };
 
 }

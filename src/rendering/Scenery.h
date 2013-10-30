@@ -14,6 +14,8 @@
 
 #ifdef __cplusplus
 
+#include "BaseDefinition.h"
+
 //class AtmosphereDefinition;
 //class CameraDefinition;
 //class CloudsDefinition;
@@ -31,16 +33,16 @@ namespace rendering {
  *
  * This class contains the whole scenery definition.
  */
-class RENDERINGSHARED_EXPORT Scenery
+class RENDERINGSHARED_EXPORT Scenery: private BaseDefinition
 {
 public:
     Scenery();
-    ~Scenery();
+    virtual ~Scenery();
+
+    virtual void save(PackStream* stream);
+    virtual void load(PackStream* stream);
 
     void autoPreset(int seed);
-
-    void save(PackStream* stream);
-    void load(PackStream* stream);
 
     void setAtmosphere(AtmosphereDefinition* atmosphere);
     inline AtmosphereDefinition* getAtmosphere() {return atmosphere;}

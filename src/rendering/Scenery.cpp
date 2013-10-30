@@ -10,7 +10,8 @@ static SceneryCustomDataCallback _custom_save = NULL;
 static SceneryCustomDataCallback _custom_load = NULL;
 static void* _custom_data = NULL;
 
-Scenery::Scenery()
+Scenery::Scenery():
+    BaseDefinition(NULL)
 {
     atmosphere = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
     camera = cameraCreateDefinition();
@@ -32,6 +33,8 @@ Scenery::~Scenery()
 
 void Scenery::save(PackStream* stream)
 {
+    BaseDefinition::save(stream);
+
     AtmosphereDefinitionClass.save(stream, atmosphere);
     cameraSave(stream, camera);
     CloudsDefinitionClass.save(stream, clouds);
@@ -42,6 +45,8 @@ void Scenery::save(PackStream* stream)
 
 void Scenery::load(PackStream* stream)
 {
+    BaseDefinition::load(stream);
+
     AtmosphereDefinitionClass.load(stream, atmosphere);
     cameraLoad(stream, camera);
     CloudsDefinitionClass.load(stream, clouds);
