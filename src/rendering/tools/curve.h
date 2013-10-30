@@ -2,7 +2,7 @@
 #define _PAYSAGES_TOOLS_CURVE_H_
 
 #include "../rendering_global.h"
-#include "pack.h"
+#include "PackStream.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -2,7 +2,7 @@
 #define _PAYSAGES_CAMERA_H_
 
 #include "rendering_global.h"
-#include "tools/pack.h"
+#include "PackStream.h"
 #include "tools/euclid.h"
 #include "tools/boundingbox.h"
 

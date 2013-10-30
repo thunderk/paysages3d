@@ -11,7 +11,7 @@ extern "C" {
 
 #include "../rendering_global.h"
 #include "color.h"
-#include "pack.h"
+#include "PackStream.h"
 
 typedef struct Texture2D Texture2D;
 typedef struct Texture3D Texture3D;

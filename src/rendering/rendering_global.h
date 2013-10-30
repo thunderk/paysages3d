@@ -24,9 +24,13 @@
 namespace paysages
 {
     namespace system {}
+    namespace basics {}
+    namespace definition {}
     namespace rendering {}
 }
 using namespace paysages::system;
+using namespace paysages::basics;
+using namespace paysages::definition;
 using namespace paysages::rendering;
 #endif
 

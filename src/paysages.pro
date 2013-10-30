@@ -3,18 +3,19 @@ CONFIG += ordered
 
 SUBDIRS = \
     system \
+    basics \
+    definition \
     rendering \
     exploring \
     editing \
-    controlling \
-    definition \
-    basics
+    controlling
 
 unix:SUBDIRS += testing
 
-rendering.depends = system
+basics.depends = system
+definition.depends = basics
+rendering.depends = definition
 exploring.depends = rendering
-definition.depends = rendering system
 editing.depends = exploring rendering
 controlling.depends = rendering
 unix:testing.depends = rendering

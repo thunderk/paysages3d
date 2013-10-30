@@ -6,15 +6,17 @@
 
 QT       -= gui
 
-TARGET = basics
+TARGET = paysages_basics
 TEMPLATE = lib
 
 DEFINES += BASICS_LIBRARY
 
-SOURCES +=
+SOURCES += \
+    ColorRGB.cpp
 
 HEADERS +=\
-        basics_global.h
+        basics_global.h \
+    ColorRGB.h
 
 unix:!symbian {
     maemo5 {

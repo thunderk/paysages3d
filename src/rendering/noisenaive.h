@@ -2,7 +2,7 @@
 #define _PAYSAGES_NOISENAIVE_H_
 
 #include "rendering_global.h"
-#include "tools/pack.h"
+#include "PackStream.h"
 
 #ifdef __cplusplus
 extern "C" {

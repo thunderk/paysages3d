@@ -8,7 +8,7 @@
 #include "../rendering_global.h"
 #include "rendering/tools/euclid.h"
 #include "rendering/tools/curve.h"
-#include "rendering/tools/pack.h"
+#include "PackStream.h"
 
 #ifdef __cplusplus
 extern "C" {

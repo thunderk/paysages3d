@@ -3,7 +3,7 @@
 
 #include "../rendering_global.h"
 #include "curve.h"
-#include "pack.h"
+#include "PackStream.h"
 
 #ifdef __cplusplus
 extern "C" {

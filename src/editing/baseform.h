@@ -9,7 +9,7 @@
 #include "rendering/shared/types.h"
 #include "rendering/tools/curve.h"
 #include "rendering/tools/color.h"
-#include "rendering/tools/pack.h"
+#include "PackStream.h"
 #include "rendering/tools/lighting.h"
 #include "rendering/noise.h"
 #include "rendering/layers.h"

@@ -4,7 +4,7 @@
 #include "../rendering_global.h"
 #include "euclid.h"
 #include "color.h"
-#include "pack.h"
+#include "PackStream.h"
 
 #ifdef __cplusplus
 extern "C" {

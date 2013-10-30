@@ -23,9 +23,13 @@
 #ifdef __cplusplus
 namespace paysages
 {
+    namespace system {}
+    namespace basics {}
     namespace definition {}
 }
 using namespace paysages::system;
+using namespace paysages::basics;
+using namespace paysages::definition;
 #endif
 
 /* Global imports */

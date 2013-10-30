@@ -4,7 +4,7 @@
 /* Factorized layer management (with names) */
 
 #include "rendering_global.h"
-#include "tools/pack.h"
+#include "PackStream.h"
 
 #ifdef __cplusplus
 extern "C" {

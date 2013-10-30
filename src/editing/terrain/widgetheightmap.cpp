@@ -187,16 +187,16 @@ void WidgetHeightMap::mouseReleaseEvent(QMouseEvent*)
 
 void WidgetHeightMap::mouseMoveEvent(QMouseEvent* event)
 {
-    if (event->buttons() & Qt::MiddleButton)
+    /*if (event->buttons() & Qt::MiddleButton)
     {
         // Rotate around the turntable
         int move_x = event->x() - _last_mouse_x;
         int move_y = event->y() - _last_mouse_y;
 
         // TODO
-        /*_angle_h -= (double)move_x * 0.008;
-        _angle_v += (double)move_y * 0.003;*/
-    }
+        //_angle_h -= (double)move_x * 0.008;
+        //_angle_v += (double)move_y * 0.003;
+    }*/
 
     _last_mouse_x = event->x();
     _last_mouse_y = event->y();

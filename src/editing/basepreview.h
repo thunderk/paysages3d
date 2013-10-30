@@ -13,7 +13,7 @@
 #include "editing/common/DrawingWidget.h"
 #include "editing/common/previewrenderer.h"
 
-#include "rendering/tools/pack.h"
+#include "PackStream.h"
 #include "rendering/tools/color.h"
 
 class _ContextChoice

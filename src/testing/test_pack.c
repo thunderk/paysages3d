@@ -1,6 +1,6 @@
 #include "testing/common.h"
 
-#include "rendering/tools/pack.h"
+#include "PackStream.h"
 
 START_TEST(testPack)
 {
@@ -21,7 +21,7 @@ START_TEST(testPack)
         data_d = (double)i;
         packWriteDouble(stream, &data_d);
 
-        data_s = "Testing string 0123 !";
+        data_s = "Testing string 0123 (accentué) !";
         packWriteString(stream, data_s, 100);
         packWriteString(stream, data_s, 4);
         packWriteString(stream, data_s, 5);
@@ -39,7 +39,7 @@ START_TEST(testPack)
         ck_assert_double_eq(data_d, (double)i);
 
         packReadString(stream, buffer, 100);
-        ck_assert_str_eq(buffer, "Testing string 0123 !");
+        ck_assert_str_eq(buffer, "Testing string 0123 (accentué) !");
         packReadString(stream, buffer, 4);
         ck_assert_str_eq(buffer, "Tes");
         packReadString(stream, buffer, 3);

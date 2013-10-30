@@ -5,7 +5,7 @@
 #include "../tools/lighting.h"
 #include "../tools/euclid.h"
 #include "../tools/color.h"
-#include "../tools/pack.h"
+#include "PackStream.h"
 #include "../layers.h"
 #include "../shared/types.h"
 

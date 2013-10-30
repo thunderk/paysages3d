@@ -1,6 +1,6 @@
 BUILDMODE=release
 BUILDPATH=./build/${BUILDMODE}
-LIBRARY_PATH=${BUILDPATH}/rendering:${BUILDPATH}/exploring:${BUILDPATH}/system
+LIBRARY_PATH=${BUILDPATH}/rendering:${BUILDPATH}/exploring:${BUILDPATH}/system:${BUILDPATH}/basics:${BUILDPATH}/definition
 
 all:build
 

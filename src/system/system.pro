@@ -16,14 +16,16 @@ SOURCES += \
     PictureFile.cpp \
     Thread.cpp \
     Mutex.cpp \
-    System.cpp
+    System.cpp \
+    PackStream.cpp
 
 HEADERS += \
     system_global.h \
     PictureFile.h \
     Thread.h \
     Mutex.h \
-    System.h
+    System.h \
+    PackStream.h
 
 unix:!symbian {
     maemo5 {

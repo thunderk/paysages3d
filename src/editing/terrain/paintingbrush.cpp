@@ -76,9 +76,8 @@ double PaintingBrush::getInfluence(double relative_x, double relative_z)
     }
 }
 
-void PaintingBrush::drawPreview(QWidget* widget)
+void PaintingBrush::drawPreview(QWidget*)
 {
-
 }
 
 QString PaintingBrush::getHelpText()

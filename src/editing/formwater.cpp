@@ -121,7 +121,7 @@ protected:
         cameraSetLocation(_renderer->render_camera, camera_location);
     }
 
-    static double _getWaterHeight(Renderer* renderer)
+    static double _getWaterHeight(Renderer*)
     {
         return 0.0;
     }

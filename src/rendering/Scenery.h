@@ -9,7 +9,7 @@
 #include "rendering/terrain/public.h"
 #include "rendering/textures/public.h"
 #include "rendering/water/public.h"
-#include "rendering/tools/pack.h"
+#include "PackStream.h"
 #include "rendering/renderer.h"
 
 #ifdef __cplusplus
