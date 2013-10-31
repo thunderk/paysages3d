@@ -10,7 +10,7 @@ SUBDIRS = \
     editing \
     controlling
 
-unix:SUBDIRS += testing
+unix:SUBDIRS += testing tests
 
 basics.depends = system
 definition.depends = basics
@@ -19,3 +19,4 @@ exploring.depends = rendering
 editing.depends = exploring rendering
 controlling.depends = rendering
 unix:testing.depends = rendering
+unix:tests.depends = rendering
