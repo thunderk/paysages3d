@@ -2,7 +2,7 @@
 #define	_EDITING_COMMON_FREELAYERHELPER_H_
 
 #include <QObject>
-#include "rendering/layers.h"
+#include "Layers.h"
 
 class QTableWidget;
 class QPushButton;

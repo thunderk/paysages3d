@@ -7,7 +7,7 @@
 #include "../tools/curve.h"
 #include "../tools/euclid.h"
 #include "../noise.h"
-#include "../layers.h"
+#include "Layers.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -6,7 +6,7 @@
 #include <QListWidget>
 #include "tools.h"
 
-#include "rendering/layers.h"
+#include "Layers.h"
 
 class DialogLayers;
 class BaseFormLayer;

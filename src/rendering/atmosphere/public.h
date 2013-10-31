@@ -6,7 +6,6 @@
 #include "../tools/euclid.h"
 #include "../tools/color.h"
 #include "PackStream.h"
-#include "../layers.h"
 #include "../shared/types.h"
 
 #ifdef __cplusplus

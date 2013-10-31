@@ -2,7 +2,7 @@
 #define _PAYSAGES_TEXTURES_PUBLIC_H_
 
 #include "../rendering_global.h"
-#include "rendering/layers.h"
+#include "Layers.h"
 #include "rendering/tools/zone.h"
 #include "rendering/tools/lighting.h"
 #include "rendering/terrain/public.h"

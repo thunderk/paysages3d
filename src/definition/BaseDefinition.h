@@ -4,6 +4,7 @@
 #include "definition_global.h"
 
 #include <QList>
+#include <QString>
 #include "PackStream.h" // TODO Delete when c++ migration is done
 
 namespace paysages {
@@ -21,6 +22,12 @@ public:
     virtual void save(PackStream* pack);
     virtual void load(PackStream* pack);
 
+    virtual void copy(BaseDefinition* destination);
+    virtual void validate();
+
+    inline const QString& getName() {return name;}
+    void setName(QString name);
+
 protected:
     void addChild(BaseDefinition* child);
     void removeChild(BaseDefinition* child);
@@ -28,6 +35,7 @@ protected:
 private:
     BaseDefinition* parent;
     BaseDefinition* root;
+    QString name;
     QList<BaseDefinition*> children;
 };
 

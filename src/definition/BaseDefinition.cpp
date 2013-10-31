@@ -22,21 +22,14 @@ BaseDefinition::~BaseDefinition()
     }
 }
 
-void BaseDefinition::addChild(BaseDefinition* child)
+void BaseDefinition::setName(QString name)
 {
-    if (not children.contains(child))
-    {
-        children.append(child);
-    }
-}
-
-void BaseDefinition::removeChild(BaseDefinition* child)
-{
-    children.removeOne(child);
+    this->name = name;
 }
 
 void BaseDefinition::save(PackStream* pack)
 {
+    pack->write(name);
     QListIterator<BaseDefinition*> it(children);
     while (it.hasNext())
     {
@@ -46,9 +39,39 @@ void BaseDefinition::save(PackStream* pack)
 
 void BaseDefinition::load(PackStream* pack)
 {
+    name = pack->readString();
     QListIterator<BaseDefinition*> it(children);
     while (it.hasNext())
     {
         it.next()->load(pack);
     }
+}
+
+void BaseDefinition::copy(BaseDefinition* destination)
+{
+    // TODO
+}
+
+void BaseDefinition::validate()
+{
+    QListIterator<BaseDefinition*> it(children);
+    while (it.hasNext())
+    {
+        it.next()->validate();
+    }
+}
+
+void BaseDefinition::addChild(BaseDefinition* child)
+{
+    if (not children.contains(child))
+    {
+        children.append(child);
+        child->parent = this;
+        child->root = this->root;
+    }
+}
+
+void BaseDefinition::removeChild(BaseDefinition* child)
+{
+    children.removeOne(child);
 }

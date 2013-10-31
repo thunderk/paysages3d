@@ -4,7 +4,7 @@
 /* Base form, with automatic layer control */
 
 #include "baseform.h"
-#include "rendering/layers.h"
+#include "Layers.h"
 
 class BaseFormLayer:public BaseForm
 {

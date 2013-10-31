@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "baseinput.h"
 #include "dialoglayers.h"
-#include "rendering/layers.h"
+#include "Layers.h"
 
 class InputLayers:public BaseInput
 {

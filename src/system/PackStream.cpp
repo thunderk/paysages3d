@@ -58,6 +58,14 @@ void PackStream::write(char* value, int max_length)
     }
 }
 
+void PackStream::write(QString value)
+{
+    if (stream)
+    {
+        *stream << value;
+    }
+}
+
 void PackStream::read(int* value)
 {
     if (stream and value and not stream->atEnd())
@@ -86,6 +94,20 @@ void PackStream::read(char* value, int max_length)
         *stream >> output;
         QByteArray array = output.toUtf8();
         qstrncpy(value, array.constData(), max_length);
+    }
+}
+
+QString PackStream::readString()
+{
+    if (stream and not stream->atEnd())
+    {
+        QString output;
+        *stream >> output;
+        return output;
+    }
+    else
+    {
+        return QString();
     }
 }
 

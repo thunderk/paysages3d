@@ -135,7 +135,7 @@ void BaseFormLayer::layerRenamedEvent(int layer, QString new_name)
 
 void BaseFormLayer::layerSelectedEvent(int layer)
 {
-    if (_layers_modified)
+    if (_layers_modified && layer >= 0)
     {
         layerReadCurrentFrom(layersGetLayer(_layers_modified, layer));
     }

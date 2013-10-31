@@ -18,7 +18,6 @@ SOURCES += main.c \
     noiseperlin.c \
     noisenaive.c \
     noise.c \
-    layers.c \
     geoarea.c \
     camera.c \
     atmosphere/atm_render.c \
@@ -74,7 +73,6 @@ HEADERS += \
     noisenaive.h \
     noise.h \
     main.h \
-    layers.h \
     geoarea.h \
     camera.h \
     atmosphere/public.h \

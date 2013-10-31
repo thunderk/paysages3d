@@ -5,6 +5,7 @@
 
 #ifdef __cplusplus
 
+#include <QString>
 class QFile;
 class QDataStream;
 
@@ -27,10 +28,12 @@ public:
     void write(int* value);
     void write(double* value);
     void write(char* value, int max_length);
+    void write(QString value);
 
     void read(int* value);
     void read(double* value);
     void read(char* value, int max_length);
+    QString readString();
 
 private:
     QFile* file;

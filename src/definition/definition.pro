@@ -12,11 +12,15 @@ TEMPLATE = lib
 DEFINES += DEFINITION_LIBRARY
 
 SOURCES += \
-    BaseDefinition.cpp
+    BaseDefinition.cpp \
+    Layers.cpp \
+    LegacyLayer.cpp
 
 HEADERS +=\
         definition_global.h \
-    BaseDefinition.h
+    BaseDefinition.h \
+    Layers.h \
+    LegacyLayer.h
 
 unix:!symbian {
     maemo5 {

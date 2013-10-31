@@ -12,7 +12,7 @@
 #include "PackStream.h"
 #include "rendering/tools/lighting.h"
 #include "rendering/noise.h"
-#include "rendering/layers.h"
+#include "Layers.h"
 
 class QPushButton;
 class QComboBox;
