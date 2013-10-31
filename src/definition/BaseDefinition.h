@@ -26,7 +26,7 @@ public:
     virtual void validate();
 
     inline const QString& getName() {return name;}
-    void setName(QString name);
+    virtual void setName(QString name);
 
     inline const BaseDefinition* getParent() {return parent;}
     inline const BaseDefinition* getRoot() {return root;}

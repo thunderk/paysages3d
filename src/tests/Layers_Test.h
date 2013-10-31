@@ -11,12 +11,14 @@ public:
     CPPUNIT_TEST(testNullLayer);
     CPPUNIT_TEST(testCopy);
     CPPUNIT_TEST(testMaxLayerCount);
+    CPPUNIT_TEST(testLegacyLayers);
     CPPUNIT_TEST_SUITE_END();
 
     void testConstructor();
     void testNullLayer();
     void testCopy();
     void testMaxLayerCount();
+    void testLegacyLayers();
 };
 
 #endif // LAYERS_TEST_H

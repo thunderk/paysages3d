@@ -49,7 +49,8 @@ void BaseDefinition::load(PackStream* pack)
 
 void BaseDefinition::copy(BaseDefinition* destination)
 {
-    // TODO
+    destination->setName(name);
+    // can't copy children as we don't know their types...
 }
 
 void BaseDefinition::validate()

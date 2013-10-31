@@ -35,14 +35,18 @@ public:
     virtual void save(PackStream* pack);
     virtual void load(PackStream* pack);
 
-    virtual void copy(LegacyLayer* destination);
+    virtual void copy(BaseDefinition* destination);
     virtual void validate();
 
+    virtual void setName(QString name);
+
     inline void* getLegacyDefinition() { return legacy; }
+    inline char* getLegacyName() {return legacy_name;}
 
 private:
     LayerType type;
     void* legacy;
+    char legacy_name[100];
 };
 
 #endif

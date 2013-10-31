@@ -17,8 +17,10 @@ Layers::~Layers()
     delete null_layer;
 }
 
-void Layers::copy(Layers* destination)
+void Layers::copy(BaseDefinition* destination_)
 {
+    Layers* destination = (Layers*)destination_;
+
     // don't call overridden method, it will copy again the children
     // FIXME ... but the definition name (and other future attributes) is not copied
 
@@ -109,7 +111,10 @@ void Layers::removeLayer(BaseDefinition* layer)
 
 void Layers::moveLayer(int old_position, int new_position)
 {
-    // TODO
+    if (old_position >= 0 and old_position < layers.size() and new_position >= 0 and new_position < layers.size())
+    {
+        layers.move(old_position, new_position);
+    }
 }
 
 void Layers::moveLayer(BaseDefinition* layer, int new_position)
@@ -173,7 +178,7 @@ void layersLoad(PackStream* stream, Layers* layers)
 
 const char* layersGetName(Layers* layers, int layer)
 {
-    return "TODO";
+    return ((LegacyLayer*)(layers->getLayer(layer)))->getLegacyName();
 }
 
 void layersSetName(Layers* layers, int layer, const char* name)

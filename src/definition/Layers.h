@@ -26,7 +26,7 @@ public:
     Layers(BaseDefinition* parent, LayerConstructor layer_constructor, LayerType* legacy_type=0);
     virtual ~Layers();
 
-    virtual void copy(Layers* destination);
+    virtual void copy(BaseDefinition* destination);
 
     void setMaxLayerCount(int max_layer_count);
 
