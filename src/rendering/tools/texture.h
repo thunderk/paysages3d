@@ -5,13 +5,13 @@
  * Pixel based textures.
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "../rendering_global.h"
 #include "color.h"
 #include "PackStream.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct Texture2D Texture2D;
 typedef struct Texture3D Texture3D;

@@ -1,12 +1,12 @@
 #ifndef TEX_PREVIEW_H
 #define	TEX_PREVIEW_H
 
+#include "rendering/renderer.h"
+#include "rendering/textures/public.h"
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
-#include "rendering/renderer.h"
-#include "rendering/textures/public.h"
 
 /* Single layer coverage */
 RENDERINGSHARED_EXPORT void TexturesPreviewLayerCoverage_bind(Renderer* renderer, TexturesDefinition* definition);
