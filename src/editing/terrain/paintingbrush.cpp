@@ -1,6 +1,7 @@
 #include "paintingbrush.h"
 
 #include <cmath>
+#include "NoiseGenerator.h"
 
 PaintingBrush::PaintingBrush()
 {
@@ -9,13 +10,13 @@ PaintingBrush::PaintingBrush()
     _smoothing = 0.0;
     _strength = 0.0;
     _height = 0.0;
-    _noise = noiseCreateGenerator();
-    noiseAddLevelsSimple(_noise, 10, 1.0, -0.5, 0.5, 0.5);
+    _noise = new NoiseGenerator();
+    _noise->addLevelsSimple(10, 1.0, -0.5, 0.5, 0.5);
 }
 
 PaintingBrush::~PaintingBrush()
 {
-    noiseDeleteGenerator(_noise);
+    delete _noise;
 }
 
 void PaintingBrush::setMode(PaintingBrushMode mode)
@@ -56,7 +57,7 @@ void PaintingBrush::setStrength(QAbstractSlider* slider)
 
 void PaintingBrush::randomizeNoise()
 {
-    noiseRandomizeOffsets(_noise);
+    _noise->randomizeOffsets();
 }
 
 double PaintingBrush::getInfluence(double relative_x, double relative_z)

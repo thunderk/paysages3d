@@ -19,7 +19,7 @@ public:
     PreviewLevel(QWidget* parent, NoiseGenerator* noise): BasePreview(parent)
     {
         _noise_original = noise;
-        _noise_preview = noiseCreateGenerator();
+        _noise_preview = new NoiseGenerator();
         _level = -1;
 
         configScaling(0.15, 6.0, 0.09, 6.0);
@@ -33,11 +33,11 @@ public:
 protected:
     void updateData()
     {
-        noiseCopy(_noise_original, _noise_preview);
+        _noise_original->copy(_noise_preview);
     }
     Color getColor(double x, double y)
     {
-        if ((_level >= 0) && (-y > noiseGet1DLevel(_noise_preview, _level, x)))
+        if ((_level >= 0) && (-y > _noise_preview->get1DLevel(_level, x)))
         {
             return COLOR_WHITE;
         }
@@ -58,18 +58,18 @@ public:
     PreviewTotal(QWidget* parent, NoiseGenerator* noise): BasePreview(parent)
     {
         _noise_original = noise;
-        _noise_preview = noiseCreateGenerator();
+        _noise_preview = new NoiseGenerator();
 
         configScaling(0.15, 6.0, 0.09, 6.0);
     }
 protected:
     void updateData()
     {
-        noiseCopy(_noise_original, _noise_preview);
+        _noise_original->copy(_noise_preview);
     }
     Color getColor(double x, double y)
     {
-        if (-y > noiseGet1DTotal(_noise_preview, x))
+        if (-y > _noise_preview->get1DTotal(x))
         {
             return COLOR_WHITE;
         }
@@ -95,7 +95,7 @@ DialogNoise::DialogNoise(QWidget *parent, NoiseGenerator* value):
     QLabel* label;
 
     _base = value;
-    _current = noiseCreateGenerator();
+    _current = new NoiseGenerator();
 
     setLayout(new QHBoxLayout());
 
@@ -208,7 +208,7 @@ DialogNoise::~DialogNoise()
     delete previewLevel;
     delete previewTotal;
 
-    noiseDeleteGenerator(_current);
+    delete _current;
 }
 
 bool DialogNoise::getNoise(QWidget* parent, NoiseGenerator* noise)
@@ -230,13 +230,13 @@ void DialogNoise::closeEvent(QCloseEvent*)
 
 void DialogNoise::accept()
 {
-    noiseCopy(_current, _base);
+    _current->copy(_base);
     QDialog::accept();
 }
 
 void DialogNoise::revert()
 {
-    noiseCopy(_base, _current);
+    _base->copy(_current);
 
     revertToCurrent();
 }
@@ -250,7 +250,7 @@ void DialogNoise::revertToCurrent()
     selected = levels->currentRow();
 
     levels->clear();
-    n = noiseGetLevelCount(_current);
+    n = _current->getLevelCount();
     for (i = 0; i < n; i++)
     {
         levels->addItem(QString(tr("Component %1")).arg(i + 1));
@@ -269,7 +269,7 @@ void DialogNoise::revertToCurrent()
         levels->setCurrentRow(selected);
     }
 
-    function = noiseGetFunction(_current);
+    function = _current->getFunction();
     function_algo->setCurrentIndex((int)function.algorithm);
     function_ridge->setValue(round(function.ridge_factor * 20.0));
 
@@ -284,7 +284,7 @@ void DialogNoise::addLevel()
     level.amplitude = 0.1;
     level.wavelength = 0.1;
 
-    noiseAddLevel(_current, level, 1);
+    _current->addLevel(level, 1);
 
     revertToCurrent();
 
@@ -297,7 +297,7 @@ void DialogNoise::removeLevel()
 
     row = levels->currentRow();
 
-    noiseRemoveLevel(_current, _current_level);
+    _current->removeLevel(_current_level);
 
     revertToCurrent();
 
@@ -315,8 +315,8 @@ void DialogNoise::functionChanged()
     function.algorithm = (NoiseFunctionAlgorithm)function_algo->currentIndex();
     function.ridge_factor = (double)function_ridge->value() * 0.05;
 
-    noiseSetFunction(_current, &function);
-    noiseValidate(_current);
+    _current->setFunction(&function);
+    _current->validate();
 
     previewLevel->redraw();
     previewTotal->redraw();
@@ -324,7 +324,7 @@ void DialogNoise::functionChanged()
 
 void DialogNoise::levelChanged(int row)
 {
-    if (noiseGetLevel(_current, row, &_current_level_params))
+    if (_current->getLevel(row, &_current_level_params))
     {
         _current_level = row;
         ((PreviewLevel*)previewLevel)->setLevel(row);
@@ -338,7 +338,7 @@ void DialogNoise::levelChanged(int row)
 void DialogNoise::heightChanged(int value)
 {
     _current_level_params.amplitude = ((double)value) / 1000.0;
-    noiseSetLevel(_current, _current_level, _current_level_params, 1);
+    _current->setLevel(_current_level, _current_level_params, 1);
     previewLevel->redraw();
     previewTotal->redraw();
 }
@@ -346,7 +346,7 @@ void DialogNoise::heightChanged(int value)
 void DialogNoise::scalingChanged(int value)
 {
     _current_level_params.wavelength = ((double)value) / 1000.0;
-    noiseSetLevel(_current, _current_level, _current_level_params, 1);
+    _current->setLevel(_current_level, _current_level_params, 1);
     previewLevel->redraw();
     previewTotal->redraw();
 }

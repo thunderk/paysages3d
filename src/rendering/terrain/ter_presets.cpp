@@ -1,6 +1,7 @@
 #include "private.h"
 
 #include <math.h>
+#include "NoiseGenerator.h"
 
 /*
  * Terrain presets.
@@ -12,12 +13,12 @@ void terrainAutoPreset(TerrainDefinition* definition, TerrainPreset preset)
     switch (preset)
     {
     case TERRAIN_PRESET_STANDARD:
-        noiseRandomizeOffsets(definition->_height_noise);
-        noiseClearLevels(definition->_height_noise);
-        noiseAddLevelSimple(definition->_height_noise, pow(2.0, resolution + 1), -1.0, 1.0);
-        noiseAddLevelsSimple(definition->_height_noise, resolution - 2, pow(2.0, resolution - 1), -0.7, 0.7, 0.5);
-        noiseNormalizeAmplitude(definition->_height_noise, -1.0, 1.0, 0);
-        noiseSetFunctionParams(definition->_height_noise, NOISE_FUNCTION_SIMPLEX, 0.0, 0.0);
+        definition->_height_noise->randomizeOffsets();
+        definition->_height_noise->clearLevels();
+        definition->_height_noise->addLevelSimple(pow(2.0, resolution + 1), -1.0, 1.0);
+        definition->_height_noise->addLevelsSimple(resolution - 2, pow(2.0, resolution - 1), -0.7, 0.7, 0.5);
+        definition->_height_noise->normalizeAmplitude(-1.0, 1.0, 0);
+        definition->_height_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, 0.0, 0.0);
         definition->scaling = 1.0;
         definition->height = 30.0;
         definition->shadow_smoothing = 0.03;

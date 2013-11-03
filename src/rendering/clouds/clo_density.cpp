@@ -1,6 +1,7 @@
 #include "clo_density.h"
 
 #include "../tools.h"
+#include "NoiseGenerator.h"
 
 double cloudsGetLayerCoverage(CloudsLayerDefinition* layer, Vector3 location)
 {
@@ -10,7 +11,7 @@ double cloudsGetLayerCoverage(CloudsLayerDefinition* layer, Vector3 location)
     }
     else
     {
-        double coverage = 0.5 + noiseGet2DTotal(layer->_coverage_noise, location.x / layer->shape_scaling, location.z / layer->shape_scaling);
+        double coverage = 0.5 + layer->_coverage_noise->get2DTotal(location.x / layer->shape_scaling, location.z / layer->shape_scaling);
         coverage -= (1.0 - layer->base_coverage);
 
         coverage *= curveGetValue(layer->_coverage_by_altitude, (location.y - layer->lower_altitude) / layer->thickness);
@@ -42,7 +43,7 @@ double cloudsGetLayerDensity(CloudsLayerDefinition* layer, Vector3 location, dou
     }
     else
     {
-        double density = noiseGet3DTotal(layer->_shape_noise, location.x / layer->shape_scaling, location.y / layer->shape_scaling, location.z / layer->shape_scaling);
+        double density = layer->_shape_noise->get3DTotal(location.x / layer->shape_scaling, location.y / layer->shape_scaling, location.z / layer->shape_scaling);
         density -= (0.5 - coverage);
         return (density <= 0.0) ? 0.0 : density;
     }
@@ -60,7 +61,7 @@ double cloudsGetEdgeDensity(CloudsLayerDefinition* layer, Vector3 location, doub
     }
     else
     {
-        double density = noiseGet3DTotal(layer->_edge_noise, location.x / layer->edge_scaling, location.y / layer->edge_scaling, location.z / layer->edge_scaling);
+        double density = layer->_edge_noise->get3DTotal(location.x / layer->edge_scaling, location.y / layer->edge_scaling, location.z / layer->edge_scaling);
         density -= (0.5 - layer_density);
         return (density <= 0.0) ? 0.0 : density;
     }

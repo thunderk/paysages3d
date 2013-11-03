@@ -25,9 +25,6 @@
 //class PackStream;
 //class Renderer;
 
-namespace paysages {
-namespace rendering {
-
 /**
  * @brief Global scenery management
  *
@@ -78,9 +75,6 @@ private:
     TexturesDefinition* textures;
     WaterDefinition* water;
 };
-
-}
-}
 
 extern "C" {
 #endif

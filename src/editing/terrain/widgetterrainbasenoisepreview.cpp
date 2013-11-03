@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include "tools.h"
+#include "NoiseGenerator.h"
 
 WidgetTerrainBaseNoisePreview::WidgetTerrainBaseNoisePreview(QWidget* parent) :
     DrawingWidget(parent)
@@ -30,12 +31,12 @@ void WidgetTerrainBaseNoisePreview::doDrawing(QPainter* painter)
         double value, factor;
         double minvalue, maxvalue;
 
-        noiseGetRange(_noise, &minvalue, &maxvalue);
+        _noise->getRange(&minvalue, &maxvalue);
         factor = ((double)height) / (maxvalue - minvalue);
 
         for (int x = boundaries.left(); x <= boundaries.right(); x++)
         {
-            value = noiseGet1DTotal(_noise, 100.0 * ((double)x) / factor);
+            value = _noise->get1DTotal(100.0 * ((double)x) / factor);
 
             painter->drawLine(x, height - 1 - (value - minvalue) * factor, x, height - 1);
         }

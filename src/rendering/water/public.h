@@ -6,12 +6,12 @@
 #include "../tools/lighting.h"
 #include "../tools/curve.h"
 #include "../tools/euclid.h"
-#include "../noise.h"
-#include "Layers.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace paysages {
+namespace basics {
+    class NoiseGenerator;
+}
+}
 
 typedef enum
 {
@@ -74,9 +74,5 @@ RENDERINGSHARED_EXPORT Color waterGetPreviewCoverage(Renderer* renderer, double 
 
 RENDERINGSHARED_EXPORT Renderer* waterCreatePreviewColorRenderer();
 RENDERINGSHARED_EXPORT Color waterGetPreviewColor(Renderer* renderer, double x, double y, double scaling);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

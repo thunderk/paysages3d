@@ -4,7 +4,6 @@
 /* OpenCL usage */
 
 #include "rendering_global.h"
-#include "noise.h"
 
 #ifdef __cplusplus
 extern "C" {

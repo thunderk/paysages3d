@@ -9,13 +9,22 @@
 #include "rendering/shared/types.h"
 #include "rendering/tools/curve.h"
 #include "rendering/tools/color.h"
-#include "PackStream.h"
 #include "rendering/tools/lighting.h"
-#include "rendering/noise.h"
-#include "Layers.h"
 
 class QPushButton;
 class QComboBox;
+
+namespace paysages {
+namespace system {
+    class PackStream;
+}
+namespace basics {
+    class NoiseGenerator;
+}
+namespace definition {
+    class Layers;
+}
+}
 
 class BaseForm : public QWidget
 {

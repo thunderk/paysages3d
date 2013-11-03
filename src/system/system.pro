@@ -17,7 +17,8 @@ SOURCES += \
     Thread.cpp \
     Mutex.cpp \
     System.cpp \
-    PackStream.cpp
+    PackStream.cpp \
+    RandomGenerator.cpp
 
 HEADERS += \
     system_global.h \
@@ -25,7 +26,8 @@ HEADERS += \
     Thread.h \
     Mutex.h \
     System.h \
-    PackStream.h
+    PackStream.h \
+    RandomGenerator.h
 
 unix:!symbian {
     maemo5 {

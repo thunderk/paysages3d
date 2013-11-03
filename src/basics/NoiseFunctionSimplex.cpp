@@ -1,4 +1,4 @@
-#include "noisesimplex.h"
+#include "NoiseFunctionSimplex.h"
 
 /*
  * Simplex noise implementation.
@@ -6,9 +6,13 @@
  * Based on Stefan Gustavson implementation.
  */
 
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
+#include <cstdlib>
+#include <cmath>
+#include <cstring>
+
+NoiseFunctionSimplex::NoiseFunctionSimplex()
+{
+}
 
 typedef struct
 {

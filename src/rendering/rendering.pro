@@ -14,10 +14,6 @@ SOURCES += main.cpp \
     renderer.cpp \
     render.cpp \
     opencl.cpp \
-    noisesimplex.cpp \
-    noiseperlin.cpp \
-    noisenaive.cpp \
-    noise.cpp \
     geoarea.cpp \
     camera.cpp \
     atmosphere/atm_render.cpp \
@@ -68,10 +64,6 @@ HEADERS += \
     renderer.h \
     render.h \
     opencl.h \
-    noisesimplex.h \
-    noiseperlin.h \
-    noisenaive.h \
-    noise.h \
     main.h \
     geoarea.h \
     camera.h \

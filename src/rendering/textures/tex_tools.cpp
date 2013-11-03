@@ -1,7 +1,7 @@
 #include "private.h"
 
-#include <assert.h>
-#include <math.h>
+#include <cmath>
+#include "NoiseGenerator.h"
 
 /*
  * Get the base presence factor of a layer, not accounting for other layers.
@@ -16,11 +16,9 @@ double texturesGetLayerBasePresence(TexturesLayerDefinition* layer, TerrainResul
  */
 double texturesGetTriplanarNoise(NoiseGenerator* noise, Vector3 location, Vector3 normal)
 {
-    /*assert(v3Norm(normal) == 1.0);*/
-
-    double noiseXY = noiseGet2DTotal(noise, location.x, location.y);
-    double noiseXZ = noiseGet2DTotal(noise, location.x, location.z);
-    double noiseYZ = noiseGet2DTotal(noise, location.y, location.z);
+    double noiseXY = noise->get2DTotal(location.x, location.y);
+    double noiseXZ = noise->get2DTotal(location.x, location.z);
+    double noiseYZ = noise->get2DTotal(location.y, location.z);
 
     double mXY = fabs(normal.z);
     double mXZ = fabs(normal.y);

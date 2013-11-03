@@ -6,11 +6,12 @@
 #include "../shared/types.h"
 #include "../tools/color.h"
 #include "../tools/euclid.h"
-#include "../noise.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace paysages {
+namespace basics {
+    class NoiseGenerator;
+}
+}
 
 typedef enum
 {
@@ -90,9 +91,5 @@ RENDERINGSHARED_EXPORT void terrainBrushAddNoise(TerrainHeightMap* heightmap, Te
 RENDERINGSHARED_EXPORT void terrainBrushReset(TerrainHeightMap* heightmap, TerrainBrush* brush, double value);
 RENDERINGSHARED_EXPORT void terrainBrushFlatten(TerrainHeightMap* heightmap, TerrainBrush* brush, double height, double force);
 RENDERINGSHARED_EXPORT void terrainEndBrushStroke(TerrainHeightMap* heightmap);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

@@ -1,7 +1,8 @@
 #include "private.h"
 
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
+#include "NoiseGenerator.h"
 
 /*
  * Clouds presets.
@@ -22,9 +23,9 @@ void cloudsAutoPreset(CloudsDefinition* definition, CloudsPreset preset)
 
 void cloudsLayerAutoPreset(CloudsLayerDefinition* definition, CloudsLayerPreset preset)
 {
-    noiseRandomizeOffsets(definition->_coverage_noise);
-    noiseRandomizeOffsets(definition->_edge_noise);
-    noiseRandomizeOffsets(definition->_shape_noise);
+    definition->_coverage_noise->randomizeOffsets();
+    definition->_edge_noise->randomizeOffsets();
+    definition->_shape_noise->randomizeOffsets();
 
     definition->material.base = colorToHSL(colorFromValues(0.7, 0.7, 0.7, 1.0));
 

@@ -2,7 +2,7 @@
 
 #include <ctime>
 
-#include "rendering/noise.h"
+#include "NoiseGenerator.h"
 #include "rendering/terrain/ter_raster.h"
 
 static Scenery* _main_scenery;

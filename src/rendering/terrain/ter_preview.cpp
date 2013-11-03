@@ -1,9 +1,9 @@
 #include "public.h"
 
-#include <stdlib.h>
 #include "../tools.h"
 #include "../tools/lighting.h"
 #include "../renderer.h"
+#include "NoiseGenerator.h"
 
 /*
  * Terrain previews.
@@ -67,7 +67,7 @@ Renderer* terrainCreatePreviewRenderer()
     layer->material.reflection = 0.05;
     layer->material.shininess = 2.0;
     TexturesDefinitionClass.validate(textures);
-    noiseClearLevels(layer->_detail_noise);
+    layer->_detail_noise->clearLevels();
 
     TexturesRendererClass.bind(result, textures);
 

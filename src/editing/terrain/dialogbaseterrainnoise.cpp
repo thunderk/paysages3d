@@ -1,6 +1,8 @@
 #include "dialogbaseterrainnoise.h"
 #include "ui_dialogbaseterrainnoise.h"
 
+#include "NoiseGenerator.h"
+
 DialogBaseTerrainNoise::DialogBaseTerrainNoise(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogBaseTerrainNoise)
@@ -8,19 +10,19 @@ DialogBaseTerrainNoise::DialogBaseTerrainNoise(QWidget *parent) :
     ui->setupUi(this);
 
     _original = 0;
-    _modified = noiseCreateGenerator();
+    _modified = new NoiseGenerator();
 }
 
 DialogBaseTerrainNoise::~DialogBaseTerrainNoise()
 {
     delete ui;
-    noiseDeleteGenerator(_modified);
+    delete _modified;
 }
 
 void DialogBaseTerrainNoise::setNoise(NoiseGenerator* noise)
 {
     _original = noise;
-    noiseCopy(noise, _modified);
+    noise->copy(_modified);
 }
 
 int DialogBaseTerrainNoise::editNoise(QWidget* parent, NoiseGenerator* noise)

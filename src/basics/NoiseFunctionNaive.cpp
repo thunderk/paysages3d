@@ -1,16 +1,22 @@
-#include "noisenaive.h"
+#include "NoiseFunctionNaive.h"
 
 /*
  * Naive noise implementation, based on pseudo-random grids.
  */
 
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#include "tools.h"
+#include <cstdlib>
+#include <cmath>
+#include <cstring>
+#include "Interpolation.h"
+#include "RandomGenerator.h"
+#include "PackStream.h"
 
 static int _noise_pool_size;
 static double* _noise_pool;
+
+NoiseFunctionNaive::NoiseFunctionNaive()
+{
+}
 
 void noiseNaiveInit()
 {
@@ -21,7 +27,7 @@ void noiseNaiveInit()
 
     for (i = 0; i < _noise_pool_size; i++)
     {
-        _noise_pool[i] = toolsRandom() - 0.5;
+        _noise_pool[i] = RandomGenerator::random() - 0.5;
     }
 }
 
@@ -91,7 +97,7 @@ double noiseNaiveGet1DValue(double x)
     buf_cubic_x[2] = _noise_pool[x2 % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[x3 % _noise_pool_size];
 
-    return toolsCubicInterpolate(buf_cubic_x, xinternal) * 0.837 + 0.5;
+    return Interpolation::cubic(buf_cubic_x, xinternal) * 0.837 + 0.5;
 }
 
 double noiseNaiveGet2DValue(double x, double y)
@@ -156,27 +162,27 @@ double noiseNaiveGet2DValue(double x, double y)
     buf_cubic_x[1] = _noise_pool[(y0 * size + x1) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y0 * size + x2) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y0 * size + x3) % _noise_pool_size];
-    buf_cubic_y[0] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[0] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y1 * size + x0) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y1 * size + x1) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y1 * size + x2) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y1 * size + x3) % _noise_pool_size];
-    buf_cubic_y[1] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[1] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y2 * size + x0) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y2 * size + x1) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y2 * size + x2) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y2 * size + x3) % _noise_pool_size];
-    buf_cubic_y[2] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[2] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y3 * size + x0) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y3 * size + x1) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y3 * size + x2) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y3 * size + x3) % _noise_pool_size];
-    buf_cubic_y[3] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[3] = Interpolation::cubic(buf_cubic_x, xinternal);
 
-    return toolsCubicInterpolate(buf_cubic_y, yinternal) * 0.723 + 0.5;
+    return Interpolation::cubic(buf_cubic_y, yinternal) * 0.723 + 0.5;
 }
 
 double noiseNaiveGet3DValue(double x, double y, double z)
@@ -266,107 +272,107 @@ double noiseNaiveGet3DValue(double x, double y, double z)
     buf_cubic_x[1] = _noise_pool[(y0 * size * size + x1 * size + z0) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y0 * size * size + x2 * size + z0) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y0 * size * size + x3 * size + z0) % _noise_pool_size];
-    buf_cubic_y[0] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[0] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y1 * size * size + x0 * size + z0) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y1 * size * size + x1 * size + z0) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y1 * size * size + x2 * size + z0) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y1 * size * size + x3 * size + z0) % _noise_pool_size];
-    buf_cubic_y[1] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[1] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y2 * size * size + x0 * size + z0) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y2 * size * size + x1 * size + z0) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y2 * size * size + x2 * size + z0) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y2 * size * size + x3 * size + z0) % _noise_pool_size];
-    buf_cubic_y[2] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[2] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y3 * size * size + x0 * size + z0) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y3 * size * size + x1 * size + z0) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y3 * size * size + x2 * size + z0) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y3 * size * size + x3 * size + z0) % _noise_pool_size];
-    buf_cubic_y[3] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[3] = Interpolation::cubic(buf_cubic_x, xinternal);
 
-    buf_cubic_z[0] =  toolsCubicInterpolate(buf_cubic_y, yinternal);
+    buf_cubic_z[0] =  Interpolation::cubic(buf_cubic_y, yinternal);
 
     buf_cubic_x[0] = _noise_pool[(y0 * size * size + x0 * size + z1) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y0 * size * size + x1 * size + z1) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y0 * size * size + x2 * size + z1) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y0 * size * size + x3 * size + z1) % _noise_pool_size];
-    buf_cubic_y[0] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[0] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y1 * size * size + x0 * size + z1) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y1 * size * size + x1 * size + z1) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y1 * size * size + x2 * size + z1) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y1 * size * size + x3 * size + z1) % _noise_pool_size];
-    buf_cubic_y[1] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[1] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y2 * size * size + x0 * size + z1) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y2 * size * size + x1 * size + z1) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y2 * size * size + x2 * size + z1) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y2 * size * size + x3 * size + z1) % _noise_pool_size];
-    buf_cubic_y[2] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[2] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y3 * size * size + x0 * size + z1) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y3 * size * size + x1 * size + z1) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y3 * size * size + x2 * size + z1) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y3 * size * size + x3 * size + z1) % _noise_pool_size];
-    buf_cubic_y[3] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[3] = Interpolation::cubic(buf_cubic_x, xinternal);
 
-    buf_cubic_z[1] =  toolsCubicInterpolate(buf_cubic_y, yinternal);
+    buf_cubic_z[1] =  Interpolation::cubic(buf_cubic_y, yinternal);
 
     buf_cubic_x[0] = _noise_pool[(y0 * size * size + x0 * size + z2) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y0 * size * size + x1 * size + z2) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y0 * size * size + x2 * size + z2) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y0 * size * size + x3 * size + z2) % _noise_pool_size];
-    buf_cubic_y[0] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[0] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y1 * size * size + x0 * size + z2) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y1 * size * size + x1 * size + z2) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y1 * size * size + x2 * size + z2) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y1 * size * size + x3 * size + z2) % _noise_pool_size];
-    buf_cubic_y[1] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[1] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y2 * size * size + x0 * size + z2) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y2 * size * size + x1 * size + z2) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y2 * size * size + x2 * size + z2) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y2 * size * size + x3 * size + z2) % _noise_pool_size];
-    buf_cubic_y[2] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[2] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y3 * size * size + x0 * size + z2) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y3 * size * size + x1 * size + z2) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y3 * size * size + x2 * size + z2) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y3 * size * size + x3 * size + z2) % _noise_pool_size];
-    buf_cubic_y[3] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[3] = Interpolation::cubic(buf_cubic_x, xinternal);
 
-    buf_cubic_z[2] =  toolsCubicInterpolate(buf_cubic_y, yinternal);
+    buf_cubic_z[2] =  Interpolation::cubic(buf_cubic_y, yinternal);
 
     buf_cubic_x[0] = _noise_pool[(y0 * size * size + x0 * size + z3) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y0 * size * size + x1 * size + z3) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y0 * size * size + x2 * size + z3) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y0 * size * size + x3 * size + z3) % _noise_pool_size];
-    buf_cubic_y[0] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[0] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y1 * size * size + x0 * size + z3) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y1 * size * size + x1 * size + z3) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y1 * size * size + x2 * size + z3) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y1 * size * size + x3 * size + z3) % _noise_pool_size];
-    buf_cubic_y[1] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[1] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y2 * size * size + x0 * size + z3) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y2 * size * size + x1 * size + z3) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y2 * size * size + x2 * size + z3) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y2 * size * size + x3 * size + z3) % _noise_pool_size];
-    buf_cubic_y[2] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[2] = Interpolation::cubic(buf_cubic_x, xinternal);
 
     buf_cubic_x[0] = _noise_pool[(y3 * size * size + x0 * size + z3) % _noise_pool_size];
     buf_cubic_x[1] = _noise_pool[(y3 * size * size + x1 * size + z3) % _noise_pool_size];
     buf_cubic_x[2] = _noise_pool[(y3 * size * size + x2 * size + z3) % _noise_pool_size];
     buf_cubic_x[3] = _noise_pool[(y3 * size * size + x3 * size + z3) % _noise_pool_size];
-    buf_cubic_y[3] = toolsCubicInterpolate(buf_cubic_x, xinternal);
+    buf_cubic_y[3] = Interpolation::cubic(buf_cubic_x, xinternal);
 
-    buf_cubic_z[3] =  toolsCubicInterpolate(buf_cubic_y, yinternal);
+    buf_cubic_z[3] =  Interpolation::cubic(buf_cubic_y, yinternal);
 
-    return toolsCubicInterpolate(buf_cubic_z, zinternal) * 0.794 + 0.5;
+    return Interpolation::cubic(buf_cubic_z, zinternal) * 0.794 + 0.5;
 }
 
 /*double noiseNaiveGet4DValue(double x, double y, double z, double w)

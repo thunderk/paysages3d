@@ -68,7 +68,8 @@ HEADERS += \
     textures/PreviewLayerCoverage.h \
     textures/PreviewLayerLook.h \
     textures/PreviewCumul.h \
-    textures/DialogTexturesLayer.h
+    textures/DialogTexturesLayer.h \
+    editing_global.h
 
 SOURCES += \
     terrain/widgetheightmap.cpp \
@@ -149,6 +150,12 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../system/debug/ -l
 else:unix: LIBS += -L$$OUT_PWD/../system/ -lpaysages_system
 INCLUDEPATH += $$PWD/../system
 DEPENDPATH += $$PWD/../system
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../basics/release/ -lpaysages_basics
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../basics/debug/ -lpaysages_basics
+else:unix: LIBS += -L$$OUT_PWD/../basics/ -lpaysages_basics
+INCLUDEPATH += $$PWD/../basics
+DEPENDPATH += $$PWD/../basics
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../exploring/release/ -lpaysages_exploring
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../exploring/debug/ -lpaysages_exploring

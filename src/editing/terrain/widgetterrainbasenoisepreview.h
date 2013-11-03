@@ -1,11 +1,16 @@
 #ifndef _PAYSAGES_EDITING_TERRAIN_WIDGETTERRAINBASENOISEPREVIEW_H_
 #define _PAYSAGES_EDITING_TERRAIN_WIDGETTERRAINBASENOISEPREVIEW_H_
 
+#include "editing_global.h"
 #include "editing/common/DrawingWidget.h"
 
-#include "rendering/noise.h"
-
 class QPainter;
+
+namespace paysages {
+namespace basics {
+    class NoiseGenerator;
+}
+}
 
 class WidgetTerrainBaseNoisePreview : public DrawingWidget
 {

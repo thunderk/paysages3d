@@ -1,9 +1,9 @@
 #include "private.h"
 
-#include <stdlib.h>
-#include <math.h>
+#include <cmath>
 #include "../tools.h"
 #include "../renderer.h"
+#include "NoiseGenerator.h"
 
 static HeightInfo _FAKE_HEIGHT_INFO = {0.0, 0.0, 0.0};
 
@@ -44,7 +44,7 @@ static WaterResult _fakeGetResult(Renderer* renderer, double x, double z)
 /******************** Helpers ********************/
 static inline double _getHeight(WaterDefinition* definition, double base_height, double x, double z)
 {
-    return base_height + noiseGet2DTotal(definition->_waves_noise, x, z);
+    return base_height + definition->_waves_noise->get2DTotal(x, z);
 }
 
 static inline Vector3 _getNormal(WaterDefinition* definition, double base_height, Vector3 base, double detail)
@@ -205,7 +205,7 @@ static HeightInfo _realGetHeightInfo(Renderer* renderer)
     double noise_minvalue, noise_maxvalue;
 
     info.base_height = renderer->terrain->getWaterHeight(renderer);
-    noiseGetRange(definition->_waves_noise, &noise_minvalue, &noise_maxvalue);
+    definition->_waves_noise->getRange(&noise_minvalue, &noise_maxvalue);
     info.min_height = info.base_height + noise_minvalue;
     info.max_height = info.base_height + noise_maxvalue;
 

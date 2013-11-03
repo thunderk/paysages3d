@@ -5,8 +5,7 @@
 #include <QComboBox>
 #include "basepreview.h"
 #include "tools.h"
-
-#include "rendering/noise.h"
+#include "NoiseGenerator.h"
 
 class DialogNoise : public DialogWithPreview
 {

@@ -1,22 +1,22 @@
 #include "private.h"
 
-#include <stdlib.h>
 #include "PackStream.h"
+#include "NoiseGenerator.h"
 
 static void _validateDefinition(WaterDefinition* definition)
 {
     double scaling = definition->scaling * 0.3;
-    noiseClearLevels(definition->_waves_noise);
+    definition->_waves_noise->clearLevels();
     if (definition->waves_height > 0.0)
     {
-        noiseAddLevelsSimple(definition->_waves_noise, 2, scaling, -definition->waves_height * scaling * 0.015, definition->waves_height * scaling * 0.015, 0.5);
+        definition->_waves_noise->addLevelsSimple(2, scaling, -definition->waves_height * scaling * 0.015, definition->waves_height * scaling * 0.015, 0.5);
     }
     if (definition->detail_height > 0.0)
     {
-        noiseAddLevelsSimple(definition->_waves_noise, 3, scaling * 0.1, -definition->detail_height * scaling * 0.015, definition->detail_height * scaling * 0.015, 0.5);
+        definition->_waves_noise->addLevelsSimple(3, scaling * 0.1, -definition->detail_height * scaling * 0.015, definition->detail_height * scaling * 0.015, 0.5);
     }
-    noiseSetFunctionParams(definition->_waves_noise, NOISE_FUNCTION_SIMPLEX, -definition->turbulence, 0.0);
-    noiseValidate(definition->_waves_noise);
+    definition->_waves_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, -definition->turbulence, 0.0);
+    definition->_waves_noise->validate();
 
     materialValidate(&definition->material);
     materialValidate(&definition->foam_material);
@@ -26,7 +26,7 @@ static WaterDefinition* _createDefinition()
 {
     WaterDefinition* definition = new WaterDefinition;
 
-    definition->_waves_noise = noiseCreateGenerator();
+    definition->_waves_noise = new NoiseGenerator();
 
     waterAutoPreset(definition, WATER_PRESET_LAKE);
 
@@ -35,7 +35,7 @@ static WaterDefinition* _createDefinition()
 
 static void _deleteDefinition(WaterDefinition* definition)
 {
-    noiseDeleteGenerator(definition->_waves_noise);
+    delete definition->_waves_noise;
     delete definition;
 }
 
@@ -46,7 +46,7 @@ static void _copyDefinition(WaterDefinition* source, WaterDefinition* destinatio
     noise = destination->_waves_noise;
     *destination = *source;
     destination->_waves_noise = noise;
-    noiseCopy(source->_waves_noise, destination->_waves_noise);
+    source->_waves_noise->copy(destination->_waves_noise);
 }
 
 static void _saveDefinition(PackStream* stream, WaterDefinition* definition)
@@ -66,7 +66,7 @@ static void _saveDefinition(PackStream* stream, WaterDefinition* definition)
     stream->write(&definition->foam_coverage);
     materialSave(stream, &definition->foam_material);
 
-    noiseSaveGenerator(stream, definition->_waves_noise);
+    definition->_waves_noise->save(stream);
 }
 
 static void _loadDefinition(PackStream* stream, WaterDefinition* definition)
@@ -86,7 +86,7 @@ static void _loadDefinition(PackStream* stream, WaterDefinition* definition)
     stream->read(&definition->foam_coverage);
     materialLoad(stream, &definition->foam_material);
 
-    noiseLoadGenerator(stream, definition->_waves_noise);
+    definition->_waves_noise->load(stream);
 
     _validateDefinition(definition);
 }

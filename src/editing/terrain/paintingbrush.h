@@ -2,8 +2,13 @@
 #define PAINTINGBRUSH_H
 
 #include <QAbstractSlider>
-#include "rendering/noise.h"
 #include "rendering/terrain/public.h"
+
+namespace paysages {
+namespace basics {
+    class NoiseGenerator;
+}
+}
 
 typedef enum
 {

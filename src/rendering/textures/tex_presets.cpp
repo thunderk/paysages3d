@@ -1,5 +1,7 @@
 #include "private.h"
 
+#include "NoiseGenerator.h"
+
 void texturesAutoPreset(TexturesDefinition* definition, TexturesPreset preset)
 {
     TexturesLayerDefinition* layer;
@@ -55,8 +57,8 @@ void texturesAutoPreset(TexturesDefinition* definition, TexturesPreset preset)
 
 void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerPreset preset)
 {
-    noiseRandomizeOffsets(definition->_displacement_noise);
-    noiseRandomizeOffsets(definition->_detail_noise);
+    definition->_displacement_noise->randomizeOffsets();
+    definition->_detail_noise->randomizeOffsets();
 
     zoneClear(definition->terrain_zone);
 

@@ -1,10 +1,16 @@
 #ifndef _PAYSAGES_QT_INPUTNOISE_H_
 #define _PAYSAGES_QT_INPUTNOISE_H_
 
+#include "editing_global.h"
+
 #include <QWidget>
 #include "baseinput.h"
 
-#include "rendering/noise.h"
+namespace paysages {
+namespace basics {
+    class NoiseGenerator;
+}
+}
 
 class InputNoise:public BaseInput
 {

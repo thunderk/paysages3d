@@ -1,7 +1,7 @@
 #include "private.h"
-#include "Scenery.h"
 
-#include <stdlib.h>
+#include "Scenery.h"
+#include "NoiseGenerator.h"
 
 /******************** Global definition ********************/
 static void _validateDefinition(TexturesDefinition* definition)
@@ -57,15 +57,15 @@ static void _layerValidateDefinition(TexturesLayerDefinition* definition)
         definition->displacement_scaling = 0.000001;
     }
 
-    noiseClearLevels(definition->_displacement_noise);
-    noiseAddLevelsSimple(definition->_displacement_noise, 9, 1.0, -1.0, 1.0, 0.0);
-    noiseNormalizeAmplitude(definition->_displacement_noise, -1.0, 1.0, 0);
-    noiseValidate(definition->_displacement_noise);
+    definition->_displacement_noise->clearLevels();
+    definition->_displacement_noise->addLevelsSimple(9, 1.0, -1.0, 1.0, 0.0);
+    definition->_displacement_noise->normalizeAmplitude(-1.0, 1.0, 0);
+    definition->_displacement_noise->validate();
 
-    noiseClearLevels(definition->_detail_noise);
-    noiseAddLevelsSimple(definition->_detail_noise, 7, 0.01, -1.0, 1.0, 0.0);
-    noiseNormalizeAmplitude(definition->_detail_noise, -0.008, 0.008, 0);
-    noiseValidate(definition->_detail_noise);
+    definition->_detail_noise->clearLevels();
+    definition->_detail_noise->addLevelsSimple(7, 0.01, -1.0, 1.0, 0.0);
+    definition->_detail_noise->normalizeAmplitude(-0.008, 0.008, 0);
+    definition->_detail_noise->validate();
 
     materialValidate(&definition->material);
 
@@ -85,8 +85,8 @@ static TexturesLayerDefinition* _layerCreateDefinition()
     result = new TexturesLayerDefinition;
 
     result->terrain_zone = zoneCreate();
-    result->_displacement_noise = noiseCreateGenerator();
-    result->_detail_noise = noiseCreateGenerator();
+    result->_displacement_noise = new NoiseGenerator();
+    result->_detail_noise = new NoiseGenerator();
 
     texturesLayerAutoPreset(result, TEXTURES_LAYER_PRESET_ROCK);
 
@@ -98,8 +98,8 @@ static TexturesLayerDefinition* _layerCreateDefinition()
 static void _layerDeleteDefinition(TexturesLayerDefinition* definition)
 {
     zoneDelete(definition->terrain_zone);
-    noiseDeleteGenerator(definition->_displacement_noise);
-    noiseDeleteGenerator(definition->_detail_noise);
+    delete definition->_displacement_noise;
+    delete definition->_detail_noise;
     delete definition;
 }
 
@@ -111,8 +111,8 @@ static void _layerCopyDefinition(TexturesLayerDefinition* source, TexturesLayerD
     destination->displacement_offset = source->displacement_offset;
     destination->material = source->material;
 
-    noiseCopy(source->_displacement_noise, destination->_displacement_noise);
-    noiseCopy(source->_detail_noise, destination->_detail_noise);
+    source->_displacement_noise->copy(destination->_displacement_noise);
+    source->_detail_noise->copy(destination->_detail_noise);
 }
 
 static void _layerSave(PackStream* stream, TexturesLayerDefinition* layer)
@@ -123,8 +123,8 @@ static void _layerSave(PackStream* stream, TexturesLayerDefinition* layer)
     stream->write(&layer->displacement_offset);
     materialSave(stream, &layer->material);
 
-    noiseSaveGenerator(stream, layer->_displacement_noise);
-    noiseSaveGenerator(stream, layer->_detail_noise);
+    layer->_displacement_noise->save(stream);
+    layer->_detail_noise->save(stream);
 }
 
 static void _layerLoad(PackStream* stream, TexturesLayerDefinition* layer)
@@ -135,8 +135,8 @@ static void _layerLoad(PackStream* stream, TexturesLayerDefinition* layer)
     stream->read(&layer->displacement_offset);
     materialLoad(stream, &layer->material);
 
-    noiseLoadGenerator(stream, layer->_displacement_noise);
-    noiseLoadGenerator(stream, layer->_detail_noise);
+    layer->_displacement_noise->load(stream);
+    layer->_detail_noise->load(stream);
 }
 
 LayerType texturesGetLayerType()

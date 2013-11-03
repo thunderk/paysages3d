@@ -1,14 +1,13 @@
 #include "private.h"
 
-#include <stdlib.h>
-#include <math.h>
 #include "../tools.h"
 #include "../renderer.h"
+#include "NoiseGenerator.h"
 
 /******************** Definition ********************/
 static void _validateDefinition(TerrainDefinition* definition)
 {
-    noiseValidate(definition->_height_noise);
+    definition->_height_noise->validate();
 
     if (definition->height < 1.0)
     {
@@ -16,7 +15,7 @@ static void _validateDefinition(TerrainDefinition* definition)
     }
 
     /* Get minimal and maximal height */
-    noiseGetRange(definition->_height_noise, &definition->_min_height, &definition->_max_height);
+    definition->_height_noise->getRange(&definition->_min_height, &definition->_max_height);
     definition->_min_height *= definition->height * definition->scaling;
     definition->_max_height *= definition->height * definition->scaling;
 
@@ -35,7 +34,7 @@ static TerrainDefinition* _createDefinition()
 
     definition->water_height = -0.3;
 
-    definition->_height_noise = noiseCreateGenerator();
+    definition->_height_noise = new NoiseGenerator();
 
     terrainAutoPreset(definition, TERRAIN_PRESET_STANDARD);
 
@@ -45,7 +44,7 @@ static TerrainDefinition* _createDefinition()
 static void _deleteDefinition(TerrainDefinition* definition)
 {
     terrainHeightmapDelete(definition->height_map);
-    noiseDeleteGenerator(definition->_height_noise);
+    delete definition->_height_noise;
     delete definition;
 }
 
@@ -59,7 +58,7 @@ static void _copyDefinition(TerrainDefinition* source, TerrainDefinition* destin
 
     destination->water_height = source->water_height;
 
-    noiseCopy(source->_height_noise, destination->_height_noise);
+    source->_height_noise->copy(destination->_height_noise);
 
     _validateDefinition(destination);
 }
@@ -71,7 +70,7 @@ static void _saveDefinition(PackStream* stream, TerrainDefinition* definition)
     stream->write(&definition->shadow_smoothing);
     terrainHeightmapSave(stream, definition->height_map);
     stream->write(&definition->water_height);
-    noiseSaveGenerator(stream, definition->_height_noise);
+    definition->_height_noise->save(stream);
 }
 
 static void _loadDefinition(PackStream* stream, TerrainDefinition* definition)
@@ -81,7 +80,7 @@ static void _loadDefinition(PackStream* stream, TerrainDefinition* definition)
     stream->read(&definition->shadow_smoothing);
     terrainHeightmapLoad(stream, definition->height_map);
     stream->read(&definition->water_height);
-    noiseLoadGenerator(stream, definition->_height_noise);
+    definition->_height_noise->load(stream);
 
     _validateDefinition(definition);
 }
@@ -102,7 +101,7 @@ double terrainGetGridHeight(TerrainDefinition* definition, int x, int z, int wit
 
     if (!with_painting || !terrainHeightmapGetGridHeight(definition->height_map, x, z, &height))
     {
-        height = noiseGet2DTotal(definition->_height_noise, (double)x, (double)z);
+        height = definition->_height_noise->get2DTotal((double)x, (double)z);
     }
 
     return height;
@@ -116,7 +115,7 @@ double terrainGetInterpolatedHeight(TerrainDefinition* definition, double x, dou
 
     if (!with_painting || !terrainHeightmapGetInterpolatedHeight(definition->height_map, x, z, &height))
     {
-        height = noiseGet2DTotal(definition->_height_noise, x, z);
+        height = definition->_height_noise->get2DTotal(x, z);
     }
 
     if (scaled)

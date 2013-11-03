@@ -6,12 +6,13 @@
 #include "../tools/lighting.h"
 #include "../tools/curve.h"
 #include "../tools/euclid.h"
-#include "../noise.h"
 #include "Layers.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace paysages {
+namespace basics {
+    class NoiseGenerator;
+}
+}
 
 typedef enum
 {
@@ -81,9 +82,5 @@ RENDERINGSHARED_EXPORT extern StandardRenderer CloudsRendererClass;
 RENDERINGSHARED_EXPORT LayerType cloudsGetLayerType();
 RENDERINGSHARED_EXPORT void cloudsAutoPreset(CloudsDefinition* definition, CloudsPreset preset);
 RENDERINGSHARED_EXPORT void cloudsLayerAutoPreset(CloudsLayerDefinition* definition, CloudsLayerPreset preset);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

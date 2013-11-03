@@ -1,11 +1,17 @@
 #ifndef DIALOGBASETERRAINNOISE_H
 #define DIALOGBASETERRAINNOISE_H
 
+#include "editing_global.h"
 #include <QDialog>
-#include "rendering/noise.h"
+
+namespace paysages {
+namespace basics {
+    class NoiseGenerator;
+}
+}
 
 namespace Ui {
-class DialogBaseTerrainNoise;
+    class DialogBaseTerrainNoise;
 }
 
 class DialogBaseTerrainNoise : public QDialog

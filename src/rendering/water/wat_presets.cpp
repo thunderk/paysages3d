@@ -1,8 +1,10 @@
 #include "private.h"
 
+#include "NoiseGenerator.h"
+
 void waterAutoPreset(WaterDefinition* definition, WaterPreset preset)
 {
-    noiseRandomizeOffsets(definition->_waves_noise);
+    definition->_waves_noise->randomizeOffsets();
 
     if (preset == WATER_PRESET_LAKE)
     {

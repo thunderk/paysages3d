@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include "PackStream.h"
+#include "NoiseGenerator.h"
 
 /******************** Global definition ********************/
 static void _validateDefinition(CloudsDefinition* definition)
@@ -62,23 +63,23 @@ void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
     }
 
     curveClear(definition->_coverage_by_altitude);
-    noiseClearLevels(definition->_shape_noise);
-    noiseClearLevels(definition->_edge_noise);
-    noiseClearLevels(definition->_coverage_noise);
+    definition->_shape_noise->clearLevels();
+    definition->_edge_noise->clearLevels();
+    definition->_coverage_noise->clearLevels();
 
-    noiseAddLevelsSimple(definition->_coverage_noise, 2, 10.0, 0.0, 1.0, 0.0);
-    noiseAddLevelsSimple(definition->_coverage_noise, 2, 1.0, 0.0, 1.0, 0.0);
-    noiseSetFunctionParams(definition->_coverage_noise, NOISE_FUNCTION_NAIVE, 0.0, 0.0);
+    definition->_coverage_noise->addLevelsSimple(2, 10.0, 0.0, 1.0, 0.0);
+    definition->_coverage_noise->addLevelsSimple(2, 1.0, 0.0, 1.0, 0.0);
+    definition->_coverage_noise->setFunctionParams(NOISE_FUNCTION_NAIVE, 0.0, 0.0);
     switch (definition->type)
     {
         case CLOUDS_TYPE_CIRRUS:
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.0, 0.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.5, 1.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 1.0, 0.0);
-            noiseAddLevelsSimple(definition->_shape_noise, 3, 1.0, 0.0, 1.0, 0.5);
-            noiseSetFunctionParams(definition->_shape_noise, NOISE_FUNCTION_SIMPLEX, 0.0, 0.0);
-            noiseAddLevelsSimple(definition->_edge_noise, 4, 1.0, -0.5, 0.5, 0.5);
-            noiseSetFunctionParams(definition->_edge_noise, NOISE_FUNCTION_SIMPLEX, -0.2, 0.0);
+            definition->_shape_noise->addLevelsSimple(3, 1.0, 0.0, 1.0, 0.5);
+            definition->_shape_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, 0.0, 0.0);
+            definition->_edge_noise->addLevelsSimple(4, 1.0, -0.5, 0.5, 0.5);
+            definition->_edge_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, -0.2, 0.0);
             break;
         case CLOUDS_TYPE_CUMULUS:
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.0, 0.0);
@@ -86,38 +87,38 @@ void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition)
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.4, 0.8);
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.7, 1.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 1.0, 0.0);
-            noiseAddLevelsSimple(definition->_shape_noise, 7, 1.0, 0.0, 1.0, 0.5);
-            noiseSetFunctionParams(definition->_shape_noise, NOISE_FUNCTION_SIMPLEX, 0.4, 0.0);
-            noiseAddLevelsSimple(definition->_edge_noise, 4, 1.0, -0.5, 0.5, 0.5);
-            noiseSetFunctionParams(definition->_edge_noise, NOISE_FUNCTION_SIMPLEX, 0.8, 0.0);
+            definition->_shape_noise->addLevelsSimple(7, 1.0, 0.0, 1.0, 0.5);
+            definition->_shape_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, 0.4, 0.0);
+            definition->_edge_noise->addLevelsSimple(4, 1.0, -0.5, 0.5, 0.5);
+            definition->_edge_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, 0.8, 0.0);
             break;
         case CLOUDS_TYPE_STRATOCUMULUS:
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.0, 0.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.2, 1.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.5, 1.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 1.0, 0.0);
-            noiseAddLevelsSimple(definition->_shape_noise, 4, 1.0, 0.0, 1.0, 0.5);
-            noiseSetFunctionParams(definition->_shape_noise, NOISE_FUNCTION_SIMPLEX, 0.3, 0.0);
-            noiseAddLevelsSimple(definition->_edge_noise, 6, 1.0, -0.5, 0.5, 0.5);
-            noiseSetFunctionParams(definition->_edge_noise, NOISE_FUNCTION_SIMPLEX, 0.5, 0.0);
+            definition->_shape_noise->addLevelsSimple(4, 1.0, 0.0, 1.0, 0.5);
+            definition->_shape_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, 0.3, 0.0);
+            definition->_edge_noise->addLevelsSimple(6, 1.0, -0.5, 0.5, 0.5);
+            definition->_edge_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, 0.5, 0.0);
             break;
         case CLOUDS_TYPE_STRATUS:
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.0, 0.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.2, 1.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 0.8, 1.0);
             curveQuickAddPoint(definition->_coverage_by_altitude, 1.0, 0.0);
-            noiseAddLevelsSimple(definition->_shape_noise, 3, 1.0, 0.0, 1.0, 0.5);
-            noiseSetFunctionParams(definition->_shape_noise, NOISE_FUNCTION_SIMPLEX, -0.3, 0.0);
-            noiseAddLevelsSimple(definition->_edge_noise, 4, 1.0, -0.5, 0.5, 0.5);
-            noiseSetFunctionParams(definition->_edge_noise, NOISE_FUNCTION_SIMPLEX, -0.5, 0.0);
+            definition->_shape_noise->addLevelsSimple(3, 1.0, 0.0, 1.0, 0.5);
+            definition->_shape_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, -0.3, 0.0);
+            definition->_edge_noise->addLevelsSimple(4, 1.0, -0.5, 0.5, 0.5);
+            definition->_edge_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, -0.5, 0.0);
             break;
         default:
             break;
     }
 
-    noiseNormalizeAmplitude(definition->_coverage_noise, -1.0, 3.0, 0);
-    noiseNormalizeAmplitude(definition->_shape_noise, -0.5, 0.5, 0);
-    noiseNormalizeAmplitude(definition->_edge_noise, -0.5, 0.5, 0);
+    definition->_coverage_noise->normalizeAmplitude(-1.0, 3.0, 0);
+    definition->_shape_noise->normalizeAmplitude(-0.5, 0.5, 0);
+    definition->_edge_noise->normalizeAmplitude(-0.5, 0.5, 0);
 
     materialValidate(&definition->material);
 }
@@ -128,9 +129,9 @@ CloudsLayerDefinition* cloudsLayerCreateDefinition()
 
     result = new CloudsLayerDefinition;
     result->_coverage_by_altitude = curveCreate();
-    result->_coverage_noise = noiseCreateGenerator();
-    result->_shape_noise = noiseCreateGenerator();
-    result->_edge_noise = noiseCreateGenerator();
+    result->_coverage_noise = new NoiseGenerator();
+    result->_shape_noise = new NoiseGenerator();
+    result->_edge_noise = new NoiseGenerator();
 
     cloudsLayerAutoPreset(result, CLOUDS_LAYER_PRESET_CIRRUS);
 
@@ -140,9 +141,9 @@ CloudsLayerDefinition* cloudsLayerCreateDefinition()
 void cloudsLayerDeleteDefinition(CloudsLayerDefinition* definition)
 {
     curveDelete(definition->_coverage_by_altitude);
-    noiseDeleteGenerator(definition->_coverage_noise);
-    noiseDeleteGenerator(definition->_shape_noise);
-    noiseDeleteGenerator(definition->_edge_noise);
+    delete definition->_coverage_noise;
+    delete definition->_shape_noise;
+    delete definition->_edge_noise;
     delete definition;
 }
 
@@ -157,13 +158,13 @@ void cloudsLayerCopyDefinition(CloudsLayerDefinition* source, CloudsLayerDefinit
     curveCopy(source->_coverage_by_altitude, destination->_coverage_by_altitude);
 
     destination->_coverage_noise = temp._coverage_noise;
-    noiseCopy(source->_coverage_noise, destination->_coverage_noise);
+    source->_coverage_noise->copy(destination->_coverage_noise);
 
     destination->_shape_noise = temp._shape_noise;
-    noiseCopy(source->_shape_noise, destination->_shape_noise);
+    source->_shape_noise->copy(destination->_shape_noise);
 
     destination->_edge_noise = temp._edge_noise;
-    noiseCopy(source->_edge_noise, destination->_edge_noise);
+    source->_edge_noise->copy(destination->_edge_noise);
 }
 
 void _cloudsLayerSave(PackStream* stream, CloudsLayerDefinition* layer)
@@ -174,9 +175,9 @@ void _cloudsLayerSave(PackStream* stream, CloudsLayerDefinition* layer)
     stream->write(&layer->lower_altitude);
     stream->write(&layer->thickness);
     curveSave(stream, layer->_coverage_by_altitude);
-    noiseSaveGenerator(stream, layer->_coverage_noise);
-    noiseSaveGenerator(stream, layer->_shape_noise);
-    noiseSaveGenerator(stream, layer->_edge_noise);
+    layer->_coverage_noise->save(stream);
+    layer->_shape_noise->save(stream);
+    layer->_edge_noise->save(stream);
     materialSave(stream, &layer->material);
     stream->write(&layer->hardness);
     stream->write(&layer->transparencydepth);
@@ -197,9 +198,9 @@ void _cloudsLayerLoad(PackStream* stream, CloudsLayerDefinition* layer)
     stream->read(&layer->lower_altitude);
     stream->read(&layer->thickness);
     curveLoad(stream, layer->_coverage_by_altitude);
-    noiseLoadGenerator(stream, layer->_coverage_noise);
-    noiseLoadGenerator(stream, layer->_shape_noise);
-    noiseLoadGenerator(stream, layer->_edge_noise);
+    layer->_coverage_noise->load(stream);
+    layer->_shape_noise->load(stream);
+    layer->_edge_noise->load(stream);
     materialLoad(stream, &layer->material);
     stream->read(&layer->hardness);
     stream->read(&layer->transparencydepth);

@@ -12,6 +12,7 @@
 #include "../tools.h"
 #include "../tools/array.h"
 #include "PackStream.h"
+#include "NoiseGenerator.h"
 
 typedef struct
 {
@@ -556,11 +557,11 @@ void terrainBrushSmooth(TerrainHeightMap* heightmap, TerrainBrush* brush, double
     _applyBrush(heightmap, brush, value, NULL, _applyBrushSmooth);
 }
 
-static double _applyBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
+static double _applyBrushAddNoise(TerrainHeightMap*, TerrainBrush* brush, double x, double z, double basevalue, double influence, double force, void* data)
 {
-    UNUSED(heightmap);
+    NoiseGenerator* noise = (NoiseGenerator*)data;
 
-    return basevalue + noiseGet2DTotal((NoiseGenerator*)data, x / brush->total_radius, z / brush->total_radius) * influence * force * brush->total_radius;
+    return basevalue + noise->get2DTotal(x / brush->total_radius, z / brush->total_radius) * influence * force * brush->total_radius;
 }
 
 void terrainBrushAddNoise(TerrainHeightMap* heightmap, TerrainBrush* brush, NoiseGenerator* generator, double value)
