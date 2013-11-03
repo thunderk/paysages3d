@@ -1,6 +1,7 @@
 #include "private.h"
 
 #include <stdlib.h>
+#include "PackStream.h"
 
 /******************** Global definition ********************/
 static void _validateDefinition(CloudsDefinition* definition)
@@ -169,45 +170,45 @@ void _cloudsLayerSave(PackStream* stream, CloudsLayerDefinition* layer)
 {
     int clouds_type = (int)layer->type;
 
-    packWriteInt(stream, &clouds_type);
-    packWriteDouble(stream, &layer->lower_altitude);
-    packWriteDouble(stream, &layer->thickness);
+    stream->write(&clouds_type);
+    stream->write(&layer->lower_altitude);
+    stream->write(&layer->thickness);
     curveSave(stream, layer->_coverage_by_altitude);
     noiseSaveGenerator(stream, layer->_coverage_noise);
     noiseSaveGenerator(stream, layer->_shape_noise);
     noiseSaveGenerator(stream, layer->_edge_noise);
     materialSave(stream, &layer->material);
-    packWriteDouble(stream, &layer->hardness);
-    packWriteDouble(stream, &layer->transparencydepth);
-    packWriteDouble(stream, &layer->lighttraversal);
-    packWriteDouble(stream, &layer->minimumlight);
-    packWriteDouble(stream, &layer->shape_scaling);
-    packWriteDouble(stream, &layer->edge_scaling);
-    packWriteDouble(stream, &layer->edge_length);
-    packWriteDouble(stream, &layer->base_coverage);
+    stream->write(&layer->hardness);
+    stream->write(&layer->transparencydepth);
+    stream->write(&layer->lighttraversal);
+    stream->write(&layer->minimumlight);
+    stream->write(&layer->shape_scaling);
+    stream->write(&layer->edge_scaling);
+    stream->write(&layer->edge_length);
+    stream->write(&layer->base_coverage);
 }
 
 void _cloudsLayerLoad(PackStream* stream, CloudsLayerDefinition* layer)
 {
     int clouds_type;
 
-    packReadInt(stream, &clouds_type);
+    stream->read(&clouds_type);
     layer->type = (CloudsType)clouds_type;
-    packReadDouble(stream, &layer->lower_altitude);
-    packReadDouble(stream, &layer->thickness);
+    stream->read(&layer->lower_altitude);
+    stream->read(&layer->thickness);
     curveLoad(stream, layer->_coverage_by_altitude);
     noiseLoadGenerator(stream, layer->_coverage_noise);
     noiseLoadGenerator(stream, layer->_shape_noise);
     noiseLoadGenerator(stream, layer->_edge_noise);
     materialLoad(stream, &layer->material);
-    packReadDouble(stream, &layer->hardness);
-    packReadDouble(stream, &layer->transparencydepth);
-    packReadDouble(stream, &layer->lighttraversal);
-    packReadDouble(stream, &layer->minimumlight);
-    packReadDouble(stream, &layer->shape_scaling);
-    packReadDouble(stream, &layer->edge_scaling);
-    packReadDouble(stream, &layer->edge_length);
-    packReadDouble(stream, &layer->base_coverage);
+    stream->read(&layer->hardness);
+    stream->read(&layer->transparencydepth);
+    stream->read(&layer->lighttraversal);
+    stream->read(&layer->minimumlight);
+    stream->read(&layer->shape_scaling);
+    stream->read(&layer->edge_scaling);
+    stream->read(&layer->edge_length);
+    stream->read(&layer->base_coverage);
 
     cloudsLayerValidateDefinition(layer);
 }

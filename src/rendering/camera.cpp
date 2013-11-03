@@ -31,19 +31,19 @@ struct CameraDefinition
 void cameraSave(PackStream* stream, CameraDefinition* camera)
 {
     v3Save(stream, &camera->location);
-    packWriteDouble(stream , &camera->direction.r);
-    packWriteDouble(stream, &camera->direction.phi);
-    packWriteDouble(stream, &camera->direction.theta);
-    packWriteDouble(stream, &camera->roll);
+    stream->write(&camera->direction.r);
+    stream->write(&camera->direction.phi);
+    stream->write(&camera->direction.theta);
+    stream->write(&camera->roll);
 }
 
 void cameraLoad(PackStream* stream, CameraDefinition* camera)
 {
     v3Load(stream, &camera->location);
-    packReadDouble(stream, &camera->direction.r);
-    packReadDouble(stream, &camera->direction.phi);
-    packReadDouble(stream, &camera->direction.theta);
-    packReadDouble(stream, &camera->roll);
+    stream->read(&camera->direction.r);
+    stream->read(&camera->direction.phi);
+    stream->read(&camera->direction.theta);
+    stream->read(&camera->roll);
 
     cameraValidateDefinition(camera, 0);
 }

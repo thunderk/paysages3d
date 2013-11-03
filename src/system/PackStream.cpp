@@ -22,15 +22,19 @@ PackStream::~PackStream()
     }
 }
 
-void PackStream::bindToFile(const char* filepath, bool write)
+bool PackStream::bindToFile(const char* filepath, bool write)
 {
     if (not file and not stream)
     {
         file = new QFile(filepath);
-        file->open(write ? QIODevice::WriteOnly : QIODevice::ReadOnly);
+        if (not file->open(write ? QIODevice::WriteOnly : QIODevice::ReadOnly))
+        {
+            return false;
+        }
 
         stream = new QDataStream(file);
     }
+    return stream != NULL;
 }
 
 void PackStream::write(int* value)
@@ -109,55 +113,4 @@ QString PackStream::readString()
     {
         return QString();
     }
-}
-
-// Transitional C-API
-
-PackStream* packReadFile(const char* filepath)
-{
-    PackStream* result = new PackStream();
-    result->bindToFile(filepath, false);
-    return result;
-}
-
-PackStream* packWriteFile(const char* filepath)
-{
-    PackStream* result = new PackStream();
-    result->bindToFile(filepath, true);
-    return result;
-}
-
-void packCloseStream(PackStream* stream)
-{
-    delete stream;
-}
-
-void packWriteDouble(PackStream* stream, double* value)
-{
-    stream->write(value);
-}
-
-void packReadDouble(PackStream* stream, double* value)
-{
-    stream->read(value);
-}
-
-void packWriteInt(PackStream* stream, int* value)
-{
-    stream->write(value);
-}
-
-void packReadInt(PackStream* stream, int* value)
-{
-    stream->read(value);
-}
-
-void packWriteString(PackStream* stream, char* value, int max_length)
-{
-    stream->write(value, max_length);
-}
-
-void packReadString(PackStream* stream, char* value, int max_length)
-{
-    stream->read(value, max_length);
 }

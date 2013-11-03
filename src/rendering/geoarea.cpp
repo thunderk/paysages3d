@@ -38,18 +38,18 @@ void geoareaValidate(GeoArea* geoarea)
 
 void geoareaSave(PackStream* stream, GeoArea* geoarea)
 {
-    packWriteDouble(stream, &geoarea->location_x);
-    packWriteDouble(stream, &geoarea->location_z);
-    packWriteDouble(stream, &geoarea->size_x);
-    packWriteDouble(stream, &geoarea->size_z);
+    stream->write(&geoarea->location_x);
+    stream->write(&geoarea->location_z);
+    stream->write(&geoarea->size_x);
+    stream->write(&geoarea->size_z);
 }
 
 void geoareaLoad(PackStream* stream, GeoArea* geoarea)
 {
-    packReadDouble(stream, &geoarea->location_x);
-    packReadDouble(stream, &geoarea->location_z);
-    packReadDouble(stream, &geoarea->size_x);
-    packReadDouble(stream, &geoarea->size_z);
+    stream->read(&geoarea->location_x);
+    stream->read(&geoarea->location_z);
+    stream->read(&geoarea->size_x);
+    stream->read(&geoarea->size_z);
 }
 
 void geoareaToLocal(GeoArea* geoarea, double absolute_x, double absolute_z, double* local_x, double* local_z)

@@ -18,10 +18,3 @@ int System::getCoreCount()
     }
     return core_count;
 }
-
-// Transitional C-API
-
-int systemGetCoreCount()
-{
-    return System::getCoreCount();
-}

@@ -66,21 +66,21 @@ static void _copyDefinition(TerrainDefinition* source, TerrainDefinition* destin
 
 static void _saveDefinition(PackStream* stream, TerrainDefinition* definition)
 {
-    packWriteDouble(stream, &definition->height);
-    packWriteDouble(stream, &definition->scaling);
-    packWriteDouble(stream, &definition->shadow_smoothing);
+    stream->write(&definition->height);
+    stream->write(&definition->scaling);
+    stream->write(&definition->shadow_smoothing);
     terrainHeightmapSave(stream, definition->height_map);
-    packWriteDouble(stream, &definition->water_height);
+    stream->write(&definition->water_height);
     noiseSaveGenerator(stream, definition->_height_noise);
 }
 
 static void _loadDefinition(PackStream* stream, TerrainDefinition* definition)
 {
-    packReadDouble(stream, &definition->height);
-    packReadDouble(stream, &definition->scaling);
-    packReadDouble(stream, &definition->shadow_smoothing);
+    stream->read(&definition->height);
+    stream->read(&definition->scaling);
+    stream->read(&definition->shadow_smoothing);
     terrainHeightmapLoad(stream, definition->height_map);
-    packReadDouble(stream, &definition->water_height);
+    stream->read(&definition->water_height);
     noiseLoadGenerator(stream, definition->_height_noise);
 
     _validateDefinition(definition);

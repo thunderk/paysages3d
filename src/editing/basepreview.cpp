@@ -407,18 +407,18 @@ void BasePreview::addOsd(QString name)
 
 void BasePreview::savePack(PackStream* stream)
 {
-    packWriteDouble(stream, &this->xoffset);
-    packWriteDouble(stream, &this->yoffset);
-    packWriteDouble(stream, &this->scalingbase);
+    stream->write(&this->xoffset);
+    stream->write(&this->yoffset);
+    stream->write(&this->scalingbase);
 
     // TODO Save choices and toggles
 }
 
 void BasePreview::loadPack(PackStream* stream)
 {
-    packReadDouble(stream, &this->xoffset);
-    packReadDouble(stream, &this->yoffset);
-    packReadDouble(stream, &this->scalingbase);
+    stream->read(&this->xoffset);
+    stream->read(&this->yoffset);
+    stream->read(&this->scalingbase);
 
     // TODO Save choices and toggles
 

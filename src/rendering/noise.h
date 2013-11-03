@@ -2,7 +2,10 @@
 #define _PAYSAGES_NOISE_H_
 
 #include "rendering_global.h"
-#include "PackStream.h"
+
+namespace paysages {
+namespace system {class PackStream;}
+}
 
 #ifdef __cplusplus
 extern "C" {

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../tools.h"
+#include "PackStream.h"
 
 #define MAX_NB_POINTS 40
 
@@ -38,12 +39,12 @@ void curveSave(PackStream* stream, Curve* curve)
 {
     int i;
 
-    packWriteDouble(stream, &curve->default_value);
-    packWriteInt(stream, &curve->nbpoints);
+    stream->write(&curve->default_value);
+    stream->write(&curve->nbpoints);
     for (i = 0; i < curve->nbpoints; i++)
     {
-        packWriteDouble(stream, &curve->points[i].position);
-        packWriteDouble(stream, &curve->points[i].value);
+        stream->write(&curve->points[i].position);
+        stream->write(&curve->points[i].value);
     }
 }
 
@@ -51,12 +52,12 @@ void curveLoad(PackStream* stream, Curve* curve)
 {
     int i;
 
-    packReadDouble(stream, &curve->default_value);
-    packReadInt(stream, &curve->nbpoints);
+    stream->read(&curve->default_value);
+    stream->read(&curve->nbpoints);
     for (i = 0; i < curve->nbpoints; i++)
     {
-        packReadDouble(stream, &curve->points[i].position);
-        packReadDouble(stream, &curve->points[i].value);
+        stream->read(&curve->points[i].position);
+        stream->read(&curve->points[i].value);
     }
 }
 

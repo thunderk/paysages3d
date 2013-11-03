@@ -171,8 +171,8 @@ void texture2DAdd(Texture2D* source, Texture2D* destination)
 void texture2DSave(PackStream* stream, Texture2D* tex)
 {
     int i, n;
-    packWriteInt(stream, &tex->xsize);
-    packWriteInt(stream, &tex->ysize);
+    stream->write(&tex->xsize);
+    stream->write(&tex->ysize);
     n = tex->xsize * tex->ysize;
     for (i = 0; i < n; i++)
     {
@@ -183,8 +183,8 @@ void texture2DSave(PackStream* stream, Texture2D* tex)
 void texture2DLoad(PackStream* stream, Texture2D* tex)
 {
     int i, n;
-    packReadInt(stream, &tex->xsize);
-    packReadInt(stream, &tex->ysize);
+    stream->read(&tex->xsize);
+    stream->read(&tex->ysize);
     n = tex->xsize * tex->ysize;
     delete[] tex->data;
     tex->data = new Color[n];
@@ -352,9 +352,9 @@ void texture3DAdd(Texture3D* source, Texture3D* destination)
 void texture3DSave(PackStream* stream, Texture3D* tex)
 {
     int i, n;
-    packWriteInt(stream, &tex->xsize);
-    packWriteInt(stream, &tex->ysize);
-    packWriteInt(stream, &tex->zsize);
+    stream->write(&tex->xsize);
+    stream->write(&tex->ysize);
+    stream->write(&tex->zsize);
     n = tex->xsize * tex->ysize * tex->zsize;
     for (i = 0; i < n; i++)
     {
@@ -365,9 +365,9 @@ void texture3DSave(PackStream* stream, Texture3D* tex)
 void texture3DLoad(PackStream* stream, Texture3D* tex)
 {
     int i, n;
-    packReadInt(stream, &tex->xsize);
-    packReadInt(stream, &tex->ysize);
-    packReadInt(stream, &tex->zsize);
+    stream->read(&tex->xsize);
+    stream->read(&tex->ysize);
+    stream->read(&tex->zsize);
     n = tex->xsize * tex->ysize * tex->zsize;
     delete[] tex->data;
     tex->data = new Color[n];
@@ -578,10 +578,10 @@ void texture4DAdd(Texture4D* source, Texture4D* destination)
 void texture4DSave(PackStream* stream, Texture4D* tex)
 {
     int i, n;
-    packWriteInt(stream, &tex->xsize);
-    packWriteInt(stream, &tex->ysize);
-    packWriteInt(stream, &tex->zsize);
-    packWriteInt(stream, &tex->wsize);
+    stream->write(&tex->xsize);
+    stream->write(&tex->ysize);
+    stream->write(&tex->zsize);
+    stream->write(&tex->wsize);
     n = tex->xsize * tex->ysize * tex->zsize * tex->wsize;
     for (i = 0; i < n; i++)
     {
@@ -592,10 +592,10 @@ void texture4DSave(PackStream* stream, Texture4D* tex)
 void texture4DLoad(PackStream* stream, Texture4D* tex)
 {
     int i, n;
-    packReadInt(stream, &tex->xsize);
-    packReadInt(stream, &tex->ysize);
-    packReadInt(stream, &tex->zsize);
-    packReadInt(stream, &tex->wsize);
+    stream->read(&tex->xsize);
+    stream->read(&tex->ysize);
+    stream->read(&tex->zsize);
+    stream->read(&tex->wsize);
     n = tex->xsize * tex->ysize * tex->zsize * tex->wsize;
     delete[] tex->data;
     tex->data = new Color[n];

@@ -11,6 +11,7 @@
 #include "../tools/memory.h"
 #include "../tools.h"
 #include "../tools/array.h"
+#include "PackStream.h"
 
 typedef struct
 {
@@ -107,18 +108,18 @@ static void _copyData(HeightMapData* source, HeightMapData* destination)
 static void _saveData(PackStream* stream, HeightMapData* data)
 {
     int i, j, k;
-    packWriteInt(stream, &data->rows_count);
+    stream->write(&data->rows_count);
     for (i = 0; i < data->rows_count; i++)
     {
-        packWriteInt(stream, &data->rows[i].z);
-        packWriteInt(stream, &data->rows[i].pixel_groups_count);
+        stream->write(&data->rows[i].z);
+        stream->write(&data->rows[i].pixel_groups_count);
         for (j = 0; j < data->rows[i].pixel_groups_count; j++)
         {
-            packWriteInt(stream, &data->rows[i].pixel_groups[j].xstart);
-            packWriteInt(stream, &data->rows[i].pixel_groups[j].xend);
+            stream->write(&data->rows[i].pixel_groups[j].xstart);
+            stream->write(&data->rows[i].pixel_groups[j].xend);
             for (k = 0; k < data->rows[i].pixel_groups[j].xend - data->rows[i].pixel_groups[j].xstart; k++)
             {
-                packWriteDouble(stream, &data->rows[i].pixel_groups[j].height[k]);
+                stream->write(&data->rows[i].pixel_groups[j].height[k]);
             }
         }
     }
@@ -131,7 +132,7 @@ static void _loadData(PackStream* stream, HeightMapData* data)
 
     _clearData(data);
 
-    packReadInt(stream, &data->rows_count);
+    stream->read(&data->rows_count);
     if (data->rows_count > 0)
     {
         size = sizeof(HeightMapRow) * data->rows_count;
@@ -139,22 +140,22 @@ static void _loadData(PackStream* stream, HeightMapData* data)
         data->memsize += size;
         for (i = 0; i < data->rows_count; i++)
         {
-            packReadInt(stream, &data->rows[i].z);
-            packReadInt(stream, &data->rows[i].pixel_groups_count);
+            stream->read(&data->rows[i].z);
+            stream->read(&data->rows[i].pixel_groups_count);
             size = sizeof(HeightMapPixelGroup) * data->rows[i].pixel_groups_count;
             data->rows[i].pixel_groups = (HeightMapPixelGroup*)malloc(size);
             data->memsize += size;
             for (j = 0; j < data->rows[i].pixel_groups_count; j++)
             {
-                packReadInt(stream, &data->rows[i].pixel_groups[j].xstart);
-                packReadInt(stream, &data->rows[i].pixel_groups[j].xend);
+                stream->read(&data->rows[i].pixel_groups[j].xstart);
+                stream->read(&data->rows[i].pixel_groups[j].xend);
                 n = data->rows[i].pixel_groups[j].xend - data->rows[i].pixel_groups[j].xstart;
                 size = sizeof(double) * n;
                 data->rows[i].pixel_groups[j].height = (double*)malloc(size);
                 data->memsize += size;
                 for (k = 0; k < n; k++)
                 {
-                    packReadDouble(stream, &data->rows[i].pixel_groups[j].height[k]);
+                    stream->read(&data->rows[i].pixel_groups[j].height[k]);
                 }
             }
         }

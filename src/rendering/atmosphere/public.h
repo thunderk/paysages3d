@@ -5,8 +5,11 @@
 #include "../tools/lighting.h"
 #include "../tools/euclid.h"
 #include "../tools/color.h"
-#include "PackStream.h"
 #include "../shared/types.h"
+
+namespace paysages {
+namespace system {class PackStream;}
+}
 
 #ifdef __cplusplus
 extern "C" {

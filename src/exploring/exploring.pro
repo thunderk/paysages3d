@@ -8,7 +8,8 @@ CONFIG(release, debug|release): DEFINES += NDEBUG
 
 INCLUDEPATH += $$PWD/..
 
-SOURCES += main.c
+SOURCES += \
+    main.cpp
 
 HEADERS += main.h \
     exploring_global.h

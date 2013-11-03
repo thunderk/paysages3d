@@ -4,6 +4,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <string.h>
+#include "PackStream.h"
 
 #define MAX_CALLBACK_COUNT 10
 #define MAX_LIGHT_COUNT 30
@@ -215,28 +216,28 @@ Vector3 lightingGetStatusLocation(LightStatus* status)
 
 void materialSave(PackStream* stream, SurfaceMaterial* material)
 {
-    packWriteDouble(stream, &material->base.h);
-    packWriteDouble(stream, &material->base.l);
-    packWriteDouble(stream, &material->base.s);
+    stream->write(&material->base.h);
+    stream->write(&material->base.l);
+    stream->write(&material->base.s);
 
-    packWriteDouble(stream, &material->hardness);
-    packWriteDouble(stream, &material->reflection);
-    packWriteDouble(stream, &material->shininess);
+    stream->write(&material->hardness);
+    stream->write(&material->reflection);
+    stream->write(&material->shininess);
 
-    packWriteDouble(stream, &material->receive_shadows);
+    stream->write(&material->receive_shadows);
 }
 
 void materialLoad(PackStream* stream, SurfaceMaterial* material)
 {
-    packReadDouble(stream, &material->base.h);
-    packReadDouble(stream, &material->base.l);
-    packReadDouble(stream, &material->base.s);
+    stream->read(&material->base.h);
+    stream->read(&material->base.l);
+    stream->read(&material->base.s);
 
-    packReadDouble(stream, &material->hardness);
-    packReadDouble(stream, &material->reflection);
-    packReadDouble(stream, &material->shininess);
+    stream->read(&material->hardness);
+    stream->read(&material->reflection);
+    stream->read(&material->shininess);
 
-    packReadDouble(stream, &material->receive_shadows);
+    stream->read(&material->receive_shadows);
 
     materialValidate(material);
 }

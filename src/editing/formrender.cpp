@@ -135,20 +135,20 @@ void FormRender::savePack(PackStream* stream)
 {
     BaseForm::savePack(stream);
 
-    packWriteInt(stream, &_params.width);
-    packWriteInt(stream, &_params.height);
-    packWriteInt(stream, &_params.antialias);
-    packWriteInt(stream, &_params.quality);
+    stream->write(&_params.width);
+    stream->write(&_params.height);
+    stream->write(&_params.antialias);
+    stream->write(&_params.quality);
 }
 
 void FormRender::loadPack(PackStream* stream)
 {
     BaseForm::loadPack(stream);
 
-    packReadInt(stream, &_params.width);
-    packReadInt(stream, &_params.height);
-    packReadInt(stream, &_params.antialias);
-    packReadInt(stream, &_params.quality);
+    stream->read(&_params.width);
+    stream->read(&_params.height);
+    stream->read(&_params.antialias);
+    stream->read(&_params.quality);
 
     revertConfig();
 }

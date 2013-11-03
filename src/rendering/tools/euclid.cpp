@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include "../tools.h"
+#include "PackStream.h"
 
 Vector3 VECTOR_ZERO = {0.0, 0.0, 0.0};
 Vector3 VECTOR_DOWN = {0.0, -1.0, 0.0};
@@ -13,16 +14,16 @@ Vector3 VECTOR_EAST = {1.0, 0.0, 0.0};
 
 void v3Save(PackStream* stream, Vector3* v)
 {
-    packWriteDouble(stream, &v->x);
-    packWriteDouble(stream, &v->y);
-    packWriteDouble(stream, &v->z);
+    stream->write(&v->x);
+    stream->write(&v->y);
+    stream->write(&v->z);
 }
 
 void v3Load(PackStream* stream, Vector3* v)
 {
-    packReadDouble(stream, &v->x);
-    packReadDouble(stream, &v->y);
-    packReadDouble(stream, &v->z);
+    stream->read(&v->x);
+    stream->read(&v->y);
+    stream->read(&v->z);
 }
 
 Vector3 v3Translate(Vector3 v1, double x, double y, double z)
@@ -125,42 +126,42 @@ Vector3 v3FromSpherical(VectorSpherical v)
 
 void m4Save(PackStream* stream, Matrix4* m)
 {
-    packWriteDouble(stream, &m->a);
-    packWriteDouble(stream, &m->b);
-    packWriteDouble(stream, &m->c);
-    packWriteDouble(stream, &m->d);
-    packWriteDouble(stream, &m->e);
-    packWriteDouble(stream, &m->f);
-    packWriteDouble(stream, &m->g);
-    packWriteDouble(stream, &m->h);
-    packWriteDouble(stream, &m->i);
-    packWriteDouble(stream, &m->j);
-    packWriteDouble(stream, &m->k);
-    packWriteDouble(stream, &m->l);
-    packWriteDouble(stream, &m->m);
-    packWriteDouble(stream, &m->n);
-    packWriteDouble(stream, &m->o);
-    packWriteDouble(stream, &m->p);
+    stream->write(&m->a);
+    stream->write(&m->b);
+    stream->write(&m->c);
+    stream->write(&m->d);
+    stream->write(&m->e);
+    stream->write(&m->f);
+    stream->write(&m->g);
+    stream->write(&m->h);
+    stream->write(&m->i);
+    stream->write(&m->j);
+    stream->write(&m->k);
+    stream->write(&m->l);
+    stream->write(&m->m);
+    stream->write(&m->n);
+    stream->write(&m->o);
+    stream->write(&m->p);
 }
 
 void m4Load(PackStream* stream, Matrix4* m)
 {
-    packReadDouble(stream, &m->a);
-    packReadDouble(stream, &m->b);
-    packReadDouble(stream, &m->c);
-    packReadDouble(stream, &m->d);
-    packReadDouble(stream, &m->e);
-    packReadDouble(stream, &m->f);
-    packReadDouble(stream, &m->g);
-    packReadDouble(stream, &m->h);
-    packReadDouble(stream, &m->i);
-    packReadDouble(stream, &m->j);
-    packReadDouble(stream, &m->k);
-    packReadDouble(stream, &m->l);
-    packReadDouble(stream, &m->m);
-    packReadDouble(stream, &m->n);
-    packReadDouble(stream, &m->o);
-    packReadDouble(stream, &m->p);
+    stream->read(&m->a);
+    stream->read(&m->b);
+    stream->read(&m->c);
+    stream->read(&m->d);
+    stream->read(&m->e);
+    stream->read(&m->f);
+    stream->read(&m->g);
+    stream->read(&m->h);
+    stream->read(&m->i);
+    stream->read(&m->j);
+    stream->read(&m->k);
+    stream->read(&m->l);
+    stream->read(&m->m);
+    stream->read(&m->n);
+    stream->read(&m->o);
+    stream->read(&m->p);
 }
 
 Matrix4 m4NewIdentity()

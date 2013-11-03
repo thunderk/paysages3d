@@ -2,8 +2,6 @@
 #define LAYERS_H
 
 #include "definition_global.h"
-
-#include "PackStream.h"
 #include "LegacyLayer.h"
 
 #ifdef __cplusplus
@@ -11,6 +9,7 @@
 #include "BaseDefinition.h"
 
 namespace paysages {
+namespace system {class PackStream;}
 namespace definition {
 
 class Layers;

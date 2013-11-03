@@ -5,9 +5,9 @@
 
 #include <QList>
 #include <QString>
-#include "PackStream.h" // TODO Delete when c++ migration is done
 
 namespace paysages {
+namespace system {class PackStream;}
 namespace definition {
 
 /**

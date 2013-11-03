@@ -2,9 +2,12 @@
 #define _PAYSAGES_CAMERA_H_
 
 #include "rendering_global.h"
-#include "PackStream.h"
 #include "tools/euclid.h"
 #include "tools/boundingbox.h"
+
+namespace paysages {
+namespace system {class PackStream;}
+}
 
 #ifdef __cplusplus
 extern "C"

@@ -3,7 +3,10 @@
 
 #include "../rendering_global.h"
 #include "curve.h"
-#include "PackStream.h"
+
+namespace paysages {
+namespace system {class PackStream;}
+}
 
 #ifdef __cplusplus
 extern "C" {

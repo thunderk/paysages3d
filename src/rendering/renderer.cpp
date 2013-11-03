@@ -184,9 +184,9 @@ void rendererSetPreviewCallbacks(Renderer* renderer, RenderCallbackStart start, 
 
 void rendererStart(Renderer* renderer, RenderParams params)
 {
-    Thread* thread;
+    Thread thread(_renderFirstPass);
     int loops;
-    int core_count = systemGetCoreCount();
+    int core_count = System::getCoreCount();
 
     params.antialias = (params.antialias < 1) ? 1 : params.antialias;
     params.antialias = (params.antialias > 4) ? 4 : params.antialias;
@@ -204,12 +204,12 @@ void rendererStart(Renderer* renderer, RenderParams params)
     renderClear(renderer->render_area);
 
     renderer->is_rendering = 1;
-    thread = threadCreate(_renderFirstPass, renderer);
+    thread.start(renderer);
     loops = 0;
 
     while (renderer->is_rendering)
     {
-        timeSleepMs(100);
+        Thread::timeSleepMs(100);
 
         if (++loops >= 10)
         {
@@ -218,7 +218,7 @@ void rendererStart(Renderer* renderer, RenderParams params)
             loops = 0;
         }
     }
-    threadJoin(thread);
+    thread.join();
 
     renderer->is_rendering = 1;
     renderPostProcess(renderer->render_area, core_count);

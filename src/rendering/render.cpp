@@ -121,7 +121,7 @@ RenderArea* renderCreateArea(Renderer* renderer)
     result->dirty_down = 1;
     result->dirty_up = -1;
     result->dirty_count = 0;
-    result->lock = mutexCreate();
+    result->lock = new Mutex();
     result->callback_start = _callbackStart;
     result->callback_draw = _callbackDraw;
     result->callback_update = _callbackUpdate;
@@ -132,7 +132,7 @@ RenderArea* renderCreateArea(Renderer* renderer)
 void renderDeleteArea(RenderArea* area)
 {
     colorProfileDelete(area->hdr_mapping);
-    mutexDestroy(area->lock);
+    delete area->lock;
     free(area->pixels);
     free(area);
 }
@@ -302,9 +302,9 @@ static void _processDirtyPixels(RenderArea* area)
 
 void renderUpdate(RenderArea* area)
 {
-    mutexAcquire(area->lock);
+    area->lock->acquire();
     _processDirtyPixels(area);
-    mutexRelease(area->lock);
+    area->lock->release();
 }
 
 static inline unsigned int _pushCallback(RenderArea* area, FragmentCallback callback)
@@ -541,9 +541,9 @@ void renderPushTriangle(RenderArea* area, Vector3 pixel1, Vector3 pixel2, Vector
     }
 
     /* Prepare fragment callback */
-    mutexAcquire(area->lock);
+    area->lock->acquire();
     point1.callback = _pushCallback(area, fragment_callback);
-    mutexRelease(area->lock);
+    area->lock->release();
 
     /* Prepare vertices */
     point1.pixel = pixel1;
@@ -578,9 +578,9 @@ void renderPushTriangle(RenderArea* area, Vector3 pixel1, Vector3 pixel2, Vector
     _pushScanLineEdge(area, &scanlines, &point3, &point1);
 
     /* Commit scanlines to area */
-    mutexAcquire(area->lock);
+    area->lock->acquire();
     _renderScanLines(area, &scanlines);
-    mutexRelease(area->lock);
+    area->lock->release();
 
     /* Free scalines */
     free(scanlines.up);
@@ -591,9 +591,9 @@ Color renderGetPixel(RenderArea* area, int x, int y)
 {
     Color result;
 
-    mutexAcquire(area->lock);
+    area->lock->acquire();
     result = _getFinalPixel(area, x, y);
-    mutexRelease(area->lock);
+    area->lock->release();
 
     return result;
 }
@@ -629,10 +629,10 @@ void* _renderPostProcessChunk(void* data)
                 fragment->data.color.g = col.g;
                 fragment->data.color.b = col.b;
 
-                mutexAcquire(chunk->area->lock);
+                chunk->area->lock->acquire();
                 fragment->flags.dirty = 0;
                 _setDirtyPixel(chunk->area, x, y);
-                mutexRelease(chunk->area->lock);
+                chunk->area->lock->release();
             }
             chunk->area->pixel_done++;
         }
@@ -681,7 +681,7 @@ void renderPostProcess(RenderArea* area, int nbchunks)
     loops = 0;
     while ((x < nx && !area->renderer->render_interrupt) || running > 0)
     {
-        timeSleepMs(50);
+        Thread::timeSleepMs(50);
 
         for (i = 0; i < nbchunks; i++)
         {
@@ -689,7 +689,8 @@ void renderPostProcess(RenderArea* area, int nbchunks)
             {
                 if (chunks[i].finished)
                 {
-                    threadJoin(chunks[i].thread);
+                    chunks[i].thread->join();
+                    delete chunks[i].thread;
                     chunks[i].thread = NULL;
                     running--;
                 }
@@ -724,7 +725,8 @@ void renderPostProcess(RenderArea* area, int nbchunks)
                     chunks[i].endy = (y + 1) * dy - 1;
                 }
 
-                chunks[i].thread = threadCreate(_renderPostProcessChunk, (void*)(chunks + i));
+                chunks[i].thread = new Thread(_renderPostProcessChunk);
+                chunks[i].thread->start((void*)(chunks + i));
                 running++;
 
                 if (++y >= ny)
@@ -737,9 +739,9 @@ void renderPostProcess(RenderArea* area, int nbchunks)
 
         if (++loops >= 10)
         {
-            mutexAcquire(area->lock);
+            area->lock->acquire();
             _processDirtyPixels(area);
-            mutexRelease(area->lock);
+            area->lock->release();
 
             loops = 0;
         }

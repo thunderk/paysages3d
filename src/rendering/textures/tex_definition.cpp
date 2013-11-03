@@ -118,9 +118,9 @@ static void _layerCopyDefinition(TexturesLayerDefinition* source, TexturesLayerD
 static void _layerSave(PackStream* stream, TexturesLayerDefinition* layer)
 {
     zoneSave(stream, layer->terrain_zone);
-    packWriteDouble(stream, &layer->displacement_scaling);
-    packWriteDouble(stream, &layer->displacement_height);
-    packWriteDouble(stream, &layer->displacement_offset);
+    stream->write(&layer->displacement_scaling);
+    stream->write(&layer->displacement_height);
+    stream->write(&layer->displacement_offset);
     materialSave(stream, &layer->material);
 
     noiseSaveGenerator(stream, layer->_displacement_noise);
@@ -130,9 +130,9 @@ static void _layerSave(PackStream* stream, TexturesLayerDefinition* layer)
 static void _layerLoad(PackStream* stream, TexturesLayerDefinition* layer)
 {
     zoneLoad(stream, layer->terrain_zone);
-    packReadDouble(stream, &layer->displacement_scaling);
-    packReadDouble(stream, &layer->displacement_height);
-    packReadDouble(stream, &layer->displacement_offset);
+    stream->read(&layer->displacement_scaling);
+    stream->read(&layer->displacement_height);
+    stream->read(&layer->displacement_offset);
     materialLoad(stream, &layer->material);
 
     noiseLoadGenerator(stream, layer->_displacement_noise);

@@ -21,30 +21,3 @@ void Thread::run()
 {
     result = function(data);
 }
-
-// Transitional C-API
-
-Thread* threadCreate(ThreadFunction function, void* data)
-{
-    Thread* result = new Thread(function);
-
-    result->start(data);
-
-    return result;
-}
-
-void* threadJoin(Thread* thread)
-{
-    void* result;
-
-    result = thread->join();
-
-    delete thread;
-
-    return result;
-}
-
-void timeSleepMs(unsigned long ms)
-{
-    QThread::msleep(ms);
-}

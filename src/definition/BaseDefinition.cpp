@@ -1,5 +1,7 @@
 #include "BaseDefinition.h"
 
+#include "PackStream.h"
+
 BaseDefinition::BaseDefinition(BaseDefinition* parent):
     parent(parent)
 {

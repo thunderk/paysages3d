@@ -73,7 +73,8 @@ static int _runNextWorker(ParallelWorker workers[], int worker_count, int unit)
                 worker->status = PARALLEL_WORKER_STATUS_RUNNING;
                 worker->result = 0;
                 worker->unit = unit;
-                worker->thread = threadCreate((ThreadFunction)_workerThreadCallback, worker);
+                worker->thread = new Thread((ThreadFunction)_workerThreadCallback);
+                worker->thread->start(worker);
 
                 return 0;
             }
@@ -84,13 +85,15 @@ static int _runNextWorker(ParallelWorker workers[], int worker_count, int unit)
                 worker->status = PARALLEL_WORKER_STATUS_RUNNING;
                 worker->result = 0;
                 worker->unit = unit;
-                threadJoin(worker->thread);
-                worker->thread = threadCreate((ThreadFunction)_workerThreadCallback, worker);
+                worker->thread->join();
+                delete worker->thread;
+                worker->thread = new Thread((ThreadFunction)_workerThreadCallback);
+                worker->thread->start(worker);
 
                 return result;
             }
         }
-        timeSleepMs(50);
+        Thread::timeSleepMs(50);
     }
 }
 
@@ -103,7 +106,7 @@ int parallelWorkPerform(ParallelWork* work, int workers)
 
     if (workers <= 0)
     {
-        workers = systemGetCoreCount();
+        workers = System::getCoreCount();
     }
     if (workers > PARALLEL_MAX_THREADS)
     {
@@ -132,7 +135,8 @@ int parallelWorkPerform(ParallelWork* work, int workers)
     {
         if (work->workers[i].status != PARALLEL_WORKER_STATUS_VOID)
         {
-            threadJoin(work->workers[i].thread);
+            work->workers[i].thread->join();
+            delete work->workers[i].thread;
             if (work->workers[i].result)
             {
                 result++;
@@ -187,7 +191,7 @@ static void* _queueThreadCallback(ParallelQueue* queue)
     while (!queue->stopping)
     {
         /* Try to take a job */
-        mutexAcquire(queue->lock);
+        queue->lock->acquire();
         job = queue->jobs + queue->jobs_index_pending;
         if (job->state == JOB_STATE_PENDING)
         {
@@ -205,14 +209,14 @@ static void* _queueThreadCallback(ParallelQueue* queue)
         {
             job = NULL;
         }
-        mutexRelease(queue->lock);
+        queue->lock->release();
 
         if (job)
         {
             /* Process the job */
             job->process(queue, job->id, job->data, 0);
 
-            mutexAcquire(queue->lock);
+            queue->lock->acquire();
             if (queue->collect)
             {
                 job->state = JOB_STATE_TOCOLLECT;
@@ -223,11 +227,11 @@ static void* _queueThreadCallback(ParallelQueue* queue)
                 job->state = JOB_STATE_FREE;
                 queue->jobs_count--;
             }
-            mutexRelease(queue->lock);
+            queue->lock->release();
         }
         else
         {
-            timeSleepMs(50);
+            Thread::timeSleepMs(50);
         }
     }
     return NULL;
@@ -243,7 +247,7 @@ ParallelQueue* parallelQueueCreate(int collect)
 
     queue->collect = collect;
     queue->stopping = 0;
-    queue->lock = mutexCreate();
+    queue->lock = new Mutex();
 
     queue->jobs = new ParallelJob[QUEUE_SIZE];
     for (i = 0; i < QUEUE_SIZE; i++)
@@ -257,11 +261,12 @@ ParallelQueue* parallelQueueCreate(int collect)
     queue->jobs_next_id = 1;
 
     /* Start workers */
-    queue->workers_count = systemGetCoreCount();
+    queue->workers_count = System::getCoreCount();
     queue->workers = new Thread*[queue->workers_count];
     for (i = 0; i < queue->workers_count; i++)
     {
-        queue->workers[i] = threadCreate((ThreadFunction)_queueThreadCallback, queue);
+        queue->workers[i] = new Thread((ThreadFunction)_queueThreadCallback);
+        queue->workers[i]->start(queue);
     }
 
     return queue;
@@ -274,7 +279,7 @@ void parallelQueueDelete(ParallelQueue* queue)
     assert(!queue->collect || queue->jobs[queue->jobs_index_collect].state != JOB_STATE_TOCOLLECT);
     assert(queue->jobs_count == 0);
 
-    mutexDestroy(queue->lock);
+    delete queue->lock;
     delete[] queue->jobs;
     delete[] queue->workers;
     delete queue;
@@ -290,7 +295,8 @@ void parallelQueueInterrupt(ParallelQueue* queue)
 
         for (i = 0; i < queue->workers_count; i++)
         {
-            threadJoin(queue->workers[i]);
+            queue->workers[i]->join();
+            delete queue->workers[i];
         }
     }
 }
@@ -299,7 +305,7 @@ void parallelQueueWait(ParallelQueue* queue)
 {
     while (queue->jobs_count > 0)
     {
-        timeSleepMs(100);
+        Thread::timeSleepMs(100);
     }
 }
 
@@ -313,7 +319,7 @@ int parallelQueueAddJob(ParallelQueue* queue, FuncParallelJob func_process, void
     /* Wait for a free slot */
     while (queue->jobs[queue->jobs_index_free].state != JOB_STATE_FREE)
     {
-        timeSleepMs(50);
+        Thread::timeSleepMs(50);
         if (queue->stopping)
         {
             return 0;
@@ -328,10 +334,10 @@ int parallelQueueAddJob(ParallelQueue* queue, FuncParallelJob func_process, void
     job.data = data;
 
     /* Add the job to the queue */
-    mutexAcquire(queue->lock);
+    queue->lock->acquire();
     if (queue->stopping)
     {
-        mutexRelease(queue->lock);
+        queue->lock->release();
         return 0;
     }
     queue->jobs[queue->jobs_index_free] = job;
@@ -345,7 +351,7 @@ int parallelQueueAddJob(ParallelQueue* queue, FuncParallelJob func_process, void
     }
     queue->jobs_count++;
     assert(queue->jobs_count <= QUEUE_SIZE);
-    mutexRelease(queue->lock);
+    queue->lock->release();
 
     return job.id;
 }

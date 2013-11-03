@@ -5,6 +5,7 @@
 #include <string.h>
 #include <math.h>
 #include "../tools.h"
+#include "PackStream.h"
 
 /******************************** Color ********************************/
 
@@ -18,18 +19,18 @@ Color COLOR_GREY = {0.5, 0.5, 0.5, 1.0};
 
 void colorSave(PackStream* stream, Color* col)
 {
-    packWriteDouble(stream, &col->r);
-    packWriteDouble(stream, &col->g);
-    packWriteDouble(stream, &col->b);
-    packWriteDouble(stream, &col->a);
+    stream->write(&col->r);
+    stream->write(&col->g);
+    stream->write(&col->b);
+    stream->write(&col->a);
 }
 
 void colorLoad(PackStream* stream, Color* col)
 {
-    packReadDouble(stream, &col->r);
-    packReadDouble(stream, &col->g);
-    packReadDouble(stream, &col->b);
-    packReadDouble(stream, &col->a);
+    stream->read(&col->r);
+    stream->read(&col->g);
+    stream->read(&col->b);
+    stream->read(&col->a);
 }
 
 Color colorFromValues(double r, double g, double b, double a)

@@ -2,9 +2,6 @@
 #define PACKSTREAM_H
 
 #include "system_global.h"
-
-#ifdef __cplusplus
-
 #include <QString>
 class QFile;
 class QDataStream;
@@ -23,7 +20,7 @@ public:
     PackStream();
     ~PackStream();
 
-    void bindToFile(const char* filepath, bool write=false);
+    bool bindToFile(const char* filepath, bool write=false);
 
     void write(int* value);
     void write(double* value);
@@ -42,29 +39,5 @@ private:
 
 }
 }
-
-extern "C" {
-#endif
-
-// Transitional C-API
-
-#ifndef __cplusplus
-typedef struct PackStream PackStream;
-#endif
-
-SYSTEMSHARED_EXPORT PackStream* packReadFile(const char* filepath);
-SYSTEMSHARED_EXPORT PackStream* packWriteFile(const char* filepath);
-SYSTEMSHARED_EXPORT void packCloseStream(PackStream* stream);
-
-SYSTEMSHARED_EXPORT void packWriteDouble(PackStream* stream, double* value);
-SYSTEMSHARED_EXPORT void packReadDouble(PackStream* stream, double* value);
-SYSTEMSHARED_EXPORT void packWriteInt(PackStream* stream, int* value);
-SYSTEMSHARED_EXPORT void packReadInt(PackStream* stream, int* value);
-SYSTEMSHARED_EXPORT void packWriteString(PackStream* stream, char* value, int max_length);
-SYSTEMSHARED_EXPORT void packReadString(PackStream* stream, char* value, int max_length);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // PACKSTREAM_H

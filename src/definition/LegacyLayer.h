@@ -1,7 +1,11 @@
 #ifndef LEGACYLAYER_H
 #define LEGACYLAYER_H
 
-#include <PackStream.h>
+#include <BaseDefinition.h>
+
+namespace paysages {
+namespace system {class PackStream;}
+namespace definition {
 
 typedef void* (*LayerCallbackCreate)();
 typedef void (*LayerCallbackDelete)(void* layer);
@@ -18,10 +22,6 @@ typedef struct {
     LayerCallbackSave callback_save;
     LayerCallbackLoad callback_load;
 } LayerType;
-
-#ifdef __cplusplus
-
-#include <BaseDefinition.h>
 
 /**
  * @brief Wrapper around the old LayerType, used by C code.
@@ -49,6 +49,7 @@ private:
     char legacy_name[100];
 };
 
-#endif
+}
+}
 
 #endif // LEGACYLAYER_H

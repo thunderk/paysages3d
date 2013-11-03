@@ -33,53 +33,47 @@ void paysagesQuit()
 
 FileOperationResult paysagesSave(char* filepath)
 {
-    PackStream* stream = packWriteFile(filepath);
+    PackStream stream;
     double app_header, version_header;
 
-    if (!stream)
+    if (!stream.bindToFile(filepath, true))
     {
         return FILE_OPERATION_IOERROR;
     }
 
     app_header = (double)APP_HEADER;
-    packWriteDouble(stream, &app_header);
+    stream.write(&app_header);
     version_header = (double)PAYSAGES_CURRENT_DATA_VERSION;
-    packWriteDouble(stream, &version_header);
+    stream.write(&version_header);
 
-    scenerySave(stream);
-
-    packCloseStream(stream);
+    scenerySave(&stream);
 
     return FILE_OPERATION_OK;
 }
 
 FileOperationResult paysagesLoad(char* filepath)
 {
-    PackStream* stream = packReadFile(filepath);
+    PackStream stream;
     double app_header, version_header;
 
-    if (!stream)
+    if (!stream.bindToFile(filepath, false))
     {
         return FILE_OPERATION_IOERROR;
     }
 
-    packReadDouble(stream, &app_header);
+    stream.read(&app_header);
     if (app_header != APP_HEADER)
     {
-        packCloseStream(stream);
         return FILE_OPERATION_APP_MISMATCH;
     }
 
-    packReadDouble(stream, &version_header);
+    stream.read(&version_header);
     if ((int)version_header != PAYSAGES_CURRENT_DATA_VERSION)
     {
-        packCloseStream(stream);
         return FILE_OPERATION_VERSION_MISMATCH;
     }
 
-    sceneryLoad(stream);
-
-    packCloseStream(stream);
+    sceneryLoad(&stream);
 
     return FILE_OPERATION_OK;
 }

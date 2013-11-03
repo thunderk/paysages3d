@@ -2,7 +2,10 @@
 #define _PAYSAGES_TOOLS_EUCLID_H_
 
 #include "../rendering_global.h"
-#include "PackStream.h"
+
+namespace paysages {
+namespace system {class PackStream;}
+}
 
 /*
  * Cartesian coordinates (X, Y, Z) - right handed :

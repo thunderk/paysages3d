@@ -34,10 +34,10 @@ void noiseNaiveSave(PackStream* stream)
 {
     int i;
 
-    packWriteInt(stream, &_noise_pool_size);
+    stream->write(&_noise_pool_size);
     for (i = 0; i < _noise_pool_size; i++)
     {
-        packWriteDouble(stream, _noise_pool + i);
+        stream->write(_noise_pool + i);
     }
 }
 
@@ -45,12 +45,12 @@ void noiseNaiveLoad(PackStream* stream)
 {
     int i;
 
-    packReadInt(stream, &_noise_pool_size);
+    stream->read(&_noise_pool_size);
     delete[] _noise_pool;
     _noise_pool = new double[_noise_pool_size];
     for (i = 0; i < _noise_pool_size; i++)
     {
-        packReadDouble(stream, _noise_pool + i);
+        stream->read(_noise_pool + i);
     }
 }
 

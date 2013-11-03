@@ -55,22 +55,22 @@ void zoneSave(PackStream* stream, Zone* zone)
 {
     int i;
 
-    packWriteInt(stream, &zone->absolute_height);
-    packWriteDouble(stream, &zone->relative_height_min);
-    packWriteDouble(stream, &zone->relative_height_middle);
-    packWriteDouble(stream, &zone->relative_height_max);
+    stream->write(&zone->absolute_height);
+    stream->write(&zone->relative_height_min);
+    stream->write(&zone->relative_height_middle);
+    stream->write(&zone->relative_height_max);
 
     curveSave(stream, zone->value_by_height);
     curveSave(stream, zone->value_by_slope);
 
-    packWriteInt(stream, &zone->circles_included_count);
+    stream->write(&zone->circles_included_count);
     for (i = 0; i < zone->circles_included_count; i++)
     {
-        packWriteDouble(stream, &zone->circles_included[i].value);
-        packWriteDouble(stream, &zone->circles_included[i].centerx);
-        packWriteDouble(stream, &zone->circles_included[i].centerz);
-        packWriteDouble(stream, &zone->circles_included[i].softradius);
-        packWriteDouble(stream, &zone->circles_included[i].hardradius);
+        stream->write(&zone->circles_included[i].value);
+        stream->write(&zone->circles_included[i].centerx);
+        stream->write(&zone->circles_included[i].centerz);
+        stream->write(&zone->circles_included[i].softradius);
+        stream->write(&zone->circles_included[i].hardradius);
     }
 }
 
@@ -78,22 +78,22 @@ void zoneLoad(PackStream* stream, Zone* zone)
 {
     int i;
 
-    packReadInt(stream, &zone->absolute_height);
-    packReadDouble(stream, &zone->relative_height_min);
-    packReadDouble(stream, &zone->relative_height_middle);
-    packReadDouble(stream, &zone->relative_height_max);
+    stream->read(&zone->absolute_height);
+    stream->read(&zone->relative_height_min);
+    stream->read(&zone->relative_height_middle);
+    stream->read(&zone->relative_height_max);
 
     curveLoad(stream, zone->value_by_height);
     curveLoad(stream, zone->value_by_slope);
 
-    packReadInt(stream, &zone->circles_included_count);
+    stream->read(&zone->circles_included_count);
     for (i = 0; i < zone->circles_included_count; i++)
     {
-        packReadDouble(stream, &zone->circles_included[i].value);
-        packReadDouble(stream, &zone->circles_included[i].centerx);
-        packReadDouble(stream, &zone->circles_included[i].centerz);
-        packReadDouble(stream, &zone->circles_included[i].softradius);
-        packReadDouble(stream, &zone->circles_included[i].hardradius);
+        stream->read(&zone->circles_included[i].value);
+        stream->read(&zone->circles_included[i].centerx);
+        stream->read(&zone->circles_included[i].centerz);
+        stream->read(&zone->circles_included[i].softradius);
+        stream->read(&zone->circles_included[i].hardradius);
     }
 }
 

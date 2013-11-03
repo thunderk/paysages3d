@@ -2,17 +2,14 @@
 #define THREAD_H
 
 #include "system_global.h"
-
-typedef void* (*ThreadFunction)(void* data);
-
-#ifdef __cplusplus
-
 #include <QThread>
 
 namespace paysages
 {
 namespace system
 {
+
+typedef void* (*ThreadFunction)(void* data);
 
 /*!
  * \brief System thread
@@ -22,9 +19,9 @@ class SYSTEMSHARED_EXPORT Thread: private QThread
 public:
     /*!
      * \brief Create a new thread
-     * \param function Function to call inside the thread once it is started
      *
      * The thread is not started automatically. A call to method start() needs to be done.
+     * \param function Function to call inside the thread once it is started
      */
     Thread(ThreadFunction function);
 
@@ -40,6 +37,8 @@ public:
      */
     void* join();
 
+    static inline void timeSleepMs(unsigned long ms){ QThread::msleep(ms); }
+
 protected:
     virtual void run();
 
@@ -51,23 +50,5 @@ private:
 
 }
 }
-
-extern "C" {
-#endif
-
-// Transitional C-API
-
-#ifndef __cplusplus
-typedef struct Thread Thread;
-#endif
-
-SYSTEMSHARED_EXPORT Thread* threadCreate(ThreadFunction function, void* data);
-SYSTEMSHARED_EXPORT void* threadJoin(Thread* thread);
-
-SYSTEMSHARED_EXPORT void timeSleepMs(unsigned long ms);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // THREAD_H

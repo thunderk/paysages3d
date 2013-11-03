@@ -1,6 +1,7 @@
 #include "private.h"
 
 #include <stdlib.h>
+#include "PackStream.h"
 
 static void _validateDefinition(WaterDefinition* definition)
 {
@@ -52,17 +53,17 @@ static void _saveDefinition(PackStream* stream, WaterDefinition* definition)
 {
     materialSave(stream, &definition->material);
     colorSave(stream, &definition->depth_color);
-    packWriteDouble(stream, &definition->transparency_depth);
-    packWriteDouble(stream, &definition->transparency);
-    packWriteDouble(stream, &definition->reflection);
-    packWriteDouble(stream, &definition->lighting_depth);
+    stream->write(&definition->transparency_depth);
+    stream->write(&definition->transparency);
+    stream->write(&definition->reflection);
+    stream->write(&definition->lighting_depth);
 
-    packWriteDouble(stream, &definition->scaling);
-    packWriteDouble(stream, &definition->waves_height);
-    packWriteDouble(stream, &definition->detail_height);
-    packWriteDouble(stream, &definition->turbulence);
+    stream->write(&definition->scaling);
+    stream->write(&definition->waves_height);
+    stream->write(&definition->detail_height);
+    stream->write(&definition->turbulence);
 
-    packWriteDouble(stream, &definition->foam_coverage);
+    stream->write(&definition->foam_coverage);
     materialSave(stream, &definition->foam_material);
 
     noiseSaveGenerator(stream, definition->_waves_noise);
@@ -72,17 +73,17 @@ static void _loadDefinition(PackStream* stream, WaterDefinition* definition)
 {
     materialLoad(stream, &definition->material);
     colorLoad(stream, &definition->depth_color);
-    packReadDouble(stream, &definition->transparency_depth);
-    packReadDouble(stream, &definition->transparency);
-    packReadDouble(stream, &definition->reflection);
-    packReadDouble(stream, &definition->lighting_depth);
+    stream->read(&definition->transparency_depth);
+    stream->read(&definition->transparency);
+    stream->read(&definition->reflection);
+    stream->read(&definition->lighting_depth);
 
-    packReadDouble(stream, &definition->scaling);
-    packReadDouble(stream, &definition->waves_height);
-    packReadDouble(stream, &definition->detail_height);
-    packReadDouble(stream, &definition->turbulence);
+    stream->read(&definition->scaling);
+    stream->read(&definition->waves_height);
+    stream->read(&definition->detail_height);
+    stream->read(&definition->turbulence);
 
-    packReadDouble(stream, &definition->foam_coverage);
+    stream->read(&definition->foam_coverage);
     materialLoad(stream, &definition->foam_material);
 
     noiseLoadGenerator(stream, definition->_waves_noise);

@@ -4,7 +4,10 @@
 #include "../rendering_global.h"
 #include "euclid.h"
 #include "color.h"
-#include "PackStream.h"
+
+namespace paysages {
+namespace system {class PackStream;}
+}
 
 #ifdef __cplusplus
 extern "C" {

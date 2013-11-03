@@ -96,23 +96,23 @@ void noiseSaveGenerator(PackStream* stream, NoiseGenerator* generator)
     int x;
 
     x = (int)generator->function.algorithm;
-    packWriteInt(stream, &x);
-    packWriteDouble(stream, &generator->function.ridge_factor);
-    packWriteDouble(stream, &generator->function.curve_factor);
+    stream->write(&x);
+    stream->write(&generator->function.ridge_factor);
+    stream->write(&generator->function.curve_factor);
 
-    packWriteDouble(stream, &generator->height_offset);
-    packWriteInt(stream, &generator->level_count);
+    stream->write(&generator->height_offset);
+    stream->write(&generator->level_count);
 
     for (x = 0; x < generator->level_count; x++)
     {
         NoiseLevel* level = generator->levels + x;
 
-        packWriteDouble(stream, &level->wavelength);
-        packWriteDouble(stream, &level->amplitude);
-        packWriteDouble(stream, &level->minvalue);
-        packWriteDouble(stream, &level->xoffset);
-        packWriteDouble(stream, &level->yoffset);
-        packWriteDouble(stream, &level->zoffset);
+        stream->write(&level->wavelength);
+        stream->write(&level->amplitude);
+        stream->write(&level->minvalue);
+        stream->write(&level->xoffset);
+        stream->write(&level->yoffset);
+        stream->write(&level->zoffset);
     }
 }
 
@@ -120,24 +120,24 @@ void noiseLoadGenerator(PackStream* stream, NoiseGenerator* generator)
 {
     int x;
 
-    packReadInt(stream, &x);
+    stream->read(&x);
     generator->function.algorithm = (NoiseFunctionAlgorithm)x;
-    packReadDouble(stream, &generator->function.ridge_factor);
-    packReadDouble(stream, &generator->function.curve_factor);
+    stream->read(&generator->function.ridge_factor);
+    stream->read(&generator->function.curve_factor);
 
-    packReadDouble(stream, &generator->height_offset);
-    packReadInt(stream, &generator->level_count);
+    stream->read(&generator->height_offset);
+    stream->read(&generator->level_count);
 
     for (x = 0; x < generator->level_count; x++)
     {
         NoiseLevel* level = generator->levels + x;
 
-        packReadDouble(stream, &level->wavelength);
-        packReadDouble(stream, &level->amplitude);
-        packReadDouble(stream, &level->minvalue);
-        packReadDouble(stream, &level->xoffset);
-        packReadDouble(stream, &level->yoffset);
-        packReadDouble(stream, &level->zoffset);
+        stream->read(&level->wavelength);
+        stream->read(&level->amplitude);
+        stream->read(&level->minvalue);
+        stream->read(&level->xoffset);
+        stream->read(&level->yoffset);
+        stream->read(&level->zoffset);
     }
 
     noiseValidate(generator);

@@ -943,10 +943,9 @@ static int _tryLoadCache2D(Texture2D* tex, const char* tag, int order)
     cache = cacheFileCreateAccessor("atmo-br", "cache", tag, xsize, ysize, 0, 0, order);
     if (cacheFileIsReadable(cache))
     {
-        PackStream* stream;
-        stream = packReadFile(cacheFileGetPath(cache));
-        texture2DLoad(stream, tex);
-        packCloseStream(stream);
+        PackStream stream;
+        stream.bindToFile(cacheFileGetPath(cache));
+        texture2DLoad(&stream, tex);
 
         cacheFileDeleteAccessor(cache);
         return 1;
@@ -967,10 +966,9 @@ static void _saveCache2D(Texture2D* tex, const char* tag, int order)
     cache = cacheFileCreateAccessor("atmo-br", "cache", tag, xsize, ysize, 0, 0, order);
     if (cacheFileIsWritable(cache))
     {
-        PackStream* stream;
-        stream = packWriteFile(cacheFileGetPath(cache));
-        texture2DSave(stream, tex);
-        packCloseStream(stream);
+        PackStream stream;
+        stream.bindToFile(cacheFileGetPath(cache));
+        texture2DSave(&stream, tex);
     }
     cacheFileDeleteAccessor(cache);
 }
@@ -998,10 +996,9 @@ static int _tryLoadCache4D(Texture4D* tex, const char* tag, int order)
     cache = cacheFileCreateAccessor("atmo-br", "cache", tag, xsize, ysize, zsize, wsize, order);
     if (cacheFileIsReadable(cache))
     {
-        PackStream* stream;
-        stream = packReadFile(cacheFileGetPath(cache));
-        texture4DLoad(stream, tex);
-        packCloseStream(stream);
+        PackStream stream;
+        stream.bindToFile(cacheFileGetPath(cache));
+        texture4DLoad(&stream, tex);
 
         cacheFileDeleteAccessor(cache);
         return 1;
@@ -1022,10 +1019,9 @@ static void _saveCache4D(Texture4D* tex, const char* tag, int order)
     cache = cacheFileCreateAccessor("atmo-br", "cache", tag, xsize, ysize, zsize, wsize, order);
     if (cacheFileIsWritable(cache))
     {
-        PackStream* stream;
-        stream = packWriteFile(cacheFileGetPath(cache));
-        texture4DSave(stream, tex);
-        packCloseStream(stream);
+        PackStream stream;
+        stream.bindToFile(cacheFileGetPath(cache));
+        texture4DSave(&stream, tex);
     }
     cacheFileDeleteAccessor(cache);
 }

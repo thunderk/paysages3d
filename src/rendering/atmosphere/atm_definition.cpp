@@ -69,24 +69,24 @@ static void _copyDefinition(AtmosphereDefinition* source, AtmosphereDefinition* 
 
 static void _saveDefinition(PackStream* stream, AtmosphereDefinition* definition)
 {
-    packWriteInt(stream, (int*)&definition->model);
-    packWriteInt(stream, &definition->hour);
-    packWriteInt(stream, &definition->minute);
+    stream->write((int*)&definition->model);
+    stream->write(&definition->hour);
+    stream->write(&definition->minute);
     colorSave(stream, &definition->sun_color);
-    packWriteDouble(stream, &definition->sun_radius);
-    packWriteDouble(stream, &definition->dome_lighting);
-    packWriteDouble(stream, &definition->humidity);
+    stream->write(&definition->sun_radius);
+    stream->write(&definition->dome_lighting);
+    stream->write(&definition->humidity);
 }
 
 static void _loadDefinition(PackStream* stream, AtmosphereDefinition* definition)
 {
-    packReadInt(stream, (int*)&definition->model);
-    packReadInt(stream, &definition->hour);
-    packReadInt(stream, &definition->minute);
+    stream->read((int*)&definition->model);
+    stream->read(&definition->hour);
+    stream->read(&definition->minute);
     colorLoad(stream, &definition->sun_color);
-    packReadDouble(stream, &definition->sun_radius);
-    packReadDouble(stream, &definition->dome_lighting);
-    packReadDouble(stream, &definition->humidity);
+    stream->read(&definition->sun_radius);
+    stream->read(&definition->dome_lighting);
+    stream->read(&definition->humidity);
 
     _validateDefinition(definition);
 }

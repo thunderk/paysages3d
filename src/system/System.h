@@ -3,8 +3,6 @@
 
 #include "system_global.h"
 
-#ifdef __cplusplus
-
 namespace paysages
 {
 namespace system
@@ -21,15 +19,5 @@ public:
 
 }
 }
-
-extern "C" {
-#endif
-
-// Transitional C-API
-int systemGetCoreCount();
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // SYSTEM_H
