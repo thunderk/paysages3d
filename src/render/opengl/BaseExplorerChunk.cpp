@@ -1,4 +1,7 @@
-#include "baseexplorerchunk.h"
+#include "BaseExplorerChunk.h"
+
+#include <QImage>
+#include <QGLWidget>
 
 #ifndef GL_CLAMP_TO_EDGE
 #define GL_CLAMP_TO_EDGE 0x812F

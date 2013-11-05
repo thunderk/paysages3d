@@ -13,7 +13,6 @@ INCLUDEPATH += $$PWD/..
 
 HEADERS += \
     terrain/widgetheightmap.h \
-    widgetexplorer.h \
     widgetcurveeditor.h \
     tools.h \
     previewosd.h \
@@ -35,8 +34,6 @@ HEADERS += \
     formrender.h \
     formclouds.h \
     formatmosphere.h \
-    explorerchunkterrain.h \
-    explorerchunksky.h \
     dialogrender.h \
     dialognoise.h \
     dialoglayers.h \
@@ -47,7 +44,6 @@ HEADERS += \
     baseinput.h \
     baseformlayer.h \
     baseform.h \
-    baseexplorerchunk.h \
     terrain/dialogterrainpainting.h \
     common/widgetglobalformbuttons.h \
     terrain/paintingbrush.h \
@@ -73,7 +69,6 @@ HEADERS += \
 
 SOURCES += \
     terrain/widgetheightmap.cpp \
-    widgetexplorer.cpp \
     widgetcurveeditor.cpp \
     tools.cpp \
     previewosd.cpp \
@@ -95,8 +90,6 @@ SOURCES += \
     formrender.cpp \
     formclouds.cpp \
     formatmosphere.cpp \
-    explorerchunkterrain.cpp \
-    explorerchunksky.cpp \
     dialogrender.cpp \
     dialognoise.cpp \
     dialoglayers.cpp \
@@ -107,7 +100,6 @@ SOURCES += \
     baseinput.cpp \
     baseformlayer.cpp \
     baseform.cpp \
-    baseexplorerchunk.cpp \
     terrain/dialogterrainpainting.cpp \
     common/widgetglobalformbuttons.cpp \
     terrain/paintingbrush.cpp \
@@ -157,12 +149,6 @@ else:unix: LIBS += -L$$OUT_PWD/../basics/ -lpaysages_basics
 INCLUDEPATH += $$PWD/../basics
 DEPENDPATH += $$PWD/../basics
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../exploring/release/ -lpaysages_exploring
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../exploring/debug/ -lpaysages_exploring
-else:unix: LIBS += -L$$OUT_PWD/../exploring/ -lpaysages_exploring
-INCLUDEPATH += $$PWD/../exploring
-DEPENDPATH += $$PWD/../exploring
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../rendering/release/ -lpaysages_rendering
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../rendering/debug/ -lpaysages_rendering
 else:unix: LIBS += -L$$OUT_PWD/../rendering/ -lpaysages_rendering
@@ -174,3 +160,9 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../definition/debug
 else:unix: LIBS += -L$$OUT_PWD/../definition/ -lpaysages_definition
 INCLUDEPATH += $$PWD/../definition
 DEPENDPATH += $$PWD/../definition
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../render/opengl/release/ -lpaysages_render_opengl
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../render/opengl/debug/ -lpaysages_render_opengl
+else:unix: LIBS += -L$$OUT_PWD/../render/opengl/ -lpaysages_render_opengl
+INCLUDEPATH += $$PWD/../render/opengl
+DEPENDPATH += $$PWD/../render/opengl

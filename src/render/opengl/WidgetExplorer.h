@@ -1,10 +1,18 @@
-#ifndef _PAYSAGES_QT_WIDGETEXPLORER_H_
-#define _PAYSAGES_QT_WIDGETEXPLORER_H_
+#ifndef WIDGETEXPLORER_H
+#define WIDGETEXPLORER_H
 
+#include "opengl_global.h"
 #include <QGLWidget>
-#include "baseexplorerchunk.h"
-#include "rendering/camera.h"
-#include "rendering/renderer.h"
+#include <QMutex>
+
+class CameraDefinition;
+class Renderer;
+
+namespace paysages {
+namespace opengl {
+
+class OpenGLRenderer;
+class BaseExplorerChunk;
 
 class WidgetExplorer : public QGLWidget
 {
@@ -37,6 +45,7 @@ private:
     CameraDefinition* _current_camera;
     CameraDefinition* _base_camera;
 
+    OpenGLRenderer* _opengl_renderer;
     Renderer* _renderer;
     bool _renderer_created;
     bool _inited;
@@ -54,4 +63,7 @@ private:
     int _last_mouse_y;
 };
 
-#endif
+}
+}
+
+#endif // WIDGETEXPLORER_H

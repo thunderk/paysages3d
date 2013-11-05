@@ -1,9 +1,11 @@
-#ifndef _PAYSAGES_QT_EXPLORERCHUNKTERRAIN_H_
-#define _PAYSAGES_QT_EXPLORERCHUNKTERRAIN_H_
+#ifndef EXPLORERCHUNKTERRAIN_H
+#define EXPLORERCHUNKTERRAIN_H
 
-#include "baseexplorerchunk.h"
-#include "rendering/renderer.h"
+#include "BaseExplorerChunk.h"
 #include "rendering/tools/euclid.h"
+
+namespace paysages {
+namespace opengl {
 
 class ExplorerChunkTerrain:public BaseExplorerChunk
 {
@@ -37,4 +39,7 @@ private:
 
 };
 
-#endif
+}
+}
+
+#endif // EXPLORERCHUNKTERRAIN_H

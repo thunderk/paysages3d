@@ -1,4 +1,4 @@
-#include "widgetexplorer.h"
+#include "WidgetExplorer.h"
 
 #include <QGLWidget>
 #include <QKeyEvent>
@@ -7,11 +7,10 @@
 #include <GL/glu.h>
 #include <QThread>
 #include "Scenery.h"
+#include "OpenGLRenderer.h"
 #include "rendering/tools/euclid.h"
-#include "../exploring/main.h"
-#include "explorerchunkterrain.h"
-#include "explorerchunksky.h"
-#include "tools.h"
+#include "ExplorerChunkSky.h"
+#include "ExplorerChunkTerrain.h"
 
 class ChunkMaintenanceThread : public QThread
 {
@@ -86,6 +85,7 @@ QGLWidget(parent)
         _renderer = sceneryCreateStandardRenderer();
         _renderer_created = true;
     }
+    _opengl_renderer = new OpenGLRenderer(NULL);
     _renderer->render_quality = 3;
     _renderer->customData[2] = _base_camera;
     _renderer->getCameraLocation = _getCameraLocation;
@@ -117,6 +117,7 @@ WidgetExplorer::~WidgetExplorer()
     {
         rendererDelete(_renderer);
     }
+    delete _opengl_renderer;
 }
 
 void WidgetExplorer::startRendering()
@@ -379,13 +380,13 @@ void WidgetExplorer::timerEvent(QTimerEvent*)
 
 void WidgetExplorer::initializeGL()
 {
-    exploringInit();
+    _opengl_renderer->initialize();
 }
 
 void WidgetExplorer::resizeGL(int w, int h)
 {
     cameraSetRenderSize(_current_camera, w, h);
-    exploringSetViewPort(w, h, _current_camera);
+    _opengl_renderer->resize(w, h);
 }
 
 void WidgetExplorer::paintGL()
@@ -455,6 +456,6 @@ void WidgetExplorer::paintGL()
 
     while ((error_code = glGetError()) != GL_NO_ERROR)
     {
-        logDebug(QString("[OpenGL] ERROR : ") + (const char*) gluErrorString(error_code));
+        qDebug("[OpenGL] ERROR : %s", (const char*)gluErrorString(error_code));
     }
 }

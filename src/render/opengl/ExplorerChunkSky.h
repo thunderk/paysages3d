@@ -1,9 +1,12 @@
-#ifndef _PAYSAGES_QT_EXPLORERCHUNKSKY_H_
-#define _PAYSAGES_QT_EXPLORERCHUNKSKY_H_
+#ifndef EXPLORERCHUNKSKY_H
+#define EXPLORERCHUNKSKY_H
 
-#include "baseexplorerchunk.h"
-#include "rendering/renderer.h"
+#include "opengl_global.h"
+#include "BaseExplorerChunk.h"
 #include "rendering/tools/euclid.h"
+
+namespace paysages {
+namespace opengl {
 
 enum SkyboxOrientation
 {
@@ -31,4 +34,7 @@ private:
     Vector3 _center;
 };
 
-#endif
+}
+}
+
+#endif // EXPLORERCHUNKSKY_H

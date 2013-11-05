@@ -1,10 +1,18 @@
-#ifndef _PAYSAGES_QT_BASEEXPLORERCHUNK_H_
-#define _PAYSAGES_QT_BASEEXPLORERCHUNK_H_
+#ifndef BASEEXPLORERCHUNK_H
+#define BASEEXPLORERCHUNK_H
 
+#include "opengl_global.h"
 #include <QMutex>
-#include <QImage>
-#include <QGLWidget>
-#include "rendering/renderer.h"
+#include "rendering/tools/color.h"
+
+class QImage;
+class QGLWidget;
+class Renderer;
+class ColorProfile;
+class CameraDefinition;
+
+namespace paysages {
+namespace opengl {
 
 class BaseExplorerChunk
 {
@@ -40,10 +48,13 @@ private:
     bool _reset_needed;
 
     QImage* _texture;
-    GLuint _texture_id;
+    unsigned int _texture_id;
     bool _texture_changed;
     int _texture_current_size;
     int _texture_max_size;
 };
 
-#endif
+}
+}
+
+#endif // BASEEXPLORERCHUNK_H

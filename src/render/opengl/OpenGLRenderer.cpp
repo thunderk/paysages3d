@@ -1,10 +1,31 @@
-#include "main.h"
+#include "OpenGLRenderer.h"
 
-#include <math.h>
-#include "GL/gl.h"
-#include "GL/glu.h"
+#include <cmath>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include "Scenery.h"
+#include "renderer.h"
 
-void exploringInit()
+OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
+    scenery(scenery)
+{
+    if (scenery)
+    {
+        renderer = rendererCreate();
+        // TODO Bind scenery to renderer
+    }
+    else
+    {
+        renderer = sceneryCreateStandardRenderer();
+    }
+}
+
+OpenGLRenderer::~OpenGLRenderer()
+{
+    rendererDelete(renderer);
+}
+
+void OpenGLRenderer::initialize()
 {
     glClearColor(0.0, 0.0, 0.0, 0.0);
 
@@ -27,7 +48,7 @@ void exploringInit()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void exploringSetViewPort(int width, int height, CameraDefinition* camera)
+void OpenGLRenderer::resize(int width, int height)
 {
     CameraPerspective perspective;
 
@@ -35,20 +56,13 @@ void exploringSetViewPort(int width, int height, CameraDefinition* camera)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    perspective = cameraGetPerspective(camera);
+    perspective = cameraGetPerspective(renderer->render_camera);
     gluPerspective(perspective.yfov * 180.0 / M_PI, perspective.xratio, perspective.znear, perspective.zfar);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void exploringRenderFrame(Renderer* renderer)
+void OpenGLRenderer::paint()
 {
-}
 
-void exploringStartStandAlone()
-{
-}
-
-void exploringInterruptStandAlone()
-{
 }

@@ -1,8 +1,9 @@
-#include "explorerchunkterrain.h"
+#include "ExplorerChunkTerrain.h"
 
-#include <math.h>
-#include "baseexplorerchunk.h"
+#include <cmath>
+#include <GL/gl.h>
 #include "rendering/camera.h"
+#include "rendering/renderer.h"
 
 ExplorerChunkTerrain::ExplorerChunkTerrain(Renderer* renderer, double x, double z, double size, int nbchunks, double water_height) : BaseExplorerChunk(renderer)
 {
