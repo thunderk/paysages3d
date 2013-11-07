@@ -4,6 +4,7 @@
 #include "../tools/euclid.h"
 #include "../renderer.h"
 #include "../tools.h"
+#include "rendering/atmosphere/public.h"
 
 /*
  * Clouds previews.

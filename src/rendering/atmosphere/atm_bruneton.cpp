@@ -5,16 +5,18 @@
  * http://evasion.inrialpes.fr/~Eric.Bruneton/
  */
 
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
 #include "System.h"
+#include "PackStream.h"
 #include "rendering/tools.h"
 #include "rendering/tools/cache.h"
 #include "rendering/tools/texture.h"
 #include "rendering/tools/parallel.h"
 #include "rendering/renderer.h"
+#include "rendering/water/public.h"
 
 /*********************** Constants ***********************/
 

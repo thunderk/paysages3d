@@ -1,8 +1,8 @@
 #include "private.h"
 
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cmath>
+#include <cstdlib>
+#include "PackStream.h"
 #include "../tools.h"
 #include "../renderer.h"
 

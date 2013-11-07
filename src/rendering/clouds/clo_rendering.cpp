@@ -6,6 +6,7 @@
 #include "../renderer.h"
 #include "clo_density.h"
 #include "clo_walking.h"
+#include "rendering/atmosphere/public.h"
 
 /******************** Fake ********************/
 static int _fakeAlterLight(Renderer* renderer, LightDefinition* light, Vector3 location)

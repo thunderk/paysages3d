@@ -1,12 +1,18 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "editing_global.h"
 #include <QMainWindow>
 #include <QVector>
-#include "PackStream.h"
 
 class BaseForm;
 class FormRender;
+
+namespace paysages {
+namespace system {
+class PackStream;
+}
+}
 
 namespace Ui {
 class MainWindow;

@@ -8,10 +8,6 @@ namespace paysages {
 namespace system {class PackStream;}
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define TYPEDEF_COLOR
 typedef struct
 {
@@ -109,9 +105,5 @@ RENDERINGSHARED_EXPORT Color colorFromHSL(ColorHSL col);
 RENDERINGSHARED_EXPORT ColorHSL colorToHSL(Color col);
 
 RENDERINGSHARED_EXPORT ColorHSL colorHSLFromValues(double h, double s, double l, double a);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

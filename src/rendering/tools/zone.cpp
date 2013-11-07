@@ -1,8 +1,9 @@
 #include "zone.h"
 
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
+#include <cstring>
+#include <cstdlib>
+#include <cmath>
+#include "PackStream.h"
 #include "tools.h"
 
 #define MAX_CIRCLES 20

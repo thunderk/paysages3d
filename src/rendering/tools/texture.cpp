@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <math.h>
 #include "System.h"
+#include "PackStream.h"
 #include "PictureFile.h"
 
 struct Texture2D

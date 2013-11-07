@@ -4,11 +4,12 @@
 /* Geographic area definition */
 
 #include "rendering_global.h"
-#include "PackStream.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace paysages {
+namespace system {
+class PackStream;
+}
+}
 
 typedef struct
 {
@@ -28,9 +29,5 @@ RENDERINGSHARED_EXPORT void geoareaLoad(PackStream* stream, GeoArea* geoarea);
 
 RENDERINGSHARED_EXPORT void geoareaToLocal(GeoArea* geoarea, double absolute_x, double absolute_z, double* local_x, double* local_z);
 RENDERINGSHARED_EXPORT void geoareaFromLocal(GeoArea* geoarea, double local_x, double local_z, double* absolute_x, double* absolute_z);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

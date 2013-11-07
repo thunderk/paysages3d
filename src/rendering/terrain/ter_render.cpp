@@ -4,6 +4,7 @@
 #include <math.h>
 #include "../tools.h"
 #include "../renderer.h"
+#include "rendering/textures/public.h"
 
 /******************** Binding ********************/
 static double _fakeGetHeight(Renderer* renderer, double x, double z, int with_painting)

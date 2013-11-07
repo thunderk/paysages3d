@@ -9,6 +9,11 @@
 #include "Scenery.h"
 #include "OpenGLRenderer.h"
 #include "rendering/tools/euclid.h"
+#include "rendering/renderer.h"
+#include "rendering/camera.h"
+#include "rendering/atmosphere/public.h"
+#include "rendering/water/public.h"
+#include "rendering/terrain/public.h"
 #include "ExplorerChunkSky.h"
 #include "ExplorerChunkTerrain.h"
 

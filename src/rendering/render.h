@@ -6,10 +6,6 @@
 #include "tools/color.h"
 #include "tools/euclid.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef Color (*f_RenderFragmentCallback)(struct Renderer* renderer, Vector3 location, void* data);
 
 typedef void (*RenderCallbackStart)(int width, int height, Color background);
@@ -45,10 +41,5 @@ RENDERINGSHARED_EXPORT Color renderGetPixel(RenderArea* area, int x, int y);
 RENDERINGSHARED_EXPORT void renderPostProcess(RenderArea* area, int nbchunks);
 RENDERINGSHARED_EXPORT int renderSaveToFile(RenderArea* area, const char* path);
 RENDERINGSHARED_EXPORT void renderSetPreviewCallbacks(RenderArea* area, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update);
-
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

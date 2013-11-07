@@ -8,11 +8,6 @@
  * Functions to walk through a cloud layer.
  */
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 typedef struct
 {
     double distance_from_start;
@@ -149,9 +144,5 @@ RENDERINGSHARED_EXPORT CloudWalkerStepInfo* cloudsWalkerGetLastSegment(CloudsWal
  * @param data User data that will be passed back in the callback
  */
 RENDERINGSHARED_EXPORT void cloudsStartWalking(CloudsWalker* walker, FuncCloudsWalkingCallback callback, void* data);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

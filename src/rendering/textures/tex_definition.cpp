@@ -2,6 +2,7 @@
 
 #include "Scenery.h"
 #include "NoiseGenerator.h"
+#include "PackStream.h"
 
 /******************** Global definition ********************/
 static void _validateDefinition(TexturesDefinition* definition)

@@ -1,5 +1,6 @@
 #include "geoarea.h"
 
+#include "PackStream.h"
 #include "tools.h"
 
 GeoArea geoareaCreate()

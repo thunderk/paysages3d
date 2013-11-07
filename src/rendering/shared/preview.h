@@ -8,10 +8,6 @@
 #include "../rendering_global.h"
 #include "types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct PreviewRenderer PreviewRenderer;
 
 typedef void (*FuncPreviewCustomizeRenderer)(PreviewRenderer* preview_renderer, Renderer* renderer);
@@ -30,9 +26,5 @@ typedef struct {
 } PreviewClass;
 
 RENDERINGSHARED_EXPORT PreviewClass previewCreateClass(FuncPreviewCustomizeRenderer customizeRenderer, FuncPreviewBindDefinition bindDefinition, FuncPreviewGetPixelColor getPixelColor);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

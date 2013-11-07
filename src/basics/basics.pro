@@ -12,7 +12,6 @@ TEMPLATE = lib
 DEFINES += BASICS_LIBRARY
 
 SOURCES += \
-    ColorRGB.cpp \
     NoiseGenerator.cpp \
     NoiseFunctionNaive.cpp \
     NoiseFunctionPerlin.cpp \
@@ -21,7 +20,6 @@ SOURCES += \
 
 HEADERS +=\
         basics_global.h \
-    ColorRGB.h \
     NoiseGenerator.h \
     NoiseFunctionNaive.h \
     NoiseFunctionPerlin.h \

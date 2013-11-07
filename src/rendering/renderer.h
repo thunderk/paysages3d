@@ -3,18 +3,16 @@
 
 #include "rendering_global.h"
 #include "shared/types.h"
-#include "atmosphere/public.h"
-#include "clouds/public.h"
-#include "terrain/public.h"
-#include "textures/public.h"
-#include "water/public.h"
-#include "camera.h"
 #include "render.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+class CameraDefinition;
+class LightingManager;
+class SurfaceMaterial;
+class AtmosphereRenderer;
+class TerrainRenderer;
+class TexturesRenderer;
+class CloudsRenderer;
+class WaterRenderer;
 
 struct Renderer
 {
@@ -66,9 +64,5 @@ RENDERINGSHARED_EXPORT void rendererDelete(Renderer* renderer);
 RENDERINGSHARED_EXPORT void rendererSetPreviewCallbacks(Renderer* renderer, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update);
 RENDERINGSHARED_EXPORT void rendererStart(Renderer* renderer, RenderParams params);
 RENDERINGSHARED_EXPORT void rendererInterrupt(Renderer* renderer);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

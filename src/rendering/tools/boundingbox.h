@@ -4,10 +4,6 @@
 #include "../rendering_global.h"
 #include "euclid.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct
 {
     int empty;
@@ -21,9 +17,5 @@ typedef struct
 
 RENDERINGSHARED_EXPORT void boundingBoxReset(BoundingBox* box);
 RENDERINGSHARED_EXPORT void boundingBoxPushPoint(BoundingBox* box, Vector3 point);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

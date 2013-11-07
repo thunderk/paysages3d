@@ -3,10 +3,6 @@
 
 #include "../rendering_global.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct
 {
     Vector3 point_nw;
@@ -36,9 +32,5 @@ RENDERINGSHARED_EXPORT void terrainTessellateChunk(Renderer* renderer, TerrainCh
  * This will push the rasterized quads in the render area, waiting for post process.
  */
 RENDERINGSHARED_EXPORT void terrainRenderSurface(Renderer* renderer);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

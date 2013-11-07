@@ -1,6 +1,8 @@
 #ifndef _PAYSAGES_QT_BASEPREVIEW_H_
 #define _PAYSAGES_QT_BASEPREVIEW_H_
 
+#include "editing_global.h"
+
 #include <QMutex>
 #include <QImage>
 #include <QThread>
@@ -12,9 +14,13 @@
 #include "editing/previewosd.h"
 #include "editing/common/DrawingWidget.h"
 #include "editing/common/previewrenderer.h"
-
-#include "PackStream.h"
 #include "rendering/tools/color.h"
+
+namespace paysages {
+namespace system {
+    class PackStream;
+}
+}
 
 class _ContextChoice
 {

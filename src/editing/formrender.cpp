@@ -6,7 +6,12 @@
 #include "inputcamera.h"
 #include "tools.h"
 #include "rendering/render.h"
+#include "rendering/atmosphere/public.h"
+#include "rendering/clouds/public.h"
+#include "rendering/terrain/public.h"
+#include "rendering/water/public.h"
 #include "Scenery.h"
+#include "PackStream.h"
 
 /**************** Previews ****************/
 class PreviewRenderLandscape : public BasePreview

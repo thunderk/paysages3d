@@ -25,6 +25,7 @@
 
 #include "rendering/main.h"
 #include "Scenery.h"
+#include "PackStream.h"
 #include "tools.h"
 
 MainWindow* MainWindow::_instance = NULL;

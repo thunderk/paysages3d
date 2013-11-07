@@ -10,6 +10,7 @@
 #include <math.h>
 #include "tools.h"
 #include "System.h"
+#include "PackStream.h"
 
 /*************** PreviewChunk ***************/
 class PreviewChunk

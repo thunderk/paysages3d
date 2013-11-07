@@ -5,10 +5,6 @@
 #include "../shared/types.h"
 #include <stdlib.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /**************** Naive methods (basic C arrays) ****************/
 
 /*
@@ -34,9 +30,5 @@ RENDERINGSHARED_EXPORT void arrayInsert(Array* array, void* item, int position);
 RENDERINGSHARED_EXPORT void arrayReplace(Array* array, void* item, int position);
 RENDERINGSHARED_EXPORT void arrayLStrip(Array* array, int count);
 RENDERINGSHARED_EXPORT void arrayClear(Array* array);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

@@ -20,8 +20,9 @@ typedef enum
 
 typedef struct TerrainHeightMap TerrainHeightMap;
 
-typedef struct
+class TerrainDefinition
 {
+public:
     double height;
     double scaling;
     double shadow_smoothing;
@@ -34,7 +35,7 @@ typedef struct
     NoiseGenerator* _height_noise;
     double _min_height;
     double _max_height;
-} TerrainDefinition;
+};
 
 typedef struct
 {
@@ -47,8 +48,9 @@ typedef TerrainResult (*FuncTerrainGetResult)(Renderer* renderer, double x, doub
 typedef Color(*FuncTerrainGetFinalColor)(Renderer* renderer, Vector3 location, double precision);
 typedef double (*FuncGetWaterHeight)(Renderer* renderer);
 
-typedef struct
+class TerrainRenderer
 {
+public:
     TerrainDefinition* definition;
 
     FuncGeneralCastRay castRay;
@@ -58,7 +60,7 @@ typedef struct
     FuncGetWaterHeight getWaterHeight;
 
     void* _internal_data;
-} TerrainRenderer;
+};
 
 RENDERINGSHARED_EXPORT extern StandardDefinition TerrainDefinitionClass;
 RENDERINGSHARED_EXPORT extern StandardRenderer TerrainRendererClass;

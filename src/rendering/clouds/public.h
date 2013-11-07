@@ -56,24 +56,26 @@ typedef struct
     NoiseGenerator* _edge_noise;
 } CloudsLayerDefinition;
 
-typedef struct
+class CloudsDefinition
 {
+public:
     Layers* layers;
-} CloudsDefinition;
+};
 
 typedef Color (*FuncCloudsGetColor)(Renderer* renderer, Color base, Vector3 start, Vector3 end);
 typedef double (*FuncCloudsGetLayerDensity)(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location);
 typedef double (*FuncCloudsGetEdgeDensity)(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location, double layer_density);
 
-typedef struct
+class CloudsRenderer
 {
+public:
     CloudsDefinition* definition;
 
     FuncCloudsGetColor getColor;
     FuncLightingAlterLight alterLight;
     FuncCloudsGetLayerDensity getLayerDensity;
     FuncCloudsGetEdgeDensity getEdgeDensity;
-} CloudsRenderer;
+};
 
 
 RENDERINGSHARED_EXPORT extern StandardDefinition CloudsDefinitionClass;

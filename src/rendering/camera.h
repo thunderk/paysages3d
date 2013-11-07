@@ -9,11 +9,6 @@ namespace paysages {
 namespace system {class PackStream;}
 }
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 typedef struct CameraDefinition CameraDefinition;
 
 typedef struct
@@ -66,9 +61,5 @@ RENDERINGSHARED_EXPORT int cameraIsUnprojectedBoxInView(CameraDefinition* camera
 RENDERINGSHARED_EXPORT int cameraIsProjectedBoxInView(CameraDefinition* camera, BoundingBox* box);
 
 RENDERINGSHARED_EXPORT int cameraTransitionToAnother(CameraDefinition* current, CameraDefinition* wanted, double factor);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

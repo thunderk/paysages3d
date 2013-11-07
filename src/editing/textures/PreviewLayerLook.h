@@ -4,6 +4,7 @@
 #include "editing/common/previewrenderer.h"
 
 class BasePreview;
+class TexturesDefinition;
 
 class PreviewLayerLook : public PreviewRenderer
 {

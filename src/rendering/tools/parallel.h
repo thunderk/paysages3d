@@ -11,10 +11,6 @@
  * shared data from unit functions.
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct ParallelWork ParallelWork;
 typedef int (*ParallelUnitFunction)(ParallelWork* work, int unit, void* data);
 
@@ -105,9 +101,5 @@ RENDERINGSHARED_EXPORT int parallelQueueAddJob(ParallelQueue* queue, FuncParalle
  * @return The number of collected jobs.
  */
 RENDERINGSHARED_EXPORT int parallelQueueCollectJobs(FuncParallelJob func_collect);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

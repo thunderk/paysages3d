@@ -1,6 +1,7 @@
 #include "public.h"
 
 #include "../renderer.h"
+#include "rendering/camera.h"
 
 /*
  * Atmosphere previews.

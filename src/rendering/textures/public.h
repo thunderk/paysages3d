@@ -7,10 +7,6 @@
 #include "rendering/tools/lighting.h"
 #include "rendering/terrain/public.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define TEXTURES_MAX_LAYERS 50
 
 typedef enum
@@ -54,10 +50,11 @@ typedef struct
     /*Curve* _local_slope_condition;*/
 } TexturesLayerDefinition;
 
-typedef struct
+class TexturesDefinition
 {
+public:
     Layers* layers;
-} TexturesDefinition;
+};
 
 typedef struct
 {
@@ -80,14 +77,15 @@ typedef Vector3 (*FuncTexturesDisplaceTerrain)(Renderer* renderer, TerrainResult
 typedef double (*FuncTexturesGetBasePresence)(Renderer* renderer, int layer, TerrainResult terrain);
 typedef TexturesResult (*FuncTexturesApplyToTerrain)(Renderer* renderer, double x, double z);
 
-typedef struct
+class TexturesRenderer
 {
+public:
     TexturesDefinition* definition;
 
     FuncTexturesDisplaceTerrain displaceTerrain;
     FuncTexturesGetBasePresence getBasePresence;
     FuncTexturesApplyToTerrain applyToTerrain;
-} TexturesRenderer;
+};
 
 
 RENDERINGSHARED_EXPORT extern StandardDefinition TexturesDefinitionClass;
@@ -99,9 +97,5 @@ RENDERINGSHARED_EXPORT void texturesAutoPreset(TexturesDefinition* definition, T
 RENDERINGSHARED_EXPORT void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerPreset preset);
 
 RENDERINGSHARED_EXPORT double texturesGetMaximalDisplacement(TexturesDefinition* textures);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

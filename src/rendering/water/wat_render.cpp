@@ -4,6 +4,7 @@
 #include "../tools.h"
 #include "../renderer.h"
 #include "NoiseGenerator.h"
+#include "rendering/terrain/public.h"
 
 static HeightInfo _FAKE_HEIGHT_INFO = {0.0, 0.0, 0.0};
 

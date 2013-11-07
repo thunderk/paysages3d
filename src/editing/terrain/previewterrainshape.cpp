@@ -1,6 +1,7 @@
 #include "previewterrainshape.h"
 
 #include "basepreview.h"
+#include "rendering/water/public.h"
 
 PreviewTerrainShape::PreviewTerrainShape(TerrainDefinition* terrain)
 {

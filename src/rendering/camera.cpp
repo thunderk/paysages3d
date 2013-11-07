@@ -1,11 +1,15 @@
 #include "camera.h"
 
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include "render.h"
 #include "Scenery.h"
+#include "PackStream.h"
 #include "tools.h"
 #include "tools/boundingbox.h"
+#include "rendering/renderer.h"
+#include "rendering/terrain/public.h"
+#include "rendering/water/public.h"
 
 struct CameraDefinition
 {

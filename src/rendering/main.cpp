@@ -1,8 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "tools/data.h"
 #include "Scenery.h"
+#include "PackStream.h"
 #include "render.h"
 #include "main.h"
 #include "opencl.h"

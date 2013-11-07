@@ -5,6 +5,7 @@
 #include <GL/glu.h>
 #include "Scenery.h"
 #include "renderer.h"
+#include "rendering/camera.h"
 
 OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     scenery(scenery)

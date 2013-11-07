@@ -9,12 +9,9 @@ namespace paysages {
 namespace system {class PackStream;}
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-typedef struct
+class SurfaceMaterial
 {
+public:
     ColorHSL base;
 
     double hardness;
@@ -24,7 +21,7 @@ typedef struct
     double receive_shadows;
 
     Color _rgb;
-} SurfaceMaterial;
+};
 
 typedef struct
 {
@@ -55,9 +52,5 @@ RENDERINGSHARED_EXPORT Color lightingApplyOneLight(LightDefinition* light, Vecto
 RENDERINGSHARED_EXPORT void materialSave(PackStream* stream, SurfaceMaterial* material);
 RENDERINGSHARED_EXPORT void materialLoad(PackStream* stream, SurfaceMaterial* material);
 RENDERINGSHARED_EXPORT void materialValidate(SurfaceMaterial* material);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

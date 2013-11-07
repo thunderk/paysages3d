@@ -8,9 +8,11 @@
 #include "rendering/tools/euclid.h"
 #include "rendering/tools/lighting.h"
 #include "rendering/renderer.h"
-#include "Scenery.h"
 #include "rendering/water/public.h"
+#include "rendering/terrain/public.h"
+#include "rendering/atmosphere/public.h"
 #include "tools.h"
+#include "Scenery.h"
 
 static WaterDefinition* _definition;
 

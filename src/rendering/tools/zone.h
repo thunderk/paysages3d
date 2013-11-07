@@ -8,11 +8,12 @@
 #include "../rendering_global.h"
 #include "rendering/tools/euclid.h"
 #include "rendering/tools/curve.h"
-#include "PackStream.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace paysages {
+namespace system {
+class PackStream;
+}
+}
 
 typedef struct Zone Zone;
 
@@ -38,9 +39,5 @@ RENDERINGSHARED_EXPORT void zoneSetSlopeCurve(Zone* zone, Curve* curve);
 RENDERINGSHARED_EXPORT void zoneAddSlopeRangeQuick(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax);
 
 RENDERINGSHARED_EXPORT double zoneGetValue(Zone* zone, Vector3 location, Vector3 normal);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

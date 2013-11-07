@@ -3,27 +3,21 @@
 
 #include "rendering_global.h"
 
-#include "rendering/atmosphere/public.h"
-#include "rendering/camera.h"
-#include "rendering/clouds/public.h"
-#include "rendering/terrain/public.h"
-#include "rendering/textures/public.h"
-#include "rendering/water/public.h"
-#include "PackStream.h"
-#include "rendering/renderer.h"
-
-#ifdef __cplusplus
-
 #include "BaseDefinition.h"
 
-//class AtmosphereDefinition;
-//class CameraDefinition;
-//class CloudsDefinition;
-//class TerrainDefinition;
-//class TexturesDefinition;
-//class WaterDefinition;
-//class PackStream;
-//class Renderer;
+class AtmosphereDefinition;
+class CameraDefinition;
+class CloudsDefinition;
+class TerrainDefinition;
+class TexturesDefinition;
+class WaterDefinition;
+class Renderer;
+
+namespace paysages {
+namespace system {
+class PackStream;
+}
+}
 
 /**
  * @brief Global scenery management
@@ -76,9 +70,6 @@ private:
     WaterDefinition* water;
 };
 
-extern "C" {
-#endif
-
 // Transitional C-API
 RENDERINGSHARED_EXPORT void sceneryInit();
 RENDERINGSHARED_EXPORT void sceneryQuit();
@@ -113,9 +104,5 @@ RENDERINGSHARED_EXPORT void sceneryGetWater(WaterDefinition* water);
 RENDERINGSHARED_EXPORT Renderer* sceneryCreateStandardRenderer();
 RENDERINGSHARED_EXPORT void sceneryBindRenderer(Renderer* renderer);
 RENDERINGSHARED_EXPORT void sceneryRenderFirstPass(Renderer* renderer);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // SCENERY_H

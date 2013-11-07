@@ -4,6 +4,7 @@
 #include <GL/gl.h>
 #include "rendering/camera.h"
 #include "rendering/renderer.h"
+#include "rendering/terrain/public.h"
 
 ExplorerChunkTerrain::ExplorerChunkTerrain(Renderer* renderer, double x, double z, double size, int nbchunks, double water_height) : BaseExplorerChunk(renderer)
 {

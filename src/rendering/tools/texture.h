@@ -7,11 +7,12 @@
 
 #include "../rendering_global.h"
 #include "color.h"
-#include "PackStream.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace paysages {
+namespace system {
+class PackStream;
+}
+}
 
 typedef struct Texture2D Texture2D;
 typedef struct Texture3D Texture3D;
@@ -58,9 +59,5 @@ RENDERINGSHARED_EXPORT void texture4DAdd(Texture4D* source, Texture4D* destinati
 RENDERINGSHARED_EXPORT void texture4DSave(PackStream* stream, Texture4D* tex);
 RENDERINGSHARED_EXPORT void texture4DLoad(PackStream* stream, Texture4D* tex);
 RENDERINGSHARED_EXPORT void texture4DSaveToFile(Texture4D* tex, const char* filepath);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

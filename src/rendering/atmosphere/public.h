@@ -11,10 +11,6 @@ namespace paysages {
 namespace system {class PackStream;}
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef enum
 {
     ATMOSPHERE_PRESET_CLEAR_DAY = 0,
@@ -29,8 +25,9 @@ typedef enum
     ATMOSPHERE_MODEL_BRUNETON = 0
 } AtmosphereModel;
 
-typedef struct
+class AtmosphereDefinition
 {
+public:
     AtmosphereModel model;
     int hour;
     int minute;
@@ -40,7 +37,7 @@ typedef struct
     double dome_lighting;
 
     double _daytime;
-} AtmosphereDefinition;
+};
 
 typedef struct
 {
@@ -57,8 +54,9 @@ typedef AtmosphereResult (*FuncAtmosphereApplyAerialPerspective)(Renderer* rende
 typedef AtmosphereResult (*FuncAtmosphereGetSkyColor)(Renderer* renderer, Vector3 direction);
 typedef Vector3 (*FuncAtmosphereGetSunDirection)(Renderer* renderer);
 
-typedef struct
+class AtmosphereRenderer
 {
+public:
     AtmosphereDefinition* definition;
 
     FuncAtmosphereGetLightingStatus getLightingStatus;
@@ -67,7 +65,7 @@ typedef struct
     FuncAtmosphereGetSunDirection getSunDirection;
 
     /*void* _internal_data;*/
-} AtmosphereRenderer;
+};
 
 RENDERINGSHARED_EXPORT extern StandardDefinition AtmosphereDefinitionClass;
 RENDERINGSHARED_EXPORT extern StandardRenderer AtmosphereRendererClass;
@@ -81,9 +79,5 @@ RENDERINGSHARED_EXPORT void atmosphereUpdateResult(AtmosphereResult* result);
 
 RENDERINGSHARED_EXPORT Renderer* atmosphereCreatePreviewRenderer();
 RENDERINGSHARED_EXPORT Color atmosphereGetPreview(Renderer* renderer, double x, double y, double heading);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

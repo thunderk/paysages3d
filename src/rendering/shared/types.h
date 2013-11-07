@@ -4,10 +4,6 @@
 #include "../tools/euclid.h"
 #include "../tools/color.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct Renderer Renderer;
 
 typedef struct
@@ -47,9 +43,5 @@ typedef struct {
     FuncObjectDelete destroy;
     FuncObjectBind bind;
 } StandardRenderer;
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

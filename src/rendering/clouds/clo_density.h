@@ -7,11 +7,6 @@
  * Coverage/density management in a cloud layer.
  */
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 /**
  * Get the coverage of a cloud layer [0.0;1.0]
  *
@@ -42,9 +37,5 @@ RENDERINGSHARED_EXPORT void cloudsBindFakeDensityToRenderer(CloudsRenderer* rend
  * Bind real density functions to a renderer.
  */
 RENDERINGSHARED_EXPORT void cloudsBindRealDensityToRenderer(CloudsRenderer* renderer);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

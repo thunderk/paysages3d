@@ -5,10 +5,6 @@
 
 #include "rendering_global.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef enum {
     FILE_OPERATION_OK,
     FILE_OPERATION_IOERROR,
@@ -20,9 +16,5 @@ RENDERINGSHARED_EXPORT void paysagesInit();
 RENDERINGSHARED_EXPORT void paysagesQuit();
 RENDERINGSHARED_EXPORT FileOperationResult paysagesSave(char* filepath);
 RENDERINGSHARED_EXPORT FileOperationResult paysagesLoad(char* filepath);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

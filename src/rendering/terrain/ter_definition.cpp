@@ -3,6 +3,7 @@
 #include "../tools.h"
 #include "../renderer.h"
 #include "NoiseGenerator.h"
+#include "PackStream.h"
 
 /******************** Definition ********************/
 static void _validateDefinition(TerrainDefinition* definition)

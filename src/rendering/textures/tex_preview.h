@@ -4,10 +4,6 @@
 #include "rendering/renderer.h"
 #include "rendering/textures/public.h"
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
-
 /* Single layer coverage */
 RENDERINGSHARED_EXPORT void TexturesPreviewLayerCoverage_bind(Renderer* renderer, TexturesDefinition* definition);
 RENDERINGSHARED_EXPORT Color TexturesPreviewLayerCoverage_getColor(Renderer* renderer, double x, double y, double scaling, int layer);
@@ -19,9 +15,5 @@ RENDERINGSHARED_EXPORT Color TexturesPreviewLayerLook_getColor(Renderer* rendere
 /* Cumulative color preview */
 RENDERINGSHARED_EXPORT void TexturesPreviewCumul_bind(Renderer* renderer, TexturesDefinition* definition);
 RENDERINGSHARED_EXPORT Color TexturesPreviewCumul_getColor(Renderer* renderer, double x, double y, double scaling, int layer);
-
-#ifdef	__cplusplus
-}
-#endif
 
 #endif

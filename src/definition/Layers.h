@@ -2,11 +2,8 @@
 #define LAYERS_H
 
 #include "definition_global.h"
-#include "LegacyLayer.h"
-
-#ifdef __cplusplus
-
 #include "BaseDefinition.h"
+#include "LegacyLayer.h"
 
 namespace paysages {
 namespace system {class PackStream;}
@@ -61,15 +58,6 @@ private:
 }
 }
 
-extern "C" {
-#endif
-
-// Transitional C-API
-
-#ifndef __cplusplus
-typedef struct Layers Layers;
-#endif
-
 DEFINITIONSHARED_EXPORT Layers* layersCreate(LayerType type, int max_layer_count);
 DEFINITIONSHARED_EXPORT Layers* layersCreateCopy(Layers* original);
 DEFINITIONSHARED_EXPORT void layersDelete(Layers* layers);
@@ -89,9 +77,5 @@ DEFINITIONSHARED_EXPORT void* layersGetLayer(Layers* layers, int layer);
 DEFINITIONSHARED_EXPORT int layersAddLayer(Layers* layers, void* definition);
 DEFINITIONSHARED_EXPORT void layersDeleteLayer(Layers* layers, int layer);
 DEFINITIONSHARED_EXPORT void layersMove(Layers* layers, int layer, int new_position);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // LAYERS_H

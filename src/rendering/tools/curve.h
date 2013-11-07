@@ -7,10 +7,6 @@ namespace paysages {
 namespace system {class PackStream;}
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct {
     double position;
     double value;
@@ -35,9 +31,5 @@ RENDERINGSHARED_EXPORT void curveRemovePoint(Curve* curve, int number);
 RENDERINGSHARED_EXPORT void curveValidate(Curve* curve);
 
 RENDERINGSHARED_EXPORT double curveGetValue(Curve* curve, double position);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

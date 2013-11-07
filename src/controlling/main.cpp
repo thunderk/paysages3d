@@ -1,11 +1,14 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
 
 #include "rendering/main.h"
 #include "rendering/render.h"
-#include "rendering/Scenery.h"
+#include "rendering/renderer.h"
+#include "rendering/atmosphere/public.h"
+#include "rendering/camera.h"
+#include "Scenery.h"
 
 void startRender(Renderer* renderer, char* outputpath, RenderParams params)
 {

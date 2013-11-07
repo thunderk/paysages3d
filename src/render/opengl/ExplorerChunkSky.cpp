@@ -1,9 +1,10 @@
 #include "ExplorerChunkSky.h"
 
 #include <cmath>
+#include <GL/gl.h>
 #include "rendering/renderer.h"
 #include "rendering/camera.h"
-#include <GL/gl.h>
+#include "rendering/atmosphere/public.h"
 
 ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, double size, SkyboxOrientation orientation) : BaseExplorerChunk(renderer)
 {

@@ -6,6 +6,12 @@
 #include "render.h"
 #include "Scenery.h"
 #include "tools.h"
+#include "rendering/camera.h"
+#include "rendering/atmosphere/public.h"
+#include "rendering/clouds/public.h"
+#include "rendering/terrain/public.h"
+#include "rendering/textures/public.h"
+#include "rendering/water/public.h"
 
 static RayCastingResult _RAYCASTING_NULL = {0};
 

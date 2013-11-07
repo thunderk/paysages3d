@@ -4,6 +4,8 @@
 #include "../tools/lighting.h"
 #include "../renderer.h"
 #include "NoiseGenerator.h"
+#include "rendering/atmosphere/public.h"
+#include "rendering/textures/public.h"
 
 /*
  * Terrain previews.

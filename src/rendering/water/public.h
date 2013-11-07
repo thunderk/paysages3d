@@ -19,8 +19,9 @@ typedef enum
     WATER_PRESET_SEA
 } WaterPreset;
 
-typedef struct
+class WaterDefinition
 {
+public:
     double transparency;
     double reflection;
     SurfaceMaterial material;
@@ -37,7 +38,7 @@ typedef struct
     SurfaceMaterial foam_material;
 
     NoiseGenerator* _waves_noise;
-} WaterDefinition;
+};
 
 typedef struct
 {
@@ -53,14 +54,15 @@ typedef HeightInfo (*FuncWaterGetHeightInfo)(Renderer* renderer);
 typedef double (*FuncWaterGetHeight)(Renderer* renderer, double x, double z);
 typedef WaterResult (*FuncWaterGetResult)(Renderer* renderer, double x, double z);
 
-typedef struct
+class WaterRenderer
 {
+public:
     WaterDefinition* definition;
 
     FuncWaterGetHeightInfo getHeightInfo;
     FuncWaterGetHeight getHeight;
     FuncWaterGetResult getResult;
-} WaterRenderer;
+};
 
 
 RENDERINGSHARED_EXPORT extern StandardDefinition WaterDefinitionClass;
