@@ -24,10 +24,11 @@ class SOFTWARESHARED_EXPORT FluidMediumTraversal
 {
 public:
     FluidMediumTraversal(SoftwareRenderer *renderer);
+    virtual ~FluidMediumTraversal();
 
     void setCollector(FluidMediumCollector *collector);
 
-    virtual void getTraversedMedia(std::vector<FluidMediumInterface> &media);
+    virtual void getTraversedMedia(std::vector<FluidMediumInterface> &media, const SpaceCoordinates &start, const SpaceCoordinates &end);
 
     void collectHalfLine(const SpaceCoordinates &start, const Vector3 &direction);
     void collectSegment(const SpaceCoordinates &start, const SpaceCoordinates &end);

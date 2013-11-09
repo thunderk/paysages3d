@@ -1,6 +1,6 @@
 #include "SoftwareRenderer.h"
 
-#include "global/FluidMediumTraversal.h"
+#include "FluidMediumTraversal.h"
 
 SoftwareRenderer::SoftwareRenderer(Scenery* scenery):
     scenery(scenery)
