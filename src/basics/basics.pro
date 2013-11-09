@@ -16,7 +16,9 @@ SOURCES += \
     NoiseFunctionNaive.cpp \
     NoiseFunctionPerlin.cpp \
     NoiseFunctionSimplex.cpp \
-    Interpolation.cpp
+    Interpolation.cpp \
+    SpaceCoordinates.cpp \
+    Vector3.cpp
 
 HEADERS +=\
         basics_global.h \
@@ -24,7 +26,9 @@ HEADERS +=\
     NoiseFunctionNaive.h \
     NoiseFunctionPerlin.h \
     NoiseFunctionSimplex.h \
-    Interpolation.h
+    Interpolation.h \
+    SpaceCoordinates.h \
+    Vector3.h
 
 unix:!symbian {
     maemo5 {

@@ -3,7 +3,7 @@
 
 /* Shared object helpers */
 #include <QtCore/qglobal.h>
-#if defined(DEFINITION_LIBRARY)
+#if defined(BASICS_LIBRARY)
 #  define BASICSSHARED_EXPORT Q_DECL_EXPORT
 #else
 #  define BASICSSHARED_EXPORT Q_DECL_IMPORT
