@@ -10,7 +10,8 @@ TEMPLATE = lib
 TARGET = paysages_system
 
 DEFINES += SYSTEM_LIBRARY
-CONFIG(release, debug|release): DEFINES += NDEBUG
+
+include(../common.pri)
 
 SOURCES += \
     PictureFile.cpp \

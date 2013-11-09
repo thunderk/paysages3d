@@ -11,6 +11,8 @@ TEMPLATE = lib
 
 DEFINES += OPENGL_LIBRARY
 
+include(../../common.pri)
+
 SOURCES += \
     OpenGLRenderer.cpp \
     BaseExplorerChunk.cpp \

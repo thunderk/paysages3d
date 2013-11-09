@@ -7,7 +7,7 @@ TARGET = paysages-gui
 
 unix:LIBS += -lGLU
 
-CONFIG(release, debug|release): DEFINES += NDEBUG
+include(../common.pri)
 
 INCLUDEPATH += $$PWD/..
 

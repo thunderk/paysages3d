@@ -11,6 +11,8 @@ TEMPLATE = lib
 
 DEFINES += SOFTWARE_LIBRARY
 
+include(../../common.pri)
+
 SOURCES += SoftwareRenderer.cpp \
     global/FluidMediumTraversal.cpp
 

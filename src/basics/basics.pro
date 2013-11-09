@@ -11,6 +11,8 @@ TEMPLATE = lib
 
 DEFINES += BASICS_LIBRARY
 
+include(../common.pri)
+
 SOURCES += \
     NoiseGenerator.cpp \
     NoiseFunctionNaive.cpp \

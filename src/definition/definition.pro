@@ -11,6 +11,8 @@ TEMPLATE = lib
 
 DEFINES += DEFINITION_LIBRARY
 
+include(../common.pri)
+
 SOURCES += \
     BaseDefinition.cpp \
     Layers.cpp \
