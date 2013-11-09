@@ -1,6 +1,6 @@
 BUILDMODE=release
 BUILDPATH=./build/${BUILDMODE}
-LIBRARY_PATH=${BUILDPATH}/rendering:${BUILDPATH}/exploring:${BUILDPATH}/system:${BUILDPATH}/basics:${BUILDPATH}/definition
+LIBRARY_PATH=${BUILDPATH}/rendering:${BUILDPATH}/exploring:${BUILDPATH}/system:${BUILDPATH}/basics:${BUILDPATH}/definition:${BUILDPATH}/render/opengl:${BUILDPATH}/render/software
 
 all:build
 
@@ -56,6 +56,10 @@ package:release
 	mkdir paysages3d-linux/lib
 	mkdir paysages3d-linux/cache
 	cp $(BUILDPATH)/system/libpaysages_system.so* paysages3d-linux/lib/
+	cp $(BUILDPATH)/basics/libpaysages_basics.so* paysages3d-linux/lib/
+	cp $(BUILDPATH)/definition/libpaysages_definition.so* paysages3d-linux/lib/
+	cp $(BUILDPATH)/render/software/libpaysages_render_software.so* paysages3d-linux/lib/
+	cp $(BUILDPATH)/render/opengl/libpaysages_render_opengl.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/rendering/libpaysages_rendering.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/exploring/libpaysages_exploring.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/editing/paysages-gui paysages3d-linux/lib/

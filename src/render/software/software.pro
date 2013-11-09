@@ -6,7 +6,7 @@
 
 QT       -= gui
 
-TARGET = software
+TARGET = paysages_render_software
 TEMPLATE = lib
 
 DEFINES += SOFTWARE_LIBRARY
