@@ -19,10 +19,12 @@ class SOFTWARESHARED_EXPORT SoftwareRenderer: public Renderer
 {
 
 public:
-    SoftwareRenderer(Scenery* scenery);
+    SoftwareRenderer(Scenery* scenery=0);
     virtual ~SoftwareRenderer();
 
     inline Scenery* getScenery() const {return scenery;}
+
+    virtual Color applyMediumTraversal(Vector3 location, Color color);
 
 private:
     Scenery* scenery;

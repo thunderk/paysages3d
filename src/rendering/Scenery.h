@@ -30,6 +30,8 @@ public:
     Scenery();
     virtual ~Scenery();
 
+    static Scenery* getCurrent();
+
     virtual void save(PackStream* stream);
     virtual void load(PackStream* stream);
 
