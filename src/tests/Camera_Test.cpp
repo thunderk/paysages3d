@@ -1,8 +1,9 @@
-#include "testing/common.h"
+#include "Camera_Test.h"
+CPPUNIT_TEST_SUITE_REGISTRATION(Camera_Test);
 
-#include "rendering/camera.h"
+#include "camera.h"
 
-START_TEST(test_camera_definition)
+void Camera_Test::test_camera_definition()
 {
     CameraDefinition* cam;
     cam = cameraCreateDefinition();
@@ -15,9 +16,8 @@ START_TEST(test_camera_definition)
 
     cameraDeleteDefinition(cam);
 }
-END_TEST
 
-START_TEST(test_camera_projection)
+void Camera_Test::test_camera_projection()
 {
     CameraDefinition* cam;
     cam = cameraCreateDefinition();
@@ -35,9 +35,8 @@ START_TEST(test_camera_projection)
 
     cameraDeleteDefinition(cam);
 }
-END_TEST
 
-START_TEST(test_camera_depth)
+void Camera_Test::test_camera_depth()
 {
     CameraDefinition* cam;
     cam = cameraCreateDefinition();
@@ -55,10 +54,3 @@ START_TEST(test_camera_depth)
 
     cameraDeleteDefinition(cam);
 }
-END_TEST
-
-TEST_CASE(camera,
-        test_camera_definition,
-        test_camera_projection,
-        test_camera_depth)
-

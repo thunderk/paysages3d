@@ -1,4 +1,5 @@
-#include "testing/common.h"
+#include "Clouds_Test.h"
+CPPUNIT_TEST_SUITE_REGISTRATION(Clouds_Test);
 
 #include "rendering/renderer.h"
 #include "rendering/tools.h"
@@ -6,7 +7,7 @@
 #include "rendering/clouds/clo_density.h"
 #include "rendering/clouds/clo_walking.h"
 
-START_TEST(test_clouds_density)
+Clouds_Test::test_clouds_density()
 {
     /* Setup */
     double x, y, z;
@@ -85,7 +86,7 @@ START_TEST(test_clouds_density)
 }
 END_TEST
 
-START_TEST(test_clouds_walking_boundaries)
+Clouds_Test::test_clouds_walking_boundaries()
 {
     Vector3 start, end;
     int result;
@@ -190,7 +191,6 @@ START_TEST(test_clouds_walking_boundaries)
 
     cloudsGetLayerType().callback_delete(layer);
 }
-END_TEST
 
 static double _getLayerDensitySinX(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location)
 {
@@ -209,7 +209,7 @@ static double _getEdgeDensitySquared(Renderer* renderer, CloudsLayerDefinition* 
 }
 
 
-START_TEST(test_clouds_walking)
+Clouds_Test::test_clouds_walking()
 {
     /* Init */
     CloudsLayerDefinition* layer;
@@ -421,9 +421,8 @@ START_TEST(test_clouds_walking)
     cloudsGetLayerType().callback_delete(layer);
     rendererDelete(renderer);
 }
-END_TEST
 
-START_TEST(test_clouds_walking_local)
+Clouds_Test::test_clouds_walking_local()
 {
     /* Init */
     CloudsLayerDefinition* layer;
@@ -465,10 +464,3 @@ START_TEST(test_clouds_walking_local)
     ck_assert_double_eq(segment->end.global_density, 0.809016994375);
     ck_assert_double_eq(segment->end.local_density, 0.654508497187);
 }
-END_TEST
-
-TEST_CASE(clouds,
-          test_clouds_density,
-          test_clouds_walking,
-          test_clouds_walking_boundaries,
-          test_clouds_walking_local)

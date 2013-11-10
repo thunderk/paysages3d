@@ -33,7 +33,7 @@ release:
 	+make BUILDMODE=release all
 
 tests:build
-	LD_LIBRARY_PATH=$(LIBRARY_PATH) CK_DEFAULT_TIMEOUT=30 ${BUILDPATH}/testing/paysages-tests
+	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${BUILDPATH}/tests/paysages-tests
 
 run_cli:build
 	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/controlling/paysages-cli

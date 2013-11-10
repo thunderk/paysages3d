@@ -1,6 +1,7 @@
-#include "testing/common.h"
+#include "Render_Test.h"
+CPPUNIT_TEST_SUITE_REGISTRATION(Render_Test);
 
-#include <math.h>
+#include <cmath>
 #include "rendering/renderer.h"
 #include "rendering/tools.h"
 
@@ -30,7 +31,7 @@ static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* da
     }
 }
 
-START_TEST(test_render_quad)
+Render_Test::test_render_quad()
 {
     Color col;
     Renderer* renderer = rendererCreate();
@@ -66,7 +67,3 @@ START_TEST(test_render_quad)
 
     rendererDelete(renderer);
 }
-END_TEST
-
-TEST_CASE(render, test_render_quad)
-

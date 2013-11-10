@@ -1,4 +1,6 @@
-#include "testing/common.h"
+#include "Euclid_Test.h"
+CPPUNIT_TEST_SUITE_REGISTRATION(Euclid_Test);
+
 #include "rendering/tools/euclid.h"
 
 static inline int _Vector3_cmp(Vector3 v1, Vector3 v2)
@@ -12,7 +14,7 @@ static inline void _Vector3_str(Vector3 v, char* buffer, int length)
 }
 DEFINE_COMPARE_ASSERT(Vector3, _Vector3_cmp, _Vector3_str);
 
-START_TEST(test_euclid_angles)
+Euclid_Test::test_euclid_angles()
 {
     ck_assert_double_eq(euclidGet2DAngle(0.0, 0.0), 0.0);
 
@@ -38,9 +40,7 @@ START_TEST(test_euclid_angles)
     ck_assert_double_eq(euclidGet2DAngle(-0.5, -0.5), 5.0 * M_PI_4);
 }
 
-END_TEST
-
-START_TEST(test_vectors)
+Euclid_Test::test_vectors()
 {
     Vector3 v1, v2, v3;
 
@@ -58,9 +58,7 @@ START_TEST(test_vectors)
     ck_assert_generic_eq(Vector3, v3Scale(v1, -0.5), v3);
 }
 
-END_TEST
-
-START_TEST(test_vectors_spherical)
+Euclid_Test::test_vectors_spherical()
 {
     Vector3 v1;
     VectorSpherical v2;
@@ -128,7 +126,3 @@ START_TEST(test_vectors_spherical)
     ck_assert_double_eq(v2.phi, 7.0 * M_PI_4);
     ck_assert_double_eq(v2.theta, M_PI_2 - 0.955316618125);
 }
-END_TEST
-
-TEST_CASE(euclid, test_euclid_angles, test_vectors, test_vectors_spherical)
-

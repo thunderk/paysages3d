@@ -10,4 +10,4 @@ SUBDIRS = \
     editing \
     controlling
 
-#unix:SUBDIRS += testing tests
+unix:SUBDIRS += tests

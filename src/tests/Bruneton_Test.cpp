@@ -1,6 +1,7 @@
-#include "testing/common.h"
+#include "Bruneton_Test.h"
+CPPUNIT_TEST_SUITE_REGISTRATION(Bruneton_Test);
+
 #include "System.h"
-#include "rendering/Scenery.h"
 
 #define OUTPUT_WIDTH 400
 #define OUTPUT_HEIGHT 300
@@ -10,7 +11,7 @@ static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* da
     return renderer->atmosphere->applyAerialPerspective(renderer, location, COLOR_BLACK).final;
 }
 
-START_TEST(testBrunetonAerialPerspective)
+Bruneton_Test::testBrunetonAerialPerspective()
 {
     Renderer* renderer = sceneryCreateStandardRenderer();
     renderer->render_width = 800;
@@ -37,9 +38,8 @@ START_TEST(testBrunetonAerialPerspective)
 
     rendererDelete(renderer);
 }
-END_TEST
 
-START_TEST(testBrunetonAerialPerspective1)
+Bruneton_Test::testBrunetonAerialPerspective1()
 {
     AtmosphereDefinition* atmo = AtmosphereDefinitionClass.create();
     sceneryGetAtmosphere(atmo);
@@ -73,9 +73,3 @@ START_TEST(testBrunetonAerialPerspective1)
 
     rendererDelete(renderer);
 }
-END_TEST
-
-TEST_CASE(bruneton,
-          testBrunetonAerialPerspective,
-          testBrunetonAerialPerspective1)
-

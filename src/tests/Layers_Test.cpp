@@ -1,6 +1,8 @@
 #include "Layers_Test.h"
+CPPUNIT_TEST_SUITE_REGISTRATION(Layers_Test);
 
 #include "Layers.h"
+#include "PackStream.h"
 
 BaseDefinition* _construc1(Layers*)
 {
@@ -166,5 +168,3 @@ void Layers_Test::testLegacyLayers()
     delete layers1;
     CPPUNIT_ASSERT_EQUAL(0, _legacy_instance_count);
 }
-
-CPPUNIT_TEST_SUITE_REGISTRATION(Layers_Test);

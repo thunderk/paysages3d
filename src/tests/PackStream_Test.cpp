@@ -1,8 +1,9 @@
-#include "testing/common.h"
+#include "PackStream_Test.h"
+CPPUNIT_TEST_SUITE_REGISTRATION(PackStream_Test);
 
 #include "PackStream.h"
 
-START_TEST(testPack)
+void PackStream_Test::testPack()
 {
     PackStream* stream;
     int i;
@@ -47,8 +48,3 @@ START_TEST(testPack)
     }
     packCloseStream(stream);
 }
-END_TEST
-
-TEST_CASE(pack,
-        testPack)
-
