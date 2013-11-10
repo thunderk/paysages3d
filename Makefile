@@ -1,6 +1,6 @@
 BUILDMODE=release
 BUILDPATH=./build/${BUILDMODE}
-LIBRARY_PATH=${BUILDPATH}/rendering:${BUILDPATH}/exploring:${BUILDPATH}/system:${BUILDPATH}/basics:${BUILDPATH}/definition:${BUILDPATH}/render/opengl:${BUILDPATH}/render/software
+LIBRARY_PATH=${BUILDPATH}/rendering:${BUILDPATH}/exploring:${BUILDPATH}/system:${BUILDPATH}/basics:${BUILDPATH}/definition:${BUILDPATH}/render/opengl:${BUILDPATH}/render/software:${BUILDPATH}/tests/googletest
 
 all:build
 
@@ -33,7 +33,7 @@ release:
 	+make BUILDMODE=release all
 
 tests:build
-	LD_LIBRARY_PATH=$(LIBRARY_PATH) CK_DEFAULT_TIMEOUT=30 ${BUILDPATH}/testing/paysages-tests
+	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${BUILDPATH}/tests/paysages-tests
 
 run_cli:build
 	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/controlling/paysages-cli

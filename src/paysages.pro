@@ -9,6 +9,6 @@ SUBDIRS = \
     render/software \
     render/opengl \
     editing \
-    controlling
-
-#unix:SUBDIRS += testing tests
+    controlling \
+    tests/googletest \
+    tests

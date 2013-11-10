@@ -1,22 +1,24 @@
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
+#include "BaseTestCase.h"
 #include <QtCore/QDebug>
-
-using namespace CppUnit;
+#include "../rendering/main.h"
 
 void noMessageOutput(QtMsgType, const QMessageLogContext&, const QString&)
 {
 }
 
-int main()
+int main(int argc, char **argv)
 {
+    int result;
+
+    paysagesInit();
+
     qInstallMessageHandler(noMessageOutput);
 
-    TextTestRunner runner;
-    TestFactoryRegistry &registry = TestFactoryRegistry::getRegistry();
+    testing::InitGoogleTest(&argc, argv);
+    result = RUN_ALL_TESTS();
 
-    runner.addTest(registry.makeTest());
+    paysagesQuit();
 
-    return runner.run() ? 1 : 0;
+    return result;
 }
 

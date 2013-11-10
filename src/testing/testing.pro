@@ -15,13 +15,6 @@ INCLUDEPATH += $$PWD/..
 
 SOURCES += main.c \
     test_terrain_painting.c \
-    test_render.c \
-    test_pack.c \
-    test_noise.c \
-    test_euclid.c \
-    test_clouds.c \
-    test_camera.c \
-    test_bruneton.c \
     test_zone.c
 
 HEADERS += \

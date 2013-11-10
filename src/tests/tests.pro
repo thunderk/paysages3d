@@ -2,20 +2,28 @@ TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 
-TARGET = paysages-tests2
-
-unix {
-    CONFIG += link_pkgconfig
-    PKGCONFIG += cppunit
-}
+TARGET = paysages-tests
 
 SOURCES += main.cpp \
     Layers_Test.cpp \
-    BaseTestCase.cpp
+    PackStream_Test.cpp \
+    NoiseGenerator_Test.cpp \
+    Render_Test.cpp \
+    TerrainPainting_Test.cpp \
+    Zone_Test.cpp \
+    Euclid_Test.cpp \
+    Bruneton_Test.cpp \
+    Camera_Test.cpp \
+    Clouds_Test.cpp
 
 HEADERS += \
-    Layers_Test.h \
     BaseTestCase.h
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/googletest/release/ -lgoogletest
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/googletest/debug/ -lgoogletest
+else:unix: LIBS += -L$$OUT_PWD/googletest/ -lgoogletest
+INCLUDEPATH += $$PWD/googletest/include
+DEPENDPATH += $$PWD/googletest/include
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../system/debug/ -lpaysages_system
