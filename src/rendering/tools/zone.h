@@ -6,8 +6,8 @@
  */
 
 #include "../rendering_global.h"
-#include "rendering/tools/euclid.h"
-#include "rendering/tools/curve.h"
+#include "../tools/euclid.h"
+#include "../tools/curve.h"
 
 namespace paysages {
 namespace system {

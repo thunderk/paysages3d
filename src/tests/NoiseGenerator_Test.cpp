@@ -1,9 +1,8 @@
-#include "NoiseGenerator_Test.h"
-CPPUNIT_TEST_SUITE_REGISTRATION(NoiseGenerator_Test);
+#include "BaseTestCase.h"
 
 #include "NoiseGenerator.h"
 
-void NoiseGenerator_Test::test_noise_range()
+TEST(NoiseGenerator, getRange)
 {
     NoiseGenerator* noise;
     double minvalue, maxvalue;
@@ -16,13 +15,13 @@ void NoiseGenerator_Test::test_noise_range()
     noise->validate();
     noise->getRange(&minvalue, &maxvalue);
 
-    ck_assert_double_eq(minvalue, -1.8);
-    ck_assert_double_eq(maxvalue, 2.4);
+    EXPECT_DOUBLE_EQ(minvalue, -1.8);
+    EXPECT_DOUBLE_EQ(maxvalue, 2.4);
 
     delete noise;
 }
 
-void NoiseGenerator_Test::test_noise_normalize()
+TEST(NoiseGenerator, normalizeAmplitude)
 {
     int x;
     NoiseGenerator* noise;
@@ -30,24 +29,24 @@ void NoiseGenerator_Test::test_noise_normalize()
     noise = new NoiseGenerator();
 
     /* Symmetric case */
-    noise->addLevelsSimple( 10, 1.0, -4.0, 4.0, 0.5);
+    noise->addLevelsSimple(10, 1.0, -4.0, 4.0, 0.5);
     noise->validate();
-    noise->normalizeAmplitude( -1.0, 1.0, 0);
+    noise->normalizeAmplitude(-1.0, 1.0, 0);
     for (x = 0; x < 1000; x++)
     {
-        double value = noise->get1DTotal( 0.01 * (double)x);
-        ck_assert_double_in_range(value, -1.0, 1.0);
+        double value = noise->get1DTotal(0.01 * (double)x);
+        ASSERT_DOUBLE_IN_RANGE(value, -1.0, 1.0);
     }
 
     /* Target center differs from current center */
     noise->clearLevels();
-    noise->addLevelsSimple( 10, 1.0, -5.0, 5.0, 0.5);
+    noise->addLevelsSimple(10, 1.0, -5.0, 5.0, 0.5);
     noise->validate();
-    noise->normalizeAmplitude( 0.0, 1.0, 0);
+    noise->normalizeAmplitude(0.0, 1.0, 0);
     for (x = 0; x < 1000; x++)
     {
         double value = noise->get1DTotal(0.01 * (double)x);
-        ck_assert_double_in_range(value, 0.0, 1.0);
+        ASSERT_DOUBLE_IN_RANGE(value, 0.0, 1.0);
     }
 
     /* Asymmetric range */
@@ -58,7 +57,7 @@ void NoiseGenerator_Test::test_noise_normalize()
     for (x = 0; x < 1000; x++)
     {
         double value = noise->get1DTotal(0.01 * (double)x);
-        ck_assert_double_in_range(value, 0.0, 1.0);
+        ASSERT_DOUBLE_IN_RANGE(value, 0.0, 1.0);
     }
 
     /* Complex asymmetric case */
@@ -69,7 +68,7 @@ void NoiseGenerator_Test::test_noise_normalize()
     for (x = 0; x < 1000; x++)
     {
         double value = noise->get1DTotal(0.01 * (double)x);
-        ck_assert_double_in_range(value, -2.0, 4.0);
+        ASSERT_DOUBLE_IN_RANGE(value, -2.0, 4.0);
     }
 
     delete noise;

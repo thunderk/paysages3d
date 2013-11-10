@@ -1,9 +1,8 @@
-#include "PackStream_Test.h"
-CPPUNIT_TEST_SUITE_REGISTRATION(PackStream_Test);
+#include "BaseTestCase.h"
 
 #include "PackStream.h"
 
-void PackStream_Test::testPack()
+TEST(PackStream, All)
 {
     PackStream* stream;
     int i;
@@ -13,38 +12,40 @@ void PackStream_Test::testPack()
     char buffer[100];
 
     /* Writing to pack */
-    stream = packWriteFile("/tmp/test_paysages_pack");
+    stream = new PackStream();
+    stream->bindToFile("/tmp/test_paysages_pack", true);
     for (i = 0; i < 5; i++)
     {
         data_i = i;
-        packWriteInt(stream, &data_i);
+        stream->write(&data_i);
 
         data_d = (double)i;
-        packWriteDouble(stream, &data_d);
+        stream->write(&data_d);
 
         data_s = "Testing string 0123 (accentué) !";
-        packWriteString(stream, data_s, 100);
-        packWriteString(stream, data_s, 4);
-        packWriteString(stream, data_s, 5);
+        stream->write(data_s, 100);
+        stream->write(data_s, 4);
+        stream->write(data_s, 5);
     }
-    packCloseStream(stream);
+    delete stream;
 
     /* Reading from pack */
-    stream = packReadFile("/tmp/test_paysages_pack");
+    stream = new PackStream();
+    stream->bindToFile("/tmp/test_paysages_pack");
     for (i = 0; i < 5; i++)
     {
-        packReadInt(stream, &data_i);
-        ck_assert_int_eq(data_i, i);
+        stream->read(&data_i);
+        ASSERT_EQ(i, data_i);
 
-        packReadDouble(stream, &data_d);
-        ck_assert_double_eq(data_d, (double)i);
+        stream->read(&data_d);
+        ASSERT_DOUBLE_EQ((double)i, data_d);
 
-        packReadString(stream, buffer, 100);
-        ck_assert_str_eq(buffer, "Testing string 0123 (accentué) !");
-        packReadString(stream, buffer, 4);
-        ck_assert_str_eq(buffer, "Tes");
-        packReadString(stream, buffer, 3);
-        ck_assert_str_eq(buffer, "Te");
+        stream->read(buffer, 100);
+        ASSERT_STREQ("Testing string 0123 (accentué) !", buffer);
+        stream->read(buffer, 4);
+        ASSERT_STREQ("Tes", buffer);
+        stream->read(buffer, 3);
+        ASSERT_STREQ("Te", buffer);
     }
-    packCloseStream(stream);
+    delete stream;
 }

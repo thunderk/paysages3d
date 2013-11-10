@@ -1,15 +1,12 @@
-#include "Render_Test.h"
-CPPUNIT_TEST_SUITE_REGISTRATION(Render_Test);
+#include "BaseTestCase.h"
 
 #include <cmath>
-#include "rendering/renderer.h"
-#include "rendering/tools.h"
+#include "renderer.h"
+#include "camera.h"
+#include "System.h"
 
-static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* data)
+static Color _postProcessFragment(Renderer*, Vector3 location, void*)
 {
-    UNUSED(renderer);
-    UNUSED(data);
-
     /* Checker-board */
     double x = fmod(location.x, 0.2);
     double z = fmod(location.z, 0.2);
@@ -31,7 +28,7 @@ static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* da
     }
 }
 
-Render_Test::test_render_quad()
+TEST(Render, quad)
 {
     Color col;
     Renderer* renderer = rendererCreate();
@@ -52,16 +49,16 @@ Render_Test::test_render_quad()
     renderClear(renderer->render_area);
 
     renderer->pushQuad(renderer, v3(-1.0, 0.0, 1.0), v3(-1.0, 0.0, -1.0), v3(1.0, 0.0, -1.0), v3(1.0, 0.0, 1.0), _postProcessFragment, NULL);
-    renderPostProcess(renderer->render_area, tests_cpu_count);
+    renderPostProcess(renderer->render_area, System::getCoreCount());
 
     col = renderGetPixel(renderer->render_area, 399, 599 - 435);
-    ck_assert_color_values(col, 1.0, 1.0, 1.0, 1.0);
+    ASSERT_COLOR_RGBA(col, 1.0, 1.0, 1.0, 1.0);
     col = renderGetPixel(renderer->render_area, 399, 599 - 436);
-    ck_assert_color_values(col, 0.0, 0.0, 0.0, 1.0);
+    ASSERT_COLOR_RGBA(col, 0.0, 0.0, 0.0, 1.0);
     col = renderGetPixel(renderer->render_area, 400, 599 - 435);
-    ck_assert_color_values(col, 0.0, 0.0, 0.0, 1.0);
+    ASSERT_COLOR_RGBA(col, 0.0, 0.0, 0.0, 1.0);
     col = renderGetPixel(renderer->render_area, 400, 599 - 436);
-    ck_assert_color_values(col, 1.0, 1.0, 1.0, 1.0);
+    ASSERT_COLOR_RGBA(col, 1.0, 1.0, 1.0, 1.0);
 
     renderSaveToFile(renderer->render_area, "./output/test_render_quad.png");
 

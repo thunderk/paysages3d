@@ -1,50 +1,32 @@
 #ifndef BASETESTCASE_H
 #define BASETESTCASE_H
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
-#include <cppunit/extensions/HelperMacros.h>
-using namespace CppUnit;
+#include "gtest/gtest.h"
 
-// Transitional macros from C libcheck
-static inline int _double_equals(double x, double y)
-{
-    return fabs(x - y) < 0.00000000001;
-}
-static inline int _double_not_equals(double x, double y)
-{
-    return fabs(x - y) >= 0.00000000001;
-}
-static inline int _double_greater(double x, double y)
-{
-    return _double_not_equals(x, y) && (x > y);
-}
-static inline int _double_greater_or_equal(double x, double y)
-{
-    return _double_equals(x, y) || (x >= y);
-}
-static inline int _double_less(double x, double y)
-{
-    return _double_not_equals(x, y) && (x < y);
-}
-static inline int _double_less_or_equal(double x, double y)
-{
-    return _double_equals(x, y) || (x <= y);
-}
+#undef EXPECT_DOUBLE_EQ
+#define EXPECT_DOUBLE_EQ(_expected_, _value_) \
+    EXPECT_NEAR(_expected_, _value_, 0.0000000001)
+#undef ASSERT_DOUBLE_EQ
+#define ASSERT_DOUBLE_EQ(_expected_, _value_) \
+    ASSERT_NEAR(_expected_, _value_, 0.0000000001)
 
-#define _ck_assert_double(F, X, O, Y) CPPUNIT_ASSERT(F(X, Y), "Assertion '"#X#O#Y"' failed: "#X"=%.12f, "#Y"=%.12f", X, Y)
-#define ck_assert_double_eq(X, Y) _ck_assert_double(_double_equals, X, ==, Y)
-#define ck_assert_double_ne(X, Y) _ck_assert_double(_double_not_equals, X, !=, Y)
-#define ck_assert_double_gt(X, Y) _ck_assert_double(_double_greater, X, >, Y)
-#define ck_assert_double_lt(X, Y) _ck_assert_double(_double_less, X, <, Y)
-#define ck_assert_double_gte(X, Y) _ck_assert_double(_double_greater_or_equal, X, >=, Y)
-#define ck_assert_double_lte(X, Y) _ck_assert_double(_double_less_or_equal, X, <=, Y)
+#define EXPECT_DOUBLE_IN_RANGE(_value_, _min_, _max_) \
+    EXPECT_GT(_value_, _min_); EXPECT_LT(_value_, _max_)
+#define ASSERT_DOUBLE_IN_RANGE(_value_, _min_, _max_) \
+    ASSERT_GT(_value_, _min_); ASSERT_LT(_value_, _max_)
 
-class BaseTestCase: public TestFixture
+#define EXPECT_COLOR_RGBA(_col_, _r_, _g_, _b_, _a_) \
+    EXPECT_DOUBLE_EQ(_col_.r, _r_); EXPECT_DOUBLE_EQ(_col_.g, _g_); EXPECT_DOUBLE_EQ(_col_.b, _b_); EXPECT_DOUBLE_EQ(_col_.a, _a_)
+#define ASSERT_COLOR_RGBA(_col_, _r_, _g_, _b_, _a_) \
+    EXPECT_DOUBLE_EQ(_col_.r, _r_); EXPECT_DOUBLE_EQ(_col_.g, _g_); EXPECT_DOUBLE_EQ(_col_.b, _b_); EXPECT_DOUBLE_EQ(_col_.a, _a_)
+
+#define EXPECT_VECTOR3_COORDS(_vec_, _x_, _y_, _z_) \
+    EXPECT_DOUBLE_EQ(_vec_.x, _x_); EXPECT_DOUBLE_EQ(_vec_.y, _y_); EXPECT_DOUBLE_EQ(_vec_.z, _z_)
+#define ASSERT_VECTOR3_COORDS(_vec_, _x_, _y_, _z_) \
+    ASSERT_DOUBLE_EQ(_vec_.x, _x_); ASSERT_DOUBLE_EQ(_vec_.y, _y_); ASSERT_DOUBLE_EQ(_vec_.z, _z_)
+
+class BaseTestCase: public ::testing::Test
 {
-public:
-    BaseTestCase();
 };
 
 #endif // BASETESTCASE_H

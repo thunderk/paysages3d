@@ -4,36 +4,26 @@ CONFIG -= app_bundle
 
 TARGET = paysages-tests
 
-unix {
-    CONFIG += link_pkgconfig
-    PKGCONFIG += cppunit
-}
-
 SOURCES += main.cpp \
     Layers_Test.cpp \
-    BaseTestCase.cpp \
-    Camera_Test.cpp \
-    NoiseGenerator_Test.cpp \
     PackStream_Test.cpp \
-    Bruneton_Test.cpp \
-    Clouds_Test.cpp \
-    Euclid_Test.cpp \
+    NoiseGenerator_Test.cpp \
     Render_Test.cpp \
     TerrainPainting_Test.cpp \
-    Zone_Test.cpp
+    Zone_Test.cpp \
+    Euclid_Test.cpp \
+    Bruneton_Test.cpp \
+    Camera_Test.cpp \
+    Clouds_Test.cpp
 
 HEADERS += \
-    Layers_Test.h \
-    BaseTestCase.h \
-    Camera_Test.h \
-    NoiseGenerator_Test.h \
-    PackStream_Test.h \
-    Bruneton_Test.h \
-    Clouds_Test.h \
-    Euclid_Test.h \
-    Render_Test.h \
-    TerrainPainting_Test.h \
-    Zone_Test.h
+    BaseTestCase.h
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/googletest/release/ -lgoogletest
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/googletest/debug/ -lgoogletest
+else:unix: LIBS += -L$$OUT_PWD/googletest/ -lgoogletest
+INCLUDEPATH += $$PWD/googletest/include
+DEPENDPATH += $$PWD/googletest/include
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../system/debug/ -lpaysages_system

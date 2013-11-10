@@ -1,17 +1,21 @@
-#include "Bruneton_Test.h"
-CPPUNIT_TEST_SUITE_REGISTRATION(Bruneton_Test);
+#include "BaseTestCase.h"
 
+#include "tools/color.h"
+#include "camera.h"
+#include "renderer.h"
+#include "atmosphere/public.h"
+#include "Scenery.h"
 #include "System.h"
 
 #define OUTPUT_WIDTH 400
 #define OUTPUT_HEIGHT 300
 
-static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* data)
+static Color _postProcessFragment(Renderer* renderer, Vector3 location, void*)
 {
     return renderer->atmosphere->applyAerialPerspective(renderer, location, COLOR_BLACK).final;
 }
 
-Bruneton_Test::testBrunetonAerialPerspective()
+TEST(Bruneton, AerialPerspective1)
 {
     Renderer* renderer = sceneryCreateStandardRenderer();
     renderer->render_width = 800;
@@ -32,16 +36,16 @@ Bruneton_Test::testBrunetonAerialPerspective()
     renderer->pushQuad(renderer, v3(15.0, -10.0, -5.0), v3(15.0, -10.0, 0.0), v3(15.0, 50.0, 0.0), v3(15.0, 50.0, -5.0), _postProcessFragment, NULL);
     renderer->pushQuad(renderer, v3(20.0, -10.0, 5.0), v3(20.0, -10.0, 10.0), v3(20.0, 50.0, 10.0), v3(20.0, 50.0, 5.0), _postProcessFragment, NULL);
     renderer->pushQuad(renderer, v3(30.0, -10.0, 25.0), v3(30.0, -10.0, 30.0), v3(30.0, 50.0, 30.0), v3(30.0, 50.0, 25.0), _postProcessFragment, NULL);
-    renderPostProcess(renderer->render_area, tests_cpu_count);
+    renderPostProcess(renderer->render_area, System::getCoreCount());
 
     renderSaveToFile(renderer->render_area, "./output/test_bruneton_perspective.png");
 
     rendererDelete(renderer);
 }
 
-Bruneton_Test::testBrunetonAerialPerspective1()
+TEST(Bruneton, AerialPerspective2)
 {
-    AtmosphereDefinition* atmo = AtmosphereDefinitionClass.create();
+    AtmosphereDefinition* atmo = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
     sceneryGetAtmosphere(atmo);
     atmo->hour = 6;
     atmo->minute = 30;
@@ -67,7 +71,7 @@ Bruneton_Test::testBrunetonAerialPerspective1()
     renderer->pushQuad(renderer, v3(15.0, -10.0, -5.0), v3(15.0, -10.0, 0.0), v3(15.0, 50.0, 0.0), v3(15.0, 50.0, -5.0), _postProcessFragment, NULL);
     renderer->pushQuad(renderer, v3(20.0, -10.0, 5.0), v3(20.0, -10.0, 10.0), v3(20.0, 50.0, 10.0), v3(20.0, 50.0, 5.0), _postProcessFragment, NULL);
     renderer->pushQuad(renderer, v3(30.0, -10.0, 25.0), v3(30.0, -10.0, 30.0), v3(30.0, 50.0, 30.0), v3(30.0, 50.0, 25.0), _postProcessFragment, NULL);
-    renderPostProcess(renderer->render_area, tests_cpu_count);
+    renderPostProcess(renderer->render_area, System::getCoreCount());
 
     renderSaveToFile(renderer->render_area, "./output/test_bruneton_perspective1.png");
 
