@@ -3,6 +3,9 @@
 
 #include "basics_global.h"
 
+namespace paysages {
+namespace basics {
+
 /*
  * Cartesian coordinates (X, Y, Z) - right handed :
  *
@@ -30,17 +33,6 @@
  *   X=0  Y=-1 Z=0   =>  THETA=-PI/2
  */
 
-namespace paysages {
-namespace system {class PackStream;}
-}
-
-typedef struct
-{
-    double x;
-    double y;
-    double z;
-} Vector3;
-
 typedef struct
 {
     double r;
@@ -48,31 +40,111 @@ typedef struct
     double phi;
 } VectorSpherical;
 
-BASICSSHARED_EXPORT extern Vector3 VECTOR_ZERO;
-BASICSSHARED_EXPORT extern Vector3 VECTOR_DOWN;
-BASICSSHARED_EXPORT extern Vector3 VECTOR_UP;
-BASICSSHARED_EXPORT extern Vector3 VECTOR_NORTH;
-BASICSSHARED_EXPORT extern Vector3 VECTOR_SOUTH;
-BASICSSHARED_EXPORT extern Vector3 VECTOR_EAST;
-BASICSSHARED_EXPORT extern Vector3 VECTOR_WEST;
+class BASICSSHARED_EXPORT Vector3
+{
+public:
+    Vector3();
+    Vector3(double x, double y, double z);
+    Vector3(const VectorSpherical &v);
+
+    void save(PackStream *stream) const;
+    void load(PackStream *stream);
+
+    Vector3 inverse() const;
+    Vector3 scale(double scaling) const;
+    double getNorm() const;
+    Vector3 normalize() const;
+
+    Vector3 add(double x, double y, double z) const;
+    Vector3 add(const Vector3 &other) const;
+    Vector3 sub(const Vector3 &other) const;
+    double dotProduct(const Vector3 &other) const;
+    Vector3 crossProduct(const Vector3 &other) const;
+
+    VectorSpherical toSpherical() const;
+
+public:
+    // TODO Make private
+    double x;
+    double y;
+    double z;
+};
+
+BASICSSHARED_EXPORT extern const Vector3 VECTOR_ZERO;
+BASICSSHARED_EXPORT extern const Vector3 VECTOR_DOWN;
+BASICSSHARED_EXPORT extern const Vector3 VECTOR_UP;
+BASICSSHARED_EXPORT extern const Vector3 VECTOR_NORTH;
+BASICSSHARED_EXPORT extern const Vector3 VECTOR_SOUTH;
+BASICSSHARED_EXPORT extern const Vector3 VECTOR_EAST;
+BASICSSHARED_EXPORT extern const Vector3 VECTOR_WEST;
+
+}
+}
+
+// Inlining
+#if PAYSAGES_USE_INLINING
+#ifndef VECTOR3_INLINE_CPP
+#include "Vector3.inline.cpp"
+#endif
+#endif
+
+// Compat API
 
 static inline Vector3 v3(double x, double y, double z)
 {
-    Vector3 result = {x, y, z};
-    return result;
+    return Vector3(x, y, z);
 }
-BASICSSHARED_EXPORT void v3Save(PackStream* stream, Vector3* v);
-BASICSSHARED_EXPORT void v3Load(PackStream* stream, Vector3* v);
-BASICSSHARED_EXPORT Vector3 v3Translate(Vector3 v1, double x, double y, double z);
-BASICSSHARED_EXPORT Vector3 v3Add(Vector3 v1, Vector3 v2);
-BASICSSHARED_EXPORT Vector3 v3Sub(Vector3 v1, Vector3 v2);
-BASICSSHARED_EXPORT Vector3 v3Neg(Vector3 v);
-BASICSSHARED_EXPORT Vector3 v3Scale(Vector3 v, double scale);
-BASICSSHARED_EXPORT double v3Norm(Vector3 v);
-BASICSSHARED_EXPORT Vector3 v3Normalize(Vector3 v);
-BASICSSHARED_EXPORT double v3Dot(Vector3 v1, Vector3 v2);
-BASICSSHARED_EXPORT Vector3 v3Cross(Vector3 v1, Vector3 v2);
-BASICSSHARED_EXPORT VectorSpherical v3ToSpherical(Vector3 v);
-BASICSSHARED_EXPORT Vector3 v3FromSpherical(VectorSpherical v);
+static inline void v3Save(PackStream* stream, Vector3* v)
+{
+    v->save(stream);
+}
+static inline void v3Load(PackStream* stream, Vector3* v)
+{
+    v->load(stream);
+}
+static inline Vector3 v3Translate(const Vector3 &v1, double x, double y, double z)
+{
+    return v1.add(x, y, z);
+}
+static inline Vector3 v3Add(const Vector3 &v1, const Vector3 &v2)
+{
+    return v1.add(v2);
+}
+static inline Vector3 v3Sub(const Vector3 &v1, const Vector3 &v2)
+{
+    return v1.sub(v2);
+}
+static inline Vector3 v3Neg(const Vector3 &v)
+{
+    return v.inverse();
+}
+static inline Vector3 v3Scale(const Vector3 &v, double scale)
+{
+    return v.scale(scale);
+}
+static inline double v3Norm(const Vector3 &v)
+{
+    return v.getNorm();
+}
+static inline Vector3 v3Normalize(const Vector3 &v)
+{
+    return v.normalize();
+}
+static inline double v3Dot(const Vector3 &v1, const Vector3 &v2)
+{
+    return v1.dotProduct(v2);
+}
+static inline Vector3 v3Cross(const Vector3 &v1, const Vector3 &v2)
+{
+    return v1.crossProduct(v2);
+}
+static inline VectorSpherical v3ToSpherical(const Vector3 &v)
+{
+    return v.toSpherical();
+}
+static inline Vector3 v3FromSpherical(const VectorSpherical &v)
+{
+    return Vector3(v);
+}
 
 #endif // VECTOR3_H

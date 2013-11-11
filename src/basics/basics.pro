@@ -20,7 +20,8 @@ SOURCES += \
     NoiseFunctionSimplex.cpp \
     Interpolation.cpp \
     SpaceCoordinates.cpp \
-    Vector3.cpp
+    Vector3.cpp \
+    Vector3.inline.cpp
 
 HEADERS +=\
         basics_global.h \

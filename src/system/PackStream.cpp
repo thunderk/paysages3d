@@ -37,7 +37,7 @@ bool PackStream::bindToFile(const char* filepath, bool write)
     return stream != NULL;
 }
 
-void PackStream::write(int* value)
+void PackStream::write(const int*value)
 {
     if (stream and value)
     {
@@ -45,7 +45,7 @@ void PackStream::write(int* value)
     }
 }
 
-void PackStream::write(double* value)
+void PackStream::write(const double *value)
 {
     if (stream and value)
     {
@@ -53,7 +53,7 @@ void PackStream::write(double* value)
     }
 }
 
-void PackStream::write(char* value, int max_length)
+void PackStream::write(const char *value, int max_length)
 {
     if (stream and value)
     {
@@ -62,7 +62,7 @@ void PackStream::write(char* value, int max_length)
     }
 }
 
-void PackStream::write(QString value)
+void PackStream::write(const QString &value)
 {
     if (stream)
     {
