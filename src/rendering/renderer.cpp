@@ -13,7 +13,7 @@
 #include "rendering/textures/public.h"
 #include "rendering/water/public.h"
 
-static RayCastingResult _RAYCASTING_NULL = {0};
+static RayCastingResult _RAYCASTING_NULL = {0, {0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
 
 static void* _renderFirstPass(void* data)
 {

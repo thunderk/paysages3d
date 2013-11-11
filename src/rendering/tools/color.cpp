@@ -212,8 +212,9 @@ void colorLimitPower(Color* col, double max_power)
 }
 
 /******************************** ColorProfile ********************************/
-struct ColorProfile
+class ColorProfile
 {
+public:
     double minvalue;
     double maxvalue;
     Color(*mapper)(Color col, double exposure);
@@ -297,12 +298,12 @@ void colorProfileSetToneMapping(ColorProfile* profile, ToneMappingOperator tonem
     profile->exposure = exposure;
 }
 
-void colorProfileSave(PackStream* stream, ColorProfile* profile)
+void colorProfileSave(PackStream*, ColorProfile*)
 {
     /* TODO */
 }
 
-void colorProfileLoad(PackStream* stream, ColorProfile* profile)
+void colorProfileLoad(PackStream*, ColorProfile*)
 {
     /* TODO */
 }

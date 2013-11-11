@@ -144,7 +144,7 @@ static Color _fakeGetFinalColor(Renderer* renderer, Vector3 location, double pre
     return COLOR_GREEN;
 }
 
-static Color _realGetFinalColor(Renderer* renderer, Vector3 location, double precision)
+static Color _realGetFinalColor(Renderer* renderer, Vector3 location, double)
 {
     /* TODO Restore precision control */
     TexturesResult textures = renderer->textures->applyToTerrain(renderer, location.x, location.z);

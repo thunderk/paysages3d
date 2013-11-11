@@ -33,7 +33,11 @@ release:
 	+make BUILDMODE=release all
 
 tests:build
+ifdef TESTCASE
+	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${BUILDPATH}/tests/paysages-tests --gtest_filter=$(TESTCASE).*
+else
 	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${BUILDPATH}/tests/paysages-tests
+endif
 
 run_cli:build
 	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/controlling/paysages-cli

@@ -9,14 +9,17 @@
 #  define SOFTWARESHARED_EXPORT Q_DECL_IMPORT
 #endif
 
+#include "basics_global.h"
+
 namespace paysages {
-namespace basics {}
-namespace definition {}
-namespace software {}
+namespace software {
+    class SoftwareRenderer;
+    class FluidMediumManager;
+    class FluidMediumInterface;
+    class FluidMediumCollector;
+}
 }
 
-using namespace paysages::basics;
-using namespace paysages::definition;
 using namespace paysages::software;
 
 #endif // SOFTWARE_GLOBAL_H

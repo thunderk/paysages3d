@@ -4,9 +4,6 @@
 #include "software_global.h"
 
 namespace paysages {
-namespace basics {
-    class SpaceCoordinate;
-}
 namespace software {
 
 /*!
@@ -16,9 +13,10 @@ class SOFTWARESHARED_EXPORT FluidMediumInterface
 {
 public:
     /*!
-     * Return true if the object may interfere with the fluid medium on the given segment.
+     * Return true if the object may change the fluid medium on the given segment.
+     * When returning true, the object may alter 'segment' to limit its influence.
      */
-    virtual bool mayInfluence(const SpaceCoordinate& start, const SpaceCoordinate& end) const = 0;
+    virtual bool checkInfluence(SpaceSegment& segment) const = 0;
 };
 
 }

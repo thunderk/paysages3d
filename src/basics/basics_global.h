@@ -13,6 +13,7 @@
 namespace paysages {
 namespace basics {
     class Vector3;
+    class SpaceSegment;
 }
 }
 using namespace paysages::basics;

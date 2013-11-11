@@ -4,7 +4,7 @@
 #include "../tools/euclid.h"
 #include "../tools/color.h"
 
-typedef struct Renderer Renderer;
+class Renderer;
 
 typedef struct
 {

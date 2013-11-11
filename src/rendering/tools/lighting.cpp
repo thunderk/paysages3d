@@ -15,8 +15,9 @@ typedef struct
     void* data;
 } LightFilterCallback;
 
-struct LightingManager
+class LightingManager
 {
+public:
     int specularity_enabled;
     int callbacks_count;
     LightFilterCallback callbacks[MAX_CALLBACK_COUNT];

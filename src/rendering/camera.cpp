@@ -11,8 +11,9 @@
 #include "rendering/terrain/public.h"
 #include "rendering/water/public.h"
 
-struct CameraDefinition
+class CameraDefinition
 {
+public:
     /* Definition */
     Vector3 location;
     VectorSpherical direction;

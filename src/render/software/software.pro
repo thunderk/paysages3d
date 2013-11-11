@@ -14,13 +14,13 @@ DEFINES += SOFTWARE_LIBRARY
 include(../../common.pri)
 
 SOURCES += SoftwareRenderer.cpp \
-    FluidMediumTraversal.cpp \
-    FluidMediumInterface.cpp
+    FluidMediumInterface.cpp \
+    FluidMediumManager.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
-    FluidMediumTraversal.h \
-    FluidMediumInterface.h
+    FluidMediumInterface.h \
+    FluidMediumManager.h
 
 unix:!symbian {
     maemo5 {

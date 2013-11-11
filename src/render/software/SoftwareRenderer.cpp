@@ -1,11 +1,12 @@
 #include "SoftwareRenderer.h"
 
+#include "camera.h"
 #include "Scenery.h"
-#include "FluidMediumTraversal.h"
+#include "FluidMediumManager.h"
 
 SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
 {
-    fluid_medium = new FluidMediumTraversal(this);
+    fluid_medium = new FluidMediumManager(this);
 
     if (scenery)
     {
@@ -23,8 +24,13 @@ SoftwareRenderer::~SoftwareRenderer()
     delete fluid_medium;
 }
 
-Color SoftwareRenderer::applyMediumTraversal(Vector3 location, Color color)
+void SoftwareRenderer::initialize()
 {
-    // TODO
-    return color;
+    //fluid_medium->registerMedium(water_renderer);
 }
+
+/*Color SoftwareRenderer::applyMediumTraversal(Vector3 location, Color color)
+{
+    Vector3 eye = cameraGetLocation(scenery->getCamera());
+    return fluid_medium->applyTraversal(eye, location, color);
+}*/

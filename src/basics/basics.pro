@@ -19,9 +19,9 @@ SOURCES += \
     NoiseFunctionPerlin.cpp \
     NoiseFunctionSimplex.cpp \
     Interpolation.cpp \
-    SpaceCoordinates.cpp \
     Vector3.cpp \
-    Vector3.inline.cpp
+    Vector3.inline.cpp \
+    SpaceSegment.cpp
 
 HEADERS +=\
         basics_global.h \
@@ -30,8 +30,8 @@ HEADERS +=\
     NoiseFunctionPerlin.h \
     NoiseFunctionSimplex.h \
     Interpolation.h \
-    SpaceCoordinates.h \
-    Vector3.h
+    Vector3.h \
+    SpaceSegment.h
 
 unix:!symbian {
     maemo5 {

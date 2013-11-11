@@ -11,7 +11,7 @@ TEMPLATE = lib
 
 DEFINES += GOOGLETEST_LIBRARY
 
-#QMAKE_CXXFLAGS += -pthread
+QMAKE_CXXFLAGS += -pthread -Wno-missing-field-initializers
 
 INCLUDEPATH += . ./include
 

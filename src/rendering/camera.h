@@ -9,7 +9,7 @@ namespace paysages {
 namespace system {class PackStream;}
 }
 
-typedef struct CameraDefinition CameraDefinition;
+class CameraDefinition;
 
 typedef struct
 {

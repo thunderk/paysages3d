@@ -48,7 +48,7 @@ RENDERINGSHARED_EXPORT double colorGetPower(Color* col);
 RENDERINGSHARED_EXPORT void colorLimitPower(Color* col, double max_power);
 
 /* HDR profile for tone-mapping */
-typedef struct ColorProfile ColorProfile;
+class ColorProfile;
 typedef enum
 {
     TONE_MAPPING_UNCHARTED,

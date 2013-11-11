@@ -10,8 +10,6 @@ class Scenery;
 namespace paysages {
 namespace software {
 
-class FluidMediumTraversal;
-
 /*!
  * \brief This class renders a defined scenery in sotware mode (using only standard CPU computations).
  */
@@ -22,13 +20,16 @@ public:
     SoftwareRenderer(Scenery* scenery=0);
     virtual ~SoftwareRenderer();
 
-    inline Scenery* getScenery() const {return scenery;}
+    virtual void initialize();
 
-    virtual Color applyMediumTraversal(Vector3 location, Color color);
+    inline Scenery* getScenery() const {return scenery;}
+    inline FluidMediumManager* getFluidMediumManager() const {return fluid_medium;}
+
+    //virtual Color applyMediumTraversal(Vector3 location, Color color) override;
 
 private:
     Scenery* scenery;
-    FluidMediumTraversal* fluid_medium;
+    FluidMediumManager* fluid_medium;
 };
 
 }
