@@ -3,50 +3,12 @@
 
 #include "../rendering_global.h"
 
+// TEMP
+#include "Vector3.h"
+
 namespace paysages {
 namespace system {class PackStream;}
 }
-
-/*
- * Cartesian coordinates (X, Y, Z) - right handed :
- *
- *        Y (up)
- *        |
- *        |
- *        +----X
- *       /
- *      /
- *     Z
- *
- * Spherical coordinates (R, PHI, THETA) :
- *
- *   R is the distance to origin
- *   PHI is typical azimuth
- *   THETA is elevation angle (not polar angle!)
- *
- *   X=1  Y=0  Z=0   =>  PHI=0
- *   X=0  Y=0  Z=-1  =>  PHI=PI/2
- *   X=-1 Y=0  Z=0   =>  PHI=PI
- *   X=0  Y=0  Z=1   =>  PHI=3*PI/2
- *
- *   X=1  Y=0  Z=0   =>  THETA=0
- *   X=0  Y=1  Z=0   =>  THETA=PI/2
- *   X=0  Y=-1 Z=0   =>  THETA=-PI/2
- */
-
-typedef struct
-{
-    double x;
-    double y;
-    double z;
-} Vector3;
-
-typedef struct
-{
-    double r;
-    double theta;
-    double phi;
-} VectorSpherical;
 
 typedef struct
 {
@@ -67,33 +29,6 @@ typedef struct
     double o;
     double p;
 } Matrix4;
-
-RENDERINGSHARED_EXPORT extern Vector3 VECTOR_ZERO;
-RENDERINGSHARED_EXPORT extern Vector3 VECTOR_DOWN;
-RENDERINGSHARED_EXPORT extern Vector3 VECTOR_UP;
-RENDERINGSHARED_EXPORT extern Vector3 VECTOR_NORTH;
-RENDERINGSHARED_EXPORT extern Vector3 VECTOR_SOUTH;
-RENDERINGSHARED_EXPORT extern Vector3 VECTOR_EAST;
-RENDERINGSHARED_EXPORT extern Vector3 VECTOR_WEST;
-
-static inline Vector3 v3(double x, double y, double z)
-{
-    Vector3 result = {x, y, z};
-    return result;
-};
-RENDERINGSHARED_EXPORT void v3Save(PackStream* stream, Vector3* v);
-RENDERINGSHARED_EXPORT void v3Load(PackStream* stream, Vector3* v);
-RENDERINGSHARED_EXPORT Vector3 v3Translate(Vector3 v1, double x, double y, double z);
-RENDERINGSHARED_EXPORT Vector3 v3Add(Vector3 v1, Vector3 v2);
-RENDERINGSHARED_EXPORT Vector3 v3Sub(Vector3 v1, Vector3 v2);
-RENDERINGSHARED_EXPORT Vector3 v3Neg(Vector3 v);
-RENDERINGSHARED_EXPORT Vector3 v3Scale(Vector3 v, double scale);
-RENDERINGSHARED_EXPORT double v3Norm(Vector3 v);
-RENDERINGSHARED_EXPORT Vector3 v3Normalize(Vector3 v);
-RENDERINGSHARED_EXPORT double v3Dot(Vector3 v1, Vector3 v2);
-RENDERINGSHARED_EXPORT Vector3 v3Cross(Vector3 v1, Vector3 v2);
-RENDERINGSHARED_EXPORT VectorSpherical v3ToSpherical(Vector3 v);
-RENDERINGSHARED_EXPORT Vector3 v3FromSpherical(VectorSpherical v);
 
 RENDERINGSHARED_EXPORT void m4Save(PackStream* stream, Matrix4* m);
 RENDERINGSHARED_EXPORT void m4Load(PackStream* stream, Matrix4* m);

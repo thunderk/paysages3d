@@ -14,8 +14,12 @@ class TexturesRenderer;
 class CloudsRenderer;
 class WaterRenderer;
 
-struct Renderer
+class Renderer
 {
+public:
+    Renderer();
+    virtual ~Renderer();
+
     /* Render base configuration */
     int render_quality;
     int render_width;
@@ -40,7 +44,7 @@ struct Renderer
 
     /* Shortcuts */
     Color(*applyLightingToSurface)(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material);
-    Color(*applyMediumTraversal)(Renderer* renderer, Vector3 location, Color color);
+    virtual Color applyMediumTraversal(Vector3 location, Color color);
 
     /* Scenery related */
     RayCastingResult(*rayWalking)(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds);

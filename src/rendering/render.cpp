@@ -10,6 +10,7 @@
 #include "Thread.h"
 #include "Mutex.h"
 #include "System.h"
+#include "Vector3.h"
 
 typedef struct
 {
@@ -21,7 +22,11 @@ typedef struct
     } flags;
     union
     {
-        Vector3 location;
+        struct {
+            double x;
+            double y;
+            double z;
+        } location;
         struct {
             double r;
             double g;
@@ -343,7 +348,9 @@ static void _pushFragment(RenderArea* area, int x, int y, double z, int edge, Ve
             pixel_data->flags.dirty = (unsigned char)1;
             pixel_data->flags.edge = (unsigned char)edge;
             pixel_data->flags.callback = (unsigned char)callback;
-            pixel_data->data.location = location;
+            pixel_data->data.location.x = location.x;
+            pixel_data->data.location.y = location.y;
+            pixel_data->data.location.z = location.z;
             pixel_data->z = z;
             _setDirtyPixel(area, x, y);
         }
@@ -617,7 +624,8 @@ void* _renderPostProcessChunk(void* data)
                 callback = chunk->area->fragment_callbacks[fragment->flags.callback];
                 if (callback.function)
                 {
-                    col = callback.function(chunk->area->renderer, fragment->data.location, callback.data);
+                    Vector3 location(fragment->data.location.x, fragment->data.location.y, fragment->data.location.z);
+                    col = callback.function(chunk->area->renderer, location, callback.data);
                     /*colorNormalize(&col);*/
                 }
                 else

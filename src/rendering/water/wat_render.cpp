@@ -290,7 +290,7 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     colorMask(&color, &foam);
 
     /* Bring color to the camera */
-    color = renderer->applyMediumTraversal(renderer, location, color);
+    color = renderer->applyMediumTraversal(location, color);
 
     result.base = definition->material._rgb;
     result.final = color;

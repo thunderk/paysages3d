@@ -144,11 +144,11 @@ static Color _fakeGetFinalColor(Renderer* renderer, Vector3 location, double pre
     return COLOR_GREEN;
 }
 
-static Color _realGetFinalColor(Renderer* renderer, Vector3 location, double precision)
+static Color _realGetFinalColor(Renderer* renderer, Vector3 location, double)
 {
     /* TODO Restore precision control */
     TexturesResult textures = renderer->textures->applyToTerrain(renderer, location.x, location.z);
-    return renderer->applyMediumTraversal(renderer, textures.final_location, textures.final_color);
+    return renderer->applyMediumTraversal(textures.final_location, textures.final_color);
 }
 
 static RayCastingResult _fakeCastRay(Renderer* renderer, Vector3 start, Vector3 direction)

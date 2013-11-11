@@ -22,10 +22,10 @@ public:
 
     bool bindToFile(const char* filepath, bool write=false);
 
-    void write(int* value);
-    void write(double* value);
-    void write(char* value, int max_length);
-    void write(QString value);
+    void write(const int *value);
+    void write(const double *value);
+    void write(const char *value, const int max_length);
+    void write(const QString &value);
 
     void read(int* value);
     void read(double* value);

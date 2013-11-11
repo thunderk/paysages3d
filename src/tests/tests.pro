@@ -4,6 +4,8 @@ CONFIG -= app_bundle
 
 TARGET = paysages-tests
 
+include(../common.pri)
+
 SOURCES += main.cpp \
     Layers_Test.cpp \
     PackStream_Test.cpp \
@@ -14,7 +16,8 @@ SOURCES += main.cpp \
     Euclid_Test.cpp \
     Bruneton_Test.cpp \
     Camera_Test.cpp \
-    Clouds_Test.cpp
+    Clouds_Test.cpp \
+    FluidMediumManager_Test.cpp
 
 HEADERS += \
     BaseTestCase.h
@@ -48,3 +51,9 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../rendering/debug/
 else:unix: LIBS += -L$$OUT_PWD/../rendering/ -lpaysages_rendering
 INCLUDEPATH += $$PWD/../rendering
 DEPENDPATH += $$PWD/../rendering
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../render/software/release/ -lpaysages_render_software
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../render/software/debug/ -lpaysages_render_software
+else:unix: LIBS += -L$$OUT_PWD/../render/software/ -lpaysages_render_software
+INCLUDEPATH += $$PWD/../render/software
+DEPENDPATH += $$PWD/../render/software

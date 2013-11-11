@@ -12,6 +12,7 @@
 #include "rendering/water/public.h"
 #include "Scenery.h"
 #include "PackStream.h"
+#include "SoftwareRenderer.h"
 
 /**************** Previews ****************/
 class PreviewRenderLandscape : public BasePreview
@@ -182,7 +183,7 @@ void FormRender::startQuickRender()
     {
         rendererDelete(_renderer);
     }
-    _renderer = sceneryCreateStandardRenderer();
+    _renderer = new SoftwareRenderer();
     _renderer_inited = true;
 
     DialogRender* dialog = new DialogRender(this, _renderer);
@@ -198,7 +199,7 @@ void FormRender::startRender()
     {
         rendererDelete(_renderer);
     }
-    _renderer = sceneryCreateStandardRenderer();
+    _renderer = new SoftwareRenderer();
     _renderer_inited = true;
 
     DialogRender* dialog = new DialogRender(this, _renderer);

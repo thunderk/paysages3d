@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-void* memory2dRealloc(void* data, int datasize, int oldxsize, int oldysize, int newxsize, int newysize, int xoffset, int yoffset)
+char* memory2dRealloc(char* data, int datasize, int oldxsize, int oldysize, int newxsize, int newysize, int xoffset, int yoffset)
 {
     int xstart, xend, xlen;
     int ystart, yend, y;
-    void* result = malloc(datasize * newxsize * newysize);
+    char* result = (char*)malloc(datasize * newxsize * newysize);
 
     /* Move remaining part*/
     ystart = yoffset;

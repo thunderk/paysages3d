@@ -33,7 +33,7 @@ typedef struct
 
 typedef int (*FuncLightingAlterLight)(void* data, LightDefinition* light, Vector3 at);
 
-typedef struct LightingManager LightingManager;
+class LightingManager;
 typedef struct LightStatus LightStatus;
 
 RENDERINGSHARED_EXPORT LightingManager* lightingManagerCreate();

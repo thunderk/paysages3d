@@ -6,7 +6,7 @@ TARGET = paysages-cli
 
 INCLUDEPATH += $$PWD/..
 
-CONFIG(release, debug|release): DEFINES += NDEBUG
+include(../common.pri)
 
 SOURCES += \
     main.cpp

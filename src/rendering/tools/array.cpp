@@ -6,16 +6,18 @@
 
 void* naiveArrayInsert(void** array, size_t item_size, int item_count, int location)
 {
+    char** barray = (char**)array;
+
     assert(location >= 0);
     assert(location <= item_count);
 
-    *array = realloc(*array, item_size * (item_count + 1));
+    *barray = (char*)realloc(*barray, item_size * (item_count + 1));
     if (location < item_count)
     {
-        memmove(*array + item_size * (location + 1), *array + item_size * location, item_size * (item_count - location));
+        memmove(*barray + item_size * (location + 1), *barray + item_size * location, item_size * (item_count - location));
     }
 
-    return *array + item_size * location;
+    return *barray + item_size * location;
 }
 
 void arrayCreate(Array* array, int item_size)
@@ -35,7 +37,7 @@ void arrayDelete(Array* array)
 
 void* arrayAppend(Array* array, void* item)
 {
-    void* dest;
+    char* dest;
     size_t item_size = (size_t)array->item_size;
 
     if (array->length >= array->alloc_length)
@@ -44,7 +46,7 @@ void* arrayAppend(Array* array, void* item)
         array->data = realloc(array->data, item_size * array->alloc_length);
     }
 
-    dest = array->data + item_size * array->length;
+    dest = ((char*)array->data) + item_size * array->length;
     memcpy(dest, item, item_size);
     array->length++;
 
@@ -56,7 +58,7 @@ void* arrayAppend(Array* array, void* item)
 void arrayInsert(Array* array, void* item, int position)
 {
     size_t item_size;
-    void* dest;
+    char* dest;
 
     if (position >= array->length)
     {
@@ -72,9 +74,9 @@ void arrayInsert(Array* array, void* item, int position)
             array->data = realloc(array->data, item_size * array->alloc_length);
         }
 
-        dest = array->data + item_size * position;
+        dest = ((char*)array->data) + item_size * position;
         memmove(dest + item_size, dest, array->length - position);
-        memcpy(array->data + item_size * position, item, item_size);
+        memcpy(((char*)array->data) + item_size * position, item, item_size);
         array->length++;
 
         array->dirty = 1;
@@ -88,7 +90,7 @@ void arrayReplace(Array* array, void* item, int position)
     if (position >= 0 && position < array->length)
     {
         item_size = (size_t)array->item_size;
-        memcpy(array->data + item_size * position, item, item_size);
+        memcpy(((char*)array->data) + item_size * position, item, item_size);
 
         array->dirty = 1;
     }
@@ -105,7 +107,7 @@ void arrayLStrip(Array* array, int count)
     else if (count >= 0)
     {
         item_size = (size_t)array->item_size;
-        memmove(array->data, array->data + item_size * count, item_size * (array->length - count));
+        memmove(array->data, ((char*)array->data) + item_size * count, item_size * (array->length - count));
         array->length -= count;
         array->dirty = 1;
     }

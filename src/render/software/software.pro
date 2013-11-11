@@ -1,32 +1,26 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2013-11-04T11:54:27
+# Project created by QtCreator 2013-11-09T15:13:23
 #
 #-------------------------------------------------
 
-QT       += opengl
+QT       -= gui
 
-TARGET = paysages_render_opengl
+TARGET = paysages_render_software
 TEMPLATE = lib
 
-DEFINES += OPENGL_LIBRARY
+DEFINES += SOFTWARE_LIBRARY
 
 include(../../common.pri)
 
-SOURCES += \
-    OpenGLRenderer.cpp \
-    BaseExplorerChunk.cpp \
-    ExplorerChunkSky.cpp \
-    ExplorerChunkTerrain.cpp \
-    WidgetExplorer.cpp
+SOURCES += SoftwareRenderer.cpp \
+    FluidMediumInterface.cpp \
+    FluidMediumManager.cpp
 
-HEADERS +=\
-        opengl_global.h \
-    OpenGLRenderer.h \
-    BaseExplorerChunk.h \
-    ExplorerChunkSky.h \
-    ExplorerChunkTerrain.h \
-    WidgetExplorer.h
+HEADERS += SoftwareRenderer.h\
+        software_global.h \
+    FluidMediumInterface.h \
+    FluidMediumManager.h
 
 unix:!symbian {
     maemo5 {
@@ -36,9 +30,6 @@ unix:!symbian {
     }
     INSTALLS += target
 }
-
-# TEMP
-INCLUDEPATH += $$PWD/../..
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../system/debug/ -lpaysages_system

@@ -11,8 +11,9 @@
 #include "rendering/terrain/public.h"
 #include "rendering/water/public.h"
 
-struct CameraDefinition
+class CameraDefinition
 {
+public:
     /* Definition */
     Vector3 location;
     VectorSpherical direction;
@@ -207,7 +208,7 @@ void cameraSetLocation(CameraDefinition* camera, Vector3 location)
 
 void cameraSetLocationCoords(CameraDefinition* camera, double x, double y, double z)
 {
-    Vector3 v = {x, y, z};
+    Vector3 v(x, y, z);
     cameraSetLocation(camera, v);
 }
 
@@ -228,7 +229,7 @@ void cameraSetTarget(CameraDefinition* camera, Vector3 target)
 
 void cameraSetTargetCoords(CameraDefinition* camera, double x, double y, double z)
 {
-    Vector3 v = {x, y, z};
+    Vector3 v(x, y, z);
     cameraSetTarget(camera, v);
 }
 

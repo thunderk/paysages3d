@@ -13,7 +13,7 @@
 #include "rendering/textures/public.h"
 #include "rendering/water/public.h"
 
-static RayCastingResult _RAYCASTING_NULL = {0};
+static RayCastingResult _RAYCASTING_NULL = {0, {0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
 
 static void* _renderFirstPass(void* data)
 {
@@ -117,69 +117,89 @@ static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vecto
     return result;
 }
 
-static Color _applyMediumTraversal(Renderer* renderer, Vector3 location, Color color)
+
+
+
+
+
+Renderer::Renderer()
 {
-    color = renderer->atmosphere->applyAerialPerspective(renderer, location, color).final;
-    color = renderer->clouds->getColor(renderer, color, renderer->getCameraLocation(renderer, location), location);
+    RenderParams params = {1, 1, 1, 5};
+
+    render_quality = 5;
+    render_width = 1;
+    render_height = 1;
+    render_interrupt = 0;
+    render_progress = 0.0;
+    is_rendering = 0;
+    render_camera = cameraCreateDefinition();
+    render_area = renderCreateArea(this);
+
+    renderSetParams(render_area, params);
+
+    addRenderProgress = _addRenderProgress;
+    getCameraLocation = _getCameraLocation;
+    getCameraDirection = _getCameraDirection;
+    getPrecision = _getPrecision;
+    projectPoint = _projectPoint;
+    unprojectPoint = _unprojectPoint;
+    pushTriangle = _pushTriangle;
+    pushQuad = _pushQuad;
+    pushDisplacedTriangle = _pushDisplacedTriangle;
+    pushDisplacedQuad = _pushDisplacedQuad;
+
+    rayWalking = _rayWalking;
+
+    applyLightingToSurface = _applyLightingToSurface;
+
+    lighting = lightingManagerCreate();
+
+    atmosphere = (AtmosphereRenderer*)AtmosphereRendererClass.create();
+    clouds = (CloudsRenderer*)CloudsRendererClass.create();
+    terrain = (TerrainRenderer*)TerrainRendererClass.create();
+    textures = (TexturesRenderer*)TexturesRendererClass.create();
+    water = (WaterRenderer*)WaterRendererClass.create();
+}
+
+Renderer::~Renderer()
+{
+    cameraDeleteDefinition(render_camera);
+    lightingManagerDelete(lighting);
+
+    AtmosphereRendererClass.destroy(atmosphere);
+    CloudsRendererClass.destroy(clouds);
+    TerrainRendererClass.destroy(terrain);
+    TexturesRendererClass.destroy(textures);
+    WaterRendererClass.destroy(water);
+
+    renderDeleteArea(render_area);
+}
+
+Color Renderer::applyMediumTraversal(Vector3 location, Color color)
+{
+    color = atmosphere->applyAerialPerspective(this, location, color).final;
+    color = clouds->getColor(this, color, getCameraLocation(this, location), location);
     return color;
 }
 
+
+
+
+
+
+
+
+
+
+// Old API compat
+
 Renderer* rendererCreate()
 {
-    Renderer* result = new Renderer;
-    RenderParams params = {1, 1, 1, 5};
-
-    result->render_quality = 5;
-    result->render_width = 1;
-    result->render_height = 1;
-    result->render_interrupt = 0;
-    result->render_progress = 0.0;
-    result->is_rendering = 0;
-    result->render_camera = cameraCreateDefinition();
-    result->render_area = renderCreateArea(result);
-
-    renderSetParams(result->render_area, params);
-
-    result->addRenderProgress = _addRenderProgress;
-    result->getCameraLocation = _getCameraLocation;
-    result->getCameraDirection = _getCameraDirection;
-    result->getPrecision = _getPrecision;
-    result->projectPoint = _projectPoint;
-    result->unprojectPoint = _unprojectPoint;
-    result->pushTriangle = _pushTriangle;
-    result->pushQuad = _pushQuad;
-    result->pushDisplacedTriangle = _pushDisplacedTriangle;
-    result->pushDisplacedQuad = _pushDisplacedQuad;
-
-    result->rayWalking = _rayWalking;
-
-    result->applyLightingToSurface = _applyLightingToSurface;
-    result->applyMediumTraversal = _applyMediumTraversal;
-
-    result->lighting = lightingManagerCreate();
-
-    result->atmosphere = (AtmosphereRenderer*)AtmosphereRendererClass.create();
-    result->clouds = (CloudsRenderer*)CloudsRendererClass.create();
-    result->terrain = (TerrainRenderer*)TerrainRendererClass.create();
-    result->textures = (TexturesRenderer*)TexturesRendererClass.create();
-    result->water = (WaterRenderer*)WaterRendererClass.create();
-
-    return result;
+    return new Renderer();
 }
 
 void rendererDelete(Renderer* renderer)
 {
-    cameraDeleteDefinition(renderer->render_camera);
-    lightingManagerDelete(renderer->lighting);
-
-    AtmosphereRendererClass.destroy(renderer->atmosphere);
-    CloudsRendererClass.destroy(renderer->clouds);
-    TerrainRendererClass.destroy(renderer->terrain);
-    TexturesRendererClass.destroy(renderer->textures);
-    WaterRendererClass.destroy(renderer->water);
-
-    renderDeleteArea(renderer->render_area);
-
     delete renderer;
 }
 

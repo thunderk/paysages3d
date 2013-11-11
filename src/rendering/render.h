@@ -6,7 +6,7 @@
 #include "tools/color.h"
 #include "tools/euclid.h"
 
-typedef Color (*f_RenderFragmentCallback)(struct Renderer* renderer, Vector3 location, void* data);
+typedef Color (*f_RenderFragmentCallback)(Renderer* renderer, Vector3 location, void* data);
 
 typedef void (*RenderCallbackStart)(int width, int height, Color background);
 typedef void (*RenderCallbackDraw)(int x, int y, Color col);

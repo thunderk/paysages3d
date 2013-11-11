@@ -11,12 +11,17 @@ TEMPLATE = lib
 
 DEFINES += BASICS_LIBRARY
 
+include(../common.pri)
+
 SOURCES += \
     NoiseGenerator.cpp \
     NoiseFunctionNaive.cpp \
     NoiseFunctionPerlin.cpp \
     NoiseFunctionSimplex.cpp \
-    Interpolation.cpp
+    Interpolation.cpp \
+    Vector3.cpp \
+    Vector3.inline.cpp \
+    SpaceSegment.cpp
 
 HEADERS +=\
         basics_global.h \
@@ -24,7 +29,9 @@ HEADERS +=\
     NoiseFunctionNaive.h \
     NoiseFunctionPerlin.h \
     NoiseFunctionSimplex.h \
-    Interpolation.h
+    Interpolation.h \
+    Vector3.h \
+    SpaceSegment.h
 
 unix:!symbian {
     maemo5 {

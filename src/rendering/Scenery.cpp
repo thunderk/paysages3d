@@ -39,6 +39,11 @@ Scenery::~Scenery()
     WaterDefinitionClass.destroy(water);
 }
 
+Scenery* Scenery::getCurrent()
+{
+    return _main_scenery;
+}
+
 void Scenery::save(PackStream* stream)
 {
     BaseDefinition::save(stream);

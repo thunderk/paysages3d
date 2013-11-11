@@ -8,7 +8,7 @@ TEST(PackStream, All)
     int i;
     int data_i;
     double data_d;
-    char* data_s;
+    const char* data_s;
     char buffer[100];
 
     /* Writing to pack */

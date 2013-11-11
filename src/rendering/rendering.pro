@@ -5,7 +5,8 @@ TEMPLATE = lib
 TARGET = paysages_rendering
 
 DEFINES += RENDERING_LIBRARY
-CONFIG(release, debug|release): DEFINES += NDEBUG
+
+include(../common.pri)
 
 INCLUDEPATH += $$PWD/..
 
