@@ -1,16 +1,17 @@
 #ifndef EDITING_TEXTURES_PREVIEWCUMUL_H
 #define EDITING_TEXTURES_PREVIEWCUMUL_H
 
-#include "common/previewrenderer.h"
+#include "editing_global.h"
 
-class BasePreview;
+#include "Base2dPreviewRenderer.h"
+
 class TexturesDefinition;
 
-class PreviewCumul : public PreviewRenderer
+class PreviewCumul : public Base2dPreviewRenderer
 {
 public:
     explicit PreviewCumul():
-        PreviewRenderer(),textures(0){}
+        Base2dPreviewRenderer(),textures(0){}
 
     void setTextures(TexturesDefinition* textures);
     void setLayer(int layer);

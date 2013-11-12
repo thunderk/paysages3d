@@ -4,5 +4,6 @@
 #include "definition_global.h"
 #include "software_global.h"
 #include "opengl_global.h"
+#include "preview_global.h"
 
 #endif // EDITING_GLOBAL_H

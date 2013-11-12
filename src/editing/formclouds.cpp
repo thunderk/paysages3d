@@ -4,6 +4,8 @@
 #include "tools/color.h"
 #include "tools/euclid.h"
 #include "Scenery.h"
+#include "BasePreview.h"
+#include "renderer.h"
 
 #include "tools.h"
 

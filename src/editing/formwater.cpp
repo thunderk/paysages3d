@@ -1,4 +1,3 @@
-#include "basepreview.h"
 #include "formwater.h"
 
 #include <QColor>
@@ -13,6 +12,8 @@
 #include "atmosphere/public.h"
 #include "tools.h"
 #include "Scenery.h"
+#include "BasePreview.h"
+#include "camera.h"
 
 static WaterDefinition* _definition;
 

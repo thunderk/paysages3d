@@ -5,6 +5,7 @@
 #include "dialogbaseterrainnoise.h"
 #include "dialogterrainpainting.h"
 #include "previewterrainshape.h"
+#include "common/freeformhelper.h"
 #include "tools.h"
 #include "Scenery.h"
 #include "textures/public.h"

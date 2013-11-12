@@ -1,7 +1,7 @@
 #include "tools.h"
 
 #include <QEvent>
-#include "basepreview.h"
+#include "BasePreview.h"
 
 DialogWithPreview::DialogWithPreview(QWidget* parent) : QDialog(parent)
 {

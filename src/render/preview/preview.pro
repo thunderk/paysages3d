@@ -6,17 +6,26 @@
 
 TARGET = paysages_render_preview
 TEMPLATE = lib
+QT += gui widgets
 
 DEFINES += PREVIEW_LIBRARY
 
 include(../../common.pri)
 
 SOURCES += Base2dPreviewRenderer.cpp \
-    AtmosphereColorPreviewRenderer.cpp
+    AtmosphereColorPreviewRenderer.cpp \
+    BasePreview.cpp \
+    PreviewOsd.cpp \
+    DrawingWidget.cpp \
+    PreviewOsdItem.cpp
 
 HEADERS += Base2dPreviewRenderer.h\
         preview_global.h \
-    AtmosphereColorPreviewRenderer.h
+    AtmosphereColorPreviewRenderer.h \
+    BasePreview.h \
+    PreviewOsd.h \
+    DrawingWidget.h \
+    PreviewOsdItem.h
 
 unix:!symbian {
     maemo5 {

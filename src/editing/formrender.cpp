@@ -13,6 +13,7 @@
 #include "Scenery.h"
 #include "PackStream.h"
 #include "SoftwareRenderer.h"
+#include "BasePreview.h"
 
 /**************** Previews ****************/
 class PreviewRenderLandscape : public BasePreview

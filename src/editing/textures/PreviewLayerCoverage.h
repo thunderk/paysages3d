@@ -1,16 +1,17 @@
 #ifndef EDITING_TEXTURES_PREVIEWLAYERCOVERAGE_H
 #define EDITING_TEXTURES_PREVIEWLAYERCOVERAGE_H
 
-#include "common/previewrenderer.h"
+#include "editing_global.h"
 
-class BasePreview;
+#include "Base2dPreviewRenderer.h"
+
 class TexturesDefinition;
 
-class PreviewLayerCoverage : public PreviewRenderer
+class PreviewLayerCoverage : public Base2dPreviewRenderer
 {
 public:
     explicit PreviewLayerCoverage():
-        PreviewRenderer(),textures(0){}
+        Base2dPreviewRenderer(),textures(0){}
 
     void setTextures(TexturesDefinition* textures);
     void setLayer(int layer);

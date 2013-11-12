@@ -12,7 +12,9 @@
 #include <QMessageBox>
 #include <QSplashScreen>
 
-#include "basepreview.h"
+#include "BasePreview.h"
+#include "PreviewOsd.h"
+#include "PreviewOsdItem.h"
 #include "formclouds.h"
 #include "formatmosphere.h"
 #include "formwater.h"

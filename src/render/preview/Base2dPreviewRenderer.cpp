@@ -1,18 +1,28 @@
 #include "Base2dPreviewRenderer.h"
 
+#include "Scenery.h"
 #include "SoftwareRenderer.h"
 
-Base2dPreviewRenderer::Base2dPreviewRenderer()
+Base2dPreviewRenderer::Base2dPreviewRenderer():
+    SoftwareRenderer()
 {
-    renderer = new SoftwareRenderer();
+    scenery = new Scenery();
+}
+
+Base2dPreviewRenderer::~Base2dPreviewRenderer()
+{
+    delete scenery;
+}
+
+void Base2dPreviewRenderer::bindEvent(BasePreview*)
+{
 }
 
 void Base2dPreviewRenderer::updateEvent()
 {
-    delete renderer;
 }
 
-Color Base2dPreviewRenderer::getColor2D(double, double, double) const
+Color Base2dPreviewRenderer::getColor2D(double, double, double)
 {
     return COLOR_BLACK;
 }

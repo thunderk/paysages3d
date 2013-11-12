@@ -1,7 +1,10 @@
 #include "formtextures.h"
 
 #include "Scenery.h"
+#include "BasePreview.h"
+#include "renderer.h"
 #include "tools.h"
+#include "camera.h"
 
 /**************** Previews ****************/
 class PreviewTexturesCoverage : public BasePreview

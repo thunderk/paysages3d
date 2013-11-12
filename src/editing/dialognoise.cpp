@@ -11,6 +11,7 @@
 #include <QPushButton>
 #include <cmath>
 #include "tools/color.h"
+#include "BasePreview.h"
 
 /**************** Previews ****************/
 class PreviewLevel:public BasePreview

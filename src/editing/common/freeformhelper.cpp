@@ -8,11 +8,14 @@
 #include <QPushButton>
 #include <QWidget>
 #include <QInputDialog>
+#include <QLabel>
 #include "mainwindow.h"
 #include "dialogrender.h"
 #include "dialogexplorer.h"
 #include "Scenery.h"
+#include "BasePreview.h"
 #include "renderer.h"
+#include "camera.h"
 #include "tools.h"
 
 Q_DECLARE_METATYPE(double*)
@@ -79,7 +82,7 @@ void FreeFormHelper::startManaging()
     processGlobalRefresh();
 }
 
-void FreeFormHelper::addPreview(BasePreview* preview, PreviewRenderer* renderer)
+void FreeFormHelper::addPreview(BasePreview* preview, Base2dPreviewRenderer* renderer)
 {
     _previews.append(preview);
     preview->setRenderer(renderer);

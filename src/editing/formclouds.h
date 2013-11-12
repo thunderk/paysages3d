@@ -1,10 +1,11 @@
 #ifndef _PAYSAGES_QT_FORMCLOUDS_H_
 #define _PAYSAGES_QT_FORMCLOUDS_H_
 
-#include <QWidget>
-#include "basepreview.h"
+#include "editing_global.h"
+
 #include "baseformlayer.h"
 #include "clouds/public.h"
+class QWidget;
 
 class FormClouds : public BaseFormLayer
 {

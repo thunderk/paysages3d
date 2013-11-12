@@ -11,10 +11,16 @@
 
 #include "software_global.h"
 
+// TEMP
+class Scenery;
+
 namespace paysages {
 namespace preview {
-class Base2dPreviewRenderer;
-class AtmosphereColorPreviewRenderer;
+    class PreviewOsd;
+    class PreviewOsdItem;
+    class BasePreview;
+    class Base2dPreviewRenderer;
+    class AtmosphereColorPreviewRenderer;
 }
 }
 using namespace paysages::preview;

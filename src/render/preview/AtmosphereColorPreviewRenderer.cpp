@@ -147,10 +147,10 @@ static inline int _checkHit(Vector3 eye, Vector3 direction, Vector3* hit, Vector
 AtmosphereColorPreviewRenderer::AtmosphereColorPreviewRenderer():
     heading(0.0)
 {
-    cameraSetLocation(renderer->render_camera, Vector3(0.0, 7.0, 0.0));
+    cameraSetLocation(render_camera, Vector3(0.0, 7.0, 0.0));
 }
 
-Color AtmosphereColorPreviewRenderer::getColor2D(double x, double y, double) const
+Color AtmosphereColorPreviewRenderer::getColor2D(double x, double y, double)
 {
     Vector3 eye = {0.0, 7.0, 0.0};
     Vector3 direction = {x, y, -1.0};
@@ -166,13 +166,13 @@ Color AtmosphereColorPreviewRenderer::getColor2D(double x, double y, double) con
         normal = m4Transform(rotation, normal);
         hit = m4Transform(rotation, hit);
 
-        color = renderer->applyLightingToSurface(renderer, hit, normal, &MOUNT_MATERIAL);
-        return renderer->atmosphere->applyAerialPerspective(renderer, hit, color).final;
+        color = this->applyLightingToSurface(this, hit, normal, &MOUNT_MATERIAL);
+        return this->atmosphere->applyAerialPerspective(this, hit, color).final;
     }
     else
     {
         direction = m4Transform(rotation, direction);
 
-        return renderer->atmosphere->getSkyColor(renderer, direction).final;
+        return this->atmosphere->getSkyColor(this, direction).final;
     }
 }

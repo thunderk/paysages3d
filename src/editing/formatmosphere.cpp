@@ -9,12 +9,13 @@
 #include "atmosphere/public.h"
 #include "AtmosphereColorPreviewRenderer.h"
 #include "Scenery.h"
+#include "BasePreview.h"
 #include "renderer.h"
 
 static AtmosphereDefinition* _definition;
 
 /**************** Previews ****************/
-class PreviewSkyEast:public PreviewRenderer, public AtmosphereColorPreviewRenderer
+class PreviewSkyEast:public AtmosphereColorPreviewRenderer
 {
 public:
     void bindEvent(BasePreview* preview) override
@@ -22,14 +23,14 @@ public:
         preview->configHdrToneMapping(true);
         preview->configScaling(0.5, 5.0, 0.5, 2.5);
     }
-    void updateData()
+    void updateEvent() override
     {
-        /*AtmosphereRendererClass.bind(_renderer, _definition);
-        _renderer->prepare();*/
+        /*AtmosphereRendererClass.bind(renderer, _definition);
+        renderer->prepare();*/
     }
 };
 
-class PreviewSkyWest:public PreviewRenderer, public AtmosphereColorPreviewRenderer
+class PreviewSkyWest:public AtmosphereColorPreviewRenderer
 {
 public:
     void bindEvent(BasePreview* preview) override
@@ -37,10 +38,10 @@ public:
         preview->configHdrToneMapping(true);
         preview->configScaling(0.5, 5.0, 0.5, 2.5);
     }
-    void updateData()
+    void updateEvent() override
     {
-        /*AtmosphereRendererClass.bind(_renderer, _definition);
-        _renderer->prepare();*/
+        /*AtmosphereRendererClass.bind(renderer, _definition);
+        renderer->prepare();*/
     }
 };
 

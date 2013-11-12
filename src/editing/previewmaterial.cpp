@@ -4,9 +4,11 @@
 #include <QPainter>
 #include "tools.h"
 #include "SoftwareRenderer.h"
+#include "BasePreview.h"
 
 #include "tools/lighting.h"
 #include "tools/color.h"
+#include "camera.h"
 
 /***** Shared renderer *****/
 MaterialPreviewRenderer::MaterialPreviewRenderer(SurfaceMaterial* material)
@@ -24,7 +26,7 @@ MaterialPreviewRenderer::MaterialPreviewRenderer(SurfaceMaterial* material)
     _material = material;
 
     Vector3 camera_location = {0.0, 0.0, 10.0};
-    cameraSetLocation(renderer->render_camera, camera_location);
+    cameraSetLocation(render_camera, camera_location);
 
     _color_profile = colorProfileCreate();
     colorProfileSetToneMapping(_color_profile, TONE_MAPPING_UNCHARTED, 1.0);
@@ -64,7 +66,7 @@ Color MaterialPreviewRenderer::getColor2D(double x, double y, double)
         }
 
         point = v3Normalize(point);
-        color = lightingApplyOneLight(&_light, renderer->getCameraLocation(renderer, point), point, point, _material);
+        color = lightingApplyOneLight(&_light, getCameraLocation(this, point), point, point, _material);
         if (dist > 0.95)
         {
             color.a = (1.0 - dist) / 0.05;

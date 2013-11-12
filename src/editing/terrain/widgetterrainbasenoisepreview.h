@@ -3,7 +3,7 @@
 
 #include "editing_global.h"
 
-#include "common/DrawingWidget.h"
+#include "DrawingWidget.h"
 class QPainter;
 
 class WidgetTerrainBaseNoisePreview : public DrawingWidget

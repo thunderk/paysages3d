@@ -1,14 +1,17 @@
 #ifndef FREEFORMHELPER_H
 #define FREEFORMHELPER_H
 
+#include "editing_global.h"
+
 #include <QVector>
 #include <QStringList>
 
 #include "widgetsliderdecimal.h"
-#include "../basepreview.h"
 
 class QSlider;
 class QPushButton;
+class QLabel;
+class Renderer;
 
 class FreeFormHelper:public QObject
 {
@@ -20,7 +23,7 @@ public:
 
     void startManaging();
 
-    void addPreview(BasePreview* preview, PreviewRenderer* renderer);
+    void addPreview(BasePreview* preview, Base2dPreviewRenderer* renderer);
     void addDoubleInputSlider(WidgetSliderDecimal* slider, double* value, double min=0.0, double max=1.0, double small_step=0.0, double large_step=0.0);
     void setApplyButton(QPushButton* button);
     void setRevertButton(QPushButton* button);

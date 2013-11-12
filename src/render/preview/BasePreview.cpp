@@ -1,4 +1,4 @@
-#include "basepreview.h"
+#include "BasePreview.h"
 
 #include <QVector>
 #include <QPainter>
@@ -6,11 +6,15 @@
 #include <QWheelEvent>
 #include <QLabel>
 #include <QMenu>
-#include <assert.h>
-#include <math.h>
+#include <QThread>
+#include <QMutex>
+#include <cassert>
+#include <cmath>
 #include "tools.h"
 #include "System.h"
 #include "PackStream.h"
+#include "Base2dPreviewRenderer.h"
+#include "PreviewOsd.h"
 
 /*************** PreviewChunk ***************/
 class PreviewChunk
@@ -142,9 +146,50 @@ private:
     int _ysize;
 };
 
+class PreviewDrawingThread;
+class PreviewDrawingManager
+{
+public:
+    PreviewDrawingManager();
+    void startThreads();
+    void stopThreads();
+    void addChunk(PreviewChunk* chunk);
+    void removeChunks(BasePreview* preview);
+    void updateChunks(BasePreview* preview);
+    void suspendChunks(BasePreview* preview);
+    void updateAllChunks();
+    void performOneThreadJob();
+    int chunkCount();
+
+private:
+    int _thread_count;
+    QVector<PreviewDrawingThread*> _threads;
+    QVector<PreviewChunk*> _chunks;
+    QList<PreviewChunk*> _updateQueue;
+    QMutex _lock;
+};
+
 static PreviewDrawingManager* _drawing_manager = NULL;
 
 /*************** PreviewDrawingThread ***************/
+class PreviewDrawingThread : public QThread
+{
+public:
+    PreviewDrawingThread();
+    void askStop();
+
+    static inline void usleep(int us)
+    {
+        QThread::usleep(us);
+    }
+
+protected:
+    void run();
+
+private:
+    bool _running;
+};
+
 PreviewDrawingThread::PreviewDrawingThread() :
 QThread()
 {
@@ -184,7 +229,7 @@ void PreviewDrawingManager::startThreads()
 
 void PreviewDrawingManager::stopThreads()
 {
-    logDebug(QString("[Previews] Stopping all render threads"));
+    qDebug("[Previews] Stopping all render threads");
     for (int i = 0; i < _threads.size(); i++)
     {
         _threads.at(i)->askStop();
@@ -226,7 +271,7 @@ void PreviewDrawingManager::removeChunks(BasePreview* preview)
         }
     }
 
-    logDebug(QString("[Previews] %1 chunks removed, %2 remaining").arg(removed).arg(_chunks.size()));
+    qDebug("[Previews] %d chunks removed, %d remaining", removed, _chunks.size());
 }
 
 void PreviewDrawingManager::suspendChunks(BasePreview* preview)
@@ -270,7 +315,7 @@ void PreviewDrawingManager::updateChunks(BasePreview* preview)
 
 void PreviewDrawingManager::updateAllChunks()
 {
-    logDebug(QString("[Previews] Reviving all %1 preview chunks").arg(_chunks.size()));
+    qDebug("[Previews] Reviving all %d preview chunks", _chunks.size());
     for (int i = 0; i < _chunks.size(); i++)
     {
         PreviewChunk* chunk;
@@ -388,7 +433,7 @@ BasePreview::~BasePreview()
     delete _lock_drawing;
 }
 
-void BasePreview::setRenderer(PreviewRenderer* renderer)
+void BasePreview::setRenderer(Base2dPreviewRenderer* renderer)
 {
     _renderer = renderer;
     _renderer->bindEvent(this);
@@ -605,7 +650,7 @@ QColor BasePreview::getPixelColor(int x, int y)
     {
         colorNormalize(&col);
     }
-    return colorToQColor(col);
+    return QColor::fromRgbF(col.r, col.g, col.b, col.a);
 }
 
 void BasePreview::timerEvent(QTimerEvent*)
@@ -681,7 +726,7 @@ void BasePreview::resizeEvent(QResizeEvent* event)
             added++;
         }
     }
-    logDebug(QString("[Previews] %1 chunks added, %2 total").arg(added).arg(_drawing_manager->chunkCount()));
+    qDebug("[Previews] %d chunks added, %d total", added, _drawing_manager->chunkCount());
 
     delete image;
 
@@ -770,7 +815,7 @@ void BasePreview::contextMenuEvent(QContextMenuEvent* event)
             action->setProperty("value", i);
             if (i == iter1.value().current)
             {
-                action->setIcon(QIcon(getDataPath("images/choice_on.png")));
+                action->setIcon(QIcon(":/images/choice_on.png"));
                 action->setIconVisibleInMenu(true);
             }
         }
@@ -793,7 +838,7 @@ void BasePreview::contextMenuEvent(QContextMenuEvent* event)
         action->setProperty("value", not iter2.value().value);
         if (iter2.value().value)
         {
-            action->setIcon(QIcon(getDataPath("images/toggle_on.png")));
+            action->setIcon(QIcon(":/images/toggle_on.png"));
             action->setIconVisibleInMenu(true);
         }
     }

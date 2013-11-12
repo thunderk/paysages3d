@@ -3,22 +3,28 @@
 
 #include "preview_global.h"
 
+#include "SoftwareRenderer.h"
 #include "tools/color.h"
+
+class Scenery;
 
 namespace paysages {
 namespace preview {
 
-class PREVIEWSHARED_EXPORT Base2dPreviewRenderer
+class PREVIEWSHARED_EXPORT Base2dPreviewRenderer: protected SoftwareRenderer
 {
 
 public:
     Base2dPreviewRenderer();
+    virtual ~Base2dPreviewRenderer();
+
+    virtual void bindEvent(BasePreview* preview);
 
     virtual void updateEvent();
-    virtual Color getColor2D(double x, double y, double scaling) const;
+    virtual Color getColor2D(double x, double y, double scaling);
 
 protected:
-    SoftwareRenderer* renderer;
+    Scenery* scenery;
 };
 
 }

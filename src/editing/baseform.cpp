@@ -10,6 +10,7 @@
 #include "inputmaterial.h"
 #include "inputenum.h"
 #include "inputlayers.h"
+#include "BasePreview.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>

@@ -1,9 +1,12 @@
 #ifndef MAINTERRAINFORM_H
 #define MAINTERRAINFORM_H
 
+#include "editing_global.h"
+
 #include <QWidget>
-#include "common/freeformhelper.h"
+
 #include "terrain/public.h"
+class FreeFormHelper;
 
 namespace Ui {
 class MainTerrainForm;
@@ -36,7 +39,7 @@ private:
 
     TerrainDefinition* _terrain;
 
-    PreviewRenderer* _renderer_shape;
+    Base2dPreviewRenderer* _renderer_shape;
 };
 
 #endif // MAINTERRAINFORM_H

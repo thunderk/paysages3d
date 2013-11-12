@@ -1,9 +1,10 @@
 #ifndef _PAYSAGES_QT_BASEFORM_H_
 #define _PAYSAGES_QT_BASEFORM_H_
 
+#include "editing_global.h"
+
 #include <QWidget>
 #include <QStringList>
-#include "basepreview.h"
 #include "baseinput.h"
 #include "dialoglayers.h"
 #include "shared/types.h"
@@ -13,18 +14,6 @@
 
 class QPushButton;
 class QComboBox;
-
-namespace paysages {
-namespace system {
-    class PackStream;
-}
-namespace basics {
-    class NoiseGenerator;
-}
-namespace definition {
-    class Layers;
-}
-}
 
 class BaseForm : public QWidget
 {

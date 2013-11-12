@@ -1,7 +1,7 @@
 #include "previewterrainshape.h"
 
 #include "SoftwareRenderer.h"
-#include "basepreview.h"
+#include "BasePreview.h"
 #include "water/public.h"
 
 PreviewTerrainShape::PreviewTerrainShape(TerrainDefinition* terrain)
@@ -9,7 +9,7 @@ PreviewTerrainShape::PreviewTerrainShape(TerrainDefinition* terrain)
     _terrain = terrain;
     _highlight_enabled = true;
 
-    terrainAlterPreviewRenderer(renderer);
+    terrainAlterPreviewRenderer(this);
 }
 
 void PreviewTerrainShape::bindEvent(BasePreview* preview)
@@ -23,12 +23,12 @@ void PreviewTerrainShape::bindEvent(BasePreview* preview)
 
 void PreviewTerrainShape::updateEvent()
 {
-    TerrainRendererClass.bind(renderer, _terrain);
+    TerrainRendererClass.bind(this, _terrain);
 }
 
-Color PreviewTerrainShape::getColor2D(double x, double y, double scaling) const
+Color PreviewTerrainShape::getColor2D(double x, double y, double scaling)
 {
-    return waterGetPreviewCoverage(renderer, x, y, scaling, _highlight_enabled ? 1 : 0);
+    return waterGetPreviewCoverage(this, x, y, scaling, _highlight_enabled ? 1 : 0);
 }
 
 void PreviewTerrainShape::toggleChangeEvent(QString key, bool value)

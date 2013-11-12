@@ -1,7 +1,7 @@
 #ifndef SMALLPREVIEWCOLOR_H
 #define	SMALLPREVIEWCOLOR_H
 
-#include "common/DrawingWidget.h"
+#include "DrawingWidget.h"
 
 #include "tools/color.h"
 

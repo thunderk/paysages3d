@@ -1,7 +1,7 @@
 #ifndef SMALLPREVIEWHUES_H
 #define	SMALLPREVIEWHUES_H
 
-#include "common/DrawingWidget.h"
+#include "DrawingWidget.h"
 
 class SmallPreviewHues: public DrawingWidget
 {

@@ -1,26 +1,18 @@
-#ifndef _PAYSAGES_QT_BASEPREVIEW_H_
-#define _PAYSAGES_QT_BASEPREVIEW_H_
+#ifndef BASEPREVIEW_H
+#define BASEPREVIEW_H
 
-#include "editing_global.h"
+#include "preview_global.h"
 
-#include <QMutex>
-#include <QImage>
-#include <QThread>
-#include <QVector>
-#include <QList>
-#include <QLabel>
-#include <QHash>
-
-#include "previewosd.h"
-#include "common/DrawingWidget.h"
-#include "common/previewrenderer.h"
+#include "DrawingWidget.h"
 #include "tools/color.h"
+#include <QImage>
+#include <QStringList>
+class QPainter;
+class QMutex;
+class QLabel;
 
 namespace paysages {
-namespace system {
-    class PackStream;
-}
-}
+namespace preview {
 
 class _ContextChoice
 {
@@ -37,8 +29,6 @@ public:
     bool value;
 };
 
-class QPainter;
-
 class BasePreview : public DrawingWidget
 {
     Q_OBJECT
@@ -47,7 +37,7 @@ public:
     BasePreview(QWidget* parent);
     ~BasePreview();
 
-    void setRenderer(PreviewRenderer* renderer);
+    void setRenderer(Base2dPreviewRenderer* renderer);
 
     virtual void savePack(PackStream* stream);
     virtual void loadPack(PackStream* stream);
@@ -110,7 +100,7 @@ private:
 
     QLabel* _info;
 
-    PreviewRenderer* _renderer;
+    Base2dPreviewRenderer* _renderer;
 
     int _width;
     int _height;
@@ -149,50 +139,7 @@ private slots:
     void choiceSelected(QAction* action);
 };
 
+}
+}
 
-
-/*** Private section ***/
-class PreviewChunk;
-
-class PreviewDrawingThread : public QThread
-{
-public:
-    PreviewDrawingThread();
-    void askStop();
-
-    static inline void usleep(int us)
-    {
-        QThread::usleep(us);
-    }
-
-protected:
-    void run();
-
-private:
-    bool _running;
-};
-
-class PreviewDrawingManager
-{
-public:
-    PreviewDrawingManager();
-    void startThreads();
-    void stopThreads();
-    void addChunk(PreviewChunk* chunk);
-    void removeChunks(BasePreview* preview);
-    void updateChunks(BasePreview* preview);
-    void suspendChunks(BasePreview* preview);
-    void updateAllChunks();
-    void performOneThreadJob();
-    int chunkCount();
-
-private:
-    int _thread_count;
-    QVector<PreviewDrawingThread*> _threads;
-    QVector<PreviewChunk*> _chunks;
-    QList<PreviewChunk*> _updateQueue;
-    QMutex _lock;
-};
-
-
-#endif
+#endif // BASEPREVIEW_H

@@ -1,10 +1,15 @@
 #ifndef DRAWINGWIDGET_H
 #define	DRAWINGWIDGET_H
 
+#include "preview_global.h"
+
 #include <QWidget>
 
 class QPaintEvent;
 class QPainter;
+
+namespace paysages {
+namespace preview {
 
 class DrawingWidget : public QWidget
 {
@@ -16,6 +21,9 @@ protected:
 private:
     virtual void paintEvent(QPaintEvent* event);
 };
+
+}
+}
 
 #endif	/* DRAWINGWIDGET_H */
 

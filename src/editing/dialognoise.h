@@ -1,9 +1,10 @@
 #ifndef _PAYSAGES_QT_DIALOGNOISE_H_
 #define _PAYSAGES_QT_DIALOGNOISE_H_
 
+#include "editing_global.h"
+
 #include <QListWidget>
 #include <QComboBox>
-#include "basepreview.h"
 #include "tools.h"
 #include "NoiseGenerator.h"
 

@@ -13,7 +13,6 @@ HEADERS += \
     terrain/widgetheightmap.h \
     widgetcurveeditor.h \
     tools.h \
-    previewosd.h \
     previewmaterial.h \
     previewcolorgradation.h \
     inputnoise.h \
@@ -38,7 +37,6 @@ HEADERS += \
     dialogexplorer.h \
     dialogcurve.h \
     dialogcolorgradation.h \
-    basepreview.h \
     baseinput.h \
     baseformlayer.h \
     baseform.h \
@@ -49,14 +47,12 @@ HEADERS += \
     common/freeformhelper.h \
     terrain/previewterrainshape.h \
     common/widgetsliderdecimal.h \
-    common/previewrenderer.h \
     terrain/widgetterrainbasenoisepreview.h \
     common/mainwindow.h \
     terrain/dialogbaseterrainnoise.h \
     textures/maintexturesform.h \
     common/freelayerhelper.h \
     lighting/DialogMaterialEditor.h \
-    common/DrawingWidget.h \
     lighting/SmallPreviewColor.h \
     lighting/SmallPreviewHues.h \
     textures/PreviewLayerCoverage.h \
@@ -69,7 +65,6 @@ SOURCES += \
     terrain/widgetheightmap.cpp \
     widgetcurveeditor.cpp \
     tools.cpp \
-    previewosd.cpp \
     previewmaterial.cpp \
     previewcolorgradation.cpp \
     inputnoise.cpp \
@@ -94,7 +89,6 @@ SOURCES += \
     dialogexplorer.cpp \
     dialogcurve.cpp \
     dialogcolorgradation.cpp \
-    basepreview.cpp \
     baseinput.cpp \
     baseformlayer.cpp \
     baseform.cpp \
@@ -105,14 +99,12 @@ SOURCES += \
     common/freeformhelper.cpp \
     terrain/previewterrainshape.cpp \
     common/widgetsliderdecimal.cpp \
-    common/previewrenderer.cpp \
     terrain/widgetterrainbasenoisepreview.cpp \
     common/mainwindow.cpp \
     terrain/dialogbaseterrainnoise.cpp \
     textures/maintexturesform.cpp \
     common/freelayerhelper.cpp \
     lighting/DialogMaterialEditor.cpp \
-    common/DrawingWidget.cpp \
     lighting/SmallPreviewColor.cpp \
     lighting/SmallPreviewHues.cpp \
     textures/PreviewLayerCoverage.cpp \

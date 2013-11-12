@@ -30,4 +30,8 @@
         <file>images/logo_64.png</file>
         <file>images/logo_256.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>images/toggle_on.png</file>
+        <file>images/choice_on.png</file>
+    </qresource>
 </RCC>

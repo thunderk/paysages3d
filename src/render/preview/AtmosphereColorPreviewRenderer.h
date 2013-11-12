@@ -11,7 +11,7 @@ class AtmosphereColorPreviewRenderer:public Base2dPreviewRenderer
 public:
     AtmosphereColorPreviewRenderer();
 
-    virtual Color getColor2D(double x, double y, double scaling) const override;
+    virtual Color getColor2D(double x, double y, double scaling) override;
 
 protected:
     double heading;
