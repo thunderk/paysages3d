@@ -1,18 +1,8 @@
 #ifndef EDITING_GLOBAL_H
 #define EDITING_GLOBAL_H
 
-namespace paysages
-{
-    namespace system {}
-    namespace basics {}
-    namespace definition {}
-    namespace software {}
-    namespace opengl {}
-}
-using namespace paysages::system;
-using namespace paysages::basics;
-using namespace paysages::definition;
-using namespace paysages::software;
-using namespace paysages::opengl;
+#include "definition_global.h"
+#include "software_global.h"
+#include "opengl_global.h"
 
 #endif // EDITING_GLOBAL_H

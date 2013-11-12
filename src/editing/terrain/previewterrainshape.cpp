@@ -1,16 +1,15 @@
 #include "previewterrainshape.h"
 
+#include "SoftwareRenderer.h"
 #include "basepreview.h"
-#include "rendering/water/public.h"
+#include "water/public.h"
 
 PreviewTerrainShape::PreviewTerrainShape(TerrainDefinition* terrain)
 {
     _terrain = terrain;
     _highlight_enabled = true;
 
-    // TODO Don't delete the base renderer, just alter it
-    rendererDelete(renderer);
-    renderer = terrainCreatePreviewRenderer();
+    terrainAlterPreviewRenderer(renderer);
 }
 
 void PreviewTerrainShape::bindEvent(BasePreview* preview)
@@ -27,7 +26,7 @@ void PreviewTerrainShape::updateEvent()
     TerrainRendererClass.bind(renderer, _terrain);
 }
 
-Color PreviewTerrainShape::getColor2D(double x, double y, double scaling)
+Color PreviewTerrainShape::getColor2D(double x, double y, double scaling) const
 {
     return waterGetPreviewCoverage(renderer, x, y, scaling, _highlight_enabled ? 1 : 0);
 }

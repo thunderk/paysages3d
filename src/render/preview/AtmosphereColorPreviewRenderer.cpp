@@ -1,7 +1,9 @@
-#include "public.h"
+#include "AtmosphereColorPreviewRenderer.h"
 
-#include "../renderer.h"
-#include "rendering/camera.h"
+#include "SoftwareRenderer.h"
+#include "AtmosphereRenderer.h"
+#include "camera.h"
+#include "tools/lighting.h"
 
 /*
  * Atmosphere previews.
@@ -142,7 +144,13 @@ static inline int _checkHit(Vector3 eye, Vector3 direction, Vector3* hit, Vector
     return _checkHitGround(eye, direction, hit);
 }
 
-Color atmosphereGetPreview(Renderer* renderer, double x, double y, double heading)
+AtmosphereColorPreviewRenderer::AtmosphereColorPreviewRenderer():
+    heading(0.0)
+{
+    cameraSetLocation(renderer->render_camera, Vector3(0.0, 7.0, 0.0));
+}
+
+Color AtmosphereColorPreviewRenderer::getColor2D(double x, double y, double) const
 {
     Vector3 eye = {0.0, 7.0, 0.0};
     Vector3 direction = {x, y, -1.0};
@@ -167,14 +175,4 @@ Color atmosphereGetPreview(Renderer* renderer, double x, double y, double headin
 
         return renderer->atmosphere->getSkyColor(renderer, direction).final;
     }
-}
-
-Renderer* atmosphereCreatePreviewRenderer()
-{
-    Renderer* result = rendererCreate();
-    Vector3 location = {0.0, 7.0, 0.0};
-
-    cameraSetLocation(result->render_camera, location);
-
-    return result;
 }

@@ -2,13 +2,12 @@
 #define _PAYSAGES_QT_PREVIEWMATERIAL_H_
 
 #include "basepreview.h"
-#include "editing/common/previewrenderer.h"
+#include "common/previewrenderer.h"
 
-#include "rendering/tools/lighting.h"
-#include "rendering/renderer.h"
+#include "tools/lighting.h"
+#include "renderer.h"
 
 class MaterialPreviewRenderer:public PreviewRenderer {
-    Q_OBJECT
 public:
     MaterialPreviewRenderer(SurfaceMaterial* material);
     ~MaterialPreviewRenderer();

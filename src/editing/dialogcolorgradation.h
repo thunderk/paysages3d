@@ -2,12 +2,13 @@
 #define _PAYSAGES_QT_DIALOGCOLORGRADATION_H_
 
 #include <QDialog>
-#include <QPushButton>
 #include "widgetcurveeditor.h"
 #include "previewcolorgradation.h"
 
-#include "rendering/tools/color.h"
-#include "rendering/tools/curve.h"
+#include "tools/color.h"
+#include "tools/curve.h"
+
+class QPushButton;
 
 class DialogColorGradation : public QDialog
 {

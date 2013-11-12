@@ -2,7 +2,7 @@
 #define DIALOGTEXTURESLAYER_H
 
 #include <QDialog>
-#include "rendering/textures/public.h"
+#include "textures/public.h"
 
 namespace Ui {
 class DialogTexturesLayer;

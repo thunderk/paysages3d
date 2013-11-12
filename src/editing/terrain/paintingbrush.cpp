@@ -1,6 +1,7 @@
 #include "paintingbrush.h"
 
 #include <cmath>
+#include <QAbstractSlider>
 #include "NoiseGenerator.h"
 
 PaintingBrush::PaintingBrush()

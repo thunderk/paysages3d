@@ -8,9 +8,9 @@
 #include "../tools/boundingbox.h"
 #include "../tools/parallel.h"
 #include "../renderer.h"
-#include "rendering/water/public.h"
-#include "rendering/textures/public.h"
-#include "rendering/camera.h"
+#include "water/public.h"
+#include "textures/public.h"
+#include "camera.h"
 
 /*
  * Terrain rasterization.

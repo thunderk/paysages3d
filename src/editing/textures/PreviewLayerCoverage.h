@@ -1,7 +1,7 @@
 #ifndef EDITING_TEXTURES_PREVIEWLAYERCOVERAGE_H
 #define EDITING_TEXTURES_PREVIEWLAYERCOVERAGE_H
 
-#include "editing/common/previewrenderer.h"
+#include "common/previewrenderer.h"
 
 class BasePreview;
 class TexturesDefinition;
@@ -9,8 +9,8 @@ class TexturesDefinition;
 class PreviewLayerCoverage : public PreviewRenderer
 {
 public:
-    explicit PreviewLayerCoverage(QObject *parent = 0):
-        PreviewRenderer(parent),textures(0){}
+    explicit PreviewLayerCoverage():
+        PreviewRenderer(),textures(0){}
 
     void setTextures(TexturesDefinition* textures);
     void setLayer(int layer);

@@ -3,9 +3,9 @@
 
 #include "../rendering_global.h"
 #include "Layers.h"
-#include "rendering/tools/zone.h"
-#include "rendering/tools/lighting.h"
-#include "rendering/terrain/public.h"
+#include "tools/zone.h"
+#include "tools/lighting.h"
+#include "terrain/public.h"
 
 #define TEXTURES_MAX_LAYERS 50
 

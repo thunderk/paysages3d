@@ -2,16 +2,11 @@
 #define _PAYSAGES_QT_DIALOGEXPLORER_H_
 
 #include "editing_global.h"
+
 #include <QDialog>
 
 class CameraDefinition;
 class Renderer;
-
-namespace paysages {
-namespace opengl {
-class WidgetExplorer;
-}
-}
 
 class DialogExplorer : public QDialog
 {

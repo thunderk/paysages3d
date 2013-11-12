@@ -4,14 +4,14 @@
 
 #include "NoiseGenerator.h"
 #include "PackStream.h"
-#include "rendering/atmosphere/public.h"
-#include "rendering/camera.h"
-#include "rendering/clouds/public.h"
-#include "rendering/terrain/public.h"
-#include "rendering/textures/public.h"
-#include "rendering/water/public.h"
-#include "rendering/renderer.h"
-#include "rendering/terrain/ter_raster.h"
+#include "atmosphere/public.h"
+#include "camera.h"
+#include "clouds/public.h"
+#include "terrain/public.h"
+#include "textures/public.h"
+#include "water/public.h"
+#include "renderer.h"
+#include "terrain/ter_raster.h"
 
 static Scenery* _main_scenery;
 static SceneryCustomDataCallback _custom_save = NULL;

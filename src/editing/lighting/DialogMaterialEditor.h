@@ -3,10 +3,10 @@
 
 #include <QDialog>
 
-#include "editing/previewmaterial.h"
+#include "previewmaterial.h"
 
-#include "rendering/tools/lighting.h"
-#include "rendering/renderer.h"
+#include "tools/lighting.h"
+#include "renderer.h"
 
 namespace Ui {
 class DialogMaterialEditor;

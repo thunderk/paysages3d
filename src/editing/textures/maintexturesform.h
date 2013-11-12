@@ -2,7 +2,7 @@
 #define MAINTEXTURESFORM_H
 
 #include <QWidget>
-#include "rendering/textures/public.h"
+#include "textures/public.h"
 
 namespace Ui {
 class MainTexturesForm;

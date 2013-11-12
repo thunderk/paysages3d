@@ -2,7 +2,7 @@
 
 #include <QPainter>
 
-#include "editing/tools.h"
+#include "tools.h"
 
 SmallPreviewHues::SmallPreviewHues(QWidget* parent) : DrawingWidget(parent)
 {

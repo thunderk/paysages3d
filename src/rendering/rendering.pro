@@ -8,8 +8,6 @@ DEFINES += RENDERING_LIBRARY
 
 include(../common.pri)
 
-INCLUDEPATH += $$PWD/..
-
 SOURCES += main.cpp \
     tools.cpp \
     renderer.cpp \
@@ -19,7 +17,6 @@ SOURCES += main.cpp \
     camera.cpp \
     atmosphere/atm_render.cpp \
     atmosphere/atm_raster.cpp \
-    atmosphere/atm_preview.cpp \
     atmosphere/atm_presets.cpp \
     atmosphere/atm_definition.cpp \
     atmosphere/atm_bruneton.cpp \

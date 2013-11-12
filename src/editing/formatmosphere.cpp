@@ -4,61 +4,44 @@
 
 #include <QColor>
 #include <QSlider>
-#include <math.h>
+#include <cmath>
 
-#include "rendering/atmosphere/public.h"
+#include "atmosphere/public.h"
+#include "AtmosphereColorPreviewRenderer.h"
 #include "Scenery.h"
-#include "rendering/renderer.h"
+#include "renderer.h"
 
 static AtmosphereDefinition* _definition;
 
 /**************** Previews ****************/
-class PreviewSkyEast:public BasePreview
+class PreviewSkyEast:public PreviewRenderer, public AtmosphereColorPreviewRenderer
 {
 public:
-    PreviewSkyEast(QWidget* parent):
-        BasePreview(parent)
+    void bindEvent(BasePreview* preview) override
     {
-        _renderer = atmosphereCreatePreviewRenderer();
-
-        configHdrToneMapping(true);
-        configScaling(0.5, 5.0, 0.5, 2.5);
-    }
-protected:
-    Color getColor(double x, double y)
-    {
-        return atmosphereGetPreview(_renderer, x, -y, -M_PI_2);
+        preview->configHdrToneMapping(true);
+        preview->configScaling(0.5, 5.0, 0.5, 2.5);
     }
     void updateData()
     {
-        AtmosphereRendererClass.bind(_renderer, _definition);
+        /*AtmosphereRendererClass.bind(_renderer, _definition);
+        _renderer->prepare();*/
     }
-private:
-    Renderer* _renderer;
 };
 
-class PreviewSkyWest:public BasePreview
+class PreviewSkyWest:public PreviewRenderer, public AtmosphereColorPreviewRenderer
 {
 public:
-    PreviewSkyWest(QWidget* parent):
-        BasePreview(parent)
+    void bindEvent(BasePreview* preview) override
     {
-        _renderer = atmosphereCreatePreviewRenderer();
-
-        configHdrToneMapping(true);
-        configScaling(0.5, 5.0, 0.5, 2.5);
-    }
-protected:
-    Color getColor(double x, double y)
-    {
-        return atmosphereGetPreview(_renderer, x, -y, M_PI_2);
+        preview->configHdrToneMapping(true);
+        preview->configScaling(0.5, 5.0, 0.5, 2.5);
     }
     void updateData()
     {
-        AtmosphereRendererClass.bind(_renderer, _definition);
+        /*AtmosphereRendererClass.bind(_renderer, _definition);
+        _renderer->prepare();*/
     }
-private:
-    Renderer* _renderer;
 };
 
 /**************** Form ****************/
@@ -73,9 +56,9 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
 
     _definition = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
 
-    previewWest = new PreviewSkyWest(this);
+    previewWest = new BasePreview(this);
     addPreview(previewWest, QString(tr("West preview")));
-    previewEast = new PreviewSkyEast(this);
+    previewEast = new BasePreview(this);
     addPreview(previewEast, QString(tr("East preview")));
 
     //addInputEnum(tr("Color model"), (int*)&_definition->model, QStringList(tr("Simplified model (with weather)")) << tr("Complex model"));

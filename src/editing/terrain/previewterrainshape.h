@@ -2,19 +2,18 @@
 #define PREVIEWTERRAINSHAPE_H
 
 #include "common/previewrenderer.h"
-#include "rendering/renderer.h"
-#include "rendering/terrain/public.h"
+#include "renderer.h"
+#include "terrain/public.h"
 
 class PreviewTerrainShape : public PreviewRenderer
 {
-    Q_OBJECT
 public:
     explicit PreviewTerrainShape(TerrainDefinition* terrain);
 
 protected:
     virtual void bindEvent(BasePreview* preview);
     virtual void updateEvent();
-    virtual Color getColor2D(double x, double y, double scaling);
+    virtual Color getColor2D(double x, double y, double scaling) const override;
     virtual void toggleChangeEvent(QString key, bool value);
 
 private:

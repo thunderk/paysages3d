@@ -9,8 +9,12 @@
 #  define OPENGLSHARED_EXPORT Q_DECL_IMPORT
 #endif
 
+#include "software_global.h"
+
 namespace paysages {
-namespace opengl {}
+namespace opengl {
+    class WidgetExplorer;
+}
 }
 using namespace paysages::opengl;
 

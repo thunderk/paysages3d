@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "basepreview.h"
 #include "baseformlayer.h"
-#include "rendering/textures/public.h"
+#include "textures/public.h"
 
 class FormTextures : public BaseFormLayer
 {

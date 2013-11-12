@@ -9,8 +9,8 @@
 #include <QSlider>
 #include <QScrollArea>
 #include <QPushButton>
-#include <math.h>
-#include "rendering/tools/color.h"
+#include <cmath>
+#include "tools/color.h"
 
 /**************** Previews ****************/
 class PreviewLevel:public BasePreview

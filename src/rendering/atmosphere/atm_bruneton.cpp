@@ -11,12 +11,12 @@
 #include <cstdlib>
 #include "System.h"
 #include "PackStream.h"
-#include "rendering/tools.h"
-#include "rendering/tools/cache.h"
-#include "rendering/tools/texture.h"
-#include "rendering/tools/parallel.h"
-#include "rendering/renderer.h"
-#include "rendering/water/public.h"
+#include "tools.h"
+#include "tools/cache.h"
+#include "tools/texture.h"
+#include "tools/parallel.h"
+#include "renderer.h"
+#include "water/public.h"
 
 /*********************** Constants ***********************/
 

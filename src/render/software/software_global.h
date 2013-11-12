@@ -14,9 +14,13 @@
 namespace paysages {
 namespace software {
     class SoftwareRenderer;
+
     class FluidMediumManager;
     class FluidMediumInterface;
     class FluidMediumCollector;
+
+    class BaseAtmosphereRenderer;
+    class SoftwareBrunetonAtmosphereRenderer;
 }
 }
 

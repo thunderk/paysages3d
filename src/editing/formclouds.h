@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "basepreview.h"
 #include "baseformlayer.h"
-#include "rendering/clouds/public.h"
+#include "clouds/public.h"
 
 class FormClouds : public BaseFormLayer
 {

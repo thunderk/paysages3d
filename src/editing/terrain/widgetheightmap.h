@@ -4,10 +4,10 @@
 #include <QGLWidget>
 #include <QDateTime>
 #include "terrain/paintingbrush.h"
-#include "rendering/camera.h"
-#include "rendering/tools/euclid.h"
-#include "rendering/renderer.h"
-#include "rendering/terrain/public.h"
+#include "camera.h"
+#include "tools/euclid.h"
+#include "renderer.h"
+#include "terrain/public.h"
 
 typedef struct
 {

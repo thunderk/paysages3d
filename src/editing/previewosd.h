@@ -2,7 +2,7 @@
 #define _PAYSAGES_QT_PREVIEWOSD_H_
 
 #include <QImage>
-#include "rendering/camera.h"
+#include "camera.h"
 
 class PreviewOsdItem:public QImage
 {

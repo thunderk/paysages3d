@@ -7,6 +7,7 @@ SUBDIRS = \
     definition \
     rendering \
     render/software \
+    render/preview \
     render/opengl \
     editing \
     controlling \

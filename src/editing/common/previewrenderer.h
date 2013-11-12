@@ -1,30 +1,22 @@
 #ifndef PREVIEWRENDERER_H
 #define PREVIEWRENDERER_H
 
-#include <QObject>
-#include "rendering/tools/color.h"
-#include "rendering/renderer.h"
+#include "rendering_global.h"
+
+#include "Base2dPreviewRenderer.h"
+#include "renderer.h"
 
 class BasePreview;
 
-class PreviewRenderer : public QObject
+class PreviewRenderer : public Base2dPreviewRenderer
 {
-    Q_OBJECT
-
 public:
-    explicit PreviewRenderer(QObject *parent = 0);
-    ~PreviewRenderer();
+    PreviewRenderer();
+    virtual ~PreviewRenderer();
 
     virtual void bindEvent(BasePreview* preview);
     virtual void updateEvent();
-    virtual Color getColor2D(double x, double y, double scaling);
-
-signals:
-    
-public slots:
-    
-protected:
-    Renderer* renderer;
+    virtual Color getColor2D(double x, double y, double scaling) const override;
 };
 
 #endif // PREVIEWRENDERER_H

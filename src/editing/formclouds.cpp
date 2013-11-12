@@ -1,8 +1,8 @@
 #include "formclouds.h"
 
-#include "rendering/clouds/clo_preview.h"
-#include "rendering/tools/color.h"
-#include "rendering/tools/euclid.h"
+#include "clouds/clo_preview.h"
+#include "tools/color.h"
+#include "tools/euclid.h"
 #include "Scenery.h"
 
 #include "tools.h"

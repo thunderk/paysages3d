@@ -1,6 +1,6 @@
 #include "dialogrender.h"
 
-#include <math.h>
+#include <cmath>
 #include <QVBoxLayout>
 #include <QImage>
 #include <QColor>
@@ -10,6 +10,12 @@
 #include <QMessageBox>
 #include <QListWidget>
 #include <QPushButton>
+#include <QMutex>
+#include <QThread>
+#include <QScrollArea>
+#include <QLabel>
+#include <QProgressBar>
+#include <QComboBox>
 #include "tools.h"
 
 #include "Scenery.h"

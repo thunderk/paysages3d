@@ -6,12 +6,12 @@
 #include "render.h"
 #include "Scenery.h"
 #include "tools.h"
-#include "rendering/camera.h"
-#include "rendering/atmosphere/public.h"
-#include "rendering/clouds/public.h"
-#include "rendering/terrain/public.h"
-#include "rendering/textures/public.h"
-#include "rendering/water/public.h"
+#include "camera.h"
+#include "atmosphere/public.h"
+#include "clouds/public.h"
+#include "terrain/public.h"
+#include "textures/public.h"
+#include "water/public.h"
 
 static RayCastingResult _RAYCASTING_NULL = {0, {0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
 
@@ -228,6 +228,8 @@ void rendererStart(Renderer* renderer, RenderParams params)
     renderSetBackgroundColor(renderer->render_area, &COLOR_BLACK);
     renderSetParams(renderer->render_area, params);
     renderClear(renderer->render_area);
+
+    renderer->prepare();
 
     renderer->is_rendering = 1;
     thread.start(renderer);

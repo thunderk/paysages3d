@@ -63,3 +63,9 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../rendering/deb
 else:unix: LIBS += -L$$OUT_PWD/../../rendering/ -lpaysages_rendering
 INCLUDEPATH += $$PWD/../../rendering
 DEPENDPATH += $$PWD/../../rendering
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../software/release/ -lpaysages_render_software
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../software/debug/ -lpaysages_render_software
+else:unix: LIBS += -L$$OUT_PWD/../software/ -lpaysages_render_software
+INCLUDEPATH += $$PWD/../software
+DEPENDPATH += $$PWD/../software

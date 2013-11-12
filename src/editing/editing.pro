@@ -9,8 +9,6 @@ unix:LIBS += -lGLU
 
 include(../common.pri)
 
-INCLUDEPATH += $$PWD/..
-
 HEADERS += \
     terrain/widgetheightmap.h \
     widgetcurveeditor.h \
@@ -166,6 +164,12 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../render/software/
 else:unix: LIBS += -L$$OUT_PWD/../render/software/ -lpaysages_render_software
 INCLUDEPATH += $$PWD/../render/software
 DEPENDPATH += $$PWD/../render/software
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../render/preview/release/ -lpaysages_render_preview
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../render/preview/debug/ -lpaysages_render_preview
+else:unix: LIBS += -L$$OUT_PWD/../render/preview/ -lpaysages_render_preview
+INCLUDEPATH += $$PWD/../render/preview
+DEPENDPATH += $$PWD/../render/preview
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../render/opengl/release/ -lpaysages_render_opengl
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../render/opengl/debug/ -lpaysages_render_opengl

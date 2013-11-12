@@ -5,8 +5,8 @@
 #include <QPainter>
 #include <QColorDialog>
 
-#include "editing/lighting/DialogMaterialEditor.h"
-#include "editing/previewmaterial.h"
+#include "lighting/DialogMaterialEditor.h"
+#include "previewmaterial.h"
 
 InputMaterial::InputMaterial(QWidget* form, QString label, SurfaceMaterial* value) : BaseInput(form, label)
 {

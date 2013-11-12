@@ -1,7 +1,7 @@
 #ifndef EDITING_TEXTURES_PREVIEWLAYERLOOK_H
 #define EDITING_TEXTURES_PREVIEWLAYERLOOK_H
 
-#include "editing/common/previewrenderer.h"
+#include "common/previewrenderer.h"
 
 class BasePreview;
 class TexturesDefinition;
@@ -9,8 +9,8 @@ class TexturesDefinition;
 class PreviewLayerLook : public PreviewRenderer
 {
 public:
-    explicit PreviewLayerLook(QObject *parent = 0):
-        PreviewRenderer(parent),textures(0){}
+    explicit PreviewLayerLook():
+        PreviewRenderer(),textures(0){}
 
     void setTextures(TexturesDefinition* textures);
     void setLayer(int layer);

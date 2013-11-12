@@ -1,28 +1,22 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2013-11-09T15:13:23
+# Project created by QtCreator 2013-11-11T17:56:07
 #
 #-------------------------------------------------
 
-QT       -= gui
-
-TARGET = paysages_render_software
+TARGET = paysages_render_preview
 TEMPLATE = lib
 
-DEFINES += SOFTWARE_LIBRARY
+DEFINES += PREVIEW_LIBRARY
 
 include(../../common.pri)
 
-SOURCES += SoftwareRenderer.cpp \
-    FluidMediumInterface.cpp \
-    FluidMediumManager.cpp \
-    AtmosphereRenderer.cpp
+SOURCES += Base2dPreviewRenderer.cpp \
+    AtmosphereColorPreviewRenderer.cpp
 
-HEADERS += SoftwareRenderer.h\
-        software_global.h \
-    FluidMediumInterface.h \
-    FluidMediumManager.h \
-    AtmosphereRenderer.h
+HEADERS += Base2dPreviewRenderer.h\
+        preview_global.h \
+    AtmosphereColorPreviewRenderer.h
 
 unix:!symbian {
     maemo5 {
@@ -56,3 +50,9 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../rendering/deb
 else:unix: LIBS += -L$$OUT_PWD/../../rendering/ -lpaysages_rendering
 INCLUDEPATH += $$PWD/../../rendering
 DEPENDPATH += $$PWD/../../rendering
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../software/release/ -lpaysages_render_software
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../software/debug/ -lpaysages_render_software
+else:unix: LIBS += -L$$OUT_PWD/../software/ -lpaysages_render_software
+INCLUDEPATH += $$PWD/../software
+DEPENDPATH += $$PWD/../software

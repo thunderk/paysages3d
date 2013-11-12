@@ -6,10 +6,10 @@
 #include "basepreview.h"
 #include "baseinput.h"
 #include "dialoglayers.h"
-#include "rendering/shared/types.h"
-#include "rendering/tools/curve.h"
-#include "rendering/tools/color.h"
-#include "rendering/tools/lighting.h"
+#include "shared/types.h"
+#include "tools/curve.h"
+#include "tools/color.h"
+#include "tools/lighting.h"
 
 class QPushButton;
 class QComboBox;

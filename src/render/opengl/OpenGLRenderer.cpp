@@ -4,21 +4,15 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "Scenery.h"
+#include "SoftwareRenderer.h"
 #include "renderer.h"
 #include "rendering/camera.h"
 
 OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     scenery(scenery)
 {
-    if (scenery)
-    {
-        renderer = rendererCreate();
-        // TODO Bind scenery to renderer
-    }
-    else
-    {
-        renderer = sceneryCreateStandardRenderer();
-    }
+    renderer = new SoftwareRenderer(scenery);
+    renderer->prepare();
 }
 
 OpenGLRenderer::~OpenGLRenderer()

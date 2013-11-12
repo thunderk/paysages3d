@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "baseinput.h"
 
-#include "rendering/tools/color.h"
+#include "tools/color.h"
 
 class InputColorGradation:public BaseInput
 {

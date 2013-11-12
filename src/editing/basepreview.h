@@ -11,10 +11,10 @@
 #include <QLabel>
 #include <QHash>
 
-#include "editing/previewosd.h"
-#include "editing/common/DrawingWidget.h"
-#include "editing/common/previewrenderer.h"
-#include "rendering/tools/color.h"
+#include "previewosd.h"
+#include "common/DrawingWidget.h"
+#include "common/previewrenderer.h"
+#include "tools/color.h"
 
 namespace paysages {
 namespace system {

@@ -1,17 +1,16 @@
 #include "previewrenderer.h"
 
-PreviewRenderer::PreviewRenderer(QObject *parent) :
-    QObject(parent)
+#include "SoftwareRenderer.h"
+
+PreviewRenderer::PreviewRenderer()
 {
-    renderer = rendererCreate();
 }
 
 PreviewRenderer::~PreviewRenderer()
 {
-    rendererDelete(renderer);
 }
 
-Color PreviewRenderer::getColor2D(double, double, double)
+Color PreviewRenderer::getColor2D(double, double, double) const
 {
     return COLOR_BLACK;
 }
@@ -22,4 +21,5 @@ void PreviewRenderer::bindEvent(BasePreview*)
 
 void PreviewRenderer::updateEvent()
 {
+    renderer->prepare();
 }

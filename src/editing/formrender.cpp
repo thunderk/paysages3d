@@ -5,11 +5,11 @@
 #include "dialogrender.h"
 #include "inputcamera.h"
 #include "tools.h"
-#include "rendering/render.h"
-#include "rendering/atmosphere/public.h"
-#include "rendering/clouds/public.h"
-#include "rendering/terrain/public.h"
-#include "rendering/water/public.h"
+#include "render.h"
+#include "atmosphere/public.h"
+#include "clouds/public.h"
+#include "terrain/public.h"
+#include "water/public.h"
 #include "Scenery.h"
 #include "PackStream.h"
 #include "SoftwareRenderer.h"
@@ -21,7 +21,7 @@ public:
 
     PreviewRenderLandscape(QWidget* parent) : BasePreview(parent)
     {
-        _renderer = sceneryCreateStandardRenderer();
+        _renderer = new SoftwareRenderer();
         _renderer->getCameraLocation = _getCameraLocation;
         lightingManagerDisableSpecularity(_renderer->lighting);
 
@@ -35,6 +35,12 @@ public:
         configScaling(0.5, 200.0, 3.0, 50.0);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     }
+    ~PreviewRenderLandscape()
+    {
+        delete _renderer;
+        CloudsDefinitionClass.destroy(_no_clouds);
+    }
+
 protected:
 
     Color getColor(double x, double y)
@@ -58,12 +64,14 @@ protected:
     void updateData()
     {
         sceneryBindRenderer(_renderer);
-        _renderer->atmosphere->applyAerialPerspective = _applyAerialPerspective;
-
         if (!_clouds_enabled)
         {
             CloudsRendererClass.bind(_renderer, _no_clouds);
         }
+
+        _renderer->prepare();
+
+        _renderer->atmosphere->applyAerialPerspective = _applyAerialPerspective;
     }
 
     void toggleChangeEvent(QString key, bool value)

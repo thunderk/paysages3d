@@ -1,7 +1,8 @@
 #include "PreviewLayerLook.h"
 
-#include "editing/basepreview.h"
-#include "rendering/textures/tex_preview.h"
+#include "SoftwareRenderer.h"
+#include "basepreview.h"
+#include "textures/tex_preview.h"
 
 void PreviewLayerLook::setTextures(TexturesDefinition* textures)
 {

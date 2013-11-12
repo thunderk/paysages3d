@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "rendering/tools/color.h"
+#include "tools/color.h"
 
 typedef enum
 {

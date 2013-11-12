@@ -1,11 +1,12 @@
 #include "previewmaterial.h"
 
-#include <math.h>
+#include <cmath>
 #include <QPainter>
 #include "tools.h"
+#include "SoftwareRenderer.h"
 
-#include "rendering/tools/lighting.h"
-#include "rendering/tools/color.h"
+#include "tools/lighting.h"
+#include "tools/color.h"
 
 /***** Shared renderer *****/
 MaterialPreviewRenderer::MaterialPreviewRenderer(SurfaceMaterial* material)

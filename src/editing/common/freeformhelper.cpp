@@ -12,7 +12,7 @@
 #include "dialogrender.h"
 #include "dialogexplorer.h"
 #include "Scenery.h"
-#include "rendering/renderer.h"
+#include "renderer.h"
 #include "tools.h"
 
 Q_DECLARE_METATYPE(double*)

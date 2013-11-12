@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "baseinput.h"
 
-#include "rendering/camera.h"
+#include "camera.h"
 
 class InputCamera:public BaseInput
 {

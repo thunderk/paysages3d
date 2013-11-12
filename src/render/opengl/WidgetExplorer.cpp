@@ -7,6 +7,7 @@
 #include <GL/glu.h>
 #include <QThread>
 #include "Scenery.h"
+#include "SoftwareRenderer.h"
 #include "OpenGLRenderer.h"
 #include "rendering/tools/euclid.h"
 #include "rendering/renderer.h"
@@ -87,10 +88,11 @@ QGLWidget(parent)
     }
     else
     {
-        _renderer = sceneryCreateStandardRenderer();
+        _renderer = new SoftwareRenderer();
         _renderer_created = true;
     }
     _opengl_renderer = new OpenGLRenderer(NULL);
+    _renderer->prepare();
     _renderer->render_quality = 3;
     _renderer->customData[2] = _base_camera;
     _renderer->getCameraLocation = _getCameraLocation;

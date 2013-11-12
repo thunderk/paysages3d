@@ -4,9 +4,9 @@
 #include "../renderer.h"
 #include "../tools.h"
 
-Renderer* waterCreatePreviewCoverageRenderer()
+void waterAlterPreviewCoverageRenderer(Renderer* renderer)
 {
-    return terrainCreatePreviewRenderer();
+    terrainAlterPreviewRenderer(renderer);
 }
 
 Color waterGetPreviewCoverage(Renderer* renderer, double x, double y, double scaling, int highlight_enabled)

@@ -5,8 +5,8 @@
 #include <QPainter>
 #include <QColorDialog>
 
-#include "editing/lighting/SmallPreviewColor.h"
-#include "editing/tools.h"
+#include "lighting/SmallPreviewColor.h"
+#include "tools.h"
 
 InputColor::InputColor(QWidget* form, QString label, Color* value):
     BaseInput(form, label),

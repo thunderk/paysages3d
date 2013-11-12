@@ -7,7 +7,7 @@
 #include <GL/glu.h>
 #include "tools.h"
 #include "Scenery.h"
-#include "rendering/water/public.h"
+#include "water/public.h"
 
 #define HEIGHTMAP_RESOLUTION 256
 

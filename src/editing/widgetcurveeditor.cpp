@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QPaintEngine>
 #include <QMouseEvent>
-#include "rendering/tools.h"
+#include "tools.h"
 
 WidgetCurveEditor::WidgetCurveEditor(QWidget *parent, double xmin, double xmax, double ymin, double ymax) : QWidget(parent)
 {

@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QColor>
-#include "rendering/tools/curve.h"
+#include "tools/curve.h"
 
 class WidgetCurveEditor : public QWidget
 {

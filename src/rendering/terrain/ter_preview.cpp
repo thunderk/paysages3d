@@ -4,8 +4,8 @@
 #include "../tools/lighting.h"
 #include "../renderer.h"
 #include "NoiseGenerator.h"
-#include "rendering/atmosphere/public.h"
-#include "rendering/textures/public.h"
+#include "atmosphere/public.h"
+#include "textures/public.h"
 
 /*
  * Terrain previews.
@@ -51,13 +51,11 @@ static Vector3 _getCameraLocation(Renderer* renderer, Vector3 location)
     return location;
 }
 
-Renderer* terrainCreatePreviewRenderer()
+void terrainAlterPreviewRenderer(Renderer* renderer)
 {
-    Renderer* result = rendererCreate();
-
-    result->render_quality = 3;
-    result->getCameraLocation = _getCameraLocation;
-    result->atmosphere->getLightingStatus = _getLightingStatus;
+    renderer->render_quality = 3;
+    renderer->getCameraLocation = _getCameraLocation;
+    renderer->atmosphere->getLightingStatus = _getLightingStatus;
 
     TexturesDefinition* textures;
     textures = (TexturesDefinition*)TexturesDefinitionClass.create();
@@ -71,11 +69,9 @@ Renderer* terrainCreatePreviewRenderer()
     TexturesDefinitionClass.validate(textures);
     layer->_detail_noise->clearLevels();
 
-    TexturesRendererClass.bind(result, textures);
+    TexturesRendererClass.bind(renderer, textures);
 
     TexturesDefinitionClass.destroy(textures);
-
-    return result;
 }
 
 Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double detail)

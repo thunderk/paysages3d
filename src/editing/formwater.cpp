@@ -3,14 +3,14 @@
 
 #include <QColor>
 #include <QSlider>
-#include <math.h>
+#include <cmath>
 
-#include "rendering/tools/euclid.h"
-#include "rendering/tools/lighting.h"
-#include "rendering/renderer.h"
-#include "rendering/water/public.h"
-#include "rendering/terrain/public.h"
-#include "rendering/atmosphere/public.h"
+#include "tools/euclid.h"
+#include "tools/lighting.h"
+#include "renderer.h"
+#include "water/public.h"
+#include "terrain/public.h"
+#include "atmosphere/public.h"
 #include "tools.h"
 #include "Scenery.h"
 
@@ -23,7 +23,8 @@ public:
 
     PreviewWaterCoverage(QWidget* parent) : BasePreview(parent)
     {
-        _renderer = waterCreatePreviewCoverageRenderer();
+        _renderer = rendererCreate();
+        waterAlterPreviewCoverageRenderer(_renderer);
         _highlight_enabled = true;
 
         addOsd(QString("geolocation"));

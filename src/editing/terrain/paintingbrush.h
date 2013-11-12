@@ -1,14 +1,15 @@
 #ifndef PAINTINGBRUSH_H
 #define PAINTINGBRUSH_H
 
-#include <QAbstractSlider>
-#include "rendering/terrain/public.h"
+#include "terrain/public.h"
 
 namespace paysages {
 namespace basics {
     class NoiseGenerator;
 }
 }
+class QAbstractSlider;
+class QWidget;
 
 typedef enum
 {

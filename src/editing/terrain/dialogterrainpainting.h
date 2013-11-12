@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include "paintingbrush.h"
-#include "rendering/terrain/public.h"
+#include "terrain/public.h"
 
 namespace Ui {
 class DialogTerrainPainting;

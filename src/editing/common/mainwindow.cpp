@@ -23,7 +23,7 @@
 #include "dialogrender.h"
 #include "dialogexplorer.h"
 
-#include "rendering/main.h"
+#include "main.h"
 #include "Scenery.h"
 #include "PackStream.h"
 #include "tools.h"

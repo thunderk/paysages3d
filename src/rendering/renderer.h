@@ -20,6 +20,8 @@ public:
     Renderer();
     virtual ~Renderer();
 
+    virtual void prepare() {}
+
     /* Render base configuration */
     int render_quality;
     int render_width;

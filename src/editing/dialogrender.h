@@ -1,17 +1,18 @@
 #ifndef _PAYSAGES_QT_DIALOGRENDER_H_
 #define _PAYSAGES_QT_DIALOGRENDER_H_
 
-#include <time.h>
+#include <ctime>
 #include <QDialog>
-#include <QThread>
-#include <QProgressBar>
-#include <QScrollArea>
-#include <QSlider>
-#include <QComboBox>
-#include <QLabel>
-#include <QMutex>
-#include "rendering/renderer.h"
-#include "rendering/tools/color.h"
+#include "renderer.h"
+#include "tools/color.h"
+
+class QThread;
+class QProgressBar;
+class QSlider;
+class QComboBox;
+class QLabel;
+class QScrollArea;
+class QMutex;
 
 class DialogRender : public QDialog
 {

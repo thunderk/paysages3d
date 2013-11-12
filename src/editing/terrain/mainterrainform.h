@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "common/freeformhelper.h"
-#include "rendering/terrain/public.h"
+#include "terrain/public.h"
 
 namespace Ui {
 class MainTerrainForm;

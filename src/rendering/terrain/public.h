@@ -70,7 +70,7 @@ RENDERINGSHARED_EXPORT double terrainGetGridHeight(TerrainDefinition* definition
 RENDERINGSHARED_EXPORT double terrainGetInterpolatedHeight(TerrainDefinition* definition, double x, double z, int scaled, int with_painting);
 RENDERINGSHARED_EXPORT size_t terrainGetMemoryStats(TerrainDefinition* definition);
 
-RENDERINGSHARED_EXPORT Renderer* terrainCreatePreviewRenderer();
+RENDERINGSHARED_EXPORT void terrainAlterPreviewRenderer(Renderer* renderer);
 RENDERINGSHARED_EXPORT Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double detail);
 
 RENDERINGSHARED_EXPORT HeightInfo terrainGetHeightInfo(TerrainDefinition* definition);

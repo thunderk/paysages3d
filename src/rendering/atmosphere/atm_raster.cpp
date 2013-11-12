@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "../tools.h"
 #include "../renderer.h"
-#include "rendering/clouds/public.h"
+#include "clouds/public.h"
 
 static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* data)
 {

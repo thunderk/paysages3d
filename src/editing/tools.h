@@ -5,8 +5,8 @@
 #include <QDialog>
 #include <QDir>
 
-#include "rendering/shared/types.h"
-#include "rendering/tools/color.h"
+#include "shared/types.h"
+#include "tools/color.h"
 
 static inline QColor colorToQColor(Color color)
 {

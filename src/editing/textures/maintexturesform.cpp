@@ -5,10 +5,10 @@
 #include "../common/freelayerhelper.h"
 #include "Scenery.h"
 #include "previewmaterial.h"
-#include "editing/textures/PreviewLayerCoverage.h"
-#include "editing/textures/PreviewLayerLook.h"
-#include "editing/textures/PreviewCumul.h"
-#include "editing/textures/DialogTexturesLayer.h"
+#include "textures/PreviewLayerCoverage.h"
+#include "textures/PreviewLayerLook.h"
+#include "textures/PreviewCumul.h"
+#include "textures/DialogTexturesLayer.h"
 
 MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui::MainTexturesForm)
 {

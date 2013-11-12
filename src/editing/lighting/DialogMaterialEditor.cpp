@@ -1,7 +1,7 @@
 #include "DialogMaterialEditor.h"
 #include "ui_DialogMaterialEditor.h"
 
-#include "editing/common/freeformhelper.h"
+#include "common/freeformhelper.h"
 
 DialogMaterialEditor::DialogMaterialEditor(QWidget *parent, SurfaceMaterial* material) :
 QDialog(parent),

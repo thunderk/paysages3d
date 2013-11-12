@@ -77,7 +77,4 @@ RENDERINGSHARED_EXPORT void atmosphereRenderSkydome(Renderer* renderer);
 RENDERINGSHARED_EXPORT void atmosphereInitResult(AtmosphereResult* result);
 RENDERINGSHARED_EXPORT void atmosphereUpdateResult(AtmosphereResult* result);
 
-RENDERINGSHARED_EXPORT Renderer* atmosphereCreatePreviewRenderer();
-RENDERINGSHARED_EXPORT Color atmosphereGetPreview(Renderer* renderer, double x, double y, double heading);
-
 #endif

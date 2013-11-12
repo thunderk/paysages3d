@@ -14,6 +14,7 @@ namespace paysages {
 namespace basics {
     class Vector3;
     class SpaceSegment;
+    class NoiseGenerator;
 }
 }
 using namespace paysages::basics;
