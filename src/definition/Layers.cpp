@@ -17,7 +17,7 @@ Layers::~Layers()
     delete null_layer;
 }
 
-void Layers::copy(BaseDefinition* destination_)
+void Layers::copy(BaseDefinition* destination_) const
 {
     Layers* destination = (Layers*)destination_;
 

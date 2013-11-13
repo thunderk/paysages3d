@@ -19,27 +19,6 @@ typedef enum
     WATER_PRESET_SEA
 } WaterPreset;
 
-class WaterDefinition
-{
-public:
-    double transparency;
-    double reflection;
-    SurfaceMaterial material;
-    Color depth_color;
-    double transparency_depth;
-    double lighting_depth;
-
-    double scaling;
-    double turbulence;
-    double waves_height;
-    double detail_height;
-
-    double foam_coverage;
-    SurfaceMaterial foam_material;
-
-    NoiseGenerator* _waves_noise;
-};
-
 typedef struct
 {
     Vector3 location;
@@ -65,7 +44,6 @@ public:
 };
 
 
-RENDERINGSHARED_EXPORT extern StandardDefinition WaterDefinitionClass;
 RENDERINGSHARED_EXPORT extern StandardRenderer WaterRendererClass;
 
 RENDERINGSHARED_EXPORT void waterRenderSurface(Renderer* renderer);

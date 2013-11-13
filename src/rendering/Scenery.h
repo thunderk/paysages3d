@@ -10,7 +10,6 @@ class CameraDefinition;
 class CloudsDefinition;
 class TerrainDefinition;
 class TexturesDefinition;
-class WaterDefinition;
 class Renderer;
 
 namespace paysages {
@@ -32,33 +31,33 @@ public:
 
     static Scenery* getCurrent();
 
-    virtual void save(PackStream* stream);
-    virtual void load(PackStream* stream);
+    virtual void save(PackStream* stream) const override;
+    virtual void load(PackStream* stream) override;
 
     void autoPreset(int seed);
 
     void setAtmosphere(AtmosphereDefinition* atmosphere);
-    inline AtmosphereDefinition* getAtmosphere() {return atmosphere;}
+    inline AtmosphereDefinition* getAtmosphere() const {return atmosphere;}
     void getAtmosphere(AtmosphereDefinition* atmosphere);
 
     void setCamera(CameraDefinition* camera);
-    inline CameraDefinition* getCamera() {return camera;}
+    inline CameraDefinition* getCamera() const {return camera;}
     void getCamera(CameraDefinition* camera);
 
     void setClouds(CloudsDefinition* clouds);
-    inline CloudsDefinition* getClouds() {return clouds;}
+    inline CloudsDefinition* getClouds() const {return clouds;}
     void getClouds(CloudsDefinition* clouds);
 
     void setTerrain(TerrainDefinition* terrain);
-    inline TerrainDefinition* getTerrain() {return terrain;}
+    inline TerrainDefinition* getTerrain() const {return terrain;}
     void getTerrain(TerrainDefinition* terrain);
 
     void setTextures(TexturesDefinition* textures);
-    inline TexturesDefinition* getTextures() {return textures;}
+    inline TexturesDefinition* getTextures() const {return textures;}
     void getTextures(TexturesDefinition* textures);
 
     void setWater(WaterDefinition* water);
-    inline WaterDefinition* getWater() {return water;}
+    inline WaterDefinition* getWater() const {return water;}
     void getWater(WaterDefinition* water);
 
     void bindToRenderer(Renderer* renderer);

@@ -21,7 +21,10 @@ SOURCES += \
     Interpolation.cpp \
     Vector3.cpp \
     Vector3.inline.cpp \
-    SpaceSegment.cpp
+    SpaceSegment.cpp \
+    Color.cpp \
+    Color.inline.cpp \
+    ColorHSL.cpp
 
 HEADERS +=\
         basics_global.h \
@@ -31,7 +34,9 @@ HEADERS +=\
     NoiseFunctionSimplex.h \
     Interpolation.h \
     Vector3.h \
-    SpaceSegment.h
+    SpaceSegment.h \
+    Color.h \
+    ColorHSL.h
 
 unix:!symbian {
     maemo5 {

@@ -7,6 +7,7 @@
 #include "../tools/curve.h"
 #include "../tools/euclid.h"
 #include "Layers.h"
+#include "SurfaceMaterial.h"
 
 namespace paysages {
 namespace basics {

@@ -4,49 +4,6 @@
 #include "../rendering_global.h"
 #include "curve.h"
 
-namespace paysages {
-namespace system {class PackStream;}
-}
-
-#define TYPEDEF_COLOR
-typedef struct
-{
-    double r;
-    double g;
-    double b;
-    double a;
-} Color;
-
-RENDERINGSHARED_EXPORT extern Color COLOR_TRANSPARENT;
-RENDERINGSHARED_EXPORT extern Color COLOR_BLACK;
-RENDERINGSHARED_EXPORT extern Color COLOR_RED;
-RENDERINGSHARED_EXPORT extern Color COLOR_GREEN;
-RENDERINGSHARED_EXPORT extern Color COLOR_BLUE;
-RENDERINGSHARED_EXPORT extern Color COLOR_WHITE;
-RENDERINGSHARED_EXPORT extern Color COLOR_GREY;
-
-/* Color */
-RENDERINGSHARED_EXPORT void colorSave(PackStream* stream, Color* col);
-RENDERINGSHARED_EXPORT void colorLoad(PackStream* stream, Color* col);
-RENDERINGSHARED_EXPORT Color colorFromValues(double r, double g, double b, double a);
-
-RENDERINGSHARED_EXPORT unsigned int colorTo32BitRGBA(Color* col);
-RENDERINGSHARED_EXPORT unsigned int colorTo32BitBGRA(Color* col);
-RENDERINGSHARED_EXPORT unsigned int colorTo32BitARGB(Color* col);
-RENDERINGSHARED_EXPORT unsigned int colorTo32BitABGR(Color* col);
-
-RENDERINGSHARED_EXPORT Color colorFrom32BitRGBA(unsigned int col);
-RENDERINGSHARED_EXPORT Color colorFrom32BitBGRA(unsigned int col);
-RENDERINGSHARED_EXPORT Color colorFrom32BitARGB(unsigned int col);
-RENDERINGSHARED_EXPORT Color colorFrom32BitABGR(unsigned int col);
-
-RENDERINGSHARED_EXPORT void colorMask(Color* base, Color* mask);
-RENDERINGSHARED_EXPORT double colorNormalize(Color* col);
-RENDERINGSHARED_EXPORT double colorGetValue(Color* col);
-
-RENDERINGSHARED_EXPORT double colorGetPower(Color* col);
-RENDERINGSHARED_EXPORT void colorLimitPower(Color* col, double max_power);
-
 /* HDR profile for tone-mapping */
 class ColorProfile;
 typedef enum
@@ -92,18 +49,8 @@ RENDERINGSHARED_EXPORT void colorGradationQuickAddRgb(ColorGradation* gradation,
 
 RENDERINGSHARED_EXPORT Color colorGradationGet(ColorGradation* gradation, double value);
 
-/* HSL color space */
-typedef struct
-{
-    double h;
-    double s;
-    double l;
-    double a;
-} ColorHSL;
 
-RENDERINGSHARED_EXPORT Color colorFromHSL(ColorHSL col);
-RENDERINGSHARED_EXPORT ColorHSL colorToHSL(Color col);
-
-RENDERINGSHARED_EXPORT ColorHSL colorHSLFromValues(double h, double s, double l, double a);
+// TEMP
+#include "Color.h"
 
 #endif

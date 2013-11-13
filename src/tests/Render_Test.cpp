@@ -45,7 +45,7 @@ TEST(Render, quad)
     RenderParams params = {renderer->render_width, renderer->render_height, 1, 1};
     renderSetParams(renderer->render_area, params);
 
-    renderSetBackgroundColor(renderer->render_area, &COLOR_BLUE);
+    renderSetBackgroundColor(renderer->render_area, COLOR_BLUE);
     renderClear(renderer->render_area);
 
     renderer->pushQuad(renderer, v3(-1.0, 0.0, 1.0), v3(-1.0, 0.0, -1.0), v3(1.0, 0.0, -1.0), v3(1.0, 0.0, 1.0), _postProcessFragment, NULL);

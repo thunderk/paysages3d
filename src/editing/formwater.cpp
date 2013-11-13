@@ -14,6 +14,7 @@
 #include "Scenery.h"
 #include "BasePreview.h"
 #include "camera.h"
+#include "WaterDefinition.h"
 
 static WaterDefinition* _definition;
 
@@ -236,7 +237,7 @@ BaseForm(parent)
     addAutoPreset(tr("Lake surface"));
     addAutoPreset(tr("Standard sea"));
 
-    _definition = (WaterDefinition*) WaterDefinitionClass.create();
+    _definition = new WaterDefinition(NULL);
 
     previewCoverage = new PreviewWaterCoverage(this);
     previewColor = new PreviewWaterColor(this);
@@ -244,8 +245,8 @@ BaseForm(parent)
     addPreview(previewColor, tr("Rendered preview"));
 
     //addInputDouble(tr("Height"), &_definition->height, -15.0, 15.0, 0.1, 1.0);
-    addInputMaterial(tr("Surface material"), &_definition->material);
-    addInputColor(tr("Depth color"), &_definition->depth_color);
+    addInputMaterial(tr("Surface material"), _definition->material);
+    addInputColor(tr("Depth color"), _definition->depth_color);
     addInputDouble(tr("Transparency"), &_definition->transparency, 0.0, 1.0, 0.001, 0.1);
     addInputDouble(tr("Reflection"), &_definition->reflection, 0.0, 1.0, 0.001, 0.1);
     addInputDouble(tr("Transparency distance"), &_definition->transparency_depth, 0.0, 20.0, 0.1, 1.0);
@@ -255,7 +256,7 @@ BaseForm(parent)
     addInputDouble(tr("Waves detail"), &_definition->detail_height, 0.0, 0.3, 0.003, 0.03);
     addInputDouble(tr("Waves turbulence"), &_definition->turbulence, 0.0, 0.5, 0.005, 0.05);
     addInputDouble(tr("Foam coverage"), &_definition->foam_coverage, 0.0, 1.0, 0.01, 0.1);
-    addInputMaterial(tr("Foam material"), &_definition->foam_material);
+    addInputMaterial(tr("Foam material"), _definition->foam_material);
 
     revertConfig();
 }
@@ -274,7 +275,7 @@ void FormWater::applyConfig()
 
 void FormWater::configChangeEvent()
 {
-    WaterDefinitionClass.validate(_definition);
+    _definition->validate();
     BaseForm::configChangeEvent();
 }
 

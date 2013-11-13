@@ -7,7 +7,6 @@
 
 class CameraDefinition;
 class LightingManager;
-class SurfaceMaterial;
 class AtmosphereRenderer;
 class TerrainRenderer;
 class TexturesRenderer;

@@ -9,20 +9,6 @@ namespace paysages {
 namespace system {class PackStream;}
 }
 
-class SurfaceMaterial
-{
-public:
-    ColorHSL base;
-
-    double hardness;
-    double reflection;
-    double shininess;
-
-    double receive_shadows;
-
-    Color _rgb;
-};
-
 typedef struct
 {
     Vector3 direction;  /* Global direction of the light */
@@ -48,9 +34,5 @@ RENDERINGSHARED_EXPORT Color lightingApplyStatus(LightStatus* status, Vector3 no
 RENDERINGSHARED_EXPORT Vector3 lightingGetStatusLocation(LightStatus* status);
 
 RENDERINGSHARED_EXPORT Color lightingApplyOneLight(LightDefinition* light, Vector3 eye, Vector3 location, Vector3 normal, SurfaceMaterial* material);
-
-RENDERINGSHARED_EXPORT void materialSave(PackStream* stream, SurfaceMaterial* material);
-RENDERINGSHARED_EXPORT void materialLoad(PackStream* stream, SurfaceMaterial* material);
-RENDERINGSHARED_EXPORT void materialValidate(SurfaceMaterial* material);
 
 #endif

@@ -17,9 +17,7 @@ int systemSavePictureFile(const char* filepath, PictureCallbackSavePixel callbac
     {
         for (int x = 0; x < width; x++)
         {
-            Color pixel = callback_pixel(data, x, y);
-            QColor pixelconv = QColor::fromRgbF(pixel.r, pixel.g, pixel.b, pixel.a);
-            result.setPixel(x, height - 1 - y, pixelconv.rgba());
+            result.setPixel(x, height - 1 - y, callback_pixel(data, x, y));
         }
     }
 

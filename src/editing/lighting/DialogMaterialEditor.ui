@@ -388,7 +388,7 @@
   <customwidget>
    <class>BasePreview</class>
    <extends>QWidget</extends>
-   <header>basepreview.h</header>
+   <header>BasePreview.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

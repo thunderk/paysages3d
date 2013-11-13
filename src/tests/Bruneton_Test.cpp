@@ -28,7 +28,7 @@ TEST(Bruneton, AerialPerspective1)
 
     RenderParams params = {renderer->render_width, renderer->render_height, 1, 1};
     renderSetParams(renderer->render_area, params);
-    renderSetBackgroundColor(renderer->render_area, &COLOR_BLACK);
+    renderSetBackgroundColor(renderer->render_area, COLOR_BLACK);
     renderClear(renderer->render_area);
 
     renderer->pushQuad(renderer, v3(50.0, -10.0, -50.0), v3(1.0, -10.0, -50.0), v3(1.0, -10.0, 50.0), v3(50.0, -10.0, 50.0), _postProcessFragment, NULL);
@@ -63,7 +63,7 @@ TEST(Bruneton, AerialPerspective2)
 
     RenderParams params = {renderer->render_width, renderer->render_height, 1, 1};
     renderSetParams(renderer->render_area, params);
-    renderSetBackgroundColor(renderer->render_area, &COLOR_BLACK);
+    renderSetBackgroundColor(renderer->render_area, COLOR_BLACK);
     renderClear(renderer->render_area);
 
     renderer->pushQuad(renderer, v3(50.0, -10.0, -50.0), v3(1.0, -10.0, -50.0), v3(1.0, -10.0, 50.0), v3(50.0, -10.0, 50.0), _postProcessFragment, NULL);

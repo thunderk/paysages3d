@@ -30,7 +30,7 @@ RENDERINGSHARED_EXPORT void renderDeleteArea(RenderArea* area);
 
 RENDERINGSHARED_EXPORT void renderSetParams(RenderArea* area, RenderParams params);
 RENDERINGSHARED_EXPORT void renderSetToneMapping(RenderArea* area, ToneMappingOperator tonemapper, double exposure);
-RENDERINGSHARED_EXPORT void renderSetBackgroundColor(RenderArea* area, Color* col);
+RENDERINGSHARED_EXPORT void renderSetBackgroundColor(RenderArea* area, const Color& col);
 RENDERINGSHARED_EXPORT void renderClear(RenderArea* area);
 RENDERINGSHARED_EXPORT void renderUpdate(RenderArea* area);
 

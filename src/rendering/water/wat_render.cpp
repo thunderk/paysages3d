@@ -3,6 +3,8 @@
 #include <cmath>
 #include "../tools.h"
 #include "../renderer.h"
+#include "WaterDefinition.h"
+#include "SurfaceMaterial.h"
 #include "NoiseGenerator.h"
 #include "terrain/public.h"
 
@@ -143,7 +145,7 @@ static inline Color _getFoamMask(Renderer* renderer, WaterDefinition* definition
     foam_factor = (foam_factor - (1.0 - definition->foam_coverage)) * definition->foam_coverage;
 
     /* TODO Re-use base lighting status */
-    result = renderer->applyLightingToSurface(renderer, location, normal, &definition->foam_material);
+    result = renderer->applyLightingToSurface(renderer, location, normal, definition->foam_material);
     result.r *= 2.0;
     result.g *= 2.0;
     result.b *= 2.0;
@@ -260,7 +262,7 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     }
     else
     {
-        Color depth_color = definition->depth_color;
+        Color depth_color = *definition->depth_color;
         refracted = renderer->rayWalking(renderer, location, _refractRay(look_direction, normal), 1, 0, 1, 1);
         depth = v3Norm(v3Sub(location, refracted.hit_location));
         colorLimitPower(&depth_color, colorGetPower(&refracted.hit_color));
@@ -279,7 +281,7 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     }
 
     /* Lighting from environment */
-    color = renderer->applyLightingToSurface(renderer, location, normal, &definition->material);
+    color = renderer->applyLightingToSurface(renderer, location, normal, definition->material);
 
     color.r += result.reflected.r * definition->reflection + result.refracted.r * definition->transparency;
     color.g += result.reflected.g * definition->reflection + result.refracted.g * definition->transparency;
@@ -292,7 +294,7 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     /* Bring color to the camera */
     color = renderer->applyMediumTraversal(location, color);
 
-    result.base = definition->material._rgb;
+    result.base = definition->material->_rgb;
     result.final = color;
 
     return result;
@@ -304,7 +306,7 @@ static WaterRenderer* _createRenderer()
     WaterRenderer* result;
 
     result = new WaterRenderer;
-    result->definition = (WaterDefinition*)WaterDefinitionClass.create();
+    result->definition = new WaterDefinition(NULL);
 
     result->getHeightInfo = _fakeGetHeightInfo;
     result->getHeight = _fakeGetHeight;
@@ -315,13 +317,13 @@ static WaterRenderer* _createRenderer()
 
 static void _deleteRenderer(WaterRenderer* renderer)
 {
-    WaterDefinitionClass.destroy(renderer->definition);
+    delete renderer->definition;
     delete renderer;
 }
 
 static void _bindRenderer(Renderer* renderer, WaterDefinition* definition)
 {
-    WaterDefinitionClass.copy(definition, renderer->water->definition);
+    definition->copy(renderer->water->definition);
 
     renderer->water->getHeightInfo = _realGetHeightInfo;
     renderer->water->getHeight = _realGetHeight;

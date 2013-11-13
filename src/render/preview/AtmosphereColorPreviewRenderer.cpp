@@ -4,6 +4,7 @@
 #include "AtmosphereRenderer.h"
 #include "camera.h"
 #include "tools/lighting.h"
+#include "SurfaceMaterial.h"
 
 /*
  * Atmosphere previews.

@@ -12,6 +12,7 @@
 #include "water/public.h"
 #include "renderer.h"
 #include "terrain/ter_raster.h"
+#include "WaterDefinition.h"
 
 static Scenery* _main_scenery;
 static SceneryCustomDataCallback _custom_save = NULL;
@@ -26,17 +27,21 @@ Scenery::Scenery():
     clouds = (CloudsDefinition*)CloudsDefinitionClass.create();
     terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
     textures = (TexturesDefinition*)TexturesDefinitionClass.create();
-    water = (WaterDefinition*)WaterDefinitionClass.create();
+    water = new WaterDefinition(this);
+
+    addChild(water);
 }
 
 Scenery::~Scenery()
 {
+    removeChild(water);
+
     AtmosphereDefinitionClass.destroy(atmosphere);
     cameraDeleteDefinition(camera);
     CloudsDefinitionClass.destroy(clouds);
     TerrainDefinitionClass.destroy(terrain);
     TexturesDefinitionClass.destroy(textures);
-    WaterDefinitionClass.destroy(water);
+    delete water;
 }
 
 Scenery* Scenery::getCurrent()
@@ -44,7 +49,7 @@ Scenery* Scenery::getCurrent()
     return _main_scenery;
 }
 
-void Scenery::save(PackStream* stream)
+void Scenery::save(PackStream* stream) const
 {
     BaseDefinition::save(stream);
 
@@ -53,7 +58,6 @@ void Scenery::save(PackStream* stream)
     CloudsDefinitionClass.save(stream, clouds);
     TerrainDefinitionClass.save(stream, terrain);
     TexturesDefinitionClass.save(stream, textures);
-    WaterDefinitionClass.save(stream, water);
 }
 
 void Scenery::load(PackStream* stream)
@@ -65,7 +69,6 @@ void Scenery::load(PackStream* stream)
     CloudsDefinitionClass.load(stream, clouds);
     TerrainDefinitionClass.load(stream, terrain);
     TexturesDefinitionClass.load(stream, textures);
-    WaterDefinitionClass.load(stream, water);
 }
 
 void Scenery::autoPreset(int seed)
@@ -139,12 +142,12 @@ void Scenery::getTextures(TexturesDefinition* textures)
 
 void Scenery::setWater(WaterDefinition* water)
 {
-    WaterDefinitionClass.copy(water, this->water);
+    water->copy(this->water);
 }
 
 void Scenery::getWater(WaterDefinition* water)
 {
-    WaterDefinitionClass.copy(this->water, water);
+    this->water->copy(water);
 }
 
 void Scenery::bindToRenderer(Renderer* renderer)

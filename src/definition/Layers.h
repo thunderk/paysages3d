@@ -22,7 +22,7 @@ public:
     Layers(BaseDefinition* parent, LayerConstructor layer_constructor, LayerType* legacy_type=0);
     virtual ~Layers();
 
-    virtual void copy(BaseDefinition* destination);
+    virtual void copy(BaseDefinition* destination) const override;
 
     void setMaxLayerCount(int max_layer_count);
 

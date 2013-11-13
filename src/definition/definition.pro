@@ -16,13 +16,17 @@ include(../common.pri)
 SOURCES += \
     BaseDefinition.cpp \
     Layers.cpp \
-    LegacyLayer.cpp
+    LegacyLayer.cpp \
+    WaterDefinition.cpp \
+    SurfaceMaterial.cpp
 
 HEADERS +=\
         definition_global.h \
     BaseDefinition.h \
     Layers.h \
-    LegacyLayer.h
+    LegacyLayer.h \
+    WaterDefinition.h \
+    SurfaceMaterial.h
 
 unix:!symbian {
     maemo5 {

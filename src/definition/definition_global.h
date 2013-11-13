@@ -10,9 +10,12 @@
 
 #include "basics_global.h"
 
-namespace paysages
-{
-    namespace definition {}
+namespace paysages {
+namespace definition {
+    class BaseDefinition;
+    class SurfaceMaterial;
+    class WaterDefinition;
+}
 }
 using namespace paysages::definition;
 

@@ -19,17 +19,17 @@ public:
     BaseDefinition(BaseDefinition* parent);
     virtual ~BaseDefinition();
 
-    virtual void save(PackStream* pack);
+    virtual void save(PackStream* pack) const;
     virtual void load(PackStream* pack);
 
-    virtual void copy(BaseDefinition* destination);
+    virtual void copy(BaseDefinition* destination) const;
     virtual void validate();
 
-    inline const QString& getName() {return name;}
+    inline const QString& getName() const {return name;}
     virtual void setName(QString name);
 
-    inline const BaseDefinition* getParent() {return parent;}
-    inline const BaseDefinition* getRoot() {return root;}
+    inline const BaseDefinition* getParent() const {return parent;}
+    inline const BaseDefinition* getRoot() const {return root;}
 
 protected:
     void addChild(BaseDefinition* child);

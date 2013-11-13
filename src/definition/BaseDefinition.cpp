@@ -29,7 +29,7 @@ void BaseDefinition::setName(QString name)
     this->name = name;
 }
 
-void BaseDefinition::save(PackStream* pack)
+void BaseDefinition::save(PackStream* pack) const
 {
     pack->write(name);
     QListIterator<BaseDefinition*> it(children);
@@ -49,7 +49,7 @@ void BaseDefinition::load(PackStream* pack)
     }
 }
 
-void BaseDefinition::copy(BaseDefinition* destination)
+void BaseDefinition::copy(BaseDefinition* destination) const
 {
     destination->setName(name);
     // can't copy children as we don't know their types...

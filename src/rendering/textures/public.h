@@ -6,6 +6,7 @@
 #include "tools/zone.h"
 #include "tools/lighting.h"
 #include "terrain/public.h"
+#include "SurfaceMaterial.h"
 
 #define TEXTURES_MAX_LAYERS 50
 

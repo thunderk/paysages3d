@@ -7,6 +7,7 @@
 
 #include "tools/lighting.h"
 #include "renderer.h"
+#include "SurfaceMaterial.h"
 
 namespace Ui {
 class DialogMaterialEditor;

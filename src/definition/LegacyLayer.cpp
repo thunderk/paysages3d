@@ -12,7 +12,7 @@ LegacyLayer::~LegacyLayer()
     type.callback_delete(legacy);
 }
 
-void LegacyLayer::save(PackStream* pack)
+void LegacyLayer::save(PackStream* pack) const
 {
     BaseDefinition::save(pack);
     type.callback_save(pack, legacy);
@@ -24,7 +24,7 @@ void LegacyLayer::load(PackStream* pack)
     type.callback_load(pack, legacy);
 }
 
-void LegacyLayer::copy(BaseDefinition* destination)
+void LegacyLayer::copy(BaseDefinition* destination) const
 {
     BaseDefinition::copy(destination);
     type.callback_copy(legacy, ((LegacyLayer*)destination)->legacy);

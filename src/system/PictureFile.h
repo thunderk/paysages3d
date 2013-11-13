@@ -19,17 +19,8 @@ public:
 
 // Transitional C-API
 
-#ifndef TYPEDEF_COLOR
-typedef struct
-{
-    double r;
-    double g;
-    double b;
-    double a;
-} Color;
-#endif
-
-typedef Color (*PictureCallbackSavePixel)(void* data, int x, int y);
+// Les pixels doivent être fournis en RGBA
+typedef unsigned int (*PictureCallbackSavePixel)(void* data, int x, int y);
 SYSTEMSHARED_EXPORT int systemSavePictureFile(const char* filepath, PictureCallbackSavePixel callback_pixel, void* data, int width, int height);
 
 #endif // PICTUREFILE_H

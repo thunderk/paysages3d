@@ -178,9 +178,9 @@ void renderSetToneMapping(RenderArea* area, ToneMappingOperator tonemapper, doub
     renderUpdate(area);
 }
 
-void renderSetBackgroundColor(RenderArea* area, Color* col)
+void renderSetBackgroundColor(RenderArea* area, const Color &col)
 {
-    area->background_color = *col;
+    area->background_color = col;
 }
 
 void renderClear(RenderArea* area)

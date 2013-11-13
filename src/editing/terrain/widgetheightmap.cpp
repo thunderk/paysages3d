@@ -7,7 +7,7 @@
 #include <GL/glu.h>
 #include "tools.h"
 #include "Scenery.h"
-#include "water/public.h"
+#include "WaterDefinition.h"
 
 #define HEIGHTMAP_RESOLUTION 256
 
@@ -29,10 +29,7 @@ QGLWidget(parent)
     _water = true;
     _wireframe = true;
     _painted_area = true;
-    WaterDefinition* water_definition = (WaterDefinition*)WaterDefinitionClass.create();
-    sceneryGetWater(water_definition);
     _water_height = 0.0;
-    WaterDefinitionClass.destroy(water_definition);
 
     _average_frame_time = 0.0;
 

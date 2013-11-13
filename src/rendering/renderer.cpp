@@ -225,7 +225,7 @@ void rendererStart(Renderer* renderer, RenderParams params)
 
     cameraSetRenderSize(renderer->render_camera, renderer->render_width, renderer->render_height);
 
-    renderSetBackgroundColor(renderer->render_area, &COLOR_BLACK);
+    renderSetBackgroundColor(renderer->render_area, COLOR_BLACK);
     renderSetParams(renderer->render_area, params);
     renderClear(renderer->render_area);
 

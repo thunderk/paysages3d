@@ -32,10 +32,10 @@ public:
     LegacyLayer(BaseDefinition* parent, LayerType* type);
     virtual ~LegacyLayer();
 
-    virtual void save(PackStream* pack);
+    virtual void save(PackStream* pack) const;
     virtual void load(PackStream* pack);
 
-    virtual void copy(BaseDefinition* destination);
+    virtual void copy(BaseDefinition* destination) const;
     virtual void validate();
 
     virtual void setName(QString name);

@@ -3,6 +3,7 @@
 #include <QPainter>
 
 #include "tools.h"
+#include "ColorHSL.h"
 
 SmallPreviewHues::SmallPreviewHues(QWidget* parent) : DrawingWidget(parent)
 {
