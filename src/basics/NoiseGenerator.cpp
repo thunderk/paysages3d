@@ -6,10 +6,18 @@
 #include "PackStream.h"
 #include "RandomGenerator.h"
 #include <cmath>
+#include <cstdlib>
 
 #define MAX_LEVEL_COUNT 30
 
-void noiseInit()
+/* Global noise state */
+
+void noiseQuit()
+{
+    noiseNaiveQuit();
+}
+
+int noiseInit()
 {
     noiseSimplexInit();
     noisePerlinInit();
@@ -34,12 +42,13 @@ void noiseInit()
     }
     printf("%f %f\n", min, max);
     noiseDeleteGenerator(noise);*/
+
+    atexit(noiseQuit);
+
+    return 1;
 }
 
-void noiseQuit()
-{
-    noiseNaiveQuit();
-}
+static int inited = noiseInit();
 
 void noiseSave(PackStream* stream)
 {
@@ -50,6 +59,8 @@ void noiseLoad(PackStream* stream)
 {
     noiseNaiveLoad(stream);
 }
+
+/* NoiseGenerator class */
 
 NoiseGenerator::NoiseGenerator()
 {

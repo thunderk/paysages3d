@@ -759,9 +759,16 @@ void renderPostProcess(RenderArea* area, int nbchunks)
     area->callback_update(1.0);
 }
 
+static unsigned int _getPicturePixel(void* data, int x, int y)
+{
+    Color result = _getFinalPixel((RenderArea*)data, x, y);
+    result.normalize();
+    return result.to32BitBGRA();
+}
+
 int renderSaveToFile(RenderArea* area, const char* path)
 {
-    return systemSavePictureFile(path, (PictureCallbackSavePixel)_getFinalPixel, area, area->params.width, area->params.height);
+    return systemSavePictureFile(path, _getPicturePixel, area, area->params.width, area->params.height);
 }
 
 void renderSetPreviewCallbacks(RenderArea* area, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update)

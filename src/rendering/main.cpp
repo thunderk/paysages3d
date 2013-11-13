@@ -20,13 +20,11 @@ void paysagesInit()
     }
     openclInit();
 
-    sceneryInit();
     renderInit();
 }
 
 void paysagesQuit()
 {
-    sceneryQuit();
     renderQuit();
 
     openclQuit();
@@ -47,7 +45,7 @@ FileOperationResult paysagesSave(char* filepath)
     version_header = (double)PAYSAGES_CURRENT_DATA_VERSION;
     stream.write(&version_header);
 
-    scenerySave(&stream);
+    Scenery::getCurrent()->save(&stream);
 
     return FILE_OPERATION_OK;
 }
@@ -74,7 +72,7 @@ FileOperationResult paysagesLoad(char* filepath)
         return FILE_OPERATION_VERSION_MISMATCH;
     }
 
-    sceneryLoad(&stream);
+    Scenery::getCurrent()->load(&stream);
 
     return FILE_OPERATION_OK;
 }

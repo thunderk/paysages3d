@@ -1,5 +1,10 @@
 #define COLOR_INLINE_CPP
 
+#ifndef NDEBUG
+#include <cmath>
+#include <cassert>
+#endif
+
 #ifdef COLOR_H
 # define METHSPEC inline
 #else
@@ -99,21 +104,21 @@ METHSPEC void Color::mask(const Color& mask)
 METHSPEC double Color::normalize()
 {
 #ifndef NDEBUG
-    assert(col->r >= 0.0);
-    assert(col->g >= 0.0);
-    assert(col->b >= 0.0);
-    assert(col->a >= 0.0);
+    assert(r >= 0.0);
+    assert(g >= 0.0);
+    assert(b >= 0.0);
+    assert(a >= 0.0);
 #ifdef isnan
-    assert(!isnan(col->r));
-    assert(!isnan(col->g));
-    assert(!isnan(col->b));
-    assert(!isnan(col->a));
+    assert(!isnan(r));
+    assert(!isnan(g));
+    assert(!isnan(b));
+    assert(!isnan(a));
 #endif
 #ifdef isfinite
-    assert(isfinite(col->r));
-    assert(isfinite(col->g));
-    assert(isfinite(col->b));
-    assert(isfinite(col->a));
+    assert(isfinite(r));
+    assert(isfinite(g));
+    assert(isfinite(b));
+    assert(isfinite(a));
 #endif
 #endif
 

@@ -19,7 +19,7 @@ public:
 
 // Transitional C-API
 
-// Les pixels doivent être fournis en RGBA
+// Les pixels doivent être fournis en BGRA
 typedef unsigned int (*PictureCallbackSavePixel)(void* data, int x, int y);
 SYSTEMSHARED_EXPORT int systemSavePictureFile(const char* filepath, PictureCallbackSavePixel callback_pixel, void* data, int width, int height);
 

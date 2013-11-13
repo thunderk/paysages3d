@@ -12,11 +12,7 @@ class TerrainDefinition;
 class TexturesDefinition;
 class Renderer;
 
-namespace paysages {
-namespace system {
-class PackStream;
-}
-}
+typedef void (*SceneryCustomDataCallback)(PackStream* stream, void* data);
 
 /**
  * @brief Global scenery management
@@ -30,6 +26,8 @@ public:
     virtual ~Scenery();
 
     static Scenery* getCurrent();
+
+    void setCustomSaveCallbacks(SceneryCustomDataCallback callback_save, SceneryCustomDataCallback callback_load, void* data);
 
     virtual void save(PackStream* stream) const override;
     virtual void load(PackStream* stream) override;
@@ -69,41 +67,14 @@ private:
     TerrainDefinition* terrain;
     TexturesDefinition* textures;
     WaterDefinition* water;
+
+    SceneryCustomDataCallback _custom_save;
+    SceneryCustomDataCallback _custom_load;
+    void* _custom_data;
 };
 
 // Transitional C-API
-RENDERINGSHARED_EXPORT void sceneryInit();
-RENDERINGSHARED_EXPORT void sceneryQuit();
 
-RENDERINGSHARED_EXPORT void sceneryAutoPreset(int seed);
-
-typedef void (*SceneryCustomDataCallback)(PackStream* stream, void* data);
-RENDERINGSHARED_EXPORT void scenerySetCustomDataCallback(SceneryCustomDataCallback callback_save, SceneryCustomDataCallback callback_load, void* data);
-
-RENDERINGSHARED_EXPORT void scenerySave(PackStream* stream);
-RENDERINGSHARED_EXPORT void sceneryLoad(PackStream* stream);
-
-RENDERINGSHARED_EXPORT void scenerySetAtmosphere(AtmosphereDefinition* atmosphere);
-RENDERINGSHARED_EXPORT void sceneryGetAtmosphere(AtmosphereDefinition* atmosphere);
-
-RENDERINGSHARED_EXPORT void scenerySetCamera(CameraDefinition* camera);
-RENDERINGSHARED_EXPORT void sceneryGetCamera(CameraDefinition* camera);
-
-RENDERINGSHARED_EXPORT void scenerySetClouds(CloudsDefinition* clouds);
-RENDERINGSHARED_EXPORT void sceneryGetClouds(CloudsDefinition* clouds);
-
-RENDERINGSHARED_EXPORT void scenerySetTerrain(TerrainDefinition* terrain);
-RENDERINGSHARED_EXPORT void sceneryGetTerrain(TerrainDefinition* terrain);
-RENDERINGSHARED_EXPORT TerrainDefinition* sceneryGetTerrainDirect();
-
-RENDERINGSHARED_EXPORT void scenerySetTextures(TexturesDefinition* textures);
-RENDERINGSHARED_EXPORT void sceneryGetTextures(TexturesDefinition* textures);
-
-RENDERINGSHARED_EXPORT void scenerySetWater(WaterDefinition* water);
-RENDERINGSHARED_EXPORT void sceneryGetWater(WaterDefinition* water);
-
-RENDERINGSHARED_EXPORT Renderer* sceneryCreateStandardRenderer();
-RENDERINGSHARED_EXPORT void sceneryBindRenderer(Renderer* renderer);
 RENDERINGSHARED_EXPORT void sceneryRenderFirstPass(Renderer* renderer);
 
 #endif // SCENERY_H

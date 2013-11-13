@@ -26,7 +26,6 @@ SOURCES += main.cpp \
     clouds/clo_presets.cpp \
     clouds/clo_density.cpp \
     clouds/clo_definition.cpp \
-    shared/preview.cpp \
     terrain/ter_render.cpp \
     terrain/ter_raster.cpp \
     terrain/ter_preview.cpp \
@@ -53,7 +52,6 @@ SOURCES += main.cpp \
     water/wat_render.cpp \
     water/wat_raster.cpp \
     water/wat_preview.cpp \
-    water/wat_presets.cpp \
     water/wat_definition.cpp \
     Scenery.cpp
 
@@ -73,7 +71,6 @@ HEADERS += \
     clouds/clo_preview.h \
     clouds/clo_density.h \
     shared/types.h \
-    shared/preview.h \
     terrain/ter_raster.h \
     terrain/public.h \
     terrain/private.h \

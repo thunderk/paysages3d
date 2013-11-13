@@ -64,7 +64,7 @@ protected:
 
     void updateData()
     {
-        sceneryBindRenderer(_renderer);
+        Scenery::getCurrent()->bindToRenderer(_renderer);
         if (!_clouds_enabled)
         {
             CloudsRendererClass.bind(_renderer, _no_clouds);
@@ -170,13 +170,13 @@ void FormRender::loadPack(PackStream* stream)
 
 void FormRender::revertConfig()
 {
-    sceneryGetCamera(_camera);
+    Scenery::getCurrent()->getCamera(_camera);
     BaseForm::revertConfig();
 }
 
 void FormRender::applyConfig()
 {
-    scenerySetCamera(_camera);
+    Scenery::getCurrent()->setCamera(_camera);
     BaseForm::applyConfig();
 }
 

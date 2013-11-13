@@ -71,7 +71,7 @@ static void _layerValidateDefinition(TexturesLayerDefinition* definition)
     materialValidate(&definition->material);
 
     /* Update zone height range */
-    TerrainDefinition* terrain = sceneryGetTerrainDirect();
+    TerrainDefinition* terrain = Scenery::getCurrent()->getTerrain();
     if (terrain)
     {
         HeightInfo height_info = terrainGetHeightInfo(terrain);

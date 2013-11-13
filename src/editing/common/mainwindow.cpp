@@ -126,11 +126,11 @@ MainWindow::MainWindow() :
     ui->tool_panel->hide();
     //ui->menuBar->hide();
 
-    scenerySetCustomDataCallback(MainWindow::guiSaveCallback, MainWindow::guiLoadCallback, this);
+    Scenery::getCurrent()->setCustomSaveCallbacks(MainWindow::guiSaveCallback, MainWindow::guiLoadCallback, this);
 
     // FIXME AutoPreset has already been called by paysagesInit but we need to redo it here because
     //   the auto apply on FormRender overwrites the camera. Delete this when the render form is no longer a BaseForm.
-    sceneryAutoPreset(0);
+    Scenery::getCurrent()->autoPreset(0);
     refreshAll();
 }
 
@@ -160,14 +160,11 @@ void MainWindow::refreshAll()
     }
 
     // Refresh preview OSD
-    CameraDefinition* camera = cameraCreateDefinition();
     PreviewOsd* osd = PreviewOsd::getInstance(QString("geolocation"));
     osd->clearItems();
-    sceneryGetCamera(camera);
     PreviewOsdItem* item = osd->newItem(50, 50);
-    item->drawCamera(camera);
+    item->drawCamera(Scenery::getCurrent()->getCamera());
     item->setToolTip(QString(tr("Camera")));
-    cameraDeleteDefinition(camera);
 
     emit refreshed();
 }
@@ -181,7 +178,7 @@ void MainWindow::fileNew()
 {
     if (QMessageBox::question(this, tr("Paysages 3D - New scenery"), tr("Do you want to start a new scenery ? Any unsaved changes will be lost."), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
-        sceneryAutoPreset(0);
+        Scenery::getCurrent()->autoPreset(0);
         refreshAll();
     }
 }
@@ -265,7 +262,7 @@ void MainWindow::explore3D()
     int result;
 
     camera = cameraCreateDefinition();
-    sceneryGetCamera(camera);
+    Scenery::getCurrent()->getCamera(camera);
 
     DialogExplorer* dialog = new DialogExplorer(this, camera, true);
     result = dialog->exec();
@@ -274,7 +271,7 @@ void MainWindow::explore3D()
 
     if (result == QDialog::Accepted)
     {
-        scenerySetCamera(camera);
+        Scenery::getCurrent()->setCamera(camera);
         refreshAll();
     }
 

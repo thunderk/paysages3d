@@ -13,8 +13,6 @@ public:
 
     PreviewTexturesCoverage(QWidget* parent, TexturesLayerDefinition* layer) : BasePreview(parent)
     {
-        _terrain = (TerrainDefinition*) TerrainDefinitionClass.create();
-
         _renderer = rendererCreate();
         _renderer->render_quality = 3;
 
@@ -46,8 +44,7 @@ protected:
 
     void updateData()
     {
-        sceneryGetTerrain(_terrain);
-        TerrainRendererClass.bind(_renderer, _terrain);
+        TerrainRendererClass.bind(_renderer, Scenery::getCurrent()->getTerrain());
 
         //TexturesDefinitionClass.copy(_original_layer, _preview_layer);
     }
@@ -56,7 +53,6 @@ private:
     Renderer* _renderer;
     TexturesLayerDefinition* _original_layer;
     TexturesDefinition* _preview_definition;
-    TerrainDefinition* _terrain;
 };
 
 class PreviewTexturesColor : public BasePreview
@@ -142,14 +138,14 @@ FormTextures::~FormTextures()
 
 void FormTextures::revertConfig()
 {
-    sceneryGetTextures(_definition);
+    Scenery::getCurrent()->getTextures(_definition);
     BaseFormLayer::revertConfig();
 }
 
 void FormTextures::applyConfig()
 {
     BaseFormLayer::applyConfig();
-    scenerySetTextures(_definition);
+    Scenery::getCurrent()->setTextures(_definition);
 }
 
 void FormTextures::layerReadCurrentFrom(void* layer_definition)

@@ -75,13 +75,13 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
 
 void FormAtmosphere::revertConfig()
 {
-    sceneryGetAtmosphere(_definition);
+    Scenery::getCurrent()->getAtmosphere(_definition);
     BaseForm::revertConfig();
 }
 
 void FormAtmosphere::applyConfig()
 {
-    scenerySetAtmosphere(_definition);
+    Scenery::getCurrent()->setAtmosphere(_definition);
     BaseForm::applyConfig();
 }
 

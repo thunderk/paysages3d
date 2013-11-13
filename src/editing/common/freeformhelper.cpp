@@ -14,7 +14,7 @@
 #include "dialogexplorer.h"
 #include "Scenery.h"
 #include "BasePreview.h"
-#include "renderer.h"
+#include "SoftwareRenderer.h"
 #include "camera.h"
 #include "tools.h"
 
@@ -232,38 +232,33 @@ void FreeFormHelper::processApplyClicked()
 
 void FreeFormHelper::processExploreClicked()
 {
-    Renderer* renderer;
+    SoftwareRenderer renderer;
 
-    renderer = sceneryCreateStandardRenderer();
-
-    emit needAlterRenderer(renderer);
+    Scenery::getCurrent()->bindToRenderer(&renderer);
+    emit needAlterRenderer(&renderer);
 
     CameraDefinition* camera = cameraCreateDefinition();
-    sceneryGetCamera(camera);
+    Scenery::getCurrent()->getCamera(camera);
 
-    DialogExplorer* dialog = new DialogExplorer(_form_widget, camera, false, renderer);
+    DialogExplorer* dialog = new DialogExplorer(_form_widget, camera, false, &renderer);
     dialog->exec();
     delete dialog;
 
-    rendererDelete(renderer);
     cameraDeleteDefinition(camera);
 }
 
 void FreeFormHelper::processRenderClicked()
 {
-    Renderer* renderer;
+    SoftwareRenderer renderer;
 
-    renderer = sceneryCreateStandardRenderer();
+    Scenery::getCurrent()->bindToRenderer(&renderer);
+    emit needAlterRenderer(&renderer);
 
-    emit needAlterRenderer(renderer);
-
-    DialogRender* dialog = new DialogRender(_form_widget, renderer);
+    DialogRender* dialog = new DialogRender(_form_widget, &renderer);
     RenderParams params = {400, 300, 1, 3};
     dialog->startRender(params);
 
     delete dialog;
-
-    rendererDelete(renderer);
 }
 
 void FreeFormHelper::processDecimalChange(double value)

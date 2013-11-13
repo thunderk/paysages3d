@@ -74,6 +74,7 @@ RENDERINGSHARED_EXPORT void terrainAlterPreviewRenderer(Renderer* renderer);
 RENDERINGSHARED_EXPORT Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double detail);
 
 RENDERINGSHARED_EXPORT HeightInfo terrainGetHeightInfo(TerrainDefinition* definition);
+RENDERINGSHARED_EXPORT double terrainGetWaterHeight(TerrainDefinition* definition);
 
 typedef struct
 {

@@ -13,7 +13,15 @@ WaterDefinition::WaterDefinition(BaseDefinition* parent):
     foam_material = new SurfaceMaterial;
     _waves_noise = new NoiseGenerator;
 
-    //waterAutoPreset(this, WATER_PRESET_LAKE);
+    transparency_depth = 0.0;
+    transparency = 0.0;
+    reflection = 0.0;
+    lighting_depth = 0.0;
+    scaling = 1.0;
+    waves_height = 0.0;
+    detail_height = 0.0;
+    turbulence = 0.0;
+    foam_coverage = 0.0;
 }
 
 WaterDefinition::~WaterDefinition()
@@ -110,4 +118,52 @@ void WaterDefinition::validate()
 
     materialValidate(material);
     materialValidate(foam_material);
+}
+
+void WaterDefinition::applyPreset(WaterPreset preset)
+{
+    _waves_noise->randomizeOffsets();
+
+    if (preset == WATER_PRESET_LAKE)
+    {
+        transparency = 0.5;
+        reflection = 0.4;
+        transparency_depth = 4.0;
+        material->base = colorToHSL(colorFromValues(0.08, 0.15, 0.2, 1.0));
+        depth_color->r = 0.0;
+        depth_color->g = 0.1;
+        depth_color->b = 0.1;
+        lighting_depth = 6.0;
+        scaling = 1.0;
+        waves_height = 0.8;
+        detail_height = 0.05;
+        turbulence = 0.1;
+        foam_coverage = 0.15;
+    }
+    else if (preset == WATER_PRESET_SEA)
+    {
+        transparency = 0.4;
+        reflection = 0.35;
+        transparency_depth = 3.0;
+        material->base = colorToHSL(colorFromValues(0.05, 0.18, 0.2, 1.0));
+        depth_color->r = 0.0;
+        depth_color->g = 0.18;
+        depth_color->b = 0.15;
+        lighting_depth = 4.0;
+        scaling = 1.5;
+        waves_height = 1.0;
+        detail_height = 0.06;
+        turbulence = 0.3;
+        foam_coverage = 0.4;
+    }
+
+    depth_color->a = 1.0;
+    material->base.a = 1.0;
+    material->reflection = 1.0;
+    material->shininess = 16.0;
+    foam_material->base = colorToHSL(colorFromValues(0.8, 0.8, 0.8, 1.0));
+    foam_material->reflection = 0.1;
+    foam_material->shininess = 1.5;
+
+    validate();
 }

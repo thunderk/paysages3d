@@ -130,12 +130,12 @@ void MainTexturesForm::selectPreset(int preset)
 
 void MainTexturesForm::updateLocalDataFromScenery()
 {
-    sceneryGetTextures(textures);
+    Scenery::getCurrent()->getTextures(textures);
 }
 
 void MainTexturesForm::commitLocalDataToScenery()
 {
-    scenerySetTextures(textures);
+    Scenery::getCurrent()->setTextures(textures);
 }
 
 void MainTexturesForm::refreshFromLocalData()

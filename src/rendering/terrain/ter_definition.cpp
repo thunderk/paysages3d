@@ -140,3 +140,8 @@ HeightInfo terrainGetHeightInfo(TerrainDefinition* definition)
 
     return result;
 }
+
+double terrainGetWaterHeight(TerrainDefinition* definition)
+{
+    return definition->water_height * definition->height * definition->scaling;
+}

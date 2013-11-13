@@ -7,18 +7,6 @@
 #include "../tools/curve.h"
 #include "../tools/euclid.h"
 
-namespace paysages {
-namespace basics {
-    class NoiseGenerator;
-}
-}
-
-typedef enum
-{
-    WATER_PRESET_LAKE,
-    WATER_PRESET_SEA
-} WaterPreset;
-
 typedef struct
 {
     Vector3 location;
@@ -47,7 +35,6 @@ public:
 RENDERINGSHARED_EXPORT extern StandardRenderer WaterRendererClass;
 
 RENDERINGSHARED_EXPORT void waterRenderSurface(Renderer* renderer);
-RENDERINGSHARED_EXPORT void waterAutoPreset(WaterDefinition* definition, WaterPreset preset);
 
 RENDERINGSHARED_EXPORT void waterAlterPreviewCoverageRenderer(Renderer* renderer);
 RENDERINGSHARED_EXPORT Color waterGetPreviewCoverage(Renderer* renderer, double x, double y, double scaling, int highlight_enabled);

@@ -8,6 +8,7 @@
 #include "rendering/renderer.h"
 #include "rendering/atmosphere/public.h"
 #include "rendering/camera.h"
+#include "SoftwareRenderer.h"
 #include "Scenery.h"
 
 void startRender(Renderer* renderer, char* outputpath, RenderParams params)
@@ -45,7 +46,7 @@ void _previewUpdate(double progress)
 
 int main(int argc, char** argv)
 {
-    Renderer* renderer;
+    SoftwareRenderer* renderer;
     char* conf_file_path = NULL;
     RenderParams conf_render_params = {800, 600, 1, 5};
     int conf_first_picture = 0;
@@ -166,24 +167,16 @@ int main(int argc, char** argv)
 
     for (outputcount = 0; outputcount < conf_first_picture + conf_nb_pictures; outputcount++)
     {
-        AtmosphereDefinition* atmo;
-        atmo = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
-        sceneryGetAtmosphere(atmo);
+        AtmosphereDefinition* atmo = Scenery::getCurrent()->getAtmosphere();
         atmo->hour = (int)floor(conf_daytime_start * 24.0);
         atmo->minute = (int)floor(fmod(conf_daytime_start, 1.0 / 24.0) * 24.0 * 60.0);
         AtmosphereDefinitionClass.validate(atmo);
-        scenerySetAtmosphere(atmo);
-        AtmosphereDefinitionClass.destroy(atmo);
 
-        CameraDefinition* camera;
+        CameraDefinition* camera = Scenery::getCurrent()->getCamera();
         Vector3 step = {conf_camera_step_x, conf_camera_step_y, conf_camera_step_z};
-        camera = cameraCreateDefinition();
-        sceneryGetCamera(camera);
         cameraSetLocation(camera, v3Add(cameraGetLocation(camera), step));
-        scenerySetCamera(camera);
-        cameraDeleteDefinition(camera);
 
-        renderer = sceneryCreateStandardRenderer();
+        renderer = new SoftwareRenderer(Scenery::getCurrent());
         rendererSetPreviewCallbacks(renderer, NULL, NULL, _previewUpdate);
 
         if (outputcount >= conf_first_picture)
@@ -192,7 +185,7 @@ int main(int argc, char** argv)
             startRender(renderer, outputpath, conf_render_params);
         }
 
-        rendererDelete(renderer);
+        delete renderer;
 
         conf_daytime_start += conf_daytime_step;
     }

@@ -6,11 +6,7 @@
 
 void TexturesPreviewLayerCoverage_bind(Renderer* renderer, TexturesDefinition* definition)
 {
-    TerrainDefinition* terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
-    sceneryGetTerrain(terrain);
-    TerrainRendererClass.bind(renderer, terrain);
-    TerrainDefinitionClass.destroy(terrain);
-
+    TerrainRendererClass.bind(renderer, Scenery::getCurrent()->getTerrain());
     TexturesRendererClass.bind(renderer, definition);
 }
 
@@ -74,11 +70,7 @@ Color TexturesPreviewLayerLook_getColor(Renderer* renderer, double x, double y, 
 
 void TexturesPreviewCumul_bind(Renderer* renderer, TexturesDefinition* definition)
 {
-    TerrainDefinition* terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
-    sceneryGetTerrain(terrain);
-    TerrainRendererClass.bind(renderer, terrain);
-    TerrainDefinitionClass.destroy(terrain);
-
+    TerrainRendererClass.bind(renderer, Scenery::getCurrent()->getTerrain());
     TexturesRendererClass.bind(renderer, definition);
 }
 

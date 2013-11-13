@@ -125,14 +125,14 @@ FormClouds::~FormClouds()
 
 void FormClouds::revertConfig()
 {
-    sceneryGetClouds(_definition);
+    Scenery::getCurrent()->getClouds(_definition);
     BaseFormLayer::revertConfig();
 }
 
 void FormClouds::applyConfig()
 {
     BaseFormLayer::applyConfig();
-    scenerySetClouds(_definition);
+    Scenery::getCurrent()->setClouds(_definition);
 }
 
 void FormClouds::layerReadCurrentFrom(void* layer_definition)

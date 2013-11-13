@@ -69,10 +69,7 @@ void MainTerrainForm::refreshFromLocalData()
 
 void MainTerrainForm::refreshFromFellowData()
 {
-    TexturesDefinition* textures = (TexturesDefinition*)TexturesDefinitionClass.create();
-    sceneryGetTextures(textures);
-    double disp = texturesGetMaximalDisplacement(textures);
-    TexturesDefinitionClass.destroy(textures);
+    double disp = texturesGetMaximalDisplacement(Scenery::getCurrent()->getTextures());
 
     if (disp == 0.0)
     {
@@ -86,12 +83,12 @@ void MainTerrainForm::refreshFromFellowData()
 
 void MainTerrainForm::updateLocalDataFromScenery()
 {
-    sceneryGetTerrain(_terrain);
+    Scenery::getCurrent()->getTerrain(_terrain);
 }
 
 void MainTerrainForm::commitLocalDataToScenery()
 {
-    scenerySetTerrain(_terrain);
+    Scenery::getCurrent()->setTerrain(_terrain);
 }
 
 void MainTerrainForm::alterRenderer(Renderer* renderer)

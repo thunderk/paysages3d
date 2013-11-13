@@ -45,12 +45,7 @@ protected:
     void updateData()
     {
         WaterRendererClass.bind(_renderer, _definition);
-
-        // TODO Do this only on full refresh
-        TerrainDefinition* terrain = (TerrainDefinition*) TerrainDefinitionClass.create();
-        sceneryGetTerrain(terrain);
-        TerrainRendererClass.bind(_renderer, terrain);
-        TerrainDefinitionClass.destroy(terrain);
+        TerrainRendererClass.bind(_renderer, Scenery::getCurrent()->getTerrain());
     }
 
     void toggleChangeEvent(QString key, bool value)
@@ -263,13 +258,13 @@ BaseForm(parent)
 
 void FormWater::revertConfig()
 {
-    sceneryGetWater(_definition);
+    Scenery::getCurrent()->getWater(_definition);
     BaseForm::revertConfig();
 }
 
 void FormWater::applyConfig()
 {
-    scenerySetWater(_definition);
+    Scenery::getCurrent()->setWater(_definition);
     BaseForm::applyConfig();
 }
 
@@ -281,7 +276,7 @@ void FormWater::configChangeEvent()
 
 void FormWater::autoPresetSelected(int preset)
 {
-    waterAutoPreset(_definition, (WaterPreset) preset);
+    _definition->applyPreset((WaterPreset)preset);
     BaseForm::autoPresetSelected(preset);
 }
 

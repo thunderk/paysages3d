@@ -92,8 +92,6 @@ private:
 }
 }
 
-BASICSSHARED_EXPORT void noiseInit();
-BASICSSHARED_EXPORT void noiseQuit();
 BASICSSHARED_EXPORT void noiseSave(PackStream* stream);
 BASICSSHARED_EXPORT void noiseLoad(PackStream* stream);
 
