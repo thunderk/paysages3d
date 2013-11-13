@@ -12,6 +12,7 @@ class FormAtmosphere : public BaseForm
 
 public:
     explicit FormAtmosphere(QWidget *parent = 0);
+    virtual ~FormAtmosphere();
 
 public slots:
     virtual void revertConfig();
@@ -23,7 +24,9 @@ protected slots:
 
 private:
     BasePreview* previewEast;
+    Base2dPreviewRenderer* previewEastRenderer;
     BasePreview* previewWest;
+    Base2dPreviewRenderer* previewWestRenderer;
 };
 
 #endif

@@ -22,9 +22,6 @@ public:
 
     virtual void updateEvent();
     virtual Color getColor2D(double x, double y, double scaling);
-
-protected:
-    Scenery* scenery;
 };
 
 }

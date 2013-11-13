@@ -36,6 +36,7 @@ public:
 
 private:
     Scenery* scenery;
+    bool own_scenery;
     FluidMediumManager* fluid_medium;
     BaseAtmosphereRenderer* atmosphere_renderer;
 };

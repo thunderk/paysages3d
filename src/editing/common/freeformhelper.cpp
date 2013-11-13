@@ -232,9 +232,8 @@ void FreeFormHelper::processApplyClicked()
 
 void FreeFormHelper::processExploreClicked()
 {
-    SoftwareRenderer renderer;
+    SoftwareRenderer renderer(Scenery::getCurrent());
 
-    Scenery::getCurrent()->bindToRenderer(&renderer);
     emit needAlterRenderer(&renderer);
 
     CameraDefinition* camera = cameraCreateDefinition();
@@ -249,9 +248,8 @@ void FreeFormHelper::processExploreClicked()
 
 void FreeFormHelper::processRenderClicked()
 {
-    SoftwareRenderer renderer;
+    SoftwareRenderer renderer(Scenery::getCurrent());
 
-    Scenery::getCurrent()->bindToRenderer(&renderer);
     emit needAlterRenderer(&renderer);
 
     DialogRender* dialog = new DialogRender(_form_widget, &renderer);

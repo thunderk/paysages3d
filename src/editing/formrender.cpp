@@ -192,7 +192,7 @@ void FormRender::startQuickRender()
     {
         rendererDelete(_renderer);
     }
-    _renderer = new SoftwareRenderer();
+    _renderer = new SoftwareRenderer(Scenery::getCurrent());
     _renderer_inited = true;
 
     DialogRender* dialog = new DialogRender(this, _renderer);
@@ -208,7 +208,7 @@ void FormRender::startRender()
     {
         rendererDelete(_renderer);
     }
-    _renderer = new SoftwareRenderer();
+    _renderer = new SoftwareRenderer(Scenery::getCurrent());
     _renderer_inited = true;
 
     DialogRender* dialog = new DialogRender(this, _renderer);

@@ -34,10 +34,12 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
     if (scenery)
     {
         this->scenery = scenery;
+        own_scenery = false;
     }
     else
     {
-        this->scenery = Scenery::getCurrent();
+        this->scenery = new Scenery;
+        own_scenery = true;
     }
     this->scenery->bindToRenderer(this);
 }
@@ -47,6 +49,11 @@ SoftwareRenderer::~SoftwareRenderer()
     delete atmosphere_renderer;
 
     delete fluid_medium;
+
+    if (own_scenery)
+    {
+        delete scenery;
+    }
 }
 
 void SoftwareRenderer::prepare()
@@ -56,6 +63,7 @@ void SoftwareRenderer::prepare()
     atmosphere_renderer = new SoftwareBrunetonAtmosphereRenderer(this);
 
     // Setup transitional renderers (for C-legacy subsystems)
+    AtmosphereDefinitionClass.copy(scenery->getAtmosphere(), atmosphere->definition);
     atmosphere->applyAerialPerspective = _legacyApplyAerialPerspective;
     atmosphere->getSkyColor = _legacyGetSkyColor;
     atmosphere->getLightingStatus = _legacyGetLightingStatus;

@@ -15,24 +15,14 @@
 static AtmosphereDefinition* _definition;
 
 /**************** Previews ****************/
-class PreviewSkyEast:public AtmosphereColorPreviewRenderer
+class PreviewSkyRenderer:public AtmosphereColorPreviewRenderer
 {
 public:
-    void bindEvent(BasePreview* preview) override
+    PreviewSkyRenderer(double heading):
+        AtmosphereColorPreviewRenderer(heading)
     {
-        preview->configHdrToneMapping(true);
-        preview->configScaling(0.5, 5.0, 0.5, 2.5);
     }
-    void updateEvent() override
-    {
-        /*AtmosphereRendererClass.bind(renderer, _definition);
-        renderer->prepare();*/
-    }
-};
 
-class PreviewSkyWest:public AtmosphereColorPreviewRenderer
-{
-public:
     void bindEvent(BasePreview* preview) override
     {
         preview->configHdrToneMapping(true);
@@ -40,8 +30,8 @@ public:
     }
     void updateEvent() override
     {
-        /*AtmosphereRendererClass.bind(renderer, _definition);
-        renderer->prepare();*/
+        getScenery()->setAtmosphere(_definition);
+        prepare();
     }
 };
 
@@ -58,8 +48,13 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
     _definition = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
 
     previewWest = new BasePreview(this);
+    previewWestRenderer = new PreviewSkyRenderer(M_PI / 2.0);
+    previewWest->setRenderer(previewWestRenderer);
     addPreview(previewWest, QString(tr("West preview")));
+
     previewEast = new BasePreview(this);
+    previewEastRenderer = new PreviewSkyRenderer(-M_PI / 2.0);
+    previewEast->setRenderer(previewEastRenderer);
     addPreview(previewEast, QString(tr("East preview")));
 
     //addInputEnum(tr("Color model"), (int*)&_definition->model, QStringList(tr("Simplified model (with weather)")) << tr("Complex model"));
@@ -71,6 +66,14 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
     addInputDouble(tr("Humidity"), &_definition->humidity, 0.0, 1.0, 0.01, 0.1);
 
     revertConfig();
+}
+
+FormAtmosphere::~FormAtmosphere()
+{
+    delete previewWest;
+    delete previewWestRenderer;
+    delete previewEast;
+    delete previewEastRenderer;
 }
 
 void FormAtmosphere::revertConfig()

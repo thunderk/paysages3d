@@ -145,8 +145,8 @@ static inline int _checkHit(Vector3 eye, Vector3 direction, Vector3* hit, Vector
     return _checkHitGround(eye, direction, hit);
 }
 
-AtmosphereColorPreviewRenderer::AtmosphereColorPreviewRenderer():
-    heading(0.0)
+AtmosphereColorPreviewRenderer::AtmosphereColorPreviewRenderer(double heading):
+    heading(heading)
 {
     cameraSetLocation(render_camera, Vector3(0.0, 7.0, 0.0));
 }
@@ -154,7 +154,7 @@ AtmosphereColorPreviewRenderer::AtmosphereColorPreviewRenderer():
 Color AtmosphereColorPreviewRenderer::getColor2D(double x, double y, double)
 {
     Vector3 eye = {0.0, 7.0, 0.0};
-    Vector3 direction = {x, y, -1.0};
+    Vector3 direction = {x, -y, -1.0};
     Vector3 hit, normal;
     Matrix4 rotation;
 

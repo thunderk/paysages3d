@@ -90,7 +90,7 @@ QGLWidget(parent)
     }
     else
     {
-        _renderer = new SoftwareRenderer();
+        _renderer = new SoftwareRenderer(Scenery::getCurrent());
         _renderer_created = true;
     }
     _opengl_renderer = new OpenGLRenderer(NULL);

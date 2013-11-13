@@ -9,7 +9,7 @@ namespace preview {
 class AtmosphereColorPreviewRenderer:public Base2dPreviewRenderer
 {
 public:
-    AtmosphereColorPreviewRenderer();
+    AtmosphereColorPreviewRenderer(double heading);
 
     virtual Color getColor2D(double x, double y, double scaling) override;
 

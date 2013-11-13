@@ -6,12 +6,10 @@
 Base2dPreviewRenderer::Base2dPreviewRenderer():
     SoftwareRenderer()
 {
-    scenery = new Scenery();
 }
 
 Base2dPreviewRenderer::~Base2dPreviewRenderer()
 {
-    delete scenery;
 }
 
 void Base2dPreviewRenderer::bindEvent(BasePreview*)

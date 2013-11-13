@@ -646,10 +646,7 @@ QColor BasePreview::getPixelColor(int x, int y)
     {
         col = colorProfileApply(_hdr_profile, col);
     }
-    else
-    {
-        colorNormalize(&col);
-    }
+    col.normalize();
     return QColor::fromRgbF(col.r, col.g, col.b, col.a);
 }
 
