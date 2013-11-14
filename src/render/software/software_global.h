@@ -9,7 +9,7 @@
 #  define SOFTWARESHARED_EXPORT Q_DECL_IMPORT
 #endif
 
-#include "basics_global.h"
+#include "definition_global.h"
 
 namespace paysages {
 namespace software {

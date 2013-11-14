@@ -5,7 +5,6 @@
 
 #include <QDialog>
 
-class CameraDefinition;
 class Renderer;
 
 class DialogExplorer : public QDialog

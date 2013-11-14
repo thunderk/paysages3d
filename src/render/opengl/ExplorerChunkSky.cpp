@@ -2,9 +2,9 @@
 
 #include <cmath>
 #include <GL/gl.h>
-#include "rendering/renderer.h"
-#include "rendering/camera.h"
-#include "rendering/atmosphere/public.h"
+#include "renderer.h"
+#include "CameraDefinition.h"
+#include "atmosphere/public.h"
 
 ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, double size, SkyboxOrientation orientation) : BaseExplorerChunk(renderer)
 {
@@ -18,7 +18,7 @@ ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, double size, SkyboxOrient
 
 void ExplorerChunkSky::onCameraEvent(CameraDefinition* camera)
 {
-    _center = cameraGetLocation(camera);
+    _center = camera->getLocation();
 }
 
 void ExplorerChunkSky::onRenderEvent(QGLWidget*)

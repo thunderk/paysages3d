@@ -13,6 +13,7 @@
 namespace paysages {
 namespace definition {
     class BaseDefinition;
+    class CameraDefinition;
     class SurfaceMaterial;
     class WaterDefinition;
 }

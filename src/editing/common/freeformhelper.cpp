@@ -15,7 +15,7 @@
 #include "Scenery.h"
 #include "BasePreview.h"
 #include "SoftwareRenderer.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 #include "tools.h"
 
 Q_DECLARE_METATYPE(double*)
@@ -236,14 +236,12 @@ void FreeFormHelper::processExploreClicked()
 
     emit needAlterRenderer(&renderer);
 
-    CameraDefinition* camera = cameraCreateDefinition();
-    Scenery::getCurrent()->getCamera(camera);
+    CameraDefinition camera;
+    Scenery::getCurrent()->getCamera(&camera);
 
-    DialogExplorer* dialog = new DialogExplorer(_form_widget, camera, false, &renderer);
+    DialogExplorer* dialog = new DialogExplorer(_form_widget, &camera, false, &renderer);
     dialog->exec();
     delete dialog;
-
-    cameraDeleteDefinition(camera);
 }
 
 void FreeFormHelper::processRenderClicked()

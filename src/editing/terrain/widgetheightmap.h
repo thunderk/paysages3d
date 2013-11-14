@@ -4,7 +4,7 @@
 #include <QGLWidget>
 #include <QDateTime>
 #include "terrain/paintingbrush.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 #include "tools/euclid.h"
 #include "renderer.h"
 #include "terrain/public.h"

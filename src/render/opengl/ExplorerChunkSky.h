@@ -2,8 +2,10 @@
 #define EXPLORERCHUNKSKY_H
 
 #include "opengl_global.h"
+
 #include "BaseExplorerChunk.h"
-#include "rendering/tools/euclid.h"
+
+#include "Vector3.h"
 
 namespace paysages {
 namespace opengl {
@@ -18,7 +20,7 @@ enum SkyboxOrientation
     SKYBOX_BOTTOM
 };
 
-class ExplorerChunkSky:public BaseExplorerChunk
+class OPENGLSHARED_EXPORT ExplorerChunkSky:public BaseExplorerChunk
 {
 public:
     ExplorerChunkSky(Renderer* renderer, double size, SkyboxOrientation orientation);

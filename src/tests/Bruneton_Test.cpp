@@ -1,7 +1,7 @@
 #include "BaseTestCase.h"
 
 #include "tools/color.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 #include "SoftwareRenderer.h"
 #include "atmosphere/public.h"
 #include "Scenery.h"
@@ -22,9 +22,9 @@ TEST(Bruneton, AerialPerspective1)
     renderer.render_height = 600;
     renderer.render_quality = 1;
 
-    cameraSetLocation(renderer.render_camera, VECTOR_ZERO);
-    cameraSetTarget(renderer.render_camera, VECTOR_EAST);
-    cameraSetRenderSize(renderer.render_camera, renderer.render_width, renderer.render_height);
+    renderer.render_camera->setLocation(VECTOR_ZERO);
+    renderer.render_camera->setTarget(VECTOR_EAST);
+    renderer.render_camera->setRenderSize(renderer.render_width, renderer.render_height);
 
     RenderParams params = {renderer.render_width, renderer.render_height, 1, 1};
     renderSetParams(renderer.render_area, params);
@@ -53,9 +53,9 @@ TEST(Bruneton, AerialPerspective2)
     renderer.render_height = 600;
     renderer.render_quality = 1;
 
-    cameraSetLocation(renderer.render_camera, VECTOR_ZERO);
-    cameraSetTarget(renderer.render_camera, VECTOR_EAST);
-    cameraSetRenderSize(renderer.render_camera, renderer.render_width, renderer.render_height);
+    renderer.render_camera->setLocation(VECTOR_ZERO);
+    renderer.render_camera->setTarget(VECTOR_EAST);
+    renderer.render_camera->setRenderSize(renderer.render_width, renderer.render_height);
 
     RenderParams params = {renderer.render_width, renderer.render_height, 1, 1};
     renderSetParams(renderer.render_area, params);

@@ -10,7 +10,6 @@
 #include <math.h>
 #include "../tools/memory.h"
 #include "../tools.h"
-#include "../tools/array.h"
 #include "PackStream.h"
 #include "NoiseGenerator.h"
 

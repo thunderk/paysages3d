@@ -44,16 +44,15 @@ QGLWidget(parent)
     _last_update_x = 0;
     _last_update_z = 0;
 
-    _current_camera = cameraCreateDefinition();
-    _top_camera = cameraCreateDefinition();
-    _temp_camera = cameraCreateDefinition();
+    _current_camera = new CameraDefinition;
+    _top_camera = new CameraDefinition;
+    _temp_camera = new CameraDefinition;
     _zoom = 35.0;
 
-    Vector3 camera_location = {0.0, 80.0, 10.0};
-    cameraSetLocation(_current_camera, camera_location);
-    cameraSetTarget(_current_camera, VECTOR_ZERO);
-    cameraSetZoomToTarget(_top_camera, _zoom);
-    cameraCopyDefinition(_current_camera, _top_camera);
+    _current_camera->setLocation(Vector3(0.0, 80.0, 10.0));
+    _current_camera->setTarget(VECTOR_ZERO);
+    _top_camera->setZoomToTarget(_zoom);
+    _current_camera->copy(_top_camera);
 
     _brush = NULL;
     _brush_x = 0.0;
@@ -62,9 +61,9 @@ QGLWidget(parent)
 
 WidgetHeightMap::~WidgetHeightMap()
 {
-    cameraDeleteDefinition(_current_camera);
-    cameraDeleteDefinition(_top_camera);
-    cameraDeleteDefinition(_temp_camera);
+    delete _current_camera;
+    delete _top_camera;
+    delete _temp_camera;
     rendererDelete(_renderer);
     delete[] _vertices;
 }
@@ -216,10 +215,10 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
 
     // Update top camera
     Vector3 target = {_target_x, terrainGetInterpolatedHeight(_terrain, _target_x, _target_z, 1, 1), _target_z};
-    cameraSetLocationCoords(_top_camera, target.x, target.y + 1.0, target.z + 0.1);
-    cameraSetTarget(_top_camera, target);
-    cameraSetZoomToTarget(_top_camera, _zoom);
-    if (cameraTransitionToAnother(_current_camera, _top_camera, 0.8))
+    _top_camera->setLocationCoords(target.x, target.y + 1.0, target.z + 0.1);
+    _top_camera->setTarget(target);
+    _top_camera->setZoomToTarget(_zoom);
+    if (_current_camera->transitionToAnother(_top_camera, 0.8))
     {
         int update_x = (int) (floor(_target_x));
         int update_z = (int) (floor(_target_z));
@@ -372,9 +371,9 @@ void WidgetHeightMap::paintGL()
     // Place camera
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    Vector3 camera_location = cameraGetLocation(_current_camera);
-    Vector3 camera_target = cameraGetTarget(_current_camera);
-    Vector3 camera_up = cameraGetUpVector(_current_camera);
+    Vector3 camera_location = _current_camera->getLocation();
+    Vector3 camera_target = _current_camera->getTarget();
+    Vector3 camera_up = _current_camera->getUpVector();
     gluLookAt(camera_location.x, camera_location.y, camera_location.z, camera_target.x, camera_target.y, camera_target.z, camera_up.x, camera_up.y, camera_up.z);
 
     // Place lights

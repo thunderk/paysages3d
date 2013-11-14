@@ -1,6 +1,6 @@
 #include "SoftwareRenderer.h"
 
-#include "camera.h"
+#include "CameraDefinition.h"
 #include "Scenery.h"
 #include "FluidMediumManager.h"
 #include "AtmosphereRenderer.h"

@@ -8,7 +8,7 @@
 
 #include "tools/lighting.h"
 #include "tools/color.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 
 /***** Shared renderer *****/
 MaterialPreviewRenderer::MaterialPreviewRenderer(SurfaceMaterial* material)
@@ -25,8 +25,7 @@ MaterialPreviewRenderer::MaterialPreviewRenderer(SurfaceMaterial* material)
 
     _material = material;
 
-    Vector3 camera_location = {0.0, 0.0, 10.0};
-    cameraSetLocation(render_camera, camera_location);
+    render_camera->setLocation(Vector3(0.0, 0.0, 10.0));
 
     _color_profile = colorProfileCreate();
     colorProfileSetToneMapping(_color_profile, TONE_MAPPING_UNCHARTED, 1.0);

@@ -14,6 +14,7 @@
 #include "PackStream.h"
 #include "SoftwareRenderer.h"
 #include "BasePreview.h"
+#include "CameraDefinition.h"
 
 /**************** Previews ****************/
 class PreviewRenderLandscape : public BasePreview
@@ -114,7 +115,7 @@ BaseForm(parent, true)
     _params.width = 800;
     _params.height = 600;
     _params.antialias = 1;
-    _camera = cameraCreateDefinition();
+    _camera = new CameraDefinition;
 
     _renderer_inited = false;
 
@@ -139,7 +140,7 @@ BaseForm(parent, true)
 
 FormRender::~FormRender()
 {
-    cameraDeleteDefinition(_camera);
+    delete _camera;
     if (_renderer_inited)
     {
         rendererDelete(_renderer);
@@ -182,7 +183,7 @@ void FormRender::applyConfig()
 
 void FormRender::configChangeEvent()
 {
-    cameraValidateDefinition(_camera, 1);
+    _camera->validate();
     BaseForm::configChangeEvent();
 }
 

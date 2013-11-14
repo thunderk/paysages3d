@@ -2,12 +2,13 @@
 #define EXPLORERCHUNKTERRAIN_H
 
 #include "BaseExplorerChunk.h"
-#include "rendering/tools/euclid.h"
+
+#include "Vector3.h"
 
 namespace paysages {
 namespace opengl {
 
-class ExplorerChunkTerrain:public BaseExplorerChunk
+class OPENGLSHARED_EXPORT ExplorerChunkTerrain:public BaseExplorerChunk
 {
 public:
     ExplorerChunkTerrain(Renderer* renderer, double x, double z, double size, int nbchunks, double water_height);

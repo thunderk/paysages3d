@@ -2,7 +2,7 @@
 
 #include <cmath>
 #include "renderer.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 #include "System.h"
 
 static Color _postProcessFragment(Renderer*, Vector3 location, void*)
@@ -38,9 +38,9 @@ TEST(Render, quad)
     renderer->render_quality = 1;
     renderSetToneMapping(renderer->render_area, TONE_MAPPING_CLAMP, 0.0);
 
-    cameraSetLocationCoords(renderer->render_camera, 0.0, 0.5, 2.0);
-    cameraSetTargetCoords(renderer->render_camera, 0.0, 0.5, 0.0);
-    cameraSetRenderSize(renderer->render_camera, renderer->render_width, renderer->render_height);
+    renderer->render_camera->setLocationCoords(0.0, 0.5, 2.0);
+    renderer->render_camera->setTargetCoords(0.0, 0.5, 0.0);
+    renderer->render_camera->setRenderSize(renderer->render_width, renderer->render_height);
 
     RenderParams params = {renderer->render_width, renderer->render_height, 1, 1};
     renderSetParams(renderer->render_area, params);

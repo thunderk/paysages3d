@@ -18,7 +18,8 @@ SOURCES += \
     Layers.cpp \
     LegacyLayer.cpp \
     WaterDefinition.cpp \
-    SurfaceMaterial.cpp
+    SurfaceMaterial.cpp \
+    CameraDefinition.cpp
 
 HEADERS +=\
         definition_global.h \
@@ -26,7 +27,8 @@ HEADERS +=\
     Layers.h \
     LegacyLayer.h \
     WaterDefinition.h \
-    SurfaceMaterial.h
+    SurfaceMaterial.h \
+    CameraDefinition.h
 
 unix:!symbian {
     maemo5 {

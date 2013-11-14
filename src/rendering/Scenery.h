@@ -6,7 +6,6 @@
 #include "BaseDefinition.h"
 
 class AtmosphereDefinition;
-class CameraDefinition;
 class CloudsDefinition;
 class TerrainDefinition;
 class TexturesDefinition;
@@ -31,6 +30,8 @@ public:
 
     virtual void save(PackStream* stream) const override;
     virtual void load(PackStream* stream) override;
+
+    virtual void validate() override;
 
     void autoPreset(int seed);
 

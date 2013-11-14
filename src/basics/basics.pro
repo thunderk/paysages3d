@@ -24,7 +24,9 @@ SOURCES += \
     SpaceSegment.cpp \
     Color.cpp \
     Color.inline.cpp \
-    ColorHSL.cpp
+    ColorHSL.cpp \
+    BoundingBox.cpp \
+    Matrix4.cpp
 
 HEADERS +=\
         basics_global.h \
@@ -36,7 +38,9 @@ HEADERS +=\
     Vector3.h \
     SpaceSegment.h \
     Color.h \
-    ColorHSL.h
+    ColorHSL.h \
+    BoundingBox.h \
+    Matrix4.h
 
 unix:!symbian {
     maemo5 {

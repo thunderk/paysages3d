@@ -2,7 +2,7 @@
 
 #include "SoftwareRenderer.h"
 #include "AtmosphereRenderer.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 #include "tools/lighting.h"
 #include "SurfaceMaterial.h"
 
@@ -148,7 +148,7 @@ static inline int _checkHit(Vector3 eye, Vector3 direction, Vector3* hit, Vector
 AtmosphereColorPreviewRenderer::AtmosphereColorPreviewRenderer(double heading):
     heading(heading)
 {
-    cameraSetLocation(render_camera, Vector3(0.0, 7.0, 0.0));
+    render_camera->setLocation(Vector3(0.0, 7.0, 0.0));
 }
 
 Color AtmosphereColorPreviewRenderer::getColor2D(double x, double y, double)
@@ -158,21 +158,21 @@ Color AtmosphereColorPreviewRenderer::getColor2D(double x, double y, double)
     Vector3 hit, normal;
     Matrix4 rotation;
 
-    rotation = m4NewRotateY(heading);
+    rotation = Matrix4::newRotateY(heading);
 
     if (_checkHit(eye, direction, &hit, &normal))
     {
         Color color;
 
-        normal = m4Transform(rotation, normal);
-        hit = m4Transform(rotation, hit);
+        normal = rotation.transform(normal);
+        hit = rotation.transform(hit);
 
         color = this->applyLightingToSurface(this, hit, normal, &MOUNT_MATERIAL);
         return this->atmosphere->applyAerialPerspective(this, hit, color).final;
     }
     else
     {
-        direction = m4Transform(rotation, direction);
+        direction = rotation.transform(direction);
 
         return this->atmosphere->getSkyColor(this, direction).final;
     }

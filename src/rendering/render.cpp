@@ -5,7 +5,7 @@
 #include <math.h>
 
 #include "renderer.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 #include "PictureFile.h"
 #include "Thread.h"
 #include "Mutex.h"
@@ -370,8 +370,8 @@ static void _scanGetDiff(ScanPoint* v1, ScanPoint* v2, ScanPoint* result)
 
 static void _scanInterpolate(CameraDefinition* camera, ScanPoint* v1, ScanPoint* diff, double value, ScanPoint* result)
 {
-    double v1depth = cameraGetRealDepth(camera, v1->pixel);
-    double v2depth = cameraGetRealDepth(camera, v3Add(v1->pixel, diff->pixel));
+    double v1depth = camera->getRealDepth(v1->pixel);
+    double v2depth = camera->getRealDepth(v1->pixel.add(diff->pixel));
     double factor = ((1.0 - value) / v1depth + value / v2depth);
 
     result->pixel.x = v1->pixel.x + diff->pixel.x * value;

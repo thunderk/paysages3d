@@ -2,7 +2,7 @@
 
 #include <QPainter>
 #include "Vector3.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 
 PreviewOsdItem::PreviewOsdItem(int width, int height) : QImage(width, height, QImage::Format_ARGB32)
 {
@@ -19,8 +19,8 @@ void PreviewOsdItem::setLocation(double x, double y)
 
 void PreviewOsdItem::drawCamera(CameraDefinition* camera)
 {
-    Vector3 camera_location = cameraGetLocation(camera);
-    VectorSpherical camera_direction = cameraGetDirectionSpherical(camera);
+    Vector3 camera_location = camera->getLocation();
+    VectorSpherical camera_direction = camera->getDirectionSpherical();
     int w2 = width() / 2;
     int h2 = height() / 2;
 

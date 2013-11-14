@@ -6,7 +6,7 @@
 #include "render.h"
 #include "Scenery.h"
 #include "tools.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 #include "atmosphere/public.h"
 #include "clouds/public.h"
 #include "terrain/public.h"
@@ -34,7 +34,7 @@ static Vector3 _getCameraLocation(Renderer* renderer, Vector3 target)
 {
     UNUSED(renderer);
     UNUSED(target);
-    return cameraGetLocation(renderer->render_camera);
+    return renderer->render_camera->getLocation();
 }
 
 static Vector3 _getCameraDirection(Renderer* renderer, Vector3 target)
@@ -42,7 +42,7 @@ static Vector3 _getCameraDirection(Renderer* renderer, Vector3 target)
     UNUSED(renderer);
     UNUSED(target);
 
-    return cameraGetDirectionNormalized(renderer->render_camera);
+    return renderer->render_camera->getDirectionNormalized();
 }
 
 static double _getPrecision(Renderer* renderer, Vector3 location)
@@ -54,12 +54,12 @@ static double _getPrecision(Renderer* renderer, Vector3 location)
 
 static Vector3 _projectPoint(Renderer* renderer, Vector3 point)
 {
-    return cameraProject(renderer->render_camera, point);
+    return renderer->render_camera->project(point);
 }
 
 static Vector3 _unprojectPoint(Renderer* renderer, Vector3 point)
 {
-    return cameraUnproject(renderer->render_camera, point);
+    return renderer->render_camera->unproject(point);
 }
 
 static void _pushTriangle(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, f_RenderFragmentCallback callback, void* callback_data)
@@ -132,7 +132,7 @@ Renderer::Renderer()
     render_interrupt = 0;
     render_progress = 0.0;
     is_rendering = 0;
-    render_camera = cameraCreateDefinition();
+    render_camera = new CameraDefinition;
     render_area = renderCreateArea(this);
 
     renderSetParams(render_area, params);
@@ -163,7 +163,7 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
-    cameraDeleteDefinition(render_camera);
+    delete render_camera;
     lightingManagerDelete(lighting);
 
     AtmosphereRendererClass.destroy(atmosphere);
@@ -223,7 +223,7 @@ void rendererStart(Renderer* renderer, RenderParams params)
     renderer->render_interrupt = 0;
     renderer->render_progress = 0.0;
 
-    cameraSetRenderSize(renderer->render_camera, renderer->render_width, renderer->render_height);
+    renderer->render_camera->setRenderSize(renderer->render_width, renderer->render_height);
 
     renderSetBackgroundColor(renderer->render_area, COLOR_BLACK);
     renderSetParams(renderer->render_area, params);

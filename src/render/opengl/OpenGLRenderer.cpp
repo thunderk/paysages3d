@@ -6,7 +6,7 @@
 #include "Scenery.h"
 #include "SoftwareRenderer.h"
 #include "renderer.h"
-#include "rendering/camera.h"
+#include "CameraDefinition.h"
 
 OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     scenery(scenery)
@@ -51,7 +51,7 @@ void OpenGLRenderer::resize(int width, int height)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    perspective = cameraGetPerspective(renderer->render_camera);
+    perspective = renderer->render_camera->getPerspective();
     gluPerspective(perspective.yfov * 180.0 / M_PI, perspective.xratio, perspective.znear, perspective.zfar);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

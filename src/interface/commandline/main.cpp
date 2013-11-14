@@ -3,11 +3,11 @@
 #include <cstring>
 #include <cmath>
 
-#include "rendering/main.h"
-#include "rendering/render.h"
-#include "rendering/renderer.h"
-#include "rendering/atmosphere/public.h"
-#include "rendering/camera.h"
+#include "main.h"
+#include "render.h"
+#include "renderer.h"
+#include "atmosphere/public.h"
+#include "CameraDefinition.h"
 #include "SoftwareRenderer.h"
 #include "Scenery.h"
 
@@ -174,7 +174,7 @@ int main(int argc, char** argv)
 
         CameraDefinition* camera = Scenery::getCurrent()->getCamera();
         Vector3 step = {conf_camera_step_x, conf_camera_step_y, conf_camera_step_z};
-        cameraSetLocation(camera, v3Add(cameraGetLocation(camera), step));
+        camera->setLocation(camera->getLocation().add(step));
 
         renderer = new SoftwareRenderer(Scenery::getCurrent());
         rendererSetPreviewCallbacks(renderer, NULL, NULL, _previewUpdate);

@@ -2,14 +2,14 @@
 #define BASEEXPLORERCHUNK_H
 
 #include "opengl_global.h"
+
 #include <QMutex>
-#include "rendering/tools/color.h"
+#include "tools/color.h"
 
 class QImage;
 class QGLWidget;
 class Renderer;
 class ColorProfile;
-class CameraDefinition;
 
 namespace paysages {
 namespace opengl {

@@ -14,7 +14,6 @@ SOURCES += main.cpp \
     render.cpp \
     opencl.cpp \
     geoarea.cpp \
-    camera.cpp \
     atmosphere/atm_render.cpp \
     atmosphere/atm_raster.cpp \
     atmosphere/atm_presets.cpp \
@@ -47,8 +46,6 @@ SOURCES += main.cpp \
     tools/curve.cpp \
     tools/color.cpp \
     tools/cache.cpp \
-    tools/boundingbox.cpp \
-    tools/array.cpp \
     water/wat_render.cpp \
     water/wat_raster.cpp \
     water/wat_preview.cpp \
@@ -62,7 +59,6 @@ HEADERS += \
     opencl.h \
     main.h \
     geoarea.h \
-    camera.h \
     atmosphere/public.h \
     atmosphere/private.h \
     clouds/public.h \
@@ -87,8 +83,6 @@ HEADERS += \
     tools/curve.h \
     tools/color.h \
     tools/cache.h \
-    tools/boundingbox.h \
-    tools/array.h \
     water/public.h \
     water/private.h \
     rendering_global.h \

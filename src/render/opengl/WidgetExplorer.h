@@ -5,7 +5,6 @@
 #include <QGLWidget>
 #include <QMutex>
 
-class CameraDefinition;
 class Renderer;
 
 namespace paysages {
@@ -14,7 +13,7 @@ namespace opengl {
 class OpenGLRenderer;
 class BaseExplorerChunk;
 
-class WidgetExplorer : public QGLWidget
+class OPENGLSHARED_EXPORT WidgetExplorer : public QGLWidget
 {
     Q_OBJECT
 public:

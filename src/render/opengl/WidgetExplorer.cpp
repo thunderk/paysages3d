@@ -11,12 +11,12 @@
 #include "OpenGLRenderer.h"
 #include "WaterDefinition.h"
 #include "SurfaceMaterial.h"
-#include "rendering/tools/euclid.h"
-#include "rendering/renderer.h"
-#include "rendering/camera.h"
-#include "rendering/atmosphere/public.h"
-#include "rendering/water/public.h"
-#include "rendering/terrain/public.h"
+#include "tools/euclid.h"
+#include "renderer.h"
+#include "CameraDefinition.h"
+#include "atmosphere/public.h"
+#include "water/public.h"
+#include "terrain/public.h"
 #include "ExplorerChunkSky.h"
 #include "ExplorerChunkTerrain.h"
 
@@ -60,7 +60,7 @@ static QVector<ChunkMaintenanceThread*> _threads;
 
 static Vector3 _getCameraLocation(Renderer* renderer, Vector3)
 {
-    return cameraGetLocation((CameraDefinition*) renderer->customData[2]);
+    return ((CameraDefinition*)renderer->customData[2])->getLocation();
 }
 
 static AtmosphereResult _applyAerialPerspective(Renderer*, Vector3, Color base)
@@ -79,9 +79,9 @@ QGLWidget(parent)
     setMinimumSize(400, 300);
     setFocusPolicy(Qt::StrongFocus);
 
-    _current_camera = cameraCreateDefinition();
+    _current_camera = new CameraDefinition;
     _base_camera = camera;
-    cameraCopyDefinition(camera, _current_camera);
+    camera->copy(_current_camera);
 
     if (renderer)
     {
@@ -120,7 +120,7 @@ WidgetExplorer::~WidgetExplorer()
     {
         delete _chunks[i];
     }
-    cameraDeleteDefinition(_current_camera);
+    delete _current_camera;
 
     if (_renderer_created)
     {
@@ -226,13 +226,13 @@ void WidgetExplorer::performChunksMaintenance()
 
 void WidgetExplorer::resetCamera()
 {
-    cameraCopyDefinition(_base_camera, _current_camera);
+    _base_camera->copy(_current_camera);
     updateGL();
 }
 
 void WidgetExplorer::validateCamera()
 {
-    cameraCopyDefinition(_current_camera, _base_camera);
+    _current_camera->copy(_base_camera);
 }
 
 void WidgetExplorer::keyPressEvent(QKeyEvent* event)
@@ -255,32 +255,32 @@ void WidgetExplorer::keyPressEvent(QKeyEvent* event)
 
     if (event->key() == Qt::Key_Up)
     {
-        cameraStrafeForward(_current_camera, 0.1 * factor);
+        _current_camera->strafeForward(0.1 * factor);
         updateGL();
     }
     else if (event->key() == Qt::Key_Down)
     {
-        cameraStrafeForward(_current_camera, -0.1 * factor);
+        _current_camera->strafeForward(-0.1 * factor);
         updateGL();
     }
     else if (event->key() == Qt::Key_Right)
     {
-        cameraStrafeRight(_current_camera, 0.1 * factor);
+        _current_camera->strafeRight(0.1 * factor);
         updateGL();
     }
     else if (event->key() == Qt::Key_Left)
     {
-        cameraStrafeRight(_current_camera, -0.1 * factor);
+        _current_camera->strafeRight(-0.1 * factor);
         updateGL();
     }
     else if (event->key() == Qt::Key_PageUp)
     {
-        cameraStrafeUp(_current_camera, 0.1 * factor);
+        _current_camera->strafeUp(0.1 * factor);
         updateGL();
     }
     else if (event->key() == Qt::Key_PageDown)
     {
-        cameraStrafeUp(_current_camera, -0.1 * factor);
+        _current_camera->strafeUp(-0.1 * factor);
         updateGL();
     }
     else
@@ -317,15 +317,15 @@ void WidgetExplorer::mouseMoveEvent(QMouseEvent* event)
 
     if (event->buttons() & Qt::LeftButton)
     {
-        cameraRotateYaw(_current_camera, (double) (event->x() - _last_mouse_x) * factor * 0.1);
-        cameraRotatePitch(_current_camera, (double) (event->y() - _last_mouse_y) * factor * 0.1);
+        _current_camera->rotateYaw((double) (event->x() - _last_mouse_x) * factor * 0.1);
+        _current_camera->rotatePitch((double) (event->y() - _last_mouse_y) * factor * 0.1);
         updateGL();
         event->accept();
     }
     else if (event->buttons() & Qt::RightButton)
     {
-        cameraStrafeRight(_current_camera, (double) (_last_mouse_x - event->x()) * factor);
-        cameraStrafeUp(_current_camera, (double) (event->y() - _last_mouse_y) * factor);
+        _current_camera->strafeRight((double) (_last_mouse_x - event->x()) * factor);
+        _current_camera->strafeUp((double) (event->y() - _last_mouse_y) * factor);
         updateGL();
         event->accept();
     }
@@ -358,7 +358,7 @@ void WidgetExplorer::wheelEvent(QWheelEvent* event)
 
     if (event->orientation() == Qt::Vertical)
     {
-        cameraStrafeForward(_current_camera, (double) event->delta() * factor);
+        _current_camera->strafeForward((double) event->delta() * factor);
         updateGL();
     }
     event->accept();
@@ -394,7 +394,7 @@ void WidgetExplorer::initializeGL()
 
 void WidgetExplorer::resizeGL(int w, int h)
 {
-    cameraSetRenderSize(_current_camera, w, h);
+    _current_camera->setRenderSize(w, h);
     _opengl_renderer->resize(w, h);
 }
 
@@ -405,16 +405,16 @@ void WidgetExplorer::paintGL()
     double frame_time;
     WaterDefinition* water = _renderer->water->definition;
 
-    cameraCopyDefinition(_current_camera, _renderer->render_camera);
-    cameraValidateDefinition(_current_camera, 1);
+    _current_camera->copy(_renderer->render_camera);
+    // TODO Keep camera above ground
 
     start_time = QTime::currentTime();
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    Vector3 camera_location = cameraGetLocation(_current_camera);
-    Vector3 camera_target = cameraGetTarget(_current_camera);
-    Vector3 camera_up = cameraGetUpVector(_current_camera);
+    Vector3 camera_location = _current_camera->getLocation();
+    Vector3 camera_target = _current_camera->getTarget();
+    Vector3 camera_up = _current_camera->getUpVector();
     gluLookAt(camera_location.x, camera_location.y, camera_location.z, camera_target.x, camera_target.y, camera_target.z, camera_up.x, camera_up.y, camera_up.z);
 
     // Background

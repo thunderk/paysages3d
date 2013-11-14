@@ -9,7 +9,7 @@ SUBDIRS = \
     render/software \
     render/preview \
     render/opengl \
+    interface/commandline \
     editing \
-    controlling \
     tests/googletest \
     tests

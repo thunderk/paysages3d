@@ -4,7 +4,7 @@
 #include "BasePreview.h"
 #include "renderer.h"
 #include "tools.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 
 /**************** Previews ****************/
 class PreviewTexturesCoverage : public BasePreview
@@ -67,8 +67,7 @@ public:
         _renderer = rendererCreate();
         _renderer->render_quality = 3;
 
-        Vector3 camera_location = {0.0, 20.0, 0.0};
-        cameraSetLocation(_renderer->render_camera, camera_location);
+        _renderer->render_camera->setLocation(Vector3(0.0, 20.0, 0.0));
 
         configScaling(0.01, 1.0, 0.01, 0.1);
         configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);

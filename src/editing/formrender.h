@@ -2,7 +2,6 @@
 #define _PAYSAGES_QT_FORMRENDER_H_
 
 #include "baseform.h"
-#include "camera.h"
 #include "renderer.h"
 #include "render.h"
 

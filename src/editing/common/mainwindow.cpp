@@ -15,6 +15,7 @@
 #include "BasePreview.h"
 #include "PreviewOsd.h"
 #include "PreviewOsdItem.h"
+#include "CameraDefinition.h"
 #include "formclouds.h"
 #include "formatmosphere.h"
 #include "formwater.h"
@@ -258,10 +259,9 @@ void MainWindow::showLastRender()
 
 void MainWindow::explore3D()
 {
-    CameraDefinition* camera;
+    CameraDefinition* camera = new CameraDefinition;
     int result;
 
-    camera = cameraCreateDefinition();
     Scenery::getCurrent()->getCamera(camera);
 
     DialogExplorer* dialog = new DialogExplorer(this, camera, true);
@@ -275,7 +275,7 @@ void MainWindow::explore3D()
         refreshAll();
     }
 
-    cameraDeleteDefinition(camera);
+    delete camera;
 }
 
 void MainWindow::guiSaveCallback(PackStream* stream, void* data)

@@ -5,12 +5,12 @@
 #include <stdlib.h>
 #include <math.h>
 #include "../tools.h"
-#include "../tools/boundingbox.h"
+#include "BoundingBox.h"
 #include "../tools/parallel.h"
 #include "../renderer.h"
 #include "water/public.h"
 #include "textures/public.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 
 /*
  * Terrain rasterization.
@@ -109,27 +109,26 @@ static void _getChunk(Renderer* renderer, TerrainChunkInfo* chunk, double x, dou
     }
 
     BoundingBox box;
-    boundingBoxReset(&box);
     if (displacement_power > 0.0)
     {
-        boundingBoxPushPoint(&box, v3Add(chunk->point_nw, v3(-displacement_power, displacement_power, -displacement_power)));
-        boundingBoxPushPoint(&box, v3Add(chunk->point_nw, v3(-displacement_power, -displacement_power, -displacement_power)));
-        boundingBoxPushPoint(&box, v3Add(chunk->point_sw, v3(-displacement_power, displacement_power, displacement_power)));
-        boundingBoxPushPoint(&box, v3Add(chunk->point_sw, v3(-displacement_power, -displacement_power, displacement_power)));
-        boundingBoxPushPoint(&box, v3Add(chunk->point_se, v3(displacement_power, displacement_power, displacement_power)));
-        boundingBoxPushPoint(&box, v3Add(chunk->point_se, v3(displacement_power, -displacement_power, displacement_power)));
-        boundingBoxPushPoint(&box, v3Add(chunk->point_ne, v3(displacement_power, displacement_power, -displacement_power)));
-        boundingBoxPushPoint(&box, v3Add(chunk->point_ne, v3(displacement_power, -displacement_power, -displacement_power)));
+        box.pushPoint(v3Add(chunk->point_nw, v3(-displacement_power, displacement_power, -displacement_power)));
+        box.pushPoint(v3Add(chunk->point_nw, v3(-displacement_power, -displacement_power, -displacement_power)));
+        box.pushPoint(v3Add(chunk->point_sw, v3(-displacement_power, displacement_power, displacement_power)));
+        box.pushPoint(v3Add(chunk->point_sw, v3(-displacement_power, -displacement_power, displacement_power)));
+        box.pushPoint(v3Add(chunk->point_se, v3(displacement_power, displacement_power, displacement_power)));
+        box.pushPoint(v3Add(chunk->point_se, v3(displacement_power, -displacement_power, displacement_power)));
+        box.pushPoint(v3Add(chunk->point_ne, v3(displacement_power, displacement_power, -displacement_power)));
+        box.pushPoint(v3Add(chunk->point_ne, v3(displacement_power, -displacement_power, -displacement_power)));
     }
     else
     {
-        boundingBoxPushPoint(&box, chunk->point_nw);
-        boundingBoxPushPoint(&box, chunk->point_sw);
-        boundingBoxPushPoint(&box, chunk->point_se);
-        boundingBoxPushPoint(&box, chunk->point_ne);
+        box.pushPoint(chunk->point_nw);
+        box.pushPoint(chunk->point_sw);
+        box.pushPoint(chunk->point_se);
+        box.pushPoint(chunk->point_ne);
     }
 
-    int coverage = cameraIsUnprojectedBoxInView(renderer->render_camera, &box);
+    int coverage = renderer->render_camera->isUnprojectedBoxInView(box);
     if (coverage > 0)
     {
         chunk->detail_hint = (int)ceil(sqrt((double)coverage) / (double)(25 - 2 * renderer->render_quality));

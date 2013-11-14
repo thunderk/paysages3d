@@ -13,7 +13,7 @@
 #include "tools.h"
 #include "Scenery.h"
 #include "BasePreview.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 #include "WaterDefinition.h"
 
 static WaterDefinition* _definition;
@@ -117,8 +117,7 @@ protected:
 
     void cameraEvent()
     {
-        Vector3 camera_location = {0.0, scaling, -10.0 * scaling};
-        cameraSetLocation(_renderer->render_camera, camera_location);
+        _renderer->render_camera->setLocation(Vector3(0.0, scaling, -10.0 * scaling));
     }
 
     static double _getWaterHeight(Renderer*)

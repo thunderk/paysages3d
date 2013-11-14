@@ -5,7 +5,6 @@
 #include "shared/types.h"
 #include "render.h"
 
-class CameraDefinition;
 class LightingManager;
 class AtmosphereRenderer;
 class TerrainRenderer;

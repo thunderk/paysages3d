@@ -2,9 +2,9 @@
 
 #include <cmath>
 #include <GL/gl.h>
-#include "rendering/camera.h"
-#include "rendering/renderer.h"
-#include "rendering/terrain/public.h"
+#include "CameraDefinition.h"
+#include "renderer.h"
+#include "terrain/public.h"
 
 ExplorerChunkTerrain::ExplorerChunkTerrain(Renderer* renderer, double x, double z, double size, int nbchunks, double water_height) : BaseExplorerChunk(renderer)
 {
@@ -86,7 +86,7 @@ bool ExplorerChunkTerrain::onMaintainEvent()
 
 void ExplorerChunkTerrain::onCameraEvent(CameraDefinition* camera)
 {
-    Vector3 camera_location = cameraGetLocation(camera);
+    Vector3 camera_location = camera->getLocation();
 
     // Handle position
     _lock_data.lock();
@@ -155,7 +155,7 @@ double ExplorerChunkTerrain::getDisplayedSizeHint(CameraDefinition* camera)
 
     center = getCenter();
 
-    if (cameraIsBoxInView(camera, center, _size, 40.0, _size))
+    if (camera->isBoxInView(center, _size, 40.0, _size))
     {
         distance = _distance_to_camera;
         distance = distance < 0.1 ? 0.1 : distance;

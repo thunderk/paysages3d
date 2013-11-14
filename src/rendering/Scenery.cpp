@@ -5,7 +5,7 @@
 #include "NoiseGenerator.h"
 #include "PackStream.h"
 #include "atmosphere/public.h"
-#include "camera.h"
+#include "CameraDefinition.h"
 #include "clouds/public.h"
 #include "terrain/public.h"
 #include "textures/public.h"
@@ -20,12 +20,13 @@ Scenery::Scenery():
     BaseDefinition(NULL)
 {
     atmosphere = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
-    camera = cameraCreateDefinition();
+    camera = new CameraDefinition;
     clouds = (CloudsDefinition*)CloudsDefinitionClass.create();
     terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
     textures = (TexturesDefinition*)TexturesDefinitionClass.create();
     water = new WaterDefinition(this);
 
+    addChild(camera);
     addChild(water);
 
     _custom_load = NULL;
@@ -35,14 +36,10 @@ Scenery::Scenery():
 
 Scenery::~Scenery()
 {
-    removeChild(water);
-
     AtmosphereDefinitionClass.destroy(atmosphere);
-    cameraDeleteDefinition(camera);
     CloudsDefinitionClass.destroy(clouds);
     TerrainDefinitionClass.destroy(terrain);
     TexturesDefinitionClass.destroy(textures);
-    delete water;
 }
 
 Scenery* Scenery::getCurrent()
@@ -64,7 +61,6 @@ void Scenery::save(PackStream* stream) const
     noiseSave(stream);
 
     AtmosphereDefinitionClass.save(stream, atmosphere);
-    cameraSave(stream, camera);
     CloudsDefinitionClass.save(stream, clouds);
     TerrainDefinitionClass.save(stream, terrain);
     TexturesDefinitionClass.save(stream, textures);
@@ -82,7 +78,6 @@ void Scenery::load(PackStream* stream)
     noiseLoad(stream);
 
     AtmosphereDefinitionClass.load(stream, atmosphere);
-    cameraLoad(stream, camera);
     CloudsDefinitionClass.load(stream, clouds);
     TerrainDefinitionClass.load(stream, terrain);
     TexturesDefinitionClass.load(stream, textures);
@@ -91,6 +86,13 @@ void Scenery::load(PackStream* stream)
     {
         _custom_load(stream, _custom_data);
     }
+
+    validate();
+}
+
+void Scenery::validate()
+{
+    // TODO Ensure camera is above ground and water
 }
 
 void Scenery::autoPreset(int seed)
@@ -107,9 +109,10 @@ void Scenery::autoPreset(int seed)
     water->applyPreset(WATER_PRESET_LAKE);
     cloudsAutoPreset(clouds, CLOUDS_PRESET_PARTLY_CLOUDY);
 
-    cameraSetLocation(camera, VECTOR_ZERO);
-    cameraSetTarget(camera, VECTOR_NORTH);
-    cameraValidateDefinition(camera, 1);
+    camera->setLocation(VECTOR_ZERO);
+    camera->setTarget(VECTOR_NORTH);
+
+    validate();
 }
 
 void Scenery::setAtmosphere(AtmosphereDefinition* atmosphere)
@@ -124,12 +127,12 @@ void Scenery::getAtmosphere(AtmosphereDefinition* atmosphere)
 
 void Scenery::setCamera(CameraDefinition* camera)
 {
-    cameraCopyDefinition(camera, this->camera);
+    camera->copy(this->camera);
 }
 
 void Scenery::getCamera(CameraDefinition* camera)
 {
-    cameraCopyDefinition(this->camera, camera);
+    this->camera->copy(camera);
 }
 
 void Scenery::setClouds(CloudsDefinition* clouds)
@@ -194,11 +197,11 @@ static double _getPrecision(Renderer* renderer, Vector3 location)
 {
     Vector3 projected;
 
-    projected = cameraProject(renderer->render_camera, location);
+    projected = renderer->render_camera->project(location);
     projected.x += 1.0;
     //projected.y += 1.0;
 
-    return v3Norm(v3Sub(cameraUnproject(renderer->render_camera, projected), location)); // / (double)render_quality;
+    return v3Norm(v3Sub(renderer->render_camera->unproject(projected), location)); // / (double)render_quality;
 }
 
 void Scenery::bindToRenderer(Renderer* renderer)
@@ -207,7 +210,7 @@ void Scenery::bindToRenderer(Renderer* renderer)
     renderer->rayWalking = _rayWalking;
     renderer->getPrecision = _getPrecision;
 
-    cameraCopyDefinition(camera, renderer->render_camera);
+    camera->copy(renderer->render_camera);
     AtmosphereRendererClass.bind(renderer, atmosphere);
     TerrainRendererClass.bind(renderer, terrain);
     TexturesRendererClass.bind(renderer, textures);

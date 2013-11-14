@@ -1,41 +1,13 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2013-11-04T11:54:27
-#
-#-------------------------------------------------
+TEMPLATE = app
+CONFIG += console
+CONFIG -= app_bundle
 
-QT       += opengl
-
-TARGET = paysages_render_opengl
-TEMPLATE = lib
-
-DEFINES += OPENGL_LIBRARY
+TARGET = paysages-cli
 
 include(../../common.pri)
 
 SOURCES += \
-    OpenGLRenderer.cpp \
-    BaseExplorerChunk.cpp \
-    ExplorerChunkSky.cpp \
-    ExplorerChunkTerrain.cpp \
-    WidgetExplorer.cpp
-
-HEADERS +=\
-        opengl_global.h \
-    OpenGLRenderer.h \
-    BaseExplorerChunk.h \
-    ExplorerChunkSky.h \
-    ExplorerChunkTerrain.h \
-    WidgetExplorer.h
-
-unix:!symbian {
-    maemo5 {
-        target.path = /opt/usr/lib
-    } else {
-        target.path = /usr/lib
-    }
-    INSTALLS += target
-}
+    main.cpp
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../system/debug/ -lpaysages_system
@@ -61,8 +33,8 @@ else:unix: LIBS += -L$$OUT_PWD/../../rendering/ -lpaysages_rendering
 INCLUDEPATH += $$PWD/../../rendering
 DEPENDPATH += $$PWD/../../rendering
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../software/release/ -lpaysages_render_software
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../software/debug/ -lpaysages_render_software
-else:unix: LIBS += -L$$OUT_PWD/../software/ -lpaysages_render_software
-INCLUDEPATH += $$PWD/../software
-DEPENDPATH += $$PWD/../software
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../render/software/release/ -lpaysages_render_software
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../render/software/debug/ -lpaysages_render_software
+else:unix: LIBS += -L$$OUT_PWD/../../render/software/ -lpaysages_render_software
+INCLUDEPATH += $$PWD/../../render/software
+DEPENDPATH += $$PWD/../../render/software

@@ -5,8 +5,6 @@
 
 #include <QImage>
 
-class CameraDefinition;
-
 namespace paysages {
 namespace preview {
 
