@@ -16,6 +16,7 @@ namespace definition {
     class CameraDefinition;
     class SurfaceMaterial;
     class WaterDefinition;
+    class Layers;
 }
 }
 using namespace paysages::definition;

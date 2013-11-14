@@ -3,8 +3,7 @@
 
 #include "opengl_global.h"
 
-class Scenery;
-class Renderer;
+#include "SoftwareRenderer.h"
 
 namespace paysages {
 namespace opengl {
@@ -12,19 +11,15 @@ namespace opengl {
 /*!
  * \brief Scenery renderer in an OpenGL context.
  */
-class OPENGLSHARED_EXPORT OpenGLRenderer
+class OPENGLSHARED_EXPORT OpenGLRenderer: protected SoftwareRenderer
 {
 public:
     OpenGLRenderer(Scenery* scenery=0);
-    ~OpenGLRenderer();
+    virtual ~OpenGLRenderer();
 
     void initialize();
     void resize(int width, int height);
     void paint();
-
-private:
-    Scenery* scenery;
-    Renderer* renderer;
 };
 
 }

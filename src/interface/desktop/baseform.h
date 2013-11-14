@@ -1,19 +1,18 @@
 #ifndef _PAYSAGES_QT_BASEFORM_H_
 #define _PAYSAGES_QT_BASEFORM_H_
 
-#include "editing_global.h"
+#include "desktop_global.h"
 
 #include <QWidget>
 #include <QStringList>
-#include "baseinput.h"
-#include "dialoglayers.h"
-#include "shared/types.h"
-#include "tools/curve.h"
-#include "tools/color.h"
-#include "tools/lighting.h"
 
 class QPushButton;
 class QComboBox;
+class ColorGradation;
+class Curve;
+
+namespace paysages {
+namespace desktop {
 
 class BaseForm : public QWidget
 {
@@ -60,7 +59,6 @@ protected:
     BaseInput* addInputCurve(QString label, Curve* value, double xmin, double xmax, double ymin, double ymax, QString xlabel, QString ylabel);
     BaseInput* addInputMaterial(QString label, SurfaceMaterial* material);
     BaseInput* addInputEnum(QString label, int* value, const QStringList& values);
-    BaseInput* addInputLayers(QString label, Layers* value, FormLayerBuilder form_builder);
 
     void updatePreviews();
     void disablePreviewsUpdate();
@@ -103,5 +101,8 @@ private:
     QPushButton* _layer_down;
     QPushButton* _layer_rename;
 };
+
+}
+}
 
 #endif

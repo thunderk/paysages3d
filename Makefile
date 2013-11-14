@@ -40,17 +40,17 @@ else
 endif
 
 run_cli:build
-	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/controlling/paysages-cli
+	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/commandline/paysages-cli
 
 run:build
-	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/editing/paysages-gui
+	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/desktop/paysages-gui
 
 profile:debug
-	LD_LIBRARY_PATH=build/debug/rendering:build/debug/exploring perf record -g fp ./build/debug/paysages-gui
+	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g fp ${BUILDPATH}/interface/desktop/paysages-gui
 	perf report -g
 
 profile_cli:debug
-	LD_LIBRARY_PATH=build/debug/rendering perf record -g fp ./build/debug/paysages-cli
+	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g fp ${BUILDPATH}/interface/commandline/paysages-cli
 	perf report -g
 
 package:release
@@ -65,8 +65,7 @@ package:release
 	cp $(BUILDPATH)/render/software/libpaysages_render_software.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/render/opengl/libpaysages_render_opengl.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/rendering/libpaysages_rendering.so* paysages3d-linux/lib/
-	cp $(BUILDPATH)/exploring/libpaysages_exploring.so* paysages3d-linux/lib/
-	cp $(BUILDPATH)/editing/paysages-gui paysages3d-linux/lib/
+	cp $(BUILDPATH)/interface/desktop/paysages-gui paysages3d-linux/lib/
 	chmod +x paysages3d-linux/lib/paysages-gui
 	cp -r data paysages3d-linux/
 	cp -r cache/*.cache paysages3d-linux/cache/

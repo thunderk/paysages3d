@@ -5,7 +5,6 @@
 /gmon.out
 /nbproject/
 /output/
-/src/*/Makefile
 *.pro.user
 *.pro.user.*
 qrc_*.cpp

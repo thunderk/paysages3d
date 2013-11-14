@@ -1,7 +1,7 @@
 #ifndef _PAYSAGES_QT_DIALOGNOISE_H_
 #define _PAYSAGES_QT_DIALOGNOISE_H_
 
-#include "editing_global.h"
+#include "desktop_global.h"
 
 #include <QListWidget>
 #include <QComboBox>

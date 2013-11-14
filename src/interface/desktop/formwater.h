@@ -1,7 +1,7 @@
 #ifndef _PAYSAGES_QT_FORMWATER_H_
 #define _PAYSAGES_QT_FORMWATER_H_
 
-#include "editing_global.h"
+#include "desktop_global.h"
 
 #include "baseform.h"
 class QWidget;

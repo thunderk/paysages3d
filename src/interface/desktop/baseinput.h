@@ -1,9 +1,14 @@
 #ifndef _PAYSAGES_QT_BASEINPUT_H_
 #define _PAYSAGES_QT_BASEINPUT_H_
 
+#include "desktop_global.h"
+
 #include <QObject>
 class QWidget;
 class QLabel;
+
+namespace paysages {
+namespace desktop {
 
 class BaseInput:public QObject
 {
@@ -37,5 +42,8 @@ protected:
     bool _visible;
     bool _enabled;
 };
+
+}
+}
 
 #endif

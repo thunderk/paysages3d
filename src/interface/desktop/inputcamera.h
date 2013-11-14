@@ -1,10 +1,12 @@
 #ifndef _PAYSAGES_QT_INPUTCAMERA_H_
 #define _PAYSAGES_QT_INPUTCAMERA_H_
 
-#include "editing_global.h"
+#include "desktop_global.h"
 
-#include <QWidget>
 #include "baseinput.h"
+#include <QObject>
+
+class QWidget;
 
 class InputCamera:public BaseInput
 {

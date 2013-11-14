@@ -1,7 +1,7 @@
 #ifndef MAINTERRAINFORM_H
 #define MAINTERRAINFORM_H
 
-#include "editing_global.h"
+#include "desktop_global.h"
 
 #include <QWidget>
 

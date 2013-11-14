@@ -4,20 +4,15 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "Scenery.h"
-#include "SoftwareRenderer.h"
-#include "renderer.h"
 #include "CameraDefinition.h"
 
 OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
-    scenery(scenery)
+    SoftwareRenderer(scenery)
 {
-    renderer = new SoftwareRenderer(scenery);
-    renderer->prepare();
 }
 
 OpenGLRenderer::~OpenGLRenderer()
 {
-    rendererDelete(renderer);
 }
 
 void OpenGLRenderer::initialize()
@@ -41,6 +36,8 @@ void OpenGLRenderer::initialize()
     glDisable(GL_FOG);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    prepare();
 }
 
 void OpenGLRenderer::resize(int width, int height)
@@ -51,7 +48,7 @@ void OpenGLRenderer::resize(int width, int height)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    perspective = renderer->render_camera->getPerspective();
+    perspective = render_camera->getPerspective();
     gluPerspective(perspective.yfov * 180.0 / M_PI, perspective.xratio, perspective.znear, perspective.zfar);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

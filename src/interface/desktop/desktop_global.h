@@ -6,4 +6,13 @@
 #include "opengl_global.h"
 #include "preview_global.h"
 
+namespace paysages {
+namespace desktop {
+    class BaseInput;
+    class BaseForm;
+}
+}
+
+using namespace paysages::desktop;
+
 #endif // EDITING_GLOBAL_H

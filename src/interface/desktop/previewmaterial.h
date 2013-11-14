@@ -1,13 +1,12 @@
 #ifndef _PAYSAGES_QT_PREVIEWMATERIAL_H_
 #define _PAYSAGES_QT_PREVIEWMATERIAL_H_
 
-#include "editing_global.h"
+#include "desktop_global.h"
 
 #include "Base2dPreviewRenderer.h"
 #include <QWidget>
 
 #include "tools/lighting.h"
-#include "renderer.h"
 
 class MaterialPreviewRenderer:public Base2dPreviewRenderer {
 public:

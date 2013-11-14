@@ -1,19 +1,19 @@
-#ifndef _PAYSAGES_QT_FORMTEXTURES_H_
-#define _PAYSAGES_QT_FORMTEXTURES_H_
+#ifndef _PAYSAGES_QT_FORMCLOUDS_H_
+#define _PAYSAGES_QT_FORMCLOUDS_H_
 
-#include "editing_global.h"
+#include "desktop_global.h"
 
 #include "baseformlayer.h"
-#include "textures/public.h"
+#include "clouds/public.h"
 class QWidget;
 
-class FormTextures : public BaseFormLayer
+class FormClouds : public BaseFormLayer
 {
     Q_OBJECT
 
 public:
-    explicit FormTextures(QWidget *parent = 0);
-    ~FormTextures();
+    explicit FormClouds(QWidget *parent = 0);
+    ~FormClouds();
 
 public slots:
     virtual void revertConfig();
@@ -25,8 +25,8 @@ protected:
     virtual void autoPresetSelected(int preset);
 
 private:
-    TexturesDefinition* _definition;
-    TexturesLayerDefinition* _layer;
+    CloudsDefinition* _definition;
+    CloudsLayerDefinition* _layer;
     BasePreview* _previewCoverage;
     BasePreview* _previewColor;
 };

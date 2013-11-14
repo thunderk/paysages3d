@@ -1,7 +1,7 @@
 #ifndef PREVIEWTERRAINSHAPE_H
 #define PREVIEWTERRAINSHAPE_H
 
-#include "editing_global.h"
+#include "desktop_global.h"
 
 #include "Base2dPreviewRenderer.h"
 #include "terrain/public.h"

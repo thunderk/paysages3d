@@ -1,7 +1,7 @@
 #ifndef FREEFORMHELPER_H
 #define FREEFORMHELPER_H
 
-#include "editing_global.h"
+#include "desktop_global.h"
 
 #include <QVector>
 #include <QStringList>

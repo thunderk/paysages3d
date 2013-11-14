@@ -10,6 +10,6 @@ SUBDIRS = \
     render/preview \
     render/opengl \
     interface/commandline \
-    editing \
+    interface/desktop \
     tests/googletest \
     tests

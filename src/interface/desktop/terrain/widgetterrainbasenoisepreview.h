@@ -1,7 +1,7 @@
 #ifndef _PAYSAGES_EDITING_TERRAIN_WIDGETTERRAINBASENOISEPREVIEW_H_
 #define _PAYSAGES_EDITING_TERRAIN_WIDGETTERRAINBASENOISEPREVIEW_H_
 
-#include "editing_global.h"
+#include "desktop_global.h"
 
 #include "DrawingWidget.h"
 class QPainter;

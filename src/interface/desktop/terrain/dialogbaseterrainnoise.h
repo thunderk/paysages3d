@@ -1,7 +1,7 @@
 #ifndef DIALOGBASETERRAINNOISE_H
 #define DIALOGBASETERRAINNOISE_H
 
-#include "editing_global.h"
+#include "desktop_global.h"
 #include <QDialog>
 
 namespace paysages {
