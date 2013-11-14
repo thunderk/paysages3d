@@ -61,6 +61,8 @@ public:
 
     void bindToRenderer(Renderer* renderer);
 
+    void checkCameraAboveGround();
+
 private:
     AtmosphereDefinition* atmosphere;
     CameraDefinition* camera;

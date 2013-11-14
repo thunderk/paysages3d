@@ -2,22 +2,19 @@
 #define WIDGETEXPLORER_H
 
 #include "opengl_global.h"
-#include <QGLWidget>
-#include <QMutex>
 
-class Renderer;
+#include <QGLWidget>
+
+#include <QMutex>
 
 namespace paysages {
 namespace opengl {
-
-class OpenGLRenderer;
-class BaseExplorerChunk;
 
 class OPENGLSHARED_EXPORT WidgetExplorer : public QGLWidget
 {
     Q_OBJECT
 public:
-    WidgetExplorer(QWidget* parent, CameraDefinition* camera, Renderer* renderer=0);
+    WidgetExplorer(QWidget* parent, CameraDefinition* camera, SoftwareRenderer* renderer=0);
     ~WidgetExplorer();
 
     void performChunksMaintenance();
@@ -45,7 +42,7 @@ private:
     CameraDefinition* _base_camera;
 
     OpenGLRenderer* _opengl_renderer;
-    Renderer* _renderer;
+    SoftwareRenderer* _renderer;
     bool _renderer_created;
     bool _inited;
     bool _updated;

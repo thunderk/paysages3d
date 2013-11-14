@@ -14,6 +14,8 @@
 namespace paysages {
 namespace opengl {
     class WidgetExplorer;
+    class OpenGLRenderer;
+    class BaseExplorerChunk;
 }
 }
 using namespace paysages::opengl;

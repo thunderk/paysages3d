@@ -73,7 +73,7 @@ static AtmosphereResult _applyAerialPerspective(Renderer*, Vector3, Color base)
     return result;
 }
 
-WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera, Renderer* renderer) :
+WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera, SoftwareRenderer* renderer) :
 QGLWidget(parent)
 {
     setMinimumSize(400, 300);
@@ -405,8 +405,8 @@ void WidgetExplorer::paintGL()
     double frame_time;
     WaterDefinition* water = _renderer->water->definition;
 
-    _current_camera->copy(_renderer->render_camera);
-    // TODO Keep camera above ground
+    // Don't do this at each frame, only on camera change
+    _renderer->getScenery()->setCamera(_current_camera);
 
     start_time = QTime::currentTime();
 

@@ -8,7 +8,7 @@
 #include "CameraDefinition.h"
 #include "renderer.h"
 
-DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool camera_validable, Renderer* renderer) : QDialog(parent)
+DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool camera_validable, SoftwareRenderer* renderer) : QDialog(parent)
 {
     QWidget* panel;
     QPushButton* button;

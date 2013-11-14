@@ -5,13 +5,11 @@
 
 #include <QDialog>
 
-class Renderer;
-
 class DialogExplorer : public QDialog
 {
     Q_OBJECT
 public:
-    explicit DialogExplorer(QWidget *parent, CameraDefinition* camera, bool camera_validable=false, Renderer* renderer=0);
+    explicit DialogExplorer(QWidget *parent, CameraDefinition* camera, bool camera_validable=false, SoftwareRenderer* renderer=0);
     ~DialogExplorer();
 
 protected slots:

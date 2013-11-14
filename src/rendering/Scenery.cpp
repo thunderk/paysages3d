@@ -92,7 +92,9 @@ void Scenery::load(PackStream* stream)
 
 void Scenery::validate()
 {
-    // TODO Ensure camera is above ground and water
+    BaseDefinition::validate();
+
+    checkCameraAboveGround();
 }
 
 void Scenery::autoPreset(int seed)
@@ -128,6 +130,7 @@ void Scenery::getAtmosphere(AtmosphereDefinition* atmosphere)
 void Scenery::setCamera(CameraDefinition* camera)
 {
     camera->copy(this->camera);
+    checkCameraAboveGround();
 }
 
 void Scenery::getCamera(CameraDefinition* camera)
@@ -216,6 +219,18 @@ void Scenery::bindToRenderer(Renderer* renderer)
     TexturesRendererClass.bind(renderer, textures);
     CloudsRendererClass.bind(renderer, clouds);
     WaterRendererClass.bind(renderer, water);
+}
+
+void Scenery::checkCameraAboveGround()
+{
+    Vector3 camera_location = camera->getLocation();
+    double terrain_height = terrainGetInterpolatedHeight(terrain, camera_location.x, camera_location.z, 1, 1) + 0.5;
+    double water_height = terrainGetWaterHeight(terrain) + 0.5;
+    if (camera_location.y < water_height || camera_location.y < terrain_height)
+    {
+        double diff = ((water_height > terrain_height) ? water_height : terrain_height) - camera_location.y;
+        camera->setLocation(camera_location.add(Vector3(0.0, diff, 0.0)));
+    }
 }
 
 // Transitional C-API
