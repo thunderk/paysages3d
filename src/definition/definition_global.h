@@ -19,6 +19,7 @@ namespace definition {
     class Layers;
     class CloudsDefinition;
     class CloudLayerDefinition;
+    class AtmosphereDefinition;
 }
 }
 using namespace paysages::definition;

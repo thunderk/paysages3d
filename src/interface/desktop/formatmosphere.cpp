@@ -6,10 +6,10 @@
 #include <QSlider>
 #include <cmath>
 
-#include "atmosphere/public.h"
 #include "AtmosphereColorPreviewRenderer.h"
 #include "Scenery.h"
 #include "BasePreview.h"
+#include "AtmosphereDefinition.h"
 #include "renderer.h"
 
 static AtmosphereDefinition* _definition;
@@ -45,7 +45,7 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
     addAutoPreset(tr("Foggy"));
     addAutoPreset(tr("Stormy"));
 
-    _definition = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
+    _definition = new AtmosphereDefinition(NULL);
 
     previewWest = new BasePreview(this);
     previewWestRenderer = new PreviewSkyRenderer(M_PI / 2.0);
@@ -90,12 +90,12 @@ void FormAtmosphere::applyConfig()
 
 void FormAtmosphere::configChangeEvent()
 {
-    AtmosphereDefinitionClass.validate(_definition);
+    _definition->validate();
     BaseForm::configChangeEvent();
 }
 
 void FormAtmosphere::autoPresetSelected(int preset)
 {
-    atmosphereAutoPreset(_definition, (AtmospherePreset)preset);
+    _definition->applyPreset((AtmosphereDefinition::AtmospherePreset)preset);
     BaseForm::autoPresetSelected(preset);
 }

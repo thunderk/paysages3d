@@ -1,39 +1,31 @@
 #include "private.h"
 
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
-#include "../tools.h"
+#include <cmath>
+#include <cstdlib>
+#include <cstring>
+#include "AtmosphereDefinition.h"
 #include "../renderer.h"
 
 /******************** Fake ********************/
-static AtmosphereResult _fakeApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
+static AtmosphereResult _fakeApplyAerialPerspective(Renderer*, Vector3, Color base)
 {
     AtmosphereResult result;
-    UNUSED(renderer);
-    UNUSED(location);
     result.base = result.final = base;
     result.inscattering = result.attenuation = COLOR_BLACK;
     return result;
 }
 
-static AtmosphereResult _fakeGetSkyColor(Renderer* renderer, Vector3 direction)
+static AtmosphereResult _fakeGetSkyColor(Renderer*, Vector3)
 {
     AtmosphereResult result;
-    UNUSED(renderer);
-    UNUSED(direction);
     result.base = result.final = COLOR_WHITE;
     result.inscattering = result.attenuation = COLOR_BLACK;
     return result;
 }
 
-static void _fakeGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)
+static void _fakeGetLightingStatus(Renderer*, LightStatus* status, Vector3, int)
 {
     LightDefinition light;
-
-    UNUSED(renderer);
-    UNUSED(normal);
-    UNUSED(opaque);
 
     light.color.r = 1.0;
     light.color.g = 1.0;
@@ -91,7 +83,7 @@ static AtmosphereRenderer* _createRenderer()
     AtmosphereRenderer* result;
 
     result = new AtmosphereRenderer;
-    result->definition = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
+    result->definition = new AtmosphereDefinition(NULL);
 
     result->getLightingStatus = _fakeGetLightingStatus;
     result->getSunDirection = _realGetSunDirection;
@@ -103,13 +95,13 @@ static AtmosphereRenderer* _createRenderer()
 
 static void _deleteRenderer(AtmosphereRenderer* renderer)
 {
-    AtmosphereDefinitionClass.destroy(renderer->definition);
+    delete renderer->definition;
     delete renderer;
 }
 
 static void _bindRenderer(Renderer* renderer, AtmosphereDefinition* definition)
 {
-    AtmosphereDefinitionClass.copy(definition, renderer->atmosphere->definition);
+    definition->copy(renderer->atmosphere->definition);
 }
 
 StandardRenderer AtmosphereRendererClass = {

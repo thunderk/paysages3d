@@ -5,7 +5,6 @@
 
 #include "BaseDefinition.h"
 
-class AtmosphereDefinition;
 class TerrainDefinition;
 class TexturesDefinition;
 class Renderer;

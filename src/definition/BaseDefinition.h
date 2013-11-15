@@ -19,8 +19,8 @@ public:
     BaseDefinition(BaseDefinition* parent);
     virtual ~BaseDefinition();
 
-    virtual void save(PackStream* pack) const;
-    virtual void load(PackStream* pack);
+    virtual void save(PackStream* stream) const;
+    virtual void load(PackStream* stream);
 
     virtual void copy(BaseDefinition* destination) const;
     virtual void validate();

@@ -21,7 +21,8 @@ SOURCES += \
     SurfaceMaterial.cpp \
     CameraDefinition.cpp \
     CloudsDefinition.cpp \
-    CloudLayerDefinition.cpp
+    CloudLayerDefinition.cpp \
+    AtmosphereDefinition.cpp
 
 HEADERS +=\
         definition_global.h \
@@ -32,7 +33,8 @@ HEADERS +=\
     SurfaceMaterial.h \
     CameraDefinition.h \
     CloudsDefinition.h \
-    CloudLayerDefinition.h
+    CloudLayerDefinition.h \
+    AtmosphereDefinition.h
 
 unix:!symbian {
     maemo5 {

@@ -6,8 +6,8 @@
 #include "main.h"
 #include "render.h"
 #include "renderer.h"
-#include "atmosphere/public.h"
 #include "CameraDefinition.h"
+#include "AtmosphereDefinition.h"
 #include "SoftwareRenderer.h"
 #include "Scenery.h"
 
@@ -170,7 +170,7 @@ int main(int argc, char** argv)
         AtmosphereDefinition* atmo = Scenery::getCurrent()->getAtmosphere();
         atmo->hour = (int)floor(conf_daytime_start * 24.0);
         atmo->minute = (int)floor(fmod(conf_daytime_start, 1.0 / 24.0) * 24.0 * 60.0);
-        AtmosphereDefinitionClass.validate(atmo);
+        atmo->validate();
 
         CameraDefinition* camera = Scenery::getCurrent()->getCamera();
         Vector3 step = {conf_camera_step_x, conf_camera_step_y, conf_camera_step_z};

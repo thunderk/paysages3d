@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include "SoftwareRenderer.h"
+#include "AtmosphereDefinition.h"
 #include "Scenery.h"
 
 // TEMP
@@ -130,7 +131,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(Vect
     /* Get base perspective */
     switch (definition->model)
     {
-    case ATMOSPHERE_MODEL_BRUNETON:
+    case AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON:
         result = brunetonApplyAerialPerspective(renderer, location, base);
         break;
     default:
@@ -189,7 +190,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
     Vector3 location = v3Add(camera_location, v3Scale(direction, 6421.0));
     switch (definition->model)
     {
-    case ATMOSPHERE_MODEL_BRUNETON:
+    case AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON:
         result = brunetonGetSkyColor(renderer, camera_location, direction, sun_position, base);
         break;
     default:

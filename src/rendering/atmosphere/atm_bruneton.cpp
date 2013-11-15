@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include "System.h"
 #include "PackStream.h"
+#include "AtmosphereDefinition.h"
 #include "tools.h"
 #include "tools/cache.h"
 #include "tools/texture.h"
@@ -1043,7 +1044,7 @@ static void _saveDebug4D(Texture4D* tex, const char* tag, int order)
 }
 
 /*********************** Public methods ***********************/
-void brunetonInit()
+int brunetonInit()
 {
     int x, y, z, w, order;
     ParallelWork* work;
@@ -1060,7 +1061,7 @@ void brunetonInit()
      && _tryLoadCache2D(_irradianceTexture, "irradiance", 0)
      && _tryLoadCache4D(_inscatterTexture, "inscatter", 0))
     {
-        return;
+        return 1;
     }
 
     Texture2D* _deltaETexture = texture2DCreate(SKY_W, SKY_H);
@@ -1149,7 +1150,11 @@ void brunetonInit()
     texture4DDelete(_deltaSMTexture);
     texture4DDelete(_deltaSRTexture);
     texture4DDelete(_deltaJTexture);
+
+    return 1;
 }
+
+static const int _init = brunetonInit();
 
 AtmosphereResult brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 direction, Vector3 sun_position, Color base)
 {

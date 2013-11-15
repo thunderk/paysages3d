@@ -16,8 +16,6 @@ SOURCES += main.cpp \
     geoarea.cpp \
     atmosphere/atm_render.cpp \
     atmosphere/atm_raster.cpp \
-    atmosphere/atm_presets.cpp \
-    atmosphere/atm_definition.cpp \
     atmosphere/atm_bruneton.cpp \
     clouds/clo_walking.cpp \
     clouds/clo_rendering.cpp \

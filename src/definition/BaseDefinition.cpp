@@ -29,23 +29,23 @@ void BaseDefinition::setName(QString name)
     this->name = name;
 }
 
-void BaseDefinition::save(PackStream* pack) const
+void BaseDefinition::save(PackStream* stream) const
 {
-    pack->write(name);
+    stream->write(name);
     QListIterator<BaseDefinition*> it(children);
     while (it.hasNext())
     {
-        it.next()->save(pack);
+        it.next()->save(stream);
     }
 }
 
-void BaseDefinition::load(PackStream* pack)
+void BaseDefinition::load(PackStream* stream)
 {
-    name = pack->readString();
+    name = stream->readString();
     QListIterator<BaseDefinition*> it(children);
     while (it.hasNext())
     {
-        it.next()->load(pack);
+        it.next()->load(stream);
     }
 }
 

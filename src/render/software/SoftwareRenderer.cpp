@@ -4,6 +4,7 @@
 #include "Scenery.h"
 #include "FluidMediumManager.h"
 #include "AtmosphereRenderer.h"
+#include "AtmosphereDefinition.h"
 
 
 // Legacy compatibility
@@ -63,7 +64,7 @@ void SoftwareRenderer::prepare()
     atmosphere_renderer = new SoftwareBrunetonAtmosphereRenderer(this);
 
     // Setup transitional renderers (for C-legacy subsystems)
-    AtmosphereDefinitionClass.copy(scenery->getAtmosphere(), atmosphere->definition);
+    scenery->getAtmosphere()->copy(atmosphere->definition);
     atmosphere->applyAerialPerspective = _legacyApplyAerialPerspective;
     atmosphere->getSkyColor = _legacyGetSkyColor;
     atmosphere->getLightingStatus = _legacyGetLightingStatus;

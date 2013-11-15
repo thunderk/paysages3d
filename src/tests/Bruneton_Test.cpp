@@ -3,7 +3,8 @@
 #include "tools/color.h"
 #include "CameraDefinition.h"
 #include "SoftwareRenderer.h"
-#include "atmosphere/public.h"
+#include "AtmosphereDefinition.h"
+#include "AtmosphereRenderer.h"
 #include "Scenery.h"
 #include "System.h"
 
@@ -46,7 +47,7 @@ TEST(Bruneton, AerialPerspective2)
     AtmosphereDefinition* atmo = Scenery::getCurrent()->getAtmosphere();
     atmo->hour = 6;
     atmo->minute = 30;
-    AtmosphereDefinitionClass.validate(atmo);
+    atmo->validate();
 
     Renderer renderer;
     renderer.render_width = 800;
