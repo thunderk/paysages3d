@@ -1,11 +1,11 @@
 #include "color.h"
 
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#include <math.h>
-#include "../tools.h"
+#include <cstdlib>
+#include <cassert>
+#include <cstring>
+#include <cmath>
 #include "PackStream.h"
+#include "Curve.h"
 
 /******************************** ColorProfile ********************************/
 class ColorProfile
@@ -67,10 +67,8 @@ static Color _toneMappingReinhard(Color pixel, double exposure)
     return pixel;
 }
 
-static Color _toneMappingClamp(Color pixel, double exposure)
+static Color _toneMappingClamp(Color pixel, double)
 {
-    UNUSED(exposure);
-
     pixel.r = pixel.r > 1.0 ? 1.0 : pixel.r;
     pixel.g = pixel.g > 1.0 ? 1.0 : pixel.g;
     pixel.b = pixel.b > 1.0 ? 1.0 : pixel.b;
@@ -146,80 +144,80 @@ ColorGradation* colorGradationCreate()
     ColorGradation* result;
 
     result = new ColorGradation;
-    result->red = curveCreate();
-    result->green = curveCreate();
-    result->blue = curveCreate();
+    result->red = new Curve;
+    result->green = new Curve;
+    result->blue = new Curve;
 
     return result;
 }
 
 void colorGradationDelete(ColorGradation* gradation)
 {
-    curveDelete(gradation->red);
-    curveDelete(gradation->green);
-    curveDelete(gradation->blue);
+    delete gradation->red;
+    delete gradation->green;
+    delete gradation->blue;
     delete gradation;
 }
 
 void colorGradationCopy(ColorGradation* source, ColorGradation* destination)
 {
-    curveCopy(source->red, destination->red);
-    curveCopy(source->green, destination->green);
-    curveCopy(source->blue, destination->blue);
+    source->red->copy(destination->red);
+    source->green->copy(destination->green);
+    source->blue->copy(destination->blue);
 }
 
 void colorGradationClear(ColorGradation* gradation)
 {
-    curveClear(gradation->red);
-    curveClear(gradation->green);
-    curveClear(gradation->blue);
+    gradation->red->clear();
+    gradation->green->clear();
+    gradation->blue->clear();
 }
 
 void colorGradationSave(PackStream* stream, ColorGradation* gradation)
 {
-    curveSave(stream, gradation->red);
-    curveSave(stream, gradation->green);
-    curveSave(stream, gradation->blue);
+    gradation->red->save(stream);
+    gradation->green->save(stream);
+    gradation->blue->save(stream);
 }
 
 void colorGradationLoad(PackStream* stream, ColorGradation* gradation)
 {
-    curveLoad(stream, gradation->red);
-    curveLoad(stream, gradation->green);
-    curveLoad(stream, gradation->blue);
+    gradation->red->load(stream);
+    gradation->green->load(stream);
+    gradation->blue->load(stream);
 }
 
 void colorGradationGetRedCurve(ColorGradation* gradation, Curve* curve)
 {
-    curveCopy(gradation->red, curve);
+    gradation->red->copy(curve);
 }
 
 void colorGradationGetGreenCurve(ColorGradation* gradation, Curve* curve)
 {
-    curveCopy(gradation->green, curve);
+    gradation->green->copy(curve);
 }
 
 void colorGradationGetBlueCurve(ColorGradation* gradation, Curve* curve)
 {
-    curveCopy(gradation->blue, curve);
+    gradation->blue->copy(curve);
 }
 
 void colorGradationSetRedCurve(ColorGradation* gradation, Curve* curve)
 {
-    curveCopy(curve, gradation->red);
-    curveValidate(gradation->red);
+    curve->copy(gradation->red);
+    gradation->red->validate();
 }
 
 void colorGradationSetGreenCurve(ColorGradation* gradation, Curve* curve)
 {
-    curveCopy(curve, gradation->green);
-    curveValidate(gradation->green);
+    curve->copy(gradation->green);
+    gradation->green->validate();
 }
 
 void colorGradationSetBlueCurve(ColorGradation* gradation, Curve* curve)
 {
-    curveCopy(curve, gradation->blue);
-    curveValidate(gradation->blue);
+    curve->copy(gradation->blue);
+    gradation->blue->validate();
 }
 
 void colorGradationQuickAdd(ColorGradation* gradation, double value, Color* col)
@@ -229,23 +227,23 @@ void colorGradationQuickAdd(ColorGradation* gradation, double value, Color* col)
 
 void colorGradationQuickAddRgb(ColorGradation* gradation, double value, double r, double g, double b)
 {
-    curveQuickAddPoint(gradation->red, value, r);
-    curveValidate(gradation->red);
+    gradation->red->addPoint(value, r);
+    gradation->red->validate();
 
-    curveQuickAddPoint(gradation->green, value, g);
-    curveValidate(gradation->green);
+    gradation->green->addPoint(value, g);
+    gradation->green->validate();
 
-    curveQuickAddPoint(gradation->blue, value, b);
-    curveValidate(gradation->blue);
+    gradation->blue->addPoint(value, b);
+    gradation->blue->validate();
 }
 
 Color colorGradationGet(ColorGradation* gradation, double value)
 {
     Color result;
 
-    result.r = curveGetValue(gradation->red, value);
-    result.g = curveGetValue(gradation->green, value);
-    result.b = curveGetValue(gradation->blue, value);
+    result.r = gradation->red->getValue(value);
+    result.g = gradation->green->getValue(value);
+    result.b = gradation->blue->getValue(value);
     result.a = 1.0;
 
     return result;

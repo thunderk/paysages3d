@@ -3,20 +3,16 @@
 
 #include "../tools/euclid.h"
 #include "../renderer.h"
-#include "../tools.h"
 #include "atmosphere/public.h"
+#include "CloudsDefinition.h"
+#include "CloudLayerDefinition.h"
 
 /*
  * Clouds previews.
  */
 
-Color _fakeApplyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material)
+Color _fakeApplyLightingToSurface(Renderer*, Vector3, Vector3, SurfaceMaterial*)
 {
-    UNUSED(renderer);
-    UNUSED(location);
-    UNUSED(normal);
-    UNUSED(material);
-
     return COLOR_WHITE;
 }
 
@@ -28,12 +24,11 @@ Renderer* cloudsPreviewCoverageCreateRenderer()
     return result;
 }
 
-void cloudsPreviewCoverageBindLayer(Renderer* renderer, CloudsLayerDefinition* layer)
+void cloudsPreviewCoverageBindLayer(Renderer* renderer, CloudLayerDefinition* layer)
 {
-    CloudsDefinition* definition = (CloudsDefinition*)CloudsDefinitionClass.create();
-    layersAddLayer(definition->layers, layer);
-    CloudsRendererClass.bind(renderer, definition);
-    CloudsDefinitionClass.destroy(definition);
+    CloudsDefinition clouds(NULL);
+    clouds.addLayer(layer->newCopy(&clouds));
+    CloudsRendererClass.bind(renderer, &clouds);
 }
 
 Color cloudsPreviewCoverageGetPixel(Renderer* renderer, double x, double y, double scaling, int perspective)
@@ -65,13 +60,9 @@ Color cloudsPreviewCoverageGetPixel(Renderer* renderer, double x, double y, doub
     }
 }
 
-static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)
+static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
 {
     LightDefinition light;
-
-    UNUSED(renderer);
-    UNUSED(normal);
-    UNUSED(opaque);
 
     light.color.r = 0.5;
     light.color.g = 0.5;
@@ -104,11 +95,8 @@ Renderer* cloudsPreviewMaterialCreateRenderer()
     return result;
 }
 
-static double _getDensity(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location)
+static double _getDensity(Renderer*, CloudLayerDefinition* layer, Vector3 location)
 {
-    UNUSED(renderer);
-    UNUSED(layer);
-
     double distance = 2.0 * v3Norm(location) / layer->thickness;
     if (distance > 1.0)
     {
@@ -124,14 +112,13 @@ static double _getDensity(Renderer* renderer, CloudsLayerDefinition* layer, Vect
     }
 }
 
-void cloudsPreviewMaterialBindLayer(Renderer* renderer, CloudsLayerDefinition* layer)
+void cloudsPreviewMaterialBindLayer(Renderer* renderer, CloudLayerDefinition* layer)
 {
-    CloudsDefinition* definition = (CloudsDefinition*)CloudsDefinitionClass.create();
-    layersAddLayer(definition->layers, layer);
-    CloudsRendererClass.bind(renderer, definition);
-    CloudsDefinitionClass.destroy(definition);
+    CloudsDefinition clouds(NULL);
+    clouds.addLayer(layer->newCopy(&clouds));
+    CloudsRendererClass.bind(renderer, &clouds);
 
-    layer = (CloudsLayerDefinition*)layersGetLayer(renderer->clouds->definition->layers, 0);
+    layer = renderer->clouds->definition->getCloudLayer(0);
     layer->thickness = layer->shape_scaling;
     layer->lower_altitude = -layer->thickness / 2.0;
 
@@ -141,7 +128,7 @@ void cloudsPreviewMaterialBindLayer(Renderer* renderer, CloudsLayerDefinition* l
 Color cloudsPreviewMaterialGetPixel(Renderer* renderer, double x, double y)
 {
     Vector3 start, end;
-    CloudsLayerDefinition* layer = (CloudsLayerDefinition*)layersGetLayer(renderer->clouds->definition->layers, 0);
+    CloudLayerDefinition* layer = renderer->clouds->definition->getCloudLayer(0);
     double thickness = layer->thickness;
 
     start.x = x * thickness * 0.5;

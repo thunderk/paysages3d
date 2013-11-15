@@ -7,13 +7,6 @@
 
 #include "../rendering_global.h"
 #include "../tools/euclid.h"
-#include "../tools/curve.h"
-
-namespace paysages {
-namespace system {
-class PackStream;
-}
-}
 
 typedef struct Zone Zone;
 

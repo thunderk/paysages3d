@@ -1,6 +1,7 @@
 #include "clo_walking.h"
 
 #include "../renderer.h"
+#include "CloudLayerDefinition.h"
 
 /**
  * Control of the next walking order.
@@ -49,7 +50,7 @@ struct CloudsWalker
 };
 
 
-int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* layer, Vector3* start, Vector3* end)
+int cloudsOptimizeWalkingBounds(CloudLayerDefinition* layer, Vector3* start, Vector3* end)
 {
     Vector3 diff;
 
@@ -101,7 +102,7 @@ int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* layer, Vector3* start, Ve
     return 1;
 }
 
-CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 start, Vector3 end)
+CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudLayerDefinition* layer, Vector3 start, Vector3 end)
 {
     CloudsWalker* result;
 
@@ -160,7 +161,7 @@ static void _getPoint(CloudsWalker* walker, double cursor, CloudWalkerPoint* out
     out_point->location = v3Add(walker->start, v3Scale(walker->diff, out_point->distance_from_start / walker->max_length));
 
     Renderer* renderer = walker->last_segment.renderer;
-    CloudsLayerDefinition* layer = walker->last_segment.layer;
+    CloudLayerDefinition* layer = walker->last_segment.layer;
     out_point->global_density = renderer->clouds->getLayerDensity(renderer, layer, out_point->location);
 
     if (walker->local_density > 0 || (walker->local_density < 0 && walker->subdivision_count > 0))

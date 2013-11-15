@@ -7,6 +7,10 @@ Layers::Layers(BaseDefinition* parent, LayerConstructor layer_constructor, Layer
     {
         this->legacy_type = *legacy_type;
     }
+    else
+    {
+        this->legacy_type.callback_create = NULL;
+    }
     max_layer_count = 100;
     null_layer = layer_constructor(this);
 }
@@ -46,12 +50,12 @@ void Layers::setMaxLayerCount(int max_layer_count)
     // TODO Delete overlimit layers ?
 }
 
-int Layers::count()
+int Layers::count() const
 {
     return layers.count();
 }
 
-BaseDefinition* Layers::getLayer(int position)
+BaseDefinition* Layers::getLayer(int position) const
 {
     if (position >= 0 and position < layers.size())
     {
@@ -64,7 +68,7 @@ BaseDefinition* Layers::getLayer(int position)
     }
 }
 
-int Layers::findLayer(BaseDefinition* layer)
+int Layers::findLayer(BaseDefinition* layer) const
 {
     int result = layers.indexOf(layer);
     if (result < 0)
@@ -146,9 +150,18 @@ Layers* layersCreate(LayerType type, int max_layer_count)
 
 Layers* layersCreateCopy(Layers* original)
 {
-    Layers* result = new Layers(NULL, _legacyLayerConstructor, &original->legacy_type);
-    original->copy(result);
-    return result;
+    if (original->legacy_type.callback_create)
+    {
+        Layers* result = new Layers(NULL, _legacyLayerConstructor, &original->legacy_type);
+        original->copy(result);
+        return result;
+    }
+    else
+    {
+        Layers* result = new Layers(NULL, original->layer_constructor, NULL);
+        original->copy(result);
+        return result;
+    }
 }
 
 void layersDelete(Layers* layers)
@@ -178,7 +191,14 @@ void layersLoad(PackStream* stream, Layers* layers)
 
 const char* layersGetName(Layers* layers, int layer)
 {
-    return ((LegacyLayer*)(layers->getLayer(layer)))->getLegacyName();
+    if (layers->legacy_type.callback_create)
+    {
+        return ((LegacyLayer*)(layers->getLayer(layer)))->getLegacyName();
+    }
+    else
+    {
+        return "";
+    }
 }
 
 void layersSetName(Layers* layers, int layer, const char* name)
@@ -198,20 +218,36 @@ int layersCount(Layers* layers)
 
 void* layersGetLayer(Layers* layers, int layer)
 {
-    LegacyLayer* legacy = (LegacyLayer*)(layers->getLayer(layer));
-    return legacy->getLegacyDefinition();
+    if (layers->legacy_type.callback_create)
+    {
+        LegacyLayer* legacy = (LegacyLayer*)(layers->getLayer(layer));
+        return legacy->getLegacyDefinition();
+    }
+    else
+    {
+        return layers->getLayer(layer);
+    }
 }
 
 int layersAddLayer(Layers* layers, void* definition)
 {
-    int position;
-    LegacyLayer* legacy = new LegacyLayer(layers, &layers->legacy_type);
-    if (definition)
+    if (layers->legacy_type.callback_create)
     {
-        layers->legacy_type.callback_copy(definition, legacy->getLegacyDefinition());
+        int position;
+        LegacyLayer* legacy = new LegacyLayer(layers, &layers->legacy_type);
+        if (definition)
+        {
+            layers->legacy_type.callback_copy(definition, legacy->getLegacyDefinition());
+        }
+        position = layers->addLayer(legacy);
+        return position;
     }
-    position = layers->addLayer(legacy);
-    return position;
+    else
+    {
+        BaseDefinition* copied = layers->layer_constructor(layers);
+        ((BaseDefinition*)definition)->copy(copied);
+        return layers->addLayer(copied);
+    }
 }
 
 void layersDeleteLayer(Layers* layers, int layer)

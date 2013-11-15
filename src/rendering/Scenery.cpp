@@ -6,7 +6,7 @@
 #include "PackStream.h"
 #include "atmosphere/public.h"
 #include "CameraDefinition.h"
-#include "clouds/public.h"
+#include "CloudsDefinition.h"
 #include "terrain/public.h"
 #include "textures/public.h"
 #include "water/public.h"
@@ -21,13 +21,14 @@ Scenery::Scenery():
 {
     atmosphere = (AtmosphereDefinition*)AtmosphereDefinitionClass.create();
     camera = new CameraDefinition;
-    clouds = (CloudsDefinition*)CloudsDefinitionClass.create();
+    clouds = new CloudsDefinition(this);
     terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
     textures = (TexturesDefinition*)TexturesDefinitionClass.create();
     water = new WaterDefinition(this);
 
     addChild(camera);
     addChild(water);
+    addChild(clouds);
 
     _custom_load = NULL;
     _custom_save = NULL;
@@ -37,7 +38,6 @@ Scenery::Scenery():
 Scenery::~Scenery()
 {
     AtmosphereDefinitionClass.destroy(atmosphere);
-    CloudsDefinitionClass.destroy(clouds);
     TerrainDefinitionClass.destroy(terrain);
     TexturesDefinitionClass.destroy(textures);
 }
@@ -61,7 +61,6 @@ void Scenery::save(PackStream* stream) const
     noiseSave(stream);
 
     AtmosphereDefinitionClass.save(stream, atmosphere);
-    CloudsDefinitionClass.save(stream, clouds);
     TerrainDefinitionClass.save(stream, terrain);
     TexturesDefinitionClass.save(stream, textures);
 
@@ -78,7 +77,6 @@ void Scenery::load(PackStream* stream)
     noiseLoad(stream);
 
     AtmosphereDefinitionClass.load(stream, atmosphere);
-    CloudsDefinitionClass.load(stream, clouds);
     TerrainDefinitionClass.load(stream, terrain);
     TexturesDefinitionClass.load(stream, textures);
 
@@ -109,7 +107,7 @@ void Scenery::autoPreset(int seed)
     texturesAutoPreset(textures, TEXTURES_PRESET_FULL);
     atmosphereAutoPreset(atmosphere, ATMOSPHERE_PRESET_CLEAR_DAY);
     water->applyPreset(WATER_PRESET_LAKE);
-    cloudsAutoPreset(clouds, CLOUDS_PRESET_PARTLY_CLOUDY);
+    clouds->applyPreset(CloudsDefinition::CLOUDS_PRESET_PARTLY_CLOUDY);
 
     camera->setLocation(VECTOR_ZERO);
     camera->setTarget(VECTOR_NORTH);
@@ -140,12 +138,12 @@ void Scenery::getCamera(CameraDefinition* camera)
 
 void Scenery::setClouds(CloudsDefinition* clouds)
 {
-    CloudsDefinitionClass.copy(clouds, this->clouds);
+    clouds->copy(this->clouds);
 }
 
 void Scenery::getClouds(CloudsDefinition* clouds)
 {
-    CloudsDefinitionClass.copy(this->clouds, clouds);
+    this->clouds->copy(clouds);
 }
 
 void Scenery::setTerrain(TerrainDefinition* terrain)
@@ -177,6 +175,11 @@ void Scenery::getWater(WaterDefinition* water)
 {
     this->water->copy(water);
 }
+
+
+
+
+#include "clouds/public.h"
 
 static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int, int, int, int)
 {

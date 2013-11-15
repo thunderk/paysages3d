@@ -22,7 +22,7 @@ typedef struct
 typedef struct
 {
     Renderer* renderer;
-    CloudsLayerDefinition* layer;
+    CloudLayerDefinition* layer;
 
     CloudWalkerPoint start;
     CloudWalkerPoint end;
@@ -46,7 +46,7 @@ typedef void (*FuncCloudsWalkingCallback)(CloudsWalker* walker);
  * @param end End of the search to optimize
  * @return 0 if the search is useless
  */
-RENDERINGSHARED_EXPORT int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* layer, Vector3* start, Vector3* end);
+RENDERINGSHARED_EXPORT int cloudsOptimizeWalkingBounds(CloudLayerDefinition* layer, Vector3* start, Vector3* end);
 
 /**
  * Create a cloud walker.
@@ -57,7 +57,7 @@ RENDERINGSHARED_EXPORT int cloudsOptimizeWalkingBounds(CloudsLayerDefinition* la
  * @param start Start of the walk
  * @param end End of the walk
  */
-RENDERINGSHARED_EXPORT CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 start, Vector3 end);
+RENDERINGSHARED_EXPORT CloudsWalker* cloudsCreateWalker(Renderer* renderer, CloudLayerDefinition* layer, Vector3 start, Vector3 end);
 
 /**
  * Delete a cloud walker.

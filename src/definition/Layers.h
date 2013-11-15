@@ -26,9 +26,9 @@ public:
 
     void setMaxLayerCount(int max_layer_count);
 
-    int count();
-    BaseDefinition* getLayer(int position);
-    int findLayer(BaseDefinition* layer);
+    int count() const;
+    BaseDefinition* getLayer(int position) const;
+    int findLayer(BaseDefinition* layer) const;
 
     /**
      * @brief Add a new layer
@@ -47,9 +47,10 @@ public:
 
     // Transitional data storage
     LayerType legacy_type;
-
-private:
+    // TODO make private when there is no more legacy layer
     LayerConstructor layer_constructor;
+
+public:
     int max_layer_count;
     QList<BaseDefinition*> layers;
     BaseDefinition* null_layer;

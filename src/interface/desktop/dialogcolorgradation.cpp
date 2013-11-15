@@ -10,7 +10,9 @@
 #include <QSlider>
 #include <QScrollArea>
 #include <QPushButton>
+#include "Curve.h"
 #include "tools.h"
+#include "previewcolorgradation.h"
 #include "widgetcurveeditor.h"
 
 /**************** Dialog ****************/
@@ -111,7 +113,7 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
     buttons->layout()->addWidget(_button_cancel);
     QObject::connect(_button_cancel, SIGNAL(clicked()), this, SLOT(reject()));
 
-    _curve = curveCreate();
+    _curve = new Curve;
 
     setWindowTitle(tr("Paysages 3D - Color gradation editor"));
     resize(900, 600);
@@ -122,7 +124,7 @@ DialogColorGradation::DialogColorGradation(QWidget *parent, ColorGradation* grad
 DialogColorGradation::~DialogColorGradation()
 {
     colorGradationDelete(_current);
-    curveDelete(_curve);
+    delete _curve;
 }
 
 bool DialogColorGradation::getGradation(QWidget* parent, ColorGradation* gradation)
@@ -181,10 +183,9 @@ void DialogColorGradation::selectBlue()
 
 void DialogColorGradation::updateColors()
 {
-    Curve* curve;
+    Curve curve;
 
-    curve = curveCreate();
-    _curve_editor->getCurve(curve);
+    _curve_editor->getCurve(&curve);
 
     switch (_selected)
     {
@@ -194,23 +195,21 @@ void DialogColorGradation::updateColors()
         _preview_blue->update();
         break;
     case 1:
-        colorGradationSetRedCurve(_current, curve);
+        colorGradationSetRedCurve(_current, &curve);
         _preview_red->update();
         break;
     case 2:
-        colorGradationSetGreenCurve(_current, curve);
+        colorGradationSetGreenCurve(_current, &curve);
         _preview_green->update();
         break;
     case 3:
-        colorGradationSetBlueCurve(_current, curve);
+        colorGradationSetBlueCurve(_current, &curve);
         _preview_blue->update();
         break;
     default:
         ;
     }
     _preview_final->update();
-
-    curveDelete(curve);
 }
 
 void DialogColorGradation::revertToCurrent()

@@ -1,11 +1,12 @@
 #ifndef _PAYSAGES_QT_DIALOGCURVE_H_
 #define _PAYSAGES_QT_DIALOGCURVE_H_
 
-#include <QDialog>
-#include <QPushButton>
-#include "widgetcurveeditor.h"
+#include "desktop_global.h"
 
-#include "tools/curve.h"
+#include <QDialog>
+
+class QPushButton;
+class WidgetCurveEditor;
 
 class DialogCurve : public QDialog
 {

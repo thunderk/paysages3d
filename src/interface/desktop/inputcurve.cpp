@@ -3,8 +3,8 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QPainter>
+#include "Curve.h"
 #include "dialogcurve.h"
-#include "tools.h"
 
 class CurveSmallPreview:public QWidget
 {
@@ -35,9 +35,9 @@ public:
         {
             painter.setPen(QColor(0, 0, 0));
             position = _xmin + (_xmax - _xmin) * (double)x / (double)(width - 1);
-            value = (curveGetValue(_curve, position) - _ymin) * (_ymax - _ymin);
-            prev_value = (curveGetValue(_curve, position - (_xmax - _xmin) / (double)(width - 1)) - _ymin) * (_ymax - _ymin);
-            next_value = (curveGetValue(_curve, position + (_xmax - _xmin) / (double)(width - 1)) - _ymin) * (_ymax - _ymin);
+            value = (_curve->getValue(position) - _ymin) * (_ymax - _ymin);
+            prev_value = (_curve->getValue(position - (_xmax - _xmin) / (double)(width - 1)) - _ymin) * (_ymax - _ymin);
+            next_value = (_curve->getValue(position + (_xmax - _xmin) / (double)(width - 1)) - _ymin) * (_ymax - _ymin);
 
             painter.drawLine(x, height - 1 - (int)((value + (prev_value - value) / 2.0) * (double)(height - 1)), x, height - 1 - (int)((value + (next_value - value) / 2.0) * (double)(height - 1)));
             painter.drawPoint(x, height - 1 - (int)(value * (double)(height - 1)));

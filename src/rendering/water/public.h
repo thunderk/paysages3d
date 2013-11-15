@@ -4,7 +4,6 @@
 #include "../rendering_global.h"
 #include "../shared/types.h"
 #include "../tools/lighting.h"
-#include "../tools/curve.h"
 #include "../tools/euclid.h"
 
 typedef struct

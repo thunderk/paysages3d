@@ -7,6 +7,8 @@
 #include "clo_density.h"
 #include "clo_walking.h"
 #include "atmosphere/public.h"
+#include "CloudsDefinition.h"
+#include "CloudLayerDefinition.h"
 
 /******************** Fake ********************/
 static int _fakeAlterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
@@ -80,10 +82,10 @@ static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 locat
     data.light_power = colorGetPower(&light->color);
 
     /* TODO Iter layers in sorted order */
-    n = layersCount(definition->layers);
+    n = definition->count();
     for (i = 0; i < n; i++)
     {
-        CloudsLayerDefinition* layer = (CloudsLayerDefinition*)layersGetLayer(renderer->clouds->definition->layers, i);
+        CloudLayerDefinition* layer = definition->getCloudLayer(i);
         Vector3 ostart, oend;
 
         ostart = location;
@@ -144,7 +146,7 @@ static void _walkerMaterialCallback(CloudsWalker* walker)
     CloudWalkerStepInfo* segment = cloudsWalkerGetLastSegment(walker);
     AccumulatedMaterialData* data = (AccumulatedMaterialData*)segment->data;
     Renderer* renderer = segment->renderer;
-    CloudsLayerDefinition* layer = segment->layer;
+    CloudLayerDefinition* layer = segment->layer;
 
     assert(data != NULL);
 
@@ -172,7 +174,7 @@ static void _walkerMaterialCallback(CloudsWalker* walker)
     {
         data->out_scattering += 0.3 * density_integral;
 
-        Color in_scattering = renderer->applyLightingToSurface(renderer, segment->start.location, VECTOR_ZERO, &layer->material);
+        Color in_scattering = renderer->applyLightingToSurface(renderer, segment->start.location, VECTOR_ZERO, layer->material);
         in_scattering.r *= density_integral * 5.0;
         in_scattering.g *= density_integral * 5.0;
         in_scattering.b *= density_integral * 5.0;
@@ -195,7 +197,7 @@ static Color _getColor(Renderer* renderer, Color base, Vector3 start, Vector3 en
     CloudsDefinition* definition = renderer->clouds->definition;
     int i, n;
 
-    n = layersCount(definition->layers);
+    n = definition->count();
     if (n < 1)
     {
         return base;
@@ -204,7 +206,7 @@ static Color _getColor(Renderer* renderer, Color base, Vector3 start, Vector3 en
     /* TODO Iter layers in sorted order */
     for (i = 0; i < n; i++)
     {
-        CloudsLayerDefinition* layer = (CloudsLayerDefinition*)layersGetLayer(renderer->clouds->definition->layers, i);
+        CloudLayerDefinition* layer = definition->getCloudLayer(i);
         Vector3 ostart, oend;
 
         ostart = start;
@@ -250,7 +252,7 @@ static CloudsRenderer* _createRenderer()
     CloudsRenderer* result;
 
     result = new CloudsRenderer;
-    result->definition = (CloudsDefinition*)CloudsDefinitionClass.create();
+    result->definition = new CloudsDefinition(NULL);
 
     result->getColor = _fakeGetColor;
     result->alterLight = (FuncLightingAlterLight)_fakeAlterLight;
@@ -262,13 +264,13 @@ static CloudsRenderer* _createRenderer()
 
 static void _deleteRenderer(CloudsRenderer* renderer)
 {
-    CloudsDefinitionClass.destroy(renderer->definition);
+    delete renderer->definition;
     delete renderer;
 }
 
 static void _bindRenderer(Renderer* renderer, CloudsDefinition* definition)
 {
-    CloudsDefinitionClass.copy(definition, renderer->clouds->definition);
+    definition->copy(renderer->clouds->definition);
 
     renderer->clouds->getColor = _getColor;
     renderer->clouds->alterLight = (FuncLightingAlterLight)_alterLight;

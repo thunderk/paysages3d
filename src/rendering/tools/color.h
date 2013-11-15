@@ -2,7 +2,6 @@
 #define _PAYSAGES_TOOLS_COLOR_H_
 
 #include "../rendering_global.h"
-#include "curve.h"
 
 /* HDR profile for tone-mapping */
 class ColorProfile;

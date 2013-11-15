@@ -8,6 +8,7 @@
 #include <QSlider>
 #include <QScrollArea>
 #include <QPushButton>
+#include "Curve.h"
 #include "baseform.h"
 #include "tools.h"
 #include "widgetcurveeditor.h"
@@ -21,24 +22,21 @@ PreviewColorGradation::PreviewColorGradation(QWidget* parent, ColorGradation* gr
 
 void PreviewColorGradation::paintEvent(QPaintEvent*)
 {
-    Curve* curve;
-
+    Curve curve;
     QPainter painter(this);
     int width = this->width();
     int height = this->height();
 
-    curve = curveCreate();
-
     switch (band)
     {
         case COLORGRADATIONBAND_RED:
-            colorGradationGetRedCurve(gradation, curve);
+            colorGradationGetRedCurve(gradation, &curve);
             break;
         case COLORGRADATIONBAND_GREEN:
-            colorGradationGetGreenCurve(gradation, curve);
+            colorGradationGetGreenCurve(gradation, &curve);
             break;
         case COLORGRADATIONBAND_BLUE:
-            colorGradationGetBlueCurve(gradation, curve);
+            colorGradationGetBlueCurve(gradation, &curve);
             break;
         default:
             break;
@@ -49,13 +47,13 @@ void PreviewColorGradation::paintEvent(QPaintEvent*)
         switch (band)
         {
             case COLORGRADATIONBAND_RED:
-                painter.setPen(QColor::fromRgbF(curveGetValue(curve, (double)x / (double)width), 0.0, 0.0));
+                painter.setPen(QColor::fromRgbF(curve.getValue((double)x / (double)width), 0.0, 0.0));
                 break;
             case COLORGRADATIONBAND_GREEN:
-                painter.setPen(QColor::fromRgbF(0.0, curveGetValue(curve, (double)x / (double)width), 0.0));
+                painter.setPen(QColor::fromRgbF(0.0, curve.getValue((double)x / (double)width), 0.0));
                 break;
             case COLORGRADATIONBAND_BLUE:
-                painter.setPen(QColor::fromRgbF(0.0, 0.0, curveGetValue(curve, (double)x / (double)width)));
+                painter.setPen(QColor::fromRgbF(0.0, 0.0, curve.getValue((double)x / (double)width)));
                 break;
             case COLORGRADATIONBAND_FINAL:
                 painter.setPen(colorToQColor(colorGradationGet(gradation, (double)x / (double)width)));
@@ -63,8 +61,6 @@ void PreviewColorGradation::paintEvent(QPaintEvent*)
         }
         painter.drawLine(x, 0, x, height - 1);
     }
-
-    curveDelete(curve);
 }
 
 void PreviewColorGradation::mouseReleaseEvent(QMouseEvent*)

@@ -3,11 +3,12 @@
 #include <QPainter>
 #include <QPaintEngine>
 #include <QMouseEvent>
-#include "tools.h"
+#include "Curve.h"
+#include "tools/euclid.h"
 
 WidgetCurveEditor::WidgetCurveEditor(QWidget *parent, double xmin, double xmax, double ymin, double ymax) : QWidget(parent)
 {
-    _curve = curveCreate();
+    _curve = new Curve;
     _dragged = -1;
     _pen = QColor(0, 0, 0);
 
@@ -21,7 +22,7 @@ WidgetCurveEditor::WidgetCurveEditor(QWidget *parent, double xmin, double xmax, 
 
 WidgetCurveEditor::~WidgetCurveEditor()
 {
-    curveDelete(_curve);
+    delete _curve;
 }
 
 void WidgetCurveEditor::setAxisLabels(QString xlabel, QString ylabel)
@@ -32,13 +33,13 @@ void WidgetCurveEditor::setAxisLabels(QString xlabel, QString ylabel)
 
 void WidgetCurveEditor::setCurve(Curve* curve)
 {
-    curveCopy(curve, _curve);
+    curve->copy(_curve);
     update();
 }
 
 void WidgetCurveEditor::getCurve(Curve* curve)
 {
-    curveCopy(_curve, curve);
+    _curve->copy(curve);
 }
 
 void WidgetCurveEditor::setPenColor(QColor color)
@@ -94,20 +95,20 @@ void WidgetCurveEditor::paintEvent(QPaintEvent*)
     {
         position = ((double)x / dwidth) * (_xmax - _xmin) + _xmin;
 
-        value = (curveGetValue(_curve, position) - _ymin) / (_ymax - _ymin);
-        prev_value = curveGetValue(_curve, position - (_xmax - _xmin) / dwidth);
-        next_value = curveGetValue(_curve, position + (_xmax - _xmin) / dwidth);
+        value = (_curve->getValue(position) - _ymin) / (_ymax - _ymin);
+        prev_value = _curve->getValue(position - (_xmax - _xmin) / dwidth);
+        next_value = _curve->getValue(position + (_xmax - _xmin) / dwidth);
 
         painter.drawLine(x, height - 1 - (int)((value + (prev_value - value) / 2.0) * dheight), x, height - 1 - (int)((value + (next_value - value) / 2.0) * dheight));
         painter.drawPoint(x, height - 1 - (int)(value * dheight));
     }
 
     // Draw handles
-    n = curveGetPointCount(_curve);
+    n = _curve->getPointCount();
     painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing, true);
     for (i = 0; i < n; i++)
     {
-        curveGetPoint(_curve, i, &point);
+        _curve->getPoint(i, &point);
         painter.drawEllipse(QPointF((int)((point.position - _xmin) / (_xmax - _xmin) * dwidth), height - 1 - (int)((point.value - _ymin) / (_ymax - _ymin) * dheight)), 4.0, 4.0);
     }
 }
@@ -135,7 +136,7 @@ void WidgetCurveEditor::mouseMoveEvent(QMouseEvent* event)
         point.value = (point.value < _ymin) ? _ymin : point.value;
         point.value = (point.value > _ymax) ? _ymax : point.value;
 
-        curveSetPoint(_curve, _dragged, &point);
+        _curve->setPoint(_dragged, point);
 
         update();
 
@@ -154,7 +155,7 @@ void WidgetCurveEditor::mouseReleaseEvent(QMouseEvent* event)
         clicked = getPointAt(event->x(), event->y());
         if (clicked >= 0)
         {
-            curveRemovePoint(_curve, clicked);
+            _curve->removePoint(clicked);
             update();
             emit liveChanged();
         }
@@ -162,7 +163,7 @@ void WidgetCurveEditor::mouseReleaseEvent(QMouseEvent* event)
     else if (event->button() == Qt::LeftButton && _dragged >= 0)
     {
         _dragged = -1;
-        curveValidate(_curve);
+        _curve->validate();
         update();
     }
 
@@ -178,8 +179,8 @@ void WidgetCurveEditor::mouseDoubleClickEvent(QMouseEvent* event)
         if (getPointAt(event->x(), event->y()) < 0)
         {
             screenToCurve(event->x(), event->y(), &point.position, &point.value);
-            curveAddPoint(_curve, &point);
-            curveValidate(_curve);
+            _curve->addPoint(point);
+            _curve->validate();
             update();
             emit liveChanged();
         }
@@ -206,7 +207,7 @@ int WidgetCurveEditor::getPointAt(int x, int y)
     CurvePoint point;
     int dx, dy;
 
-    n = curveGetPointCount(_curve);
+    n = _curve->getPointCount();
     if (n < 1)
     {
         return -1;
@@ -217,7 +218,7 @@ int WidgetCurveEditor::getPointAt(int x, int y)
     distance = 0.0;
     for (int i = 0; i < n; i++)
     {
-        curveGetPoint(_curve, i, &point);
+        _curve->getPoint(i, &point);
         curveToScreen(point.position, point.value, &dx, &dy);
         ndistance = euclidGetDistance2D((double)x, (double)y, (double)dx, (double)dy);
         if (nearest < 0 || ndistance < distance)

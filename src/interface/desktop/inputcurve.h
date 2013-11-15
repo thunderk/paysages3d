@@ -1,10 +1,10 @@
 #ifndef _PAYSAGES_QT_INPUTCURVE_H_
 #define _PAYSAGES_QT_INPUTCURVE_H_
 
+#include "desktop_global.h"
+
 #include <QWidget>
 #include "baseinput.h"
-
-#include "tools/curve.h"
 
 class InputCurve:public BaseInput
 {

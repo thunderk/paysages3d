@@ -5,14 +5,14 @@
 #include "clouds/public.h"
 #include "clouds/clo_density.h"
 #include "clouds/clo_walking.h"
+#include "CloudLayerDefinition.h"
 #include "NoiseGenerator.h"
 
 TEST(Clouds, Density)
 {
     /* Setup */
     double x, y, z;
-    CloudsLayerDefinition* layer;
-    layer = (CloudsLayerDefinition*)cloudsGetLayerType().callback_create();
+    CloudLayerDefinition layer(NULL);
 
     /* Test default coverage (empty) */
     for (x = -10.0; x < 10.0; x += 10.0)
@@ -21,109 +21,105 @@ TEST(Clouds, Density)
         {
             for (z = -10.0; z < 10.0; z += 10.0)
             {
-                ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, y, z)), 0.0);
+                ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, y, z)), 0.0);
             }
         }
     }
 
     /* Test coverage by altitude */
-    layer->base_coverage = 1.0;
-    layer->lower_altitude = -1.0;
-    layer->thickness = 2.0;
-    cloudsGetLayerType().callback_validate(layer);
-    layer->base_coverage = 1.0;
-    layer->_coverage_noise->forceValue(1.0);
+    layer.base_coverage = 1.0;
+    layer.lower_altitude = -1.0;
+    layer.thickness = 2.0;
+    layer.validate();
+    layer.base_coverage = 1.0;
+    layer._coverage_noise->forceValue(1.0);
     for (x = -10.0; x < 10.0; x += 10.0)
     {
         for (z = -10.0; z < 10.0; z += 10.0)
         {
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, 0.0, z)), 1.0);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, 0.5, z)), 0.5);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, 1.0, z)), 0.0);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, 1.5, z)), 0.0);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, -0.5, z)), 0.5);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, -1.0, z)), 0.0);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, -1.5, z)), 0.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, 0.0, z)), 1.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, 0.5, z)), 0.5);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, 1.0, z)), 0.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, 1.5, z)), 0.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, -0.5, z)), 0.5);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, -1.0, z)), 0.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, -1.5, z)), 0.0);
         }
     }
-    layer->base_coverage = 0.5;
-    layer->_coverage_noise->forceValue(1.0);
+    layer.base_coverage = 0.5;
+    layer._coverage_noise->forceValue(1.0);
     for (x = -10.0; x < 10.0; x += 10.0)
     {
         for (z = -10.0; z < 10.0; z += 10.0)
         {
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, 0.0, z)), 0.5);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, 0.5, z)), 0.25);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, 1.0, z)), 0.0);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, 1.5, z)), 0.0);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, -0.5, z)), 0.25);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, -1.0, z)), 0.0);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, -1.5, z)), 0.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, 0.0, z)), 0.5);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, 0.5, z)), 0.25);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, 1.0, z)), 0.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, 1.5, z)), 0.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, -0.5, z)), 0.25);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, -1.0, z)), 0.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, -1.5, z)), 0.0);
         }
     }
-    layer->base_coverage = 1.0;
-    layer->_coverage_noise->forceValue(0.5);
+    layer.base_coverage = 1.0;
+    layer._coverage_noise->forceValue(0.5);
     for (x = -10.0; x < 10.0; x += 10.0)
     {
         for (z = -10.0; z < 10.0; z += 10.0)
         {
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, 0.0, z)), 0.5);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, 0.5, z)), 0.25);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, 1.0, z)), 0.0);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, 1.5, z)), 0.0);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, -0.5, z)), 0.25);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, -1.0, z)), 0.0);
-            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(layer, v3(x, -1.5, z)), 0.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, 0.0, z)), 0.5);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, 0.5, z)), 0.25);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, 1.0, z)), 0.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, 1.5, z)), 0.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, -0.5, z)), 0.25);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, -1.0, z)), 0.0);
+            ASSERT_DOUBLE_EQ(cloudsGetLayerCoverage(&layer, v3(x, -1.5, z)), 0.0);
         }
     }
 
     /* TODO Test fake renderer */
 
     /* TODO Test real renderer */
-
-    /* Teardown */
-    cloudsGetLayerType().callback_delete(layer);
 }
 
 TEST(Clouds, WalkingBoundaries)
 {
     Vector3 start, end;
     int result;
-    CloudsLayerDefinition* layer;
-    layer = (CloudsLayerDefinition*)cloudsGetLayerType().callback_create();
-    layer->base_coverage = 1.0;
-    layer->lower_altitude = -1.0;
-    layer->thickness = 2.0;
-    cloudsGetLayerType().callback_validate(layer);
+    CloudLayerDefinition layer(NULL);
+    layer.base_coverage = 1.0;
+    layer.lower_altitude = -1.0;
+    layer.thickness = 2.0;
+    layer.validate();
 
     /* Basic cases */
     start = v3(0.0, -3.0, 0.0);
     end = v3(0.0, -2.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 0);
 
     start = v3(0.0, 2.0, 0.0);
     end = v3(0.0, 3.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 0);
 
     start = v3(0.0, -2.0, 0.0);
     end = v3(0.0, 2.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 1);
     ASSERT_VECTOR3_COORDS(start, 0.0, -1.0, 0.0);
     ASSERT_VECTOR3_COORDS(end, 0.0, 1.0, 0.0);
 
     start = v3(0.0, 0.0, 0.0);
     end = v3(0.0, 2.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 1);
     ASSERT_VECTOR3_COORDS(start, 0.0, 0.0, 0.0);
     ASSERT_VECTOR3_COORDS(end, 0.0, 1.0, 0.0);
 
     start = v3(0.0, -2.0, 0.0);
     end = v3(0.0, 0.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 1);
     ASSERT_VECTOR3_COORDS(start, 0.0, -1.0, 0.0);
     ASSERT_VECTOR3_COORDS(end, 0.0, 0.0, 0.0);
@@ -131,31 +127,31 @@ TEST(Clouds, WalkingBoundaries)
     /* Basic cases (inverted) */
     start = v3(0.0, -2.0, 0.0);
     end = v3(0.0, -3.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 0);
 
     start = v3(0.0, 3.0, 0.0);
     end = v3(0.0, 2.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 0);
 
     start = v3(0.0, 2.0, 0.0);
     end = v3(0.0, -2.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 1);
     ASSERT_VECTOR3_COORDS(start, 0.0, 1.0, 0.0);
     ASSERT_VECTOR3_COORDS(end, 0.0, -1.0, 0.0);
 
     start = v3(0.0, 2.0, 0.0);
     end = v3(0.0, 0.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 1);
     ASSERT_VECTOR3_COORDS(start, 0.0, 1.0, 0.0);
     ASSERT_VECTOR3_COORDS(end, 0.0, 0.0, 0.0);
 
     start = v3(0.0, 0.0, 0.0);
     end = v3(0.0, -2.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 1);
     ASSERT_VECTOR3_COORDS(start, 0.0, 0.0, 0.0);
     ASSERT_VECTOR3_COORDS(end, 0.0, -1.0, 0.0);
@@ -163,41 +159,39 @@ TEST(Clouds, WalkingBoundaries)
     /* Horizontal cases */
     start = v3(0.0, 2.0, 0.0);
     end = v3(10.0, 2.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 0);
 
     start = v3(0.0, 1.00001, 0.0);
     end = v3(10.0, 1.00001, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 0);
 
     start = v3(0.0, -1.00001, 0.0);
     end = v3(10.0, -1.00001, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 0);
 
     start = v3(0.0, -2.0, 0.0);
     end = v3(10.0, -2.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 0);
 
     start = v3(0.0, 0.0, 0.0);
     end = v3(10.0, 0.0, 0.0);
-    result = cloudsOptimizeWalkingBounds(layer, &start, &end);
+    result = cloudsOptimizeWalkingBounds(&layer, &start, &end);
     ASSERT_EQ(result, 1);
     ASSERT_VECTOR3_COORDS(start, 0.0, 0.0, 0.0);
     ASSERT_VECTOR3_COORDS(end, 10.0, 0.0, 0.0);
-
-    cloudsGetLayerType().callback_delete(layer);
 }
 
-static double _getLayerDensitySinX(Renderer*, CloudsLayerDefinition*, Vector3 location)
+static double _getLayerDensitySinX(Renderer*, CloudLayerDefinition*, Vector3 location)
 {
     double density = sin(location.x * (2.0 * M_PI));
     return (density > 0.0) ? density : 0.0;
 }
 
-static double _getEdgeDensitySquared(Renderer*, CloudsLayerDefinition*, Vector3, double edge_density)
+static double _getEdgeDensitySquared(Renderer*, CloudLayerDefinition*, Vector3, double edge_density)
 {
     return edge_density * edge_density;
 }
@@ -205,11 +199,10 @@ static double _getEdgeDensitySquared(Renderer*, CloudsLayerDefinition*, Vector3,
 TEST(Clouds, Walking)
 {
     /* Init */
-    CloudsLayerDefinition* layer;
-    layer = (CloudsLayerDefinition*)cloudsGetLayerType().callback_create();
-    layer->lower_altitude = -1.0;
-    layer->thickness = 2.0;
-    cloudsGetLayerType().callback_validate(layer);
+    CloudLayerDefinition layer(NULL);
+    layer.lower_altitude = -1.0;
+    layer.thickness = 2.0;
+    layer.validate();
 
     Renderer* renderer;
     renderer = rendererCreate();
@@ -217,7 +210,7 @@ TEST(Clouds, Walking)
     renderer->render_quality = 8;
     renderer->clouds->getLayerDensity = _getLayerDensitySinX;
 
-    CloudsWalker* walker = cloudsCreateWalker(renderer, layer, v3(-0.4, 0.0, 0.0), v3(1.75, 0.0, 0.0));
+    CloudsWalker* walker = cloudsCreateWalker(renderer, &layer, v3(-0.4, 0.0, 0.0), v3(1.75, 0.0, 0.0));
     CloudWalkerStepInfo* segment;
     int result;
 
@@ -411,18 +404,16 @@ TEST(Clouds, Walking)
     /* Clean up */
     cloudsDeleteWalker(walker);
 
-    cloudsGetLayerType().callback_delete(layer);
     rendererDelete(renderer);
 }
 
 TEST(Clouds, WalkingLocal)
 {
     /* Init */
-    CloudsLayerDefinition* layer;
-    layer = (CloudsLayerDefinition*)cloudsGetLayerType().callback_create();
-    layer->lower_altitude = -1.0;
-    layer->thickness = 2.0;
-    cloudsGetLayerType().callback_validate(layer);
+    CloudLayerDefinition layer(NULL);
+    layer.lower_altitude = -1.0;
+    layer.thickness = 2.0;
+    layer.validate();
 
     Renderer* renderer;
     renderer = rendererCreate();
@@ -431,7 +422,7 @@ TEST(Clouds, WalkingLocal)
     renderer->clouds->getLayerDensity = _getLayerDensitySinX;
     renderer->clouds->getEdgeDensity = _getEdgeDensitySquared;
 
-    CloudsWalker* walker = cloudsCreateWalker(renderer, layer, v3(0.0, 0.0, 0.0), v3(1.0, 0.0, 0.0));
+    CloudsWalker* walker = cloudsCreateWalker(renderer, &layer, v3(0.0, 0.0, 0.0), v3(1.0, 0.0, 0.0));
     CloudWalkerStepInfo* segment;
     int result;
 

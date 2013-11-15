@@ -14,20 +14,20 @@
 #include "PackStream.h"
 #include "SoftwareRenderer.h"
 #include "BasePreview.h"
+#include "CloudsDefinition.h"
 #include "CameraDefinition.h"
 
 /**************** Previews ****************/
 class PreviewRenderLandscape : public BasePreview
 {
 public:
-
     PreviewRenderLandscape(QWidget* parent) : BasePreview(parent)
     {
         _renderer = new SoftwareRenderer();
         _renderer->getCameraLocation = _getCameraLocation;
         lightingManagerDisableSpecularity(_renderer->lighting);
 
-        _no_clouds = (CloudsDefinition*) CloudsDefinitionClass.create();
+        _no_clouds = new CloudsDefinition(NULL);
         _clouds_enabled = true;
 
         addOsd(QString("geolocation"));
@@ -40,11 +40,10 @@ public:
     ~PreviewRenderLandscape()
     {
         delete _renderer;
-        CloudsDefinitionClass.destroy(_no_clouds);
+        delete _no_clouds;
     }
 
 protected:
-
     Color getColor(double x, double y)
     {
         Vector3 location;
@@ -84,6 +83,7 @@ protected:
             redraw();
         }
     }
+
 private:
     Renderer* _renderer;
     bool _clouds_enabled;

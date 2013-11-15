@@ -6,9 +6,9 @@
 #define CLOUDS_MAX_LAYERS 6
 #define MAX_SEGMENT_COUNT 100
 
-void cloudsLayerValidateDefinition(CloudsLayerDefinition* definition);
+void cloudsLayerValidateDefinition(CloudLayerDefinition* definition);
 
-Color cloudsLayerFilterLight(CloudsLayerDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light);
-Color cloudsApplyLayer(CloudsLayerDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end);
+Color cloudsLayerFilterLight(CloudLayerDefinition* definition, Renderer* renderer, Color light, Vector3 location, Vector3 light_location, Vector3 direction_to_light);
+Color cloudsApplyLayer(CloudLayerDefinition* definition, Color base, Renderer* renderer, Vector3 start, Vector3 end);
 
 #endif

@@ -22,9 +22,7 @@ SOURCES += main.cpp \
     clouds/clo_walking.cpp \
     clouds/clo_rendering.cpp \
     clouds/clo_preview.cpp \
-    clouds/clo_presets.cpp \
     clouds/clo_density.cpp \
-    clouds/clo_definition.cpp \
     terrain/ter_render.cpp \
     terrain/ter_raster.cpp \
     terrain/ter_preview.cpp \
@@ -43,7 +41,6 @@ SOURCES += main.cpp \
     tools/lighting.cpp \
     tools/euclid.cpp \
     tools/data.cpp \
-    tools/curve.cpp \
     tools/color.cpp \
     tools/cache.cpp \
     water/wat_render.cpp \
@@ -80,7 +77,6 @@ HEADERS += \
     tools/lighting.h \
     tools/euclid.h \
     tools/data.h \
-    tools/curve.h \
     tools/color.h \
     tools/cache.h \
     water/public.h \

@@ -1,9 +1,10 @@
 #include "clo_density.h"
 
-#include "../tools.h"
 #include "NoiseGenerator.h"
+#include "CloudLayerDefinition.h"
+#include "Curve.h"
 
-double cloudsGetLayerCoverage(CloudsLayerDefinition* layer, Vector3 location)
+double cloudsGetLayerCoverage(CloudLayerDefinition* layer, Vector3 location)
 {
     if (layer->base_coverage <= 0.0)
     {
@@ -14,7 +15,7 @@ double cloudsGetLayerCoverage(CloudsLayerDefinition* layer, Vector3 location)
         double coverage = 0.5 + layer->_coverage_noise->get2DTotal(location.x / layer->shape_scaling, location.z / layer->shape_scaling);
         coverage -= (1.0 - layer->base_coverage);
 
-        coverage *= curveGetValue(layer->_coverage_by_altitude, (location.y - layer->lower_altitude) / layer->thickness);
+        coverage *= layer->_coverage_by_altitude->getValue((location.y - layer->lower_altitude) / layer->thickness);
 
         if (coverage < 0.0)
         {
@@ -31,7 +32,7 @@ double cloudsGetLayerCoverage(CloudsLayerDefinition* layer, Vector3 location)
     }
 }
 
-double cloudsGetLayerDensity(CloudsLayerDefinition* layer, Vector3 location, double coverage)
+double cloudsGetLayerDensity(CloudLayerDefinition* layer, Vector3 location, double coverage)
 {
     if (coverage <= 0.0)
     {
@@ -49,7 +50,7 @@ double cloudsGetLayerDensity(CloudsLayerDefinition* layer, Vector3 location, dou
     }
 }
 
-double cloudsGetEdgeDensity(CloudsLayerDefinition* layer, Vector3 location, double layer_density)
+double cloudsGetEdgeDensity(CloudLayerDefinition* layer, Vector3 location, double layer_density)
 {
     if (layer_density <= 0.0)
     {
@@ -67,22 +68,13 @@ double cloudsGetEdgeDensity(CloudsLayerDefinition* layer, Vector3 location, doub
     }
 }
 
-static double _fakeGetDensity(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location)
+static double _fakeGetDensity(Renderer*, CloudLayerDefinition*, Vector3)
 {
-    UNUSED(layer);
-    UNUSED(renderer);
-    UNUSED(location);
-
     return 0.0;
 }
 
-static double _fakeGetEdgeDensity(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location, double layer_density)
+static double _fakeGetEdgeDensity(Renderer*, CloudLayerDefinition*, Vector3, double)
 {
-    UNUSED(layer);
-    UNUSED(renderer);
-    UNUSED(location);
-    UNUSED(layer_density);
-
     return 0.0;
 }
 
@@ -92,19 +84,15 @@ void cloudsBindFakeDensityToRenderer(CloudsRenderer* renderer)
     renderer->getEdgeDensity = _fakeGetEdgeDensity;
 }
 
-static double _realGetDensity(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location)
+static double _realGetDensity(Renderer*, CloudLayerDefinition* layer, Vector3 location)
 {
-    UNUSED(renderer);
-
     double coverage = cloudsGetLayerCoverage(layer, location);
 
     return cloudsGetLayerDensity(layer, location, coverage);
 }
 
-static double _realGetEdgeDensity(Renderer* renderer, CloudsLayerDefinition* layer, Vector3 location, double layer_density)
+static double _realGetEdgeDensity(Renderer*, CloudLayerDefinition* layer, Vector3 location, double layer_density)
 {
-    UNUSED(renderer);
-
     return cloudsGetEdgeDensity(layer, location, layer_density);
 }
 

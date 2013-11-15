@@ -6,6 +6,8 @@
 #include "Scenery.h"
 #include "BasePreview.h"
 #include "renderer.h"
+#include "CloudsDefinition.h"
+#include "CloudLayerDefinition.h"
 
 #include "tools.h"
 
@@ -13,7 +15,7 @@
 class PreviewCloudsCoverage:public BasePreview
 {
 public:
-    PreviewCloudsCoverage(QWidget* parent, CloudsLayerDefinition* layer):BasePreview(parent)
+    PreviewCloudsCoverage(QWidget* parent, CloudLayerDefinition* layer):BasePreview(parent)
     {
         _renderer = cloudsPreviewCoverageCreateRenderer();
         _3d = true;
@@ -47,14 +49,14 @@ protected:
 
 private:
     Renderer* _renderer;
-    CloudsLayerDefinition* _original_layer;
+    CloudLayerDefinition* _original_layer;
     bool _3d;
 };
 
 class PreviewCloudsColor:public BasePreview
 {
 public:
-    PreviewCloudsColor(QWidget* parent, CloudsLayerDefinition* layer):BasePreview(parent)
+    PreviewCloudsColor(QWidget* parent, CloudLayerDefinition* layer):BasePreview(parent)
     {
         _original_layer = layer;
 
@@ -78,7 +80,7 @@ protected:
     }
 private:
     Renderer* _renderer;
-    CloudsLayerDefinition* _original_layer;
+    CloudLayerDefinition* _original_layer;
 };
 
 /**************** Form ****************/
@@ -90,8 +92,8 @@ FormClouds::FormClouds(QWidget *parent):
     addAutoPreset(tr("Stratocumulus"));
     addAutoPreset(tr("Stratus"));
 
-    _definition = (CloudsDefinition*)CloudsDefinitionClass.create();
-    _layer = (CloudsLayerDefinition*)cloudsGetLayerType().callback_create();
+    _definition = new CloudsDefinition(NULL);
+    _layer = new CloudLayerDefinition(NULL);
 
     _previewCoverage = new PreviewCloudsCoverage(parent, _layer);
     _previewColor = new PreviewCloudsColor(parent, _layer);
@@ -105,19 +107,19 @@ FormClouds::FormClouds(QWidget *parent):
     addInputDouble(tr("Shape scaling"), &_layer->shape_scaling, 3.0, 30.0, 0.3, 3.0);
     addInputDouble(tr("Edge scaling"), &_layer->edge_scaling, 0.5, 5.0, 0.05, 0.5);
     addInputDouble(tr("Edge length"), &_layer->edge_length, 0.0, 1.0, 0.01, 0.1);
-    addInputMaterial(tr("Material"), &_layer->material);
+    addInputMaterial(tr("Material"), _layer->material);
     addInputDouble(tr("Hardness to light"), &_layer->hardness, 0.0, 1.0, 0.01, 0.1);
     addInputDouble(tr("Transparency depth"), &_layer->transparencydepth, 0.0, 10.0, 0.1, 1.0);
     addInputDouble(tr("Light traversal depth"), &_layer->lighttraversal, 0.0, 10.0, 0.1, 1.0);
     addInputDouble(tr("Minimum lighting"), &_layer->minimumlight, 0.0, 1.0, 0.01, 0.1);
 
-    setLayers(_definition->layers);
+    setLayers(_definition);
 }
 
 FormClouds::~FormClouds()
 {
-    CloudsDefinitionClass.destroy(_definition);
-    cloudsGetLayerType().callback_delete(_layer);
+    delete _layer;
+    delete _definition;
 
     delete _previewCoverage;
     delete _previewColor;
@@ -137,16 +139,16 @@ void FormClouds::applyConfig()
 
 void FormClouds::layerReadCurrentFrom(void* layer_definition)
 {
-    cloudsGetLayerType().callback_copy((CloudsLayerDefinition*)layer_definition, _layer);
+    ((CloudLayerDefinition*)layer_definition)->copy(_layer);
 }
 
 void FormClouds::layerWriteCurrentTo(void* layer_definition)
 {
-    cloudsGetLayerType().callback_copy(_layer, (CloudsLayerDefinition*)layer_definition);
+    _layer->copy((CloudLayerDefinition*)layer_definition);
 }
 
 void FormClouds::autoPresetSelected(int preset)
 {
-    cloudsLayerAutoPreset(_layer, (CloudsLayerPreset)preset);
+    _layer->applyPreset((CloudLayerDefinition::CloudsLayerPreset)preset);
     BaseForm::autoPresetSelected(preset);
 }

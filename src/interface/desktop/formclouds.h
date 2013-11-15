@@ -26,7 +26,7 @@ protected:
 
 private:
     CloudsDefinition* _definition;
-    CloudsLayerDefinition* _layer;
+    CloudLayerDefinition* _layer;
     BasePreview* _previewCoverage;
     BasePreview* _previewColor;
 };

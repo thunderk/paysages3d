@@ -13,7 +13,7 @@
  * 0.0 means no cloud is present.
  * 1.0 means full layer.
  */
-RENDERINGSHARED_EXPORT double cloudsGetLayerCoverage(CloudsLayerDefinition* layer, Vector3 location);
+RENDERINGSHARED_EXPORT double cloudsGetLayerCoverage(CloudLayerDefinition* layer, Vector3 location);
 
 /**
  * Get the global density of a cloud layer at a given point [0.0;1.0].
@@ -21,12 +21,12 @@ RENDERINGSHARED_EXPORT double cloudsGetLayerCoverage(CloudsLayerDefinition* laye
  * 0.0 means no cloud is present.
  * 1.0 means full density (deep inside cloud).
  */
-RENDERINGSHARED_EXPORT double cloudsGetLayerDensity(CloudsLayerDefinition* layer, Vector3 location, double coverage);
+RENDERINGSHARED_EXPORT double cloudsGetLayerDensity(CloudLayerDefinition* layer, Vector3 location, double coverage);
 
 /**
  * Get the local density of a cloud layer at a given point inside an edge [0.0;1.0].
  */
-RENDERINGSHARED_EXPORT double cloudsGetEdgeDensity(CloudsLayerDefinition* layer, Vector3 location, double layer_density);
+RENDERINGSHARED_EXPORT double cloudsGetEdgeDensity(CloudLayerDefinition* layer, Vector3 location, double layer_density);
 
 /*
  * Bind fake density functions to a renderer.

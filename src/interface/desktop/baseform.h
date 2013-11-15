@@ -9,7 +9,6 @@
 class QPushButton;
 class QComboBox;
 class ColorGradation;
-class Curve;
 
 namespace paysages {
 namespace desktop {

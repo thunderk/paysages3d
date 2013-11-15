@@ -17,6 +17,8 @@ namespace definition {
     class SurfaceMaterial;
     class WaterDefinition;
     class Layers;
+    class CloudsDefinition;
+    class CloudLayerDefinition;
 }
 }
 using namespace paysages::definition;

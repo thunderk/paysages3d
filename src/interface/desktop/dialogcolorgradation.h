@@ -1,14 +1,15 @@
 #ifndef _PAYSAGES_QT_DIALOGCOLORGRADATION_H_
 #define _PAYSAGES_QT_DIALOGCOLORGRADATION_H_
 
+#include "desktop_global.h"
+
 #include <QDialog>
-#include "widgetcurveeditor.h"
-#include "previewcolorgradation.h"
 
 #include "tools/color.h"
-#include "tools/curve.h"
 
 class QPushButton;
+class WidgetCurveEditor;
+class PreviewColorGradation;
 
 class DialogColorGradation : public QDialog
 {

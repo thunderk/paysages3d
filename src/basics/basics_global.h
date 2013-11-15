@@ -18,6 +18,7 @@ namespace basics {
     class SpaceSegment;
     class Color;
     class NoiseGenerator;
+    class Curve;
 }
 }
 using namespace paysages::basics;

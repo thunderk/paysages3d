@@ -1,9 +1,10 @@
 #ifndef _PAYSAGES_QT_WIDGETCURVEEDITOR_H_
 #define _PAYSAGES_QT_WIDGETCURVEEDITOR_H_
 
+#include "desktop_global.h"
+
 #include <QWidget>
 #include <QColor>
-#include "tools/curve.h"
 
 class WidgetCurveEditor : public QWidget
 {

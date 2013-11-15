@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include "PackStream.h"
+#include "Curve.h"
 #include "tools.h"
 
 #define MAX_CIRCLES 20
@@ -35,11 +36,11 @@ Zone* zoneCreate()
     Zone* result;
 
     result = (Zone*)malloc(sizeof(Zone));
-    result->value_by_height = curveCreate();
+    result->value_by_height = new Curve;
     result->absolute_height = 1;
-    curveSetDefault(result->value_by_height, 1.0);
-    result->value_by_slope = curveCreate();
-    curveSetDefault(result->value_by_slope, 1.0);
+    result->value_by_height->setDefault(1.0);
+    result->value_by_slope = new Curve;
+    result->value_by_slope->setDefault(1.0);
     result->circles_included_count = 0;
 
     return result;
@@ -47,8 +48,8 @@ Zone* zoneCreate()
 
 void zoneDelete(Zone* zone)
 {
-    curveDelete(zone->value_by_height);
-    curveDelete(zone->value_by_slope);
+    delete zone->value_by_height;
+    delete zone->value_by_slope;
     free(zone);
 }
 
@@ -61,8 +62,8 @@ void zoneSave(PackStream* stream, Zone* zone)
     stream->write(&zone->relative_height_middle);
     stream->write(&zone->relative_height_max);
 
-    curveSave(stream, zone->value_by_height);
-    curveSave(stream, zone->value_by_slope);
+    zone->value_by_height->save(stream);
+    zone->value_by_slope->save(stream);
 
     stream->write(&zone->circles_included_count);
     for (i = 0; i < zone->circles_included_count; i++)
@@ -84,8 +85,8 @@ void zoneLoad(PackStream* stream, Zone* zone)
     stream->read(&zone->relative_height_middle);
     stream->read(&zone->relative_height_max);
 
-    curveLoad(stream, zone->value_by_height);
-    curveLoad(stream, zone->value_by_slope);
+    zone->value_by_height->load(stream);
+    zone->value_by_slope->load(stream);
 
     stream->read(&zone->circles_included_count);
     for (i = 0; i < zone->circles_included_count; i++)
@@ -105,8 +106,8 @@ void zoneCopy(Zone* source, Zone* destination)
     destination->relative_height_middle = source->relative_height_middle;
     destination->relative_height_max = source->relative_height_max;
 
-    curveCopy(source->value_by_height, destination->value_by_height);
-    curveCopy(source->value_by_slope, destination->value_by_slope);
+    source->value_by_height->copy(destination->value_by_height);
+    source->value_by_slope->copy(destination->value_by_slope);
 
     memcpy(destination->circles_included, source->circles_included, sizeof(Circle) * source->circles_included_count);
     destination->circles_included_count = source->circles_included_count;
@@ -114,8 +115,8 @@ void zoneCopy(Zone* source, Zone* destination)
 
 void zoneClear(Zone* zone)
 {
-    curveClear(zone->value_by_height);
-    curveClear(zone->value_by_slope);
+    zone->value_by_height->clear();
+    zone->value_by_slope->clear();
     zone->circles_included_count = 0;
 }
 
@@ -157,38 +158,38 @@ void zoneIncludeCircleArea(Zone* zone, double value, double centerx, double cent
 
 void zoneGetHeightCurve(Zone* zone, Curve* curve)
 {
-    curveCopy(zone->value_by_height, curve);
+    zone->value_by_height->copy(curve);
 }
 
 void zoneSetHeightCurve(Zone* zone, Curve* curve)
 {
-    curveCopy(curve, zone->value_by_height);
+    curve->copy(zone->value_by_height);
 }
 
 void zoneAddHeightRangeQuick(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax)
 {
-    curveQuickAddPoint(zone->value_by_height, hardmin, 0.0);
-    curveQuickAddPoint(zone->value_by_height, softmin, value);
-    curveQuickAddPoint(zone->value_by_height, softmax, value);
-    curveQuickAddPoint(zone->value_by_height, hardmax, 0.0);
+    zone->value_by_height->addPoint(hardmin, 0.0);
+    zone->value_by_height->addPoint(softmin, value);
+    zone->value_by_height->addPoint(softmax, value);
+    zone->value_by_height->addPoint(hardmax, 0.0);
 }
 
 void zoneGetSlopeCurve(Zone* zone, Curve* curve)
 {
-    curveCopy(zone->value_by_slope, curve);
+    zone->value_by_slope->copy(curve);
 }
 
 void zoneSetSlopeCurve(Zone* zone, Curve* curve)
 {
-    curveCopy(curve, zone->value_by_slope);
+    curve->copy(zone->value_by_slope);
 }
 
 void zoneAddSlopeRangeQuick(Zone* zone, double value, double hardmin, double softmin, double softmax, double hardmax)
 {
-    curveQuickAddPoint(zone->value_by_slope, hardmin, 0.0);
-    curveQuickAddPoint(zone->value_by_slope, softmin, value);
-    curveQuickAddPoint(zone->value_by_slope, softmax, value);
-    curveQuickAddPoint(zone->value_by_slope, hardmax, 0.0);
+    zone->value_by_slope->addPoint(hardmin, 0.0);
+    zone->value_by_slope->addPoint(softmin, value);
+    zone->value_by_slope->addPoint(softmax, value);
+    zone->value_by_slope->addPoint(hardmax, 0.0);
 }
 
 static inline double _getCircleInfluence(Circle circle, Vector3 position)
@@ -260,8 +261,8 @@ double zoneGetValue(Zone* zone, Vector3 location, Vector3 normal)
         }
     }
 
-    value_height = curveGetValue(zone->value_by_height, final_height);
-    value_steepness = curveGetValue(zone->value_by_slope, (1.0 - normal.y));
+    value_height = zone->value_by_height->getValue(final_height);
+    value_steepness = zone->value_by_slope->getValue(1.0 - normal.y);
 
     if (value_steepness < value_height)
     {

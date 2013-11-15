@@ -1,15 +1,9 @@
 #include "dialogcurve.h"
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QGridLayout>
-#include <QImage>
 #include <QLabel>
-#include <QColor>
-#include <QPainter>
-#include <QSlider>
-#include <QScrollArea>
 #include <QPushButton>
+#include "Curve.h"
 #include "baseform.h"
 #include "tools.h"
 #include "widgetcurveeditor.h"
@@ -23,8 +17,8 @@ DialogCurve::DialogCurve(QWidget *parent, Curve* curve, double xmin, double xmax
     QLabel* label;
 
     _base = curve;
-    _current = curveCreate();
-    curveCopy(_base, _current);
+    _current = new Curve;
+    _base->copy(_current);
 
     setLayout(new QVBoxLayout());
 
@@ -71,7 +65,7 @@ DialogCurve::DialogCurve(QWidget *parent, Curve* curve, double xmin, double xmax
 
 DialogCurve::~DialogCurve()
 {
-    curveDelete(_current);
+    delete _current;
 }
 
 bool DialogCurve::getCurve(QWidget* parent, Curve* curve, double xmin, double xmax, double ymin, double ymax, QString xlabel, QString ylabel)
@@ -94,13 +88,13 @@ void DialogCurve::closeEvent(QCloseEvent*)
 void DialogCurve::accept()
 {
     _curve_editor->getCurve(_current);
-    curveCopy(_current, _base);
+    _current->copy(_base);
     QDialog::accept();
 }
 
 void DialogCurve::revert()
 {
-    curveCopy(_base, _current);
+    _base->copy(_current);
     revertToCurrent();
 }
 
