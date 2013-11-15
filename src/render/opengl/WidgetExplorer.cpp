@@ -407,6 +407,7 @@ void WidgetExplorer::paintGL()
 
     // Don't do this at each frame, only on camera change
     _renderer->getScenery()->setCamera(_current_camera);
+    _renderer->getScenery()->getCamera(_current_camera);
 
     start_time = QTime::currentTime();
 
