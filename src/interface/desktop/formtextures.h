@@ -4,7 +4,7 @@
 #include "desktop_global.h"
 
 #include "baseformlayer.h"
-#include "textures/public.h"
+
 class QWidget;
 
 class FormTextures : public BaseFormLayer
@@ -26,7 +26,7 @@ protected:
 
 private:
     TexturesDefinition* _definition;
-    TexturesLayerDefinition* _layer;
+    TextureLayerDefinition* _layer;
     BasePreview* _previewCoverage;
     BasePreview* _previewColor;
 };

@@ -5,8 +5,6 @@
 
 #include "Base2dPreviewRenderer.h"
 
-class TexturesDefinition;
-
 class PreviewLayerLook : public Base2dPreviewRenderer
 {
 public:

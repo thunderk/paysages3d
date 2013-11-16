@@ -2,13 +2,16 @@
 
 #include <cmath>
 #include "NoiseGenerator.h"
+#include "TexturesDefinition.h"
+#include "TextureLayerDefinition.h"
+#include "Zone.h"
 
 /*
  * Get the base presence factor of a layer, not accounting for other layers.
  */
-double texturesGetLayerBasePresence(TexturesLayerDefinition* layer, TerrainResult terrain)
+double texturesGetLayerBasePresence(TextureLayerDefinition* layer, TerrainResult terrain)
 {
-    return zoneGetValue(layer->terrain_zone, terrain.location, terrain.normal);
+    return layer->terrain_zone->getValue(terrain.location, terrain.normal);
 }
 
 /*
@@ -35,10 +38,10 @@ double texturesGetMaximalDisplacement(TexturesDefinition* textures)
 {
     int i, n;
     double disp = 0.0;
-    n = layersCount(textures->layers);
+    n = textures->count();
     for (i = 0; i < n; i++)
     {
-        TexturesLayerDefinition* layer = (TexturesLayerDefinition*)layersGetLayer(textures->layers, i);
+        TextureLayerDefinition* layer = textures->getTextureLayer(i);
 
         if (layer->displacement_height > 0.0)
         {

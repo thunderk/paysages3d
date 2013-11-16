@@ -16,25 +16,29 @@ include(../common.pri)
 SOURCES += \
     BaseDefinition.cpp \
     Layers.cpp \
-    LegacyLayer.cpp \
     WaterDefinition.cpp \
     SurfaceMaterial.cpp \
     CameraDefinition.cpp \
     CloudsDefinition.cpp \
     CloudLayerDefinition.cpp \
-    AtmosphereDefinition.cpp
+    AtmosphereDefinition.cpp \
+    TexturesDefinition.cpp \
+    TextureLayerDefinition.cpp \
+    Zone.cpp
 
 HEADERS +=\
         definition_global.h \
     BaseDefinition.h \
     Layers.h \
-    LegacyLayer.h \
     WaterDefinition.h \
     SurfaceMaterial.h \
     CameraDefinition.h \
     CloudsDefinition.h \
     CloudLayerDefinition.h \
-    AtmosphereDefinition.h
+    AtmosphereDefinition.h \
+    TexturesDefinition.h \
+    TextureLayerDefinition.h \
+    Zone.h
 
 unix:!symbian {
     maemo5 {

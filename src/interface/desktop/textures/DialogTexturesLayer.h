@@ -1,8 +1,9 @@
 #ifndef DIALOGTEXTURESLAYER_H
 #define DIALOGTEXTURESLAYER_H
 
+#include "desktop_global.h"
+
 #include <QDialog>
-#include "textures/public.h"
 
 namespace Ui {
 class DialogTexturesLayer;

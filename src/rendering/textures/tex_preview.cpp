@@ -2,7 +2,7 @@
 #include "private.h"
 
 #include "Scenery.h"
-#include "tools.h"
+#include "TexturesDefinition.h"
 
 void TexturesPreviewLayerCoverage_bind(Renderer* renderer, TexturesDefinition* definition)
 {
@@ -10,16 +10,14 @@ void TexturesPreviewLayerCoverage_bind(Renderer* renderer, TexturesDefinition* d
     TexturesRendererClass.bind(renderer, definition);
 }
 
-Color TexturesPreviewLayerCoverage_getColor(Renderer* renderer, double x, double y, double scaling, int layer)
+Color TexturesPreviewLayerCoverage_getColor(Renderer* renderer, double x, double y, double, int layer)
 {
-    UNUSED(scaling);
-
-    TexturesLayerDefinition* layerdef;
+    TextureLayerDefinition* layerdef;
     TerrainResult terrain;
     double presence;
     Color result;
 
-    layerdef = (TexturesLayerDefinition*)layersGetLayer(renderer->textures->definition->layers, layer);
+    layerdef = renderer->textures->definition->getTextureLayer(layer);
     if (layerdef)
     {
         terrain = renderer->terrain->getResult(renderer, x, y, 1, 1);
@@ -36,12 +34,8 @@ Color TexturesPreviewLayerCoverage_getColor(Renderer* renderer, double x, double
     return result;
 }
 
-static double _getPresenceFull(Renderer* renderer, int layer, TerrainResult terrain)
+static double _getPresenceFull(Renderer*, int, TerrainResult)
 {
-    UNUSED(renderer);
-    UNUSED(layer);
-    UNUSED(terrain);
-
     return 1.0;
 }
 
@@ -51,11 +45,8 @@ void TexturesPreviewLayerLook_bind(Renderer* renderer, TexturesDefinition* defin
     renderer->textures->getBasePresence = _getPresenceFull;
 }
 
-Color TexturesPreviewLayerLook_getColor(Renderer* renderer, double x, double y, double scaling, int layer)
+Color TexturesPreviewLayerLook_getColor(Renderer* renderer, double x, double y, double, int layer)
 {
-    UNUSED(scaling);
-    UNUSED(layer);
-
     TexturesResult result = renderer->textures->applyToTerrain(renderer, x, y);
     if (layer >= 0 && layer < result.layer_count)
     {
@@ -74,10 +65,7 @@ void TexturesPreviewCumul_bind(Renderer* renderer, TexturesDefinition* definitio
     TexturesRendererClass.bind(renderer, definition);
 }
 
-Color TexturesPreviewCumul_getColor(Renderer* renderer, double x, double y, double scaling, int layer)
+Color TexturesPreviewCumul_getColor(Renderer* renderer, double x, double y, double, int)
 {
-    UNUSED(scaling);
-    UNUSED(layer);
-
     return renderer->textures->applyToTerrain(renderer, x, y).final_color;
 }

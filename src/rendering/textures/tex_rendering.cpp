@@ -1,7 +1,8 @@
 #include "private.h"
 
-#include <stdlib.h>
-#include "../tools.h"
+#include <cstdlib>
+#include "TexturesDefinition.h"
+#include "TextureLayerDefinition.h"
 #include "../renderer.h"
 
 /******************** Tools ********************/
@@ -29,7 +30,7 @@ static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south)
     return v3Normalize(v3Cross(v3Sub(south, center), v3Sub(east, center)));
 }
 
-static Vector3 _getDetailNormal(Renderer* renderer, Vector3 base_location, Vector3 base_normal, TexturesLayerDefinition* layer)
+static Vector3 _getDetailNormal(Renderer* renderer, Vector3 base_location, Vector3 base_normal, TextureLayerDefinition* layer)
 {
     Vector3 result;
     double offset = 0.01;
@@ -88,10 +89,10 @@ static Vector3 _realDisplaceTerrain(Renderer* renderer, TerrainResult terrain)
     double offset = 0.0;
     int i, n;
 
-    n = layersCount(textures->layers);
+    n = textures->count();
     for (i = 0; i < n; i++)
     {
-        TexturesLayerDefinition* layer = (TexturesLayerDefinition*)layersGetLayer(textures->layers, i);
+        TextureLayerDefinition* layer = textures->getTextureLayer(i);
 
         if (layer->displacement_height > 0.0)
         {
@@ -106,7 +107,7 @@ static Vector3 _realDisplaceTerrain(Renderer* renderer, TerrainResult terrain)
 
 static double _realGetBasePresence(Renderer* renderer, int layer, TerrainResult terrain)
 {
-    TexturesLayerDefinition* layerdef = (TexturesLayerDefinition*)layersGetLayer(renderer->textures->definition->layers, layer);
+    TextureLayerDefinition* layerdef = renderer->textures->definition->getTextureLayer(layer);
     return texturesGetLayerBasePresence(layerdef, terrain);
 }
 
@@ -122,16 +123,16 @@ static TexturesResult _realApplyToTerrain(Renderer* renderer, double x, double z
 
     /* Find presence of each layer */
     int i, n;
-    n = layersCount(textures->layers);
+    n = textures->count();
     for (i = 0; i < n; i++)
     {
         TexturesLayerResult* info = result.layers + i;
-        info->layer = (TexturesLayerDefinition*)layersGetLayer(textures->layers, i);
+        info->layer = textures->getTextureLayer(i);
         info->presence = renderer->textures->getBasePresence(renderer, i, terrain);
         if (info->presence > 0.0)
         {
             Vector3 normal = _getDetailNormal(renderer, terrain.location, terrain.normal, info->layer);
-            info->color = renderer->applyLightingToSurface(renderer, terrain.location, normal, &info->layer->material);
+            info->color = renderer->applyLightingToSurface(renderer, terrain.location, normal, info->layer->material);
         }
         else
         {
@@ -157,26 +158,18 @@ static TexturesResult _realApplyToTerrain(Renderer* renderer, double x, double z
 }
 
 /******************** Fake ********************/
-static Vector3 _fakeDisplaceTerrain(Renderer* renderer, TerrainResult terrain)
+static Vector3 _fakeDisplaceTerrain(Renderer*, TerrainResult terrain)
 {
-    UNUSED(renderer);
-
     return terrain.location;
 }
 
-static double _fakeGetBasePresence(Renderer* renderer, int layer, TerrainResult terrain)
+static double _fakeGetBasePresence(Renderer*, int, TerrainResult)
 {
-    UNUSED(renderer);
-    UNUSED(layer);
-    UNUSED(terrain);
-
     return 1.0;
 }
 
-static TexturesResult _fakeApplyToTerrain(Renderer* renderer, double x, double z)
+static TexturesResult _fakeApplyToTerrain(Renderer*, double x, double z)
 {
-    UNUSED(renderer);
-
     TexturesResult result;
 
     result.base_location.x = x;
@@ -196,7 +189,7 @@ static TexturesRenderer* _createRenderer()
     TexturesRenderer* result;
 
     result = new TexturesRenderer;
-    result->definition = (TexturesDefinition*)TexturesDefinitionClass.create();
+    result->definition = new TexturesDefinition(NULL);
 
     result->displaceTerrain = _fakeDisplaceTerrain;
     result->getBasePresence = _fakeGetBasePresence;
@@ -207,13 +200,13 @@ static TexturesRenderer* _createRenderer()
 
 static void _deleteRenderer(TexturesRenderer* renderer)
 {
-    TexturesDefinitionClass.destroy(renderer->definition);
+    delete renderer->definition;
     delete renderer;
 }
 
 static void _bindRenderer(Renderer* renderer, TexturesDefinition* definition)
 {
-    TexturesDefinitionClass.copy(definition, renderer->textures->definition);
+    definition->copy(renderer->textures->definition);
 
     renderer->textures->displaceTerrain = _realDisplaceTerrain;
     renderer->textures->getBasePresence = _realGetBasePresence;

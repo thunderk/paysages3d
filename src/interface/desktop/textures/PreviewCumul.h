@@ -5,8 +5,6 @@
 
 #include "Base2dPreviewRenderer.h"
 
-class TexturesDefinition;
-
 class PreviewCumul : public Base2dPreviewRenderer
 {
 public:

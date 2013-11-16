@@ -15,11 +15,14 @@ namespace definition {
     class BaseDefinition;
     class CameraDefinition;
     class SurfaceMaterial;
+    class Zone;
     class WaterDefinition;
     class Layers;
     class CloudsDefinition;
     class CloudLayerDefinition;
     class AtmosphereDefinition;
+    class TexturesDefinition;
+    class TextureLayerDefinition;
 }
 }
 using namespace paysages::definition;

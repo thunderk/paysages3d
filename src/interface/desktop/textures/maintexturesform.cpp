@@ -4,19 +4,22 @@
 #include "../common/freeformhelper.h"
 #include "../common/freelayerhelper.h"
 #include "Scenery.h"
+#include "TexturesDefinition.h"
+#include "TextureLayerDefinition.h"
 #include "previewmaterial.h"
 #include "textures/PreviewLayerCoverage.h"
 #include "textures/PreviewLayerLook.h"
 #include "textures/PreviewCumul.h"
 #include "textures/DialogTexturesLayer.h"
+#include "textures/public.h"
 
 MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui::MainTexturesForm)
 {
-    textures = (TexturesDefinition*) TexturesDefinitionClass.create();
+    textures = new TexturesDefinition(NULL);
 
     ui->setupUi(this);
 
-    layer_helper = new FreeLayerHelper(textures->layers, true);
+    layer_helper = new FreeLayerHelper(textures, true);
     layer_helper->setLayerTable(ui->layersGrid);
     layer_helper->setAddButton(ui->layer_add);
     layer_helper->setDelButton(ui->layer_del);
@@ -69,23 +72,23 @@ void MainTexturesForm::updateLayers()
 
     ui->layersGrid->clearContents();
 
-    n = layersCount(textures->layers);
+    n = textures->count();
     ui->layersGrid->setRowCount(n);
 
     for (i = 0; i < n; i++)
     {
         QTableWidgetItem* item;
-        TexturesLayerDefinition* layer = (TexturesLayerDefinition*) layersGetLayer(textures->layers, i);
+        TextureLayerDefinition* layer = textures->getTextureLayer(i);
 
         item = new QTableWidgetItem(QString("%1").arg(i + 1));
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         ui->layersGrid->setItem(n - 1 - i, 0, item);
 
-        item = new QTableWidgetItem(QString(layersGetName(textures->layers, i)));
+        item = new QTableWidgetItem(layer->getName());
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         ui->layersGrid->setItem(n - 1 - i, 1, item);
 
-        QWidget* widget = new SmallMaterialPreview(ui->layersGrid, &layer->material);
+        QWidget* widget = new SmallMaterialPreview(ui->layersGrid, layer->material);
         //widget->setMinimumSize(50, 50);
         ui->layersGrid->setCellWidget(n - 1 - i, 2, widget);
 
@@ -125,7 +128,7 @@ void MainTexturesForm::editLayer(int layer)
 
 void MainTexturesForm::selectPreset(int preset)
 {
-    texturesAutoPreset(textures, (TexturesPreset)preset);
+    textures->applyPreset((TexturesDefinition::TexturesPreset)preset);
 }
 
 void MainTexturesForm::updateLocalDataFromScenery()

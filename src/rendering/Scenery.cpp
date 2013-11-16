@@ -5,14 +5,15 @@
 #include "NoiseGenerator.h"
 #include "PackStream.h"
 #include "atmosphere/public.h"
-#include "CameraDefinition.h"
-#include "CloudsDefinition.h"
 #include "terrain/public.h"
 #include "textures/public.h"
 #include "renderer.h"
 #include "terrain/ter_raster.h"
-#include "WaterDefinition.h"
 #include "AtmosphereDefinition.h"
+#include "CameraDefinition.h"
+#include "CloudsDefinition.h"
+#include "TexturesDefinition.h"
+#include "WaterDefinition.h"
 
 static Scenery _main_scenery;
 
@@ -23,13 +24,14 @@ Scenery::Scenery():
     camera = new CameraDefinition;
     clouds = new CloudsDefinition(this);
     terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
-    textures = (TexturesDefinition*)TexturesDefinitionClass.create();
+    textures = new TexturesDefinition(this);
     water = new WaterDefinition(this);
 
-    addChild(camera);
     addChild(atmosphere);
-    addChild(water);
+    addChild(camera);
     addChild(clouds);
+    addChild(textures);
+    addChild(water);
 
     _custom_load = NULL;
     _custom_save = NULL;
@@ -39,7 +41,6 @@ Scenery::Scenery():
 Scenery::~Scenery()
 {
     TerrainDefinitionClass.destroy(terrain);
-    TexturesDefinitionClass.destroy(textures);
 }
 
 Scenery* Scenery::getCurrent()
@@ -61,7 +62,6 @@ void Scenery::save(PackStream* stream) const
     noiseSave(stream);
 
     TerrainDefinitionClass.save(stream, terrain);
-    TexturesDefinitionClass.save(stream, textures);
 
     if (_custom_save)
     {
@@ -76,7 +76,6 @@ void Scenery::load(PackStream* stream)
     noiseLoad(stream);
 
     TerrainDefinitionClass.load(stream, terrain);
-    TexturesDefinitionClass.load(stream, textures);
 
     if (_custom_load)
     {
@@ -102,7 +101,7 @@ void Scenery::autoPreset(int seed)
     srand(seed);
 
     terrainAutoPreset(terrain, TERRAIN_PRESET_STANDARD);
-    texturesAutoPreset(textures, TEXTURES_PRESET_FULL);
+    textures->applyPreset(TexturesDefinition::TEXTURES_PRESET_FULL);
     atmosphere->applyPreset(AtmosphereDefinition::ATMOSPHERE_PRESET_CLEAR_DAY);
     water->applyPreset(WATER_PRESET_LAKE);
     clouds->applyPreset(CloudsDefinition::CLOUDS_PRESET_PARTLY_CLOUDY);
@@ -156,12 +155,12 @@ void Scenery::getTerrain(TerrainDefinition* terrain)
 
 void Scenery::setTextures(TexturesDefinition* textures)
 {
-    TexturesDefinitionClass.copy(textures, this->textures);
+    textures->copy(this->textures);
 }
 
 void Scenery::getTextures(TexturesDefinition* textures)
 {
-    TexturesDefinitionClass.copy(this->textures, textures);
+    this->textures->copy(textures);
 }
 
 void Scenery::setWater(WaterDefinition* water)

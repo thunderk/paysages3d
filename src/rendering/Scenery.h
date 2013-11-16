@@ -6,7 +6,6 @@
 #include "BaseDefinition.h"
 
 class TerrainDefinition;
-class TexturesDefinition;
 class Renderer;
 
 typedef void (*SceneryCustomDataCallback)(PackStream* stream, void* data);

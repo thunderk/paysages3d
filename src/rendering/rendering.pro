@@ -30,9 +30,6 @@ SOURCES += main.cpp \
     textures/tex_tools.cpp \
     textures/tex_rendering.cpp \
     textures/tex_preview.cpp \
-    textures/tex_presets.cpp \
-    textures/tex_definition.cpp \
-    tools/zone.cpp \
     tools/texture.cpp \
     tools/parallel.cpp \
     tools/memory.cpp \
@@ -68,7 +65,6 @@ HEADERS += \
     textures/tex_preview.h \
     textures/public.h \
     textures/private.h \
-    tools/zone.h \
     tools/texture.h \
     tools/parallel.h \
     tools/memory.h \

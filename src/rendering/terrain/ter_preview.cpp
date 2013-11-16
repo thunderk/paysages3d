@@ -6,6 +6,9 @@
 #include "NoiseGenerator.h"
 #include "atmosphere/public.h"
 #include "textures/public.h"
+#include "TextureLayerDefinition.h"
+#include "TexturesDefinition.h"
+#include "Zone.h"
 
 /*
  * Terrain previews.
@@ -57,21 +60,17 @@ void terrainAlterPreviewRenderer(Renderer* renderer)
     renderer->getCameraLocation = _getCameraLocation;
     renderer->atmosphere->getLightingStatus = _getLightingStatus;
 
-    TexturesDefinition* textures;
-    textures = (TexturesDefinition*)TexturesDefinitionClass.create();
-    layersClear(textures->layers);
-    TexturesLayerDefinition* layer = (TexturesLayerDefinition*)layersGetLayer(textures->layers, layersAddLayer(textures->layers, NULL));
-    zoneClear(layer->terrain_zone);
+    TexturesDefinition textures(NULL);
+    TextureLayerDefinition* layer = textures.getTextureLayer(textures.addLayer());
+    layer->terrain_zone->clear();
     layer->displacement_height = 0.0;
-    layer->material.base = colorToHSL(COLOR_WHITE);
-    layer->material.reflection = 0.05;
-    layer->material.shininess = 2.0;
-    TexturesDefinitionClass.validate(textures);
+    layer->material->base = colorToHSL(COLOR_WHITE);
+    layer->material->reflection = 0.05;
+    layer->material->shininess = 2.0;
+    layer->validate();
     layer->_detail_noise->clearLevels();
 
-    TexturesRendererClass.bind(renderer, textures);
-
-    TexturesDefinitionClass.destroy(textures);
+    TexturesRendererClass.bind(renderer, &textures);
 }
 
 Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double detail)

@@ -23,7 +23,7 @@ void FreeLayerHelper::refreshLayers()
 
         emit tableUpdateNeeded();
 
-        int n = layersCount(_layers);
+        int n = _layers->count();
         if (n == 0)
         {
             _selected = -1;
@@ -96,7 +96,7 @@ void FreeLayerHelper::setEditButton(QPushButton* button)
 
 void FreeLayerHelper::addLayer()
 {
-    _selected = layersAddLayer(_layers, NULL);
+    _selected = _layers->addLayer(NULL);
     emit(layersChanged());
     refreshLayers();
 }
@@ -105,7 +105,7 @@ void FreeLayerHelper::deleteLayer()
 {
     if (_selected >= 0)
     {
-        layersDeleteLayer(_layers, _selected);
+        _layers->removeLayer(_selected);
         emit(layersChanged());
         refreshLayers();
     }
@@ -115,7 +115,7 @@ void FreeLayerHelper::moveLayerDown()
 {
     if (_selected > 0)
     {
-        layersMove(_layers, _selected, _selected - 1);
+        _layers->moveLayer(_selected, _selected - 1);
         _selected--;
         emit(layersChanged());
         refreshLayers();
@@ -124,9 +124,9 @@ void FreeLayerHelper::moveLayerDown()
 
 void FreeLayerHelper::moveLayerUp()
 {
-    if (_selected >= 0 && _selected < layersCount(_layers) - 1)
+    if (_selected >= 0 && _selected < _layers->count() - 1)
     {
-        layersMove(_layers, _selected, _selected + 1);
+        _layers->moveLayer(_selected, _selected + 1);
         _selected++;
         emit(layersChanged());
         refreshLayers();
@@ -135,7 +135,7 @@ void FreeLayerHelper::moveLayerUp()
 
 void FreeLayerHelper::startEditing()
 {
-    if (_selected >= 0 && _selected < layersCount(_layers))
+    if (_selected >= 0 && _selected < _layers->count())
     {
         emit(editRequired(_selected));
     }
@@ -143,7 +143,7 @@ void FreeLayerHelper::startEditing()
 
 void FreeLayerHelper::tableSelectionChanged(int row, int)
 {
-    int n = layersCount(_layers);
+    int n = _layers->count();
 
     if (n == 0 or row >= n)
     {

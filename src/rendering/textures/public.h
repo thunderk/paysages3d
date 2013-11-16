@@ -3,63 +3,15 @@
 
 #include "../rendering_global.h"
 #include "Layers.h"
-#include "tools/zone.h"
 #include "tools/lighting.h"
 #include "terrain/public.h"
 #include "SurfaceMaterial.h"
 
 #define TEXTURES_MAX_LAYERS 50
 
-typedef enum
-{
-    TEXTURES_PRESET_FULL,
-    TEXTURES_PRESET_IRELAND,
-    TEXTURES_PRESET_ALPS,
-    TEXTURES_PRESET_CANYON
-} TexturesPreset;
-
-typedef enum
-{
-    TEXTURES_LAYER_PRESET_MUD,
-    TEXTURES_LAYER_PRESET_ROCK,
-    TEXTURES_LAYER_PRESET_GRASS,
-    TEXTURES_LAYER_PRESET_SAND,
-    TEXTURES_LAYER_PRESET_SNOW
-} TexturesLayerPreset;
-
-typedef enum
-{
-    TEXTURES_MERGE_FADE,
-    TEXTURES_MERGE_DISSOLVE,
-    TEXTURES_MERGE_DISPLACEMENT_VALUE
-} TexturesMergeMode;
-
 typedef struct
 {
-    Zone* terrain_zone;
-    double displacement_scaling;
-    double displacement_height;
-    double displacement_offset;
-    /*double detail_scaling;
-    double detail_height;*/
-    SurfaceMaterial material;
-    /*double cancel_displacement_factor;
-    TexturesMergeMode merge_mode;*/
-
-    NoiseGenerator* _displacement_noise;
-    NoiseGenerator* _detail_noise;
-    /*Curve* _local_slope_condition;*/
-} TexturesLayerDefinition;
-
-class TexturesDefinition
-{
-public:
-    Layers* layers;
-};
-
-typedef struct
-{
-    TexturesLayerDefinition* layer;
+    TextureLayerDefinition* layer;
     double presence;
     Color color;
 } TexturesLayerResult;
@@ -89,13 +41,7 @@ public:
 };
 
 
-RENDERINGSHARED_EXPORT extern StandardDefinition TexturesDefinitionClass;
 RENDERINGSHARED_EXPORT extern StandardRenderer TexturesRendererClass;
-
-
-RENDERINGSHARED_EXPORT LayerType texturesGetLayerType();
-RENDERINGSHARED_EXPORT void texturesAutoPreset(TexturesDefinition* definition, TexturesPreset preset);
-RENDERINGSHARED_EXPORT void texturesLayerAutoPreset(TexturesLayerDefinition* definition, TexturesLayerPreset preset);
 
 RENDERINGSHARED_EXPORT double texturesGetMaximalDisplacement(TexturesDefinition* textures);
 

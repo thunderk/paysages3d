@@ -5,13 +5,16 @@
 #include "renderer.h"
 #include "tools.h"
 #include "CameraDefinition.h"
+#include "TexturesDefinition.h"
+#include "TextureLayerDefinition.h"
+#include "terrain/public.h"
 
 /**************** Previews ****************/
 class PreviewTexturesCoverage : public BasePreview
 {
 public:
 
-    PreviewTexturesCoverage(QWidget* parent, TexturesLayerDefinition* layer) : BasePreview(parent)
+    PreviewTexturesCoverage(QWidget* parent, TextureLayerDefinition* layer) : BasePreview(parent)
     {
         _renderer = rendererCreate();
         _renderer->render_quality = 3;
@@ -51,7 +54,7 @@ protected:
 
 private:
     Renderer* _renderer;
-    TexturesLayerDefinition* _original_layer;
+    TextureLayerDefinition* _original_layer;
     TexturesDefinition* _preview_definition;
 };
 
@@ -59,7 +62,7 @@ class PreviewTexturesColor : public BasePreview
 {
 public:
 
-    PreviewTexturesColor(QWidget* parent, TexturesLayerDefinition* layer) : BasePreview(parent)
+    PreviewTexturesColor(QWidget* parent, TextureLayerDefinition* layer) : BasePreview(parent)
     {
         _original_layer = layer;
         //_preview_layer = (TexturesLayerDefinition*)TexturesDefinitionClass.create();
@@ -95,8 +98,8 @@ protected:
     }
 private:
     Renderer* _renderer;
-    TexturesLayerDefinition* _original_layer;
-    TexturesLayerDefinition* _preview_layer;
+    TextureLayerDefinition* _original_layer;
+    TextureLayerDefinition* _preview_layer;
 };
 
 /**************** Form ****************/
@@ -108,8 +111,8 @@ BaseFormLayer(parent)
     addAutoPreset(tr("Sand"));
     addAutoPreset(tr("Snow"));
 
-    _definition = (TexturesDefinition*) TexturesDefinitionClass.create();
-    _layer = (TexturesLayerDefinition*) texturesGetLayerType().callback_create();
+    _definition = new TexturesDefinition(NULL);
+    _layer = new TextureLayerDefinition(NULL);
 
     _previewCoverage = new PreviewTexturesCoverage(this, _layer);
     _previewColor = new PreviewTexturesColor(this, _layer);
@@ -118,7 +121,7 @@ BaseFormLayer(parent)
 
     addInputDouble(tr("Displacement height"), &_layer->displacement_height, 0.0, 0.1, 0.001, 0.01);
     addInputDouble(tr("Displacement scaling"), &_layer->displacement_scaling, 0.003, 0.3, 0.003, 0.03);
-    addInputMaterial(tr("Material"), &_layer->material);
+    addInputMaterial(tr("Material"), _layer->material);
     /*addInputCurve(tr("Coverage by altitude"), _layer->terrain_zone->value_by_height, -20.0, 20.0, 0.0, 1.0, tr("Terrain altitude"), tr("Texture coverage"));
     addInputCurve(tr("Coverage by slope"), _layer->terrain_zone->value_by_slope, 0.0, 5.0, 0.0, 1.0, tr("Terrain slope"), tr("Texture coverage"));*/
 
@@ -126,13 +129,13 @@ BaseFormLayer(parent)
     addInputDouble(tr("Layer thickness"), &_layer->thickness, 0.0, 0.1, 0.001, 0.01);
     addInputDouble(tr("Transparency thickness"), &_layer->thickness_transparency, 0.0, 0.1, 0.001, 0.01);*/
 
-    setLayers(_definition->layers);
+    setLayers(_definition);
 }
 
 FormTextures::~FormTextures()
 {
-    TexturesDefinitionClass.destroy(_definition);
-    texturesGetLayerType().callback_delete(_layer);
+    delete _definition;
+    delete _layer;
 }
 
 void FormTextures::revertConfig()
@@ -149,16 +152,16 @@ void FormTextures::applyConfig()
 
 void FormTextures::layerReadCurrentFrom(void* layer_definition)
 {
-    texturesGetLayerType().callback_copy((TexturesLayerDefinition*) layer_definition, _layer);
+    ((TextureLayerDefinition*)layer_definition)->copy(_layer);
 }
 
 void FormTextures::layerWriteCurrentTo(void* layer_definition)
 {
-    texturesGetLayerType().callback_copy(_layer, (TexturesLayerDefinition*) layer_definition);
+    _layer->copy((TextureLayerDefinition*)layer_definition);
 }
 
 void FormTextures::autoPresetSelected(int preset)
 {
-    texturesLayerAutoPreset(_layer, (TexturesLayerPreset) preset);
+    _layer->applyPreset((TextureLayerDefinition::TextureLayerPreset)preset);
     BaseForm::autoPresetSelected(preset);
 }

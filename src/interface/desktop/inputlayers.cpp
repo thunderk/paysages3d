@@ -19,7 +19,7 @@ InputLayers::InputLayers(QWidget* form, QString label, Layers* value, FormLayerB
 
 void InputLayers::updatePreview()
 {
-    ((QLabel*)_preview)->setText(tr("%1 layers").arg(layersCount(_value)));
+    ((QLabel*)_preview)->setText(tr("%1 layers").arg(_value->count()));
 
     BaseInput::updatePreview();
 }

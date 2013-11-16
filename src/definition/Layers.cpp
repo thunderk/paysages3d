@@ -1,16 +1,8 @@
 #include "Layers.h"
 
-Layers::Layers(BaseDefinition* parent, LayerConstructor layer_constructor, LayerType* legacy_type):
+Layers::Layers(BaseDefinition* parent, LayerConstructor layer_constructor):
     BaseDefinition(parent), layer_constructor(layer_constructor)
 {
-    if (legacy_type)
-    {
-        this->legacy_type = *legacy_type;
-    }
-    else
-    {
-        this->legacy_type.callback_create = NULL;
-    }
     max_layer_count = 100;
     null_layer = layer_constructor(this);
 }
@@ -31,7 +23,6 @@ void Layers::copy(BaseDefinition* destination_) const
     destination->clear();
 
     destination->max_layer_count = max_layer_count;
-    destination->legacy_type = legacy_type;
 
     null_layer->copy(destination->null_layer);
 
@@ -42,6 +33,13 @@ void Layers::copy(BaseDefinition* destination_) const
         BaseDefinition* new_layer = destination->getLayer(position);
         it.next()->copy(new_layer);
     }
+}
+
+Layers* Layers::newCopy() const
+{
+    Layers* result = new Layers(NULL, layer_constructor);
+    copy(result);
+    return result;
 }
 
 void Layers::setMaxLayerCount(int max_layer_count)
@@ -132,130 +130,4 @@ void Layers::clear()
     {
         removeLayer(0);
     }
-}
-
-// Transitional C-API
-
-BaseDefinition* _legacyLayerConstructor(Layers* layers)
-{
-    return new LegacyLayer(layers, &layers->legacy_type);
-}
-
-Layers* layersCreate(LayerType type, int max_layer_count)
-{
-    Layers* result = new Layers(NULL, _legacyLayerConstructor, &type);
-    result->setMaxLayerCount(max_layer_count);
-    return result;
-}
-
-Layers* layersCreateCopy(Layers* original)
-{
-    if (original->legacy_type.callback_create)
-    {
-        Layers* result = new Layers(NULL, _legacyLayerConstructor, &original->legacy_type);
-        original->copy(result);
-        return result;
-    }
-    else
-    {
-        Layers* result = new Layers(NULL, original->layer_constructor, NULL);
-        original->copy(result);
-        return result;
-    }
-}
-
-void layersDelete(Layers* layers)
-{
-    delete layers;
-}
-
-void layersCopy(Layers* source, Layers* destination)
-{
-    source->copy(destination);
-}
-
-void layersValidate(Layers* layers)
-{
-    layers->validate();
-}
-
-void layersSave(PackStream* stream, Layers* layers)
-{
-    layers->save(stream);
-}
-
-void layersLoad(PackStream* stream, Layers* layers)
-{
-    layers->load(stream);
-}
-
-const char* layersGetName(Layers* layers, int layer)
-{
-    if (layers->legacy_type.callback_create)
-    {
-        return ((LegacyLayer*)(layers->getLayer(layer)))->getLegacyName();
-    }
-    else
-    {
-        return "";
-    }
-}
-
-void layersSetName(Layers* layers, int layer, const char* name)
-{
-    layers->getLayer(layer)->setName(name);
-}
-
-void layersClear(Layers* layers)
-{
-    layers->clear();
-}
-
-int layersCount(Layers* layers)
-{
-    return layers->count();
-}
-
-void* layersGetLayer(Layers* layers, int layer)
-{
-    if (layers->legacy_type.callback_create)
-    {
-        LegacyLayer* legacy = (LegacyLayer*)(layers->getLayer(layer));
-        return legacy->getLegacyDefinition();
-    }
-    else
-    {
-        return layers->getLayer(layer);
-    }
-}
-
-int layersAddLayer(Layers* layers, void* definition)
-{
-    if (layers->legacy_type.callback_create)
-    {
-        int position;
-        LegacyLayer* legacy = new LegacyLayer(layers, &layers->legacy_type);
-        if (definition)
-        {
-            layers->legacy_type.callback_copy(definition, legacy->getLegacyDefinition());
-        }
-        position = layers->addLayer(legacy);
-        return position;
-    }
-    else
-    {
-        BaseDefinition* copied = layers->layer_constructor(layers);
-        ((BaseDefinition*)definition)->copy(copied);
-        return layers->addLayer(copied);
-    }
-}
-
-void layersDeleteLayer(Layers* layers, int layer)
-{
-    layers->removeLayer(layer);
-}
-
-void layersMove(Layers* layers, int layer, int new_position)
-{
-    layers->moveLayer(layer, new_position);
 }

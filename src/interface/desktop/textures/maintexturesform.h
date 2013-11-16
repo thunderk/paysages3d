@@ -1,8 +1,9 @@
 #ifndef MAINTEXTURESFORM_H
 #define MAINTEXTURESFORM_H
 
+#include "desktop_global.h"
+
 #include <QWidget>
-#include "textures/public.h"
 
 namespace Ui {
 class MainTexturesForm;
@@ -13,6 +14,7 @@ class FreeLayerHelper;
 class PreviewLayerCoverage;
 class PreviewLayerLook;
 class PreviewCumul;
+class Renderer;
 
 class MainTexturesForm : public QWidget
 {

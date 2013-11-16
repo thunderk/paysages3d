@@ -1,6 +1,7 @@
 #include "baseformlayer.h"
 
 #include <QInputDialog>
+#include "Layers.h"
 
 BaseFormLayer::BaseFormLayer(QWidget* parent, Layers* layers) : BaseForm(parent, false, true)
 {
@@ -9,7 +10,7 @@ BaseFormLayer::BaseFormLayer(QWidget* parent, Layers* layers) : BaseForm(parent,
     if (layers)
     {
         _layers_original = layers;
-        _layers_modified = layersCreateCopy(_layers_original);
+        _layers_modified = _layers_original->newCopy();
     }
 }
 
@@ -17,7 +18,7 @@ BaseFormLayer::~BaseFormLayer()
 {
     if (_layers_modified)
     {
-        layersDelete(_layers_modified);
+        delete _layers_modified;
     }
 }
 
@@ -25,7 +26,7 @@ void BaseFormLayer::revertConfig()
 {
     if (_layers_original && _layers_modified)
     {
-        layersCopy(_layers_original, _layers_modified);
+        _layers_original->copy(_layers_modified);
         layerSelectedEvent(currentLayer());
     }
 
@@ -36,7 +37,7 @@ void BaseFormLayer::applyConfig()
 {
     if (_layers_original && _layers_modified)
     {
-        layersCopy(_layers_modified, _layers_original);
+        _layers_modified->copy(_layers_original);
     }
 
     BaseForm::applyConfig();
@@ -47,9 +48,9 @@ void BaseFormLayer::setLayers(Layers* layers)
     _layers_original = layers;
     if (_layers_modified)
     {
-        layersDelete(_layers_modified);
+        delete _layers_modified;
     }
-    _layers_modified = layersCreateCopy(_layers_original);
+    _layers_modified = _layers_original->newCopy();
     revertConfig();
 }
 
@@ -61,8 +62,8 @@ void BaseFormLayer::configChangeEvent()
 {
     if (_layers_modified)
     {
-        layerWriteCurrentTo(layersGetLayer(_layers_modified, currentLayer()));
-        layersValidate(_layers_modified);
+        layerWriteCurrentTo(_layers_modified->getLayer(currentLayer()));
+        _layers_modified->validate();
     }
 
     BaseForm::configChangeEvent();
@@ -74,9 +75,9 @@ QStringList BaseFormLayer::getLayers()
 
     if (_layers_modified)
     {
-        for (int i = 0; i < layersCount(_layers_modified); i++)
+        for (int i = 0; i < _layers_modified->count(); i++)
         {
-            result << QString::fromUtf8(layersGetName(_layers_modified, i));
+            result << _layers_modified->getLayer(i)->getName();
         }
     }
 
@@ -90,14 +91,14 @@ void BaseFormLayer::layerAddedEvent()
         QString layer_name = QInputDialog::getText(this, tr("Create layer"), tr("Layer name :"), QLineEdit::Normal, tr("Unnamed layer"));
         if (not layer_name.isEmpty())
         {
-            int layer = layersAddLayer(_layers_modified, NULL);
+            int layer = _layers_modified->addLayer();
             if (layer >= 0)
             {
-                layersSetName(_layers_modified, layer, layer_name.toUtf8().data());
+                _layers_modified->getLayer(layer)->setName(layer_name);
 
                 BaseForm::layerAddedEvent();
 
-                afterLayerAdded(layersGetLayer(_layers_modified, layer));
+                afterLayerAdded(_layers_modified->getLayer(layer));
             }
         }
     }
@@ -107,7 +108,7 @@ void BaseFormLayer::layerDeletedEvent(int layer)
 {
     if (_layers_modified)
     {
-        layersDeleteLayer(_layers_modified, layer);
+        _layers_modified->removeLayer(layer);
     }
 
     BaseForm::layerDeletedEvent(layer);
@@ -117,7 +118,7 @@ void BaseFormLayer::layerMovedEvent(int layer, int new_position)
 {
     if (_layers_modified)
     {
-        layersMove(_layers_modified, layer, new_position);
+        _layers_modified->moveLayer(layer, new_position);
     }
 
     BaseForm::layerMovedEvent(layer, new_position);
@@ -127,7 +128,7 @@ void BaseFormLayer::layerRenamedEvent(int layer, QString new_name)
 {
     if (_layers_modified)
     {
-        layersSetName(_layers_modified, layer, new_name.toUtf8().data());
+        _layers_modified->getLayer(layer)->setName(new_name);
     }
 
     BaseForm::layerRenamedEvent(layer, new_name);
@@ -137,7 +138,7 @@ void BaseFormLayer::layerSelectedEvent(int layer)
 {
     if (_layers_modified && layer >= 0)
     {
-        layerReadCurrentFrom(layersGetLayer(_layers_modified, layer));
+        layerReadCurrentFrom(_layers_modified->getLayer(layer));
     }
 
     BaseForm::layerSelectedEvent(layer);

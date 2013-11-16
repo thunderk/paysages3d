@@ -1,6 +1,8 @@
 #include "DialogTexturesLayer.h"
 #include "ui_DialogTexturesLayer.h"
 
+#include "TexturesDefinition.h"
+
 DialogTexturesLayer::DialogTexturesLayer(QWidget* parent, TexturesDefinition* textures, int layer) :
     QDialog(parent),
     ui(new Ui::DialogTexturesLayer)
@@ -9,12 +11,12 @@ DialogTexturesLayer::DialogTexturesLayer(QWidget* parent, TexturesDefinition* te
 
     this->layer = layer;
     original = textures;
-    modified = (TexturesDefinition*)TexturesDefinitionClass.create();
+    modified = new TexturesDefinition(NULL);
 }
 
 DialogTexturesLayer::~DialogTexturesLayer()
 {
     delete ui;
 
-    TexturesDefinitionClass.destroy(modified);
+    delete modified;
 }

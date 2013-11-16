@@ -6,7 +6,7 @@
 /*
  * Get the base presence factor of a layer, not accounting for other layers.
  */
-double texturesGetLayerBasePresence(TexturesLayerDefinition* layer, TerrainResult terrain);
+double texturesGetLayerBasePresence(TextureLayerDefinition* layer, TerrainResult terrain);
 
 /*
  * Get triplanar noise value, depending on the normal direction.
