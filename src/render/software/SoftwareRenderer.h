@@ -5,8 +5,6 @@
 
 #include "renderer.h"
 
-class Scenery;
-
 namespace paysages {
 namespace software {
 
@@ -21,12 +19,19 @@ public:
     virtual ~SoftwareRenderer();
 
     /*!
+     * \brief Set the scenery to render.
+     *
+     * Don't call this after rendering has already started.
+     */
+    virtual void setScenery(Scenery* scenery) override;
+
+    /*!
      * \brief Prepare the renderer sub-systems.
      *
      * This will clear the caches and connect elements together.
      * After this call, don't update the scenery when renderer is in use.
      */
-    virtual void prepare();
+    virtual void prepare() override;
 
     inline Scenery* getScenery() const {return scenery;}
     inline BaseAtmosphereRenderer* getAtmosphereRenderer() const {return atmosphere_renderer;}

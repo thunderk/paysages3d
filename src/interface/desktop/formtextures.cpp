@@ -1,6 +1,6 @@
 #include "formtextures.h"
 
-#include "Scenery.h"
+#include "RenderingScenery.h"
 #include "BasePreview.h"
 #include "renderer.h"
 #include "tools.h"
@@ -47,7 +47,7 @@ protected:
 
     void updateData()
     {
-        TerrainRendererClass.bind(_renderer, Scenery::getCurrent()->getTerrain());
+        TerrainRendererClass.bind(_renderer, RenderingScenery::getCurrent()->getTerrain());
 
         //TexturesDefinitionClass.copy(_original_layer, _preview_layer);
     }
@@ -140,14 +140,14 @@ FormTextures::~FormTextures()
 
 void FormTextures::revertConfig()
 {
-    Scenery::getCurrent()->getTextures(_definition);
+    RenderingScenery::getCurrent()->getTextures(_definition);
     BaseFormLayer::revertConfig();
 }
 
 void FormTextures::applyConfig()
 {
     BaseFormLayer::applyConfig();
-    Scenery::getCurrent()->setTextures(_definition);
+    RenderingScenery::getCurrent()->setTextures(_definition);
 }
 
 void FormTextures::layerReadCurrentFrom(void* layer_definition)

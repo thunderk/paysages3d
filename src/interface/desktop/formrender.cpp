@@ -10,7 +10,7 @@
 #include "clouds/public.h"
 #include "terrain/public.h"
 #include "water/public.h"
-#include "Scenery.h"
+#include "RenderingScenery.h"
 #include "PackStream.h"
 #include "SoftwareRenderer.h"
 #include "BasePreview.h"
@@ -64,7 +64,7 @@ protected:
 
     void updateData()
     {
-        Scenery::getCurrent()->bindToRenderer(_renderer);
+        RenderingScenery::getCurrent()->bindToRenderer(_renderer);
         if (!_clouds_enabled)
         {
             CloudsRendererClass.bind(_renderer, _no_clouds);
@@ -171,13 +171,13 @@ void FormRender::loadPack(PackStream* stream)
 
 void FormRender::revertConfig()
 {
-    Scenery::getCurrent()->getCamera(_camera);
+    RenderingScenery::getCurrent()->getCamera(_camera);
     BaseForm::revertConfig();
 }
 
 void FormRender::applyConfig()
 {
-    Scenery::getCurrent()->setCamera(_camera);
+    RenderingScenery::getCurrent()->setCamera(_camera);
     BaseForm::applyConfig();
 }
 
@@ -193,7 +193,7 @@ void FormRender::startQuickRender()
     {
         rendererDelete(_renderer);
     }
-    _renderer = new SoftwareRenderer(Scenery::getCurrent());
+    _renderer = new SoftwareRenderer(RenderingScenery::getCurrent());
     _renderer_inited = true;
 
     DialogRender* dialog = new DialogRender(this, _renderer);
@@ -209,7 +209,7 @@ void FormRender::startRender()
     {
         rendererDelete(_renderer);
     }
-    _renderer = new SoftwareRenderer(Scenery::getCurrent());
+    _renderer = new SoftwareRenderer(RenderingScenery::getCurrent());
     _renderer_inited = true;
 
     DialogRender* dialog = new DialogRender(this, _renderer);

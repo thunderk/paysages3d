@@ -2,6 +2,7 @@
 #include <cstdlib>
 
 #include "tools/data.h"
+#include "RenderingScenery.h"
 #include "Scenery.h"
 #include "PackStream.h"
 #include "render.h"
@@ -45,7 +46,7 @@ FileOperationResult paysagesSave(char* filepath)
     version_header = (double)PAYSAGES_CURRENT_DATA_VERSION;
     stream.write(&version_header);
 
-    Scenery::getCurrent()->save(&stream);
+    RenderingScenery::getCurrent()->save(&stream);
 
     return FILE_OPERATION_OK;
 }
@@ -72,7 +73,7 @@ FileOperationResult paysagesLoad(char* filepath)
         return FILE_OPERATION_VERSION_MISMATCH;
     }
 
-    Scenery::getCurrent()->load(&stream);
+    RenderingScenery::getCurrent()->load(&stream);
 
     return FILE_OPERATION_OK;
 }

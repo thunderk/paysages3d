@@ -29,6 +29,18 @@ void BaseDefinition::setName(QString name)
     this->name = name;
 }
 
+Scenery* BaseDefinition::getScenery()
+{
+    if (parent)
+    {
+        return parent->getScenery();
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
 void BaseDefinition::save(PackStream* stream) const
 {
     stream->write(name);

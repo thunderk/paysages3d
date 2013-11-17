@@ -5,7 +5,7 @@
 #include "SoftwareRenderer.h"
 #include "AtmosphereDefinition.h"
 #include "AtmosphereRenderer.h"
-#include "Scenery.h"
+#include "RenderingScenery.h"
 #include "System.h"
 
 #define OUTPUT_WIDTH 400
@@ -44,7 +44,7 @@ TEST(Bruneton, AerialPerspective1)
 
 TEST(Bruneton, AerialPerspective2)
 {
-    AtmosphereDefinition* atmo = Scenery::getCurrent()->getAtmosphere();
+    AtmosphereDefinition* atmo = RenderingScenery::getCurrent()->getAtmosphere();
     atmo->hour = 6;
     atmo->minute = 30;
     atmo->validate();

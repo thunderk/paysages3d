@@ -27,7 +27,7 @@
 #include "dialogexplorer.h"
 
 #include "main.h"
-#include "Scenery.h"
+#include "RenderingScenery.h"
 #include "PackStream.h"
 #include "tools.h"
 
@@ -127,11 +127,11 @@ MainWindow::MainWindow() :
     ui->tool_panel->hide();
     //ui->menuBar->hide();
 
-    Scenery::getCurrent()->setCustomSaveCallbacks(MainWindow::guiSaveCallback, MainWindow::guiLoadCallback, this);
+    RenderingScenery::getCurrent()->setCustomSaveCallbacks(MainWindow::guiSaveCallback, MainWindow::guiLoadCallback, this);
 
     // FIXME AutoPreset has already been called by paysagesInit but we need to redo it here because
     //   the auto apply on FormRender overwrites the camera. Delete this when the render form is no longer a BaseForm.
-    Scenery::getCurrent()->autoPreset(0);
+    RenderingScenery::getCurrent()->autoPreset(0);
     refreshAll();
 }
 
@@ -164,7 +164,7 @@ void MainWindow::refreshAll()
     PreviewOsd* osd = PreviewOsd::getInstance(QString("geolocation"));
     osd->clearItems();
     PreviewOsdItem* item = osd->newItem(50, 50);
-    item->drawCamera(Scenery::getCurrent()->getCamera());
+    item->drawCamera(RenderingScenery::getCurrent()->getCamera());
     item->setToolTip(QString(tr("Camera")));
 
     emit refreshed();
@@ -179,7 +179,7 @@ void MainWindow::fileNew()
 {
     if (QMessageBox::question(this, tr("Paysages 3D - New scenery"), tr("Do you want to start a new scenery ? Any unsaved changes will be lost."), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
-        Scenery::getCurrent()->autoPreset(0);
+        RenderingScenery::getCurrent()->autoPreset(0);
         refreshAll();
     }
 }
@@ -262,7 +262,7 @@ void MainWindow::explore3D()
     CameraDefinition* camera = new CameraDefinition;
     int result;
 
-    Scenery::getCurrent()->getCamera(camera);
+    RenderingScenery::getCurrent()->getCamera(camera);
 
     DialogExplorer* dialog = new DialogExplorer(this, camera, true);
     result = dialog->exec();
@@ -271,7 +271,7 @@ void MainWindow::explore3D()
 
     if (result == QDialog::Accepted)
     {
-        Scenery::getCurrent()->setCamera(camera);
+        RenderingScenery::getCurrent()->setCamera(camera);
         refreshAll();
     }
 

@@ -1,10 +1,11 @@
 #include "dialogterrainpainting.h"
 #include "ui_dialogterrainpainting.h"
 
-#include "tools.h"
 #include <QKeyEvent>
 #include <QWheelEvent>
 #include <QMessageBox>
+#include "tools.h"
+#include "TerrainDefinition.h"
 
 DialogTerrainPainting::DialogTerrainPainting(QWidget*parent, TerrainDefinition* terrain) :
     QDialog(parent),
@@ -16,7 +17,7 @@ DialogTerrainPainting::DialogTerrainPainting(QWidget*parent, TerrainDefinition* 
     ui->brush_preview->hide();
 
     _terrain_original = terrain;
-    _terrain_modified = (TerrainDefinition*)TerrainDefinitionClass.create();
+    _terrain_modified = new TerrainDefinition(NULL);
 
     ui->widget_commands->hide();
 
@@ -80,13 +81,13 @@ void DialogTerrainPainting::wheelEvent(QWheelEvent* event)
 
 void DialogTerrainPainting::accept()
 {
-    TerrainDefinitionClass.copy(_terrain_modified, _terrain_original);
+    _terrain_modified->copy(_terrain_original);
     QDialog::accept();
 }
 
 void DialogTerrainPainting::revert()
 {
-    TerrainDefinitionClass.copy(_terrain_original, _terrain_modified);
+    _terrain_original->copy(_terrain_modified);
 
     ui->widget_heightmap->setTerrain(_terrain_modified);
     ui->widget_heightmap->setBrush(&_brush);
@@ -112,7 +113,7 @@ void DialogTerrainPainting::brushConfigChanged()
 
 void DialogTerrainPainting::heightmapChanged()
 {
-    qint64 memused = terrainGetMemoryStats(_terrain_modified);
+    unsigned long memused = _terrain_modified->getMemoryStats();
     ui->label_memory_consumption->setText(tr("Memory used: %1").arg(getHumanMemory(memused)));
     ui->progress_memory_consumption->setMaximum(1024);
     ui->progress_memory_consumption->setValue(memused / 1024);

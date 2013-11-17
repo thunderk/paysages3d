@@ -13,6 +13,7 @@
 namespace paysages {
 namespace definition {
     class BaseDefinition;
+    class Scenery;
     class CameraDefinition;
     class SurfaceMaterial;
     class Zone;
@@ -23,6 +24,14 @@ namespace definition {
     class AtmosphereDefinition;
     class TexturesDefinition;
     class TextureLayerDefinition;
+    class TerrainDefinition;
+    class TerrainHeightMap;
+    class TerrainHeightMapBrush;
+    class TerrainHeightMapBrushElevation;
+    class TerrainHeightMapBrushSmooth;
+    class TerrainHeightMapBrushAddNoise;
+    class TerrainHeightMapBrushReset;
+    class TerrainHeightMapBrushFlatten;
 }
 }
 using namespace paysages::definition;

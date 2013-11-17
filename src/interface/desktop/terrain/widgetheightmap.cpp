@@ -7,6 +7,8 @@
 #include <GL/glu.h>
 #include "tools.h"
 #include "Scenery.h"
+#include "TerrainDefinition.h"
+#include "TerrainHeightMap.h"
 #include "WaterDefinition.h"
 
 #define HEIGHTMAP_RESOLUTION 256
@@ -174,7 +176,7 @@ void WidgetHeightMap::mouseReleaseEvent(QMouseEvent*)
     _last_brush_action = 0;
     if (_terrain)
     {
-        terrainEndBrushStroke(_terrain->height_map);
+        _terrain->height_map->endBrushStroke();
     }
     if (_brush)
     {
@@ -214,7 +216,7 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
     _last_time = new_time;
 
     // Update top camera
-    Vector3 target = {_target_x, terrainGetInterpolatedHeight(_terrain, _target_x, _target_z, 1, 1), _target_z};
+    Vector3 target = {_target_x, _terrain->getInterpolatedHeight(_target_x, _target_z, 1, 1), _target_z};
     _top_camera->setLocationCoords(target.x, target.y + 1.0, target.z + 0.1);
     _top_camera->setTarget(target);
     _top_camera->setZoomToTarget(_zoom);
@@ -533,9 +535,9 @@ void WidgetHeightMap::updateVertexInfo()
             vertex->point.x = (double) dx;
             vertex->point.z = (double) dz;
 
-            vertex->point.y = terrainGetGridHeight(_terrain, dx, dz, 1) * _terrain->height;
+            vertex->point.y = _terrain->getGridHeight(dx, dz, 1) * _terrain->height;
 
-            vertex->painted = terrainIsPainted(_terrain->height_map, dx, dz);
+            vertex->painted = _terrain->height_map->isPainted(dx, dz);
         }
     }
 

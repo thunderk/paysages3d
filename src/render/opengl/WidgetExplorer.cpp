@@ -6,7 +6,7 @@
 #include <cmath>
 #include <GL/glu.h>
 #include <QThread>
-#include "Scenery.h"
+#include "RenderingScenery.h"
 #include "SoftwareRenderer.h"
 #include "OpenGLRenderer.h"
 #include "WaterDefinition.h"
@@ -90,7 +90,7 @@ QGLWidget(parent)
     }
     else
     {
-        _renderer = new SoftwareRenderer(Scenery::getCurrent());
+        _renderer = new SoftwareRenderer(RenderingScenery::getCurrent());
         _renderer_created = true;
     }
     _opengl_renderer = new OpenGLRenderer(NULL);

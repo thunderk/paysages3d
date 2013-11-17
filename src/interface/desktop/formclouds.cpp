@@ -3,7 +3,7 @@
 #include "clouds/clo_preview.h"
 #include "tools/color.h"
 #include "tools/euclid.h"
-#include "Scenery.h"
+#include "RenderingScenery.h"
 #include "BasePreview.h"
 #include "renderer.h"
 #include "CloudsDefinition.h"
@@ -127,14 +127,14 @@ FormClouds::~FormClouds()
 
 void FormClouds::revertConfig()
 {
-    Scenery::getCurrent()->getClouds(_definition);
+    RenderingScenery::getCurrent()->getClouds(_definition);
     BaseFormLayer::revertConfig();
 }
 
 void FormClouds::applyConfig()
 {
     BaseFormLayer::applyConfig();
-    Scenery::getCurrent()->setClouds(_definition);
+    RenderingScenery::getCurrent()->setClouds(_definition);
 }
 
 void FormClouds::layerReadCurrentFrom(void* layer_definition)

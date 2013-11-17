@@ -4,7 +4,7 @@
 #include "System.h"
 #include "Thread.h"
 #include "render.h"
-#include "Scenery.h"
+#include "RenderingScenery.h"
 #include "tools.h"
 #include "CameraDefinition.h"
 #include "atmosphere/public.h"

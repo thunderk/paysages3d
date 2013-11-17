@@ -3,6 +3,9 @@
 #include <cmath>
 #include <QAbstractSlider>
 #include "NoiseGenerator.h"
+#include "TerrainDefinition.h"
+#include "TerrainHeightMap.h"
+#include "TerrainHeightMapBrush.h"
 
 PaintingBrush::PaintingBrush()
 {
@@ -101,7 +104,7 @@ QString PaintingBrush::getHelpText()
 void PaintingBrush::applyToTerrain(TerrainDefinition* terrain, double x, double z, double duration, bool reverse)
 {
     double brush_strength;
-    TerrainBrush brush;
+    TerrainHeightMapBrush brush;
 
     brush.relative_x = x;
     brush.relative_z = z;
@@ -118,30 +121,30 @@ void PaintingBrush::applyToTerrain(TerrainDefinition* terrain, double x, double 
         {
             brush_strength = -brush_strength;
         }
-        terrainBrushElevation(terrain->height_map, &brush, brush_strength * 2.0);
+        terrain->height_map->brushElevation(brush, brush_strength * 2.0);
         break;
     case PAINTING_BRUSH_SMOOTH:
         if (reverse)
         {
-            terrainBrushSmooth(terrain->height_map, &brush, brush_strength * 30.0);
+            terrain->height_map->brushSmooth(brush, brush_strength * 30.0);
         }
         else
         {
-            terrainBrushAddNoise(terrain->height_map, &brush, _noise, brush_strength * 0.3);
+            terrain->height_map->brushAddNoise(brush, _noise, brush_strength * 0.3);
         }
         break;
     case PAINTING_BRUSH_FLATTEN:
         if (reverse)
         {
-            _height = terrainGetInterpolatedHeight(terrain, x * terrain->scaling, z * terrain->scaling, 0, 1);
+            _height = terrain->getInterpolatedHeight(x * terrain->scaling, z * terrain->scaling, 0, 1);
         }
         else
         {
-            terrainBrushFlatten(terrain->height_map, &brush, _height, brush_strength * 30.0);
+            terrain->height_map->brushFlatten(brush, _height, brush_strength * 30.0);
         }
         break;
     case PAINTING_BRUSH_RESTORE:
-        terrainBrushReset(terrain->height_map, &brush, brush_strength * 30.0);
+        terrain->height_map->brushReset(brush, brush_strength * 30.0);
         break;
     default:
         return;

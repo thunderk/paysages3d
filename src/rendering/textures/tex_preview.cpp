@@ -1,12 +1,12 @@
 #include "tex_preview.h"
 #include "private.h"
 
-#include "Scenery.h"
+#include "RenderingScenery.h"
 #include "TexturesDefinition.h"
 
 void TexturesPreviewLayerCoverage_bind(Renderer* renderer, TexturesDefinition* definition)
 {
-    TerrainRendererClass.bind(renderer, Scenery::getCurrent()->getTerrain());
+    TerrainRendererClass.bind(renderer, RenderingScenery::getCurrent()->getTerrain());
     TexturesRendererClass.bind(renderer, definition);
 }
 
@@ -61,7 +61,7 @@ Color TexturesPreviewLayerLook_getColor(Renderer* renderer, double x, double y, 
 
 void TexturesPreviewCumul_bind(Renderer* renderer, TexturesDefinition* definition)
 {
-    TerrainRendererClass.bind(renderer, Scenery::getCurrent()->getTerrain());
+    TerrainRendererClass.bind(renderer, RenderingScenery::getCurrent()->getTerrain());
     TexturesRendererClass.bind(renderer, definition);
 }
 

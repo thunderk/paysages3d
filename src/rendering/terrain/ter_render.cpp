@@ -1,10 +1,11 @@
 #include "private.h"
 
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include "../tools.h"
 #include "../renderer.h"
 #include "textures/public.h"
+#include "TerrainDefinition.h"
 
 /******************** Binding ********************/
 static double _fakeGetHeight(Renderer* renderer, double x, double z, int with_painting)
@@ -19,7 +20,7 @@ static double _fakeGetHeight(Renderer* renderer, double x, double z, int with_pa
 
 static double _realGetHeight(Renderer* renderer, double x, double z, int with_painting)
 {
-    return terrainGetInterpolatedHeight(renderer->terrain->definition, x, z, 1, with_painting);
+    return renderer->terrain->definition->getInterpolatedHeight(x, z, 1, with_painting);
 }
 
 static TerrainResult _fakeGetResult(Renderer* renderer, double x, double z, int with_painting, int with_textures)
@@ -313,7 +314,7 @@ static TerrainRenderer* _createRenderer()
     TerrainRenderer* result;
 
     result = new TerrainRenderer;
-    result->definition = (TerrainDefinition*)TerrainDefinitionClass.create();
+    result->definition = new TerrainDefinition(NULL);
 
     result->castRay = _fakeCastRay;
     result->getHeight = _fakeGetHeight;
@@ -326,13 +327,13 @@ static TerrainRenderer* _createRenderer()
 
 static void _deleteRenderer(TerrainRenderer* renderer)
 {
-    TerrainDefinitionClass.destroy(renderer->definition);
+    delete renderer->definition;
     delete renderer;
 }
 
 static void _bindRenderer(Renderer* renderer, TerrainDefinition* definition)
 {
-    TerrainDefinitionClass.copy(definition, renderer->terrain->definition);
+    definition->copy(renderer->terrain->definition);
 
     renderer->terrain->castRay = _realCastRay;
     renderer->terrain->getHeight = _realGetHeight;

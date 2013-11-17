@@ -24,9 +24,7 @@ SOURCES += main.cpp \
     terrain/ter_render.cpp \
     terrain/ter_raster.cpp \
     terrain/ter_preview.cpp \
-    terrain/ter_presets.cpp \
     terrain/ter_painting.cpp \
-    terrain/ter_definition.cpp \
     textures/tex_tools.cpp \
     textures/tex_rendering.cpp \
     textures/tex_preview.cpp \
@@ -42,7 +40,7 @@ SOURCES += main.cpp \
     water/wat_raster.cpp \
     water/wat_preview.cpp \
     water/wat_definition.cpp \
-    Scenery.cpp
+    RenderingScenery.cpp
 
 HEADERS += \
     tools.h \
@@ -76,7 +74,7 @@ HEADERS += \
     water/public.h \
     water/private.h \
     rendering_global.h \
-    Scenery.h
+    RenderingScenery.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../system/debug/ -lpaysages_system

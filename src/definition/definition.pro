@@ -24,7 +24,11 @@ SOURCES += \
     AtmosphereDefinition.cpp \
     TexturesDefinition.cpp \
     TextureLayerDefinition.cpp \
-    Zone.cpp
+    Zone.cpp \
+    TerrainDefinition.cpp \
+    TerrainHeightMap.cpp \
+    TerrainHeightMapBrush.cpp \
+    Scenery.cpp
 
 HEADERS +=\
         definition_global.h \
@@ -38,7 +42,11 @@ HEADERS +=\
     AtmosphereDefinition.h \
     TexturesDefinition.h \
     TextureLayerDefinition.h \
-    Zone.h
+    Zone.h \
+    TerrainDefinition.h \
+    TerrainHeightMap.h \
+    TerrainHeightMapBrush.h \
+    Scenery.h
 
 unix:!symbian {
     maemo5 {

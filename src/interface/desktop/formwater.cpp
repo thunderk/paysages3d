@@ -11,7 +11,7 @@
 #include "terrain/public.h"
 #include "atmosphere/public.h"
 #include "tools.h"
-#include "Scenery.h"
+#include "RenderingScenery.h"
 #include "BasePreview.h"
 #include "CameraDefinition.h"
 #include "WaterDefinition.h"
@@ -45,7 +45,7 @@ protected:
     void updateData()
     {
         WaterRendererClass.bind(_renderer, _definition);
-        TerrainRendererClass.bind(_renderer, Scenery::getCurrent()->getTerrain());
+        TerrainRendererClass.bind(_renderer, RenderingScenery::getCurrent()->getTerrain());
     }
 
     void toggleChangeEvent(QString key, bool value)
@@ -257,13 +257,13 @@ BaseForm(parent)
 
 void FormWater::revertConfig()
 {
-    Scenery::getCurrent()->getWater(_definition);
+    RenderingScenery::getCurrent()->getWater(_definition);
     BaseForm::revertConfig();
 }
 
 void FormWater::applyConfig()
 {
-    Scenery::getCurrent()->setWater(_definition);
+    RenderingScenery::getCurrent()->setWater(_definition);
     BaseForm::applyConfig();
 }
 
@@ -275,7 +275,7 @@ void FormWater::configChangeEvent()
 
 void FormWater::autoPresetSelected(int preset)
 {
-    _definition->applyPreset((WaterPreset)preset);
+    _definition->applyPreset((WaterDefinition::WaterPreset)preset);
     BaseForm::autoPresetSelected(preset);
 }
 

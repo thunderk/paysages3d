@@ -7,7 +7,7 @@
 #include <cmath>
 
 #include "AtmosphereColorPreviewRenderer.h"
-#include "Scenery.h"
+#include "RenderingScenery.h"
 #include "BasePreview.h"
 #include "AtmosphereDefinition.h"
 #include "renderer.h"
@@ -78,13 +78,13 @@ FormAtmosphere::~FormAtmosphere()
 
 void FormAtmosphere::revertConfig()
 {
-    Scenery::getCurrent()->getAtmosphere(_definition);
+    RenderingScenery::getCurrent()->getAtmosphere(_definition);
     BaseForm::revertConfig();
 }
 
 void FormAtmosphere::applyConfig()
 {
-    Scenery::getCurrent()->setAtmosphere(_definition);
+    RenderingScenery::getCurrent()->setAtmosphere(_definition);
     BaseForm::applyConfig();
 }
 

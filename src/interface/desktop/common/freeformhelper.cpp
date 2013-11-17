@@ -12,7 +12,7 @@
 #include "mainwindow.h"
 #include "dialogrender.h"
 #include "dialogexplorer.h"
-#include "Scenery.h"
+#include "RenderingScenery.h"
 #include "BasePreview.h"
 #include "SoftwareRenderer.h"
 #include "CameraDefinition.h"
@@ -232,12 +232,12 @@ void FreeFormHelper::processApplyClicked()
 
 void FreeFormHelper::processExploreClicked()
 {
-    SoftwareRenderer renderer(Scenery::getCurrent());
+    SoftwareRenderer renderer(RenderingScenery::getCurrent());
 
     emit needAlterRenderer(&renderer);
 
     CameraDefinition camera;
-    Scenery::getCurrent()->getCamera(&camera);
+    RenderingScenery::getCurrent()->getCamera(&camera);
 
     DialogExplorer* dialog = new DialogExplorer(_form_widget, &camera, false, &renderer);
     dialog->exec();
@@ -246,7 +246,7 @@ void FreeFormHelper::processExploreClicked()
 
 void FreeFormHelper::processRenderClicked()
 {
-    SoftwareRenderer renderer(Scenery::getCurrent());
+    SoftwareRenderer renderer(RenderingScenery::getCurrent());
 
     emit needAlterRenderer(&renderer);
 

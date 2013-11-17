@@ -6,8 +6,6 @@
 #include "SoftwareRenderer.h"
 #include "tools/color.h"
 
-class Scenery;
-
 namespace paysages {
 namespace preview {
 

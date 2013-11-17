@@ -19,6 +19,7 @@ public:
     virtual ~Renderer();
 
     virtual void prepare() {}
+    virtual void setScenery(Scenery*) {}
 
     /* Render base configuration */
     int render_quality;

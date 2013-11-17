@@ -28,6 +28,8 @@ public:
     inline const QString& getName() const {return name;}
     virtual void setName(QString name);
 
+    virtual Scenery* getScenery();
+
     inline const BaseDefinition* getParent() const {return parent;}
     inline const BaseDefinition* getRoot() const {return root;}
 

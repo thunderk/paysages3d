@@ -4,6 +4,8 @@
 #include "NoiseGenerator.h"
 #include "SurfaceMaterial.h"
 #include "PackStream.h"
+#include "Scenery.h"
+#include "TerrainDefinition.h"
 
 TextureLayerDefinition::TextureLayerDefinition(BaseDefinition* parent):
     BaseDefinition(parent)
@@ -42,13 +44,13 @@ void TextureLayerDefinition::validate()
     materialValidate(material);
 
     /* Update zone height range */
-    // TODO
-    /*TerrainDefinition* terrain = Scenery::getCurrent()->getTerrain();
-    if (terrain)
+    Scenery* scenery = getScenery();
+    if (scenery)
     {
-        HeightInfo height_info = terrainGetHeightInfo(terrain);
-        zoneSetRelativeHeight(terrain_zone, height_info.min_height, height_info.base_height, height_info.max_height);
-    }*/
+        TerrainDefinition* terrain = scenery->getTerrain();
+        HeightInfo height_info = terrain->getHeightInfo();
+        terrain_zone->setRelativeHeight(height_info.min_height, height_info.base_height, height_info.max_height);
+    }
 }
 
 void TextureLayerDefinition::copy(BaseDefinition *_destination) const

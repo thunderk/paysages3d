@@ -20,18 +20,6 @@ double toolsCubicInterpolate(double stencil[4], double x)
     return _cubicInterpolate(stencil, x);
 }
 
-double toolsBicubicInterpolate(double stencil[16], double x, double y)
-{
-    double buf_cubic_y[4];
-
-    buf_cubic_y[0] = _cubicInterpolate(stencil, x);
-    buf_cubic_y[1] = _cubicInterpolate(stencil + 4, x);
-    buf_cubic_y[2] = _cubicInterpolate(stencil + 8, x);
-    buf_cubic_y[3] = _cubicInterpolate(stencil + 12, x);
-
-    return _cubicInterpolate(buf_cubic_y, y);
-}
-
 void toolsFloat2DMapCopy(double* src, double* dest, int src_xstart, int src_ystart, int dest_xstart, int dest_ystart, int xsize, int ysize, int src_xstep, int src_ystep, int dest_xstep, int dest_ystep)
 {
     /* TODO Optimize with memcpy if src_xstep == dest_xstep == 1 */

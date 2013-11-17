@@ -7,14 +7,16 @@
 #include "previewterrainshape.h"
 #include "common/freeformhelper.h"
 #include "tools.h"
-#include "Scenery.h"
+#include "RenderingScenery.h"
+#include "TerrainDefinition.h"
+#include "TerrainHeightMap.h"
 #include "textures/public.h"
 
 MainTerrainForm::MainTerrainForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainTerrainForm)
 {
-    _terrain = (TerrainDefinition*)TerrainDefinitionClass.create();
+    _terrain = new TerrainDefinition(NULL);
 
     ui->setupUi(this);
 
@@ -49,12 +51,12 @@ MainTerrainForm::~MainTerrainForm()
     delete ui;
     delete _renderer_shape;
 
-    TerrainDefinitionClass.destroy(_terrain);
+    delete _terrain;
 }
 
 void MainTerrainForm::refreshFromLocalData()
 {
-    qint64 memused = terrainGetMemoryStats(_terrain);
+    unsigned long memused = _terrain->getMemoryStats();
     if (memused > 0)
     {
         _form_helper->setLabelText(ui->label_painting_info, tr("Memory used by sculpted data: %1").arg(getHumanMemory(memused)));
@@ -69,7 +71,7 @@ void MainTerrainForm::refreshFromLocalData()
 
 void MainTerrainForm::refreshFromFellowData()
 {
-    double disp = texturesGetMaximalDisplacement(Scenery::getCurrent()->getTextures());
+    double disp = texturesGetMaximalDisplacement(RenderingScenery::getCurrent()->getTextures());
 
     if (disp == 0.0)
     {
@@ -83,12 +85,12 @@ void MainTerrainForm::refreshFromFellowData()
 
 void MainTerrainForm::updateLocalDataFromScenery()
 {
-    Scenery::getCurrent()->getTerrain(_terrain);
+    RenderingScenery::getCurrent()->getTerrain(_terrain);
 }
 
 void MainTerrainForm::commitLocalDataToScenery()
 {
-    Scenery::getCurrent()->setTerrain(_terrain);
+    RenderingScenery::getCurrent()->setTerrain(_terrain);
 }
 
 void MainTerrainForm::alterRenderer(Renderer* renderer)
@@ -99,7 +101,7 @@ void MainTerrainForm::alterRenderer(Renderer* renderer)
 void MainTerrainForm::buttonBaseNoisePressed()
 {
     int erase;
-    if (terrainGetMemoryStats(_terrain) > 0)
+    if (_terrain->getMemoryStats() > 0)
     {
         erase = QMessageBox::question(this, tr("Paysages 3D - Base noise edition"), tr("You have manual modifications on this terrain, regenerating base noise may produce weird results."), tr("Keep my changes anyway"), tr("Erase my changes"));
     }
@@ -112,7 +114,7 @@ void MainTerrainForm::buttonBaseNoisePressed()
     {
         if (erase)
         {
-            terrainClearPainting(_terrain->height_map);
+            _terrain->height_map->clearPainting();
         }
     }
 }

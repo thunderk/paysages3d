@@ -1,34 +1,28 @@
 #ifndef SCENERY_H
 #define SCENERY_H
 
-#include "rendering_global.h"
+#include "definition_global.h"
 
 #include "BaseDefinition.h"
 
-class TerrainDefinition;
-class Renderer;
-
-typedef void (*SceneryCustomDataCallback)(PackStream* stream, void* data);
+namespace paysages {
+namespace definition {
 
 /**
  * @brief Global scenery management
  *
  * This class contains the whole scenery definition.
  */
-class RENDERINGSHARED_EXPORT Scenery: private BaseDefinition
+class DEFINITIONSHARED_EXPORT Scenery: public BaseDefinition
 {
 public:
     Scenery();
-    virtual ~Scenery();
-
-    static Scenery* getCurrent();
-
-    void setCustomSaveCallbacks(SceneryCustomDataCallback callback_save, SceneryCustomDataCallback callback_load, void* data);
 
     virtual void save(PackStream* stream) const override;
     virtual void load(PackStream* stream) override;
 
     virtual void validate() override;
+    virtual Scenery* getScenery() override;
 
     void autoPreset(int seed);
 
@@ -56,8 +50,6 @@ public:
     inline WaterDefinition* getWater() const {return water;}
     void getWater(WaterDefinition* water);
 
-    void bindToRenderer(Renderer* renderer);
-
     void checkCameraAboveGround();
 
 private:
@@ -67,14 +59,9 @@ private:
     TerrainDefinition* terrain;
     TexturesDefinition* textures;
     WaterDefinition* water;
-
-    SceneryCustomDataCallback _custom_save;
-    SceneryCustomDataCallback _custom_load;
-    void* _custom_data;
 };
 
-// Transitional C-API
-
-RENDERINGSHARED_EXPORT void sceneryRenderFirstPass(Renderer* renderer);
+}
+}
 
 #endif // SCENERY_H

@@ -3,7 +3,7 @@
 
 #include "../common/freeformhelper.h"
 #include "../common/freelayerhelper.h"
-#include "Scenery.h"
+#include "RenderingScenery.h"
 #include "TexturesDefinition.h"
 #include "TextureLayerDefinition.h"
 #include "previewmaterial.h"
@@ -133,12 +133,12 @@ void MainTexturesForm::selectPreset(int preset)
 
 void MainTexturesForm::updateLocalDataFromScenery()
 {
-    Scenery::getCurrent()->getTextures(textures);
+    RenderingScenery::getCurrent()->getTextures(textures);
 }
 
 void MainTexturesForm::commitLocalDataToScenery()
 {
-    Scenery::getCurrent()->setTextures(textures);
+    RenderingScenery::getCurrent()->setTextures(textures);
 }
 
 void MainTexturesForm::refreshFromLocalData()

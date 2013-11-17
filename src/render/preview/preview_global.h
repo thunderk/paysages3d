@@ -11,9 +11,6 @@
 
 #include "software_global.h"
 
-// TEMP
-class Scenery;
-
 namespace paysages {
 namespace preview {
     class PreviewOsd;

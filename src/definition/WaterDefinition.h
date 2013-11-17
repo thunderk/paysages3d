@@ -8,12 +8,6 @@
 namespace paysages {
 namespace definition {
 
-typedef enum
-{
-    WATER_PRESET_LAKE,
-    WATER_PRESET_SEA
-} WaterPreset;
-
 class WaterDefinition: public BaseDefinition
 {
 public:
@@ -26,6 +20,12 @@ public:
     virtual void copy(BaseDefinition* destination) const override;
     virtual void validate() override;
 
+public:
+    typedef enum
+    {
+        WATER_PRESET_LAKE,
+        WATER_PRESET_SEA
+    } WaterPreset;
     void applyPreset(WaterPreset preset);
 
 public:
