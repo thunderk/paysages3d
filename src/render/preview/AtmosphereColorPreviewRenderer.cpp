@@ -5,6 +5,7 @@
 #include "CameraDefinition.h"
 #include "tools/lighting.h"
 #include "SurfaceMaterial.h"
+#include "Scenery.h"
 
 /*
  * Atmosphere previews.
@@ -148,7 +149,7 @@ static inline int _checkHit(Vector3 eye, Vector3 direction, Vector3* hit, Vector
 AtmosphereColorPreviewRenderer::AtmosphereColorPreviewRenderer(double heading):
     heading(heading)
 {
-    render_camera->setLocation(Vector3(0.0, 7.0, 0.0));
+    getScenery()->getCamera()->setLocation(Vector3(0.0, 7.0, 0.0));
 }
 
 Color AtmosphereColorPreviewRenderer::getColor2D(double x, double y, double)
