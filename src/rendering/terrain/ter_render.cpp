@@ -8,13 +8,8 @@
 #include "TerrainDefinition.h"
 
 /******************** Binding ********************/
-static double _fakeGetHeight(Renderer* renderer, double x, double z, int with_painting)
+static double _fakeGetHeight(Renderer*, double, double, int)
 {
-    UNUSED(renderer);
-    UNUSED(x);
-    UNUSED(z);
-    UNUSED(with_painting);
-
     return 0.0;
 }
 
@@ -23,15 +18,9 @@ static double _realGetHeight(Renderer* renderer, double x, double z, int with_pa
     return renderer->terrain->definition->getInterpolatedHeight(x, z, 1, with_painting);
 }
 
-static TerrainResult _fakeGetResult(Renderer* renderer, double x, double z, int with_painting, int with_textures)
+static TerrainResult _fakeGetResult(Renderer*, double x, double z, int, int)
 {
     TerrainResult result;
-
-    UNUSED(renderer);
-    UNUSED(x);
-    UNUSED(z);
-    UNUSED(with_painting);
-    UNUSED(with_textures);
 
     result.location.x = x;
     result.location.y = 0.0;
@@ -137,11 +126,8 @@ static TerrainResult _realGetResult(Renderer* renderer, double x, double z, int 
     return result;
 }
 
-static Color _fakeGetFinalColor(Renderer* renderer, Vector3 location, double precision)
+static Color _fakeGetFinalColor(Renderer*, Vector3, double)
 {
-    UNUSED(renderer);
-    UNUSED(location);
-    UNUSED(precision);
     return COLOR_GREEN;
 }
 
@@ -152,12 +138,8 @@ static Color _realGetFinalColor(Renderer* renderer, Vector3 location, double)
     return renderer->applyMediumTraversal(textures.final_location, textures.final_color);
 }
 
-static RayCastingResult _fakeCastRay(Renderer* renderer, Vector3 start, Vector3 direction)
+static RayCastingResult _fakeCastRay(Renderer*, Vector3, Vector3)
 {
-    UNUSED(renderer);
-    UNUSED(start);
-    UNUSED(direction);
-
     RayCastingResult result;
     result.hit = 0;
     return result;
@@ -297,9 +279,8 @@ static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 locat
     }
 }
 
-static double _fakeGetWaterHeight(Renderer* renderer)
+static double _fakeGetWaterHeight(Renderer*)
 {
-    UNUSED(renderer);
     return -1000.0;
 }
 

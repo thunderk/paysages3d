@@ -7,12 +7,10 @@
 #include "../renderer.h"
 #include "clouds/public.h"
 
-static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* data)
+static Color _postProcessFragment(Renderer* renderer, Vector3 location, void*)
 {
     Vector3 camera_location, direction;
     Color result;
-
-    UNUSED(data);
 
     camera_location = renderer->getCameraLocation(renderer, location);
     direction = v3Sub(location, camera_location);

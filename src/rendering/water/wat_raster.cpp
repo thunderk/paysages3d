@@ -7,9 +7,8 @@
 #include "../tools.h"
 #include "../tools/parallel.h"
 
-static Color _postProcessFragment(Renderer* renderer, Vector3 location, void* data)
+static Color _postProcessFragment(Renderer* renderer, Vector3 location, void*)
 {
-    UNUSED(data);
     return renderer->water->getResult(renderer, location.x, location.z).final;
 }
 
@@ -47,11 +46,9 @@ typedef struct
     double radius_ext;
 } ParallelRasterInfo;
 
-static int _parallelJobCallback(ParallelQueue* queue, int job_id, void* data, int stopping)
+static int _parallelJobCallback(ParallelQueue*, int, void* data, int stopping)
 {
     ParallelRasterInfo* info = (ParallelRasterInfo*)data;
-    UNUSED(queue);
-    UNUSED(job_id);
 
     if (!stopping)
     {

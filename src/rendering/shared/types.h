@@ -23,21 +23,7 @@ typedef struct
 
 typedef void* (*FuncObjectCreate)();
 typedef void (*FuncObjectDelete)(void* object);
-typedef void (*FuncObjectCopy)(void* source, void* destination);
-typedef void (*FuncObjectValidate)(void* object);
-typedef void (*FuncObjectSave)(PackStream* stream, void* object);
-typedef void (*FuncObjectLoad)(PackStream* stream, void* object);
 typedef void (*FuncObjectBind)(void* base, void* sub);
-
-typedef struct {
-    FuncObjectCreate create;
-    FuncObjectDelete destroy;
-    FuncObjectCopy copy;
-    FuncObjectValidate validate;
-    FuncObjectSave save;
-    FuncObjectLoad load;
-} StandardDefinition;
-
 typedef struct {
     FuncObjectCreate create;
     FuncObjectDelete destroy;

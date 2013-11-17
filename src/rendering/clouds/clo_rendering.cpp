@@ -11,21 +11,13 @@
 #include "CloudLayerDefinition.h"
 
 /******************** Fake ********************/
-static int _fakeAlterLight(Renderer* renderer, LightDefinition* light, Vector3 location)
+static int _fakeAlterLight(Renderer*, LightDefinition*, Vector3)
 {
-    UNUSED(renderer);
-    UNUSED(light);
-    UNUSED(location);
-
     return 0;
 }
 
-static Color _fakeGetColor(Renderer* renderer, Color base, Vector3 start, Vector3 end)
+static Color _fakeGetColor(Renderer*, Color base, Vector3, Vector3)
 {
-    UNUSED(renderer);
-    UNUSED(start);
-    UNUSED(end);
-
     return base;
 }
 

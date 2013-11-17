@@ -16,10 +16,8 @@
  * Terrain rasterization.
  */
 
-static inline Vector3 _getPoint(TerrainDefinition* definition, Renderer* renderer, double x, double z)
+static inline Vector3 _getPoint(TerrainDefinition*, Renderer* renderer, double x, double z)
 {
-    UNUSED(definition);
-
     Vector3 result;
 
     result.x = x;
@@ -213,11 +211,9 @@ typedef struct
     TerrainChunkInfo chunk;
 } ParallelRasterInfo;
 
-static int _parallelJobCallback(ParallelQueue* queue, int job_id, void* data, int stopping)
+static int _parallelJobCallback(ParallelQueue*, int, void* data, int stopping)
 {
     ParallelRasterInfo* info = (ParallelRasterInfo*)data;
-    UNUSED(queue);
-    UNUSED(job_id);
 
     if (!stopping)
     {

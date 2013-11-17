@@ -15,9 +15,8 @@ GeoArea geoareaCreate()
     return result;
 }
 
-void geoareaDelete(GeoArea* geoarea)
+void geoareaDelete(GeoArea*)
 {
-    UNUSED(geoarea);
 }
 
 void geoareaCopy(GeoArea* source, GeoArea* destination)

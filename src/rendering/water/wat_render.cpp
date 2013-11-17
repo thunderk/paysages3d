@@ -11,25 +11,19 @@
 static HeightInfo _FAKE_HEIGHT_INFO = {0.0, 0.0, 0.0};
 
 /******************** Fake ********************/
-static HeightInfo _fakeGetHeightInfo(Renderer* renderer)
+static HeightInfo _fakeGetHeightInfo(Renderer*)
 {
-    UNUSED(renderer);
     return _FAKE_HEIGHT_INFO;
 }
 
-static double _fakeGetHeight(Renderer* renderer, double x, double z)
+static double _fakeGetHeight(Renderer*, double, double)
 {
-    UNUSED(renderer);
-    UNUSED(x);
-    UNUSED(z);
     return 0.0;
 }
 
-static WaterResult _fakeGetResult(Renderer* renderer, double x, double z)
+static WaterResult _fakeGetResult(Renderer*, double x, double z)
 {
     WaterResult result;
-
-    UNUSED(renderer);
 
     result.location.x = x;
     result.location.y = 0.0;

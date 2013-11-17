@@ -24,31 +24,23 @@ static void* _renderFirstPass(void* data)
     return NULL;
 }
 
-static int _addRenderProgress(Renderer* renderer, double progress)
+static int _addRenderProgress(Renderer* renderer, double)
 {
-    UNUSED(progress);
     return !renderer->render_interrupt;
 }
 
-static Vector3 _getCameraLocation(Renderer* renderer, Vector3 target)
+static Vector3 _getCameraLocation(Renderer* renderer, Vector3)
 {
-    UNUSED(renderer);
-    UNUSED(target);
     return renderer->render_camera->getLocation();
 }
 
-static Vector3 _getCameraDirection(Renderer* renderer, Vector3 target)
+static Vector3 _getCameraDirection(Renderer* renderer, Vector3)
 {
-    UNUSED(renderer);
-    UNUSED(target);
-
     return renderer->render_camera->getDirectionNormalized();
 }
 
-static double _getPrecision(Renderer* renderer, Vector3 location)
+static double _getPrecision(Renderer*, Vector3)
 {
-    UNUSED(renderer);
-    UNUSED(location);
     return 0.0;
 }
 
@@ -96,15 +88,8 @@ static void _pushDisplacedQuad(Renderer* renderer, Vector3 v1, Vector3 v2, Vecto
     renderer->pushDisplacedTriangle(renderer, v4, v1, v3, ov4, ov1, ov3, callback, callback_data);
 }
 
-static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds)
+static RayCastingResult _rayWalking(Renderer*, Vector3, Vector3, int, int, int, int)
 {
-    UNUSED(renderer);
-    UNUSED(location);
-    UNUSED(direction);
-    UNUSED(terrain);
-    UNUSED(water);
-    UNUSED(sky);
-    UNUSED(clouds);
     return _RAYCASTING_NULL;
 }
 

@@ -490,10 +490,9 @@ typedef struct
     Texture4D* mie;
 } Inscatter1Params;
 
-static int _inscatter1Worker(ParallelWork* work, int layer, void* data)
+static int _inscatter1Worker(ParallelWork*, int layer, void* data)
 {
     Inscatter1Params* params = (Inscatter1Params*)data;
-    UNUSED(work);
 
     double r;
     Color dhdH;
@@ -630,10 +629,9 @@ typedef struct
     int first;
 } jParams;
 
-static int _jWorker(ParallelWork* work, int layer, void* data)
+static int _jWorker(ParallelWork*, int layer, void* data)
 {
     jParams* params = (jParams*)data;
-    UNUSED(work);
 
     double r;
     Color dhdH;
@@ -753,10 +751,8 @@ static Color _inscatterN(Texture4D* deltaJ, double r, double mu, double muS, dou
     return raymie;
 }
 
-static int _inscatterNWorker(ParallelWork* work, int layer, void* data)
+static int _inscatterNWorker(ParallelWork*, int layer, void* data)
 {
-    UNUSED(work);
-
     InscatterNParams* params = (InscatterNParams*)data;
 
     double r;
@@ -787,10 +783,9 @@ typedef struct
     Texture4D* destination;
 } CopyInscatterNParams;
 
-static int _copyInscatterNWorker(ParallelWork* work, int layer, void* data)
+static int _copyInscatterNWorker(ParallelWork*, int layer, void* data)
 {
     CopyInscatterNParams* params = (CopyInscatterNParams*)data;
-    UNUSED(work);
 
     double r;
     Color dhdH;
@@ -1156,10 +1151,8 @@ int brunetonInit()
 
 static const int _init = brunetonInit();
 
-AtmosphereResult brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 direction, Vector3 sun_position, Color base)
+AtmosphereResult brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 direction, Vector3 sun_position, Color)
 {
-    UNUSED(base);
-
     double yoffset = GROUND_OFFSET - renderer->water->getHeightInfo(renderer).base_height;
     eye.y += yoffset;
     if (eye.y < 0.0)
@@ -1240,11 +1233,8 @@ AtmosphereResult brunetonApplyAerialPerspective(Renderer* renderer, Vector3 loca
     return result;
 }
 
-void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque)
+void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3, int)
 {
-    UNUSED(normal);
-    UNUSED(opaque);
-
     LightDefinition sun, irradiance;
     double muS;
 

@@ -54,10 +54,8 @@ int cacheFileIsReadable(CacheFile* cache)
     }
 }
 
-int cacheFileIsWritable(CacheFile* cache)
+int cacheFileIsWritable(CacheFile*)
 {
-    UNUSED(cache);
-
     FILE* f = fopen("./cache/.test", "wb");
     if (f)
     {
