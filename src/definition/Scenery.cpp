@@ -38,6 +38,20 @@ void Scenery::load(PackStream* stream)
     validate();
 }
 
+void Scenery::copy(BaseDefinition *destination_) const
+{
+    Scenery* destination = (Scenery*)destination_;
+
+    atmosphere->copy(destination->atmosphere);
+    camera->copy(destination->camera);
+    clouds->copy(destination->clouds);
+    terrain->copy(destination->terrain);
+    textures->copy(destination->textures);
+    water->copy(destination->water);
+
+    destination->validate();
+}
+
 void Scenery::validate()
 {
     BaseDefinition::validate();

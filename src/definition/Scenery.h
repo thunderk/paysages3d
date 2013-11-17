@@ -22,6 +22,8 @@ public:
     virtual void load(PackStream* stream) override;
 
     virtual void validate() override;
+    virtual void copy(BaseDefinition *destination) const override;
+
     virtual Scenery* getScenery() override;
 
     void autoPreset(int seed);

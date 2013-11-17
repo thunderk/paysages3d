@@ -70,8 +70,6 @@ protected:
             CloudsRendererClass.bind(_renderer, _no_clouds);
         }
 
-        _renderer->prepare();
-
         _renderer->atmosphere->applyAerialPerspective = _applyAerialPerspective;
     }
 
@@ -85,7 +83,7 @@ protected:
     }
 
 private:
-    Renderer* _renderer;
+    SoftwareRenderer* _renderer;
     bool _clouds_enabled;
     CloudsDefinition* _no_clouds;
 
