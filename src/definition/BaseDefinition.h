@@ -26,7 +26,7 @@ public:
     virtual void validate();
 
     inline const QString& getName() const {return name;}
-    virtual void setName(QString name);
+    virtual void setName(const QString &name);
 
     virtual Scenery* getScenery();
 

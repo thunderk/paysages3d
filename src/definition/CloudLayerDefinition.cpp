@@ -40,6 +40,8 @@ CloudLayerDefinition* CloudLayerDefinition::newCopy(BaseDefinition* parent) cons
 
 void CloudLayerDefinition::save(PackStream* stream) const
 {
+    BaseDefinition::save(stream);
+
     int clouds_type = (int)type;
 
     stream->write(&clouds_type);
@@ -62,6 +64,8 @@ void CloudLayerDefinition::save(PackStream* stream) const
 
 void CloudLayerDefinition::load(PackStream* stream)
 {
+    BaseDefinition::load(stream);
+
     int clouds_type;
 
     stream->read(&clouds_type);
@@ -87,6 +91,8 @@ void CloudLayerDefinition::load(PackStream* stream)
 
 void CloudLayerDefinition::copy(BaseDefinition* _destination) const
 {
+    BaseDefinition::copy(_destination);
+
     CloudLayerDefinition* destination = (CloudLayerDefinition*)_destination;
 
     destination->type = type;

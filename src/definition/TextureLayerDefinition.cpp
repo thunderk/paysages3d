@@ -26,6 +26,8 @@ TextureLayerDefinition::~TextureLayerDefinition()
 
 void TextureLayerDefinition::validate()
 {
+    BaseDefinition::validate();
+
     if (displacement_scaling < 0.000001)
     {
         displacement_scaling = 0.000001;
@@ -55,6 +57,8 @@ void TextureLayerDefinition::validate()
 
 void TextureLayerDefinition::copy(BaseDefinition *_destination) const
 {
+    BaseDefinition::copy(_destination);
+
     TextureLayerDefinition* destination = (TextureLayerDefinition*)_destination;
 
     terrain_zone->copy(destination->terrain_zone);
@@ -70,6 +74,8 @@ void TextureLayerDefinition::copy(BaseDefinition *_destination) const
 
 void TextureLayerDefinition::save(PackStream* stream) const
 {
+    BaseDefinition::save(stream);
+
     terrain_zone->save(stream);
     stream->write(&displacement_scaling);
     stream->write(&displacement_height);
@@ -82,6 +88,8 @@ void TextureLayerDefinition::save(PackStream* stream) const
 
 void TextureLayerDefinition::load(PackStream* stream)
 {
+    BaseDefinition::load(stream);
+
     terrain_zone->load(stream);
     stream->read(&displacement_scaling);
     stream->read(&displacement_height);

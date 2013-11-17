@@ -15,10 +15,9 @@ Layers::~Layers()
 
 void Layers::copy(BaseDefinition* destination_) const
 {
-    Layers* destination = (Layers*)destination_;
+    BaseDefinition::copy(destination_);
 
-    // don't call overridden method, it will copy again the children
-    // FIXME ... but the definition name (and other future attributes) is not copied
+    Layers* destination = (Layers*)destination_;
 
     destination->clear();
 

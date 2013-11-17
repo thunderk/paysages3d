@@ -20,6 +20,7 @@ void CloudsDefinition::applyPreset(CloudsPreset preset)
     {
         CloudLayerDefinition* layer = new CloudLayerDefinition(this);
         layer->applyPreset(CloudLayerDefinition::CLOUDS_LAYER_PRESET_CIRRUS);
+        layer->setName("Cirrus");
         addLayer(layer);
     }
 }

@@ -24,7 +24,7 @@ BaseDefinition::~BaseDefinition()
     }
 }
 
-void BaseDefinition::setName(QString name)
+void BaseDefinition::setName(const QString &name)
 {
     this->name = name;
 }
