@@ -12,13 +12,11 @@ SOURCES += main.cpp \
     renderer.cpp \
     render.cpp \
     opencl.cpp \
-    geoarea.cpp \
     atmosphere/atm_render.cpp \
     atmosphere/atm_raster.cpp \
     atmosphere/atm_bruneton.cpp \
     clouds/clo_walking.cpp \
     clouds/clo_rendering.cpp \
-    clouds/clo_preview.cpp \
     clouds/clo_density.cpp \
     terrain/ter_render.cpp \
     terrain/ter_raster.cpp \
@@ -36,7 +34,6 @@ SOURCES += main.cpp \
     water/wat_render.cpp \
     water/wat_raster.cpp \
     water/wat_preview.cpp \
-    water/wat_definition.cpp \
     RenderingScenery.cpp
 
 HEADERS += \
@@ -44,13 +41,11 @@ HEADERS += \
     render.h \
     opencl.h \
     main.h \
-    geoarea.h \
     atmosphere/public.h \
     atmosphere/private.h \
     clouds/public.h \
     clouds/private.h \
     clouds/clo_walking.h \
-    clouds/clo_preview.h \
     clouds/clo_density.h \
     shared/types.h \
     terrain/ter_raster.h \

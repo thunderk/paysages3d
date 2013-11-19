@@ -1,86 +1,15 @@
 #include "formclouds.h"
 
-#include "clouds/clo_preview.h"
 #include "tools/euclid.h"
 #include "RenderingScenery.h"
 #include "BasePreview.h"
 #include "renderer.h"
 #include "CloudsDefinition.h"
 #include "CloudLayerDefinition.h"
+#include "CloudsCoveragePreviewRenderer.h"
+#include "CloudsAspectPreviewRenderer.h"
 
 #include "tools.h"
-
-/**************** Previews ****************/
-class PreviewCloudsCoverage:public BasePreview
-{
-public:
-    PreviewCloudsCoverage(QWidget* parent, CloudLayerDefinition* layer):BasePreview(parent)
-    {
-        _renderer = cloudsPreviewCoverageCreateRenderer();
-        _3d = true;
-
-        _original_layer = layer;
-
-        addToggle("3d", tr("Perspective"), true);
-        configScaling(100.0, 1000.0, 20.0, 200.0);
-    }
-    ~PreviewCloudsCoverage()
-    {
-        rendererDelete(_renderer);
-    }
-protected:
-    Color getColor(double x, double y)
-    {
-        return cloudsPreviewCoverageGetPixel(_renderer, x, y, scaling, _3d);
-    }
-    virtual void toggleChangeEvent(QString key, bool value)
-    {
-        if (key == "3d")
-        {
-            _3d = value;
-        }
-        BasePreview::toggleChangeEvent(key, value);
-    }
-    void updateData()
-    {
-        cloudsPreviewCoverageBindLayer(_renderer, _original_layer);
-    }
-
-private:
-    Renderer* _renderer;
-    CloudLayerDefinition* _original_layer;
-    bool _3d;
-};
-
-class PreviewCloudsColor:public BasePreview
-{
-public:
-    PreviewCloudsColor(QWidget* parent, CloudLayerDefinition* layer):BasePreview(parent)
-    {
-        _original_layer = layer;
-
-        _renderer = cloudsPreviewMaterialCreateRenderer();
-
-        configScaling(0.5, 2.0, 0.1, 2.0);
-    }
-
-    ~PreviewCloudsColor()
-    {
-        rendererDelete(_renderer);
-    }
-protected:
-    Color getColor(double x, double y)
-    {
-        return cloudsPreviewMaterialGetPixel(_renderer, x, y);
-    }
-    void updateData()
-    {
-        cloudsPreviewMaterialBindLayer(_renderer, _original_layer);
-    }
-private:
-    Renderer* _renderer;
-    CloudLayerDefinition* _original_layer;
-};
 
 /**************** Form ****************/
 FormClouds::FormClouds(QWidget *parent):
@@ -94,10 +23,15 @@ FormClouds::FormClouds(QWidget *parent):
     _definition = new CloudsDefinition(NULL);
     _layer = new CloudLayerDefinition(NULL);
 
-    _previewCoverage = new PreviewCloudsCoverage(parent, _layer);
-    _previewColor = new PreviewCloudsColor(parent, _layer);
+    _previewCoverageRenderer = new CloudsCoveragePreviewRenderer(_layer);
+    _previewCoverage = new BasePreview(parent);
     addPreview(_previewCoverage, tr("Layer coverage (no lighting)"));
+    _previewCoverage->setRenderer(_previewCoverageRenderer);
+
+    _previewColorRenderer = new CloudsAspectPreviewRenderer(_layer);
+    _previewColor = new BasePreview(parent);
     addPreview(_previewColor, tr("Appearance"));
+    _previewColor->setRenderer(_previewColorRenderer);
 
     addInputEnum(tr("Clouds model"), (int*)&_layer->type, QStringList() << tr("Cirrus") << tr("Cumulus") << tr("Stratocumulus") << tr("Stratus"));
     addInputDouble(tr("Lower altitude"), &_layer->lower_altitude, -10.0, 50.0, 0.5, 5.0);
@@ -121,7 +55,10 @@ FormClouds::~FormClouds()
     delete _definition;
 
     delete _previewCoverage;
+    delete _previewCoverageRenderer;
+
     delete _previewColor;
+    delete _previewColorRenderer;
 }
 
 void FormClouds::revertConfig()

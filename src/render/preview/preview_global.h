@@ -18,6 +18,8 @@ namespace preview {
     class BasePreview;
     class Base2dPreviewRenderer;
     class AtmosphereColorPreviewRenderer;
+    class CloudsCoveragePreviewRenderer;
+    class CloudsAspectPreviewRenderer;
 }
 }
 using namespace paysages::preview;
