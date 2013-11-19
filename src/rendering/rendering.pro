@@ -29,7 +29,6 @@ SOURCES += main.cpp \
     textures/tex_preview.cpp \
     tools/texture.cpp \
     tools/parallel.cpp \
-    tools/memory.cpp \
     tools/lighting.cpp \
     tools/euclid.cpp \
     tools/data.cpp \
@@ -62,7 +61,6 @@ HEADERS += \
     textures/private.h \
     tools/texture.h \
     tools/parallel.h \
-    tools/memory.h \
     tools/lighting.h \
     tools/euclid.h \
     tools/data.h \
