@@ -6,8 +6,8 @@
 #include "../rendering_global.h"
 #include "../tools/lighting.h"
 #include "../tools/euclid.h"
-#include "../tools/color.h"
 #include "../shared/types.h"
+#include "Color.h"
 
 typedef struct
 {

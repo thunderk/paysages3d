@@ -4,7 +4,6 @@
 #include "inputint.h"
 #include "inputboolean.h"
 #include "inputcolor.h"
-#include "inputcolorgradation.h"
 #include "inputnoise.h"
 #include "inputcurve.h"
 #include "inputmaterial.h"
@@ -437,11 +436,6 @@ BaseInput* BaseForm::addInputBoolean(QString label, int* value)
 BaseInput* BaseForm::addInputColor(QString label, Color* value)
 {
     return addInput(new InputColor(_form, label, value));
-}
-
-BaseInput* BaseForm::addInputColorGradation(QString label, ColorGradation* value)
-{
-    return addInput(new InputColorGradation(_form, label, value));
 }
 
 BaseInput* BaseForm::addInputNoise(QString label, NoiseGenerator* value)

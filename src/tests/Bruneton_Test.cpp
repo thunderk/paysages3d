@@ -1,6 +1,5 @@
 #include "BaseTestCase.h"
 
-#include "tools/color.h"
 #include "CameraDefinition.h"
 #include "SoftwareRenderer.h"
 #include "AtmosphereDefinition.h"

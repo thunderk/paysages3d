@@ -10,4 +10,7 @@
 
 #include "definition_global.h"
 
+class Renderer; // TEMP
+class RenderingScenery; // TEMP
+
 #endif // RENDERING_GLOBAL_H

@@ -4,7 +4,6 @@
 #include "software_global.h"
 
 #include "SpaceSegment.h"
-#include "tools/color.h"
 
 namespace paysages {
 namespace software {

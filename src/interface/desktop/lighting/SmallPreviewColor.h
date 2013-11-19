@@ -1,9 +1,9 @@
 #ifndef SMALLPREVIEWCOLOR_H
 #define	SMALLPREVIEWCOLOR_H
 
-#include "DrawingWidget.h"
+#include "software_global.h"
 
-#include "tools/color.h"
+#include "DrawingWidget.h"
 
 class SmallPreviewColor: public DrawingWidget
 {

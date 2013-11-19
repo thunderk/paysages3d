@@ -4,7 +4,6 @@
 #include "preview_global.h"
 
 #include "DrawingWidget.h"
-#include "tools/color.h"
 #include <QImage>
 #include <QStringList>
 class QPainter;

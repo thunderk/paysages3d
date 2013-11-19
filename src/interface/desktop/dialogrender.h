@@ -4,7 +4,6 @@
 #include <ctime>
 #include <QDialog>
 #include "renderer.h"
-#include "tools/color.h"
 
 class QThread;
 class QProgressBar;

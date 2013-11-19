@@ -1,10 +1,10 @@
 #ifndef _PAYSAGES_TYPES_H_
 #define _PAYSAGES_TYPES_H_
 
-#include "../tools/euclid.h"
-#include "../tools/color.h"
+#include "rendering_global.h"
 
-class Renderer;
+#include "../tools/euclid.h"
+#include "Color.h"
 
 typedef struct
 {

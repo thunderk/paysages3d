@@ -3,8 +3,8 @@
 
 #include "../rendering_global.h"
 #include "../shared/types.h"
-#include "../tools/color.h"
 #include "../tools/euclid.h"
+#include "Color.h"
 
 typedef struct
 {
@@ -14,7 +14,7 @@ typedef struct
 
 typedef double (*FuncTerrainGetHeight)(Renderer* renderer, double x, double z, int with_painting);
 typedef TerrainResult (*FuncTerrainGetResult)(Renderer* renderer, double x, double z, int with_painting, int with_textures);
-typedef Color(*FuncTerrainGetFinalColor)(Renderer* renderer, Vector3 location, double precision);
+typedef Color (*FuncTerrainGetFinalColor)(Renderer* renderer, Vector3 location, double precision);
 typedef double (*FuncGetWaterHeight)(Renderer* renderer);
 
 class TerrainRenderer

@@ -33,7 +33,6 @@ SOURCES += main.cpp \
     tools/lighting.cpp \
     tools/euclid.cpp \
     tools/data.cpp \
-    tools/color.cpp \
     tools/cache.cpp \
     water/wat_render.cpp \
     water/wat_raster.cpp \
@@ -67,7 +66,6 @@ HEADERS += \
     tools/lighting.h \
     tools/euclid.h \
     tools/data.h \
-    tools/color.h \
     tools/cache.h \
     water/public.h \
     water/private.h \

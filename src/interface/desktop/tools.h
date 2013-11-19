@@ -6,7 +6,7 @@
 #include <QDir>
 
 #include "shared/types.h"
-#include "tools/color.h"
+#include "Color.h"
 
 static inline QColor colorToQColor(Color color)
 {

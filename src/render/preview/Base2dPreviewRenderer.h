@@ -4,7 +4,8 @@
 #include "preview_global.h"
 
 #include "SoftwareRenderer.h"
-#include "tools/color.h"
+
+#include "Color.h"
 
 namespace paysages {
 namespace preview {

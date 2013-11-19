@@ -14,7 +14,6 @@ HEADERS += \
     widgetcurveeditor.h \
     tools.h \
     previewmaterial.h \
-    previewcolorgradation.h \
     inputnoise.h \
     inputmaterial.h \
     inputlayers.h \
@@ -22,7 +21,6 @@ HEADERS += \
     inputenum.h \
     inputdouble.h \
     inputcurve.h \
-    inputcolorgradation.h \
     inputcolor.h \
     inputcamera.h \
     inputboolean.h \
@@ -36,7 +34,6 @@ HEADERS += \
     dialoglayers.h \
     dialogexplorer.h \
     dialogcurve.h \
-    dialogcolorgradation.h \
     baseinput.h \
     baseformlayer.h \
     baseform.h \
@@ -66,7 +63,6 @@ SOURCES += \
     widgetcurveeditor.cpp \
     tools.cpp \
     previewmaterial.cpp \
-    previewcolorgradation.cpp \
     inputnoise.cpp \
     inputmaterial.cpp \
     inputlayers.cpp \
@@ -74,7 +70,6 @@ SOURCES += \
     inputenum.cpp \
     inputdouble.cpp \
     inputcurve.cpp \
-    inputcolorgradation.cpp \
     inputcolor.cpp \
     inputcamera.cpp \
     inputboolean.cpp \
@@ -88,7 +83,6 @@ SOURCES += \
     dialoglayers.cpp \
     dialogexplorer.cpp \
     dialogcurve.cpp \
-    dialogcolorgradation.cpp \
     baseinput.cpp \
     baseformlayer.cpp \
     baseform.cpp \

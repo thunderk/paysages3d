@@ -10,7 +10,6 @@
 #include <QScrollArea>
 #include <QPushButton>
 #include <cmath>
-#include "tools/color.h"
 #include "BasePreview.h"
 
 /**************** Previews ****************/

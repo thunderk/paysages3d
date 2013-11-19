@@ -1,7 +1,6 @@
 #include "formclouds.h"
 
 #include "clouds/clo_preview.h"
-#include "tools/color.h"
 #include "tools/euclid.h"
 #include "RenderingScenery.h"
 #include "BasePreview.h"
