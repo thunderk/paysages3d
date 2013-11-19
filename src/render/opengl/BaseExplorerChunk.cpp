@@ -2,6 +2,7 @@
 
 #include <QImage>
 #include <QGLWidget>
+#include "ColorProfile.h"
 
 #ifndef GL_CLAMP_TO_EDGE
 #define GL_CLAMP_TO_EDGE 0x812F
@@ -10,7 +11,7 @@
 BaseExplorerChunk::BaseExplorerChunk(Renderer* renderer)
 {
     _renderer = renderer;
-    _color_profile = colorProfileCreate();
+    _color_profile = new ColorProfile;
 
     priority = 0.0;
     _reset_needed = false;
@@ -25,7 +26,7 @@ BaseExplorerChunk::BaseExplorerChunk(Renderer* renderer)
 BaseExplorerChunk::~BaseExplorerChunk()
 {
     _lock_data.lock();
-    colorProfileDelete(_color_profile);
+    delete _color_profile;
     delete _texture;
     _lock_data.unlock();
 }
@@ -57,7 +58,7 @@ bool BaseExplorerChunk::maintain()
                 if (_texture_current_size <= 1 || i % 2 != 0 || j % 2 != 0)
                 {
                     Color color = getTextureColor((double)i / (double)new_texture_size, 1.0 - (double)j / (double)new_texture_size);
-                    color = colorProfileApply(_color_profile, color);
+                    color = _color_profile->apply(color);
                     colorNormalize(&color);
                     new_image->setPixel(i, j, colorTo32BitBGRA(&color));
                 }

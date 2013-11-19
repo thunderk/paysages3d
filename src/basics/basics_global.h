@@ -19,6 +19,7 @@ namespace basics {
     class Color;
     class NoiseGenerator;
     class Curve;
+    class ColorProfile;
 }
 }
 using namespace paysages::basics;

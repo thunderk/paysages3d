@@ -5,10 +5,9 @@
 #include "tools.h"
 #include "SoftwareRenderer.h"
 #include "BasePreview.h"
-
-#include "tools/lighting.h"
-#include "tools/color.h"
 #include "CameraDefinition.h"
+#include "ColorProfile.h"
+#include "tools/lighting.h"
 
 /***** Shared renderer *****/
 MaterialPreviewRenderer::MaterialPreviewRenderer(SurfaceMaterial* material)
@@ -27,13 +26,13 @@ MaterialPreviewRenderer::MaterialPreviewRenderer(SurfaceMaterial* material)
 
     render_camera->setLocation(Vector3(0.0, 0.0, 10.0));
 
-    _color_profile = colorProfileCreate();
-    colorProfileSetToneMapping(_color_profile, TONE_MAPPING_UNCHARTED, 1.0);
+    _color_profile = new ColorProfile;
+    _color_profile->setToneMapping(ColorProfile::TONE_MAPPING_UNCHARTED, 1.0);
 }
 
 MaterialPreviewRenderer::~MaterialPreviewRenderer()
 {
-    colorProfileDelete(_color_profile);
+    delete _color_profile;
 }
 
 void MaterialPreviewRenderer::bindEvent(BasePreview* preview)
@@ -70,7 +69,7 @@ Color MaterialPreviewRenderer::getColor2D(double x, double y, double)
         {
             color.a = (1.0 - dist) / 0.05;
         }
-        return colorProfileApply(_color_profile, color);
+        return _color_profile->apply(color);
     }
 }
 

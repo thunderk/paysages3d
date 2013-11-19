@@ -14,6 +14,7 @@
 #include "PackStream.h"
 #include "Base2dPreviewRenderer.h"
 #include "PreviewOsd.h"
+#include "ColorProfile.h"
 
 /*************** PreviewChunk ***************/
 class PreviewChunk
@@ -406,7 +407,7 @@ DrawingWidget(parent)
     _info->setStyleSheet("QLabel { background-color: white; color: black; }");
 
     _hdr_enabled = false;
-    _hdr_profile = colorProfileCreate();
+    _hdr_profile = new ColorProfile;
 
     this->alive = true;
 
@@ -423,7 +424,7 @@ BasePreview::~BasePreview()
 {
     alive = false;
 
-    colorProfileDelete(_hdr_profile);
+    delete _hdr_profile;
 
     _drawing_manager->removeChunks(this);
 
@@ -643,7 +644,7 @@ QColor BasePreview::getPixelColor(int x, int y)
     Color col = getColor((double) (x - _width / 2) * scaling + xoffset, (double) (y - _height / 2) * scaling + yoffset);
     if (_hdr_enabled)
     {
-        col = colorProfileApply(_hdr_profile, col);
+        col = _hdr_profile->apply(col);
     }
     col.normalize();
     return QColor::fromRgbF(col.r, col.g, col.b, col.a);

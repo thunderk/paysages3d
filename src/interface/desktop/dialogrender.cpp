@@ -19,6 +19,7 @@
 #include "tools.h"
 
 #include "Scenery.h"
+#include "ColorProfile.h"
 
 static DialogRender* _current_dialog;
 
@@ -219,7 +220,7 @@ void DialogRender::saveRender()
 
 void DialogRender::toneMappingChanged()
 {
-    renderSetToneMapping(_renderer->render_area, (ToneMappingOperator)_tonemapping_control->currentIndex(), ((double)_exposure_control->value()) * 0.01);
+    renderSetToneMapping(_renderer->render_area, ColorProfile((ColorProfile::ToneMappingOperator)_tonemapping_control->currentIndex(), ((double)_exposure_control->value()) * 0.01));
 }
 
 void DialogRender::loadLastRender()

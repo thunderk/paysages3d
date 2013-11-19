@@ -1,8 +1,6 @@
 #include "render.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
+#include <cmath>
 
 #include "renderer.h"
 #include "CameraDefinition.h"
@@ -11,6 +9,7 @@
 #include "Mutex.h"
 #include "System.h"
 #include "Vector3.h"
+#include "ColorProfile.h"
 
 typedef struct
 {
@@ -112,7 +111,7 @@ RenderArea* renderCreateArea(Renderer* renderer)
 
     result = new RenderArea;
     result->renderer = renderer;
-    result->hdr_mapping = colorProfileCreate();
+    result->hdr_mapping = new ColorProfile;
     result->params.width = 1;
     result->params.height = 1;
     result->params.antialias = 1;
@@ -136,7 +135,7 @@ RenderArea* renderCreateArea(Renderer* renderer)
 
 void renderDeleteArea(RenderArea* area)
 {
-    colorProfileDelete(area->hdr_mapping);
+    delete area->hdr_mapping;
     delete area->lock;
     free(area->pixels);
     free(area);
@@ -171,9 +170,9 @@ void renderSetParams(RenderArea* area, RenderParams params)
     renderClear(area);
 }
 
-void renderSetToneMapping(RenderArea* area, ToneMappingOperator tonemapper, double exposure)
+void renderSetToneMapping(RenderArea* area, const ColorProfile &profile)
 {
-    colorProfileSetToneMapping(area->hdr_mapping, tonemapper, exposure);
+    profile.copy(area->hdr_mapping);
     _setAllDirty(area);
     renderUpdate(area);
 }
@@ -275,7 +274,7 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
         }
     }
 
-    return colorProfileApply(area->hdr_mapping, result);
+    return area->hdr_mapping->apply(result);
 }
 
 static void _processDirtyPixels(RenderArea* area)

@@ -3,6 +3,7 @@
 #include <cmath>
 #include "renderer.h"
 #include "CameraDefinition.h"
+#include "ColorProfile.h"
 #include "System.h"
 
 static Color _postProcessFragment(Renderer*, Vector3 location, void*)
@@ -36,7 +37,7 @@ TEST(Render, quad)
     renderer->render_width = 800;
     renderer->render_height = 600;
     renderer->render_quality = 1;
-    renderSetToneMapping(renderer->render_area, TONE_MAPPING_CLAMP, 0.0);
+    renderSetToneMapping(renderer->render_area, ColorProfile(ColorProfile::TONE_MAPPING_CLAMP, 0.0));
 
     renderer->render_camera->setLocationCoords(0.0, 0.5, 2.0);
     renderer->render_camera->setTargetCoords(0.0, 0.5, 0.0);

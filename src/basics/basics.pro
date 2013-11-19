@@ -27,7 +27,8 @@ SOURCES += \
     ColorHSL.cpp \
     BoundingBox.cpp \
     Matrix4.cpp \
-    Curve.cpp
+    Curve.cpp \
+    ColorProfile.cpp
 
 HEADERS +=\
         basics_global.h \
@@ -42,7 +43,8 @@ HEADERS +=\
     ColorHSL.h \
     BoundingBox.h \
     Matrix4.h \
-    Curve.h
+    Curve.h \
+    ColorProfile.h
 
 unix:!symbian {
     maemo5 {

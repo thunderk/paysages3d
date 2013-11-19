@@ -3,27 +3,6 @@
 
 #include "../rendering_global.h"
 
-/* HDR profile for tone-mapping */
-class ColorProfile;
-typedef enum
-{
-    TONE_MAPPING_UNCHARTED,
-    TONE_MAPPING_REIHNARD,
-    TONE_MAPPING_CLAMP
-} ToneMappingOperator;
-
-RENDERINGSHARED_EXPORT ColorProfile* colorProfileCreate();
-RENDERINGSHARED_EXPORT void colorProfileDelete(ColorProfile* profile);
-
-RENDERINGSHARED_EXPORT void colorProfileSetToneMapping(ColorProfile* profile, ToneMappingOperator tonemapper, double exposure);
-
-RENDERINGSHARED_EXPORT void colorProfileSave(PackStream* stream, ColorProfile* profile);
-RENDERINGSHARED_EXPORT void colorProfileLoad(PackStream* stream, ColorProfile* profile);
-
-RENDERINGSHARED_EXPORT void colorProfileClear(ColorProfile* profile);
-RENDERINGSHARED_EXPORT int colorProfileCollect(ColorProfile* profile, Color pixel);
-RENDERINGSHARED_EXPORT Color colorProfileApply(ColorProfile* profile, Color pixel);
-
 /* ColorGradation */
 typedef struct ColorGradation ColorGradation;
 

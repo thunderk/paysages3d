@@ -4,12 +4,11 @@
 #include "opengl_global.h"
 
 #include <QMutex>
-#include "tools/color.h"
+#include "Color.h"
 
 class QImage;
 class QGLWidget;
 class Renderer;
-class ColorProfile;
 
 namespace paysages {
 namespace opengl {
@@ -27,7 +26,7 @@ public:
 protected:
     BaseExplorerChunk(Renderer* renderer);
 
-    inline Renderer* renderer() {return _renderer;};
+    inline Renderer* renderer() {return _renderer;}
 
     void askReset();
     void setMaxTextureSize(int size);
