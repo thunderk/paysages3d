@@ -3,7 +3,6 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include "../tools.h"
 #include "../renderer.h"
 #include "clouds/public.h"
 

@@ -2,12 +2,13 @@
 #define RANDOMGENERATOR_H
 
 #include "system_global.h"
+
 #include <cstdlib>
 
 namespace paysages {
 namespace system {
 
-class RandomGenerator
+class SYSTEMSHARED_EXPORT RandomGenerator
 {
 public:
     RandomGenerator();

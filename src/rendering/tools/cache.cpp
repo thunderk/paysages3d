@@ -1,8 +1,7 @@
 #include "cache.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "../tools.h"
+#include <cstdio>
+#include <cstdlib>
 
 struct CacheFile
 {

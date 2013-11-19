@@ -2,7 +2,6 @@
 
 #include <assert.h>
 #include <stdlib.h>
-#include "../tools.h"
 #include "../renderer.h"
 #include "clo_density.h"
 #include "clo_walking.h"

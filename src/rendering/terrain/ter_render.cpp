@@ -2,7 +2,6 @@
 
 #include <cstdlib>
 #include <cmath>
-#include "../tools.h"
 #include "../renderer.h"
 #include "textures/public.h"
 #include "TerrainDefinition.h"

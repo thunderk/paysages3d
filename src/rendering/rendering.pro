@@ -9,7 +9,6 @@ DEFINES += RENDERING_LIBRARY
 include(../common.pri)
 
 SOURCES += main.cpp \
-    tools.cpp \
     renderer.cpp \
     render.cpp \
     opencl.cpp \
@@ -43,7 +42,6 @@ SOURCES += main.cpp \
     RenderingScenery.cpp
 
 HEADERS += \
-    tools.h \
     renderer.h \
     render.h \
     opencl.h \

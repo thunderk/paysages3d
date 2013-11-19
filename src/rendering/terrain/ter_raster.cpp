@@ -2,9 +2,8 @@
 #include "private.h"
 #include "ter_raster.h"
 
-#include <stdlib.h>
-#include <math.h>
-#include "../tools.h"
+#include <cstdlib>
+#include <cmath>
 #include "BoundingBox.h"
 #include "../tools/parallel.h"
 #include "../renderer.h"

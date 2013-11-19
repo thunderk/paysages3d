@@ -1,6 +1,5 @@
 #include "public.h"
 
-#include "../tools.h"
 #include "../tools/lighting.h"
 #include "../renderer.h"
 #include "NoiseGenerator.h"

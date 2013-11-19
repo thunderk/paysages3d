@@ -2,7 +2,6 @@
 
 #include "../terrain/public.h"
 #include "../renderer.h"
-#include "../tools.h"
 
 void waterAlterPreviewCoverageRenderer(Renderer* renderer)
 {

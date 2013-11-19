@@ -10,7 +10,6 @@
 #include <QMutex>
 #include <cassert>
 #include <cmath>
-#include "tools.h"
 #include "System.h"
 #include "PackStream.h"
 #include "Base2dPreviewRenderer.h"

@@ -1,7 +1,6 @@
 #include "private.h"
 
 #include <cmath>
-#include "../tools.h"
 #include "../renderer.h"
 #include "WaterDefinition.h"
 #include "SurfaceMaterial.h"

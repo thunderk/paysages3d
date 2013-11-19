@@ -12,7 +12,6 @@
 #include "System.h"
 #include "PackStream.h"
 #include "AtmosphereDefinition.h"
-#include "tools.h"
 #include "tools/cache.h"
 #include "tools/texture.h"
 #include "tools/parallel.h"

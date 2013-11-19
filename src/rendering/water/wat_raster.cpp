@@ -1,10 +1,8 @@
 #include "public.h"
 #include "private.h"
 
-#include <stdlib.h>
-#include <math.h>
+#include <cmath>
 #include "../renderer.h"
-#include "../tools.h"
 #include "../tools/parallel.h"
 
 static Color _postProcessFragment(Renderer* renderer, Vector3 location, void*)
