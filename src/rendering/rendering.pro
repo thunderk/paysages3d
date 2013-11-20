@@ -11,7 +11,6 @@ include(../common.pri)
 SOURCES += main.cpp \
     renderer.cpp \
     render.cpp \
-    opencl.cpp \
     atmosphere/atm_render.cpp \
     atmosphere/atm_raster.cpp \
     atmosphere/atm_bruneton.cpp \
@@ -38,7 +37,6 @@ SOURCES += main.cpp \
 HEADERS += \
     renderer.h \
     render.h \
-    opencl.h \
     main.h \
     atmosphere/public.h \
     atmosphere/private.h \

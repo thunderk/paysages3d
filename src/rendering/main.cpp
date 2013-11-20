@@ -7,7 +7,6 @@
 #include "PackStream.h"
 #include "render.h"
 #include "main.h"
-#include "opencl.h"
 
 #define APP_HEADER 198632.125
 
@@ -19,7 +18,6 @@ void paysagesInit()
         fprintf(stderr, "ERROR : Can't locate data files.\n");
         exit(1);
     }
-    openclInit();
 
     renderInit();
 }
@@ -27,8 +25,6 @@ void paysagesInit()
 void paysagesQuit()
 {
     renderQuit();
-
-    openclQuit();
 }
 
 FileOperationResult paysagesSave(char* filepath)
