@@ -4,7 +4,7 @@
 #include <QPaintEngine>
 #include <QMouseEvent>
 #include "Curve.h"
-#include "tools/euclid.h"
+#include "Geometry.h"
 
 WidgetCurveEditor::WidgetCurveEditor(QWidget *parent, double xmin, double xmax, double ymin, double ymax) : QWidget(parent)
 {
@@ -220,7 +220,7 @@ int WidgetCurveEditor::getPointAt(int x, int y)
     {
         _curve->getPoint(i, &point);
         curveToScreen(point.position, point.value, &dx, &dy);
-        ndistance = euclidGetDistance2D((double)x, (double)y, (double)dx, (double)dy);
+        ndistance = Geometry::getDistance2D((double)x, (double)y, (double)dx, (double)dy);
         if (nearest < 0 || ndistance < distance)
         {
             distance = ndistance;

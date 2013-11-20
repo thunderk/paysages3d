@@ -5,7 +5,6 @@
 #include <QDateTime>
 #include "terrain/paintingbrush.h"
 #include "CameraDefinition.h"
-#include "tools/euclid.h"
 #include "renderer.h"
 #include "terrain/public.h"
 

@@ -11,7 +11,6 @@
 #include "OpenGLRenderer.h"
 #include "WaterDefinition.h"
 #include "SurfaceMaterial.h"
-#include "tools/euclid.h"
 #include "renderer.h"
 #include "CameraDefinition.h"
 #include "atmosphere/public.h"

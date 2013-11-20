@@ -3,8 +3,8 @@
 
 #include "rendering_global.h"
 
-#include "../tools/euclid.h"
 #include "Color.h"
+#include "Vector3.h"
 
 typedef struct
 {

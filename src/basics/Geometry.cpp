@@ -1,9 +1,9 @@
-#include "euclid.h"
+#include "Geometry.h"
 
-#include <math.h>
-#include "PackStream.h"
+#include <cmath>
+#include "Vector3.h"
 
-double euclidGet2DAngle(double x, double y)
+double Geometry::get2DAngle(double x, double y)
 {
     double nx, ny, d, ret;
 
@@ -35,26 +35,24 @@ double euclidGet2DAngle(double x, double y)
     return ret < 0.0 ? ret + 2.0 * M_PI : ret;
 }
 
-Vector3 euclidGetNormalFromTriangle(Vector3 center, Vector3 bottom, Vector3 right)
+Vector3 Geometry::getNormalFromTriangle(const Vector3 &center, const Vector3 &bottom, const Vector3 &right)
 {
-    Vector3 dx = v3Sub(right, center);
-    Vector3 dz = v3Sub(bottom, center);
-    return v3Normalize(v3Cross(dz, dx));
+    Vector3 dx = right.sub(center);
+    Vector3 dz = bottom.sub(center);
+    return dz.crossProduct(dx).normalize();
 }
 
-double euclidGetDistance2D(double x1, double y1, double x2, double y2)
+double Geometry::getDistance2D(double x1, double y1, double x2, double y2)
 {
     double dx = x2 - x1;
     double dy = y2 - y1;
     return sqrt(dx * dx + dy * dy);
 }
 
-int euclidRayIntersectSphere(Vector3 ray_point, Vector3 ray_direction, Vector3 sphere_center, double sphere_radius, Vector3* hit1, Vector3* hit2)
+int Geometry::rayIntersectSphere(const Vector3 &ray_point, const Vector3 &ray_direction, const Vector3 &sphere_center, double sphere_radius, Vector3 *hit1, Vector3 *hit2)
 {
-    Vector3 ray_direction_sphere;
+    Vector3 ray_direction_sphere = ray_point.sub(sphere_center);
     double a, b, c, d;
-
-    ray_direction_sphere = v3Sub(ray_point, sphere_center);
 
     a = ray_direction.x * ray_direction.x + ray_direction.y * ray_direction.y + ray_direction.z * ray_direction.z;
     b = 2 * (ray_direction.x * ray_direction_sphere.x + ray_direction.y * ray_direction_sphere.y + ray_direction.z * ray_direction_sphere.z);
@@ -69,8 +67,8 @@ int euclidRayIntersectSphere(Vector3 ray_point, Vector3 ray_direction, Vector3 s
     {
         if (hit1 && hit2)
         {
-            *hit1 = v3Add(ray_point, v3Scale(ray_direction, (-b - sqrt(d)) / (2 * a)));
-            *hit2 = v3Add(ray_point, v3Scale(ray_direction, (-b + sqrt(d)) / (2 * a)));
+            *hit1 = ray_point.add(ray_direction.scale((-b - sqrt(d)) / (2 * a)));
+            *hit2 = ray_point.add(ray_direction.scale((-b + sqrt(d)) / (2 * a)));
         }
         return 2;
     }
@@ -78,7 +76,7 @@ int euclidRayIntersectSphere(Vector3 ray_point, Vector3 ray_direction, Vector3 s
     {
         if (hit1)
         {
-            *hit1 = v3Add(ray_point, v3Scale(ray_direction, -b / (2 * a)));
+            *hit1 = ray_point.add(ray_direction.scale(-b / (2 * a)));
         }
         return 1;
     }

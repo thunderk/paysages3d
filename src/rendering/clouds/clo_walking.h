@@ -2,7 +2,8 @@
 #define _PAYSAGES_CLOUDS_WALKING_H_
 
 #include "public.h"
-#include "../tools/euclid.h"
+
+#include "Vector3.h"
 
 /**
  * Functions to walk through a cloud layer.

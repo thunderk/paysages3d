@@ -5,7 +5,6 @@
 
 #include "../shared/types.h"
 #include "../tools/lighting.h"
-#include "../tools/euclid.h"
 #include "SurfaceMaterial.h"
 
 typedef Color (*FuncCloudsGetColor)(Renderer* renderer, Color base, Vector3 start, Vector3 end);

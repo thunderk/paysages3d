@@ -28,7 +28,8 @@ void PreviewTerrainShape::updateEvent()
 
 Color PreviewTerrainShape::getColor2D(double x, double y, double scaling)
 {
-    return waterGetPreviewCoverage(this, x, y, scaling, _highlight_enabled ? 1 : 0);
+    //return waterGetPreviewCoverage(this, x, y, scaling, _highlight_enabled ? 1 : 0);
+    return COLOR_BLACK;
 }
 
 void PreviewTerrainShape::toggleChangeEvent(QString key, bool value)

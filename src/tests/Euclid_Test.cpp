@@ -1,7 +1,8 @@
 #include "BaseTestCase.h"
 
 #include <cmath>
-#include "tools/euclid.h"
+#include "Geometry.h"
+#include "Vector3.h"
 
 /*static inline int _Vector3_cmp(Vector3 v1, Vector3 v2)
 {
@@ -16,28 +17,28 @@ DEFINE_COMPARE_ASSERT(Vector3, _Vector3_cmp, _Vector3_str);*/
 
 TEST(Euclid, get2DAngle)
 {
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(0.0, 0.0), 0.0);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(0.0, 0.0), 0.0);
 
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(0.1, 0.0), 0.0);
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(1.0, 0.0), 0.0);
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(2.0, 0.0), 0.0);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(0.1, 0.0), 0.0);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(1.0, 0.0), 0.0);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(2.0, 0.0), 0.0);
 
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(0.0, 0.1), M_PI_2);
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(0.0, 1.0), M_PI_2);
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(0.0, 2.0), M_PI_2);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(0.0, 0.1), M_PI_2);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(0.0, 1.0), M_PI_2);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(0.0, 2.0), M_PI_2);
 
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(-0.1, 0.0), M_PI);
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(-1.0, 0.0), M_PI);
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(-2.0, 0.0), M_PI);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(-0.1, 0.0), M_PI);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(-1.0, 0.0), M_PI);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(-2.0, 0.0), M_PI);
 
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(0.0, -0.1), 3.0 * M_PI_2);
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(0.0, -1.0), 3.0 * M_PI_2);
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(0.0, -2.0), 3.0 * M_PI_2);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(0.0, -0.1), 3.0 * M_PI_2);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(0.0, -1.0), 3.0 * M_PI_2);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(0.0, -2.0), 3.0 * M_PI_2);
 
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(0.5, 0.5), M_PI_4);
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(0.5, -0.5), 7.0 * M_PI_4);
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(-0.5, 0.5), 3.0 * M_PI_4);
-    EXPECT_DOUBLE_EQ(euclidGet2DAngle(-0.5, -0.5), 5.0 * M_PI_4);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(0.5, 0.5), M_PI_4);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(0.5, -0.5), 7.0 * M_PI_4);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(-0.5, 0.5), 3.0 * M_PI_4);
+    EXPECT_DOUBLE_EQ(Geometry::get2DAngle(-0.5, -0.5), 5.0 * M_PI_4);
 }
 
 /*TEST(Euclid, Vector3)

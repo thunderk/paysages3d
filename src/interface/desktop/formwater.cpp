@@ -4,7 +4,6 @@
 #include <QSlider>
 #include <cmath>
 
-#include "tools/euclid.h"
 #include "tools/lighting.h"
 #include "renderer.h"
 #include "water/public.h"
@@ -64,7 +63,7 @@ FormWater::~FormWater()
     delete previewCoverage;
 
     delete previewColorRenderer;
-    delete previewCoverage;
+    delete previewColor;
 }
 
 void FormWater::revertConfig()

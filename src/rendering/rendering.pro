@@ -27,7 +27,6 @@ SOURCES += main.cpp \
     tools/texture.cpp \
     tools/parallel.cpp \
     tools/lighting.cpp \
-    tools/euclid.cpp \
     tools/data.cpp \
     tools/cache.cpp \
     water/wat_render.cpp \
@@ -54,7 +53,6 @@ HEADERS += \
     tools/texture.h \
     tools/parallel.h \
     tools/lighting.h \
-    tools/euclid.h \
     tools/data.h \
     tools/cache.h \
     water/public.h \

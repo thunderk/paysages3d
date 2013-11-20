@@ -2,8 +2,8 @@
 #define _PAYSAGES_TOOLS_LIGHTING_H_
 
 #include "../rendering_global.h"
-#include "euclid.h"
 #include "Color.h"
+#include "Vector3.h"
 
 typedef struct
 {

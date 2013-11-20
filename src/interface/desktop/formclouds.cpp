@@ -1,6 +1,5 @@
 #include "formclouds.h"
 
-#include "tools/euclid.h"
 #include "RenderingScenery.h"
 #include "BasePreview.h"
 #include "renderer.h"

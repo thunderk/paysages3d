@@ -3,7 +3,6 @@
 
 #include "rendering_global.h"
 #include "shared/types.h"
-#include "tools/euclid.h"
 #include "Color.h"
 
 typedef Color (*f_RenderFragmentCallback)(Renderer* renderer, Vector3 location, void* data);
