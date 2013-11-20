@@ -20,6 +20,7 @@ public:
     virtual void bindEvent(BasePreview* preview);
 
     virtual void updateEvent();
+    virtual void cameraEvent(double x, double y, double scaling);
     virtual Color getColor2D(double x, double y, double scaling);
 };
 

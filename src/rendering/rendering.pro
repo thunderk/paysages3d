@@ -33,7 +33,6 @@ SOURCES += main.cpp \
     tools/cache.cpp \
     water/wat_render.cpp \
     water/wat_raster.cpp \
-    water/wat_preview.cpp \
     RenderingScenery.cpp
 
 HEADERS += \

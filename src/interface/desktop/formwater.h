@@ -12,6 +12,7 @@ class FormWater : public BaseForm
 
 public:
     explicit FormWater(QWidget *parent = 0);
+    virtual ~FormWater();
 
 public slots:
     virtual void revertConfig();
@@ -23,7 +24,10 @@ protected slots:
 
 private:
     BasePreview* previewCoverage;
+    WaterCoveragePreviewRenderer* previewCoverageRenderer;
+
     BasePreview* previewColor;
+    WaterAspectPreviewRenderer* previewColorRenderer;
 };
 
 #endif

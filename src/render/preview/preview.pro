@@ -19,7 +19,9 @@ SOURCES += Base2dPreviewRenderer.cpp \
     DrawingWidget.cpp \
     PreviewOsdItem.cpp \
     CloudsCoveragePreviewRenderer.cpp \
-    CloudsAspectPreviewRenderer.cpp
+    CloudsAspectPreviewRenderer.cpp \
+    WaterCoveragePreviewRenderer.cpp \
+    WaterAspectPreviewRenderer.cpp
 
 HEADERS += Base2dPreviewRenderer.h\
         preview_global.h \
@@ -29,7 +31,9 @@ HEADERS += Base2dPreviewRenderer.h\
     DrawingWidget.h \
     PreviewOsdItem.h \
     CloudsCoveragePreviewRenderer.h \
-    CloudsAspectPreviewRenderer.h
+    CloudsAspectPreviewRenderer.h \
+    WaterCoveragePreviewRenderer.h \
+    WaterAspectPreviewRenderer.h
 
 unix:!symbian {
     maemo5 {

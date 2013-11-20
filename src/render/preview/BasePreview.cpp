@@ -498,6 +498,10 @@ void BasePreview::updateData()
 
 void BasePreview::cameraEvent()
 {
+    if (_renderer)
+    {
+        _renderer->cameraEvent(xoffset, yoffset, scaling);
+    }
 }
 
 Color BasePreview::getColor(double x, double y)

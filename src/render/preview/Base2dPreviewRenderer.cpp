@@ -20,6 +20,10 @@ void Base2dPreviewRenderer::updateEvent()
 {
 }
 
+void Base2dPreviewRenderer::cameraEvent(double, double, double)
+{
+}
+
 Color Base2dPreviewRenderer::getColor2D(double, double, double)
 {
     return COLOR_BLACK;
