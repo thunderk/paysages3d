@@ -9,11 +9,14 @@ namespace preview {
 class AtmosphereColorPreviewRenderer:public Base2dPreviewRenderer
 {
 public:
-    AtmosphereColorPreviewRenderer(double heading);
+    AtmosphereColorPreviewRenderer(AtmosphereDefinition* definition, double heading);
 
+    void bindEvent(BasePreview* preview) override;
+    void updateEvent() override;
     virtual Color getColor2D(double x, double y, double scaling) override;
 
-protected:
+private:
+    AtmosphereDefinition* definition;
     double heading;
 };
 

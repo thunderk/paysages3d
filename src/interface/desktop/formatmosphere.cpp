@@ -14,27 +14,6 @@
 
 static AtmosphereDefinition* _definition;
 
-/**************** Previews ****************/
-class PreviewSkyRenderer:public AtmosphereColorPreviewRenderer
-{
-public:
-    PreviewSkyRenderer(double heading):
-        AtmosphereColorPreviewRenderer(heading)
-    {
-    }
-
-    void bindEvent(BasePreview* preview) override
-    {
-        preview->configHdrToneMapping(true);
-        preview->configScaling(0.5, 5.0, 0.5, 2.5);
-    }
-    void updateEvent() override
-    {
-        getScenery()->setAtmosphere(_definition);
-        prepare();
-    }
-};
-
 /**************** Form ****************/
 FormAtmosphere::FormAtmosphere(QWidget *parent):
     BaseForm(parent)
@@ -48,12 +27,12 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
     _definition = new AtmosphereDefinition(NULL);
 
     previewWest = new BasePreview(this);
-    previewWestRenderer = new PreviewSkyRenderer(M_PI / 2.0);
+    previewWestRenderer = new AtmosphereColorPreviewRenderer(_definition, M_PI / 2.0);
     previewWest->setRenderer(previewWestRenderer);
     addPreview(previewWest, QString(tr("West preview")));
 
     previewEast = new BasePreview(this);
-    previewEastRenderer = new PreviewSkyRenderer(-M_PI / 2.0);
+    previewEastRenderer = new AtmosphereColorPreviewRenderer(_definition, -M_PI / 2.0);
     previewEast->setRenderer(previewEastRenderer);
     addPreview(previewEast, QString(tr("East preview")));
 

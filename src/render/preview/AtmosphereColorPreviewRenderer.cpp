@@ -6,6 +6,7 @@
 #include "tools/lighting.h"
 #include "SurfaceMaterial.h"
 #include "Scenery.h"
+#include "BasePreview.h"
 
 /*
  * Atmosphere previews.
@@ -146,10 +147,21 @@ static inline int _checkHit(Vector3 eye, Vector3 direction, Vector3* hit, Vector
     return _checkHitGround(eye, direction, hit);
 }
 
-AtmosphereColorPreviewRenderer::AtmosphereColorPreviewRenderer(double heading):
-    heading(heading)
+AtmosphereColorPreviewRenderer::AtmosphereColorPreviewRenderer(AtmosphereDefinition* definition, double heading):
+    definition(definition), heading(heading)
 {
     getScenery()->getCamera()->setLocation(Vector3(0.0, 7.0, 0.0));
+}
+
+void AtmosphereColorPreviewRenderer::bindEvent(BasePreview* preview)
+{
+    preview->configHdrToneMapping(true);
+    preview->configScaling(0.5, 5.0, 0.5, 2.5);
+}
+void AtmosphereColorPreviewRenderer::updateEvent()
+{
+    getScenery()->setAtmosphere(definition);
+    prepare();
 }
 
 Color AtmosphereColorPreviewRenderer::getColor2D(double x, double y, double)
