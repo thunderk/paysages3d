@@ -3,15 +3,16 @@
 
 #include "preview_global.h"
 
-#include "Base2dPreviewRenderer.h"
+#include "TerrainShapePreviewRenderer.h"
 
 namespace paysages {
 namespace preview {
 
-class PREVIEWSHARED_EXPORT WaterCoveragePreviewRenderer : public Base2dPreviewRenderer
+class PREVIEWSHARED_EXPORT WaterCoveragePreviewRenderer : public TerrainShapePreviewRenderer
 {
 public:
     WaterCoveragePreviewRenderer(WaterDefinition* definition);
+    virtual ~WaterCoveragePreviewRenderer();
 
     virtual void bindEvent(BasePreview* preview) override;
     virtual void updateEvent() override;

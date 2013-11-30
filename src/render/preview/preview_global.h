@@ -22,6 +22,7 @@ namespace preview {
     class CloudsAspectPreviewRenderer;
     class WaterCoveragePreviewRenderer;
     class WaterAspectPreviewRenderer;
+    class TerrainShapePreviewRenderer;
 }
 }
 using namespace paysages::preview;

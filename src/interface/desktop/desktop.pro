@@ -42,7 +42,6 @@ HEADERS += \
     terrain/paintingbrush.h \
     terrain/mainterrainform.h \
     common/freeformhelper.h \
-    terrain/previewterrainshape.h \
     common/widgetsliderdecimal.h \
     terrain/widgetterrainbasenoisepreview.h \
     common/mainwindow.h \
@@ -91,7 +90,6 @@ SOURCES += \
     terrain/paintingbrush.cpp \
     terrain/mainterrainform.cpp \
     common/freeformhelper.cpp \
-    terrain/previewterrainshape.cpp \
     common/widgetsliderdecimal.cpp \
     terrain/widgetterrainbasenoisepreview.cpp \
     common/mainwindow.cpp \

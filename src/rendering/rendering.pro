@@ -19,7 +19,6 @@ SOURCES += main.cpp \
     clouds/clo_density.cpp \
     terrain/ter_render.cpp \
     terrain/ter_raster.cpp \
-    terrain/ter_preview.cpp \
     terrain/ter_painting.cpp \
     textures/tex_tools.cpp \
     textures/tex_rendering.cpp \

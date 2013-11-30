@@ -14,13 +14,6 @@ typedef struct
 } RayCastingResult;
 typedef RayCastingResult (*FuncGeneralCastRay)(Renderer* renderer, Vector3 start, Vector3 direction);
 
-typedef struct
-{
-    double min_height;
-    double max_height;
-    double base_height;
-} HeightInfo;
-
 typedef void* (*FuncObjectCreate)();
 typedef void (*FuncObjectDelete)(void* object);
 typedef void (*FuncObjectBind)(void* base, void* sub);

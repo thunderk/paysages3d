@@ -1,15 +1,17 @@
-#ifndef PREVIEWTERRAINSHAPE_H
-#define PREVIEWTERRAINSHAPE_H
+#ifndef TERRAINSHAPEPREVIEWRENDERER_H
+#define TERRAINSHAPEPREVIEWRENDERER_H
 
-#include "desktop_global.h"
+#include "preview_global.h"
 
 #include "Base2dPreviewRenderer.h"
-#include "terrain/public.h"
 
-class PreviewTerrainShape : public Base2dPreviewRenderer
+namespace paysages {
+namespace preview {
+
+class TerrainShapePreviewRenderer : public Base2dPreviewRenderer
 {
 public:
-    explicit PreviewTerrainShape(TerrainDefinition* terrain);
+    explicit TerrainShapePreviewRenderer(TerrainDefinition* terrain);
 
 protected:
     virtual void bindEvent(BasePreview* preview);
@@ -17,10 +19,14 @@ protected:
     virtual Color getColor2D(double x, double y, double scaling) override;
     virtual void toggleChangeEvent(QString key, bool value);
 
-private:
     TerrainDefinition* _terrain;
+
+private:
     bool _highlight_enabled;
     double _water_height;
 };
 
-#endif // PREVIEWTERRAINSHAPE_H
+}
+}
+
+#endif // TERRAINSHAPEPREVIEWRENDERER_H

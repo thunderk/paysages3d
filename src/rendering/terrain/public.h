@@ -32,7 +32,4 @@ public:
 
 RENDERINGSHARED_EXPORT extern StandardRenderer TerrainRendererClass;
 
-RENDERINGSHARED_EXPORT void terrainAlterPreviewRenderer(Renderer* renderer);
-RENDERINGSHARED_EXPORT Color terrainGetPreviewColor(Renderer* renderer, double x, double z, double detail);
-
 #endif

@@ -2,6 +2,7 @@
 
 #include "BasePreview.h"
 #include "Scenery.h"
+#include "TerrainDefinition.h"
 
 // TEMP
 #include "RenderingScenery.h"
@@ -9,9 +10,14 @@
 #include "water/public.h"
 
 WaterCoveragePreviewRenderer::WaterCoveragePreviewRenderer(WaterDefinition* definition):
-    definition(definition)
+    TerrainShapePreviewRenderer(new TerrainDefinition(NULL)), definition(definition)
 {
     highlight = true;
+}
+
+WaterCoveragePreviewRenderer::~WaterCoveragePreviewRenderer()
+{
+    delete TerrainShapePreviewRenderer::_terrain;
 }
 
 void WaterCoveragePreviewRenderer::bindEvent(BasePreview* preview)
@@ -27,11 +33,10 @@ void WaterCoveragePreviewRenderer::bindEvent(BasePreview* preview)
 
 void WaterCoveragePreviewRenderer::updateEvent()
 {
-    getScenery()->setTerrain(RenderingScenery::getCurrent()->getTerrain());
     getScenery()->setWater(definition);
-    prepare();
 
-    terrainAlterPreviewRenderer(this);
+    RenderingScenery::getCurrent()->getTerrain(_terrain);
+    TerrainShapePreviewRenderer::updateEvent();
 }
 
 Color WaterCoveragePreviewRenderer::getColor2D(double x, double y, double scaling)
@@ -41,7 +46,7 @@ Color WaterCoveragePreviewRenderer::getColor2D(double x, double y, double scalin
     height = terrain->getHeight(this, x, y, 1);
     if (height > terrain->getWaterHeight(this))
     {
-        return terrainGetPreviewColor(this, x, y, scaling);
+        return TerrainShapePreviewRenderer::getColor2D(x, y, scaling);
     }
     else
     {

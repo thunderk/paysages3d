@@ -4,7 +4,7 @@
 #include <QMessageBox>
 #include "dialogbaseterrainnoise.h"
 #include "dialogterrainpainting.h"
-#include "previewterrainshape.h"
+#include "TerrainShapePreviewRenderer.h"
 #include "common/freeformhelper.h"
 #include "tools.h"
 #include "RenderingScenery.h"
@@ -25,7 +25,7 @@ MainTerrainForm::MainTerrainForm(QWidget *parent) :
 
     _form_helper = new FreeFormHelper(this);
 
-    _renderer_shape = new PreviewTerrainShape(_terrain);
+    _renderer_shape = new TerrainShapePreviewRenderer(_terrain);
     _form_helper->addPreview(ui->preview_shape, _renderer_shape);
 
     _form_helper->addDoubleInputSlider(ui->input_scaling, &_terrain->scaling, 0.1, 3.0, 0.03, 0.3);
