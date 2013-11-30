@@ -551,7 +551,7 @@ void BasePreview::configScrolling(double xmin, double xmax, double xinit, double
     redraw();
 }
 
-void BasePreview::addChoice(const QString& key, const QString& title, const QStringList& choices, int init_value)
+void BasePreview::addChoice(const QString &key, const QString &title, const QStringList &choices, int init_value)
 {
     _ContextChoice choice;
     choice.title = title;
@@ -563,11 +563,16 @@ void BasePreview::addChoice(const QString& key, const QString& title, const QStr
     choiceChangeEvent(key, init_value);
 }
 
-void BasePreview::choiceChangeEvent(const QString&, int)
+void BasePreview::choiceChangeEvent(const QString &key, int position)
 {
+    if (_renderer)
+    {
+        _renderer->choiceChangeEvent(key.toStdString(), position);
+    }
+    redraw();
 }
 
-void BasePreview::addToggle(const QString& key, const QString& text, bool init_value)
+void BasePreview::addToggle(const QString &key, const QString &text, bool init_value)
 {
     _ContextToggle toggle;
     toggle.title = text;
@@ -578,8 +583,12 @@ void BasePreview::addToggle(const QString& key, const QString& text, bool init_v
     toggleChangeEvent(key, init_value);
 }
 
-void BasePreview::toggleChangeEvent(QString, bool)
+void BasePreview::toggleChangeEvent(const QString &key, bool value)
 {
+    if (_renderer)
+    {
+        _renderer->toggleChangeEvent(key.toStdString(), value);
+    }
     redraw();
 }
 

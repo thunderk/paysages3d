@@ -63,3 +63,11 @@ Color CloudsCoveragePreviewRenderer::getColor2D(double x, double y, double scali
         return clouds->getColor(this, COLOR_BLUE, start, end);
     }
 }
+
+void CloudsCoveragePreviewRenderer::toggleChangeEvent(const std::string &key, bool value)
+{
+    if (key == "3d")
+    {
+        perspective = value;
+    }
+}

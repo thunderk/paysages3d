@@ -16,7 +16,10 @@ public:
 
     virtual void bindEvent(BasePreview* preview) override;
     virtual void updateEvent() override;
-    virtual Color getColor2D(double x, double y, double scaling) override;
+
+    virtual Color getWaterColor(double x, double y, double scaling) override;
+
+    virtual void toggleChangeEvent(const std::string &key, bool value) override;
 
 private:
     WaterDefinition* definition;

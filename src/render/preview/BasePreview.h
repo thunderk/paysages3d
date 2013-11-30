@@ -59,11 +59,11 @@ public:
     void configScaling(double min, double max, double step, double init, bool logarithmic = true);
     void configScrolling(double xmin, double xmax, double xinit, double ymin, double ymax, double yinit);
 
-    void addChoice(const QString& key, const QString& title, const QStringList& choices, int init_value);
-    virtual void choiceChangeEvent(const QString& key, int position);
+    void addChoice(const QString &key, const QString &title, const QStringList &choices, int init_value);
+    virtual void choiceChangeEvent(const QString &key, int position);
 
-    void addToggle(const QString& key, const QString& text, bool init_value);
-    virtual void toggleChangeEvent(QString key, bool value);
+    void addToggle(const QString &key, const QString &text, bool init_value);
+    virtual void toggleChangeEvent(const QString &key, bool value);
 
 protected:
     virtual void updateData();

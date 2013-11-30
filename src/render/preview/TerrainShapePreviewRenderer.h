@@ -14,15 +14,15 @@ public:
     explicit TerrainShapePreviewRenderer(TerrainDefinition* terrain);
 
 protected:
-    virtual void bindEvent(BasePreview* preview);
-    virtual void updateEvent();
+    virtual void bindEvent(BasePreview* preview) override;
+    virtual void updateEvent() override;
     virtual Color getColor2D(double x, double y, double scaling) override;
-    virtual void toggleChangeEvent(QString key, bool value);
+
+    virtual Color getWaterColor(double x, double y, double scaling);
 
     TerrainDefinition* _terrain;
 
 private:
-    bool _highlight_enabled;
     double _water_height;
 };
 

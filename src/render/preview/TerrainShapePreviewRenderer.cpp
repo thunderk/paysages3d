@@ -70,7 +70,6 @@ static void _alterPreviewRenderer(Renderer* renderer)
 TerrainShapePreviewRenderer::TerrainShapePreviewRenderer(TerrainDefinition* terrain)
 {
     _terrain = terrain;
-    _highlight_enabled = true;
 
     _alterPreviewRenderer(this);
 }
@@ -78,7 +77,6 @@ TerrainShapePreviewRenderer::TerrainShapePreviewRenderer(TerrainDefinition* terr
 void TerrainShapePreviewRenderer::bindEvent(BasePreview* preview)
 {
     preview->addOsd(QString("geolocation"));
-    //preview->addToggle("highlight", tr("Coverage highlight"), true);
 
     preview->configScaling(20.0, 1000.0, 20.0, 200.0);
     preview->configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
@@ -89,7 +87,7 @@ void TerrainShapePreviewRenderer::updateEvent()
     TerrainRendererClass.bind(this, _terrain);
 }
 
-Color TerrainShapePreviewRenderer::getColor2D(double x, double y, double)
+Color TerrainShapePreviewRenderer::getColor2D(double x, double y, double scaling)
 {
     double height;
 
@@ -100,24 +98,11 @@ Color TerrainShapePreviewRenderer::getColor2D(double x, double y, double)
     }
     else
     {
-        Color base;
-
-        base = water->getResult(this, x, y).final;
-
-        if (_highlight_enabled)
-        {
-            Color mask = {0.5, 0.5, 1.0, 0.5};
-            colorMask(&base, &mask);
-        }
-
-        return base;
+        return getWaterColor(x, y, scaling);
     }
 }
 
-void TerrainShapePreviewRenderer::toggleChangeEvent(QString key, bool value)
+Color TerrainShapePreviewRenderer::getWaterColor(double, double, double)
 {
-    if (key == "highlight")
-    {
-        _highlight_enabled = value;
-    }
+    return COLOR_BLUE;
 }

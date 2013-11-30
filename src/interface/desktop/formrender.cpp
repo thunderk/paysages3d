@@ -16,92 +16,7 @@
 #include "BasePreview.h"
 #include "CloudsDefinition.h"
 #include "CameraDefinition.h"
-
-/**************** Previews ****************/
-class PreviewRenderLandscape : public BasePreview
-{
-public:
-    PreviewRenderLandscape(QWidget* parent) : BasePreview(parent)
-    {
-        _renderer = new SoftwareRenderer();
-        _renderer->getCameraLocation = _getCameraLocation;
-        lightingManagerDisableSpecularity(_renderer->lighting);
-
-        _no_clouds = new CloudsDefinition(NULL);
-        _clouds_enabled = true;
-
-        addOsd(QString("geolocation"));
-        addToggle("clouds", tr("Clouds"), false);
-
-        configHdrToneMapping(true);
-        configScaling(0.5, 200.0, 3.0, 50.0);
-        configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
-    }
-    ~PreviewRenderLandscape()
-    {
-        delete _renderer;
-        delete _no_clouds;
-    }
-
-protected:
-    Color getColor(double x, double y)
-    {
-        Vector3 location;
-        double height = _renderer->terrain->getHeight(_renderer, x, y, 1);
-
-        if (height < _renderer->water->getHeightInfo(_renderer).max_height)
-        {
-            return _renderer->water->getResult(_renderer, x, y).final;
-        }
-        else
-        {
-            location.x = x;
-            location.y = height;
-            location.z = y;
-            return _renderer->terrain->getFinalColor(_renderer, location, scaling);
-        }
-    }
-
-    void updateData()
-    {
-        RenderingScenery::getCurrent()->bindToRenderer(_renderer);
-        if (!_clouds_enabled)
-        {
-            CloudsRendererClass.bind(_renderer, _no_clouds);
-        }
-
-        _renderer->atmosphere->applyAerialPerspective = _applyAerialPerspective;
-    }
-
-    void toggleChangeEvent(QString key, bool value)
-    {
-        if (key == "clouds")
-        {
-            _clouds_enabled = value;
-            redraw();
-        }
-    }
-
-private:
-    SoftwareRenderer* _renderer;
-    bool _clouds_enabled;
-    CloudsDefinition* _no_clouds;
-
-    static Vector3 _getCameraLocation(Renderer*, Vector3 location)
-    {
-        return v3Add(location, v3Scale(VECTOR_UP, 50.0));
-    }
-
-    static AtmosphereResult _applyAerialPerspective(Renderer*, Vector3, Color base)
-    {
-        AtmosphereResult result;
-        atmosphereInitResult(&result);
-        result.base = base;
-        result.final = base;
-        atmosphereUpdateResult(&result);
-        return result;
-    }
-};
+#include "SceneryTopDownPreviewRenderer.h"
 
 /**************** Form ****************/
 FormRender::FormRender(QWidget *parent) :
@@ -119,8 +34,10 @@ BaseForm(parent, true)
 
     disablePreviewsUpdate();
 
-    _preview_landscape = new PreviewRenderLandscape(this);
+    _preview_landscape = new BasePreview(this);
+    _preview_landscape_renderer = new SceneryTopDownPreviewRenderer(RenderingScenery::getCurrent());
     addPreview(_preview_landscape, QString(tr("Top-down preview")));
+    _preview_landscape->setRenderer(_preview_landscape_renderer);
 
     addInput(new InputCamera(this, tr("Camera"), _camera));
     addInputInt(tr("Quality"), &_params.quality, 1, 10, 1, 1);

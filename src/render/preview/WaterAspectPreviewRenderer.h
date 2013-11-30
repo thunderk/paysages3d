@@ -18,6 +18,9 @@ public:
     virtual void cameraEvent(double x, double y, double scaling) override;
     virtual Color getColor2D(double x, double y, double scaling) override;
 
+    virtual void toggleChangeEvent(const std::string &key, bool value) override;
+    virtual void choiceChangeEvent(const std::string &key, int position) override;
+
 private:
     WaterDefinition* definition;
     bool lighting;

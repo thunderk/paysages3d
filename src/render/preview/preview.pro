@@ -22,7 +22,8 @@ SOURCES += Base2dPreviewRenderer.cpp \
     CloudsAspectPreviewRenderer.cpp \
     WaterCoveragePreviewRenderer.cpp \
     WaterAspectPreviewRenderer.cpp \
-    TerrainShapePreviewRenderer.cpp
+    TerrainShapePreviewRenderer.cpp \
+    SceneryTopDownPreviewRenderer.cpp
 
 HEADERS += Base2dPreviewRenderer.h\
         preview_global.h \
@@ -35,7 +36,8 @@ HEADERS += Base2dPreviewRenderer.h\
     CloudsAspectPreviewRenderer.h \
     WaterCoveragePreviewRenderer.h \
     WaterAspectPreviewRenderer.h \
-    TerrainShapePreviewRenderer.h
+    TerrainShapePreviewRenderer.h \
+    SceneryTopDownPreviewRenderer.h
 
 unix:!symbian {
     maemo5 {

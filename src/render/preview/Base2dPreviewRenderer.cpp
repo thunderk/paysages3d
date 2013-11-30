@@ -16,6 +16,14 @@ void Base2dPreviewRenderer::bindEvent(BasePreview*)
 {
 }
 
+void Base2dPreviewRenderer::toggleChangeEvent(const std::string &, bool)
+{
+}
+
+void Base2dPreviewRenderer::choiceChangeEvent(const std::string &, int)
+{
+}
+
 void Base2dPreviewRenderer::updateEvent()
 {
 }

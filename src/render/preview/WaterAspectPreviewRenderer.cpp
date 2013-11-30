@@ -155,3 +155,19 @@ Color WaterAspectPreviewRenderer::getColor2D(double x, double y, double scaling)
 
     return water->getResult(this, target_x, target_z).final;
 }
+
+void WaterAspectPreviewRenderer::toggleChangeEvent(const std::string &key, bool value)
+{
+    if (key == "light")
+    {
+        lighting = value;
+    }
+}
+
+void WaterAspectPreviewRenderer::choiceChangeEvent(const std::string &key, int position)
+{
+    if (key == "bg")
+    {
+        background = position;
+    }
+}

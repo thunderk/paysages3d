@@ -32,6 +32,7 @@ private:
     Renderer* _renderer;
     bool _renderer_inited;
     BasePreview* _preview_landscape;
+    Base2dPreviewRenderer* _preview_landscape_renderer;
 };
 
 #endif

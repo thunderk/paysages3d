@@ -1,5 +1,5 @@
-#ifndef CLOUDSCOVERAGEPREVIEWRENDERER_H
-#define CLOUDSCOVERAGEPREVIEWRENDERER_H
+#ifndef SCENERYTOPDOWNPREVIEWRENDERER_H
+#define SCENERYTOPDOWNPREVIEWRENDERER_H
 
 #include "preview_global.h"
 
@@ -8,23 +8,24 @@
 namespace paysages {
 namespace preview {
 
-class PREVIEWSHARED_EXPORT CloudsCoveragePreviewRenderer : public Base2dPreviewRenderer
+class PREVIEWSHARED_EXPORT SceneryTopDownPreviewRenderer : public Base2dPreviewRenderer
 {
 public:
-    CloudsCoveragePreviewRenderer(CloudLayerDefinition* layer);
+    SceneryTopDownPreviewRenderer(Scenery* scenery);
 
+protected:
     virtual void bindEvent(BasePreview* preview) override;
     virtual void updateEvent() override;
     virtual Color getColor2D(double x, double y, double scaling) override;
-
     virtual void toggleChangeEvent(const std::string &key, bool value) override;
 
 private:
-    bool perspective;
-    CloudLayerDefinition* layer;
+    Scenery* scenery;
+    bool clouds_enabled;
+    CloudsDefinition* no_clouds;
 };
 
 }
 }
 
-#endif // CLOUDSCOVERAGEPREVIEWRENDERER_H
+#endif // SCENERYTOPDOWNPREVIEWRENDERER_H

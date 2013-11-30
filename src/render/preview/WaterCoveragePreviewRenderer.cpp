@@ -22,44 +22,42 @@ WaterCoveragePreviewRenderer::~WaterCoveragePreviewRenderer()
 
 void WaterCoveragePreviewRenderer::bindEvent(BasePreview* preview)
 {
-    preview->addOsd("geolocation");
+    TerrainShapePreviewRenderer::bindEvent(preview);
+
     // TODO Translation
     preview->addToggle("highlight", "Coverage highlight", true);
 
-    preview->configScaling(20.0, 1000.0, 20.0, 200.0);
-    preview->configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
     // TODO Keep camera above center (for reflections)
+}
+
+void WaterCoveragePreviewRenderer::toggleChangeEvent(const std::string &key, bool value)
+{
+    if (key == "highlight")
+    {
+        highlight = value;
+    }
 }
 
 void WaterCoveragePreviewRenderer::updateEvent()
 {
-    getScenery()->setWater(definition);
-
     RenderingScenery::getCurrent()->getTerrain(_terrain);
     TerrainShapePreviewRenderer::updateEvent();
+
+    getScenery()->setWater(definition);
+    WaterRendererClass.bind(this, definition);
 }
 
-Color WaterCoveragePreviewRenderer::getColor2D(double x, double y, double scaling)
+Color WaterCoveragePreviewRenderer::getWaterColor(double x, double y, double)
 {
-    double height;
+    Color base;
 
-    height = terrain->getHeight(this, x, y, 1);
-    if (height > terrain->getWaterHeight(this))
+    base = water->getResult(this, x, y).final;
+
+    if (highlight)
     {
-        return TerrainShapePreviewRenderer::getColor2D(x, y, scaling);
+        Color mask = {0.5, 0.5, 1.0, 0.5};
+        colorMask(&base, &mask);
     }
-    else
-    {
-        Color base;
 
-        base = water->getResult(this, x, y).final;
-
-        if (highlight)
-        {
-            Color mask = {0.5, 0.5, 1.0, 0.5};
-            colorMask(&base, &mask);
-        }
-
-        return base;
-    }
+    return base;
 }
