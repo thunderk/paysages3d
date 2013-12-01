@@ -1,12 +1,19 @@
-#include "public.h"
-#include "private.h"
+#include "SkyRasterizer.h"
 
-#include <math.h>
-#include <stdlib.h>
-#include "../renderer.h"
-#include "clouds/public.h"
+#include "Vector3.h"
+#include "Color.h"
+#include "SoftwareRenderer.h"
+#include "AtmosphereRenderer.h"
+#include "CloudsRenderer.h"
 
-static Color _postProcessFragment(Renderer* renderer, Vector3 location, void*)
+#define SPHERE_SIZE 20000.0
+
+SkyRasterizer::SkyRasterizer(SoftwareRenderer* renderer):
+    renderer(renderer)
+{
+}
+
+static Color _postProcessFragment(SoftwareRenderer* renderer, Vector3 location, void*)
 {
     Vector3 camera_location, direction;
     Color result;
@@ -16,12 +23,12 @@ static Color _postProcessFragment(Renderer* renderer, Vector3 location, void*)
 
     /* TODO Don't compute result->color if it's fully covered by clouds */
     result = renderer->atmosphere->getSkyColor(renderer, v3Normalize(direction)).final;
-    result = renderer->clouds->getColor(renderer, result, camera_location, v3Add(camera_location, v3Scale(direction, 10.0)));
+    result = renderer->getCloudsRenderer()->getColor(camera_location, v3Add(camera_location, v3Scale(direction, 10.0)), result);
 
     return result;
 }
 
-void atmosphereRenderSkydome(Renderer* renderer)
+void SkyRasterizer::rasterize()
 {
     int res_i, res_j;
     int i, j;
@@ -71,7 +78,7 @@ void atmosphereRenderSkydome(Renderer* renderer)
             vertex4 = v3Add(camera_location, direction);
 
             /* TODO Triangles at poles */
-            renderer->pushQuad(renderer, vertex1, vertex4, vertex3, vertex2, _postProcessFragment, NULL);
+            renderer->pushQuad(renderer, vertex1, vertex4, vertex3, vertex2, (f_RenderFragmentCallback)_postProcessFragment, NULL);
         }
     }
 }

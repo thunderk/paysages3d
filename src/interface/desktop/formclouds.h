@@ -4,7 +4,6 @@
 #include "desktop_global.h"
 
 #include "baseformlayer.h"
-#include "clouds/public.h"
 class QWidget;
 
 class FormClouds : public BaseFormLayer

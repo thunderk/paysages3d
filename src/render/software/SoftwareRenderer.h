@@ -33,17 +33,26 @@ public:
      */
     virtual void prepare() override;
 
+    /*!
+     * \brief Start the rasterization process.
+     */
+    virtual void rasterize() override;
+
     inline Scenery* getScenery() const {return scenery;}
+
     inline BaseAtmosphereRenderer* getAtmosphereRenderer() const {return atmosphere_renderer;}
+    inline CloudsRenderer* getCloudsRenderer() const {return clouds_renderer;}
+
     inline FluidMediumManager* getFluidMediumManager() const {return fluid_medium;}
 
-    //virtual Color applyMediumTraversal(Vector3 location, Color color) override;
+    virtual Color applyMediumTraversal(Vector3 location, Color color) override;
 
 private:
     Scenery* scenery;
     bool own_scenery;
     FluidMediumManager* fluid_medium;
     BaseAtmosphereRenderer* atmosphere_renderer;
+    CloudsRenderer* clouds_renderer;
 };
 
 }

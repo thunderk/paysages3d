@@ -12,11 +12,7 @@ SOURCES += main.cpp \
     renderer.cpp \
     render.cpp \
     atmosphere/atm_render.cpp \
-    atmosphere/atm_raster.cpp \
     atmosphere/atm_bruneton.cpp \
-    clouds/clo_walking.cpp \
-    clouds/clo_rendering.cpp \
-    clouds/clo_density.cpp \
     terrain/ter_render.cpp \
     terrain/ter_raster.cpp \
     terrain/ter_painting.cpp \
@@ -38,10 +34,6 @@ HEADERS += \
     main.h \
     atmosphere/public.h \
     atmosphere/private.h \
-    clouds/public.h \
-    clouds/private.h \
-    clouds/clo_walking.h \
-    clouds/clo_density.h \
     shared/types.h \
     terrain/ter_raster.h \
     terrain/public.h \

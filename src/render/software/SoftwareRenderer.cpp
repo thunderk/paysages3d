@@ -5,12 +5,14 @@
 #include "FluidMediumManager.h"
 #include "AtmosphereRenderer.h"
 #include "AtmosphereDefinition.h"
+#include "CloudsRenderer.h"
+#include "SkyRasterizer.h"
 
 
 // Legacy compatibility
 #include "renderer.h"
 #include "terrain/public.h"
-#include "clouds/public.h"
+#include "terrain/ter_raster.h"
 #include "textures/public.h"
 #include "water/public.h"
 static AtmosphereResult _legacyApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
@@ -29,8 +31,9 @@ static Vector3 _legacyGetSunDirection(Renderer* renderer)
 {
     return ((SoftwareRenderer*)renderer)->getAtmosphereRenderer()->getSunDirection();
 }
-static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int, int, int, int)
+static RayCastingResult _rayWalking(Renderer* renderer_, Vector3 location, Vector3 direction, int, int, int, int)
 {
+    SoftwareRenderer* renderer = (SoftwareRenderer*)renderer_;
     RayCastingResult result;
     Color sky_color;
 
@@ -41,7 +44,7 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
 
         result.hit = 1;
         result.hit_location = v3Add(location, v3Scale(direction, 1000.0));
-        result.hit_color = renderer->clouds->getColor(renderer, sky_color, location, result.hit_location);
+        result.hit_color = renderer->getCloudsRenderer()->getColor(location, result.hit_location, sky_color);
     }
 
     return result;
@@ -60,6 +63,7 @@ static double _getPrecision(Renderer* renderer, Vector3 location)
 SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
 {
     atmosphere_renderer = new BaseAtmosphereRenderer(this);
+    clouds_renderer = new CloudsRenderer(this);
 
     fluid_medium = new FluidMediumManager(this);
 
@@ -78,6 +82,7 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
 SoftwareRenderer::~SoftwareRenderer()
 {
     delete atmosphere_renderer;
+    delete clouds_renderer;
 
     delete fluid_medium;
 
@@ -103,6 +108,10 @@ void SoftwareRenderer::prepare()
     delete atmosphere_renderer;
     atmosphere_renderer = new SoftwareBrunetonAtmosphereRenderer(this);
 
+    delete clouds_renderer;
+    clouds_renderer = new CloudsRenderer(this);
+    clouds_renderer->update();
+
     // Setup transitional renderers (for C-legacy subsystems)
     rayWalking = _rayWalking;
     getPrecision = _getPrecision;
@@ -116,7 +125,6 @@ void SoftwareRenderer::prepare()
     scenery->getCamera()->copy(render_camera);
     TerrainRendererClass.bind(this, scenery->getTerrain());
     TexturesRendererClass.bind(this, scenery->getTextures());
-    CloudsRendererClass.bind(this, scenery->getClouds());
     WaterRendererClass.bind(this, scenery->getWater());
 
     // Prepare global tools
@@ -124,8 +132,21 @@ void SoftwareRenderer::prepare()
     //fluid_medium->registerMedium(water_renderer);
 }
 
-/*Color SoftwareRenderer::applyMediumTraversal(Vector3 location, Color color)
+void SoftwareRenderer::rasterize()
 {
-    Vector3 eye = cameraGetLocation(scenery->getCamera());
-    return fluid_medium->applyTraversal(eye, location, color);
-}*/
+    terrainRenderSurface(this);
+    waterRenderSurface(this);
+
+    SkyRasterizer sky(this);
+    sky.rasterize();
+}
+
+Color SoftwareRenderer::applyMediumTraversal(Vector3 location, Color color)
+{
+    color = atmosphere->applyAerialPerspective(this, location, color).final;
+    color = clouds_renderer->getColor(getCameraLocation(this, location), location, color);
+    return color;
+
+    /*Vector3 eye = cameraGetLocation(scenery->getCamera());
+    return fluid_medium->applyTraversal(eye, location, color);*/
+}

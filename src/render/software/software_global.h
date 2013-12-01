@@ -21,6 +21,9 @@ namespace software {
 
     class BaseAtmosphereRenderer;
     class SoftwareBrunetonAtmosphereRenderer;
+
+    class CloudsRenderer;
+    class BaseCloudLayerRenderer;
 }
 }
 

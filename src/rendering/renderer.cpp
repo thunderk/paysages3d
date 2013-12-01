@@ -7,7 +7,6 @@
 #include "RenderingScenery.h"
 #include "CameraDefinition.h"
 #include "atmosphere/public.h"
-#include "clouds/public.h"
 #include "terrain/public.h"
 #include "textures/public.h"
 #include "water/public.h"
@@ -18,7 +17,7 @@ static void* _renderFirstPass(void* data)
 {
     Renderer* renderer = (Renderer*)data;
 
-    sceneryRenderFirstPass(renderer);
+    renderer->rasterize();
     renderer->is_rendering = 0;
     return NULL;
 }
@@ -139,7 +138,6 @@ Renderer::Renderer()
     lighting = lightingManagerCreate();
 
     atmosphere = (AtmosphereRenderer*)AtmosphereRendererClass.create();
-    clouds = (CloudsRenderer*)CloudsRendererClass.create();
     terrain = (TerrainRenderer*)TerrainRendererClass.create();
     textures = (TexturesRenderer*)TexturesRendererClass.create();
     water = (WaterRenderer*)WaterRendererClass.create();
@@ -151,7 +149,6 @@ Renderer::~Renderer()
     lightingManagerDelete(lighting);
 
     AtmosphereRendererClass.destroy(atmosphere);
-    CloudsRendererClass.destroy(clouds);
     TerrainRendererClass.destroy(terrain);
     TexturesRendererClass.destroy(textures);
     WaterRendererClass.destroy(water);
@@ -159,10 +156,8 @@ Renderer::~Renderer()
     renderDeleteArea(render_area);
 }
 
-Color Renderer::applyMediumTraversal(Vector3 location, Color color)
+Color Renderer::applyMediumTraversal(Vector3, Color color)
 {
-    color = atmosphere->applyAerialPerspective(this, location, color).final;
-    color = clouds->getColor(this, color, getCameraLocation(this, location), location);
     return color;
 }
 

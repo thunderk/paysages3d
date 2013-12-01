@@ -55,13 +55,3 @@ void RenderingScenery::bindToRenderer(Renderer* renderer)
     renderer->setScenery(this);
     renderer->prepare();
 }
-
-
-// Transitional C-API
-
-void sceneryRenderFirstPass(Renderer* renderer)
-{
-    terrainRenderSurface(renderer);
-    waterRenderSurface(renderer);
-    atmosphereRenderSkydome(renderer);
-}

@@ -1,11 +1,11 @@
 #include "CloudsAspectPreviewRenderer.h"
 
-#include "clouds/public.h"
 #include "atmosphere/public.h"
 #include "BasePreview.h"
 #include "Scenery.h"
 #include "CloudsDefinition.h"
 #include "CloudLayerDefinition.h"
+#include "CloudsRenderer.h"
 
 static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
 {
@@ -61,7 +61,6 @@ CloudsAspectPreviewRenderer::CloudsAspectPreviewRenderer(CloudLayerDefinition* l
     CloudsDefinition* clouds = getScenery()->getClouds();
     clouds->clear();
     clouds->addLayer();
-    CloudsRendererClass.bind(this, clouds);
 
     render_quality = 6;
 }
@@ -82,7 +81,7 @@ void CloudsAspectPreviewRenderer::updateEvent()
 
     prepare();
 
-    clouds->getLayerDensity = _getDensity;
+    //clouds->getLayerDensity = _getDensity;
     atmosphere->getLightingStatus = _getLightingStatus;
     atmosphere->applyAerialPerspective = _fakeApplyAerialPerspective;
 }
@@ -100,5 +99,5 @@ Color CloudsAspectPreviewRenderer::getColor2D(double x, double y, double)
     end.z = start.z;
     end.y = -start.y;
 
-    return clouds->getColor(this, COLOR_BLUE, start, end);
+    return getCloudsRenderer()->getColor(start, end, COLOR_BLUE);
 }

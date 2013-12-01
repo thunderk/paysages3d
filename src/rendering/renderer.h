@@ -9,7 +9,6 @@ class LightingManager;
 class AtmosphereRenderer;
 class TerrainRenderer;
 class TexturesRenderer;
-class CloudsRenderer;
 class WaterRenderer;
 
 class Renderer
@@ -19,6 +18,7 @@ public:
     virtual ~Renderer();
 
     virtual void prepare() {}
+    virtual void rasterize() {}
     virtual void setScenery(Scenery*) {}
 
     /* Render base configuration */
@@ -57,7 +57,6 @@ public:
     AtmosphereRenderer* atmosphere;
     TerrainRenderer* terrain;
     TexturesRenderer* textures;
-    CloudsRenderer* clouds;
     WaterRenderer* water;
 
     /* Custom data */

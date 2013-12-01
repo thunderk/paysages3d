@@ -1,10 +1,10 @@
 #include "CloudsCoveragePreviewRenderer.h"
 
-#include "clouds/public.h"
 #include "BasePreview.h"
 #include "Scenery.h"
 #include "CloudsDefinition.h"
 #include "CloudLayerDefinition.h"
+#include "CloudsRenderer.h"
 
 Color _fakeApplyLightingToSurface(Renderer*, Vector3, Vector3, SurfaceMaterial*)
 {
@@ -19,7 +19,6 @@ CloudsCoveragePreviewRenderer::CloudsCoveragePreviewRenderer(CloudLayerDefinitio
     CloudsDefinition* clouds = getScenery()->getClouds();
     clouds->clear();
     clouds->addLayer();
-    CloudsRendererClass.bind(this, clouds);
 }
 
 void CloudsCoveragePreviewRenderer::bindEvent(BasePreview* preview)
@@ -49,7 +48,7 @@ Color CloudsCoveragePreviewRenderer::getColor2D(double x, double y, double scali
         look.z = 1.0;
         look = look.normalize();
 
-        return clouds->getColor(this, COLOR_BLUE, eye, eye.add(look.scale(1000.0)));
+        return getCloudsRenderer()->getColor(eye, eye.add(look.scale(1000.0)), COLOR_BLUE);
     }
     else
     {
@@ -60,7 +59,7 @@ Color CloudsCoveragePreviewRenderer::getColor2D(double x, double y, double scali
         start.y = 1000.0;
         end.y = -1000.0;
 
-        return clouds->getColor(this, COLOR_BLUE, start, end);
+        return getCloudsRenderer()->getColor(start, end, COLOR_BLUE);
     }
 }
 

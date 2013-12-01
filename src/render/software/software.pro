@@ -16,13 +16,21 @@ include(../../common.pri)
 SOURCES += SoftwareRenderer.cpp \
     FluidMediumInterface.cpp \
     FluidMediumManager.cpp \
-    AtmosphereRenderer.cpp
+    AtmosphereRenderer.cpp \
+    CloudsRenderer.cpp \
+    BaseCloudLayerRenderer.cpp \
+    SkyRasterizer.cpp \
+    CloudBasicLayerRenderer.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
     FluidMediumInterface.h \
     FluidMediumManager.h \
-    AtmosphereRenderer.h
+    AtmosphereRenderer.h \
+    CloudsRenderer.h \
+    BaseCloudLayerRenderer.h \
+    SkyRasterizer.h \
+    CloudBasicLayerRenderer.h
 
 unix:!symbian {
     maemo5 {

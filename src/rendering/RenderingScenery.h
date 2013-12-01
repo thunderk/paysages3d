@@ -34,8 +34,4 @@ private:
     void* _custom_data;
 };
 
-// Transitional C-API
-
-RENDERINGSHARED_EXPORT void sceneryRenderFirstPass(Renderer* renderer);
-
 #endif // SCENERY_H

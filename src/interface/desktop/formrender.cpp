@@ -7,7 +7,6 @@
 #include "tools.h"
 #include "render.h"
 #include "atmosphere/public.h"
-#include "clouds/public.h"
 #include "terrain/public.h"
 #include "water/public.h"
 #include "RenderingScenery.h"

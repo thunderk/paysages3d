@@ -38,8 +38,6 @@ public:
 
 RENDERINGSHARED_EXPORT extern StandardRenderer AtmosphereRendererClass;
 
-RENDERINGSHARED_EXPORT void atmosphereRenderSkydome(Renderer* renderer);
-
 RENDERINGSHARED_EXPORT void atmosphereInitResult(AtmosphereResult* result);
 RENDERINGSHARED_EXPORT void atmosphereUpdateResult(AtmosphereResult* result);
 
