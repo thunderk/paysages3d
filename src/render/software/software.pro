@@ -20,7 +20,9 @@ SOURCES += SoftwareRenderer.cpp \
     CloudsRenderer.cpp \
     BaseCloudLayerRenderer.cpp \
     SkyRasterizer.cpp \
-    CloudBasicLayerRenderer.cpp
+    CloudBasicLayerRenderer.cpp \
+    clouds/BaseCloudsModel.cpp \
+    clouds/CloudModelStratoCumulus.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -30,7 +32,9 @@ HEADERS += SoftwareRenderer.h\
     CloudsRenderer.h \
     BaseCloudLayerRenderer.h \
     SkyRasterizer.h \
-    CloudBasicLayerRenderer.h
+    CloudBasicLayerRenderer.h \
+    clouds/BaseCloudsModel.h \
+    clouds/CloudModelStratoCumulus.h
 
 unix:!symbian {
     maemo5 {

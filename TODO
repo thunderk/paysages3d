@@ -1,5 +1,6 @@
 Technology Preview 2 :
 - Add initial terrain offset so that the (0,0) coordinates are above water.
+- Use water height as 0.0 (offset the terrain).
 - Finalize lighting/clouds refactoring
    => Restore cloud lighting
    => Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).

@@ -19,8 +19,8 @@ void CloudsDefinition::applyPreset(CloudsPreset preset)
     if (preset == CLOUDS_PRESET_PARTLY_CLOUDY)
     {
         CloudLayerDefinition* layer = new CloudLayerDefinition(this);
-        layer->applyPreset(CloudLayerDefinition::CLOUDS_LAYER_PRESET_CIRRUS);
-        layer->setName("Cirrus");
+        layer->type = CloudLayerDefinition::STRATOCUMULUS;
+        layer->setName("Strato-cumulus");
         addLayer(layer);
     }
 }

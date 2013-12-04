@@ -5,6 +5,8 @@
 #include "NoiseGenerator.h"
 #include "Curve.h"
 #include "AtmosphereRenderer.h"
+#include "clouds/BaseCloudsModel.h"
+#include "SurfaceMaterial.h"
 
 typedef struct
 {
@@ -18,67 +20,9 @@ CloudBasicLayerRenderer::CloudBasicLayerRenderer(SoftwareRenderer* parent):
 {
 }
 
-static inline double _standardCoverageFunc(CloudLayerDefinition* layer, Vector3 position)
+static inline double _getDistanceToBorder(BaseCloudsModel* model, Vector3 position)
 {
-    if (position.y < layer->lower_altitude || position.y > (layer->lower_altitude + layer->thickness))
-    {
-        return 0.0;
-    }
-    else
-    {
-        return layer->base_coverage * layer->_coverage_by_altitude->getValue((position.y - layer->lower_altitude) / layer->thickness);
-    }
-}
-
-static inline double _getDistanceToBorder(CloudLayerDefinition* layer, Vector3 position)
-{
-    double val;
-    double minval, maxval;
-
-    layer->_shape_noise->getRange(&minval, &maxval);
-
-    val = 0.5 * layer->_shape_noise->get3DTotal(position.x / layer->shape_scaling, position.y / layer->shape_scaling, position.z / layer->shape_scaling) / maxval;
-
-    return (val - 0.5 + _standardCoverageFunc(layer, position)) * layer->shape_scaling;
-}
-
-static inline Vector3 _getNormal(CloudLayerDefinition* layer, Vector3 position, double detail)
-{
-    Vector3 result = {0.0, 0.0, 0.0};
-    Vector3 dposition;
-    double val, dval;
-
-    val = _getDistanceToBorder(layer, position);
-
-    dposition.x = position.x + detail;
-    dposition.y = position.y;
-    dposition.z = position.z;
-    dval = val - _getDistanceToBorder(layer, dposition);
-    result.x += dval;
-
-    dposition.x = position.x - detail;
-    dval = val - _getDistanceToBorder(layer, dposition);
-    result.x -= dval;
-
-    dposition.x = position.x;
-    dposition.y = position.y + detail;
-    dval = val - _getDistanceToBorder(layer, dposition);
-    result.y += dval;
-
-    dposition.y = position.y - detail;
-    dval = val - _getDistanceToBorder(layer, dposition);
-    result.y -= dval;
-
-    dposition.y = position.y;
-    dposition.z = position.z + detail;
-    dval = val - _getDistanceToBorder(layer, dposition);
-    result.z += dval;
-
-    dposition.z = position.z - detail;
-    dval = val - _getDistanceToBorder(layer, dposition);
-    result.z -= dval;
-
-    return v3Normalize(result);
+    return model->getDensity(position);
 }
 
 /**
@@ -97,8 +41,9 @@ static inline Vector3 _getNormal(CloudLayerDefinition* layer, Vector3 position, 
  * @param out_segments Allocated space to fill found segments
  * @return Number of segments found
  */
-static int _findSegments(CloudLayerDefinition* definition, SoftwareRenderer* renderer, Vector3 start, Vector3 direction, double, int max_segments, double max_inside_length, double max_total_length, double* inside_length, double* total_length, CloudSegment* out_segments)
+static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vector3 start, Vector3 direction, double, int max_segments, double max_inside_length, double max_total_length, double* inside_length, double* total_length, CloudSegment* out_segments)
 {
+    CloudLayerDefinition* layer = model->getLayer();
     int inside, segment_count;
     double current_total_length, current_inside_length;
     double step_length, segment_length, remaining_length;
@@ -112,7 +57,7 @@ static int _findSegments(CloudLayerDefinition* definition, SoftwareRenderer* ren
     }
 
     render_precision = 15.2 - 1.5 * (double)renderer->render_quality;
-    render_precision = render_precision * definition->shape_scaling / 50.0;
+    render_precision = render_precision * layer->scaling / 50.0;
     if (render_precision > max_total_length / 10.0)
     {
         render_precision = max_total_length / 10.0;
@@ -127,7 +72,7 @@ static int _findSegments(CloudLayerDefinition* definition, SoftwareRenderer* ren
     current_inside_length = 0.0;
     segment_length = 0.0;
     walker = start;
-    noise_distance = _getDistanceToBorder(definition, start) * render_precision;
+    noise_distance = _getDistanceToBorder(model, start) * render_precision;
     inside = (noise_distance > 0.0) ? 1 : 0;
     step = v3Scale(direction, render_precision);
 
@@ -136,7 +81,7 @@ static int _findSegments(CloudLayerDefinition* definition, SoftwareRenderer* ren
         walker = v3Add(walker, step);
         step_length = v3Norm(step);
         last_noise_distance = noise_distance;
-        noise_distance = _getDistanceToBorder(definition, walker) * render_precision;
+        noise_distance = _getDistanceToBorder(model, walker) * render_precision;
         current_total_length += step_length;
 
         if (noise_distance > 0.0)
@@ -185,49 +130,16 @@ static int _findSegments(CloudLayerDefinition* definition, SoftwareRenderer* ren
                 step = v3Scale(direction, (noise_distance > -render_precision) ? render_precision : -noise_distance);
             }
         }
-    } while (inside || (walker.y >= definition->lower_altitude - 0.001 && walker.y <= (definition->lower_altitude + definition->thickness) + 0.001 && current_total_length < max_total_length && current_inside_length < max_inside_length));
+    } while (inside || (walker.y >= layer->altitude - 0.001 && walker.y <= (layer->altitude + layer->scaling) + 0.001 && current_total_length < max_total_length && current_inside_length < max_inside_length));
 
     *total_length = current_total_length;
     *inside_length = current_inside_length;
     return segment_count;
 }
 
-static Color _applyLayerLighting(CloudLayerDefinition* definition, SoftwareRenderer* renderer, Vector3 position, double)
+Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &eye, const Vector3 &location)
 {
-    Vector3 normal;
-    Color col1, col2;
-
-    normal = _getNormal(definition, position, 3.0);
-    if (renderer->render_quality > 5)
-    {
-        normal = v3Add(normal, _getNormal(definition, position, 2.0));
-        normal = v3Add(normal, _getNormal(definition, position, 1.0));
-    }
-    if (renderer->render_quality > 5)
-    {
-        normal = v3Add(normal, _getNormal(definition, position, 0.5));
-    }
-    normal = v3Scale(v3Normalize(normal), definition->hardness);
-
-    // TODO Compute light filter only once
-    col1 = renderer->applyLightingToSurface(renderer, position, normal, definition->material);
-    col2 = renderer->applyLightingToSurface(renderer, position, v3Scale(normal, -1.0), definition->material);
-
-    col1.r = (col1.r + col2.r) / 2.0;
-    col1.g = (col1.g + col2.g) / 2.0;
-    col1.b = (col1.b + col2.b) / 2.0;
-    col1.a = (col1.a + col2.a) / 2.0;
-
-    return col1;
-}
-
-double CloudBasicLayerRenderer::getDensity(CloudLayerDefinition* layer, const Vector3 &location)
-{
-    return 0.0;
-}
-
-Color CloudBasicLayerRenderer::getColor(CloudLayerDefinition* layer, const Vector3 &eye, const Vector3 &location)
-{
+    CloudLayerDefinition* layer = model->getLayer();
     int i, segment_count;
     double max_length, detail, total_length, inside_length;
     Vector3 start, end, direction;
@@ -236,7 +148,7 @@ Color CloudBasicLayerRenderer::getColor(CloudLayerDefinition* layer, const Vecto
 
     start = eye;
     end = location;
-    if (!optimizeSearchLimits(layer, &start, &end))
+    if (!optimizeSearchLimits(model, &start, &end))
     {
         return COLOR_TRANSPARENT;
     }
@@ -246,16 +158,25 @@ Color CloudBasicLayerRenderer::getColor(CloudLayerDefinition* layer, const Vecto
     direction = direction.normalize();
     result = COLOR_TRANSPARENT;
 
-    detail = parent->getPrecision(parent, start) / layer->shape_scaling;
+    detail = parent->getPrecision(parent, start) / layer->scaling;
+    double transparency_depth = layer->scaling * 0.5;
 
-    segment_count = _findSegments(layer, parent, start, direction, detail, 20, layer->transparencydepth, max_length, &inside_length, &total_length, segments);
+    segment_count = _findSegments(model, parent, start, direction, detail, 20, transparency_depth, max_length, &inside_length, &total_length, segments);
     for (i = segment_count - 1; i >= 0; i--)
     {
-        col = _applyLayerLighting(layer, parent, segments[i].start, detail);
-        col.a = (segments[i].length >= layer->transparencydepth) ? 1.0 : (segments[i].length / layer->transparencydepth);
+        SurfaceMaterial material;
+        material.base = colorToHSL(Color(0.7, 0.7, 0.7));
+        material.hardness = 0.25;
+        material.reflection = 0.3;
+        material.shininess = 0.8;
+        materialValidate(&material);
+
+        col = parent->applyLightingToSurface(parent, segments[i].start, parent->getAtmosphereRenderer()->getSunDirection(), &material);
+
+        col.a = (segments[i].length >= transparency_depth) ? 1.0 : (segments[i].length / transparency_depth);
         colorMask(&result, &col);
     }
-    if (inside_length >= layer->transparencydepth)
+    if (inside_length >= transparency_depth)
     {
         result.a = 1.0;
     }
@@ -267,7 +188,7 @@ Color CloudBasicLayerRenderer::getColor(CloudLayerDefinition* layer, const Vecto
     return result;
 }
 
-bool CloudBasicLayerRenderer::alterLight(CloudLayerDefinition* layer, LightDefinition* light, const Vector3 &, const Vector3 &location)
+bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightDefinition* light, const Vector3 &, const Vector3 &location)
 {
     Vector3 start, end;
     double inside_depth, total_depth, factor;
@@ -275,27 +196,29 @@ bool CloudBasicLayerRenderer::alterLight(CloudLayerDefinition* layer, LightDefin
 
     start = location;
     end = location.add(light->direction.scale(10000.0));
-    if (not optimizeSearchLimits(layer, &start, &end))
+    if (not optimizeSearchLimits(model, &start, &end))
     {
         return false;
     }
 
-    _findSegments(layer, parent, start, light->direction, 0.1, 20, layer->lighttraversal, end.sub(start).getNorm(), &inside_depth, &total_depth, segments);
+    double light_traversal = model->getLayer()->scaling * 8.0;
+    _findSegments(model, parent, start, light->direction, 0.1, 20, light_traversal, end.sub(start).getNorm(), &inside_depth, &total_depth, segments);
 
-    if (layer->lighttraversal < 0.0001)
+    if (light_traversal < 0.0001)
     {
         factor = 0.0;
     }
     else
     {
-        factor = inside_depth / layer->lighttraversal;
+        factor = inside_depth / light_traversal;
         if (factor > 1.0)
         {
             factor = 1.0;
         }
     }
 
-    factor = 1.0 - (1.0 - layer->minimumlight) * factor;
+    double miminum_light = 0.4;
+    factor = 1.0 - (1.0 - miminum_light) * factor;
 
     light->color.r *= factor;
     light->color.g *= factor;

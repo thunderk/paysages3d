@@ -21,7 +21,6 @@ public slots:
 protected:
     virtual void layerReadCurrentFrom(void* layer_definition);
     virtual void layerWriteCurrentTo(void* layer_definition);
-    virtual void autoPresetSelected(int preset);
 
 private:
     CloudsDefinition* _definition;

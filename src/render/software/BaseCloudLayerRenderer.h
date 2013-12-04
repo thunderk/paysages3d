@@ -14,11 +14,10 @@ public:
     BaseCloudLayerRenderer(SoftwareRenderer* parent);
     virtual ~BaseCloudLayerRenderer();
 
-    virtual bool optimizeSearchLimits(CloudLayerDefinition *layer, Vector3 *start, Vector3 *end);
+    virtual bool optimizeSearchLimits(BaseCloudsModel *model, Vector3 *start, Vector3 *end);
 
-    virtual double getDensity(CloudLayerDefinition* layer, const Vector3 &location);
-    virtual Color getColor(CloudLayerDefinition* layer, const Vector3 &eye, const Vector3 &location);
-    virtual bool alterLight(CloudLayerDefinition* layer, LightDefinition* light, const Vector3 &eye, const Vector3 &location);
+    virtual Color getColor(BaseCloudsModel *model, const Vector3 &eye, const Vector3 &location);
+    virtual bool alterLight(BaseCloudsModel *model, LightDefinition* light, const Vector3 &eye, const Vector3 &location);
 
 protected:
     SoftwareRenderer* parent;

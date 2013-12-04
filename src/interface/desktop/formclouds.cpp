@@ -14,11 +14,6 @@
 FormClouds::FormClouds(QWidget *parent):
     BaseFormLayer(parent)
 {
-    addAutoPreset(tr("Cirrus"));
-    addAutoPreset(tr("Cumulus"));
-    addAutoPreset(tr("Stratocumulus"));
-    addAutoPreset(tr("Stratus"));
-
     _definition = new CloudsDefinition(NULL);
     _layer = new CloudLayerDefinition(NULL);
 
@@ -33,17 +28,9 @@ FormClouds::FormClouds(QWidget *parent):
     _previewColor->setRenderer(_previewColorRenderer);
 
     addInputEnum(tr("Clouds model"), (int*)&_layer->type, QStringList() << tr("Cirrus") << tr("Cumulus") << tr("Stratocumulus") << tr("Stratus"));
-    addInputDouble(tr("Lower altitude"), &_layer->lower_altitude, -10.0, 50.0, 0.5, 5.0);
-    addInputDouble(tr("Layer thickness"), &_layer->thickness, 0.0, 20.0, 0.1, 1.0);
-    addInputDouble(tr("Max coverage"), &_layer->base_coverage, 0.0, 1.0, 0.01, 0.1);
-    addInputDouble(tr("Shape scaling"), &_layer->shape_scaling, 3.0, 30.0, 0.3, 3.0);
-    addInputDouble(tr("Edge scaling"), &_layer->edge_scaling, 0.5, 5.0, 0.05, 0.5);
-    addInputDouble(tr("Edge length"), &_layer->edge_length, 0.0, 1.0, 0.01, 0.1);
-    addInputMaterial(tr("Material"), _layer->material);
-    addInputDouble(tr("Hardness to light"), &_layer->hardness, 0.0, 1.0, 0.01, 0.1);
-    addInputDouble(tr("Transparency depth"), &_layer->transparencydepth, 0.0, 10.0, 0.1, 1.0);
-    addInputDouble(tr("Light traversal depth"), &_layer->lighttraversal, 0.0, 10.0, 0.1, 1.0);
-    addInputDouble(tr("Minimum lighting"), &_layer->minimumlight, 0.0, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Lower altitude"), &_layer->altitude, 0.0, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Scaling"), &_layer->scaling, 0.0, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Coverage"), &_layer->coverage, 0.0, 1.0, 0.01, 0.1);
 
     setLayers(_definition);
 }
@@ -80,10 +67,4 @@ void FormClouds::layerReadCurrentFrom(void* layer_definition)
 void FormClouds::layerWriteCurrentTo(void* layer_definition)
 {
     _layer->copy((CloudLayerDefinition*)layer_definition);
-}
-
-void FormClouds::autoPresetSelected(int preset)
-{
-    _layer->applyPreset((CloudLayerDefinition::CloudsLayerPreset)preset);
-    BaseForm::autoPresetSelected(preset);
 }

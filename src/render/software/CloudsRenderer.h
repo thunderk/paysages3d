@@ -18,32 +18,45 @@ public:
     virtual ~CloudsRenderer();
 
     /*!
-     * Update the renderer with the bound scenery.
+     * \brief Update the renderer with the bound scenery.
+     *
+     * Don't call this if another thread is currently using this renderer.
      */
     void update();
 
     /*!
-     * Get the layer renderer for a given layer.
+     * \brief Get the layer renderer for a given layer.
      *
      * The returned renderer is managed by this object and should not be deleted.
      */
     virtual BaseCloudLayerRenderer* getLayerRenderer(unsigned int layer);
 
     /*!
-     * Get the composited color, as applied on a base color and location.
+     * \brief Get the cloud model for a given layer.
+     *
+     * The returned model is managed by this object and should not be deleted.
+     */
+    virtual BaseCloudsModel* getLayerModel(unsigned int layer);
+
+    /*!
+     * \brief Get the composited color, as applied on a base color and location.
      */
     virtual Color getColor(const Vector3 &eye, const Vector3 &location, const Color &base);
 
     /*!
-     * Alter a light, as if passed through all layers.
+     * \brief Alter a light, as if passed through all layers.
      *
      * Return true if the light was altered.
      */
     virtual bool alterLight(LightDefinition* light, const Vector3 &eye, const Vector3 &location);
 private:
     SoftwareRenderer* parent;
+
     std::vector<BaseCloudLayerRenderer*> layer_renderers;
     BaseCloudLayerRenderer* fake_renderer;
+
+    std::vector<BaseCloudsModel*> layer_models;
+    BaseCloudsModel* fake_model;
 };
 
 }

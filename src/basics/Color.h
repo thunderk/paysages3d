@@ -10,7 +10,7 @@ class Color
 {
 public:
     Color();
-    Color(double r, double g, double b, double a);
+    Color(double r, double g, double b, double a=1.0);
 
     void save(PackStream* stream) const;
     void load(PackStream* stream);

@@ -10,14 +10,19 @@
 namespace paysages {
 namespace software {
 
+/*!
+ * \brief Basic cloud layer renderer.
+ *
+ * This renderer simply iters through the cloud layer, collecting cloud segments.
+ * It does not account for local density variations.
+ */
 class SOFTWARESHARED_EXPORT CloudBasicLayerRenderer: public BaseCloudLayerRenderer
 {
 public:
     CloudBasicLayerRenderer(SoftwareRenderer* parent);
 
-    virtual double getDensity(CloudLayerDefinition* layer, const Vector3 &location) override;
-    virtual Color getColor(CloudLayerDefinition* layer, const Vector3 &eye, const Vector3 &location) override;
-    virtual bool alterLight(CloudLayerDefinition* layer, LightDefinition* light, const Vector3 &eye, const Vector3 &location) override;
+    virtual Color getColor(BaseCloudsModel *model, const Vector3 &eye, const Vector3 &location) override;
+    virtual bool alterLight(BaseCloudsModel *model, LightDefinition* light, const Vector3 &eye, const Vector3 &location) override;
 };
 
 }

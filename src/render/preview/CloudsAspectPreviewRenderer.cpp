@@ -30,7 +30,7 @@ static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
 
 static double _getDensity(Renderer*, CloudLayerDefinition* layer, Vector3 location)
 {
-    double distance = 2.0 * v3Norm(location) / layer->thickness;
+    double distance = 2.0 * v3Norm(location) / layer->scaling;
     if (distance > 1.0)
     {
         return 0.0;
@@ -75,8 +75,7 @@ void CloudsAspectPreviewRenderer::updateEvent()
     CloudLayerDefinition* preview_layer = getScenery()->getClouds()->getCloudLayer(0);
     layer->copy(preview_layer);
 
-    preview_layer->thickness = preview_layer->shape_scaling;
-    preview_layer->lower_altitude = -preview_layer->thickness / 2.0;
+    preview_layer->altitude = -preview_layer->scaling / 2.0;
     preview_layer->validate();
 
     prepare();
@@ -89,7 +88,7 @@ void CloudsAspectPreviewRenderer::updateEvent()
 Color CloudsAspectPreviewRenderer::getColor2D(double x, double y, double)
 {
     Vector3 start, end;
-    double thickness = layer->thickness;
+    double thickness = layer->scaling;
 
     start.x = x * thickness * 0.5;
     start.z = y * thickness * 0.5;

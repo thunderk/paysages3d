@@ -24,6 +24,7 @@ namespace software {
 
     class CloudsRenderer;
     class BaseCloudLayerRenderer;
+    class BaseCloudsModel;
 }
 }
 
