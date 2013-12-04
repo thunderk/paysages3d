@@ -134,5 +134,23 @@ Color CloudsRenderer::getColor(const Vector3 &eye, const Vector3 &location, cons
 
 bool CloudsRenderer::alterLight(LightDefinition* light, const Vector3 &eye, const Vector3 &location)
 {
-    return false;
+    CloudsDefinition* definition = parent->getScenery()->getClouds();
+
+    int n = definition->count();
+    if (n < 1)
+    {
+        return false;
+    }
+
+    /* TODO Iter layers in sorted order */
+    bool altered = false;
+    for (int i = 0; i < n; i++)
+    {
+        BaseCloudLayerRenderer* layer_renderer = getLayerRenderer(i);
+        BaseCloudsModel* layer_model = getLayerModel(i);
+
+        altered = altered || layer_renderer->alterLight(layer_model, light, eye, location);
+    }
+
+    return altered;
 }

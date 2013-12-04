@@ -27,8 +27,20 @@ FormClouds::FormClouds(QWidget *parent):
     addPreview(_previewColor, tr("Appearance"));
     _previewColor->setRenderer(_previewColorRenderer);
 
-    addInputEnum(tr("Clouds model"), (int*)&_layer->type, QStringList() << tr("Cirrus") << tr("Cumulus") << tr("Stratocumulus") << tr("Stratus"));
-    addInputDouble(tr("Lower altitude"), &_layer->altitude, 0.0, 1.0, 0.01, 0.1);
+    QStringList cloud_models;
+    cloud_models << tr("Stratus")
+                 << tr("Nimbo-stratus")
+                 << tr("Cumulus")
+                 << tr("Strato-cumulus")
+                 << tr("Alto-cumulus")
+                 << tr("Alto-stratus")
+                 << tr("Cumulo-nimbus")
+                 << tr("Cirro-cumulus")
+                 << tr("Cirro-stratus")
+                 << tr("Cirrus");
+
+    addInputEnum(tr("Clouds model"), (int*)&_layer->type, cloud_models);
+    addInputDouble(tr("Altitude"), &_layer->altitude, 0.0, 1.0, 0.01, 0.1);
     addInputDouble(tr("Scaling"), &_layer->scaling, 0.0, 1.0, 0.01, 0.1);
     addInputDouble(tr("Coverage"), &_layer->coverage, 0.0, 1.0, 0.01, 0.1);
 
