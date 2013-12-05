@@ -1,21 +1,20 @@
-#include "public.h"
-#include "private.h"
-#include "ter_raster.h"
+#include "TerrainRasterizer.h"
 
-#include <cstdlib>
-#include <cmath>
+#include "SoftwareRenderer.h"
 #include "BoundingBox.h"
-#include "../tools/parallel.h"
-#include "../renderer.h"
-#include "water/public.h"
-#include "textures/public.h"
 #include "CameraDefinition.h"
 
-/*
- * Terrain rasterization.
- */
+#include "tools/parallel.h"
+#include "terrain/public.h"
+#include "water/public.h"
+#include "textures/public.h"
 
-static inline Vector3 _getPoint(TerrainDefinition*, Renderer* renderer, double x, double z)
+TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer):
+    renderer(renderer)
+{
+}
+
+static inline Vector3 _getPoint(TerrainDefinition*, SoftwareRenderer* renderer, double x, double z)
 {
     Vector3 result;
 
@@ -26,9 +25,10 @@ static inline Vector3 _getPoint(TerrainDefinition*, Renderer* renderer, double x
     return result;
 }
 
-static Color _postProcessFragment(Renderer* renderer, Vector3 point, void*)
+static Color _postProcessFragment(Renderer* renderer_, Vector3 point, void*)
 {
     double precision;
+    SoftwareRenderer* renderer = (SoftwareRenderer*)renderer_;
 
     point = _getPoint(renderer->terrain->definition, renderer, point.x, point.z);
 
@@ -65,7 +65,7 @@ static void _renderQuad(Renderer* renderer, double x, double z, double size, dou
     }
 }
 
-void terrainTessellateChunk(Renderer* renderer, TerrainChunkInfo* chunk, int detail)
+void TerrainRasterizer::tessellateChunk(TerrainChunkInfo* chunk, int detail)
 {
     if (detail < 1)
     {
@@ -88,7 +88,7 @@ void terrainTessellateChunk(Renderer* renderer, TerrainChunkInfo* chunk, int det
     }
 }
 
-static void _getChunk(Renderer* renderer, TerrainChunkInfo* chunk, double x, double z, double size, int displaced)
+static void _getChunk(Renderer* renderer, TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, int displaced)
 {
     chunk->point_nw = renderer->terrain->getResult(renderer, x, z, 1, displaced).location;
     chunk->point_sw = renderer->terrain->getResult(renderer, x, z + size, 1, displaced).location;
@@ -141,7 +141,7 @@ static void _getChunk(Renderer* renderer, TerrainChunkInfo* chunk, double x, dou
     }
 }
 
-void terrainGetTessellationInfo(Renderer* renderer, FuncTerrainTessellationCallback callback, int displaced)
+void TerrainRasterizer::getTessellationInfo(int displaced)
 {
     TerrainChunkInfo chunk;
     int chunk_factor, chunk_count, i;
@@ -168,25 +168,25 @@ void terrainGetTessellationInfo(Renderer* renderer, FuncTerrainTessellationCallb
         for (i = 0; i < chunk_count - 1; i++)
         {
             _getChunk(renderer, &chunk, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size, displaced);
-            if (!callback(renderer, &chunk, progress))
+            if (!processChunk(&chunk, progress))
             {
                 return;
             }
 
             _getChunk(renderer, &chunk, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size, displaced);
-            if (!callback(renderer, &chunk, progress))
+            if (!processChunk(&chunk, progress))
             {
                 return;
             }
 
             _getChunk(renderer, &chunk, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size, displaced);
-            if (!callback(renderer, &chunk, progress))
+            if (!processChunk(&chunk, progress))
             {
                 return;
             }
 
             _getChunk(renderer, &chunk, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size, displaced);
-            if (!callback(renderer, &chunk, progress))
+            if (!processChunk(&chunk, progress))
             {
                 return;
             }
@@ -206,8 +206,8 @@ void terrainGetTessellationInfo(Renderer* renderer, FuncTerrainTessellationCallb
 
 typedef struct
 {
-    Renderer* renderer;
-    TerrainChunkInfo chunk;
+    TerrainRasterizer* rasterizer;
+    TerrainRasterizer::TerrainChunkInfo chunk;
 } ParallelRasterInfo;
 
 static int _parallelJobCallback(ParallelQueue*, int, void* data, int stopping)
@@ -216,18 +216,18 @@ static int _parallelJobCallback(ParallelQueue*, int, void* data, int stopping)
 
     if (!stopping)
     {
-        terrainTessellateChunk(info->renderer, &info->chunk, info->chunk.detail_hint);
+        info->rasterizer->tessellateChunk(&info->chunk, info->chunk.detail_hint);
     }
 
     free(data);
     return 0;
 }
 
-static int _standardTessellationCallback(Renderer* renderer, TerrainChunkInfo* chunk, double progress)
+int TerrainRasterizer::processChunk(TerrainChunkInfo* chunk, double progress)
 {
     ParallelRasterInfo* info = new ParallelRasterInfo;
 
-    info->renderer = renderer;
+    info->rasterizer = this;
     info->chunk = *chunk;
 
     if (!parallelQueueAddJob((ParallelQueue*)renderer->customData[0], _parallelJobCallback, info))
@@ -239,7 +239,7 @@ static int _standardTessellationCallback(Renderer* renderer, TerrainChunkInfo* c
     return !renderer->render_interrupt;
 }
 
-void terrainRenderSurface(Renderer* renderer)
+void TerrainRasterizer::renderSurface()
 {
     ParallelQueue* queue;
     queue = parallelQueueCreate(0);
@@ -248,7 +248,7 @@ void terrainRenderSurface(Renderer* renderer)
     renderer->customData[0] = queue;
 
     renderer->render_progress = 0.0;
-    terrainGetTessellationInfo(renderer, _standardTessellationCallback, 0);
+    getTessellationInfo(0);
     renderer->render_progress = 0.05;
 
     parallelQueueWait(queue);

@@ -7,12 +7,12 @@
 #include "AtmosphereDefinition.h"
 #include "CloudsRenderer.h"
 #include "SkyRasterizer.h"
+#include "TerrainRasterizer.h"
 
 
 // Legacy compatibility
 #include "renderer.h"
 #include "terrain/public.h"
-#include "terrain/ter_raster.h"
 #include "textures/public.h"
 #include "water/public.h"
 static AtmosphereResult _legacyApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
@@ -134,7 +134,9 @@ void SoftwareRenderer::prepare()
 
 void SoftwareRenderer::rasterize()
 {
-    terrainRenderSurface(this);
+    TerrainRasterizer terrain(this);
+    terrain.renderSurface();
+
     waterRenderSurface(this);
 
     SkyRasterizer sky(this);

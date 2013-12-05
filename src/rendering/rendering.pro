@@ -14,7 +14,6 @@ SOURCES += main.cpp \
     atmosphere/atm_render.cpp \
     atmosphere/atm_bruneton.cpp \
     terrain/ter_render.cpp \
-    terrain/ter_raster.cpp \
     terrain/ter_painting.cpp \
     textures/tex_tools.cpp \
     textures/tex_rendering.cpp \
@@ -35,7 +34,6 @@ HEADERS += \
     atmosphere/public.h \
     atmosphere/private.h \
     shared/types.h \
-    terrain/ter_raster.h \
     terrain/public.h \
     terrain/private.h \
     textures/tex_preview.h \

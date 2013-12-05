@@ -25,6 +25,9 @@ namespace software {
     class CloudsRenderer;
     class BaseCloudLayerRenderer;
     class BaseCloudsModel;
+
+    class SkyRasterizer;
+    class TerrainRasterizer;
 }
 }
 

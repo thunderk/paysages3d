@@ -22,7 +22,8 @@ SOURCES += SoftwareRenderer.cpp \
     SkyRasterizer.cpp \
     CloudBasicLayerRenderer.cpp \
     clouds/BaseCloudsModel.cpp \
-    clouds/CloudModelStratoCumulus.cpp
+    clouds/CloudModelStratoCumulus.cpp \
+    TerrainRasterizer.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -34,7 +35,8 @@ HEADERS += SoftwareRenderer.h\
     SkyRasterizer.h \
     CloudBasicLayerRenderer.h \
     clouds/BaseCloudsModel.h \
-    clouds/CloudModelStratoCumulus.h
+    clouds/CloudModelStratoCumulus.h \
+    TerrainRasterizer.h
 
 unix:!symbian {
     maemo5 {
