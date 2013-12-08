@@ -3,6 +3,8 @@
 
 #include "software_global.h"
 
+#include <set>
+
 namespace paysages {
 namespace software {
 
@@ -35,12 +37,12 @@ public:
     /**
      * @brief Apply a final component on a surface material.
      */
-    void applyFinalComponent(const LightComponent &component, const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material);
+    Color applyFinalComponent(const LightComponent &component, const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material);
 
 private:
     int specularity;
 
-    std::vector<LightFilter*> filters;
+    std::set<LightFilter*> filters;
 };
 
 }

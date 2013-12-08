@@ -4,12 +4,6 @@
 #include "BasePreview.h"
 #include "Scenery.h"
 
-// TEMP
-#include "atmosphere/public.h"
-#include "tools/lighting.h"
-#include "terrain/public.h"
-#include "water/public.h"
-
 static Vector3 _getCameraLocation(Renderer*, Vector3 location)
 {
     return v3Add(location, v3Scale(VECTOR_UP, 50.0));

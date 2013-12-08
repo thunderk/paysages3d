@@ -5,9 +5,7 @@
 #include "render.h"
 #include "RenderingScenery.h"
 #include "CameraDefinition.h"
-#include "terrain/public.h"
-#include "textures/public.h"
-#include "water/public.h"
+#include "SurfaceMaterial.h"
 
 static RayCastingResult _RAYCASTING_NULL = {0, {0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
 
@@ -84,11 +82,6 @@ static void _pushDisplacedQuad(Renderer* renderer, Vector3 v1, Vector3 v2, Vecto
     renderer->pushDisplacedTriangle(renderer, v4, v1, v3, ov4, ov1, ov3, callback, callback_data);
 }
 
-static RayCastingResult _rayWalking(Renderer*, Vector3, Vector3, int, int, int, int)
-{
-    return _RAYCASTING_NULL;
-}
-
 
 
 
@@ -118,21 +111,11 @@ Renderer::Renderer()
     pushQuad = _pushQuad;
     pushDisplacedTriangle = _pushDisplacedTriangle;
     pushDisplacedQuad = _pushDisplacedQuad;
-
-    rayWalking = _rayWalking;
-
-    terrain = (TerrainRenderer*)TerrainRendererClass.create();
-    textures = (TexturesRenderer*)TexturesRendererClass.create();
-    water = (WaterRenderer*)WaterRendererClass.create();
 }
 
 Renderer::~Renderer()
 {
     delete render_camera;
-
-    TerrainRendererClass.destroy(terrain);
-    TexturesRendererClass.destroy(textures);
-    WaterRendererClass.destroy(water);
 
     renderDeleteArea(render_area);
 }
@@ -145,6 +128,11 @@ Color Renderer::applyMediumTraversal(Vector3, Color color)
 Color Renderer::applyLightingToSurface(const Vector3 &, const Vector3 &, const SurfaceMaterial &material)
 {
     return material._rgb;
+}
+
+RayCastingResult Renderer::rayWalking(const Vector3 &, const Vector3 &, int, int, int, int)
+{
+    return _RAYCASTING_NULL;
 }
 
 

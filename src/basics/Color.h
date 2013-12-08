@@ -31,6 +31,8 @@ public:
     double getPower() const;
     void limitPower(double max_power);
 
+    Color add(const Color& other) const;
+
 public:
     double r;
     double g;

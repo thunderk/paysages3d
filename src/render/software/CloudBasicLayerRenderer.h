@@ -5,8 +5,6 @@
 
 #include "BaseCloudLayerRenderer.h"
 
-#include "tools/lighting.h"
-
 namespace paysages {
 namespace software {
 
@@ -22,7 +20,7 @@ public:
     CloudBasicLayerRenderer(SoftwareRenderer* parent);
 
     virtual Color getColor(BaseCloudsModel *model, const Vector3 &eye, const Vector3 &location) override;
-    virtual bool alterLight(BaseCloudsModel *model, LightDefinition* light, const Vector3 &eye, const Vector3 &location) override;
+    virtual bool alterLight(BaseCloudsModel *model, LightComponent* light, const Vector3 &eye, const Vector3 &location) override;
 };
 
 }

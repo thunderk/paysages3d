@@ -5,6 +5,8 @@
 #include "NoiseGenerator.h"
 #include "Curve.h"
 #include "AtmosphereRenderer.h"
+#include "AtmosphereResult.h"
+#include "LightComponent.h"
 #include "clouds/BaseCloudsModel.h"
 #include "SurfaceMaterial.h"
 
@@ -171,7 +173,7 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
         material.shininess = 0.8;
         materialValidate(&material);
 
-        col = parent->applyLightingToSurface(parent, segments[i].start, parent->getAtmosphereRenderer()->getSunDirection(), &material);
+        col = parent->applyLightingToSurface(segments[i].start, parent->getAtmosphereRenderer()->getSunDirection(), material);
 
         col.a = (segments[i].length >= transparency_depth) ? 1.0 : (segments[i].length / transparency_depth);
         colorMask(&result, &col);
@@ -188,7 +190,7 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
     return result;
 }
 
-bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightDefinition* light, const Vector3 &, const Vector3 &location)
+bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent* light, const Vector3 &, const Vector3 &location)
 {
     Vector3 start, end;
     double inside_depth, total_depth, factor;

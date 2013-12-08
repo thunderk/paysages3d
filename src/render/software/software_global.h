@@ -21,10 +21,16 @@ namespace software {
 
     class BaseAtmosphereRenderer;
     class SoftwareBrunetonAtmosphereRenderer;
+    class AtmosphereResult;
+    class AtmosphereModelBruneton;
 
     class CloudsRenderer;
     class BaseCloudLayerRenderer;
     class BaseCloudsModel;
+
+    class TerrainRenderer;
+    class TexturesRenderer;
+    class WaterRenderer;
 
     class SkyRasterizer;
     class TerrainRasterizer;

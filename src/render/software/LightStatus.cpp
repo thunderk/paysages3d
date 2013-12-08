@@ -1,5 +1,9 @@
 #include "LightStatus.h"
 
+#include "LightingManager.h"
+#include "Color.h"
+#include "SurfaceMaterial.h"
+
 LightStatus::LightStatus(LightingManager *manager, const Vector3 &location, const Vector3 &eye)
 {
     this->manager = manager;
@@ -9,21 +13,21 @@ LightStatus::LightStatus(LightingManager *manager, const Vector3 &location, cons
 
 void LightStatus::pushComponent(LightComponent component)
 {
-    if (manager->filter(&component, location))
+    if (manager->alterLight(component, location))
     {
-        components.add(component);
+        components.push_back(component);
     }
 }
 
 Color LightStatus::apply(const Vector3 &normal, const SurfaceMaterial &material)
 {
-    Color final();
+    Color final;
 
     for (auto component: components)
     {
-        final.add(manager->applyFinalComponent(component, eye, location, normal, material));
+        final = final.add(manager->applyFinalComponent(component, eye, location, normal, material));
     }
 
-    final.a = material->base.a;
+    final.a = material.base.a;
     return final;
 }

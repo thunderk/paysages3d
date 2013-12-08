@@ -6,16 +6,12 @@
 #include "SurfaceMaterial.h"
 #include "NoiseGenerator.h"
 #include "BasePreview.h"
-
-// TEMP
-#include "atmosphere/public.h"
-#include "tools/lighting.h"
-#include "textures/public.h"
-#include "water/public.h"
+#include "LightComponent.h"
+#include "LightStatus.h"
 
 static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
 {
-    LightDefinition light;
+    LightComponent light;
 
     light.color.r = 0.6;
     light.color.g = 0.6;
@@ -26,7 +22,7 @@ static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
     light.direction = v3Normalize(light.direction);
     light.altered = 1;
     light.reflection = 0.0;
-    lightingPushLight(status, &light);
+    status->pushComponent(light);
 
     light.color.r = 0.2;
     light.color.g = 0.2;
@@ -37,7 +33,7 @@ static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
     light.direction = v3Normalize(light.direction);
     light.altered = 0;
     light.reflection = 0.0;
-    lightingPushLight(status, &light);
+    status->pushComponent(light);
 }
 
 static Vector3 _getCameraLocation(Renderer*, Vector3 location)

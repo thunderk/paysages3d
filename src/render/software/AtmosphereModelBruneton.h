@@ -11,14 +11,14 @@ namespace software {
 class SOFTWARESHARED_EXPORT AtmosphereModelBruneton
 {
 public:
-    AtmosphereModelBruneton(AtmosphereRenderer *parent);
+    AtmosphereModelBruneton(SoftwareRenderer *parent);
 
-    AtmosphereResult getSkyColor(const Vector3 &eye, const Vector3 &direction, const Vector3 &sun_position, const Color &base);
-    AtmosphereResult applyAerialPerspective(const Vector3 &location, const Color &base);
+    AtmosphereResult getSkyColor(Vector3 eye, const Vector3 &direction, const Vector3 &sun_position, const Color &base);
+    AtmosphereResult applyAerialPerspective(Vector3 location, const Color &base);
     void fillLightingStatus(LightStatus *status, const Vector3 &normal, int opaque);
 
 private:
-    AtmosphereRenderer* parent;
+    SoftwareRenderer* parent;
 };
 
 }

@@ -3,6 +3,8 @@
 
 #include "software_global.h"
 
+#include "Color.h"
+
 namespace paysages {
 namespace software {
 
@@ -25,11 +27,15 @@ protected:
 class SoftwareBrunetonAtmosphereRenderer: public BaseAtmosphereRenderer
 {
 public:
-    SoftwareBrunetonAtmosphereRenderer(SoftwareRenderer* renderer):BaseAtmosphereRenderer(renderer) {}
+    SoftwareBrunetonAtmosphereRenderer(SoftwareRenderer* renderer);
+    virtual ~SoftwareBrunetonAtmosphereRenderer();
 
     virtual void getLightingStatus(LightStatus* status, Vector3 normal, int opaque) override;
     virtual AtmosphereResult applyAerialPerspective(Vector3 location, Color base) override;
     virtual AtmosphereResult getSkyColor(Vector3 direction) override;
+
+private:
+    AtmosphereModelBruneton* model;
 };
 
 }

@@ -132,7 +132,7 @@ Color CloudsRenderer::getColor(const Vector3 &eye, const Vector3 &location, cons
     return cumul;
 }
 
-bool CloudsRenderer::alterLight(LightDefinition* light, const Vector3 &eye, const Vector3 &location)
+bool CloudsRenderer::alterLight(LightComponent* light, const Vector3 &eye, const Vector3 &location)
 {
     CloudsDefinition* definition = parent->getScenery()->getClouds();
 

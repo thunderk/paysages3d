@@ -5,17 +5,12 @@
 #include "WaterDefinition.h"
 #include "CameraDefinition.h"
 
-// TEMP
-#include "water/public.h"
-#include "terrain/public.h"
-#include "atmosphere/public.h"
-
 static double _getWaterHeight(Renderer*)
 {
     return 0.0;
 }
 
-static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector3 direction, int, int, int, int)
+static RayCastingResult _rayWalking(SoftwareRenderer* renderer, Vector3 location, Vector3 direction, int, int, int, int)
 {
     RayCastingResult result;
     int background = *(int*)renderer->customData[1];
@@ -49,13 +44,14 @@ static RayCastingResult _rayWalking(Renderer* renderer, Vector3 location, Vector
 
         if (result.hit_location.y < 0.0)
         {
-            if (result.hit_location.y < -renderer->water->definition->lighting_depth)
+            double lighting_depth = renderer->getScenery()->getWater()->lighting_depth;
+            if (result.hit_location.y < -lighting_depth)
             {
                 result.hit_color = COLOR_BLACK;
             }
             else
             {
-                double attenuation = -result.hit_location.y / renderer->water->definition->lighting_depth;
+                double attenuation = -result.hit_location.y / lighting_depth;
                 result.hit_color.r *= 1.0 - attenuation;
                 result.hit_color.g *= 1.0 - attenuation;
                 result.hit_color.b *= 1.0 - attenuation;
@@ -119,9 +115,9 @@ void WaterAspectPreviewRenderer::updateEvent()
     getScenery()->getCamera()->setTarget(VECTOR_ZERO);
     prepare();
 
-    terrain->getWaterHeight = _getWaterHeight;
-    atmosphere->getLightingStatus = _getLightingStatus;
-    rayWalking = _rayWalking;
+    //terrain->getWaterHeight = _getWaterHeight;
+    //atmosphere->getLightingStatus = _getLightingStatus;
+    //rayWalking = _rayWalking;
     getPrecision = _getPrecision;
 }
 

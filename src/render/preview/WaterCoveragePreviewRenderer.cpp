@@ -3,11 +3,10 @@
 #include "BasePreview.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"
+#include "WaterRenderer.h"
 
 // TEMP
 #include "RenderingScenery.h"
-#include "terrain/public.h"
-#include "water/public.h"
 
 WaterCoveragePreviewRenderer::WaterCoveragePreviewRenderer(WaterDefinition* definition):
     TerrainShapePreviewRenderer(new TerrainDefinition(NULL)), definition(definition)
@@ -44,14 +43,13 @@ void WaterCoveragePreviewRenderer::updateEvent()
     TerrainShapePreviewRenderer::updateEvent();
 
     getScenery()->setWater(definition);
-    WaterRendererClass.bind(this, definition);
 }
 
 Color WaterCoveragePreviewRenderer::getWaterColor(double x, double y, double)
 {
     Color base;
 
-    base = water->getResult(this, x, y).final;
+    base = getWaterRenderer()->getResult(x, y).final;
 
     if (highlight)
     {

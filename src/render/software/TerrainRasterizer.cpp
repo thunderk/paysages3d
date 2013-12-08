@@ -3,23 +3,24 @@
 #include "SoftwareRenderer.h"
 #include "BoundingBox.h"
 #include "CameraDefinition.h"
+#include "TerrainRenderer.h"
+#include "WaterRenderer.h"
+#include "TexturesRenderer.h"
+#include "Scenery.h"
 
 #include "tools/parallel.h"
-#include "terrain/public.h"
-#include "water/public.h"
-#include "textures/public.h"
 
 TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer):
     renderer(renderer)
 {
 }
 
-static inline Vector3 _getPoint(TerrainDefinition*, SoftwareRenderer* renderer, double x, double z)
+static inline Vector3 _getPoint(SoftwareRenderer* renderer, double x, double z)
 {
     Vector3 result;
 
     result.x = x;
-    result.y = renderer->terrain->getHeight(renderer, x, z, 1);
+    result.y = renderer->getTerrainRenderer()->getHeight(x, z, 1);
     result.z = z;
 
     return result;
@@ -30,13 +31,13 @@ static Color _postProcessFragment(Renderer* renderer_, Vector3 point, void*)
     double precision;
     SoftwareRenderer* renderer = (SoftwareRenderer*)renderer_;
 
-    point = _getPoint(renderer->terrain->definition, renderer, point.x, point.z);
+    point = _getPoint(renderer, point.x, point.z);
 
     precision = renderer->getPrecision(renderer, point);
-    return renderer->terrain->getFinalColor(renderer, point, precision);
+    return renderer->getTerrainRenderer()->getFinalColor(point, precision);
 }
 
-static void _renderQuad(Renderer* renderer, double x, double z, double size, double water_height)
+static void _renderQuad(SoftwareRenderer* renderer, double x, double z, double size, double water_height)
 {
     Vector3 ov1, ov2, ov3, ov4;
     Vector3 dv1, dv2, dv3, dv4;
@@ -45,19 +46,19 @@ static void _renderQuad(Renderer* renderer, double x, double z, double size, dou
 
     ov1.x = x;
     ov1.z = z;
-    dv1 = renderer->terrain->getResult(renderer, x, z, 1, 1).location;
+    dv1 = renderer->getTerrainRenderer()->getResult(x, z, 1, 1).location;
 
     ov2.x = x;
     ov2.z = z + size;
-    dv2 = renderer->terrain->getResult(renderer, x, z + size, 1, 1).location;
+    dv2 = renderer->getTerrainRenderer()->getResult(x, z + size, 1, 1).location;
 
     ov3.x = x + size;
     ov3.z = z + size;
-    dv3 = renderer->terrain->getResult(renderer, x + size, z + size, 1, 1).location;
+    dv3 = renderer->getTerrainRenderer()->getResult(x + size, z + size, 1, 1).location;
 
     ov4.x = x + size;
     ov4.z = z;
-    dv4 = renderer->terrain->getResult(renderer, x + size, z, 1, 1).location;
+    dv4 = renderer->getTerrainRenderer()->getResult(x + size, z, 1, 1).location;
 
     if (dv1.y > water_height || dv2.y > water_height || dv3.y > water_height || dv4.y > water_height)
     {
@@ -72,7 +73,7 @@ void TerrainRasterizer::tessellateChunk(TerrainChunkInfo* chunk, int detail)
         return;
     }
 
-    double water_height = renderer->water->getHeightInfo(renderer).min_height;
+    double water_height = renderer->getWaterRenderer()->getHeightInfo().min_height;
 
     double startx = chunk->point_nw.x;
     double startz = chunk->point_nw.z;
@@ -88,12 +89,12 @@ void TerrainRasterizer::tessellateChunk(TerrainChunkInfo* chunk, int detail)
     }
 }
 
-static void _getChunk(Renderer* renderer, TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, int displaced)
+static void _getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, int displaced)
 {
-    chunk->point_nw = renderer->terrain->getResult(renderer, x, z, 1, displaced).location;
-    chunk->point_sw = renderer->terrain->getResult(renderer, x, z + size, 1, displaced).location;
-    chunk->point_se = renderer->terrain->getResult(renderer, x + size, z + size, 1, displaced).location;
-    chunk->point_ne = renderer->terrain->getResult(renderer, x + size, z, 1, displaced).location;
+    chunk->point_nw = renderer->getTerrainRenderer()->getResult(x, z, 1, displaced).location;
+    chunk->point_sw = renderer->getTerrainRenderer()->getResult(x, z + size, 1, displaced).location;
+    chunk->point_se = renderer->getTerrainRenderer()->getResult(x + size, z + size, 1, displaced).location;
+    chunk->point_ne = renderer->getTerrainRenderer()->getResult(x + size, z, 1, displaced).location;
 
     double displacement_power;
     if (displaced)
@@ -102,7 +103,7 @@ static void _getChunk(Renderer* renderer, TerrainRasterizer::TerrainChunkInfo* c
     }
     else
     {
-        displacement_power = texturesGetMaximalDisplacement(renderer->textures->definition);
+        displacement_power = renderer->getTexturesRenderer()->getMaximalDisplacement(renderer->getScenery()->getTextures());
     }
 
     BoundingBox box;

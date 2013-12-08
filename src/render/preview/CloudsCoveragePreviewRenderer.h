@@ -19,6 +19,8 @@ public:
 
     virtual void toggleChangeEvent(const std::string &key, bool value) override;
 
+    virtual Color applyLightingToSurface(const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material) override;
+
 private:
     bool perspective;
     CloudLayerDefinition* layer;

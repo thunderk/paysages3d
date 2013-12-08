@@ -1,43 +1,22 @@
-#include "private.h"
+#include "WaterRenderer.h"
 
-#include <cmath>
-#include "../renderer.h"
+#include "SoftwareRenderer.h"
+#include "TerrainRenderer.h"
 #include "WaterDefinition.h"
-#include "SurfaceMaterial.h"
 #include "NoiseGenerator.h"
-#include "terrain/public.h"
+#include "LightComponent.h"
+#include "Scenery.h"
+#include "SurfaceMaterial.h"
 
-static HeightInfo _FAKE_HEIGHT_INFO = {0.0, 0.0, 0.0};
-
-/******************** Fake ********************/
-static HeightInfo _fakeGetHeightInfo(Renderer*)
+WaterRenderer::WaterRenderer(SoftwareRenderer* parent):
+    parent(parent)
 {
-    return _FAKE_HEIGHT_INFO;
 }
 
-static double _fakeGetHeight(Renderer*, double, double)
+WaterRenderer::~WaterRenderer()
 {
-    return 0.0;
 }
 
-static WaterResult _fakeGetResult(Renderer*, double x, double z)
-{
-    WaterResult result;
-
-    result.location.x = x;
-    result.location.y = 0.0;
-    result.location.z = z;
-
-    result.base = COLOR_BLUE;
-    result.reflected = COLOR_BLACK;
-    result.refracted = COLOR_BLACK;
-    result.foam = COLOR_BLACK;
-    result.final = COLOR_BLUE;
-
-    return result;
-}
-
-/******************** Helpers ********************/
 static inline double _getHeight(WaterDefinition* definition, double base_height, double x, double z)
 {
     return base_height + definition->_waves_noise->get2DTotal(x, z);
@@ -89,13 +68,13 @@ static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal)
     }
 }
 
-static inline Color _getFoamMask(Renderer* renderer, WaterDefinition* definition, Vector3 location, Vector3 normal, double detail)
+static inline Color _getFoamMask(SoftwareRenderer* renderer, WaterDefinition* definition, Vector3 location, Vector3 normal, double detail)
 {
     Color result;
     double foam_factor, normal_diff, location_offset;
     double base_height;
 
-    base_height = renderer->terrain->getWaterHeight(renderer);
+    base_height = renderer->getTerrainRenderer()->getWaterHeight();
     location_offset = 2.0 * detail;
 
     foam_factor = 0.0;
@@ -156,13 +135,13 @@ static inline Color _getFoamMask(Renderer* renderer, WaterDefinition* definition
     return result;
 }
 
-static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 at)
+int WaterRenderer::alterLight(LightComponent *light, const Vector3 &at)
 {
-    WaterDefinition* definition = renderer->water->definition;
+    WaterDefinition* definition = parent->getScenery()->getWater();
     double factor;
     double base_height;
 
-    base_height = renderer->terrain->getWaterHeight(renderer);
+    base_height = parent->getTerrainRenderer()->getWaterHeight();
     if (at.y < base_height)
     {
         if (light->direction.y <= -0.00001)
@@ -193,14 +172,13 @@ static int _alterLight(Renderer* renderer, LightDefinition* light, Vector3 at)
     }
 }
 
-/******************** Real ********************/
-static HeightInfo _realGetHeightInfo(Renderer* renderer)
+HeightInfo WaterRenderer::getHeightInfo()
 {
-    WaterDefinition* definition = renderer->water->definition;
+    WaterDefinition* definition = parent->getScenery()->getWater();
     HeightInfo info;
     double noise_minvalue, noise_maxvalue;
 
-    info.base_height = renderer->terrain->getWaterHeight(renderer);
+    info.base_height = parent->getTerrainRenderer()->getWaterHeight();
     definition->_waves_noise->getRange(&noise_minvalue, &noise_maxvalue);
     info.min_height = info.base_height + noise_minvalue;
     info.max_height = info.base_height + noise_maxvalue;
@@ -208,35 +186,35 @@ static HeightInfo _realGetHeightInfo(Renderer* renderer)
     return info;
 }
 
-static double _realGetHeight(Renderer* renderer, double x, double z)
+double WaterRenderer::getHeight(double x, double z)
 {
-    return _getHeight(renderer->water->definition, renderer->terrain->getWaterHeight(renderer), x, z);
+    return _getHeight(parent->getScenery()->getWater(), parent->getTerrainRenderer()->getWaterHeight(), x, z);
 }
 
-static WaterResult _realGetResult(Renderer* renderer, double x, double z)
+WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
 {
-    WaterDefinition* definition = renderer->water->definition;
+    WaterDefinition* definition = parent->getScenery()->getWater();
     WaterResult result;
     RayCastingResult refracted;
     Vector3 location, normal, look_direction;
     Color color, foam;
     double base_height, detail, depth;
 
-    base_height = renderer->terrain->getWaterHeight(renderer);
+    base_height = parent->getTerrainRenderer()->getWaterHeight();
 
     location.x = x;
     location.y = _getHeight(definition, base_height, x, z);
     location.z = z;
     result.location = location;
 
-    detail = renderer->getPrecision(renderer, location) * 0.1;
+    detail = parent->getPrecision(parent, location) * 0.1;
     if (detail < 0.00001)
     {
         detail = 0.00001;
     }
 
     normal = _getNormal(definition, base_height, location, detail);
-    look_direction = v3Normalize(v3Sub(location, renderer->getCameraLocation(renderer, location)));
+    look_direction = v3Normalize(v3Sub(location, parent->getCameraLocation(parent, location)));
 
     /* Reflection */
     if (definition->reflection == 0.0)
@@ -245,7 +223,7 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     }
     else
     {
-        result.reflected = renderer->rayWalking(renderer, location, _reflectRay(look_direction, normal), 1, 0, 1, 1).hit_color;
+        result.reflected = parent->rayWalking(location, _reflectRay(look_direction, normal), 1, 0, 1, 1).hit_color;
     }
 
     /* Transparency/refraction */
@@ -256,7 +234,7 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     else
     {
         Color depth_color = *definition->depth_color;
-        refracted = renderer->rayWalking(renderer, location, _refractRay(look_direction, normal), 1, 0, 1, 1);
+        refracted = parent->rayWalking(location, _refractRay(look_direction, normal), 1, 0, 1, 1);
         depth = v3Norm(v3Sub(location, refracted.hit_location));
         colorLimitPower(&depth_color, colorGetPower(&refracted.hit_color));
         if (depth > definition->transparency_depth)
@@ -274,59 +252,21 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     }
 
     /* Lighting from environment */
-    color = renderer->applyLightingToSurface(location, normal, *definition->material);
+    color = parent->applyLightingToSurface(location, normal, *definition->material);
 
     color.r += result.reflected.r * definition->reflection + result.refracted.r * definition->transparency;
     color.g += result.reflected.g * definition->reflection + result.refracted.g * definition->transparency;
     color.b += result.reflected.b * definition->reflection + result.refracted.b * definition->transparency;
 
     /* Merge with foam */
-    foam = _getFoamMask(renderer, definition, location, normal, detail);
+    foam = _getFoamMask(parent, definition, location, normal, detail);
     colorMask(&color, &foam);
 
     /* Bring color to the camera */
-    color = renderer->applyMediumTraversal(location, color);
+    color = parent->applyMediumTraversal(location, color);
 
     result.base = definition->material->_rgb;
     result.final = color;
 
     return result;
 }
-
-/******************** Renderer ********************/
-static WaterRenderer* _createRenderer()
-{
-    WaterRenderer* result;
-
-    result = new WaterRenderer;
-    result->definition = new WaterDefinition(NULL);
-
-    result->getHeightInfo = _fakeGetHeightInfo;
-    result->getHeight = _fakeGetHeight;
-    result->getResult = _fakeGetResult;
-
-    return result;
-}
-
-static void _deleteRenderer(WaterRenderer* renderer)
-{
-    delete renderer->definition;
-    delete renderer;
-}
-
-static void _bindRenderer(Renderer* renderer, WaterDefinition* definition)
-{
-    definition->copy(renderer->water->definition);
-
-    renderer->water->getHeightInfo = _realGetHeightInfo;
-    renderer->water->getHeight = _realGetHeight;
-    renderer->water->getResult = _realGetResult;
-
-    lightingManagerRegisterFilter(renderer->lighting, (FuncLightingAlterLight)_alterLight, renderer);
-}
-
-StandardRenderer WaterRendererClass = {
-    (FuncObjectCreate)_createRenderer,
-    (FuncObjectDelete)_deleteRenderer,
-    (FuncObjectBind)_bindRenderer
-};

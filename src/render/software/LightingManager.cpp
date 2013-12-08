@@ -3,6 +3,7 @@
 #include "LightFilter.h"
 #include "LightComponent.h"
 #include "Color.h"
+#include "SurfaceMaterial.h"
 
 LightingManager::LightingManager()
 {
@@ -11,10 +12,7 @@ LightingManager::LightingManager()
 
 void LightingManager::registerFilter(LightFilter* filter)
 {
-    if (not filters.contains(filter))
-    {
-        filters.add(filter);
-    }
+    filters.insert(filter);
 }
 
 bool LightingManager::alterLight(LightComponent &component, const Vector3 &location)
@@ -23,7 +21,7 @@ bool LightingManager::alterLight(LightComponent &component, const Vector3 &locat
     {
         for (auto filter:filters)
         {
-            if (not filter.app(component, location))
+            if (not filter->applyLightFilter(component, location))
             {
                 return false;
             }
@@ -43,43 +41,42 @@ void LightingManager::setSpecularity(bool enabled)
     specularity = enabled;
 }
 
-void applyFinalComponent(const LightComponent &component, const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material)
+Color LightingManager::applyFinalComponent(const LightComponent &component, const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material)
 {
     Color result, light_color;
     double normal_norm;
     Vector3 direction_inv;
 
-    light_color = component->color;
-    direction_inv = v3Scale(v3Normalize(component->direction), -1.0);
+    light_color = component.color;
+    direction_inv = v3Scale(v3Normalize(component.direction), -1.0);
 
     normal_norm = v3Norm(normal);
     if (normal_norm > 1.0)
     {
         normal_norm = 1.0;
     }
-    normal = v3Normalize(normal);
 
     result = COLOR_BLACK;
 
     /* diffused light */
-    double diffuse = v3Dot(direction_inv, normal);
+    double diffuse = v3Dot(direction_inv, normal.normalize());
     diffuse = (diffuse + (1.0 - normal_norm)) / (1.0 + (1.0 - normal_norm));
     if (diffuse > 0.0)
     {
-        result.r += diffuse * material->_rgb.r * light_color.r;
-        result.g += diffuse * material->_rgb.g * light_color.g;
-        result.b += diffuse * material->_rgb.b * light_color.b;
+        result.r += diffuse * material._rgb.r * light_color.r;
+        result.g += diffuse * material._rgb.g * light_color.g;
+        result.b += diffuse * material._rgb.b * light_color.b;
     }
 
     /* specular reflection */
-    if (material->reflection > 0.0 && light->reflection > 0.0)
+    if (material.reflection > 0.0 && component.reflection > 0.0)
     {
         Vector3 view = v3Normalize(v3Sub(location, eye));
         Vector3 reflect = v3Sub(direction_inv, v3Scale(normal, 2.0 * v3Dot(direction_inv, normal)));
         double specular = v3Dot(reflect, view);
         if (specular > 0.0)
         {
-            specular = pow(specular, material->shininess) * material->reflection * light->reflection * normal_norm;
+            specular = pow(specular, material.shininess) * material.reflection * component.reflection * normal_norm;
             if (specular > 0.0)
             {
                 result.r += specular * light_color.r;

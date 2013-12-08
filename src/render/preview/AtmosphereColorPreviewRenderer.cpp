@@ -2,8 +2,8 @@
 
 #include "SoftwareRenderer.h"
 #include "AtmosphereRenderer.h"
+#include "AtmosphereResult.h"
 #include "CameraDefinition.h"
-#include "tools/lighting.h"
 #include "SurfaceMaterial.h"
 #include "Scenery.h"
 #include "BasePreview.h"
@@ -180,13 +180,13 @@ Color AtmosphereColorPreviewRenderer::getColor2D(double x, double y, double)
         normal = rotation.transform(normal);
         hit = rotation.transform(hit);
 
-        color = this->applyLightingToSurface(this, hit, normal, &MOUNT_MATERIAL);
-        return this->atmosphere->applyAerialPerspective(this, hit, color).final;
+        color = applyLightingToSurface(hit, normal, MOUNT_MATERIAL);
+        return applyMediumTraversal(hit, color);
     }
     else
     {
         direction = rotation.transform(direction);
 
-        return this->atmosphere->getSkyColor(this, direction).final;
+        return getAtmosphereRenderer()->getSkyColor(direction).final;
     }
 }

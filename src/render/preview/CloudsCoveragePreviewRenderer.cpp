@@ -6,11 +6,6 @@
 #include "CloudLayerDefinition.h"
 #include "CloudsRenderer.h"
 
-Color _fakeApplyLightingToSurface(Renderer*, Vector3, Vector3, SurfaceMaterial*)
-{
-    return COLOR_WHITE;
-}
-
 CloudsCoveragePreviewRenderer::CloudsCoveragePreviewRenderer(CloudLayerDefinition* layer):
     layer(layer)
 {
@@ -31,7 +26,6 @@ void CloudsCoveragePreviewRenderer::updateEvent()
 {
     layer->copy(getScenery()->getClouds()->getCloudLayer(0));
     prepare();
-    applyLightingToSurface = _fakeApplyLightingToSurface;
 }
 
 Color CloudsCoveragePreviewRenderer::getColor2D(double x, double y, double scaling)
@@ -69,4 +63,9 @@ void CloudsCoveragePreviewRenderer::toggleChangeEvent(const std::string &key, bo
     {
         perspective = value;
     }
+}
+
+Color CloudsCoveragePreviewRenderer::applyLightingToSurface(const Vector3 &, const Vector3 &, const SurfaceMaterial &)
+{
+    return COLOR_WHITE;
 }

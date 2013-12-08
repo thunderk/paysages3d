@@ -3,8 +3,6 @@
 
 #include "software_global.h"
 
-#include "tools/lighting.h"
-
 namespace paysages {
 namespace software {
 
@@ -17,7 +15,7 @@ public:
     virtual bool optimizeSearchLimits(BaseCloudsModel *model, Vector3 *start, Vector3 *end);
 
     virtual Color getColor(BaseCloudsModel *model, const Vector3 &eye, const Vector3 &location);
-    virtual bool alterLight(BaseCloudsModel *model, LightDefinition* light, const Vector3 &eye, const Vector3 &location);
+    virtual bool alterLight(BaseCloudsModel *model, LightComponent* light, const Vector3 &eye, const Vector3 &location);
 
 protected:
     SoftwareRenderer* parent;

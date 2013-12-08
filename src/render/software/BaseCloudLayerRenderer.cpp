@@ -1,6 +1,7 @@
 #include "BaseCloudLayerRenderer.h"
 
 #include "clouds/BaseCloudsModel.h"
+#include "Vector3.h"
 
 BaseCloudLayerRenderer::BaseCloudLayerRenderer(SoftwareRenderer* parent):
     parent(parent)
@@ -17,7 +18,7 @@ Color BaseCloudLayerRenderer::getColor(BaseCloudsModel *, const Vector3 &, const
     return COLOR_TRANSPARENT;
 }
 
-bool BaseCloudLayerRenderer::alterLight(BaseCloudsModel *, LightDefinition *, const Vector3 &, const Vector3 &)
+bool BaseCloudLayerRenderer::alterLight(BaseCloudsModel *, LightComponent *, const Vector3 &, const Vector3 &)
 {
     return false;
 }

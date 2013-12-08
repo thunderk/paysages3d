@@ -18,7 +18,11 @@ class SOFTWARESHARED_EXPORT LightStatus
 public:
     LightStatus(LightingManager *manager, const Vector3 &location, const Vector3 &eye);
 
+    inline Vector3 getLocation() const {return location;}
+
     void pushComponent(LightComponent component);
+
+    Color apply(const Vector3 &normal, const SurfaceMaterial &material);
 
 private:
     LightingManager* manager;

@@ -1,7 +1,7 @@
 #include "WaterRasterizer.h"
 
 #include "SoftwareRenderer.h"
-#include "water/public.h"
+#include "WaterRenderer.h"
 #include "tools/parallel.h"
 
 WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer):
@@ -9,23 +9,24 @@ WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer):
 {
 }
 
-static Color _postProcessFragment(Renderer* renderer, Vector3 location, void*)
+static Color _postProcessFragment(Renderer* renderer_, Vector3 location, void*)
 {
-    return renderer->water->getResult(renderer, location.x, location.z).final;
+    SoftwareRenderer* renderer = (SoftwareRenderer*) renderer_;
+    return renderer->getWaterRenderer()->getResult(location.x, location.z).final;
 }
 
-static Vector3 _getFirstPassVertex(Renderer* renderer, double x, double z)
+static Vector3 _getFirstPassVertex(SoftwareRenderer* renderer, double x, double z)
 {
     Vector3 result;
 
     result.x = x;
-    result.y = renderer->water->getHeight(renderer, x, z);
+    result.y = renderer->getWaterRenderer()->getHeight(x, z);
     result.z = z;
 
     return result;
 }
 
-static void _renderQuad(Renderer* renderer, double x, double z, double size)
+static void _renderQuad(SoftwareRenderer* renderer, double x, double z, double size)
 {
     Vector3 v1, v2, v3, v4;
 

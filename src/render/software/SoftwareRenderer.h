@@ -42,18 +42,29 @@ public:
 
     inline BaseAtmosphereRenderer* getAtmosphereRenderer() const {return atmosphere_renderer;}
     inline CloudsRenderer* getCloudsRenderer() const {return clouds_renderer;}
+    inline TerrainRenderer* getTerrainRenderer() const {return terrain_renderer;}
+    inline TexturesRenderer* getTexturesRenderer() const {return textures_renderer;}
+    inline WaterRenderer* getWaterRenderer() const {return water_renderer;}
 
     inline FluidMediumManager* getFluidMediumManager() const {return fluid_medium;}
+    inline LightingManager* getLightingManager() const {return lighting;}
 
-    virtual Color applyMediumTraversal(Vector3 location, Color color) override;
     virtual Color applyLightingToSurface(const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material) override;
+    virtual Color applyMediumTraversal(Vector3 location, Color color) override;
+    virtual RayCastingResult rayWalking(const Vector3 &location, const Vector3 &direction, int terrain, int water, int sky, int clouds) override;
 
 private:
     Scenery* scenery;
     bool own_scenery;
+
     FluidMediumManager* fluid_medium;
+    LightingManager* lighting;
+
     BaseAtmosphereRenderer* atmosphere_renderer;
     CloudsRenderer* clouds_renderer;
+    TerrainRenderer* terrain_renderer;
+    TexturesRenderer* textures_renderer;
+    WaterRenderer* water_renderer;
 };
 
 }

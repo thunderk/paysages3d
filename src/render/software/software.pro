@@ -29,9 +29,11 @@ SOURCES += SoftwareRenderer.cpp \
     LightStatus.cpp \
     LightFilter.cpp \
     LightComponent.cpp \
-    WaterRasterizer.cpp \
     AtmosphereResult.cpp \
-    AtmosphereModelBruneton.cpp
+    AtmosphereModelBruneton.cpp \
+    TerrainRenderer.cpp \
+    TexturesRenderer.cpp \
+    WaterRenderer.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -50,9 +52,11 @@ HEADERS += SoftwareRenderer.h\
     LightStatus.h \
     LightFilter.h \
     LightComponent.h \
-    WaterRasterizer.h \
     AtmosphereResult.h \
-    AtmosphereModelBruneton.h
+    AtmosphereModelBruneton.h \
+    TerrainRenderer.h \
+    TexturesRenderer.h \
+    WaterRenderer.h
 
 unix:!symbian {
     maemo5 {

@@ -3,8 +3,6 @@
 
 #include "software_global.h"
 
-#include "tools/lighting.h"
-
 namespace paysages {
 namespace software {
 
@@ -48,7 +46,7 @@ public:
      *
      * Return true if the light was altered.
      */
-    virtual bool alterLight(LightDefinition* light, const Vector3 &eye, const Vector3 &location);
+    virtual bool alterLight(LightComponent* light, const Vector3 &eye, const Vector3 &location);
 private:
     SoftwareRenderer* parent;
 

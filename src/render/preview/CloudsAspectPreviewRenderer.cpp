@@ -1,15 +1,17 @@
 #include "CloudsAspectPreviewRenderer.h"
 
-#include "atmosphere/public.h"
 #include "BasePreview.h"
 #include "Scenery.h"
 #include "CloudsDefinition.h"
 #include "CloudLayerDefinition.h"
 #include "CloudsRenderer.h"
+#include "LightStatus.h"
+#include "LightComponent.h"
+#include "AtmosphereResult.h"
 
 static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
 {
-    LightDefinition light;
+    LightComponent light;
 
     light.color.r = 0.5;
     light.color.g = 0.5;
@@ -17,7 +19,7 @@ static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
     light.direction = Vector3(-1.0, 0.5, 1.0).normalize();
     light.altered = 1;
     light.reflection = 0.0;
-    lightingPushLight(status, &light);
+    status->pushComponent(light);
 
     light.color.r = 0.1;
     light.color.g = 0.1;
@@ -25,7 +27,7 @@ static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
     light.direction = Vector3(1.0, -0.5, -1.0).normalize();
     light.altered = 0;
     light.reflection = 0.0;
-    lightingPushLight(status, &light);
+    status->pushComponent(light);
 }
 
 static double _getDensity(Renderer*, CloudLayerDefinition* layer, Vector3 location)
@@ -81,8 +83,8 @@ void CloudsAspectPreviewRenderer::updateEvent()
     prepare();
 
     //clouds->getLayerDensity = _getDensity;
-    atmosphere->getLightingStatus = _getLightingStatus;
-    atmosphere->applyAerialPerspective = _fakeApplyAerialPerspective;
+    //atmosphere->getLightingStatus = _getLightingStatus;
+    //atmosphere->applyAerialPerspective = _fakeApplyAerialPerspective;
 }
 
 Color CloudsAspectPreviewRenderer::getColor2D(double x, double y, double)

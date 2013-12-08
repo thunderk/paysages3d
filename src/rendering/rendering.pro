@@ -11,16 +11,10 @@ include(../common.pri)
 SOURCES += main.cpp \
     renderer.cpp \
     render.cpp \
-    terrain/ter_render.cpp \
-    terrain/ter_painting.cpp \
-    textures/tex_tools.cpp \
-    textures/tex_rendering.cpp \
-    textures/tex_preview.cpp \
     tools/texture.cpp \
     tools/parallel.cpp \
     tools/data.cpp \
     tools/cache.cpp \
-    water/wat_render.cpp \
     RenderingScenery.cpp
 
 HEADERS += \
@@ -28,17 +22,10 @@ HEADERS += \
     render.h \
     main.h \
     shared/types.h \
-    terrain/public.h \
-    terrain/private.h \
-    textures/tex_preview.h \
-    textures/public.h \
-    textures/private.h \
     tools/texture.h \
     tools/parallel.h \
     tools/data.h \
     tools/cache.h \
-    water/public.h \
-    water/private.h \
     rendering_global.h \
     RenderingScenery.h
 

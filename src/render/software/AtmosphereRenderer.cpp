@@ -3,7 +3,18 @@
 #include <cmath>
 #include "SoftwareRenderer.h"
 #include "AtmosphereDefinition.h"
+#include "AtmosphereModelBruneton.h"
+#include "AtmosphereResult.h"
+#include "LightComponent.h"
+#include "LightStatus.h"
 #include "Scenery.h"
+
+/* Factor to convert software units to kilometers */
+#define WORLD_SCALING 0.05
+#define SUN_DISTANCE 149597870.0
+#define SUN_DISTANCE_SCALED (SUN_DISTANCE / WORLD_SCALING)
+#define SUN_RADIUS 6.955e5
+#define SUN_RADIUS_SCALED (SUN_RADIUS / WORLD_SCALING)
 
 static inline double _getDayFactor(double daytime)
 {
@@ -53,7 +64,7 @@ static inline void _applyWeatherEffects(AtmosphereDefinition* definition, Atmosp
     result->attenuation.g *= 1.0 - 0.4 * distancefactor * definition->humidity;
     result->attenuation.b *= 1.0 - 0.4 * distancefactor * definition->humidity;
 
-    atmosphereUpdateResult(result);
+    result->updateFinal();
 }
 
 
@@ -65,7 +76,7 @@ BaseAtmosphereRenderer::BaseAtmosphereRenderer(SoftwareRenderer* renderer):
 
 void BaseAtmosphereRenderer::getLightingStatus(LightStatus* status, Vector3, int)
 {
-    LightDefinition light;
+    LightComponent light;
 
     light.color.r = 1.0;
     light.color.g = 1.0;
@@ -75,7 +86,7 @@ void BaseAtmosphereRenderer::getLightingStatus(LightStatus* status, Vector3, int
     light.direction.z = 0.7;
     light.altered = 0;
     light.reflection = 0.0;
-    lightingPushLight(status, &light);
+    status->pushComponent(light);
     light.color.r = 0.3;
     light.color.g = 0.31;
     light.color.b = 0.34;
@@ -84,7 +95,7 @@ void BaseAtmosphereRenderer::getLightingStatus(LightStatus* status, Vector3, int
     light.direction.z = -0.7;
     light.altered = 0;
     light.reflection = 0.0;
-    lightingPushLight(status, &light);
+    status->pushComponent(light);
 }
 
 AtmosphereResult BaseAtmosphereRenderer::applyAerialPerspective(Vector3, Color base)
@@ -115,9 +126,20 @@ AtmosphereDefinition* BaseAtmosphereRenderer::getDefinition()
     return renderer->getScenery()->getAtmosphere();
 }
 
+SoftwareBrunetonAtmosphereRenderer::SoftwareBrunetonAtmosphereRenderer(SoftwareRenderer* renderer):
+    BaseAtmosphereRenderer(renderer)
+{
+    model = new AtmosphereModelBruneton(this);
+}
+
+SoftwareBrunetonAtmosphereRenderer::~SoftwareBrunetonAtmosphereRenderer()
+{
+    delete model;
+}
+
 void SoftwareBrunetonAtmosphereRenderer::getLightingStatus(LightStatus* status, Vector3 normal, int opaque)
 {
-    return brunetonGetLightingStatus(renderer, status, normal, opaque);
+    return model->fillLightingStatus(status, normal, opaque);
 }
 
 AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(Vector3 location, Color base)
@@ -129,7 +151,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(Vect
     switch (definition->model)
     {
     case AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON:
-        result = brunetonApplyAerialPerspective(renderer, location, base);
+        result = model->applyAerialPerspective(location, base);
         break;
     default:
         ;
@@ -188,7 +210,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
     switch (definition->model)
     {
     case AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON:
-        result = brunetonGetSkyColor(renderer, camera_location, direction, sun_position, base);
+        result = model->getSkyColor(camera_location, direction, sun_position, base);
         break;
     default:
         result = BaseAtmosphereRenderer::applyAerialPerspective(location, result.base);

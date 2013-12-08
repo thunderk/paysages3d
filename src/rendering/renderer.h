@@ -5,11 +5,6 @@
 #include "shared/types.h"
 #include "render.h"
 
-class LightingManager;
-class TerrainRenderer;
-class TexturesRenderer;
-class WaterRenderer;
-
 class Renderer
 {
 public:
@@ -45,14 +40,7 @@ public:
     /* Shortcuts */
     virtual Color applyLightingToSurface(const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material);
     virtual Color applyMediumTraversal(Vector3 location, Color color);
-
-    /* Scenery related */
-    RayCastingResult(*rayWalking)(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds);
-
-    /* Autonomous sub-renderers */
-    TerrainRenderer* terrain;
-    TexturesRenderer* textures;
-    WaterRenderer* water;
+    virtual RayCastingResult rayWalking(const Vector3 &location, const Vector3 &direction, int terrain, int water, int sky, int clouds);
 
     /* Custom data */
     void* customData[10];

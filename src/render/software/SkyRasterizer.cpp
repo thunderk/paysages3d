@@ -4,6 +4,7 @@
 #include "Color.h"
 #include "SoftwareRenderer.h"
 #include "AtmosphereRenderer.h"
+#include "AtmosphereResult.h"
 #include "CloudsRenderer.h"
 
 #define SPHERE_SIZE 20000.0
@@ -22,7 +23,7 @@ static Color _postProcessFragment(SoftwareRenderer* renderer, Vector3 location, 
     direction = v3Sub(location, camera_location);
 
     /* TODO Don't compute result->color if it's fully covered by clouds */
-    result = renderer->atmosphere->getSkyColor(renderer, v3Normalize(direction)).final;
+    result = renderer->getAtmosphereRenderer()->getSkyColor(v3Normalize(direction)).final;
     result = renderer->getCloudsRenderer()->getColor(camera_location, v3Add(camera_location, v3Scale(direction, 10.0)), result);
 
     return result;

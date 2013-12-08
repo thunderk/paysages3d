@@ -1,12 +1,5 @@
 #include "AtmosphereModelBruneton.h"
 
-/* Factor to convert software units to kilometers */
-#define WORLD_SCALING 0.05
-#define SUN_DISTANCE 149597870.0
-#define SUN_DISTANCE_SCALED (SUN_DISTANCE / WORLD_SCALING)
-#define SUN_RADIUS 6.955e5
-#define SUN_RADIUS_SCALED (SUN_RADIUS / WORLD_SCALING)
-
 /*
  * Atmospheric scattering, based on E. Bruneton and F.Neyret work.
  * http://evasion.inrialpes.fr/~Eric.Bruneton/
@@ -18,12 +11,26 @@
 #include <cstdlib>
 #include "System.h"
 #include "PackStream.h"
+#include "Scenery.h"
 #include "AtmosphereDefinition.h"
+#include "AtmosphereRenderer.h"
+#include "SoftwareRenderer.h"
+#include "WaterRenderer.h"
+#include "LightComponent.h"
+#include "LightStatus.h"
 #include "tools/cache.h"
 #include "tools/texture.h"
 #include "tools/parallel.h"
 #include "renderer.h"
-#include "water/public.h"
+
+/* Factor to convert software units to kilometers */
+// TODO This is copied in AtmosphereRenderer
+#define SPHERE_SIZE 20000.0
+#define WORLD_SCALING 0.05
+#define SUN_DISTANCE 149597870.0
+#define SUN_DISTANCE_SCALED (SUN_DISTANCE / WORLD_SCALING)
+#define SUN_RADIUS 6.955e5
+#define SUN_RADIUS_SCALED (SUN_RADIUS / WORLD_SCALING)
 
 /*********************** Constants ***********************/
 
@@ -1157,14 +1164,14 @@ int brunetonInit()
 
 static const int _init = brunetonInit();
 
-AtmosphereModelBruneton::AtmosphereModelBruneton(AtmosphereRenderer *parent):
+AtmosphereModelBruneton::AtmosphereModelBruneton(SoftwareRenderer *parent):
     parent(parent)
 {
 }
 
-AtmosphereResult getSkyColor(const Vector3 &eye, const Vector3 &direction, const Vector3 &sun_position, const Color &)
+AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3 &direction, const Vector3 &sun_position, const Color &)
 {
-    double yoffset = GROUND_OFFSET - renderer->water->getHeightInfo(renderer).base_height;
+    double yoffset = GROUND_OFFSET - parent->getWaterRenderer()->getHeightInfo().base_height;
     eye.y += yoffset;
     if (eye.y < 0.0)
     {
@@ -1180,9 +1187,8 @@ AtmosphereResult getSkyColor(const Vector3 &eye, const Vector3 &direction, const
 
     AtmosphereResult result;
     Vector3 attenuation;
-    Color sunColor = _sunColor(v, s, r, mu, renderer->atmosphere->definition->sun_radius); /* L0 */
+    Color sunColor = _sunColor(v, s, r, mu, parent->getScenery()->getAtmosphere()->sun_radius); /* L0 */
 
-    atmosphereInitResult(&result);
     /*result.base.r = base.r + sunColor.r;
     result.base.g = base.g + sunColor.g;
     result.base.b = base.b + sunColor.b;*/
@@ -1191,17 +1197,17 @@ AtmosphereResult getSkyColor(const Vector3 &eye, const Vector3 &direction, const
     /* TODO Use atmosphere attenuation */
     result.distance = SPHERE_SIZE;
 
-    atmosphereUpdateResult(&result);
+    result.updateFinal();
 
     return result;
 }
 
-AtmosphereResult applyAerialPerspective(const Vector3 &location, const Color &base)
+AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 location, const Color &base)
 {
-    Vector3 eye = renderer->getCameraLocation(renderer, location);
-    Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), SUN_DISTANCE);
+    Vector3 eye = parent->getCameraLocation(parent, location);
+    Vector3 sun_position = v3Scale(parent->getAtmosphereRenderer()->getSunDirection(), SUN_DISTANCE);
 
-    double yoffset = GROUND_OFFSET - renderer->water->getHeightInfo(renderer).base_height;
+    double yoffset = GROUND_OFFSET - parent->getWaterRenderer()->getHeightInfo().base_height;
     eye.y += yoffset;
     location.y += yoffset;
     if (eye.y < 0.0)
@@ -1230,8 +1236,6 @@ AtmosphereResult applyAerialPerspective(const Vector3 &location, const Color &ba
     AtmosphereResult result;
     Vector3 attenuation;
 
-    atmosphereInitResult(&result);
-
     result.base = base;
     result.inscattering = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
     result.attenuation.r = attenuation.x;
@@ -1239,19 +1243,19 @@ AtmosphereResult applyAerialPerspective(const Vector3 &location, const Color &ba
     result.attenuation.b = attenuation.z;
     result.distance = t / WORLD_SCALING;
 
-    atmosphereUpdateResult(&result);
+    result.updateFinal();
 
     return result;
 }
 
-void fillLightingStatus(LightStatus *status, const Vector3 &, int)
+void AtmosphereModelBruneton::fillLightingStatus(LightStatus *status, const Vector3 &, int)
 {
-    LightDefinition sun, irradiance;
+    LightComponent sun, irradiance;
     double muS;
 
-    double altitude = lightingGetStatusLocation(status).y;
+    double altitude = status->getLocation().y;
 
-    double yoffset = GROUND_OFFSET - renderer->water->getHeightInfo(renderer).base_height;
+    double yoffset = GROUND_OFFSET - parent->getWaterRenderer()->getHeightInfo().base_height;
     altitude += yoffset;
     if (altitude < 0.0)
     {
@@ -1260,7 +1264,7 @@ void fillLightingStatus(LightStatus *status, const Vector3 &, int)
 
     double r0 = Rg + altitude * WORLD_SCALING;
     Vector3 up = {0.0, 1.0, 0.0};
-    Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), SUN_DISTANCE);
+    Vector3 sun_position = v3Scale(parent->getAtmosphereRenderer()->getSunDirection(), SUN_DISTANCE);
     Vector3 x = {0.0, r0, 0.0};
     Vector3 s = v3Normalize(v3Sub(sun_position, x));
 
@@ -1270,12 +1274,12 @@ void fillLightingStatus(LightStatus *status, const Vector3 &, int)
     sun.reflection = ISun;
     sun.altered = 1;
 
-    lightingPushLight(status, &sun);
+    status->pushComponent(sun);
 
     irradiance.color = _irradiance(_irradianceTexture, r0, muS);
     irradiance.direction = VECTOR_DOWN;
     irradiance.reflection = 0.0;
     irradiance.altered = 0;
 
-    lightingPushLight(status, &irradiance);
+    status->pushComponent(irradiance);
 }
