@@ -33,8 +33,6 @@ public:
 
 RENDERINGSHARED_EXPORT extern StandardRenderer WaterRendererClass;
 
-RENDERINGSHARED_EXPORT void waterRenderSurface(Renderer* renderer);
-
 RENDERINGSHARED_EXPORT void waterAlterPreviewCoverageRenderer(Renderer* renderer);
 RENDERINGSHARED_EXPORT Color waterGetPreviewCoverage(Renderer* renderer, double x, double y, double scaling, int highlight_enabled);
 

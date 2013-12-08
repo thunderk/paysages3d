@@ -24,7 +24,6 @@ SOURCES += main.cpp \
     tools/data.cpp \
     tools/cache.cpp \
     water/wat_render.cpp \
-    water/wat_raster.cpp \
     RenderingScenery.cpp
 
 HEADERS += \

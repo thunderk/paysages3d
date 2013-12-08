@@ -1,9 +1,13 @@
-#include "public.h"
-#include "private.h"
+#include "WaterRasterizer.h"
 
-#include <cmath>
-#include "../renderer.h"
-#include "../tools/parallel.h"
+#include "SoftwareRenderer.h"
+#include "water/public.h"
+#include "tools/parallel.h"
+
+WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer):
+    renderer(renderer)
+{
+}
 
 static Color _postProcessFragment(Renderer* renderer, Vector3 location, void*)
 {
@@ -35,7 +39,7 @@ static void _renderQuad(Renderer* renderer, double x, double z, double size)
 
 typedef struct
 {
-    Renderer* renderer;
+    SoftwareRenderer* renderer;
     int i;
     double cx;
     double cz;
@@ -60,7 +64,7 @@ static int _parallelJobCallback(ParallelQueue*, int, void* data, int stopping)
     return 0;
 }
 
-void waterRenderSurface(Renderer* renderer)
+void WaterRasterizer::renderSurface()
 {
     ParallelRasterInfo* info;
     ParallelQueue* queue;

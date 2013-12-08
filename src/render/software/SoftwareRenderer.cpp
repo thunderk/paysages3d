@@ -8,6 +8,7 @@
 #include "CloudsRenderer.h"
 #include "SkyRasterizer.h"
 #include "TerrainRasterizer.h"
+#include "WaterRasterizer.h"
 
 
 // Legacy compatibility
@@ -137,7 +138,8 @@ void SoftwareRenderer::rasterize()
     TerrainRasterizer terrain(this);
     terrain.renderSurface();
 
-    waterRenderSurface(this);
+    WaterRasterizer water(this);
+    water.renderSurface();
 
     SkyRasterizer sky(this);
     sky.rasterize();
