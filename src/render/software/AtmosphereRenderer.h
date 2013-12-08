@@ -3,9 +3,6 @@
 
 #include "software_global.h"
 
-// TEMP
-#include "atmosphere/public.h"
-
 namespace paysages {
 namespace software {
 

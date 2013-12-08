@@ -1,4 +1,11 @@
-#include "private.h"
+#include "AtmosphereModelBruneton.h"
+
+/* Factor to convert software units to kilometers */
+#define WORLD_SCALING 0.05
+#define SUN_DISTANCE 149597870.0
+#define SUN_DISTANCE_SCALED (SUN_DISTANCE / WORLD_SCALING)
+#define SUN_RADIUS 6.955e5
+#define SUN_RADIUS_SCALED (SUN_RADIUS / WORLD_SCALING)
 
 /*
  * Atmospheric scattering, based on E. Bruneton and F.Neyret work.
@@ -1150,7 +1157,12 @@ int brunetonInit()
 
 static const int _init = brunetonInit();
 
-AtmosphereResult brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 direction, Vector3 sun_position, Color)
+AtmosphereModelBruneton::AtmosphereModelBruneton(AtmosphereRenderer *parent):
+    parent(parent)
+{
+}
+
+AtmosphereResult getSkyColor(const Vector3 &eye, const Vector3 &direction, const Vector3 &sun_position, const Color &)
 {
     double yoffset = GROUND_OFFSET - renderer->water->getHeightInfo(renderer).base_height;
     eye.y += yoffset;
@@ -1184,7 +1196,7 @@ AtmosphereResult brunetonGetSkyColor(Renderer* renderer, Vector3 eye, Vector3 di
     return result;
 }
 
-AtmosphereResult brunetonApplyAerialPerspective(Renderer* renderer, Vector3 location, Color base)
+AtmosphereResult applyAerialPerspective(const Vector3 &location, const Color &base)
 {
     Vector3 eye = renderer->getCameraLocation(renderer, location);
     Vector3 sun_position = v3Scale(renderer->atmosphere->getSunDirection(renderer), SUN_DISTANCE);
@@ -1232,7 +1244,7 @@ AtmosphereResult brunetonApplyAerialPerspective(Renderer* renderer, Vector3 loca
     return result;
 }
 
-void brunetonGetLightingStatus(Renderer* renderer, LightStatus* status, Vector3, int)
+void fillLightingStatus(LightStatus *status, const Vector3 &, int)
 {
     LightDefinition sun, irradiance;
     double muS;

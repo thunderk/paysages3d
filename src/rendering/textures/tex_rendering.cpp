@@ -132,7 +132,7 @@ static TexturesResult _realApplyToTerrain(Renderer* renderer, double x, double z
         if (info->presence > 0.0)
         {
             Vector3 normal = _getDetailNormal(renderer, terrain.location, terrain.normal, info->layer);
-            info->color = renderer->applyLightingToSurface(renderer, terrain.location, normal, info->layer->material);
+            info->color = renderer->applyLightingToSurface(terrain.location, normal, *info->layer->material);
         }
         else
         {

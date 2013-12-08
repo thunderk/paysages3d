@@ -6,7 +6,6 @@
 #include "render.h"
 
 class LightingManager;
-class AtmosphereRenderer;
 class TerrainRenderer;
 class TexturesRenderer;
 class WaterRenderer;
@@ -50,11 +49,7 @@ public:
     /* Scenery related */
     RayCastingResult(*rayWalking)(Renderer* renderer, Vector3 location, Vector3 direction, int terrain, int water, int sky, int clouds);
 
-    /* Autonomous tools */
-    LightingManager* lighting;
-
     /* Autonomous sub-renderers */
-    AtmosphereRenderer* atmosphere;
     TerrainRenderer* terrain;
     TexturesRenderer* textures;
     WaterRenderer* water;

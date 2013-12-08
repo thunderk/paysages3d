@@ -5,9 +5,6 @@
 #include "AtmosphereDefinition.h"
 #include "Scenery.h"
 
-// TEMP
-#include "atmosphere/private.h"
-
 static inline double _getDayFactor(double daytime)
 {
     daytime = 1.0 - fabs(0.5 - daytime) / 0.5;

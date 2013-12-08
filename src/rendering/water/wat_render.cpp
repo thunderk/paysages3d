@@ -138,7 +138,7 @@ static inline Color _getFoamMask(Renderer* renderer, WaterDefinition* definition
     foam_factor = (foam_factor - (1.0 - definition->foam_coverage)) * definition->foam_coverage;
 
     /* TODO Re-use base lighting status */
-    result = renderer->applyLightingToSurface(renderer, location, normal, definition->foam_material);
+    result = renderer->applyLightingToSurface(location, normal, *definition->foam_material);
     result.r *= 2.0;
     result.g *= 2.0;
     result.b *= 2.0;
@@ -274,7 +274,7 @@ static WaterResult _realGetResult(Renderer* renderer, double x, double z)
     }
 
     /* Lighting from environment */
-    color = renderer->applyLightingToSurface(renderer, location, normal, definition->material);
+    color = renderer->applyLightingToSurface(location, normal, *definition->material);
 
     color.r += result.reflected.r * definition->reflection + result.refracted.r * definition->transparency;
     color.g += result.reflected.g * definition->reflection + result.refracted.g * definition->transparency;

@@ -5,7 +5,6 @@
 #include "render.h"
 #include "RenderingScenery.h"
 #include "CameraDefinition.h"
-#include "atmosphere/public.h"
 #include "terrain/public.h"
 #include "textures/public.h"
 #include "water/public.h"
@@ -122,9 +121,6 @@ Renderer::Renderer()
 
     rayWalking = _rayWalking;
 
-    lighting = lightingManagerCreate();
-
-    atmosphere = (AtmosphereRenderer*)AtmosphereRendererClass.create();
     terrain = (TerrainRenderer*)TerrainRendererClass.create();
     textures = (TexturesRenderer*)TexturesRendererClass.create();
     water = (WaterRenderer*)WaterRendererClass.create();
@@ -133,9 +129,7 @@ Renderer::Renderer()
 Renderer::~Renderer()
 {
     delete render_camera;
-    lightingManagerDelete(lighting);
 
-    AtmosphereRendererClass.destroy(atmosphere);
     TerrainRendererClass.destroy(terrain);
     TexturesRendererClass.destroy(textures);
     WaterRendererClass.destroy(water);
@@ -148,11 +142,10 @@ Color Renderer::applyMediumTraversal(Vector3, Color color)
     return color;
 }
 
-Color applyLightingToSurface(const Vector3 &, const Vector3 &, const SurfaceMaterial &material)
+Color Renderer::applyLightingToSurface(const Vector3 &, const Vector3 &, const SurfaceMaterial &material)
 {
-    return material.base;
+    return material._rgb;
 }
-
 
 
 

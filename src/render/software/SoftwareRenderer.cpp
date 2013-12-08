@@ -157,8 +157,8 @@ Color SoftwareRenderer::applyMediumTraversal(Vector3 location, Color color)
 
 Color SoftwareRenderer::applyLightingToSurface(const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material)
 {
-    LightStatus* light = lightingCreateStatus(renderer->lighting, location, renderer->getCameraLocation(renderer, location));
-    renderer->atmosphere->getLightingStatus(renderer, light, normal, 0);
+    LightStatus* light = lightingCreateStatus(lighting, location, getCameraLocation(renderer, location));
+    atmosphere->getLightingStatus(renderer, light, normal, 0);
     Color result = lightingApplyStatus(light, normal, material);
     lightingDeleteStatus(light);
     return result;

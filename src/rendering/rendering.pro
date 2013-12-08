@@ -11,8 +11,6 @@ include(../common.pri)
 SOURCES += main.cpp \
     renderer.cpp \
     render.cpp \
-    atmosphere/atm_render.cpp \
-    atmosphere/atm_bruneton.cpp \
     terrain/ter_render.cpp \
     terrain/ter_painting.cpp \
     textures/tex_tools.cpp \
@@ -29,8 +27,6 @@ HEADERS += \
     renderer.h \
     render.h \
     main.h \
-    atmosphere/public.h \
-    atmosphere/private.h \
     shared/types.h \
     terrain/public.h \
     terrain/private.h \

@@ -4,7 +4,6 @@
 #include "terrain/public.h"
 #include "textures/public.h"
 #include "water/public.h"
-#include "atmosphere/public.h"
 #include "CameraDefinition.h"
 
 static RenderingScenery _main_scenery;

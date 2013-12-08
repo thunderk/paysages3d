@@ -28,7 +28,10 @@ SOURCES += SoftwareRenderer.cpp \
     LightingManager.cpp \
     LightStatus.cpp \
     LightFilter.cpp \
-    LightComponent.cpp
+    LightComponent.cpp \
+    WaterRasterizer.cpp \
+    AtmosphereResult.cpp \
+    AtmosphereModelBruneton.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -46,7 +49,10 @@ HEADERS += SoftwareRenderer.h\
     LightingManager.h \
     LightStatus.h \
     LightFilter.h \
-    LightComponent.h
+    LightComponent.h \
+    WaterRasterizer.h \
+    AtmosphereResult.h \
+    AtmosphereModelBruneton.h
 
 unix:!symbian {
     maemo5 {
