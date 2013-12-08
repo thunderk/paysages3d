@@ -44,7 +44,7 @@ public:
     void (*pushDisplacedQuad)(Renderer* renderer, Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Vector3 ov1, Vector3 ov2, Vector3 ov3, Vector3 ov4, f_RenderFragmentCallback callback, void* callback_data);
 
     /* Shortcuts */
-    Color(*applyLightingToSurface)(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material);
+    virtual Color applyLightingToSurface(const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material);
     virtual Color applyMediumTraversal(Vector3 location, Color color);
 
     /* Scenery related */

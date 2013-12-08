@@ -28,6 +28,11 @@ namespace software {
 
     class SkyRasterizer;
     class TerrainRasterizer;
+
+    class LightingManager;
+    class LightStatus;
+    class LightFilter;
+    class LightComponent;
 }
 }
 

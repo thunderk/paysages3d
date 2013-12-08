@@ -24,7 +24,11 @@ SOURCES += SoftwareRenderer.cpp \
     clouds/BaseCloudsModel.cpp \
     clouds/CloudModelStratoCumulus.cpp \
     TerrainRasterizer.cpp \
-    WaterRasterizer.cpp
+    WaterRasterizer.cpp \
+    LightingManager.cpp \
+    LightStatus.cpp \
+    LightFilter.cpp \
+    LightComponent.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -38,7 +42,11 @@ HEADERS += SoftwareRenderer.h\
     clouds/BaseCloudsModel.h \
     clouds/CloudModelStratoCumulus.h \
     TerrainRasterizer.h \
-    WaterRasterizer.h
+    WaterRasterizer.h \
+    LightingManager.h \
+    LightStatus.h \
+    LightFilter.h \
+    LightComponent.h
 
 unix:!symbian {
     maemo5 {

@@ -4,7 +4,6 @@
 #include "rendering_global.h"
 
 #include "../rendering_global.h"
-#include "../tools/lighting.h"
 #include "../shared/types.h"
 #include "Color.h"
 
@@ -18,7 +17,6 @@ typedef struct
     Color final;
 } AtmosphereResult;
 
-typedef void (*FuncAtmosphereGetLightingStatus)(Renderer* renderer, LightStatus* status, Vector3 normal, int opaque);
 typedef AtmosphereResult (*FuncAtmosphereApplyAerialPerspective)(Renderer* renderer, Vector3 location, Color base);
 typedef AtmosphereResult (*FuncAtmosphereGetSkyColor)(Renderer* renderer, Vector3 direction);
 typedef Vector3 (*FuncAtmosphereGetSunDirection)(Renderer* renderer);
@@ -28,7 +26,6 @@ class AtmosphereRenderer
 public:
     AtmosphereDefinition* definition;
 
-    FuncAtmosphereGetLightingStatus getLightingStatus;
     FuncAtmosphereApplyAerialPerspective applyAerialPerspective;
     FuncAtmosphereGetSkyColor getSkyColor;
     FuncAtmosphereGetSunDirection getSunDirection;

@@ -20,7 +20,6 @@ SOURCES += main.cpp \
     textures/tex_preview.cpp \
     tools/texture.cpp \
     tools/parallel.cpp \
-    tools/lighting.cpp \
     tools/data.cpp \
     tools/cache.cpp \
     water/wat_render.cpp \
@@ -40,7 +39,6 @@ HEADERS += \
     textures/private.h \
     tools/texture.h \
     tools/parallel.h \
-    tools/lighting.h \
     tools/data.h \
     tools/cache.h \
     water/public.h \

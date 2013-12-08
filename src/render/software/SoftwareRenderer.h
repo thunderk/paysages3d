@@ -46,6 +46,7 @@ public:
     inline FluidMediumManager* getFluidMediumManager() const {return fluid_medium;}
 
     virtual Color applyMediumTraversal(Vector3 location, Color color) override;
+    virtual Color applyLightingToSurface(const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material);
 
 private:
     Scenery* scenery;

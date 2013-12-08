@@ -3,7 +3,6 @@
 
 #include "../rendering_global.h"
 #include "Layers.h"
-#include "tools/lighting.h"
 #include "terrain/public.h"
 #include "SurfaceMaterial.h"
 

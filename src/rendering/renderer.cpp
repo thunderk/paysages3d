@@ -1,6 +1,5 @@
 #include "renderer.h"
 
-#include "tools/lighting.h"
 #include "System.h"
 #include "Thread.h"
 #include "render.h"
@@ -91,16 +90,6 @@ static RayCastingResult _rayWalking(Renderer*, Vector3, Vector3, int, int, int, 
     return _RAYCASTING_NULL;
 }
 
-static Color _applyLightingToSurface(Renderer* renderer, Vector3 location, Vector3 normal, SurfaceMaterial* material)
-{
-    LightStatus* light = lightingCreateStatus(renderer->lighting, location, renderer->getCameraLocation(renderer, location));
-    renderer->atmosphere->getLightingStatus(renderer, light, normal, 0);
-    Color result = lightingApplyStatus(light, normal, material);
-    lightingDeleteStatus(light);
-    return result;
-}
-
-
 
 
 
@@ -133,8 +122,6 @@ Renderer::Renderer()
 
     rayWalking = _rayWalking;
 
-    applyLightingToSurface = _applyLightingToSurface;
-
     lighting = lightingManagerCreate();
 
     atmosphere = (AtmosphereRenderer*)AtmosphereRendererClass.create();
@@ -159,6 +146,11 @@ Renderer::~Renderer()
 Color Renderer::applyMediumTraversal(Vector3, Color color)
 {
     return color;
+}
+
+Color applyLightingToSurface(const Vector3 &, const Vector3 &, const SurfaceMaterial &material)
+{
+    return material.base;
 }
 
 

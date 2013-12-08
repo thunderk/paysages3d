@@ -3,7 +3,6 @@
 
 #include "../rendering_global.h"
 #include "../shared/types.h"
-#include "../tools/lighting.h"
 #include "TerrainDefinition.h"
 
 typedef struct
