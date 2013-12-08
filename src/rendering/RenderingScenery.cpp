@@ -3,7 +3,6 @@
 #include "renderer.h"
 #include "terrain/public.h"
 #include "textures/public.h"
-#include "terrain/ter_raster.h"
 #include "water/public.h"
 #include "atmosphere/public.h"
 #include "CameraDefinition.h"
