@@ -13,6 +13,10 @@
 namespace paysages {
 namespace system {
     class PackStream;
+    class ParallelQueue;
+    class ParallelWork;
+    class Thread;
+    class Mutex;
 }
 }
 using namespace paysages::system;

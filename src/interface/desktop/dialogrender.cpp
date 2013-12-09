@@ -18,6 +18,7 @@
 #include <QComboBox>
 #include "tools.h"
 
+#include "SoftwareRenderer.h"
 #include "Scenery.h"
 #include "ColorProfile.h"
 
@@ -48,7 +49,7 @@ static void _renderUpdate(double progress)
 class RenderThread:public QThread
 {
 public:
-    RenderThread(DialogRender* dialog, Renderer* renderer, RenderParams params):QThread()
+    RenderThread(DialogRender* dialog, SoftwareRenderer* renderer, RenderArea::RenderParams params):QThread()
     {
         _dialog = dialog;
         _renderer = renderer;
@@ -56,13 +57,13 @@ public:
     }
     void run()
     {
-        rendererStart(_renderer, _params);
+        _renderer->start(_params);
         _dialog->tellRenderEnded();
     }
 private:
     DialogRender* _dialog;
-    Renderer* _renderer;
-    RenderParams _params;
+    SoftwareRenderer* _renderer;
+    RenderArea::RenderParams _params;
 };
 
 class _RenderArea:public QWidget
@@ -83,7 +84,7 @@ public:
     }
 };
 
-DialogRender::DialogRender(QWidget *parent, Renderer* renderer):
+DialogRender::DialogRender(QWidget *parent, SoftwareRenderer* renderer):
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint)
 {
     pixbuf_lock = new QMutex();
@@ -151,7 +152,7 @@ DialogRender::~DialogRender()
 {
     if (_render_thread)
     {
-        rendererInterrupt(_renderer);
+        _renderer->interrupt();
         _render_thread->wait();
 
         delete _render_thread;
@@ -175,12 +176,12 @@ void DialogRender::tellRenderEnded()
     emit renderEnded();
 }
 
-void DialogRender::startRender(RenderParams params)
+void DialogRender::startRender(RenderArea::RenderParams params)
 {
     _started = time(NULL);
 
     applyRenderSize(params.width, params.height);
-    rendererSetPreviewCallbacks(_renderer, _renderStart, _renderDraw, _renderUpdate);
+    _renderer->setPreviewCallbacks(_renderStart, _renderDraw, _renderUpdate);
 
     _render_thread = new RenderThread(this, _renderer, params);
     _render_thread->start();
@@ -207,7 +208,8 @@ void DialogRender::saveRender()
         {
             filepath = filepath.append(".png");
         }
-        if (renderSaveToFile(_renderer->render_area, (char*)filepath.toStdString().c_str()))
+        std::string filepathstr = filepath.toStdString();
+        if (_renderer->render_area->saveToFile((char*)filepathstr.c_str()))
         {
             QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
         }
@@ -220,13 +222,14 @@ void DialogRender::saveRender()
 
 void DialogRender::toneMappingChanged()
 {
-    renderSetToneMapping(_renderer->render_area, ColorProfile((ColorProfile::ToneMappingOperator)_tonemapping_control->currentIndex(), ((double)_exposure_control->value()) * 0.01));
+    ColorProfile profile((ColorProfile::ToneMappingOperator)_tonemapping_control->currentIndex(), ((double)_exposure_control->value()) * 0.01);
+    _renderer->render_area->setToneMapping(profile);
 }
 
 void DialogRender::loadLastRender()
 {
     applyRenderSize(_renderer->render_width, _renderer->render_height);
-    rendererSetPreviewCallbacks(_renderer, _renderStart, _renderDraw, _renderUpdate);
+    _renderer->setPreviewCallbacks(_renderStart, _renderDraw, _renderUpdate);
     renderEnded();
     toneMappingChanged();
 

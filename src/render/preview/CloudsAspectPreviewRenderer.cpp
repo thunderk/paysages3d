@@ -9,7 +9,7 @@
 #include "LightComponent.h"
 #include "AtmosphereResult.h"
 
-static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
+/*static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
 {
     LightComponent light;
 
@@ -45,17 +45,7 @@ static double _getDensity(Renderer*, CloudLayerDefinition* layer, Vector3 locati
     {
         return (1.0 - distance) / 0.2;
     }
-}
-
-static AtmosphereResult _fakeApplyAerialPerspective(Renderer*, Vector3, Color base)
-{
-    AtmosphereResult result;
-
-    result.base = base;
-    result.final = base;
-
-    return result;
-}
+}*/
 
 CloudsAspectPreviewRenderer::CloudsAspectPreviewRenderer(CloudLayerDefinition* layer):
     layer(layer)
@@ -82,9 +72,9 @@ void CloudsAspectPreviewRenderer::updateEvent()
 
     prepare();
 
+    //disableAerialPerspective();
     //clouds->getLayerDensity = _getDensity;
     //atmosphere->getLightingStatus = _getLightingStatus;
-    //atmosphere->applyAerialPerspective = _fakeApplyAerialPerspective;
 }
 
 Color CloudsAspectPreviewRenderer::getColor2D(double x, double y, double)

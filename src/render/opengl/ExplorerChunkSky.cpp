@@ -2,11 +2,12 @@
 
 #include <cmath>
 #include <GL/gl.h>
-#include "renderer.h"
 #include "CameraDefinition.h"
-#include "atmosphere/public.h"
+#include "SoftwareRenderer.h"
+#include "AtmosphereRenderer.h"
+#include "AtmosphereResult.h"
 
-ExplorerChunkSky::ExplorerChunkSky(Renderer* renderer, double size, SkyboxOrientation orientation) : BaseExplorerChunk(renderer)
+ExplorerChunkSky::ExplorerChunkSky(SoftwareRenderer* renderer, double size, SkyboxOrientation orientation) : BaseExplorerChunk(renderer)
 {
     _box_size = size;
     _orientation = orientation;
@@ -143,5 +144,5 @@ Color ExplorerChunkSky::getTextureColor(double x, double y)
     {
         location.y = 0.0;
     }
-    return renderer()->atmosphere->getSkyColor(renderer(), location).final;
+    return renderer()->getAtmosphereRenderer()->getSkyColor(location).final;
 }

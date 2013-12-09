@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include "System.h"
+#include "ParallelWork.h"
 #include "PackStream.h"
 #include "Scenery.h"
 #include "AtmosphereDefinition.h"
@@ -20,8 +21,6 @@
 #include "LightStatus.h"
 #include "tools/cache.h"
 #include "tools/texture.h"
-#include "tools/parallel.h"
-#include "renderer.h"
 
 /* Factor to convert software units to kilometers */
 // TODO This is copied in AtmosphereRenderer
@@ -1088,9 +1087,9 @@ int brunetonInit()
     /* computes single scattering texture deltaS (line 3 in algorithm 4.1)
      * Rayleigh and Mie separated in deltaSR + deltaSM */
     Inscatter1Params params = {_deltaSRTexture, _deltaSMTexture};
-    work = parallelWorkCreate(_inscatter1Worker, RES_R, &params);
-    parallelWorkPerform(work, -1);
-    parallelWorkDelete(work);
+    work = new ParallelWork(_inscatter1Worker, RES_R, &params);
+    work->perform();
+    delete work;
     _saveDebug4D(_deltaSRTexture, "deltaSR", 0);
     _saveDebug4D(_deltaSMTexture, "deltaSM", 0);
 
@@ -1122,9 +1121,9 @@ int brunetonInit()
     {
         /* computes deltaJ (line 7 in algorithm 4.1) */
         jParams jparams = {_deltaJTexture, _deltaETexture, _deltaSRTexture, _deltaSMTexture, order == 2};
-        work = parallelWorkCreate(_jWorker, RES_R, &jparams);
-        parallelWorkPerform(work, -1);
-        parallelWorkDelete(work);
+        work = new ParallelWork(_jWorker, RES_R, &jparams);
+        work->perform();
+        delete work;
         _saveDebug4D(_deltaJTexture, "deltaJ", order);
 
         /* computes deltaE (line 8 in algorithm 4.1) */
@@ -1133,10 +1132,9 @@ int brunetonInit()
 
         /* computes deltaS (line 9 in algorithm 4.1) */
         InscatterNParams iparams = {_deltaSRTexture, _deltaJTexture};
-        work = parallelWorkCreate(_inscatterNWorker, RES_R, &iparams);
-        parallelWorkPerform(work, -1);
-        parallelWorkDelete(work);
-        _saveDebug4D(_deltaSRTexture, "deltaSR", order);
+        work = new ParallelWork(_inscatterNWorker, RES_R, &iparams);
+        work->perform();
+        delete work;
 
         /* adds deltaE into irradiance texture E (line 10 in algorithm 4.1) */
         texture2DAdd(_deltaETexture, _irradianceTexture);
@@ -1144,9 +1142,9 @@ int brunetonInit()
 
         /* adds deltaS into inscatter texture S (line 11 in algorithm 4.1) */
         CopyInscatterNParams cparams = {_deltaSRTexture, _inscatterTexture};
-        work = parallelWorkCreate(_copyInscatterNWorker, RES_R, &cparams);
-        parallelWorkPerform(work, -1);
-        parallelWorkDelete(work);
+        work = new ParallelWork(_copyInscatterNWorker, RES_R, &cparams);
+        work->perform();
+        delete work;
         _saveDebug4D(_inscatterTexture, "inscatter", order);
     }
 
@@ -1204,7 +1202,7 @@ AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3
 
 AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 location, const Color &base)
 {
-    Vector3 eye = parent->getCameraLocation(parent, location);
+    Vector3 eye = parent->getCameraLocation(location);
     Vector3 sun_position = v3Scale(parent->getAtmosphereRenderer()->getSunDirection(), SUN_DISTANCE);
 
     double yoffset = GROUND_OFFSET - parent->getWaterRenderer()->getHeightInfo().base_height;

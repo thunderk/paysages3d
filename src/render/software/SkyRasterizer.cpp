@@ -19,7 +19,7 @@ static Color _postProcessFragment(SoftwareRenderer* renderer, Vector3 location, 
     Vector3 camera_location, direction;
     Color result;
 
-    camera_location = renderer->getCameraLocation(renderer, location);
+    camera_location = renderer->getCameraLocation(location);
     direction = v3Sub(location, camera_location);
 
     /* TODO Don't compute result->color if it's fully covered by clouds */
@@ -43,11 +43,11 @@ void SkyRasterizer::rasterize()
     step_i = M_PI * 2.0 / (double)res_i;
     step_j = M_PI / (double)res_j;
 
-    camera_location = renderer->getCameraLocation(renderer, VECTOR_ZERO);
+    camera_location = renderer->getCameraLocation(VECTOR_ZERO);
 
     for (j = 0; j < res_j; j++)
     {
-        if (!renderer->addRenderProgress(renderer, 0.0))
+        if (!renderer->addRenderProgress(0.0))
         {
             return;
         }
@@ -79,7 +79,7 @@ void SkyRasterizer::rasterize()
             vertex4 = v3Add(camera_location, direction);
 
             /* TODO Triangles at poles */
-            renderer->pushQuad(renderer, vertex1, vertex4, vertex3, vertex2, (f_RenderFragmentCallback)_postProcessFragment, NULL);
+            renderer->pushQuad(vertex1, vertex4, vertex3, vertex2, _postProcessFragment, NULL);
         }
     }
 }

@@ -3,8 +3,10 @@
 #include "CloudsDefinition.h"
 #include "BasePreview.h"
 #include "Scenery.h"
+#include "TerrainRenderer.h"
+#include "WaterRenderer.h"
 
-static Vector3 _getCameraLocation(Renderer*, Vector3 location)
+/*static Vector3 _getCameraLocation(Renderer*, Vector3 location)
 {
     return v3Add(location, v3Scale(VECTOR_UP, 50.0));
 }
@@ -17,7 +19,7 @@ static AtmosphereResult _applyAerialPerspective(Renderer*, Vector3, Color base)
     result.final = base;
     atmosphereUpdateResult(&result);
     return result;
-}
+}*/
 
 SceneryTopDownPreviewRenderer::SceneryTopDownPreviewRenderer(Scenery* scenery):
     scenery(scenery)
@@ -51,26 +53,26 @@ void SceneryTopDownPreviewRenderer::updateEvent()
 
     prepare();
 
-    getCameraLocation = _getCameraLocation;
+    /*getCameraLocation = _getCameraLocation;
     lightingManagerDisableSpecularity(lighting);
-    atmosphere->applyAerialPerspective = _applyAerialPerspective;
+    atmosphere->applyAerialPerspective = _applyAerialPerspective;*/
 }
 
 Color SceneryTopDownPreviewRenderer::getColor2D(double x, double y, double scaling)
 {
     Vector3 location;
-    double height = terrain->getHeight(this, x, y, 1);
+    double height = getTerrainRenderer()->getHeight(x, y, 1);
 
-    if (height < water->getHeightInfo(this).max_height)
+    if (height < getWaterRenderer()->getHeightInfo().max_height)
     {
-        return water->getResult(this, x, y).final;
+        return getWaterRenderer()->getResult(x, y).final;
     }
     else
     {
         location.x = x;
         location.y = height;
         location.z = y;
-        return terrain->getFinalColor(this, location, scaling);
+        return getTerrainRenderer()->getFinalColor(location, scaling);
     }
 }
 

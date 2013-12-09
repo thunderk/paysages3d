@@ -5,7 +5,6 @@
 #include "RenderingScenery.h"
 #include "Scenery.h"
 #include "PackStream.h"
-#include "render.h"
 #include "main.h"
 
 #define APP_HEADER 198632.125
@@ -18,13 +17,10 @@ void paysagesInit()
         fprintf(stderr, "ERROR : Can't locate data files.\n");
         exit(1);
     }
-
-    renderInit();
 }
 
 void paysagesQuit()
 {
-    renderQuit();
 }
 
 FileOperationResult paysagesSave(char* filepath)

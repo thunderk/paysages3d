@@ -1,17 +1,14 @@
-#include "render.h"
+#include "RenderArea.h"
 
-#include <cmath>
-
-#include "renderer.h"
-#include "CameraDefinition.h"
-#include "PictureFile.h"
-#include "Thread.h"
-#include "Mutex.h"
-#include "System.h"
 #include "Vector3.h"
 #include "ColorProfile.h"
+#include "Mutex.h"
+#include "CameraDefinition.h"
+#include "SoftwareRenderer.h"
+#include "Thread.h"
+#include "PictureFile.h"
 
-typedef struct
+struct RenderFragment
 {
     struct
     {
@@ -33,7 +30,7 @@ typedef struct
         } color;
     } data;
     double z;
-} RenderFragment;
+};
 
 typedef struct
 {
@@ -44,32 +41,10 @@ typedef struct
     int callback;
 } ScanPoint;
 
-typedef struct
+struct FragmentCallback
 {
-    f_RenderFragmentCallback function;
+    RenderArea::f_RenderFragmentCallback function;
     void* data;
-} FragmentCallback;
-
-struct RenderArea
-{
-    ColorProfile* hdr_mapping;
-    Renderer* renderer;
-    RenderParams params;
-    int pixel_count;
-    int pixel_done;
-    RenderFragment* pixels;
-    int fragment_callbacks_count;
-    FragmentCallback fragment_callbacks[64];
-    Color background_color;
-    volatile int dirty_left;
-    volatile int dirty_right;
-    volatile int dirty_up;
-    volatile int dirty_down;
-    volatile int dirty_count;
-    Mutex* lock;
-    RenderCallbackStart callback_start;
-    RenderCallbackDraw callback_draw;
-    RenderCallbackUpdate callback_update;
 };
 
 typedef struct
@@ -97,122 +72,110 @@ static void _callbackStart(int, int, Color) {}
 static void _callbackDraw(int, int, Color) {}
 static void _callbackUpdate(double) {}
 
-void renderInit()
+RenderArea::RenderArea(SoftwareRenderer* renderer)
 {
+    this->renderer = renderer;
+    this->hdr_mapping = new ColorProfile;
+    this->params.width = 1;
+    this->params.height = 1;
+    this->params.antialias = 1;
+    this->params.quality = 5;
+    this->pixel_count = 1;
+    this->pixels = new RenderFragment[1];
+    this->fragment_callbacks_count = 0;
+    this->fragment_callbacks = new FragmentCallback[64];
+    this->background_color = COLOR_TRANSPARENT;
+    this->dirty_left = 1;
+    this->dirty_right = -1;
+    this->dirty_down = 1;
+    this->dirty_up = -1;
+    this->dirty_count = 0;
+    this->lock = new Mutex();
+    this->callback_start = _callbackStart;
+    this->callback_draw = _callbackDraw;
+    this->callback_update = _callbackUpdate;
 }
 
-void renderQuit()
+RenderArea::~RenderArea()
 {
+    delete hdr_mapping;
+    delete lock;
+    delete[] fragment_callbacks;
+    delete[] pixels;
 }
 
-RenderArea* renderCreateArea(Renderer* renderer)
+void RenderArea::setAllDirty()
 {
-    RenderArea* result;
-
-    result = new RenderArea;
-    result->renderer = renderer;
-    result->hdr_mapping = new ColorProfile;
-    result->params.width = 1;
-    result->params.height = 1;
-    result->params.antialias = 1;
-    result->params.quality = 5;
-    result->pixel_count = 1;
-    result->pixels = new RenderFragment[1];
-    result->fragment_callbacks_count = 0;
-    result->background_color = COLOR_TRANSPARENT;
-    result->dirty_left = 1;
-    result->dirty_right = -1;
-    result->dirty_down = 1;
-    result->dirty_up = -1;
-    result->dirty_count = 0;
-    result->lock = new Mutex();
-    result->callback_start = _callbackStart;
-    result->callback_draw = _callbackDraw;
-    result->callback_update = _callbackUpdate;
-
-    return result;
+    dirty_left = 0;
+    dirty_right = params.width * params.antialias - 1;
+    dirty_down = 0;
+    dirty_up = params.height * params.antialias - 1;
 }
 
-void renderDeleteArea(RenderArea* area)
-{
-    delete area->hdr_mapping;
-    delete area->lock;
-    free(area->pixels);
-    free(area);
-}
-
-static void _setAllDirty(RenderArea* area)
-{
-    area->dirty_left = 0;
-    area->dirty_right = area->params.width * area->params.antialias - 1;
-    area->dirty_down = 0;
-    area->dirty_up = area->params.height * area->params.antialias - 1;
-}
-
-void renderSetParams(RenderArea* area, RenderParams params)
+void RenderArea::setParams(RenderParams params)
 {
     int width, height;
 
     width = params.width * params.antialias;
     height = params.height * params.antialias;
 
-    area->params = params;
-    delete[] area->pixels;
-    area->pixels = new RenderFragment[width * height];
-    area->pixel_count = width * height;
+    params = params;
+    delete[] pixels;
+    pixels = new RenderFragment[width * height];
+    pixel_count = width * height;
 
-    area->dirty_left = width;
-    area->dirty_right = -1;
-    area->dirty_down = height;
-    area->dirty_up = -1;
-    area->dirty_count = 0;
+    dirty_left = width;
+    dirty_right = -1;
+    dirty_down = height;
+    dirty_up = -1;
+    dirty_count = 0;
 
-    renderClear(area);
+    clear();
 }
 
-void renderSetToneMapping(RenderArea* area, const ColorProfile &profile)
+void RenderArea::setToneMapping(const ColorProfile &profile)
 {
-    profile.copy(area->hdr_mapping);
-    _setAllDirty(area);
-    renderUpdate(area);
+    profile.copy(hdr_mapping);
+    setAllDirty();
+    update();
 }
 
-void renderSetBackgroundColor(RenderArea* area, const Color &col)
+void RenderArea::setBackgroundColor(const Color &col)
 {
-    area->background_color = col;
+    background_color = col;
 }
 
-void renderClear(RenderArea* area)
+void RenderArea::clear()
 {
     RenderFragment* pixel;
     int x;
     int y;
 
-    area->fragment_callbacks_count = 1;
-    area->fragment_callbacks[0].function = NULL;
-    area->fragment_callbacks[0].data = NULL;
+    fragment_callbacks_count = 1;
+    fragment_callbacks[0].function = NULL;
+    fragment_callbacks[0].data = NULL;
 
-    for (x = 0; x < area->params.width * area->params.antialias; x++)
+    for (x = 0; x < params.width * params.antialias; x++)
     {
-        for (y = 0; y < area->params.height * area->params.antialias; y++)
+        for (y = 0; y < params.height * params.antialias; y++)
         {
-            pixel = area->pixels + (y * area->params.width * area->params.antialias + x);
+            pixel = pixels + (y * params.width * params.antialias + x);
             pixel->z = -100000000.0;
             pixel->flags.dirty = 0;
             pixel->flags.callback = 0;
-            pixel->data.color.r = area->background_color.r;
-            pixel->data.color.g = area->background_color.g;
-            pixel->data.color.b = area->background_color.b;
+            pixel->data.color.r = background_color.r;
+            pixel->data.color.g = background_color.g;
+            pixel->data.color.b = background_color.b;
         }
     }
 
-    area->callback_start(area->params.width, area->params.height, area->background_color);
+    callback_start(params.width, params.height, background_color);
 
-    area->dirty_left = area->params.width * area->params.antialias;
-    area->dirty_right = -1;
-    area->dirty_down = area->params.height * area->params.antialias;
-    area->dirty_up = -1;
-    area->dirty_count = 0;
+    dirty_left = params.width * params.antialias;
+    dirty_right = -1;
+    dirty_down = params.height * params.antialias;
+    dirty_up = -1;
+    dirty_count = 0;
 }
 
 static inline void _setDirtyPixel(RenderArea* area, int x, int y)
@@ -277,38 +240,38 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
     return area->hdr_mapping->apply(result);
 }
 
-static void _processDirtyPixels(RenderArea* area)
+void RenderArea::processDirtyPixels()
 {
     int x, y;
     int down, up, left, right;
 
-    down = area->dirty_down / area->params.antialias;
-    up = area->dirty_up / area->params.antialias;
-    left = area->dirty_left / area->params.antialias;
-    right = area->dirty_right / area->params.antialias;
+    down = dirty_down / params.antialias;
+    up = dirty_up / params.antialias;
+    left = dirty_left / params.antialias;
+    right = dirty_right / params.antialias;
 
     for (y = down; y <= up; y++)
     {
         for (x = left; x <= right; x++)
         {
-            area->callback_draw(x, y, _getFinalPixel(area, x, y));
+            callback_draw(x, y, _getFinalPixel(this, x, y));
         }
     }
 
-    area->callback_update(area->renderer->render_progress);
+    callback_update(renderer->render_progress);
 
-    area->dirty_left = area->params.width * area->params.antialias;
-    area->dirty_right = -1;
-    area->dirty_down = area->params.height * area->params.antialias;
-    area->dirty_up = -1;
-    area->dirty_count = 0;
+    dirty_left = params.width * params.antialias;
+    dirty_right = -1;
+    dirty_down = params.height * params.antialias;
+    dirty_up = -1;
+    dirty_count = 0;
 }
 
-void renderUpdate(RenderArea* area)
+void RenderArea::update()
 {
-    area->lock->acquire();
-    _processDirtyPixels(area);
-    area->lock->release();
+    lock->acquire();
+    processDirtyPixels();
+    lock->release();
 }
 
 static inline unsigned int _pushCallback(RenderArea* area, FragmentCallback callback)
@@ -334,13 +297,13 @@ static inline unsigned int _pushCallback(RenderArea* area, FragmentCallback call
     }
 }
 
-static void _pushFragment(RenderArea* area, int x, int y, double z, int edge, Vector3 location, int callback)
+void RenderArea::pushFragment(int x, int y, double z, int edge, Vector3 location, int callback)
 {
     RenderFragment* pixel_data;
 
-    if (x >= 0 && x < area->params.width * area->params.antialias && y >= 0 && y < area->params.height * area->params.antialias && z > 1.0)
+    if (x >= 0 && x < params.width * params.antialias && y >= 0 && y < params.height * params.antialias && z > 1.0)
     {
-        pixel_data = area->pixels + (y * area->params.width * area->params.antialias + x);
+        pixel_data = pixels + (y * params.width * params.antialias + x);
 
         if (z > pixel_data->z)
         {
@@ -351,7 +314,7 @@ static void _pushFragment(RenderArea* area, int x, int y, double z, int edge, Ve
             pixel_data->data.location.y = location.y;
             pixel_data->data.location.z = location.z;
             pixel_data->z = z;
-            _setDirtyPixel(area, x, y);
+            _setDirtyPixel(this, x, y);
         }
     }
 }
@@ -527,18 +490,18 @@ static void _renderScanLines(RenderArea* area, RenderScanlines* scanlines)
                 current.y = cury;
                 _scanInterpolate(area->renderer->render_camera, &down, &diff, fy / dy, &current);
 
-                _pushFragment(area, current.x, current.y, current.pixel.z, (cury == starty || cury == endy), current.location, current.callback);
+                area->pushFragment(current.x, current.y, current.pixel.z, (cury == starty || cury == endy), current.location, current.callback);
             }
         }
     }
 }
 
-void renderPushTriangle(RenderArea* area, Vector3 pixel1, Vector3 pixel2, Vector3 pixel3, Vector3 location1, Vector3 location2, Vector3 location3, f_RenderFragmentCallback callback, void* callback_data)
+void RenderArea::pushTriangle(Vector3 pixel1, Vector3 pixel2, Vector3 pixel3, Vector3 location1, Vector3 location2, Vector3 location3, f_RenderFragmentCallback callback, void* callback_data)
 {
     FragmentCallback fragment_callback = {callback, callback_data};
     ScanPoint point1, point2, point3;
-    double limit_width = (double)(area->params.width * area->params.antialias - 1);
-    double limit_height = (double)(area->params.height * area->params.antialias - 1);
+    double limit_width = (double)(params.width * params.antialias - 1);
+    double limit_height = (double)(params.height * params.antialias - 1);
 
     /* Filter if outside screen */
     if (pixel1.z < 1.0 || pixel2.z < 1.0 || pixel3.z < 1.0 || (pixel1.x < 0.0 && pixel2.x < 0.0 && pixel3.x < 0.0) || (pixel1.y < 0.0 && pixel2.y < 0.0 && pixel3.y < 0.0) || (pixel1.x > limit_width && pixel2.x > limit_width && pixel3.x > limit_width) || (pixel1.y > limit_height && pixel2.y > limit_height && pixel3.y > limit_height))
@@ -547,9 +510,9 @@ void renderPushTriangle(RenderArea* area, Vector3 pixel1, Vector3 pixel2, Vector
     }
 
     /* Prepare fragment callback */
-    area->lock->acquire();
-    point1.callback = _pushCallback(area, fragment_callback);
-    area->lock->release();
+    lock->acquire();
+    point1.callback = _pushCallback(this, fragment_callback);
+    lock->release();
 
     /* Prepare vertices */
     point1.pixel = pixel1;
@@ -566,7 +529,7 @@ void renderPushTriangle(RenderArea* area, Vector3 pixel1, Vector3 pixel2, Vector
     /* Prepare scanlines */
     RenderScanlines scanlines;
     int x;
-    int width = area->params.width * area->params.antialias;
+    int width = params.width * params.antialias;
     scanlines.left = width;
     scanlines.right = -1;
     scanlines.up = new ScanPoint[width];
@@ -575,31 +538,31 @@ void renderPushTriangle(RenderArea* area, Vector3 pixel1, Vector3 pixel2, Vector
     {
         /* TODO Do not initialize whole width each time, init only when needed on point push */
         scanlines.up[x].y = -1;
-        scanlines.down[x].y = area->params.height * area->params.antialias;
+        scanlines.down[x].y = params.height * params.antialias;
     }
 
     /* Render edges in scanlines */
-    _pushScanLineEdge(area, &scanlines, &point1, &point2);
-    _pushScanLineEdge(area, &scanlines, &point2, &point3);
-    _pushScanLineEdge(area, &scanlines, &point3, &point1);
+    _pushScanLineEdge(this, &scanlines, &point1, &point2);
+    _pushScanLineEdge(this, &scanlines, &point2, &point3);
+    _pushScanLineEdge(this, &scanlines, &point3, &point1);
 
     /* Commit scanlines to area */
-    area->lock->acquire();
-    _renderScanLines(area, &scanlines);
-    area->lock->release();
+    lock->acquire();
+    _renderScanLines(this, &scanlines);
+    lock->release();
 
     /* Free scalines */
     free(scanlines.up);
     free(scanlines.down);
 }
 
-Color renderGetPixel(RenderArea* area, int x, int y)
+Color RenderArea::getPixel(int x, int y)
 {
     Color result;
 
-    area->lock->acquire();
-    result = _getFinalPixel(area, x, y);
-    area->lock->release();
+    lock->acquire();
+    result = _getFinalPixel(this, x, y);
+    lock->release();
 
     return result;
 }
@@ -654,7 +617,7 @@ void* _renderPostProcessChunk(void* data)
 }
 
 #define MAX_CHUNKS 8
-void renderPostProcess(RenderArea* area, int nbchunks)
+void RenderArea::postProcess(int nbchunks)
 {
     volatile RenderChunk chunks[MAX_CHUNKS];
     int i;
@@ -672,21 +635,21 @@ void renderPostProcess(RenderArea* area, int nbchunks)
 
     nx = 10;
     ny = 10;
-    dx = area->params.width * area->params.antialias / nx;
-    dy = area->params.height * area->params.antialias / ny;
+    dx = params.width * params.antialias / nx;
+    dy = params.height * params.antialias / ny;
     x = 0;
     y = 0;
-    area->pixel_done = 0;
+    pixel_done = 0;
 
     for (i = 0; i < nbchunks; i++)
     {
         chunks[i].thread = NULL;
-        chunks[i].area = area;
+        chunks[i].area = this;
     }
 
     running = 0;
     loops = 0;
-    while ((x < nx && !area->renderer->render_interrupt) || running > 0)
+    while ((x < nx && !renderer->render_interrupt) || running > 0)
     {
         Thread::timeSleepMs(50);
 
@@ -701,22 +664,22 @@ void renderPostProcess(RenderArea* area, int nbchunks)
                     chunks[i].thread = NULL;
                     running--;
                 }
-                else if (area->renderer->render_interrupt)
+                else if (renderer->render_interrupt)
                 {
                     chunks[i].interrupt = 1;
                 }
             }
 
-            area->renderer->render_progress = 0.1 + ((double)area->pixel_done / (double)area->pixel_count) * 0.9;
+            renderer->render_progress = 0.1 + ((double)pixel_done / (double)pixel_count) * 0.9;
 
-            if (x < nx && !chunks[i].thread && !area->renderer->render_interrupt)
+            if (x < nx && !chunks[i].thread && !renderer->render_interrupt)
             {
                 chunks[i].finished = 0;
                 chunks[i].interrupt = 0;
                 chunks[i].startx = x * dx;
                 if (x == nx - 1)
                 {
-                    chunks[i].endx = area->params.width * area->params.antialias - 1;
+                    chunks[i].endx = params.width * params.antialias - 1;
                 }
                 else
                 {
@@ -725,7 +688,7 @@ void renderPostProcess(RenderArea* area, int nbchunks)
                 chunks[i].starty = y * dy;
                 if (y == ny - 1)
                 {
-                    chunks[i].endy = area->params.height * area->params.antialias - 1;
+                    chunks[i].endy = params.height * params.antialias - 1;
                 }
                 else
                 {
@@ -746,16 +709,16 @@ void renderPostProcess(RenderArea* area, int nbchunks)
 
         if (++loops >= 10)
         {
-            area->lock->acquire();
-            _processDirtyPixels(area);
-            area->lock->release();
+            lock->acquire();
+            processDirtyPixels();
+            lock->release();
 
             loops = 0;
         }
     }
 
-    _processDirtyPixels(area);
-    area->callback_update(1.0);
+    processDirtyPixels();
+    callback_update(1.0);
 }
 
 static unsigned int _getPicturePixel(void* data, int x, int y)
@@ -765,21 +728,21 @@ static unsigned int _getPicturePixel(void* data, int x, int y)
     return result.to32BitBGRA();
 }
 
-int renderSaveToFile(RenderArea* area, const char* path)
+int RenderArea::saveToFile(const char* path)
 {
-    return systemSavePictureFile(path, _getPicturePixel, area, area->params.width, area->params.height);
+    return systemSavePictureFile(path, _getPicturePixel, this, params.width, params.height);
 }
 
-void renderSetPreviewCallbacks(RenderArea* area, RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update)
+void RenderArea::setPreviewCallbacks(RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update)
 {
-    area->callback_start = start ? start : _callbackStart;
-    area->callback_draw = draw ? draw : _callbackDraw;
-    area->callback_update = update ? update : _callbackUpdate;
+    callback_start = start ? start : _callbackStart;
+    callback_draw = draw ? draw : _callbackDraw;
+    callback_update = update ? update : _callbackUpdate;
 
-    area->callback_start(area->params.width, area->params.height, area->background_color);
+    callback_start(params.width, params.height, background_color);
 
-    _setAllDirty(area);
-    _processDirtyPixels(area);
+    setAllDirty();
+    processDirtyPixels();
 
-    area->callback_update(0.0);
+    callback_update(0.0);
 }

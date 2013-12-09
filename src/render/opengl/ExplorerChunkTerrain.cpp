@@ -3,10 +3,10 @@
 #include <cmath>
 #include <GL/gl.h>
 #include "CameraDefinition.h"
-#include "renderer.h"
-#include "terrain/public.h"
+#include "SoftwareRenderer.h"
+#include "TerrainRenderer.h"
 
-ExplorerChunkTerrain::ExplorerChunkTerrain(Renderer* renderer, double x, double z, double size, int nbchunks, double water_height) : BaseExplorerChunk(renderer)
+ExplorerChunkTerrain::ExplorerChunkTerrain(SoftwareRenderer* renderer, double x, double z, double size, int nbchunks, double water_height) : BaseExplorerChunk(renderer)
 {
     _startx = x;
     _startz = z;
@@ -43,7 +43,7 @@ void ExplorerChunkTerrain::onResetEvent()
 
 bool ExplorerChunkTerrain::onMaintainEvent()
 {
-    Renderer* renderer = this->renderer();
+    SoftwareRenderer* renderer = this->renderer();
 
     // Improve heightmap resolution
     if (_tessellation_current_size < _tessellation_max_size)
@@ -57,7 +57,7 @@ bool ExplorerChunkTerrain::onMaintainEvent()
             {
                 if (_tessellation_current_size == 0 || i % old_tessellation_inc != 0 || j % old_tessellation_inc != 0)
                 {
-                    double height = renderer->terrain->getHeight(renderer, _startx + _tessellation_step * (double) i, _startz + _tessellation_step * (double) j, 1);
+                    double height = renderer->getTerrainRenderer()->getHeight(_startx + _tessellation_step * (double) i, _startz + _tessellation_step * (double) j, 1);
                     if (height >= _water_height)
                     {
                         _overwater = true;
@@ -170,7 +170,7 @@ double ExplorerChunkTerrain::getDisplayedSizeHint(CameraDefinition* camera)
 Color ExplorerChunkTerrain::getTextureColor(double x, double y)
 {
     Vector3 location = {_startx + x * _size, 0.0, _startz + y * _size};
-    return renderer()->terrain->getFinalColor(renderer(), location, 0.01);
+    return renderer()->getTerrainRenderer()->getFinalColor(location, 0.01);
 }
 
 Vector3 ExplorerChunkTerrain::getCenter()

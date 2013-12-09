@@ -8,7 +8,7 @@
 #define GL_CLAMP_TO_EDGE 0x812F
 #endif
 
-BaseExplorerChunk::BaseExplorerChunk(Renderer* renderer)
+BaseExplorerChunk::BaseExplorerChunk(SoftwareRenderer* renderer)
 {
     _renderer = renderer;
     _color_profile = new ColorProfile;

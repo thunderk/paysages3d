@@ -6,7 +6,6 @@
 #include <QLabel>
 #include "WidgetExplorer.h"
 #include "CameraDefinition.h"
-#include "renderer.h"
 
 DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool camera_validable, SoftwareRenderer* renderer) : QDialog(parent)
 {

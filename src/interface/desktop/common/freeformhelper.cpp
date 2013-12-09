@@ -251,7 +251,7 @@ void FreeFormHelper::processRenderClicked()
     emit needAlterRenderer(&renderer);
 
     DialogRender* dialog = new DialogRender(_form_widget, &renderer);
-    RenderParams params = {400, 300, 1, 3};
+    RenderArea::RenderParams params = {400, 300, 1, 3};
     dialog->startRender(params);
 
     delete dialog;

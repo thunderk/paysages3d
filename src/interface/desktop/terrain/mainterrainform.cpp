@@ -10,7 +10,6 @@
 #include "RenderingScenery.h"
 #include "TerrainDefinition.h"
 #include "TerrainHeightMap.h"
-#include "textures/public.h"
 
 MainTerrainForm::MainTerrainForm(QWidget *parent) :
     QWidget(parent),
@@ -71,7 +70,8 @@ void MainTerrainForm::refreshFromLocalData()
 
 void MainTerrainForm::refreshFromFellowData()
 {
-    double disp = texturesGetMaximalDisplacement(RenderingScenery::getCurrent()->getTextures());
+    //double disp = texturesGetMaximalDisplacement(RenderingScenery::getCurrent()->getTextures());
+    double disp = -1000.0;
 
     if (disp == 0.0)
     {
@@ -93,9 +93,10 @@ void MainTerrainForm::commitLocalDataToScenery()
     RenderingScenery::getCurrent()->setTerrain(_terrain);
 }
 
-void MainTerrainForm::alterRenderer(Renderer* renderer)
+void MainTerrainForm::alterRenderer(SoftwareRenderer* renderer)
 {
-    TerrainRendererClass.bind(renderer, _terrain);
+    renderer->getScenery()->setTerrain(_terrain);
+    renderer->prepare();
 }
 
 void MainTerrainForm::buttonBaseNoisePressed()

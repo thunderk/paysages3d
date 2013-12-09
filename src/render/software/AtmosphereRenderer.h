@@ -11,7 +11,7 @@ namespace software {
 class BaseAtmosphereRenderer
 {
 public:
-    BaseAtmosphereRenderer(SoftwareRenderer* renderer);
+    BaseAtmosphereRenderer(SoftwareRenderer* parent);
     virtual ~BaseAtmosphereRenderer() {}
 
     virtual void getLightingStatus(LightStatus* status, Vector3 normal, int opaque);
@@ -21,13 +21,13 @@ public:
 
 protected:
     virtual AtmosphereDefinition* getDefinition();
-    SoftwareRenderer* renderer;
+    SoftwareRenderer* parent;
 };
 
 class SoftwareBrunetonAtmosphereRenderer: public BaseAtmosphereRenderer
 {
 public:
-    SoftwareBrunetonAtmosphereRenderer(SoftwareRenderer* renderer);
+    SoftwareBrunetonAtmosphereRenderer(SoftwareRenderer* parent);
     virtual ~SoftwareBrunetonAtmosphereRenderer();
 
     virtual void getLightingStatus(LightStatus* status, Vector3 normal, int opaque) override;

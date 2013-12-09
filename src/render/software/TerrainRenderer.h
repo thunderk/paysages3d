@@ -3,7 +3,8 @@
 
 #include "software_global.h"
 
-#include "shared/types.h"
+#include "RayCastingManager.h"
+#include "Color.h"
 
 namespace paysages {
 namespace software {

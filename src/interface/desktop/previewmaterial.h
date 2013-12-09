@@ -6,8 +6,6 @@
 #include "Base2dPreviewRenderer.h"
 #include <QWidget>
 
-#include "tools/lighting.h"
-
 class MaterialPreviewRenderer:public Base2dPreviewRenderer {
 public:
     MaterialPreviewRenderer(SurfaceMaterial* material);
@@ -18,7 +16,7 @@ public:
 
 private:
     SurfaceMaterial* _material;
-    LightDefinition _light;
+    LightComponent* _light;
     ColorProfile* _color_profile;
 };
 

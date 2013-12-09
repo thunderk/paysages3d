@@ -20,7 +20,9 @@ SOURCES += \
     System.cpp \
     PackStream.cpp \
     RandomGenerator.cpp \
-    Memory.cpp
+    Memory.cpp \
+    ParallelWork.cpp \
+    ParallelQueue.cpp
 
 HEADERS += \
     system_global.h \
@@ -30,7 +32,9 @@ HEADERS += \
     System.h \
     PackStream.h \
     RandomGenerator.h \
-    Memory.h
+    Memory.h \
+    ParallelWork.h \
+    ParallelQueue.h
 
 unix:!symbian {
     maemo5 {

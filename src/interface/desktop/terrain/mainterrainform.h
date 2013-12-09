@@ -5,7 +5,6 @@
 
 #include <QWidget>
 
-#include "terrain/public.h"
 class FreeFormHelper;
 
 namespace Ui {
@@ -27,7 +26,7 @@ public slots:
     void refreshFromFellowData();
     void updateLocalDataFromScenery();
     void commitLocalDataToScenery();
-    void alterRenderer(Renderer* renderer);
+    void alterRenderer(SoftwareRenderer* renderer);
 
     void buttonBaseNoisePressed();
     void buttonPaintingPressed();

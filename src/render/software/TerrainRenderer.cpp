@@ -158,7 +158,7 @@ RayCastingResult TerrainRenderer::castRay(const Vector3 &start, const Vector3 &d
             }
             result.hit = 1;
             result.hit_location = cursor;
-            result.hit_color = getFinalColor(cursor, parent->getPrecision(parent, result.hit_location));
+            result.hit_color = getFinalColor(cursor, parent->getPrecision(result.hit_location));
             return result;
         }
 

@@ -1,12 +1,11 @@
 #ifndef DIALOGMATERIALEDITOR_H
 #define DIALOGMATERIALEDITOR_H
 
+#include "desktop_global.h"
+
 #include <QDialog>
 
 #include "previewmaterial.h"
-
-#include "tools/lighting.h"
-#include "renderer.h"
 #include "SurfaceMaterial.h"
 
 namespace Ui {
@@ -30,7 +29,7 @@ public slots:
     void refreshFromFellowData();
     void updateLocalDataFromScenery();
     void commitLocalDataToScenery();
-    void alterRenderer(Renderer* renderer);
+    void alterRenderer(SoftwareRenderer* renderer);
 
 private:
     Ui::DialogMaterialEditor *ui;

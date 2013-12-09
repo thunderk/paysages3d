@@ -4,11 +4,6 @@
 #include <QSlider>
 #include <cmath>
 
-#include "tools/lighting.h"
-#include "renderer.h"
-#include "water/public.h"
-#include "terrain/public.h"
-#include "atmosphere/public.h"
 #include "tools.h"
 #include "RenderingScenery.h"
 #include "BasePreview.h"

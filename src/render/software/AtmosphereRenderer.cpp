@@ -69,7 +69,7 @@ static inline void _applyWeatherEffects(AtmosphereDefinition* definition, Atmosp
 
 
 BaseAtmosphereRenderer::BaseAtmosphereRenderer(SoftwareRenderer* renderer):
-    renderer(renderer)
+    parent(renderer)
 {
 
 }
@@ -123,13 +123,13 @@ Vector3 BaseAtmosphereRenderer::getSunDirection()
 
 AtmosphereDefinition* BaseAtmosphereRenderer::getDefinition()
 {
-    return renderer->getScenery()->getAtmosphere();
+    return parent->getScenery()->getAtmosphere();
 }
 
 SoftwareBrunetonAtmosphereRenderer::SoftwareBrunetonAtmosphereRenderer(SoftwareRenderer* renderer):
     BaseAtmosphereRenderer(renderer)
 {
-    model = new AtmosphereModelBruneton(this);
+    model = new AtmosphereModelBruneton(parent);
 }
 
 SoftwareBrunetonAtmosphereRenderer::~SoftwareBrunetonAtmosphereRenderer()
@@ -170,7 +170,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
     Color base;
 
     definition = getDefinition();
-    camera_location = renderer->getCameraLocation(renderer, VECTOR_ZERO);
+    camera_location = parent->getCameraLocation(VECTOR_ZERO);
 
     sun_direction = getSunDirection();
     direction = v3Normalize(direction);

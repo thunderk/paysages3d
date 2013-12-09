@@ -8,7 +8,6 @@
 
 class QImage;
 class QGLWidget;
-class Renderer;
 
 namespace paysages {
 namespace opengl {
@@ -24,9 +23,9 @@ public:
 
     double priority;
 protected:
-    BaseExplorerChunk(Renderer* renderer);
+    BaseExplorerChunk(SoftwareRenderer* renderer);
 
-    inline Renderer* renderer() {return _renderer;}
+    inline SoftwareRenderer* renderer() {return _renderer;}
 
     void askReset();
     void setMaxTextureSize(int size);
@@ -41,7 +40,7 @@ protected:
     QMutex _lock_data;
 
 private:
-    Renderer* _renderer;
+    SoftwareRenderer* _renderer;
     ColorProfile* _color_profile;
 
     bool _reset_needed;

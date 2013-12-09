@@ -5,8 +5,6 @@
 
 #include "Scenery.h"
 
-class Renderer;
-
 typedef void (*SceneryCustomDataCallback)(PackStream* stream, void* data);
 
 /**
@@ -25,8 +23,6 @@ public:
 
     virtual void save(PackStream* stream) const override;
     virtual void load(PackStream* stream) override;
-
-    void bindToRenderer(Renderer* renderer);
 
 private:
     SceneryCustomDataCallback _custom_save;

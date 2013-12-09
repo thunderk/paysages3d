@@ -11,7 +11,7 @@ namespace opengl {
 class OPENGLSHARED_EXPORT ExplorerChunkTerrain:public BaseExplorerChunk
 {
 public:
-    ExplorerChunkTerrain(Renderer* renderer, double x, double z, double size, int nbchunks, double water_height);
+    ExplorerChunkTerrain(SoftwareRenderer* renderer, double x, double z, double size, int nbchunks, double water_height);
     ~ExplorerChunkTerrain();
 
     void onCameraEvent(CameraDefinition* camera);

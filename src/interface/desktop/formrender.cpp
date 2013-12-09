@@ -5,10 +5,6 @@
 #include "dialogrender.h"
 #include "inputcamera.h"
 #include "tools.h"
-#include "render.h"
-#include "atmosphere/public.h"
-#include "terrain/public.h"
-#include "water/public.h"
 #include "RenderingScenery.h"
 #include "PackStream.h"
 #include "SoftwareRenderer.h"
@@ -57,7 +53,7 @@ FormRender::~FormRender()
     delete _camera;
     if (_renderer_inited)
     {
-        rendererDelete(_renderer);
+        delete _renderer;
     }
 }
 
@@ -105,13 +101,13 @@ void FormRender::startQuickRender()
 {
     if (_renderer_inited)
     {
-        rendererDelete(_renderer);
+        delete _renderer;
     }
     _renderer = new SoftwareRenderer(RenderingScenery::getCurrent());
     _renderer_inited = true;
 
     DialogRender* dialog = new DialogRender(this, _renderer);
-    RenderParams params = {400, 300, 1, 3};
+    RenderArea::RenderParams params = {400, 300, 1, 3};
     dialog->startRender(params);
 
     delete dialog;
@@ -121,7 +117,7 @@ void FormRender::startRender()
 {
     if (_renderer_inited)
     {
-        rendererDelete(_renderer);
+        delete _renderer;
     }
     _renderer = new SoftwareRenderer(RenderingScenery::getCurrent());
     _renderer_inited = true;

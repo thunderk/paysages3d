@@ -14,7 +14,6 @@ class FreeLayerHelper;
 class PreviewLayerCoverage;
 class PreviewLayerLook;
 class PreviewCumul;
-class Renderer;
 
 class MainTexturesForm : public QWidget
 {
@@ -29,7 +28,7 @@ public slots:
     void commitLocalDataToScenery();
     void refreshFromLocalData();
     void refreshFromFellowData();
-    void alterRenderer(Renderer* renderer);
+    void alterRenderer(SoftwareRenderer* renderer);
 
     void updateLayers();
     void selectLayer(int layer);

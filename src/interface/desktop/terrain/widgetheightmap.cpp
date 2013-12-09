@@ -6,10 +6,12 @@
 #include <math.h>
 #include <GL/glu.h>
 #include "tools.h"
+#include "SoftwareRenderer.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"
 #include "TerrainHeightMap.h"
 #include "WaterDefinition.h"
+#include "TerrainRenderer.h"
 
 #define HEIGHTMAP_RESOLUTION 256
 
@@ -23,7 +25,7 @@ QGLWidget(parent)
     startTimer(100);
 
     _terrain = NULL;
-    _renderer = rendererCreate();
+    _renderer = new SoftwareRenderer();
     _vertices = new _VertexInfo[HEIGHTMAP_RESOLUTION * HEIGHTMAP_RESOLUTION];
 
     _dirty = true;
@@ -66,15 +68,17 @@ WidgetHeightMap::~WidgetHeightMap()
     delete _current_camera;
     delete _top_camera;
     delete _temp_camera;
-    rendererDelete(_renderer);
+    delete _renderer;
     delete[] _vertices;
 }
 
 void WidgetHeightMap::setTerrain(TerrainDefinition* terrain)
 {
     _terrain = terrain;
-    TerrainRendererClass.bind(_renderer, _terrain);
-    _water_height = _renderer->terrain->getWaterHeight(_renderer) / _terrain->scaling;
+
+    _renderer->getScenery()->setTerrain(_terrain);
+    _renderer->prepare();
+    _water_height = _renderer->getTerrainRenderer()->getWaterHeight() / _terrain->scaling;
 
     revert();
 }

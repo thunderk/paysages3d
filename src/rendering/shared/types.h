@@ -6,14 +6,6 @@
 #include "Color.h"
 #include "Vector3.h"
 
-typedef struct
-{
-    int hit;
-    Color hit_color;
-    Vector3 hit_location;
-} RayCastingResult;
-typedef RayCastingResult (*FuncGeneralCastRay)(Renderer* renderer, Vector3 start, Vector3 direction);
-
 typedef void* (*FuncObjectCreate)();
 typedef void (*FuncObjectDelete)(void* object);
 typedef void (*FuncObjectBind)(void* base, void* sub);

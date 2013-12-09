@@ -1,7 +1,7 @@
 #include "Thread.h"
 
 Thread::Thread(ThreadFunction function):
-    function(function), data(0), result(0)
+    data(0), result(0), function(function)
 {
 }
 

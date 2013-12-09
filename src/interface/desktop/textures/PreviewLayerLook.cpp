@@ -2,7 +2,6 @@
 
 #include "SoftwareRenderer.h"
 #include "BasePreview.h"
-#include "textures/tex_preview.h"
 
 void PreviewLayerLook::setTextures(TexturesDefinition* textures)
 {
@@ -25,7 +24,7 @@ void PreviewLayerLook::updateEvent()
 {
     if (textures)
     {
-        TexturesPreviewLayerLook_bind(this, textures);
+        //TexturesPreviewLayerLook_bind(this, textures);
     }
 }
 
@@ -33,7 +32,8 @@ Color PreviewLayerLook::getColor2D(double x, double y, double scaling)
 {
     if (textures)
     {
-        return TexturesPreviewLayerLook_getColor(this, x, y, scaling, layer);
+        return COLOR_BLACK;
+        //return TexturesPreviewLayerLook_getColor(this, x, y, scaling, layer);
     }
     else
     {

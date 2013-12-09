@@ -2,16 +2,15 @@
 
 #include "SoftwareRenderer.h"
 #include "WaterRenderer.h"
-#include "tools/parallel.h"
+#include "ParallelQueue.h"
 
 WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer):
     renderer(renderer)
 {
 }
 
-static Color _postProcessFragment(Renderer* renderer_, Vector3 location, void*)
+static Color _postProcessFragment(SoftwareRenderer* renderer, Vector3 location, void*)
 {
-    SoftwareRenderer* renderer = (SoftwareRenderer*) renderer_;
     return renderer->getWaterRenderer()->getResult(location.x, location.z).final;
 }
 
@@ -35,7 +34,7 @@ static void _renderQuad(SoftwareRenderer* renderer, double x, double z, double s
     v3 = _getFirstPassVertex(renderer, x + size, z + size);
     v4 = _getFirstPassVertex(renderer, x + size, z);
 
-    renderer->pushQuad(renderer, v1, v2, v3, v4, _postProcessFragment, NULL);
+    renderer->pushQuad(v1, v2, v3, v4, _postProcessFragment, NULL);
 }
 
 typedef struct
@@ -69,10 +68,10 @@ void WaterRasterizer::renderSurface()
 {
     ParallelRasterInfo* info;
     ParallelQueue* queue;
-    queue = parallelQueueCreate(0);
+    queue = new ParallelQueue();
 
     int chunk_factor, chunk_count, i;
-    Vector3 cam = renderer->getCameraLocation(renderer, VECTOR_ZERO);
+    Vector3 cam = renderer->getCameraLocation(VECTOR_ZERO);
     double radius_int, radius_ext, base_chunk_size, chunk_size;
 
     base_chunk_size = 2.0 / (double)renderer->render_quality;
@@ -92,7 +91,7 @@ void WaterRasterizer::renderSurface()
 
     while (radius_int < 20000.0)
     {
-        if (!renderer->addRenderProgress(renderer, 0.0))
+        if (!renderer->addRenderProgress(0.0))
         {
             return;
         }
@@ -109,7 +108,7 @@ void WaterRasterizer::renderSurface()
             info->radius_ext = radius_ext;
             info->chunk_size = chunk_size;
 
-            if (!parallelQueueAddJob(queue, _parallelJobCallback, info))
+            if (!queue->addJob(_parallelJobCallback, info))
             {
                 delete info;
             }
@@ -126,6 +125,6 @@ void WaterRasterizer::renderSurface()
         radius_ext += chunk_size;
     }
 
-    parallelQueueWait(queue);
-    parallelQueueDelete(queue);
+    queue->wait();
+    delete queue;
 }

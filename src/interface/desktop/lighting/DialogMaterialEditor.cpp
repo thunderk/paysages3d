@@ -69,6 +69,6 @@ void DialogMaterialEditor::commitLocalDataToScenery()
 {
 }
 
-void DialogMaterialEditor::alterRenderer(Renderer*)
+void DialogMaterialEditor::alterRenderer(SoftwareRenderer*)
 {
 }

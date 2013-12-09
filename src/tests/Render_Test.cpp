@@ -1,12 +1,12 @@
 #include "BaseTestCase.h"
 
 #include <cmath>
-#include "renderer.h"
+#include "SoftwareRenderer.h"
 #include "CameraDefinition.h"
 #include "ColorProfile.h"
 #include "System.h"
 
-static Color _postProcessFragment(Renderer*, Vector3 location, void*)
+static Color _postProcessFragment(SoftwareRenderer*, Vector3 location, void*)
 {
     /* Checker-board */
     double x = fmod(location.x, 0.2);
@@ -32,36 +32,34 @@ static Color _postProcessFragment(Renderer*, Vector3 location, void*)
 TEST(Render, quad)
 {
     Color col;
-    Renderer* renderer = rendererCreate();
+    SoftwareRenderer renderer;
 
-    renderer->render_width = 800;
-    renderer->render_height = 600;
-    renderer->render_quality = 1;
-    renderSetToneMapping(renderer->render_area, ColorProfile(ColorProfile::TONE_MAPPING_CLAMP, 0.0));
+    renderer.render_width = 800;
+    renderer.render_height = 600;
+    renderer.render_quality = 1;
+    renderer.render_area->setToneMapping(ColorProfile(ColorProfile::TONE_MAPPING_CLAMP, 0.0));
 
-    renderer->render_camera->setLocationCoords(0.0, 0.5, 2.0);
-    renderer->render_camera->setTargetCoords(0.0, 0.5, 0.0);
-    renderer->render_camera->setRenderSize(renderer->render_width, renderer->render_height);
+    renderer.render_camera->setLocationCoords(0.0, 0.5, 2.0);
+    renderer.render_camera->setTargetCoords(0.0, 0.5, 0.0);
+    renderer.render_camera->setRenderSize(renderer.render_width, renderer.render_height);
 
-    RenderParams params = {renderer->render_width, renderer->render_height, 1, 1};
-    renderSetParams(renderer->render_area, params);
+    RenderArea::RenderParams params = {renderer.render_width, renderer.render_height, 1, 1};
+    renderer.render_area->setParams(params);
 
-    renderSetBackgroundColor(renderer->render_area, COLOR_BLUE);
-    renderClear(renderer->render_area);
+    renderer.render_area->setBackgroundColor(COLOR_BLUE);
+    renderer.render_area->clear();
 
-    renderer->pushQuad(renderer, v3(-1.0, 0.0, 1.0), v3(-1.0, 0.0, -1.0), v3(1.0, 0.0, -1.0), v3(1.0, 0.0, 1.0), _postProcessFragment, NULL);
-    renderPostProcess(renderer->render_area, System::getCoreCount());
+    renderer.pushQuad(v3(-1.0, 0.0, 1.0), v3(-1.0, 0.0, -1.0), v3(1.0, 0.0, -1.0), v3(1.0, 0.0, 1.0), _postProcessFragment, NULL);
+    renderer.render_area->postProcess(System::getCoreCount());
 
-    col = renderGetPixel(renderer->render_area, 399, 599 - 435);
+    col = renderer.render_area->getPixel(399, 599 - 435);
     ASSERT_COLOR_RGBA(col, 1.0, 1.0, 1.0, 1.0);
-    col = renderGetPixel(renderer->render_area, 399, 599 - 436);
+    col = renderer.render_area->getPixel(399, 599 - 436);
     ASSERT_COLOR_RGBA(col, 0.0, 0.0, 0.0, 1.0);
-    col = renderGetPixel(renderer->render_area, 400, 599 - 435);
+    col = renderer.render_area->getPixel(400, 599 - 435);
     ASSERT_COLOR_RGBA(col, 0.0, 0.0, 0.0, 1.0);
-    col = renderGetPixel(renderer->render_area, 400, 599 - 436);
+    col = renderer.render_area->getPixel(400, 599 - 436);
     ASSERT_COLOR_RGBA(col, 1.0, 1.0, 1.0, 1.0);
 
-    renderSaveToFile(renderer->render_area, "./output/test_render_quad.png");
-
-    rendererDelete(renderer);
+    renderer.render_area->saveToFile("./output/test_render_quad.png");
 }

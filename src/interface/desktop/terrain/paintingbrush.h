@@ -1,13 +1,8 @@
 #ifndef PAINTINGBRUSH_H
 #define PAINTINGBRUSH_H
 
-#include "terrain/public.h"
+#include "desktop_global.h"
 
-namespace paysages {
-namespace basics {
-    class NoiseGenerator;
-}
-}
 class QAbstractSlider;
 class QWidget;
 

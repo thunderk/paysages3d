@@ -11,7 +11,6 @@
 class QSlider;
 class QPushButton;
 class QLabel;
-class Renderer;
 
 class FreeFormHelper:public QObject
 {
@@ -47,7 +46,7 @@ signals:
     void needGlobalRefreshing();
     void needReverting();
     void needCommitting();
-    void needAlterRenderer(Renderer* renderer);
+    void needAlterRenderer(SoftwareRenderer* renderer);
 
 public slots:
     void processDataChange();

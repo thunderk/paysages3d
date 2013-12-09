@@ -1,9 +1,10 @@
 #ifndef DIALOGTERRAINPAINTING_H
 #define DIALOGTERRAINPAINTING_H
 
+#include "desktop_global.h"
+
 #include <QDialog>
 #include "paintingbrush.h"
-#include "terrain/public.h"
 
 namespace Ui {
 class DialogTerrainPainting;

@@ -207,14 +207,14 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     location.z = z;
     result.location = location;
 
-    detail = parent->getPrecision(parent, location) * 0.1;
+    detail = parent->getPrecision(location) * 0.1;
     if (detail < 0.00001)
     {
         detail = 0.00001;
     }
 
     normal = _getNormal(definition, base_height, location, detail);
-    look_direction = v3Normalize(v3Sub(location, parent->getCameraLocation(parent, location)));
+    look_direction = v3Normalize(v3Sub(location, parent->getCameraLocation(location)));
 
     /* Reflection */
     if (definition->reflection == 0.0)

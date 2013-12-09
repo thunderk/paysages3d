@@ -6,10 +6,12 @@
 #include "SurfaceMaterial.h"
 #include "NoiseGenerator.h"
 #include "BasePreview.h"
+#include "Scenery.h"
 #include "LightComponent.h"
 #include "LightStatus.h"
+#include "TerrainRenderer.h"
 
-static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
+/*static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
 {
     LightComponent light;
 
@@ -42,32 +44,13 @@ static Vector3 _getCameraLocation(Renderer*, Vector3 location)
     location.y += 15.0;
     location.z += 10.0;
     return location;
-}
-
-static void _alterPreviewRenderer(Renderer* renderer)
-{
-    renderer->render_quality = 3;
-    renderer->getCameraLocation = _getCameraLocation;
-    renderer->atmosphere->getLightingStatus = _getLightingStatus;
-
-    TexturesDefinition textures(NULL);
-    TextureLayerDefinition* layer = textures.getTextureLayer(textures.addLayer());
-    layer->terrain_zone->clear();
-    layer->displacement_height = 0.0;
-    layer->material->base = colorToHSL(COLOR_WHITE);
-    layer->material->reflection = 0.05;
-    layer->material->shininess = 2.0;
-    layer->validate();
-    layer->_detail_noise->clearLevels();
-
-    TexturesRendererClass.bind(renderer, &textures);
-}
+}*/
 
 TerrainShapePreviewRenderer::TerrainShapePreviewRenderer(TerrainDefinition* terrain)
 {
     _terrain = terrain;
 
-    _alterPreviewRenderer(this);
+    render_quality = 3;
 }
 
 void TerrainShapePreviewRenderer::bindEvent(BasePreview* preview)
@@ -80,17 +63,31 @@ void TerrainShapePreviewRenderer::bindEvent(BasePreview* preview)
 
 void TerrainShapePreviewRenderer::updateEvent()
 {
-    TerrainRendererClass.bind(this, _terrain);
+    getScenery()->setTerrain(_terrain);
+
+    prepare();
+
+    /*getCameraLocation = _getCameraLocation;
+    atmosphere->getLightingStatus = _getLightingStatus;*/
+
+    TextureLayerDefinition* layer = getScenery()->getTextures()->getTextureLayer(0);
+    layer->terrain_zone->clear();
+    layer->displacement_height = 0.0;
+    layer->material->base = colorToHSL(COLOR_WHITE);
+    layer->material->reflection = 0.05;
+    layer->material->shininess = 2.0;
+    layer->validate();
+    layer->_detail_noise->clearLevels();
 }
 
 Color TerrainShapePreviewRenderer::getColor2D(double x, double y, double scaling)
 {
     double height;
 
-    height = terrain->getHeight(this, x, y, 1);
-    if (height > terrain->getWaterHeight(this))
+    height = getTerrainRenderer()->getHeight(x, y, 1);
+    if (height > getTerrainRenderer()->getWaterHeight())
     {
-        return terrain->getFinalColor(this, Vector3(x, height, y), 0.000001);
+        return getTerrainRenderer()->getFinalColor(Vector3(x, height, y), 0.000001);
     }
     else
     {

@@ -10,7 +10,6 @@
 #include "RenderingScenery.h"
 #include "BasePreview.h"
 #include "AtmosphereDefinition.h"
-#include "renderer.h"
 
 static AtmosphereDefinition* _definition;
 

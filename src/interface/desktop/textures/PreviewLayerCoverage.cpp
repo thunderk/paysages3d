@@ -2,7 +2,6 @@
 
 #include "SoftwareRenderer.h"
 #include "BasePreview.h"
-#include "textures/tex_preview.h"
 
 void PreviewLayerCoverage::setTextures(TexturesDefinition* textures)
 {
@@ -26,7 +25,7 @@ void PreviewLayerCoverage::updateEvent()
 {
     if (textures)
     {
-        TexturesPreviewLayerCoverage_bind(this, textures);
+        //TexturesPreviewLayerCoverage_bind(this, textures);
     }
 }
 
@@ -34,7 +33,8 @@ Color PreviewLayerCoverage::getColor2D(double x, double y, double scaling)
 {
     if (textures)
     {
-        return TexturesPreviewLayerCoverage_getColor(this, x, y, scaling, layer);
+        return COLOR_BLACK;
+        //return TexturesPreviewLayerCoverage_getColor(this, x, y, scaling, layer);
     }
     else
     {

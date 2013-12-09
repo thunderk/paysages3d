@@ -2,12 +2,12 @@
 
 #include "RenderingScenery.h"
 #include "BasePreview.h"
-#include "renderer.h"
 #include "tools.h"
 #include "CameraDefinition.h"
 #include "TexturesDefinition.h"
 #include "TextureLayerDefinition.h"
-#include "terrain/public.h"
+#include "SoftwareRenderer.h"
+#include "TerrainRenderer.h"
 
 /**************** Previews ****************/
 class PreviewTexturesCoverage : public BasePreview
@@ -16,11 +16,10 @@ public:
 
     PreviewTexturesCoverage(QWidget* parent, TextureLayerDefinition* layer) : BasePreview(parent)
     {
-        _renderer = rendererCreate();
+        _renderer = new SoftwareRenderer();
         _renderer->render_quality = 3;
 
         _original_layer = layer;
-        //_preview_definition = (TexturesDefinition*)TexturesDefinitionClass.create();
 
         addOsd(QString("geolocation"));
 
@@ -30,7 +29,7 @@ public:
 
     ~PreviewTexturesCoverage()
     {
-        //TexturesDefinitionClass.destroy(_preview_layer);
+        delete _renderer;
     }
 protected:
 
@@ -39,7 +38,7 @@ protected:
         Vector3 location;
         Color result;
         location.x = x;
-        location.y = _renderer->terrain->getHeight(_renderer, x, y, 1);
+        location.y = _renderer->getTerrainRenderer()->getHeight(x, y, 1);
         location.z = y;
         //result.r = result.g = result.b = texturesGetLayerCoverage(_preview_layer, _renderer, location, this->scaling);
         return result;
@@ -47,15 +46,17 @@ protected:
 
     void updateData()
     {
-        TerrainRendererClass.bind(_renderer, RenderingScenery::getCurrent()->getTerrain());
+        TexturesDefinition* textures = _renderer->getScenery()->getTextures();
+        textures->clear();
+        textures->addLayer();
+        _original_layer->copy(textures->getLayer(0));
 
-        //TexturesDefinitionClass.copy(_original_layer, _preview_layer);
+        _renderer->prepare();
     }
 
 private:
-    Renderer* _renderer;
+    SoftwareRenderer* _renderer;
     TextureLayerDefinition* _original_layer;
-    TexturesDefinition* _preview_definition;
 };
 
 class PreviewTexturesColor : public BasePreview
@@ -65,9 +66,8 @@ public:
     PreviewTexturesColor(QWidget* parent, TextureLayerDefinition* layer) : BasePreview(parent)
     {
         _original_layer = layer;
-        //_preview_layer = (TexturesLayerDefinition*)TexturesDefinitionClass.create();
 
-        _renderer = rendererCreate();
+        _renderer = new SoftwareRenderer();
         _renderer->render_quality = 3;
 
         _renderer->render_camera->setLocation(Vector3(0.0, 20.0, 0.0));
@@ -78,7 +78,7 @@ public:
 
     ~PreviewTexturesColor()
     {
-        //TexturesDefinitionClass.destroy(_preview_layer);
+        delete _renderer;
     }
 protected:
 
@@ -94,12 +94,16 @@ protected:
 
     void updateData()
     {
-        //TexturesDefinitionClass.copy(_original_layer, _preview_layer);
+        TexturesDefinition* textures = _renderer->getScenery()->getTextures();
+        textures->clear();
+        textures->addLayer();
+        _original_layer->copy(textures->getLayer(0));
+
+        _renderer->prepare();
     }
 private:
-    Renderer* _renderer;
+    SoftwareRenderer* _renderer;
     TextureLayerDefinition* _original_layer;
-    TextureLayerDefinition* _preview_layer;
 };
 
 /**************** Form ****************/

@@ -9,21 +9,15 @@ DEFINES += RENDERING_LIBRARY
 include(../common.pri)
 
 SOURCES += main.cpp \
-    renderer.cpp \
-    render.cpp \
     tools/texture.cpp \
-    tools/parallel.cpp \
     tools/data.cpp \
     tools/cache.cpp \
     RenderingScenery.cpp
 
 HEADERS += \
-    renderer.h \
-    render.h \
     main.h \
     shared/types.h \
     tools/texture.h \
-    tools/parallel.h \
     tools/data.h \
     tools/cache.h \
     rendering_global.h \

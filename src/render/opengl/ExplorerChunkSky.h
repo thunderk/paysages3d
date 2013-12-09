@@ -23,7 +23,7 @@ enum SkyboxOrientation
 class OPENGLSHARED_EXPORT ExplorerChunkSky:public BaseExplorerChunk
 {
 public:
-    ExplorerChunkSky(Renderer* renderer, double size, SkyboxOrientation orientation);
+    ExplorerChunkSky(SoftwareRenderer* renderer, double size, SkyboxOrientation orientation);
 
     void onCameraEvent(CameraDefinition* camera);
     void onRenderEvent(QGLWidget* widget);

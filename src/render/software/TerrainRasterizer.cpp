@@ -7,8 +7,7 @@
 #include "WaterRenderer.h"
 #include "TexturesRenderer.h"
 #include "Scenery.h"
-
-#include "tools/parallel.h"
+#include "ParallelQueue.h"
 
 TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer):
     renderer(renderer)
@@ -26,14 +25,13 @@ static inline Vector3 _getPoint(SoftwareRenderer* renderer, double x, double z)
     return result;
 }
 
-static Color _postProcessFragment(Renderer* renderer_, Vector3 point, void*)
+static Color _postProcessFragment(SoftwareRenderer* renderer, Vector3 point, void*)
 {
     double precision;
-    SoftwareRenderer* renderer = (SoftwareRenderer*)renderer_;
 
     point = _getPoint(renderer, point.x, point.z);
 
-    precision = renderer->getPrecision(renderer, point);
+    precision = renderer->getPrecision(point);
     return renderer->getTerrainRenderer()->getFinalColor(point, precision);
 }
 
@@ -62,7 +60,7 @@ static void _renderQuad(SoftwareRenderer* renderer, double x, double z, double s
 
     if (dv1.y > water_height || dv2.y > water_height || dv3.y > water_height || dv4.y > water_height)
     {
-        renderer->pushDisplacedQuad(renderer, dv1, dv2, dv3, dv4, ov1, ov2, ov3, ov4, _postProcessFragment, NULL);
+        renderer->pushDisplacedQuad(dv1, dv2, dv3, dv4, ov1, ov2, ov3, ov4, _postProcessFragment, NULL);
     }
 }
 
@@ -146,7 +144,7 @@ void TerrainRasterizer::getTessellationInfo(int displaced)
 {
     TerrainChunkInfo chunk;
     int chunk_factor, chunk_count, i;
-    Vector3 cam = renderer->getCameraLocation(renderer, VECTOR_ZERO);
+    Vector3 cam = renderer->getCameraLocation(VECTOR_ZERO);
     double progress;
     double radius_int, radius_ext;
     double base_chunk_size, chunk_size;
@@ -231,7 +229,7 @@ int TerrainRasterizer::processChunk(TerrainChunkInfo* chunk, double progress)
     info->rasterizer = this;
     info->chunk = *chunk;
 
-    if (!parallelQueueAddJob((ParallelQueue*)renderer->customData[0], _parallelJobCallback, info))
+    if (!((ParallelQueue*)renderer->customData[0])->addJob(_parallelJobCallback, info))
     {
         delete info;
     }
@@ -242,16 +240,14 @@ int TerrainRasterizer::processChunk(TerrainChunkInfo* chunk, double progress)
 
 void TerrainRasterizer::renderSurface()
 {
-    ParallelQueue* queue;
-    queue = parallelQueueCreate(0);
+    ParallelQueue queue;
 
     /* TODO Do not use custom data, it could already be used by another module */
-    renderer->customData[0] = queue;
+    renderer->customData[0] = &queue;
 
     renderer->render_progress = 0.0;
     getTessellationInfo(0);
     renderer->render_progress = 0.05;
 
-    parallelQueueWait(queue);
-    parallelQueueDelete(queue);
+    queue.wait();
 }

@@ -1,7 +1,5 @@
 #include "RenderingScenery.h"
 
-#include "renderer.h"
-
 static RenderingScenery _main_scenery;
 
 RenderingScenery::RenderingScenery()
@@ -41,11 +39,4 @@ void RenderingScenery::load(PackStream* stream)
     }
 
     Scenery::load(stream);
-}
-
-
-void RenderingScenery::bindToRenderer(Renderer* renderer)
-{
-    renderer->setScenery(this);
-    renderer->prepare();
 }

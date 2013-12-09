@@ -2,7 +2,6 @@
 
 #include "SoftwareRenderer.h"
 #include "BasePreview.h"
-#include "textures/tex_preview.h"
 
 void PreviewCumul::setTextures(TexturesDefinition* textures)
 {
@@ -28,7 +27,7 @@ void PreviewCumul::updateEvent()
 {
     if (textures)
     {
-        TexturesPreviewCumul_bind(this, textures);
+        //TexturesPreviewCumul_bind(this, textures);
     }
 }
 
@@ -36,7 +35,8 @@ Color PreviewCumul::getColor2D(double x, double y, double scaling)
 {
     if (textures)
     {
-        return TexturesPreviewCumul_getColor(this, x, y, scaling, layer);
+        return COLOR_BLACK;
+        //return TexturesPreviewCumul_getColor(this, x, y, scaling, layer);
     }
     else
     {

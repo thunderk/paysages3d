@@ -1,9 +1,11 @@
 #ifndef _PAYSAGES_QT_FORMRENDER_H_
 #define _PAYSAGES_QT_FORMRENDER_H_
 
+#include "desktop_global.h"
+
 #include "baseform.h"
-#include "renderer.h"
-#include "render.h"
+
+#include "RenderArea.h"
 
 class FormRender : public BaseForm
 {
@@ -27,9 +29,9 @@ protected slots:
     virtual void configChangeEvent();
 
 private:
-    RenderParams _params;
+    RenderArea::RenderParams _params;
     CameraDefinition* _camera;
-    Renderer* _renderer;
+    SoftwareRenderer* _renderer;
     bool _renderer_inited;
     BasePreview* _preview_landscape;
     Base2dPreviewRenderer* _preview_landscape_renderer;

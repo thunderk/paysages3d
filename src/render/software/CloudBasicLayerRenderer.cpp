@@ -160,7 +160,7 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
     direction = direction.normalize();
     result = COLOR_TRANSPARENT;
 
-    detail = parent->getPrecision(parent, start) / layer->scaling;
+    detail = parent->getPrecision(start) / layer->scaling;
     double transparency_depth = layer->scaling * 0.5;
 
     segment_count = _findSegments(model, parent, start, direction, detail, 20, transparency_depth, max_length, &inside_length, &total_length, segments);

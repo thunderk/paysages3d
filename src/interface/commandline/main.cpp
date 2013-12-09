@@ -4,20 +4,18 @@
 #include <cmath>
 
 #include "main.h"
-#include "render.h"
-#include "renderer.h"
 #include "CameraDefinition.h"
 #include "AtmosphereDefinition.h"
 #include "SoftwareRenderer.h"
 #include "RenderingScenery.h"
 
-void startRender(Renderer* renderer, char* outputpath, RenderParams params)
+void startRender(SoftwareRenderer* renderer, char* outputpath, RenderArea::RenderParams params)
 {
     printf("\rRendering %s ...                   \n", outputpath);
-    rendererStart(renderer, params);
+    renderer->start(params);
     printf("\rSaving %s ...                      \n", outputpath);
     remove(outputpath);
-    renderSaveToFile(renderer->render_area, outputpath);
+    renderer->render_area->saveToFile(outputpath);
 }
 
 void displayHelp()
@@ -48,7 +46,7 @@ int main(int argc, char** argv)
 {
     SoftwareRenderer* renderer;
     char* conf_file_path = NULL;
-    RenderParams conf_render_params = {800, 600, 1, 5};
+    RenderArea::RenderParams conf_render_params = {800, 600, 1, 5};
     int conf_first_picture = 0;
     int conf_nb_pictures = 1;
     double conf_daytime_start = 0.4;
@@ -177,7 +175,7 @@ int main(int argc, char** argv)
         camera->setLocation(camera->getLocation().add(step));
 
         renderer = new SoftwareRenderer(RenderingScenery::getCurrent());
-        rendererSetPreviewCallbacks(renderer, NULL, NULL, _previewUpdate);
+        renderer->setPreviewCallbacks(NULL, NULL, _previewUpdate);
 
         if (outputcount >= conf_first_picture)
         {

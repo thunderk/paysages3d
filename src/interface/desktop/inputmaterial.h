@@ -4,8 +4,6 @@
 #include <QWidget>
 #include "baseinput.h"
 
-#include "tools/lighting.h"
-
 class InputMaterial:public BaseInput
 {
     Q_OBJECT

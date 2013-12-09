@@ -7,20 +7,22 @@
 #include "BasePreview.h"
 #include "CameraDefinition.h"
 #include "ColorProfile.h"
-#include "tools/lighting.h"
+#include "LightComponent.h"
+#include "LightingManager.h"
 
 /***** Shared renderer *****/
 MaterialPreviewRenderer::MaterialPreviewRenderer(SurfaceMaterial* material)
 {
-    _light.color.r = 3.0;
-    _light.color.g = 3.0;
-    _light.color.b = 3.0;
-    _light.direction.x = -0.5;
-    _light.direction.y = -0.5;
-    _light.direction.z = -0.5;
-    _light.direction = v3Normalize(_light.direction);
-    _light.altered = 0;
-    _light.reflection = 1.0;
+    _light = new LightComponent;
+    _light->color.r = 3.0;
+    _light->color.g = 3.0;
+    _light->color.b = 3.0;
+    _light->direction.x = -0.5;
+    _light->direction.y = -0.5;
+    _light->direction.z = -0.5;
+    _light->direction = v3Normalize(_light->direction);
+    _light->altered = 0;
+    _light->reflection = 1.0;
 
     _material = material;
 
@@ -33,6 +35,7 @@ MaterialPreviewRenderer::MaterialPreviewRenderer(SurfaceMaterial* material)
 MaterialPreviewRenderer::~MaterialPreviewRenderer()
 {
     delete _color_profile;
+    delete _light;
 }
 
 void MaterialPreviewRenderer::bindEvent(BasePreview* preview)
@@ -64,7 +67,7 @@ Color MaterialPreviewRenderer::getColor2D(double x, double y, double)
         }
 
         point = v3Normalize(point);
-        color = lightingApplyOneLight(&_light, getCameraLocation(this, point), point, point, _material);
+        color = getLightingManager()->applyFinalComponent(*_light, getCameraLocation(point), point, point, *_material);
         if (dist > 0.95)
         {
             color.a = (1.0 - dist) / 0.05;

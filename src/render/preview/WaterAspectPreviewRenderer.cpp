@@ -4,62 +4,11 @@
 #include "Scenery.h"
 #include "WaterDefinition.h"
 #include "CameraDefinition.h"
+#include "WaterRenderer.h"
 
-static double _getWaterHeight(Renderer*)
+/*static double _getWaterHeight(Renderer*)
 {
     return 0.0;
-}
-
-static RayCastingResult _rayWalking(SoftwareRenderer* renderer, Vector3 location, Vector3 direction, int, int, int, int)
-{
-    RayCastingResult result;
-    int background = *(int*)renderer->customData[1];
-    double x, y;
-
-    result.hit = 1;
-    if (direction.z < 0.0001)
-    {
-        result.hit_color = COLOR_WHITE;
-        result.hit_location = location;
-    }
-    else
-    {
-        x = location.x + direction.x * (0.0 - location.z) / direction.z;
-        y = location.y + direction.y * (0.0 - location.z) / direction.z;
-
-        switch (background)
-        {
-        case 1:
-            result.hit_color = (((int) ceil(x * 0.2) % 2 == 0) ^ ((int) ceil(y * 0.2 - 0.5) % 2 == 0)) ? COLOR_WHITE : COLOR_BLACK;
-            break;
-        case 2:
-            result.hit_color = (y * 0.1 > x * 0.03 + sin(x - M_PI_2)) ? COLOR_WHITE : COLOR_BLACK;
-            break;
-        default:
-            result.hit_color = COLOR_WHITE;
-        }
-        result.hit_location.x = x;
-        result.hit_location.y = y;
-        result.hit_location.z = 0.0;
-
-        if (result.hit_location.y < 0.0)
-        {
-            double lighting_depth = renderer->getScenery()->getWater()->lighting_depth;
-            if (result.hit_location.y < -lighting_depth)
-            {
-                result.hit_color = COLOR_BLACK;
-            }
-            else
-            {
-                double attenuation = -result.hit_location.y / lighting_depth;
-                result.hit_color.r *= 1.0 - attenuation;
-                result.hit_color.g *= 1.0 - attenuation;
-                result.hit_color.b *= 1.0 - attenuation;
-            }
-        }
-    }
-
-    return result;
 }
 
 static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3, int)
@@ -85,7 +34,7 @@ static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3,
 static double _getPrecision(Renderer*, Vector3)
 {
     return 0.000001;
-}
+}*/
 
 WaterAspectPreviewRenderer::WaterAspectPreviewRenderer(WaterDefinition* definition):
     definition(definition)
@@ -117,8 +66,7 @@ void WaterAspectPreviewRenderer::updateEvent()
 
     //terrain->getWaterHeight = _getWaterHeight;
     //atmosphere->getLightingStatus = _getLightingStatus;
-    //rayWalking = _rayWalking;
-    getPrecision = _getPrecision;
+    //getPrecision = _getPrecision;
 }
 
 void WaterAspectPreviewRenderer::cameraEvent(double, double, double scaling)
@@ -138,7 +86,7 @@ Color WaterAspectPreviewRenderer::getColor2D(double x, double y, double scaling)
 
     if (look.y > -0.0001)
     {
-        return _rayWalking(this, eye, look, 0, 0, 0, 0).hit_color;
+        return rayWalking(eye, look, 0, 0, 0, 0).hit_color;
     }
 
     target_x = eye.x - look.x * eye.y / look.y;
@@ -146,10 +94,10 @@ Color WaterAspectPreviewRenderer::getColor2D(double x, double y, double scaling)
 
     if (target_z > 0.0)
     {
-        return _rayWalking(this, eye, look, 0, 0, 0, 0).hit_color;
+        return rayWalking(eye, look, 0, 0, 0, 0).hit_color;
     }
 
-    return water->getResult(this, target_x, target_z).final;
+    return getWaterRenderer()->getResult(target_x, target_z).final;
 }
 
 void WaterAspectPreviewRenderer::toggleChangeEvent(const std::string &key, bool value)
@@ -166,4 +114,55 @@ void WaterAspectPreviewRenderer::choiceChangeEvent(const std::string &key, int p
     {
         background = position;
     }
+}
+
+RayCastingResult WaterAspectPreviewRenderer::rayWalking(const Vector3 &location, const Vector3 &direction, int, int, int, int)
+{
+    RayCastingResult result;
+    double x, y;
+
+    result.hit = 1;
+    if (direction.z < 0.0001)
+    {
+        result.hit_color = COLOR_WHITE;
+        result.hit_location = location;
+    }
+    else
+    {
+        x = location.x + direction.x * (0.0 - location.z) / direction.z;
+        y = location.y + direction.y * (0.0 - location.z) / direction.z;
+
+        switch (background)
+        {
+        case 1:
+            result.hit_color = (((int) ceil(x * 0.2) % 2 == 0) ^ ((int) ceil(y * 0.2 - 0.5) % 2 == 0)) ? COLOR_WHITE : COLOR_BLACK;
+            break;
+        case 2:
+            result.hit_color = (y * 0.1 > x * 0.03 + sin(x - M_PI_2)) ? COLOR_WHITE : COLOR_BLACK;
+            break;
+        default:
+            result.hit_color = COLOR_WHITE;
+        }
+        result.hit_location.x = x;
+        result.hit_location.y = y;
+        result.hit_location.z = 0.0;
+
+        if (result.hit_location.y < 0.0)
+        {
+            double lighting_depth = getScenery()->getWater()->lighting_depth;
+            if (result.hit_location.y < -lighting_depth)
+            {
+                result.hit_color = COLOR_BLACK;
+            }
+            else
+            {
+                double attenuation = -result.hit_location.y / lighting_depth;
+                result.hit_color.r *= 1.0 - attenuation;
+                result.hit_color.g *= 1.0 - attenuation;
+                result.hit_color.b *= 1.0 - attenuation;
+            }
+        }
+    }
+
+    return result;
 }

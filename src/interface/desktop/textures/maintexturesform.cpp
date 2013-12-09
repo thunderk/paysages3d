@@ -11,7 +11,6 @@
 #include "textures/PreviewLayerLook.h"
 #include "textures/PreviewCumul.h"
 #include "textures/DialogTexturesLayer.h"
-#include "textures/public.h"
 
 MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui::MainTexturesForm)
 {
@@ -150,7 +149,8 @@ void MainTexturesForm::refreshFromFellowData()
 {
 }
 
-void MainTexturesForm::alterRenderer(Renderer* renderer)
+void MainTexturesForm::alterRenderer(SoftwareRenderer* renderer)
 {
-    TexturesRendererClass.bind(renderer, textures);
+    renderer->getScenery()->setTextures(textures);
+    renderer->prepare();
 }

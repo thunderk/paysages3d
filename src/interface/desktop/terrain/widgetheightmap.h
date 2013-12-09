@@ -1,12 +1,13 @@
 #ifndef _PAYSAGES_QT_WIDGETHEIGHTMAP_H_
 #define _PAYSAGES_QT_WIDGETHEIGHTMAP_H_
 
+#include "desktop_global.h"
+
 #include <QGLWidget>
+
 #include <QDateTime>
 #include "terrain/paintingbrush.h"
 #include "CameraDefinition.h"
-#include "renderer.h"
-#include "terrain/public.h"
 
 typedef struct
 {
@@ -55,7 +56,7 @@ private:
 
 private:
     TerrainDefinition* _terrain;
-    Renderer* _renderer;
+    SoftwareRenderer* _renderer;
     _VertexInfo* _vertices;
 
     bool _dirty;

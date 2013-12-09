@@ -33,7 +33,9 @@ SOURCES += SoftwareRenderer.cpp \
     AtmosphereModelBruneton.cpp \
     TerrainRenderer.cpp \
     TexturesRenderer.cpp \
-    WaterRenderer.cpp
+    WaterRenderer.cpp \
+    RenderArea.cpp \
+    RayCastingManager.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -56,7 +58,9 @@ HEADERS += SoftwareRenderer.h\
     AtmosphereModelBruneton.h \
     TerrainRenderer.h \
     TexturesRenderer.h \
-    WaterRenderer.h
+    WaterRenderer.h \
+    RenderArea.h \
+    RayCastingManager.h
 
 unix:!symbian {
     maemo5 {
