@@ -9,19 +9,12 @@ DEFINES += RENDERING_LIBRARY
 include(../common.pri)
 
 SOURCES += main.cpp \
-    tools/texture.cpp \
-    tools/data.cpp \
-    tools/cache.cpp \
-    RenderingScenery.cpp
+    tools/data.cpp
 
 HEADERS += \
     main.h \
-    shared/types.h \
-    tools/texture.h \
     tools/data.h \
-    tools/cache.h \
-    rendering_global.h \
-    RenderingScenery.h
+    rendering_global.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../system/debug/ -lpaysages_system

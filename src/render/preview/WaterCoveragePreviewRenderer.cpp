@@ -5,9 +5,6 @@
 #include "TerrainDefinition.h"
 #include "WaterRenderer.h"
 
-// TEMP
-#include "RenderingScenery.h"
-
 WaterCoveragePreviewRenderer::WaterCoveragePreviewRenderer(WaterDefinition* definition):
     TerrainShapePreviewRenderer(new TerrainDefinition(NULL)), definition(definition)
 {
@@ -39,7 +36,7 @@ void WaterCoveragePreviewRenderer::toggleChangeEvent(const std::string &key, boo
 
 void WaterCoveragePreviewRenderer::updateEvent()
 {
-    RenderingScenery::getCurrent()->getTerrain(_terrain);
+    //RenderingScenery::getCurrent()->getTerrain(_terrain);
     TerrainShapePreviewRenderer::updateEvent();
 
     getScenery()->setWater(definition);

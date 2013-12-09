@@ -6,7 +6,7 @@
 #include "CameraDefinition.h"
 #include "SoftwareRenderer.h"
 #include "Thread.h"
-#include "PictureFile.h"
+#include "PictureWriter.h"
 
 struct RenderFragment
 {
@@ -721,16 +721,25 @@ void RenderArea::postProcess(int nbchunks)
     callback_update(1.0);
 }
 
-static unsigned int _getPicturePixel(void* data, int x, int y)
+class RenderWriter:public PictureWriter
 {
-    Color result = _getFinalPixel((RenderArea*)data, x, y);
-    result.normalize();
-    return result.to32BitBGRA();
-}
+public:
+    RenderWriter(RenderArea *area): area(area) {}
 
-int RenderArea::saveToFile(const char* path)
+    virtual unsigned int getPixel(int x, int y) override
+    {
+        Color result = _getFinalPixel(area, x, y);
+        result.normalize();
+        return result.to32BitBGRA();
+    }
+private:
+    RenderArea *area;
+};
+
+int RenderArea::saveToFile(const std::string &path)
 {
-    return systemSavePictureFile(path, _getPicturePixel, this, params.width, params.height);
+    RenderWriter writer(this);
+    return writer.save(path, params.width, params.height);
 }
 
 void RenderArea::setPreviewCallbacks(RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update)

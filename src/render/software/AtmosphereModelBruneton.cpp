@@ -19,8 +19,9 @@
 #include "WaterRenderer.h"
 #include "LightComponent.h"
 #include "LightStatus.h"
-#include "tools/cache.h"
-#include "tools/texture.h"
+#include "Texture2D.h"
+#include "Texture4D.h"
+#include "CacheFile.h"
 
 /* Factor to convert software units to kilometers */
 // TODO This is copied in AtmosphereRenderer
@@ -177,7 +178,7 @@ static Color _texture4D(Texture4D* tex, double r, double mu, double muS, double 
     double uMu = cst.a + (rmu * cst.r + sqrt(delta + cst.g)) / (rho + cst.b) * (0.5 - 1.0 / (double)(RES_MU));
     double uMuS = 0.5 / (double)(RES_MU_S) + (atan(max(muS, -0.1975) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / (double)(RES_MU_S));
 
-    return texture4DGetLinear(tex, uMu, uMuS, nu, uR);
+    return tex->getLinear(uMu, uMuS, nu, uR);
 }
 
 /*********************** Physics functions ***********************/
@@ -239,7 +240,7 @@ static Color _transmittance(double r, double mu)
 {
     double u, v;
     _getTransmittanceUV(r, mu, &u, &v);
-    return texture2DGetLinear(_transmittanceTexture, u, v);
+    return _transmittanceTexture->getLinear(u, v);
 }
 
 /* transmittance(=transparency) of atmosphere between x and x0
@@ -345,7 +346,7 @@ static Color _irradiance(Texture2D* sampler, double r, double muS)
 {
     double u, v;
     _getIrradianceUV(r, muS, &u, &v);
-    return texture2DGetLinear(sampler, u, v);
+    return sampler->getLinear(u, v);
 }
 
 /*********************** transmittance.glsl ***********************/
@@ -388,7 +389,7 @@ static void _precomputeTransmittanceTexture()
             trans.g = exp(-(betaR.g * depth1 + betaMEx.y * depth2));
             trans.b = exp(-(betaR.b * depth1 + betaMEx.z * depth2));
             trans.a = 1.0;
-            texture2DSetPixel(_transmittanceTexture, x, y, trans); /* Eq (5) */
+            _transmittanceTexture->setPixel(x, y, trans); /* Eq (5) */
         }
     }
 }
@@ -414,7 +415,7 @@ static void _precomputeIrrDeltaETexture(Texture2D* destination)
             irr.b = trans.b * max(muS, 0.0);
             irr.a = 1.0;
 
-            texture2DSetPixel(destination, x, y, irr);
+            destination->setPixel(x, y, irr);
         }
     }
 }
@@ -524,8 +525,8 @@ static int _inscatter1Worker(ParallelWork*, int layer, void* data)
                 _inscatter1(r, mu, muS, nu, &ray, &mie);
                 /* store separately Rayleigh and Mie contributions, WITHOUT the phase function factor
                  * (cf "Angular precision") */
-                texture4DSetPixel(params->ray, x, y, z, layer, ray);
-                texture4DSetPixel(params->mie, x, y, z, layer, mie);
+                params->ray->setPixel(x, y, z, layer, ray);
+                params->mie->setPixel(x, y, z, layer, mie);
             }
         }
     }
@@ -660,7 +661,7 @@ static int _jWorker(ParallelWork*, int layer, void* data)
                 double mu, muS, nu;
                 _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
                 raymie = _inscatterS(r, mu, muS, nu, params->first, params->deltaE, params->deltaSR, params->deltaSM);
-                texture4DSetPixel(params->result, x, y, z, layer, raymie);
+                params->result->setPixel(x, y, z, layer, raymie);
             }
         }
     }
@@ -717,7 +718,7 @@ void _irradianceNProg(Texture2D* destination, Texture4D* deltaSR, Texture4D* del
                 }
             }
 
-            texture2DSetPixel(destination, x, y, result);
+            destination->setPixel(x, y, result);
         }
     }
 }
@@ -780,7 +781,7 @@ static int _inscatterNWorker(ParallelWork*, int layer, void* data)
             {
                 double mu, muS, nu;
                 _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
-                texture4DSetPixel(params->destination, x, y, z, layer, _inscatterN(params->deltaJ, r, mu, muS, nu));
+                params->destination->setPixel(x, y, z, layer, _inscatterN(params->deltaJ, r, mu, muS, nu));
             }
         }
     }
@@ -812,12 +813,12 @@ static int _copyInscatterNWorker(ParallelWork*, int layer, void* data)
             {
                 double mu, muS, nu;
                 _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
-                Color col1 = texture4DGetPixel(params->source, x, y, z, layer);
-                Color col2 = texture4DGetPixel(params->destination, x, y, z, layer);
+                Color col1 = params->source->getPixel(x, y, z, layer);
+                Color col2 = params->destination->getPixel(x, y, z, layer);
                 col2.r += col1.r / _phaseFunctionR(nu);
                 col2.g += col1.g / _phaseFunctionR(nu);
                 col2.b += col1.b / _phaseFunctionR(nu);
-                texture4DSetPixel(params->destination, x, y, z, layer, col2);
+                params->destination->setPixel(x, y, z, layer, col2);
             }
         }
     }
@@ -946,108 +947,94 @@ static Color _sunColor(Vector3 v, Vector3 s, double r, double mu, double radius)
 
 static int _tryLoadCache2D(Texture2D* tex, const char* tag, int order)
 {
-    CacheFile* cache;
     int xsize, ysize;
+    tex->getSize(&xsize, &ysize);
 
-    texture2DGetSize(tex, &xsize, &ysize);
-    cache = cacheFileCreateAccessor("atmo-br", "cache", tag, xsize, ysize, 0, 0, order);
-    if (cacheFileIsReadable(cache))
+    CacheFile cache("atmo-br", "cache", tag, xsize, ysize, 0, 0, order);
+    if (cache.isReadable())
     {
         PackStream stream;
-        stream.bindToFile(cacheFileGetPath(cache));
-        texture2DLoad(&stream, tex);
+        stream.bindToFile(cache.getPath());
+        tex->load(&stream);
 
-        cacheFileDeleteAccessor(cache);
         return 1;
     }
     else
     {
-        cacheFileDeleteAccessor(cache);
         return 0;
     }
 }
 
 static void _saveCache2D(Texture2D* tex, const char* tag, int order)
 {
-    CacheFile* cache;
     int xsize, ysize;
+    tex->getSize(&xsize, &ysize);
 
-    texture2DGetSize(tex, &xsize, &ysize);
-    cache = cacheFileCreateAccessor("atmo-br", "cache", tag, xsize, ysize, 0, 0, order);
-    if (cacheFileIsWritable(cache))
+    CacheFile cache("atmo-br", "cache", tag, xsize, ysize, 0, 0, order);
+    if (cache.isWritable())
     {
         PackStream stream;
-        stream.bindToFile(cacheFileGetPath(cache));
-        texture2DSave(&stream, tex);
+        stream.bindToFile(cache.getPath());
+        tex->save(&stream);
     }
-    cacheFileDeleteAccessor(cache);
 }
 
 static void _saveDebug2D(Texture2D* tex, const char* tag, int order)
 {
-    CacheFile* cache;
     int xsize, ysize;
+    tex->getSize(&xsize, &ysize);
 
-    texture2DGetSize(tex, &xsize, &ysize);
-    cache = cacheFileCreateAccessor("atmo-br", "png", tag, xsize, ysize, 0, 0, order);
-    if (cacheFileIsWritable(cache))
+    CacheFile cache("atmo-br", "png", tag, xsize, ysize, 0, 0, order);
+    if (cache.isWritable())
     {
-        texture2DSaveToFile(tex, cacheFileGetPath(cache));
+        tex->saveToFile(cache.getPath());
     }
-    cacheFileDeleteAccessor(cache);
 }
 
 static int _tryLoadCache4D(Texture4D* tex, const char* tag, int order)
 {
-    CacheFile* cache;
     int xsize, ysize, zsize, wsize;
+    tex->getSize(&xsize, &ysize, &zsize, &wsize);
 
-    texture4DGetSize(tex, &xsize, &ysize, &zsize, &wsize);
-    cache = cacheFileCreateAccessor("atmo-br", "cache", tag, xsize, ysize, zsize, wsize, order);
-    if (cacheFileIsReadable(cache))
+    CacheFile cache("atmo-br", "cache", tag, xsize, ysize, zsize, wsize, order);
+    if (cache.isReadable())
     {
         PackStream stream;
-        stream.bindToFile(cacheFileGetPath(cache));
-        texture4DLoad(&stream, tex);
+        stream.bindToFile(cache.getPath());
+        tex->load(&stream);
 
-        cacheFileDeleteAccessor(cache);
         return 1;
     }
     else
     {
-        cacheFileDeleteAccessor(cache);
         return 0;
     }
 }
 
 static void _saveCache4D(Texture4D* tex, const char* tag, int order)
 {
-    CacheFile* cache;
     int xsize, ysize, zsize, wsize;
+    tex->getSize(&xsize, &ysize, &zsize, &wsize);
 
-    texture4DGetSize(tex, &xsize, &ysize, &zsize, &wsize);
-    cache = cacheFileCreateAccessor("atmo-br", "cache", tag, xsize, ysize, zsize, wsize, order);
-    if (cacheFileIsWritable(cache))
+    CacheFile cache("atmo-br", "cache", tag, xsize, ysize, zsize, wsize, order);
+    if (cache.isWritable())
     {
         PackStream stream;
-        stream.bindToFile(cacheFileGetPath(cache));
-        texture4DSave(&stream, tex);
+        stream.bindToFile(cache.getPath());
+        tex->save(&stream);
     }
-    cacheFileDeleteAccessor(cache);
 }
 
 static void _saveDebug4D(Texture4D* tex, const char* tag, int order)
 {
-    CacheFile* cache;
     int xsize, ysize, zsize, wsize;
+    tex->getSize(&xsize, &ysize, &zsize, &wsize);
 
-    texture4DGetSize(tex, &xsize, &ysize, &zsize, &wsize);
-    cache = cacheFileCreateAccessor("atmo-br", "png", tag, xsize, ysize, zsize, wsize, order);
-    if (cacheFileIsWritable(cache))
+    CacheFile cache("atmo-br", "png", tag, xsize, ysize, zsize, wsize, order);
+    if (cache.isWritable())
     {
-        texture4DSaveToFile(tex, cacheFileGetPath(cache));
+        tex->saveToFile(cache.getPath());
     }
-    cacheFileDeleteAccessor(cache);
 }
 
 /*********************** Public methods ***********************/
@@ -1059,9 +1046,9 @@ int brunetonInit()
     assert(_inscatterTexture == NULL);
 
     /* TODO Deletes */
-    _transmittanceTexture = texture2DCreate(TRANSMITTANCE_W, TRANSMITTANCE_H);
-    _irradianceTexture = texture2DCreate(SKY_W, SKY_H);
-    _inscatterTexture = texture4DCreate(RES_MU, RES_MU_S, RES_NU, RES_R);
+    _transmittanceTexture = new Texture2D(TRANSMITTANCE_W, TRANSMITTANCE_H);
+    _irradianceTexture = new Texture2D(SKY_W, SKY_H);
+    _inscatterTexture = new Texture4D(RES_MU, RES_MU_S, RES_NU, RES_R);
 
     /* try loading from cache */
     if (_tryLoadCache2D(_transmittanceTexture, "transmittance", 0)
@@ -1071,10 +1058,10 @@ int brunetonInit()
         return 1;
     }
 
-    Texture2D* _deltaETexture = texture2DCreate(SKY_W, SKY_H);
-    Texture4D* _deltaSMTexture = texture4DCreate(RES_MU, RES_MU_S, RES_NU, RES_R);
-    Texture4D* _deltaSRTexture = texture4DCreate(RES_MU, RES_MU_S, RES_NU, RES_R);
-    Texture4D* _deltaJTexture = texture4DCreate(RES_MU, RES_MU_S, RES_NU, RES_R);
+    Texture2D* _deltaETexture = new Texture2D(SKY_W, SKY_H);
+    Texture4D* _deltaSMTexture = new Texture4D(RES_MU, RES_MU_S, RES_NU, RES_R);
+    Texture4D* _deltaSRTexture = new Texture4D(RES_MU, RES_MU_S, RES_NU, RES_R);
+    Texture4D* _deltaJTexture = new Texture4D(RES_MU, RES_MU_S, RES_NU, RES_R);
 
     /* computes transmittance texture T (line 1 in algorithm 4.1) */
     _precomputeTransmittanceTexture();
@@ -1095,7 +1082,7 @@ int brunetonInit()
 
     /* copies deltaE into irradiance texture E (line 4 in algorithm 4.1) */
     /* ??? all black texture (k=0.0) ??? */
-    texture2DFill(_irradianceTexture, COLOR_BLACK);
+    _irradianceTexture->fill(COLOR_BLACK);
 
     /* copies deltaS into inscatter texture S (line 5 in algorithm 4.1) */
     for (x = 0; x < RES_MU; x++)
@@ -1106,10 +1093,10 @@ int brunetonInit()
             {
                 for (w = 0; w < RES_R; w++)
                 {
-                    Color result = texture4DGetPixel(_deltaSRTexture, x, y, z, w);
-                    Color mie = texture4DGetPixel(_deltaSMTexture, x, y, z, w);
+                    Color result = _deltaSRTexture->getPixel(x, y, z, w);
+                    Color mie = _deltaSMTexture->getPixel(x, y, z, w);
                     result.a = mie.r;
-                    texture4DSetPixel(_inscatterTexture, x, y, z, w, result);
+                    _inscatterTexture->setPixel(x, y, z, w, result);
                 }
             }
         }
@@ -1137,7 +1124,7 @@ int brunetonInit()
         delete work;
 
         /* adds deltaE into irradiance texture E (line 10 in algorithm 4.1) */
-        texture2DAdd(_deltaETexture, _irradianceTexture);
+        _irradianceTexture->add(_deltaETexture);
         _saveDebug2D(_irradianceTexture, "irradiance", order);
 
         /* adds deltaS into inscatter texture S (line 11 in algorithm 4.1) */
@@ -1152,10 +1139,10 @@ int brunetonInit()
     _saveCache2D(_irradianceTexture, "irradiance", 0);
     _saveCache4D(_inscatterTexture, "inscatter", 0);
 
-    texture2DDelete(_deltaETexture);
-    texture4DDelete(_deltaSMTexture);
-    texture4DDelete(_deltaSRTexture);
-    texture4DDelete(_deltaJTexture);
+    delete _deltaETexture;
+    delete _deltaSMTexture;
+    delete _deltaSRTexture;
+    delete _deltaJTexture;
 
     return 1;
 }

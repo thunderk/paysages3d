@@ -29,7 +29,10 @@ SOURCES += \
     Matrix4.cpp \
     Curve.cpp \
     ColorProfile.cpp \
-    Geometry.cpp
+    Geometry.cpp \
+    Texture2D.cpp \
+    Texture3D.cpp \
+    Texture4D.cpp
 
 HEADERS +=\
         basics_global.h \
@@ -46,7 +49,10 @@ HEADERS +=\
     Matrix4.h \
     Curve.h \
     ColorProfile.h \
-    Geometry.h
+    Geometry.h \
+    Texture2D.h \
+    Texture3D.h \
+    Texture4D.h
 
 unix:!symbian {
     maemo5 {

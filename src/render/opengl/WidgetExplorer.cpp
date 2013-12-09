@@ -6,7 +6,6 @@
 #include <cmath>
 #include <GL/glu.h>
 #include <QThread>
-#include "RenderingScenery.h"
 #include "SoftwareRenderer.h"
 #include "OpenGLRenderer.h"
 #include "WaterDefinition.h"
@@ -16,6 +15,7 @@
 #include "ExplorerChunkTerrain.h"
 #include "TerrainRenderer.h"
 #include "WaterRenderer.h"
+#include "Scenery.h"
 
 class ChunkMaintenanceThread : public QThread
 {
@@ -80,16 +80,7 @@ QGLWidget(parent)
     _base_camera = camera;
     camera->copy(_current_camera);
 
-    if (renderer)
-    {
-        _renderer = renderer;
-        _renderer_created = false;
-    }
-    else
-    {
-        _renderer = new SoftwareRenderer(RenderingScenery::getCurrent());
-        _renderer_created = true;
-    }
+    _renderer = renderer;
     _opengl_renderer = new OpenGLRenderer(NULL);
     _renderer->prepare();
     _renderer->render_quality = 3;
@@ -118,11 +109,6 @@ WidgetExplorer::~WidgetExplorer()
         delete _chunks[i];
     }
     delete _current_camera;
-
-    if (_renderer_created)
-    {
-        delete _renderer;
-    }
     delete _opengl_renderer;
 }
 

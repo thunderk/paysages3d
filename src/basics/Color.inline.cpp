@@ -187,3 +187,14 @@ METHSPEC Color Color::add(const Color& other) const
 {
     return Color(r + other.r, g + other.g, b + other.b, a);
 }
+
+METHSPEC Color Color::lerp(const Color& other, double f) const
+{
+    Color result(
+                r * (1.0 - f) + other.r * f,
+                g * (1.0 - f) + other.g * f,
+                b * (1.0 - f) + other.b * f,
+                a * (1.0 - f) + other.a * f
+                );
+    return result;
+}

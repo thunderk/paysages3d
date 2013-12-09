@@ -55,7 +55,8 @@ HEADERS += \
     textures/PreviewLayerLook.h \
     textures/PreviewCumul.h \
     textures/DialogTexturesLayer.h \
-    desktop_global.h
+    desktop_global.h \
+    RenderingScenery.h
 
 SOURCES += \
     terrain/widgetheightmap.cpp \
@@ -102,7 +103,8 @@ SOURCES += \
     textures/PreviewLayerCoverage.cpp \
     textures/PreviewLayerLook.cpp \
     textures/PreviewCumul.cpp \
-    textures/DialogTexturesLayer.cpp
+    textures/DialogTexturesLayer.cpp \
+    RenderingScenery.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \

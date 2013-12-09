@@ -32,6 +32,7 @@ public:
     void limitPower(double max_power);
 
     Color add(const Color& other) const;
+    Color lerp(const Color& other, double f) const;
 
 public:
     double r;

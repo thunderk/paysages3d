@@ -42,7 +42,7 @@ public:
     Color getPixel(int x, int y);
 
     void postProcess(int nbchunks);
-    int saveToFile(const char* path);
+    int saveToFile(const std::string &path);
     void setPreviewCallbacks(RenderCallbackStart start, RenderCallbackDraw draw, RenderCallbackUpdate update);
 
     void setAllDirty();

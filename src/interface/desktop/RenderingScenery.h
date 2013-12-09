@@ -1,7 +1,7 @@
 #ifndef RENDERINGSCENERY_H
 #define RENDERINGSCENERY_H
 
-#include "rendering_global.h"
+#include "desktop_global.h"
 
 #include "Scenery.h"
 
@@ -12,7 +12,7 @@ typedef void (*SceneryCustomDataCallback)(PackStream* stream, void* data);
  *
  * This class contains the whole scenery definition.
  */
-class RENDERINGSHARED_EXPORT RenderingScenery: public Scenery
+class RenderingScenery: public Scenery
 {
 public:
     RenderingScenery();
@@ -30,4 +30,4 @@ private:
     void* _custom_data;
 };
 
-#endif // SCENERY_H
+#endif // RENDERINGSCENERY_H

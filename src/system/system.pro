@@ -14,7 +14,6 @@ DEFINES += SYSTEM_LIBRARY
 include(../common.pri)
 
 SOURCES += \
-    PictureFile.cpp \
     Thread.cpp \
     Mutex.cpp \
     System.cpp \
@@ -22,11 +21,12 @@ SOURCES += \
     RandomGenerator.cpp \
     Memory.cpp \
     ParallelWork.cpp \
-    ParallelQueue.cpp
+    ParallelQueue.cpp \
+    CacheFile.cpp \
+    PictureWriter.cpp
 
 HEADERS += \
     system_global.h \
-    PictureFile.h \
     Thread.h \
     Mutex.h \
     System.h \
@@ -34,7 +34,9 @@ HEADERS += \
     RandomGenerator.h \
     Memory.h \
     ParallelWork.h \
-    ParallelQueue.h
+    ParallelQueue.h \
+    CacheFile.h \
+    PictureWriter.h
 
 unix:!symbian {
     maemo5 {
