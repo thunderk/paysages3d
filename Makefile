@@ -1,6 +1,6 @@
 BUILDMODE=release
 BUILDPATH=./build/${BUILDMODE}
-LIBRARY_PATH=${BUILDPATH}/rendering:${BUILDPATH}/exploring:${BUILDPATH}/system:${BUILDPATH}/basics:${BUILDPATH}/definition:${BUILDPATH}/render/opengl:${BUILDPATH}/render/software:${BUILDPATH}/tests/googletest
+LIBRARY_PATH=${BUILDPATH}/rendering:${BUILDPATH}/exploring:${BUILDPATH}/system:${BUILDPATH}/basics:${BUILDPATH}/definition:${BUILDPATH}/render/opengl:${BUILDPATH}/render/software:${BUILDPATH}/render/preview:${BUILDPATH}/tests/googletest
 BUILD_SPEC=linux-g++
 
 all:build
@@ -46,15 +46,15 @@ run_cli:build
 run:build
 	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/desktop/paysages-gui
 
-profile:debug
+profile:build
 	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g fp ${BUILDPATH}/interface/desktop/paysages-gui
 	perf report -g
 
-profile_cli:debug
+profile_cli:build
 	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g fp ${BUILDPATH}/interface/commandline/paysages-cli
 	perf report -g
 
-package:release
+package:build
 	rm -rf paysages3d-linux
 	rm -f paysages3d-linux.tar.bz2
 	mkdir paysages3d-linux

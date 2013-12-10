@@ -352,27 +352,44 @@ static void _pushScanPoint(RenderArea* area, RenderScanlines* scanlines, ScanPoi
 
     if (point->x < 0 || point->x >= area->params.width * area->params.antialias)
     {
+        // Point outside scanline range
         return;
     }
-
-    if (point->x > scanlines->right)
+    else if (scanlines->right < 0)
     {
+        // First point pushed
+        scanlines->left = point->x;
         scanlines->right = point->x;
-        scanlines->up[scanlines->right] = *point;
-        scanlines->down[scanlines->right] = *point;
-        if (point->x < scanlines->left)
+        scanlines->up[point->x] = *point;
+        scanlines->down[point->x] = *point;
+    }
+    else if (point->x > scanlines->right)
+    {
+        // Grow scanlines to right
+        for (int x = scanlines->right + 1; x < point->x; x++)
         {
-            scanlines->left = point->x;
+            scanlines->up[x].y = -1;
+            scanlines->down[x].y = area->params.height * area->params.antialias;
         }
+        scanlines->right = point->x;
+        scanlines->up[point->x] = *point;
+        scanlines->down[point->x] = *point;
     }
     else if (point->x < scanlines->left)
     {
+        // Grow scanlines to left
+        for (int x = point->x + 1; x < scanlines->left; x++)
+        {
+            scanlines->up[x].y = -1;
+            scanlines->down[x].y = area->params.height * area->params.antialias;
+        }
         scanlines->left = point->x;
-        scanlines->up[scanlines->left] = *point;
-        scanlines->down[scanlines->left] = *point;
+        scanlines->up[point->x] = *point;
+        scanlines->down[point->x] = *point;
     }
     else
     {
+        // Expand existing scanline
         if (point->y > scanlines->up[point->x].y)
         {
             scanlines->up[point->x] = *point;
@@ -534,12 +551,6 @@ void RenderArea::pushTriangle(Vector3 pixel1, Vector3 pixel2, Vector3 pixel3, Ve
     scanlines.right = -1;
     scanlines.up = new ScanPoint[width];
     scanlines.down = new ScanPoint[width];
-    for (x = 0; x < width; x++)
-    {
-        /* TODO Do not initialize whole width each time, init only when needed on point push */
-        scanlines.up[x].y = -1;
-        scanlines.down[x].y = params.height * params.antialias;
-    }
 
     /* Render edges in scanlines */
     _pushScanLineEdge(this, &scanlines, &point1, &point2);

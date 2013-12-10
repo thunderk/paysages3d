@@ -5,6 +5,7 @@
 /gmon.out
 /nbproject/
 /output/
+/perf.*
 *.pro.user
 *.pro.user.*
 qrc_*.cpp

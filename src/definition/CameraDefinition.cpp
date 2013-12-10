@@ -58,8 +58,6 @@ void CameraDefinition::copy(BaseDefinition* _destination) const
 
 void CameraDefinition::validate()
 {
-    Matrix4 rotation;
-
     if (location.y > 300.0)
     {
         location.y = 300.0;
@@ -75,7 +73,7 @@ void CameraDefinition::validate()
     up.y = 1.0;
     up.z = 0.0;
 
-    rotation = Matrix4::newRotateEuler(direction.phi, direction.theta, roll);
+    Matrix4 rotation = Matrix4::newRotateEuler(direction.phi, direction.theta, roll);
 
     forward = rotation.multPoint(forward);
     right = rotation.multPoint(right);
@@ -83,16 +81,17 @@ void CameraDefinition::validate()
 
     target = location.add(direction);
 
-    projector = Matrix4::newPerspective(perspective.yfov, perspective.xratio, perspective.znear, perspective.zfar).mult(Matrix4::newLookAt(location, target, up));
+    Matrix4 mperspective = Matrix4::newPerspective(perspective.yfov, perspective.xratio, perspective.znear, perspective.zfar);
+    unperspective = mperspective.inversed();
+
+    projector = mperspective.mult(Matrix4::newLookAt(location, target, up));
     unprojector = projector.inversed();
 }
 
 double CameraDefinition::getRealDepth(const Vector3 &projected) const
 {
-    /* TODO Optimize this */
-    Matrix4 m = Matrix4::newPerspective(perspective.yfov, perspective.xratio, perspective.znear, perspective.zfar);
     Vector3 v(projected.x / (0.5 * width) - 1.0, -(projected.y / (0.5 * height) - 1.0), projected.z);
-    return m.inversed().transform(v).z;
+    return unperspective.transform(v).z;
 }
 
 void CameraDefinition::setLocation(const Vector3 &location)

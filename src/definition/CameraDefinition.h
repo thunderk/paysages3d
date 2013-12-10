@@ -82,6 +82,7 @@ private:
     Vector3 up;
     Matrix4 projector;
     Matrix4 unprojector;
+    Matrix4 unperspective;
 };
 
 }
