@@ -17,14 +17,13 @@ BaseDefinition::BaseDefinition(BaseDefinition* parent):
 
 BaseDefinition::~BaseDefinition()
 {
-    QListIterator<BaseDefinition*> it(children);
-    while (it.hasNext())
+    for (auto child:children)
     {
-        delete it.next();
+        delete child;
     }
 }
 
-void BaseDefinition::setName(const QString &name)
+void BaseDefinition::setName(const std::string &name)
 {
     this->name = name;
 }
@@ -44,20 +43,18 @@ Scenery* BaseDefinition::getScenery()
 void BaseDefinition::save(PackStream* stream) const
 {
     stream->write(name);
-    QListIterator<BaseDefinition*> it(children);
-    while (it.hasNext())
+    for (auto child: children)
     {
-        it.next()->save(stream);
+        child->save(stream);
     }
 }
 
 void BaseDefinition::load(PackStream* stream)
 {
     name = stream->readString();
-    QListIterator<BaseDefinition*> it(children);
-    while (it.hasNext())
+    for (auto child: children)
     {
-        it.next()->load(stream);
+        child->load(stream);
     }
 }
 
@@ -69,18 +66,17 @@ void BaseDefinition::copy(BaseDefinition* destination) const
 
 void BaseDefinition::validate()
 {
-    QListIterator<BaseDefinition*> it(children);
-    while (it.hasNext())
+    for (auto child: children)
     {
-        it.next()->validate();
+        child->validate();
     }
 }
 
 void BaseDefinition::addChild(BaseDefinition* child)
 {
-    if (not children.contains(child))
+    if (std::find(children.begin(), children.end(), child) != children.end())
     {
-        children.append(child);
+        children.push_back(child);
         child->parent = this;
         child->root = this->root;
     }
@@ -88,5 +84,13 @@ void BaseDefinition::addChild(BaseDefinition* child)
 
 void BaseDefinition::removeChild(BaseDefinition* child)
 {
-    children.removeOne(child);
+    std::vector<BaseDefinition*>::iterator it = std::find(children.begin(), children.end(), child);
+    if (it != children.end())
+    {
+        children.erase(it);
+    }
+    else
+    {
+        qWarning("Trying to remove not found child from '%s'", name.c_str());
+    }
 }

@@ -5,7 +5,7 @@
 #include "dialogrender.h"
 #include "inputcamera.h"
 #include "tools.h"
-#include "RenderingScenery.h"
+#include "DesktopScenery.h"
 #include "PackStream.h"
 #include "SoftwareRenderer.h"
 #include "BasePreview.h"
@@ -30,7 +30,7 @@ BaseForm(parent, true)
     disablePreviewsUpdate();
 
     _preview_landscape = new BasePreview(this);
-    _preview_landscape_renderer = new SceneryTopDownPreviewRenderer(RenderingScenery::getCurrent());
+    _preview_landscape_renderer = new SceneryTopDownPreviewRenderer(DesktopScenery::getCurrent());
     addPreview(_preview_landscape, QString(tr("Top-down preview")));
     _preview_landscape->setRenderer(_preview_landscape_renderer);
 
@@ -81,13 +81,13 @@ void FormRender::loadPack(PackStream* stream)
 
 void FormRender::revertConfig()
 {
-    RenderingScenery::getCurrent()->getCamera(_camera);
+    DesktopScenery::getCurrent()->getCamera(_camera);
     BaseForm::revertConfig();
 }
 
 void FormRender::applyConfig()
 {
-    RenderingScenery::getCurrent()->setCamera(_camera);
+    DesktopScenery::getCurrent()->setCamera(_camera);
     BaseForm::applyConfig();
 }
 
@@ -103,7 +103,7 @@ void FormRender::startQuickRender()
     {
         delete _renderer;
     }
-    _renderer = new SoftwareRenderer(RenderingScenery::getCurrent());
+    _renderer = new SoftwareRenderer(DesktopScenery::getCurrent());
     _renderer_inited = true;
 
     DialogRender* dialog = new DialogRender(this, _renderer);
@@ -119,7 +119,7 @@ void FormRender::startRender()
     {
         delete _renderer;
     }
-    _renderer = new SoftwareRenderer(RenderingScenery::getCurrent());
+    _renderer = new SoftwareRenderer(DesktopScenery::getCurrent());
     _renderer_inited = true;
 
     DialogRender* dialog = new DialogRender(this, _renderer);

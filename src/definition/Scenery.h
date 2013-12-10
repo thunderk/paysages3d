@@ -16,6 +16,16 @@ namespace definition {
 class DEFINITIONSHARED_EXPORT Scenery: public BaseDefinition
 {
 public:
+    typedef enum {
+        FILE_OPERATION_OK,
+        FILE_OPERATION_IOERROR,
+        FILE_OPERATION_APP_MISMATCH,
+        FILE_OPERATION_VERSION_MISMATCH
+    } FileOperationResult;
+
+    typedef void (*SceneryCustomDataCallback)(PackStream* stream, void* data);
+
+public:
     Scenery();
 
     virtual void save(PackStream* stream) const override;
@@ -24,9 +34,12 @@ public:
     virtual void validate() override;
     virtual void copy(BaseDefinition *destination) const override;
 
+    FileOperationResult saveGlobal(const std::string &filepath) const;
+    FileOperationResult loadGlobal(const std::string &filepath);
+
     virtual Scenery* getScenery() override;
 
-    void autoPreset(int seed);
+    void autoPreset(int seed=0);
 
     void setAtmosphere(AtmosphereDefinition* atmosphere);
     inline AtmosphereDefinition* getAtmosphere() const {return atmosphere;}

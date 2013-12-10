@@ -1,6 +1,6 @@
 #include "formtextures.h"
 
-#include "RenderingScenery.h"
+#include "DesktopScenery.h"
 #include "BasePreview.h"
 #include "tools.h"
 #include "CameraDefinition.h"
@@ -144,14 +144,14 @@ FormTextures::~FormTextures()
 
 void FormTextures::revertConfig()
 {
-    RenderingScenery::getCurrent()->getTextures(_definition);
+    DesktopScenery::getCurrent()->getTextures(_definition);
     BaseFormLayer::revertConfig();
 }
 
 void FormTextures::applyConfig()
 {
     BaseFormLayer::applyConfig();
-    RenderingScenery::getCurrent()->setTextures(_definition);
+    DesktopScenery::getCurrent()->setTextures(_definition);
 }
 
 void FormTextures::layerReadCurrentFrom(void* layer_definition)

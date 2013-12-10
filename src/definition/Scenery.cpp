@@ -1,6 +1,7 @@
 #include "Scenery.h"
 
 #include <ctime>
+#include <map>
 
 #include "NoiseGenerator.h"
 #include "PackStream.h"
@@ -10,6 +11,9 @@
 #include "TerrainDefinition.h"
 #include "TexturesDefinition.h"
 #include "WaterDefinition.h"
+
+static const double APP_HEADER = 19866544632.125;
+static const int DATA_VERSION = 1;
 
 Scenery::Scenery():
     BaseDefinition(NULL)
@@ -57,6 +61,53 @@ void Scenery::validate()
     BaseDefinition::validate();
 
     checkCameraAboveGround();
+}
+
+Scenery::FileOperationResult Scenery::saveGlobal(const std::string &filepath) const
+{
+    PackStream stream;
+    double app_header, version_header;
+
+    if (not stream.bindToFile(filepath, true))
+    {
+        return FILE_OPERATION_IOERROR;
+    }
+
+    app_header = (double)APP_HEADER;
+    stream.write(&app_header);
+    version_header = (double)DATA_VERSION;
+    stream.write(&version_header);
+
+    save(&stream);
+
+    return FILE_OPERATION_OK;
+}
+
+Scenery::FileOperationResult Scenery::loadGlobal(const std::string &filepath)
+{
+    PackStream stream;
+    double app_header, version_header;
+
+    if (not stream.bindToFile(filepath, false))
+    {
+        return FILE_OPERATION_IOERROR;
+    }
+
+    stream.read(&app_header);
+    if (app_header != APP_HEADER)
+    {
+        return FILE_OPERATION_APP_MISMATCH;
+    }
+
+    stream.read(&version_header);
+    if ((int)version_header != DATA_VERSION)
+    {
+        return FILE_OPERATION_VERSION_MISMATCH;
+    }
+
+    load(&stream);
+
+    return FILE_OPERATION_OK;
 }
 
 Scenery* Scenery::getScenery()

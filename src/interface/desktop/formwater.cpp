@@ -5,7 +5,7 @@
 #include <cmath>
 
 #include "tools.h"
-#include "RenderingScenery.h"
+#include "DesktopScenery.h"
 #include "BasePreview.h"
 #include "CameraDefinition.h"
 #include "WaterDefinition.h"
@@ -63,13 +63,13 @@ FormWater::~FormWater()
 
 void FormWater::revertConfig()
 {
-    RenderingScenery::getCurrent()->getWater(_definition);
+    DesktopScenery::getCurrent()->getWater(_definition);
     BaseForm::revertConfig();
 }
 
 void FormWater::applyConfig()
 {
-    RenderingScenery::getCurrent()->setWater(_definition);
+    DesktopScenery::getCurrent()->setWater(_definition);
     BaseForm::applyConfig();
 }
 

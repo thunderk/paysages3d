@@ -12,7 +12,7 @@
 #include "mainwindow.h"
 #include "dialogrender.h"
 #include "dialogexplorer.h"
-#include "RenderingScenery.h"
+#include "DesktopScenery.h"
 #include "BasePreview.h"
 #include "SoftwareRenderer.h"
 #include "CameraDefinition.h"
@@ -77,7 +77,7 @@ void FreeFormHelper::startManaging()
     connect(this, SIGNAL(needGlobalRefreshing()), _form_widget, SLOT(refreshFromFellowData()));
     connect(this, SIGNAL(needReverting()), _form_widget, SLOT(updateLocalDataFromScenery()));
     connect(this, SIGNAL(needCommitting()), _form_widget, SLOT(commitLocalDataToScenery()));
-    connect(this, SIGNAL(needAlterRenderer(Renderer*)), _form_widget, SLOT(alterRenderer(Renderer*)));
+    connect(this, SIGNAL(needAlterRenderer(SoftwareRenderer*)), _form_widget, SLOT(alterRenderer(SoftwareRenderer*)));
 
     processGlobalRefresh();
 }
@@ -232,12 +232,12 @@ void FreeFormHelper::processApplyClicked()
 
 void FreeFormHelper::processExploreClicked()
 {
-    SoftwareRenderer renderer(RenderingScenery::getCurrent());
+    SoftwareRenderer renderer(DesktopScenery::getCurrent());
 
     emit needAlterRenderer(&renderer);
 
     CameraDefinition camera;
-    RenderingScenery::getCurrent()->getCamera(&camera);
+    DesktopScenery::getCurrent()->getCamera(&camera);
 
     DialogExplorer* dialog = new DialogExplorer(_form_widget, &camera, false, &renderer);
     dialog->exec();
@@ -246,7 +246,7 @@ void FreeFormHelper::processExploreClicked()
 
 void FreeFormHelper::processRenderClicked()
 {
-    SoftwareRenderer renderer(RenderingScenery::getCurrent());
+    SoftwareRenderer renderer(DesktopScenery::getCurrent());
 
     emit needAlterRenderer(&renderer);
 

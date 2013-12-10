@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <QPainter>
 #include <QColorDialog>
+#include "Color.h"
 
 #include "lighting/SmallPreviewColor.h"
 #include "tools.h"
@@ -12,7 +13,9 @@ InputColor::InputColor(QWidget* form, QString label, Color* value):
     BaseInput(form, label),
     _original(value)
 {
-    _preview = new SmallPreviewColor(form, &_edited);
+    _edited = new Color();
+
+    _preview = new SmallPreviewColor(form, _edited);
     _preview->setMinimumSize(50, 20);
     _control = new QPushButton(tr("Edit"), form);
     _control->setMaximumWidth(150);
@@ -28,24 +31,24 @@ void InputColor::updatePreview()
 
 void InputColor::applyValue()
 {
-    *_original = _edited;
+    *_original = *_edited;
     BaseInput::applyValue();
 }
 
 void InputColor::revert()
 {
-    _edited = *_original;
+    *_edited = *_original;
     BaseInput::revert();
 }
 
 void InputColor::chooseColor()
 {
-    QColor col = QColorDialog::getColor(colorToQColor(_edited), _control);
+    QColor col = QColorDialog::getColor(colorToQColor(*_edited), _control);
     if (col.isValid())
     {
-        _edited.r = col.redF();
-        _edited.g = col.greenF();
-        _edited.b = col.blueF();
+        _edited->r = col.redF();
+        _edited->g = col.greenF();
+        _edited->b = col.blueF();
         applyValue();
     }
 }

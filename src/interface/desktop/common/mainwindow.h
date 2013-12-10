@@ -24,12 +24,13 @@ public:
 
     virtual bool event(QEvent* event);
 
+    void guiSave(PackStream* stream);
+    void guiLoad(PackStream* stream);
+
     static inline MainWindow* instance()
     {
         return _instance;
     }
-    static void guiSaveCallback(PackStream* stream, void* data);
-    static void guiLoadCallback(PackStream* stream, void* data);
 
 protected:
 
@@ -56,9 +57,6 @@ signals:
 private:
     static MainWindow* _instance;
     Ui::MainWindow *ui;
-
-    void guiSave(PackStream* stream);
-    void guiLoad(PackStream* stream);
 
     QVector<BaseForm*> _forms;
     FormRender* _form_render;

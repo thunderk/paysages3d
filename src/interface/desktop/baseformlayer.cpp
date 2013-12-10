@@ -77,7 +77,7 @@ QStringList BaseFormLayer::getLayers()
     {
         for (int i = 0; i < _layers_modified->count(); i++)
         {
-            result << _layers_modified->getLayer(i)->getName();
+            result << QString::fromStdString(_layers_modified->getLayer(i)->getName());
         }
     }
 
@@ -94,7 +94,7 @@ void BaseFormLayer::layerAddedEvent()
             int layer = _layers_modified->addLayer();
             if (layer >= 0)
             {
-                _layers_modified->getLayer(layer)->setName(layer_name);
+                _layers_modified->getLayer(layer)->setName(layer_name.toStdString());
 
                 BaseForm::layerAddedEvent();
 
@@ -128,7 +128,7 @@ void BaseFormLayer::layerRenamedEvent(int layer, QString new_name)
 {
     if (_layers_modified)
     {
-        _layers_modified->getLayer(layer)->setName(new_name);
+        _layers_modified->getLayer(layer)->setName(new_name.toStdString());
     }
 
     BaseForm::layerRenamedEvent(layer, new_name);

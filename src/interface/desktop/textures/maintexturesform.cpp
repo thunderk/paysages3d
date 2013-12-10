@@ -3,7 +3,7 @@
 
 #include "../common/freeformhelper.h"
 #include "../common/freelayerhelper.h"
-#include "RenderingScenery.h"
+#include "DesktopScenery.h"
 #include "TexturesDefinition.h"
 #include "TextureLayerDefinition.h"
 #include "previewmaterial.h"
@@ -83,7 +83,7 @@ void MainTexturesForm::updateLayers()
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         ui->layersGrid->setItem(n - 1 - i, 0, item);
 
-        item = new QTableWidgetItem(layer->getName());
+        item = new QTableWidgetItem(QString::fromStdString(layer->getName()));
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         ui->layersGrid->setItem(n - 1 - i, 1, item);
 
@@ -132,12 +132,12 @@ void MainTexturesForm::selectPreset(int preset)
 
 void MainTexturesForm::updateLocalDataFromScenery()
 {
-    RenderingScenery::getCurrent()->getTextures(textures);
+    DesktopScenery::getCurrent()->getTextures(textures);
 }
 
 void MainTexturesForm::commitLocalDataToScenery()
 {
-    RenderingScenery::getCurrent()->setTextures(textures);
+    DesktopScenery::getCurrent()->setTextures(textures);
 }
 
 void MainTexturesForm::refreshFromLocalData()

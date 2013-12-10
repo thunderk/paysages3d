@@ -2,7 +2,7 @@
 #define PACKSTREAM_H
 
 #include "system_global.h"
-#include <QString>
+
 class QFile;
 class QDataStream;
 
@@ -20,17 +20,17 @@ public:
     PackStream();
     ~PackStream();
 
-    bool bindToFile(const char* filepath, bool write=false);
+    bool bindToFile(const std::string &filepath, bool write=false);
 
     void write(const int *value);
     void write(const double *value);
     void write(const char *value, const int max_length);
-    void write(const QString &value);
+    void write(const std::string &value);
 
     void read(int* value);
     void read(double* value);
     void read(char* value, int max_length);
-    QString readString();
+    std::string readString();
 
 private:
     QFile* file;

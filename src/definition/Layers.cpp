@@ -25,12 +25,11 @@ void Layers::copy(BaseDefinition* destination_) const
 
     null_layer->copy(destination->null_layer);
 
-    QListIterator<BaseDefinition*> it(layers);
-    while (it.hasNext())
+    for (auto layer: layers)
     {
         int position = destination->addLayer();
         BaseDefinition* new_layer = destination->getLayer(position);
-        it.next()->copy(new_layer);
+        layer->copy(new_layer);
     }
 }
 
@@ -49,12 +48,12 @@ void Layers::setMaxLayerCount(int max_layer_count)
 
 int Layers::count() const
 {
-    return layers.count();
+    return layers.size();
 }
 
 BaseDefinition* Layers::getLayer(int position) const
 {
-    if (position >= 0 and position < layers.size())
+    if (position >= 0 and position < (int)layers.size())
     {
         return layers[position];
     }
@@ -67,19 +66,24 @@ BaseDefinition* Layers::getLayer(int position) const
 
 int Layers::findLayer(BaseDefinition* layer) const
 {
-    int result = layers.indexOf(layer);
-    if (result < 0)
+    int i = 0;
+    for (auto it:layers)
     {
-        qWarning("Layer %p not found, on a total of %d, returning %d", layer, layers.size(), result);
+        if (it == layer)
+        {
+            return i;
+        }
+        i++;
     }
-    return result;
+    qWarning("Layer %p not found, on a total of %d, returning %d", layer, layers.size(), -1);
+    return -1;
 }
 
 int Layers::addLayer(BaseDefinition* layer)
 {
-    if (layers.size() < max_layer_count)
+    if ((int)layers.size() < max_layer_count)
     {
-        layers.append(layer);
+        layers.push_back(layer);
         addChild(layer);
         return layers.size() - 1;
     }
@@ -97,10 +101,11 @@ int Layers::addLayer()
 
 void Layers::removeLayer(int position)
 {
-    if (position >= 0 and position < layers.size())
+    if (position >= 0 and position < (int)layers.size())
     {
-        BaseDefinition* removed = layers.takeAt(position);
+        BaseDefinition* removed = layers[position];
         removeChild(removed);
+        layers.erase(layers.begin() + position);
         delete removed;
     }
 }
@@ -112,9 +117,11 @@ void Layers::removeLayer(BaseDefinition* layer)
 
 void Layers::moveLayer(int old_position, int new_position)
 {
-    if (old_position >= 0 and old_position < layers.size() and new_position >= 0 and new_position < layers.size())
+    if (old_position >= 0 and old_position < (int)layers.size() and new_position >= 0 and new_position < (int)layers.size())
     {
-        layers.move(old_position, new_position);
+        BaseDefinition* layer = layers[old_position];
+        layers.erase(layers.begin() + old_position);
+        layers.insert(layers.begin() + new_position, layer);
     }
 }
 

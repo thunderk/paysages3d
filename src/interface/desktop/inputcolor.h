@@ -4,8 +4,6 @@
 #include <QWidget>
 #include "baseinput.h"
 
-#include "shared/types.h"
-
 class InputColor:public BaseInput
 {
     Q_OBJECT
@@ -23,7 +21,7 @@ private slots:
 
 private:
     Color* _original;
-    Color _edited;
+    Color* _edited;
 };
 
 #endif

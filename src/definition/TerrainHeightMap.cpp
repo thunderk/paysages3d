@@ -1,12 +1,13 @@
 #include "TerrainHeightMap.h"
 
+#include <cassert>
+#include <cstring>
 #include "PackStream.h"
 #include "Memory.h"
 #include "TerrainDefinition.h"
 #include "TerrainHeightMapBrush.h"
 #include "Interpolation.h"
 #include "NoiseGenerator.h"
-#include <cassert>
 
 typedef struct
 {

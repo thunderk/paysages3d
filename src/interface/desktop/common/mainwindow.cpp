@@ -27,7 +27,7 @@
 #include "dialogexplorer.h"
 
 #include "main.h"
-#include "RenderingScenery.h"
+#include "DesktopScenery.h"
 #include "PackStream.h"
 #include "tools.h"
 
@@ -127,11 +127,9 @@ MainWindow::MainWindow() :
     ui->tool_panel->hide();
     //ui->menuBar->hide();
 
-    RenderingScenery::getCurrent()->setCustomSaveCallbacks(MainWindow::guiSaveCallback, MainWindow::guiLoadCallback, this);
-
     // FIXME AutoPreset has already been called by paysagesInit but we need to redo it here because
     //   the auto apply on FormRender overwrites the camera. Delete this when the render form is no longer a BaseForm.
-    RenderingScenery::getCurrent()->autoPreset(0);
+    DesktopScenery::getCurrent()->autoPreset(0);
     refreshAll();
 }
 
@@ -164,7 +162,7 @@ void MainWindow::refreshAll()
     PreviewOsd* osd = PreviewOsd::getInstance(QString("geolocation"));
     osd->clearItems();
     PreviewOsdItem* item = osd->newItem(50, 50);
-    item->drawCamera(RenderingScenery::getCurrent()->getCamera());
+    item->drawCamera(DesktopScenery::getCurrent()->getCamera());
     item->setToolTip(QString(tr("Camera")));
 
     emit refreshed();
@@ -179,7 +177,7 @@ void MainWindow::fileNew()
 {
     if (QMessageBox::question(this, tr("Paysages 3D - New scenery"), tr("Do you want to start a new scenery ? Any unsaved changes will be lost."), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
-        RenderingScenery::getCurrent()->autoPreset(0);
+        DesktopScenery::getCurrent()->autoPreset(0);
         refreshAll();
     }
 }
@@ -194,12 +192,12 @@ void MainWindow::fileSave()
             filepath = filepath.append(".p3d");
         }
 
-        FileOperationResult result = paysagesSave((char*) filepath.toStdString().c_str());
+        Scenery::FileOperationResult result = DesktopScenery::getCurrent()->saveGlobal(filepath.toStdString());
         switch (result)
         {
-        case FILE_OPERATION_OK:
+        case Scenery::FILE_OPERATION_OK:
             break;
-        case FILE_OPERATION_IOERROR:
+        case Scenery::FILE_OPERATION_IOERROR:
             QMessageBox::critical(this, tr("Paysages 3D - File saving error"), tr("Can't write specified file : %1").arg(filepath));
             break;
         default:
@@ -215,19 +213,19 @@ void MainWindow::fileLoad()
         QString filepath = QFileDialog::getOpenFileName(this, tr("Paysages 3D - Choose a scenery file to load"), QString(), tr("Paysages 3D Scenery (*.p3d)"));
         if (!filepath.isNull())
         {
-            FileOperationResult result = paysagesLoad((char*) filepath.toStdString().c_str());
+            Scenery::FileOperationResult result = DesktopScenery::getCurrent()->loadGlobal(filepath.toStdString());
             switch (result)
             {
-            case FILE_OPERATION_OK:
+            case Scenery::FILE_OPERATION_OK:
                 refreshAll();
                 break;
-            case FILE_OPERATION_IOERROR:
+            case Scenery::FILE_OPERATION_IOERROR:
                 QMessageBox::critical(this, tr("Paysages 3D - File loading error"), tr("Can't read specified file : %1").arg(filepath));
                 break;
-            case FILE_OPERATION_APP_MISMATCH:
+            case Scenery::FILE_OPERATION_APP_MISMATCH:
                 QMessageBox::critical(this, tr("Paysages 3D - File loading error"), tr("This file doesn't look like a Paysages 3D file : %1").arg(filepath));
                 break;
-            case FILE_OPERATION_VERSION_MISMATCH:
+            case Scenery::FILE_OPERATION_VERSION_MISMATCH:
                 QMessageBox::critical(this, tr("Paysages 3D - File loading error"), tr("This file was created with an incompatible Paysages 3D version : %1").arg(filepath));
                 break;
             default:
@@ -262,7 +260,7 @@ void MainWindow::explore3D()
     CameraDefinition* camera = new CameraDefinition;
     int result;
 
-    RenderingScenery::getCurrent()->getCamera(camera);
+    DesktopScenery::getCurrent()->getCamera(camera);
 
     DialogExplorer* dialog = new DialogExplorer(this, camera, true);
     result = dialog->exec();
@@ -271,21 +269,11 @@ void MainWindow::explore3D()
 
     if (result == QDialog::Accepted)
     {
-        RenderingScenery::getCurrent()->setCamera(camera);
+        DesktopScenery::getCurrent()->setCamera(camera);
         refreshAll();
     }
 
     delete camera;
-}
-
-void MainWindow::guiSaveCallback(PackStream* stream, void* data)
-{
-    ((MainWindow*) data)->guiSave(stream);
-}
-
-void MainWindow::guiLoadCallback(PackStream* stream, void* data)
-{
-    ((MainWindow*) data)->guiLoad(stream);
 }
 
 void MainWindow::guiSave(PackStream* stream)

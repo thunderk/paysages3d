@@ -1,5 +1,6 @@
 #include "Zone.h"
 
+#include <cstring>
 #include "Curve.h"
 #include "PackStream.h"
 #include "Vector3.h"

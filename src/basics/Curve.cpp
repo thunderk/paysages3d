@@ -1,8 +1,9 @@
 #include "Curve.h"
 
-const int MAX_NB_POINTS = 30;
-
+#include <cstring>
 #include "PackStream.h"
+
+const int MAX_NB_POINTS = 30;
 
 Curve::Curve()
 {

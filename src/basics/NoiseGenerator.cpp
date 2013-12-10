@@ -7,6 +7,7 @@
 #include "RandomGenerator.h"
 #include <cmath>
 #include <cstdlib>
+#include <cstring>
 
 #define MAX_LEVEL_COUNT 30
 

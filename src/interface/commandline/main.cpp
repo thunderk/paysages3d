@@ -3,11 +3,10 @@
 #include <cstring>
 #include <cmath>
 
-#include "main.h"
 #include "CameraDefinition.h"
 #include "AtmosphereDefinition.h"
 #include "SoftwareRenderer.h"
-#include "RenderingScenery.h"
+#include "Scenery.h"
 
 void startRender(SoftwareRenderer* renderer, char* outputpath, RenderArea::RenderParams params)
 {
@@ -156,25 +155,29 @@ int main(int argc, char** argv)
     }
 
     printf("Initializing ...\n");
-    paysagesInit();
+    Scenery* scenery = new Scenery();
 
     if (conf_file_path)
     {
-        paysagesLoad(conf_file_path);
+        scenery->loadGlobal(conf_file_path);
+    }
+    else
+    {
+        scenery->autoPreset();
     }
 
     for (outputcount = 0; outputcount < conf_first_picture + conf_nb_pictures; outputcount++)
     {
-        AtmosphereDefinition* atmo = RenderingScenery::getCurrent()->getAtmosphere();
+        AtmosphereDefinition* atmo = scenery->getAtmosphere();
         atmo->hour = (int)floor(conf_daytime_start * 24.0);
         atmo->minute = (int)floor(fmod(conf_daytime_start, 1.0 / 24.0) * 24.0 * 60.0);
         atmo->validate();
 
-        CameraDefinition* camera = RenderingScenery::getCurrent()->getCamera();
+        CameraDefinition* camera = scenery->getCamera();
         Vector3 step = {conf_camera_step_x, conf_camera_step_y, conf_camera_step_z};
         camera->setLocation(camera->getLocation().add(step));
 
-        renderer = new SoftwareRenderer(RenderingScenery::getCurrent());
+        renderer = new SoftwareRenderer(scenery);
         renderer->setPreviewCallbacks(NULL, NULL, _previewUpdate);
 
         if (outputcount >= conf_first_picture)
@@ -189,7 +192,7 @@ int main(int argc, char** argv)
     }
 
     printf("Cleaning up ...\n");
-    paysagesQuit();
+    delete scenery;
 
     printf("\rDone.                         \n");
 

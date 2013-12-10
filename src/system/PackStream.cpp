@@ -22,11 +22,11 @@ PackStream::~PackStream()
     }
 }
 
-bool PackStream::bindToFile(const char* filepath, bool write)
+bool PackStream::bindToFile(const std::string &filepath, bool write)
 {
     if (not file and not stream)
     {
-        file = new QFile(filepath);
+        file = new QFile(QString::fromStdString(filepath));
         if (not file->open(write ? QIODevice::WriteOnly : QIODevice::ReadOnly))
         {
             return false;
@@ -37,7 +37,7 @@ bool PackStream::bindToFile(const char* filepath, bool write)
     return stream != NULL;
 }
 
-void PackStream::write(const int*value)
+void PackStream::write(const int *value)
 {
     if (stream and value)
     {
@@ -62,11 +62,11 @@ void PackStream::write(const char *value, int max_length)
     }
 }
 
-void PackStream::write(const QString &value)
+void PackStream::write(const std::string &value)
 {
     if (stream)
     {
-        *stream << value;
+        *stream << QString::fromStdString(value);
     }
 }
 
@@ -101,16 +101,16 @@ void PackStream::read(char* value, int max_length)
     }
 }
 
-QString PackStream::readString()
+std::string PackStream::readString()
 {
     if (stream and not stream->atEnd())
     {
         QString output;
         *stream >> output;
-        return output;
+        return output.toStdString();
     }
     else
     {
-        return QString();
+        return "";
     }
 }

@@ -1,6 +1,7 @@
 BUILDMODE=release
 BUILDPATH=./build/${BUILDMODE}
 LIBRARY_PATH=${BUILDPATH}/rendering:${BUILDPATH}/exploring:${BUILDPATH}/system:${BUILDPATH}/basics:${BUILDPATH}/definition:${BUILDPATH}/render/opengl:${BUILDPATH}/render/software:${BUILDPATH}/tests/googletest
+BUILD_SPEC=linux-g++
 
 all:build
 
@@ -9,9 +10,9 @@ dirs:
 
 makefiles:dirs
 ifeq (${BUILDMODE}, release)
-	@+cd ${BUILDPATH} && qmake ../../src/paysages.pro -r -spec linux-clang
+	@+cd ${BUILDPATH} && qmake ../../src/paysages.pro -r -spec $(BUILD_SPEC)
 else
-	@+cd ${BUILDPATH} && qmake ../../src/paysages.pro -r -spec linux-clang CONFIG+=debug CONFIG+=declarative_debug CONFIG+=qml_debug
+	@+cd ${BUILDPATH} && qmake ../../src/paysages.pro -r -spec $(BUILD_SPEC) CONFIG+=debug CONFIG+=declarative_debug CONFIG+=qml_debug
 endif
 
 build:makefiles

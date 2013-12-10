@@ -5,7 +5,7 @@
 #include "AtmosphereDefinition.h"
 #include "AtmosphereRenderer.h"
 #include "AtmosphereResult.h"
-#include "RenderingScenery.h"
+#include "Scenery.h"
 #include "System.h"
 
 #define OUTPUT_WIDTH 400
@@ -18,7 +18,8 @@ static Color _postProcessFragment(SoftwareRenderer* renderer, Vector3 location, 
 
 TEST(Bruneton, AerialPerspective1)
 {
-    SoftwareRenderer renderer;
+    Scenery scenery;
+    SoftwareRenderer renderer(&scenery);
     renderer.render_width = 800;
     renderer.render_height = 600;
     renderer.render_quality = 1;
@@ -44,12 +45,14 @@ TEST(Bruneton, AerialPerspective1)
 
 TEST(Bruneton, AerialPerspective2)
 {
-    AtmosphereDefinition* atmo = RenderingScenery::getCurrent()->getAtmosphere();
+    Scenery scenery;
+
+    AtmosphereDefinition* atmo = scenery.getAtmosphere();
     atmo->hour = 6;
     atmo->minute = 30;
     atmo->validate();
 
-    SoftwareRenderer renderer;
+    SoftwareRenderer renderer(&scenery);
     renderer.render_width = 800;
     renderer.render_height = 600;
     renderer.render_quality = 1;

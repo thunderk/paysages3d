@@ -46,7 +46,7 @@ public:
 public:
     LayerConstructor layer_constructor;
     int max_layer_count;
-    QList<BaseDefinition*> layers;
+    std::vector<BaseDefinition*> layers;
     BaseDefinition* null_layer;
 };
 

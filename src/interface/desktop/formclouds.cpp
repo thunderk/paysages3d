@@ -1,6 +1,6 @@
 #include "formclouds.h"
 
-#include "RenderingScenery.h"
+#include "DesktopScenery.h"
 #include "BasePreview.h"
 #include "CloudsDefinition.h"
 #include "CloudLayerDefinition.h"
@@ -60,14 +60,14 @@ FormClouds::~FormClouds()
 
 void FormClouds::revertConfig()
 {
-    RenderingScenery::getCurrent()->getClouds(_definition);
+    DesktopScenery::getCurrent()->getClouds(_definition);
     BaseFormLayer::revertConfig();
 }
 
 void FormClouds::applyConfig()
 {
     BaseFormLayer::applyConfig();
-    RenderingScenery::getCurrent()->setClouds(_definition);
+    DesktopScenery::getCurrent()->setClouds(_definition);
 }
 
 void FormClouds::layerReadCurrentFrom(void* layer_definition)

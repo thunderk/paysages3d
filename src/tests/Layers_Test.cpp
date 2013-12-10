@@ -33,7 +33,7 @@ TEST(Layers, NullLayer)
         EXPECT_EQ(NULL, layer->getParent());
         EXPECT_EQ(layer, layer->getRoot());
 
-        EXPECT_EQ(QString(), layer->getName());
+        EXPECT_EQ("", layer->getName());
     }
 
     EXPECT_EQ(0, layers1.count());
@@ -50,9 +50,9 @@ TEST(Layers, copy)
     EXPECT_EQ(0, layers2.count());
     layers1.copy(&layers2);
     EXPECT_EQ(1, layers2.count());
-    EXPECT_EQ(QString("test"), layers1.getLayer(0)->getName());
+    EXPECT_EQ("test", layers1.getLayer(0)->getName());
     EXPECT_EQ(&layers1, layers1.getLayer(0)->getParent());
-    EXPECT_EQ(QString("test"), layers2.getLayer(0)->getName());
+    EXPECT_EQ("test", layers2.getLayer(0)->getName());
     EXPECT_EQ(&layers2, layers2.getLayer(0)->getParent());
     EXPECT_NE(layers1.getLayer(0), layers2.getLayer(0));
 }

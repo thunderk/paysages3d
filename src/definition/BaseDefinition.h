@@ -3,11 +3,7 @@
 
 #include "definition_global.h"
 
-#include <QList>
-#include <QString>
-
 namespace paysages {
-namespace system {class PackStream;}
 namespace definition {
 
 /**
@@ -25,8 +21,8 @@ public:
     virtual void copy(BaseDefinition* destination) const;
     virtual void validate();
 
-    inline const QString& getName() const {return name;}
-    virtual void setName(const QString &name);
+    inline const std::string &getName() const {return name;}
+    virtual void setName(const std::string &name);
 
     virtual Scenery* getScenery();
 
@@ -40,8 +36,8 @@ protected:
 private:
     BaseDefinition* parent;
     BaseDefinition* root;
-    QString name;
-    QList<BaseDefinition*> children;
+    std::string name;
+    std::vector<BaseDefinition*> children;
 };
 
 }

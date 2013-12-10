@@ -7,7 +7,7 @@
 #include "TerrainShapePreviewRenderer.h"
 #include "common/freeformhelper.h"
 #include "tools.h"
-#include "RenderingScenery.h"
+#include "DesktopScenery.h"
 #include "TerrainDefinition.h"
 #include "TerrainHeightMap.h"
 
@@ -85,12 +85,12 @@ void MainTerrainForm::refreshFromFellowData()
 
 void MainTerrainForm::updateLocalDataFromScenery()
 {
-    RenderingScenery::getCurrent()->getTerrain(_terrain);
+    DesktopScenery::getCurrent()->getTerrain(_terrain);
 }
 
 void MainTerrainForm::commitLocalDataToScenery()
 {
-    RenderingScenery::getCurrent()->setTerrain(_terrain);
+    DesktopScenery::getCurrent()->setTerrain(_terrain);
 }
 
 void MainTerrainForm::alterRenderer(SoftwareRenderer* renderer)
