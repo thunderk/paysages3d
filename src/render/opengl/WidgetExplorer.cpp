@@ -70,7 +70,7 @@ static AtmosphereResult _applyAerialPerspective(Renderer*, Vector3, Color base)
     return result;
 }*/
 
-WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera, SoftwareRenderer* renderer) :
+WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera, Scenery* scenery) :
 QGLWidget(parent)
 {
     setMinimumSize(400, 300);
@@ -80,7 +80,7 @@ QGLWidget(parent)
     _base_camera = camera;
     camera->copy(_current_camera);
 
-    _renderer = renderer;
+    _renderer = new SoftwareRenderer(scenery);
     _opengl_renderer = new OpenGLRenderer(NULL);
     _renderer->prepare();
     _renderer->render_quality = 3;

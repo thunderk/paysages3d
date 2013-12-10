@@ -5,9 +5,10 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include "WidgetExplorer.h"
+#include "DesktopScenery.h"
 #include "CameraDefinition.h"
 
-DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool camera_validable, SoftwareRenderer* renderer) : QDialog(parent)
+DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool camera_validable, Scenery* scenery) : QDialog(parent)
 {
     QWidget* panel;
     QPushButton* button;
@@ -16,7 +17,12 @@ DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool c
     setWindowTitle(tr("Paysages 3D - Explore"));
     setLayout(new QHBoxLayout());
 
-    _wanderer = new WidgetExplorer(this, camera, renderer);
+    if (!scenery)
+    {
+        scenery = DesktopScenery::getCurrent();
+    }
+
+    _wanderer = new WidgetExplorer(this, camera, scenery);
     layout()->addWidget(_wanderer);
 
     panel = new QWidget(this);

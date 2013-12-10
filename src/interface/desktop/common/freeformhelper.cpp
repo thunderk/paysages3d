@@ -239,7 +239,7 @@ void FreeFormHelper::processExploreClicked()
     CameraDefinition camera;
     DesktopScenery::getCurrent()->getCamera(&camera);
 
-    DialogExplorer* dialog = new DialogExplorer(_form_widget, &camera, false, &renderer);
+    DialogExplorer* dialog = new DialogExplorer(_form_widget, &camera, false, renderer.getScenery());
     dialog->exec();
     delete dialog;
 }

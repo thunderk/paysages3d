@@ -119,7 +119,7 @@ void RenderArea::setParams(RenderParams params)
     width = params.width * params.antialias;
     height = params.height * params.antialias;
 
-    params = params;
+    this->params = params;
     delete[] pixels;
     pixels = new RenderFragment[width * height];
     pixel_count = width * height;

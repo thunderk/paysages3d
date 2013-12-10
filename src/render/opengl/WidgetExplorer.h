@@ -14,7 +14,7 @@ class OPENGLSHARED_EXPORT WidgetExplorer : public QGLWidget
 {
     Q_OBJECT
 public:
-    WidgetExplorer(QWidget* parent, CameraDefinition* camera, SoftwareRenderer* renderer);
+    WidgetExplorer(QWidget* parent, CameraDefinition* camera, Scenery* scenery);
     ~WidgetExplorer();
 
     void performChunksMaintenance();

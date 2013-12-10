@@ -128,6 +128,7 @@ static void* _renderFirstPass(void* data)
 {
     SoftwareRenderer* renderer = (SoftwareRenderer*)data;
     renderer->rasterize();
+    renderer->is_rendering = 0;
     return NULL;
 }
 
@@ -164,7 +165,6 @@ void SoftwareRenderer::start(RenderArea::RenderParams params)
 
         if (++loops >= 10)
         {
-
             render_area->update();
             loops = 0;
         }
