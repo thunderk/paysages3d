@@ -176,7 +176,7 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
         col = parent->applyLightingToSurface(segments[i].start, parent->getAtmosphereRenderer()->getSunDirection(), material);
 
         col.a = (segments[i].length >= transparency_depth) ? 1.0 : (segments[i].length / transparency_depth);
-        colorMask(&result, &col);
+        result.mask(col);
     }
     if (inside_length >= transparency_depth)
     {

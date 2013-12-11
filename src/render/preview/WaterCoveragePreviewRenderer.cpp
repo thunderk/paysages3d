@@ -51,7 +51,7 @@ Color WaterCoveragePreviewRenderer::getWaterColor(double x, double y, double)
     if (highlight)
     {
         Color mask = {0.5, 0.5, 1.0, 0.5};
-        colorMask(&base, &mask);
+        base.mask(mask);
     }
 
     return base;

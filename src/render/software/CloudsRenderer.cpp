@@ -126,7 +126,7 @@ Color CloudsRenderer::getColor(const Vector3 &eye, const Vector3 &location, cons
 
         Color layer_color = layer_renderer->getColor(layer_model, eye, location);
 
-        colorMask(&cumul, &layer_color);
+        cumul.mask(layer_color);
     }
 
     return cumul;

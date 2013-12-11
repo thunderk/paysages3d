@@ -59,8 +59,8 @@ bool BaseExplorerChunk::maintain()
                 {
                     Color color = getTextureColor((double)i / (double)new_texture_size, 1.0 - (double)j / (double)new_texture_size);
                     color = _color_profile->apply(color);
-                    colorNormalize(&color);
-                    new_image->setPixel(i, j, colorTo32BitBGRA(&color));
+                    color.normalize();
+                    new_image->setPixel(i, j, color.to32BitBGRA());
                 }
             }
         }

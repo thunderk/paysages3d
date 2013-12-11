@@ -130,7 +130,7 @@ void Texture2D::save(PackStream* stream)
     n = this->xsize * this->ysize;
     for (i = 0; i < n; i++)
     {
-        colorSave(stream, this->data + i);
+        (this->data + i)->save(stream);
     }
 }
 
@@ -144,7 +144,7 @@ void Texture2D::load(PackStream* stream)
     this->data = new Color[n];
     for (i = 0; i < n; i++)
     {
-        colorLoad(stream, this->data + i);
+        (this->data + i)->load(stream);
     }
 }
 

@@ -37,7 +37,7 @@ void WaterDefinition::save(PackStream* stream) const
     BaseDefinition::save(stream);
 
     materialSave(stream, material);
-    colorSave(stream, depth_color);
+    depth_color->save(stream);
     stream->write(&transparency_depth);
     stream->write(&transparency);
     stream->write(&reflection);
@@ -59,7 +59,7 @@ void WaterDefinition::load(PackStream* stream)
     BaseDefinition::load(stream);
 
     materialLoad(stream, material);
-    colorLoad(stream, depth_color);
+    depth_color->load(stream);
     stream->read(&transparency_depth);
     stream->read(&transparency);
     stream->read(&reflection);
@@ -129,7 +129,7 @@ void WaterDefinition::applyPreset(WaterPreset preset)
         transparency = 0.5;
         reflection = 0.4;
         transparency_depth = 4.0;
-        material->base = colorToHSL(colorFromValues(0.08, 0.15, 0.2, 1.0));
+        material->base = colorToHSL(Color(0.08, 0.15, 0.2, 1.0));
         depth_color->r = 0.0;
         depth_color->g = 0.1;
         depth_color->b = 0.1;
@@ -145,7 +145,7 @@ void WaterDefinition::applyPreset(WaterPreset preset)
         transparency = 0.4;
         reflection = 0.35;
         transparency_depth = 3.0;
-        material->base = colorToHSL(colorFromValues(0.05, 0.18, 0.2, 1.0));
+        material->base = colorToHSL(Color(0.05, 0.18, 0.2, 1.0));
         depth_color->r = 0.0;
         depth_color->g = 0.18;
         depth_color->b = 0.15;
@@ -161,7 +161,7 @@ void WaterDefinition::applyPreset(WaterPreset preset)
     material->base.a = 1.0;
     material->reflection = 1.0;
     material->shininess = 16.0;
-    foam_material->base = colorToHSL(colorFromValues(0.8, 0.8, 0.8, 1.0));
+    foam_material->base = colorToHSL(Color(0.8, 0.8, 0.8, 1.0));
     foam_material->reflection = 0.1;
     foam_material->shininess = 1.5;
 

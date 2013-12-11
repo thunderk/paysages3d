@@ -205,7 +205,7 @@ TexturesRenderer::TexturesResult TexturesRenderer::applyToTerrain(double x, doub
         if (result.layers[i].presence > 0.0)
         {
             result.layers[i].color.a = result.layers[i].presence;
-            colorMask(&result.final_color, &result.layers[i].color);
+            result.final_color.mask(result.layers[i].color);
         }
     }
 

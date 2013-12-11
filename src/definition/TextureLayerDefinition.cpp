@@ -113,7 +113,7 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset)
             displacement_height = 0.05;
             displacement_scaling = 3.0;
             displacement_offset = 0.0;
-            material->base = colorToHSL(colorFromValues(0.4, 0.38, 0.35, 1.0));
+            material->base = colorToHSL(Color(0.4, 0.38, 0.35, 1.0));
             material->reflection = 0.003;
             material->shininess = 4.0;
             break;
@@ -122,7 +122,7 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset)
             displacement_height = 0.3;
             displacement_scaling = 2.0;
             displacement_offset = 0.0;
-            material->base = colorToHSL(colorFromValues(0.6, 0.55, 0.57, 1.0));
+            material->base = colorToHSL(Color(0.6, 0.55, 0.57, 1.0));
             material->reflection = 0.006;
             material->shininess = 6.0;
             break;
@@ -132,7 +132,7 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset)
             displacement_height = 0.0;
             displacement_scaling = 1.0;
             displacement_offset = 0.0;
-            material->base = colorToHSL(colorFromValues(0.12, 0.19, 0.035, 1.0));
+            material->base = colorToHSL(Color(0.12, 0.19, 0.035, 1.0));
             material->reflection = 0.001;
             material->shininess = 4.0;
             break;
@@ -142,7 +142,7 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset)
             displacement_height = 0.02;
             displacement_scaling = 5.0;
             displacement_offset = 0.0;
-            material->base = colorToHSL(colorFromValues(0.93, 0.9, 0.8, 1.0));
+            material->base = colorToHSL(Color(0.93, 0.9, 0.8, 1.0));
             material->reflection = 0.008;
             material->shininess = 1.0;
             break;
@@ -152,7 +152,7 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset)
             displacement_height = 0.1;
             displacement_scaling = 1.0;
             displacement_offset = 0.0;
-            material->base = colorToHSL(colorFromValues(1.0, 1.0, 1.0, 1.0));
+            material->base = colorToHSL(Color(1.0, 1.0, 1.0, 1.0));
             material->reflection = 0.25;
             material->shininess = 0.6;
             break;

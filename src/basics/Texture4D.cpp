@@ -188,7 +188,7 @@ void Texture4D::save(PackStream* stream)
     n = this->xsize * this->ysize * this->zsize * this->wsize;
     for (i = 0; i < n; i++)
     {
-        colorSave(stream, this->data + i);
+        (this->data + i)->save(stream);
     }
 }
 
@@ -204,7 +204,7 @@ void Texture4D::load(PackStream* stream)
     this->data = new Color[n];
     for (i = 0; i < n; i++)
     {
-        colorLoad(stream, this->data + i);
+        (this->data + i)->load(stream);
     }
 }
 

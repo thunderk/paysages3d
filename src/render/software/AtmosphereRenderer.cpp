@@ -48,7 +48,7 @@ static inline void _applyWeatherEffects(AtmosphereDefinition* definition, Atmosp
     {
         /* Limit scattering on ultra clear day */
         double force = (0.15 - definition->humidity) / 0.15;
-        colorLimitPower(&result->inscattering, 100.0 - 90.0 * pow(force, 0.1));
+        result->inscattering.limitPower(100.0 - 90.0 * pow(force, 0.1));
     }
     else
     {

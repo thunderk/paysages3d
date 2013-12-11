@@ -236,7 +236,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
         Color depth_color = *definition->depth_color;
         refracted = parent->rayWalking(location, _refractRay(look_direction, normal), 1, 0, 1, 1);
         depth = v3Norm(v3Sub(location, refracted.hit_location));
-        colorLimitPower(&depth_color, colorGetPower(&refracted.hit_color));
+        depth_color.limitPower(refracted.hit_color.getPower());
         if (depth > definition->transparency_depth)
         {
             result.refracted = depth_color;
@@ -260,7 +260,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
 
     /* Merge with foam */
     foam = _getFoamMask(parent, definition, location, normal, detail);
-    colorMask(&color, &foam);
+    color.mask(foam);
 
     /* Bring color to the camera */
     color = parent->applyMediumTraversal(location, color);

@@ -17,5 +17,5 @@ void AtmosphereResult::updateFinal()
     final.b = base.b * attenuation.b + inscattering.b;
     final.a = 1.0;
 
-    colorMask(&final, &mask);
+    final.mask(mask);
 }
