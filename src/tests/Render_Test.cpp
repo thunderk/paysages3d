@@ -6,7 +6,7 @@
 #include "ColorProfile.h"
 #include "System.h"
 
-static Color _postProcessFragment(SoftwareRenderer*, Vector3 location, void*)
+static Color _postProcessFragment(SoftwareRenderer*, const Vector3 &location, void*)
 {
     /* Checker-board */
     double x = fmod(location.x, 0.2);

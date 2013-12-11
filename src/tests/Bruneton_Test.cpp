@@ -11,7 +11,7 @@
 #define OUTPUT_WIDTH 400
 #define OUTPUT_HEIGHT 300
 
-static Color _postProcessFragment(SoftwareRenderer* renderer, Vector3 location, void*)
+static Color _postProcessFragment(SoftwareRenderer* renderer, const Vector3 &location, void*)
 {
     return renderer->getAtmosphereRenderer()->applyAerialPerspective(location, COLOR_BLACK).final;
 }

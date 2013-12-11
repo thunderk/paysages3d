@@ -14,7 +14,7 @@ SkyRasterizer::SkyRasterizer(SoftwareRenderer* renderer):
 {
 }
 
-static Color _postProcessFragment(SoftwareRenderer* renderer, Vector3 location, void*)
+static Color _postProcessFragment(SoftwareRenderer* renderer, const Vector3 &location, void*)
 {
     Vector3 camera_location, direction;
     Color result;

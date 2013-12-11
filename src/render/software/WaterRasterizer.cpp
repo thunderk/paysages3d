@@ -9,7 +9,7 @@ WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer):
 {
 }
 
-static Color _postProcessFragment(SoftwareRenderer* renderer, Vector3 location, void*)
+static Color _postProcessFragment(SoftwareRenderer* renderer, const Vector3 &location, void*)
 {
     return renderer->getWaterRenderer()->getResult(location.x, location.z).final;
 }

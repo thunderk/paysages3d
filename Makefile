@@ -47,11 +47,11 @@ run:build
 	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/desktop/paysages-gui
 
 profile:build
-	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g fp ${BUILDPATH}/interface/desktop/paysages-gui
+	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g fp ${BUILDPATH}/interface/desktop/paysages-gui $(ARGS)
 	perf report -g
 
 profile_cli:build
-	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g fp ${BUILDPATH}/interface/commandline/paysages-cli
+	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g fp ${BUILDPATH}/interface/commandline/paysages-cli $(ARGS)
 	perf report -g
 
 package:build

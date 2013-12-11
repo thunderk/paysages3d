@@ -83,19 +83,24 @@ Vector3 Matrix4::multPoint(const Vector3 &v) const
 
 Vector3 Matrix4::transform(const Vector3 &v) const
 {
-    Vector3 result;
-    double w;
-    result.x = a * v.x + b * v.y + c * v.z + d;
-    result.y = e * v.x + f * v.y + g * v.z + h;
-    result.z = i * v.x + j * v.y + k * v.z + l;
-    w = m * v.x + n * v.y + o * v.z + p;
+    double w = m * v.x + n * v.y + o * v.z + p;
     if (w != 0.0)
     {
-        result.x /= w;
-        result.y /= w;
-        result.z /= w;
+        w = 1.0 / w;
+        return Vector3(
+            (a * v.x + b * v.y + c * v.z + d) * w,
+            (e * v.x + f * v.y + g * v.z + h) * w,
+            (i * v.x + j * v.y + k * v.z + l) * w
+        );
     }
-    return result;
+    else
+    {
+        return Vector3(
+            a * v.x + b * v.y + c * v.z + d,
+            e * v.x + f * v.y + g * v.z + h,
+            i * v.x + j * v.y + k * v.z + l
+        );
+    }
 }
 
 Matrix4 Matrix4::transposed() const

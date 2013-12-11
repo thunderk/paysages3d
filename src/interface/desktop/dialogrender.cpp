@@ -24,7 +24,7 @@
 
 static DialogRender* _current_dialog;
 
-static void _renderStart(int width, int height, Color background)
+static void _renderStart(int width, int height, const Color &background)
 {
     _current_dialog->pixbuf_lock->lock();
     delete _current_dialog->pixbuf;
@@ -35,7 +35,7 @@ static void _renderStart(int width, int height, Color background)
     _current_dialog->tellRenderSize(width, height);
 }
 
-static void _renderDraw(int x, int y, Color col)
+static void _renderDraw(int x, int y, const Color &col)
 {
     _current_dialog->pixbuf->setPixel(x, _current_dialog->pixbuf->height() - 1 - y, colorToQColor(col).rgb());
 }

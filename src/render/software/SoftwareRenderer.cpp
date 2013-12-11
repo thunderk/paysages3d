@@ -221,17 +221,17 @@ int SoftwareRenderer::addRenderProgress(double)
     return not render_interrupt;
 }
 
-Vector3 SoftwareRenderer::getCameraLocation(Vector3)
+Vector3 SoftwareRenderer::getCameraLocation(const Vector3 &)
 {
     return render_camera->getLocation();
 }
 
-Vector3 SoftwareRenderer::getCameraDirection(Vector3)
+Vector3 SoftwareRenderer::getCameraDirection(const Vector3 &)
 {
     return render_camera->getDirectionNormalized();
 }
 
-double SoftwareRenderer::getPrecision(Vector3 location)
+double SoftwareRenderer::getPrecision(const Vector3 &location)
 {
     Vector3 projected;
 
@@ -242,17 +242,17 @@ double SoftwareRenderer::getPrecision(Vector3 location)
     return render_camera->unproject(projected).sub(location).getNorm(); // / (double)render_quality;
 }
 
-Vector3 SoftwareRenderer::projectPoint(Vector3 point)
+Vector3 SoftwareRenderer::projectPoint(const Vector3 &point)
 {
     return render_camera->project(point);
 }
 
-Vector3 SoftwareRenderer::unprojectPoint(Vector3 point)
+Vector3 SoftwareRenderer::unprojectPoint(const Vector3 &point)
 {
     return render_camera->unproject(point);
 }
 
-void SoftwareRenderer::pushTriangle(Vector3 v1, Vector3 v2, Vector3 v3, RenderArea::f_RenderFragmentCallback callback, void* callback_data)
+void SoftwareRenderer::pushTriangle(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, RenderArea::f_RenderFragmentCallback callback, void* callback_data)
 {
     Vector3 p1, p2, p3;
 
@@ -263,13 +263,13 @@ void SoftwareRenderer::pushTriangle(Vector3 v1, Vector3 v2, Vector3 v3, RenderAr
     render_area->pushTriangle(p1, p2, p3, v1, v2, v3, callback, callback_data);
 }
 
-void SoftwareRenderer::pushQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, RenderArea::f_RenderFragmentCallback callback, void* callback_data)
+void SoftwareRenderer::pushQuad(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4, RenderArea::f_RenderFragmentCallback callback, void* callback_data)
 {
     pushTriangle(v2, v3, v1, callback, callback_data);
     pushTriangle(v4, v1, v3, callback, callback_data);
 }
 
-void SoftwareRenderer::pushDisplacedTriangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 ov1, Vector3 ov2, Vector3 ov3, RenderArea::f_RenderFragmentCallback callback, void* callback_data)
+void SoftwareRenderer::pushDisplacedTriangle(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3, RenderArea::f_RenderFragmentCallback callback, void* callback_data)
 {
     Vector3 p1, p2, p3;
 
@@ -280,7 +280,7 @@ void SoftwareRenderer::pushDisplacedTriangle(Vector3 v1, Vector3 v2, Vector3 v3,
     render_area->pushTriangle(p1, p2, p3, ov1, ov2, ov3, callback, callback_data);
 }
 
-void SoftwareRenderer::pushDisplacedQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Vector3 ov1, Vector3 ov2, Vector3 ov3, Vector3 ov4, RenderArea::f_RenderFragmentCallback callback, void* callback_data)
+void SoftwareRenderer::pushDisplacedQuad(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3, const Vector3 &ov4, RenderArea::f_RenderFragmentCallback callback, void* callback_data)
 {
     pushDisplacedTriangle(v2, v3, v1, ov2, ov3, ov1, callback, callback_data);
     pushDisplacedTriangle(v4, v1, v3, ov4, ov1, ov3, callback, callback_data);

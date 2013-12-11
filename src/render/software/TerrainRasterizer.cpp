@@ -16,22 +16,12 @@ TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer):
 
 static inline Vector3 _getPoint(SoftwareRenderer* renderer, double x, double z)
 {
-    Vector3 result;
-
-    result.x = x;
-    result.y = renderer->getTerrainRenderer()->getHeight(x, z, 1);
-    result.z = z;
-
-    return result;
+    return Vector3(x, renderer->getTerrainRenderer()->getHeight(x, z, 1), z);
 }
 
-static Color _postProcessFragment(SoftwareRenderer* renderer, Vector3 point, void*)
+static Color _postProcessFragment(SoftwareRenderer* renderer, const Vector3 &point, void*)
 {
-    double precision;
-
-    point = _getPoint(renderer, point.x, point.z);
-
-    precision = renderer->getPrecision(point);
+    double precision = renderer->getPrecision(_getPoint(renderer, point.x, point.z));
     return renderer->getTerrainRenderer()->getFinalColor(point, precision);
 }
 

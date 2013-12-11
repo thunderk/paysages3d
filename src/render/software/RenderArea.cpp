@@ -36,8 +36,16 @@ typedef struct
 {
     int x;
     int y;
-    Vector3 pixel;
-    Vector3 location;
+    struct {
+        double x;
+        double y;
+        double z;
+    } pixel;
+    struct {
+        double x;
+        double y;
+        double z;
+    } location;
     int callback;
 } ScanPoint;
 
@@ -68,8 +76,8 @@ typedef struct
     RenderArea* area;
 } RenderChunk;
 
-static void _callbackStart(int, int, Color) {}
-static void _callbackDraw(int, int, Color) {}
+static void _callbackStart(int, int, const Color&) {}
+static void _callbackDraw(int, int, const Color&) {}
 static void _callbackUpdate(double) {}
 
 RenderArea::RenderArea(SoftwareRenderer* renderer)
@@ -297,7 +305,7 @@ static inline unsigned int _pushCallback(RenderArea* area, FragmentCallback call
     }
 }
 
-void RenderArea::pushFragment(int x, int y, double z, int edge, Vector3 location, int callback)
+void RenderArea::pushFragment(int x, int y, double z, int edge, const Vector3 &location, int callback)
 {
     RenderFragment* pixel_data;
 
@@ -332,8 +340,10 @@ static void _scanGetDiff(ScanPoint* v1, ScanPoint* v2, ScanPoint* result)
 
 static void _scanInterpolate(CameraDefinition* camera, ScanPoint* v1, ScanPoint* diff, double value, ScanPoint* result)
 {
-    double v1depth = camera->getRealDepth(v1->pixel);
-    double v2depth = camera->getRealDepth(v1->pixel.add(diff->pixel));
+    Vector3 vec1(v1->pixel.x, v1->pixel.y, v1->pixel.z);
+    Vector3 vecdiff(diff->pixel.x, diff->pixel.y, diff->pixel.z);
+    double v1depth = camera->getRealDepth(vec1);
+    double v2depth = camera->getRealDepth(vec1.add(vecdiff));
     double factor = ((1.0 - value) / v1depth + value / v2depth);
 
     result->pixel.x = v1->pixel.x + diff->pixel.x * value;
@@ -507,13 +517,14 @@ static void _renderScanLines(RenderArea* area, RenderScanlines* scanlines)
                 current.y = cury;
                 _scanInterpolate(area->renderer->render_camera, &down, &diff, fy / dy, &current);
 
-                area->pushFragment(current.x, current.y, current.pixel.z, (cury == starty || cury == endy), current.location, current.callback);
+                Vector3 veclocation = Vector3(current.location.x, current.location.y, current.location.z);
+                area->pushFragment(current.x, current.y, current.pixel.z, (cury == starty || cury == endy), veclocation, current.callback);
             }
         }
     }
 }
 
-void RenderArea::pushTriangle(Vector3 pixel1, Vector3 pixel2, Vector3 pixel3, Vector3 location1, Vector3 location2, Vector3 location3, f_RenderFragmentCallback callback, void* callback_data)
+void RenderArea::pushTriangle(const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3, f_RenderFragmentCallback callback, void* callback_data)
 {
     FragmentCallback fragment_callback = {callback, callback_data};
     ScanPoint point1, point2, point3;
@@ -532,15 +543,27 @@ void RenderArea::pushTriangle(Vector3 pixel1, Vector3 pixel2, Vector3 pixel3, Ve
     lock->release();
 
     /* Prepare vertices */
-    point1.pixel = pixel1;
-    point1.location = location1;
+    point1.pixel.x = pixel1.x;
+    point1.pixel.y = pixel1.y;
+    point1.pixel.z = pixel1.z;
+    point1.location.x = location1.x;
+    point1.location.y = location1.y;
+    point1.location.z = location1.z;
 
-    point2.pixel = pixel2;
-    point2.location = location2;
+    point2.pixel.x = pixel2.x;
+    point2.pixel.y = pixel2.y;
+    point2.pixel.z = pixel2.z;
+    point2.location.x = location2.x;
+    point2.location.y = location2.y;
+    point2.location.z = location2.z;
     point2.callback = point1.callback;
 
-    point3.pixel = pixel3;
-    point3.location = location3;
+    point3.pixel.x = pixel3.x;
+    point3.pixel.y = pixel3.y;
+    point3.pixel.z = pixel3.z;
+    point3.location.x = location3.x;
+    point3.location.y = location3.y;
+    point3.location.z = location3.z;
     point3.callback = point1.callback;
 
     /* Prepare scanlines */

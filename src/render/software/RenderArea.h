@@ -22,9 +22,9 @@ public:
         int quality;
     } RenderParams;
 
-    typedef Color (*f_RenderFragmentCallback)(SoftwareRenderer* renderer, Vector3 location, void* data);
-    typedef void (*RenderCallbackStart)(int width, int height, Color background);
-    typedef void (*RenderCallbackDraw)(int x, int y, Color col);
+    typedef Color (*f_RenderFragmentCallback)(SoftwareRenderer* renderer, const Vector3 &location, void* data);
+    typedef void (*RenderCallbackStart)(int width, int height, const Color &background);
+    typedef void (*RenderCallbackDraw)(int x, int y, const Color &col);
     typedef void (*RenderCallbackUpdate)(double progress);
 
 public:
@@ -37,7 +37,7 @@ public:
     void clear();
     void update();
 
-    void pushTriangle(Vector3 pixel1, Vector3 pixel2, Vector3 pixel3, Vector3 location1, Vector3 location2, Vector3 location3, f_RenderFragmentCallback callback, void* callback_data);
+    void pushTriangle(const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3, f_RenderFragmentCallback callback, void* callback_data);
 
     Color getPixel(int x, int y);
 
@@ -47,7 +47,7 @@ public:
 
     void setAllDirty();
     void processDirtyPixels();
-    void pushFragment(int x, int y, double z, int edge, Vector3 location, int callback);
+    void pushFragment(int x, int y, double z, int edge, const Vector3 &location, int callback);
 
 public:
     ColorProfile* hdr_mapping;

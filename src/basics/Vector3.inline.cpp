@@ -14,8 +14,7 @@ METHSPEC Vector3::Vector3(double x, double y, double z):
 {
 }
 
-METHSPEC Vector3::Vector3():
-    x(0.0), y(0.0), z(0.0)
+METHSPEC Vector3::Vector3()
 {
 }
 

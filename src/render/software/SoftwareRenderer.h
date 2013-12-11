@@ -33,16 +33,16 @@ public:
 
     void* customData[10];
 
-    virtual Vector3 getCameraLocation(Vector3 target);
-    virtual Vector3 getCameraDirection(Vector3 target);
-    virtual double getPrecision(Vector3 location);
-    virtual Vector3 projectPoint(Vector3 point);
-    virtual Vector3 unprojectPoint(Vector3 point);
+    virtual Vector3 getCameraLocation(const Vector3 &target);
+    virtual Vector3 getCameraDirection(const Vector3 &target);
+    virtual double getPrecision(const Vector3 &location);
+    virtual Vector3 projectPoint(const Vector3 &point);
+    virtual Vector3 unprojectPoint(const Vector3 &point);
     virtual int addRenderProgress(double progress);
-    virtual void pushTriangle(Vector3 v1, Vector3 v2, Vector3 v3, RenderArea::f_RenderFragmentCallback callback, void* callback_data);
-    virtual void pushQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, RenderArea::f_RenderFragmentCallback callback, void* callback_data);
-    virtual void pushDisplacedTriangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 ov1, Vector3 ov2, Vector3 ov3, RenderArea::f_RenderFragmentCallback callback, void* callback_data);
-    virtual void pushDisplacedQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Vector3 ov1, Vector3 ov2, Vector3 ov3, Vector3 ov4, RenderArea::f_RenderFragmentCallback callback, void* callback_data);
+    virtual void pushTriangle(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, RenderArea::f_RenderFragmentCallback callback, void* callback_data);
+    virtual void pushQuad(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4, RenderArea::f_RenderFragmentCallback callback, void* callback_data);
+    virtual void pushDisplacedTriangle(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3, RenderArea::f_RenderFragmentCallback callback, void* callback_data);
+    virtual void pushDisplacedQuad(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3, const Vector3 &ov4, RenderArea::f_RenderFragmentCallback callback, void* callback_data);
 
     /*!
      * \brief Set the scenery to render.
