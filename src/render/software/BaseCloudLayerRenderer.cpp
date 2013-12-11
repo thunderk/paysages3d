@@ -38,11 +38,11 @@ bool BaseCloudLayerRenderer::optimizeSearchLimits(BaseCloudsModel *model, Vector
         }
         else
         {
-            diff = v3Sub(*end, *start);
-            *start = v3Add(*start, v3Scale(diff, (max_altitude - start->y) / diff.y));
+            diff = end->sub(*start);
+            *start = start->add(diff.scale((max_altitude - start->y) / diff.y));
             if (end->y < min_altitude)
             {
-                *end = v3Add(*end, v3Scale(diff, (min_altitude - end->y) / diff.y));
+                *end = end->add(diff.scale((min_altitude - end->y) / diff.y));
             }
         }
     }
@@ -54,24 +54,24 @@ bool BaseCloudLayerRenderer::optimizeSearchLimits(BaseCloudsModel *model, Vector
         }
         else
         {
-            diff = v3Sub(*end, *start);
-            *start = v3Add(*start, v3Scale(diff, (min_altitude - start->y) / diff.y));
+            diff = end->sub(*start);
+            *start = start->add(diff.scale((min_altitude - start->y) / diff.y));
             if (end->y >= max_altitude)
             {
-                *end = v3Add(*end, v3Scale(diff, (max_altitude - end->y) / diff.y));
+                *end = end->add(diff.scale((max_altitude - end->y) / diff.y));
             }
         }
     }
     else /* start is inside layer */
     {
-        diff = v3Sub(*end, *start);
+        diff = end->sub(*start);
         if (end->y > max_altitude)
         {
-            *end = v3Add(*start, v3Scale(diff, (max_altitude - start->y) / diff.y));
+            *end = start->add(diff.scale((max_altitude - start->y) / diff.y));
         }
         else if (end->y < min_altitude)
         {
-            *end = v3Add(*start, v3Scale(diff, (min_altitude - start->y) / diff.y));
+            *end = start->add(diff.scale((min_altitude - start->y) / diff.y));
         }
     }
 

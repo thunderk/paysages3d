@@ -580,8 +580,8 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
             double dw = dtheta * dphi * sin(theta);
             Vector3 w = vec3(cos(phi) * sin(theta), sin(phi) * sin(theta), ctheta);
 
-            double nu1 = v3Dot(s, w);
-            double nu2 = v3Dot(v, w);
+            double nu1 = s.dotProduct(w);
+            double nu2 = v.dotProduct(w);
             double pr2 = _phaseFunctionR(nu2);
             double pm2 = _phaseFunctionM(nu2);
 
@@ -590,7 +590,7 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
             gnormal.x = dground * w.x / Rg;
             gnormal.y = dground * w.y / Rg;
             gnormal.z = (r + dground * w.z) / Rg;
-            Color girradiance = _irradiance(deltaE, Rg, v3Dot(gnormal, s));
+            Color girradiance = _irradiance(deltaE, Rg, gnormal.dotProduct(s));
 
             Color raymie1; /* light arriving at x from direction w */
 
@@ -695,7 +695,7 @@ void _irradianceNProg(Texture2D* destination, Texture4D* deltaSR, Texture4D* del
                     double theta = ((double)(itheta) + 0.5) * dtheta;
                     double dw = dtheta * dphi * sin(theta);
                     Vector3 w = vec3(cos(phi) * sin(theta), sin(phi) * sin(theta), cos(theta));
-                    double nu = v3Dot(s, w);
+                    double nu = s.dotProduct(w);
                     if (first)
                     {
                         /* first iteration is special because Rayleigh and Mie were stored separately,
@@ -840,8 +840,8 @@ static inline Color _applyInscatter(Color inscatter, Color attmod, Color samp)
 static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, double* _r, double* _mu, Vector3* attenuation)
 {
     Color result;
-    double r = v3Norm(*_x);
-    double mu = v3Dot(*_x, v) / r;
+    double r = _x->getNorm();
+    double mu = _x->dotProduct(v) / r;
     double d = -r * mu - sqrt(r * r * (mu * mu - 1.0) + Rt * Rt);
     attenuation->x = attenuation->y = attenuation->z = 0.0;
     if (d > 0.0)
@@ -860,18 +860,18 @@ static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, d
     if (r <= Rt)
     {
         /* if ray intersects atmosphere */
-        double nu = v3Dot(v, s);
-        double muS = v3Dot(x, s) / r;
+        double nu = v.dotProduct(s);
+        double muS = x.dotProduct(s) / r;
         double phaseR = _phaseFunctionR(nu);
         double phaseM = _phaseFunctionM(nu);
         Color inscatter = vec4max(_texture4D(_inscatterTexture, r, mu, muS, nu), 0.0);
         if (t > 0.0)
         {
-            Vector3 x0 = v3Add(x, v3Scale(v, t));
-            double r0 = v3Norm(x0);
-            double rMu0 = v3Dot(x0, v);
+            Vector3 x0 = x.add(v.scale(t));
+            double r0 = x0.getNorm();
+            double rMu0 = x0.dotProduct(v);
             double mu0 = rMu0 / r0;
-            double muS0 = v3Dot(x0, s) / r0;
+            double muS0 = x0.dotProduct(s) / r0;
             /* avoids imprecision problems in transmittance computations based on textures */
             *attenuation = _analyticTransmittance(r, mu, t);
             if (r0 > Rg + 0.001)
@@ -935,7 +935,7 @@ static Color _sunColor(Vector3 v, Vector3 s, double r, double mu, double radius)
     Color transmittance = r <= Rt ? _transmittanceWithShadow(r, mu) : COLOR_WHITE; /* T(x,xo) */
     double d = _limit(r, mu);
     radius *= (1.0 + 10.0 * d / Rt); /* Inflating due to lens effect near horizon */
-    double isun = step(cos(radius * M_PI / 180.0), v3Dot(v, s)) * ISun; /* Lsun */
+    double isun = step(cos(radius * M_PI / 180.0), v.dotProduct(s)) * ISun; /* Lsun */
     transmittance.r *= isun;
     transmittance.g *= isun;
     transmittance.b *= isun;
@@ -1163,11 +1163,11 @@ AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3
         eye.y = 0.0;
     }
     Vector3 x = {0.0, Rg + eye.y * WORLD_SCALING, 0.0};
-    Vector3 v = v3Normalize(direction);
-    Vector3 s = v3Normalize(v3Sub(sun_position, x));
+    Vector3 v = direction.normalize();
+    Vector3 s = sun_position.sub(x).normalize();
 
-    double r = v3Norm(x);
-    double mu = v3Dot(x, v) / r;
+    double r = x.getNorm();
+    double mu = x.dotProduct(v) / r;
     double t = -r * mu - sqrt(r * r * (mu * mu - 1.0) + Rg * Rg);
 
     AtmosphereResult result;
@@ -1190,7 +1190,7 @@ AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3
 AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 location, const Color &base)
 {
     Vector3 eye = parent->getCameraLocation(location);
-    Vector3 sun_position = v3Scale(parent->getAtmosphereRenderer()->getSunDirection(), SUN_DISTANCE);
+    Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(SUN_DISTANCE);
 
     double yoffset = GROUND_OFFSET - parent->getWaterRenderer()->getHeightInfo().base_height;
     eye.y += yoffset;
@@ -1203,20 +1203,20 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
     {
         location.y = 0.0;
     }
-    Vector3 direction = v3Scale(v3Sub(location, eye), WORLD_SCALING);
+    Vector3 direction = location.sub(eye).scale(WORLD_SCALING);
 
     Vector3 x = {0.0, Rg + eye.y * WORLD_SCALING, 0.0};
-    Vector3 v = v3Normalize(direction);
-    Vector3 s = v3Normalize(v3Sub(sun_position, x));
+    Vector3 v = direction.normalize();
+    Vector3 s = sun_position.sub(x).normalize();
 
     if (v.y == 0.0)
     {
         v.y = -0.000001;
     }
 
-    double r = v3Norm(x);
-    double mu = v3Dot(x, v) / r;
-    double t = v3Norm(direction);
+    double r = x.getNorm();
+    double mu = x.dotProduct(v) / r;
+    double t = direction.getNorm();
 
     AtmosphereResult result;
     Vector3 attenuation;
@@ -1249,13 +1249,13 @@ void AtmosphereModelBruneton::fillLightingStatus(LightStatus *status, const Vect
 
     double r0 = Rg + altitude * WORLD_SCALING;
     Vector3 up = {0.0, 1.0, 0.0};
-    Vector3 sun_position = v3Scale(parent->getAtmosphereRenderer()->getSunDirection(), SUN_DISTANCE);
+    Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(SUN_DISTANCE);
     Vector3 x = {0.0, r0, 0.0};
-    Vector3 s = v3Normalize(v3Sub(sun_position, x));
+    Vector3 s = sun_position.sub(x).normalize();
 
-    muS = v3Dot(up, s);
+    muS = up.dotProduct(s);
     sun.color = _transmittanceWithShadow(r0, muS);
-    sun.direction = v3Scale(s, -1.0);
+    sun.direction = s.scale(-1.0);
     sun.reflection = ISun;
     sun.altered = 1;
 

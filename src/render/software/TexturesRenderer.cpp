@@ -66,23 +66,23 @@ static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, V
     /* TODO This is duplicated in terrain/main.c */
     Vector3 dnorth, deast, dsouth, dwest, normal;
 
-    dnorth = v3Sub(north, center);
-    deast = v3Sub(east, center);
-    dsouth = v3Sub(south, center);
-    dwest = v3Sub(west, center);
+    dnorth = north.sub(center);
+    deast = east.sub(center);
+    dsouth = south.sub(center);
+    dwest = west.sub(center);
 
-    normal = v3Cross(deast, dnorth);
-    normal = v3Add(normal, v3Cross(dsouth, deast));
-    normal = v3Add(normal, v3Cross(dwest, dsouth));
-    normal = v3Add(normal, v3Cross(dnorth, dwest));
+    normal = deast.crossProduct(dnorth);
+    normal = normal.add(dsouth.crossProduct(deast));
+    normal = normal.add(dwest.crossProduct(dsouth));
+    normal = normal.add(dnorth.crossProduct(dwest));
 
-    return v3Normalize(normal);
+    return normal.normalize();
 }
 
 static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south)
 {
     /* TODO This is duplicated in terrain/main.c */
-    return v3Normalize(v3Cross(v3Sub(south, center), v3Sub(east, center)));
+    return south.sub(center).crossProduct(east.sub(center)).normalize();
 }
 
 static Vector3 _getDetailNormal(SoftwareRenderer* renderer, Vector3 base_location, Vector3 base_normal, TextureLayerDefinition* layer)
@@ -102,27 +102,27 @@ static Vector3 _getDetailNormal(SoftwareRenderer* renderer, Vector3 base_locatio
     {
         pivot = VECTOR_UP;
     }
-    dx = v3Normalize(v3Cross(base_normal, pivot));
-    dy = v3Cross(base_normal, dx);
+    dx = base_normal.crossProduct(pivot).normalize();
+    dy = base_normal.crossProduct(dx);
 
     /* Apply detail noise locally */
     Vector3 center, north, east, south, west;
 
-    center = v3Add(base_location, v3Scale(base_normal, textures->getTriplanarNoise(layer->_detail_noise, base_location, base_normal)));
+    center = base_location.add(base_normal.scale(textures->getTriplanarNoise(layer->_detail_noise, base_location, base_normal)));
 
-    east = v3Add(base_location, v3Scale(dx, offset));
-    east = v3Add(east, v3Scale(base_normal, textures->getTriplanarNoise(layer->_detail_noise, east, base_normal)));
+    east = base_location.add(dx.scale(offset));
+    east = east.add(base_normal.scale(textures->getTriplanarNoise(layer->_detail_noise, east, base_normal)));
 
-    south = v3Add(base_location, v3Scale(dy, offset));
-    south = v3Add(south, v3Scale(base_normal, textures->getTriplanarNoise(layer->_detail_noise, south, base_normal)));
+    south = base_location.add(dy.scale(offset));
+    south = south.add(base_normal.scale(textures->getTriplanarNoise(layer->_detail_noise, south, base_normal)));
 
     if (renderer->render_quality > 6)
     {
-        west = v3Add(base_location, v3Scale(dx, -offset));
-        west = v3Add(west, v3Scale(base_normal, textures->getTriplanarNoise(layer->_detail_noise, west, base_normal)));
+        west = base_location.add(dx.scale(-offset));
+        west = west.add(base_normal.scale(textures->getTriplanarNoise(layer->_detail_noise, west, base_normal)));
 
-        north = v3Add(base_location, v3Scale(dy, -offset));
-        north = v3Add(north, v3Scale(base_normal, textures->getTriplanarNoise(layer->_detail_noise, north, base_normal)));
+        north = base_location.add(dy.scale(-offset));
+        north = north.add(base_normal.scale(textures->getTriplanarNoise(layer->_detail_noise, north, base_normal)));
 
         result = _getNormal4(center, north, east, south, west);
     }
@@ -131,9 +131,9 @@ static Vector3 _getDetailNormal(SoftwareRenderer* renderer, Vector3 base_locatio
         result = _getNormal2(center, east, south);
     }
 
-    if (v3Dot(result, base_normal) < 0.0)
+    if (result.dotProduct(base_normal) < 0.0)
     {
-        result = v3Scale(result, -1.0);
+        result = result.scale(-1.0);
     }
     return result;
 }
@@ -157,7 +157,7 @@ Vector3 TexturesRenderer::displaceTerrain(const TerrainRenderer::TerrainResult &
         }
     }
 
-    return v3Add(terrain.location, v3Scale(v3Normalize(terrain.normal), offset));
+    return terrain.location.add(terrain.normal.normalize().scale(offset));
 }
 
 double TexturesRenderer::getBasePresence(int layer, const TerrainRenderer::TerrainResult &terrain)

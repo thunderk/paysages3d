@@ -48,9 +48,9 @@ Color LightingManager::applyFinalComponent(const LightComponent &component, cons
     Vector3 direction_inv;
 
     light_color = component.color;
-    direction_inv = v3Scale(v3Normalize(component.direction), -1.0);
+    direction_inv = component.direction.normalize().scale(-1.0);
 
-    normal_norm = v3Norm(normal);
+    normal_norm = normal.getNorm();
     if (normal_norm > 1.0)
     {
         normal_norm = 1.0;
@@ -59,7 +59,7 @@ Color LightingManager::applyFinalComponent(const LightComponent &component, cons
     result = COLOR_BLACK;
 
     /* diffused light */
-    double diffuse = v3Dot(direction_inv, normal.normalize());
+    double diffuse = direction_inv.dotProduct(normal.normalize());
     diffuse = (diffuse + (1.0 - normal_norm)) / (1.0 + (1.0 - normal_norm));
     if (diffuse > 0.0)
     {
@@ -71,9 +71,9 @@ Color LightingManager::applyFinalComponent(const LightComponent &component, cons
     /* specular reflection */
     if (material.reflection > 0.0 && component.reflection > 0.0)
     {
-        Vector3 view = v3Normalize(v3Sub(location, eye));
-        Vector3 reflect = v3Sub(direction_inv, v3Scale(normal, 2.0 * v3Dot(direction_inv, normal)));
-        double specular = v3Dot(reflect, view);
+        Vector3 view = location.sub(eye).normalize();
+        Vector3 reflect = direction_inv.sub(normal.scale(2.0 * direction_inv.dotProduct(normal)));
+        double specular = reflect.dotProduct(view);
         if (specular > 0.0)
         {
             specular = pow(specular, material.shininess) * material.reflection * component.reflection * normal_norm;

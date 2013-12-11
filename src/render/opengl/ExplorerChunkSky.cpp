@@ -139,7 +139,7 @@ Color ExplorerChunkSky::getTextureColor(double x, double y)
         location.z = y;
         break;
     }
-    location = v3Normalize(location);
+    location = location.normalize();
     if (location.y < 0.0)
     {
         location.y = 0.0;

@@ -209,7 +209,7 @@ RayCastingResult SoftwareRenderer::rayWalking(const Vector3 &location, const Vec
         sky_color = atmosphere_renderer->getSkyColor(direction).final;
 
         result.hit = 1;
-        result.hit_location = v3Add(location, v3Scale(direction, 1000.0));
+        result.hit_location = location.add(direction.scale(1000.0));
         result.hit_color = clouds_renderer->getColor(location, result.hit_location, sky_color);
     }
 
@@ -239,7 +239,7 @@ double SoftwareRenderer::getPrecision(Vector3 location)
     projected.x += 1.0;
     //projected.y += 1.0;
 
-    return v3Norm(v3Sub(render_camera->unproject(projected), location)); // / (double)render_quality;
+    return render_camera->unproject(projected).sub(location).getNorm(); // / (double)render_quality;
 }
 
 Vector3 SoftwareRenderer::projectPoint(Vector3 point)

@@ -64,11 +64,11 @@ static inline int _rayIntersectsTriangle(Vector3 p, Vector3 d, Vector3 v0, Vecto
     Vector3 e1, e2, h, s, q;
     double a, f, u, v, t;
 
-    e1 = v3Sub(v1, v0);
-    e2 = v3Sub(v2, v0);
+    e1 = v1.sub(v0);
+    e2 = v2.sub(v0);
 
-    h = v3Cross(d, e2);
-    a = v3Dot(e1, h);
+    h = d.crossProduct(e2);
+    a = e1.dotProduct(h);
 
     if (a > -0.00001 && a < 0.00001)
     {
@@ -76,27 +76,27 @@ static inline int _rayIntersectsTriangle(Vector3 p, Vector3 d, Vector3 v0, Vecto
     }
 
     f = 1.0 / a;
-    s = v3Sub(p, v0);
-    u = f * v3Dot(s, h);
+    s = p.sub(v0);
+    u = f * s.dotProduct(h);
 
     if (u < 0.0 || u > 1.0)
     {
         return 0;
     }
 
-    q = v3Cross(s, e1);
-    v = f * v3Dot(d, q);
+    q = s.crossProduct(e1);
+    v = f * d.dotProduct(q);
 
     if (v < 0.0 || u + v > 1.0)
     {
         return 0;
     }
 
-    t = f * v3Dot(e2, q);
+    t = f * e2.dotProduct(q);
 
     if (t > 0.00001)
     {
-        *hit = v3Add(p, v3Scale(d, t));
+        *hit = p.add(d.scale(t));
         return 1;
     }
     else

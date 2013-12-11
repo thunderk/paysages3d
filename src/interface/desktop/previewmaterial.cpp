@@ -20,7 +20,7 @@ MaterialPreviewRenderer::MaterialPreviewRenderer(SurfaceMaterial* material)
     _light->direction.x = -0.5;
     _light->direction.y = -0.5;
     _light->direction.z = -0.5;
-    _light->direction = v3Normalize(_light->direction);
+    _light->direction = _light->direction.normalize();
     _light->altered = 0;
     _light->reflection = 1.0;
 
@@ -66,7 +66,7 @@ Color MaterialPreviewRenderer::getColor2D(double x, double y, double)
             point.z = fabs(acos(dist));
         }
 
-        point = v3Normalize(point);
+        point = point.normalize();
         color = getLightingManager()->applyFinalComponent(*_light, getCameraLocation(point), point, point, *_material);
         if (dist > 0.95)
         {

@@ -68,7 +68,7 @@ TEST(Euclid, VectorSpherical)
     v1.x = 0.0;
     v1.y = 0.0;
     v1.z = 0.0;
-    v2 = v3ToSpherical(v1);
+    v2 = v1.toSpherical();
     EXPECT_DOUBLE_EQ(v2.r, 0.0);
     EXPECT_DOUBLE_EQ(v2.phi, 0.0);
     EXPECT_DOUBLE_EQ(v2.theta, 0.0);
@@ -76,7 +76,7 @@ TEST(Euclid, VectorSpherical)
     v1.x = 1.0;
     v1.y = 0.0;
     v1.z = 0.0;
-    v2 = v3ToSpherical(v1);
+    v2 = v1.toSpherical();
     EXPECT_DOUBLE_EQ(v2.r, 1.0);
     EXPECT_DOUBLE_EQ(v2.phi, 0.0);
     EXPECT_DOUBLE_EQ(v2.theta, 0.0);
@@ -84,7 +84,7 @@ TEST(Euclid, VectorSpherical)
     v1.x = -1.0;
     v1.y = 0.0;
     v1.z = 0.0;
-    v2 = v3ToSpherical(v1);
+    v2 = v1.toSpherical();
     EXPECT_DOUBLE_EQ(v2.r, 1.0);
     EXPECT_DOUBLE_EQ(v2.phi, M_PI);
     EXPECT_DOUBLE_EQ(v2.theta, 0.0);
@@ -92,7 +92,7 @@ TEST(Euclid, VectorSpherical)
     v1.x = 0.0;
     v1.y = 1.0;
     v1.z = 0.0;
-    v2 = v3ToSpherical(v1);
+    v2 = v1.toSpherical();
     EXPECT_DOUBLE_EQ(v2.r, 1.0);
     EXPECT_DOUBLE_EQ(v2.phi, 0.0);
     EXPECT_DOUBLE_EQ(v2.theta, M_PI_2);
@@ -100,7 +100,7 @@ TEST(Euclid, VectorSpherical)
     v1.x = 0.0;
     v1.y = -1.0;
     v1.z = 0.0;
-    v2 = v3ToSpherical(v1);
+    v2 = v1.toSpherical();
     EXPECT_DOUBLE_EQ(v2.r, 1.0);
     EXPECT_DOUBLE_EQ(v2.phi, 0.0);
     EXPECT_DOUBLE_EQ(v2.theta, -M_PI_2);
@@ -108,7 +108,7 @@ TEST(Euclid, VectorSpherical)
     v1.x = 0.0;
     v1.y = 0.0;
     v1.z = 1.0;
-    v2 = v3ToSpherical(v1);
+    v2 = v1.toSpherical();
     EXPECT_DOUBLE_EQ(v2.r, 1.0);
     EXPECT_DOUBLE_EQ(v2.phi, 3.0 * M_PI_2);
     EXPECT_DOUBLE_EQ(v2.theta, 0.0);
@@ -116,13 +116,13 @@ TEST(Euclid, VectorSpherical)
     v1.x = 0.0;
     v1.y = 0.0;
     v1.z = -1.0;
-    v2 = v3ToSpherical(v1);
+    v2 = v1.toSpherical();
     EXPECT_DOUBLE_EQ(v2.r, 1.0);
     EXPECT_DOUBLE_EQ(v2.phi, M_PI_2);
     EXPECT_DOUBLE_EQ(v2.theta, 0.0);
 
     v1.x = v1.y = v1.z = 0.5;
-    v2 = v3ToSpherical(v1);
+    v2 = v1.toSpherical();
     EXPECT_DOUBLE_EQ(v2.r, sqrt(0.5 * 0.5 + 0.5 * 0.5 + 0.5 * 0.5));
     EXPECT_DOUBLE_EQ(v2.phi, 7.0 * M_PI_4);
     EXPECT_DOUBLE_EQ(v2.theta, M_PI_2 - 0.955316618125);

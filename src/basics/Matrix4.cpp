@@ -228,9 +228,9 @@ Matrix4 Matrix4::newRotateTripleAxis(const Vector3 &x, const Vector3 &y, const V
 
 Matrix4 Matrix4::newLookAt(const Vector3 &eye, const Vector3 &at, const Vector3 &up)
 {
-    Vector3 z = v3Normalize(v3Sub(at, eye));
-    Vector3 x = v3Normalize(v3Cross(up, z));
-    Vector3 y = v3Cross(z, x);
+    Vector3 z = at.sub(eye).normalize();
+    Vector3 x = up.crossProduct(z).normalize();
+    Vector3 y = z.crossProduct(x);
     Matrix4 result = Matrix4::newRotateTripleAxis(x, y, z);
     result.d = eye.x;
     result.h = eye.y;

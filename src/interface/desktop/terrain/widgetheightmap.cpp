@@ -564,10 +564,10 @@ void WidgetHeightMap::updateVertexInfo()
             {
                 Vector3 dx, dz;
 
-                dx = v3Sub((vertex + 1)->point, vertex->point);
-                dz = v3Sub((vertex + rx)->point, vertex->point);
+                dx = (vertex + 1)->point.sub(vertex->point);
+                dz = (vertex + rx)->point.sub(vertex->point);
 
-                vertex->normal = v3Cross(v3Normalize(dz), v3Normalize(dx));
+                vertex->normal = dz.normalize().crossProduct(dx.normalize());
             }
         }
     }

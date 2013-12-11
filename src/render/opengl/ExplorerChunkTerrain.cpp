@@ -111,7 +111,7 @@ void ExplorerChunkTerrain::onCameraEvent(CameraDefinition* camera)
         askReset();
     }
 
-    _distance_to_camera = v3Norm(v3Sub(getCenter(), camera_location));
+    _distance_to_camera = getCenter().sub(camera_location).getNorm();
 
     _lock_data.unlock();
 }

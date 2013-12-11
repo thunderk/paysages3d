@@ -222,8 +222,8 @@ bool CameraDefinition::isBoxInView(const Vector3 &center, double xsize, double y
 {
     BoundingBox box;
 
-    box.pushPoint(v3Add(center, v3(-xsize, -ysize, -zsize)));
-    box.pushPoint(v3Add(center, v3(xsize, ysize, zsize)));
+    box.pushPoint(center.add(Vector3(-xsize, -ysize, -zsize)));
+    box.pushPoint(center.add(Vector3(xsize, ysize, zsize)));
 
     return isUnprojectedBoxInView(box);
 }

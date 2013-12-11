@@ -76,12 +76,12 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
     walker = start;
     noise_distance = _getDistanceToBorder(model, start) * render_precision;
     inside = (noise_distance > 0.0) ? 1 : 0;
-    step = v3Scale(direction, render_precision);
+    step = direction.scale(render_precision);
 
     do
     {
-        walker = v3Add(walker, step);
-        step_length = v3Norm(step);
+        walker = walker.add(step);
+        step_length = step.getNorm();
         last_noise_distance = noise_distance;
         noise_distance = _getDistanceToBorder(model, walker) * render_precision;
         current_total_length += step_length;
@@ -93,16 +93,16 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
                 // inside the cloud
                 segment_length += step_length;
                 current_inside_length += step_length;
-                step = v3Scale(direction, (noise_distance < render_precision) ? render_precision : noise_distance);
+                step = direction.scale((noise_distance < render_precision) ? render_precision : noise_distance);
             }
             else
             {
                 // entering the cloud
                 inside = 1;
                 segment_length = step_length * noise_distance / (noise_distance - last_noise_distance);
-                segment_start = v3Add(walker, v3Scale(direction, -segment_length));
+                segment_start = walker.add(direction.scale(-segment_length));
                 current_inside_length += segment_length;
-                step = v3Scale(direction, render_precision);
+                step = direction.scale(render_precision);
             }
         }
         else
@@ -115,7 +115,7 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
                 current_inside_length += remaining_length;
 
                 out_segments->start = segment_start;
-                out_segments->end = v3Add(walker, v3Scale(direction, remaining_length - step_length));
+                out_segments->end = walker.add(direction.scale(remaining_length - step_length));
                 out_segments->length = segment_length;
                 out_segments++;
                 if (++segment_count >= max_segments)
@@ -124,12 +124,12 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
                 }
 
                 inside = 0;
-                step = v3Scale(direction, render_precision);
+                step = direction.scale(render_precision);
             }
             else
             {
                 // searching for a cloud
-                step = v3Scale(direction, (noise_distance > -render_precision) ? render_precision : -noise_distance);
+                step = direction.scale((noise_distance > -render_precision) ? render_precision : -noise_distance);
             }
         }
     } while (inside || (walker.y >= layer->altitude - 0.001 && walker.y <= (layer->altitude + layer->scaling) + 0.001 && current_total_length < max_total_length && current_inside_length < max_inside_length));

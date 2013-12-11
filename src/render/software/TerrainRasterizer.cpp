@@ -107,14 +107,14 @@ static void _getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChun
     BoundingBox box;
     if (displacement_power > 0.0)
     {
-        box.pushPoint(v3Add(chunk->point_nw, v3(-displacement_power, displacement_power, -displacement_power)));
-        box.pushPoint(v3Add(chunk->point_nw, v3(-displacement_power, -displacement_power, -displacement_power)));
-        box.pushPoint(v3Add(chunk->point_sw, v3(-displacement_power, displacement_power, displacement_power)));
-        box.pushPoint(v3Add(chunk->point_sw, v3(-displacement_power, -displacement_power, displacement_power)));
-        box.pushPoint(v3Add(chunk->point_se, v3(displacement_power, displacement_power, displacement_power)));
-        box.pushPoint(v3Add(chunk->point_se, v3(displacement_power, -displacement_power, displacement_power)));
-        box.pushPoint(v3Add(chunk->point_ne, v3(displacement_power, displacement_power, -displacement_power)));
-        box.pushPoint(v3Add(chunk->point_ne, v3(displacement_power, -displacement_power, -displacement_power)));
+        box.pushPoint(chunk->point_nw.add(Vector3(-displacement_power, displacement_power, -displacement_power)));
+        box.pushPoint(chunk->point_nw.add(Vector3(-displacement_power, -displacement_power, -displacement_power)));
+        box.pushPoint(chunk->point_sw.add(Vector3(-displacement_power, displacement_power, displacement_power)));
+        box.pushPoint(chunk->point_sw.add(Vector3(-displacement_power, -displacement_power, displacement_power)));
+        box.pushPoint(chunk->point_se.add(Vector3(displacement_power, displacement_power, displacement_power)));
+        box.pushPoint(chunk->point_se.add(Vector3(displacement_power, -displacement_power, displacement_power)));
+        box.pushPoint(chunk->point_ne.add(Vector3(displacement_power, displacement_power, -displacement_power)));
+        box.pushPoint(chunk->point_ne.add(Vector3(displacement_power, -displacement_power, -displacement_power)));
     }
     else
     {

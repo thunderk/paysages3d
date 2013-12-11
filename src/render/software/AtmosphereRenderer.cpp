@@ -173,8 +173,8 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
     camera_location = parent->getCameraLocation(VECTOR_ZERO);
 
     sun_direction = getSunDirection();
-    direction = v3Normalize(direction);
-    sun_position = v3Scale(sun_direction, SUN_DISTANCE_SCALED);
+    direction = direction.normalize();
+    sun_position = sun_direction.scale(SUN_DISTANCE_SCALED);
 
     /* Get sun shape */
     base = COLOR_BLACK;
@@ -206,7 +206,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
 
     /* Get scattering */
     AtmosphereResult result;
-    Vector3 location = v3Add(camera_location, v3Scale(direction, 6421.0));
+    Vector3 location = camera_location.add(direction.scale(6421.0));
     switch (definition->model)
     {
     case AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON:

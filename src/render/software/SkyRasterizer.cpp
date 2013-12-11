@@ -20,11 +20,11 @@ static Color _postProcessFragment(SoftwareRenderer* renderer, Vector3 location, 
     Color result;
 
     camera_location = renderer->getCameraLocation(location);
-    direction = v3Sub(location, camera_location);
+    direction = location.sub(camera_location);
 
     /* TODO Don't compute result->color if it's fully covered by clouds */
-    result = renderer->getAtmosphereRenderer()->getSkyColor(v3Normalize(direction)).final;
-    result = renderer->getCloudsRenderer()->getColor(camera_location, v3Add(camera_location, v3Scale(direction, 10.0)), result);
+    result = renderer->getAtmosphereRenderer()->getSkyColor(direction.normalize()).final;
+    result = renderer->getCloudsRenderer()->getColor(camera_location, camera_location.add(direction.scale(10.0)), result);
 
     return result;
 }
@@ -61,22 +61,22 @@ void SkyRasterizer::rasterize()
             direction.x = SPHERE_SIZE * cos(current_i) * cos(current_j);
             direction.y = SPHERE_SIZE * sin(current_j);
             direction.z = SPHERE_SIZE * sin(current_i) * cos(current_j);
-            vertex1 = v3Add(camera_location, direction);
+            vertex1 = camera_location.add(direction);
 
             direction.x = SPHERE_SIZE * cos(current_i + step_i) * cos(current_j);
             direction.y = SPHERE_SIZE * sin(current_j);
             direction.z = SPHERE_SIZE * sin(current_i + step_i) * cos(current_j);
-            vertex2 = v3Add(camera_location, direction);
+            vertex2 = camera_location.add(direction);
 
             direction.x = SPHERE_SIZE * cos(current_i + step_i) * cos(current_j + step_j);
             direction.y = SPHERE_SIZE * sin(current_j + step_j);
             direction.z = SPHERE_SIZE * sin(current_i + step_i) * cos(current_j + step_j);
-            vertex3 = v3Add(camera_location, direction);
+            vertex3 = camera_location.add(direction);
 
             direction.x = SPHERE_SIZE * cos(current_i) * cos(current_j + step_j);
             direction.y = SPHERE_SIZE * sin(current_j + step_j);
             direction.z = SPHERE_SIZE * sin(current_i) * cos(current_j + step_j);
-            vertex4 = v3Add(camera_location, direction);
+            vertex4 = camera_location.add(direction);
 
             /* TODO Triangles at poles */
             renderer->pushQuad(vertex1, vertex4, vertex3, vertex2, _postProcessFragment, NULL);

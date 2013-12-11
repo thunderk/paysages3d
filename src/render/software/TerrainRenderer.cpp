@@ -24,22 +24,22 @@ static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, V
 {
     Vector3 dnorth, deast, dsouth, dwest, normal;
 
-    dnorth = v3Sub(north, center);
-    deast = v3Sub(east, center);
-    dsouth = v3Sub(south, center);
-    dwest = v3Sub(west, center);
+    dnorth = north.sub(center);
+    deast = east.sub(center);
+    dsouth = south.sub(center);
+    dwest = west.sub(center);
 
-    normal = v3Cross(deast, dnorth);
-    normal = v3Add(normal, v3Cross(dsouth, deast));
-    normal = v3Add(normal, v3Cross(dwest, dsouth));
-    normal = v3Add(normal, v3Cross(dnorth, dwest));
+    normal = deast.crossProduct(dnorth);
+    normal = normal.add(dsouth.crossProduct(deast));
+    normal = normal.add(dwest.crossProduct(dsouth));
+    normal = normal.add(dnorth.crossProduct(dwest));
 
-    return v3Normalize(normal);
+    return normal.normalize();
 }
 
 static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south)
 {
-    return v3Normalize(v3Cross(v3Sub(south, center), v3Sub(east, center)));
+    return south.sub(center).crossProduct(east.sub(center)).normalize();
 }
 
 TerrainRenderer::TerrainResult TerrainRenderer::getResult(double x, double z, int with_painting, int with_textures)
@@ -140,16 +140,16 @@ RayCastingResult TerrainRenderer::castRay(const Vector3 &start, const Vector3 &d
     length = 0.0;
     do
     {
-        inc_vector = v3Scale(direction_norm, inc_value);
-        length += v3Norm(inc_vector);
-        cursor = v3Add(cursor, inc_vector);
+        inc_vector = direction_norm.scale(inc_value);
+        length += inc_vector.getNorm();
+        cursor = cursor.add(inc_vector);
         height = getHeight(cursor.x, cursor.z, 1);
         diff = cursor.y - height;
         if (diff < 0.0)
         {
             if (fabs(diff - lastdiff) > 0.00001)
             {
-                cursor = v3Add(cursor, v3Scale(inc_vector, -diff / (diff - lastdiff)));
+                cursor = cursor.add(inc_vector.scale(-diff / (diff - lastdiff)));
                 cursor.y = getHeight(cursor.x, cursor.z, 1);
             }
             else
@@ -188,7 +188,7 @@ int TerrainRenderer::alterLight(LightComponent *light, const Vector3 &location)
     Vector3 inc_vector, direction_to_light, cursor;
     double inc_value, inc_base, inc_factor, height, diff, light_factor, smoothing, length;
 
-    direction_to_light = v3Scale(light->direction, -1.0);
+    direction_to_light = light->direction.scale(-1.0);
     if (direction_to_light.y < -0.05)
     {
         light->color = COLOR_BLACK;
@@ -212,16 +212,16 @@ int TerrainRenderer::alterLight(LightComponent *light, const Vector3 &location)
     diff = 0.0;
     do
     {
-        inc_vector = v3Scale(direction_to_light, inc_value);
-        length += v3Norm(inc_vector);
-        cursor = v3Add(cursor, inc_vector);
+        inc_vector = direction_to_light.scale(inc_value);
+        length += inc_vector.getNorm();
+        cursor = cursor.add(inc_vector);
         height = parent->getTerrainRenderer()->getResult(location.x, location.z, 1, 1).location.y;
         diff = location.y - height;
         if (diff < 0.0)
         {
             if (length * smoothing > 0.000001)
             {
-                light_factor += diff * v3Norm(inc_vector) / (length * smoothing);
+                light_factor += diff * inc_vector.getNorm() / (length * smoothing);
             }
             else
             {

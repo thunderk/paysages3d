@@ -49,7 +49,7 @@ TEST(Render, quad)
     renderer.render_area->setBackgroundColor(COLOR_BLUE);
     renderer.render_area->clear();
 
-    renderer.pushQuad(v3(-1.0, 0.0, 1.0), v3(-1.0, 0.0, -1.0), v3(1.0, 0.0, -1.0), v3(1.0, 0.0, 1.0), _postProcessFragment, NULL);
+    renderer.pushQuad(Vector3(-1.0, 0.0, 1.0), Vector3(-1.0, 0.0, -1.0), Vector3(1.0, 0.0, -1.0), Vector3(1.0, 0.0, 1.0), _postProcessFragment, NULL);
     renderer.render_area->postProcess(System::getCoreCount());
 
     col = renderer.render_area->getPixel(399, 599 - 435);

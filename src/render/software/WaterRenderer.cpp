@@ -33,22 +33,22 @@ static inline Vector3 _getNormal(WaterDefinition* definition, double base_height
     back.x = x;
     back.y = _getHeight(definition, base_height, x, z + detail);
     back.z = z + detail;
-    back = v3Sub(back, base);
+    back = back.sub(base);
 
     right.x = x + detail;
     right.y = _getHeight(definition, base_height, x + detail, z);
     right.z = z;
-    right = v3Sub(right, base);
+    right = right.sub(base);
 
-    return v3Normalize(v3Cross(back, right));
+    return back.crossProduct(right).normalize();
 }
 
 static inline Vector3 _reflectRay(Vector3 incoming, Vector3 normal)
 {
     double c;
 
-    c = v3Dot(normal, v3Scale(incoming, -1.0));
-    return v3Add(incoming, v3Scale(normal, 2.0 * c));
+    c = normal.dotProduct(incoming.scale(-1.0));
+    return incoming.add(normal.scale(2.0 * c));
 }
 
 static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal)
@@ -56,15 +56,15 @@ static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal)
     double c1, c2, f;
 
     f = 1.0 / 1.33;
-    c1 = v3Dot(normal, v3Scale(incoming, -1.0));
+    c1 = normal.dotProduct(incoming.scale(-1.0));
     c2 = sqrt(1.0 - pow(f, 2.0) * (1.0 - pow(c1, 2.0)));
     if (c1 >= 0.0)
     {
-        return v3Add(v3Scale(incoming, f), v3Scale(normal, f * c1 - c2));
+        return incoming.scale(f).add(normal.scale(f * c1 - c2));
     }
     else
     {
-        return v3Add(v3Scale(incoming, f), v3Scale(normal, c2 - f * c1));
+        return incoming.scale(f).add(normal.scale(c2 - f * c1));
     }
 }
 
@@ -79,26 +79,26 @@ static inline Color _getFoamMask(SoftwareRenderer* renderer, WaterDefinition* de
 
     foam_factor = 0.0;
     location.x += location_offset;
-    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, base_height, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, base_height, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.x -= location_offset * 2.0;
-    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, base_height, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, base_height, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.x += location_offset;
     location.z -= location_offset;
-    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, base_height, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, base_height, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.z += location_offset * 2.0;
-    normal_diff = 1.0 - v3Dot(normal, _getNormal(definition, base_height, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, base_height, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
@@ -214,7 +214,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     }
 
     normal = _getNormal(definition, base_height, location, detail);
-    look_direction = v3Normalize(v3Sub(location, parent->getCameraLocation(location)));
+    look_direction = location.sub(parent->getCameraLocation(location)).normalize();
 
     /* Reflection */
     if (definition->reflection == 0.0)
@@ -235,7 +235,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     {
         Color depth_color = *definition->depth_color;
         refracted = parent->rayWalking(location, _refractRay(look_direction, normal), 1, 0, 1, 1);
-        depth = v3Norm(v3Sub(location, refracted.hit_location));
+        depth = location.sub(refracted.hit_location).getNorm();
         depth_color.limitPower(refracted.hit_color.getPower());
         if (depth > definition->transparency_depth)
         {
