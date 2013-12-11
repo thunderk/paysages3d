@@ -1,6 +1,6 @@
 BUILDMODE=release
 BUILDPATH=./build/${BUILDMODE}
-LIBRARY_PATH=${BUILDPATH}/rendering:${BUILDPATH}/exploring:${BUILDPATH}/system:${BUILDPATH}/basics:${BUILDPATH}/definition:${BUILDPATH}/render/opengl:${BUILDPATH}/render/software:${BUILDPATH}/render/preview:${BUILDPATH}/tests/googletest
+LIBRARY_PATH=${BUILDPATH}/system:${BUILDPATH}/basics:${BUILDPATH}/definition:${BUILDPATH}/render/software:${BUILDPATH}/render/preview:${BUILDPATH}/render/opengl:${BUILDPATH}/tests/googletest
 BUILD_SPEC=linux-g++
 
 all:build
@@ -64,8 +64,8 @@ package:build
 	cp $(BUILDPATH)/basics/libpaysages_basics.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/definition/libpaysages_definition.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/render/software/libpaysages_render_software.so* paysages3d-linux/lib/
+	cp $(BUILDPATH)/render/preview/libpaysages_render_software.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/render/opengl/libpaysages_render_opengl.so* paysages3d-linux/lib/
-	cp $(BUILDPATH)/rendering/libpaysages_rendering.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/interface/desktop/paysages-gui paysages3d-linux/lib/
 	chmod +x paysages3d-linux/lib/paysages-gui
 	cp -r data paysages3d-linux/

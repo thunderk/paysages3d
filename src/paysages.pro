@@ -5,7 +5,6 @@ SUBDIRS = \
     system \
     basics \
     definition \
-    rendering \
     render/software \
     render/preview \
     render/opengl \

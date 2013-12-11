@@ -59,7 +59,7 @@ BaseDefinition* Layers::getLayer(int position) const
     }
     else
     {
-        qWarning("Asked for a undefined layer %d on a total of %d", position, layers.size());
+        qWarning("Asked for a undefined layer %d on a total of %d", position, (int)layers.size());
         return null_layer;
     }
 }
@@ -75,7 +75,7 @@ int Layers::findLayer(BaseDefinition* layer) const
         }
         i++;
     }
-    qWarning("Layer %p not found, on a total of %d, returning %d", layer, layers.size(), -1);
+    qWarning("Layer %p not found, on a total of %d, returning %d", layer, (int)layers.size(), -1);
     return -1;
 }
 

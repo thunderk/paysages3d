@@ -46,12 +46,6 @@ else:unix: LIBS += -L$$OUT_PWD/../definition/ -lpaysages_definition
 INCLUDEPATH += $$PWD/../definition
 DEPENDPATH += $$PWD/../definition
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../rendering/release/ -lpaysages_rendering
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../rendering/debug/ -lpaysages_rendering
-else:unix: LIBS += -L$$OUT_PWD/../rendering/ -lpaysages_rendering
-INCLUDEPATH += $$PWD/../rendering
-DEPENDPATH += $$PWD/../rendering
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../render/software/release/ -lpaysages_render_software
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../render/software/debug/ -lpaysages_render_software
 else:unix: LIBS += -L$$OUT_PWD/../render/software/ -lpaysages_render_software

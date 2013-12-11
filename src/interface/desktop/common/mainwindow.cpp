@@ -6,6 +6,7 @@
 #include <QMenu>
 #include <QIcon>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QTabWidget>
 #include <QTranslator>
 #include <QLocale>
@@ -26,7 +27,6 @@
 #include "dialogrender.h"
 #include "dialogexplorer.h"
 
-#include "main.h"
 #include "DesktopScenery.h"
 #include "PackStream.h"
 #include "tools.h"
@@ -40,6 +40,12 @@ int main(int argc, char** argv)
     int result;
 
     QApplication app(argc, argv);
+
+    if (not QFileInfo("./data/.paysages_data").isReadable())
+    {
+        QMessageBox::critical(NULL, QObject::tr("Paysages 3D - Data error"), QObject::tr("Application data were not found. Please ensure the software is run from its original directory."));
+        return 1;
+    }
 
     splash = new QSplashScreen(QPixmap(getDataPath("images/logo_256.png")));
     splash->show();
@@ -63,7 +69,6 @@ int main(int argc, char** argv)
     //splash->showMessage(app.tr("Preloading..."), Qt::AlignCenter, Qt::white);
     app.processEvents();
 
-    paysagesInit();
     BasePreview::initDrawers();
 
     window = new MainWindow();
@@ -79,7 +84,6 @@ int main(int argc, char** argv)
 
     delete window;
 
-    paysagesQuit();
     return result;
 }
 
