@@ -5,21 +5,7 @@
 #include "Scenery.h"
 #include "TerrainRenderer.h"
 #include "WaterRenderer.h"
-
-/*static Vector3 _getCameraLocation(Renderer*, Vector3 location)
-{
-    return v3Add(location, v3Scale(VECTOR_UP, 50.0));
-}
-
-static AtmosphereResult _applyAerialPerspective(Renderer*, Vector3, Color base)
-{
-    AtmosphereResult result;
-    atmosphereInitResult(&result);
-    result.base = base;
-    result.final = base;
-    atmosphereUpdateResult(&result);
-    return result;
-}*/
+#include "CloudsRenderer.h"
 
 SceneryTopDownPreviewRenderer::SceneryTopDownPreviewRenderer(Scenery* scenery):
     scenery(scenery)
@@ -39,7 +25,6 @@ void SceneryTopDownPreviewRenderer::bindEvent(BasePreview* preview)
     preview->configHdrToneMapping(true);
     preview->configScaling(0.5, 200.0, 3.0, 50.0);
     preview->configScrolling(-1000.0, 1000.0, 0.0, -1000.0, 1000.0, 0.0);
-
 }
 
 void SceneryTopDownPreviewRenderer::updateEvent()
@@ -52,10 +37,6 @@ void SceneryTopDownPreviewRenderer::updateEvent()
     }
 
     prepare();
-
-    /*getCameraLocation = _getCameraLocation;
-    lightingManagerDisableSpecularity(lighting);
-    atmosphere->applyAerialPerspective = _applyAerialPerspective;*/
 }
 
 Color SceneryTopDownPreviewRenderer::getColor2D(double x, double y, double scaling)
@@ -81,6 +62,23 @@ void SceneryTopDownPreviewRenderer::toggleChangeEvent(const std::string &key, bo
     if (key == "clouds")
     {
         clouds_enabled = value;
+    }
+}
+
+Vector3 SceneryTopDownPreviewRenderer::getCameraLocation(const Vector3 &target)
+{
+    return target.add(VECTOR_UP.scale(50.0));
+}
+
+Color SceneryTopDownPreviewRenderer::applyMediumTraversal(Vector3 location, Color color)
+{
+    if (clouds_enabled)
+    {
+        return getCloudsRenderer()->getColor(getCameraLocation(location), location, color);
+    }
+    else
+    {
+        return color;
     }
 }
 

@@ -17,7 +17,11 @@ protected:
     virtual void bindEvent(BasePreview* preview) override;
     virtual void updateEvent() override;
     virtual Color getColor2D(double x, double y, double scaling) override;
+
     virtual void toggleChangeEvent(const std::string &key, bool value) override;
+
+    virtual Vector3 getCameraLocation(const Vector3 &target) override;
+    virtual Color applyMediumTraversal(Vector3 location, Color color) override;
 
 private:
     Scenery* scenery;
