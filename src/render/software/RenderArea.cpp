@@ -212,6 +212,7 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
 {
     Color result, col;
     int sx, sy;
+    double factor = 1.0 / (double)(area->params.antialias * area->params.antialias);
     RenderFragment* pixel_data;
 
     result.r = result.g = result.b = 0.0;
@@ -238,9 +239,9 @@ static inline Color _getFinalPixel(RenderArea* area, int x, int y)
                 col.g = pixel_data->data.color.g;
                 col.b = pixel_data->data.color.b;
             }
-            result.r += col.r / (double)(area->params.antialias * area->params.antialias);
-            result.g += col.g / (double)(area->params.antialias * area->params.antialias);
-            result.b += col.b / (double)(area->params.antialias * area->params.antialias);
+            result.r += col.r * factor;
+            result.g += col.g * factor;
+            result.b += col.b * factor;
 
         }
     }
