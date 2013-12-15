@@ -6,6 +6,7 @@
 #include "TerrainRenderer.h"
 #include "WaterRenderer.h"
 #include "CloudsRenderer.h"
+#include "LightingManager.h"
 
 SceneryTopDownPreviewRenderer::SceneryTopDownPreviewRenderer(Scenery* scenery):
     scenery(scenery)
@@ -21,6 +22,7 @@ void SceneryTopDownPreviewRenderer::bindEvent(BasePreview* preview)
     // TODO Translation
     preview->addOsd("geolocation");
     preview->addToggle("clouds", "Clouds", false);
+    preview->addToggle("specularity", "Light reflection", false);
 
     preview->configHdrToneMapping(true);
     preview->configScaling(0.5, 200.0, 3.0, 50.0);
@@ -35,6 +37,7 @@ void SceneryTopDownPreviewRenderer::updateEvent()
     {
         getScenery()->getClouds()->clear();
     }
+    getLightingManager()->setSpecularity(specularity_enabled);
 
     prepare();
 }
@@ -63,6 +66,15 @@ void SceneryTopDownPreviewRenderer::toggleChangeEvent(const std::string &key, bo
     {
         clouds_enabled = value;
     }
+    else if (key == "specularity")
+    {
+        specularity_enabled = value;
+    }
+}
+
+double SceneryTopDownPreviewRenderer::getPrecision(const Vector3 &)
+{
+    return 0.0000001;
 }
 
 Vector3 SceneryTopDownPreviewRenderer::getCameraLocation(const Vector3 &target)

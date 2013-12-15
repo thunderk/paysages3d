@@ -21,6 +21,7 @@ public:
     void resize(int width, int height);
     void paint();
 
+    virtual double getPrecision(const Vector3 &location) override;
     virtual Color applyMediumTraversal(Vector3 location, Color color) override;
 };
 
