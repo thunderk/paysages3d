@@ -86,6 +86,8 @@ void SoftwareRenderer::setScenery(Scenery* scenery)
 
 void SoftwareRenderer::prepare()
 {
+    scenery->getCamera()->copy(render_camera);
+
     // Prepare sub renderers
     delete atmosphere_renderer;
     if (getScenery()->getAtmosphere()->model == AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON)
@@ -169,13 +171,13 @@ void SoftwareRenderer::start(RenderArea::RenderParams params)
     render_interrupt = 0;
     render_progress = 0.0;
 
+    prepare();
+
     render_camera->setRenderSize(render_width, render_height);
 
     render_area->setBackgroundColor(COLOR_BLACK);
     render_area->setParams(params);
     render_area->clear();
-
-    prepare();
 
     is_rendering = 1;
     thread.start(this);
