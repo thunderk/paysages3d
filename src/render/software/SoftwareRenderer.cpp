@@ -88,7 +88,14 @@ void SoftwareRenderer::prepare()
 {
     // Prepare sub renderers
     delete atmosphere_renderer;
-    atmosphere_renderer = new SoftwareBrunetonAtmosphereRenderer(this);
+    if (getScenery()->getAtmosphere()->model == AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON)
+    {
+        atmosphere_renderer = new SoftwareBrunetonAtmosphereRenderer(this);
+    }
+    else
+    {
+        atmosphere_renderer = new BaseAtmosphereRenderer(this);
+    }
 
     delete clouds_renderer;
     clouds_renderer = new CloudsRenderer(this);
@@ -123,6 +130,15 @@ void SoftwareRenderer::rasterize()
 void SoftwareRenderer::disableClouds()
 {
     scenery->getClouds()->clear();
+}
+
+void SoftwareRenderer::disableAtmosphere(const std::vector<LightComponent> &lights)
+{
+    scenery->getAtmosphere()->model = AtmosphereDefinition::ATMOSPHERE_MODEL_DISABLED;
+
+    delete atmosphere_renderer;
+    atmosphere_renderer = new BaseAtmosphereRenderer(this);
+    atmosphere_renderer->setStaticLights(lights);
 }
 
 void SoftwareRenderer::setPreviewCallbacks(RenderArea::RenderCallbackStart start, RenderArea::RenderCallbackDraw draw, RenderArea::RenderCallbackUpdate update)

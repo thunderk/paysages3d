@@ -66,8 +66,16 @@ public:
 
     /*!
      * \brief Disable the clouds feature.
+     *
+     * This toggle is permanent, provided the clouds part of the sceney is not changed.
      */
     void disableClouds();
+    /*!
+     * \brief Disable atmosphere and sky lighting, replacing it by static lights.
+     *
+     * This function needs to be called after each prepare().
+     */
+    void disableAtmosphere(const std::vector<LightComponent> &lights);
 
     void setPreviewCallbacks(RenderArea::RenderCallbackStart start, RenderArea::RenderCallbackDraw draw, RenderArea::RenderCallbackUpdate update);
     void start(RenderArea::RenderParams params);

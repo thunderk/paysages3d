@@ -11,46 +11,29 @@
 #include "LightStatus.h"
 #include "TerrainRenderer.h"
 
-/*static void _getLightingStatus(Renderer*, LightStatus* status, Vector3, int)
-{
-    LightComponent light;
-
-    light.color.r = 0.6;
-    light.color.g = 0.6;
-    light.color.b = 0.6;
-    light.direction.x = -1.0;
-    light.direction.y = -0.5;
-    light.direction.z = 1.0;
-    light.direction = v3Normalize(light.direction);
-    light.altered = 1;
-    light.reflection = 0.0;
-    status->pushComponent(light);
-
-    light.color.r = 0.2;
-    light.color.g = 0.2;
-    light.color.b = 0.2;
-    light.direction.x = 1.0;
-    light.direction.y = -0.5;
-    light.direction.z = -1.0;
-    light.direction = v3Normalize(light.direction);
-    light.altered = 0;
-    light.reflection = 0.0;
-    status->pushComponent(light);
-}
-
-static Vector3 _getCameraLocation(Renderer*, Vector3 location)
-{
-    location.x -= 10.0;
-    location.y += 15.0;
-    location.z += 10.0;
-    return location;
-}*/
-
 TerrainShapePreviewRenderer::TerrainShapePreviewRenderer(TerrainDefinition* terrain)
 {
     _terrain = terrain;
 
     render_quality = 3;
+
+    disableClouds();
+
+    getScenery()->getTextures()->clear();
+    getScenery()->getTextures()->addLayer();
+    TextureLayerDefinition* layer = getScenery()->getTextures()->getTextureLayer(0);
+    layer->terrain_zone->clear();
+    layer->displacement_height = 0.0;
+    layer->material->base = colorToHSL(COLOR_WHITE);
+    layer->material->reflection = 0.05;
+    layer->material->shininess = 2.0;
+    layer->validate();
+    layer->_detail_noise->clearLevels();
+}
+
+Vector3 TerrainShapePreviewRenderer::getCameraLocation(const Vector3 &target)
+{
+    return target.add(Vector3(-10.0, 15.0, 10.0));
 }
 
 void TerrainShapePreviewRenderer::bindEvent(BasePreview* preview)
@@ -67,17 +50,32 @@ void TerrainShapePreviewRenderer::updateEvent()
 
     prepare();
 
-    /*getCameraLocation = _getCameraLocation;
-    atmosphere->getLightingStatus = _getLightingStatus;*/
+    LightComponent light;
+    std::vector<LightComponent> lights;
 
-    TextureLayerDefinition* layer = getScenery()->getTextures()->getTextureLayer(0);
-    layer->terrain_zone->clear();
-    layer->displacement_height = 0.0;
-    layer->material->base = colorToHSL(COLOR_WHITE);
-    layer->material->reflection = 0.05;
-    layer->material->shininess = 2.0;
-    layer->validate();
-    layer->_detail_noise->clearLevels();
+    light.color.r = 0.6;
+    light.color.g = 0.6;
+    light.color.b = 0.6;
+    light.direction.x = -1.0;
+    light.direction.y = -0.5;
+    light.direction.z = 1.0;
+    light.direction = light.direction.normalize();
+    light.altered = 1;
+    light.reflection = 0.0;
+    lights.push_back(light);
+
+    light.color.r = 0.2;
+    light.color.g = 0.2;
+    light.color.b = 0.2;
+    light.direction.x = 1.0;
+    light.direction.y = -0.5;
+    light.direction.z = -1.0;
+    light.direction = light.direction.normalize();
+    light.altered = 0;
+    light.reflection = 0.0;
+    lights.push_back(light);
+
+    disableAtmosphere(lights);
 }
 
 Color TerrainShapePreviewRenderer::getColor2D(double x, double y, double scaling)

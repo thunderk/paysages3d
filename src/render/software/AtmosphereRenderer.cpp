@@ -24,6 +24,12 @@ static inline double _getDayFactor(double daytime)
 
 static inline void _applyWeatherEffects(AtmosphereDefinition* definition, AtmosphereResult* result)
 {
+    if (definition->model == AtmosphereDefinition::ATMOSPHERE_MODEL_DISABLED)
+    {
+        result->updateFinal();
+        return;
+    }
+
     double distance = result->distance;
     double max_distance = 100.0 - 90.0 * definition->humidity;
     double distancefactor, dayfactor;
@@ -76,26 +82,10 @@ BaseAtmosphereRenderer::BaseAtmosphereRenderer(SoftwareRenderer* renderer):
 
 void BaseAtmosphereRenderer::getLightingStatus(LightStatus* status, Vector3, int)
 {
-    LightComponent light;
-
-    light.color.r = 1.0;
-    light.color.g = 1.0;
-    light.color.b = 1.0;
-    light.direction.x = -0.7;
-    light.direction.y = -0.7;
-    light.direction.z = 0.7;
-    light.altered = 0;
-    light.reflection = 0.0;
-    status->pushComponent(light);
-    light.color.r = 0.3;
-    light.color.g = 0.31;
-    light.color.b = 0.34;
-    light.direction.x = 0.7;
-    light.direction.y = -0.7;
-    light.direction.z = -0.7;
-    light.altered = 0;
-    light.reflection = 0.0;
-    status->pushComponent(light);
+    for (LightComponent light:lights)
+    {
+        status->pushComponent(light);
+    }
 }
 
 AtmosphereResult BaseAtmosphereRenderer::applyAerialPerspective(Vector3, Color base)
@@ -119,6 +109,40 @@ Vector3 BaseAtmosphereRenderer::getSunDirection()
     AtmosphereDefinition* atmosphere = getDefinition();
     double sun_angle = (atmosphere->_daytime + 0.75) * M_PI * 2.0;
     return Vector3(cos(sun_angle), sin(sun_angle), 0.0);
+}
+
+void BaseAtmosphereRenderer::setBasicLights()
+{
+    LightComponent light;
+
+    lights.clear();
+
+    light.color.r = 0.6;
+    light.color.g = 0.6;
+    light.color.b = 0.6;
+    light.direction.x = -1.0;
+    light.direction.y = -0.5;
+    light.direction.z = 1.0;
+    light.direction = light.direction.normalize();
+    light.altered = 1;
+    light.reflection = 0.0;
+    lights.push_back(light);
+
+    light.color.r = 0.2;
+    light.color.g = 0.2;
+    light.color.b = 0.2;
+    light.direction.x = 1.0;
+    light.direction.y = -0.5;
+    light.direction.z = -1.0;
+    light.direction = light.direction.normalize();
+    light.altered = 0;
+    light.reflection = 0.0;
+    lights.push_back(light);
+}
+
+void BaseAtmosphereRenderer::setStaticLights(const std::vector<LightComponent> &lights)
+{
+    this->lights = lights;
 }
 
 AtmosphereDefinition* BaseAtmosphereRenderer::getDefinition()

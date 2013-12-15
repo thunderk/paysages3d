@@ -15,7 +15,8 @@ class AtmosphereDefinition : public BaseDefinition
 public:
     typedef enum
     {
-        ATMOSPHERE_MODEL_BRUNETON = 0
+        ATMOSPHERE_MODEL_DISABLED = 0,
+        ATMOSPHERE_MODEL_BRUNETON = 1
     } AtmosphereModel;
     typedef enum
     {

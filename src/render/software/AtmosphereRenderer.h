@@ -4,6 +4,7 @@
 #include "software_global.h"
 
 #include "Color.h"
+#include "LightComponent.h"
 
 namespace paysages {
 namespace software {
@@ -19,9 +20,13 @@ public:
     virtual AtmosphereResult getSkyColor(Vector3 direction);
     virtual Vector3 getSunDirection();
 
+    void setBasicLights();
+    void setStaticLights(const std::vector<LightComponent> &lights);
+
 protected:
     virtual AtmosphereDefinition* getDefinition();
     SoftwareRenderer* parent;
+    std::vector<LightComponent> lights;
 };
 
 class SoftwareBrunetonAtmosphereRenderer: public BaseAtmosphereRenderer

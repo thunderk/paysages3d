@@ -14,6 +14,8 @@ public:
     explicit TerrainShapePreviewRenderer(TerrainDefinition* terrain);
 
 protected:
+    virtual Vector3 getCameraLocation(const Vector3 &target) override;
+
     virtual void bindEvent(BasePreview* preview) override;
     virtual void updateEvent() override;
     virtual Color getColor2D(double x, double y, double scaling) override;
