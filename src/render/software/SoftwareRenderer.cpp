@@ -42,15 +42,10 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
     fluid_medium = new FluidMediumManager(this);
     lighting = new LightingManager();
 
+    this->scenery = new Scenery;
     if (scenery)
     {
-        this->scenery = scenery;
-        own_scenery = false;
-    }
-    else
-    {
-        this->scenery = new Scenery;
-        own_scenery = true;
+        scenery->copy(this->scenery);
     }
 }
 
@@ -68,19 +63,11 @@ SoftwareRenderer::~SoftwareRenderer()
     delete fluid_medium;
     delete lighting;
 
-    if (own_scenery)
-    {
-        delete scenery;
-    }
+    delete scenery;
 }
 
 void SoftwareRenderer::setScenery(Scenery* scenery)
 {
-    if (!own_scenery)
-    {
-        this->scenery = new Scenery;
-        own_scenery = true;
-    }
     scenery->copy(this->scenery);
 }
 

@@ -98,7 +98,6 @@ public:
 
 private:
     Scenery* scenery;
-    bool own_scenery;
 
     FluidMediumManager* fluid_medium;
     LightingManager* lighting;
