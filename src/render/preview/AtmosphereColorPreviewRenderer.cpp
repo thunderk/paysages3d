@@ -151,6 +151,9 @@ AtmosphereColorPreviewRenderer::AtmosphereColorPreviewRenderer(AtmosphereDefinit
     definition(definition), heading(heading)
 {
     getScenery()->getCamera()->setLocation(Vector3(0.0, 7.0, 0.0));
+    render_camera->setLocation(Vector3(0.0, 7.0, 0.0));
+
+    disableClouds();
 }
 
 void AtmosphereColorPreviewRenderer::bindEvent(BasePreview* preview)
@@ -166,8 +169,8 @@ void AtmosphereColorPreviewRenderer::updateEvent()
 
 Color AtmosphereColorPreviewRenderer::getColor2D(double x, double y, double)
 {
-    Vector3 eye = {0.0, 7.0, 0.0};
-    Vector3 direction = {x, -y, -1.0};
+    Vector3 eye(0.0, 7.0, 0.0);
+    Vector3 direction = Vector3(x, -y, -1.0).normalize();
     Vector3 hit, normal;
     Matrix4 rotation;
 

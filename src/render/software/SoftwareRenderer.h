@@ -64,6 +64,11 @@ public:
      */
     virtual void rasterize();
 
+    /*!
+     * \brief Disable the clouds feature.
+     */
+    void disableClouds();
+
     void setPreviewCallbacks(RenderArea::RenderCallbackStart start, RenderArea::RenderCallbackDraw draw, RenderArea::RenderCallbackUpdate update);
     void start(RenderArea::RenderParams params);
     void interrupt();

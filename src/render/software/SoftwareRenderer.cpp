@@ -7,6 +7,7 @@
 #include "AtmosphereDefinition.h"
 #include "AtmosphereResult.h"
 #include "CloudsRenderer.h"
+#include "CloudsDefinition.h"
 #include "TerrainRenderer.h"
 #include "TexturesRenderer.h"
 #include "WaterRenderer.h"
@@ -117,6 +118,11 @@ void SoftwareRenderer::rasterize()
 
     SkyRasterizer sky(this);
     sky.rasterize();
+}
+
+void SoftwareRenderer::disableClouds()
+{
+    scenery->getClouds()->clear();
 }
 
 void SoftwareRenderer::setPreviewCallbacks(RenderArea::RenderCallbackStart start, RenderArea::RenderCallbackDraw draw, RenderArea::RenderCallbackUpdate update)

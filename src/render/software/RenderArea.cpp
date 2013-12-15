@@ -567,8 +567,8 @@ void RenderArea::pushTriangle(const Vector3 &pixel1, const Vector3 &pixel2, cons
     point3.callback = point1.callback;
 
     /* Prepare scanlines */
+    // TODO Don't create scanlines for each triangles (one by thread is more appropriate)
     RenderScanlines scanlines;
-    int x;
     int width = params.width * params.antialias;
     scanlines.left = width;
     scanlines.right = -1;
@@ -586,8 +586,8 @@ void RenderArea::pushTriangle(const Vector3 &pixel1, const Vector3 &pixel2, cons
     lock->release();
 
     /* Free scalines */
-    free(scanlines.up);
-    free(scanlines.down);
+    delete[] scanlines.up;
+    delete[] scanlines.down;
 }
 
 Color RenderArea::getPixel(int x, int y)
