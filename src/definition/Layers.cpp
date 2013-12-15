@@ -75,7 +75,7 @@ int Layers::findLayer(BaseDefinition* layer) const
         }
         i++;
     }
-    qWarning("Layer %p not found, on a total of %d, returning %d", layer, (int)layers.size(), -1);
+    qWarning("Layer %p (%s) not found, on a total of %d", layer, layer->getName().c_str(), (int)layers.size());
     return -1;
 }
 
@@ -107,6 +107,10 @@ void Layers::removeLayer(int position)
         removeChild(removed);
         layers.erase(layers.begin() + position);
         delete removed;
+    }
+    else
+    {
+        qWarning("Removing unknown layer %d on %d from '%s'", position, (int)layers.size(), getName().c_str());
     }
 }
 

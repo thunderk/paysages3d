@@ -101,7 +101,7 @@ void WaterAspectPreviewRenderer::choiceChangeEvent(const std::string &key, int p
     }
 }
 
-double WaterAspectPreviewRenderer::getPrecision(const Vector3 &location)
+double WaterAspectPreviewRenderer::getPrecision(const Vector3 &)
 {
     return 0.000001;
 }

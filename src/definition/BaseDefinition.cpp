@@ -74,7 +74,7 @@ void BaseDefinition::validate()
 
 void BaseDefinition::addChild(BaseDefinition* child)
 {
-    if (std::find(children.begin(), children.end(), child) != children.end())
+    if (std::find(children.begin(), children.end(), child) == children.end())
     {
         children.push_back(child);
         child->parent = this;
@@ -91,6 +91,6 @@ void BaseDefinition::removeChild(BaseDefinition* child)
     }
     else
     {
-        qWarning("Trying to remove not found child from '%s'", name.c_str());
+        qWarning("Trying to remove not found child '%s' from '%s'", child->name.c_str(), name.c_str());
     }
 }
