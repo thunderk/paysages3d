@@ -21,6 +21,7 @@ public:
     virtual void toggleChangeEvent(const std::string &key, bool value) override;
     virtual void choiceChangeEvent(const std::string &key, int position) override;
 
+    virtual double getPrecision(const Vector3 &location) override;
     virtual RayCastingResult rayWalking(const Vector3 &location, const Vector3 &direction, int terrain, int water, int sky, int clouds) override;
 
 private:

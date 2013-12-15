@@ -63,6 +63,7 @@ FormWater::~FormWater()
 
 void FormWater::revertConfig()
 {
+    previewCoverageRenderer->setTerrain(DesktopScenery::getCurrent()->getTerrain());
     DesktopScenery::getCurrent()->getWater(_definition);
     BaseForm::revertConfig();
 }

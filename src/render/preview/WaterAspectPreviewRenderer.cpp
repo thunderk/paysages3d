@@ -5,36 +5,7 @@
 #include "WaterDefinition.h"
 #include "CameraDefinition.h"
 #include "WaterRenderer.h"
-
-/*static double _getWaterHeight(Renderer*)
-{
-    return 0.0;
-}
-
-static void _getLightingStatus(Renderer* renderer, LightStatus* status, Vector3, int)
-{
-    LightDefinition light;
-    bool lighting = *(bool*)renderer->customData[0];
-    light.color = COLOR_WHITE;
-    light.direction.x = 0.0;
-    light.direction.y = -0.4794;
-    light.direction.z = -0.8776;
-    light.altered = 0;
-    if (lighting)
-    {
-        light.reflection = 1.0;
-    }
-    else
-    {
-        light.reflection = 0.0;
-    }
-    lightingPushLight(status, &light);
-}
-
-static double _getPrecision(Renderer*, Vector3)
-{
-    return 0.000001;
-}*/
+#include "LightComponent.h"
 
 WaterAspectPreviewRenderer::WaterAspectPreviewRenderer(WaterDefinition* definition):
     definition(definition)
@@ -64,9 +35,23 @@ void WaterAspectPreviewRenderer::updateEvent()
     getScenery()->getCamera()->setTarget(VECTOR_ZERO);
     prepare();
 
-    //terrain->getWaterHeight = _getWaterHeight;
-    //atmosphere->getLightingStatus = _getLightingStatus;
-    //getPrecision = _getPrecision;
+    LightComponent light;
+    std::vector<LightComponent> lights;
+    light.color = COLOR_WHITE;
+    light.direction.x = 0.0;
+    light.direction.y = -0.4794;
+    light.direction.z = -0.8776;
+    light.altered = 0;
+    if (lighting)
+    {
+        light.reflection = 1.0;
+    }
+    else
+    {
+        light.reflection = 0.0;
+    }
+    lights.push_back(light);
+    disableAtmosphere(lights);
 }
 
 void WaterAspectPreviewRenderer::cameraEvent(double, double, double scaling)
@@ -114,6 +99,11 @@ void WaterAspectPreviewRenderer::choiceChangeEvent(const std::string &key, int p
     {
         background = position;
     }
+}
+
+double WaterAspectPreviewRenderer::getPrecision(const Vector3 &location)
+{
+    return 0.000001;
 }
 
 RayCastingResult WaterAspectPreviewRenderer::rayWalking(const Vector3 &location, const Vector3 &direction, int, int, int, int)

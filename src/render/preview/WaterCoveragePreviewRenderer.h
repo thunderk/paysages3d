@@ -14,6 +14,8 @@ public:
     WaterCoveragePreviewRenderer(WaterDefinition* definition);
     virtual ~WaterCoveragePreviewRenderer();
 
+    void setTerrain(TerrainDefinition* terrain);
+
     virtual void bindEvent(BasePreview* preview) override;
     virtual void updateEvent() override;
 

@@ -16,6 +16,12 @@ WaterCoveragePreviewRenderer::~WaterCoveragePreviewRenderer()
     delete TerrainShapePreviewRenderer::_terrain;
 }
 
+void WaterCoveragePreviewRenderer::setTerrain(TerrainDefinition *terrain)
+{
+    terrain->copy(TerrainShapePreviewRenderer::_terrain);
+    getScenery()->setTerrain(terrain);
+}
+
 void WaterCoveragePreviewRenderer::bindEvent(BasePreview* preview)
 {
     TerrainShapePreviewRenderer::bindEvent(preview);
@@ -36,10 +42,9 @@ void WaterCoveragePreviewRenderer::toggleChangeEvent(const std::string &key, boo
 
 void WaterCoveragePreviewRenderer::updateEvent()
 {
-    //RenderingScenery::getCurrent()->getTerrain(_terrain);
-    TerrainShapePreviewRenderer::updateEvent();
-
     getScenery()->setWater(definition);
+
+    TerrainShapePreviewRenderer::updateEvent();
 }
 
 Color WaterCoveragePreviewRenderer::getWaterColor(double x, double y, double)
