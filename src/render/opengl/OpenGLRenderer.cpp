@@ -58,3 +58,8 @@ void OpenGLRenderer::paint()
 {
 
 }
+
+Color OpenGLRenderer::applyMediumTraversal(Vector3, Color color)
+{
+    return color;
+}

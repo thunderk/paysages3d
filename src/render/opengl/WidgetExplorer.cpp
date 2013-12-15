@@ -16,6 +16,7 @@
 #include "TerrainRenderer.h"
 #include "WaterRenderer.h"
 #include "Scenery.h"
+#include "LightingManager.h"
 
 class ChunkMaintenanceThread : public QThread
 {
@@ -55,21 +56,6 @@ private:
 
 static QVector<ChunkMaintenanceThread*> _threads;
 
-/*static Vector3 _getCameraLocation(Renderer* renderer, Vector3)
-{
-    return ((CameraDefinition*)renderer->customData[2])->getLocation();
-}
-
-static AtmosphereResult _applyAerialPerspective(Renderer*, Vector3, Color base)
-{
-    AtmosphereResult result;
-    atmosphereInitResult(&result);
-    result.base = base;
-    result.final = base;
-    atmosphereUpdateResult(&result);
-    return result;
-}*/
-
 WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera, Scenery* scenery) :
 QGLWidget(parent)
 {
@@ -80,14 +66,11 @@ QGLWidget(parent)
     _base_camera = camera;
     camera->copy(_current_camera);
 
-    _renderer = new SoftwareRenderer(scenery);
-    _opengl_renderer = new OpenGLRenderer(NULL);
-    _renderer->prepare();
-    _renderer->render_quality = 3;
-    /*_renderer->customData[2] = _base_camera;
-    _renderer->getCameraLocation = _getCameraLocation;
-    _renderer->atmosphere->applyAerialPerspective = _applyAerialPerspective;
-    lightingManagerDisableSpecularity(_renderer->lighting);*/
+    _opengl_renderer = new OpenGLRenderer(scenery);
+    _opengl_renderer->prepare();
+    _opengl_renderer->render_quality = 3;
+    _opengl_renderer->getLightingManager()->setSpecularity(false);
+    _opengl_renderer->disableClouds();
 
     _inited = false;
     _updated = false;
@@ -119,12 +102,12 @@ void WidgetExplorer::startRendering()
     double size = 400.0;
     double chunksize = size / (double) chunks;
     double start = -size / 2.0;
-    double water_height = _renderer->getWaterRenderer()->getHeightInfo().base_height;
+    double water_height = _opengl_renderer->getWaterRenderer()->getHeightInfo().base_height;
     for (int i = 0; i < chunks; i++)
     {
         for (int j = 0; j < chunks; j++)
         {
-            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(_renderer, start + chunksize * (double) i, start + chunksize * (double) j, chunksize, chunks, water_height);
+            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(_opengl_renderer, start + chunksize * (double) i, start + chunksize * (double) j, chunksize, chunks, water_height);
             _chunks.append(chunk);
             _updateQueue.append(chunk);
         }
@@ -133,7 +116,7 @@ void WidgetExplorer::startRendering()
     // Add skybox
     for (int orientation = 0; orientation < 5; orientation++)
     {
-        ExplorerChunkSky* chunk = new ExplorerChunkSky(_renderer, 500.0, (SkyboxOrientation) orientation);
+        ExplorerChunkSky* chunk = new ExplorerChunkSky(_opengl_renderer, 500.0, (SkyboxOrientation) orientation);
         _chunks.append(chunk);
         _updateQueue.append(chunk);
     }
@@ -386,11 +369,7 @@ void WidgetExplorer::paintGL()
     GLenum error_code;
     QTime start_time;
     double frame_time;
-    WaterDefinition* water = _renderer->getScenery()->getWater();
-
-    // Don't do this at each frame, only on camera change
-    _renderer->getScenery()->setCamera(_current_camera);
-    _renderer->getScenery()->getCamera(_current_camera);
+    WaterDefinition* water = _opengl_renderer->getScenery()->getWater();
 
     start_time = QTime::currentTime();
 
@@ -406,7 +385,7 @@ void WidgetExplorer::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render water
-    double water_height = _renderer->getTerrainRenderer()->getWaterHeight();
+    double water_height = _opengl_renderer->getTerrainRenderer()->getWaterHeight();
     glDisable(GL_TEXTURE_2D);
     glColor3f(water->material->_rgb.r, water->material->_rgb.g, water->material->_rgb.b);
     glBegin(GL_QUADS);

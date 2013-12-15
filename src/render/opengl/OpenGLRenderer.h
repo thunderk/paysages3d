@@ -11,7 +11,7 @@ namespace opengl {
 /*!
  * \brief Scenery renderer in an OpenGL context.
  */
-class OPENGLSHARED_EXPORT OpenGLRenderer: protected SoftwareRenderer
+class OPENGLSHARED_EXPORT OpenGLRenderer: public SoftwareRenderer
 {
 public:
     OpenGLRenderer(Scenery* scenery=0);
@@ -20,6 +20,8 @@ public:
     void initialize();
     void resize(int width, int height);
     void paint();
+
+    virtual Color applyMediumTraversal(Vector3 location, Color color) override;
 };
 
 }

@@ -42,7 +42,6 @@ private:
     CameraDefinition* _base_camera;
 
     OpenGLRenderer* _opengl_renderer;
-    SoftwareRenderer* _renderer;
     bool _inited;
     bool _updated;
 
