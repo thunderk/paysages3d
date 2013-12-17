@@ -208,7 +208,7 @@ static int _parallelJobCallback(ParallelQueue*, int, void* data, int stopping)
         info->rasterizer->tessellateChunk(&info->chunk, info->chunk.detail_hint);
     }
 
-    free(data);
+    delete info;
     return 0;
 }
 

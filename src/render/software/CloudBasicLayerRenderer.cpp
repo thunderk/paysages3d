@@ -46,6 +46,7 @@ static inline double _getDistanceToBorder(BaseCloudsModel* model, Vector3 positi
 static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vector3 start, Vector3 direction, double, int max_segments, double max_inside_length, double max_total_length, double* inside_length, double* total_length, CloudSegment* out_segments)
 {
     CloudLayerDefinition* layer = model->getLayer();
+    double ymin, ymax;
     int inside, segment_count;
     double current_total_length, current_inside_length;
     double step_length, segment_length, remaining_length;
@@ -57,6 +58,8 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
     {
         return 0;
     }
+
+    model->getAltitudeRange(&ymin, &ymax);
 
     render_precision = 15.2 - 1.5 * (double)renderer->render_quality;
     render_precision = render_precision * layer->scaling / 50.0;
@@ -75,7 +78,7 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
     segment_length = 0.0;
     walker = start;
     noise_distance = _getDistanceToBorder(model, start) * render_precision;
-    inside = (noise_distance > 0.0) ? 1 : 0;
+    inside = 0;
     step = direction.scale(render_precision);
 
     do
@@ -132,7 +135,7 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
                 step = direction.scale((noise_distance > -render_precision) ? render_precision : -noise_distance);
             }
         }
-    } while (inside || (walker.y >= layer->altitude - 0.001 && walker.y <= (layer->altitude + layer->scaling) + 0.001 && current_total_length < max_total_length && current_inside_length < max_inside_length));
+    } while (inside || (walker.y >= ymin - 0.001 && walker.y <= ymax + 0.001 && current_total_length < max_total_length && current_inside_length < max_inside_length));
 
     *total_length = current_total_length;
     *inside_length = current_inside_length;
@@ -169,8 +172,8 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
         SurfaceMaterial material;
         material.base = colorToHSL(Color(0.7, 0.7, 0.7));
         material.hardness = 0.25;
-        material.reflection = 0.3;
-        material.shininess = 0.8;
+        material.reflection = 0.0;
+        material.shininess = 0.0;
         materialValidate(&material);
 
         col = parent->applyLightingToSurface(segments[i].start, parent->getAtmosphereRenderer()->getSunDirection(), material);

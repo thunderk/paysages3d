@@ -60,7 +60,7 @@ static int _parallelJobCallback(ParallelQueue*, int, void* data, int stopping)
         _renderQuad(info->renderer, info->cx - info->radius_ext, info->cz + info->radius_int - info->chunk_size * info->i, info->chunk_size);
     }
 
-    free(data);
+    delete info;
     return 0;
 }
 

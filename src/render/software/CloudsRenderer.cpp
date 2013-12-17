@@ -90,6 +90,7 @@ BaseCloudLayerRenderer* CloudsRenderer::getLayerRenderer(unsigned int layer)
     }
     else
     {
+        qWarning("Asked for unknown layer renderer %d", layer);
         return fake_renderer;
     }
 }
@@ -102,6 +103,7 @@ BaseCloudsModel* CloudsRenderer::getLayerModel(unsigned int layer)
     }
     else
     {
+        qWarning("Asked for unknown layer renderer %d", layer);
         return fake_model;
     }
 }
@@ -149,7 +151,7 @@ bool CloudsRenderer::alterLight(LightComponent* light, const Vector3 &eye, const
         BaseCloudLayerRenderer* layer_renderer = getLayerRenderer(i);
         BaseCloudsModel* layer_model = getLayerModel(i);
 
-        altered = altered || layer_renderer->alterLight(layer_model, light, eye, location);
+        altered = layer_renderer->alterLight(layer_model, light, eye, location) || altered;
     }
 
     return altered;

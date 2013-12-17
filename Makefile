@@ -64,7 +64,7 @@ package:build
 	cp $(BUILDPATH)/basics/libpaysages_basics.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/definition/libpaysages_definition.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/render/software/libpaysages_render_software.so* paysages3d-linux/lib/
-	cp $(BUILDPATH)/render/preview/libpaysages_render_software.so* paysages3d-linux/lib/
+	cp $(BUILDPATH)/render/preview/libpaysages_render_preview.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/render/opengl/libpaysages_render_opengl.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/interface/desktop/paysages-gui paysages3d-linux/lib/
 	chmod +x paysages3d-linux/lib/paysages-gui
