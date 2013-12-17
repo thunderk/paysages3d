@@ -6,6 +6,7 @@
 #include "CloudLayerDefinition.h"
 #include "BaseCloudLayerRenderer.h"
 #include "CloudBasicLayerRenderer.h"
+#include "CameraDefinition.h"
 
 #include "clouds/BaseCloudsModel.h"
 #include "clouds/CloudModelStratoCumulus.h"
@@ -134,25 +135,24 @@ Color CloudsRenderer::getColor(const Vector3 &eye, const Vector3 &location, cons
     return cumul;
 }
 
-bool CloudsRenderer::alterLight(LightComponent* light, const Vector3 &eye, const Vector3 &location)
+bool CloudsRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
 {
     CloudsDefinition* definition = parent->getScenery()->getClouds();
 
     int n = definition->count();
     if (n < 1)
     {
-        return false;
+        return true;
     }
 
     /* TODO Iter layers in sorted order */
-    bool altered = false;
     for (int i = 0; i < n; i++)
     {
         BaseCloudLayerRenderer* layer_renderer = getLayerRenderer(i);
         BaseCloudsModel* layer_model = getLayerModel(i);
 
-        altered = layer_renderer->alterLight(layer_model, light, eye, location) || altered;
+        layer_renderer->alterLight(layer_model, &light, parent->render_camera->getLocation(), at);
     }
 
-    return altered;
+    return true;
 }

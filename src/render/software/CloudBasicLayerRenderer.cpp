@@ -164,13 +164,13 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
     result = COLOR_TRANSPARENT;
 
     detail = parent->getPrecision(start) / layer->scaling;
-    double transparency_depth = layer->scaling * 0.5;
+    double transparency_depth = layer->scaling * 0.7;
 
     segment_count = _findSegments(model, parent, start, direction, detail, 20, transparency_depth, max_length, &inside_length, &total_length, segments);
     for (i = segment_count - 1; i >= 0; i--)
     {
         SurfaceMaterial material;
-        material.base = colorToHSL(Color(0.7, 0.7, 0.7));
+        material.base = colorToHSL(Color(3.0, 3.0, 3.0));
         material.hardness = 0.25;
         material.reflection = 0.0;
         material.shininess = 0.0;
@@ -206,7 +206,7 @@ bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent*
         return false;
     }
 
-    double light_traversal = model->getLayer()->scaling * 8.0;
+    double light_traversal = model->getLayer()->scaling * 1.3;
     _findSegments(model, parent, start, light->direction, 0.1, 20, light_traversal, end.sub(start).getNorm(), &inside_depth, &total_depth, segments);
 
     if (light_traversal < 0.0001)
@@ -222,7 +222,7 @@ bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent*
         }
     }
 
-    double miminum_light = 0.4;
+    double miminum_light = 0.2;
     factor = 1.0 - (1.0 - miminum_light) * factor;
 
     light->color.r *= factor;

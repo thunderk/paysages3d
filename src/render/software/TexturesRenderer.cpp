@@ -16,6 +16,10 @@ TexturesRenderer::~TexturesRenderer()
 {
 }
 
+void TexturesRenderer::update()
+{
+}
+
 /*
  * Get the base presence factor of a layer, not accounting for other layers.
  */

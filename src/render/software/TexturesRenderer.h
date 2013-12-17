@@ -34,6 +34,8 @@ public:
     TexturesRenderer(SoftwareRenderer *parent);
     virtual ~TexturesRenderer();
 
+    virtual void update();
+
     virtual double getMaximalDisplacement(TexturesDefinition *textures);
     virtual double getLayerBasePresence(TextureLayerDefinition *layer, const TerrainRenderer::TerrainResult &terrain);
     virtual double getTriplanarNoise(NoiseGenerator *noise, const Vector3 &location, const Vector3 &normal);

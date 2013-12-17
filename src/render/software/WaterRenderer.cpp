@@ -17,6 +17,10 @@ WaterRenderer::~WaterRenderer()
 {
 }
 
+void WaterRenderer::update()
+{
+}
+
 static inline double _getHeight(WaterDefinition* definition, double base_height, double x, double z)
 {
     return base_height + definition->_waves_noise->get2DTotal(x, z);
@@ -135,43 +139,6 @@ static inline Color _getFoamMask(SoftwareRenderer* renderer, WaterDefinition* de
     return result;
 }
 
-int WaterRenderer::alterLight(LightComponent *light, const Vector3 &at)
-{
-    WaterDefinition* definition = parent->getScenery()->getWater();
-    double factor;
-    double base_height;
-
-    base_height = parent->getTerrainRenderer()->getWaterHeight();
-    if (at.y < base_height)
-    {
-        if (light->direction.y <= -0.00001)
-        {
-            factor = (base_height - at.y) / (-light->direction.y * definition->lighting_depth);
-            if (factor > 1.0)
-            {
-                factor = 1.0;
-            }
-            factor = 1.0 - factor;
-
-            light->color.r *= factor;
-            light->color.g *= factor;
-            light->color.b *= factor;
-            light->reflection *= factor;
-
-            return 1;
-        }
-        else
-        {
-            light->color = COLOR_BLACK;
-            return 1;
-        }
-    }
-    else
-    {
-        return 0;
-    }
-}
-
 HeightInfo WaterRenderer::getHeightInfo()
 {
     WaterDefinition* definition = parent->getScenery()->getWater();
@@ -269,4 +236,41 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     result.final = color;
 
     return result;
+}
+
+bool WaterRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
+{
+    WaterDefinition* definition = parent->getScenery()->getWater();
+    double factor;
+    double base_height;
+
+    base_height = parent->getTerrainRenderer()->getWaterHeight();
+    if (at.y < base_height)
+    {
+        if (light.direction.y <= -0.00001)
+        {
+            factor = (base_height - at.y) / (-light.direction.y * definition->lighting_depth);
+            if (factor > 1.0)
+            {
+                factor = 1.0;
+            }
+            factor = 1.0 - factor;
+
+            light.color.r *= factor;
+            light.color.g *= factor;
+            light.color.b *= factor;
+            light.reflection *= factor;
+
+            return true;
+        }
+        else
+        {
+            light.color = COLOR_BLACK;
+            return false;
+        }
+    }
+    else
+    {
+        return true;
+    }
 }

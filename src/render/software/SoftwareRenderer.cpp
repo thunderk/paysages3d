@@ -42,6 +42,10 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
     fluid_medium = new FluidMediumManager(this);
     lighting = new LightingManager();
 
+    lighting->registerFilter(terrain_renderer);
+    lighting->registerFilter(water_renderer);
+    lighting->registerFilter(clouds_renderer);
+
     this->scenery = new Scenery;
     if (scenery)
     {
@@ -54,14 +58,14 @@ SoftwareRenderer::~SoftwareRenderer()
     delete render_camera;
     delete render_area;
 
+    delete fluid_medium;
+    delete lighting;
+
     delete atmosphere_renderer;
     delete clouds_renderer;
     delete terrain_renderer;
     delete textures_renderer;
     delete water_renderer;
-
-    delete fluid_medium;
-    delete lighting;
 
     delete scenery;
 }
@@ -76,6 +80,7 @@ void SoftwareRenderer::prepare()
     scenery->getCamera()->copy(render_camera);
 
     // Prepare sub renderers
+    // TODO Don't recreate the renderer each time
     delete atmosphere_renderer;
     if (getScenery()->getAtmosphere()->model == AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON)
     {
@@ -86,18 +91,10 @@ void SoftwareRenderer::prepare()
         atmosphere_renderer = new BaseAtmosphereRenderer(this);
     }
 
-    delete clouds_renderer;
-    clouds_renderer = new CloudsRenderer(this);
     clouds_renderer->update();
-
-    delete terrain_renderer;
-    terrain_renderer = new TerrainRenderer(this);
-
-    delete textures_renderer;
-    textures_renderer = new TexturesRenderer(this);
-
-    delete water_renderer;
-    water_renderer = new WaterRenderer(this);
+    terrain_renderer->update();
+    water_renderer->update();
+    textures_renderer->update();
 
     // Prepare global tools
     fluid_medium->clearMedia();

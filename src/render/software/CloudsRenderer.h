@@ -3,13 +3,15 @@
 
 #include "software_global.h"
 
+#include "LightFilter.h"
+
 namespace paysages {
 namespace software {
 
 /*!
  * \brief Software renderer of a group of cloud layers.
  */
-class SOFTWARESHARED_EXPORT CloudsRenderer
+class SOFTWARESHARED_EXPORT CloudsRenderer: public LightFilter
 {
 public:
     CloudsRenderer(SoftwareRenderer* parent);
@@ -20,7 +22,7 @@ public:
      *
      * Don't call this if another thread is currently using this renderer.
      */
-    void update();
+    virtual void update();
 
     /*!
      * \brief Get the layer renderer for a given layer.
@@ -46,7 +48,7 @@ public:
      *
      * Return true if the light was altered.
      */
-    virtual bool alterLight(LightComponent* light, const Vector3 &eye, const Vector3 &location);
+    virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override;
 private:
     SoftwareRenderer* parent;
 

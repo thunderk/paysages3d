@@ -18,7 +18,7 @@ public:
      * This will alter the component and return if the component is still
      * useful.
      */
-    bool applyLightFilter(LightComponent &light, const Vector3 &at);
+    virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) = 0;
 };
 
 }

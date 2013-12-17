@@ -3,6 +3,8 @@
 
 #include "software_global.h"
 
+#include "LightFilter.h"
+
 #include "TerrainDefinition.h"
 #include "Vector3.h"
 #include "Color.h"
@@ -10,7 +12,7 @@
 namespace paysages {
 namespace software {
 
-class SOFTWARESHARED_EXPORT WaterRenderer
+class SOFTWARESHARED_EXPORT WaterRenderer:public LightFilter
 {
 public:
     typedef struct
@@ -27,10 +29,12 @@ public:
     WaterRenderer(SoftwareRenderer* parent);
     virtual ~WaterRenderer();
 
+    virtual void update();
+
     virtual HeightInfo getHeightInfo();
     virtual double getHeight(double x, double z);
     virtual WaterResult getResult(double x, double z);
-    virtual int alterLight(LightComponent *light, const Vector3 &at);
+    virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override;
 
 private:
     SoftwareRenderer* parent;
