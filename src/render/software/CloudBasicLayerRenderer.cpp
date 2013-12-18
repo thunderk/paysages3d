@@ -49,7 +49,7 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
     double ymin, ymax;
     int inside, segment_count;
     double current_total_length, current_inside_length;
-    double step_length, segment_length, remaining_length;
+    double step_length, segment_length;
     double noise_distance, last_noise_distance;
     Vector3 walker, step, segment_start;
     double render_precision;
@@ -102,8 +102,8 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
             {
                 // entering the cloud
                 inside = 1;
-                segment_length = step_length * noise_distance / (noise_distance - last_noise_distance);
-                segment_start = walker.add(direction.scale(-segment_length));
+                segment_length = 0.0;
+                segment_start = walker;
                 current_inside_length += segment_length;
                 step = direction.scale(render_precision);
             }
@@ -113,12 +113,11 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
             if (inside)
             {
                 // exiting the cloud
-                remaining_length = step_length * last_noise_distance / (last_noise_distance - noise_distance);
-                segment_length += remaining_length;
-                current_inside_length += remaining_length;
+                segment_length += step_length;
+                current_inside_length += step_length;
 
                 out_segments->start = segment_start;
-                out_segments->end = walker.add(direction.scale(remaining_length - step_length));
+                out_segments->end = walker;
                 out_segments->length = segment_length;
                 out_segments++;
                 if (++segment_count >= max_segments)
@@ -195,19 +194,20 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
 
 bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent* light, const Vector3 &, const Vector3 &location)
 {
-    Vector3 start, end;
+    Vector3 start, end, direction;
     double inside_depth, total_depth, factor;
     CloudSegment segments[20];
 
     start = location;
-    end = location.add(light->direction.scale(10000.0));
+    direction = light->direction.scale(-1.0);
+    end = location.add(direction.scale(10000.0));
     if (not optimizeSearchLimits(model, &start, &end))
     {
         return false;
     }
 
     double light_traversal = model->getLayer()->scaling * 1.3;
-    _findSegments(model, parent, start, light->direction, 0.1, 20, light_traversal, end.sub(start).getNorm(), &inside_depth, &total_depth, segments);
+    _findSegments(model, parent, start, direction, 0.1, 20, light_traversal, end.sub(start).getNorm(), &inside_depth, &total_depth, segments);
 
     if (light_traversal < 0.0001)
     {
@@ -222,7 +222,7 @@ bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent*
         }
     }
 
-    double miminum_light = 0.2;
+    double miminum_light = 0.3;
     factor = 1.0 - (1.0 - miminum_light) * factor;
 
     light->color.r *= factor;
