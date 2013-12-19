@@ -118,7 +118,7 @@ public:
 
             if (changed)
             {
-                _need_render = not _preview->commitChunkTransaction(&pixbuf, _xstart, _ystart, _xsize, _ysize, revision);
+                _need_render = not _preview->commitChunkTransaction(pixbuf, _xstart, _ystart, _xsize, _ysize, revision);
             }
             else
             {
@@ -613,7 +613,7 @@ QImage BasePreview::startChunkTransaction(int x, int y, int w, int h, int* revis
     return result;
 }
 
-bool BasePreview::commitChunkTransaction(QImage* chunk, int x, int y, int w, int h, int revision)
+bool BasePreview::commitChunkTransaction(const QImage &chunk, int x, int y, int w, int h, int revision)
 {
     bool result;
 
@@ -621,13 +621,8 @@ bool BasePreview::commitChunkTransaction(QImage* chunk, int x, int y, int w, int
 
     if (revision == _revision)
     {
-        for (int ix = 0; ix < w; ix++)
-        {
-            for (int iy = 0; iy < h; iy++)
-            {
-                _pixbuf->setPixel(x + ix, y + iy, chunk->pixel(ix, iy));
-            }
-        }
+        QPainter painter(_pixbuf);
+        painter.drawImage(x, y, chunk, 0, 0, w, h);
         emit contentChange();
         result = true;
     }
@@ -739,6 +734,8 @@ void BasePreview::resizeEvent(QResizeEvent* event)
     qDebug("[Previews] %d chunks added, %d total", added, _drawing_manager->chunkCount());
 
     delete image;
+
+    _revision++;
 
     this->_lock_drawing->unlock();
 }

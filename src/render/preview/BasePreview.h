@@ -48,7 +48,7 @@ public:
     void redraw();
 
     QImage startChunkTransaction(int x, int y, int w, int h, int* revision);
-    bool commitChunkTransaction(QImage* chunk, int x, int y, int w, int h, int revision);
+    bool commitChunkTransaction(const QImage &chunk, int x, int y, int w, int h, int revision);
     void rollbackChunkTransaction();
 
     QColor getPixelColor(int x, int y);
