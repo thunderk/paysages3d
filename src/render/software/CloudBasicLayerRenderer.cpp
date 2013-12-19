@@ -163,7 +163,7 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
     result = COLOR_TRANSPARENT;
 
     detail = parent->getPrecision(start) / layer->scaling;
-    double transparency_depth = layer->scaling * 0.7;
+    double transparency_depth = layer->scaling * 1.5;
 
     segment_count = _findSegments(model, parent, start, direction, detail, 20, transparency_depth, max_length, &inside_length, &total_length, segments);
     for (i = segment_count - 1; i >= 0; i--)
@@ -206,7 +206,7 @@ bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent*
         return false;
     }
 
-    double light_traversal = model->getLayer()->scaling * 1.3;
+    double light_traversal = model->getLayer()->scaling * 5.0;
     _findSegments(model, parent, start, direction, 0.1, 20, light_traversal, end.sub(start).getNorm(), &inside_depth, &total_depth, segments);
 
     if (light_traversal < 0.0001)
