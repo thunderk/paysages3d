@@ -106,9 +106,16 @@ AtmosphereResult BaseAtmosphereRenderer::getSkyColor(Vector3)
 
 Vector3 BaseAtmosphereRenderer::getSunDirection()
 {
-    AtmosphereDefinition* atmosphere = getDefinition();
-    double sun_angle = (atmosphere->_daytime + 0.75) * M_PI * 2.0;
-    return Vector3(cos(sun_angle), sin(sun_angle), 0.0);
+    if (lights.size() > 0)
+    {
+        return lights[0].direction.scale(-1.0);
+    }
+    else
+    {
+        AtmosphereDefinition* atmosphere = getDefinition();
+        double sun_angle = (atmosphere->_daytime + 0.75) * M_PI * 2.0;
+        return Vector3(cos(sun_angle), sin(sun_angle), 0.0);
+    }
 }
 
 void BaseAtmosphereRenderer::setBasicLights()

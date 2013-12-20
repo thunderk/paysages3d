@@ -104,8 +104,25 @@ BaseCloudsModel* CloudsRenderer::getLayerModel(unsigned int layer)
     }
     else
     {
-        qWarning("Asked for unknown layer renderer %d", layer);
+        qWarning("Asked for unknown layer model %d", layer);
         return fake_model;
+    }
+}
+
+void CloudsRenderer::setLayerModel(unsigned int layer, BaseCloudsModel *model, bool delete_old)
+{
+    if (layer < layer_models.size())
+    {
+        if (delete_old)
+        {
+            delete layer_models[layer];
+        }
+        layer_models[layer] = model;
+    }
+    else
+    {
+        qWarning("Asked to set an unknown layer model %d", layer);
+        delete model;
     }
 }
 

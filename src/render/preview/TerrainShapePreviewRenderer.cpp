@@ -50,32 +50,7 @@ void TerrainShapePreviewRenderer::updateEvent()
 
     prepare();
 
-    LightComponent light;
-    std::vector<LightComponent> lights;
-
-    light.color.r = 0.6;
-    light.color.g = 0.6;
-    light.color.b = 0.6;
-    light.direction.x = -1.0;
-    light.direction.y = -0.5;
-    light.direction.z = 1.0;
-    light.direction = light.direction.normalize();
-    light.altered = 1;
-    light.reflection = 0.0;
-    lights.push_back(light);
-
-    light.color.r = 0.2;
-    light.color.g = 0.2;
-    light.color.b = 0.2;
-    light.direction.x = 1.0;
-    light.direction.y = -0.5;
-    light.direction.z = -1.0;
-    light.direction = light.direction.normalize();
-    light.altered = 0;
-    light.reflection = 0.0;
-    lights.push_back(light);
-
-    disableAtmosphere(lights);
+    disableAtmosphere();
 }
 
 Color TerrainShapePreviewRenderer::getColor2D(double x, double y, double scaling)

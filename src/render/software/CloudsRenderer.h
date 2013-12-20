@@ -39,6 +39,14 @@ public:
     virtual BaseCloudsModel* getLayerModel(unsigned int layer);
 
     /*!
+     * \brief Override de default density model for a given layer.
+     *
+     * This must be called after each update().
+     * Ownership of the model is taken.
+     */
+    virtual void setLayerModel(unsigned int layer, BaseCloudsModel* model, bool delete_old=true);
+
+    /*!
      * \brief Get the composited color, as applied on a base color and location.
      */
     virtual Color getColor(const Vector3 &eye, const Vector3 &location, const Color &base);

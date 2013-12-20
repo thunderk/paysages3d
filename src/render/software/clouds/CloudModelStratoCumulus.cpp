@@ -37,15 +37,15 @@ void CloudModelStratoCumulus::update()
 
 void CloudModelStratoCumulus::getAltitudeRange(double *min_altitude, double *max_altitude) const
 {
-    *min_altitude = 2.0 + 7.0 * layer->altitude;
-    *max_altitude = *min_altitude + 5.0 * layer->scaling;
+    *min_altitude = 4.0 + 14.0 * layer->altitude;
+    *max_altitude = *min_altitude + 11.0 * layer->scaling;
 }
 
 double CloudModelStratoCumulus::getDensity(const Vector3 &location) const
 {
     double val;
     double min_altitude, max_altitude;
-    double noise_scaling = 12.0 * layer->scaling;
+    double noise_scaling = 25.0 * layer->scaling;
 
     getAltitudeRange(&min_altitude, &max_altitude);
 

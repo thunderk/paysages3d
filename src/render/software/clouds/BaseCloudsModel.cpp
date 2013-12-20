@@ -23,8 +23,11 @@ void BaseCloudsModel::getAltitudeRange(double *min_altitude, double *max_altitud
 
 void BaseCloudsModel::getDetailRange(double *min_step, double *max_step) const
 {
-    *min_step = 0.1;
-    *max_step = 1.0;
+    double min_altitude, max_altitude, thickness;
+    getAltitudeRange(&min_altitude, &max_altitude);
+    thickness = max_altitude - min_altitude;
+    *min_step = thickness * 0.001;
+    *max_step = thickness * 0.05;
 }
 
 double BaseCloudsModel::getProbability(const Vector3 &, double) const

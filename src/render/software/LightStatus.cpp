@@ -21,7 +21,7 @@ void LightStatus::pushComponent(LightComponent component)
 
 Color LightStatus::apply(const Vector3 &normal, const SurfaceMaterial &material)
 {
-    Color final;
+    Color final(0.0, 0.0, 0.0, 0.0);
 
     for (auto component: components)
     {

@@ -118,6 +118,36 @@ void SoftwareRenderer::disableClouds()
     scenery->getClouds()->clear();
 }
 
+void SoftwareRenderer::disableAtmosphere()
+{
+    LightComponent light;
+    std::vector<LightComponent> lights;
+
+    light.color.r = 1.5;
+    light.color.g = 1.5;
+    light.color.b = 1.5;
+    light.direction.x = -1.0;
+    light.direction.y = -0.5;
+    light.direction.z = 1.0;
+    light.direction = light.direction.normalize();
+    light.altered = 1;
+    light.reflection = 0.0;
+    lights.push_back(light);
+
+    light.color.r = 0.4;
+    light.color.g = 0.4;
+    light.color.b = 0.42;
+    light.direction.x = 1.0;
+    light.direction.y = -0.5;
+    light.direction.z = -1.0;
+    light.direction = light.direction.normalize();
+    light.altered = 0;
+    light.reflection = 0.0;
+    lights.push_back(light);
+
+    disableAtmosphere(lights);
+}
+
 void SoftwareRenderer::disableAtmosphere(const std::vector<LightComponent> &lights)
 {
     scenery->getAtmosphere()->model = AtmosphereDefinition::ATMOSPHERE_MODEL_DISABLED;

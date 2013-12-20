@@ -11,6 +11,8 @@ CloudsCoveragePreviewRenderer::CloudsCoveragePreviewRenderer(CloudLayerDefinitio
 {
     perspective = true;
 
+    render_quality = 6;
+
     CloudsDefinition* clouds = getScenery()->getClouds();
     clouds->clear();
     clouds->addLayer();

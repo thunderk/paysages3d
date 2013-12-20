@@ -43,14 +43,14 @@ static inline double _getDistanceToBorder(BaseCloudsModel* model, Vector3 positi
  * @param out_segments Allocated space to fill found segments
  * @return Number of segments found
  */
-static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vector3 start, Vector3 direction, double, int max_segments, double max_inside_length, double max_total_length, double* inside_length, double* total_length, CloudSegment* out_segments)
+static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vector3 start, Vector3 direction, int max_segments, double max_inside_length, double max_total_length, double* inside_length, double* total_length, CloudSegment* out_segments)
 {
-    CloudLayerDefinition* layer = model->getLayer();
     double ymin, ymax;
     int inside, segment_count;
     double current_total_length, current_inside_length;
     double step_length, segment_length;
-    double noise_distance, last_noise_distance;
+    double min_step, max_step;
+    double noise_distance;
     Vector3 walker, step, segment_start;
     double render_precision;
 
@@ -61,8 +61,17 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
 
     model->getAltitudeRange(&ymin, &ymax);
 
+    model->getDetailRange(&min_step, &max_step);
     render_precision = 15.2 - 1.5 * (double)renderer->render_quality;
-    render_precision = render_precision * layer->scaling / 50.0;
+    render_precision = render_precision * (ymax - ymin) / 50.0;
+    if (render_precision < min_step)
+    {
+        render_precision = min_step;
+    }
+    else if (render_precision > max_step)
+    {
+        render_precision = max_step;
+    }
     if (render_precision > max_total_length / 10.0)
     {
         render_precision = max_total_length / 10.0;
@@ -85,7 +94,6 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
     {
         walker = walker.add(step);
         step_length = step.getNorm();
-        last_noise_distance = noise_distance;
         noise_distance = _getDistanceToBorder(model, walker) * render_precision;
         current_total_length += step_length;
 
@@ -143,9 +151,8 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
 
 Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &eye, const Vector3 &location)
 {
-    CloudLayerDefinition* layer = model->getLayer();
     int i, segment_count;
-    double max_length, detail, total_length, inside_length;
+    double max_length, total_length, inside_length;
     Vector3 start, end, direction;
     Color result, col;
     CloudSegment segments[20];
@@ -162,10 +169,11 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
     direction = direction.normalize();
     result = COLOR_TRANSPARENT;
 
-    detail = parent->getPrecision(start) / layer->scaling;
-    double transparency_depth = layer->scaling * 1.5;
+    double ymin, ymax;
+    model->getAltitudeRange(&ymin, &ymax);
+    double transparency_depth = (ymax - ymin) * 0.3;
 
-    segment_count = _findSegments(model, parent, start, direction, detail, 20, transparency_depth, max_length, &inside_length, &total_length, segments);
+    segment_count = _findSegments(model, parent, start, direction, 20, transparency_depth, max_length, &inside_length, &total_length, segments);
     for (i = segment_count - 1; i >= 0; i--)
     {
         SurfaceMaterial material;
@@ -206,8 +214,10 @@ bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent*
         return false;
     }
 
-    double light_traversal = model->getLayer()->scaling * 5.0;
-    _findSegments(model, parent, start, direction, 0.1, 20, light_traversal, end.sub(start).getNorm(), &inside_depth, &total_depth, segments);
+    double ymin, ymax;
+    model->getAltitudeRange(&ymin, &ymax);
+    double light_traversal = (ymax - ymin) * 0.8;
+    _findSegments(model, parent, start, direction, 20, light_traversal, end.sub(start).getNorm(), &inside_depth, &total_depth, segments);
 
     if (light_traversal < 0.0001)
     {

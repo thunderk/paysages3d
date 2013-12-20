@@ -75,6 +75,7 @@ public:
      *
      * This function needs to be called after each prepare().
      */
+    void disableAtmosphere();
     void disableAtmosphere(const std::vector<LightComponent> &lights);
 
     void setPreviewCallbacks(RenderArea::RenderCallbackStart start, RenderArea::RenderCallbackDraw draw, RenderArea::RenderCallbackUpdate update);
