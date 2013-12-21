@@ -353,6 +353,11 @@ void WidgetExplorer::resizeGL(int w, int h)
 {
     _current_camera->setRenderSize(w, h);
     _renderer->resize(w, h);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    CameraPerspective perspective = _current_camera->getPerspective();
+    gluPerspective(perspective.yfov * 180.0 / M_PI, perspective.xratio, perspective.znear, perspective.zfar);
 }
 
 void WidgetExplorer::paintGL()

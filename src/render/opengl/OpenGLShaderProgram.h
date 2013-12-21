@@ -10,7 +10,7 @@
 #include <QPair>
 
 class QOpenGLShaderProgram;
-class QOpenGLFunctions;
+class QOpenGLFunctions_3_2_Core;
 
 namespace paysages {
 namespace opengl {
@@ -18,7 +18,7 @@ namespace opengl {
 class OPENGLSHARED_EXPORT OpenGLShaderProgram
 {
 public:
-    OpenGLShaderProgram(QString name, QOpenGLFunctions* functions);
+    OpenGLShaderProgram(QString name, QOpenGLFunctions_3_2_Core* functions);
     ~OpenGLShaderProgram();
 
     void addVertexSource(QString path);
@@ -50,7 +50,7 @@ private:
 
     QString name;
     QOpenGLShaderProgram* program;
-    QOpenGLFunctions* functions;
+    QOpenGLFunctions_3_2_Core* functions;
 
     QMap<QString, QPair<int, unsigned int> > textures;
 };

@@ -1,6 +1,6 @@
 #include "OpenGLRenderer.h"
 
-#include <QOpenGLFunctions>
+#include <QOpenGLFunctions_3_2_Core>
 #include <cmath>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -11,39 +11,42 @@
 OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     SoftwareRenderer(scenery)
 {
+    functions = new QOpenGLFunctions_3_2_Core();
     skybox = new OpenGLSkybox(this);
 }
 
 OpenGLRenderer::~OpenGLRenderer()
 {
     delete skybox;
+    delete functions;
 }
 
 void OpenGLRenderer::initialize()
 {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    // TODO Check return value
+    functions->initializeOpenGLFunctions();
 
-    glDisable(GL_LIGHTING);
+    functions->glClearColor(0.0, 0.0, 0.0, 0.0);
 
-    glFrontFace(GL_CCW);
-    glCullFace(GL_BACK);
-    glEnable(GL_CULL_FACE);
+    functions->glDisable(GL_LIGHTING);
 
-    glDepthFunc(GL_LESS);
-    glDepthMask(1);
-    glEnable(GL_DEPTH_TEST);
+    functions->glFrontFace(GL_CCW);
+    functions->glCullFace(GL_BACK);
+    functions->glEnable(GL_CULL_FACE);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glEnable(GL_LINE_SMOOTH);
-    glLineWidth(1.0);
+    functions->glDepthFunc(GL_LESS);
+    functions->glDepthMask(1);
+    functions->glEnable(GL_DEPTH_TEST);
 
-    glDisable(GL_FOG);
+    functions->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    functions->glEnable(GL_LINE_SMOOTH);
+    functions->glLineWidth(1.0);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    functions->glDisable(GL_FOG);
+
+    functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     prepare();
-
-    functions = new QOpenGLFunctions();
 
     skybox->initialize();
     skybox->updateScenery();
@@ -51,22 +54,13 @@ void OpenGLRenderer::initialize()
 
 void OpenGLRenderer::resize(int width, int height)
 {
-    CameraPerspective perspective;
-
-    glViewport(0, 0, width, height);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    perspective = render_camera->getPerspective();
-    gluPerspective(perspective.yfov * 180.0 / M_PI, perspective.xratio, perspective.znear, perspective.zfar);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    functions->glViewport(0, 0, width, height);
 }
 
 void OpenGLRenderer::paint()
 {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    functions->glClearColor(0.0, 0.0, 0.0, 0.0);
+    functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     skybox->render();
 }

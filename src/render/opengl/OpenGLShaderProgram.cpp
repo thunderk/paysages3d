@@ -1,14 +1,14 @@
 #include "OpenGLShaderProgram.h"
 
 #include <QOpenGLShaderProgram>
-#include <QOpenGLFunctions>
+#include <QOpenGLFunctions_3_2_Core>
 #include <QDir>
 #include "Texture2D.h"
 #include "Texture3D.h"
 #include "Texture4D.h"
 #include "Color.h"
 
-OpenGLShaderProgram::OpenGLShaderProgram(QString name, QOpenGLFunctions* functions):
+OpenGLShaderProgram::OpenGLShaderProgram(QString name, QOpenGLFunctions_3_2_Core* functions):
     name(name), functions(functions)
 {
     program = new QOpenGLShaderProgram();
@@ -68,15 +68,15 @@ void OpenGLShaderProgram::addTexture(QString sampler_name, Texture2D* texture)
     }
     else
     {
-        glGenTextures(1, &texid);
+        functions->glGenTextures(1, &texid);
         textures[sampler_name] = QPair<int, unsigned int>(GL_TEXTURE_2D, texid);
     }
 
-    glBindTexture(GL_TEXTURE_2D, texid);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    functions->glBindTexture(GL_TEXTURE_2D, texid);
+    functions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    functions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    functions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    functions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     int sx, sy;
     texture->getSize(&sx, &sy);
@@ -94,7 +94,7 @@ void OpenGLShaderProgram::addTexture(QString sampler_name, Texture2D* texture)
         }
     }
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sx, sy, 0, GL_RGBA, GL_FLOAT, pixels);
+    functions->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sx, sy, 0, GL_RGBA, GL_FLOAT, pixels);
     delete[] pixels;
 }
 
@@ -108,16 +108,16 @@ void OpenGLShaderProgram::addTexture(QString sampler_name, Texture3D* texture)
     }
     else
     {
-        glGenTextures(1, &texid);
+        functions->glGenTextures(1, &texid);
         textures[sampler_name] = QPair<int, unsigned int>(GL_TEXTURE_3D, texid);
     }
 
-    glBindTexture(GL_TEXTURE_3D, texid);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    functions->glBindTexture(GL_TEXTURE_3D, texid);
+    functions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    functions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    functions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    functions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    functions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     int sx, sy, sz;
     texture->getSize(&sx, &sy, &sz);
@@ -138,7 +138,7 @@ void OpenGLShaderProgram::addTexture(QString sampler_name, Texture3D* texture)
         }
     }
 
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, sx, sy, sz, 0, GL_RGBA, GL_FLOAT, pixels);
+    functions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, sx, sy, sz, 0, GL_RGBA, GL_FLOAT, pixels);
     delete[] pixels;
 }
 
@@ -152,16 +152,16 @@ void OpenGLShaderProgram::addTexture(QString sampler_name, Texture4D* texture)
     }
     else
     {
-        glGenTextures(1, &texid);
+        functions->glGenTextures(1, &texid);
         textures[sampler_name] = QPair<int, unsigned int>(GL_TEXTURE_3D, texid);
     }
 
-    glBindTexture(GL_TEXTURE_3D, texid);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    functions->glBindTexture(GL_TEXTURE_3D, texid);
+    functions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    functions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    functions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    functions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    functions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     int sx, sy, sz, sw;
     texture->getSize(&sx, &sy, &sz, &sw);
@@ -185,7 +185,7 @@ void OpenGLShaderProgram::addTexture(QString sampler_name, Texture4D* texture)
         }
     }
 
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, sx, sy, sz * sw, 0, GL_RGBA, GL_FLOAT, pixels);
+    functions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, sx, sy, sz * sw, 0, GL_RGBA, GL_FLOAT, pixels);
     delete[] pixels;
 }
 
@@ -233,8 +233,8 @@ void OpenGLShaderProgram::bind()
         int textureSampler = program->uniformLocation(iter.key());
         if (textureSampler >= 0)
         {
-            glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(iter.value().first, iter.value().second);
+            functions->glActiveTexture(GL_TEXTURE0 + i);
+            functions->glBindTexture(iter.value().first, iter.value().second);
             program->setUniformValue(textureSampler, i);
             i++;
         }
@@ -254,7 +254,7 @@ void OpenGLShaderProgram::drawTriangles(float* vertices, int triangle_count)
     program->setAttributeArray(vertex, GL_FLOAT, vertices, 3);
     program->enableAttributeArray(vertex);
 
-    glDrawArrays(GL_TRIANGLES, 0, triangle_count * 3);
+    functions->glDrawArrays(GL_TRIANGLES, 0, triangle_count * 3);
 
     program->disableAttributeArray(vertex);
 
@@ -269,7 +269,7 @@ void OpenGLShaderProgram::drawTriangleStrip(float* vertices, int vertex_count)
     program->setAttributeArray(vertex, GL_FLOAT, vertices, 3);
     program->enableAttributeArray(vertex);
 
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, vertex_count);
+    functions->glDrawArrays(GL_TRIANGLE_STRIP, 0, vertex_count);
 
     program->disableAttributeArray(vertex);
 
