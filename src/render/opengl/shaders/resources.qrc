@@ -2,5 +2,7 @@
     <qresource prefix="/shaders">
         <file>skybox.frag</file>
         <file>skybox.vert</file>
+        <file>water.frag</file>
+        <file>water.vert</file>
     </qresource>
 </RCC>

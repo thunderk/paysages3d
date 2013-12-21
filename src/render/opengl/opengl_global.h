@@ -18,6 +18,7 @@ namespace opengl {
     class BaseExplorerChunk;
     class OpenGLShaderProgram;
     class OpenGLSkybox;
+    class OpenGLWater;
 }
 }
 using namespace paysages::opengl;

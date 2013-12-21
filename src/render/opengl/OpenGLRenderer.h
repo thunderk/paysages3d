@@ -34,6 +34,7 @@ private:
     QOpenGLFunctions_3_2_Core* functions;
 
     OpenGLSkybox* skybox;
+    OpenGLWater* water;
 };
 
 }

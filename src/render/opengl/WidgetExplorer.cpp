@@ -365,7 +365,6 @@ void WidgetExplorer::paintGL()
     GLenum error_code;
     QTime start_time;
     double frame_time;
-    WaterDefinition* water = _renderer->getScenery()->getWater();
 
     // Don't do this at each frame, only on camera change
     _renderer->getScenery()->setCamera(_current_camera);
@@ -383,17 +382,6 @@ void WidgetExplorer::paintGL()
     Vector3 camera_target = _current_camera->getTarget();
     Vector3 camera_up = _current_camera->getUpVector();
     gluLookAt(camera_location.x, camera_location.y, camera_location.z, camera_target.x, camera_target.y, camera_target.z, camera_up.x, camera_up.y, camera_up.z);
-
-    // Render water
-    double water_height = _renderer->getTerrainRenderer()->getWaterHeight();
-    glDisable(GL_TEXTURE_2D);
-    glColor3f(water->material->_rgb.r, water->material->_rgb.g, water->material->_rgb.b);
-    glBegin(GL_QUADS);
-    glVertex3f(camera_location.x - 500.0, water_height, camera_location.z - 500.0);
-    glVertex3f(camera_location.x - 500.0, water_height, camera_location.z + 500.0);
-    glVertex3f(camera_location.x + 500.0, water_height, camera_location.z + 500.0);
-    glVertex3f(camera_location.x + 500.0, water_height, camera_location.z - 500.0);
-    glEnd();
 
     // Render chunks
     glEnable(GL_TEXTURE_2D);

@@ -20,7 +20,8 @@ SOURCES += \
     WidgetExplorer.cpp \
     OpenGLShaderProgram.cpp \
     OpenGLPart.cpp \
-    OpenGLSkybox.cpp
+    OpenGLSkybox.cpp \
+    OpenGLWater.cpp
 
 HEADERS +=\
         opengl_global.h \
@@ -30,7 +31,8 @@ HEADERS +=\
     WidgetExplorer.h \
     OpenGLShaderProgram.h \
     OpenGLPart.h \
-    OpenGLSkybox.h
+    OpenGLSkybox.h \
+    OpenGLWater.h
 
 unix:!symbian {
     maemo5 {
@@ -70,4 +72,7 @@ RESOURCES += \
 
 OTHER_FILES += \
     shaders/skybox.frag \
-    shaders/skybox.vert
+    shaders/skybox.vert \
+    shaders/water.vert \
+    shaders/water.frag \
+    shaders/bruneton.frag
