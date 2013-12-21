@@ -2,6 +2,7 @@
 #define DEFINITION_GLOBAL_H
 
 #include <QtCore/qglobal.h>
+
 #if defined(DEFINITION_LIBRARY)
 #  define DEFINITIONSHARED_EXPORT Q_DECL_EXPORT
 #else

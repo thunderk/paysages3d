@@ -5,6 +5,8 @@
 
 #include "SoftwareRenderer.h"
 
+class QOpenGLFunctions;
+
 namespace paysages {
 namespace opengl {
 
@@ -21,8 +23,17 @@ public:
     void resize(int width, int height);
     void paint();
 
+    void cameraChangeEvent(CameraDefinition* camera);
+
+    inline QOpenGLFunctions* getOpenGlFunctions() {return functions;}
+
     virtual double getPrecision(const Vector3 &location) override;
     virtual Color applyMediumTraversal(Vector3 location, Color color) override;
+
+private:
+    QOpenGLFunctions* functions;
+
+    OpenGLSkybox* skybox;
 };
 
 }

@@ -17,6 +17,11 @@ public:
     AtmosphereResult applyAerialPerspective(Vector3 location, const Color &base);
     void fillLightingStatus(LightStatus *status, const Vector3 &normal, int opaque);
 
+    /* Functions to get access to internal textures (for opengl shaders) */
+    Texture2D* getTextureTransmittance() const;
+    Texture2D* getTextureIrradiance() const;
+    Texture4D* getTextureInscatter() const;
+
 private:
     SoftwareRenderer* parent;
 };

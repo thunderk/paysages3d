@@ -20,6 +20,9 @@ namespace basics {
     class NoiseGenerator;
     class Curve;
     class ColorProfile;
+    class Texture2D;
+    class Texture3D;
+    class Texture4D;
 }
 }
 using namespace paysages::basics;

@@ -1,18 +1,22 @@
 #include "OpenGLRenderer.h"
 
+#include <QOpenGLFunctions>
 #include <cmath>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "Scenery.h"
 #include "CameraDefinition.h"
+#include "OpenGLSkybox.h"
 
 OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     SoftwareRenderer(scenery)
 {
+    skybox = new OpenGLSkybox(this);
 }
 
 OpenGLRenderer::~OpenGLRenderer()
 {
+    delete skybox;
 }
 
 void OpenGLRenderer::initialize()
@@ -38,6 +42,11 @@ void OpenGLRenderer::initialize()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     prepare();
+
+    functions = new QOpenGLFunctions();
+
+    skybox->initialize();
+    skybox->updateScenery();
 }
 
 void OpenGLRenderer::resize(int width, int height)
@@ -56,7 +65,15 @@ void OpenGLRenderer::resize(int width, int height)
 
 void OpenGLRenderer::paint()
 {
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    skybox->render();
+}
+
+void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera)
+{
+    skybox->updateCamera(camera);
 }
 
 double OpenGLRenderer::getPrecision(const Vector3 &)

@@ -11,7 +11,6 @@
 #include "WaterDefinition.h"
 #include "SurfaceMaterial.h"
 #include "CameraDefinition.h"
-#include "ExplorerChunkSky.h"
 #include "ExplorerChunkTerrain.h"
 #include "TerrainRenderer.h"
 #include "WaterRenderer.h"
@@ -111,14 +110,6 @@ void WidgetExplorer::startRendering()
             _chunks.append(chunk);
             _updateQueue.append(chunk);
         }
-    }
-
-    // Add skybox
-    for (int orientation = 0; orientation < 5; orientation++)
-    {
-        ExplorerChunkSky* chunk = new ExplorerChunkSky(_renderer, 500.0, (SkyboxOrientation) orientation);
-        _chunks.append(chunk);
-        _updateQueue.append(chunk);
     }
 
     // Start rendering workers
@@ -374,8 +365,12 @@ void WidgetExplorer::paintGL()
     // Don't do this at each frame, only on camera change
     _renderer->getScenery()->setCamera(_current_camera);
     _renderer->getScenery()->getCamera(_current_camera);
+    _renderer->cameraChangeEvent(_current_camera);
 
     start_time = QTime::currentTime();
+
+    // Background
+    _renderer->paint();
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -383,10 +378,6 @@ void WidgetExplorer::paintGL()
     Vector3 camera_target = _current_camera->getTarget();
     Vector3 camera_up = _current_camera->getUpVector();
     gluLookAt(camera_location.x, camera_location.y, camera_location.z, camera_target.x, camera_target.y, camera_target.z, camera_up.x, camera_up.y, camera_up.z);
-
-    // Background
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render water
     double water_height = _renderer->getTerrainRenderer()->getWaterHeight();

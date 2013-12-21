@@ -1268,3 +1268,18 @@ void AtmosphereModelBruneton::fillLightingStatus(LightStatus *status, const Vect
 
     status->pushComponent(irradiance);
 }
+
+Texture2D *AtmosphereModelBruneton::getTextureTransmittance() const
+{
+    return _transmittanceTexture;
+}
+
+Texture2D *AtmosphereModelBruneton::getTextureIrradiance() const
+{
+    return _irradianceTexture;
+}
+
+Texture4D *AtmosphereModelBruneton::getTextureInscatter() const
+{
+    return _inscatterTexture;
+}
