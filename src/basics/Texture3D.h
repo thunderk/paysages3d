@@ -12,17 +12,17 @@ public:
     Texture3D(int xsize, int ysize, int zsize);
     ~Texture3D();
 
-    void getSize(int* xsize, int* ysize, int* zsize);
+    void getSize(int* xsize, int* ysize, int* zsize) const;
     void setPixel(int x, int y, int z, Color col);
-    Color getPixel(int x, int y, int z);
-    Color getNearest(double dx, double dy, double dz);
-    Color getLinear(double dx, double dy, double dz);
-    Color getCubic(double dx, double dy, double dz);
+    Color getPixel(int x, int y, int z) const;
+    Color getNearest(double dx, double dy, double dz) const;
+    Color getLinear(double dx, double dy, double dz) const;
+    Color getCubic(double dx, double dy, double dz) const;
     void fill(Color col);
     void add(Texture3D* other);
-    void save(PackStream* stream);
+    void save(PackStream* stream) const;
     void load(PackStream* stream);
-    void saveToFile(const std::string &filepath);
+    void saveToFile(const std::string &filepath) const;
 
 private:
     int xsize;

@@ -19,7 +19,7 @@ Texture2D::~Texture2D()
     delete[] data;
 }
 
-void Texture2D::getSize(int* xsize, int* ysize)
+void Texture2D::getSize(int* xsize, int* ysize) const
 {
     *xsize = this->xsize;
     *ysize = this->ysize;
@@ -33,7 +33,7 @@ void Texture2D::setPixel(int x, int y, Color col)
     data[y * xsize + x] = col;
 }
 
-Color Texture2D::getPixel(int x, int y)
+Color Texture2D::getPixel(int x, int y) const
 {
     assert(x >= 0 && x < xsize);
     assert(y >= 0 && y < ysize);
@@ -41,7 +41,7 @@ Color Texture2D::getPixel(int x, int y)
     return data[y * xsize + x];
 }
 
-Color Texture2D::getNearest(double dx, double dy)
+Color Texture2D::getNearest(double dx, double dy) const
 {
     if (dx < 0.0) dx = 0.0;
     if (dx > 1.0) dx = 1.0;
@@ -57,7 +57,7 @@ Color Texture2D::getNearest(double dx, double dy)
     return this->data[iy * this->xsize + ix];
 }
 
-Color Texture2D::getLinear(double dx, double dy)
+Color Texture2D::getLinear(double dx, double dy) const
 {
     if (dx < 0.0) dx = 0.0;
     if (dx > 1.0) dx = 1.0;
@@ -89,7 +89,7 @@ Color Texture2D::getLinear(double dx, double dy)
     return c1.lerp(c2, dy);
 }
 
-Color Texture2D::getCubic(double dx, double dy)
+Color Texture2D::getCubic(double dx, double dy) const
 {
     /* TODO */
     return getLinear(dx, dy);
@@ -122,7 +122,7 @@ void Texture2D::add(Texture2D* source)
     }
 }
 
-void Texture2D::save(PackStream* stream)
+void Texture2D::save(PackStream* stream) const
 {
     int i, n;
     stream->write(&this->xsize);
@@ -151,17 +151,17 @@ void Texture2D::load(PackStream* stream)
 class Texture2DWriter:public PictureWriter
 {
 public:
-    Texture2DWriter(Texture2D *tex): tex(tex) {}
+    Texture2DWriter(const Texture2D *tex): tex(tex) {}
 
     virtual unsigned int getPixel(int x, int y) override
     {
         return tex->getPixel(x, y).to32BitBGRA();
     }
 private:
-    Texture2D *tex;
+    const Texture2D *tex;
 };
 
-void Texture2D::saveToFile(const std::string &filepath)
+void Texture2D::saveToFile(const std::string &filepath) const
 {
     Texture2DWriter writer(this);
     writer.save(filepath, xsize, ysize);

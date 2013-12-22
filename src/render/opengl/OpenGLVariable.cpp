@@ -2,20 +2,33 @@
 
 #include <cassert>
 #include <QOpenGLShaderProgram>
+#include <QOpenGLFunctions_3_2_Core>
+#include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
 #include "Vector3.h"
 #include "Matrix4.h"
 #include "Color.h"
+#include "Texture2D.h"
+#include "Texture3D.h"
+#include "Texture4D.h"
 
 OpenGLVariable::OpenGLVariable(const std::string &name):
     name(name)
 {
     type = TYPE_NONE;
+    texture_toupload = false;
 }
 
-void OpenGLVariable::apply(OpenGLShaderProgram *program)
+void OpenGLVariable::apply(OpenGLShaderProgram *program, int &texture_unit)
 {
     QOpenGLShaderProgram* pr = program->getProgram();
+    QOpenGLFunctions_3_2_Core* functions = program->getRenderer()->getOpenGlFunctions();
+
+    if (texture_toupload)
+    {
+        uploadTexture(program->getRenderer());
+        texture_toupload = false;
+    }
 
     switch (type)
     {
@@ -31,9 +44,49 @@ void OpenGLVariable::apply(OpenGLShaderProgram *program)
     case TYPE_MATRIX4:
         pr->setUniformValue(name.c_str(), value_matrix4);
         break;
+    case TYPE_TEXTURE_2D:
+        functions->glActiveTexture(GL_TEXTURE0 + texture_unit);
+        functions->glBindTexture(GL_TEXTURE_2D, texture_id);
+        pr->setUniformValue(name.c_str(), texture_unit);
+        texture_unit++;
+        break;
+    case TYPE_TEXTURE_3D:
+    case TYPE_TEXTURE_4D:
+        functions->glActiveTexture(GL_TEXTURE0 + texture_unit);
+        functions->glBindTexture(GL_TEXTURE_3D, texture_id);
+        pr->setUniformValue(name.c_str(), texture_unit);
+        texture_unit++;
+        break;
     case TYPE_NONE:
         break;
     }
+}
+
+void OpenGLVariable::set(const Texture2D *texture)
+{
+    assert(type == TYPE_NONE or type == TYPE_TEXTURE_2D);
+
+    type = TYPE_TEXTURE_2D;
+    value_tex2d = texture;
+    texture_toupload = true;
+}
+
+void OpenGLVariable::set(const Texture3D *texture)
+{
+    assert(type == TYPE_NONE or type == TYPE_TEXTURE_3D);
+
+    type = TYPE_TEXTURE_3D;
+    value_tex3d = texture;
+    texture_toupload = true;
+}
+
+void OpenGLVariable::set(const Texture4D *texture)
+{
+    assert(type == TYPE_NONE or type == TYPE_TEXTURE_4D);
+
+    type = TYPE_TEXTURE_4D;
+    value_tex4d = texture;
+    texture_toupload = true;
 }
 
 void OpenGLVariable::set(float value)
@@ -76,4 +129,103 @@ void OpenGLVariable::set(const Color &color)
 
     type = TYPE_COLOR;
     value_color = QColor(color.r, color.g, color.b);
+}
+
+void OpenGLVariable::uploadTexture(OpenGLRenderer* renderer)
+{
+    QOpenGLFunctions_3_2_Core* functions = renderer->getOpenGlFunctions();
+
+    assert(type == TYPE_TEXTURE_2D or type == TYPE_TEXTURE_3D or type == TYPE_TEXTURE_4D);
+
+    if (texture_id == 0)
+    {
+        GLuint texid;
+        functions->glGenTextures(1, &texid);
+        texture_id = texid;
+    }
+
+    GLenum textype = (type == TYPE_TEXTURE_2D) ? GL_TEXTURE_2D : GL_TEXTURE_3D;
+
+    functions->glBindTexture(textype, texture_id);
+    functions->glTexParameteri(textype, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    functions->glTexParameteri(textype, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    functions->glTexParameteri(textype, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    functions->glTexParameteri(textype, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    if (textype == GL_TEXTURE_3D)
+    {
+        functions->glTexParameteri(textype, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    }
+
+    if (type == TYPE_TEXTURE_2D)
+    {
+        int sx, sy;
+        value_tex2d->getSize(&sx, &sy);
+        float* pixels = new float[sx * sy * 4];
+        for (int x = 0; x < sx; x++)
+        {
+            for (int y = 0; y < sy; y++)
+            {
+                float* pixel = pixels + (y * sx + x) * 4;
+                Color col = value_tex2d->getPixel(x, y);
+                pixel[0] = (float)col.r;
+                pixel[1] = (float)col.g;
+                pixel[2] = (float)col.b;
+                pixel[3] = (float)col.a;
+            }
+        }
+
+        functions->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sx, sy, 0, GL_RGBA, GL_FLOAT, pixels);
+        delete[] pixels;
+    }
+    else if (type == TYPE_TEXTURE_3D)
+    {
+        int sx, sy, sz;
+        value_tex3d->getSize(&sx, &sy, &sz);
+        float* pixels = new float[sx * sy * sz * 4];
+        for (int x = 0; x < sx; x++)
+        {
+            for (int y = 0; y < sy; y++)
+            {
+                for (int z = 0; z < sz; z++)
+                {
+                    float* pixel = pixels + (z * (sx * sy) + y * sx + x) * 4;
+                    Color col = value_tex3d->getPixel(x, y, z);
+                    pixel[0] = (float)col.r;
+                    pixel[1] = (float)col.g;
+                    pixel[2] = (float)col.b;
+                    pixel[3] = (float)col.a;
+                }
+            }
+        }
+
+        functions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, sx, sy, sz, 0, GL_RGBA, GL_FLOAT, pixels);
+        delete[] pixels;
+    }
+    else
+    {
+        int sx, sy, sz, sw;
+        value_tex4d->getSize(&sx, &sy, &sz, &sw);
+        float* pixels = new float[sx * sy * sz * sw * 4];
+        for (int x = 0; x < sx; x++)
+        {
+            for (int y = 0; y < sy; y++)
+            {
+                for (int z = 0; z < sz; z++)
+                {
+                    for (int w = 0; w < sw; w++)
+                    {
+                        float* pixel = pixels + (w * (sx * sy * sz) + z * (sx * sy) + y * sx + x) * 4;
+                        Color col = value_tex4d->getPixel(x, y, z, w);
+                        pixel[0] = (float)col.r;
+                        pixel[1] = (float)col.g;
+                        pixel[2] = (float)col.b;
+                        pixel[3] = (float)col.a;
+                    }
+                }
+            }
+        }
+
+        functions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, sx, sy, sz * sw, 0, GL_RGBA, GL_FLOAT, pixels);
+        delete[] pixels;
+    }
 }

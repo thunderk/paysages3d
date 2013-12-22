@@ -20,7 +20,7 @@ public:
     /*!
      * \brief Apply the stored variables to the bound program.
      */
-    void apply(OpenGLShaderProgram* program);
+    void apply(OpenGLShaderProgram* program, int &texture_unit);
 
     /*!
      * \brief Get or create a variable in the state.
