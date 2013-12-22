@@ -216,9 +216,10 @@ vec4 _toneMappingUncharted(vec4 color, float exposure)
 void main(void)
 {
     float yoffset = GROUND_OFFSET - waterHeight;
-    float cameray = max(cameraLocation[1] + yoffset, 0.0);
-    vec3 x = vec3(0.0, Rg + cameray * WORLD_SCALING, 0.0);
-    vec3 v = normalize(unprojected - cameraLocation);
+    vec3 camera = vec3(cameraLocation.x, max(cameraLocation.y + yoffset, 0.0), cameraLocation.z);
+    vec3 location = vec3(unprojected.x, max(unprojected.y + yoffset, 0.0), unprojected.z);
+    vec3 x = vec3(0.0, Rg + camera.y * WORLD_SCALING, 0.0);
+    vec3 v = normalize(location - camera);
     vec3 s = normalize(sunDirection * SUN_DISTANCE_SCALED - x);
 
     float r = length(x);
