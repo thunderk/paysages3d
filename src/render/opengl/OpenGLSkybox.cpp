@@ -3,6 +3,7 @@
 #include <cmath>
 #include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
+#include "OpenGLSharedState.h"
 #include "Scenery.h"
 #include "AtmosphereDefinition.h"
 #include "AtmosphereRenderer.h"
@@ -51,8 +52,13 @@ void OpenGLSkybox::initialize()
 
 void OpenGLSkybox::update()
 {
-    SoftwareBrunetonAtmosphereRenderer* bruneton = (SoftwareBrunetonAtmosphereRenderer*)renderer->getAtmosphereRenderer();
+    Vector3 sun_direction = renderer->getAtmosphereRenderer()->getSunDirection();
+    renderer->getSharedState()->set("sunDirection", sun_direction);
 
+    Color sun_color = renderer->getScenery()->getAtmosphere()->sun_color;
+    renderer->getSharedState()->set("sunColor", sun_color);
+
+    SoftwareBrunetonAtmosphereRenderer* bruneton = (SoftwareBrunetonAtmosphereRenderer*)renderer->getAtmosphereRenderer();
     program->addTexture("transmittanceTexture", bruneton->getModel()->getTextureTransmittance());
     program->addTexture("inscatterTexture", bruneton->getModel()->getTextureInscatter());
 }

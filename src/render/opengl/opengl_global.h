@@ -17,6 +17,8 @@ namespace opengl {
     class OpenGLRenderer;
     class BaseExplorerChunk;
     class OpenGLShaderProgram;
+    class OpenGLSharedState;
+    class OpenGLVariable;
     class OpenGLSkybox;
     class OpenGLWater;
 }

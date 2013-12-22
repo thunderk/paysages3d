@@ -18,7 +18,7 @@ namespace opengl {
 class OPENGLSHARED_EXPORT OpenGLShaderProgram
 {
 public:
-    OpenGLShaderProgram(QString name, QOpenGLFunctions_3_2_Core* functions);
+    OpenGLShaderProgram(QString name, OpenGLRenderer* renderer);
     ~OpenGLShaderProgram();
 
     void addVertexSource(QString path);
@@ -26,8 +26,6 @@ public:
     void compile();
 
     void updateCamera(const QVector3D& location, const QMatrix4x4& view);
-    void updateWaterHeight(double height);
-    void updateSun(const QVector3D& direction, const QColor& color);
 
     void addTexture(QString sampler_name, Texture2D* texture);
     void addTexture(QString sampler_name, Texture3D* texture);
@@ -36,17 +34,18 @@ public:
     void drawTriangles(float* vertices, int triangle_count);
     void drawTriangleStrip(float* vertices, int vertex_count);
 
+protected:
+    inline QOpenGLShaderProgram* getProgram() const {return program;}
+    friend class OpenGLVariable;
+
 private:
     void bind();
     void release();
 
+    OpenGLRenderer* renderer;
+
     QMatrix4x4 view;
     QVector3D camera_location;
-
-    float water_height;
-
-    QVector3D sun_direction;
-    QColor sun_color;
 
     QString name;
     QOpenGLShaderProgram* program;

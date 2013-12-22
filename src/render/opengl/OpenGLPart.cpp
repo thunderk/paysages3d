@@ -7,7 +7,6 @@
 #include "CameraDefinition.h"
 #include "AtmosphereDefinition.h"
 #include "AtmosphereRenderer.h"
-#include "WaterRenderer.h"
 #include "Scenery.h"
 
 OpenGLPart::OpenGLPart(OpenGLRenderer* renderer):
@@ -27,7 +26,7 @@ OpenGLPart::~OpenGLPart()
 
 OpenGLShaderProgram* OpenGLPart::createShader(QString name)
 {
-    OpenGLShaderProgram* program = new OpenGLShaderProgram(name, renderer->getOpenGlFunctions());
+    OpenGLShaderProgram* program = new OpenGLShaderProgram(name, renderer);
 
     if (!shaders.contains(name))
     {
@@ -82,25 +81,6 @@ void OpenGLPart::updateCamera(CameraDefinition* camera)
 
 void OpenGLPart::updateScenery(bool onlyCommon)
 {
-    Scenery* scenery = renderer->getScenery();
-
-    // Collect common info
-    double water_height = renderer->getWaterRenderer()->getHeightInfo().max_height;
-    Vector3 orig_sun_direction = renderer->getAtmosphereRenderer()->getSunDirection();
-    QVector3D sun_direction = QVector3D(orig_sun_direction.x, orig_sun_direction.y, orig_sun_direction.z);
-    Color orig_sun_color = scenery->getAtmosphere()->sun_color;
-    QColor sun_color = QColor(orig_sun_color.r, orig_sun_color.g, orig_sun_color.b);
-
-    // Update shaders
-    QMapIterator<QString, OpenGLShaderProgram*> i(shaders);
-    while (i.hasNext())
-    {
-        i.next();
-
-        i.value()->updateWaterHeight(water_height);
-        i.value()->updateSun(sun_direction, sun_color);
-    }
-
     // Let subclass do its own collecting
     if (not onlyCommon)
     {

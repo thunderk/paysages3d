@@ -2,6 +2,7 @@
 
 #include <QOpenGLFunctions_3_2_Core>
 #include "CameraDefinition.h"
+#include "OpenGLSharedState.h"
 #include "OpenGLSkybox.h"
 #include "OpenGLWater.h"
 
@@ -9,6 +10,8 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     SoftwareRenderer(scenery)
 {
     functions = new QOpenGLFunctions_3_2_Core();
+    shared_state = new OpenGLSharedState();
+
     skybox = new OpenGLSkybox(this);
     water = new OpenGLWater(this);
 }
@@ -17,7 +20,9 @@ OpenGLRenderer::~OpenGLRenderer()
 {
     delete skybox;
     delete water;
+
     delete functions;
+    delete shared_state;
 }
 
 void OpenGLRenderer::initialize()

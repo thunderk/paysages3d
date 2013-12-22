@@ -21,7 +21,9 @@ SOURCES += \
     OpenGLShaderProgram.cpp \
     OpenGLPart.cpp \
     OpenGLSkybox.cpp \
-    OpenGLWater.cpp
+    OpenGLWater.cpp \
+    OpenGLSharedState.cpp \
+    OpenGLVariable.cpp
 
 HEADERS +=\
         opengl_global.h \
@@ -32,7 +34,9 @@ HEADERS +=\
     OpenGLShaderProgram.h \
     OpenGLPart.h \
     OpenGLSkybox.h \
-    OpenGLWater.h
+    OpenGLWater.h \
+    OpenGLSharedState.h \
+    OpenGLVariable.h
 
 unix:!symbian {
     maemo5 {

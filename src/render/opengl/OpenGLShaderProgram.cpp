@@ -3,15 +3,18 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLFunctions_3_2_Core>
 #include <QDir>
+#include "OpenGLRenderer.h"
+#include "OpenGLSharedState.h"
 #include "Texture2D.h"
 #include "Texture3D.h"
 #include "Texture4D.h"
 #include "Color.h"
 
-OpenGLShaderProgram::OpenGLShaderProgram(QString name, QOpenGLFunctions_3_2_Core* functions):
-    name(name), functions(functions)
+OpenGLShaderProgram::OpenGLShaderProgram(QString name, OpenGLRenderer* renderer):
+    renderer(renderer), name(name)
 {
     program = new QOpenGLShaderProgram();
+    functions = renderer->getOpenGlFunctions();
 }
 
 OpenGLShaderProgram::~OpenGLShaderProgram()
@@ -45,17 +48,6 @@ void OpenGLShaderProgram::updateCamera(const QVector3D& location, const QMatrix4
 {
     this->camera_location = location;
     this->view = view;
-}
-
-void OpenGLShaderProgram::updateWaterHeight(double height)
-{
-    this->water_height = height;
-}
-
-void OpenGLShaderProgram::updateSun(const QVector3D& direction, const QColor& color)
-{
-    this->sun_direction = direction;
-    this->sun_color = color;
 }
 
 void OpenGLShaderProgram::addTexture(QString sampler_name, Texture2D* texture)
@@ -193,6 +185,8 @@ void OpenGLShaderProgram::bind()
 {
     program->bind();
 
+    renderer->getSharedState()->apply(this);
+
     // TODO Keep locations in cache
 
     int viewMatrix = program->uniformLocation("viewMatrix");
@@ -205,24 +199,6 @@ void OpenGLShaderProgram::bind()
     if (cameraLocation >= 0)
     {
         program->setUniformValue(cameraLocation, camera_location);
-    }
-
-    int waterHeight = program->uniformLocation("waterHeight");
-    if (waterHeight >= 0)
-    {
-        program->setUniformValue(waterHeight, water_height);
-    }
-
-    int sunDirection = program->uniformLocation("sunDirection");
-    if (sunDirection >= 0)
-    {
-        program->setUniformValue(sunDirection, sun_direction);
-    }
-
-    int sunColor = program->uniformLocation("sunColor");
-    if (sunColor >= 0)
-    {
-        program->setUniformValue(sunColor, sun_color);
     }
 
     QMapIterator<QString, QPair<int, unsigned int> > iter(textures);

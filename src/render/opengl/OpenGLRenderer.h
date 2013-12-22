@@ -25,13 +25,15 @@ public:
 
     void cameraChangeEvent(CameraDefinition* camera);
 
-    inline QOpenGLFunctions_3_2_Core* getOpenGlFunctions() {return functions;}
+    inline QOpenGLFunctions_3_2_Core* getOpenGlFunctions() const {return functions;}
+    inline OpenGLSharedState* getSharedState() const {return shared_state;}
 
     virtual double getPrecision(const Vector3 &location) override;
     virtual Color applyMediumTraversal(Vector3 location, Color color) override;
 
 private:
     QOpenGLFunctions_3_2_Core* functions;
+    OpenGLSharedState* shared_state;
 
     OpenGLSkybox* skybox;
     OpenGLWater* water;
