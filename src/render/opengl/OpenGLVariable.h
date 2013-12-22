@@ -5,6 +5,7 @@
 
 #include <QColor>
 #include <QVector3D>
+#include <QMatrix4x4>
 
 namespace paysages {
 namespace opengl {
@@ -36,7 +37,9 @@ public:
     void set(const Texture4D *texture);
     void set(float value);
     void set(const Vector3 &vector);
+    void set(const QVector3D &vector);
     void set(const Matrix4 &matrix);
+    void set(const QMatrix4x4 &matrix);
     void set(const Color &color);
 
 private:
@@ -46,6 +49,7 @@ private:
     float value_float;
     QColor value_color;
     QVector3D value_vector3;
+    QMatrix4x4 value_matrix4;
 };
 
 }

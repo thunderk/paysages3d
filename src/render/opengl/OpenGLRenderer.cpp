@@ -75,8 +75,26 @@ void OpenGLRenderer::paint()
 
 void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera)
 {
-    skybox->updateCamera(camera);
-    water->updateCamera(camera);
+    // Get camera info
+    Vector3 location = camera->getLocation();
+    Vector3 target = camera->getTarget();
+    Vector3 up = camera->getUpVector();
+    CameraPerspective perspective = camera->getPerspective();
+
+    // Compute matrix
+    QMatrix4x4 transform;
+    transform.setToIdentity();
+    transform.lookAt(QVector3D(location.x, location.y, location.z),
+                  QVector3D(target.x, target.y, target.z),
+                  QVector3D(up.x, up.y, up.z));
+
+    QMatrix4x4 projection;
+    projection.setToIdentity();
+    projection.perspective(perspective.yfov * 180.0 / M_PI, perspective.xratio, perspective.znear, perspective.zfar);
+
+    // Set in shaders
+    shared_state->set("cameraLocation", location);
+    shared_state->set("viewMatrix", projection * transform);
 }
 
 double OpenGLRenderer::getPrecision(const Vector3 &)

@@ -27,7 +27,6 @@ public:
     virtual void render() = 0;
 
     void postInitialize();
-    void updateCamera(CameraDefinition* camera);
     void updateScenery(bool onlyCommon=false);
 
 protected:

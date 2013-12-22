@@ -4,6 +4,9 @@
 #include "basics_global.h"
 
 #include "Vector3.h"
+#ifdef QT_GUI_LIB
+#include <QMatrix4x4>
+#endif
 
 namespace paysages {
 namespace basics {
@@ -34,6 +37,15 @@ public:
     static Matrix4 newPerspective(double fov_y, double aspect, double near, double far);
 
     double getDeterminant() const;
+
+#ifdef QT_GUI_LIB
+    inline QMatrix4x4 toQMatrix() const {
+        return QMatrix4x4(a, b, c, d,
+                          e, f, g, h,
+                          i, j, k, l,
+                          m, n, o, p);
+    }
+#endif
 
 private:
     double a;

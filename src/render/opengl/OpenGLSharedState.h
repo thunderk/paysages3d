@@ -33,7 +33,9 @@ public:
     inline void set(const std::string &name, const Texture4D *texture) {get(name)->set(texture);}
     inline void set(const std::string &name, float value) {get(name)->set(value);}
     inline void set(const std::string &name, const Vector3 &vector) {get(name)->set(vector);}
+    inline void set(const std::string &name, const QVector3D &vector) {get(name)->set(vector);}
     inline void set(const std::string &name, const Matrix4 &matrix) {get(name)->set(matrix);}
+    inline void set(const std::string &name, const QMatrix4x4 &matrix) {get(name)->set(matrix);}
     inline void set(const std::string &name, const Color &color) {get(name)->set(color);}
 
 private:

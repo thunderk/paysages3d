@@ -36,6 +36,7 @@ public:
     inline double getRoll() const {return roll;}
     inline Vector3 getDirection() const {return Vector3(direction);}
     inline Vector3 getDirectionNormalized() const {return forward;}
+    inline const Matrix4 &getTransformationMatrix() const {return projector;}
     inline VectorSpherical getDirectionSpherical() const {return direction;}
     inline CameraPerspective getPerspective() const {return perspective;}
 

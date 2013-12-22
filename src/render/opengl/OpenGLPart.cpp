@@ -49,36 +49,6 @@ void OpenGLPart::postInitialize()
     }
 }
 
-void OpenGLPart::updateCamera(CameraDefinition* camera)
-{
-    // Get camera info
-    Vector3 location = camera->getLocation();
-    Vector3 target = camera->getTarget();
-    Vector3 up = camera->getUpVector();
-    CameraPerspective perspective = camera->getPerspective();
-
-    QVector3D vlocation(location.x, location.y, location.z);
-
-    // Compute matrix
-    QMatrix4x4 transform;
-    transform.setToIdentity();
-    transform.lookAt(vlocation,
-                  QVector3D(target.x, target.y, target.z),
-                  QVector3D(up.x, up.y, up.z));
-
-    QMatrix4x4 projection;
-    projection.setToIdentity();
-    projection.perspective(perspective.yfov * 180.0 / M_PI, perspective.xratio, perspective.znear, perspective.zfar);
-
-    // Set in shaders
-    QMapIterator<QString, OpenGLShaderProgram*> i(shaders);
-    while (i.hasNext())
-    {
-        i.next();
-        i.value()->updateCamera(vlocation, projection * transform);
-    }
-}
-
 void OpenGLPart::updateScenery(bool onlyCommon)
 {
     // Let subclass do its own collecting

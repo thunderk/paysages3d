@@ -25,8 +25,6 @@ public:
     void addFragmentSource(QString path);
     void compile();
 
-    void updateCamera(const QVector3D& location, const QMatrix4x4& view);
-
     void addTexture(QString sampler_name, Texture2D* texture);
     void addTexture(QString sampler_name, Texture3D* texture);
     void addTexture(QString sampler_name, Texture4D* texture);
@@ -43,9 +41,6 @@ private:
     void release();
 
     OpenGLRenderer* renderer;
-
-    QMatrix4x4 view;
-    QVector3D camera_location;
 
     QString name;
     QOpenGLShaderProgram* program;

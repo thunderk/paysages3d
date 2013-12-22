@@ -4,6 +4,7 @@
 #include <QOpenGLShaderProgram>
 #include "OpenGLShaderProgram.h"
 #include "Vector3.h"
+#include "Matrix4.h"
 #include "Color.h"
 
 OpenGLVariable::OpenGLVariable(const std::string &name):
@@ -27,6 +28,9 @@ void OpenGLVariable::apply(OpenGLShaderProgram *program)
     case TYPE_VECTOR3:
         pr->setUniformValue(name.c_str(), value_vector3);
         break;
+    case TYPE_MATRIX4:
+        pr->setUniformValue(name.c_str(), value_matrix4);
+        break;
     case TYPE_NONE:
         break;
     }
@@ -42,10 +46,28 @@ void OpenGLVariable::set(float value)
 
 void OpenGLVariable::set(const Vector3 &vector)
 {
-    assert(type == TYPE_NONE or type == TYPE_COLOR);
+    set(QVector3D(vector.x, vector.y, vector.z));
+}
+
+void OpenGLVariable::set(const QVector3D &vector)
+{
+    assert(type == TYPE_NONE or type == TYPE_VECTOR3);
 
     type = TYPE_VECTOR3;
-    value_vector3 = QVector3D(vector.x, vector.y, vector.z);
+    value_vector3 = vector;
+}
+
+void OpenGLVariable::set(const Matrix4 &matrix)
+{
+    set(matrix.toQMatrix());
+}
+
+void OpenGLVariable::set(const QMatrix4x4 &matrix)
+{
+    assert(type == TYPE_NONE or type == TYPE_MATRIX4);
+
+    type = TYPE_MATRIX4;
+    value_matrix4 = matrix;
 }
 
 void OpenGLVariable::set(const Color &color)

@@ -44,12 +44,6 @@ void OpenGLShaderProgram::compile()
     }
 }
 
-void OpenGLShaderProgram::updateCamera(const QVector3D& location, const QMatrix4x4& view)
-{
-    this->camera_location = location;
-    this->view = view;
-}
-
 void OpenGLShaderProgram::addTexture(QString sampler_name, Texture2D* texture)
 {
     GLuint texid;
@@ -186,20 +180,6 @@ void OpenGLShaderProgram::bind()
     program->bind();
 
     renderer->getSharedState()->apply(this);
-
-    // TODO Keep locations in cache
-
-    int viewMatrix = program->uniformLocation("viewMatrix");
-    if (viewMatrix >= 0)
-    {
-        program->setUniformValue(viewMatrix, view);
-    }
-
-    int cameraLocation = program->uniformLocation("cameraLocation");
-    if (cameraLocation >= 0)
-    {
-        program->setUniformValue(cameraLocation, camera_location);
-    }
 
     QMapIterator<QString, QPair<int, unsigned int> > iter(textures);
     int i = 0;
