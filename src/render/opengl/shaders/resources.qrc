@@ -4,5 +4,7 @@
         <file>skybox.vert</file>
         <file>water.frag</file>
         <file>water.vert</file>
+        <file>bruneton.frag</file>
+        <file>tonemapping.frag</file>
     </qresource>
 </RCC>

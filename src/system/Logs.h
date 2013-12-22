@@ -4,6 +4,6 @@
 #include "system_global.h"
 
 #define logWarning qWarning
-#define logError qError
+#define logError qCritical
 
 #endif // LOGS_H

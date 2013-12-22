@@ -39,16 +39,6 @@ OpenGLShaderProgram* OpenGLPart::createShader(QString name)
     }
 }
 
-void OpenGLPart::postInitialize()
-{
-    QMapIterator<QString, OpenGLShaderProgram*> i(shaders);
-    while (i.hasNext())
-    {
-        i.next();
-        i.value()->compile();
-    }
-}
-
 void OpenGLPart::updateScenery(bool onlyCommon)
 {
     // Let subclass do its own collecting

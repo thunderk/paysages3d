@@ -9,12 +9,14 @@
 #include "Texture3D.h"
 #include "Texture4D.h"
 #include "Color.h"
+#include "Logs.h"
 
 OpenGLShaderProgram::OpenGLShaderProgram(QString name, OpenGLRenderer* renderer):
     renderer(renderer), name(name)
 {
     program = new QOpenGLShaderProgram();
     functions = renderer->getOpenGlFunctions();
+    compiled = false;
 }
 
 OpenGLShaderProgram::~OpenGLShaderProgram()
@@ -24,21 +26,40 @@ OpenGLShaderProgram::~OpenGLShaderProgram()
 
 void OpenGLShaderProgram::addVertexSource(QString path)
 {
-    program->addShaderFromSourceFile(QOpenGLShader::Vertex, QString(":/shaders/%1.vert").arg(path));
+    QFile file(QString(":/shaders/%1.vert").arg(path));
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        source_vertex += QString(file.readAll()).toStdString();
+    }
+    else
+    {
+        logError() << "Can't open vertex file " << file.fileName();
+    }
 }
 
 void OpenGLShaderProgram::addFragmentSource(QString path)
 {
-    program->addShaderFromSourceFile(QOpenGLShader::Fragment, QString(":/shaders/%1.frag").arg(path));
+    QFile file(QString(":/shaders/%1.frag").arg(path));
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        source_fragment += QString(file.readAll()).toStdString();
+    }
+    else
+    {
+        logError("Can't open fragment file %s", file.fileName().toStdString().c_str());
+    }
 }
 
 void OpenGLShaderProgram::compile()
 {
+    program->addShaderFromSourceCode(QOpenGLShader::Vertex, QString::fromStdString(source_vertex));
+    program->addShaderFromSourceCode(QOpenGLShader::Fragment, QString::fromStdString(source_fragment));
+
     if (not program->link())
     {
         qWarning() << "Error while compiling shader " << name << "\n" << program->log() << "\n";
     }
-    else
+    else if (program->log().length() > 0)
     {
         qDebug() << "Shader " << name << " compilation output:\n" << program->log() << "\n";
     }
@@ -46,6 +67,12 @@ void OpenGLShaderProgram::compile()
 
 void OpenGLShaderProgram::bind()
 {
+    if (not compiled)
+    {
+        compile();
+        compiled = true;
+    }
+
     program->bind();
 
     int texture_unit = 0;

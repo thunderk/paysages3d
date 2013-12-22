@@ -20,6 +20,8 @@ void OpenGLWater::initialize()
 {
     program = createShader("water");
     program->addVertexSource("water");
+    program->addFragmentSource("bruneton");
+    program->addFragmentSource("tonemapping");
     program->addFragmentSource("water");
 
     setVertex(0, -1.0f, 0.0f, -1.0f);

@@ -79,4 +79,6 @@ OTHER_FILES += \
     shaders/skybox.vert \
     shaders/water.vert \
     shaders/water.frag \
-    shaders/bruneton.frag
+    shaders/bruneton.frag \
+    shaders/bruneton.frag \
+    shaders/tonemapping.frag

@@ -26,7 +26,6 @@ public:
     // Do the rendering
     virtual void render() = 0;
 
-    void postInitialize();
     void updateScenery(bool onlyCommon=false);
 
 protected:
