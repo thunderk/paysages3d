@@ -8,6 +8,7 @@
 #include "CameraDefinition.h"
 #include "OpenGLRenderer.h"
 #include "TerrainRenderer.h"
+#include "VertexArray.h"
 
 ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, double z, double size, int nbchunks, double water_height):
     _renderer(renderer)
@@ -33,8 +34,11 @@ ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, d
     _water_height = water_height;
     _overwater = false;
 
-    _tessellation_max_size = 32;
-    _tessellation = new double[(_tessellation_max_size + 1) * (_tessellation_max_size + 1)];
+    tessellation_count = 33;
+    tessellated = new VertexArray<TerrainVertex>();
+    tessellated->setGridSize(tessellation_count);
+    tessellated->setAutoGridIndices(tessellation_count);
+    _tessellation_max_size = tessellation_count - 1;
     _tessellation_current_size = 0;
     _tessellation_step = _size / (double) _tessellation_max_size;
 
@@ -49,7 +53,7 @@ ExplorerChunkTerrain::~ExplorerChunkTerrain()
     delete _color_profile;
     delete _texture;
     delete texture;
-    delete [] _tessellation;
+    delete tessellated;
     _lock_data.unlock();
 }
 
@@ -116,24 +120,39 @@ bool ExplorerChunkTerrain::onMaintainEvent()
         int new_tessellation_size = _tessellation_current_size ? _tessellation_current_size * 4 : 2;
         int old_tessellation_inc = _tessellation_current_size ? _tessellation_max_size / _tessellation_current_size : 1;
         int new_tessellation_inc = _tessellation_max_size / new_tessellation_size;
+        float internal_step = 1.0f / (float)_tessellation_max_size;
         for (int j = 0; j <= _tessellation_max_size; j += new_tessellation_inc)
         {
             for (int i = 0; i <= _tessellation_max_size; i += new_tessellation_inc)
             {
                 if (_tessellation_current_size == 0 || i % old_tessellation_inc != 0 || j % old_tessellation_inc != 0)
                 {
-                    double height = _renderer->getTerrainRenderer()->getHeight(_startx + _tessellation_step * (double) i, _startz + _tessellation_step * (double) j, 1);
+                    double x = _startx + _tessellation_step * (float)i;
+                    double z = _startz + _tessellation_step * (float)j;
+
+                    double height = _renderer->getTerrainRenderer()->getHeight(x, z, 1);
                     if (height >= _water_height)
                     {
                         _overwater = true;
                     }
-                    _tessellation[j * (_tessellation_max_size + 1) + i] = height;
+
+                    TerrainVertex v;
+
+                    v.uv[0] = internal_step * (float)i;
+                    v.uv[1] = internal_step * (float)j;
+
+                    v.location[0] = x;
+                    v.location[1] = height;
+                    v.location[2] = z;
+
+                    tessellated->setGridVertex(tessellation_count, i, j, v);
                 }
             }
         }
 
         _lock_data.lock();
         _tessellation_current_size = new_tessellation_size;
+        tessellated->setAutoGridIndices(tessellation_count, new_tessellation_inc);
         _lock_data.unlock();
 
         if (_tessellation_current_size < 4 && _tessellation_current_size < _tessellation_max_size)
@@ -216,7 +235,6 @@ void ExplorerChunkTerrain::render(OpenGLFunctions* functions)
     {
         _lock_data.lock();
         int tessellation_size = _tessellation_current_size;
-        double tsize = 1.0 / (double) _tessellation_max_size;
         _lock_data.unlock();
 
         if (tessellation_size <= 1 or not _overwater)
@@ -224,19 +242,17 @@ void ExplorerChunkTerrain::render(OpenGLFunctions* functions)
             return;
         }
 
-        int tessellation_inc = _tessellation_max_size / (double) tessellation_size;
-        for (int j = 0; j < _tessellation_max_size; j += tessellation_inc)
+        _lock_data.lock(); // TEMP
+        int n = tessellated->getIndexCount();
+        functions->glBegin(GL_TRIANGLES);
+        for (int i = 0; i < n; i++)
         {
-            functions->glBegin(GL_QUAD_STRIP);
-            for (int i = 0; i <= _tessellation_max_size; i += tessellation_inc)
-            {
-                functions->glTexCoord2d(tsize * (double) i, tsize * (double) j);
-                functions->glVertex3d(_startx + _tessellation_step * (double) i, _tessellation[j * (_tessellation_max_size + 1) + i], _startz + _tessellation_step * (double) j);
-                functions->glTexCoord2d(tsize * (double) i, tsize * (double) (j + tessellation_inc));
-                functions->glVertex3d(_startx + _tessellation_step * (double) i, _tessellation[(j + tessellation_inc) * (_tessellation_max_size + 1) + i], _startz + _tessellation_step * (double) (j + tessellation_inc));
-            }
-            functions->glEnd();
+            TerrainVertex v = tessellated->getVertexByIndex(i);
+            functions->glTexCoord2d(v.uv[0], v.uv[1]);
+            functions->glVertex3d(v.location[0], v.location[1], v.location[2]);
         }
+        functions->glEnd();
+        _lock_data.unlock(); // TEMP
     }
 }
 

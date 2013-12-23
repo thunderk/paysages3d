@@ -13,6 +13,13 @@ namespace opengl {
 class OPENGLSHARED_EXPORT ExplorerChunkTerrain
 {
 public:
+    typedef struct
+    {
+        float location[3];
+        float uv[2];
+    } TerrainVertex;
+
+public:
     ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, double z, double size, int nbchunks, double water_height);
     ~ExplorerChunkTerrain();
 
@@ -41,7 +48,8 @@ private:
     double _water_height;
     bool _overwater;
 
-    double* _tessellation;
+    int tessellation_count;
+    VertexArray<TerrainVertex> *tessellated;
     int _tessellation_max_size;
     int _tessellation_current_size;
     double _tessellation_step;

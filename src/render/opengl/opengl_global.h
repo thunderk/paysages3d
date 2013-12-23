@@ -22,6 +22,7 @@ namespace opengl {
     class OpenGLWater;
     class OpenGLTerrain;
     class ExplorerChunkTerrain;
+    template <typename Vertex> class VertexArray;
 }
 }
 using namespace paysages::opengl;

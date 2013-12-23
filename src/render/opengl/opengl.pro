@@ -23,7 +23,8 @@ SOURCES += \
     OpenGLWater.cpp \
     OpenGLSharedState.cpp \
     OpenGLVariable.cpp \
-    OpenGLTerrain.cpp
+    OpenGLTerrain.cpp \
+    VertexArray.cpp
 
 HEADERS +=\
         opengl_global.h \
@@ -36,7 +37,8 @@ HEADERS +=\
     OpenGLWater.h \
     OpenGLSharedState.h \
     OpenGLVariable.h \
-    OpenGLTerrain.h
+    OpenGLTerrain.h \
+    VertexArray.h
 
 unix:!symbian {
     maemo5 {
