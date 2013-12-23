@@ -15,7 +15,6 @@ include(../../common.pri)
 
 SOURCES += \
     OpenGLRenderer.cpp \
-    BaseExplorerChunk.cpp \
     ExplorerChunkTerrain.cpp \
     WidgetExplorer.cpp \
     OpenGLShaderProgram.cpp \
@@ -23,12 +22,12 @@ SOURCES += \
     OpenGLSkybox.cpp \
     OpenGLWater.cpp \
     OpenGLSharedState.cpp \
-    OpenGLVariable.cpp
+    OpenGLVariable.cpp \
+    OpenGLTerrain.cpp
 
 HEADERS +=\
         opengl_global.h \
     OpenGLRenderer.h \
-    BaseExplorerChunk.h \
     ExplorerChunkTerrain.h \
     WidgetExplorer.h \
     OpenGLShaderProgram.h \
@@ -36,7 +35,8 @@ HEADERS +=\
     OpenGLSkybox.h \
     OpenGLWater.h \
     OpenGLSharedState.h \
-    OpenGLVariable.h
+    OpenGLVariable.h \
+    OpenGLTerrain.h
 
 unix:!symbian {
     maemo5 {

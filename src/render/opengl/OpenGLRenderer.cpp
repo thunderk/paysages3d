@@ -5,6 +5,7 @@
 #include "OpenGLSharedState.h"
 #include "OpenGLSkybox.h"
 #include "OpenGLWater.h"
+#include "OpenGLTerrain.h"
 
 OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     SoftwareRenderer(scenery)
@@ -16,12 +17,14 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
 
     skybox = new OpenGLSkybox(this);
     water = new OpenGLWater(this);
+    terrain = new OpenGLTerrain(this);
 }
 
 OpenGLRenderer::~OpenGLRenderer()
 {
     delete skybox;
     delete water;
+    delete terrain;
 
     delete functions;
     delete shared_state;
@@ -60,6 +63,9 @@ void OpenGLRenderer::initialize()
 
         water->initialize();
         water->updateScenery();
+
+        terrain->initialize();
+        terrain->updateScenery();
     }
 }
 
@@ -79,6 +85,7 @@ void OpenGLRenderer::paint()
         functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         skybox->render();
+        terrain->render();
         water->render();
     }
 }

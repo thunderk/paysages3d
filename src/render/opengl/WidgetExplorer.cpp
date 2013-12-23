@@ -17,44 +17,6 @@
 #include "Scenery.h"
 #include "LightingManager.h"
 
-class ChunkMaintenanceThread : public QThread
-{
-public:
-
-    ChunkMaintenanceThread(WidgetExplorer* wanderer)
-    {
-        _wanderer = wanderer;
-        _running = true;
-    }
-
-    void askStop()
-    {
-        _running = false;
-    }
-
-    static inline void usleep(unsigned long us)
-    {
-        QThread::usleep(us);
-    }
-
-protected:
-
-    void run()
-    {
-        while (_running)
-        {
-            _wanderer->performChunksMaintenance();
-            QThread::usleep(10000);
-        }
-    }
-
-private:
-    bool _running;
-    WidgetExplorer* _wanderer;
-};
-
-static QVector<ChunkMaintenanceThread*> _threads;
-
 WidgetExplorer::WidgetExplorer(QWidget *parent, CameraDefinition* camera, Scenery* scenery) :
 QGLWidget(parent)
 {
@@ -71,9 +33,6 @@ QGLWidget(parent)
     _renderer->getLightingManager()->setSpecularity(false);
     _renderer->disableClouds();
 
-    _inited = false;
-    _updated = false;
-
     _average_frame_time = 0.05;
     _quality = 3;
     _last_mouse_x = 0;
@@ -84,101 +43,8 @@ QGLWidget(parent)
 
 WidgetExplorer::~WidgetExplorer()
 {
-    stopRendering();
-
-    for (int i = 0; i < _chunks.count(); i++)
-    {
-        delete _chunks[i];
-    }
     delete _current_camera;
     delete _renderer;
-}
-
-void WidgetExplorer::startRendering()
-{
-    // Add terrain
-    int chunks = 20;
-    double size = 400.0;
-    double chunksize = size / (double) chunks;
-    double start = -size / 2.0;
-    double water_height = _renderer->getWaterRenderer()->getHeightInfo().base_height;
-    for (int i = 0; i < chunks; i++)
-    {
-        for (int j = 0; j < chunks; j++)
-        {
-            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(_renderer, start + chunksize * (double) i, start + chunksize * (double) j, chunksize, chunks, water_height);
-            _chunks.append(chunk);
-            _updateQueue.append(chunk);
-        }
-    }
-
-    // Start rendering workers
-    int nbcore;
-    _alive = true;
-
-    nbcore = QThread::idealThreadCount();
-    if (nbcore < 1)
-    {
-        nbcore = 1;
-    }
-
-    for (int i = 0; i < nbcore; i++)
-    {
-        _threads.append(new ChunkMaintenanceThread(this));
-    }
-    for (int i = 0; i < _threads.count(); i++)
-    {
-        _threads[i]->start();
-    }
-}
-
-void WidgetExplorer::stopRendering()
-{
-    for (int i = 0; i < _threads.count(); i++)
-    {
-        _threads[i]->askStop();
-    }
-    _alive = false;
-    for (int i = 0; i < _threads.count(); i++)
-    {
-        _threads[i]->wait();
-    }
-}
-
-bool _cmpChunks(const BaseExplorerChunk* c1, const BaseExplorerChunk* c2)
-{
-    return c1->priority > c2->priority;
-}
-
-void WidgetExplorer::performChunksMaintenance()
-{
-    BaseExplorerChunk* chunk;
-
-    _lock_chunks.lock();
-    if (_updateQueue.count() > 0)
-    {
-        chunk = _updateQueue.takeFirst();
-        _lock_chunks.unlock();
-    }
-    else
-    {
-        _lock_chunks.unlock();
-        return;
-    }
-
-    if (chunk->maintain())
-    {
-        if (!_alive)
-        {
-            return;
-        }
-
-        _updated = true;
-    }
-
-    _lock_chunks.lock();
-    _updateQueue.append(chunk);
-    _lock_chunks.unlock();
 }
 
 void WidgetExplorer::resetCamera()
@@ -323,25 +189,7 @@ void WidgetExplorer::wheelEvent(QWheelEvent* event)
 
 void WidgetExplorer::timerEvent(QTimerEvent*)
 {
-    if (!_inited)
-    {
-        _inited = true;
-        startRendering();
-    }
-
-    if (_updated)
-    {
-        _updated = false;
-        updateGL();
-    }
-
-    for (int i = 0; i < _chunks.count(); i++)
-    {
-        _chunks[i]->updatePriority(_current_camera);
-    }
-    _lock_chunks.lock();
-    qSort(_updateQueue.begin(), _updateQueue.end(), _cmpChunks);
-    _lock_chunks.unlock();
+    updateGL();
 }
 
 void WidgetExplorer::initializeGL()
@@ -353,11 +201,6 @@ void WidgetExplorer::resizeGL(int w, int h)
 {
     _current_camera->setRenderSize(w, h);
     _renderer->resize(w, h);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    CameraPerspective perspective = _current_camera->getPerspective();
-    gluPerspective(perspective.yfov * 180.0 / M_PI, perspective.xratio, perspective.znear, perspective.zfar);
 }
 
 void WidgetExplorer::paintGL()
@@ -376,21 +219,6 @@ void WidgetExplorer::paintGL()
     // Background
     _renderer->paint();
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    Vector3 camera_location = _current_camera->getLocation();
-    Vector3 camera_target = _current_camera->getTarget();
-    Vector3 camera_up = _current_camera->getUpVector();
-    gluLookAt(camera_location.x, camera_location.y, camera_location.z, camera_target.x, camera_target.y, camera_target.z, camera_up.x, camera_up.y, camera_up.z);
-
-    // Render chunks
-    glEnable(GL_TEXTURE_2D);
-    for (int i = 0; i < _chunks.count(); i++)
-    {
-        glColor3f(1.0, 1.0, 1.0);
-        _chunks[i]->render(this);
-    }
-
     frame_time = 0.001 * (double) start_time.msecsTo(QTime::currentTime());
 
     _average_frame_time = _average_frame_time * 0.8 + frame_time * 0.2;
@@ -406,13 +234,13 @@ void WidgetExplorer::paintGL()
     }
 
     // Messages
-    if (!_inited)
+    /*if (!_inited)
     {
         glColor3f(0.0, 0.0, 0.0);
         renderText(6, height() - 10, tr("Please wait while loading scene..."));
         glColor3f(1.0, 1.0, 1.0);
         renderText(5, height() - 9, tr("Please wait while loading scene..."));
-    }
+    }*/
 
     while ((error_code = glGetError()) != GL_NO_ERROR)
     {

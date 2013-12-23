@@ -15,12 +15,13 @@ namespace paysages {
 namespace opengl {
     class WidgetExplorer;
     class OpenGLRenderer;
-    class BaseExplorerChunk;
     class OpenGLShaderProgram;
     class OpenGLSharedState;
     class OpenGLVariable;
     class OpenGLSkybox;
     class OpenGLWater;
+    class OpenGLTerrain;
+    class ExplorerChunkTerrain;
 }
 }
 using namespace paysages::opengl;

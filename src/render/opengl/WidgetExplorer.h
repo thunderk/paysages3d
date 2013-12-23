@@ -5,8 +5,6 @@
 
 #include <QGLWidget>
 
-#include <QMutex>
-
 namespace paysages {
 namespace opengl {
 
@@ -16,8 +14,6 @@ class OPENGLSHARED_EXPORT WidgetExplorer : public QGLWidget
 public:
     WidgetExplorer(QWidget* parent, CameraDefinition* camera, Scenery* scenery);
     ~WidgetExplorer();
-
-    void performChunksMaintenance();
 
 public slots:
     void resetCamera();
@@ -35,20 +31,10 @@ protected:
     void paintGL();
 
 private:
-    void startRendering();
-    void stopRendering();
-
     CameraDefinition* _current_camera;
     CameraDefinition* _base_camera;
 
     OpenGLRenderer* _renderer;
-    bool _inited;
-    bool _updated;
-
-    QVector<BaseExplorerChunk*> _chunks;
-    QList<BaseExplorerChunk*> _updateQueue;
-    bool _alive;
-    QMutex _lock_chunks;
 
     double _average_frame_time;
     int _quality;

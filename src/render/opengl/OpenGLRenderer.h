@@ -37,6 +37,7 @@ private:
 
     OpenGLSkybox* skybox;
     OpenGLWater* water;
+    OpenGLTerrain* terrain;
 };
 
 }

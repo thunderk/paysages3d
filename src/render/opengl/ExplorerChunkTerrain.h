@@ -1,25 +1,33 @@
 #ifndef EXPLORERCHUNKTERRAIN_H
 #define EXPLORERCHUNKTERRAIN_H
 
-#include "BaseExplorerChunk.h"
+#include "opengl_global.h"
 
-#include "Vector3.h"
+#include <QMutex>
+class QImage;
+class QOpenGLTexture;
 
 namespace paysages {
 namespace opengl {
 
-class OPENGLSHARED_EXPORT ExplorerChunkTerrain:public BaseExplorerChunk
+class OPENGLSHARED_EXPORT ExplorerChunkTerrain
 {
 public:
-    ExplorerChunkTerrain(SoftwareRenderer* renderer, double x, double z, double size, int nbchunks, double water_height);
+    ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, double z, double size, int nbchunks, double water_height);
     ~ExplorerChunkTerrain();
 
-    void onCameraEvent(CameraDefinition* camera);
-    void onResetEvent();
+    bool maintain();
+    void updatePriority(CameraDefinition* camera);
+    void render(OpenGLFunctions* functions);
+
+    void askReset();
+    void setMaxTextureSize(int size);
+
     bool onMaintainEvent();
-    void onRenderEvent(QGLWidget* widget);
     double getDisplayedSizeHint(CameraDefinition* camera);
     Color getTextureColor(double x, double y);
+
+    double priority;
 
 private:
     Vector3 getCenter();
@@ -38,6 +46,18 @@ private:
     int _tessellation_current_size;
     double _tessellation_step;
 
+    QMutex _lock_data;
+
+    OpenGLRenderer* _renderer;
+    ColorProfile* _color_profile;
+
+    bool _reset_needed;
+
+    QImage* _texture;
+    QOpenGLTexture* texture;
+    bool _texture_changed;
+    int _texture_current_size;
+    int _texture_max_size;
 };
 
 }
