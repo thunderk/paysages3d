@@ -1,7 +1,7 @@
 #include "OpenGLShaderProgram.h"
 
+#include OPENGL_FUNCTIONS_INCLUDE
 #include <QOpenGLShaderProgram>
-#include <QOpenGLFunctions_3_2_Core>
 #include <QDir>
 #include "OpenGLRenderer.h"
 #include "OpenGLSharedState.h"

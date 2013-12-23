@@ -6,7 +6,6 @@
 #include <QString>
 
 class QOpenGLShaderProgram;
-class QOpenGLFunctions_3_2_Core;
 
 namespace paysages {
 namespace opengl {
@@ -39,7 +38,7 @@ private:
 
     QString name;
     QOpenGLShaderProgram* program;
-    QOpenGLFunctions_3_2_Core* functions;
+    OpenGLFunctions* functions;
 
     std::string source_vertex;
     std::string source_fragment;

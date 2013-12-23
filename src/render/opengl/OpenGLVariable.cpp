@@ -1,8 +1,8 @@
 #include "OpenGLVariable.h"
 
-#include <cassert>
+#include OPENGL_FUNCTIONS_INCLUDE
 #include <QOpenGLShaderProgram>
-#include <QOpenGLFunctions_3_2_Core>
+#include <cassert>
 #include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
 #include "Vector3.h"
@@ -22,7 +22,7 @@ OpenGLVariable::OpenGLVariable(const std::string &name):
 void OpenGLVariable::apply(OpenGLShaderProgram *program, int &texture_unit)
 {
     QOpenGLShaderProgram* pr = program->getProgram();
-    QOpenGLFunctions_3_2_Core* functions = program->getRenderer()->getOpenGlFunctions();
+    OpenGLFunctions* functions = program->getRenderer()->getOpenGlFunctions();
 
     if (texture_toupload)
     {
@@ -133,7 +133,7 @@ void OpenGLVariable::set(const Color &color)
 
 void OpenGLVariable::uploadTexture(OpenGLRenderer* renderer)
 {
-    QOpenGLFunctions_3_2_Core* functions = renderer->getOpenGlFunctions();
+    OpenGLFunctions* functions = renderer->getOpenGlFunctions();
 
     assert(type == TYPE_TEXTURE_2D or type == TYPE_TEXTURE_3D or type == TYPE_TEXTURE_4D);
 

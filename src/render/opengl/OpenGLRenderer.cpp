@@ -1,6 +1,6 @@
 #include "OpenGLRenderer.h"
 
-#include <QOpenGLFunctions_3_2_Core>
+#include OPENGL_FUNCTIONS_INCLUDE
 #include "CameraDefinition.h"
 #include "OpenGLSharedState.h"
 #include "OpenGLSkybox.h"
@@ -9,7 +9,9 @@
 OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     SoftwareRenderer(scenery)
 {
-    functions = new QOpenGLFunctions_3_2_Core();
+    ready = false;
+
+    functions = new OpenGLFunctions();
     shared_state = new OpenGLSharedState();
 
     skybox = new OpenGLSkybox(this);
@@ -27,50 +29,58 @@ OpenGLRenderer::~OpenGLRenderer()
 
 void OpenGLRenderer::initialize()
 {
-    // TODO Check return value
-    functions->initializeOpenGLFunctions();
+    ready = functions->initializeOpenGLFunctions();
 
-    functions->glClearColor(0.0, 0.0, 0.0, 0.0);
+    if (ready)
+    {
+        functions->glClearColor(0.0, 0.0, 0.0, 0.0);
 
-    functions->glDisable(GL_LIGHTING);
+        functions->glDisable(GL_LIGHTING);
 
-    functions->glFrontFace(GL_CCW);
-    functions->glCullFace(GL_BACK);
-    functions->glEnable(GL_CULL_FACE);
+        functions->glFrontFace(GL_CCW);
+        functions->glCullFace(GL_BACK);
+        functions->glEnable(GL_CULL_FACE);
 
-    functions->glDepthFunc(GL_LESS);
-    functions->glDepthMask(1);
-    functions->glEnable(GL_DEPTH_TEST);
+        functions->glDepthFunc(GL_LESS);
+        functions->glDepthMask(1);
+        functions->glEnable(GL_DEPTH_TEST);
 
-    functions->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    functions->glEnable(GL_LINE_SMOOTH);
-    functions->glLineWidth(1.0);
+        functions->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        functions->glEnable(GL_LINE_SMOOTH);
+        functions->glLineWidth(1.0);
 
-    functions->glDisable(GL_FOG);
+        functions->glDisable(GL_FOG);
 
-    functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    prepare();
+        prepare();
 
-    skybox->initialize();
-    skybox->updateScenery();
+        skybox->initialize();
+        skybox->updateScenery();
 
-    water->initialize();
-    water->updateScenery();
+        water->initialize();
+        water->updateScenery();
+    }
 }
 
 void OpenGLRenderer::resize(int width, int height)
 {
-    functions->glViewport(0, 0, width, height);
+    if (ready)
+    {
+        functions->glViewport(0, 0, width, height);
+    }
 }
 
 void OpenGLRenderer::paint()
 {
-    functions->glClearColor(0.0, 0.0, 0.0, 0.0);
-    functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if (ready)
+    {
+        functions->glClearColor(0.0, 0.0, 0.0, 0.0);
+        functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    skybox->render();
-    water->render();
+        skybox->render();
+        water->render();
+    }
 }
 
 void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera)

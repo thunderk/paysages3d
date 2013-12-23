@@ -5,8 +5,6 @@
 
 #include "SoftwareRenderer.h"
 
-class QOpenGLFunctions_3_2_Core;
-
 namespace paysages {
 namespace opengl {
 
@@ -25,14 +23,16 @@ public:
 
     void cameraChangeEvent(CameraDefinition* camera);
 
-    inline QOpenGLFunctions_3_2_Core* getOpenGlFunctions() const {return functions;}
+    inline OpenGLFunctions* getOpenGlFunctions() const {return functions;}
     inline OpenGLSharedState* getSharedState() const {return shared_state;}
 
     virtual double getPrecision(const Vector3 &location) override;
     virtual Color applyMediumTraversal(Vector3 location, Color color) override;
 
 private:
-    QOpenGLFunctions_3_2_Core* functions;
+    bool ready;
+
+    OpenGLFunctions* functions;
     OpenGLSharedState* shared_state;
 
     OpenGLSkybox* skybox;
