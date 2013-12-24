@@ -4,6 +4,9 @@
 #include "OpenGLShaderProgram.h"
 #include "OpenGLSharedState.h"
 #include "WaterRenderer.h"
+#include "Scenery.h"
+#include "WaterDefinition.h"
+#include "SurfaceMaterial.h"
 
 OpenGLWater::OpenGLWater(OpenGLRenderer *renderer):
     OpenGLPart(renderer)
@@ -34,6 +37,9 @@ void OpenGLWater::update()
 {
     double water_height = renderer->getWaterRenderer()->getHeightInfo().max_height;
     renderer->getSharedState()->set("waterHeight", water_height);
+
+    Color water_color = renderer->getScenery()->getWater()->material->_rgb;
+    renderer->getSharedState()->set("waterColor", water_color);
 }
 
 void OpenGLWater::render()

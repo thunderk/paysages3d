@@ -1,6 +1,8 @@
+uniform vec4 waterColor;
+
 void main(void)
 {
-    gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+    gl_FragColor = waterColor;
 
     float yoffset = GROUND_OFFSET - waterHeight;
     vec3 camera = vec3(cameraLocation.x, max(cameraLocation.y + yoffset, 0.0), cameraLocation.z);
