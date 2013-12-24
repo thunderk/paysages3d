@@ -28,10 +28,6 @@ QGLWidget(parent)
     camera->copy(_current_camera);
 
     _renderer = new OpenGLRenderer(scenery);
-    _renderer->prepare();
-    _renderer->render_quality = 3;
-    _renderer->getLightingManager()->setSpecularity(false);
-    _renderer->disableClouds();
 
     _average_frame_time = 0.05;
     _quality = 3;
@@ -205,7 +201,6 @@ void WidgetExplorer::resizeGL(int w, int h)
 
 void WidgetExplorer::paintGL()
 {
-    GLenum error_code;
     QTime start_time;
     double frame_time;
 
@@ -241,9 +236,4 @@ void WidgetExplorer::paintGL()
         glColor3f(1.0, 1.0, 1.0);
         renderText(5, height() - 9, tr("Please wait while loading scene..."));
     }*/
-
-    while ((error_code = glGetError()) != GL_NO_ERROR)
-    {
-        qDebug("[OpenGL] ERROR : %s", (const char*)gluErrorString(error_code));
-    }
 }

@@ -6,6 +6,11 @@
 #include "OpenGLSkybox.h"
 #include "OpenGLWater.h"
 #include "OpenGLTerrain.h"
+#include "Scenery.h"
+#include "LightingManager.h"
+#include "Logs.h"
+
+#include "GL/glu.h" // TEMP
 
 OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     SoftwareRenderer(scenery)
@@ -62,6 +67,7 @@ void OpenGLRenderer::initialize()
         prepare();
 
         disableClouds();
+        getLightingManager()->setSpecularity(false);
 
         skybox->initialize();
         skybox->updateScenery();
@@ -71,6 +77,12 @@ void OpenGLRenderer::initialize()
 
         terrain->initialize();
         terrain->updateScenery();
+
+        cameraChangeEvent(getScenery()->getCamera());
+    }
+    else
+    {
+        logError("Failed to initialize OpenGL bindings");
     }
 }
 
@@ -80,6 +92,10 @@ void OpenGLRenderer::resize(int width, int height)
     {
         functions->glViewport(0, 0, width, height);
     }
+    getScenery()->getCamera()->setRenderSize(width, height);
+    render_camera->setRenderSize(width, height);
+
+    cameraChangeEvent(getScenery()->getCamera());
 }
 
 void OpenGLRenderer::paint()
@@ -95,6 +111,12 @@ void OpenGLRenderer::paint()
         skybox->render();
         terrain->render();
         water->render();
+
+        int error_code;
+        while ((error_code = glGetError()) != GL_NO_ERROR)
+        {
+            logWarning("[OpenGL] ERROR : %s", (const char*)gluErrorString(error_code));
+        }
     }
 }
 

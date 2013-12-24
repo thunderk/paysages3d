@@ -13,6 +13,8 @@ DEFINES += OPENGL_LIBRARY
 
 include(../../common.pri)
 
+unix:LIBS += -lGLU
+
 SOURCES += \
     OpenGLRenderer.cpp \
     ExplorerChunkTerrain.cpp \
