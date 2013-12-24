@@ -57,8 +57,8 @@ void OpenGLTerrain::initialize()
     program->addFragmentSource("terrain");
 
     // Add terrain chunks
-    int chunks = 20;
-    double size = 400.0;
+    int chunks = 25;
+    double size = 800.0;
     double chunksize = size / (double) chunks;
     double start = -size / 2.0;
     double water_height = renderer->getWaterRenderer()->getHeightInfo().base_height;

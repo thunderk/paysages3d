@@ -1,4 +1,5 @@
 uniform vec4 waterColor;
+uniform float viewDistance;
 
 void main(void)
 {
@@ -26,4 +27,6 @@ void main(void)
     gl_FragColor = gl_FragColor * vec4(attenuation, 0.0) + vec4(inscattering, 0.0);
 
     gl_FragColor = _toneMappingUncharted(gl_FragColor, 2.0);
+
+    gl_FragColor.a = mix(1.0, 0.0, clamp((t - viewDistance * 0.8) / (viewDistance * 0.2), 0.0, 1.0));
 }

@@ -15,6 +15,8 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     functions = new OpenGLFunctions();
     shared_state = new OpenGLSharedState();
 
+    shared_state->set("viewDistance", 20.0);
+
     skybox = new OpenGLSkybox(this);
     water = new OpenGLWater(this);
     terrain = new OpenGLTerrain(this);
@@ -83,6 +85,9 @@ void OpenGLRenderer::paint()
     {
         functions->glClearColor(0.0, 0.0, 0.0, 0.0);
         functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        functions->glEnable(GL_BLEND);
+        functions->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         skybox->render();
         terrain->render();
