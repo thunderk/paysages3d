@@ -15,7 +15,8 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     functions = new OpenGLFunctions();
     shared_state = new OpenGLSharedState();
 
-    shared_state->set("viewDistance", 20.0);
+    shared_state->set("viewDistance", 300.0);
+    shared_state->set("exposure", 1.6);
 
     skybox = new OpenGLSkybox(this);
     water = new OpenGLWater(this);
@@ -59,6 +60,8 @@ void OpenGLRenderer::initialize()
         functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         prepare();
+
+        disableClouds();
 
         skybox->initialize();
         skybox->updateScenery();

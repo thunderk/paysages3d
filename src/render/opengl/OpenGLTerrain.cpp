@@ -54,6 +54,7 @@ void OpenGLTerrain::initialize()
     program->addVertexSource("terrain");
     program->addFragmentSource("bruneton");
     program->addFragmentSource("tonemapping");
+    program->addFragmentSource("fadeout");
     program->addFragmentSource("terrain");
 
     // Add terrain chunks

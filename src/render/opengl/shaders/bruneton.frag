@@ -2,7 +2,6 @@ const float GROUND_OFFSET = 0.5;
 const float Rg = 6360.0;
 const float Rt = 6420.0;
 const float RL = 6421.0;
-const float exposure = 0.4;
 const float ISun = 100.0;
 const float AVERAGE_GROUND_REFLECTANCE = 0.1;
 const float HR = 8.0;
@@ -90,7 +89,7 @@ vec4 _sunTransmittance(vec3 v, vec3 s, float r, float mu, float radius)
 {
     vec4 transmittance = r <= Rt ? _transmittanceWithShadow(r, mu) : vec4(1.0); /* T(x,xo) */
     float d = _limit(r, mu);
-    radius *= (1.0 + 10.0 * d / Rt); /* Inflating due to lens effect near horizon */
+    radius *= (1.0 + 25.0 * d / Rt); /* Inflating due to lens effect near horizon */
     float isun = step(cos(radius * M_PI / 180.0), dot(v, s)) * ISun; /* Lsun */
     transmittance.r *= isun;
     transmittance.g *= isun;
@@ -185,4 +184,28 @@ vec3 _getInscatterColor(inout vec3 x, inout float t, vec3 v, vec3 s, out float r
         result = vec3(0.0);
     }
     return result * ISun;
+}
+
+vec4 applyAerialPerspective(vec4 base)
+{
+    float yoffset = GROUND_OFFSET - waterHeight;
+    vec3 camera = vec3(cameraLocation.x, max(cameraLocation.y + yoffset, 0.0), cameraLocation.z);
+    vec3 location = vec3(unprojected.x, max(unprojected.y + yoffset, 0.0), unprojected.z);
+    vec3 x = vec3(0.0, Rg + camera.y * WORLD_SCALING, 0.0);
+    vec3 v = normalize(location - camera);
+    vec3 s = normalize(sunDirection * SUN_DISTANCE_SCALED - x);
+
+    if (v.y == 0.0)
+    {
+        v.y = -0.000001;
+    }
+
+    float r = length(x);
+    float mu = dot(x, v) / r;
+    float t = length(location - camera) * WORLD_SCALING;
+
+    vec3 attenuation;
+    vec3 inscattering = _getInscatterColor(x, t, v, s, r, mu, attenuation);
+
+    return base * vec4(attenuation, 0.0) + vec4(inscattering, 0.0);
 }

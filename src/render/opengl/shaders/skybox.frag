@@ -15,5 +15,5 @@ void main(void)
     vec3 attenuation;
     vec3 inscattering = _getInscatterColor(x, t, v, s, r, mu, attenuation);
 
-    gl_FragColor = _toneMappingUncharted(sunTransmittance + vec4(inscattering, 0.0), 2.0);
+    gl_FragColor = applyToneMapping(sunTransmittance + vec4(inscattering, 0.0));
 }

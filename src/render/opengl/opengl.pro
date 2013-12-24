@@ -84,4 +84,5 @@ OTHER_FILES += \
     shaders/bruneton.frag \
     shaders/tonemapping.frag \
     shaders/terrain.frag \
-    shaders/terrain.vert
+    shaders/terrain.vert \
+    shaders/fadeout.frag

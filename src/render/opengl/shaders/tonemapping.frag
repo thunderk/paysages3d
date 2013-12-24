@@ -1,3 +1,5 @@
+uniform float exposure;
+
 float _uncharted2Tonemap(float x)
 {
     float A = 0.15;
@@ -10,7 +12,12 @@ float _uncharted2Tonemap(float x)
     return ((x * (A * x + C * B) + D * E) / (x * (A * x + B) + D * F)) - E / F;
 }
 
-vec4 _toneMappingUncharted(vec4 color, float exposure)
+vec4 applyToneMapping(vec4 color)
+{
+    return vec4(((color * exposure) / (1.0 + color * exposure)).rgb, 1.0);
+}
+
+/*vec4 applyToneMapping(vec4 color)
 {
     float W = 11.2;
     float white_scale = 1.0 / _uncharted2Tonemap(W);
@@ -22,4 +29,4 @@ vec4 _toneMappingUncharted(vec4 color, float exposure)
     result.a = 1.0;
 
     return result;
-}
+}*/

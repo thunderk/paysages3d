@@ -8,5 +8,6 @@
         <file>tonemapping.frag</file>
         <file>terrain.frag</file>
         <file>terrain.vert</file>
+        <file>fadeout.frag</file>
     </qresource>
 </RCC>
