@@ -5,7 +5,7 @@
 
 #include <QMutex>
 class QImage;
-class QOpenGLTexture;
+class QOpenGLShaderProgram;
 
 namespace paysages {
 namespace opengl {
@@ -25,7 +25,7 @@ public:
 
     bool maintain();
     void updatePriority(CameraDefinition* camera);
-    void render(OpenGLFunctions* functions);
+    void render(QOpenGLShaderProgram* program, OpenGLFunctions* functions);
 
     void askReset();
     void setMaxTextureSize(int size);
@@ -62,7 +62,7 @@ private:
     bool _reset_needed;
 
     QImage* _texture;
-    QOpenGLTexture* texture;
+    unsigned int texture_id;
     bool _texture_changed;
     int _texture_current_size;
     int _texture_max_size;

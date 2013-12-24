@@ -22,15 +22,17 @@ public:
     void drawTriangles(float* vertices, int triangle_count);
     void drawTriangleStrip(float* vertices, int vertex_count);
 
-protected:
+    void bind();
+    void release();
+
     inline QOpenGLShaderProgram* getProgram() const {return program;}
     inline OpenGLRenderer* getRenderer() const {return renderer;}
+
+protected:
     friend class OpenGLVariable;
 
 private:
     void compile();
-    void bind();
-    void release();
 
     bool compiled;
 

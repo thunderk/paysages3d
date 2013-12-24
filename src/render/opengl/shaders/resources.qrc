@@ -6,5 +6,7 @@
         <file>water.vert</file>
         <file>bruneton.frag</file>
         <file>tonemapping.frag</file>
+        <file>terrain.frag</file>
+        <file>terrain.vert</file>
     </qresource>
 </RCC>

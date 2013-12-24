@@ -23,8 +23,7 @@ SOURCES += \
     OpenGLWater.cpp \
     OpenGLSharedState.cpp \
     OpenGLVariable.cpp \
-    OpenGLTerrain.cpp \
-    VertexArray.cpp
+    OpenGLTerrain.cpp
 
 HEADERS +=\
         opengl_global.h \
@@ -83,4 +82,6 @@ OTHER_FILES += \
     shaders/water.frag \
     shaders/bruneton.frag \
     shaders/bruneton.frag \
-    shaders/tonemapping.frag
+    shaders/tonemapping.frag \
+    shaders/terrain.frag \
+    shaders/terrain.vert

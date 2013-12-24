@@ -3,7 +3,9 @@
 
 #include "opengl_global.h"
 
+#include OPENGL_FUNCTIONS_INCLUDE
 #include <cassert>
+#include <QOpenGLShaderProgram>
 
 namespace paysages {
 namespace opengl {
@@ -21,7 +23,7 @@ public:
         vertex_count = 1;
         vertices = new Vertex[1];
         index_count = 1;
-        indices = new int[1];
+        indices = new unsigned short[1];
     }
 
     ~VertexArray()
@@ -74,7 +76,7 @@ public:
         int cell_count = edge_vertex_count - 1;
 
         index_count = (cell_count / stride) * (cell_count / stride) * 6;
-        indices = new int[index_count];
+        indices = new unsigned short[index_count];
 
         int idx = 0;
         for (int y = 0; y < cell_count; y += stride)
@@ -99,7 +101,7 @@ public:
         return vertices[position];
     }
 
-    Vertex getVertexByIndex(int index)
+    Vertex getVertexByIndex(unsigned short index)
     {
         assert(index >= 0 and index < index_count);
 
@@ -111,11 +113,29 @@ public:
         return getVertex(y * edge_vertex_count + x);
     }
 
-    int getIndex(int position)
+    unsigned short getIndex(int position)
     {
         assert(position >= 0 and position < index_count);
 
         return indices[position];
+    }
+
+    void render(QOpenGLShaderProgram* program, OpenGLFunctions* functions)
+    {
+        size_t ptr = (size_t)vertices;
+
+        GLuint vertex = program->attributeLocation("vertex");
+        program->setAttributeArray(vertex, GL_FLOAT, (void*)(ptr + offsetof(Vertex, location)), 3, sizeof(Vertex));
+        program->enableAttributeArray(vertex);
+
+        GLuint uv = program->attributeLocation("uv");
+        program->setAttributeArray(uv, GL_FLOAT, (void*)(ptr + offsetof(Vertex, uv)), 2, sizeof(Vertex));
+        program->enableAttributeArray(uv);
+
+        functions->glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_SHORT, indices);
+
+        program->disableAttributeArray(vertex);
+        program->disableAttributeArray(uv);
     }
 
 private:
@@ -126,7 +146,7 @@ private:
     Vertex* vertices;
 
     int index_count;
-    int* indices;
+    unsigned short* indices;
 };
 
 }

@@ -3,7 +3,6 @@
 #include OPENGL_FUNCTIONS_INCLUDE
 #include <cmath>
 #include <QImage>
-#include <QOpenGLTexture>
 #include "ColorProfile.h"
 #include "CameraDefinition.h"
 #include "OpenGLRenderer.h"
@@ -13,13 +12,13 @@
 ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, double z, double size, int nbchunks, double water_height):
     _renderer(renderer)
 {
-    _color_profile = new ColorProfile;
+    _color_profile = new ColorProfile(ColorProfile::TONE_MAPPING_REIHNARD, 2.0);
 
     priority = 0.0;
     _reset_needed = false;
 
-    _texture = new QImage(1, 1, QImage::Format_ARGB32);
-    texture = new QOpenGLTexture(*_texture);
+    _texture = new QImage(1, 1, QImage::Format_RGBA8888);
+    texture_id = 0;
     _texture_changed = false;
     _texture_current_size = 0;
     _texture_max_size = 0;
@@ -52,7 +51,6 @@ ExplorerChunkTerrain::~ExplorerChunkTerrain()
     _lock_data.lock();
     delete _color_profile;
     delete _texture;
-    delete texture;
     delete tessellated;
     _lock_data.unlock();
 }
@@ -85,9 +83,9 @@ bool ExplorerChunkTerrain::maintain()
                 if (_texture_current_size <= 1 || i % 2 != 0 || j % 2 != 0)
                 {
                     Color color = getTextureColor((double)i / (double)new_texture_size, (double)j / (double)new_texture_size);
-                    color = _color_profile->apply(color);
+                    //color = _color_profile->apply(color);
                     color.normalize();
-                    new_image->setPixel(i, j, color.to32BitBGRA());
+                    new_image->setPixel(i, j, color.to32BitRGBA());
                 }
             }
         }
@@ -213,24 +211,34 @@ void ExplorerChunkTerrain::updatePriority(CameraDefinition* camera)
     _lock_data.unlock();
 }
 
-void ExplorerChunkTerrain::render(OpenGLFunctions* functions)
+void ExplorerChunkTerrain::render(QOpenGLShaderProgram* program, OpenGLFunctions* functions)
 {
     // Put texture in place
     _lock_data.lock();
     if (_texture_changed)
     {
         _texture_changed = false;
-        texture->destroy();
+
         // TODO Only do the scale if not power-of-two textures are unsupported by GPU
-        texture->setData(_texture->scaled(_texture_current_size, _texture_current_size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        //texture->setData(*_texture);
-        texture->setWrapMode(QOpenGLTexture::DirectionS, QOpenGLTexture::ClampToEdge);
-        texture->setWrapMode(QOpenGLTexture::DirectionT, QOpenGLTexture::ClampToEdge);
+        QImage tex = _texture->scaled(_texture_current_size, _texture_current_size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+        if (texture_id == 0)
+        {
+            GLuint texid;
+            functions->glGenTextures(1, &texid);
+            texture_id = texid;
+        }
+
+        functions->glBindTexture(GL_TEXTURE_2D, texture_id);
+        functions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        functions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        functions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        functions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        functions->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex.width(), tex.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
     }
-    texture->bind();
     _lock_data.unlock();
 
-    // Delegate poly rendering to subclass
+    // Render tessellated mesh
     if (!_reset_needed)
     {
         _lock_data.lock();
@@ -243,15 +251,12 @@ void ExplorerChunkTerrain::render(OpenGLFunctions* functions)
         }
 
         _lock_data.lock(); // TEMP
-        int n = tessellated->getIndexCount();
-        functions->glBegin(GL_TRIANGLES);
-        for (int i = 0; i < n; i++)
-        {
-            TerrainVertex v = tessellated->getVertexByIndex(i);
-            functions->glTexCoord2d(v.uv[0], v.uv[1]);
-            functions->glVertex3d(v.location[0], v.location[1], v.location[2]);
-        }
-        functions->glEnd();
+        // TEMP
+        functions->glActiveTexture(GL_TEXTURE0 + 3);
+        functions->glBindTexture(GL_TEXTURE_2D, texture_id);
+        program->setUniformValue("groundTexture", 3);
+
+        tessellated->render(program, functions);
         _lock_data.unlock(); // TEMP
     }
 }

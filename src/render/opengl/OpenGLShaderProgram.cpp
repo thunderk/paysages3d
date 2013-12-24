@@ -46,7 +46,7 @@ void OpenGLShaderProgram::addFragmentSource(QString path)
     }
     else
     {
-        logError("Can't open fragment file %s", file.fileName().toStdString().c_str());
+        logError() << "Can't open fragment file " << file.fileName();
     }
 }
 
