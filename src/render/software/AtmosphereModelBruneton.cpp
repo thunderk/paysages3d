@@ -934,7 +934,7 @@ static Color _sunColor(Vector3 v, Vector3 s, double r, double mu, double radius)
 {
     Color transmittance = r <= Rt ? _transmittanceWithShadow(r, mu) : COLOR_WHITE; /* T(x,xo) */
     double d = _limit(r, mu);
-    radius *= (1.0 + 10.0 * d / Rt); /* Inflating due to lens effect near horizon */
+    radius *= (1.0 + 25.0 * d / Rt); /* Inflating due to lens effect near horizon */
     double isun = step(cos(radius * M_PI / 180.0), v.dotProduct(s)) * ISun; /* Lsun */
     transmittance.r *= isun;
     transmittance.g *= isun;
@@ -1267,4 +1267,19 @@ void AtmosphereModelBruneton::fillLightingStatus(LightStatus *status, const Vect
     irradiance.altered = 0;
 
     status->pushComponent(irradiance);
+}
+
+Texture2D *AtmosphereModelBruneton::getTextureTransmittance() const
+{
+    return _transmittanceTexture;
+}
+
+Texture2D *AtmosphereModelBruneton::getTextureIrradiance() const
+{
+    return _irradianceTexture;
+}
+
+Texture4D *AtmosphereModelBruneton::getTextureInscatter() const
+{
+    return _inscatterTexture;
 }

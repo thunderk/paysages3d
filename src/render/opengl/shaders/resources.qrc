@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/shaders">
+        <file>skybox.frag</file>
+        <file>skybox.vert</file>
+        <file>water.frag</file>
+        <file>water.vert</file>
+        <file>bruneton.frag</file>
+        <file>tonemapping.frag</file>
+        <file>terrain.frag</file>
+        <file>terrain.vert</file>
+        <file>fadeout.frag</file>
+    </qresource>
+</RCC>

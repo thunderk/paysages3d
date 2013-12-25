@@ -17,7 +17,8 @@ SOURCES += main.cpp \
     Bruneton_Test.cpp \
     Camera_Test.cpp \
     Clouds_Test.cpp \
-    FluidMediumManager_Test.cpp
+    FluidMediumManager_Test.cpp \
+    VertexArray_Test.cpp
 
 HEADERS += \
     BaseTestCase.h
@@ -51,3 +52,9 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../render/software/
 else:unix: LIBS += -L$$OUT_PWD/../render/software/ -lpaysages_render_software
 INCLUDEPATH += $$PWD/../render/software
 DEPENDPATH += $$PWD/../render/software
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../render/opengl/release/ -lpaysages_render_opengl
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../render/opengl/debug/ -lpaysages_render_opengl
+else:unix: LIBS += -L$$OUT_PWD/../render/opengl/ -lpaysages_render_opengl
+INCLUDEPATH += $$PWD/../render/opengl
+DEPENDPATH += $$PWD/../render/opengl

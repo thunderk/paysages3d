@@ -21,7 +21,7 @@ Texture4D::~Texture4D()
     delete[] data;
 }
 
-void Texture4D::getSize(int* xsize, int* ysize, int* zsize, int* wsize)
+void Texture4D::getSize(int* xsize, int* ysize, int* zsize, int* wsize) const
 {
     *xsize = this->xsize;
     *ysize = this->ysize;
@@ -39,7 +39,7 @@ void Texture4D::setPixel(int x, int y, int z, int w, Color col)
     this->data[w * this->xsize * this->ysize * this->zsize + z * this->xsize * this->ysize + y * this->xsize + x] = col;
 }
 
-Color Texture4D::getPixel(int x, int y, int z, int w)
+Color Texture4D::getPixel(int x, int y, int z, int w) const
 {
     assert(x >= 0 && x < this->xsize);
     assert(y >= 0 && y < this->ysize);
@@ -49,7 +49,7 @@ Color Texture4D::getPixel(int x, int y, int z, int w)
     return this->data[w * this->xsize * this->ysize * this->zsize + z * this->xsize * this->ysize + y * this->xsize + x];
 }
 
-Color Texture4D::getNearest(double dx, double dy, double dz, double dw)
+Color Texture4D::getNearest(double dx, double dy, double dz, double dw) const
 {
     if (dx < 0.0) dx = 0.0;
     if (dx > 1.0) dx = 1.0;
@@ -73,7 +73,7 @@ Color Texture4D::getNearest(double dx, double dy, double dz, double dw)
     return this->data[iw * this->xsize * this->ysize * this->zsize + iz * this->xsize * this->ysize + iy * this->xsize + ix];
 }
 
-Color Texture4D::getLinear(double dx, double dy, double dz, double dw)
+Color Texture4D::getLinear(double dx, double dy, double dz, double dw) const
 {
     if (dx < 0.0) dx = 0.0;
     if (dx > 1.0) dx = 1.0;
@@ -143,7 +143,7 @@ Color Texture4D::getLinear(double dx, double dy, double dz, double dw)
     return cz1.lerp(cz2, dw);
 }
 
-Color Texture4D::getCubic(double dx, double dy, double dz, double dw)
+Color Texture4D::getCubic(double dx, double dy, double dz, double dw) const
 {
     /* TODO */
     return getLinear(dx, dy, dz, dw);
@@ -178,7 +178,7 @@ void Texture4D::add(Texture4D* source)
     }
 }
 
-void Texture4D::save(PackStream* stream)
+void Texture4D::save(PackStream* stream) const
 {
     int i, n;
     stream->write(&this->xsize);
@@ -212,7 +212,7 @@ void Texture4D::load(PackStream* stream)
 class Texture4DWriter:public PictureWriter
 {
 public:
-    Texture4DWriter(Texture4D *tex): tex(tex) {}
+    Texture4DWriter(const Texture4D *tex): tex(tex) {}
 
     virtual unsigned int getPixel(int x, int y) override
     {
@@ -228,10 +228,10 @@ public:
         return tex->getPixel(x, y, z, w).to32BitBGRA();
     }
 private:
-    Texture4D *tex;
+    const Texture4D *tex;
 };
 
-void Texture4D::saveToFile(const std::string &filepath)
+void Texture4D::saveToFile(const std::string &filepath) const
 {
     Texture4DWriter writer(this);
     writer.save(filepath, xsize * wsize, ysize * zsize);

@@ -20,7 +20,7 @@ Texture3D::~Texture3D()
     delete[] data;
 }
 
-void Texture3D::getSize(int* xsize, int* ysize, int* zsize)
+void Texture3D::getSize(int* xsize, int* ysize, int* zsize) const
 {
     *xsize = this->xsize;
     *ysize = this->ysize;
@@ -36,7 +36,7 @@ void Texture3D::setPixel(int x, int y, int z, Color col)
     this->data[z * this->xsize * this->ysize + y * this->xsize + x] = col;
 }
 
-Color Texture3D::getPixel(int x, int y, int z)
+Color Texture3D::getPixel(int x, int y, int z) const
 {
     assert(x >= 0 && x < this->xsize);
     assert(y >= 0 && y < this->ysize);
@@ -45,7 +45,7 @@ Color Texture3D::getPixel(int x, int y, int z)
     return this->data[z * this->xsize * this->ysize + y * this->xsize + x];
 }
 
-Color Texture3D::getNearest(double dx, double dy, double dz)
+Color Texture3D::getNearest(double dx, double dy, double dz) const
 {
     if (dx < 0.0) dx = 0.0;
     if (dx > 1.0) dx = 1.0;
@@ -65,7 +65,7 @@ Color Texture3D::getNearest(double dx, double dy, double dz)
     return this->data[iz * this->xsize * this->ysize + iy * this->xsize + ix];
 }
 
-Color Texture3D::getLinear(double dx, double dy, double dz)
+Color Texture3D::getLinear(double dx, double dy, double dz) const
 {
     if (dx < 0.0) dx = 0.0;
     if (dx > 1.0) dx = 1.0;
@@ -112,7 +112,7 @@ Color Texture3D::getLinear(double dx, double dy, double dz)
     return cy1.lerp(cy2, dz);
 }
 
-Color Texture3D::getCubic(double dx, double dy, double dz)
+Color Texture3D::getCubic(double dx, double dy, double dz) const
 {
     /* TODO */
     return getLinear(dx, dy, dz);
@@ -146,7 +146,7 @@ void Texture3D::add(Texture3D* source)
     }
 }
 
-void Texture3D::save(PackStream* stream)
+void Texture3D::save(PackStream* stream) const
 {
     int i, n;
     stream->write(&this->xsize);
@@ -177,7 +177,7 @@ void Texture3D::load(PackStream* stream)
 class Texture3DWriter:public PictureWriter
 {
 public:
-    Texture3DWriter(Texture3D *tex): tex(tex) {}
+    Texture3DWriter(const Texture3D *tex): tex(tex) {}
 
     virtual unsigned int getPixel(int x, int y) override
     {
@@ -190,10 +190,10 @@ public:
         return tex->getPixel(x, y, z).to32BitBGRA();
     }
 private:
-    Texture3D *tex;
+    const Texture3D *tex;
 };
 
-void Texture3D::saveToFile(const std::string &filepath)
+void Texture3D::saveToFile(const std::string &filepath) const
 {
     Texture3DWriter writer(this);
     writer.save(filepath, xsize, ysize * zsize);

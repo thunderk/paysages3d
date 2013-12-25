@@ -21,8 +21,23 @@ public:
     void resize(int width, int height);
     void paint();
 
+    void cameraChangeEvent(CameraDefinition* camera);
+
+    inline OpenGLFunctions* getOpenGlFunctions() const {return functions;}
+    inline OpenGLSharedState* getSharedState() const {return shared_state;}
+
     virtual double getPrecision(const Vector3 &location) override;
     virtual Color applyMediumTraversal(Vector3 location, Color color) override;
+
+private:
+    bool ready;
+
+    OpenGLFunctions* functions;
+    OpenGLSharedState* shared_state;
+
+    OpenGLSkybox* skybox;
+    OpenGLWater* water;
+    OpenGLTerrain* terrain;
 };
 
 }

@@ -4,7 +4,7 @@
 
 ColorProfile::ColorProfile()
 {
-    setToneMapping(TONE_MAPPING_UNCHARTED, 2.0);
+    setToneMapping(TONE_MAPPING_UNCHARTED, 1.6);
 }
 
 ColorProfile::ColorProfile(ToneMappingOperator tonemapper, double exposure)

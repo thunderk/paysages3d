@@ -13,20 +13,33 @@ DEFINES += OPENGL_LIBRARY
 
 include(../../common.pri)
 
+unix:LIBS += -lGLU
+
 SOURCES += \
     OpenGLRenderer.cpp \
-    BaseExplorerChunk.cpp \
-    ExplorerChunkSky.cpp \
     ExplorerChunkTerrain.cpp \
-    WidgetExplorer.cpp
+    WidgetExplorer.cpp \
+    OpenGLShaderProgram.cpp \
+    OpenGLPart.cpp \
+    OpenGLSkybox.cpp \
+    OpenGLWater.cpp \
+    OpenGLSharedState.cpp \
+    OpenGLVariable.cpp \
+    OpenGLTerrain.cpp
 
 HEADERS +=\
         opengl_global.h \
     OpenGLRenderer.h \
-    BaseExplorerChunk.h \
-    ExplorerChunkSky.h \
     ExplorerChunkTerrain.h \
-    WidgetExplorer.h
+    WidgetExplorer.h \
+    OpenGLShaderProgram.h \
+    OpenGLPart.h \
+    OpenGLSkybox.h \
+    OpenGLWater.h \
+    OpenGLSharedState.h \
+    OpenGLVariable.h \
+    OpenGLTerrain.h \
+    VertexArray.h
 
 unix:!symbian {
     maemo5 {
@@ -60,3 +73,18 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../software/debug/ 
 else:unix: LIBS += -L$$OUT_PWD/../software/ -lpaysages_render_software
 INCLUDEPATH += $$PWD/../software
 DEPENDPATH += $$PWD/../software
+
+RESOURCES += \
+    shaders/resources.qrc
+
+OTHER_FILES += \
+    shaders/skybox.frag \
+    shaders/skybox.vert \
+    shaders/water.vert \
+    shaders/water.frag \
+    shaders/bruneton.frag \
+    shaders/bruneton.frag \
+    shaders/tonemapping.frag \
+    shaders/terrain.frag \
+    shaders/terrain.vert \
+    shaders/fadeout.frag

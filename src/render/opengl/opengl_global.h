@@ -15,9 +15,21 @@ namespace paysages {
 namespace opengl {
     class WidgetExplorer;
     class OpenGLRenderer;
-    class BaseExplorerChunk;
+    class OpenGLShaderProgram;
+    class OpenGLSharedState;
+    class OpenGLVariable;
+    class OpenGLSkybox;
+    class OpenGLWater;
+    class OpenGLTerrain;
+    class ExplorerChunkTerrain;
+    template <typename Vertex> class VertexArray;
 }
 }
 using namespace paysages::opengl;
+
+//#define OpenGLFunctions QOpenGLFunctions_3_2_Core
+#define OpenGLFunctions QOpenGLFunctions_3_0
+#define OPENGL_FUNCTIONS_INCLUDE <OpenGLFunctions>
+class OpenGLFunctions;
 
 #endif // OPENGL_GLOBAL_H

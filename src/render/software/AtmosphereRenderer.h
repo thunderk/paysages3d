@@ -39,6 +39,8 @@ public:
     virtual AtmosphereResult applyAerialPerspective(Vector3 location, Color base) override;
     virtual AtmosphereResult getSkyColor(Vector3 direction) override;
 
+    inline const AtmosphereModelBruneton* getModel() const {return model;}
+
 private:
     AtmosphereModelBruneton* model;
 };
