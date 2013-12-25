@@ -43,7 +43,7 @@ void TextureLayerDefinition::validate()
     _detail_noise->normalizeAmplitude(-0.008, 0.008, 0);
     _detail_noise->validate();
 
-    materialValidate(material);
+    material->validate();
 
     /* Update zone height range */
     Scenery* scenery = getScenery();
@@ -80,7 +80,7 @@ void TextureLayerDefinition::save(PackStream* stream) const
     stream->write(&displacement_scaling);
     stream->write(&displacement_height);
     stream->write(&displacement_offset);
-    materialSave(stream, material);
+    material->save(stream);
 
     _displacement_noise->save(stream);
     _detail_noise->save(stream);
@@ -94,7 +94,7 @@ void TextureLayerDefinition::load(PackStream* stream)
     stream->read(&displacement_scaling);
     stream->read(&displacement_height);
     stream->read(&displacement_offset);
-    materialLoad(stream, material);
+    material->load(stream);
 
     _displacement_noise->load(stream);
     _detail_noise->load(stream);

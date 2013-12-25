@@ -46,12 +46,17 @@ DialogMaterialEditor::~DialogMaterialEditor()
 bool DialogMaterialEditor::getMaterial(QWidget* parent, SurfaceMaterial* material)
 {
     DialogMaterialEditor dialog(parent, material);
-    return dialog.exec() != 0;
+    bool validated = dialog.exec() != 0;
+    if (validated)
+    {
+        *material = dialog.edited;
+    }
+    return validated;
 }
 
 void DialogMaterialEditor::refreshFromLocalData()
 {
-    materialValidate(&edited);
+    edited.validate();
     ui->preview_color->update();
 }
 

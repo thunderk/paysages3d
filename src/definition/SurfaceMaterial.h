@@ -13,6 +13,15 @@ namespace definition {
 class DEFINITIONSHARED_EXPORT SurfaceMaterial
 {
 public:
+    SurfaceMaterial();
+    SurfaceMaterial(const Color& color);
+
+    void save(PackStream* stream) const;
+    void load(PackStream* stream);
+
+    void validate();
+
+public:
     ColorHSL base;
 
     double hardness;
@@ -26,9 +35,5 @@ public:
 
 }
 }
-
-DEFINITIONSHARED_EXPORT void materialSave(PackStream* stream, SurfaceMaterial* material);
-DEFINITIONSHARED_EXPORT void materialLoad(PackStream* stream, SurfaceMaterial* material);
-DEFINITIONSHARED_EXPORT void materialValidate(SurfaceMaterial* material);
 
 #endif // SURFACEMATERIAL_H

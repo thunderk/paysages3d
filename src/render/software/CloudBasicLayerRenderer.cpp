@@ -181,7 +181,7 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
         material.hardness = 0.25;
         material.reflection = 0.0;
         material.shininess = 0.0;
-        materialValidate(&material);
+        material.validate();
 
         col = parent->applyLightingToSurface(segments[i].start, parent->getAtmosphereRenderer()->getSunDirection(), material);
 

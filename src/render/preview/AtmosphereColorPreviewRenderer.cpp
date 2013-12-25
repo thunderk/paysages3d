@@ -55,9 +55,7 @@ static Mount MOUNTS[MOUNTS_COUNT] = {
     },
 };
 
-static SurfaceMaterial MOUNT_MATERIAL = {
-    {0.4, 0.4, 0.4, 1.0}, 0.0, 0.0, 0.0, 0.0, {0.0, 0.0, 0.0, 0.0}
-};
+static SurfaceMaterial MOUNT_MATERIAL(Color(0.4, 0.4, 0.4, 1.0));
 
 static inline int _rayIntersectsTriangle(Vector3 p, Vector3 d, Vector3 v0, Vector3 v1, Vector3 v2, Vector3* hit)
 {

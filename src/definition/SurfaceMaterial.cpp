@@ -2,35 +2,49 @@
 
 #include "PackStream.h"
 
-void materialSave(PackStream* stream, SurfaceMaterial* material)
+SurfaceMaterial::SurfaceMaterial():
+    SurfaceMaterial(COLOR_BLACK)
 {
-    stream->write(&material->base.h);
-    stream->write(&material->base.l);
-    stream->write(&material->base.s);
-
-    stream->write(&material->hardness);
-    stream->write(&material->reflection);
-    stream->write(&material->shininess);
-
-    stream->write(&material->receive_shadows);
 }
 
-void materialLoad(PackStream* stream, SurfaceMaterial* material)
+SurfaceMaterial::SurfaceMaterial(const Color &color)
 {
-    stream->read(&material->base.h);
-    stream->read(&material->base.l);
-    stream->read(&material->base.s);
-
-    stream->read(&material->hardness);
-    stream->read(&material->reflection);
-    stream->read(&material->shininess);
-
-    stream->read(&material->receive_shadows);
-
-    materialValidate(material);
+    base = colorToHSL(color);
+    hardness = 0.5;
+    reflection = 0.0;
+    shininess = 0.0;
+    receive_shadows = 1.0;
 }
 
-void materialValidate(SurfaceMaterial* material)
+void SurfaceMaterial::save(PackStream* stream) const
 {
-    material->_rgb = colorFromHSL(material->base);
+    stream->write(&base.h);
+    stream->write(&base.l);
+    stream->write(&base.s);
+
+    stream->write(&hardness);
+    stream->write(&reflection);
+    stream->write(&shininess);
+
+    stream->write(&receive_shadows);
+}
+
+void SurfaceMaterial::load(PackStream* stream)
+{
+    stream->read(&base.h);
+    stream->read(&base.l);
+    stream->read(&base.s);
+
+    stream->read(&hardness);
+    stream->read(&reflection);
+    stream->read(&shininess);
+
+    stream->read(&receive_shadows);
+
+    validate();
+}
+
+void SurfaceMaterial::validate()
+{
+    _rgb = colorFromHSL(base);
 }

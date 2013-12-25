@@ -36,7 +36,7 @@ void WaterDefinition::save(PackStream* stream) const
 {
     BaseDefinition::save(stream);
 
-    materialSave(stream, material);
+    material->save(stream);
     depth_color->save(stream);
     stream->write(&transparency_depth);
     stream->write(&transparency);
@@ -49,7 +49,7 @@ void WaterDefinition::save(PackStream* stream) const
     stream->write(&turbulence);
 
     stream->write(&foam_coverage);
-    materialSave(stream, foam_material);
+    foam_material->save(stream);
 
     _waves_noise->save(stream);
 }
@@ -58,7 +58,7 @@ void WaterDefinition::load(PackStream* stream)
 {
     BaseDefinition::load(stream);
 
-    materialLoad(stream, material);
+    material->load(stream);
     depth_color->load(stream);
     stream->read(&transparency_depth);
     stream->read(&transparency);
@@ -71,7 +71,7 @@ void WaterDefinition::load(PackStream* stream)
     stream->read(&turbulence);
 
     stream->read(&foam_coverage);
-    materialLoad(stream, foam_material);
+    foam_material->load(stream);
 
     _waves_noise->load(stream);
 
@@ -116,8 +116,8 @@ void WaterDefinition::validate()
     _waves_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, -turbulence, 0.0);
     _waves_noise->validate();
 
-    materialValidate(material);
-    materialValidate(foam_material);
+    material->validate();
+    foam_material->validate();
 }
 
 void WaterDefinition::applyPreset(WaterPreset preset)

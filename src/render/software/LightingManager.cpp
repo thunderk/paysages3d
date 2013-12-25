@@ -60,6 +60,17 @@ Color LightingManager::applyFinalComponent(const LightComponent &component, cons
 
     /* diffused light */
     double diffuse = direction_inv.dotProduct(normal.normalize());
+    double sign = (diffuse < 0.0) ? -1.0 : 1.0;
+    if (material.hardness <= 0.5)
+    {
+        double hardness = material.hardness * 2.0;
+        diffuse = (1.0 - hardness) * (diffuse * diffuse) * sign + hardness * diffuse;
+    }
+    else if (diffuse != 0.0)
+    {
+        double hardness = (material.hardness - 0.5) * 2.0;
+        diffuse = (1.0 - hardness) * diffuse + hardness * sign * sqrt(fabs(diffuse));
+    }
     diffuse = (diffuse + (1.0 - normal_norm)) / (1.0 + (1.0 - normal_norm));
     if (diffuse > 0.0)
     {
