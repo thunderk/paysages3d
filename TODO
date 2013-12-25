@@ -1,17 +1,11 @@
 Technology Preview 2 :
-- Add initial terrain offset so that the (0,0) coordinates are above water.
+- Add initial terrain offset so that the (0,0) coordinates are above water (to avoid starting at the middle of a sea).
 - Use water height as 0.0 (offset the terrain).
-- Finalize lighting/clouds refactoring
-   => Restore cloud lighting
-   => Improve cloud rendering precision (and beware of precision discontinuity when rendering clouds in front of ground (shorter distance)).
-- Finish texture refactoring.
-   => Add detail texture.
-   => Displacement on 3d explorer and previews.
-   => Optimize ray marching (for tracing and shadows), using base terrain and displacement power.
+- Add missing cloud models.
+- Finish material dialog.
+- Finish texture dialog.
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
 - Fix terrain/water quads not being drawn when too much near camera.
-- Create deb and rpm packages, and windows installer.
-   => Compress and ship bruneton cache data.
 - Translations.
 
 Technlogy Preview 3 :
@@ -23,7 +17,6 @@ Technlogy Preview 3 :
 - Add a map preview to terrain editor.
 - Better time selection widget for atmosphere.
 - Clouds should keep distance to ground.
-- Create a StandardPreviewClass in C-lib (with renderer, updateData, changeView, getColor, choices and toggles).
 - Fully move layer management from BaseForm to BaseFormLayer.
 - Allow render saving in HDR compatible format.
 - Add clouds to explorer with 3d textures.
