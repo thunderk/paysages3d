@@ -59,7 +59,6 @@ package:build
 	rm -f paysages3d-linux.tar.bz2
 	mkdir paysages3d-linux
 	mkdir paysages3d-linux/lib
-	mkdir paysages3d-linux/cache
 	cp $(BUILDPATH)/system/libpaysages_system.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/basics/libpaysages_basics.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/definition/libpaysages_definition.so* paysages3d-linux/lib/
@@ -69,7 +68,6 @@ package:build
 	cp $(BUILDPATH)/interface/desktop/paysages-gui paysages3d-linux/lib/
 	chmod +x paysages3d-linux/lib/paysages-gui
 	cp -r data paysages3d-linux/
-	cp -r cache/*.cache paysages3d-linux/cache/
 	cp dist/paysages3d.sh paysages3d-linux/
 	chmod +x paysages3d-linux/paysages3d.sh
 	cp dist/collectlib.sh paysages3d-linux/

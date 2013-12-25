@@ -5,7 +5,7 @@ CacheFile::CacheFile(const char* module, const char* ext, const char* tag1, int 
     datapath = (char*)malloc(sizeof(char) * 501);
     filepath = (char*)malloc(sizeof(char) * 501);
 
-    snprintf(datapath, 500, "/usr/share/paysages3d/%s-%s-%d-%d-%d-%d-%d.%s", module, tag1, tag2, tag3, tag4, tag5, tag6, ext);
+    snprintf(datapath, 500, "./data/cache/%s-%s-%d-%d-%d-%d-%d.%s", module, tag1, tag2, tag3, tag4, tag5, tag6, ext);
     snprintf(filepath, 500, "./cache/%s-%s-%d-%d-%d-%d-%d.%s", module, tag1, tag2, tag3, tag4, tag5, tag6, ext);
 }
 

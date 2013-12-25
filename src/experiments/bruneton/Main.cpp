@@ -700,6 +700,101 @@ void idleFunc()
     glutPostRedisplay();
 }
 
+#include "Texture2D.h"
+#include "Texture4D.h"
+#include "Color.h"
+#include "Logs.h"
+#include "PackStream.h"
+void dumpTextures()
+{
+    PackStream stream;
+    int x, y, z, w;
+    float* texdata;
+
+    /* Dump irradiance */
+    Texture2D irradiance(SKY_W, SKY_H);
+
+    texdata = new float[SKY_W * SKY_H * 3 * sizeof(float)];
+
+    glBindTexture(GL_TEXTURE_2D, irradianceTexture);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, texdata);
+
+    for (x = 0; x < SKY_W; x++)
+    {
+        for (y = 0; y < SKY_H; y++)
+        {
+            float* pixel = texdata + (y * SKY_W + x) * 3;
+            irradiance.setPixel(x, y, Color(pixel[0], pixel[1], pixel[2], 1.0));
+        }
+    }
+
+    stream = PackStream();
+    stream.bindToFile("atmo-br-irradiance-64-16-0-0-0.cache", true);
+    irradiance.save(&stream);
+    irradiance.saveToFile("irradiance.png");
+    delete[] texdata;
+
+    /* Dump transmittance */
+    Texture2D transmittance(TRANSMITTANCE_W, TRANSMITTANCE_H);
+
+    texdata = new float[TRANSMITTANCE_W * TRANSMITTANCE_H * 3 * sizeof(float)];
+
+    glBindTexture(GL_TEXTURE_2D, transmittanceTexture);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, texdata);
+
+    for (x = 0; x < TRANSMITTANCE_W; x++)
+    {
+        for (y = 0; y < TRANSMITTANCE_H; y++)
+        {
+            float* pixel = texdata + (y * TRANSMITTANCE_W + x) * 3;
+            transmittance.setPixel(x, y, Color(pixel[0], pixel[1], pixel[2], 1.0));
+        }
+    }
+
+    stream = PackStream();
+    stream.bindToFile("atmo-br-transmittance-256-64-0-0-0.cache", true);
+    transmittance.save(&stream);
+    transmittance.saveToFile("transmittance.png");
+    delete[] texdata;
+
+    /* Dump inscatter */
+    Texture4D inscatter(RES_MU, RES_MU_S, RES_NU, RES_R);
+    //Texture3D inscatter(RES_MU_S * RES_NU, RES_MU, RES_R);
+
+    texdata = new float[RES_MU * RES_MU_S * RES_NU * RES_R * 4 * sizeof(float)];
+
+    glBindTexture(GL_TEXTURE_3D, inscatterTexture);
+    glGetTexImage(GL_TEXTURE_3D, 0, GL_RGBA, GL_FLOAT, texdata);
+
+    for (x = 0; x < RES_MU; x++)
+    {
+        for (y = 0; y < RES_MU_S; y++)
+        {
+            for (z = 0; z < RES_NU; z++)
+            {
+                for (w = 0; w < RES_R; w++)
+                {
+                    float* pixel = texdata + (w * (RES_MU * RES_MU_S * RES_NU) + z * (RES_MU_S) + y + x * (RES_MU_S * RES_NU)) * 4;
+                    inscatter.setPixel(x, y, z, w, Color(pixel[0], pixel[1], pixel[2], pixel[3]));
+                }
+            }
+        }
+    }
+
+    stream = PackStream();
+    stream.bindToFile("atmo-br-inscatter-128-32-8-32-0.cache", true);
+    inscatter.save(&stream);
+    inscatter.saveToFile("inscatter.png");
+    delete[] texdata;
+
+    /* Check errors */
+    int error_code;
+    while ((error_code = glGetError()) != GL_NO_ERROR)
+    {
+        logWarning("[OpenGL] ERROR : %s", (const char*)gluErrorString(error_code));
+    }
+}
+
 int main(int argc, char* argv[])
 {
 	glutInit(&argc, argv);
@@ -718,6 +813,7 @@ int main(int argc, char* argv[])
 
     loadData();
     precompute();
+    dumpTextures();
     updateView();
     glutMainLoop();
 }
