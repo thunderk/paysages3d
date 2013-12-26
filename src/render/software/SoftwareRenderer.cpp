@@ -14,6 +14,7 @@
 #include "SkyRasterizer.h"
 #include "TerrainRasterizer.h"
 #include "WaterRasterizer.h"
+#include "NightSky.h"
 #include "LightStatus.h"
 #include "LightingManager.h"
 #include "System.h"
@@ -39,6 +40,8 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
     textures_renderer = new TexturesRenderer(this);
     water_renderer = new WaterRenderer(this);
 
+    nightsky_renderer = new NightSky(this);
+
     fluid_medium = new FluidMediumManager(this);
     lighting = new LightingManager();
 
@@ -60,6 +63,8 @@ SoftwareRenderer::~SoftwareRenderer()
 
     delete fluid_medium;
     delete lighting;
+
+    delete nightsky_renderer;
 
     delete atmosphere_renderer;
     delete clouds_renderer;
@@ -95,6 +100,8 @@ void SoftwareRenderer::prepare()
     terrain_renderer->update();
     water_renderer->update();
     textures_renderer->update();
+
+    nightsky_renderer->update();
 
     // Prepare global tools
     fluid_medium->clearMedia();

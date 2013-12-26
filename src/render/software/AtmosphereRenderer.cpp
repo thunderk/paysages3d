@@ -8,6 +8,7 @@
 #include "LightComponent.h"
 #include "LightStatus.h"
 #include "Scenery.h"
+#include "NightSky.h"
 
 /* Factor to convert software units to kilometers */
 #define WORLD_SCALING 0.05
@@ -207,8 +208,12 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
     direction = direction.normalize();
     sun_position = sun_direction.scale(SUN_DISTANCE_SCALED);
 
-    /* Get sun shape */
     base = COLOR_BLACK;
+
+    /* Get night sky */
+    base = base.add(parent->getNightSky()->getColor(camera_location.y, direction));
+
+    /* Get sun shape */
     /*if (v3Dot(sun_direction, direction) >= 0)
     {
         double sun_radius = definition->sun_radius * SUN_RADIUS_SCALED * 5.0; // FIXME Why should we multiply by 5 ?
@@ -232,8 +237,6 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
             base = sun_color;
         }
     }*/
-
-    /* TODO Get stars */
 
     /* Get scattering */
     AtmosphereResult result;
