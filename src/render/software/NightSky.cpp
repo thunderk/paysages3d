@@ -7,6 +7,8 @@
 #include "Scenery.h"
 #include "AtmosphereDefinition.h"
 #include "SurfaceMaterial.h"
+#include "LightComponent.h"
+#include "LightStatus.h"
 
 #define WORLD_SCALING 0.05
 #define MOON_DISTANCE 384403.0
@@ -85,4 +87,19 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction)
 
     return result;
 
+}
+
+void NightSky::fillLightingStatus(LightStatus *status, const Vector3 &, int)
+{
+    LightComponent moon;
+
+    AtmosphereDefinition* atmosphere = renderer->getScenery()->getAtmosphere();
+    VectorSpherical moon_location_s = {MOON_DISTANCE_SCALED, atmosphere->moon_theta, -atmosphere->moon_phi};
+
+    moon.color = Color(0.03, 0.03, 0.03); // TODO take moon phase into account
+    moon.direction = Vector3(moon_location_s).normalize().scale(-1.0);
+    moon.reflection = 0.2;
+    moon.altered = 1;
+
+    status->pushComponent(moon);
 }

@@ -171,7 +171,8 @@ SoftwareBrunetonAtmosphereRenderer::~SoftwareBrunetonAtmosphereRenderer()
 
 void SoftwareBrunetonAtmosphereRenderer::getLightingStatus(LightStatus* status, Vector3 normal, int opaque)
 {
-    return model->fillLightingStatus(status, normal, opaque);
+    model->fillLightingStatus(status, normal, opaque);
+    parent->getNightSky()->fillLightingStatus(status, normal, opaque);
 }
 
 AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(Vector3 location, Color base)

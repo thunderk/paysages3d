@@ -26,6 +26,8 @@ public:
      */
     virtual const Color getColor(double altitude, const Vector3 &direction);
 
+    virtual void fillLightingStatus(LightStatus *status, const Vector3 &normal, int opaque);
+
 private:
     SoftwareRenderer* renderer;
 };
