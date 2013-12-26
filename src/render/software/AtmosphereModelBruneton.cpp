@@ -1154,7 +1154,7 @@ AtmosphereModelBruneton::AtmosphereModelBruneton(SoftwareRenderer *parent):
 {
 }
 
-AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3 &direction, const Vector3 &sun_position, const Color &)
+AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3 &direction, const Vector3 &sun_position, const Color &base)
 {
     double yoffset = GROUND_OFFSET - parent->getWaterRenderer()->getHeightInfo().base_height;
     eye.y += yoffset;
@@ -1177,7 +1177,7 @@ AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3
     /*result.base.r = base.r + sunColor.r;
     result.base.g = base.g + sunColor.g;
     result.base.b = base.b + sunColor.b;*/
-    result.base = sunColor;
+    result.base = base.add(sunColor);
     result.inscattering = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
     /* TODO Use atmosphere attenuation */
     result.distance = SPHERE_SIZE;
@@ -1254,7 +1254,14 @@ void AtmosphereModelBruneton::fillLightingStatus(LightStatus *status, const Vect
     Vector3 s = sun_position.sub(x).normalize();
 
     muS = up.dotProduct(s);
-    sun.color = _transmittanceWithShadow(r0, muS);
+    if (altitude * WORLD_SCALING > RL)
+    {
+        sun.color = parent->getScenery()->getAtmosphere()->sun_color;
+    }
+    else
+    {
+        sun.color = _transmittanceWithShadow(r0, muS);
+    }
     sun.direction = s.scale(-1.0);
     sun.reflection = ISun;
     sun.altered = 1;

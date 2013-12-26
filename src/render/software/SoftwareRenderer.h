@@ -90,6 +90,8 @@ public:
     inline TexturesRenderer* getTexturesRenderer() const {return textures_renderer;}
     inline WaterRenderer* getWaterRenderer() const {return water_renderer;}
 
+    inline NightSky* getNightSky() const {return nightsky_renderer;}
+
     inline FluidMediumManager* getFluidMediumManager() const {return fluid_medium;}
     inline LightingManager* getLightingManager() const {return lighting;}
 
@@ -108,6 +110,7 @@ private:
     TerrainRenderer* terrain_renderer;
     TexturesRenderer* textures_renderer;
     WaterRenderer* water_renderer;
+    NightSky* nightsky_renderer;
 };
 
 }

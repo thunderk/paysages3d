@@ -192,6 +192,12 @@ bool TerrainRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
     Vector3 inc_vector, direction_to_light, cursor;
     double inc_value, inc_base, inc_factor, height, diff, light_factor, smoothing, length;
 
+    if (at.y > definition->getHeightInfo().max_height)
+    {
+        // Location is above terrain, don't bother
+        return true;
+    }
+
     direction_to_light = light.direction.scale(-1.0);
     if (direction_to_light.y < -0.05)
     {

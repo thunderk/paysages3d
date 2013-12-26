@@ -21,7 +21,7 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     shared_state = new OpenGLSharedState();
 
     shared_state->set("viewDistance", 300.0);
-    shared_state->set("exposure", 1.6);
+    shared_state->set("exposure", 1.2);
 
     skybox = new OpenGLSkybox(this);
     water = new OpenGLWater(this);
