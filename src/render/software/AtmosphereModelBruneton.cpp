@@ -1254,7 +1254,14 @@ void AtmosphereModelBruneton::fillLightingStatus(LightStatus *status, const Vect
     Vector3 s = sun_position.sub(x).normalize();
 
     muS = up.dotProduct(s);
-    sun.color = _transmittanceWithShadow(r0, muS);
+    if (altitude * WORLD_SCALING > RL)
+    {
+        sun.color = parent->getScenery()->getAtmosphere()->sun_color;
+    }
+    else
+    {
+        sun.color = _transmittanceWithShadow(r0, muS);
+    }
     sun.direction = s.scale(-1.0);
     sun.reflection = ISun;
     sun.altered = 1;
