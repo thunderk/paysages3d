@@ -42,6 +42,9 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
     addInputDouble(tr("Sun radius"), &_definition->sun_radius, 0.0, 5.0, 0.05, 0.5);
     //addInputDouble(tr("Influence of skydome on lighting"), &_definition->dome_lighting, 0.0, 2.0, 0.01, 0.1);
     addInputDouble(tr("Humidity"), &_definition->humidity, 0.0, 1.0, 0.01, 0.1);
+    addInputDouble(tr("Moon radius"), &_definition->moon_radius, 0.5, 3.0, 0.03, 0.3);
+    addInputDouble(tr("Moon location (horizontal)"), &_definition->moon_phi, 0.0, M_PI * 2.0, 0.05, 0.5);
+    addInputDouble(tr("Moon location (vertical)"), &_definition->moon_theta, -0.1, M_PI * 0.5, 0.02, 0.2);
 
     revertConfig();
 }

@@ -20,6 +20,9 @@ void AtmosphereDefinition::save(PackStream* stream) const
     stream->write(&sun_radius);
     stream->write(&dome_lighting);
     stream->write(&humidity);
+    stream->write(&moon_radius);
+    stream->write(&moon_theta);
+    stream->write(&moon_phi);
 }
 
 void AtmosphereDefinition::load(PackStream* stream)
@@ -31,6 +34,9 @@ void AtmosphereDefinition::load(PackStream* stream)
     stream->read(&sun_radius);
     stream->read(&dome_lighting);
     stream->read(&humidity);
+    stream->read(&moon_radius);
+    stream->read(&moon_theta);
+    stream->read(&moon_phi);
 
     validate();
 }
@@ -46,6 +52,9 @@ void AtmosphereDefinition::copy(BaseDefinition* _destination) const
     destination->sun_radius = sun_radius;
     destination->dome_lighting = dome_lighting;
     destination->humidity = humidity;
+    destination->moon_radius = moon_radius;
+    destination->moon_theta = moon_theta;
+    destination->moon_phi = moon_phi;
 
     destination->validate();
 }
@@ -79,6 +88,9 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset)
     sun_color.b = 0.9;
     sun_color.a = 1.0;
     sun_radius = 1.0;
+    moon_radius = 1.0;
+    moon_theta = 0.3;
+    moon_phi = 0.5;
     humidity = 0.1;
 
     model = ATMOSPHERE_MODEL_BRUNETON;

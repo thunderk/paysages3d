@@ -48,6 +48,10 @@ public:
     double sun_radius;
     double dome_lighting;
 
+    double moon_radius;
+    double moon_theta;
+    double moon_phi;
+
     double _daytime;
 };
 

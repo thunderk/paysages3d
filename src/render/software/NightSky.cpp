@@ -4,6 +4,8 @@
 #include "Vector3.h"
 #include "Geometry.h"
 #include "SoftwareRenderer.h"
+#include "Scenery.h"
+#include "AtmosphereDefinition.h"
 #include "SurfaceMaterial.h"
 
 #define WORLD_SCALING 0.05
@@ -27,6 +29,7 @@ void NightSky::update()
 
 const Color NightSky::getColor(double altitude, const Vector3 &direction)
 {
+    AtmosphereDefinition* atmosphere = renderer->getScenery()->getAtmosphere();
     Color result(0.01, 0.012, 0.03);
 
     Vector3 location(0.0, altitude, 0.0);
@@ -34,11 +37,12 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction)
     // Get stars
 
     // Get moon
-    Vector3 moon_direction = Vector3(0.9, 0.5, -0.6).normalize();
+    VectorSpherical moon_location_s = {MOON_DISTANCE_SCALED, atmosphere->moon_theta, -atmosphere->moon_phi};
+    Vector3 moon_position(moon_location_s);
+    Vector3 moon_direction = moon_position.normalize();
     if (moon_direction.dotProduct(direction) >= 0)
     {
-        Vector3 moon_position = moon_direction.scale(MOON_DISTANCE_SCALED);
-        double moon_radius = MOON_RADIUS_SCALED * 5.0;
+        double moon_radius = MOON_RADIUS_SCALED * 5.0 * atmosphere->moon_radius;
         Vector3 hit1, hit2;
         int hits = Geometry::rayIntersectSphere(location, direction, moon_position, moon_radius, &hit1, &hit2);
         if (hits > 1)
