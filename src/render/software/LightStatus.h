@@ -25,6 +25,7 @@ public:
     Color apply(const Vector3 &normal, const SurfaceMaterial &material);
 
 private:
+    double max_power;
     LightingManager* manager;
     Vector3 location;
     Vector3 eye;

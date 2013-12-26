@@ -15,5 +15,7 @@ void main(void)
     vec3 attenuation;
     vec3 inscattering = _getInscatterColor(x, t, v, s, r, mu, attenuation);
 
-    gl_FragColor = applyToneMapping(sunTransmittance + vec4(inscattering, 0.0));
+    gl_FragColor = vec4(0.01, 0.012, 0.03, 1.0); // night sky
+    gl_FragColor += sunTransmittance + vec4(inscattering, 0.0);
+    gl_FragColor = applyToneMapping(gl_FragColor);
 }

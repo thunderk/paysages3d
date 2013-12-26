@@ -72,7 +72,7 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction)
             double dist = hit2.sub(hit1).getNorm() / moon_radius; // distance between intersection points (relative to radius)
 
             Vector3 nearest = (hit1.sub(location).getNorm() > hit2.sub(location).getNorm()) ? hit2 : hit1;
-            SurfaceMaterial moon_material(Color(3.0, 3.0, 3.0, 1.0));
+            SurfaceMaterial moon_material(Color(3.0, 3.0, 3.0));
             moon_material.validate();
 
             Color moon_color = renderer->applyLightingToSurface(nearest, nearest.sub(moon_position).normalize(), moon_material);
@@ -91,7 +91,7 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction)
 
 void NightSky::fillLightingStatus(LightStatus *status, const Vector3 &, int)
 {
-    LightComponent moon;
+    LightComponent moon, sky;
 
     AtmosphereDefinition* atmosphere = renderer->getScenery()->getAtmosphere();
     VectorSpherical moon_location_s = {MOON_DISTANCE_SCALED, atmosphere->moon_theta, -atmosphere->moon_phi};
@@ -102,4 +102,11 @@ void NightSky::fillLightingStatus(LightStatus *status, const Vector3 &, int)
     moon.altered = 1;
 
     status->pushComponent(moon);
+
+    sky.color = Color(0.01, 0.012, 0.03);
+    sky.direction = VECTOR_DOWN;
+    sky.reflection = 0.0;
+    sky.altered = 0;
+
+    status->pushComponent(sky);
 }
