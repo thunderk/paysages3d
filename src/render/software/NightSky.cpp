@@ -35,6 +35,26 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction)
     Vector3 location(0.0, altitude, 0.0);
 
     // Get stars
+    for (const auto &star: atmosphere->stars)
+    {
+        if (star.location.dotProduct(direction) >= 0)
+        {
+            double radius = star.radius;
+            Vector3 hit1, hit2;
+            int hits = Geometry::rayIntersectSphere(location, direction, star.location, radius, &hit1, &hit2);
+            if (hits > 1)
+            {
+                double dist = hit2.sub(hit1).getNorm() / radius; // distance between intersection points (relative to radius)
+
+                Color color = star.col;
+                if (dist <= 0.5)
+                {
+                    color.a *= 1.0 - dist / 0.5;
+                }
+                result.mask(color);
+            }
+        }
+    }
 
     // Get moon
     VectorSpherical moon_location_s = {MOON_DISTANCE_SCALED, atmosphere->moon_theta, -atmosphere->moon_phi};

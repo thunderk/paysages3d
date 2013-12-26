@@ -5,6 +5,7 @@
 
 #include "BaseDefinition.h"
 
+#include "Vector3.h"
 #include "Color.h"
 
 namespace paysages {
@@ -12,6 +13,14 @@ namespace definition {
 
 class AtmosphereDefinition : public BaseDefinition
 {
+public:
+    typedef struct
+    {
+        Vector3 location;
+        double radius;
+        Color col;
+    } Star;
+
 public:
     typedef enum
     {
@@ -38,6 +47,7 @@ public:
     virtual void validate() override;
 
     void applyPreset(AtmospherePreset preset);
+    void generateStars(int count);
 
 public:
     AtmosphereModel model;
@@ -53,6 +63,8 @@ public:
     double moon_phi;
 
     double _daytime;
+
+    std::vector<Star> stars;
 };
 
 }
