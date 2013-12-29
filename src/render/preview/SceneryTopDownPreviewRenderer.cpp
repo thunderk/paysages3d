@@ -12,6 +12,7 @@ SceneryTopDownPreviewRenderer::SceneryTopDownPreviewRenderer(Scenery* scenery):
     scenery(scenery)
 {
     clouds_enabled = true;
+    render_quality = 3;
 }
 
 void SceneryTopDownPreviewRenderer::bindEvent(BasePreview* preview)

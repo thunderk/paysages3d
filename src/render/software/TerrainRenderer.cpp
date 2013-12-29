@@ -5,18 +5,22 @@
 #include "TerrainDefinition.h"
 #include "TexturesRenderer.h"
 #include "LightComponent.h"
+#include "TerrainRayWalker.h"
 
 TerrainRenderer::TerrainRenderer(SoftwareRenderer* parent):
     parent(parent)
 {
+    walker = new TerrainRayWalker(parent);
 }
 
 TerrainRenderer::~TerrainRenderer()
 {
+    delete walker;
 }
 
 void TerrainRenderer::update()
 {
+    walker->update();
 }
 
 double TerrainRenderer::getHeight(double x, double z, int with_painting)
@@ -130,75 +134,33 @@ Color TerrainRenderer::getFinalColor(const Vector3 &location, double)
 RayCastingResult TerrainRenderer::castRay(const Vector3 &start, const Vector3 &direction)
 {
     RayCastingResult result;
-    TerrainDefinition* definition = parent->getScenery()->getTerrain();
-    Vector3 inc_vector, direction_norm, cursor;
-    double inc_value, inc_base, inc_factor, height, diff, lastdiff, length;
-
-    cursor = start;
-    direction_norm = direction.normalize();
-    inc_factor = (double)parent->render_quality;
-    inc_base = 1.0;
-    inc_value = inc_base / inc_factor;
-    lastdiff = start.y - getHeight(start.x, start.z, 1);
-
-    length = 0.0;
-    do
+    TerrainRayWalker::TerrainHitResult walk_result;
+    if (walker->startWalking(start, direction.normalize(), 0.0, 200.0, walk_result))
     {
-        inc_vector = direction_norm.scale(inc_value);
-        length += inc_vector.getNorm();
-        cursor = cursor.add(inc_vector);
-        height = getHeight(cursor.x, cursor.z, 1);
-        diff = cursor.y - height;
-        if (diff < 0.0)
-        {
-            if (fabs(diff - lastdiff) > 0.00001)
-            {
-                cursor = cursor.add(inc_vector.scale(-diff / (diff - lastdiff)));
-                cursor.y = getHeight(cursor.x, cursor.z, 1);
-            }
-            else
-            {
-                cursor.y = height;
-            }
-            result.hit = 1;
-            result.hit_location = cursor;
-            result.hit_color = getFinalColor(cursor, parent->getPrecision(result.hit_location));
-            return result;
-        }
-
-        if (diff < inc_base / inc_factor)
-        {
-            inc_value = inc_base / inc_factor;
-        }
-        else if (diff > inc_base)
-        {
-            inc_value = inc_base;
-        }
-        else
-        {
-            inc_value = diff;
-        }
-        lastdiff = diff;
+        result.hit = true;
+        result.hit_location = walk_result.hit_location;
+        result.hit_color = getFinalColor(walk_result.hit_location, parent->getPrecision(walk_result.hit_location));
     }
-    while (length < 50.0 && cursor.y <= definition->_max_height);
-
-    result.hit = 0;
+    else
+    {
+        result.hit = false;
+    }
     return result;
 }
 
 bool TerrainRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
 {
     TerrainDefinition* definition = parent->getScenery()->getTerrain();
-    Vector3 inc_vector, direction_to_light, cursor;
-    double inc_value, inc_base, inc_factor, height, diff, light_factor, smoothing, length;
+    TerrainRayWalker::TerrainHitResult walk_result;
 
+    // If location is above terrain, don't bother
     if (at.y > definition->getHeightInfo().max_height)
     {
-        // Location is above terrain, don't bother
         return true;
     }
 
-    direction_to_light = light.direction.scale(-1.0);
+    // Handle sun below horizon
+    Vector3 direction_to_light = light.direction.scale(-1.0);
     if (direction_to_light.y < -0.05)
     {
         light.color = COLOR_BLACK;
@@ -211,60 +173,31 @@ bool TerrainRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
         light.color.b *= (0.05 + direction_to_light.y) / 0.05;
     }
 
-    cursor = at;
-    inc_factor = (double)parent->render_quality;
-    inc_base = definition->height / definition->scaling;
-    inc_value = inc_base / inc_factor;
-    smoothing = definition->shadow_smoothing;
-
-    light_factor = 1.0;
-    length = 0.0;
-    diff = 0.0;
-    do
+    // Walk to find an intersection
+    double escape_angle = definition->shadow_smoothing;
+    if (walker->startWalking(at, direction_to_light, escape_angle, 100.0, walk_result))
     {
-        inc_vector = direction_to_light.scale(inc_value);
-        length += inc_vector.getNorm();
-        cursor = cursor.add(inc_vector);
-        height = parent->getTerrainRenderer()->getResult(cursor.x, cursor.z, 1, 1).location.y;
-        diff = cursor.y - height;
-        if (diff < 0.0)
+        if (walk_result.escape_angle == 0.0)
         {
-            if (length * smoothing > 0.000001)
-            {
-                light_factor += diff * inc_vector.getNorm() / (length * smoothing);
-            }
-            else
-            {
-                light_factor = 0.0;
-            }
-        }
-
-        if (diff < inc_base / inc_factor)
-        {
-            inc_value = inc_base / inc_factor;
-        }
-        else if (diff > inc_base)
-        {
-            inc_value = inc_base;
+            // Hit, with no escape, cancelling the light
+            light.color = COLOR_BLACK;
+            return false;
         }
         else
         {
-            inc_value = diff;
-        }
-    }
-    while (light_factor > 0.0 && length < (10.0 * inc_factor) && cursor.y <= definition->_max_height);
+            // Hit, with an escape
+            double light_factor = 1.0 - (walk_result.escape_angle / escape_angle);
 
-    if (light_factor <= 0.0)
-    {
-        light.color = COLOR_BLACK;
-        return false;
+            light.color.r *= light_factor;
+            light.color.g *= light_factor;
+            light.color.b *= light_factor;
+
+            return true;
+        }
     }
     else
     {
-        light.color.r *= light_factor;
-        light.color.g *= light_factor;
-        light.color.b *= light_factor;
-
+        // No hit, leave light alone
         return true;
     }
 }

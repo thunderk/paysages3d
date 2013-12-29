@@ -42,6 +42,8 @@ namespace software {
     class LightComponent;
 
     class NightSky;
+
+    class TerrainRayWalker;
 }
 }
 

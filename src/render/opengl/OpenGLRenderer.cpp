@@ -17,6 +17,8 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
 {
     ready = false;
 
+    render_quality = 3;
+
     functions = new OpenGLFunctions();
     shared_state = new OpenGLSharedState();
 

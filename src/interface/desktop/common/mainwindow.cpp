@@ -11,7 +11,6 @@
 #include <QTranslator>
 #include <QLocale>
 #include <QMessageBox>
-#include <QSplashScreen>
 
 #include "BasePreview.h"
 #include "PreviewOsd.h"
@@ -36,7 +35,6 @@ MainWindow* MainWindow::_instance = NULL;
 int main(int argc, char** argv)
 {
     MainWindow* window;
-    QSplashScreen* splash;
     int result;
 
     QApplication app(argc, argv);
@@ -46,9 +44,6 @@ int main(int argc, char** argv)
         QMessageBox::critical(NULL, QObject::tr("Paysages 3D - Data error"), QObject::tr("Application data were not found. Please ensure the software is run from its original directory."));
         return 1;
     }
-
-    splash = new QSplashScreen(QPixmap(getDataPath("images/logo_256.png")));
-    splash->show();
 
     QTranslator qtTranslator;
     QTranslator myTranslator;
@@ -74,9 +69,6 @@ int main(int argc, char** argv)
     window = new MainWindow();
     window->show();
     //window->showMaximized();
-    splash->finish(window);
-
-    delete splash;
 
     result = app.exec();
 

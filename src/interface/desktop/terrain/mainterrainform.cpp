@@ -8,6 +8,7 @@
 #include "common/freeformhelper.h"
 #include "tools.h"
 #include "DesktopScenery.h"
+#include "TexturesDefinition.h"
 #include "TerrainDefinition.h"
 #include "TerrainHeightMap.h"
 
@@ -70,8 +71,7 @@ void MainTerrainForm::refreshFromLocalData()
 
 void MainTerrainForm::refreshFromFellowData()
 {
-    //double disp = texturesGetMaximalDisplacement(RenderingScenery::getCurrent()->getTextures());
-    double disp = -1000.0;
+    double disp = DesktopScenery::getCurrent()->getTextures()->getMaximalDisplacement();
 
     if (disp == 0.0)
     {
@@ -79,7 +79,9 @@ void MainTerrainForm::refreshFromFellowData()
     }
     else
     {
-        ui->label_info_textures->setText(tr("Maximal displacement : %1% of total height").arg(100.0 * disp / _terrain->height, 0, 'f', 1));
+        HeightInfo info = DesktopScenery::getCurrent()->getTerrain()->getHeightInfo();
+        double terrain_height = info.max_height - info.min_height;
+        ui->label_info_textures->setText(tr("Maximal displacement : %1% of total height").arg(100.0 * disp / terrain_height, 0, 'f', 1));
     }
 }
 

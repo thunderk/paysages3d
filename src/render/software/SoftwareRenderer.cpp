@@ -134,16 +134,16 @@ void SoftwareRenderer::disableAtmosphere()
     light.color.g = 1.5;
     light.color.b = 1.5;
     light.direction.x = -1.0;
-    light.direction.y = -0.5;
+    light.direction.y = -0.3;
     light.direction.z = 1.0;
     light.direction = light.direction.normalize();
     light.altered = 1;
     light.reflection = 0.0;
     lights.push_back(light);
 
-    light.color.r = 0.4;
-    light.color.g = 0.4;
-    light.color.b = 0.42;
+    light.color.r = 0.2;
+    light.color.g = 0.2;
+    light.color.b = 0.21;
     light.direction.x = 1.0;
     light.direction.y = -0.5;
     light.direction.z = -1.0;
