@@ -6,6 +6,7 @@
 #include "TexturesDefinition.h"
 #include "TerrainRenderer.h"
 #include "TexturesRenderer.h"
+#include "Matrix4.h"
 
 TerrainRayWalker::TerrainRayWalker(SoftwareRenderer* renderer):
     renderer(renderer)
@@ -23,33 +24,57 @@ void TerrainRayWalker::update()
     ymin = info.min_height - disp;
     ymax = info.max_height + disp;
 
-    ydispmin = -disp;
-    ydispmax = disp;
+    ydispmax = disp * (0.5 + (double)renderer->render_quality * 0.1);
+    ydispmin = -ydispmax;
 
-    minstep = 0.01 * terrain->scaling / (double)renderer->render_quality;
-    maxstep = 1.0 * terrain->scaling;
+    minstep = 1.0 * terrain->scaling / (double)(renderer->render_quality * renderer->render_quality);
+    maxstep = 10.0 * terrain->scaling / (double)renderer->render_quality;
 }
 
-bool TerrainRayWalker::startWalking(Vector3 start, const Vector3 &direction, double escaping_factor, double max_length, TerrainHitResult &result)
+static inline Vector3 _getShiftAxis(const Vector3 &direction)
+{
+    if (fabs(direction.y) > 0.99)
+    {
+        // When the ray is vertical, we choose an arbitrary shift axis
+        return VECTOR_NORTH;
+    }
+    else
+    {
+        return VECTOR_UP.crossProduct(direction);
+    }
+}
+
+bool TerrainRayWalker::startWalking(const Vector3 &start, Vector3 direction, double escape_angle, double max_length, TerrainHitResult &result)
 {
     TerrainRenderer* terrain_renderer = renderer->getTerrainRenderer();
     TexturesRenderer* textures_renderer = renderer->getTexturesRenderer();
     TerrainRenderer::TerrainResult terrain_result;
-    Vector3 end, displaced;
-    bool hit;
+    Vector3 cursor, displaced;
     double diff;
+    Matrix4 shift_matrix;
+    double shift_step = 0.0;
 
+    Vector3 previous_cursor = start;
+    bool hit = false;
     double step_length = minstep;
     double walked_length = 0.0;
+
+    result.escape_angle = 0.0;
+    if (escape_angle != 0.0)
+    {
+        // Prepare escape
+        shift_step = escape_angle / (double)(renderer->render_quality * renderer->render_quality);
+        shift_matrix = Matrix4::newRotateAxis(-shift_step, _getShiftAxis(direction));
+    }
 
     do
     {
         // Perform a step
-        end = start.add(direction.scale(step_length));
+        cursor = previous_cursor.add(direction.scale(step_length));
 
         // Get the terrain info at end (without textures displacement)
-        terrain_result = terrain_renderer->getResult(end.x, end.z, true, false);
-        diff = end.y - terrain_result.location.y;
+        terrain_result = terrain_renderer->getResult(cursor.x, cursor.z, true, false);
+        diff = cursor.y - terrain_result.location.y;
 
         // If we are very under the terrain, consider a hit
         if (diff < ydispmin)
@@ -61,33 +86,42 @@ bool TerrainRayWalker::startWalking(Vector3 start, const Vector3 &direction, dou
         else if (diff < ydispmax)
         {
             displaced = textures_renderer->displaceTerrain(terrain_result);
-            diff = end.y - displaced.y;
-            hit = (diff < 0.0);
+            diff = cursor.y - displaced.y;
+            hit = diff < 0.0;
         }
 
         if (hit)
         {
-            // Refine the hit with dichotomy at high quality
+            // TODO Refine the hit with dichotomy at high quality
             /*if (renderer->render_quality > 7)
             {
-                end = refineHit(start, end, step_length);
+                cursor = refineHit(previous_cursor, cursor, step_length);
             }*/
 
-            // Find an escape
-            /*if (escaping_factor != 0.0)
+            // Shift ray to escape terrain
+            if (escape_angle != 0.0)
             {
-                result.escape_length = findEscape(end, walked_length, escaping_factor, max_length);
-            }*/
+                result.escape_angle += shift_step;
+                if (result.escape_angle > escape_angle)
+                {
+                    // Too much shifted to escape, make it a hit
+                    result.escape_angle = 0.0;
+                    return true;
+                }
+                hit = false;
+                direction = shift_matrix.multPoint(direction);
+                previous_cursor = start.add(shift_matrix.multPoint(previous_cursor.sub(start)));
+            }
 
-            result.hit_location = end;
+            result.hit_location = cursor;
         }
         else
         {
             // Prepare next step
-            start = end;
+            previous_cursor = cursor;
             walked_length += step_length;
 
-            step_length = diff / (double)renderer->render_quality;
+            step_length = diff * 3.0 / (double)renderer->render_quality;
             if (step_length < minstep)
             {
                 step_length = minstep;
@@ -97,7 +131,7 @@ bool TerrainRayWalker::startWalking(Vector3 start, const Vector3 &direction, dou
                 step_length = maxstep;
             }
         }
-    } while (not hit and start.y < ymax and walked_length < max_length);
+    } while (not hit and cursor.y < ymax and walked_length < max_length);
 
-    return hit;
+    return hit or result.escape_angle > 0.0;
 }

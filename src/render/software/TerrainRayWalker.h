@@ -20,7 +20,7 @@ class SOFTWARESHARED_EXPORT TerrainRayWalker
 public:
     typedef struct {
         Vector3 hit_location; // Location of the hit
-        double escape_length; // Length walked before terrain was escaped after hit (0.0 if no escape)
+        double escape_angle;  // Angle used to shift the ray to escape the terrain (0.0 if no escape was possible)
     } TerrainHitResult;
 
 public:
@@ -36,12 +36,12 @@ public:
      *
      * \param start Point of origin of the ray
      * \param direction Ray direction (normalized vector)
-     * \param escaping_factor Factor used to escape the terrain on hit (mainly for shadows computing)
+     * \param escape_angle Maximal angle allowed to escape the terrain on hit (mainly for shadows computing)
      * \param max_length Maximum length to walk before considering no hit
      * \param result Object to store the results info
      * \return true if there was a hit
      */
-    bool startWalking(Vector3 start, const Vector3 &direction, double escaping_factor, double max_length, TerrainHitResult &result);
+    bool startWalking(const Vector3 &start, Vector3 direction, double escape_angle, double max_length, TerrainHitResult &result);
 
 private:
     SoftwareRenderer* renderer;

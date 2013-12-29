@@ -151,16 +151,16 @@ RayCastingResult TerrainRenderer::castRay(const Vector3 &start, const Vector3 &d
 bool TerrainRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
 {
     TerrainDefinition* definition = parent->getScenery()->getTerrain();
-    Vector3 inc_vector, direction_to_light, cursor;
-    double inc_value, inc_base, inc_factor, height, diff, light_factor, smoothing, length;
+    TerrainRayWalker::TerrainHitResult walk_result;
 
+    // If location is above terrain, don't bother
     if (at.y > definition->getHeightInfo().max_height)
     {
-        // Location is above terrain, don't bother
         return true;
     }
 
-    direction_to_light = light.direction.scale(-1.0);
+    // Handle sun below horizon
+    Vector3 direction_to_light = light.direction.scale(-1.0);
     if (direction_to_light.y < -0.05)
     {
         light.color = COLOR_BLACK;
@@ -173,60 +173,31 @@ bool TerrainRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
         light.color.b *= (0.05 + direction_to_light.y) / 0.05;
     }
 
-    cursor = at;
-    inc_factor = (double)parent->render_quality;
-    inc_base = definition->height / definition->scaling;
-    inc_value = inc_base / inc_factor;
-    smoothing = definition->shadow_smoothing;
-
-    light_factor = 1.0;
-    length = 0.0;
-    diff = 0.0;
-    do
+    // Walk to find an intersection
+    double escape_angle = definition->shadow_smoothing;
+    if (walker->startWalking(at, direction_to_light, escape_angle, 100.0, walk_result))
     {
-        inc_vector = direction_to_light.scale(inc_value);
-        length += inc_vector.getNorm();
-        cursor = cursor.add(inc_vector);
-        height = parent->getTerrainRenderer()->getResult(cursor.x, cursor.z, 1, 1).location.y;
-        diff = cursor.y - height;
-        if (diff < 0.0)
+        if (walk_result.escape_angle == 0.0)
         {
-            if (length * smoothing > 0.000001)
-            {
-                light_factor += diff * inc_vector.getNorm() / (length * smoothing);
-            }
-            else
-            {
-                light_factor = 0.0;
-            }
-        }
-
-        if (diff < inc_base / inc_factor)
-        {
-            inc_value = inc_base / inc_factor;
-        }
-        else if (diff > inc_base)
-        {
-            inc_value = inc_base;
+            // Hit, with no escape, cancelling the light
+            light.color = COLOR_BLACK;
+            return false;
         }
         else
         {
-            inc_value = diff;
-        }
-    }
-    while (light_factor > 0.0 && length < (10.0 * inc_factor) && cursor.y <= definition->_max_height);
+            // Hit, with an escape
+            double light_factor = 1.0 - (walk_result.escape_angle / escape_angle);
 
-    if (light_factor <= 0.0)
-    {
-        light.color = COLOR_BLACK;
-        return false;
+            light.color.r *= light_factor;
+            light.color.g *= light_factor;
+            light.color.b *= light_factor;
+
+            return true;
+        }
     }
     else
     {
-        light.color.r *= light_factor;
-        light.color.g *= light_factor;
-        light.color.b *= light_factor;
-
+        // No hit, leave light alone
         return true;
     }
 }
