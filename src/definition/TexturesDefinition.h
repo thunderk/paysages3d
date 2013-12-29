@@ -23,6 +23,8 @@ public:
         TEXTURES_PRESET_CANYON
     } TexturesPreset;
     void applyPreset(TexturesPreset preset);
+
+    double getMaximalDisplacement();
 };
 
 }

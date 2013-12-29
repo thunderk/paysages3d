@@ -5,18 +5,22 @@
 #include "TerrainDefinition.h"
 #include "TexturesRenderer.h"
 #include "LightComponent.h"
+#include "TerrainRayWalker.h"
 
 TerrainRenderer::TerrainRenderer(SoftwareRenderer* parent):
     parent(parent)
 {
+    walker = new TerrainRayWalker(parent);
 }
 
 TerrainRenderer::~TerrainRenderer()
 {
+    delete walker;
 }
 
 void TerrainRenderer::update()
 {
+    walker->update();
 }
 
 double TerrainRenderer::getHeight(double x, double z, int with_painting)
@@ -130,59 +134,17 @@ Color TerrainRenderer::getFinalColor(const Vector3 &location, double)
 RayCastingResult TerrainRenderer::castRay(const Vector3 &start, const Vector3 &direction)
 {
     RayCastingResult result;
-    TerrainDefinition* definition = parent->getScenery()->getTerrain();
-    Vector3 inc_vector, direction_norm, cursor;
-    double inc_value, inc_base, inc_factor, height, diff, lastdiff, length;
-
-    cursor = start;
-    direction_norm = direction.normalize();
-    inc_factor = (double)parent->render_quality;
-    inc_base = 1.0;
-    inc_value = inc_base / inc_factor;
-    lastdiff = start.y - getHeight(start.x, start.z, 1);
-
-    length = 0.0;
-    do
+    TerrainRayWalker::TerrainHitResult walk_result;
+    if (walker->startWalking(start, direction.normalize(), 0.0, 200.0, walk_result))
     {
-        inc_vector = direction_norm.scale(inc_value);
-        length += inc_vector.getNorm();
-        cursor = cursor.add(inc_vector);
-        height = getHeight(cursor.x, cursor.z, 1);
-        diff = cursor.y - height;
-        if (diff < 0.0)
-        {
-            if (fabs(diff - lastdiff) > 0.00001)
-            {
-                cursor = cursor.add(inc_vector.scale(-diff / (diff - lastdiff)));
-                cursor.y = getHeight(cursor.x, cursor.z, 1);
-            }
-            else
-            {
-                cursor.y = height;
-            }
-            result.hit = 1;
-            result.hit_location = cursor;
-            result.hit_color = getFinalColor(cursor, parent->getPrecision(result.hit_location));
-            return result;
-        }
-
-        if (diff < inc_base / inc_factor)
-        {
-            inc_value = inc_base / inc_factor;
-        }
-        else if (diff > inc_base)
-        {
-            inc_value = inc_base;
-        }
-        else
-        {
-            inc_value = diff;
-        }
-        lastdiff = diff;
+        result.hit = true;
+        result.hit_location = walk_result.hit_location;
+        result.hit_color = getFinalColor(walk_result.hit_location, parent->getPrecision(walk_result.hit_location));
     }
-    while (length < 50.0 && cursor.y <= definition->_max_height);
-
-    result.hit = 0;
+    else
+    {
+        result.hit = false;
+    }
     return result;
 }
 

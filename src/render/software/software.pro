@@ -36,7 +36,8 @@ SOURCES += SoftwareRenderer.cpp \
     WaterRenderer.cpp \
     RenderArea.cpp \
     RayCastingManager.cpp \
-    NightSky.cpp
+    NightSky.cpp \
+    TerrainRayWalker.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -62,7 +63,8 @@ HEADERS += SoftwareRenderer.h\
     WaterRenderer.h \
     RenderArea.h \
     RayCastingManager.h \
-    NightSky.h
+    NightSky.h \
+    TerrainRayWalker.h
 
 unix:!symbian {
     maemo5 {

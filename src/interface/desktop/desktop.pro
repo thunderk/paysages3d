@@ -25,7 +25,6 @@ HEADERS += \
     inputcamera.h \
     inputboolean.h \
     formwater.h \
-    formtextures.h \
     formrender.h \
     formclouds.h \
     formatmosphere.h \
@@ -74,7 +73,6 @@ SOURCES += \
     inputcamera.cpp \
     inputboolean.cpp \
     formwater.cpp \
-    formtextures.cpp \
     formrender.cpp \
     formclouds.cpp \
     formatmosphere.cpp \

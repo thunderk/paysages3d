@@ -64,3 +64,14 @@ void TexturesDefinition::applyPreset(TexturesPreset preset)
         /* TODO */
     }
 }
+
+double TexturesDefinition::getMaximalDisplacement()
+{
+    double result = 0.0;
+    int n = count();
+    for (int i = 0; i < n; i++)
+    {
+        result += getTextureLayer(i)->displacement_height;
+    }
+    return result;
+}
