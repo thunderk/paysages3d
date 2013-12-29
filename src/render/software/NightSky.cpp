@@ -6,6 +6,7 @@
 #include "SoftwareRenderer.h"
 #include "Scenery.h"
 #include "AtmosphereDefinition.h"
+#include "AtmosphereRenderer.h"
 #include "SurfaceMaterial.h"
 #include "LightComponent.h"
 #include "LightStatus.h"
@@ -37,23 +38,28 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction)
     Vector3 location(0.0, altitude, 0.0);
 
     // Get stars
-    for (const auto &star: atmosphere->stars)
+    Vector3 sun_direction = renderer->getAtmosphereRenderer()->getSunDirection();
+    if (sun_direction.y < 0.1)
     {
-        if (star.location.dotProduct(direction) >= 0)
+        double factor = (sun_direction.y < 0.0) ? 1.0 : 1.0 - (sun_direction.y * 10.0);
+        for (const auto &star: atmosphere->stars)
         {
-            double radius = star.radius;
-            Vector3 hit1, hit2;
-            int hits = Geometry::rayIntersectSphere(location, direction, star.location, radius, &hit1, &hit2);
-            if (hits > 1)
+            if (star.location.dotProduct(direction) >= 0)
             {
-                double dist = hit2.sub(hit1).getNorm() / radius; // distance between intersection points (relative to radius)
-
-                Color color = star.col;
-                if (dist <= 0.5)
+                double radius = star.radius;
+                Vector3 hit1, hit2;
+                int hits = Geometry::rayIntersectSphere(location, direction, star.location, radius, &hit1, &hit2);
+                if (hits > 1)
                 {
-                    color.a *= 1.0 - dist / 0.5;
+                    double dist = hit2.sub(hit1).getNorm() / radius; // distance between intersection points (relative to radius)
+
+                    Color color = star.col;
+                    if (dist <= 0.5)
+                    {
+                        color.a *= (1.0 - dist / 0.5) * factor;
+                    }
+                    result.mask(color);
                 }
-                result.mask(color);
             }
         }
     }

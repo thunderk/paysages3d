@@ -117,7 +117,7 @@ static void _getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChun
     int coverage = renderer->render_camera->isUnprojectedBoxInView(box);
     if (coverage > 0)
     {
-        chunk->detail_hint = (int)ceil(sqrt((double)coverage) / (double)(25 - 2 * renderer->render_quality));
+        chunk->detail_hint = (int)ceil(sqrt((double)coverage) / (double)(25 - renderer->render_quality));
         if (chunk->detail_hint > 5 * renderer->render_quality)
         {
             chunk->detail_hint = 5 * renderer->render_quality;
@@ -139,7 +139,7 @@ void TerrainRasterizer::getTessellationInfo(int displaced)
     double radius_int, radius_ext;
     double base_chunk_size, chunk_size;
 
-    base_chunk_size = 5.0 / (double)renderer->render_quality;
+    base_chunk_size = 8.0 / (double)(renderer->render_quality * renderer->render_quality);
 
     chunk_factor = 1;
     chunk_count = 2;

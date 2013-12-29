@@ -13,6 +13,8 @@ WaterAspectPreviewRenderer::WaterAspectPreviewRenderer(WaterDefinition* definiti
     lighting = true;
     background = 2;
 
+    render_quality = 3;
+
     customData[0] = &lighting;
     customData[1] = &background;
 }

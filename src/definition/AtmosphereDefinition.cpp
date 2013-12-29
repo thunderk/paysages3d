@@ -154,7 +154,7 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset)
             ;
     }
 
-    generateStars(5000);
+    generateStars(2000);
 
     validate();
 }
@@ -167,7 +167,7 @@ void AtmosphereDefinition::generateStars(int count)
     {
         Star star;
 
-        star.location = Vector3((RandomGenerator::random() - 0.5) * 100000.0, (RandomGenerator::random() - 0.5) * 100000.0, (RandomGenerator::random() - 0.5) * 100000.0);
+        star.location = Vector3((RandomGenerator::random() - 0.5) * 100000.0, (RandomGenerator::random() * 0.5) * 100000.0, (RandomGenerator::random() - 0.5) * 100000.0);
         if (star.location.getNorm() < 30000.0)
         {
             i--;

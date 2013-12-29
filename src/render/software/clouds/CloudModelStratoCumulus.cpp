@@ -37,7 +37,7 @@ void CloudModelStratoCumulus::update()
 
 void CloudModelStratoCumulus::getAltitudeRange(double *min_altitude, double *max_altitude) const
 {
-    *min_altitude = 4.0 + 14.0 * layer->altitude;
+    *min_altitude = 10.0 + 10.0 * layer->altitude;
     *max_altitude = *min_altitude + 11.0 * layer->scaling;
 }
 
@@ -55,9 +55,9 @@ double CloudModelStratoCumulus::getDensity(const Vector3 &location) const
     }
     else
     {
-        double x = location.x / noise_scaling;
+        double x = 0.3 * location.x / noise_scaling;
         double y = (location.y - min_altitude) / noise_scaling;
-        double z = location.z / noise_scaling;
+        double z = 0.3 * location.z / noise_scaling;
 
         //double coverage = layer->coverage * layer->_coverage_by_altitude->getValue((position.y - layer->altitude) / layer->scaling);
         double coverage = layer->coverage;
