@@ -17,7 +17,7 @@ CameraDefinition::CameraDefinition():
 
     width = 1.0;
     height = 1.0;
-    perspective.yfov = 1.57;
+    perspective.yfov = 1.0;
     perspective.xratio = 1.0;
     perspective.znear = 1.0;
     perspective.zfar = 1000.0;
@@ -32,6 +32,7 @@ void CameraDefinition::save(PackStream* stream) const
     stream->write(&direction.phi);
     stream->write(&direction.theta);
     stream->write(&roll);
+    stream->write(&perspective.yfov);
 }
 
 void CameraDefinition::load(PackStream* stream)
@@ -41,6 +42,7 @@ void CameraDefinition::load(PackStream* stream)
     stream->read(&direction.phi);
     stream->read(&direction.theta);
     stream->read(&roll);
+    stream->read(&perspective.yfov);
 
     validate();
 }
@@ -52,6 +54,8 @@ void CameraDefinition::copy(BaseDefinition* _destination) const
     destination->location = location;
     destination->direction = direction;
     destination->roll = roll;
+
+    destination->perspective = perspective;
 
     destination->validate();
 }
@@ -139,6 +143,13 @@ void CameraDefinition::setZoomToTarget(double zoom)
 {
     direction.r = zoom;
     location = target.add(Vector3(direction).scale(-1.0));
+
+    validate();
+}
+
+void CameraDefinition::setFov(double fov)
+{
+    perspective.yfov = fov;
 
     validate();
 }

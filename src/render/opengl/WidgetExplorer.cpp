@@ -43,6 +43,12 @@ WidgetExplorer::~WidgetExplorer()
     delete _renderer;
 }
 
+void WidgetExplorer::setCameraFov(double fov)
+{
+    _current_camera->setFov(fov);
+    updateGL();
+}
+
 void WidgetExplorer::resetCamera()
 {
     _base_camera->copy(_current_camera);

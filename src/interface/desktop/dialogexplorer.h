@@ -14,6 +14,7 @@ public:
 
 protected slots:
     void validateCamera();
+    void fovChanged(int value);
 
 private:
     WidgetExplorer* _wanderer;

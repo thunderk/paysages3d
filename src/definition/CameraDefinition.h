@@ -48,6 +48,7 @@ public:
     void setTargetCoords(double x, double y, double z);
     void setRoll(double angle);
     void setZoomToTarget(double zoom);
+    void setFov(double fov);
 
     void strafeForward(double value);
     void strafeRight(double value);

@@ -15,6 +15,8 @@ public:
     WidgetExplorer(QWidget* parent, CameraDefinition* camera, Scenery* scenery);
     ~WidgetExplorer();
 
+    void setCameraFov(double fov);
+
 public slots:
     void resetCamera();
     void validateCamera();

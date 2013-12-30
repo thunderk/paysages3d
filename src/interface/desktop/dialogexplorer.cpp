@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QSlider>
 #include "WidgetExplorer.h"
 #include "DesktopScenery.h"
 #include "CameraDefinition.h"
@@ -12,6 +13,7 @@ DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool c
 {
     QWidget* panel;
     QPushButton* button;
+    QLabel* label;
 
     setModal(true);
     setWindowTitle(tr("Paysages 3D - Explore"));
@@ -28,6 +30,16 @@ DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool c
     panel = new QWidget(this);
     panel->setLayout(new QVBoxLayout());
     panel->setMaximumWidth(230);
+
+    label = new QLabel(tr("Field of vision"), panel);
+    label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    panel->layout()->addWidget(label);
+    QSlider* slider = new QSlider(Qt::Horizontal, panel);
+    slider->setRange(0, 1000);
+    slider->setValue((int)(1000.0 * (camera->getPerspective().yfov - 0.7) / 1.0));
+    slider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(fovChanged(int)));
+    panel->layout()->addWidget(slider);
 
     panel->layout()->addWidget(new QLabel(tr("COMMANDS\n\nLeft click : Look around\nRight click : Pan (adjust framing)\nWheel : Move forward/backward\nHold SHIFT : Faster\nHold CTRL : Slower"), panel));
 
@@ -59,5 +71,10 @@ void DialogExplorer::validateCamera()
 {
     _wanderer->validateCamera();
     accept();
+}
+
+void DialogExplorer::fovChanged(int value)
+{
+    _wanderer->setCameraFov(0.7 + 1.0 * ((double)value) / 1000.0);
 }
 
