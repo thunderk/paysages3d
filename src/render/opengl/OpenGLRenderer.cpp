@@ -32,6 +32,10 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
 
 OpenGLRenderer::~OpenGLRenderer()
 {
+    terrain->interrupt();
+    water->interrupt();
+    skybox->interrupt();
+
     delete skybox;
     delete water;
     delete terrain;

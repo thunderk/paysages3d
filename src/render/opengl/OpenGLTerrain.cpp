@@ -58,7 +58,7 @@ void OpenGLTerrain::initialize()
     program->addFragmentSource("terrain");
 
     // Add terrain chunks
-    int chunks = 25;
+    int chunks = 16;
     double size = 800.0;
     double chunksize = size / (double) chunks;
     double start = -size / 2.0;
@@ -91,6 +91,14 @@ void OpenGLTerrain::render()
     }
 
     program->release();
+}
+
+void OpenGLTerrain::interrupt()
+{
+    for (auto chunk: _chunks)
+    {
+        chunk->askInterrupt();
+    }
 }
 
 static bool _cmpChunks(const ExplorerChunkTerrain* c1, const ExplorerChunkTerrain* c2)

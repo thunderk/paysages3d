@@ -28,6 +28,7 @@ QGLWidget(parent)
     camera->copy(_current_camera);
 
     _renderer = new OpenGLRenderer(scenery);
+    scenery->setCamera(_current_camera);
 
     _average_frame_time = 0.05;
     _quality = 3;
@@ -130,7 +131,7 @@ void WidgetExplorer::mouseMoveEvent(QMouseEvent* event)
     {
         factor = 0.01;
     }
-    else if (event->modifiers() & Qt::ShiftModifier)
+    else if ((event->modifiers() & Qt::ShiftModifier) and not (event->buttons() & Qt::LeftButton))
     {
         factor = 1.0;
     }

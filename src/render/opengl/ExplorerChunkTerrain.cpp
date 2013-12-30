@@ -12,26 +12,27 @@
 ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, double z, double size, int nbchunks, double water_height):
     _renderer(renderer)
 {
-    _color_profile = new ColorProfile(ColorProfile::TONE_MAPPING_REIHNARD, 2.0);
-
     priority = 0.0;
     _reset_needed = false;
+
+    interrupt = false;
 
     _texture = new QImage(1, 1, QImage::Format_RGBA8888);
     texture_id = 0;
     _texture_changed = false;
     _texture_current_size = 0;
-    _texture_max_size = 0;
+    _texture_wanted_size = 0;
+    _texture_max_size = 256;
 
     _startx = x;
     _startz = z;
     _size = size;
     _overall_step = size * (double) nbchunks;
 
-    _distance_to_camera = 0.0;
+    distance_to_camera = 0.0;
 
     _water_height = water_height;
-    _overwater = false;
+    overwater = false;
 
     tessellation_count = 33;
     tessellated = new VertexArray<TerrainVertex>();
@@ -41,15 +42,12 @@ ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, d
     _tessellation_current_size = 0;
     _tessellation_step = _size / (double) _tessellation_max_size;
 
-    setMaxTextureSize(128);
-
     maintain();
 }
 
 ExplorerChunkTerrain::~ExplorerChunkTerrain()
 {
     _lock_data.lock();
-    delete _color_profile;
     delete _texture;
     delete tessellated;
     _lock_data.unlock();
@@ -65,14 +63,71 @@ bool ExplorerChunkTerrain::maintain()
         _reset_needed = false;
         _texture_current_size = 0;
         _tessellation_current_size = 0;
-        _overwater = false;
+        overwater = false;
     }
     _lock_data.unlock();
 
-    subchanged = onMaintainEvent();
+    // Improve heightmap resolution
+    if (_tessellation_current_size < _tessellation_max_size)
+    {
+        while (_tessellation_current_size < _tessellation_max_size)
+        {
+            int new_tessellation_size = _tessellation_current_size ? _tessellation_current_size * 4 : 2;
+            int old_tessellation_inc = _tessellation_current_size ? _tessellation_max_size / _tessellation_current_size : 1;
+            int new_tessellation_inc = _tessellation_max_size / new_tessellation_size;
+            float internal_step = 1.0f / (float)_tessellation_max_size;
+            for (int j = 0; j <= _tessellation_max_size; j += new_tessellation_inc)
+            {
+                for (int i = 0; i <= _tessellation_max_size; i += new_tessellation_inc)
+                {
+                    if (_tessellation_current_size == 0 || i % old_tessellation_inc != 0 || j % old_tessellation_inc != 0)
+                    {
+                        double x = _startx + _tessellation_step * (float)i;
+                        double z = _startz + _tessellation_step * (float)j;
+
+                        double height = _renderer->getTerrainRenderer()->getHeight(x, z, 1);
+                        if (height >= _water_height)
+                        {
+                            overwater = true;
+                        }
+
+                        TerrainVertex v;
+
+                        v.uv[0] = internal_step * (float)i;
+                        v.uv[1] = internal_step * (float)j;
+
+                        v.location[0] = x;
+                        v.location[1] = height;
+                        v.location[2] = z;
+
+                        tessellated->setGridVertex(tessellation_count, i, j, v);
+                    }
+                }
+                if (interrupt or _reset_needed)
+                {
+                    return false;
+                }
+            }
+
+            _lock_data.lock();
+            _tessellation_current_size = new_tessellation_size;
+            tessellated->setAutoGridIndices(tessellation_count, new_tessellation_inc);
+            _lock_data.unlock();
+
+            if (_tessellation_current_size >= 4)
+            {
+                break;
+            }
+        }
+        subchanged = true;
+    }
+    else
+    {
+        subchanged = false;
+    }
 
     // Improve texture resolution
-    if (_texture_current_size < _texture_max_size)
+    if (_texture_current_size < _texture_wanted_size)
     {
         int new_texture_size = _texture_current_size ? _texture_current_size * 2 : 1;
         QImage* new_image = new QImage(_texture->scaled(new_texture_size + 1, new_texture_size + 1, Qt::IgnoreAspectRatio, Qt::FastTransformation));
@@ -83,10 +138,14 @@ bool ExplorerChunkTerrain::maintain()
                 if (_texture_current_size <= 1 || i % 2 != 0 || j % 2 != 0)
                 {
                     Color color = getTextureColor((double)i / (double)new_texture_size, (double)j / (double)new_texture_size);
-                    //color = _color_profile->apply(color);
                     color.normalize();
                     new_image->setPixel(i, j, color.to32BitRGBA());
                 }
+            }
+
+            if (interrupt or _reset_needed)
+            {
+                return false;
             }
         }
 
@@ -97,11 +156,6 @@ bool ExplorerChunkTerrain::maintain()
         _texture_changed = true;
         _lock_data.unlock();
 
-        /*if (_texture_current_size < 4 && _texture_current_size < _texture_max_size)
-        {
-            maintain();
-        }*/
-
         return true;
     }
     else
@@ -110,77 +164,8 @@ bool ExplorerChunkTerrain::maintain()
     }
 }
 
-bool ExplorerChunkTerrain::onMaintainEvent()
-{
-    // Improve heightmap resolution
-    if (_tessellation_current_size < _tessellation_max_size)
-    {
-        int new_tessellation_size = _tessellation_current_size ? _tessellation_current_size * 4 : 2;
-        int old_tessellation_inc = _tessellation_current_size ? _tessellation_max_size / _tessellation_current_size : 1;
-        int new_tessellation_inc = _tessellation_max_size / new_tessellation_size;
-        float internal_step = 1.0f / (float)_tessellation_max_size;
-        for (int j = 0; j <= _tessellation_max_size; j += new_tessellation_inc)
-        {
-            for (int i = 0; i <= _tessellation_max_size; i += new_tessellation_inc)
-            {
-                if (_tessellation_current_size == 0 || i % old_tessellation_inc != 0 || j % old_tessellation_inc != 0)
-                {
-                    double x = _startx + _tessellation_step * (float)i;
-                    double z = _startz + _tessellation_step * (float)j;
-
-                    double height = _renderer->getTerrainRenderer()->getHeight(x, z, 1);
-                    if (height >= _water_height)
-                    {
-                        _overwater = true;
-                    }
-
-                    TerrainVertex v;
-
-                    v.uv[0] = internal_step * (float)i;
-                    v.uv[1] = internal_step * (float)j;
-
-                    v.location[0] = x;
-                    v.location[1] = height;
-                    v.location[2] = z;
-
-                    tessellated->setGridVertex(tessellation_count, i, j, v);
-                }
-            }
-        }
-
-        _lock_data.lock();
-        _tessellation_current_size = new_tessellation_size;
-        tessellated->setAutoGridIndices(tessellation_count, new_tessellation_inc);
-        _lock_data.unlock();
-
-        if (_tessellation_current_size < 4 && _tessellation_current_size < _tessellation_max_size)
-        {
-            onMaintainEvent();
-        }
-
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 void ExplorerChunkTerrain::updatePriority(CameraDefinition* camera)
 {
-    if (_reset_needed || (_texture_max_size > 1 && _texture_current_size <= 1))
-    {
-        priority = 1000.0;
-    }
-    else if (_texture_current_size == _texture_max_size)
-    {
-        priority = -1000.0;
-    }
-    else
-    {
-        priority = getDisplayedSizeHint(camera) - _texture_current_size;
-    }
-
     Vector3 camera_location = camera->getLocation();
 
     // Handle position
@@ -205,10 +190,45 @@ void ExplorerChunkTerrain::updatePriority(CameraDefinition* camera)
         _startz -= _overall_step;
         askReset();
     }
-
-    _distance_to_camera = getCenter().sub(camera_location).getNorm();
-
+    distance_to_camera = getCenter().sub(camera_location).getNorm();
     _lock_data.unlock();
+
+    // Update wanted LOD
+    if (not overwater)
+    {
+        _texture_wanted_size = 2;
+    }
+    else if (distance_to_camera < 50.0)
+    {
+        _texture_wanted_size = _texture_max_size;
+    }
+    else if (distance_to_camera < 100.0)
+    {
+        _texture_wanted_size = _texture_max_size / 4;
+    }
+    else if (distance_to_camera < 200.0)
+    {
+        _texture_wanted_size = _texture_max_size / 8;
+    }
+    else
+    {
+        _texture_wanted_size = 8;
+    }
+
+    // Update priority
+    if (_reset_needed || (_texture_max_size > 1 && _texture_current_size <= 1))
+    {
+        priority = 1000.0;
+    }
+    else if (_texture_current_size == _texture_wanted_size)
+    {
+        priority = -1000.0;
+    }
+    else
+    {
+        priority = _texture_wanted_size / _texture_current_size;
+    }
+
 }
 
 void ExplorerChunkTerrain::render(QOpenGLShaderProgram* program, OpenGLFunctions* functions)
@@ -245,19 +265,18 @@ void ExplorerChunkTerrain::render(QOpenGLShaderProgram* program, OpenGLFunctions
         int tessellation_size = _tessellation_current_size;
         _lock_data.unlock();
 
-        if (tessellation_size <= 1 or not _overwater)
+        if (tessellation_size <= 1 or not overwater)
         {
             return;
         }
 
-        _lock_data.lock(); // TEMP
+        _lock_data.lock();
         // TEMP
         functions->glActiveTexture(GL_TEXTURE0 + 3);
         functions->glBindTexture(GL_TEXTURE_2D, texture_id);
         program->setUniformValue("groundTexture", 3);
-
         tessellated->render(program, functions);
-        _lock_data.unlock(); // TEMP
+        _lock_data.unlock();
     }
 }
 
@@ -266,33 +285,9 @@ void ExplorerChunkTerrain::askReset()
     _reset_needed = true;
 }
 
-void ExplorerChunkTerrain::setMaxTextureSize(int size)
+void ExplorerChunkTerrain::askInterrupt()
 {
-    _texture_max_size = size;
-}
-
-double ExplorerChunkTerrain::getDisplayedSizeHint(CameraDefinition* camera)
-{
-    double distance;
-    Vector3 center;
-
-    if (not _overwater)
-    {
-        return -1000.0;
-    }
-
-    center = getCenter();
-
-    if (camera->isBoxInView(center, _size, 40.0, _size))
-    {
-        distance = _distance_to_camera;
-        distance = distance < 0.1 ? 0.1 : distance;
-        return (int) ceil(120.0 - distance / 1.5);
-    }
-    else
-    {
-        return -800.0;
-    }
+    interrupt = true;
 }
 
 Color ExplorerChunkTerrain::getTextureColor(double x, double y)

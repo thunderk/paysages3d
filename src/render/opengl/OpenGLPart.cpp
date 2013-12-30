@@ -24,6 +24,10 @@ OpenGLPart::~OpenGLPart()
     }
 }
 
+void OpenGLPart::interrupt()
+{
+}
+
 OpenGLShaderProgram* OpenGLPart::createShader(QString name)
 {
     OpenGLShaderProgram* program = new OpenGLShaderProgram(name, renderer);

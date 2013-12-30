@@ -26,6 +26,9 @@ public:
     // Do the rendering
     virtual void render() = 0;
 
+    // Interrupt the rendering
+    virtual void interrupt();
+
     void updateScenery(bool onlyCommon=false);
 
 protected:

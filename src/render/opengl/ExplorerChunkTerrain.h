@@ -28,10 +28,8 @@ public:
     void render(QOpenGLShaderProgram* program, OpenGLFunctions* functions);
 
     void askReset();
-    void setMaxTextureSize(int size);
+    void askInterrupt();
 
-    bool onMaintainEvent();
-    double getDisplayedSizeHint(CameraDefinition* camera);
     Color getTextureColor(double x, double y);
 
     double priority;
@@ -44,9 +42,7 @@ private:
     double _size;
     double _overall_step;
 
-    double _distance_to_camera;
     double _water_height;
-    bool _overwater;
 
     int tessellation_count;
     VertexArray<TerrainVertex> *tessellated;
@@ -57,15 +53,20 @@ private:
     QMutex _lock_data;
 
     OpenGLRenderer* _renderer;
-    ColorProfile* _color_profile;
 
     bool _reset_needed;
+    bool interrupt;
 
     QImage* _texture;
     unsigned int texture_id;
     bool _texture_changed;
     int _texture_current_size;
+    int _texture_wanted_size;
     int _texture_max_size;
+
+    // LOD control
+    double distance_to_camera;
+    bool overwater;
 };
 
 }
