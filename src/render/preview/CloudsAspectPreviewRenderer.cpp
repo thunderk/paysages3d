@@ -57,12 +57,13 @@ public:
 
     virtual double getDensity(const Vector3 &location) const override
     {
+        Vector3 location_ext(location.x * 0.5, location.y, location.z * 0.5);
         double ymin, ymax, thickness;
         getAltitudeRange(&ymin, &ymax);
         thickness = ymax - ymin;
 
         Vector3 center(0.0, ymin + thickness * 0.5, 0.0);
-        double distance = 2.0 * location.sub(center).getNorm() / thickness;
+        double distance = 2.0 * location_ext.sub(center).getNorm() / thickness;
         double fallout = 0.7;
         if (distance > 1.0)
         {
@@ -75,7 +76,7 @@ public:
         else
         {
             double factor = (1.0 - distance) / fallout;
-            return real_model->getDensity(location) * (1.0 - factor) + factor;
+            return real_model->getDensity(location_ext) * (1.0 - factor) + factor;
         }
     }
 
@@ -120,9 +121,9 @@ Color CloudsAspectPreviewRenderer::getColor2D(double x, double y, double)
     model->getAltitudeRange(&ymin, &ymax);
     thickness = ymax - ymin;
 
-    start.x = x * thickness * 0.5;
+    start.x = x * thickness;
     start.y = ymin + (1.0 - y) * thickness * 0.5;
-    start.z = thickness * 0.5;
+    start.z = thickness;
 
     end.x = start.x;
     end.y = start.y;

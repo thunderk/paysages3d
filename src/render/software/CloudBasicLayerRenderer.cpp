@@ -171,19 +171,27 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
 
     double ymin, ymax;
     model->getAltitudeRange(&ymin, &ymax);
-    double transparency_depth = (ymax - ymin) * 0.3;
+    double transparency_depth = (ymax - ymin) * 0.5;
 
     segment_count = _findSegments(model, parent, start, direction, 20, transparency_depth, max_length, &inside_length, &total_length, segments);
     for (i = segment_count - 1; i >= 0; i--)
     {
         SurfaceMaterial material;
-        material.base = colorToHSL(Color(3.0, 3.0, 3.0));
+        material.base = colorToHSL(COLOR_WHITE);
         material.hardness = 0.25;
         material.reflection = 0.0;
         material.shininess = 0.0;
         material.validate();
 
         col = parent->applyLightingToSurface(segments[i].start, parent->getAtmosphereRenderer()->getSunDirection(), material);
+
+        double power = col.getPower();
+        if (power > 0.2)
+        {
+            col.r += (power - 0.2) * 1.5;
+            col.g += (power - 0.2) * 1.5;
+            col.b += (power - 0.2) * 1.5;
+        }
 
         col.a = (segments[i].length >= transparency_depth) ? 1.0 : (segments[i].length / transparency_depth);
         result.mask(col);
@@ -216,7 +224,7 @@ bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent*
 
     double ymin, ymax;
     model->getAltitudeRange(&ymin, &ymax);
-    double light_traversal = (ymax - ymin) * 0.8;
+    double light_traversal = (ymax - ymin) * 1.2;
     _findSegments(model, parent, start, direction, 20, light_traversal, end.sub(start).getNorm(), &inside_depth, &total_depth, segments);
 
     if (light_traversal < 0.0001)
