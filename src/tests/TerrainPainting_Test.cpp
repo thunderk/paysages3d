@@ -33,6 +33,8 @@ protected:
         terrain->_height_noise->clearLevels();
         NoiseGenerator::NoiseLevel level = {1.0, 2.0, -1.0};
         terrain->_height_noise->addLevel(level);
+        noise_state.resetOffsets();
+        terrain->_height_noise->setState(noise_state);
         terrain->_height_noise->setCustomFunction(_noise1dMock, _noise2dMock, _noise3dMock);
     }
 
@@ -42,6 +44,7 @@ protected:
     }
 
     TerrainDefinition* terrain;
+    NoiseState noise_state;
 };
 
 TEST_F(TerrainPainting_Test, grid)

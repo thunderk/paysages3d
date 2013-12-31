@@ -53,3 +53,13 @@ void NoiseState::randomizeOffsets()
         level_offset.z = RandomGenerator::random();
     }
 }
+
+void NoiseState::resetOffsets(double x, double y, double z)
+{
+    for (auto &level_offset:level_offsets)
+    {
+        level_offset.x = x;
+        level_offset.y = y;
+        level_offset.z = z;
+    }
+}

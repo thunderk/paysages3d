@@ -37,6 +37,7 @@ static void _render_quad_checker(SoftwareRenderer &renderer)
     renderer.render_area->setToneMapping(ColorProfile(ColorProfile::TONE_MAPPING_CLAMP, 0.0));
 
     renderer.render_camera->setRenderSize(renderer.render_width, renderer.render_height);
+    renderer.render_camera->setFov(1.57);
 
     RenderArea::RenderParams params = {renderer.render_width, renderer.render_height, 1, 1};
     renderer.render_area->setParams(params);
