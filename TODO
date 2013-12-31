@@ -2,16 +2,16 @@ Technology Preview 2 :
 - Add initial terrain offset so that the (0,0) coordinates are above water (to avoid starting at the middle of a sea).
 - Use water height as 0.0 (offset the terrain).
 - Add missing cloud models.
+- Fix the terrain walker hitting displacement immediately at high quality.
 - Finish material dialog.
 - Finish texture dialog.
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
-- Fix terrain/water quads not being drawn when too much near camera.
+- Fix the moon being backlit by its own light.
 - Translations.
 
 Technlogy Preview 3 :
 - FOCUS : Streamlining, with undo system
 - FOCUS : Vegetation
-- FOCUS : Night sky
 - Implement copy-on-write on definitions (to avoid copying whole heightmaps for instance).
 - Alter aerial perspective using estimation of the amount of light left after cloud layers traversal.
 - Add a map preview to terrain editor.
@@ -21,7 +21,7 @@ Technlogy Preview 3 :
 - Allow render saving in HDR compatible format.
 - Add clouds to explorer with 3d textures.
 - Add fresnel effect to specular lighting.
-- Add "hardness to light" and shadow control ("minimum lighting") to material.
+- Add shadow control ("minimum lighting") to material.
 - Start using OpenCL to optimize rendering.
 - Fully restore render progress (with first pass).
 - Rethink the quality settings and detail smoothing in the distance.
