@@ -107,7 +107,7 @@ static Vector3 _getDetailNormal(SoftwareRenderer* renderer, Vector3 base_locatio
         pivot = VECTOR_UP;
     }
     dx = base_normal.crossProduct(pivot).normalize();
-    dy = base_normal.crossProduct(dx);
+    dy = base_normal.crossProduct(dx).normalize();
 
     /* Apply detail noise locally */
     Vector3 center, north, east, south, west;
@@ -191,7 +191,8 @@ TexturesRenderer::TexturesResult TexturesRenderer::applyToTerrain(double x, doub
         if (info->presence > 0.0)
         {
             Vector3 normal = _getDetailNormal(parent, terrain.location, terrain.normal, info->layer);
-            info->color = parent->applyLightingToSurface(terrain.location, normal, *info->layer->material);
+            Vector3 location(x, terrain.location.y, z);
+            info->color = parent->applyLightingToSurface(location, normal, *info->layer->material);
         }
         else
         {

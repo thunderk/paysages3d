@@ -2,7 +2,6 @@ Technology Preview 2 :
 - Add initial terrain offset so that the (0,0) coordinates are above water (to avoid starting at the middle of a sea).
 - Use water height as 0.0 (offset the terrain).
 - Add missing cloud models.
-- Fix the terrain walker hitting displacement immediately at high quality.
 - Finish material dialog.
 - Finish texture dialog.
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
