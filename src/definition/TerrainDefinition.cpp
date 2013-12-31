@@ -148,7 +148,7 @@ void TerrainDefinition::applyPreset(TerrainPreset preset)
         _height_noise->addLevelSimple(pow(2.0, resolution + 1), -1.0, 1.0);
         _height_noise->addLevelsSimple(resolution - 2, pow(2.0, resolution - 1), -0.7, 0.7, 0.5);
         _height_noise->normalizeAmplitude(-1.0, 1.0, 0);
-        _height_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, 0.0, 0.0);
+        _height_noise->setFunctionParams(NoiseGenerator::NOISE_FUNCTION_SIMPLEX, 0.0, 0.0);
         scaling = 1.0;
         height = 30.0;
         shadow_smoothing = 0.03;

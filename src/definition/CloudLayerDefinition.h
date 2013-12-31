@@ -5,6 +5,8 @@
 
 #include "BaseDefinition.h"
 
+#include "NoiseState.h"
+
 namespace paysages {
 namespace definition {
 
@@ -13,6 +15,8 @@ class DEFINITIONSHARED_EXPORT CloudLayerDefinition : public BaseDefinition
 public:
     CloudLayerDefinition(BaseDefinition* parent);
     virtual ~CloudLayerDefinition();
+
+    inline const NoiseState &getNoiseState() const {return noise_state;}
 
     static CloudLayerDefinition* newCopy(const CloudLayerDefinition& other, BaseDefinition* parent);
     CloudLayerDefinition* newCopy(BaseDefinition* parent) const;
@@ -40,6 +44,7 @@ public:
 
 public:
     CloudsType type;
+    NoiseState noise_state;
     double altitude;
     double scaling;
     double coverage;

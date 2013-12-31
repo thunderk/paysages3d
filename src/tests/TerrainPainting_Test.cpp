@@ -31,8 +31,8 @@ protected:
         terrain->height = 3.0;
         terrain->scaling = 1.0;
         terrain->_height_noise->clearLevels();
-        NoiseLevel level = {1.0, 2.0, -1.0, 0.0, 0.0, 0.0};
-        terrain->_height_noise->addLevel(level, 0);
+        NoiseGenerator::NoiseLevel level = {1.0, 2.0, -1.0};
+        terrain->_height_noise->addLevel(level);
         terrain->_height_noise->setCustomFunction(_noise1dMock, _noise2dMock, _noise3dMock);
     }
 

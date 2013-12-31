@@ -10,10 +10,6 @@
 #include <cmath>
 #include <cstring>
 
-NoiseFunctionSimplex::NoiseFunctionSimplex()
-{
-}
-
 typedef struct
 {
     double x;
@@ -123,7 +119,7 @@ static inline double _dot4(Grad4 g, double x, double y, double z, double w)
     return g.x * x + g.y * y + g.z * z + g.w * w;
 }
 
-void noiseSimplexInit()
+static int noiseSimplexInit()
 {
     int i;
 
@@ -141,7 +137,11 @@ void noiseSimplexInit()
     _G3 = 1.0 / 6.0;
     _F4 = (sqrt(5.0) - 1.0) / 4.0;
     _G4 = (5.0 - sqrt(5.0)) / 20.0;
+
+    return 1;
 }
+
+static int _inited = noiseSimplexInit();
 
 double noiseSimplexGet1DValue(double x)
 {

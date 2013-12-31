@@ -1,65 +1,15 @@
 #include "NoiseGenerator.h"
 
-#include "NoiseFunctionNaive.h"
 #include "NoiseFunctionPerlin.h"
 #include "NoiseFunctionSimplex.h"
 #include "PackStream.h"
 #include "RandomGenerator.h"
+#include "NoiseState.h"
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
 
 #define MAX_LEVEL_COUNT 30
-
-/* Global noise state */
-
-void noiseQuit()
-{
-    noiseNaiveQuit();
-}
-
-int noiseInit()
-{
-    noiseSimplexInit();
-    noisePerlinInit();
-    noiseNaiveInit();
-
-    /* Noise stats */
-    /*NoiseGenerator* noise;
-    int x;
-    double min, max, value;
-    noise = noiseCreateGenerator();
-    noiseSetFunctionParams(noise, NOISE_FUNCTION_NAIVE, 0.0);
-    noiseAddLevelSimple(noise, 1.0, 0.0, 1.0);
-    min = 100000.0;
-    max = -100000.0;
-    for (x = 0; x < 1000000; x++)
-    {
-        value = noiseGet1DTotal(noise, toolsRandom() * 10000.0);
-        value = noiseGet2DTotal(noise, toolsRandom() * 10000.0, toolsRandom() * 10000.0);
-        value = noiseGet3DTotal(noise, toolsRandom() * 10000.0, toolsRandom() * 10000.0, toolsRandom() * 10000.0);
-        if (value < min) min = value;
-        if (value > max) max = value;
-    }
-    printf("%f %f\n", min, max);
-    noiseDeleteGenerator(noise);*/
-
-    atexit(noiseQuit);
-
-    return 1;
-}
-
-static int inited = noiseInit();
-
-void noiseSave(PackStream* stream)
-{
-    noiseNaiveSave(stream);
-}
-
-void noiseLoad(PackStream* stream)
-{
-    noiseNaiveLoad(stream);
-}
 
 /* NoiseGenerator class */
 
@@ -98,10 +48,9 @@ void NoiseGenerator::save(PackStream* stream)
         stream->write(&level->wavelength);
         stream->write(&level->amplitude);
         stream->write(&level->minvalue);
-        stream->write(&level->xoffset);
-        stream->write(&level->yoffset);
-        stream->write(&level->zoffset);
     }
+
+    state.save(stream);
 }
 
 void NoiseGenerator::load(PackStream* stream)
@@ -123,10 +72,9 @@ void NoiseGenerator::load(PackStream* stream)
         stream->read(&level->wavelength);
         stream->read(&level->amplitude);
         stream->read(&level->minvalue);
-        stream->read(&level->xoffset);
-        stream->read(&level->yoffset);
-        stream->read(&level->zoffset);
     }
+
+    state.load(stream);
 
     validate();
 }
@@ -139,6 +87,8 @@ void NoiseGenerator::copy(NoiseGenerator* destination)
 
     memcpy(destination->levels, levels, sizeof(NoiseLevel) * destination->level_count);
 
+    state.copy(&destination->state);
+
     validate();
 }
 
@@ -146,26 +96,21 @@ void NoiseGenerator::validate()
 {
     int x;
 
-    if (function.algorithm < 0 || function.algorithm > NOISE_FUNCTION_NAIVE)
+    if (function.algorithm < 0 || function.algorithm > NOISE_FUNCTION_SIMPLEX)
     {
         function.algorithm = NOISE_FUNCTION_SIMPLEX;
     }
     switch (function.algorithm)
     {
-    case NOISE_FUNCTION_SIMPLEX:
-        _func_noise_1d = noiseSimplexGet1DValue;
-        _func_noise_2d = noiseSimplexGet2DValue;
-        _func_noise_3d = noiseSimplexGet3DValue;
-        break;
     case NOISE_FUNCTION_PERLIN:
         _func_noise_1d = noisePerlinGet1DValue;
         _func_noise_2d = noisePerlinGet2DValue;
         _func_noise_3d = noisePerlinGet3DValue;
         break;
-    case NOISE_FUNCTION_NAIVE:
-        _func_noise_1d = noiseNaiveGet1DValue;
-        _func_noise_2d = noiseNaiveGet2DValue;
-        _func_noise_3d = noiseNaiveGet3DValue;
+    case NOISE_FUNCTION_SIMPLEX:
+        _func_noise_1d = noiseSimplexGet1DValue;
+        _func_noise_2d = noiseSimplexGet2DValue;
+        _func_noise_3d = noiseSimplexGet3DValue;
         break;
     }
 
@@ -195,18 +140,17 @@ void NoiseGenerator::validate()
     }
 }
 
-void NoiseGenerator::randomizeOffsets()
+void NoiseGenerator::setState(const NoiseState &state)
 {
-    int i;
-    for (i = 0; i < MAX_LEVEL_COUNT; i++)
-    {
-        levels[i].xoffset = RandomGenerator::random();
-        levels[i].yoffset = RandomGenerator::random();
-        levels[i].zoffset = RandomGenerator::random();
-    }
+    state.copy(&this->state);
 }
 
-NoiseFunction NoiseGenerator::getFunction()
+void NoiseGenerator::randomizeOffsets()
+{
+    state.randomizeOffsets();
+}
+
+NoiseGenerator::NoiseFunction NoiseGenerator::getFunction()
 {
     return function;
 }
@@ -254,19 +198,10 @@ void NoiseGenerator::clearLevels()
     validate();
 }
 
-void NoiseGenerator::addLevel(NoiseLevel level, int protect_offsets)
+void NoiseGenerator::addLevel(NoiseLevel level)
 {
     if (level_count < MAX_LEVEL_COUNT)
     {
-        NoiseLevel baselevel = levels[level_count];
-
-        if (protect_offsets)
-        {
-            level.xoffset = baselevel.xoffset;
-            level.yoffset = baselevel.yoffset;
-            level.zoffset = baselevel.zoffset;
-        }
-
         levels[level_count] = level;
         level_count++;
         validate();
@@ -281,7 +216,7 @@ void NoiseGenerator::addLevelSimple(double scaling, double minvalue, double maxv
     level.minvalue = minvalue;
     level.amplitude = maxvalue - minvalue;
 
-    addLevel(level, 1);
+    addLevel(level);
 }
 
 void NoiseGenerator::addLevels(int level_count, NoiseLevel start_level, double scaling_factor, double amplitude_factor, double center_factor)
@@ -290,7 +225,7 @@ void NoiseGenerator::addLevels(int level_count, NoiseLevel start_level, double s
 
     for (i = 0; i < level_count; i++)
     {
-        addLevel(start_level, 1);
+        addLevel(start_level);
         start_level.minvalue += start_level.amplitude * (1.0 - amplitude_factor) * center_factor;
         start_level.wavelength *= scaling_factor;
         start_level.amplitude *= amplitude_factor;
@@ -333,19 +268,10 @@ int NoiseGenerator::getLevel(int level, NoiseLevel* params)
     }
 }
 
-void NoiseGenerator::setLevel(int index, NoiseLevel level, int protect_offsets)
+void NoiseGenerator::setLevel(int index, NoiseLevel level)
 {
     if (index >= 0 && index < level_count)
     {
-        NoiseLevel baselevel = levels[index];
-
-        if (protect_offsets)
-        {
-            level.xoffset = baselevel.xoffset;
-            level.yoffset = baselevel.yoffset;
-            level.zoffset = baselevel.zoffset;
-        }
-
         levels[index] = level;
         validate();
     }
@@ -359,7 +285,7 @@ void NoiseGenerator::setLevelSimple(int index, double scaling, double minvalue, 
     level.minvalue = minvalue;
     level.amplitude = maxvalue - minvalue;
 
-    setLevel(index, level, 1);
+    setLevel(index, level);
 }
 
 void NoiseGenerator::normalizeAmplitude(double minvalue, double maxvalue, int adjust_scaling)
@@ -440,16 +366,16 @@ static inline double _fixValue(double value, double ridge, double curve)
 
 
 
-inline double NoiseGenerator::_get1DLevelValue(NoiseLevel* level, double x)
+inline double NoiseGenerator::_get1DLevelValue(NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x)
 {
-    return level->minvalue + _fixValue(_func_noise_1d(x / level->wavelength + level->xoffset), function.ridge_factor, function.curve_factor) * level->amplitude;
+    return level->minvalue + _fixValue(_func_noise_1d(x / level->wavelength + offset.x), function.ridge_factor, function.curve_factor) * level->amplitude;
 }
 
 double NoiseGenerator::get1DLevel(int level, double x)
 {
     if (level >= 0 && level < level_count)
     {
-        return _get1DLevelValue(levels + level, x);
+        return _get1DLevelValue(levels + level, state.level_offsets[level], x);
     }
     else
     {
@@ -465,7 +391,7 @@ double NoiseGenerator::get1DTotal(double x)
     result = 0.0;
     for (level = 0; level < level_count; level++)
     {
-        result += _get1DLevelValue(levels + level, x);
+        result += _get1DLevelValue(levels + level, state.level_offsets[level], x);
     }
     return result + height_offset;
 }
@@ -489,7 +415,7 @@ double NoiseGenerator::get1DDetail(double x, double detail)
             factor = (detail * 0.5 - height) / 0.25;
         }
 
-        result += _get1DLevelValue(levels + level, x) * factor;
+        result += _get1DLevelValue(levels + level, state.level_offsets[level], x) * factor;
     }
     return result + height_offset;
 }
@@ -497,16 +423,16 @@ double NoiseGenerator::get1DDetail(double x, double detail)
 
 
 
-inline double NoiseGenerator::_get2DLevelValue(NoiseLevel* level, double x, double y)
+inline double NoiseGenerator::_get2DLevelValue(NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x, double y)
 {
-    return level->minvalue + _fixValue(_func_noise_2d(x / level->wavelength + level->xoffset, y / level->wavelength + level->yoffset), function.ridge_factor, function.curve_factor) * level->amplitude;
+    return level->minvalue + _fixValue(_func_noise_2d(x / level->wavelength + offset.x, y / level->wavelength + offset.y), function.ridge_factor, function.curve_factor) * level->amplitude;
 }
 
 double NoiseGenerator::get2DLevel(int level, double x, double y)
 {
     if (level >= 0 && level < level_count)
     {
-        return _get2DLevelValue(levels + level, x, y);
+        return _get2DLevelValue(levels + level, state.level_offsets[level], x, y);
     }
     else
     {
@@ -522,7 +448,7 @@ double NoiseGenerator::get2DTotal(double x, double y)
     result = 0.0;
     for (level = 0; level < level_count; level++)
     {
-        result += _get2DLevelValue(levels + level, x, y);
+        result += _get2DLevelValue(levels + level, state.level_offsets[level], x, y);
     }
     return result + height_offset;
 }
@@ -546,7 +472,7 @@ double NoiseGenerator::get2DDetail(double x, double y, double detail)
             factor = (detail * 0.5 - height) / 0.25;
         }
 
-        result += _get2DLevelValue(levels + level, x, y) * factor;
+        result += _get2DLevelValue(levels + level, state.level_offsets[level], x, y) * factor;
     }
     return result + height_offset;
 }
@@ -554,16 +480,16 @@ double NoiseGenerator::get2DDetail(double x, double y, double detail)
 
 
 
-inline double NoiseGenerator::_get3DLevelValue(NoiseLevel* level, double x, double y, double z)
+inline double NoiseGenerator::_get3DLevelValue(NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x, double y, double z)
 {
-    return level->minvalue + _fixValue(_func_noise_3d(x / level->wavelength + level->xoffset, y / level->wavelength + level->yoffset, z / level->wavelength + level->zoffset), function.ridge_factor, function.curve_factor) * level->amplitude;
+    return level->minvalue + _fixValue(_func_noise_3d(x / level->wavelength + offset.x, y / level->wavelength + offset.y, z / level->wavelength + offset.z), function.ridge_factor, function.curve_factor) * level->amplitude;
 }
 
 double NoiseGenerator::get3DLevel(int level, double x, double y, double z)
 {
     if (level >= 0 && level < level_count)
     {
-        return _get3DLevelValue(levels + level, x, y, z);
+        return _get3DLevelValue(levels + level, state.level_offsets[level], x, y, z);
     }
     else
     {
@@ -579,7 +505,7 @@ double NoiseGenerator::get3DTotal(double x, double y, double z)
     result = 0.0;
     for (level = 0; level < level_count; level++)
     {
-        result += _get3DLevelValue(levels + level, x, y, z);
+        result += _get3DLevelValue(levels + level, state.level_offsets[level], x, y, z);
     }
     return result + height_offset;
 }
@@ -603,7 +529,7 @@ double NoiseGenerator::get3DDetail(double x, double y, double z, double detail)
             factor = (detail * 0.5 - height) / 0.25;
         }
 
-        result += _get3DLevelValue(levels + level, x, y, z) * factor;
+        result += _get3DLevelValue(levels + level, state.level_offsets[level], x, y, z) * factor;
     }
     return result + height_offset;
 }

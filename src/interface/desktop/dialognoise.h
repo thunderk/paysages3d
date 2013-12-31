@@ -39,7 +39,7 @@ private:
     NoiseGenerator* _base;
     NoiseGenerator* _current;
     int _current_level;
-    NoiseLevel _current_level_params;
+    NoiseGenerator::NoiseLevel _current_level_params;
     BasePreview* previewLevel;
     BasePreview* previewTotal;
     QComboBox* function_algo;

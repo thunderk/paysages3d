@@ -18,8 +18,6 @@ public:
     virtual void update() override;
     virtual void render() override;
 
-    void alterDayTime(double delta);
-
 private:
     void setVertex(int i, float x, float y, float z);
 

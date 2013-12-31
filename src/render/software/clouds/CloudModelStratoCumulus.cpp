@@ -33,6 +33,7 @@ void CloudModelStratoCumulus::update()
     noise->addLevelSimple(1.0 / 800.0, -0.003, 0.003);
     noise->addLevelSimple(1.0 / 1000.0, -0.0015, 0.0015);
     noise->normalizeAmplitude(-3.0, 3.0, 0);
+    noise->setState(layer->getNoiseState());
 }
 
 void CloudModelStratoCumulus::getAltitudeRange(double *min_altitude, double *max_altitude) const

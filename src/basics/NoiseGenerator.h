@@ -4,37 +4,34 @@
 #include "basics_global.h"
 
 #define MAX_LEVEL_COUNT 30
-
-typedef enum
-{
-    NOISE_FUNCTION_SIMPLEX,
-    NOISE_FUNCTION_PERLIN,
-    NOISE_FUNCTION_NAIVE
-} NoiseFunctionAlgorithm;
-
-typedef struct
-{
-    NoiseFunctionAlgorithm algorithm;
-    double ridge_factor; /* -0.5;0.5 */
-    double curve_factor; /* -1.0;1.0 */
-} NoiseFunction;
-
-typedef struct
-{
-    double wavelength;
-    double amplitude;
-    double minvalue;
-    double xoffset;
-    double yoffset;
-    double zoffset;
-} NoiseLevel;
+#include "NoiseState.h"
 
 namespace paysages {
-namespace system {class PackStream;}
 namespace basics {
 
 class BASICSSHARED_EXPORT NoiseGenerator
 {
+public:
+    typedef enum
+    {
+        NOISE_FUNCTION_PERLIN,
+        NOISE_FUNCTION_SIMPLEX
+    } NoiseFunctionAlgorithm;
+
+    typedef struct
+    {
+        NoiseFunctionAlgorithm algorithm;
+        double ridge_factor; /* -0.5;0.5 */
+        double curve_factor; /* -1.0;1.0 */
+    } NoiseFunction;
+
+    typedef struct
+    {
+        double wavelength;
+        double amplitude;
+        double minvalue;
+    } NoiseLevel;
+
 public:
     NoiseGenerator();
     virtual ~NoiseGenerator();
@@ -43,6 +40,9 @@ public:
     virtual void load(PackStream* stream);
     virtual void copy(NoiseGenerator* destination);
     virtual void validate();
+
+    inline const NoiseState &getState() const {return state;}
+    void setState(const NoiseState &state);
 
     void randomizeOffsets();
     NoiseFunction getFunction();
@@ -53,13 +53,13 @@ public:
     void getRange(double* minvalue, double* maxvalue);
     int getLevelCount();
     void clearLevels();
-    void addLevel(NoiseLevel level, int protect_offsets);
+    void addLevel(NoiseLevel level);
     void addLevelSimple(double scaling, double minvalue, double maxvalue);
     void addLevels(int level_count, NoiseLevel start_level, double scaling_factor, double amplitude_factor, double center_factor);
     void addLevelsSimple(int level_count, double scaling, double minvalue, double maxvalue, double center_factor);
     void removeLevel(int level);
     int getLevel(int level, NoiseLevel* params);
-    void setLevel(int index, NoiseLevel level, int protect_offsets);
+    void setLevel(int index, NoiseLevel level);
     void setLevelSimple(int index, double scaling, double minvalue, double maxvalue);
     void normalizeAmplitude(double minvalue, double maxvalue, int adjust_scaling);
     double get1DLevel(int level, double x);
@@ -73,14 +73,16 @@ public:
     double get3DDetail(double x, double y, double z, double detail);
 
 private:
-    double _get1DLevelValue(NoiseLevel* level, double x);
-    double _get2DLevelValue(NoiseLevel* level, double x, double y);
-    double _get3DLevelValue(NoiseLevel* level, double x, double y, double z);
+    double _get1DLevelValue(NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x);
+    double _get2DLevelValue(NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x, double y);
+    double _get3DLevelValue(NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x, double y, double z);
 
     NoiseFunction function;
     double height_offset;
     int level_count;
     NoiseLevel levels[MAX_LEVEL_COUNT];
+
+    NoiseState state;
 
     double _min_value;
     double _max_value;
@@ -91,8 +93,5 @@ private:
 
 }
 }
-
-BASICSSHARED_EXPORT void noiseSave(PackStream* stream);
-BASICSSHARED_EXPORT void noiseLoad(PackStream* stream);
 
 #endif // NOISEGENERATOR_H

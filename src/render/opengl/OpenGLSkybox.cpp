@@ -70,32 +70,6 @@ void OpenGLSkybox::render()
     program->drawTriangleStrip(vertices, 14);
 }
 
-void OpenGLSkybox::alterDayTime(double delta)
-{
-#if 0
-    Scenery* scenery = renderer->getScenery();
-    AtmosphereDefinition* definition = scenery->getAtmosphere()->definition;
-    daytime = fmod(daytime + delta * 0.001, 1.0);
-    // TEMP
-    if (daytime > 0.8)
-    {
-        daytime -= 0.6;
-    }
-    if (daytime < 0.2)
-    {
-        daytime += 0.6;
-    }
-
-    definition->hour = (int)(daytime * 24.0);
-    definition->minute = (int)((daytime - (((double)definition->hour) / 24.0)) * 1440.0);
-
-    AtmosphereDefinitionClass.validate(definition);
-
-    // TODO Update only the sun
-    updateScenery(scenery, true);
-#endif
-}
-
 void OpenGLSkybox::setVertex(int i, float x, float y, float z)
 {
     vertices[i * 3] = x;

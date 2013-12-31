@@ -153,7 +153,7 @@ static void _normalize3(double v[3])
     v[2] = v[2] / s;
 }
 
-void noisePerlinInit(void)
+static int noisePerlinInit(void)
 {
     int i, j, k;
 
@@ -185,4 +185,8 @@ void noisePerlinInit(void)
         for (j = 0 ; j < 3 ; j++)
             g3[B + i][j] = g3[i][j];
     }
+
+    return 1;
 }
+
+static int _inited = noisePerlinInit();

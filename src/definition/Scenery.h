@@ -28,9 +28,6 @@ public:
 public:
     Scenery();
 
-    virtual void save(PackStream* stream) const override;
-    virtual void load(PackStream* stream) override;
-
     virtual void validate() override;
     virtual void copy(BaseDefinition *destination) const override;
 

@@ -42,6 +42,8 @@ void CloudLayerDefinition::save(PackStream* stream) const
     stream->write(&altitude);
     stream->write(&scaling);
     stream->write(&coverage);
+
+    noise_state.save(stream);
 }
 
 void CloudLayerDefinition::load(PackStream* stream)
@@ -56,6 +58,8 @@ void CloudLayerDefinition::load(PackStream* stream)
     stream->read(&scaling);
     stream->read(&coverage);
 
+    noise_state.load(stream);
+
     validate();
 }
 
@@ -69,6 +73,8 @@ void CloudLayerDefinition::copy(BaseDefinition* _destination) const
     destination->altitude = altitude;
     destination->scaling = scaling;
     destination->coverage = coverage;
+
+    noise_state.copy(&destination->noise_state);
 }
 
 void CloudLayerDefinition::validate()

@@ -3,7 +3,6 @@
 #include <ctime>
 #include <map>
 
-#include "NoiseGenerator.h"
 #include "PackStream.h"
 #include "AtmosphereDefinition.h"
 #include "CameraDefinition.h"
@@ -24,22 +23,6 @@ Scenery::Scenery():
     addChild(terrain = new TerrainDefinition(this));
     addChild(textures = new TexturesDefinition(this));
     addChild(water = new WaterDefinition(this));
-}
-
-void Scenery::save(PackStream* stream) const
-{
-    BaseDefinition::save(stream);
-
-    noiseSave(stream);
-}
-
-void Scenery::load(PackStream* stream)
-{
-    BaseDefinition::load(stream);
-
-    noiseLoad(stream);
-
-    validate();
 }
 
 void Scenery::copy(BaseDefinition *destination_) const

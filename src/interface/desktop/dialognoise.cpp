@@ -245,7 +245,7 @@ void DialogNoise::revertToCurrent()
 {
     int i, n;
     int selected;
-    NoiseFunction function;
+    NoiseGenerator::NoiseFunction function;
 
     selected = levels->currentRow();
 
@@ -279,12 +279,12 @@ void DialogNoise::revertToCurrent()
 
 void DialogNoise::addLevel()
 {
-    NoiseLevel level;
+    NoiseGenerator::NoiseLevel level;
 
     level.amplitude = 0.1;
     level.wavelength = 0.1;
 
-    _current->addLevel(level, 1);
+    _current->addLevel(level);
 
     revertToCurrent();
 
@@ -310,9 +310,9 @@ void DialogNoise::removeLevel()
 
 void DialogNoise::functionChanged()
 {
-    NoiseFunction function;
+    NoiseGenerator::NoiseFunction function;
 
-    function.algorithm = (NoiseFunctionAlgorithm)function_algo->currentIndex();
+    function.algorithm = (NoiseGenerator::NoiseFunctionAlgorithm)function_algo->currentIndex();
     function.ridge_factor = (double)function_ridge->value() * 0.05;
 
     _current->setFunction(&function);
@@ -338,7 +338,7 @@ void DialogNoise::levelChanged(int row)
 void DialogNoise::heightChanged(int value)
 {
     _current_level_params.amplitude = ((double)value) / 1000.0;
-    _current->setLevel(_current_level, _current_level_params, 1);
+    _current->setLevel(_current_level, _current_level_params);
     previewLevel->redraw();
     previewTotal->redraw();
 }
@@ -346,7 +346,7 @@ void DialogNoise::heightChanged(int value)
 void DialogNoise::scalingChanged(int value)
 {
     _current_level_params.wavelength = ((double)value) / 1000.0;
-    _current->setLevel(_current_level, _current_level_params, 1);
+    _current->setLevel(_current_level, _current_level_params);
     previewLevel->redraw();
     previewTotal->redraw();
 }

@@ -18,6 +18,7 @@ namespace basics {
     class SpaceSegment;
     class Color;
     class NoiseGenerator;
+    class NoiseState;
     class Curve;
     class ColorProfile;
     class Texture2D;

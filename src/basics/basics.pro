@@ -15,7 +15,6 @@ include(../common.pri)
 
 SOURCES += \
     NoiseGenerator.cpp \
-    NoiseFunctionNaive.cpp \
     NoiseFunctionPerlin.cpp \
     NoiseFunctionSimplex.cpp \
     Interpolation.cpp \
@@ -32,12 +31,12 @@ SOURCES += \
     Geometry.cpp \
     Texture2D.cpp \
     Texture3D.cpp \
-    Texture4D.cpp
+    Texture4D.cpp \
+    NoiseState.cpp
 
 HEADERS +=\
         basics_global.h \
     NoiseGenerator.h \
-    NoiseFunctionNaive.h \
     NoiseFunctionPerlin.h \
     NoiseFunctionSimplex.h \
     Interpolation.h \
@@ -52,7 +51,8 @@ HEADERS +=\
     Geometry.h \
     Texture2D.h \
     Texture3D.h \
-    Texture4D.h
+    Texture4D.h \
+    NoiseState.h
 
 unix:!symbian {
     maemo5 {

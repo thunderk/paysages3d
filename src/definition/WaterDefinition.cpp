@@ -113,7 +113,7 @@ void WaterDefinition::validate()
     {
         _waves_noise->addLevelsSimple(3, scaling * 0.1, -detail_height * scaling * 0.015, detail_height * scaling * 0.015, 0.5);
     }
-    _waves_noise->setFunctionParams(NOISE_FUNCTION_SIMPLEX, -turbulence, 0.0);
+    _waves_noise->setFunctionParams(NoiseGenerator::NOISE_FUNCTION_SIMPLEX, -turbulence, 0.0);
     _waves_noise->validate();
 
     material->validate();
