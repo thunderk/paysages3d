@@ -63,3 +63,14 @@ void NoiseState::resetOffsets(double x, double y, double z)
         level_offset.z = z;
     }
 }
+
+void NoiseState::setLevel(int level, double x, double y, double z)
+{
+    NoiseOffset offset = {x, y, z};
+    level_offsets.at(level) = offset;
+}
+
+void NoiseState::setLevelCount(int level_count)
+{
+    level_offsets.resize(level_count);
+}

@@ -7,6 +7,10 @@ class TestFractalNoise:public FractalNoise
 public:
     TestFractalNoise(double value=0.0):FractalNoise(), value(value)
     {
+        NoiseState state;
+        state.resetOffsets();
+        setState(state);
+
         calls = 0;
     }
 
@@ -148,22 +152,74 @@ TEST(FractalNoise, StepScalingAndHeight)
     EXPECT_DOUBLE_EQ(1.8 + 0.7 + 0.3, result);
 }
 
+TEST(FractalNoise, StateOffset)
+{
+    TestFractalNoise noise(0.8);
+    NoiseState state;
+    state.resetOffsets(0.2);
+    noise.setState(state);
+
+    double result = noise.get1d(0.4, 1.0);
+
+    ASSERT_EQ(2, noise.calls);
+    EXPECT_DOUBLE_EQ(2.0 + 1.5, result);
+}
+
+TEST(FractalNoise, StateOffsetIter)
+{
+    TestFractalNoise noise(0.8);
+    NoiseState state;
+    state.setLevel(0, 0.1, 0.1, 0.1);
+    state.setLevel(1, 0.6, 0.6, 0.6);
+    noise.setState(state);
+
+    double result = noise.get1d(0.4, 1.0);
+
+    ASSERT_EQ(2, noise.calls);
+    EXPECT_DOUBLE_EQ(1.9 + 1.7, result);
+}
+
+TEST(FractalNoise, StateOffsetLoop)
+{
+    TestFractalNoise noise(0.8);
+    NoiseState state;
+    state.setLevelCount(2);
+    state.setLevel(0, 0.1, 0.1, 0.1);
+    state.setLevel(1, 0.6, 0.6, 0.6);
+    noise.setState(state);
+
+    double result = noise.get1d(0.2, 1.0);
+
+    ASSERT_EQ(3, noise.calls);
+    EXPECT_DOUBLE_EQ(1.9 + 1.7 + 1.225, result);
+}
+
 TEST(FractalNoise, Noise2d)
 {
     TestFractalNoise noise(0.8);
+    NoiseState state;
+    state.setLevelCount(2);
+    state.setLevel(0, 0.1, 0.2, 0.3);
+    state.setLevel(1, 0.6, 0.7, 0.8);
+    noise.setState(state);
 
     double result = noise.get2d(0.4, 1.0, 0.5);
 
     ASSERT_EQ(2, noise.calls);
-    EXPECT_DOUBLE_EQ(2.3 + 1.9, result);
+    EXPECT_DOUBLE_EQ(2.6 + 2.55, result);
 }
 
 TEST(FractalNoise, Noise3d)
 {
     TestFractalNoise noise(0.8);
+    NoiseState state;
+    state.setLevelCount(2);
+    state.setLevel(0, 0.1, 0.2, 0.3);
+    state.setLevel(1, 0.6, 0.7, 0.8);
+    noise.setState(state);
 
     double result = noise.get3d(0.4, 1.0, 0.5, 0.3);
 
     ASSERT_EQ(2, noise.calls);
-    EXPECT_DOUBLE_EQ(2.6 + 2.2, result);
+    EXPECT_DOUBLE_EQ(3.2 + 3.25, result);
 }

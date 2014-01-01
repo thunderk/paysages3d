@@ -20,6 +20,7 @@ public:
     void setStep(double scaling_factor, double height_factor=1.0);
     void setSlope(double slope_factor);
     void setRidge(double ridge_factor);
+    void setState(const NoiseState &state);
 
     double get1d(double detail, double x) const;
     double get2d(double detail, double x, double y) const;
