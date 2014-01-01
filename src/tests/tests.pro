@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     Camera_Test.cpp \
     Clouds_Test.cpp \
     FluidMediumManager_Test.cpp \
-    VertexArray_Test.cpp
+    VertexArray_Test.cpp \
+    FractalNoise_Test.cpp
 
 HEADERS += \
     BaseTestCase.h

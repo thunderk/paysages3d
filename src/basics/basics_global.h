@@ -19,6 +19,7 @@ namespace basics {
     class Color;
     class NoiseGenerator;
     class NoiseState;
+    class FractalNoise;
     class Curve;
     class ColorProfile;
     class Texture2D;

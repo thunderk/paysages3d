@@ -51,6 +51,9 @@ static void _render_quad_checker(SoftwareRenderer &renderer)
 
 TEST(Render, quad)
 {
+#ifndef TESTS_FULL
+    return;
+#endif
     SoftwareRenderer renderer;
 
     renderer.render_camera->setLocationCoords(0.0, 0.5, 2.0);
@@ -73,6 +76,9 @@ TEST(Render, quad)
 
 TEST(Render, quad_cut)
 {
+#ifndef TESTS_FULL
+    return;
+#endif
     SoftwareRenderer renderer;
 
     renderer.render_camera->setLocationCoords(0.8, 0.7, 1.0);

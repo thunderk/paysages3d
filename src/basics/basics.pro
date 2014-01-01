@@ -32,7 +32,8 @@ SOURCES += \
     Texture2D.cpp \
     Texture3D.cpp \
     Texture4D.cpp \
-    NoiseState.cpp
+    NoiseState.cpp \
+    FractalNoise.cpp
 
 HEADERS +=\
         basics_global.h \
@@ -52,7 +53,8 @@ HEADERS +=\
     Texture2D.h \
     Texture3D.h \
     Texture4D.h \
-    NoiseState.h
+    NoiseState.h \
+    FractalNoise.h
 
 unix:!symbian {
     maemo5 {

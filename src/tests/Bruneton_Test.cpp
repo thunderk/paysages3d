@@ -18,6 +18,9 @@ static Color _postProcessFragment(SoftwareRenderer* renderer, const Vector3 &loc
 
 TEST(Bruneton, AerialPerspective1)
 {
+#ifndef TESTS_FULL
+    return;
+#endif
     Scenery scenery;
     SoftwareRenderer renderer(&scenery);
     renderer.render_width = 800;
@@ -45,6 +48,9 @@ TEST(Bruneton, AerialPerspective1)
 
 TEST(Bruneton, AerialPerspective2)
 {
+#ifndef TESTS_FULL
+    return;
+#endif
     Scenery scenery;
 
     AtmosphereDefinition* atmo = scenery.getAtmosphere();
