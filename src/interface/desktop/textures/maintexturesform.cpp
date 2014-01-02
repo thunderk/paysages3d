@@ -9,7 +9,7 @@
 #include "previewmaterial.h"
 #include "textures/PreviewLayerCoverage.h"
 #include "textures/PreviewLayerLook.h"
-#include "textures/PreviewCumul.h"
+#include "TexturesMixPreviewRenderer.h"
 #include "textures/DialogTexturesLayer.h"
 
 MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui::MainTexturesForm)
@@ -34,7 +34,6 @@ MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui
     form_helper->setRevertButton(ui->button_revert);
     form_helper->setExploreButton(ui->button_explore);
     form_helper->setRenderButton(ui->button_render);
-    form_helper->startManaging();
 
     preview_layer_coverage = new PreviewLayerCoverage();
     preview_layer_coverage->setTextures(textures);
@@ -44,7 +43,7 @@ MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui
     preview_layer_look->setTextures(textures);
     form_helper->addPreview(ui->preview_texture, preview_layer_look);
 
-    preview_cumul = new PreviewCumul();
+    preview_cumul = new TexturesMixPreviewRenderer();
     preview_cumul->setTextures(textures);
     form_helper->addPreview(ui->preview_cumul, preview_cumul);
 
@@ -56,6 +55,8 @@ MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui
     connect(form_helper, SIGNAL(presetSelected(int)), this, SLOT(selectPreset(int)));
 
     connect(layer_helper, SIGNAL(layersChanged()), form_helper, SLOT(processDataChange()));
+
+    form_helper->startManaging();
 }
 
 MainTexturesForm::~MainTexturesForm()
@@ -133,6 +134,8 @@ void MainTexturesForm::selectPreset(int preset)
 void MainTexturesForm::updateLocalDataFromScenery()
 {
     DesktopScenery::getCurrent()->getTextures(textures);
+
+    preview_cumul->setTerrain(DesktopScenery::getCurrent()->getTerrain());
 }
 
 void MainTexturesForm::commitLocalDataToScenery()

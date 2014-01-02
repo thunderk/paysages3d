@@ -26,6 +26,7 @@ void Base2dPreviewRenderer::choiceChangeEvent(const std::string &, int)
 
 void Base2dPreviewRenderer::updateEvent()
 {
+    prepare();
 }
 
 void Base2dPreviewRenderer::cameraEvent(double, double, double)

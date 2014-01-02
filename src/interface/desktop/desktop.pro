@@ -52,7 +52,6 @@ HEADERS += \
     lighting/SmallPreviewHues.h \
     textures/PreviewLayerCoverage.h \
     textures/PreviewLayerLook.h \
-    textures/PreviewCumul.h \
     textures/DialogTexturesLayer.h \
     desktop_global.h \
     DesktopScenery.h
@@ -100,7 +99,6 @@ SOURCES += \
     lighting/SmallPreviewHues.cpp \
     textures/PreviewLayerCoverage.cpp \
     textures/PreviewLayerLook.cpp \
-    textures/PreviewCumul.cpp \
     textures/DialogTexturesLayer.cpp \
     DesktopScenery.cpp
 

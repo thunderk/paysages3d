@@ -42,7 +42,7 @@ private:
     FreeLayerHelper* layer_helper;
     PreviewLayerCoverage* preview_layer_coverage;
     PreviewLayerLook* preview_layer_look;
-    PreviewCumul* preview_cumul;
+    TexturesMixPreviewRenderer* preview_cumul;
 };
 
 #endif // MAINTEXTURESFORM_H
