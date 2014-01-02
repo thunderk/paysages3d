@@ -49,6 +49,7 @@ public:
 
 private:
     SoftwareRenderer* renderer;
+    ParallelQueue* queue;
 };
 
 }

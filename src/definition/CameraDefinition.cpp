@@ -229,7 +229,7 @@ Vector3 CameraDefinition::unproject(const Vector3 &point) const
     return unprojector.transform(tpoint);
 }
 
-bool CameraDefinition::isBoxInView(const Vector3 &center, double xsize, double ysize, double zsize) const
+int CameraDefinition::isBoxInView(const Vector3 &center, double xsize, double ysize, double zsize) const
 {
     BoundingBox box;
 
@@ -239,7 +239,7 @@ bool CameraDefinition::isBoxInView(const Vector3 &center, double xsize, double y
     return isUnprojectedBoxInView(box);
 }
 
-bool CameraDefinition::isUnprojectedBoxInView(const BoundingBox &box) const
+int CameraDefinition::isUnprojectedBoxInView(const BoundingBox &box) const
 {
     BoundingBox projected;
 
@@ -255,18 +255,18 @@ bool CameraDefinition::isUnprojectedBoxInView(const BoundingBox &box) const
     return isProjectedBoxInView(projected);
 }
 
-bool CameraDefinition::isProjectedBoxInView(const BoundingBox &box) const
+int CameraDefinition::isProjectedBoxInView(const BoundingBox &box) const
 {
     if (box.xmin <= width && box.xmax >= 0.0 && box.ymin <= height && box.ymax >= 0.0 && box.zmax >= perspective.znear)
     {
         double dx = box.xmax - box.xmin;
         double dy = box.ymax - box.ymin;
 
-        return (int)ceil(dx) * (int)ceil(dy) > 0;
+        return (int)ceil(dx) * (int)ceil(dy);
     }
     else
     {
-        return false;
+        return 0;
     }
 }
 

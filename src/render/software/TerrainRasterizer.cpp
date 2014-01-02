@@ -117,7 +117,7 @@ static void _getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChun
     int coverage = renderer->render_camera->isUnprojectedBoxInView(box);
     if (coverage > 0)
     {
-        chunk->detail_hint = (int)ceil(sqrt((double)coverage) / (double)(25 - renderer->render_quality));
+        chunk->detail_hint = (int)ceil(sqrt((double)coverage) / (double)(25 - 2 * renderer->render_quality));
         if (chunk->detail_hint > 5 * renderer->render_quality)
         {
             chunk->detail_hint = 5 * renderer->render_quality;
@@ -139,7 +139,7 @@ void TerrainRasterizer::getTessellationInfo(int displaced)
     double radius_int, radius_ext;
     double base_chunk_size, chunk_size;
 
-    base_chunk_size = 8.0 / (double)(renderer->render_quality * renderer->render_quality);
+    base_chunk_size = 5.0 / (double)renderer->render_quality;
 
     chunk_factor = 1;
     chunk_count = 2;
@@ -219,7 +219,7 @@ int TerrainRasterizer::processChunk(TerrainChunkInfo* chunk, double progress)
     info->rasterizer = this;
     info->chunk = *chunk;
 
-    if (!((ParallelQueue*)renderer->customData[0])->addJob(_parallelJobCallback, info))
+    if (!queue->addJob(_parallelJobCallback, info))
     {
         delete info;
     }
@@ -230,14 +230,11 @@ int TerrainRasterizer::processChunk(TerrainChunkInfo* chunk, double progress)
 
 void TerrainRasterizer::renderSurface()
 {
-    ParallelQueue queue;
-
-    /* TODO Do not use custom data, it could already be used by another module */
-    renderer->customData[0] = &queue;
+    queue = new ParallelQueue();
 
     renderer->render_progress = 0.0;
     getTessellationInfo(0);
     renderer->render_progress = 0.05;
 
-    queue.wait();
+    queue->wait();
 }

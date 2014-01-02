@@ -60,9 +60,9 @@ public:
     void setRenderSize(int width, int height);
     Vector3 project(const Vector3 &point) const;
     Vector3 unproject(const Vector3 &point) const;
-    bool isBoxInView(const Vector3 &center, double xsize, double ysize, double zsize) const;
-    bool isUnprojectedBoxInView(const BoundingBox &box) const;
-    bool isProjectedBoxInView(const BoundingBox &box) const;
+    int isBoxInView(const Vector3 &center, double xsize, double ysize, double zsize) const;
+    int isUnprojectedBoxInView(const BoundingBox &box) const;
+    int isProjectedBoxInView(const BoundingBox &box) const;
 
     bool transitionToAnother(const CameraDefinition *wanted, double factor);
 
