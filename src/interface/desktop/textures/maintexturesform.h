@@ -40,8 +40,8 @@ private:
     TexturesDefinition* textures;
     FreeFormHelper* form_helper;
     FreeLayerHelper* layer_helper;
-    PreviewLayerCoverage* preview_layer_coverage;
-    PreviewLayerLook* preview_layer_look;
+    TextureLayerCoveragePreviewRenderer* preview_layer_coverage;
+    TextureLayerAspectPreviewRenderer* preview_layer_look;
     TexturesMixPreviewRenderer* preview_cumul;
 };
 

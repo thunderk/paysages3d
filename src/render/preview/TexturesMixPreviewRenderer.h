@@ -18,9 +18,9 @@ public:
     void setLayer(int layer);
 
 protected:
-    virtual void bindEvent(BasePreview* preview);
-    virtual void updateEvent();
-    virtual Color getColor2D(double x, double y, double scaling);
+    virtual void bindEvent(BasePreview* preview) override;
+    virtual void updateEvent() override;
+    virtual Color getColor2D(double x, double y, double scaling) override;
 
 private:
     int layer;

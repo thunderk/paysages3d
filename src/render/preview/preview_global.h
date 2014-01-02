@@ -24,6 +24,8 @@ namespace preview {
     class WaterAspectPreviewRenderer;
     class TerrainShapePreviewRenderer;
     class TexturesMixPreviewRenderer;
+    class TextureLayerCoveragePreviewRenderer;
+    class TextureLayerAspectPreviewRenderer;
 }
 }
 using namespace paysages::preview;

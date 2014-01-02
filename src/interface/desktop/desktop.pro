@@ -50,8 +50,6 @@ HEADERS += \
     lighting/DialogMaterialEditor.h \
     lighting/SmallPreviewColor.h \
     lighting/SmallPreviewHues.h \
-    textures/PreviewLayerCoverage.h \
-    textures/PreviewLayerLook.h \
     textures/DialogTexturesLayer.h \
     desktop_global.h \
     DesktopScenery.h
@@ -97,8 +95,6 @@ SOURCES += \
     lighting/DialogMaterialEditor.cpp \
     lighting/SmallPreviewColor.cpp \
     lighting/SmallPreviewHues.cpp \
-    textures/PreviewLayerCoverage.cpp \
-    textures/PreviewLayerLook.cpp \
     textures/DialogTexturesLayer.cpp \
     DesktopScenery.cpp
 

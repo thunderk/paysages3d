@@ -7,10 +7,10 @@
 #include "TexturesDefinition.h"
 #include "TextureLayerDefinition.h"
 #include "previewmaterial.h"
-#include "textures/PreviewLayerCoverage.h"
-#include "textures/PreviewLayerLook.h"
-#include "TexturesMixPreviewRenderer.h"
 #include "textures/DialogTexturesLayer.h"
+#include "TexturesMixPreviewRenderer.h"
+#include "TextureLayerCoveragePreviewRenderer.h"
+#include "TextureLayerAspectPreviewRenderer.h"
 
 MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui::MainTexturesForm)
 {
@@ -35,11 +35,11 @@ MainTexturesForm::MainTexturesForm(QWidget *parent) : QWidget(parent), ui(new Ui
     form_helper->setExploreButton(ui->button_explore);
     form_helper->setRenderButton(ui->button_render);
 
-    preview_layer_coverage = new PreviewLayerCoverage();
+    preview_layer_coverage = new TextureLayerCoveragePreviewRenderer();
     preview_layer_coverage->setTextures(textures);
     form_helper->addPreview(ui->preview_coverage, preview_layer_coverage);
 
-    preview_layer_look = new PreviewLayerLook();
+    preview_layer_look = new TextureLayerAspectPreviewRenderer();
     preview_layer_look->setTextures(textures);
     form_helper->addPreview(ui->preview_texture, preview_layer_look);
 
@@ -135,6 +135,7 @@ void MainTexturesForm::updateLocalDataFromScenery()
 {
     DesktopScenery::getCurrent()->getTextures(textures);
 
+    preview_layer_coverage->setTerrain(DesktopScenery::getCurrent()->getTerrain());
     preview_cumul->setTerrain(DesktopScenery::getCurrent()->getTerrain());
 }
 

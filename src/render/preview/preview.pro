@@ -24,7 +24,9 @@ SOURCES += Base2dPreviewRenderer.cpp \
     WaterAspectPreviewRenderer.cpp \
     TerrainShapePreviewRenderer.cpp \
     SceneryTopDownPreviewRenderer.cpp \
-    TexturesMixPreviewRenderer.cpp
+    TexturesMixPreviewRenderer.cpp \
+    TextureLayerCoveragePreviewRenderer.cpp \
+    TextureLayerAspectPreviewRenderer.cpp
 
 HEADERS += Base2dPreviewRenderer.h\
         preview_global.h \
@@ -39,7 +41,9 @@ HEADERS += Base2dPreviewRenderer.h\
     WaterAspectPreviewRenderer.h \
     TerrainShapePreviewRenderer.h \
     SceneryTopDownPreviewRenderer.h \
-    TexturesMixPreviewRenderer.h
+    TexturesMixPreviewRenderer.h \
+    TextureLayerCoveragePreviewRenderer.h \
+    TextureLayerAspectPreviewRenderer.h
 
 unix:!symbian {
     maemo5 {

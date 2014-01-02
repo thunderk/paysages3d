@@ -1,15 +1,17 @@
-#ifndef EDITING_TEXTURES_PREVIEWLAYERLOOK_H
-#define EDITING_TEXTURES_PREVIEWLAYERLOOK_H
+#ifndef TEXTURELAYERASPECTPREVIEWRENDERER_H
+#define TEXTURELAYERASPECTPREVIEWRENDERER_H
 
-#include "desktop_global.h"
+#include "preview_global.h"
 
 #include "Base2dPreviewRenderer.h"
 
-class PreviewLayerLook : public Base2dPreviewRenderer
+namespace paysages {
+namespace preview {
+
+class PREVIEWSHARED_EXPORT TextureLayerAspectPreviewRenderer: public Base2dPreviewRenderer
 {
 public:
-    explicit PreviewLayerLook():
-        Base2dPreviewRenderer(),textures(0){}
+    TextureLayerAspectPreviewRenderer();
 
     void setTextures(TexturesDefinition* textures);
     void setLayer(int layer);
@@ -24,4 +26,7 @@ private:
     int layer;
 };
 
-#endif
+}
+}
+
+#endif // TEXTURELAYERASPECTPREVIEWRENDERER_H
