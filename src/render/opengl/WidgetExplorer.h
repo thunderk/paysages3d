@@ -16,6 +16,7 @@ public:
     ~WidgetExplorer();
 
     void setCameraFov(double fov);
+    inline const CameraDefinition* getCurrentCamera() const {return _current_camera;}
 
 public slots:
     void resetCamera();

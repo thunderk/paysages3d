@@ -34,18 +34,17 @@ DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool c
     label = new QLabel(tr("Field of vision"), panel);
     label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     panel->layout()->addWidget(label);
-    QSlider* slider = new QSlider(Qt::Horizontal, panel);
-    slider->setRange(0, 1000);
-    slider->setValue((int)(1000.0 * (camera->getPerspective().yfov - 0.7) / 1.0));
-    slider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(fovChanged(int)));
-    panel->layout()->addWidget(slider);
+    _fov = new QSlider(Qt::Horizontal, panel);
+    _fov->setRange(0, 1000);
+    _fov->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    connect(_fov, SIGNAL(valueChanged(int)), this, SLOT(fovChanged(int)));
+    panel->layout()->addWidget(_fov);
 
     panel->layout()->addWidget(new QLabel(tr("COMMANDS\n\nLeft click : Look around\nRight click : Pan (adjust framing)\nWheel : Move forward/backward\nHold SHIFT : Faster\nHold CTRL : Slower"), panel));
 
     button = new QPushButton(tr("Reset camera"), panel);
     panel->layout()->addWidget(button);
-    QObject::connect(button, SIGNAL(clicked()), _wanderer, SLOT(resetCamera()));
+    QObject::connect(button, SIGNAL(clicked()), this, SLOT(resetCamera()));
 
     if (camera_validable)
     {
@@ -61,6 +60,7 @@ DialogExplorer::DialogExplorer(QWidget* parent, CameraDefinition* camera, bool c
     layout()->addWidget(panel);
 
     resize(900, 600);
+    resetCamera();
 }
 
 DialogExplorer::~DialogExplorer()
@@ -71,6 +71,12 @@ void DialogExplorer::validateCamera()
 {
     _wanderer->validateCamera();
     accept();
+}
+
+void DialogExplorer::resetCamera()
+{
+    _wanderer->resetCamera();
+    _fov->setValue((int)(1000.0 * (_wanderer->getCurrentCamera()->getPerspective().yfov - 0.7) / 1.0));
 }
 
 void DialogExplorer::fovChanged(int value)

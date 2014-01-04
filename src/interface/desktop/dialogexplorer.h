@@ -5,6 +5,8 @@
 
 #include <QDialog>
 
+class QSlider;
+
 class DialogExplorer : public QDialog
 {
     Q_OBJECT
@@ -14,10 +16,12 @@ public:
 
 protected slots:
     void validateCamera();
+    void resetCamera();
     void fovChanged(int value);
 
 private:
     WidgetExplorer* _wanderer;
+    QSlider* _fov;
 };
 
 #endif
