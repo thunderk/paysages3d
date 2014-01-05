@@ -9,7 +9,8 @@ namespace basics {
 class NoiseFunctionSimplex
 {
 public:
-    static const Texture2D *getSampleTexture();
+    static const Texture2D *getValueTexture();
+    static const Texture2D *getNormalTexture();
 };
 
 }

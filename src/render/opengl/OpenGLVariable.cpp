@@ -134,7 +134,7 @@ void OpenGLVariable::set(const Color &color)
     assert(type == TYPE_NONE or type == TYPE_COLOR);
 
     type = TYPE_COLOR;
-    value_color = QColor(color.r, color.g, color.b);
+    value_color = QColor::fromRgbF(color.r, color.g, color.b);
 }
 
 void OpenGLVariable::uploadTexture(OpenGLRenderer* renderer)

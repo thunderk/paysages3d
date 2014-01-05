@@ -11,6 +11,8 @@
 #include <cstring>
 #include "Texture2D.h"
 #include "Color.h"
+#include "Geometry.h"
+#include "Vector3.h"
 
 typedef struct
 {
@@ -479,24 +481,58 @@ double noiseSimplexGet4DValue(double x, double y, double z, double w)
 }
 
 
-static Texture2D *_sampleTexture = NULL;
+static Texture2D *_valueTexture = NULL;
 
-const Texture2D *NoiseFunctionSimplex::getSampleTexture()
+const Texture2D *NoiseFunctionSimplex::getValueTexture()
 {
-    const int width = 1024;
-    const int height = 1024;
-    if (!_sampleTexture)
+    if (!_valueTexture)
     {
-        _sampleTexture = new Texture2D(width, height);
+        const int width = 1024;
+        const int height = 1024;
+
+        _valueTexture = new Texture2D(width, height);
+
         for (int x = 0; x < width; x++)
         {
             for (int z = 0; z < height; z++)
             {
                 double val = noiseSimplexGet2DValue((double)x, (double)z);
-                _sampleTexture->setPixel(x, z, Color(val, val, val));
+                _valueTexture->setPixel(x, z, Color(val, val, val));
             }
         }
     }
 
-    return _sampleTexture;
+    return _valueTexture;
+}
+
+static Texture2D *_normalTexture = NULL;
+
+const Texture2D *NoiseFunctionSimplex::getNormalTexture()
+{
+    if (!_normalTexture)
+    {
+        const int width = 1024;
+        const int height = 1024;
+
+        _normalTexture = new Texture2D(width, height);
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < height; z++)
+            {
+                double vcenter = noiseSimplexGet2DValue(0.01 * (double)x, 0.01 * (double)z);
+                double vsouth = noiseSimplexGet2DValue(0.01 * (double)x, 0.01 * (double)z + 0.001);
+                double veast = noiseSimplexGet2DValue(0.01 * (double)x + 0.001, 0.01 * (double)z);
+
+                Vector3 normal = Geometry::getNormalFromTriangle(Vector3(0.0, vcenter, 0.0),
+                                                                 Vector3(0.0, vsouth, 0.01),
+                                                                 Vector3(0.01, veast, 0.0)
+                                                                 );
+
+                _normalTexture->setPixel(x, z, Color(normal.x, normal.y, normal.z));
+            }
+        }
+    }
+
+    return _normalTexture;
 }

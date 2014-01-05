@@ -43,7 +43,7 @@ void OpenGLWater::update()
     Color water_color = renderer->getScenery()->getWater()->material->_rgb;
     renderer->getSharedState()->set("waterColor", water_color);
 
-    renderer->getSharedState()->set("simplexSampler", NoiseFunctionSimplex::getSampleTexture(), true, false);
+    renderer->getSharedState()->set("simplexSampler", NoiseFunctionSimplex::getNormalTexture(), true, true);
 }
 
 void OpenGLWater::render()
