@@ -1,5 +1,6 @@
 uniform vec4 waterColor;
 uniform sampler2D simplexSampler;
+uniform float waterReflection;
 
 vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float shininess)
 {
@@ -24,15 +25,16 @@ vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float shininess)
 
 void main(void)
 {
-    //gl_FragColor = waterColor;
-    //gl_FragColor = texture2D(simplexSampler, unprojected.xz * 0.01);
     vec3 normal = vec3(0.0, 0.0, 0.0);
-    for (float scaling = 1.0; scaling < 50.0; scaling *= 1.5)
+    for (float scaling = 1.0; scaling < 400.0; scaling *= 1.5)
     {
         normal += texture2D(simplexSampler, unprojected.xz * 0.01 * scaling).xyz;
     }
+    normal = normalize(normal);
 
-    gl_FragColor = applyLighting(unprojected, normalize(normal), waterColor, 100.0);
+    gl_FragColor = applyLighting(unprojected, normal, waterColor, 100.0);
+
+    gl_FragColor += getSkyColor(unprojected, reflect(unprojected - cameraLocation, normal)) * waterReflection;
 
     gl_FragColor = applyAerialPerspective(gl_FragColor);
 

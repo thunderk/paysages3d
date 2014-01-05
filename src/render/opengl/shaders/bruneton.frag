@@ -209,3 +209,24 @@ vec4 applyAerialPerspective(vec4 base)
 
     return base * vec4(attenuation, 0.0) + vec4(inscattering, 0.0);
 }
+
+vec4 getSkyColor(vec3 location, vec3 direction)
+{
+    float yoffset = GROUND_OFFSET - waterHeight;
+    vec3 camera = vec3(location.x, max(location.y + yoffset, 0.0), location.z);
+    vec3 x = vec3(0.0, Rg + camera.y * WORLD_SCALING, 0.0);
+    vec3 v = normalize(direction);
+    vec3 s = normalize(sunDirection * SUN_DISTANCE_SCALED - x);
+
+    float r = length(x);
+    float mu = dot(x, v) / r;
+    float t = -r * mu - sqrt(r * r * (mu * mu - 1.0) + Rg * Rg);
+
+    vec4 sunTransmittance = _sunTransmittance(v, s, r, mu, sunRadius);
+    vec3 attenuation;
+    vec3 inscattering = _getInscatterColor(x, t, v, s, r, mu, attenuation);
+
+    vec4 result = vec4(0.01, 0.012, 0.03, 1.0); // night sky
+    result += sunTransmittance + vec4(inscattering, 0.0);
+    return result;
+}
