@@ -62,31 +62,37 @@ void OpenGLVariable::apply(OpenGLShaderProgram *program, int &texture_unit)
     }
 }
 
-void OpenGLVariable::set(const Texture2D *texture)
+void OpenGLVariable::set(const Texture2D *texture, bool repeat, bool color)
 {
     assert(type == TYPE_NONE or type == TYPE_TEXTURE_2D);
 
     type = TYPE_TEXTURE_2D;
     value_tex2d = texture;
     texture_toupload = true;
+    texture_repeat = repeat;
+    texture_color = color;
 }
 
-void OpenGLVariable::set(const Texture3D *texture)
+void OpenGLVariable::set(const Texture3D *texture, bool repeat, bool color)
 {
     assert(type == TYPE_NONE or type == TYPE_TEXTURE_3D);
 
     type = TYPE_TEXTURE_3D;
     value_tex3d = texture;
     texture_toupload = true;
+    texture_repeat = repeat;
+    texture_color = color;
 }
 
-void OpenGLVariable::set(const Texture4D *texture)
+void OpenGLVariable::set(const Texture4D *texture, bool repeat, bool color)
 {
     assert(type == TYPE_NONE or type == TYPE_TEXTURE_4D);
 
     type = TYPE_TEXTURE_4D;
     value_tex4d = texture;
     texture_toupload = true;
+    texture_repeat = repeat;
+    texture_color = color;
 }
 
 void OpenGLVariable::set(float value)
@@ -149,12 +155,14 @@ void OpenGLVariable::uploadTexture(OpenGLRenderer* renderer)
     functions->glBindTexture(textype, texture_id);
     functions->glTexParameteri(textype, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     functions->glTexParameteri(textype, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    functions->glTexParameteri(textype, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    functions->glTexParameteri(textype, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    functions->glTexParameteri(textype, GL_TEXTURE_WRAP_S, texture_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+    functions->glTexParameteri(textype, GL_TEXTURE_WRAP_T, texture_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
     if (textype == GL_TEXTURE_3D)
     {
-        functions->glTexParameteri(textype, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        functions->glTexParameteri(textype, GL_TEXTURE_WRAP_R, texture_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
     }
+
+    int dest_format = texture_color ? GL_RGBA : GL_RED;
 
     if (type == TYPE_TEXTURE_2D)
     {
@@ -174,7 +182,7 @@ void OpenGLVariable::uploadTexture(OpenGLRenderer* renderer)
             }
         }
 
-        functions->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sx, sy, 0, GL_RGBA, GL_FLOAT, pixels);
+        functions->glTexImage2D(GL_TEXTURE_2D, 0, dest_format, sx, sy, 0, GL_RGBA, GL_FLOAT, pixels);
         delete[] pixels;
     }
     else if (type == TYPE_TEXTURE_3D)
@@ -198,7 +206,7 @@ void OpenGLVariable::uploadTexture(OpenGLRenderer* renderer)
             }
         }
 
-        functions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, sx, sy, sz, 0, GL_RGBA, GL_FLOAT, pixels);
+        functions->glTexImage3D(GL_TEXTURE_3D, 0, dest_format, sx, sy, sz, 0, GL_RGBA, GL_FLOAT, pixels);
         delete[] pixels;
     }
     else
@@ -225,7 +233,7 @@ void OpenGLVariable::uploadTexture(OpenGLRenderer* renderer)
             }
         }
 
-        functions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, sx, sy, sz * sw, 0, GL_RGBA, GL_FLOAT, pixels);
+        functions->glTexImage3D(GL_TEXTURE_3D, 0, dest_format, sx, sy, sz * sw, 0, GL_RGBA, GL_FLOAT, pixels);
         delete[] pixels;
     }
 }

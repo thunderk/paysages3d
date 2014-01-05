@@ -272,9 +272,9 @@ void ExplorerChunkTerrain::render(QOpenGLShaderProgram* program, OpenGLFunctions
 
         _lock_data.lock();
         // TEMP
-        functions->glActiveTexture(GL_TEXTURE0 + 3);
+        functions->glActiveTexture(GL_TEXTURE0 + 7);
         functions->glBindTexture(GL_TEXTURE_2D, texture_id);
-        program->setUniformValue("groundTexture", 3);
+        program->setUniformValue("groundTexture", 7);
         tessellated->render(program, functions);
         _lock_data.unlock();
     }

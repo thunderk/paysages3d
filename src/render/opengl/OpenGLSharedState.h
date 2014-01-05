@@ -28,9 +28,9 @@ public:
     OpenGLVariable *get(const std::string &name);
 
     // Shortcuts
-    inline void set(const std::string &name, const Texture2D *texture) {get(name)->set(texture);}
-    inline void set(const std::string &name, const Texture3D *texture) {get(name)->set(texture);}
-    inline void set(const std::string &name, const Texture4D *texture) {get(name)->set(texture);}
+    inline void set(const std::string &name, const Texture2D *texture, bool repeat=false, bool color=true) {get(name)->set(texture, repeat, color);}
+    inline void set(const std::string &name, const Texture3D *texture, bool repeat=false, bool color=true) {get(name)->set(texture, repeat, color);}
+    inline void set(const std::string &name, const Texture4D *texture, bool repeat=false, bool color=true) {get(name)->set(texture, repeat, color);}
     inline void set(const std::string &name, float value) {get(name)->set(value);}
     inline void set(const std::string &name, const Vector3 &vector) {get(name)->set(vector);}
     inline void set(const std::string &name, const QVector3D &vector) {get(name)->set(vector);}

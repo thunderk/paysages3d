@@ -32,9 +32,9 @@ public:
 
     void apply(OpenGLShaderProgram *program, int &texture_unit);
 
-    void set(const Texture2D *texture);
-    void set(const Texture3D *texture);
-    void set(const Texture4D *texture);
+    void set(const Texture2D *texture, bool repeat=false, bool color=true);
+    void set(const Texture3D *texture, bool repeat=false, bool color=true);
+    void set(const Texture4D *texture, bool repeat=false, bool color=true);
     void set(float value);
     void set(const Vector3 &vector);
     void set(const QVector3D &vector);
@@ -58,6 +58,8 @@ private:
     const Texture4D* value_tex4d;
 
     bool texture_toupload;
+    bool texture_repeat;
+    bool texture_color;
     unsigned int texture_id;
 };
 

@@ -7,6 +7,7 @@
 #include "Scenery.h"
 #include "WaterDefinition.h"
 #include "SurfaceMaterial.h"
+#include "NoiseFunctionSimplex.h"
 
 OpenGLWater::OpenGLWater(OpenGLRenderer *renderer):
     OpenGLPart(renderer)
@@ -41,6 +42,8 @@ void OpenGLWater::update()
 
     Color water_color = renderer->getScenery()->getWater()->material->_rgb;
     renderer->getSharedState()->set("waterColor", water_color);
+
+    renderer->getSharedState()->set("simplexSampler", NoiseFunctionSimplex::getSampleTexture(), true, false);
 }
 
 void OpenGLWater::render()

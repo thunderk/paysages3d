@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <cmath>
 #include <cstring>
+#include "Texture2D.h"
+#include "Color.h"
 
 typedef struct
 {
@@ -474,4 +476,27 @@ double noiseSimplexGet4DValue(double x, double y, double z, double w)
     }
     /* Sum up and scale the result to cover the range [-0.5,0.5] */
     return 13.5 * (n0 + n1 + n2 + n3 + n4) + 0.5;
+}
+
+
+static Texture2D *_sampleTexture = NULL;
+
+const Texture2D *NoiseFunctionSimplex::getSampleTexture()
+{
+    const int width = 1024;
+    const int height = 1024;
+    if (!_sampleTexture)
+    {
+        _sampleTexture = new Texture2D(width, height);
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < height; z++)
+            {
+                double val = noiseSimplexGet2DValue((double)x, (double)z);
+                _sampleTexture->setPixel(x, z, Color(val, val, val));
+            }
+        }
+    }
+
+    return _sampleTexture;
 }
