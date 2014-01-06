@@ -33,7 +33,6 @@ QGLWidget(parent)
     _water = true;
     _wireframe = true;
     _painted_area = true;
-    _water_height = 0.0;
 
     _average_frame_time = 0.0;
 
@@ -78,7 +77,6 @@ void WidgetHeightMap::setTerrain(TerrainDefinition* terrain)
 
     _renderer->getScenery()->setTerrain(_terrain);
     _renderer->prepare();
-    _water_height = _renderer->getTerrainRenderer()->getWaterHeight() / _terrain->scaling;
 
     revert();
 }
@@ -466,10 +464,11 @@ void WidgetHeightMap::paintGL()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4f(0.2, 0.3, 0.7, 0.7);
         glBegin(GL_QUADS);
-        glVertex3f(_target_x - 500.0, _water_height, _target_z - 500.0);
-        glVertex3f(_target_x - 500.0, _water_height, _target_z + 500.0);
-        glVertex3f(_target_x + 500.0, _water_height, _target_z + 500.0);
-        glVertex3f(_target_x + 500.0, _water_height, _target_z - 500.0);
+        double water_height = _terrain->water_height * _terrain->scaling * _terrain->height;
+        glVertex3f(_target_x - 500.0, water_height, _target_z - 500.0);
+        glVertex3f(_target_x - 500.0, water_height, _target_z + 500.0);
+        glVertex3f(_target_x + 500.0, water_height, _target_z + 500.0);
+        glVertex3f(_target_x + 500.0, water_height, _target_z - 500.0);
         glEnd();
         glDisable(GL_BLEND);
         glEnable(GL_LIGHTING);

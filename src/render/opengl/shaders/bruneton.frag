@@ -1,4 +1,3 @@
-const float GROUND_OFFSET = 0.5;
 const float Rg = 6360.0;
 const float Rt = 6420.0;
 const float RL = 6421.0;
@@ -188,11 +187,8 @@ vec3 _getInscatterColor(inout vec3 x, inout float t, vec3 v, vec3 s, out float r
 
 vec4 applyAerialPerspective(vec4 base)
 {
-    float yoffset = GROUND_OFFSET - waterHeight;
-    vec3 camera = vec3(cameraLocation.x, max(cameraLocation.y + yoffset, 0.0), cameraLocation.z);
-    vec3 location = vec3(unprojected.x, max(unprojected.y + yoffset, 0.0), unprojected.z);
-    vec3 x = vec3(0.0, Rg + camera.y * WORLD_SCALING, 0.0);
-    vec3 v = normalize(location - camera);
+    vec3 x = vec3(0.0, Rg + cameraLocation.y * WORLD_SCALING, 0.0);
+    vec3 v = normalize(unprojected - cameraLocation);
     vec3 s = normalize(sunDirection * SUN_DISTANCE_SCALED - x);
 
     if (v.y == 0.0)
@@ -202,7 +198,7 @@ vec4 applyAerialPerspective(vec4 base)
 
     float r = length(x);
     float mu = dot(x, v) / r;
-    float t = length(location - camera) * WORLD_SCALING;
+    float t = length(unprojected - cameraLocation) * WORLD_SCALING;
 
     vec3 attenuation;
     vec3 inscattering = _getInscatterColor(x, t, v, s, r, mu, attenuation);
@@ -212,9 +208,7 @@ vec4 applyAerialPerspective(vec4 base)
 
 vec4 getSkyColor(vec3 location, vec3 direction)
 {
-    float yoffset = GROUND_OFFSET - waterHeight;
-    vec3 camera = vec3(location.x, max(location.y + yoffset, 0.0), location.z);
-    vec3 x = vec3(0.0, Rg + camera.y * WORLD_SCALING, 0.0);
+    vec3 x = vec3(0.0, Rg + location.y * WORLD_SCALING, 0.0);
     vec3 v = normalize(direction);
     vec3 s = normalize(sunDirection * SUN_DISTANCE_SCALED - x);
 

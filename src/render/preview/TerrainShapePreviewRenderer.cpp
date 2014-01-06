@@ -58,7 +58,7 @@ Color TerrainShapePreviewRenderer::getColor2D(double x, double y, double scaling
     double height;
 
     height = getTerrainRenderer()->getHeight(x, y, 1);
-    if (height > getTerrainRenderer()->getWaterHeight())
+    if (height > 0.0)
     {
         return getTerrainRenderer()->getFinalColor(Vector3(x, height, y), 0.000001);
     }

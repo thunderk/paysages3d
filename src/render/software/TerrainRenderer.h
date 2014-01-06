@@ -30,7 +30,6 @@ public:
     virtual double getHeight(double x, double z, int with_painting);
     virtual TerrainResult getResult(double x, double z, int with_painting, int with_textures);
     virtual Color getFinalColor(const Vector3 &location, double precision);
-    virtual double getWaterHeight();
     virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override;
 
 private:

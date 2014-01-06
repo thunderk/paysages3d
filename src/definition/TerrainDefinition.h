@@ -31,7 +31,6 @@ public:
     double getInterpolatedHeight(double x, double z, int scaled, int with_painting);
     unsigned long getMemoryStats();
     HeightInfo getHeightInfo();
-    double getWaterHeight();
 
 public:
     typedef enum

@@ -201,9 +201,3 @@ bool TerrainRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
         return true;
     }
 }
-
-double TerrainRenderer::getWaterHeight()
-{
-    TerrainDefinition* terrain = parent->getScenery()->getTerrain();
-    return terrain->water_height * terrain->height * terrain->scaling;
-}

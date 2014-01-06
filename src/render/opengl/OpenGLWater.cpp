@@ -37,9 +37,6 @@ void OpenGLWater::initialize()
 
 void OpenGLWater::update()
 {
-    double water_height = renderer->getWaterRenderer()->getHeightInfo().max_height;
-    renderer->getSharedState()->set("waterHeight", water_height);
-
     Color water_color = renderer->getScenery()->getWater()->material->_rgb;
     renderer->getSharedState()->set("waterColor", water_color);
 

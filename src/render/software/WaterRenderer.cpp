@@ -21,12 +21,12 @@ void WaterRenderer::update()
 {
 }
 
-static inline double _getHeight(WaterDefinition* definition, double base_height, double x, double z)
+static inline double _getHeight(WaterDefinition* definition, double x, double z)
 {
-    return base_height + definition->_waves_noise->get2DTotal(x, z);
+    return definition->_waves_noise->get2DTotal(x, z);
 }
 
-static inline Vector3 _getNormal(WaterDefinition* definition, double base_height, Vector3 base, double detail)
+static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, double detail)
 {
     Vector3 back, right;
     double x, z;
@@ -35,12 +35,12 @@ static inline Vector3 _getNormal(WaterDefinition* definition, double base_height
     z = base.z;
 
     back.x = x;
-    back.y = _getHeight(definition, base_height, x, z + detail);
+    back.y = _getHeight(definition, x, z + detail);
     back.z = z + detail;
     back = back.sub(base);
 
     right.x = x + detail;
-    right.y = _getHeight(definition, base_height, x + detail, z);
+    right.y = _getHeight(definition, x + detail, z);
     right.z = z;
     right = right.sub(base);
 
@@ -76,33 +76,31 @@ static inline Color _getFoamMask(SoftwareRenderer* renderer, WaterDefinition* de
 {
     Color result;
     double foam_factor, normal_diff, location_offset;
-    double base_height;
 
-    base_height = renderer->getTerrainRenderer()->getWaterHeight();
     location_offset = 2.0 * detail;
 
     foam_factor = 0.0;
     location.x += location_offset;
-    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, base_height, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.x -= location_offset * 2.0;
-    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, base_height, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.x += location_offset;
     location.z -= location_offset;
-    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, base_height, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.z += location_offset * 2.0;
-    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, base_height, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
@@ -145,7 +143,7 @@ HeightInfo WaterRenderer::getHeightInfo()
     HeightInfo info;
     double noise_minvalue, noise_maxvalue;
 
-    info.base_height = parent->getTerrainRenderer()->getWaterHeight();
+    info.base_height = 0.0;
     definition->_waves_noise->getRange(&noise_minvalue, &noise_maxvalue);
     info.min_height = info.base_height + noise_minvalue;
     info.max_height = info.base_height + noise_maxvalue;
@@ -155,7 +153,7 @@ HeightInfo WaterRenderer::getHeightInfo()
 
 double WaterRenderer::getHeight(double x, double z)
 {
-    return _getHeight(parent->getScenery()->getWater(), parent->getTerrainRenderer()->getWaterHeight(), x, z);
+    return _getHeight(parent->getScenery()->getWater(), x, z);
 }
 
 WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
@@ -165,12 +163,10 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     RayCastingResult refracted;
     Vector3 location, normal, look_direction;
     Color color, foam;
-    double base_height, detail, depth;
-
-    base_height = parent->getTerrainRenderer()->getWaterHeight();
+    double detail, depth;
 
     location.x = x;
-    location.y = _getHeight(definition, base_height, x, z);
+    location.y = _getHeight(definition, x, z);
     location.z = z;
     result.location = location;
 
@@ -180,7 +176,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
         detail = 0.00001;
     }
 
-    normal = _getNormal(definition, base_height, location, detail);
+    normal = _getNormal(definition, location, detail);
     look_direction = location.sub(parent->getCameraLocation(location)).normalize();
 
     /* Reflection */
@@ -242,14 +238,12 @@ bool WaterRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
 {
     WaterDefinition* definition = parent->getScenery()->getWater();
     double factor;
-    double base_height;
 
-    base_height = parent->getTerrainRenderer()->getWaterHeight();
-    if (at.y < base_height)
+    if (at.y < 0.0)
     {
         if (light.direction.y <= -0.00001)
         {
-            factor = (base_height - at.y) / (-light.direction.y * definition->lighting_depth);
+            factor = -at.y / (-light.direction.y * definition->lighting_depth);
             if (factor > 1.0)
             {
                 factor = 1.0;

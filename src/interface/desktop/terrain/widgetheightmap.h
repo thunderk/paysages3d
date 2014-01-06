@@ -61,7 +61,6 @@ private:
 
     bool _dirty;
 
-    double _water_height;
     bool _water;
     bool _wireframe;
     bool _painted_area;

@@ -107,7 +107,7 @@ double TerrainDefinition::getInterpolatedHeight(double x, double z, int scaled, 
 
     if (scaled)
     {
-        return h * height * scaling;
+        return (h - water_height) * height * scaling;
     }
     else
     {
@@ -125,11 +125,6 @@ HeightInfo TerrainDefinition::getHeightInfo()
     result.base_height = water_height * height * scaling;
 
     return result;
-}
-
-double TerrainDefinition::getWaterHeight()
-{
-    return water_height * height * scaling;
 }
 
 unsigned long TerrainDefinition::getMemoryStats()

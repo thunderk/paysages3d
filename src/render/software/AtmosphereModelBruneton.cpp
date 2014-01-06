@@ -34,7 +34,6 @@
 
 /*********************** Constants ***********************/
 
-#define GROUND_OFFSET 0.5
 static const double Rg = 6360.0;
 static const double Rt = 6420.0;
 static const double RL = 6421.0;
@@ -1156,12 +1155,6 @@ AtmosphereModelBruneton::AtmosphereModelBruneton(SoftwareRenderer *parent):
 
 AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3 &direction, const Vector3 &sun_position, const Color &base)
 {
-    double yoffset = GROUND_OFFSET - parent->getWaterRenderer()->getHeightInfo().base_height;
-    eye.y += yoffset;
-    if (eye.y < 0.0)
-    {
-        eye.y = 0.0;
-    }
     Vector3 x = {0.0, Rg + eye.y * WORLD_SCALING, 0.0};
     Vector3 v = direction.normalize();
     Vector3 s = sun_position.sub(x).normalize();
@@ -1192,17 +1185,6 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
     Vector3 eye = parent->getCameraLocation(location);
     Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(SUN_DISTANCE);
 
-    double yoffset = GROUND_OFFSET - parent->getWaterRenderer()->getHeightInfo().base_height;
-    eye.y += yoffset;
-    location.y += yoffset;
-    if (eye.y < 0.0)
-    {
-        eye.y = 0.0;
-    }
-    if (location.y < 0.0)
-    {
-        location.y = 0.0;
-    }
     Vector3 direction = location.sub(eye).scale(WORLD_SCALING);
 
     Vector3 x = {0.0, Rg + eye.y * WORLD_SCALING, 0.0};
@@ -1238,23 +1220,16 @@ void AtmosphereModelBruneton::fillLightingStatus(LightStatus *status, const Vect
     LightComponent sun, irradiance;
     double muS;
 
-    double altitude = status->getLocation().y;
+    double altitude = status->getLocation().y * WORLD_SCALING;
 
-    double yoffset = GROUND_OFFSET - parent->getWaterRenderer()->getHeightInfo().base_height;
-    altitude += yoffset;
-    if (altitude < 0.0)
-    {
-        altitude = 0.0;
-    }
-
-    double r0 = Rg + altitude * WORLD_SCALING;
+    double r0 = Rg + altitude;
     Vector3 up = {0.0, 1.0, 0.0};
     Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(SUN_DISTANCE);
     Vector3 x = {0.0, r0, 0.0};
     Vector3 s = sun_position.sub(x).normalize();
 
     muS = up.dotProduct(s);
-    if (altitude * WORLD_SCALING > RL)
+    if (altitude > RL)
     {
         sun.color = parent->getScenery()->getAtmosphere()->sun_color;
     }
