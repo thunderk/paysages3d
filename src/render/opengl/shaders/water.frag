@@ -28,7 +28,9 @@ void main(void)
 
     gl_FragColor = applyLighting(unprojected, normal, waterColor, 100.0);
 
-    gl_FragColor += getSkyColor(unprojected, reflect(unprojected - cameraLocation, normal)) * waterReflection;
+    vec3 reflected = reflect(unprojected - cameraLocation, normal);
+    reflected.y = max(reflected.y, 0.0);
+    gl_FragColor += getSkyColor(unprojected, reflected) * waterReflection;
 
     gl_FragColor = applyAerialPerspective(gl_FragColor);
 
