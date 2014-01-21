@@ -1,7 +1,7 @@
 #include "WaterDefinition.h"
 
 #include "PackStream.h"
-#include "NoiseGenerator.h"
+#include "NoiseState.h"
 #include "Color.h"
 #include "SurfaceMaterial.h"
 
@@ -11,7 +11,7 @@ WaterDefinition::WaterDefinition(BaseDefinition* parent):
     material = new SurfaceMaterial;
     depth_color = new Color;
     foam_material = new SurfaceMaterial;
-    _waves_noise = new NoiseGenerator;
+    noise_state = new NoiseState();
 
     transparency_depth = 0.0;
     transparency = 0.0;
@@ -29,7 +29,7 @@ WaterDefinition::~WaterDefinition()
     delete material;
     delete depth_color;
     delete foam_material;
-    delete _waves_noise;
+    delete noise_state;
 }
 
 void WaterDefinition::save(PackStream* stream) const
@@ -51,7 +51,7 @@ void WaterDefinition::save(PackStream* stream) const
     stream->write(&foam_coverage);
     foam_material->save(stream);
 
-    _waves_noise->save(stream);
+    noise_state->save(stream);
 }
 
 void WaterDefinition::load(PackStream* stream)
@@ -73,7 +73,7 @@ void WaterDefinition::load(PackStream* stream)
     stream->read(&foam_coverage);
     foam_material->load(stream);
 
-    _waves_noise->load(stream);
+    noise_state->load(stream);
 
     validate();
 }
@@ -95,26 +95,12 @@ void WaterDefinition::copy(BaseDefinition* _destination) const
     destination->turbulence = turbulence;
     destination->foam_coverage = foam_coverage;
     *destination->foam_material = *foam_material;
-    _waves_noise->copy(destination->_waves_noise);
+    noise_state->copy(destination->noise_state);
 }
 
 void WaterDefinition::validate()
 {
     BaseDefinition::validate();
-
-    double scaling = this->scaling * 0.3;
-
-    _waves_noise->clearLevels();
-    if (waves_height > 0.0)
-    {
-        _waves_noise->addLevelsSimple(2, scaling, -waves_height * scaling * 0.015, waves_height * scaling * 0.015, 0.5);
-    }
-    if (detail_height > 0.0)
-    {
-        _waves_noise->addLevelsSimple(3, scaling * 0.1, -detail_height * scaling * 0.015, detail_height * scaling * 0.015, 0.5);
-    }
-    _waves_noise->setFunctionParams(NoiseGenerator::NOISE_FUNCTION_SIMPLEX, -turbulence, 0.0);
-    _waves_noise->validate();
 
     material->validate();
     foam_material->validate();
@@ -122,7 +108,7 @@ void WaterDefinition::validate()
 
 void WaterDefinition::applyPreset(WaterPreset preset)
 {
-    _waves_noise->randomizeOffsets();
+    noise_state->randomizeOffsets();
 
     if (preset == WATER_PRESET_LAKE)
     {

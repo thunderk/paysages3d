@@ -7,26 +7,33 @@
 #include "LightComponent.h"
 #include "Scenery.h"
 #include "SurfaceMaterial.h"
+#include "NoiseFunctionSimplex.h"
 
 WaterRenderer::WaterRenderer(SoftwareRenderer* parent):
     parent(parent)
 {
+    noise = new NoiseFunctionSimplex();
 }
 
 WaterRenderer::~WaterRenderer()
 {
+    delete noise;
 }
 
 void WaterRenderer::update()
 {
+    WaterDefinition* definition = parent->getScenery()->getWater();
+    noise->setState(*definition->noise_state);
+    noise->setScaling(definition->scaling * 0.3, definition->waves_height * 0.05);
+    noise->setStep(0.3);
 }
 
-static inline double _getHeight(WaterDefinition* definition, double x, double z)
+static inline double _getHeight(FractalNoise* noise, double x, double z)
 {
-    return definition->_waves_noise->get2DTotal(x, z);
+    return noise->get2d(0.00001, x, z);
 }
 
-static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, double detail)
+static inline Vector3 _getNormal(FractalNoise* noise, Vector3 base, double detail)
 {
     Vector3 back, right;
     double x, z;
@@ -35,12 +42,12 @@ static inline Vector3 _getNormal(WaterDefinition* definition, Vector3 base, doub
     z = base.z;
 
     back.x = x;
-    back.y = _getHeight(definition, x, z + detail);
+    back.y = _getHeight(noise, x, z + detail);
     back.z = z + detail;
     back = back.sub(base);
 
     right.x = x + detail;
-    right.y = _getHeight(definition, x + detail, z);
+    right.y = _getHeight(noise, x + detail, z);
     right.z = z;
     right = right.sub(base);
 
@@ -72,7 +79,7 @@ static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal)
     }
 }
 
-static inline Color _getFoamMask(SoftwareRenderer* renderer, WaterDefinition* definition, Vector3 location, Vector3 normal, double detail)
+static inline Color _getFoamMask(SoftwareRenderer* renderer, WaterDefinition* definition, FractalNoise* noise, Vector3 location, Vector3 normal, double detail)
 {
     Color result;
     double foam_factor, normal_diff, location_offset;
@@ -81,26 +88,26 @@ static inline Color _getFoamMask(SoftwareRenderer* renderer, WaterDefinition* de
 
     foam_factor = 0.0;
     location.x += location_offset;
-    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(noise, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.x -= location_offset * 2.0;
-    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(noise, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.x += location_offset;
     location.z -= location_offset;
-    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(noise, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.z += location_offset * 2.0;
-    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(noise, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
@@ -139,12 +146,13 @@ static inline Color _getFoamMask(SoftwareRenderer* renderer, WaterDefinition* de
 
 HeightInfo WaterRenderer::getHeightInfo()
 {
-    WaterDefinition* definition = parent->getScenery()->getWater();
     HeightInfo info;
     double noise_minvalue, noise_maxvalue;
 
     info.base_height = 0.0;
-    definition->_waves_noise->getRange(&noise_minvalue, &noise_maxvalue);
+    // TODO
+    //noise->getRange(&noise_minvalue, &noise_maxvalue);
+    noise_minvalue = noise_maxvalue = 0.0;
     info.min_height = info.base_height + noise_minvalue;
     info.max_height = info.base_height + noise_maxvalue;
 
@@ -153,7 +161,7 @@ HeightInfo WaterRenderer::getHeightInfo()
 
 double WaterRenderer::getHeight(double x, double z)
 {
-    return _getHeight(parent->getScenery()->getWater(), x, z);
+    return _getHeight(noise, x, z);
 }
 
 WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
@@ -166,7 +174,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     double detail, depth;
 
     location.x = x;
-    location.y = _getHeight(definition, x, z);
+    location.y = _getHeight(noise, x, z);
     location.z = z;
     result.location = location;
 
@@ -176,7 +184,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
         detail = 0.00001;
     }
 
-    normal = _getNormal(definition, location, detail);
+    normal = _getNormal(noise, location, detail);
     look_direction = location.sub(parent->getCameraLocation(location)).normalize();
 
     /* Reflection */
@@ -222,7 +230,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     color.b += result.reflected.b * definition->reflection + result.refracted.b * definition->transparency;
 
     /* Merge with foam */
-    foam = _getFoamMask(parent, definition, location, normal, detail);
+    foam = _getFoamMask(parent, definition, noise, location, normal, detail);
     color.mask(foam);
 
     /* Bring color to the camera */

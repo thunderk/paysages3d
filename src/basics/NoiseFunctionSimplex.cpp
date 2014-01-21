@@ -480,6 +480,15 @@ double noiseSimplexGet4DValue(double x, double y, double z, double w)
     return 13.5 * (n0 + n1 + n2 + n3 + n4) + 0.5;
 }
 
+double NoiseFunctionSimplex::getBase2d(double x, double y) const
+{
+    return noiseSimplexGet2DValue(x, y);
+}
+
+double NoiseFunctionSimplex::getBase3d(double x, double y, double z) const
+{
+    return noiseSimplexGet3DValue(x, y, z);
+}
 
 static Texture2D *_valueTexture = NULL;
 

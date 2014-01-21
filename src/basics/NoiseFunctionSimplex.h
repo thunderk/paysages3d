@@ -3,11 +3,16 @@
 
 #include "basics_global.h"
 
+#include "FractalNoise.h"
+
 namespace paysages {
 namespace basics {
 
-class NoiseFunctionSimplex
+class NoiseFunctionSimplex:public FractalNoise
 {
+    virtual double getBase2d(double x, double y) const override;
+    virtual double getBase3d(double x, double y, double z) const override;
+
 public:
     static const Texture2D *getValueTexture();
     static const Texture2D *getNormalTexture();

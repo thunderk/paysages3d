@@ -38,6 +38,7 @@ public:
 
 private:
     SoftwareRenderer* parent;
+    FractalNoise* noise;
 };
 
 }

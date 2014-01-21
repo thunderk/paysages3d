@@ -44,7 +44,7 @@ public:
     double foam_coverage;
     SurfaceMaterial* foam_material;
 
-    NoiseGenerator* _waves_noise;
+    NoiseState* noise_state;
 };
 
 }

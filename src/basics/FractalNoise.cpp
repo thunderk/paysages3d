@@ -10,6 +10,10 @@ FractalNoise::FractalNoise()
     ridge = 0.0;
 }
 
+FractalNoise::~FractalNoise()
+{
+}
+
 void FractalNoise::setScaling(double scaling, double height)
 {
     this->scaling = scaling < 0.00000001 ? 0.0 : 1.0 / scaling;
