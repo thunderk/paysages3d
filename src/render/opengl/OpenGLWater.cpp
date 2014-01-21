@@ -27,6 +27,7 @@ void OpenGLWater::initialize()
     program->addFragmentSource("bruneton");
     program->addFragmentSource("tonemapping");
     program->addFragmentSource("fadeout");
+    program->addFragmentSource("noise");
     program->addFragmentSource("water");
 
     setVertex(0, -1.0f, 0.0f, -1.0f);

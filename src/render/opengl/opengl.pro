@@ -87,4 +87,5 @@ OTHER_FILES += \
     shaders/tonemapping.frag \
     shaders/terrain.frag \
     shaders/terrain.vert \
-    shaders/fadeout.frag
+    shaders/fadeout.frag \
+    shaders/noise.frag

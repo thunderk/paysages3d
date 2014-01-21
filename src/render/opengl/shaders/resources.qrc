@@ -9,5 +9,6 @@
         <file>terrain.frag</file>
         <file>terrain.vert</file>
         <file>fadeout.frag</file>
+        <file>noise.frag</file>
     </qresource>
 </RCC>

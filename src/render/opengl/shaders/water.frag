@@ -1,5 +1,4 @@
 uniform vec4 waterColor;
-uniform sampler2D simplexSampler;
 uniform float waterReflection;
 
 vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float shininess)
@@ -25,12 +24,7 @@ vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float shininess)
 
 void main(void)
 {
-    vec3 normal = vec3(0.0, 0.0, 0.0);
-    for (float scaling = 1.0; scaling < 400.0; scaling *= 1.5)
-    {
-        normal += texture2D(simplexSampler, unprojected.xz * 0.01 * scaling).xyz;
-    }
-    normal = normalize(normal);
+    vec3 normal = noiseNormal2d(unprojected.xz, 0.001);
 
     gl_FragColor = applyLighting(unprojected, normal, waterColor, 100.0);
 
