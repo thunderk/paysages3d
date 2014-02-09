@@ -27,5 +27,5 @@ Credits
 
 * [Michaël Lemaire](http://thunderk.net) - Main developer
 * [Eric Bruneton and Fabrice Neyet](http://www-evasion.imag.fr/Membres/Eric.Bruneton/) - Publication and source code from *Precomputed Atmospheric Scattering (2008)*
-* [Qt](http://qt.nokia.com/) - Library in use
+* [Qt](http://qt-project.org/) - Library in use
 * [GoogleTest](https://code.google.com/p/googletest/) - Included library
