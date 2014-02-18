@@ -1,7 +1,9 @@
 BUILDMODE=release
+QTSDK=
 BUILDPATH=./build/${BUILDMODE}
 LIBRARY_PATH=${BUILDPATH}/system:${BUILDPATH}/basics:${BUILDPATH}/definition:${BUILDPATH}/render/software:${BUILDPATH}/render/preview:${BUILDPATH}/render/opengl:${BUILDPATH}/tests/googletest
 BUILD_SPEC=linux-g++
+PATH:=${QTSDK}/bin:${PATH}
 
 all:build
 
