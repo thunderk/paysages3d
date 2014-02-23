@@ -10,6 +10,8 @@ About
 
 It is written in C++ 11, using Qt 5.2 as only dependency.
 
+[![Screenshot 1](data/screenshots/small1.jpg)](data/screenshots/large1.jpg) [![Screenshot 2](data/screenshots/small2.jpg)](data/screenshots/large2.jpg) [![Screenshot 3](data/screenshots/small3.jpg)](data/screenshots/large3.jpg)
+
 Build/Run
 ---------
 
