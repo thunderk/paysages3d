@@ -101,7 +101,7 @@
              <string>Commands</string>
             </property>
             <property name="icon">
-             <iconset resource="../../../data/ui_pictures.qrc">
+             <iconset resource="../../../../data/ui_pictures.qrc">
               <normaloff>:/buttons/logo/images/about.png</normaloff>:/buttons/logo/images/about.png</iconset>
             </property>
             <property name="iconSize">
@@ -788,7 +788,7 @@
   <tabstop>input_brush_strength</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../data/ui_pictures.qrc"/>
+  <include location="../../../../data/ui_pictures.qrc"/>
  </resources>
  <connections>
   <connection>

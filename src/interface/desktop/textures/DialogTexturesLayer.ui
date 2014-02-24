@@ -209,7 +209,7 @@
            <string>Explore in 3D</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/explore.png</normaloff>:/buttons/logo/images/explore.png</iconset>
           </property>
          </widget>
@@ -220,7 +220,7 @@
            <string>Cancel</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/cancel.png</normaloff>:/buttons/logo/images/cancel.png</iconset>
           </property>
          </widget>
@@ -231,7 +231,7 @@
            <string>Validate</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/apply.png</normaloff>:/buttons/logo/images/apply.png</iconset>
           </property>
           <property name="default">
@@ -245,7 +245,7 @@
            <string>Render preview</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/render.png</normaloff>:/buttons/logo/images/render.png</iconset>
           </property>
          </widget>
@@ -256,7 +256,7 @@
            <string>Load preset</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/auto.png</normaloff>:/buttons/logo/images/auto.png</iconset>
           </property>
          </widget>
@@ -267,7 +267,7 @@
            <string>Revert</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/revert.png</normaloff>:/buttons/logo/images/revert.png</iconset>
           </property>
          </widget>
@@ -288,7 +288,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../data/ui_pictures.qrc"/>
+  <include location="../../../../data/ui_pictures.qrc"/>
  </resources>
  <connections/>
 </ui>

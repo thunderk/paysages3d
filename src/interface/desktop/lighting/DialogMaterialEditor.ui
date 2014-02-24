@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1091</width>
+    <width>1139</width>
     <height>627</height>
    </rect>
   </property>
@@ -350,7 +350,7 @@
            <string>Cancel</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/cancel.png</normaloff>:/buttons/logo/images/cancel.png</iconset>
           </property>
          </widget>
@@ -361,7 +361,7 @@
            <string>Revert</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/revert.png</normaloff>:/buttons/logo/images/revert.png</iconset>
           </property>
          </widget>
@@ -372,7 +372,7 @@
            <string>Ok</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/apply.png</normaloff>:/buttons/logo/images/apply.png</iconset>
           </property>
          </widget>
@@ -410,7 +410,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../data/ui_pictures.qrc"/>
+  <include location="../../../../data/ui_pictures.qrc"/>
  </resources>
  <connections/>
 </ui>

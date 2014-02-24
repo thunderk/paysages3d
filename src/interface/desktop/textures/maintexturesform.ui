@@ -100,7 +100,7 @@
                <string>Add layer</string>
               </property>
               <property name="icon">
-               <iconset resource="../../../data/ui_pictures.qrc">
+               <iconset resource="../../../../data/ui_pictures.qrc">
                 <normaloff>:/buttons/logo/images/layer_add.png</normaloff>:/buttons/logo/images/layer_add.png</iconset>
               </property>
               <property name="iconSize">
@@ -120,7 +120,7 @@
                <string>Remove layer</string>
               </property>
               <property name="icon">
-               <iconset resource="../../../data/ui_pictures.qrc">
+               <iconset resource="../../../../data/ui_pictures.qrc">
                 <normaloff>:/buttons/logo/images/layer_del.png</normaloff>:/buttons/logo/images/layer_del.png</iconset>
               </property>
               <property name="iconSize">
@@ -153,7 +153,7 @@
                <string>Edit layer</string>
               </property>
               <property name="icon">
-               <iconset resource="../../../data/ui_pictures.qrc">
+               <iconset resource="../../../../data/ui_pictures.qrc">
                 <normaloff>:/buttons/logo/images/layer_rename.png</normaloff>:/buttons/logo/images/layer_rename.png</iconset>
               </property>
               <property name="iconSize">
@@ -186,7 +186,7 @@
                <string>Move layer up</string>
               </property>
               <property name="icon">
-               <iconset resource="../../../data/ui_pictures.qrc">
+               <iconset resource="../../../../data/ui_pictures.qrc">
                 <normaloff>:/buttons/logo/images/layer_up.png</normaloff>:/buttons/logo/images/layer_up.png</iconset>
               </property>
               <property name="iconSize">
@@ -203,7 +203,7 @@
                <string>Move layer down</string>
               </property>
               <property name="icon">
-               <iconset resource="../../../data/ui_pictures.qrc">
+               <iconset resource="../../../../data/ui_pictures.qrc">
                 <normaloff>:/buttons/logo/images/layer_down.png</normaloff>:/buttons/logo/images/layer_down.png</iconset>
               </property>
               <property name="iconSize">
@@ -358,7 +358,7 @@
         <string>Explore in 3D</string>
        </property>
        <property name="icon">
-        <iconset resource="../../../data/ui_pictures.qrc">
+        <iconset resource="../../../../data/ui_pictures.qrc">
          <normaloff>:/buttons/logo/images/explore.png</normaloff>:/buttons/logo/images/explore.png</iconset>
        </property>
       </widget>
@@ -369,7 +369,7 @@
         <string>Render preview</string>
        </property>
        <property name="icon">
-        <iconset resource="../../../data/ui_pictures.qrc">
+        <iconset resource="../../../../data/ui_pictures.qrc">
          <normaloff>:/buttons/logo/images/render.png</normaloff>:/buttons/logo/images/render.png</iconset>
        </property>
       </widget>
@@ -402,7 +402,7 @@
            <string>Load preset</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/auto.png</normaloff>:/buttons/logo/images/auto.png</iconset>
           </property>
          </widget>
@@ -413,7 +413,7 @@
            <string>Revert modifications</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/revert.png</normaloff>:/buttons/logo/images/revert.png</iconset>
           </property>
          </widget>
@@ -424,7 +424,7 @@
            <string>Apply modifications</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/apply.png</normaloff>:/buttons/logo/images/apply.png</iconset>
           </property>
          </widget>
@@ -445,7 +445,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../data/ui_pictures.qrc"/>
+  <include location="../../../../data/ui_pictures.qrc"/>
  </resources>
  <connections/>
 </ui>
