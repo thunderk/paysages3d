@@ -374,6 +374,10 @@ void BaseForm::addPreview(BasePreview* preview, QString label)
     _previews->layout()->addWidget(label_widget);
     _previews->layout()->addWidget(preview);
 
+    preview->setMinimumSize(256, 256);
+    preview->setMaximumSize(256, 256);
+    preview->resize(256, 256);
+
     _previews_list.append(preview);
 }
 

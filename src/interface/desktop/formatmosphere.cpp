@@ -27,13 +27,13 @@ FormAtmosphere::FormAtmosphere(QWidget *parent):
 
     previewWest = new BasePreview(this);
     previewWestRenderer = new AtmosphereColorPreviewRenderer(_definition, M_PI / 2.0);
-    previewWest->setRenderer(previewWestRenderer);
     addPreview(previewWest, QString(tr("West preview")));
+    previewWest->setRenderer(previewWestRenderer);
 
     previewEast = new BasePreview(this);
     previewEastRenderer = new AtmosphereColorPreviewRenderer(_definition, -M_PI / 2.0);
-    previewEast->setRenderer(previewEastRenderer);
     addPreview(previewEast, QString(tr("East preview")));
+    previewEast->setRenderer(previewEastRenderer);
 
     //addInputEnum(tr("Color model"), (int*)&_definition->model, QStringList(tr("Simplified model (with weather)")) << tr("Complex model"));
     addInputInt(tr("Day time (hour)"), &_definition->hour, 0, 23, 1, 10);
