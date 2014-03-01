@@ -9,7 +9,7 @@ class QImage;
 namespace paysages {
 namespace preview {
 
-class PreviewOsd
+class PREVIEWSHARED_EXPORT PreviewOsd
 {
 public:
     PreviewOsd();

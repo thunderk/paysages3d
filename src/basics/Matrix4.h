@@ -3,7 +3,6 @@
 
 #include "basics_global.h"
 
-#include "Vector3.h"
 #ifdef QT_GUI_LIB
 #include <QMatrix4x4>
 #endif

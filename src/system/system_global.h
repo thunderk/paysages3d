@@ -1,7 +1,9 @@
 #ifndef SYSTEM_GLOBAL_H
 #define SYSTEM_GLOBAL_H
 
+#ifndef __MINGW32__
 #define PAYSAGES_USE_INLINING 1
+#endif
 
 #include <QtCore/qglobal.h>
 #if defined(SYSTEM_LIBRARY)

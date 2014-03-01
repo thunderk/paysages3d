@@ -28,7 +28,7 @@ public:
     bool value;
 };
 
-class BasePreview : public DrawingWidget
+class PREVIEWSHARED_EXPORT BasePreview : public DrawingWidget
 {
     Q_OBJECT
 

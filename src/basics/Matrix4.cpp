@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include "PackStream.h"
+#include "Vector3.h"
 
 Matrix4::Matrix4(bool identity)
 {

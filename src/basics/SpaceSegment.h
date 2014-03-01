@@ -5,15 +5,13 @@
 
 #include "Vector3.h"
 
-namespace paysages
-{
-namespace basics
-{
+namespace paysages {
+namespace basics {
 
 /*!
  * \brief A segment in 3D space (mainly useful for rays).
  */
-class SpaceSegment
+class BASICSSHARED_EXPORT SpaceSegment
 {
 public:
     SpaceSegment(const Vector3& start, const Vector3& end);

@@ -11,7 +11,7 @@ namespace software {
 /*!
  * \brief Abstract class for all cloud models (cirrus, cumulus...).
  */
-class BaseCloudsModel
+class SOFTWARESHARED_EXPORT BaseCloudsModel
 {
 public:
     BaseCloudsModel(CloudLayerDefinition *layer);

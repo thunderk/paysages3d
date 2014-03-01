@@ -9,7 +9,7 @@ namespace system {
 /*!
  * Pool to handle a group of threads doing the same task.
  */
-class ParallelPool
+class SYSTEMSHARED_EXPORT ParallelPool
 {
 public:
     ParallelPool();

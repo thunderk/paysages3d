@@ -11,7 +11,7 @@
 namespace paysages {
 namespace definition {
 
-class AtmosphereDefinition : public BaseDefinition
+class DEFINITIONSHARED_EXPORT AtmosphereDefinition : public BaseDefinition
 {
 public:
     typedef struct

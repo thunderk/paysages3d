@@ -8,7 +8,7 @@
 namespace paysages {
 namespace definition {
 
-class WaterDefinition: public BaseDefinition
+class DEFINITIONSHARED_EXPORT WaterDefinition: public BaseDefinition
 {
 public:
     WaterDefinition(BaseDefinition* parent);

@@ -19,7 +19,7 @@ typedef struct
     double zfar;
 } CameraPerspective;
 
-class BASICSSHARED_EXPORT CameraDefinition: public BaseDefinition
+class DEFINITIONSHARED_EXPORT CameraDefinition: public BaseDefinition
 {
 public:
     CameraDefinition();
