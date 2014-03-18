@@ -39,7 +39,8 @@ SOURCES += SoftwareRenderer.cpp \
     NightSky.cpp \
     TerrainRayWalker.cpp \
     clouds/CloudModelAltoCumulus.cpp \
-    clouds/CloudModelCirrus.cpp
+    clouds/CloudModelCirrus.cpp \
+    clouds/CloudModelCumuloNimbus.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -68,7 +69,8 @@ HEADERS += SoftwareRenderer.h\
     NightSky.h \
     TerrainRayWalker.h \
     clouds/CloudModelAltoCumulus.h \
-    clouds/CloudModelCirrus.h
+    clouds/CloudModelCirrus.h \
+    clouds/CloudModelCumuloNimbus.h
 
 unix:!symbian {
     maemo5 {

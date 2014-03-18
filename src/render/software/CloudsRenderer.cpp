@@ -11,6 +11,7 @@
 #include "clouds/BaseCloudsModel.h"
 #include "clouds/CloudModelAltoCumulus.h"
 #include "clouds/CloudModelCirrus.h"
+#include "clouds/CloudModelCumuloNimbus.h"
 #include "clouds/CloudModelStratoCumulus.h"
 
 CloudsRenderer::CloudsRenderer(SoftwareRenderer* parent):
@@ -62,25 +63,25 @@ void CloudsRenderer::update()
         BaseCloudsModel* model;
         switch (layer->type)
         {
-        case CloudLayerDefinition::STRATUS:
-        case CloudLayerDefinition::NIMBOSTRATUS:
-        case CloudLayerDefinition::CUMULUS:
-            model = new BaseCloudsModel(layer);
-            break;
         case CloudLayerDefinition::STRATOCUMULUS:
             model = new CloudModelStratoCumulus(layer);
             break;
         case CloudLayerDefinition::ALTOCUMULUS:
             model = new CloudModelAltoCumulus(layer);
             break;
-        case CloudLayerDefinition::ALTOSTRATUS:
+        case CloudLayerDefinition::CIRRUS:
+            model = new CloudModelCirrus(layer);
+            break;
         case CloudLayerDefinition::CUMULONIMBUS:
+            model = new CloudModelCumuloNimbus(layer);
+            break;
+        case CloudLayerDefinition::STRATUS:
+        case CloudLayerDefinition::NIMBOSTRATUS:
+        case CloudLayerDefinition::CUMULUS:
+        case CloudLayerDefinition::ALTOSTRATUS:
         case CloudLayerDefinition::CIRROCUMULUS:
         case CloudLayerDefinition::CIRROSTRATUS:
             model = new BaseCloudsModel(layer);
-            break;
-        case CloudLayerDefinition::CIRRUS:
-            model = new CloudModelCirrus(layer);
             break;
         }
 
