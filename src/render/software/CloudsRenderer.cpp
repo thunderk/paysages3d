@@ -10,6 +10,7 @@
 
 #include "clouds/BaseCloudsModel.h"
 #include "clouds/CloudModelAltoCumulus.h"
+#include "clouds/CloudModelCirrus.h"
 #include "clouds/CloudModelStratoCumulus.h"
 
 CloudsRenderer::CloudsRenderer(SoftwareRenderer* parent):
@@ -76,8 +77,10 @@ void CloudsRenderer::update()
         case CloudLayerDefinition::CUMULONIMBUS:
         case CloudLayerDefinition::CIRROCUMULUS:
         case CloudLayerDefinition::CIRROSTRATUS:
-        case CloudLayerDefinition::CIRRUS:
             model = new BaseCloudsModel(layer);
+            break;
+        case CloudLayerDefinition::CIRRUS:
+            model = new CloudModelCirrus(layer);
             break;
         }
 

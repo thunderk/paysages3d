@@ -38,7 +38,8 @@ SOURCES += SoftwareRenderer.cpp \
     RayCastingManager.cpp \
     NightSky.cpp \
     TerrainRayWalker.cpp \
-    clouds/CloudModelAltoCumulus.cpp
+    clouds/CloudModelAltoCumulus.cpp \
+    clouds/CloudModelCirrus.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -66,7 +67,8 @@ HEADERS += SoftwareRenderer.h\
     RayCastingManager.h \
     NightSky.h \
     TerrainRayWalker.h \
-    clouds/CloudModelAltoCumulus.h
+    clouds/CloudModelAltoCumulus.h \
+    clouds/CloudModelCirrus.h
 
 unix:!symbian {
     maemo5 {
