@@ -9,6 +9,7 @@
 #include "CameraDefinition.h"
 
 #include "clouds/BaseCloudsModel.h"
+#include "clouds/CloudModelAltoCumulus.h"
 #include "clouds/CloudModelStratoCumulus.h"
 
 CloudsRenderer::CloudsRenderer(SoftwareRenderer* parent):
@@ -69,6 +70,8 @@ void CloudsRenderer::update()
             model = new CloudModelStratoCumulus(layer);
             break;
         case CloudLayerDefinition::ALTOCUMULUS:
+            model = new CloudModelAltoCumulus(layer);
+            break;
         case CloudLayerDefinition::ALTOSTRATUS:
         case CloudLayerDefinition::CUMULONIMBUS:
         case CloudLayerDefinition::CIRROCUMULUS:
