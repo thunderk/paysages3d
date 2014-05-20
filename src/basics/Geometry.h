@@ -6,7 +6,7 @@
 namespace paysages {
 namespace basics {
 
-class Geometry
+class BASICSSHARED_EXPORT Geometry
 {
 public:
     static double get2DAngle(double x, double y);

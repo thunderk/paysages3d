@@ -6,7 +6,7 @@
 namespace paysages {
 namespace basics {
 
-class Color
+class BASICSSHARED_EXPORT Color
 {
 public:
     Color();

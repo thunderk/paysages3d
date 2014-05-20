@@ -14,7 +14,7 @@
    <string>Paysages 3D</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../../data/ui_pictures.qrc">
+   <iconset resource="../../../../data/ui_pictures.qrc">
     <normaloff>:/logo/images/logo_32.png</normaloff>:/logo/images/logo_32.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -162,7 +162,7 @@
              <string>Explore in 3D</string>
             </property>
             <property name="icon">
-             <iconset resource="../../../data/ui_pictures.qrc">
+             <iconset resource="../../../../data/ui_pictures.qrc">
               <normaloff>:/buttons/logo/images/explore.png</normaloff>:/buttons/logo/images/explore.png</iconset>
             </property>
             <property name="shortcut">
@@ -176,7 +176,7 @@
              <string>Render</string>
             </property>
             <property name="icon">
-             <iconset resource="../../../data/ui_pictures.qrc">
+             <iconset resource="../../../../data/ui_pictures.qrc">
               <normaloff>:/buttons/logo/images/render.png</normaloff>:/buttons/logo/images/render.png</iconset>
             </property>
            </widget>
@@ -209,7 +209,7 @@
              <string>New</string>
             </property>
             <property name="icon">
-             <iconset resource="../../../data/ui_pictures.qrc">
+             <iconset resource="../../../../data/ui_pictures.qrc">
               <normaloff>:/buttons/logo/images/new.png</normaloff>:/buttons/logo/images/new.png</iconset>
             </property>
            </widget>
@@ -220,7 +220,7 @@
              <string>Save</string>
             </property>
             <property name="icon">
-             <iconset resource="../../../data/ui_pictures.qrc">
+             <iconset resource="../../../../data/ui_pictures.qrc">
               <normaloff>:/buttons/logo/images/save.png</normaloff>:/buttons/logo/images/save.png</iconset>
             </property>
            </widget>
@@ -231,7 +231,7 @@
              <string>Load</string>
             </property>
             <property name="icon">
-             <iconset resource="../../../data/ui_pictures.qrc">
+             <iconset resource="../../../../data/ui_pictures.qrc">
               <normaloff>:/buttons/logo/images/load.png</normaloff>:/buttons/logo/images/load.png</iconset>
             </property>
            </widget>
@@ -268,7 +268,7 @@
       </property>
       <widget class="MainTerrainForm" name="tab_terrain">
        <attribute name="icon">
-        <iconset resource="../../../data/ui_pictures.qrc">
+        <iconset resource="../../../../data/ui_pictures.qrc">
          <normaloff>:/tabs/images/tab_terrain.png</normaloff>:/tabs/images/tab_terrain.png</iconset>
        </attribute>
        <attribute name="title">
@@ -277,7 +277,7 @@
       </widget>
       <widget class="MainTexturesForm" name="tab">
        <attribute name="icon">
-        <iconset resource="../../../data/ui_pictures.qrc">
+        <iconset resource="../../../../data/ui_pictures.qrc">
          <normaloff>:/tabs/images/tab_textures.png</normaloff>:/tabs/images/tab_textures.png</iconset>
        </attribute>
        <attribute name="title">
@@ -332,7 +332,7 @@
      <x>0</x>
      <y>0</y>
      <width>946</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -364,7 +364,7 @@
   </widget>
   <action name="action_explore">
    <property name="icon">
-    <iconset resource="../../../data/ui_pictures.qrc">
+    <iconset resource="../../../../data/ui_pictures.qrc">
      <normaloff>:/buttons/logo/images/explore.png</normaloff>:/buttons/logo/images/explore.png</iconset>
    </property>
    <property name="text">
@@ -379,7 +379,7 @@
   </action>
   <action name="action_file_new">
    <property name="icon">
-    <iconset resource="../../../data/ui_pictures.qrc">
+    <iconset resource="../../../../data/ui_pictures.qrc">
      <normaloff>:/buttons/logo/images/new.png</normaloff>:/buttons/logo/images/new.png</iconset>
    </property>
    <property name="text">
@@ -394,7 +394,7 @@
   </action>
   <action name="action_file_load">
    <property name="icon">
-    <iconset resource="../../../data/ui_pictures.qrc">
+    <iconset resource="../../../../data/ui_pictures.qrc">
      <normaloff>:/buttons/logo/images/load.png</normaloff>:/buttons/logo/images/load.png</iconset>
    </property>
    <property name="text">
@@ -409,7 +409,7 @@
   </action>
   <action name="action_file_save">
    <property name="icon">
-    <iconset resource="../../../data/ui_pictures.qrc">
+    <iconset resource="../../../../data/ui_pictures.qrc">
      <normaloff>:/buttons/logo/images/save.png</normaloff>:/buttons/logo/images/save.png</iconset>
    </property>
    <property name="text">
@@ -424,7 +424,7 @@
   </action>
   <action name="action_quick_render">
    <property name="icon">
-    <iconset resource="../../../data/ui_pictures.qrc">
+    <iconset resource="../../../../data/ui_pictures.qrc">
      <normaloff>:/buttons/logo/images/render.png</normaloff>:/buttons/logo/images/render.png</iconset>
    </property>
    <property name="text">
@@ -439,7 +439,7 @@
   </action>
   <action name="action_final_render">
    <property name="icon">
-    <iconset resource="../../../data/ui_pictures.qrc">
+    <iconset resource="../../../../data/ui_pictures.qrc">
      <normaloff>:/buttons/logo/images/render.png</normaloff>:/buttons/logo/images/render.png</iconset>
    </property>
    <property name="text">
@@ -454,7 +454,7 @@
   </action>
   <action name="action_about">
    <property name="icon">
-    <iconset resource="../../../data/ui_pictures.qrc">
+    <iconset resource="../../../../data/ui_pictures.qrc">
      <normaloff>:/buttons/logo/images/about.png</normaloff>:/buttons/logo/images/about.png</iconset>
    </property>
    <property name="text">
@@ -469,7 +469,7 @@
   </action>
   <action name="action_last_render">
    <property name="icon">
-    <iconset resource="../../../data/ui_pictures.qrc">
+    <iconset resource="../../../../data/ui_pictures.qrc">
      <normaloff>:/buttons/logo/images/render.png</normaloff>:/buttons/logo/images/render.png</iconset>
    </property>
    <property name="text">
@@ -498,7 +498,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../data/ui_pictures.qrc"/>
+  <include location="../../../../data/ui_pictures.qrc"/>
  </resources>
  <connections>
   <connection>

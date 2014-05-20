@@ -8,7 +8,7 @@
 namespace paysages {
 namespace preview {
 
-class TerrainShapePreviewRenderer : public Base2dPreviewRenderer
+class PREVIEWSHARED_EXPORT TerrainShapePreviewRenderer : public Base2dPreviewRenderer
 {
 public:
     explicit TerrainShapePreviewRenderer(TerrainDefinition* terrain);

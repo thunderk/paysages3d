@@ -11,7 +11,7 @@ class QPainter;
 namespace paysages {
 namespace preview {
 
-class DrawingWidget : public QWidget
+class PREVIEWSHARED_EXPORT DrawingWidget : public QWidget
 {
     Q_OBJECT
 public:

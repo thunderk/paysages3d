@@ -6,7 +6,7 @@
 namespace paysages {
 namespace basics {
 
-class Texture3D
+class BASICSSHARED_EXPORT Texture3D
 {
 public:
     Texture3D(int xsize, int ysize, int zsize);

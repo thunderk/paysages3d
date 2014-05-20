@@ -413,9 +413,7 @@ DrawingWidget(parent)
 
     QObject::connect(this, SIGNAL(contentChange()), this, SLOT(update()));
 
-    this->setMinimumSize(256, 256);
-    this->setMaximumSize(256, 256);
-    this->resize(256, 256);
+    setMinimumSize(10, 10);
 
     startTimer(50);
 }

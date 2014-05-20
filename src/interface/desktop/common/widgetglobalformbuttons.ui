@@ -32,7 +32,7 @@
       <string>Cancel</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../data/ui_pictures.qrc">
+      <iconset resource="../../../../data/ui_pictures.qrc">
        <normaloff>:/buttons/logo/images/cancel.png</normaloff>:/buttons/logo/images/cancel.png</iconset>
      </property>
     </widget>
@@ -49,7 +49,7 @@
       <string>Revert modifications</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../data/ui_pictures.qrc">
+      <iconset resource="../../../../data/ui_pictures.qrc">
        <normaloff>:/buttons/logo/images/revert.png</normaloff>:/buttons/logo/images/revert.png</iconset>
      </property>
     </widget>
@@ -66,7 +66,7 @@
       <string>Validate</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../data/ui_pictures.qrc">
+      <iconset resource="../../../../data/ui_pictures.qrc">
        <normaloff>:/buttons/logo/images/apply.png</normaloff>:/buttons/logo/images/apply.png</iconset>
      </property>
     </widget>
@@ -74,7 +74,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../../data/ui_pictures.qrc"/>
+  <include location="../../../../data/ui_pictures.qrc"/>
  </resources>
  <connections/>
  <slots>

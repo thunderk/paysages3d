@@ -442,7 +442,7 @@
            <string>Render preview</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/render.png</normaloff>:/buttons/logo/images/render.png</iconset>
           </property>
          </widget>
@@ -453,7 +453,7 @@
            <string>Explore in 3D</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/explore.png</normaloff>:/buttons/logo/images/explore.png</iconset>
           </property>
          </widget>
@@ -489,7 +489,7 @@
            <string>Revert modifications</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/revert.png</normaloff>:/buttons/logo/images/revert.png</iconset>
           </property>
          </widget>
@@ -500,7 +500,7 @@
            <string>Apply modifications</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../data/ui_pictures.qrc">
+           <iconset resource="../../../../data/ui_pictures.qrc">
             <normaloff>:/buttons/logo/images/apply.png</normaloff>:/buttons/logo/images/apply.png</iconset>
           </property>
          </widget>
@@ -532,7 +532,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../data/ui_pictures.qrc"/>
+  <include location="../../../../data/ui_pictures.qrc"/>
  </resources>
  <connections/>
 </ui>

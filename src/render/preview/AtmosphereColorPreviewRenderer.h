@@ -6,7 +6,7 @@
 namespace paysages {
 namespace preview {
 
-class AtmosphereColorPreviewRenderer:public Base2dPreviewRenderer
+class PREVIEWSHARED_EXPORT AtmosphereColorPreviewRenderer:public Base2dPreviewRenderer
 {
 public:
     AtmosphereColorPreviewRenderer(AtmosphereDefinition* definition, double heading);

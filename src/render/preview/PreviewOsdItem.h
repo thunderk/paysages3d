@@ -8,7 +8,7 @@
 namespace paysages {
 namespace preview {
 
-class PreviewOsdItem:public QImage
+class PREVIEWSHARED_EXPORT PreviewOsdItem:public QImage
 {
 public:
     PreviewOsdItem(int width, int height);
