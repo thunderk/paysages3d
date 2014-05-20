@@ -31,6 +31,7 @@ protected:
         terrain->height = 3.0;
         terrain->scaling = 1.0;
         terrain->_height_noise->clearLevels();
+        terrain->water_height = 0.0;
         NoiseGenerator::NoiseLevel level = {1.0, 2.0, -1.0};
         terrain->_height_noise->addLevel(level);
         noise_state.resetOffsets();

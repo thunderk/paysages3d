@@ -112,6 +112,8 @@ void NoiseGenerator::validate()
         _func_noise_2d = noiseSimplexGet2DValue;
         _func_noise_3d = noiseSimplexGet3DValue;
         break;
+    case NOISE_FUNCTION_CUSTOM:
+        break;
     }
 
     if (function.ridge_factor > 0.5)
@@ -163,9 +165,10 @@ void NoiseGenerator::setFunction(NoiseFunction* function)
 
 void NoiseGenerator::setCustomFunction(double (*func1d)(double x), double (*func2d)(double x, double y), double (*func3d)(double x, double y, double z))
 {
-    this->_func_noise_1d = func1d;
-    this->_func_noise_2d = func2d;
-    this->_func_noise_3d = func3d;
+    _func_noise_1d = func1d;
+    _func_noise_2d = func2d;
+    _func_noise_3d = func3d;
+    function.algorithm = NOISE_FUNCTION_CUSTOM;
 }
 
 void NoiseGenerator::setFunctionParams(NoiseFunctionAlgorithm algorithm, double ridge_factor, double curve_factor)

@@ -15,7 +15,8 @@ public:
     typedef enum
     {
         NOISE_FUNCTION_PERLIN,
-        NOISE_FUNCTION_SIMPLEX
+        NOISE_FUNCTION_SIMPLEX,
+        NOISE_FUNCTION_CUSTOM
     } NoiseFunctionAlgorithm;
 
     typedef struct
