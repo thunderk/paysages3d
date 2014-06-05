@@ -21,6 +21,8 @@
 #include "SoftwareRenderer.h"
 #include "Scenery.h"
 #include "ColorProfile.h"
+#include "SoftwareCanvasRenderer.h"
+#include "WidgetPreviewCanvas.h"
 
 static DialogRender* _current_dialog;
 
@@ -103,6 +105,11 @@ DialogRender::DialogRender(QWidget *parent, SoftwareRenderer* renderer):
     _scroll->setWidget(area);
     layout()->addWidget(_scroll);
 
+    canvas_renderer = new SoftwareCanvasRenderer();
+    canvas_preview = new WidgetPreviewCanvas(this);
+    canvas_preview->setCanvas(canvas_renderer->getCanvas());
+    layout()->addWidget(canvas_preview);
+
     // Status bar
     _info = new QWidget(this);
     _info->setLayout(new QHBoxLayout());
@@ -179,6 +186,8 @@ void DialogRender::tellRenderEnded()
 void DialogRender::startRender(RenderArea::RenderParams params)
 {
     _started = time(NULL);
+
+    canvas_renderer->setSize(params.width, params.height, params.antialias);
 
     applyRenderSize(params.width, params.height);
     _renderer->setPreviewCallbacks(_renderStart, _renderDraw, _renderUpdate);

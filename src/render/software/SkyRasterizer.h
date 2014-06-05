@@ -3,10 +3,12 @@
 
 #include "software_global.h"
 
+#include "Rasterizer.h"
+
 namespace paysages {
 namespace software {
 
-class SOFTWARESHARED_EXPORT SkyRasterizer
+class SOFTWARESHARED_EXPORT SkyRasterizer: public Rasterizer
 {
 public:
     SkyRasterizer(SoftwareRenderer* renderer);

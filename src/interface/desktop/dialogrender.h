@@ -45,6 +45,9 @@ signals:
     void renderEnded();
 
 private:
+    SoftwareCanvasRenderer* canvas_renderer;
+    WidgetPreviewCanvas* canvas_preview;
+
     QScrollArea* _scroll;
     QWidget* _info;
     QWidget* _actions;

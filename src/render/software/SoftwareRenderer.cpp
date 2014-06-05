@@ -108,6 +108,13 @@ void SoftwareRenderer::prepare()
     //fluid_medium->registerMedium(water_renderer);
 }
 
+void SoftwareRenderer::getRasterizers(std::vector<Rasterizer> *array)
+{
+    array->push_back(TerrainRasterizer(this));
+    array->push_back(WaterRasterizer(this));
+    array->push_back(SkyRasterizer(this));
+}
+
 void SoftwareRenderer::rasterize()
 {
     TerrainRasterizer terrain(this);

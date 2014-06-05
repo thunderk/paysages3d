@@ -60,6 +60,11 @@ public:
     virtual void prepare();
 
     /*!
+     * \brief Get the list of objects that can be rasterized to polygons on a canvas.
+     */
+    virtual void getRasterizers(std::vector<Rasterizer> *array);
+
+    /*!
      * \brief Start the rasterization process.
      */
     virtual void rasterize();

@@ -3,12 +3,13 @@
 
 #include "software_global.h"
 
+#include "Rasterizer.h"
 #include "Vector3.h"
 
 namespace paysages {
 namespace software {
 
-class SOFTWARESHARED_EXPORT TerrainRasterizer
+class SOFTWARESHARED_EXPORT TerrainRasterizer: public Rasterizer
 {
 public:
     typedef struct

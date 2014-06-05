@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     Clouds_Test.cpp \
     FluidMediumManager_Test.cpp \
     VertexArray_Test.cpp \
-    FractalNoise_Test.cpp
+    FractalNoise_Test.cpp \
+    Canvas_Test.cpp
 
 HEADERS += \
     BaseTestCase.h

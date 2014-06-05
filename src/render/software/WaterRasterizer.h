@@ -3,10 +3,12 @@
 
 #include "software_global.h"
 
+#include "Rasterizer.h"
+
 namespace paysages {
 namespace software {
 
-class WaterRasterizer
+class WaterRasterizer: public Rasterizer
 {
 public:
     WaterRasterizer(SoftwareRenderer* renderer);

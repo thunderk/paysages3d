@@ -37,7 +37,14 @@ SOURCES += SoftwareRenderer.cpp \
     RenderArea.cpp \
     RayCastingManager.cpp \
     NightSky.cpp \
-    TerrainRayWalker.cpp
+    TerrainRayWalker.cpp \
+    Canvas.cpp \
+    CanvasPortion.cpp \
+    CanvasPixel.cpp \
+    CanvasFragment.cpp \
+    SoftwareCanvasRenderer.cpp \
+    Rasterizer.cpp \
+    CanvasLiveClient.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -64,7 +71,14 @@ HEADERS += SoftwareRenderer.h\
     RenderArea.h \
     RayCastingManager.h \
     NightSky.h \
-    TerrainRayWalker.h
+    TerrainRayWalker.h \
+    Canvas.h \
+    CanvasPortion.h \
+    CanvasPixel.h \
+    CanvasFragment.h \
+    SoftwareCanvasRenderer.h \
+    Rasterizer.h \
+    CanvasLiveClient.h
 
 unix:!symbian {
     maemo5 {
