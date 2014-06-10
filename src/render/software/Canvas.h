@@ -27,8 +27,7 @@ public:
 
     inline int getWidth() const {return width;}
     inline int getHeight() const {return height;}
-    inline int getPreviewWidth() const {return preview_width;}
-    inline int getPreviewHeight() const {return preview_height;}
+    inline CanvasPreview *getPreview() const {return preview;}
 
 private:
     std::vector<CanvasPortion*> portions;
@@ -36,8 +35,8 @@ private:
     int vertical_portion_count;
     int width;
     int height;
-    int preview_width;
-    int preview_height;
+
+    CanvasPreview *preview;
 };
 
 }

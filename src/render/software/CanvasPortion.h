@@ -6,12 +6,6 @@
 namespace paysages {
 namespace software {
 
-typedef struct {
-    double red;
-    double green;
-    double blue;
-} CanvasPreviewPixel;
-
 /**
  * @brief Rectangular portion of a Canvas.
  *
@@ -21,20 +15,27 @@ class SOFTWARESHARED_EXPORT CanvasPortion
 {
 public:
     CanvasPortion();
+    ~CanvasPortion();
 
     inline int getWidth() const {return width;}
     inline int getHeight() const {return height;}
+    int getFragmentCount(int x, int y) const;
+    const CanvasFragment *getFrontFragment(int x, int y) const;
 
+    void clear();
     void setSize(int width, int height);
+
+    /**
+     * @brief Add a fragment to the pixel located at (x, y).
+     *
+     * Checking x and y coordinates to be in the canvas portion should be done before this call.
+     */
+    void pushFragment(int x, int y, const CanvasFragment &fragment);
 
 private:
     int width;
     int height;
-    std::vector<CanvasPixel> *pixels;
-
-    int preview_width;
-    int preview_height;
-    std::vector<CanvasPreviewPixel> *preview_pixels;
+    CanvasPixel *pixels;
 };
 
 }

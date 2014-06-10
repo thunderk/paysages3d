@@ -44,7 +44,8 @@ SOURCES += SoftwareRenderer.cpp \
     CanvasFragment.cpp \
     SoftwareCanvasRenderer.cpp \
     Rasterizer.cpp \
-    CanvasLiveClient.cpp
+    CanvasLiveClient.cpp \
+    CanvasPreview.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -78,7 +79,8 @@ HEADERS += SoftwareRenderer.h\
     CanvasFragment.h \
     SoftwareCanvasRenderer.h \
     Rasterizer.h \
-    CanvasLiveClient.h
+    CanvasLiveClient.h \
+    CanvasPreview.h
 
 unix:!symbian {
     maemo5 {

@@ -1,6 +1,7 @@
 #include "WidgetPreviewCanvas.h"
 
 #include "Canvas.h"
+#include "CanvasPreview.h"
 
 WidgetPreviewCanvas::WidgetPreviewCanvas(QWidget *parent) :
     QWidget(parent), canvas(NULL)
@@ -31,10 +32,11 @@ void WidgetPreviewCanvas::canvasPainted(int x, int y, const Color &col)
 void WidgetPreviewCanvas::timerEvent(QTimerEvent *)
 {
     // Refresh the view
+    CanvasPreview *preview = canvas->getPreview();
     if (canvas)
     {
-        int width = canvas->getPreviewWidth();
-        int height = canvas->getPreviewHeight();
+        int width = preview->getWidth();
+        int height = preview->getHeight();
 
         if (QSize(width, height) != this->size())
         {

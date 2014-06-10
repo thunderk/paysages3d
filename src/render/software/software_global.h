@@ -52,6 +52,7 @@ namespace software {
     class CanvasPixel;
     class CanvasFragment;
     class CanvasLiveClient;
+    class CanvasPreview;
 }
 }
 

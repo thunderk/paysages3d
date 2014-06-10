@@ -1,7 +1,9 @@
 #include "Canvas.h"
 
-#include "CanvasPortion.h"
 #include <cassert>
+
+#include "CanvasPortion.h"
+#include "CanvasPreview.h"
 
 Canvas::Canvas()
 {
@@ -9,9 +11,9 @@ Canvas::Canvas()
     vertical_portion_count = 1;
     width = 1;
     height = 1;
-    preview_width = 1;
-    preview_height = 1;
     portions.push_back(new CanvasPortion());
+
+    preview = new CanvasPreview();
 }
 
 Canvas::~Canvas()
@@ -20,6 +22,7 @@ Canvas::~Canvas()
     {
         delete portion;
     }
+    delete preview;
 }
 
 void Canvas::setSize(int width, int height)
@@ -63,8 +66,9 @@ void Canvas::setSize(int width, int height)
 
     this->width = width;
     this->height = height;
-    this->preview_width = width;
-    this->preview_height = height;
+
+    // TODO Smaller preview
+    preview->setSize(width, height, width, height);
 }
 
 CanvasPortion *Canvas::at(int x, int y) const
