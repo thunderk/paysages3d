@@ -7,7 +7,7 @@
 #include "tools.h"
 #include "DesktopScenery.h"
 #include "PackStream.h"
-#include "SoftwareRenderer.h"
+#include "SoftwareCanvasRenderer.h"
 #include "BasePreview.h"
 #include "CloudsDefinition.h"
 #include "CameraDefinition.h"
@@ -103,7 +103,8 @@ void FormRender::startQuickRender()
     {
         delete _renderer;
     }
-    _renderer = new SoftwareRenderer(DesktopScenery::getCurrent());
+    _renderer = new SoftwareCanvasRenderer();
+    _renderer->setScenery(DesktopScenery::getCurrent());
     _renderer_inited = true;
 
     DialogRender* dialog = new DialogRender(this, _renderer);
@@ -119,7 +120,8 @@ void FormRender::startRender()
     {
         delete _renderer;
     }
-    _renderer = new SoftwareRenderer(DesktopScenery::getCurrent());
+    _renderer = new SoftwareCanvasRenderer();
+    _renderer->setScenery(DesktopScenery::getCurrent());
     _renderer_inited = true;
 
     DialogRender* dialog = new DialogRender(this, _renderer);

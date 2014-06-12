@@ -9,8 +9,8 @@
 #include "Scenery.h"
 #include "ParallelQueue.h"
 
-TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer):
-    renderer(renderer)
+TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer, int client_id):
+    Rasterizer(renderer, client_id)
 {
 }
 
@@ -228,7 +228,7 @@ int TerrainRasterizer::processChunk(TerrainChunkInfo* chunk, double progress)
     return !renderer->render_interrupt;
 }
 
-void TerrainRasterizer::renderSurface()
+void TerrainRasterizer::rasterize()
 {
     queue = new ParallelQueue();
 

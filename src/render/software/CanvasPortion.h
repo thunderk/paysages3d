@@ -14,7 +14,7 @@ namespace software {
 class SOFTWARESHARED_EXPORT CanvasPortion
 {
 public:
-    CanvasPortion();
+    CanvasPortion(CanvasPreview* preview=NULL);
     ~CanvasPortion();
 
     inline int getWidth() const {return width;}
@@ -36,6 +36,7 @@ private:
     int width;
     int height;
     CanvasPixel *pixels;
+    CanvasPreview* preview;
 };
 
 }

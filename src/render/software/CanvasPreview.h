@@ -6,12 +6,6 @@
 namespace paysages {
 namespace software {
 
-typedef struct {
-    double red;
-    double green;
-    double blue;
-} CanvasPreviewPixel;
-
 /**
  * @brief Smaller preview of a Canvas rendering, that can be watched live.
  */
@@ -27,15 +21,25 @@ public:
     void setSize(int real_width, int real_height, int preview_width, int preview_height);
     void reset();
 
-    void initLive(CanvasLiveClient &client);
-    void updateLive(CanvasLiveClient &client);
+    void initLive(CanvasLiveClient *client);
+    void updateLive(CanvasLiveClient *client);
 
-    void pushPixel(int real_x, int real_y, Color old_color, Color new_color);
+    void pushPixel(int real_x, int real_y, const Color &old_color, const Color &new_color);
+
+protected:
+    void setAllDirty();
 
 private:
-    CanvasPreviewPixel *pixels;
+    Mutex *lock;
+
+    Color *pixels;
     int width;
     int height;
+
+    int dirty_left;
+    int dirty_right;
+    int dirty_down;
+    int dirty_up;
 };
 
 }

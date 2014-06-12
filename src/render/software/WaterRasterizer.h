@@ -11,12 +11,9 @@ namespace software {
 class WaterRasterizer: public Rasterizer
 {
 public:
-    WaterRasterizer(SoftwareRenderer* renderer);
+    WaterRasterizer(SoftwareRenderer* renderer, int client_id);
 
-    void renderSurface();
-
-private:
-    SoftwareRenderer* renderer;
+    virtual void rasterize();
 };
 
 }

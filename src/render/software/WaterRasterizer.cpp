@@ -4,8 +4,8 @@
 #include "WaterRenderer.h"
 #include "ParallelQueue.h"
 
-WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer):
-    renderer(renderer)
+WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer, int client_id):
+    Rasterizer(renderer, client_id)
 {
 }
 
@@ -64,7 +64,7 @@ static int _parallelJobCallback(ParallelQueue*, int, void* data, int stopping)
     return 0;
 }
 
-void WaterRasterizer::renderSurface()
+void WaterRasterizer::rasterize()
 {
     ParallelRasterInfo* info;
     ParallelQueue* queue;

@@ -1,12 +1,23 @@
 #include "WidgetPreviewCanvas.h"
 
+#include "tools.h"
 #include "Canvas.h"
 #include "CanvasPreview.h"
+
+#include <QPainter>
 
 WidgetPreviewCanvas::WidgetPreviewCanvas(QWidget *parent) :
     QWidget(parent), canvas(NULL)
 {
+    pixbuf = new QImage();
+    inited = false;
+
     startTimer(1000);
+}
+
+WidgetPreviewCanvas::~WidgetPreviewCanvas()
+{
+    delete pixbuf;
 }
 
 void WidgetPreviewCanvas::setCanvas(const Canvas *canvas)
@@ -14,35 +25,45 @@ void WidgetPreviewCanvas::setCanvas(const Canvas *canvas)
     this->canvas = canvas;
 }
 
+void WidgetPreviewCanvas::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+    painter.drawImage(0, 0, *pixbuf);
+}
+
 void WidgetPreviewCanvas::canvasResized(int width, int height)
 {
-    // TODO
+    if (QSize(width, height) != this->size())
+    {
+        setMaximumSize(width, height);
+        setMinimumSize(width, height);
+        resize(width, height);
+
+        delete pixbuf;
+        pixbuf = new QImage(width, height, QImage::Format_ARGB32);
+    }
 }
 
 void WidgetPreviewCanvas::canvasCleared(const Color &col)
 {
-    // TODO
+    pixbuf->fill(colorToQColor(col));
 }
 
 void WidgetPreviewCanvas::canvasPainted(int x, int y, const Color &col)
 {
-    // TODO
+    pixbuf->setPixel(x, pixbuf->height() - 1 - y, colorToQColor(col).rgb());
 }
 
 void WidgetPreviewCanvas::timerEvent(QTimerEvent *)
 {
-    // Refresh the view
-    CanvasPreview *preview = canvas->getPreview();
     if (canvas)
     {
-        int width = preview->getWidth();
-        int height = preview->getHeight();
-
-        if (QSize(width, height) != this->size())
+        if (!inited)
         {
-            setMaximumSize(width, height);
-            setMinimumSize(width, height);
-            resize(width, height);
+            canvas->getPreview()->initLive(this);
+            inited = true;
         }
+
+        canvas->getPreview()->updateLive(this);
     }
 }

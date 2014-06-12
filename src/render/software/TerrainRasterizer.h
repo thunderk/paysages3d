@@ -22,7 +22,7 @@ public:
     } TerrainChunkInfo;
 
 public:
-    TerrainRasterizer(SoftwareRenderer* renderer);
+    TerrainRasterizer(SoftwareRenderer* renderer, int client_id);
 
     /**
      * Method called for each chunk tessellated by getTessellationInfo.
@@ -46,10 +46,9 @@ public:
      *
      * This will push the rasterized quads in the render area, waiting for post process.
      */
-    void renderSurface();
+    virtual void rasterize();
 
 private:
-    SoftwareRenderer* renderer;
     ParallelQueue* queue;
 };
 

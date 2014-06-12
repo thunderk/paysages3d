@@ -3,6 +3,8 @@
 
 #include "software_global.h"
 
+#include "SoftwareRenderer.h"
+
 namespace paysages {
 namespace software {
 
@@ -14,11 +16,11 @@ namespace software {
  *
  * It tries to keep a canvas portion rasterized ahead of the post processing.
  */
-class SOFTWARESHARED_EXPORT SoftwareCanvasRenderer
+class SOFTWARESHARED_EXPORT SoftwareCanvasRenderer: public SoftwareRenderer
 {
 public:
     SoftwareCanvasRenderer();
-    ~SoftwareCanvasRenderer();
+    virtual ~SoftwareCanvasRenderer();
 
     inline const Canvas *getCanvas() const {return canvas;}
 
@@ -33,6 +35,11 @@ public:
      * @brief Start the two-pass render process.
      */
     void render();
+
+    /*!
+     * \brief Get the list of objects that can be rasterized to polygons on a canvas.
+     */
+    virtual const std::vector<Rasterizer*> &getRasterizers() const;
 
 protected:
     /**
@@ -50,8 +57,8 @@ protected:
     void postProcess(CanvasPortion* portion, bool threaded=true);
 
 private:
-    SoftwareRenderer* renderer;
     Canvas* canvas;
+    std::vector<Rasterizer*> rasterizers;
     bool started;
 };
 

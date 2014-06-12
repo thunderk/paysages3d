@@ -14,7 +14,7 @@
 #include "dialogexplorer.h"
 #include "DesktopScenery.h"
 #include "BasePreview.h"
-#include "SoftwareRenderer.h"
+#include "SoftwareCanvasRenderer.h"
 #include "CameraDefinition.h"
 #include "tools.h"
 
@@ -246,7 +246,8 @@ void FreeFormHelper::processExploreClicked()
 
 void FreeFormHelper::processRenderClicked()
 {
-    SoftwareRenderer renderer(DesktopScenery::getCurrent());
+    SoftwareCanvasRenderer renderer;
+    renderer.setScenery(DesktopScenery::getCurrent());
 
     emit needAlterRenderer(&renderer);
 

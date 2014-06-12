@@ -3,13 +3,15 @@
 #include <cassert>
 
 #include "CanvasPixel.h"
+#include "CanvasPreview.h"
 
 #define CHECK_COORDINATES() assert(x >= 0); \
     assert(x < width); \
     assert(y >= 0); \
     assert(y < height)
 
-CanvasPortion::CanvasPortion()
+CanvasPortion::CanvasPortion(CanvasPreview* preview):
+    preview(preview)
 {
     width = 1;
     height = 1;
@@ -58,5 +60,12 @@ void CanvasPortion::pushFragment(int x, int y, const CanvasFragment &fragment)
     CHECK_COORDINATES();
 
     CanvasPixel &pixel = pixels[y * width + x];
+    Color old_color = pixel.getComposite();
+
     pixel.pushFragment(fragment);
+
+    if (preview)
+    {
+        preview->pushPixel(x, y, old_color, pixel.getComposite());
+    }
 }

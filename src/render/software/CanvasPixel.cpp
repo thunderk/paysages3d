@@ -5,6 +5,7 @@
 CanvasPixel::CanvasPixel()
 {
     count = 0;
+    composite = COLOR_BLACK;
 }
 
 const CanvasFragment *CanvasPixel::getFrontFragment() const
@@ -85,4 +86,16 @@ void CanvasPixel::pushFragment(const CanvasFragment &fragment)
             }
         }
     }
+
+    updateComposite();
+}
+
+void CanvasPixel::updateComposite()
+{
+    Color result(0.0, 0.0, 0.0, 1.0);
+    for (int i = 0; i < count; i++)
+    {
+        result.mask(fragments[i].getColor());
+    }
+    composite = result;
 }

@@ -31,7 +31,7 @@ protected slots:
 private:
     RenderArea::RenderParams _params;
     CameraDefinition* _camera;
-    SoftwareRenderer* _renderer;
+    SoftwareCanvasRenderer* _renderer;
     bool _renderer_inited;
     BasePreview* _preview_landscape;
     Base2dPreviewRenderer* _preview_landscape_renderer;

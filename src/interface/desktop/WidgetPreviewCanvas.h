@@ -17,11 +17,14 @@ class WidgetPreviewCanvas : public QWidget, public CanvasLiveClient
     Q_OBJECT
 public:
     explicit WidgetPreviewCanvas(QWidget *parent = 0);
+    virtual ~WidgetPreviewCanvas();
 
     /*!
      * \brief Set the canvas to watch and display, null to stop watching.
      */
     void setCanvas(const Canvas *canvas);
+
+    virtual void paintEvent(QPaintEvent* event);
 
 protected:
     virtual void canvasResized(int width, int height);
@@ -30,7 +33,9 @@ protected:
     virtual void timerEvent(QTimerEvent *event);
 
 private:
+    QImage* pixbuf;
     const Canvas *canvas;
+    bool inited;
 };
 
 }

@@ -18,6 +18,8 @@ public:
     CanvasFragment();
     CanvasFragment(double z, const Vector3 &location, int client=0, bool opaque=true);
 
+    void setColor(const Color &col);
+
     inline bool getOpaque() const {return opaque;}
     inline double getZ() const {return z;}
     inline const Vector3 &getLocation() const {return location;}

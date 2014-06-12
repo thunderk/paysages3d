@@ -51,7 +51,7 @@ static void _renderUpdate(double progress)
 class RenderThread:public QThread
 {
 public:
-    RenderThread(DialogRender* dialog, SoftwareRenderer* renderer, RenderArea::RenderParams params):QThread()
+    RenderThread(DialogRender* dialog, SoftwareCanvasRenderer* renderer, RenderArea::RenderParams params):QThread()
     {
         _dialog = dialog;
         _renderer = renderer;
@@ -59,12 +59,13 @@ public:
     }
     void run()
     {
+        _renderer->render();
         _renderer->start(_params);
         _dialog->tellRenderEnded();
     }
 private:
     DialogRender* _dialog;
-    SoftwareRenderer* _renderer;
+    SoftwareCanvasRenderer* _renderer;
     RenderArea::RenderParams _params;
 };
 
@@ -86,14 +87,14 @@ public:
     }
 };
 
-DialogRender::DialogRender(QWidget *parent, SoftwareRenderer* renderer):
+DialogRender::DialogRender(QWidget *parent, SoftwareCanvasRenderer* renderer):
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint)
 {
     pixbuf_lock = new QMutex();
     pixbuf = new QImage(1, 1, QImage::Format_ARGB32);
     _current_dialog = this;
     _render_thread = NULL;
-    _renderer = renderer;
+    canvas_renderer = renderer;
 
     setModal(true);
     setWindowTitle(tr("Paysages 3D - Render"));
@@ -105,7 +106,6 @@ DialogRender::DialogRender(QWidget *parent, SoftwareRenderer* renderer):
     _scroll->setWidget(area);
     layout()->addWidget(_scroll);
 
-    canvas_renderer = new SoftwareCanvasRenderer();
     canvas_preview = new WidgetPreviewCanvas(this);
     canvas_preview->setCanvas(canvas_renderer->getCanvas());
     layout()->addWidget(canvas_preview);
@@ -159,7 +159,7 @@ DialogRender::~DialogRender()
 {
     if (_render_thread)
     {
-        _renderer->interrupt();
+        canvas_renderer->interrupt();
         _render_thread->wait();
 
         delete _render_thread;
@@ -190,9 +190,9 @@ void DialogRender::startRender(RenderArea::RenderParams params)
     canvas_renderer->setSize(params.width, params.height, params.antialias);
 
     applyRenderSize(params.width, params.height);
-    _renderer->setPreviewCallbacks(_renderStart, _renderDraw, _renderUpdate);
+    canvas_renderer->setPreviewCallbacks(_renderStart, _renderDraw, _renderUpdate);
 
-    _render_thread = new RenderThread(this, _renderer, params);
+    _render_thread = new RenderThread(this, canvas_renderer, params);
     _render_thread->start();
 
     exec();
@@ -218,7 +218,7 @@ void DialogRender::saveRender()
             filepath = filepath.append(".png");
         }
         std::string filepathstr = filepath.toStdString();
-        if (_renderer->render_area->saveToFile((char*)filepathstr.c_str()))
+        if (canvas_renderer->render_area->saveToFile((char*)filepathstr.c_str()))
         {
             QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
         }
@@ -232,13 +232,13 @@ void DialogRender::saveRender()
 void DialogRender::toneMappingChanged()
 {
     ColorProfile profile((ColorProfile::ToneMappingOperator)_tonemapping_control->currentIndex(), ((double)_exposure_control->value()) * 0.01);
-    _renderer->render_area->setToneMapping(profile);
+    canvas_renderer->render_area->setToneMapping(profile);
 }
 
 void DialogRender::loadLastRender()
 {
-    applyRenderSize(_renderer->render_width, _renderer->render_height);
-    _renderer->setPreviewCallbacks(_renderStart, _renderDraw, _renderUpdate);
+    applyRenderSize(canvas_renderer->render_width, canvas_renderer->render_height);
+    canvas_renderer->setPreviewCallbacks(_renderStart, _renderDraw, _renderUpdate);
     renderEnded();
     toneMappingChanged();
 

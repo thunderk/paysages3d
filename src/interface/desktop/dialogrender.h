@@ -19,7 +19,7 @@ class DialogRender : public QDialog
 {
     Q_OBJECT
 public:
-    explicit DialogRender(QWidget *parent, SoftwareRenderer* renderer);
+    explicit DialogRender(QWidget *parent, SoftwareCanvasRenderer* renderer);
     ~DialogRender();
 
     void tellRenderSize(int width, int height);
@@ -56,7 +56,6 @@ private:
     QPushButton* _save_button;
     QThread* _render_thread;
     QLabel* _timer;
-    SoftwareRenderer* _renderer;
     QProgressBar* _progress;
     time_t _started;
 };

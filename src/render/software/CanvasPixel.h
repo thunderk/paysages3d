@@ -21,14 +21,17 @@ public:
     CanvasPixel();
 
     inline int getFragmentCount() const {return count;}
+    inline const Color &getComposite() const {return composite;}
     const CanvasFragment *getFrontFragment() const;
 
     void reset();
     void pushFragment(const CanvasFragment &fragment);
+    void updateComposite();
 
 private:
     int count;
     CanvasFragment fragments[MAX_FRAGMENT_COUNT];
+    Color composite;
 };
 
 }
