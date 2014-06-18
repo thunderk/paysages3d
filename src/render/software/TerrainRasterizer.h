@@ -48,6 +48,8 @@ public:
      */
     virtual void rasterize();
 
+    virtual void rasterizeToCanvas(CanvasPortion* canvas);
+
 private:
     ParallelQueue* queue;
 };

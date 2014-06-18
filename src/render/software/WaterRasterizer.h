@@ -13,7 +13,11 @@ class WaterRasterizer: public Rasterizer
 public:
     WaterRasterizer(SoftwareRenderer* renderer, int client_id);
 
+    void rasterizeQuad(CanvasPortion* canvas, double x, double z, double size);
+
     virtual void rasterize();
+
+    virtual void rasterizeToCanvas(CanvasPortion* canvas);
 };
 
 }

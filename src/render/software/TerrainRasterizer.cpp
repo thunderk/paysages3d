@@ -238,3 +238,8 @@ void TerrainRasterizer::rasterize()
 
     queue->wait();
 }
+
+void TerrainRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
+{
+
+}

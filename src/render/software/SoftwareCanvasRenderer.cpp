@@ -44,6 +44,8 @@ void SoftwareCanvasRenderer::render()
 
     render_camera->setRenderSize(canvas->getWidth(), canvas->getHeight());
 
+    prepare();
+
     rasterize(portion, true);
     postProcess(portion, true);
 }

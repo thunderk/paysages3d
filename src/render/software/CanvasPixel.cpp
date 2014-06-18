@@ -34,7 +34,7 @@ void CanvasPixel::pushFragment(const CanvasFragment &fragment)
     }
     else
     {
-        if (fragments[0].getOpaque() and fragment.getZ() > fragments[0].getZ())
+        if (fragments[0].getOpaque() and fragment.getZ() < fragments[0].getZ())
         {
             // behind opaque fragment, don't bother
             return;
@@ -42,7 +42,7 @@ void CanvasPixel::pushFragment(const CanvasFragment &fragment)
 
         // find expected position
         int i = 0;
-        while (i < count and fragment.getZ() < fragments[i].getZ())
+        while (i < count and fragment.getZ() > fragments[i].getZ())
         {
             i++;
         }

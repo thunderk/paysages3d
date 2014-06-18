@@ -47,17 +47,17 @@ TEST(CanvasPortion, pushFragment_opaque)
     ASSERT_EQ(1, portion.getFragmentCount(2, 2));
     EXPECT_DOUBLE_EQ(2.0, portion.getFrontFragment(2, 2)->getZ());
 
-    pushed = CanvasFragment(4.0, VECTOR_ZERO, 0);
+    pushed = CanvasFragment(1.0, VECTOR_ZERO, 0);
     portion.pushFragment(2, 2, pushed);
 
     ASSERT_EQ(1, portion.getFragmentCount(2, 2));
     EXPECT_DOUBLE_EQ(2.0, portion.getFrontFragment(2, 2)->getZ());
 
-    pushed = CanvasFragment(1.0, VECTOR_ZERO, 0);
+    pushed = CanvasFragment(4.0, VECTOR_ZERO, 0);
     portion.pushFragment(2, 2, pushed);
 
     ASSERT_EQ(1, portion.getFragmentCount(2, 2));
-    EXPECT_DOUBLE_EQ(1.0, portion.getFrontFragment(2, 2)->getZ());
+    EXPECT_DOUBLE_EQ(4.0, portion.getFrontFragment(2, 2)->getZ());
 }
 
 TEST(CanvasPortion, pushFragment_transparent)
@@ -67,11 +67,11 @@ TEST(CanvasPortion, pushFragment_transparent)
 
     portion.setSize(10, 10);
 
-    pushed = CanvasFragment(4.0, VECTOR_ZERO, 0, false);
+    pushed = CanvasFragment(2.0, VECTOR_ZERO, 0, false);
     portion.pushFragment(2, 2, pushed);
 
     ASSERT_EQ(1, portion.getFragmentCount(2, 2));
-    EXPECT_DOUBLE_EQ(4.0, portion.getFrontFragment(2, 2)->getZ());
+    EXPECT_DOUBLE_EQ(2.0, portion.getFrontFragment(2, 2)->getZ());
 
     pushed = CanvasFragment(3.0, VECTOR_ZERO, 0, true);
     portion.pushFragment(2, 2, pushed);
@@ -79,11 +79,11 @@ TEST(CanvasPortion, pushFragment_transparent)
     ASSERT_EQ(1, portion.getFragmentCount(2, 2));
     EXPECT_DOUBLE_EQ(3.0, portion.getFrontFragment(2, 2)->getZ());
 
-    pushed = CanvasFragment(2.0, VECTOR_ZERO, 0, false);
+    pushed = CanvasFragment(4.0, VECTOR_ZERO, 0, false);
     portion.pushFragment(2, 2, pushed);
 
     ASSERT_EQ(2, portion.getFragmentCount(2, 2));
-    EXPECT_DOUBLE_EQ(2.0, portion.getFrontFragment(2, 2)->getZ());
+    EXPECT_DOUBLE_EQ(4.0, portion.getFrontFragment(2, 2)->getZ());
 }
 
 TEST(CanvasPortion, clear)
