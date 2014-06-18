@@ -5,7 +5,6 @@
 
 #include <ctime>
 #include <QDialog>
-#include "RenderArea.h"
 
 class QThread;
 class QProgressBar;
@@ -25,7 +24,7 @@ public:
     void tellRenderSize(int width, int height);
     void tellProgressChange(double value);
     void tellRenderEnded();
-    void startRender(RenderArea::RenderParams params);
+    void startRender(const RenderConfig &params);
     void loadLastRender();
 
     QImage* pixbuf;

@@ -18,7 +18,7 @@
 #include <QComboBox>
 #include "tools.h"
 
-#include "SoftwareRenderer.h"
+#include "RenderConfig.h"
 #include "Scenery.h"
 #include "ColorProfile.h"
 #include "SoftwareCanvasRenderer.h"
@@ -51,7 +51,7 @@ static void _renderUpdate(double progress)
 class RenderThread:public QThread
 {
 public:
-    RenderThread(DialogRender* dialog, SoftwareCanvasRenderer* renderer, RenderArea::RenderParams params):QThread()
+    RenderThread(DialogRender* dialog, SoftwareCanvasRenderer* renderer, const RenderConfig &params):QThread()
     {
         _dialog = dialog;
         _renderer = renderer;
@@ -59,14 +59,14 @@ public:
     }
     void run()
     {
+        // FIXME Pass config to render
         _renderer->render();
-        _renderer->start(_params);
         _dialog->tellRenderEnded();
     }
 private:
     DialogRender* _dialog;
     SoftwareCanvasRenderer* _renderer;
-    RenderArea::RenderParams _params;
+    RenderConfig _params;
 };
 
 class _RenderArea:public QWidget
@@ -183,14 +183,13 @@ void DialogRender::tellRenderEnded()
     emit renderEnded();
 }
 
-void DialogRender::startRender(RenderArea::RenderParams params)
+void DialogRender::startRender(const RenderConfig &params)
 {
     _started = time(NULL);
 
     canvas_renderer->setSize(params.width, params.height, params.antialias);
 
     applyRenderSize(params.width, params.height);
-    canvas_renderer->setPreviewCallbacks(_renderStart, _renderDraw, _renderUpdate);
 
     _render_thread = new RenderThread(this, canvas_renderer, params);
     _render_thread->start();
@@ -218,11 +217,11 @@ void DialogRender::saveRender()
             filepath = filepath.append(".png");
         }
         std::string filepathstr = filepath.toStdString();
-        if (canvas_renderer->render_area->saveToFile((char*)filepathstr.c_str()))
+        /*if (canvas_renderer->render_area->saveToFile((char*)filepathstr.c_str()))
         {
             QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
         }
-        else
+        else*/
         {
             QMessageBox::critical(this, "Message", QString(tr("Can't write to file : %1")).arg(filepath));
         }
@@ -232,13 +231,12 @@ void DialogRender::saveRender()
 void DialogRender::toneMappingChanged()
 {
     ColorProfile profile((ColorProfile::ToneMappingOperator)_tonemapping_control->currentIndex(), ((double)_exposure_control->value()) * 0.01);
-    canvas_renderer->render_area->setToneMapping(profile);
+    //canvas_renderer->render_area->setToneMapping(profile);
 }
 
 void DialogRender::loadLastRender()
 {
     applyRenderSize(canvas_renderer->render_width, canvas_renderer->render_height);
-    canvas_renderer->setPreviewCallbacks(_renderStart, _renderDraw, _renderUpdate);
     renderEnded();
     toneMappingChanged();
 

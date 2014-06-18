@@ -13,7 +13,6 @@ class SOFTWARESHARED_EXPORT SkyRasterizer: public Rasterizer
 public:
     SkyRasterizer(SoftwareRenderer* renderer, int client_id);
 
-    virtual void rasterize();
     virtual void rasterizeToCanvas(CanvasPortion* canvas);
 };
 

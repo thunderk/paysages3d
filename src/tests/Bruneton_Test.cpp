@@ -31,7 +31,7 @@ TEST(Bruneton, AerialPerspective1)
     renderer.render_camera->setTarget(VECTOR_EAST);
     renderer.render_camera->setRenderSize(renderer.render_width, renderer.render_height);
 
-    RenderArea::RenderParams params = {renderer.render_width, renderer.render_height, 1, 1};
+    /*RenderArea::RenderParams params = {renderer.render_width, renderer.render_height, 1, 1};
     renderer.render_area->setParams(params);
     renderer.render_area->setBackgroundColor(COLOR_BLACK);
     renderer.render_area->clear();
@@ -43,7 +43,7 @@ TEST(Bruneton, AerialPerspective1)
     renderer.pushQuad(Vector3(30.0, -10.0, 25.0), Vector3(30.0, -10.0, 30.0), Vector3(30.0, 50.0, 30.0), Vector3(30.0, 50.0, 25.0), _postProcessFragment, NULL);
     renderer.render_area->postProcess(System::getCoreCount());
 
-    renderer.render_area->saveToFile("./output/test_bruneton_perspective.png");
+    renderer.render_area->saveToFile("./output/test_bruneton_perspective.png");*/
 }
 
 TEST(Bruneton, AerialPerspective2)
@@ -67,7 +67,7 @@ TEST(Bruneton, AerialPerspective2)
     renderer.render_camera->setTarget(VECTOR_EAST);
     renderer.render_camera->setRenderSize(renderer.render_width, renderer.render_height);
 
-    RenderArea::RenderParams params = {renderer.render_width, renderer.render_height, 1, 1};
+    /*RenderArea::RenderParams params = {renderer.render_width, renderer.render_height, 1, 1};
     renderer.render_area->setParams(params);
     renderer.render_area->setBackgroundColor(COLOR_BLACK);
     renderer.render_area->clear();
@@ -79,5 +79,5 @@ TEST(Bruneton, AerialPerspective2)
     renderer.pushQuad(Vector3(30.0, -10.0, 25.0), Vector3(30.0, -10.0, 30.0), Vector3(30.0, 50.0, 30.0), Vector3(30.0, 50.0, 25.0), _postProcessFragment, NULL);
     renderer.render_area->postProcess(System::getCoreCount());
 
-    renderer.render_area->saveToFile("./output/test_bruneton_perspective1.png");
+    renderer.render_area->saveToFile("./output/test_bruneton_perspective1.png");*/
 }

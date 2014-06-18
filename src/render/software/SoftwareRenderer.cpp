@@ -22,8 +22,6 @@
 
 SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
 {
-    RenderArea::RenderParams params = {1, 1, 1, 5};
-
     render_quality = 5;
     render_width = 1;
     render_height = 1;
@@ -31,8 +29,6 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
     render_progress = 0.0;
     is_rendering = 0;
     render_camera = new CameraDefinition;
-    render_area = new RenderArea(this);
-    render_area->setParams(params);
 
     atmosphere_renderer = new BaseAtmosphereRenderer(this);
     clouds_renderer = new CloudsRenderer(this);
@@ -59,7 +55,6 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
 SoftwareRenderer::~SoftwareRenderer()
 {
     delete render_camera;
-    delete render_area;
 
     delete fluid_medium;
     delete lighting;
@@ -108,18 +103,6 @@ void SoftwareRenderer::prepare()
     //fluid_medium->registerMedium(water_renderer);
 }
 
-void SoftwareRenderer::rasterize()
-{
-    TerrainRasterizer terrain(this, 0);
-    terrain.rasterize();
-
-    WaterRasterizer water(this, 1);
-    water.rasterize();
-
-    SkyRasterizer sky(this, 2);
-    sky.rasterize();
-}
-
 void SoftwareRenderer::disableClouds()
 {
     scenery->getClouds()->clear();
@@ -162,63 +145,6 @@ void SoftwareRenderer::disableAtmosphere(const std::vector<LightComponent> &ligh
     delete atmosphere_renderer;
     atmosphere_renderer = new BaseAtmosphereRenderer(this);
     atmosphere_renderer->setStaticLights(lights);
-}
-
-void SoftwareRenderer::setPreviewCallbacks(RenderArea::RenderCallbackStart start, RenderArea::RenderCallbackDraw draw, RenderArea::RenderCallbackUpdate update)
-{
-    render_area->setPreviewCallbacks(start, draw, update);
-}
-
-static void* _renderFirstPass(void* data)
-{
-    SoftwareRenderer* renderer = (SoftwareRenderer*)data;
-    renderer->rasterize();
-    renderer->is_rendering = 0;
-    return NULL;
-}
-
-void SoftwareRenderer::start(RenderArea::RenderParams params)
-{
-    Thread thread(_renderFirstPass);
-    int loops;
-    int core_count = System::getCoreCount();
-
-    params.antialias = (params.antialias < 1) ? 1 : params.antialias;
-    params.antialias = (params.antialias > 4) ? 4 : params.antialias;
-
-    render_quality = params.quality;
-    render_width = params.width * params.antialias;
-    render_height = params.height * params.antialias;
-    render_interrupt = 0;
-    render_progress = 0.0;
-
-    prepare();
-
-    render_camera->setRenderSize(render_width, render_height);
-
-    render_area->setBackgroundColor(COLOR_BLACK);
-    render_area->setParams(params);
-    render_area->clear();
-
-    is_rendering = 1;
-    thread.start(this);
-    loops = 0;
-
-    while (is_rendering)
-    {
-        Thread::timeSleepMs(100);
-
-        if (++loops >= 10)
-        {
-            render_area->update();
-            loops = 0;
-        }
-    }
-    thread.join();
-
-    is_rendering = 1;
-    render_area->postProcess(core_count);
-    is_rendering = 0;
 }
 
 void SoftwareRenderer::interrupt()
@@ -295,38 +221,4 @@ Vector3 SoftwareRenderer::projectPoint(const Vector3 &point)
 Vector3 SoftwareRenderer::unprojectPoint(const Vector3 &point)
 {
     return render_camera->unproject(point);
-}
-
-void SoftwareRenderer::pushTriangle(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, RenderArea::f_RenderFragmentCallback callback, void* callback_data)
-{
-    Vector3 p1, p2, p3;
-
-    p1 = projectPoint(v1);
-    p2 = projectPoint(v2);
-    p3 = projectPoint(v3);
-
-    render_area->pushTriangle(p1, p2, p3, v1, v2, v3, callback, callback_data);
-}
-
-void SoftwareRenderer::pushQuad(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4, RenderArea::f_RenderFragmentCallback callback, void* callback_data)
-{
-    pushTriangle(v2, v3, v1, callback, callback_data);
-    pushTriangle(v4, v1, v3, callback, callback_data);
-}
-
-void SoftwareRenderer::pushDisplacedTriangle(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3, RenderArea::f_RenderFragmentCallback callback, void* callback_data)
-{
-    Vector3 p1, p2, p3;
-
-    p1 = projectPoint(v1);
-    p2 = projectPoint(v2);
-    p3 = projectPoint(v3);
-
-    render_area->pushTriangle(p1, p2, p3, ov1, ov2, ov3, callback, callback_data);
-}
-
-void SoftwareRenderer::pushDisplacedQuad(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3, const Vector3 &ov4, RenderArea::f_RenderFragmentCallback callback, void* callback_data)
-{
-    pushDisplacedTriangle(v2, v3, v1, ov2, ov3, ov1, callback, callback_data);
-    pushDisplacedTriangle(v4, v1, v3, ov4, ov1, ov3, callback, callback_data);
 }

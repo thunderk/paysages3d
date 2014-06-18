@@ -27,19 +27,21 @@ public:
     /**
      * Method called for each chunk tessellated by getTessellationInfo.
      */
-    int processChunk(TerrainChunkInfo* chunk, double progress);
+    int processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, double progress);
 
     /**
      * Tessellate the terrain, calling processChunk for each chunk.
      *
      * The terrain will be broken in chunks, most detailed near the camera.
      */
-    void getTessellationInfo(int displaced);
+    void getTessellationInfo(CanvasPortion* canvas, int displaced);
 
     /**
      * Tessellate a terrain chunk, pushing the quads in the render area.
      */
-    void tessellateChunk(TerrainChunkInfo* chunk, int detail);
+    void tessellateChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, int detail);
+
+    void renderQuad(CanvasPortion* canvas, double x, double z, double size, double water_height);
 
     /**
      * Start the final rasterization of terrain.

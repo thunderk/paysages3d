@@ -13,9 +13,9 @@ SoftwareCanvasRenderer::SoftwareCanvasRenderer()
     started = false;
     canvas = new Canvas();
 
-    rasterizers.push_back(new TerrainRasterizer(this, 0));
+    rasterizers.push_back(new SkyRasterizer(this, 0));
     rasterizers.push_back(new WaterRasterizer(this, 1));
-    rasterizers.push_back(new SkyRasterizer(this, 2));
+    rasterizers.push_back(new TerrainRasterizer(this, 2));
 }
 
 SoftwareCanvasRenderer::~SoftwareCanvasRenderer()
@@ -41,6 +41,9 @@ void SoftwareCanvasRenderer::render()
     // TEMP
     started = true;
     CanvasPortion *portion = canvas->at(0, 0);
+    render_width = canvas->getWidth();
+    render_height = canvas->getHeight();
+    render_quality = 3;
 
     render_camera->setRenderSize(canvas->getWidth(), canvas->getHeight());
 

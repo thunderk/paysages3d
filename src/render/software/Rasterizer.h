@@ -20,7 +20,6 @@ public:
 
     inline SoftwareRenderer *getRenderer() const {return renderer;}
 
-    virtual void rasterize() = 0;
     virtual void rasterizeToCanvas(CanvasPortion* canvas);
 
 protected:

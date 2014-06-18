@@ -34,7 +34,6 @@ SOURCES += SoftwareRenderer.cpp \
     TerrainRenderer.cpp \
     TexturesRenderer.cpp \
     WaterRenderer.cpp \
-    RenderArea.cpp \
     RayCastingManager.cpp \
     NightSky.cpp \
     TerrainRayWalker.cpp \
@@ -45,7 +44,8 @@ SOURCES += SoftwareRenderer.cpp \
     SoftwareCanvasRenderer.cpp \
     Rasterizer.cpp \
     CanvasLiveClient.cpp \
-    CanvasPreview.cpp
+    CanvasPreview.cpp \
+    RenderConfig.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -69,7 +69,6 @@ HEADERS += SoftwareRenderer.h\
     TerrainRenderer.h \
     TexturesRenderer.h \
     WaterRenderer.h \
-    RenderArea.h \
     RayCastingManager.h \
     NightSky.h \
     TerrainRayWalker.h \
@@ -80,7 +79,8 @@ HEADERS += SoftwareRenderer.h\
     SoftwareCanvasRenderer.h \
     Rasterizer.h \
     CanvasLiveClient.h \
-    CanvasPreview.h
+    CanvasPreview.h \
+    RenderConfig.h
 
 unix:!symbian {
     maemo5 {

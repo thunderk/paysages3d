@@ -12,6 +12,7 @@
 #include "mainwindow.h"
 #include "dialogrender.h"
 #include "dialogexplorer.h"
+#include "RenderConfig.h"
 #include "DesktopScenery.h"
 #include "BasePreview.h"
 #include "SoftwareCanvasRenderer.h"
@@ -252,7 +253,7 @@ void FreeFormHelper::processRenderClicked()
     emit needAlterRenderer(&renderer);
 
     DialogRender* dialog = new DialogRender(_form_widget, &renderer);
-    RenderArea::RenderParams params = {400, 300, 1, 3};
+    RenderConfig params(400, 300, 1, 3);
     dialog->startRender(params);
 
     delete dialog;

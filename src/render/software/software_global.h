@@ -15,7 +15,7 @@ namespace paysages {
 namespace software {
     class SoftwareRenderer;
     class SoftwareCanvasRenderer;
-    class RenderArea;
+    class RenderConfig;
 
     class FluidMediumManager;
     class FluidMediumInterface;

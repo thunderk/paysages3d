@@ -108,7 +108,7 @@ void FormRender::startQuickRender()
     _renderer_inited = true;
 
     DialogRender* dialog = new DialogRender(this, _renderer);
-    RenderArea::RenderParams params = {400, 300, 1, 3};
+    RenderConfig params(400, 300, 1, 3);
     dialog->startRender(params);
 
     delete dialog;
