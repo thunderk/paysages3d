@@ -11,7 +11,7 @@
 #include "CanvasPortion.h"
 
 TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer, int client_id):
-    Rasterizer(renderer, client_id)
+    Rasterizer(renderer, client_id, Color(0.5, 0.3, 0.3))
 {
 }
 

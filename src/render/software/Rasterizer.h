@@ -15,7 +15,7 @@ typedef struct RenderScanlines RenderScanlines;
 class SOFTWARESHARED_EXPORT Rasterizer
 {
 public:
-    Rasterizer(SoftwareRenderer *renderer, int client_id);
+    Rasterizer(SoftwareRenderer *renderer, int client_id, const Color &color);
     virtual ~Rasterizer();
 
     inline SoftwareRenderer *getRenderer() const {return renderer;}
@@ -30,6 +30,7 @@ protected:
     void pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3);
     void pushDisplacedQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3, const Vector3 &ov4);
 
+    Color* color;
     SoftwareRenderer *renderer;
     int client_id;
 

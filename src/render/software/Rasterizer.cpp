@@ -31,13 +31,15 @@ struct paysages::software::RenderScanlines
     int right;
 };
 
-Rasterizer::Rasterizer(SoftwareRenderer* renderer, int client_id):
+Rasterizer::Rasterizer(SoftwareRenderer* renderer, int client_id, const Color &color):
     renderer(renderer), client_id(client_id)
 {
+    this->color = new Color(color);
 }
 
 Rasterizer::~Rasterizer()
 {
+    delete color;
 }
 
 void Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3)
@@ -329,7 +331,12 @@ void Rasterizer::renderScanLines(CanvasPortion *canvas, RenderScanlines* scanlin
                 scanInterpolate(renderer->render_camera, &down, &diff, fy / dy, &current);
 
                 CanvasFragment fragment(current.pixel.z, Vector3(current.location.x, current.location.y, current.location.z), current.client);
-                fragment.setColor((cury == starty || cury == endy) ? COLOR_GREY : COLOR_WHITE);
+
+                Color frag_color = *color;
+                if (cury == starty || cury == endy)
+                    frag_color.mask(Color(0.0, 0.0, 0.0, 0.3));
+                fragment.setColor(frag_color);
+
                 canvas->pushFragment(current.x, current.y, fragment);
             }
         }
