@@ -29,10 +29,8 @@ public:
 
     QImage* pixbuf;
     QMutex* pixbuf_lock;
-    QWidget* area;
 
 private slots:
-    void applyRenderSize(int width, int height);
     void applyProgress(double value);
     void saveRender();
     void applyRenderEnded();
@@ -47,7 +45,6 @@ private:
     SoftwareCanvasRenderer* canvas_renderer;
     WidgetPreviewCanvas* canvas_preview;
 
-    QScrollArea* _scroll;
     QWidget* _info;
     QWidget* _actions;
     QComboBox* _tonemapping_control;

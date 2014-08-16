@@ -24,30 +24,6 @@
 #include "SoftwareCanvasRenderer.h"
 #include "WidgetPreviewCanvas.h"
 
-static DialogRender* _current_dialog;
-
-static void _renderStart(int width, int height, const Color &background)
-{
-    _current_dialog->pixbuf_lock->lock();
-    delete _current_dialog->pixbuf;
-    _current_dialog->pixbuf = new QImage(width, height, QImage::Format_ARGB32);
-    _current_dialog->pixbuf->fill(colorToQColor(background).rgb());
-    _current_dialog->pixbuf_lock->unlock();
-
-    _current_dialog->tellRenderSize(width, height);
-}
-
-static void _renderDraw(int x, int y, const Color &col)
-{
-    _current_dialog->pixbuf->setPixel(x, _current_dialog->pixbuf->height() - 1 - y, colorToQColor(col).rgb());
-}
-
-static void _renderUpdate(double progress)
-{
-    _current_dialog->area->update();
-    _current_dialog->tellProgressChange(progress);
-}
-
 class RenderThread:public QThread
 {
 public:
@@ -69,42 +45,17 @@ private:
     RenderConfig _params;
 };
 
-class _RenderArea:public QWidget
-{
-public:
-    _RenderArea(QWidget* parent):
-        QWidget(parent)
-    {
-        setMinimumSize(800, 600);
-    }
-
-    void paintEvent(QPaintEvent*)
-    {
-        QPainter painter(this);
-        _current_dialog->pixbuf_lock->lock();
-        painter.drawImage(0, 0, *_current_dialog->pixbuf);
-        _current_dialog->pixbuf_lock->unlock();
-    }
-};
-
 DialogRender::DialogRender(QWidget *parent, SoftwareCanvasRenderer* renderer):
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint)
 {
     pixbuf_lock = new QMutex();
     pixbuf = new QImage(1, 1, QImage::Format_ARGB32);
-    _current_dialog = this;
     _render_thread = NULL;
     canvas_renderer = renderer;
 
     setModal(true);
     setWindowTitle(tr("Paysages 3D - Render"));
     setLayout(new QVBoxLayout());
-
-    _scroll = new QScrollArea(this);
-    _scroll->setAlignment(Qt::AlignCenter);
-    area = new _RenderArea(_scroll);
-    _scroll->setWidget(area);
-    layout()->addWidget(_scroll);
 
     canvas_preview = new WidgetPreviewCanvas(this);
     canvas_preview->setCanvas(canvas_renderer->getCanvas());
@@ -189,8 +140,6 @@ void DialogRender::startRender(const RenderConfig &params)
 
     canvas_renderer->setSize(params.width, params.height, params.antialias);
 
-    applyRenderSize(params.width, params.height);
-
     _render_thread = new RenderThread(this, canvas_renderer, params);
     _render_thread->start();
 
@@ -201,8 +150,6 @@ void DialogRender::applyRenderEnded()
 {
     _info->hide();
     _actions->show();
-
-    area->update();
 }
 
 void DialogRender::saveRender()
@@ -236,19 +183,10 @@ void DialogRender::toneMappingChanged()
 
 void DialogRender::loadLastRender()
 {
-    applyRenderSize(canvas_renderer->render_width, canvas_renderer->render_height);
     renderEnded();
     toneMappingChanged();
 
     exec();
-}
-
-void DialogRender::applyRenderSize(int width, int height)
-{
-    area->setMinimumSize(width, height);
-    area->setMaximumSize(width, height);
-    area->resize(width, height);
-    _scroll->setMinimumSize(width > 800 ? 820 : width + 20, height > 600 ? 620 : height + 20);
 }
 
 void DialogRender::applyProgress(double value)
