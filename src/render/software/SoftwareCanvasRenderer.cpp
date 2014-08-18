@@ -43,7 +43,6 @@ void SoftwareCanvasRenderer::render()
 {
     // TEMP
     started = true;
-    CanvasPortion *portion = canvas->at(0, 0);
     render_width = canvas->getWidth();
     render_height = canvas->getHeight();
     render_quality = 3;
@@ -52,6 +51,9 @@ void SoftwareCanvasRenderer::render()
 
     prepare();
 
+    // TODO Iterate portions
+    CanvasPortion *portion = canvas->at(0, 0);
+    portion->preparePixels();
     rasterize(portion, true);
     postProcess(portion, true);
 }

@@ -36,8 +36,8 @@ BaseForm(parent, true)
 
     addInput(new InputCamera(this, tr("Camera"), _camera));
     addInputInt(tr("Quality"), &_params.quality, 1, 10, 1, 1);
-    addInputInt(tr("Image width"), &_params.width, 100, 2000, 10, 100);
-    addInputInt(tr("Image height"), &_params.height, 100, 1200, 10, 100);
+    addInputInt(tr("Image width"), &_params.width, 100, 4000, 10, 100);
+    addInputInt(tr("Image height"), &_params.height, 100, 3000, 10, 100);
     addInputInt(tr("Anti aliasing"), &_params.antialias, 1, 4, 1, 1);
 
     button = addButton(tr("Start new render"));

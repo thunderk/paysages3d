@@ -10,6 +10,8 @@ namespace software {
  * Rectangular portion of a Canvas.
  *
  * Contains the pixels of a canvas region (CanvasPixel).
+ *
+ * Pixels are not allocated until preparePixels is called.
  */
 class SOFTWARESHARED_EXPORT CanvasPortion
 {
@@ -24,6 +26,11 @@ public:
 
     void clear();
     void setSize(int width, int height);
+
+    /**
+     * Prepare (allocate in memory) the pixels area.
+     */
+    void preparePixels();
 
     /**
      * Add a fragment to the pixel located at (x, y).

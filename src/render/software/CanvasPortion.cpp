@@ -8,19 +8,23 @@
 #define CHECK_COORDINATES() assert(x >= 0); \
     assert(x < width); \
     assert(y >= 0); \
-    assert(y < height)
+    assert(y < height); \
+    assert(pixels != NULL)
 
 CanvasPortion::CanvasPortion(CanvasPreview* preview):
     preview(preview)
 {
     width = 1;
     height = 1;
-    pixels = new CanvasPixel[1];
+    pixels = NULL;
 }
 
 CanvasPortion::~CanvasPortion()
 {
-    delete[] pixels;
+    if (pixels)
+    {
+        delete[] pixels;
+    }
 }
 
 int CanvasPortion::getFragmentCount(int x, int y) const
@@ -50,9 +54,16 @@ void CanvasPortion::setSize(int width, int height)
 {
     this->width = width;
     this->height = height;
+}
 
-    delete[] pixels;
+void CanvasPortion::preparePixels()
+{
+    if (pixels)
+    {
+        delete[] pixels;
+    }
     pixels = new CanvasPixel[width * height];
+    clear();
 }
 
 void CanvasPortion::pushFragment(int x, int y, const CanvasFragment &fragment)

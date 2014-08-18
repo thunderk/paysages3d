@@ -67,8 +67,13 @@ void Canvas::setSize(int width, int height)
     this->width = width;
     this->height = height;
 
-    // TODO Smaller preview
-    preview->setSize(width, height, width, height);
+    // Smaller preview
+    while (width > 800 and height > 800)
+    {
+        width = width / 2;
+        height = height / 2;
+    }
+    preview->setSize(this->width, this->height, width, height);
 }
 
 CanvasPortion *Canvas::at(int x, int y) const

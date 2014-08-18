@@ -18,6 +18,11 @@ CanvasPreview::CanvasPreview()
     dirty_down = 1;
     dirty_up = -1;
 
+    scaled = false;
+    factor = 1.0;
+    factor_x = 1.0;
+    factor_y = 1.0;
+
     lock = new Mutex();
     profile = new ColorProfile();
 }
@@ -43,6 +48,11 @@ void CanvasPreview::setSize(int real_width, int real_height, int preview_width, 
     dirty_right = -1;
     dirty_down = height;
     dirty_up = -1;
+
+    scaled = (real_width != preview_height or real_height != preview_height);
+    factor_x = (double)real_width / (double)preview_width;
+    factor_y = (double)real_height / (double)preview_height;
+    factor = factor_x * factor_y;
 
     lock->release();
 
@@ -94,17 +104,26 @@ void CanvasPreview::updateLive(CanvasLiveClient *client)
 
 void CanvasPreview::pushPixel(int real_x, int real_y, const Color &old_color, const Color &new_color)
 {
+    int x, y;
+
     lock->acquire();
 
-    // TODO Assert-check and transform coordinates
-    int x = real_x;
-    int y = real_y;
-    double fact = 1.0;
+    // TODO Assert-check
+    if (scaled)
+    {
+        x = round(real_x / factor_x);
+        y = round(real_y / factor_y);
+    }
+    else
+    {
+        x = real_x;
+        y = real_y;
+    }
 
-    Color* pixel = pixels + (real_y * width + real_x);
-    pixel->r = pixel->r - old_color.r * fact + new_color.r * fact;
-    pixel->g = pixel->g - old_color.g * fact + new_color.g * fact;
-    pixel->b = pixel->b - old_color.b * fact + new_color.b * fact;
+    Color* pixel = pixels + (y * width + x);
+    pixel->r = pixel->r - old_color.r / factor + new_color.r / factor;
+    pixel->g = pixel->g - old_color.g / factor + new_color.g / factor;
+    pixel->b = pixel->b - old_color.b / factor + new_color.b / factor;
 
     // Set pixel dirty
     if (x < dirty_left)

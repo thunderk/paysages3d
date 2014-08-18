@@ -42,6 +42,11 @@ private:
     int dirty_right;
     int dirty_down;
     int dirty_up;
+
+    bool scaled;
+    double factor;
+    double factor_x;
+    double factor_y;
 };
 
 }
