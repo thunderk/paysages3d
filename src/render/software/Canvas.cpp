@@ -50,7 +50,9 @@ void Canvas::setSize(int width, int height)
             CanvasPortion *portion = new CanvasPortion(preview);
 
             portion->setSize((x == horizontal_portion_count - 1) ? width - done_width : portion_width,
-                             (y == vertical_portion_count - 1) ? height - done_height : portion_height);
+                             (y == vertical_portion_count - 1) ? height - done_height : portion_height,
+                             done_width,
+                             done_height);
 
             done_width += portion->getWidth();
             if (x == horizontal_portion_count - 1)

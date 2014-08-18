@@ -21,16 +21,23 @@ public:
 
     inline int getWidth() const {return width;}
     inline int getHeight() const {return height;}
+    inline int getXOffset() const {return xoffset;}
+    inline int getYOffset() const {return yoffset;}
     int getFragmentCount(int x, int y) const;
     const CanvasFragment *getFrontFragment(int x, int y) const;
 
     void clear();
-    void setSize(int width, int height);
+    void setSize(int width, int height, int xoffset=0, int yoffset=0);
 
     /**
      * Prepare (allocate in memory) the pixels area.
      */
     void preparePixels();
+
+    /**
+     * Discard the memory used by pixels.
+     */
+    void discardPixels();
 
     /**
      * Add a fragment to the pixel located at (x, y).
@@ -56,6 +63,8 @@ public:
 private:
     int width;
     int height;
+    int xoffset;
+    int yoffset;
     CanvasPixel *pixels;
     CanvasPreview* preview;
 };

@@ -48,33 +48,37 @@ void Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pix
     double limit_width = (double)(canvas->getWidth() - 1);
     double limit_height = (double)(canvas->getHeight() - 1);
 
+    Vector3 canvas_offset(canvas->getXOffset(), canvas->getYOffset(), 0.0);
+    Vector3 dpixel1 = pixel1.sub(canvas_offset);
+    Vector3 dpixel2 = pixel2.sub(canvas_offset);
+    Vector3 dpixel3 = pixel3.sub(canvas_offset);
+
     /* Filter if outside screen */
-    if (pixel1.z < 1.0 || pixel2.z < 1.0 || pixel3.z < 1.0 || (pixel1.x < 0.0 && pixel2.x < 0.0 && pixel3.x < 0.0) || (pixel1.y < 0.0 && pixel2.y < 0.0 && pixel3.y < 0.0) || (pixel1.x > limit_width && pixel2.x > limit_width && pixel3.x > limit_width) || (pixel1.y > limit_height && pixel2.y > limit_height && pixel3.y > limit_height))
+    if (dpixel1.z < 1.0 || dpixel2.z < 1.0 || dpixel3.z < 1.0 || (dpixel1.x < 0.0 && dpixel2.x < 0.0 && dpixel3.x < 0.0) || (dpixel1.y < 0.0 && dpixel2.y < 0.0 && dpixel3.y < 0.0) || (dpixel1.x > limit_width && dpixel2.x > limit_width && dpixel3.x > limit_width) || (dpixel1.y > limit_height && dpixel2.y > limit_height && dpixel3.y > limit_height))
     {
         return;
     }
 
     /* Prepare vertices */
-    // FIXME Apply canvas portion offset
-    point1.pixel.x = pixel1.x;
-    point1.pixel.y = pixel1.y;
-    point1.pixel.z = pixel1.z;
+    point1.pixel.x = dpixel1.x;
+    point1.pixel.y = dpixel1.y;
+    point1.pixel.z = dpixel1.z;
     point1.location.x = location1.x;
     point1.location.y = location1.y;
     point1.location.z = location1.z;
     point1.client = client_id;
 
-    point2.pixel.x = pixel2.x;
-    point2.pixel.y = pixel2.y;
-    point2.pixel.z = pixel2.z;
+    point2.pixel.x = dpixel2.x;
+    point2.pixel.y = dpixel2.y;
+    point2.pixel.z = dpixel2.z;
     point2.location.x = location2.x;
     point2.location.y = location2.y;
     point2.location.z = location2.z;
     point2.client = client_id;
 
-    point3.pixel.x = pixel3.x;
-    point3.pixel.y = pixel3.y;
-    point3.pixel.z = pixel3.z;
+    point3.pixel.x = dpixel3.x;
+    point3.pixel.y = dpixel3.y;
+    point3.pixel.z = dpixel3.z;
     point3.location.x = location3.x;
     point3.location.y = location3.y;
     point3.location.z = location3.z;

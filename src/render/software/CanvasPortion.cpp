@@ -16,6 +16,8 @@ CanvasPortion::CanvasPortion(CanvasPreview* preview):
 {
     width = 1;
     height = 1;
+    xoffset = 0;
+    yoffset = 0;
     pixels = NULL;
 }
 
@@ -50,10 +52,12 @@ void CanvasPortion::clear()
     }
 }
 
-void CanvasPortion::setSize(int width, int height)
+void CanvasPortion::setSize(int width, int height, int xoffset, int yoffset)
 {
     this->width = width;
     this->height = height;
+    this->xoffset = xoffset;
+    this->yoffset = yoffset;
 }
 
 void CanvasPortion::preparePixels()
@@ -64,6 +68,15 @@ void CanvasPortion::preparePixels()
     }
     pixels = new CanvasPixel[width * height];
     clear();
+}
+
+void CanvasPortion::discardPixels()
+{
+    if (pixels)
+    {
+        delete[] pixels;
+        pixels = NULL;
+    }
 }
 
 void CanvasPortion::pushFragment(int x, int y, const CanvasFragment &fragment)
@@ -77,7 +90,7 @@ void CanvasPortion::pushFragment(int x, int y, const CanvasFragment &fragment)
 
     if (preview)
     {
-        preview->pushPixel(x, y, old_color, pixel.getComposite());
+        preview->pushPixel(xoffset + x, yoffset + y, old_color, pixel.getComposite());
     }
 }
 
@@ -99,6 +112,6 @@ void CanvasPortion::setColor(int x, int y, const Color &color)
 
     if (preview)
     {
-        preview->pushPixel(x, y, old_color, pixel.getComposite());
+        preview->pushPixel(xoffset + x, yoffset + y, old_color, pixel.getComposite());
     }
 }

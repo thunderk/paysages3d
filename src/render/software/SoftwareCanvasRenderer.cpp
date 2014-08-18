@@ -51,11 +51,20 @@ void SoftwareCanvasRenderer::render()
 
     prepare();
 
-    // TODO Iterate portions
-    CanvasPortion *portion = canvas->at(0, 0);
-    portion->preparePixels();
-    rasterize(portion, true);
-    postProcess(portion, true);
+    // Iterate portions
+    int nx = canvas->getHorizontalPortionCount();
+    int ny = canvas->getVerticalPortionCount();
+    for (int y = 0; y < ny; y++)
+    {
+        for (int x = 0; x < nx; x++)
+        {
+            CanvasPortion *portion = canvas->at(x, y);
+            portion->preparePixels();
+            rasterize(portion, true);
+            postProcess(portion, true);
+            portion->discardPixels();
+        }
+    }
 }
 
 const std::vector<Rasterizer *> &SoftwareCanvasRenderer::getRasterizers() const

@@ -108,7 +108,6 @@ void CanvasPreview::pushPixel(int real_x, int real_y, const Color &old_color, co
 
     lock->acquire();
 
-    // TODO Assert-check
     if (scaled)
     {
         x = round(real_x / factor_x);
@@ -119,6 +118,8 @@ void CanvasPreview::pushPixel(int real_x, int real_y, const Color &old_color, co
         x = real_x;
         y = real_y;
     }
+
+    // TODO Assert-check on x and y
 
     Color* pixel = pixels + (y * width + x);
     pixel->r = pixel->r - old_color.r / factor + new_color.r / factor;
