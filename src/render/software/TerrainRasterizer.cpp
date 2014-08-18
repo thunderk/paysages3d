@@ -12,7 +12,7 @@
 #include "CanvasFragment.h"
 
 TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer, int client_id):
-    Rasterizer(renderer, client_id, Color(0.5, 0.3, 0.3))
+    Rasterizer(renderer, client_id, Color(1.0, 0.9, 0.9))
 {
 }
 

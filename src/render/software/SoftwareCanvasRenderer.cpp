@@ -77,13 +77,16 @@ void SoftwareCanvasRenderer::rasterize(CanvasPortion *portion, bool threaded)
 void SoftwareCanvasRenderer::postProcess(CanvasPortion *portion, bool threaded)
 {
     // Subdivide in chunks
-    int chunk_size = 32;
+    int chunk_size = 64;
     int chunks_x = (portion->getWidth() - 1) / chunk_size + 1;
     int chunks_y = (portion->getHeight() - 1) / chunk_size + 1;
     int units = chunks_x * chunks_y;
 
     // Render chunks in parallel
-    CanvasPixelShader shader(*this, portion, chunk_size, chunks_x, chunks_y);
-    ParallelWork work(&shader, units);
-    work.perform();
+    for (int sub_chunk_size = chunk_size; sub_chunk_size >= 1; sub_chunk_size /= 2)
+    {
+        CanvasPixelShader shader(*this, portion, chunk_size, sub_chunk_size, chunks_x, chunks_y);
+        ParallelWork work(&shader, units);
+        work.perform();
+    }
 }

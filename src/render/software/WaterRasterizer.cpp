@@ -6,7 +6,7 @@
 #include "CanvasFragment.h"
 
 WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer, int client_id):
-    Rasterizer(renderer, client_id, Color(0.1, 0.3, 0.6))
+    Rasterizer(renderer, client_id, Color(0.9, 0.95, 1.0))
 {
 }
 

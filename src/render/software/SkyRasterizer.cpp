@@ -12,7 +12,7 @@
 #define SPHERE_SIZE 20000.0
 
 SkyRasterizer::SkyRasterizer(SoftwareRenderer* renderer, int client_id):
-    Rasterizer(renderer, client_id, Color(0.3, 0.7, 1.0))
+    Rasterizer(renderer, client_id, Color(0.9, 0.9, 1.0))
 {
 }
 
