@@ -14,6 +14,7 @@ public:
     SkyRasterizer(SoftwareRenderer* renderer, int client_id);
 
     virtual void rasterizeToCanvas(CanvasPortion* canvas);
+    virtual Color shadeFragment(const CanvasFragment &fragment) const;
 };
 
 }

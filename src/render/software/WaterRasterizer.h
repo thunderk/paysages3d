@@ -16,6 +16,7 @@ public:
     void rasterizeQuad(CanvasPortion* canvas, double x, double z, double size);
 
     virtual void rasterizeToCanvas(CanvasPortion* canvas);
+    virtual Color shadeFragment(const CanvasFragment &fragment) const;
 };
 
 }

@@ -7,6 +7,9 @@
 #include "WaterRasterizer.h"
 #include "SkyRasterizer.h"
 #include "CameraDefinition.h"
+#include "ParallelWork.h"
+#include "CanvasPortion.h"
+#include "CanvasPixelShader.h"
 
 SoftwareCanvasRenderer::SoftwareCanvasRenderer()
 {
@@ -58,6 +61,11 @@ const std::vector<Rasterizer *> &SoftwareCanvasRenderer::getRasterizers() const
     return rasterizers;
 }
 
+const Rasterizer &SoftwareCanvasRenderer::getRasterizer(int client_id) const
+{
+    return *(getRasterizers()[client_id]);
+}
+
 void SoftwareCanvasRenderer::rasterize(CanvasPortion *portion, bool threaded)
 {
     for (auto &rasterizer:getRasterizers())
@@ -68,5 +76,14 @@ void SoftwareCanvasRenderer::rasterize(CanvasPortion *portion, bool threaded)
 
 void SoftwareCanvasRenderer::postProcess(CanvasPortion *portion, bool threaded)
 {
-    // TODO
+    // Subdivide in chunks
+    int chunk_size = 32;
+    int chunks_x = portion->getWidth() / chunk_size + 1;
+    int chunks_y = portion->getHeight() / chunk_size + 1;
+    int units = chunks_x * chunks_y;
+
+    // Render chunks in parallel
+    CanvasPixelShader shader(*this, portion, chunk_size, chunks_x, chunks_y);
+    ParallelWork work(&shader, units);
+    work.perform();
 }

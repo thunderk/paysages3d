@@ -22,11 +22,13 @@ public:
 
     inline int getFragmentCount() const {return count;}
     inline const Color &getComposite() const {return composite;}
+    inline const CanvasFragment &getFragment(int position) const {return fragments[position];}
     const CanvasFragment *getFrontFragment() const;
 
     void reset();
     void pushFragment(const CanvasFragment &fragment);
     void updateComposite();
+    void setComposite(const Color &color);
 
 private:
     int count;

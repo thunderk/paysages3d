@@ -2,37 +2,72 @@
 
 #include "Thread.h"
 #include "System.h"
+#include "ParallelWorker.h"
 #include <cassert>
+
+/**
+ * Compatibility class for code that uses ParallelUnitFunction.
+ */
+class ParallelWorkerCompat:public ParallelWorker
+{
+public:
+    ParallelWorkerCompat(ParallelWork *work, ParallelWork::ParallelUnitFunction func, void* data):
+        ParallelWorker(), work(work), func(func), data(data)
+    {
+    }
+
+    virtual int processParallelUnit(int unit)
+    {
+        return func(work, unit, data);
+    }
+
+private:
+    ParallelWork* work;
+    ParallelWork::ParallelUnitFunction func;
+    void* data;
+};
+
+ParallelWork::ParallelWork(ParallelWorker *worker, int units)
+{
+    this->units = units;
+    this->running = 0;
+    this->worker = worker;
+    this->worker_compat = false;
+}
 
 ParallelWork::ParallelWork(ParallelUnitFunction func, int units, void* data)
 {
     this->units = units;
     this->running = 0;
-    this->unit_function = func;
-    this->data = data;
+    this->worker = new ParallelWorkerCompat(this, func, data);
+    this->worker_compat = true;
 }
 
 ParallelWork::~ParallelWork()
 {
     assert(not running);
+    if (worker_compat)
+    {
+        delete worker;
+    }
 }
 
-static void* _workerThreadCallback(ParallelWork::ParallelWorker* worker)
+static void* _workerThreadCallback(ParallelWork::ParallelWorkerThread* thread)
 {
-    worker->result = worker->work->unit_function(worker->work, worker->unit, worker->work->data);
-    worker->status = ParallelWork::PARALLEL_WORKER_STATUS_DONE;
+    thread->result = thread->worker->processParallelUnit(thread->unit);
+    thread->status = ParallelWork::PARALLEL_WORKER_STATUS_DONE;
     return NULL;
 }
 
-static int _runNextWorker(ParallelWork::ParallelWorker workers[], int worker_count, int unit)
+static int _runNextWorker(ParallelWork::ParallelWorkerThread threads[], int thread_count, int unit)
 {
     int i;
 
     while (1)
     {
-        for (i = 0; i < worker_count; i++)
+        for (i = 0; i < thread_count; i++)
         {
-            ParallelWork::ParallelWorker* worker = workers + i;
+            ParallelWork::ParallelWorkerThread* worker = threads + i;
             if (worker->status == ParallelWork::PARALLEL_WORKER_STATUS_VOID)
             {
                 worker->status = ParallelWork::PARALLEL_WORKER_STATUS_RUNNING;
@@ -62,47 +97,47 @@ static int _runNextWorker(ParallelWork::ParallelWorker workers[], int worker_cou
     }
 }
 
-int ParallelWork::perform(int nbworkers)
+int ParallelWork::perform(int thread_count)
 {
     int i, done, result;
     assert(not running);
 
     result = 0;
 
-    if (nbworkers <= 0)
+    if (thread_count <= 0)
     {
-        nbworkers = System::getCoreCount();
+        thread_count = System::getCoreCount();
     }
-    if (nbworkers > PARALLEL_MAX_THREADS)
+    if (thread_count > PARALLEL_MAX_THREADS)
     {
-        nbworkers = PARALLEL_MAX_THREADS;
+        thread_count = PARALLEL_MAX_THREADS;
     }
     running = 1;
 
     /* Init workers */
-    for (i = 0; i < nbworkers; i++)
+    for (i = 0; i < thread_count; i++)
     {
-        workers[i].status = PARALLEL_WORKER_STATUS_VOID;
-        workers[i].work = this;
+        threads[i].status = PARALLEL_WORKER_STATUS_VOID;
+        threads[i].worker = worker;
     }
 
     /* Perform run */
     for (done = 0; done < units; done++)
     {
-        if (_runNextWorker(workers, nbworkers, done))
+        if (_runNextWorker(threads, thread_count, done))
         {
             result++;
         }
     }
 
     /* Wait and clean up workers */
-    for (i = 0; i < nbworkers; i++)
+    for (i = 0; i < thread_count; i++)
     {
-        if (workers[i].status != PARALLEL_WORKER_STATUS_VOID)
+        if (threads[i].status != PARALLEL_WORKER_STATUS_VOID)
         {
-            workers[i].thread->join();
-            delete workers[i].thread;
-            if (workers[i].result)
+            threads[i].thread->join();
+            delete threads[i].thread;
+            if (threads[i].result)
             {
                 result++;
             }

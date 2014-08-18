@@ -3,15 +3,11 @@
 #include "SoftwareRenderer.h"
 #include "WaterRenderer.h"
 #include "ParallelQueue.h"
+#include "CanvasFragment.h"
 
 WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer, int client_id):
     Rasterizer(renderer, client_id, Color(0.1, 0.3, 0.6))
 {
-}
-
-static Color _postProcessFragment(SoftwareRenderer* renderer, const Vector3 &location, void*)
-{
-    return renderer->getWaterRenderer()->getResult(location.x, location.z).final;
 }
 
 static inline Vector3 _getFirstPassVertex(SoftwareRenderer* renderer, double x, double z)
@@ -83,4 +79,10 @@ void WaterRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
         radius_int = radius_ext;
         radius_ext += chunk_size;
     }
+}
+
+Color WaterRasterizer::shadeFragment(const CanvasFragment &fragment) const
+{
+    Vector3 location = fragment.getLocation();
+    return renderer->getWaterRenderer()->getResult(location.x, location.z).final;
 }

@@ -136,10 +136,6 @@ void Rasterizer::pushDisplacedQuad(CanvasPortion *canvas, const Vector3 &v1, con
     pushDisplacedTriangle(canvas, v4, v1, v3, ov4, ov1, ov3);
 }
 
-void Rasterizer::rasterizeToCanvas(CanvasPortion *)
-{
-}
-
 void Rasterizer::scanGetDiff(ScanPoint* v1, ScanPoint* v2, ScanPoint* result)
 {
     result->pixel.x = v2->pixel.x - v1->pixel.x;
@@ -316,25 +312,35 @@ void Rasterizer::renderScanLines(CanvasPortion *canvas, RenderScanlines* scanlin
             current.x = x;
             for (cury = starty; cury <= endy; cury++)
             {
-                fy = (double)cury + 0.5;
-                if (fy < down.pixel.y)
+                if (dy == 0)
                 {
-                    fy = down.pixel.y;
+                    // Down and up are the same
+                    current = down;
                 }
-                else if (fy > up.pixel.y)
+                else
                 {
-                    fy = up.pixel.y;
-                }
-                fy = fy - down.pixel.y;
+                    fy = (double)cury + 0.5;
+                    if (fy < down.pixel.y)
+                    {
+                        fy = down.pixel.y;
+                    }
+                    else if (fy > up.pixel.y)
+                    {
+                        fy = up.pixel.y;
+                    }
+                    fy = fy - down.pixel.y;
 
-                current.y = cury;
-                scanInterpolate(renderer->render_camera, &down, &diff, fy / dy, &current);
+                    current.y = cury;
+                    scanInterpolate(renderer->render_camera, &down, &diff, fy / dy, &current);
+                }
 
                 CanvasFragment fragment(current.pixel.z, Vector3(current.location.x, current.location.y, current.location.z), current.client);
 
                 Color frag_color = *color;
                 if (cury == starty || cury == endy)
+                {
                     frag_color.mask(Color(0.0, 0.0, 0.0, 0.3));
+                }
                 fragment.setColor(frag_color);
 
                 canvas->pushFragment(current.x, current.y, fragment);

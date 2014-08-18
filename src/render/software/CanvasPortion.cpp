@@ -69,3 +69,25 @@ void CanvasPortion::pushFragment(int x, int y, const CanvasFragment &fragment)
         preview->pushPixel(x, y, old_color, pixel.getComposite());
     }
 }
+
+const CanvasPixel &CanvasPortion::at(int x, int y)
+{
+    CHECK_COORDINATES();
+
+    return pixels[y * width + x];
+}
+
+void CanvasPortion::setColor(int x, int y, const Color &color)
+{
+    CHECK_COORDINATES();
+
+    CanvasPixel &pixel = pixels[y * width + x];
+    Color old_color = pixel.getComposite();
+
+    pixel.setComposite(color);
+
+    if (preview)
+    {
+        preview->pushPixel(x, y, old_color, pixel.getComposite());
+    }
+}

@@ -99,3 +99,8 @@ void CanvasPixel::updateComposite()
     }
     composite = result;
 }
+
+void CanvasPixel::setComposite(const Color &color)
+{
+    composite = color;
+}

@@ -9,6 +9,7 @@
 #include "Scenery.h"
 #include "ParallelQueue.h"
 #include "CanvasPortion.h"
+#include "CanvasFragment.h"
 
 TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer, int client_id):
     Rasterizer(renderer, client_id, Color(0.5, 0.3, 0.3))
@@ -18,12 +19,6 @@ TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer, int client_id):
 static inline Vector3 _getPoint(SoftwareRenderer* renderer, double x, double z)
 {
     return Vector3(x, renderer->getTerrainRenderer()->getHeight(x, z, 1), z);
-}
-
-static Color _postProcessFragment(SoftwareRenderer* renderer, const Vector3 &point, void*)
-{
-    double precision = renderer->getPrecision(_getPoint(renderer, point.x, point.z));
-    return renderer->getTerrainRenderer()->getFinalColor(point, precision);
 }
 
 void TerrainRasterizer::tessellateChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, int detail)
@@ -244,4 +239,11 @@ void TerrainRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
     renderer->render_progress = 0.05;
 
     queue->wait();
+}
+
+Color TerrainRasterizer::shadeFragment(const CanvasFragment &fragment) const
+{
+    Vector3 point = fragment.getLocation();
+    double precision = renderer->getPrecision(_getPoint(renderer, point.x, point.z));
+    return renderer->getTerrainRenderer()->getFinalColor(point, precision);
 }

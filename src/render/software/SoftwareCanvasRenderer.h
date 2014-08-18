@@ -36,10 +36,15 @@ public:
      */
     void render();
 
-    /*!
-     * \brief Get the list of objects that can be rasterized to polygons on a canvas.
+    /**
+     * @brief Get the list of objects that can be rasterized to polygons on a canvas.
      */
     virtual const std::vector<Rasterizer*> &getRasterizers() const;
+
+    /**
+     * Get a rasterizer by its client id.
+     */
+    const Rasterizer &getRasterizer(int client_id) const;
 
 protected:
     /**

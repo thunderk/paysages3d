@@ -23,22 +23,24 @@ public:
     typedef struct
     {
         Thread* thread;
-        ParallelWork* work;
+        ParallelWorker* worker;
         ParallelWorkerStatus status;
         int unit;
         int result;
-    } ParallelWorker;
+    } ParallelWorkerThread;
 
 public:
     /**
      * Create a parallel work handler.
      *
-     * This will spawn an optimal number of threads to process a given number of work units.
+     * This will spawn a number of threads.
+     */
+    ParallelWork(ParallelWorker *worker, int units);
+
+    /**
+     * Create a parallel work handler.
      *
-     * @param func The callback that will be called from threads to process one unit.
-     * @param units Number of units to handle.
-     * @param data Custom data that will be passed to the callback.
-     * @return The newly allocated handler.
+     * This is a compatibility constructor for older code, use the constructor with ParallelWorker instead.
      */
     ParallelWork(ParallelUnitFunction func, int units, void* data);
 
@@ -52,15 +54,15 @@ public:
     /**
      * Start working on the units.
      *
-     * @param workers Number of threads to spaws, -1 for an optimal number.
+     * @param threads Number of threads to spaws, -1 for an optimal number.
      */
-    int perform(int workers=-1);
+    int perform(int thread_count=-1);
 
     int units;
     int running;
-    ParallelUnitFunction unit_function;
-    ParallelWorker workers[PARALLEL_MAX_THREADS];
-    void* data;
+    ParallelWorker *worker;
+    bool worker_compat;
+    ParallelWorkerThread threads[PARALLEL_MAX_THREADS];
 };
 
 }

@@ -51,6 +51,7 @@ public:
     virtual void rasterize();
 
     virtual void rasterizeToCanvas(CanvasPortion* canvas);
+    virtual Color shadeFragment(const CanvasFragment &fragment) const;
 
 private:
     ParallelQueue* queue;
