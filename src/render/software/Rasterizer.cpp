@@ -339,7 +339,7 @@ void Rasterizer::renderScanLines(CanvasPortion *canvas, RenderScanlines* scanlin
                 Color frag_color = *color;
                 if (cury == starty || cury == endy)
                 {
-                    frag_color.mask(Color(0.0, 0.0, 0.0, 0.1));
+                    frag_color.mask(Color(0.0, 0.0, 0.0, 0.3));
                 }
                 fragment.setColor(frag_color);
 

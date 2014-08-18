@@ -36,6 +36,8 @@ private:
     int width;
     int height;
 
+    ColorProfile *profile;
+
     int dirty_left;
     int dirty_right;
     int dirty_down;

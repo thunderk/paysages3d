@@ -3,6 +3,7 @@
 #include "Color.h"
 #include "CanvasLiveClient.h"
 #include "Mutex.h"
+#include "ColorProfile.h"
 
 #include <cassert>
 
@@ -18,12 +19,14 @@ CanvasPreview::CanvasPreview()
     dirty_up = -1;
 
     lock = new Mutex();
+    profile = new ColorProfile();
 }
 
 CanvasPreview::~CanvasPreview()
 {
     delete [] pixels;
     delete lock;
+    delete profile;
 }
 
 void CanvasPreview::setSize(int real_width, int real_height, int preview_width, int preview_height)
@@ -77,7 +80,7 @@ void CanvasPreview::updateLive(CanvasLiveClient *client)
     {
         for (x = dirty_left; x <= dirty_right; x++)
         {
-            client->canvasPainted(x, y, pixels[y * width + x]);
+            client->canvasPainted(x, y, profile->apply(pixels[y * width + x]));
         }
     }
 
