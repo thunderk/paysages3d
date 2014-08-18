@@ -66,8 +66,8 @@ protected:
             if (unit >= 0)
             {
                 work->worker->processParallelUnit(unit);
-                work->returnThread(this);
                 unit = -1;
+                work->returnThread(this);
             }
         }
     }
