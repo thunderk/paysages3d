@@ -13,21 +13,11 @@ class SYSTEMSHARED_EXPORT ParallelWork
 public:
     typedef int (*ParallelUnitFunction)(ParallelWork* work, int unit, void* data);
 
-    typedef enum
-    {
-        PARALLEL_WORKER_STATUS_VOID,
-        PARALLEL_WORKER_STATUS_RUNNING,
-        PARALLEL_WORKER_STATUS_DONE
-    } ParallelWorkerStatus;
-
-    typedef struct
-    {
-        Thread* thread;
-        ParallelWorker* worker;
-        ParallelWorkerStatus status;
-        int unit;
-        int result;
-    } ParallelWorkerThread;
+    /**
+     * Obscure thread class.
+     */
+    class ParallelThread;
+    friend class ParallelThread;
 
 public:
     /**
@@ -58,11 +48,22 @@ public:
      */
     int perform(int thread_count=-1);
 
+private:
+    void returnThread(ParallelThread *thread);
+
+private:
     int units;
     int running;
     ParallelWorker *worker;
     bool worker_compat;
-    ParallelWorkerThread threads[PARALLEL_MAX_THREADS];
+
+    int thread_count;
+    Mutex* mutex;
+    Semaphore* semaphore;
+    ParallelThread** threads;
+    ParallelThread** available;
+    int available_offset;
+    int available_length;
 };
 
 }

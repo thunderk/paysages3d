@@ -12,7 +12,7 @@ WidgetPreviewCanvas::WidgetPreviewCanvas(QWidget *parent) :
     pixbuf = new QImage();
     inited = false;
 
-    startTimer(1000);
+    startTimer(500);
 }
 
 WidgetPreviewCanvas::~WidgetPreviewCanvas()
@@ -65,5 +65,6 @@ void WidgetPreviewCanvas::timerEvent(QTimerEvent *)
         }
 
         canvas->getPreview()->updateLive(this);
+        update();
     }
 }

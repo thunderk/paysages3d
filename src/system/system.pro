@@ -26,7 +26,8 @@ SOURCES += \
     PictureWriter.cpp \
     Logs.cpp \
     ParallelPool.cpp \
-    ParallelWorker.cpp
+    ParallelWorker.cpp \
+    Semaphore.cpp
 
 HEADERS += \
     system_global.h \
@@ -42,7 +43,8 @@ HEADERS += \
     PictureWriter.h \
     Logs.h \
     ParallelPool.h \
-    ParallelWorker.h
+    ParallelWorker.h \
+    Semaphore.h
 
 unix:!symbian {
     maemo5 {

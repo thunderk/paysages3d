@@ -78,8 +78,8 @@ void SoftwareCanvasRenderer::postProcess(CanvasPortion *portion, bool threaded)
 {
     // Subdivide in chunks
     int chunk_size = 32;
-    int chunks_x = portion->getWidth() / chunk_size + 1;
-    int chunks_y = portion->getHeight() / chunk_size + 1;
+    int chunks_x = (portion->getWidth() - 1) / chunk_size + 1;
+    int chunks_y = (portion->getHeight() - 1) / chunk_size + 1;
     int units = chunks_x * chunks_y;
 
     // Render chunks in parallel

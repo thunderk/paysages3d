@@ -2,6 +2,8 @@
 
 #include "Thread.h"
 #include "System.h"
+#include "Semaphore.h"
+#include "Mutex.h"
 #include "ParallelWorker.h"
 #include <cassert>
 
@@ -25,6 +27,56 @@ private:
     ParallelWork* work;
     ParallelWork::ParallelUnitFunction func;
     void* data;
+};
+
+/**
+ * Thread sub-class to perform units of work
+ */
+class ParallelWork::ParallelThread:public Thread
+{
+public:
+    ParallelThread(ParallelWork *work):
+        Thread(), work(work), sem(0)
+    {
+        interrupted = false;
+        unit = -1;
+    }
+
+    void feedUnit(int unit)
+    {
+        this->unit = unit;
+        sem.release();
+    }
+
+    void interrupt()
+    {
+        interrupted = true;
+        sem.release();
+    }
+
+protected:
+    virtual void run() override
+    {
+        while (unit >= 0 or not interrupted)
+        {
+            // Wait for a unit (or interrupt)
+            sem.acquire();
+
+            // Process the unit
+            if (unit >= 0)
+            {
+                work->worker->processParallelUnit(unit);
+                work->returnThread(this);
+                unit = -1;
+            }
+        }
+    }
+
+private:
+    ParallelWork* work;
+    Semaphore sem;
+    int unit;
+    bool interrupted;
 };
 
 ParallelWork::ParallelWork(ParallelWorker *worker, int units)
@@ -52,58 +104,12 @@ ParallelWork::~ParallelWork()
     }
 }
 
-static void* _workerThreadCallback(ParallelWork::ParallelWorkerThread* thread)
-{
-    thread->result = thread->worker->processParallelUnit(thread->unit);
-    thread->status = ParallelWork::PARALLEL_WORKER_STATUS_DONE;
-    return NULL;
-}
-
-static int _runNextWorker(ParallelWork::ParallelWorkerThread threads[], int thread_count, int unit)
-{
-    int i;
-
-    while (1)
-    {
-        for (i = 0; i < thread_count; i++)
-        {
-            ParallelWork::ParallelWorkerThread* worker = threads + i;
-            if (worker->status == ParallelWork::PARALLEL_WORKER_STATUS_VOID)
-            {
-                worker->status = ParallelWork::PARALLEL_WORKER_STATUS_RUNNING;
-                worker->result = 0;
-                worker->unit = unit;
-                worker->thread = new Thread((ThreadFunction)_workerThreadCallback);
-                worker->thread->start(worker);
-
-                return 0;
-            }
-            else if (worker->status == ParallelWork::PARALLEL_WORKER_STATUS_DONE)
-            {
-                int result = worker->result;
-
-                worker->status = ParallelWork::PARALLEL_WORKER_STATUS_RUNNING;
-                worker->result = 0;
-                worker->unit = unit;
-                worker->thread->join();
-                delete worker->thread;
-                worker->thread = new Thread((ThreadFunction)_workerThreadCallback);
-                worker->thread->start(worker);
-
-                return result;
-            }
-        }
-        Thread::timeSleepMs(50);
-    }
-}
-
 int ParallelWork::perform(int thread_count)
 {
-    int i, done, result;
+    int i, done;
     assert(not running);
 
-    result = 0;
-
+    // Get thread count
     if (thread_count <= 0)
     {
         thread_count = System::getCoreCount();
@@ -112,38 +118,65 @@ int ParallelWork::perform(int thread_count)
     {
         thread_count = PARALLEL_MAX_THREADS;
     }
+    this->thread_count = thread_count;
     running = 1;
 
-    /* Init workers */
+    // Init threads
+    semaphore = new Semaphore(thread_count);
+    mutex = new Mutex();
+    threads = new ParallelThread*[thread_count];
+    available = new ParallelThread*[thread_count];
+    available_offset = 0;
+    available_length = thread_count;
     for (i = 0; i < thread_count; i++)
     {
-        threads[i].status = PARALLEL_WORKER_STATUS_VOID;
-        threads[i].worker = worker;
+        threads[i] = available[i] = new ParallelThread(this);
+        threads[i]->start();
     }
 
-    /* Perform run */
+    // Perform all units
     for (done = 0; done < units; done++)
     {
-        if (_runNextWorker(threads, thread_count, done))
+        // Take first available thread
+        semaphore->acquire();
+        mutex->acquire();
+        ParallelThread *thread = available[available_offset];
+        available_offset++;
+        if (available_offset >= thread_count)
         {
-            result++;
+            available_offset = 0;
         }
+        available_length--;
+        mutex->release();
+
+        // Feed the unit to it
+        thread->feedUnit(done);
     }
 
-    /* Wait and clean up workers */
+    // Wait for all threads to end, then cleanup
     for (i = 0; i < thread_count; i++)
     {
-        if (threads[i].status != PARALLEL_WORKER_STATUS_VOID)
-        {
-            threads[i].thread->join();
-            delete threads[i].thread;
-            if (threads[i].result)
-            {
-                result++;
-            }
-        }
+        threads[i]->interrupt();
     }
+    for (i = 0; i < thread_count; i++)
+    {
+        threads[i]->join();
+        delete threads[i];
+    }
+    delete[] threads;
+    delete[] available;
+    delete semaphore;
+    delete mutex;
 
     running = 0;
-    return result;
+    return done;
+}
+
+void ParallelWork::returnThread(ParallelWork::ParallelThread *thread)
+{
+    mutex->acquire();
+    available[(available_offset + available_length) % thread_count] = thread;
+    available_length++;
+    semaphore->release();
+    mutex->release();
 }
