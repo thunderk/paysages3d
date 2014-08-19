@@ -14,6 +14,7 @@
 SoftwareCanvasRenderer::SoftwareCanvasRenderer()
 {
     started = false;
+    interrupted = false;
     canvas = new Canvas();
 
     rasterizers.push_back(new SkyRasterizer(this, 0));
@@ -60,13 +61,13 @@ void SoftwareCanvasRenderer::render()
         {
             CanvasPortion *portion = canvas->at(x, y);
 
-            if (not render_interrupt)
+            if (not interrupted)
             {
                 portion->preparePixels();
                 rasterize(portion, true);
             }
 
-            if (not render_interrupt)
+            if (not interrupted)
             {
                 applyPixelShader(portion, true);
             }
@@ -78,7 +79,7 @@ void SoftwareCanvasRenderer::render()
 
 void SoftwareCanvasRenderer::interrupt()
 {
-    SoftwareRenderer::interrupt();
+    interrupted = true;
 
     if (current_work)
     {
@@ -119,7 +120,7 @@ void SoftwareCanvasRenderer::applyPixelShader(CanvasPortion *portion, bool threa
     // Render chunks in parallel
     for (int sub_chunk_size = chunk_size; sub_chunk_size >= 1; sub_chunk_size /= 2)
     {
-        if (render_interrupt)
+        if (interrupted)
         {
             break;
         }

@@ -22,11 +22,6 @@ public:
     int render_quality;
     CameraDefinition* render_camera;
 
-    /* Render related */
-    double render_progress;
-    int render_interrupt;
-    int is_rendering;
-
     void* customData[10];
 
     virtual Vector3 getCameraLocation(const Vector3 &target);
@@ -34,7 +29,6 @@ public:
     virtual double getPrecision(const Vector3 &location);
     virtual Vector3 projectPoint(const Vector3 &point);
     virtual Vector3 unprojectPoint(const Vector3 &point);
-    virtual int addRenderProgress(double progress);
 
     /*!
      * \brief Set the scenery to render.
@@ -64,8 +58,6 @@ public:
      */
     void disableAtmosphere();
     void disableAtmosphere(const std::vector<LightComponent> &lights);
-
-    virtual void interrupt();
 
     inline Scenery* getScenery() const {return scenery;}
 

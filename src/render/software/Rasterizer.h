@@ -25,6 +25,9 @@ public:
     virtual void interrupt();
 
 protected:
+    void addPredictedPolys(int count=1);
+    void addDonePolys(int count=1);
+
     void pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3);
 
     void pushTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3);
@@ -43,6 +46,9 @@ private:
     void pushScanPoint(CanvasPortion *canvas, RenderScanlines *scanlines, ScanPoint *point);
     void pushScanLineEdge(CanvasPortion *canvas, RenderScanlines *scanlines, ScanPoint *point1, ScanPoint *point2);
     void renderScanLines(CanvasPortion *canvas, RenderScanlines *scanlines);
+
+    int predicted_poly_count;
+    int done_poly_count;
 };
 
 }

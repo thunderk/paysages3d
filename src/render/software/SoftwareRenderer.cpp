@@ -23,9 +23,6 @@
 SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
 {
     render_quality = 5;
-    render_interrupt = 0;
-    render_progress = 0.0;
-    is_rendering = 0;
     render_camera = new CameraDefinition;
 
     atmosphere_renderer = new BaseAtmosphereRenderer(this);
@@ -145,11 +142,6 @@ void SoftwareRenderer::disableAtmosphere(const std::vector<LightComponent> &ligh
     atmosphere_renderer->setStaticLights(lights);
 }
 
-void SoftwareRenderer::interrupt()
-{
-    render_interrupt = 1;
-}
-
 Color SoftwareRenderer::applyLightingToSurface(const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material)
 {
     LightStatus status(lighting, location, getCameraLocation(location));
@@ -183,11 +175,6 @@ RayCastingResult SoftwareRenderer::rayWalking(const Vector3 &location, const Vec
     }
 
     return result;
-}
-
-int SoftwareRenderer::addRenderProgress(double)
-{
-    return not render_interrupt;
 }
 
 Vector3 SoftwareRenderer::getCameraLocation(const Vector3 &)

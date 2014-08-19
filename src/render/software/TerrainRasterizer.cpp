@@ -195,15 +195,11 @@ void TerrainRasterizer::getTessellationInfo(CanvasPortion* canvas, int displaced
 void TerrainRasterizer::processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, double progress)
 {
     tessellateChunk(canvas, chunk, chunk->detail_hint);
-
-    renderer->render_progress = 0.05 * progress;
 }
 
 void TerrainRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
 {
-    renderer->render_progress = 0.0;
     getTessellationInfo(canvas, 0);
-    renderer->render_progress = 0.05;
 }
 
 Color TerrainRasterizer::shadeFragment(const CanvasFragment &fragment) const
