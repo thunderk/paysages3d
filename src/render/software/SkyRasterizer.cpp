@@ -34,7 +34,7 @@ void SkyRasterizer::rasterizeToCanvas(CanvasPortion* canvas)
 
     for (j = 0; j < res_j; j++)
     {
-        if (!renderer->addRenderProgress(0.0))
+        if (interrupted)
         {
             return;
         }

@@ -86,6 +86,10 @@ void SoftwareCanvasRenderer::interrupt()
     {
         current_work->interrupt();
     }
+    for (auto &rasterizer:getRasterizers())
+    {
+        rasterizer->interrupt();
+    }
 }
 
 const std::vector<Rasterizer *> &SoftwareCanvasRenderer::getRasterizers() const

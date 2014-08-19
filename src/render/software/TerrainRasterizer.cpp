@@ -152,25 +152,29 @@ void TerrainRasterizer::getTessellationInfo(CanvasPortion* canvas, int displaced
         for (i = 0; i < chunk_count - 1; i++)
         {
             _getChunk(renderer, &chunk, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size, displaced);
-            if (!processChunk(canvas, &chunk, progress))
+            processChunk(canvas, &chunk, progress);
+            if (interrupted)
             {
                 return;
             }
 
             _getChunk(renderer, &chunk, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size, displaced);
-            if (!processChunk(canvas, &chunk, progress))
+            processChunk(canvas, &chunk, progress);
+            if (interrupted)
             {
                 return;
             }
 
             _getChunk(renderer, &chunk, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size, displaced);
-            if (!processChunk(canvas, &chunk, progress))
+            processChunk(canvas, &chunk, progress);
+            if (interrupted)
             {
                 return;
             }
 
             _getChunk(renderer, &chunk, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size, displaced);
-            if (!processChunk(canvas, &chunk, progress))
+            processChunk(canvas, &chunk, progress);
+            if (interrupted)
             {
                 return;
             }
@@ -188,12 +192,11 @@ void TerrainRasterizer::getTessellationInfo(CanvasPortion* canvas, int displaced
     }
 }
 
-int TerrainRasterizer::processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, double progress)
+void TerrainRasterizer::processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, double progress)
 {
     tessellateChunk(canvas, chunk, chunk->detail_hint);
 
     renderer->render_progress = 0.05 * progress;
-    return !renderer->render_interrupt;
 }
 
 void TerrainRasterizer::rasterizeToCanvas(CanvasPortion *canvas)

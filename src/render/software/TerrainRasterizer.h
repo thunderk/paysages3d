@@ -27,7 +27,7 @@ public:
     /**
      * Method called for each chunk tessellated by getTessellationInfo.
      */
-    int processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, double progress);
+    void processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, double progress);
 
     /**
      * Tessellate the terrain, calling processChunk for each chunk.

@@ -18,9 +18,9 @@ public:
     {
     }
 
-    virtual int processParallelUnit(int unit)
+    virtual void processParallelUnit(int unit)
     {
-        return func(work, unit, data);
+        func(work, unit, data);
     }
 
 private:

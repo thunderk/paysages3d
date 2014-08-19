@@ -12,7 +12,7 @@ CanvasPixelShader::CanvasPixelShader(const SoftwareCanvasRenderer &renderer, Can
 {
 }
 
-int CanvasPixelShader::processParallelUnit(int unit)
+void CanvasPixelShader::processParallelUnit(int unit)
 {
     // Locate the chunk we work on
     int prev_sub_chunk_size = chunk_size * 2;
@@ -33,7 +33,7 @@ int CanvasPixelShader::processParallelUnit(int unit)
         {
             if (interrupted)
             {
-                return 0;
+                return;
             }
 
             if (sub_chunk_size == chunk_size or x % prev_sub_chunk_size != 0 or y % prev_sub_chunk_size != 0)
@@ -60,6 +60,4 @@ int CanvasPixelShader::processParallelUnit(int unit)
             }
         }
     }
-
-    return 0;
 }

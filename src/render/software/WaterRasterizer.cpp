@@ -55,7 +55,7 @@ void WaterRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
 
     while (radius_int < 20000.0)
     {
-        if (!renderer->addRenderProgress(0.0))
+        if (interrupted)
         {
             return;
         }
