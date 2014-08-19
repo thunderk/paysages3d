@@ -20,8 +20,6 @@ public:
 
     /* Render base configuration */
     int render_quality;
-    int render_width;
-    int render_height;
     CameraDefinition* render_camera;
 
     /* Render related */

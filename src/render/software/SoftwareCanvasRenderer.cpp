@@ -45,8 +45,6 @@ void SoftwareCanvasRenderer::render()
 {
     // TEMP
     started = true;
-    render_width = canvas->getWidth();
-    render_height = canvas->getHeight();
     render_quality = 3;
 
     render_camera->setRenderSize(canvas->getWidth(), canvas->getHeight());

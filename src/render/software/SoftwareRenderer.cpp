@@ -23,8 +23,6 @@
 SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
 {
     render_quality = 5;
-    render_width = 1;
-    render_height = 1;
     render_interrupt = 0;
     render_progress = 0.0;
     is_rendering = 0;
