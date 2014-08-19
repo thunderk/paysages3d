@@ -32,35 +32,29 @@ OpenGLView {
             anchors.verticalCenter: parent.verticalCenter
             spacing: (parent.height - 6 * tool_terrain.height) / 7
 
-            Image {
+            ToolbarButton {
                 id: tool_terrain
-                opacity: 0.5
-                source: "qrc:///toolbar/primary/tab_terrain.png"
+                code: "terrain"
             }
-            Image {
+            ToolbarButton {
                 id: tool_textures
-                opacity: 0.5
-                source: "qrc:///toolbar/primary/tab_textures.png"
+                code: "textures"
             }
-            Image {
+            ToolbarButton {
                 id: tool_water
-                opacity: 0.5
-                source: "qrc:///toolbar/primary/tab_water.png"
+                code: "water"
             }
-            Image {
+            ToolbarButton {
                 id: tool_atmosphere
-                opacity: 0.5
-                source: "qrc:///toolbar/primary/tab_atmosphere.png"
+                code: "atmosphere"
             }
-            Image {
+            ToolbarButton {
                 id: tool_clouds
-                opacity: 0.5
-                source: "qrc:///toolbar/primary/tab_clouds.png"
+                code: "clouds"
             }
-            Image {
+            ToolbarButton {
                 id: tool_render
-                opacity: 0.5
-                source: "qrc:///toolbar/primary/tab_render.png"
+                code: "render"
             }
         }
     }
@@ -71,7 +65,7 @@ OpenGLView {
         anchors.left: primary_toolbar.right
         width: primary_toolbar.width
         height: primary_toolbar.height
-        color: "green"
+        color: "#8800FF00"
 
         SequentialAnimation on width {
             loops: Animation.Infinite

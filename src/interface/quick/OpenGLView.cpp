@@ -16,6 +16,7 @@ OpenGLView::OpenGLView(QQuickItem *parent) :
     connect(this, SIGNAL(windowChanged(QQuickWindow*)), this, SLOT(handleWindowChanged(QQuickWindow*)));
 
     scenery.autoPreset();
+
     renderer.setScenery(&scenery);
 }
 
