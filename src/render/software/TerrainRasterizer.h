@@ -45,9 +45,6 @@ public:
 
     virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
     virtual Color shadeFragment(const CanvasFragment &fragment) const override;
-
-private:
-    ParallelQueue* queue;
 };
 
 }

@@ -7,7 +7,6 @@
 #include "WaterRenderer.h"
 #include "TexturesRenderer.h"
 #include "Scenery.h"
-#include "ParallelQueue.h"
 #include "CanvasPortion.h"
 #include "CanvasFragment.h"
 
@@ -189,38 +188,9 @@ void TerrainRasterizer::getTessellationInfo(CanvasPortion* canvas, int displaced
     }
 }
 
-typedef struct
-{
-    TerrainRasterizer* rasterizer;
-    CanvasPortion *canvas;
-    TerrainRasterizer::TerrainChunkInfo chunk;
-} ParallelRasterInfo;
-
-static int _parallelJobCallback(ParallelQueue*, int, void* data, int stopping)
-{
-    ParallelRasterInfo* info = (ParallelRasterInfo*)data;
-
-    if (!stopping)
-    {
-        info->rasterizer->tessellateChunk(info->canvas, &info->chunk, info->chunk.detail_hint);
-    }
-
-    delete info;
-    return 0;
-}
-
 int TerrainRasterizer::processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, double progress)
 {
-    ParallelRasterInfo* info = new ParallelRasterInfo;
-
-    info->rasterizer = this;
-    info->canvas = canvas;
-    info->chunk = *chunk;
-
-    if (!queue->addJob(_parallelJobCallback, info))
-    {
-        delete info;
-    }
+    tessellateChunk(canvas, chunk, chunk->detail_hint);
 
     renderer->render_progress = 0.05 * progress;
     return !renderer->render_interrupt;
@@ -228,13 +198,9 @@ int TerrainRasterizer::processChunk(CanvasPortion* canvas, TerrainChunkInfo* chu
 
 void TerrainRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
 {
-    queue = new ParallelQueue();
-
     renderer->render_progress = 0.0;
     getTessellationInfo(canvas, 0);
     renderer->render_progress = 0.05;
-
-    queue->wait();
 }
 
 Color TerrainRasterizer::shadeFragment(const CanvasFragment &fragment) const

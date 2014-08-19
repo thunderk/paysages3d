@@ -21,7 +21,6 @@ SOURCES += \
     RandomGenerator.cpp \
     Memory.cpp \
     ParallelWork.cpp \
-    ParallelQueue.cpp \
     CacheFile.cpp \
     PictureWriter.cpp \
     Logs.cpp \
@@ -38,7 +37,6 @@ HEADERS += \
     RandomGenerator.h \
     Memory.h \
     ParallelWork.h \
-    ParallelQueue.h \
     CacheFile.h \
     PictureWriter.h \
     Logs.h \

@@ -2,7 +2,6 @@
 
 #include "SoftwareRenderer.h"
 #include "WaterRenderer.h"
-#include "ParallelQueue.h"
 #include "CanvasFragment.h"
 
 WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer, int client_id):
