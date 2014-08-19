@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/toolbar/primary">
+        <file>tab_water.png</file>
+        <file>tab_atmosphere.png</file>
+        <file>tab_clouds.png</file>
+        <file>tab_render.png</file>
+        <file>tab_terrain.png</file>
+        <file>tab_textures.png</file>
+    </qresource>
+</RCC>

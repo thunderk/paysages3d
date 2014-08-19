@@ -39,6 +39,8 @@ void OpenGLView::paint()
         initialized = true;
     }
 
-    renderer.resize(window()->width(), window()->height());
+    renderer.resize(width(), height());
     renderer.paint();
+
+    window()->resetOpenGLState();
 }
