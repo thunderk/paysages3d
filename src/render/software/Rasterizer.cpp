@@ -35,11 +35,18 @@ Rasterizer::Rasterizer(SoftwareRenderer* renderer, int client_id, const Color &c
     renderer(renderer), client_id(client_id)
 {
     this->color = new Color(color);
+
+    interrupted = false;
 }
 
 Rasterizer::~Rasterizer()
 {
     delete color;
+}
+
+void Rasterizer::interrupt()
+{
+    interrupted = true;
 }
 
 void Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3)

@@ -172,6 +172,11 @@ int ParallelWork::perform(int thread_count)
     return done;
 }
 
+void ParallelWork::interrupt()
+{
+    worker->interrupt();
+}
+
 void ParallelWork::returnThread(ParallelWork::ParallelThread *thread)
 {
     mutex->acquire();

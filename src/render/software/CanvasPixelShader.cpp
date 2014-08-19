@@ -31,6 +31,11 @@ int CanvasPixelShader::processParallelUnit(int unit)
     {
         for (int y = 0; y < limit_y; y += sub_chunk_size)
         {
+            if (interrupted)
+            {
+                return 0;
+            }
+
             if (sub_chunk_size == chunk_size or x % prev_sub_chunk_size != 0 or y % prev_sub_chunk_size != 0)
             {
                 // Resolve the pixel color

@@ -15,8 +15,8 @@ public:
 
     void rasterizeQuad(CanvasPortion* canvas, double x, double z, double size);
 
-    virtual void rasterizeToCanvas(CanvasPortion* canvas);
-    virtual Color shadeFragment(const CanvasFragment &fragment) const;
+    virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
+    virtual Color shadeFragment(const CanvasFragment &fragment) const override;
 };
 
 }

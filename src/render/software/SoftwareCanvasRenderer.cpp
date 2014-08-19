@@ -19,6 +19,8 @@ SoftwareCanvasRenderer::SoftwareCanvasRenderer()
     rasterizers.push_back(new SkyRasterizer(this, 0));
     rasterizers.push_back(new WaterRasterizer(this, 1));
     rasterizers.push_back(new TerrainRasterizer(this, 2));
+
+    current_work = NULL;
 }
 
 SoftwareCanvasRenderer::~SoftwareCanvasRenderer()
@@ -59,11 +61,30 @@ void SoftwareCanvasRenderer::render()
         for (int x = 0; x < nx; x++)
         {
             CanvasPortion *portion = canvas->at(x, y);
-            portion->preparePixels();
-            rasterize(portion, true);
-            postProcess(portion, true);
+
+            if (not render_interrupt)
+            {
+                portion->preparePixels();
+                rasterize(portion, true);
+            }
+
+            if (not render_interrupt)
+            {
+                applyPixelShader(portion, true);
+            }
+
             portion->discardPixels();
         }
+    }
+}
+
+void SoftwareCanvasRenderer::interrupt()
+{
+    SoftwareRenderer::interrupt();
+
+    if (current_work)
+    {
+        current_work->interrupt();
     }
 }
 
@@ -85,7 +106,7 @@ void SoftwareCanvasRenderer::rasterize(CanvasPortion *portion, bool threaded)
     }
 }
 
-void SoftwareCanvasRenderer::postProcess(CanvasPortion *portion, bool threaded)
+void SoftwareCanvasRenderer::applyPixelShader(CanvasPortion *portion, bool threaded)
 {
     // Subdivide in chunks
     int chunk_size = 64;
@@ -96,8 +117,16 @@ void SoftwareCanvasRenderer::postProcess(CanvasPortion *portion, bool threaded)
     // Render chunks in parallel
     for (int sub_chunk_size = chunk_size; sub_chunk_size >= 1; sub_chunk_size /= 2)
     {
+        if (render_interrupt)
+        {
+            break;
+        }
+
         CanvasPixelShader shader(*this, portion, chunk_size, sub_chunk_size, chunks_x, chunks_y);
         ParallelWork work(&shader, units);
+
+        current_work = &work;
         work.perform();
+        current_work = NULL;
     }
 }

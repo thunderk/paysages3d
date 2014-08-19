@@ -48,6 +48,13 @@ public:
      */
     int perform(int thread_count=-1);
 
+    /**
+     * Tell the threads to interrupt what they are doing.
+     *
+     * This will also call interrupt() on the worker.
+     */
+    void interrupt();
+
 private:
     void returnThread(ParallelThread *thread);
 

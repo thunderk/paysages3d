@@ -226,10 +226,6 @@ int TerrainRasterizer::processChunk(CanvasPortion* canvas, TerrainChunkInfo* chu
     return !renderer->render_interrupt;
 }
 
-void TerrainRasterizer::rasterize()
-{
-}
-
 void TerrainRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
 {
     queue = new ParallelQueue();

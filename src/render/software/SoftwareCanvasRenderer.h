@@ -36,6 +36,8 @@ public:
      */
     void render();
 
+    virtual void interrupt() override;
+
     /**
      * @brief Get the list of objects that can be rasterized to polygons on a canvas.
      */
@@ -52,19 +54,21 @@ protected:
      *
      * If 'threaded' is true, the rasterization will take advantage of multiple CPU cores.
      */
-    void rasterize(CanvasPortion* portion, bool threaded);
+    void rasterize(CanvasPortion *portion, bool threaded=false);
 
     /**
-     * @brief Apply post-processing to fragments stored in the CanvasPortion.
+     * @brief Apply pixel shader to fragments stored in the CanvasPortion.
      *
-     * If 'threaded' is true, the post-processing will take advantage of multiple CPU cores.
+     * If 'threaded' is true, the shader will take advantage of multiple CPU cores.
      */
-    void postProcess(CanvasPortion* portion, bool threaded=true);
+    void applyPixelShader(CanvasPortion *portion, bool threaded=true);
 
 private:
-    Canvas* canvas;
+    Canvas *canvas;
     std::vector<Rasterizer*> rasterizers;
     bool started;
+
+    ParallelWork *current_work;
 };
 
 }

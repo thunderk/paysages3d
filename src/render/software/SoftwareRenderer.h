@@ -67,7 +67,7 @@ public:
     void disableAtmosphere();
     void disableAtmosphere(const std::vector<LightComponent> &lights);
 
-    void interrupt();
+    virtual void interrupt();
 
     inline Scenery* getScenery() const {return scenery;}
 

@@ -22,6 +22,7 @@ public:
 
     virtual void rasterizeToCanvas(CanvasPortion* canvas) = 0;
     virtual Color shadeFragment(const CanvasFragment &fragment) const = 0;
+    virtual void interrupt();
 
 protected:
     void pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3);
@@ -34,6 +35,7 @@ protected:
     Color* color;
     SoftwareRenderer *renderer;
     int client_id;
+    bool interrupted;
 
 private:
     void scanGetDiff(ScanPoint *v1, ScanPoint *v2, ScanPoint *result);

@@ -21,6 +21,14 @@ public:
      * This method will be called from any thread in the thread pool used by the ParallelWork.
      */
     virtual int processParallelUnit(int unit) = 0;
+
+    /**
+     * Method to reimplement to know when to interrupt the processing of units.
+     */
+    virtual void interrupt();
+
+protected:
+    bool interrupted;
 };
 
 }

@@ -43,15 +43,8 @@ public:
 
     void renderQuad(CanvasPortion* canvas, double x, double z, double size, double water_height);
 
-    /**
-     * Start the final rasterization of terrain.
-     *
-     * This will push the rasterized quads in the render area, waiting for post process.
-     */
-    virtual void rasterize();
-
-    virtual void rasterizeToCanvas(CanvasPortion* canvas);
-    virtual Color shadeFragment(const CanvasFragment &fragment) const;
+    virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
+    virtual Color shadeFragment(const CanvasFragment &fragment) const override;
 
 private:
     ParallelQueue* queue;

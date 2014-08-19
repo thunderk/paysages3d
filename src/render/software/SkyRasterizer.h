@@ -13,8 +13,8 @@ class SOFTWARESHARED_EXPORT SkyRasterizer: public Rasterizer
 public:
     SkyRasterizer(SoftwareRenderer* renderer, int client_id);
 
-    virtual void rasterizeToCanvas(CanvasPortion* canvas);
-    virtual Color shadeFragment(const CanvasFragment &fragment) const;
+    virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
+    virtual Color shadeFragment(const CanvasFragment &fragment) const override;
 };
 
 }
