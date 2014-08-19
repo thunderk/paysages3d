@@ -21,6 +21,8 @@ TEST(CanvasPortion, pushFragment)
     int count;
 
     portion.setSize(50, 50);
+    portion.preparePixels();
+
     portion.pushFragment(10, 15, pushed);
 
     count = portion.getFragmentCount(10, 14);
@@ -40,6 +42,7 @@ TEST(CanvasPortion, pushFragment_opaque)
     CanvasFragment pushed;
 
     portion.setSize(10, 10);
+    portion.preparePixels();
 
     pushed = CanvasFragment(2.0, VECTOR_ZERO, 0);
     portion.pushFragment(2, 2, pushed);
@@ -66,6 +69,7 @@ TEST(CanvasPortion, pushFragment_transparent)
     CanvasFragment pushed;
 
     portion.setSize(10, 10);
+    portion.preparePixels();
 
     pushed = CanvasFragment(2.0, VECTOR_ZERO, 0, false);
     portion.pushFragment(2, 2, pushed);
@@ -92,6 +96,8 @@ TEST(CanvasPortion, clear)
     CanvasFragment fragment;
 
     portion.setSize(10, 10);
+    portion.preparePixels();
+
     portion.pushFragment(5, 5, fragment);
 
     EXPECT_EQ(0, portion.getFragmentCount(4, 5));

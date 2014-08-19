@@ -7,6 +7,12 @@
 
 #include <cassert>
 
+#define CHECK_COORDINATES(_x_, _y_) \
+    assert(_x_ >= 0); \
+    assert(_y_ >= 0); \
+    assert(_x_ < this->width); \
+    assert(_y_ < this->height) \
+
 CanvasPreview::CanvasPreview()
 {
     width = 1;
@@ -32,6 +38,13 @@ CanvasPreview::~CanvasPreview()
     delete [] pixels;
     delete lock;
     delete profile;
+}
+
+const Color &CanvasPreview::getFinalPixel(int x, int y) const
+{
+    CHECK_COORDINATES(x, y);
+
+    return pixels[y * width + x];
 }
 
 void CanvasPreview::setSize(int real_width, int real_height, int preview_width, int preview_height)
@@ -110,8 +123,11 @@ void CanvasPreview::pushPixel(int real_x, int real_y, const Color &old_color, co
 
     if (scaled)
     {
-        x = round(real_x / factor_x);
-        y = round(real_y / factor_y);
+        x = int(real_x / factor_x);
+        y = int(real_y / factor_y);
+
+        x = (x >= width) ? width - 1 : x;
+        y = (y >= height) ? height - 1 : y;
     }
     else
     {
@@ -119,7 +135,7 @@ void CanvasPreview::pushPixel(int real_x, int real_y, const Color &old_color, co
         y = real_y;
     }
 
-    // TODO Assert-check on x and y
+    CHECK_COORDINATES(x, y);
 
     Color* pixel = pixels + (y * width + x);
     pixel->r = pixel->r - old_color.r / factor + new_color.r / factor;

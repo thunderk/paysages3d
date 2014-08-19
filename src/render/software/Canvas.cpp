@@ -70,7 +70,7 @@ void Canvas::setSize(int width, int height)
     this->height = height;
 
     // Smaller preview
-    while (width > 800 and height > 800)
+    while (width > 1000 or height > 700)
     {
         width = width / 2;
         height = height / 2;

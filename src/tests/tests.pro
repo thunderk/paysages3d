@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     VertexArray_Test.cpp \
     FractalNoise_Test.cpp \
     Canvas_Test.cpp \
-    CanvasPortion_Test.cpp
+    CanvasPortion_Test.cpp \
+    CanvasPreview_Test.cpp
 
 HEADERS += \
     BaseTestCase.h

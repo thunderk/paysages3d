@@ -18,6 +18,8 @@ public:
     inline int getWidth() const {return width;}
     inline int getHeight() const {return height;}
 
+    const Color &getFinalPixel(int x, int y) const;
+
     void setSize(int real_width, int real_height, int preview_width, int preview_height);
     void reset();
 

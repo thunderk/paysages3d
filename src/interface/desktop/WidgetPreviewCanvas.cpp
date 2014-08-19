@@ -25,7 +25,7 @@ void WidgetPreviewCanvas::setCanvas(const Canvas *canvas)
     this->canvas = canvas;
 }
 
-void WidgetPreviewCanvas::paintEvent(QPaintEvent *event)
+void WidgetPreviewCanvas::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.drawImage(0, 0, *pixbuf);
