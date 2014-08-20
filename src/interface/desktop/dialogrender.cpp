@@ -99,6 +99,8 @@ DialogRender::DialogRender(QWidget *parent, SoftwareCanvasRenderer* renderer):
     connect(_save_button, SIGNAL(clicked()), this, SLOT(saveRender()));
     connect(_tonemapping_control, SIGNAL(currentIndexChanged(int)), this, SLOT(toneMappingChanged()));
     connect(_exposure_control, SIGNAL(valueChanged(int)), this, SLOT(toneMappingChanged()));
+
+    toneMappingChanged();
 }
 
 DialogRender::~DialogRender()
@@ -166,7 +168,7 @@ void DialogRender::saveRender()
 void DialogRender::toneMappingChanged()
 {
     ColorProfile profile((ColorProfile::ToneMappingOperator)_tonemapping_control->currentIndex(), ((double)_exposure_control->value()) * 0.01);
-    //canvas_renderer->render_area->setToneMapping(profile);
+    canvas_preview->setToneMapping(profile);
 }
 
 void DialogRender::loadLastRender()

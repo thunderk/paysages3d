@@ -72,6 +72,12 @@ void CanvasPreview::setSize(int real_width, int real_height, int preview_width, 
     reset();
 }
 
+void CanvasPreview::setToneMapping(const ColorProfile &profile)
+{
+    profile.copy(this->profile);
+    setAllDirty();
+}
+
 void CanvasPreview::reset()
 {
     lock->acquire();

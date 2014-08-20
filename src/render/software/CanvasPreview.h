@@ -21,6 +21,7 @@ public:
     const Color &getFinalPixel(int x, int y) const;
 
     void setSize(int real_width, int real_height, int preview_width, int preview_height);
+    void setToneMapping(const ColorProfile &profile);
     void reset();
 
     void initLive(CanvasLiveClient *client);

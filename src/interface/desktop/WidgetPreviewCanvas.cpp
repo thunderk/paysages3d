@@ -28,6 +28,16 @@ void WidgetPreviewCanvas::setCanvas(const Canvas *canvas)
     }
 }
 
+void WidgetPreviewCanvas::setToneMapping(const ColorProfile &profile)
+{
+    if (canvas)
+    {
+        canvas->getPreview()->setToneMapping(profile);
+        canvas->getPreview()->updateLive(this);
+        update();
+    }
+}
+
 void WidgetPreviewCanvas::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);

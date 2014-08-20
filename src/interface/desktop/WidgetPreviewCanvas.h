@@ -9,8 +9,8 @@
 namespace paysages {
 namespace desktop {
 
-/*!
- * \brief Widget to display a live-updated preview of a Canvas software rendering.
+/**
+ * Widget to display a live-updated preview of a Canvas software rendering.
  */
 class WidgetPreviewCanvas : public QWidget, public CanvasLiveClient
 {
@@ -19,12 +19,17 @@ public:
     explicit WidgetPreviewCanvas(QWidget *parent = 0);
     virtual ~WidgetPreviewCanvas();
 
-    /*!
-     * \brief Set the canvas to watch and display, null to stop watching.
+    /**
+     * Set the canvas to watch and display, null to stop watching.
      *
      * This function must be called from the graphics thread.
      */
     void setCanvas(const Canvas *canvas);
+
+    /**
+     * Set the tone mapping to apply to pixel colors.
+     */
+    void setToneMapping(const ColorProfile &profile);
 
     virtual void paintEvent(QPaintEvent* event);
 
