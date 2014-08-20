@@ -116,11 +116,6 @@ DialogRender::~DialogRender()
     delete pixbuf_lock;
 }
 
-void DialogRender::tellProgressChange(double value)
-{
-    emit progressChanged(value);
-}
-
 void DialogRender::tellRenderEnded()
 {
     emit renderEnded();
@@ -132,6 +127,8 @@ void DialogRender::startRender()
 
     _render_thread = new RenderThread(this, canvas_renderer);
     _render_thread->start();
+
+    startTimer(100);
 
     exec();
 }
@@ -179,14 +176,15 @@ void DialogRender::loadLastRender()
     exec();
 }
 
-void DialogRender::applyProgress(double value)
+void DialogRender::timerEvent(QTimerEvent *)
 {
     double diff = difftime(time(NULL), _started);
     int hours = (int)floor(diff / 3600.0);
     int minutes = (int)floor((diff - 3600.0 * hours) / 60.0);
     int seconds = (int)floor(diff - 3600.0 * hours - 60.0 * minutes);
     _timer->setText(tr("%1:%2.%3").arg(hours).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
-    _progress->setValue((int)(value * 1000.0));
+
+    _progress->setValue((int)(canvas_renderer->getProgress() * 1000.0));
     _progress->update();
 }
 

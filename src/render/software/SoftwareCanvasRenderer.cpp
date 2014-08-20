@@ -17,6 +17,7 @@ SoftwareCanvasRenderer::SoftwareCanvasRenderer()
     started = false;
     interrupted = false;
     canvas = new Canvas();
+    progress = 0.0;
 
     rasterizers.push_back(new SkyRasterizer(this, 0));
     rasterizers.push_back(new WaterRasterizer(this, 1));
@@ -55,6 +56,7 @@ void SoftwareCanvasRenderer::setSize(int width, int height, int samples)
 void SoftwareCanvasRenderer::render()
 {
     started = true;
+    progress = 0.0;
 
     render_camera->setRenderSize(canvas->getWidth(), canvas->getHeight());
 
@@ -63,6 +65,8 @@ void SoftwareCanvasRenderer::render()
     // Iterate portions
     int nx = canvas->getHorizontalPortionCount();
     int ny = canvas->getVerticalPortionCount();
+    int i = 0;
+    int n = nx * ny;
     for (int y = 0; y < ny; y++)
     {
         for (int x = 0; x < nx; x++)
@@ -71,16 +75,20 @@ void SoftwareCanvasRenderer::render()
 
             if (not interrupted)
             {
+                progress_segment = 0.2 / (double)n;
                 portion->preparePixels();
-                rasterize(portion, true);
+                rasterize(portion);
             }
 
             if (not interrupted)
             {
-                applyPixelShader(portion, true);
+                progress_segment = 0.8 / (double)n;
+                applyPixelShader(portion);
             }
 
             portion->discardPixels();
+            i++;
+            progress = (double)i / (double)n;
         }
     }
 }
@@ -93,37 +101,40 @@ void SoftwareCanvasRenderer::interrupt()
     {
         current_work->interrupt();
     }
-    for (auto &rasterizer:getRasterizers())
+    for (auto &rasterizer:rasterizers)
     {
         rasterizer->interrupt();
     }
 }
 
-const std::vector<Rasterizer *> &SoftwareCanvasRenderer::getRasterizers() const
-{
-    return rasterizers;
-}
-
 const Rasterizer &SoftwareCanvasRenderer::getRasterizer(int client_id) const
 {
-    return *(getRasterizers()[client_id]);
+    return *(rasterizers[client_id]);
 }
 
-void SoftwareCanvasRenderer::rasterize(CanvasPortion *portion, bool threaded)
+void SoftwareCanvasRenderer::rasterize(CanvasPortion *portion)
 {
-    for (auto &rasterizer:getRasterizers())
+    for (auto &rasterizer:rasterizers)
     {
         rasterizer->rasterizeToCanvas(portion);
+        progress += progress_segment / (double)rasterizers.size();
     }
 }
 
-void SoftwareCanvasRenderer::applyPixelShader(CanvasPortion *portion, bool threaded)
+void SoftwareCanvasRenderer::applyPixelShader(CanvasPortion *portion)
 {
     // Subdivide in chunks
     int chunk_size = 64;
     int chunks_x = (portion->getWidth() - 1) / chunk_size + 1;
     int chunks_y = (portion->getHeight() - 1) / chunk_size + 1;
     int units = chunks_x * chunks_y;
+
+    // Estimate chunks
+    int n = 0;
+    for (int sub_chunk_size = chunk_size; sub_chunk_size >= 1; sub_chunk_size /= 2)
+    {
+        n += chunk_size / sub_chunk_size;
+    }
 
     // Render chunks in parallel
     for (int sub_chunk_size = chunk_size; sub_chunk_size >= 1; sub_chunk_size /= 2)
@@ -139,5 +150,6 @@ void SoftwareCanvasRenderer::applyPixelShader(CanvasPortion *portion, bool threa
         current_work = &work;
         work.perform();
         current_work = NULL;
+        progress += progress_segment * (double)(chunk_size / sub_chunk_size) / (double)n;
     }
 }

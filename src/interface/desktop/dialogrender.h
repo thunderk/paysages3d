@@ -18,25 +18,24 @@ class DialogRender : public QDialog
 {
     Q_OBJECT
 public:
-    explicit DialogRender(QWidget *parent, SoftwareCanvasRenderer* renderer);
+    explicit DialogRender(QWidget *parent, SoftwareCanvasRenderer *renderer);
     ~DialogRender();
 
-    void tellProgressChange(double value);
     void tellRenderEnded();
     void startRender();
     void loadLastRender();
+
+    virtual void timerEvent(QTimerEvent *event) override;
 
     QImage* pixbuf;
     QMutex* pixbuf_lock;
 
 private slots:
-    void applyProgress(double value);
     void saveRender();
     void applyRenderEnded();
     void toneMappingChanged();
 
 signals:
-    void progressChanged(double value);
     void renderEnded();
 
 private:

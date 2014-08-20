@@ -23,6 +23,7 @@ public:
     virtual ~SoftwareCanvasRenderer();
 
     inline const Canvas *getCanvas() const {return canvas;}
+    inline double getProgress() const {return progress;}
 
     /**
      * Set the renderer configuration.
@@ -47,11 +48,6 @@ public:
     void interrupt();
 
     /**
-     * @brief Get the list of objects that can be rasterized to polygons on a canvas.
-     */
-    virtual const std::vector<Rasterizer*> &getRasterizers() const;
-
-    /**
      * Get a rasterizer by its client id.
      */
     const Rasterizer &getRasterizer(int client_id) const;
@@ -59,19 +55,18 @@ public:
 protected:
     /**
      * @brief Rasterize the scenery into a canvas portion.
-     *
-     * If 'threaded' is true, the rasterization will take advantage of multiple CPU cores.
      */
-    void rasterize(CanvasPortion *portion, bool threaded=false);
+    void rasterize(CanvasPortion *portion);
 
     /**
      * @brief Apply pixel shader to fragments stored in the CanvasPortion.
-     *
-     * If 'threaded' is true, the shader will take advantage of multiple CPU cores.
      */
-    void applyPixelShader(CanvasPortion *portion, bool threaded=true);
+    void applyPixelShader(CanvasPortion *portion);
 
 private:
+    double progress;
+    double progress_segment;
+
     Canvas *canvas;
     std::vector<Rasterizer*> rasterizers;
     bool started;
