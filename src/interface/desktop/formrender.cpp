@@ -103,15 +103,16 @@ void FormRender::startQuickRender()
     {
         delete _renderer;
     }
+
+    RenderConfig config(400, 300, 1, 3);
+
     _renderer = new SoftwareCanvasRenderer();
     _renderer->setScenery(DesktopScenery::getCurrent());
+    _renderer->setConfig(config);
     _renderer_inited = true;
 
-    DialogRender* dialog = new DialogRender(this, _renderer);
-    RenderConfig params(400, 300, 1, 3);
-    dialog->startRender(params);
-
-    delete dialog;
+    DialogRender dialog(this, _renderer);
+    dialog.startRender();
 }
 
 void FormRender::startRender()
@@ -122,21 +123,18 @@ void FormRender::startRender()
     }
     _renderer = new SoftwareCanvasRenderer();
     _renderer->setScenery(DesktopScenery::getCurrent());
+    _renderer->setConfig(_params);
     _renderer_inited = true;
 
-    DialogRender* dialog = new DialogRender(this, _renderer);
-    dialog->startRender(_params);
-
-    delete dialog;
+    DialogRender dialog(this, _renderer);
+    dialog.startRender();
 }
 
 void FormRender::showRender()
 {
     if (_renderer_inited)
     {
-        DialogRender* dialog = new DialogRender(this, _renderer);
-        dialog->loadLastRender();
-
-        delete dialog;
+        DialogRender dialog(this, _renderer);
+        dialog.loadLastRender();
     }
 }

@@ -21,6 +21,8 @@ public:
 
     /*!
      * \brief Set the canvas to watch and display, null to stop watching.
+     *
+     * This function must be called from the graphics thread.
      */
     void setCanvas(const Canvas *canvas);
 
@@ -35,7 +37,6 @@ protected:
 private:
     QImage* pixbuf;
     const Canvas *canvas;
-    bool inited;
 };
 
 }

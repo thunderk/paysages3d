@@ -10,7 +10,6 @@ WidgetPreviewCanvas::WidgetPreviewCanvas(QWidget *parent) :
     QWidget(parent), canvas(NULL)
 {
     pixbuf = new QImage();
-    inited = false;
 
     startTimer(500);
 }
@@ -22,7 +21,11 @@ WidgetPreviewCanvas::~WidgetPreviewCanvas()
 
 void WidgetPreviewCanvas::setCanvas(const Canvas *canvas)
 {
-    this->canvas = canvas;
+    if (not this->canvas)
+    {
+        this->canvas = canvas;
+        canvas->getPreview()->initLive(this);
+    }
 }
 
 void WidgetPreviewCanvas::paintEvent(QPaintEvent *)
@@ -58,12 +61,6 @@ void WidgetPreviewCanvas::timerEvent(QTimerEvent *)
 {
     if (canvas)
     {
-        if (!inited)
-        {
-            canvas->getPreview()->initLive(this);
-            inited = true;
-        }
-
         canvas->getPreview()->updateLive(this);
         update();
     }

@@ -21,10 +21,9 @@ public:
     explicit DialogRender(QWidget *parent, SoftwareCanvasRenderer* renderer);
     ~DialogRender();
 
-    void tellRenderSize(int width, int height);
     void tellProgressChange(double value);
     void tellRenderEnded();
-    void startRender(const RenderConfig &params);
+    void startRender();
     void loadLastRender();
 
     QImage* pixbuf;
@@ -37,7 +36,6 @@ private slots:
     void toneMappingChanged();
 
 signals:
-    void renderSizeChanged(int width, int height);
     void progressChanged(double value);
     void renderEnded();
 

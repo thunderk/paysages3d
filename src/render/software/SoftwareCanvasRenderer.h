@@ -25,6 +25,11 @@ public:
     inline const Canvas *getCanvas() const {return canvas;}
 
     /**
+     * Set the renderer configuration.
+     */
+    void setConfig(const RenderConfig &config);
+
+    /**
      * @brief Set the rendering size in pixels.
      *
      * Set 'samples' to something bigger than 1 to allow for the multi-sampling of pixels.

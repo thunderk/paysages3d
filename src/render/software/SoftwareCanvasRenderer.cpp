@@ -10,6 +10,7 @@
 #include "ParallelWork.h"
 #include "CanvasPortion.h"
 #include "CanvasPixelShader.h"
+#include "RenderConfig.h"
 
 SoftwareCanvasRenderer::SoftwareCanvasRenderer()
 {
@@ -34,6 +35,15 @@ SoftwareCanvasRenderer::~SoftwareCanvasRenderer()
     }
 }
 
+void SoftwareCanvasRenderer::setConfig(const RenderConfig &config)
+{
+    if (not started)
+    {
+        setSize(config.width, config.height, config.antialias);
+        render_quality = config.quality;
+    }
+}
+
 void SoftwareCanvasRenderer::setSize(int width, int height, int samples)
 {
     if (not started)
@@ -44,9 +54,7 @@ void SoftwareCanvasRenderer::setSize(int width, int height, int samples)
 
 void SoftwareCanvasRenderer::render()
 {
-    // TEMP
     started = true;
-    render_quality = 3;
 
     render_camera->setRenderSize(canvas->getWidth(), canvas->getHeight());
 

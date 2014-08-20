@@ -18,7 +18,6 @@
 #include <QComboBox>
 #include "tools.h"
 
-#include "RenderConfig.h"
 #include "Scenery.h"
 #include "ColorProfile.h"
 #include "SoftwareCanvasRenderer.h"
@@ -27,22 +26,19 @@
 class RenderThread:public QThread
 {
 public:
-    RenderThread(DialogRender* dialog, SoftwareCanvasRenderer* renderer, const RenderConfig &params):QThread()
+    RenderThread(DialogRender* dialog, SoftwareCanvasRenderer* renderer):QThread()
     {
         _dialog = dialog;
         _renderer = renderer;
-        _params = params;
     }
     void run()
     {
-        // FIXME Pass config to render
         _renderer->render();
         _dialog->tellRenderEnded();
     }
 private:
     DialogRender* _dialog;
     SoftwareCanvasRenderer* _renderer;
-    RenderConfig _params;
 };
 
 DialogRender::DialogRender(QWidget *parent, SoftwareCanvasRenderer* renderer):
@@ -98,7 +94,6 @@ DialogRender::DialogRender(QWidget *parent, SoftwareCanvasRenderer* renderer):
     _actions->layout()->addWidget(_save_button);
 
     // Connections
-    //connect(this, SIGNAL(renderSizeChanged(int, int)), this, SLOT(applyRenderSize(int, int)));
     connect(this, SIGNAL(progressChanged(double)), this, SLOT(applyProgress(double)));
     connect(this, SIGNAL(renderEnded()), this, SLOT(applyRenderEnded()));
     connect(_save_button, SIGNAL(clicked()), this, SLOT(saveRender()));
@@ -119,11 +114,6 @@ DialogRender::~DialogRender()
     delete pixbuf_lock;
 }
 
-void DialogRender::tellRenderSize(int width, int height)
-{
-    emit renderSizeChanged(width, height);
-}
-
 void DialogRender::tellProgressChange(double value)
 {
     emit progressChanged(value);
@@ -134,13 +124,11 @@ void DialogRender::tellRenderEnded()
     emit renderEnded();
 }
 
-void DialogRender::startRender(const RenderConfig &params)
+void DialogRender::startRender()
 {
     _started = time(NULL);
 
-    canvas_renderer->setSize(params.width, params.height, params.antialias);
-
-    _render_thread = new RenderThread(this, canvas_renderer, params);
+    _render_thread = new RenderThread(this, canvas_renderer);
     _render_thread->start();
 
     exec();
