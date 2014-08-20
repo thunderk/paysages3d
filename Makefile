@@ -43,17 +43,17 @@ else
 endif
 
 run_cli:build
-	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/commandline/paysages-cli
+	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/commandline/paysages-cli $(ARGS)
 
 run:build
-	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/desktop/paysages-gui
+	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/desktop/paysages-gui $(ARGS)
 
 profile:build
-	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g fp ${BUILDPATH}/interface/desktop/paysages-gui $(ARGS)
+	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g ${BUILDPATH}/interface/desktop/paysages-gui $(ARGS)
 	perf report -g
 
 profile_cli:build
-	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g fp ${BUILDPATH}/interface/commandline/paysages-cli $(ARGS)
+	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g ${BUILDPATH}/interface/commandline/paysages-cli $(ARGS)
 	perf report -g
 
 package:build

@@ -63,8 +63,8 @@ void CanvasPreview::setSize(int real_width, int real_height, int preview_width, 
     dirty_up = -1;
 
     scaled = (real_width != preview_height or real_height != preview_height);
-    factor_x = (double)real_width / (double)preview_width;
-    factor_y = (double)real_height / (double)preview_height;
+    factor_x = (double)preview_width / (double)real_width;
+    factor_y = (double)preview_height / (double)real_height;
     factor = factor_x * factor_y;
 
     lock->release();
@@ -125,12 +125,10 @@ void CanvasPreview::pushPixel(int real_x, int real_y, const Color &old_color, co
 {
     int x, y;
 
-    lock->acquire();
-
     if (scaled)
     {
-        x = int(real_x / factor_x);
-        y = int(real_y / factor_y);
+        x = int(real_x * factor_x);
+        y = int(real_y * factor_y);
 
         x = (x >= width) ? width - 1 : x;
         y = (y >= height) ? height - 1 : y;
@@ -143,10 +141,12 @@ void CanvasPreview::pushPixel(int real_x, int real_y, const Color &old_color, co
 
     CHECK_COORDINATES(x, y);
 
+    lock->acquire();
+
     Color* pixel = pixels + (y * width + x);
-    pixel->r = pixel->r - old_color.r / factor + new_color.r / factor;
-    pixel->g = pixel->g - old_color.g / factor + new_color.g / factor;
-    pixel->b = pixel->b - old_color.b / factor + new_color.b / factor;
+    pixel->r = pixel->r - old_color.r * factor + new_color.r * factor;
+    pixel->g = pixel->g - old_color.g * factor + new_color.g * factor;
+    pixel->b = pixel->b - old_color.b * factor + new_color.b * factor;
 
     // Set pixel dirty
     if (x < dirty_left)

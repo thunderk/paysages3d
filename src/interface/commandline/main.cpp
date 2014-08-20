@@ -9,13 +9,13 @@
 #include "Scenery.h"
 #include "RenderConfig.h"
 
-void startRender(SoftwareRenderer *renderer, char *outputpath, const RenderConfig &params)
+void startRender(SoftwareCanvasRenderer *renderer, char *outputpath)
 {
-    /*printf("\rRendering %s ...                   \n", outputpath);
-    renderer->start(params);
+    printf("\rRendering %s ...                   \n", outputpath);
+    renderer->render();
     printf("\rSaving %s ...                      \n", outputpath);
     remove(outputpath);
-    renderer->render_area->saveToFile(outputpath);*/
+    //renderer->render_area->saveToFile(outputpath);
 }
 
 void displayHelp()
@@ -179,12 +179,13 @@ int main(int argc, char** argv)
         camera->setLocation(camera->getLocation().add(step));
 
         renderer = new SoftwareCanvasRenderer();
+        renderer->setConfig(conf_render_params);
         renderer->setScenery(scenery);
 
         if (outputcount >= conf_first_picture)
         {
             sprintf(outputpath, "output/pic%05d.png", outputcount);
-            startRender(renderer, outputpath, conf_render_params);
+            startRender(renderer, outputpath);
         }
 
         delete renderer;
