@@ -21,6 +21,7 @@ namespace system {
     class Thread;
     class Mutex;
     class Semaphore;
+    class PictureWriter;
 }
 }
 using namespace paysages::system;

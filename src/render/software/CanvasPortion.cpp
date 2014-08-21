@@ -4,6 +4,8 @@
 
 #include "CanvasPixel.h"
 #include "CanvasPreview.h"
+#include "PackStream.h"
+#include "FileSystem.h"
 
 #define CHECK_COORDINATES() assert(x >= 0); \
     assert(x < width); \
@@ -11,8 +13,8 @@
     assert(y < height); \
     assert(pixels != NULL)
 
-CanvasPortion::CanvasPortion(CanvasPreview* preview):
-    preview(preview)
+CanvasPortion::CanvasPortion(int index, CanvasPreview* preview):
+    index(index), preview(preview)
 {
     width = 1;
     height = 1;
@@ -70,12 +72,35 @@ void CanvasPortion::preparePixels()
     clear();
 }
 
-void CanvasPortion::discardPixels()
+void CanvasPortion::discardPixels(bool save)
 {
     if (pixels)
     {
+        if (save)
+        {
+            saveToDisk();
+        }
         delete[] pixels;
         pixels = NULL;
+    }
+}
+
+void CanvasPortion::saveToDisk()
+{
+    if (pixels)
+    {
+        std::string filepath = FileSystem::getTempFile("paysages_portion_" + std::to_string(index) + ".dat");
+        PackStream stream;
+        stream.bindToFile(filepath, true);
+        stream.write(&width);
+        stream.write(&height);
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                pixels[y * width + x].getComposite().save(&stream);
+            }
+        }
     }
 }
 

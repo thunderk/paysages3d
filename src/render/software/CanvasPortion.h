@@ -16,8 +16,8 @@ namespace software {
 class SOFTWARESHARED_EXPORT CanvasPortion
 {
 public:
-    CanvasPortion(CanvasPreview* preview=NULL);
-    ~CanvasPortion();
+    CanvasPortion(int index=0, CanvasPreview *preview=NULL);
+    virtual ~CanvasPortion();
 
     inline int getWidth() const {return width;}
     inline int getHeight() const {return height;}
@@ -36,8 +36,15 @@ public:
 
     /**
      * Discard the memory used by pixels.
+     *
+     * If save is true, the portion will be saved to disk before.
      */
-    void discardPixels();
+    void discardPixels(bool save=true);
+
+    /**
+     * Save the portion to a picture file on disk.
+     */
+    void saveToDisk();
 
     /**
      * Add a fragment to the pixel located at (x, y).
@@ -61,12 +68,13 @@ public:
     void setColor(int x, int y, const Color &color);
 
 private:
+    int index;
     int width;
     int height;
     int xoffset;
     int yoffset;
     CanvasPixel *pixels;
-    CanvasPreview* preview;
+    CanvasPreview *preview;
 };
 
 }

@@ -11,7 +11,7 @@ Canvas::Canvas()
     vertical_portion_count = 1;
     width = 1;
     height = 1;
-    portions.push_back(new CanvasPortion());
+    portions.push_back(new CanvasPortion);
 
     preview = new CanvasPreview;
 }
@@ -41,13 +41,14 @@ void Canvas::setSize(int width, int height)
 
     int done_width = 0;
     int done_height = 0;
+    int index = 0;
 
     for (int y = 0; y < vertical_portion_count; y++)
     {
         done_width = 0;
         for (int x = 0; x < horizontal_portion_count; x++)
         {
-            CanvasPortion *portion = new CanvasPortion(preview);
+            CanvasPortion *portion = new CanvasPortion(index++, preview);
 
             portion->setSize((x == horizontal_portion_count - 1) ? width - done_width : portion_width,
                              (y == vertical_portion_count - 1) ? height - done_height : portion_height,
