@@ -28,15 +28,15 @@ TEST(Canvas, SizingAndCutting)
     ASSERT_EQ(1, canvas.getVerticalPortionCount());
     checkPortion(canvas, 0, 0, 200, 100);
 
-    canvas.setSize(600, 501);
-    EXPECT_EQ(600, canvas.getWidth());
-    EXPECT_EQ(501, canvas.getHeight());
-    EXPECT_EQ(600, canvas.getPreview()->getWidth());
-    EXPECT_EQ(501, canvas.getPreview()->getHeight());
+    canvas.setSize(1100, 901);
+    EXPECT_EQ(1100, canvas.getWidth());
+    EXPECT_EQ(901, canvas.getHeight());
+    EXPECT_EQ(550, canvas.getPreview()->getWidth());
+    EXPECT_EQ(450, canvas.getPreview()->getHeight());
     ASSERT_EQ(2, canvas.getHorizontalPortionCount());
     ASSERT_EQ(2, canvas.getVerticalPortionCount());
-    checkPortion(canvas, 0, 0, 300, 250);
-    checkPortion(canvas, 0, 1, 300, 251);
-    checkPortion(canvas, 1, 0, 300, 250);
-    checkPortion(canvas, 1, 1, 300, 251);
+    checkPortion(canvas, 0, 0, 550, 450);
+    checkPortion(canvas, 0, 1, 550, 451);
+    checkPortion(canvas, 1, 0, 550, 450);
+    checkPortion(canvas, 1, 1, 550, 451);
 }

@@ -27,8 +27,8 @@ Canvas::~Canvas()
 
 void Canvas::setSize(int width, int height)
 {
-    horizontal_portion_count = 1 + (width - 1) / 400;
-    vertical_portion_count = 1 + (height - 1) / 400;
+    horizontal_portion_count = 1 + (width - 1) / 800;
+    vertical_portion_count = 1 + (height - 1) / 800;
 
     int portion_width = width / horizontal_portion_count;
     int portion_height = height / vertical_portion_count;
