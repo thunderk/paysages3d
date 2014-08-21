@@ -4,6 +4,7 @@
 
 #include "CanvasPortion.h"
 #include "CanvasPreview.h"
+#include "CanvasPictureWriter.h"
 
 Canvas::Canvas()
 {
@@ -85,4 +86,25 @@ CanvasPortion *Canvas::at(int x, int y) const
     assert(y >= 0 && y < vertical_portion_count);
 
     return portions[y * horizontal_portion_count + x];
+}
+
+CanvasPortion *Canvas::atPixel(int x, int y) const
+{
+    assert(x >= 0 && x < width);
+    assert(y >= 0 && y < height);
+
+    int pwidth = portions[0]->getWidth();
+    int pheight = portions[0]->getHeight();
+
+    return at(x / pwidth, y / pheight);
+}
+
+bool Canvas::saveToDisk(const std::string &filepath, const ColorProfile &profile, int antialias) const
+{
+    assert(antialias >= 1);
+
+    CanvasPictureWriter writer(this);
+    writer.setColorProfile(profile);
+    writer.setAntialias(antialias);
+    return writer.saveCanvas(filepath);
 }

@@ -11,6 +11,8 @@
 #include "CanvasPortion.h"
 #include "CanvasPixelShader.h"
 #include "RenderConfig.h"
+#include "ColorProfile.h"
+#include "CanvasPreview.h"
 
 SoftwareCanvasRenderer::SoftwareCanvasRenderer()
 {
@@ -18,6 +20,7 @@ SoftwareCanvasRenderer::SoftwareCanvasRenderer()
     interrupted = false;
     canvas = new Canvas();
     progress = 0.0;
+    samples = 1;
 
     rasterizers.push_back(new SkyRasterizer(this, 0));
     rasterizers.push_back(new WaterRasterizer(this, 1));
@@ -50,6 +53,7 @@ void SoftwareCanvasRenderer::setSize(int width, int height, int samples)
     if (not started)
     {
         canvas->setSize(width * samples, height * samples);
+        this->samples = samples;
     }
 }
 
@@ -110,6 +114,11 @@ void SoftwareCanvasRenderer::interrupt()
 const Rasterizer &SoftwareCanvasRenderer::getRasterizer(int client_id) const
 {
     return *(rasterizers[client_id]);
+}
+
+bool SoftwareCanvasRenderer::saveToDisk(const std::string &filepath) const
+{
+    return getCanvas()->saveToDisk(filepath, *getCanvas()->getPreview()->getToneMapping(), samples);
 }
 
 void SoftwareCanvasRenderer::rasterize(CanvasPortion *portion)

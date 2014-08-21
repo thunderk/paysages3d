@@ -89,18 +89,35 @@ void CanvasPortion::saveToDisk()
 {
     if (pixels)
     {
-        std::string filepath = FileSystem::getTempFile("paysages_portion_" + std::to_string(index) + ".dat");
+        filepath = FileSystem::getTempFile("paysages_portion_" + std::to_string(index) + ".dat");
         PackStream stream;
         stream.bindToFile(filepath, true);
         stream.write(&width);
         stream.write(&height);
-        for (int x = 0; x < width; x++)
+        for (int y = 0; y < height; y++)
         {
-            for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
             {
                 pixels[y * width + x].getComposite().save(&stream);
             }
         }
+    }
+}
+
+bool CanvasPortion::getReadStream(PackStream &stream, int x, int y)
+{
+    if (FileSystem::isFile(filepath))
+    {
+        int unused_i;
+        double unused_d;
+        stream.bindToFile(filepath);
+        stream.skip(unused_i, 2);
+        stream.skip(unused_d, (y * width + x - 1) * 4);
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 

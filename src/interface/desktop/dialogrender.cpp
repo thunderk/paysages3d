@@ -22,6 +22,7 @@
 #include "ColorProfile.h"
 #include "SoftwareCanvasRenderer.h"
 #include "WidgetPreviewCanvas.h"
+#include "Canvas.h"
 
 class RenderThread:public QThread
 {
@@ -150,12 +151,11 @@ void DialogRender::saveRender()
         {
             filepath = filepath.append(".png");
         }
-        std::string filepathstr = filepath.toStdString();
-        /*if (canvas_renderer->render_area->saveToFile((char*)filepathstr.c_str()))
+        if (canvas_renderer->saveToDisk(filepath.toStdString()))
         {
             QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
         }
-        else*/
+        else
         {
             QMessageBox::critical(this, "Message", QString(tr("Can't write to file : %1")).arg(filepath));
         }

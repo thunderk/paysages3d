@@ -15,6 +15,11 @@ public:
      * filename must not contain directory separators.
      */
     static std::string getTempFile(const std::string &filename);
+
+    /**
+     * Returns true if the given path points to a file.
+     */
+    static bool isFile(const std::string &filepath);
 };
 
 }

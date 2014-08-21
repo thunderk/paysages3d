@@ -8,6 +8,7 @@
 #include "SoftwareCanvasRenderer.h"
 #include "Scenery.h"
 #include "RenderConfig.h"
+#include "ColorProfile.h"
 
 void startRender(SoftwareCanvasRenderer *renderer, char *outputpath)
 {
@@ -15,7 +16,7 @@ void startRender(SoftwareCanvasRenderer *renderer, char *outputpath)
     renderer->render();
     printf("\rSaving %s ...                      \n", outputpath);
     remove(outputpath);
-    //renderer->render_area->saveToFile(outputpath);
+    renderer->saveToDisk(outputpath);
 }
 
 void displayHelp()

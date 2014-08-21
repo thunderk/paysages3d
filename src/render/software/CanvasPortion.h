@@ -47,6 +47,13 @@ public:
     void saveToDisk();
 
     /**
+     * Bind a stream to pixel data, and position it on a given pixel.
+     *
+     * Returns true if the stream was successfully located, false if it was not possible.
+     */
+    bool getReadStream(PackStream &stream, int x=0, int y=0);
+
+    /**
      * Add a fragment to the pixel located at (x, y).
      *
      * Checking x and y coordinates to be in the canvas portion should be done before this call.
@@ -75,6 +82,7 @@ private:
     int yoffset;
     CanvasPixel *pixels;
     CanvasPreview *preview;
+    std::string filepath;
 };
 
 }

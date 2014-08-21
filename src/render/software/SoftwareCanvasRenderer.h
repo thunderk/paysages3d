@@ -52,6 +52,13 @@ public:
      */
     const Rasterizer &getRasterizer(int client_id) const;
 
+    /**
+     * Save the rendered canvas to a picture file on disk.
+     *
+     * Returns true if the save was successful.
+     */
+    bool saveToDisk(const std::string &filepath) const;
+
 protected:
     /**
      * @brief Rasterize the scenery into a canvas portion.
@@ -68,6 +75,7 @@ private:
     double progress_segment;
 
     Canvas *canvas;
+    int samples;
     std::vector<Rasterizer*> rasterizers;
     bool started;
     bool interrupted;

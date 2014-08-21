@@ -24,10 +24,18 @@ public:
     inline int getVerticalPortionCount() const {return vertical_portion_count;}
 
     CanvasPortion *at(int x, int y) const;
+    CanvasPortion *atPixel(int x, int y) const;
 
     inline int getWidth() const {return width;}
     inline int getHeight() const {return height;}
     inline CanvasPreview *getPreview() const {return preview;}
+
+    /**
+     * Save the canvas to a picture file on disk.
+     *
+     * Returns true if the save was successful.
+     */
+    bool saveToDisk(const std::string &filepath, const ColorProfile &profile, int antialias) const;
 
 private:
     std::vector<CanvasPortion*> portions;

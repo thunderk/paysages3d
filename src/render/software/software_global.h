@@ -54,6 +54,7 @@ namespace software {
     class CanvasLiveClient;
     class CanvasPreview;
     class CanvasPixelShader;
+    class CanvasPictureWriter;
 }
 }
 

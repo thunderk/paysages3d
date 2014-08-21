@@ -46,7 +46,8 @@ SOURCES += SoftwareRenderer.cpp \
     CanvasLiveClient.cpp \
     CanvasPreview.cpp \
     RenderConfig.cpp \
-    CanvasPixelShader.cpp
+    CanvasPixelShader.cpp \
+    CanvasPictureWriter.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -82,7 +83,8 @@ HEADERS += SoftwareRenderer.h\
     CanvasLiveClient.h \
     CanvasPreview.h \
     RenderConfig.h \
-    CanvasPixelShader.h
+    CanvasPixelShader.h \
+    CanvasPictureWriter.h
 
 unix:!symbian {
     maemo5 {

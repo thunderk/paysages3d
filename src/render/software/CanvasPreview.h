@@ -17,6 +17,7 @@ public:
 
     inline int getWidth() const {return width;}
     inline int getHeight() const {return height;}
+    inline const ColorProfile *getToneMapping() const {return profile;}
 
     const Color &getFinalPixel(int x, int y) const;
 
