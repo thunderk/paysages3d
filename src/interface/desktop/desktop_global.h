@@ -10,6 +10,9 @@ namespace paysages {
 namespace desktop {
     class BaseInput;
     class BaseForm;
+
+    class WidgetCanvas;
+    class WidgetPreviewCanvas;
 }
 }
 

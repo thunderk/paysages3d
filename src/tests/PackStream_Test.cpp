@@ -49,3 +49,46 @@ TEST(PackStream, All)
     }
     delete stream;
 }
+
+TEST(PackStream, Skip)
+{
+    PackStream* stream;
+    int i1=1, i2=2, i3=3;
+    double d1=1.1, d2=2.2;
+
+    stream = new PackStream();
+    stream->bindToFile("/tmp/test_paysages_pack", true);
+
+    stream->write(&i1);
+    stream->write(&i2);
+    stream->write(&d1);
+    stream->write(&d2);
+    stream->write(&i3);
+
+    delete stream;
+
+    int resi;
+    double resd;
+
+    stream = new PackStream();
+    stream->bindToFile("/tmp/test_paysages_pack");
+    stream->skip(i1, 1);
+    stream->read(&resi);
+    EXPECT_EQ(2, resi);
+    delete stream;
+
+    stream = new PackStream();
+    stream->bindToFile("/tmp/test_paysages_pack");
+    stream->skip(i1, 2);
+    stream->read(&resd);
+    EXPECT_DOUBLE_EQ(1.1, resd);
+    delete stream;
+
+    stream = new PackStream();
+    stream->bindToFile("/tmp/test_paysages_pack");
+    stream->skip(i1, 2);
+    stream->skip(d1, 2);
+    stream->read(&resi);
+    EXPECT_EQ(3, resi);
+    delete stream;
+}

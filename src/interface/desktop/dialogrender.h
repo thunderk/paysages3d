@@ -5,7 +5,6 @@
 
 #include <ctime>
 #include <QDialog>
-#include "RenderArea.h"
 
 class QThread;
 class QProgressBar;
@@ -19,33 +18,30 @@ class DialogRender : public QDialog
 {
     Q_OBJECT
 public:
-    explicit DialogRender(QWidget *parent, SoftwareRenderer* renderer);
+    explicit DialogRender(QWidget *parent, SoftwareCanvasRenderer *renderer);
     ~DialogRender();
 
-    void tellRenderSize(int width, int height);
-    void tellProgressChange(double value);
     void tellRenderEnded();
-    void startRender(RenderArea::RenderParams params);
+    void startRender();
     void loadLastRender();
+
+    virtual void timerEvent(QTimerEvent *event) override;
 
     QImage* pixbuf;
     QMutex* pixbuf_lock;
-    QWidget* area;
 
 private slots:
-    void applyRenderSize(int width, int height);
-    void applyProgress(double value);
     void saveRender();
     void applyRenderEnded();
     void toneMappingChanged();
 
 signals:
-    void renderSizeChanged(int width, int height);
-    void progressChanged(double value);
     void renderEnded();
 
 private:
-    QScrollArea* _scroll;
+    SoftwareCanvasRenderer* canvas_renderer;
+    WidgetPreviewCanvas* canvas_preview;
+
     QWidget* _info;
     QWidget* _actions;
     QComboBox* _tonemapping_control;
@@ -53,7 +49,6 @@ private:
     QPushButton* _save_button;
     QThread* _render_thread;
     QLabel* _timer;
-    SoftwareRenderer* _renderer;
     QProgressBar* _progress;
     time_t _started;
 };

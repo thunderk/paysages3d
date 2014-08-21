@@ -85,6 +85,8 @@ private:
     Matrix4 projector;
     Matrix4 unprojector;
     Matrix4 unperspective;
+    double inv_x_factor;
+    double inv_y_factor;
 };
 
 }

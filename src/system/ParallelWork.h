@@ -13,32 +13,24 @@ class SYSTEMSHARED_EXPORT ParallelWork
 public:
     typedef int (*ParallelUnitFunction)(ParallelWork* work, int unit, void* data);
 
-    typedef enum
-    {
-        PARALLEL_WORKER_STATUS_VOID,
-        PARALLEL_WORKER_STATUS_RUNNING,
-        PARALLEL_WORKER_STATUS_DONE
-    } ParallelWorkerStatus;
-
-    typedef struct
-    {
-        Thread* thread;
-        ParallelWork* work;
-        ParallelWorkerStatus status;
-        int unit;
-        int result;
-    } ParallelWorker;
+    /**
+     * Obscure thread class.
+     */
+    class ParallelThread;
+    friend class ParallelThread;
 
 public:
     /**
      * Create a parallel work handler.
      *
-     * This will spawn an optimal number of threads to process a given number of work units.
+     * This will spawn a number of threads.
+     */
+    ParallelWork(ParallelWorker *worker, int units);
+
+    /**
+     * Create a parallel work handler.
      *
-     * @param func The callback that will be called from threads to process one unit.
-     * @param units Number of units to handle.
-     * @param data Custom data that will be passed to the callback.
-     * @return The newly allocated handler.
+     * This is a compatibility constructor for older code, use the constructor with ParallelWorker instead.
      */
     ParallelWork(ParallelUnitFunction func, int units, void* data);
 
@@ -52,15 +44,33 @@ public:
     /**
      * Start working on the units.
      *
-     * @param workers Number of threads to spaws, -1 for an optimal number.
+     * @param threads Number of threads to spaws, -1 for an optimal number.
      */
-    int perform(int workers=-1);
+    int perform(int thread_count=-1);
 
+    /**
+     * Tell the threads to interrupt what they are doing.
+     *
+     * This will also call interrupt() on the worker.
+     */
+    void interrupt();
+
+private:
+    void returnThread(ParallelThread *thread);
+
+private:
     int units;
     int running;
-    ParallelUnitFunction unit_function;
-    ParallelWorker workers[PARALLEL_MAX_THREADS];
-    void* data;
+    ParallelWorker *worker;
+    bool worker_compat;
+
+    int thread_count;
+    Mutex* mutex;
+    Semaphore* semaphore;
+    ParallelThread** threads;
+    ParallelThread** available;
+    int available_offset;
+    int available_length;
 };
 
 }

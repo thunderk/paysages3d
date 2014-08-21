@@ -40,10 +40,10 @@ double TexturesRenderer::getTriplanarNoise(NoiseGenerator *noise, const Vector3 
     double mXY = fabs(normal.z);
     double mXZ = fabs(normal.y);
     double mYZ = fabs(normal.x);
-    double total = mXY + mXZ + mYZ;
-    mXY /= total;
-    mXZ /= total;
-    mYZ /= total;
+    double total = 1.0 / (mXY + mXZ + mYZ);
+    mXY *= total;
+    mXZ *= total;
+    mYZ *= total;
 
     return noiseXY * mXY + noiseXZ * mXZ + noiseYZ * mYZ;
 }

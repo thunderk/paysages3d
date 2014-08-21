@@ -7,7 +7,7 @@
 #include "tools.h"
 #include "DesktopScenery.h"
 #include "PackStream.h"
-#include "SoftwareRenderer.h"
+#include "SoftwareCanvasRenderer.h"
 #include "BasePreview.h"
 #include "CloudsDefinition.h"
 #include "CameraDefinition.h"
@@ -36,8 +36,8 @@ BaseForm(parent, true)
 
     addInput(new InputCamera(this, tr("Camera"), _camera));
     addInputInt(tr("Quality"), &_params.quality, 1, 10, 1, 1);
-    addInputInt(tr("Image width"), &_params.width, 100, 2000, 10, 100);
-    addInputInt(tr("Image height"), &_params.height, 100, 1200, 10, 100);
+    addInputInt(tr("Image width"), &_params.width, 100, 4000, 10, 100);
+    addInputInt(tr("Image height"), &_params.height, 100, 3000, 10, 100);
     addInputInt(tr("Anti aliasing"), &_params.antialias, 1, 4, 1, 1);
 
     button = addButton(tr("Start new render"));
@@ -103,14 +103,16 @@ void FormRender::startQuickRender()
     {
         delete _renderer;
     }
-    _renderer = new SoftwareRenderer(DesktopScenery::getCurrent());
+
+    RenderConfig config(400, 300, 1, 3);
+
+    _renderer = new SoftwareCanvasRenderer();
+    _renderer->setScenery(DesktopScenery::getCurrent());
+    _renderer->setConfig(config);
     _renderer_inited = true;
 
-    DialogRender* dialog = new DialogRender(this, _renderer);
-    RenderArea::RenderParams params = {400, 300, 1, 3};
-    dialog->startRender(params);
-
-    delete dialog;
+    DialogRender dialog(this, _renderer);
+    dialog.startRender();
 }
 
 void FormRender::startRender()
@@ -119,22 +121,20 @@ void FormRender::startRender()
     {
         delete _renderer;
     }
-    _renderer = new SoftwareRenderer(DesktopScenery::getCurrent());
+    _renderer = new SoftwareCanvasRenderer();
+    _renderer->setScenery(DesktopScenery::getCurrent());
+    _renderer->setConfig(_params);
     _renderer_inited = true;
 
-    DialogRender* dialog = new DialogRender(this, _renderer);
-    dialog->startRender(_params);
-
-    delete dialog;
+    DialogRender dialog(this, _renderer);
+    dialog.startRender();
 }
 
 void FormRender::showRender()
 {
     if (_renderer_inited)
     {
-        DialogRender* dialog = new DialogRender(this, _renderer);
-        dialog->loadLastRender();
-
-        delete dialog;
+        DialogRender dialog(this, _renderer);
+        dialog.loadLastRender();
     }
 }

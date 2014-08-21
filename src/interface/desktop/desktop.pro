@@ -52,7 +52,9 @@ HEADERS += \
     lighting/SmallPreviewHues.h \
     textures/DialogTexturesLayer.h \
     desktop_global.h \
-    DesktopScenery.h
+    DesktopScenery.h \
+    WidgetCanvas.h \
+    WidgetPreviewCanvas.h
 
 SOURCES += \
     terrain/widgetheightmap.cpp \
@@ -96,7 +98,9 @@ SOURCES += \
     lighting/SmallPreviewColor.cpp \
     lighting/SmallPreviewHues.cpp \
     textures/DialogTexturesLayer.cpp \
-    DesktopScenery.cpp
+    DesktopScenery.cpp \
+    WidgetCanvas.cpp \
+    WidgetPreviewCanvas.cpp
 
 FORMS += \
     terrain/dialogterrainpainting.ui \

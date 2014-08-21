@@ -18,90 +18,45 @@
 #include <QComboBox>
 #include "tools.h"
 
-#include "SoftwareRenderer.h"
 #include "Scenery.h"
 #include "ColorProfile.h"
-
-static DialogRender* _current_dialog;
-
-static void _renderStart(int width, int height, const Color &background)
-{
-    _current_dialog->pixbuf_lock->lock();
-    delete _current_dialog->pixbuf;
-    _current_dialog->pixbuf = new QImage(width, height, QImage::Format_ARGB32);
-    _current_dialog->pixbuf->fill(colorToQColor(background).rgb());
-    _current_dialog->pixbuf_lock->unlock();
-
-    _current_dialog->tellRenderSize(width, height);
-}
-
-static void _renderDraw(int x, int y, const Color &col)
-{
-    _current_dialog->pixbuf->setPixel(x, _current_dialog->pixbuf->height() - 1 - y, colorToQColor(col).rgb());
-}
-
-static void _renderUpdate(double progress)
-{
-    _current_dialog->area->update();
-    _current_dialog->tellProgressChange(progress);
-}
+#include "SoftwareCanvasRenderer.h"
+#include "WidgetPreviewCanvas.h"
+#include "Canvas.h"
 
 class RenderThread:public QThread
 {
 public:
-    RenderThread(DialogRender* dialog, SoftwareRenderer* renderer, RenderArea::RenderParams params):QThread()
+    RenderThread(DialogRender* dialog, SoftwareCanvasRenderer* renderer):QThread()
     {
         _dialog = dialog;
         _renderer = renderer;
-        _params = params;
     }
     void run()
     {
-        _renderer->start(_params);
+        _renderer->render();
         _dialog->tellRenderEnded();
     }
 private:
     DialogRender* _dialog;
-    SoftwareRenderer* _renderer;
-    RenderArea::RenderParams _params;
+    SoftwareCanvasRenderer* _renderer;
 };
 
-class _RenderArea:public QWidget
-{
-public:
-    _RenderArea(QWidget* parent):
-        QWidget(parent)
-    {
-        setMinimumSize(800, 600);
-    }
-
-    void paintEvent(QPaintEvent*)
-    {
-        QPainter painter(this);
-        _current_dialog->pixbuf_lock->lock();
-        painter.drawImage(0, 0, *_current_dialog->pixbuf);
-        _current_dialog->pixbuf_lock->unlock();
-    }
-};
-
-DialogRender::DialogRender(QWidget *parent, SoftwareRenderer* renderer):
+DialogRender::DialogRender(QWidget *parent, SoftwareCanvasRenderer* renderer):
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint)
 {
     pixbuf_lock = new QMutex();
     pixbuf = new QImage(1, 1, QImage::Format_ARGB32);
-    _current_dialog = this;
     _render_thread = NULL;
-    _renderer = renderer;
+    canvas_renderer = renderer;
 
     setModal(true);
     setWindowTitle(tr("Paysages 3D - Render"));
     setLayout(new QVBoxLayout());
 
-    _scroll = new QScrollArea(this);
-    _scroll->setAlignment(Qt::AlignCenter);
-    area = new _RenderArea(_scroll);
-    _scroll->setWidget(area);
-    layout()->addWidget(_scroll);
+    canvas_preview = new WidgetPreviewCanvas(this);
+    canvas_preview->setCanvas(canvas_renderer->getCanvas());
+    layout()->addWidget(canvas_preview);
 
     // Status bar
     _info = new QWidget(this);
@@ -140,19 +95,19 @@ DialogRender::DialogRender(QWidget *parent, SoftwareRenderer* renderer):
     _actions->layout()->addWidget(_save_button);
 
     // Connections
-    //connect(this, SIGNAL(renderSizeChanged(int, int)), this, SLOT(applyRenderSize(int, int)));
-    connect(this, SIGNAL(progressChanged(double)), this, SLOT(applyProgress(double)));
     connect(this, SIGNAL(renderEnded()), this, SLOT(applyRenderEnded()));
     connect(_save_button, SIGNAL(clicked()), this, SLOT(saveRender()));
     connect(_tonemapping_control, SIGNAL(currentIndexChanged(int)), this, SLOT(toneMappingChanged()));
     connect(_exposure_control, SIGNAL(valueChanged(int)), this, SLOT(toneMappingChanged()));
+
+    toneMappingChanged();
 }
 
 DialogRender::~DialogRender()
 {
     if (_render_thread)
     {
-        _renderer->interrupt();
+        canvas_renderer->interrupt();
         _render_thread->wait();
 
         delete _render_thread;
@@ -161,30 +116,19 @@ DialogRender::~DialogRender()
     delete pixbuf_lock;
 }
 
-void DialogRender::tellRenderSize(int width, int height)
-{
-    emit renderSizeChanged(width, height);
-}
-
-void DialogRender::tellProgressChange(double value)
-{
-    emit progressChanged(value);
-}
-
 void DialogRender::tellRenderEnded()
 {
     emit renderEnded();
 }
 
-void DialogRender::startRender(RenderArea::RenderParams params)
+void DialogRender::startRender()
 {
     _started = time(NULL);
 
-    applyRenderSize(params.width, params.height);
-    _renderer->setPreviewCallbacks(_renderStart, _renderDraw, _renderUpdate);
-
-    _render_thread = new RenderThread(this, _renderer, params);
+    _render_thread = new RenderThread(this, canvas_renderer);
     _render_thread->start();
+
+    startTimer(100);
 
     exec();
 }
@@ -193,8 +137,6 @@ void DialogRender::applyRenderEnded()
 {
     _info->hide();
     _actions->show();
-
-    area->update();
 }
 
 void DialogRender::saveRender()
@@ -208,8 +150,7 @@ void DialogRender::saveRender()
         {
             filepath = filepath.append(".png");
         }
-        std::string filepathstr = filepath.toStdString();
-        if (_renderer->render_area->saveToFile((char*)filepathstr.c_str()))
+        if (canvas_renderer->saveToDisk(filepath.toStdString()))
         {
             QMessageBox::information(this, "Message", QString(tr("The picture %1 has been saved.")).arg(filepath));
         }
@@ -223,35 +164,26 @@ void DialogRender::saveRender()
 void DialogRender::toneMappingChanged()
 {
     ColorProfile profile((ColorProfile::ToneMappingOperator)_tonemapping_control->currentIndex(), ((double)_exposure_control->value()) * 0.01);
-    _renderer->render_area->setToneMapping(profile);
+    canvas_preview->setToneMapping(profile);
 }
 
 void DialogRender::loadLastRender()
 {
-    applyRenderSize(_renderer->render_width, _renderer->render_height);
-    _renderer->setPreviewCallbacks(_renderStart, _renderDraw, _renderUpdate);
     renderEnded();
     toneMappingChanged();
 
     exec();
 }
 
-void DialogRender::applyRenderSize(int width, int height)
-{
-    area->setMinimumSize(width, height);
-    area->setMaximumSize(width, height);
-    area->resize(width, height);
-    _scroll->setMinimumSize(width > 800 ? 820 : width + 20, height > 600 ? 620 : height + 20);
-}
-
-void DialogRender::applyProgress(double value)
+void DialogRender::timerEvent(QTimerEvent *)
 {
     double diff = difftime(time(NULL), _started);
     int hours = (int)floor(diff / 3600.0);
     int minutes = (int)floor((diff - 3600.0 * hours) / 60.0);
     int seconds = (int)floor(diff - 3600.0 * hours - 60.0 * minutes);
     _timer->setText(tr("%1:%2.%3").arg(hours).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
-    _progress->setValue((int)(value * 1000.0));
+
+    _progress->setValue((int)(canvas_renderer->getProgress() * 1000.0));
     _progress->update();
 }
 

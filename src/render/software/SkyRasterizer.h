@@ -3,17 +3,18 @@
 
 #include "software_global.h"
 
+#include "Rasterizer.h"
+
 namespace paysages {
 namespace software {
 
-class SOFTWARESHARED_EXPORT SkyRasterizer
+class SOFTWARESHARED_EXPORT SkyRasterizer: public Rasterizer
 {
 public:
-    SkyRasterizer(SoftwareRenderer* renderer);
-    void rasterize();
+    SkyRasterizer(SoftwareRenderer* renderer, int client_id);
 
-private:
-    SoftwareRenderer* renderer;
+    virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
+    virtual Color shadeFragment(const CanvasFragment &fragment) const override;
 };
 
 }

@@ -21,11 +21,13 @@ SOURCES += \
     RandomGenerator.cpp \
     Memory.cpp \
     ParallelWork.cpp \
-    ParallelQueue.cpp \
     CacheFile.cpp \
     PictureWriter.cpp \
     Logs.cpp \
-    ParallelPool.cpp
+    ParallelPool.cpp \
+    ParallelWorker.cpp \
+    Semaphore.cpp \
+    FileSystem.cpp
 
 HEADERS += \
     system_global.h \
@@ -36,11 +38,13 @@ HEADERS += \
     RandomGenerator.h \
     Memory.h \
     ParallelWork.h \
-    ParallelQueue.h \
     CacheFile.h \
     PictureWriter.h \
     Logs.h \
-    ParallelPool.h
+    ParallelPool.h \
+    ParallelWorker.h \
+    Semaphore.h \
+    FileSystem.h
 
 unix:!symbian {
     maemo5 {

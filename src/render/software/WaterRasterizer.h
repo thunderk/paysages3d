@@ -3,18 +3,20 @@
 
 #include "software_global.h"
 
+#include "Rasterizer.h"
+
 namespace paysages {
 namespace software {
 
-class WaterRasterizer
+class WaterRasterizer: public Rasterizer
 {
 public:
-    WaterRasterizer(SoftwareRenderer* renderer);
+    WaterRasterizer(SoftwareRenderer* renderer, int client_id);
 
-    void renderSurface();
+    void rasterizeQuad(CanvasPortion* canvas, double x, double z, double size);
 
-private:
-    SoftwareRenderer* renderer;
+    virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
+    virtual Color shadeFragment(const CanvasFragment &fragment) const override;
 };
 
 }

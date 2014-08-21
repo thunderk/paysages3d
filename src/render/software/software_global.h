@@ -14,7 +14,8 @@
 namespace paysages {
 namespace software {
     class SoftwareRenderer;
-    class RenderArea;
+    class SoftwareCanvasRenderer;
+    class RenderConfig;
 
     class FluidMediumManager;
     class FluidMediumInterface;
@@ -33,6 +34,7 @@ namespace software {
     class TexturesRenderer;
     class WaterRenderer;
 
+    class Rasterizer;
     class SkyRasterizer;
     class TerrainRasterizer;
 
@@ -44,6 +46,15 @@ namespace software {
     class NightSky;
 
     class TerrainRayWalker;
+
+    class Canvas;
+    class CanvasPortion;
+    class CanvasPixel;
+    class CanvasFragment;
+    class CanvasLiveClient;
+    class CanvasPreview;
+    class CanvasPixelShader;
+    class CanvasPictureWriter;
 }
 }
 

@@ -6,30 +6,17 @@
 #include "AtmosphereRenderer.h"
 #include "AtmosphereResult.h"
 #include "CloudsRenderer.h"
+#include "Rasterizer.h"
+#include "CanvasFragment.h"
 
 #define SPHERE_SIZE 20000.0
 
-SkyRasterizer::SkyRasterizer(SoftwareRenderer* renderer):
-    renderer(renderer)
+SkyRasterizer::SkyRasterizer(SoftwareRenderer* renderer, int client_id):
+    Rasterizer(renderer, client_id, Color(0.9, 0.9, 1.0))
 {
 }
 
-static Color _postProcessFragment(SoftwareRenderer* renderer, const Vector3 &location, void*)
-{
-    Vector3 camera_location, direction;
-    Color result;
-
-    camera_location = renderer->getCameraLocation(location);
-    direction = location.sub(camera_location);
-
-    /* TODO Don't compute result->color if it's fully covered by clouds */
-    result = renderer->getAtmosphereRenderer()->getSkyColor(direction.normalize()).final;
-    result = renderer->getCloudsRenderer()->getColor(camera_location, camera_location.add(direction.scale(10.0)), result);
-
-    return result;
-}
-
-void SkyRasterizer::rasterize()
+void SkyRasterizer::rasterizeToCanvas(CanvasPortion* canvas)
 {
     int res_i, res_j;
     int i, j;
@@ -47,7 +34,7 @@ void SkyRasterizer::rasterize()
 
     for (j = 0; j < res_j; j++)
     {
-        if (!renderer->addRenderProgress(0.0))
+        if (interrupted)
         {
             return;
         }
@@ -79,7 +66,23 @@ void SkyRasterizer::rasterize()
             vertex4 = camera_location.add(direction);
 
             /* TODO Triangles at poles */
-            renderer->pushQuad(vertex1, vertex4, vertex3, vertex2, _postProcessFragment, NULL);
+            pushQuad(canvas, vertex1, vertex4, vertex3, vertex2);
         }
     }
+}
+
+Color SkyRasterizer::shadeFragment(const CanvasFragment &fragment) const
+{
+    Vector3 location = fragment.getLocation();
+    Vector3 camera_location, direction;
+    Color result;
+
+    camera_location = renderer->getCameraLocation(location);
+    direction = location.sub(camera_location);
+
+    /* TODO Don't compute result->color if it's fully covered by clouds */
+    result = renderer->getAtmosphereRenderer()->getSkyColor(direction.normalize()).final;
+    result = renderer->getCloudsRenderer()->getColor(camera_location, camera_location.add(direction.scale(10.0)), result);
+
+    return result;
 }
