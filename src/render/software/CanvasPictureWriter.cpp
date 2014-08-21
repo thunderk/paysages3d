@@ -15,18 +15,14 @@ CanvasPictureWriter::CanvasPictureWriter(const Canvas *canvas):
     width = canvas->getWidth();
     height = canvas->getHeight();
 
-    last_portion = NULL;
-    last_stream = NULL;
-    last_y = 0;
+    cache = new Color[1];
+    cache_y = -antialias;
+    cache_width = 0;
 }
 
 CanvasPictureWriter::~CanvasPictureWriter()
 {
     delete profile;
-    if (last_stream)
-    {
-        delete last_stream;
-    }
 }
 
 void CanvasPictureWriter::setAntialias(int antialias)
@@ -85,32 +81,44 @@ unsigned int CanvasPictureWriter::getPixel(int x, int y)
 
 Color CanvasPictureWriter::getRawPixel(int x, int y)
 {
-    // Get the portion this pixel is in
-    CanvasPortion *portion = canvas->atPixel(x, y);
-
-    // While we stay in the same portion line, read is sequential in the stream
-    if (portion != last_portion or last_y != y)
+    if (not (y >= cache_y && y < cache_y + antialias))
     {
-        // Get the pack stream positioned at the pixel
-        if (last_stream)
+        // Load rows into cache
+        delete [] cache;
+        cache_y = y;
+        cache_width = canvas->getWidth();
+        cache = new Color[cache_width * antialias];
+
+        CanvasPortion *portion = NULL;
+        PackStream *stream = new PackStream;
+
+        Color* itcolor = cache;
+        bool has_pixels = false;
+        for (int cy = cache_y; cy < cache_y + antialias; cy++)
         {
-            delete last_stream;
-        }
-        last_stream = new PackStream;
-        if (portion->getReadStream(*last_stream, x - portion->getXOffset(), y - portion->getYOffset()))
-        {
-            last_portion = portion;
-            last_y = y;
-        }
-        else
-        {
-            // Portion has no stream
-            return COLOR_BLACK;
+            for (int cx = 0; cx < cache_width; cx++)
+            {
+                CanvasPortion *nportion = canvas->atPixel(cx, cy);
+                if (nportion != portion)
+                {
+                    portion = nportion;
+                    delete stream;
+                    stream = new PackStream;
+                    has_pixels = portion->getReadStream(*stream, cx - portion->getXOffset(), cy - portion->getYOffset());
+                }
+                if (has_pixels)
+                {
+                    itcolor->load(stream);
+                }
+                else
+                {
+                    *itcolor = COLOR_BLACK;
+                }
+                itcolor++;
+            }
         }
     }
 
-    // Load the pixel
-    Color col;
-    col.load(last_stream);
-    return col;
+    // Hit the cache
+    return cache[(y - cache_y) * cache_width + x];
 }

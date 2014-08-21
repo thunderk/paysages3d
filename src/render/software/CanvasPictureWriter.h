@@ -47,9 +47,9 @@ private:
     int height;
     ColorProfile *profile;
 
-    CanvasPortion *last_portion;
-    int last_y;
-    PackStream *last_stream;
+    int cache_y;
+    int cache_width;
+    Color *cache;
 };
 
 }

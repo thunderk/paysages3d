@@ -98,7 +98,19 @@ CanvasPortion *Canvas::atPixel(int x, int y) const
     int pwidth = portions[0]->getWidth();
     int pheight = portions[0]->getHeight();
 
-    return at(x / pwidth, y / pheight);
+    int px = x / pwidth;
+    int py = y / pheight;
+
+    if (px >= horizontal_portion_count)
+    {
+        px = horizontal_portion_count - 1;
+    }
+    if (py >= vertical_portion_count)
+    {
+        py = vertical_portion_count - 1;
+    }
+
+    return at(px, py);
 }
 
 bool Canvas::saveToDisk(const std::string &filepath, const ColorProfile &profile, int antialias) const
