@@ -47,7 +47,10 @@ SOURCES += SoftwareRenderer.cpp \
     CanvasPreview.cpp \
     RenderConfig.cpp \
     CanvasPixelShader.cpp \
-    CanvasPictureWriter.cpp
+    CanvasPictureWriter.cpp \
+    clouds/CloudModelAltoCumulus.cpp \
+    clouds/CloudModelCirrus.cpp \
+    clouds/CloudModelCumuloNimbus.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -84,7 +87,10 @@ HEADERS += SoftwareRenderer.h\
     CanvasPreview.h \
     RenderConfig.h \
     CanvasPixelShader.h \
-    CanvasPictureWriter.h
+    CanvasPictureWriter.h \
+    clouds/CloudModelAltoCumulus.h \
+    clouds/CloudModelCirrus.h \
+    clouds/CloudModelCumuloNimbus.h
 
 unix:!symbian {
     maemo5 {
