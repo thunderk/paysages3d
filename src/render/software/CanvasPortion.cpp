@@ -108,11 +108,20 @@ bool CanvasPortion::getReadStream(PackStream &stream, int x, int y)
 {
     if (FileSystem::isFile(filepath))
     {
+        if (not stream.bindToFile(filepath))
+        {
+            return false;
+        }
+
         int unused_i;
-        double unused_d;
-        stream.bindToFile(filepath);
         stream.skip(unused_i, 2);
-        stream.skip(unused_d, (y * width + x - 1) * 4);
+
+        if (x > 0 or y > 0)
+        {
+            double unused_d;
+            stream.skip(unused_d, (y * width + x) * 4);
+        }
+
         return true;
     }
     else

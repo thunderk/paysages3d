@@ -14,11 +14,19 @@ CanvasPictureWriter::CanvasPictureWriter(const Canvas *canvas):
     antialias = 1;
     width = canvas->getWidth();
     height = canvas->getHeight();
+
+    last_portion = NULL;
+    last_stream = NULL;
+    last_y = 0;
 }
 
 CanvasPictureWriter::~CanvasPictureWriter()
 {
     delete profile;
+    if (last_stream)
+    {
+        delete last_stream;
+    }
 }
 
 void CanvasPictureWriter::setAntialias(int antialias)
@@ -80,15 +88,29 @@ Color CanvasPictureWriter::getRawPixel(int x, int y)
     // Get the portion this pixel is in
     CanvasPortion *portion = canvas->atPixel(x, y);
 
-    // Get the pack stream positioned at the pixel
-    PackStream stream;
-    if (not portion->getReadStream(stream, x - portion->getXOffset(), y - portion->getYOffset()))
+    // While we stay in the same portion line, read is sequential in the stream
+    if (portion != last_portion or last_y != y)
     {
-        return COLOR_BLACK;
+        // Get the pack stream positioned at the pixel
+        if (last_stream)
+        {
+            delete last_stream;
+        }
+        last_stream = new PackStream;
+        if (portion->getReadStream(*last_stream, x - portion->getXOffset(), y - portion->getYOffset()))
+        {
+            last_portion = portion;
+            last_y = y;
+        }
+        else
+        {
+            // Portion has no stream
+            return COLOR_BLACK;
+        }
     }
 
-    // Load the pixel and apply tone mapping
+    // Load the pixel
     Color col;
-    col.load(&stream);
+    col.load(last_stream);
     return col;
 }

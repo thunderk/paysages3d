@@ -46,6 +46,10 @@ private:
     int width;
     int height;
     ColorProfile *profile;
+
+    CanvasPortion *last_portion;
+    int last_y;
+    PackStream *last_stream;
 };
 
 }

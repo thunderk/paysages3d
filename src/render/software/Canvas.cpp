@@ -6,6 +6,8 @@
 #include "CanvasPreview.h"
 #include "CanvasPictureWriter.h"
 
+#define CUTTER_SIZE 800
+
 Canvas::Canvas()
 {
     horizontal_portion_count = 1;
@@ -28,8 +30,8 @@ Canvas::~Canvas()
 
 void Canvas::setSize(int width, int height)
 {
-    horizontal_portion_count = 1 + (width - 1) / 800;
-    vertical_portion_count = 1 + (height - 1) / 800;
+    horizontal_portion_count = 1 + (width - 1) / CUTTER_SIZE;
+    vertical_portion_count = 1 + (height - 1) / CUTTER_SIZE;
 
     int portion_width = width / horizontal_portion_count;
     int portion_height = height / vertical_portion_count;
