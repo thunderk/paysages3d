@@ -95,7 +95,6 @@ DialogRender::DialogRender(QWidget *parent, SoftwareCanvasRenderer* renderer):
     _actions->layout()->addWidget(_save_button);
 
     // Connections
-    connect(this, SIGNAL(progressChanged(double)), this, SLOT(applyProgress(double)));
     connect(this, SIGNAL(renderEnded()), this, SLOT(applyRenderEnded()));
     connect(_save_button, SIGNAL(clicked()), this, SLOT(saveRender()));
     connect(_tonemapping_control, SIGNAL(currentIndexChanged(int)), this, SLOT(toneMappingChanged()));

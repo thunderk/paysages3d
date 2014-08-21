@@ -44,16 +44,19 @@ bool CanvasPictureWriter::saveCanvas(const std::string &filepath)
 
 unsigned int CanvasPictureWriter::getPixel(int x, int y)
 {
+    Color comp;
+
     if (antialias > 1)
     {
         int basex = x * antialias;
         int basey = y * antialias;
         double factor = 1.0 / (antialias * antialias);
-        Color comp = COLOR_BLACK;
 
-        for (int ix = 0; ix < antialias; ix++)
+        comp = COLOR_BLACK;
+
+        for (int iy = 0; iy < antialias; iy++)
         {
-            for (int iy = 0; iy < antialias; iy++)
+            for (int ix = 0; ix < antialias; ix++)
             {
                 Color col = getRawPixel(basex + ix, basey + iy);
                 comp.r += col.r * factor;
@@ -61,13 +64,15 @@ unsigned int CanvasPictureWriter::getPixel(int x, int y)
                 comp.b += col.b * factor;
             }
         }
-
-        return profile->apply(comp).to32BitBGRA();
     }
     else
     {
-        return profile->apply(getRawPixel(x, y)).to32BitBGRA();
+        comp = getRawPixel(x, y);
     }
+
+    comp = profile->apply(comp);
+    comp.normalize();
+    return comp.to32BitBGRA();
 }
 
 Color CanvasPictureWriter::getRawPixel(int x, int y)
