@@ -36,8 +36,8 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
     fluid_medium = new FluidMediumManager(this);
     lighting = new LightingManager();
 
-    lighting->registerFilter(terrain_renderer);
     lighting->registerFilter(water_renderer);
+    lighting->registerFilter(terrain_renderer);
     lighting->registerFilter(clouds_renderer);
 
     this->scenery = new Scenery;

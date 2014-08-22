@@ -3,8 +3,6 @@
 
 #include "software_global.h"
 
-#include <set>
-
 namespace paysages {
 namespace software {
 
@@ -42,7 +40,7 @@ public:
 private:
     int specularity;
 
-    std::set<LightFilter*> filters;
+    std::vector<LightFilter*> filters;
 };
 
 }
