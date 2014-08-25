@@ -1,0 +1,3 @@
+[submodule "src/tests/googletest/sources"]
+	path = src/tests/googletest/sources
+	url = https://github.com/thunderk/googletest.git

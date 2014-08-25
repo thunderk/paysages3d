@@ -28,8 +28,8 @@ HEADERS += \
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/googletest/release/ -lgoogletest
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/googletest/debug/ -lgoogletest
 else:unix: LIBS += -L$$OUT_PWD/googletest/ -lgoogletest
-INCLUDEPATH += $$PWD/googletest/include
-DEPENDPATH += $$PWD/googletest/include
+INCLUDEPATH += $$PWD/googletest/sources/include
+DEPENDPATH += $$PWD/googletest/sources/include
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../system/debug/ -lpaysages_system
