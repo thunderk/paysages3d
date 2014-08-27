@@ -1,7 +1,7 @@
 import QtQuick 2.0
 
 Item {
-    property string code
+    property string picture
     property bool selected: false
     property bool hovered: false
 
@@ -24,7 +24,7 @@ Item {
 
     Image {
         id: image
-        source: "qrc:///toolbar/primary/tab_" + parent.code + ".png"
+        source: parent.picture
         anchors.centerIn: parent
     }
 

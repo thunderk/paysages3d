@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<OpenGLView>("Paysages", 1, 0, "OpenGLView");
 
     QQuickView view;
+    view.setTitle(QObject::tr("Paysages 3D"));
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setSource(QUrl("qrc:///main.qml"));
     view.show();

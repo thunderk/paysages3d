@@ -34,27 +34,27 @@ OpenGLView {
 
             ToolbarButton {
                 id: tool_terrain
-                code: "terrain"
+                picture: "images/tab_terrain.png"
             }
             ToolbarButton {
                 id: tool_textures
-                code: "textures"
+                picture: "images/tab_textures.png"
             }
             ToolbarButton {
                 id: tool_water
-                code: "water"
+                picture: "images/tab_water.png"
             }
             ToolbarButton {
                 id: tool_atmosphere
-                code: "atmosphere"
+                picture: "images/tab_atmosphere.png"
             }
             ToolbarButton {
                 id: tool_clouds
-                code: "clouds"
+                picture: "images/tab_clouds.png"
             }
             ToolbarButton {
                 id: tool_render
-                code: "render"
+                picture: "images/tab_render.png"
             }
         }
     }

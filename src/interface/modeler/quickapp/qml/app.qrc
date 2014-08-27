@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ToolbarButton.qml</file>
+        <file>main.qml</file>
+        <file>images/tab_atmosphere.png</file>
+        <file>images/tab_clouds.png</file>
+        <file>images/tab_render.png</file>
+        <file>images/tab_terrain.png</file>
+        <file>images/tab_textures.png</file>
+        <file>images/tab_water.png</file>
+    </qresource>
+</RCC>

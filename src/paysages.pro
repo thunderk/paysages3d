@@ -10,7 +10,7 @@ SUBDIRS = \
     render/opengl \
     interface/commandline \
     interface/desktop \
-    interface/quick
+    interface/modeler
 
 exists( tests/googletest/sources/src/gtest-all.cc ) {
     SUBDIRS += \

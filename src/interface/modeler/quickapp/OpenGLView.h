@@ -1,12 +1,12 @@
 #ifndef OPENGLVIEW_H
 #define OPENGLVIEW_H
 
-#include "quick_global.h"
+#include "modeler_global.h"
 
 #include <QQuickItem>
 
 namespace paysages {
-namespace quick {
+namespace modeler {
 
 class OpenGLView : public QQuickItem
 {

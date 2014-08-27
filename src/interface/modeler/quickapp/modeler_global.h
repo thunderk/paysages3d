@@ -1,16 +1,16 @@
-#ifndef QUICK_GLOBAL_H
-#define QUICK_GLOBAL_H
+#ifndef MODELER_GLOBAL_H
+#define MODELER_GLOBAL_H
 
 #include "definition_global.h"
 #include "software_global.h"
 #include "opengl_global.h"
 
 namespace paysages {
-namespace quick {
+namespace modeler {
     class ItemOpenGLView;
 }
 }
 
-using namespace paysages::quick;
+using namespace paysages::modeler;
 
-#endif // QUICK_GLOBAL_H
+#endif // MODELER_GLOBAL_H
