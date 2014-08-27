@@ -114,3 +114,13 @@ std::string PackStream::readString()
         return "";
     }
 }
+
+void PackStream::skip(const int &value, int count)
+{
+    stream->skipRawData(sizeof(value) * count);
+}
+
+void PackStream::skip(const double &value, int count)
+{
+    stream->skipRawData(sizeof(value) * count);
+}

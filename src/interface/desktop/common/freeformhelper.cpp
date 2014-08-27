@@ -12,9 +12,10 @@
 #include "mainwindow.h"
 #include "dialogrender.h"
 #include "dialogexplorer.h"
+#include "RenderConfig.h"
 #include "DesktopScenery.h"
 #include "BasePreview.h"
-#include "SoftwareRenderer.h"
+#include "SoftwareCanvasRenderer.h"
 #include "CameraDefinition.h"
 #include "tools.h"
 
@@ -246,15 +247,16 @@ void FreeFormHelper::processExploreClicked()
 
 void FreeFormHelper::processRenderClicked()
 {
-    SoftwareRenderer renderer(DesktopScenery::getCurrent());
+    RenderConfig params(400, 300, 1, 3);
+
+    SoftwareCanvasRenderer renderer;
+    renderer.setConfig(params);
+    renderer.setScenery(DesktopScenery::getCurrent());
 
     emit needAlterRenderer(&renderer);
 
-    DialogRender* dialog = new DialogRender(_form_widget, &renderer);
-    RenderArea::RenderParams params = {400, 300, 1, 3};
-    dialog->startRender(params);
-
-    delete dialog;
+    DialogRender dialog(_form_widget, &renderer);
+    dialog.startRender();
 }
 
 void FreeFormHelper::processDecimalChange(double value)

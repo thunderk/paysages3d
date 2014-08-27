@@ -90,11 +90,14 @@ void CameraDefinition::validate()
 
     projector = mperspective.mult(Matrix4::newLookAt(location, target, up));
     unprojector = projector.inversed();
+
+    inv_x_factor = 1.0 / (0.5 * width);
+    inv_y_factor = 1.0 / (0.5 * height);
 }
 
 double CameraDefinition::getRealDepth(const Vector3 &projected) const
 {
-    Vector3 v(projected.x / (0.5 * width) - 1.0, -(projected.y / (0.5 * height) - 1.0), projected.z);
+    Vector3 v(projected.x * inv_x_factor - 1.0, -(projected.y * inv_x_factor - 1.0), projected.z);
     return unperspective.transform(v).z;
 }
 

@@ -29,7 +29,7 @@ public:
      * \brief Start the thread
      * \param data User data to pass to the threaded function
      */
-    void start(void* data);
+    void start(void* data=0);
 
     /*!
      * \brief Wait for the thread to end, and collect its result.

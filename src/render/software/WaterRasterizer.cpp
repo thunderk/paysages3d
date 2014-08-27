@@ -2,19 +2,14 @@
 
 #include "SoftwareRenderer.h"
 #include "WaterRenderer.h"
-#include "ParallelQueue.h"
+#include "CanvasFragment.h"
 
-WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer):
-    renderer(renderer)
+WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer, int client_id):
+    Rasterizer(renderer, client_id, Color(0.9, 0.95, 1.0))
 {
 }
 
-static Color _postProcessFragment(SoftwareRenderer* renderer, const Vector3 &location, void*)
-{
-    return renderer->getWaterRenderer()->getResult(location.x, location.z).final;
-}
-
-static Vector3 _getFirstPassVertex(SoftwareRenderer* renderer, double x, double z)
+static inline Vector3 _getFirstPassVertex(SoftwareRenderer* renderer, double x, double z)
 {
     Vector3 result;
 
@@ -25,7 +20,7 @@ static Vector3 _getFirstPassVertex(SoftwareRenderer* renderer, double x, double 
     return result;
 }
 
-static void _renderQuad(SoftwareRenderer* renderer, double x, double z, double size)
+void WaterRasterizer::rasterizeQuad(CanvasPortion* canvas, double x, double z, double size)
 {
     Vector3 v1, v2, v3, v4;
 
@@ -34,42 +29,11 @@ static void _renderQuad(SoftwareRenderer* renderer, double x, double z, double s
     v3 = _getFirstPassVertex(renderer, x + size, z + size);
     v4 = _getFirstPassVertex(renderer, x + size, z);
 
-    renderer->pushQuad(v1, v2, v3, v4, _postProcessFragment, NULL);
+    pushQuad(canvas, v1, v2, v3, v4);
 }
 
-typedef struct
+void WaterRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
 {
-    SoftwareRenderer* renderer;
-    int i;
-    double cx;
-    double cz;
-    double radius_int;
-    double chunk_size;
-    double radius_ext;
-} ParallelRasterInfo;
-
-static int _parallelJobCallback(ParallelQueue*, int, void* data, int stopping)
-{
-    ParallelRasterInfo* info = (ParallelRasterInfo*)data;
-
-    if (!stopping)
-    {
-        _renderQuad(info->renderer, info->cx - info->radius_ext + info->chunk_size * info->i, info->cz - info->radius_ext, info->chunk_size);
-        _renderQuad(info->renderer, info->cx + info->radius_int, info->cz - info->radius_ext + info->chunk_size * info->i, info->chunk_size);
-        _renderQuad(info->renderer, info->cx + info->radius_int - info->chunk_size * info->i, info->cz + info->radius_int, info->chunk_size);
-        _renderQuad(info->renderer, info->cx - info->radius_ext, info->cz + info->radius_int - info->chunk_size * info->i, info->chunk_size);
-    }
-
-    delete info;
-    return 0;
-}
-
-void WaterRasterizer::renderSurface()
-{
-    ParallelRasterInfo* info;
-    ParallelQueue* queue;
-    queue = new ParallelQueue();
-
     int chunk_factor, chunk_count, i;
     Vector3 cam = renderer->getCameraLocation(VECTOR_ZERO);
     double radius_int, radius_ext, base_chunk_size, chunk_size;
@@ -91,27 +55,17 @@ void WaterRasterizer::renderSurface()
 
     while (radius_int < 20000.0)
     {
-        if (!renderer->addRenderProgress(0.0))
+        if (interrupted)
         {
             return;
         }
 
         for (i = 0; i < chunk_count - 1; i++)
         {
-            info = new ParallelRasterInfo;
-
-            info->renderer = renderer;
-            info->cx = cx;
-            info->cz = cz;
-            info->i = i;
-            info->radius_int = radius_int;
-            info->radius_ext = radius_ext;
-            info->chunk_size = chunk_size;
-
-            if (!queue->addJob(_parallelJobCallback, info))
-            {
-                delete info;
-            }
+            rasterizeQuad(canvas, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size);
+            rasterizeQuad(canvas, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size);
+            rasterizeQuad(canvas, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size);
+            rasterizeQuad(canvas, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size);
         }
 
         if (radius_int > 20.0 && chunk_count % 64 == 0 && (double)chunk_factor < radius_int / 20.0)
@@ -124,7 +78,10 @@ void WaterRasterizer::renderSurface()
         radius_int = radius_ext;
         radius_ext += chunk_size;
     }
+}
 
-    queue->wait();
-    delete queue;
+Color WaterRasterizer::shadeFragment(const CanvasFragment &fragment) const
+{
+    Vector3 location = fragment.getLocation();
+    return renderer->getWaterRenderer()->getResult(location.x, location.z).final;
 }

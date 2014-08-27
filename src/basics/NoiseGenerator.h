@@ -28,7 +28,7 @@ public:
 
     typedef struct
     {
-        double wavelength;
+        double frequency;
         double amplitude;
         double minvalue;
     } NoiseLevel;

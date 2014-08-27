@@ -12,7 +12,7 @@ LightingManager::LightingManager()
 
 void LightingManager::registerFilter(LightFilter* filter)
 {
-    filters.insert(filter);
+    filters.push_back(filter);
 }
 
 bool LightingManager::alterLight(LightComponent &component, const Vector3 &location)

@@ -282,7 +282,7 @@ void DialogNoise::addLevel()
     NoiseGenerator::NoiseLevel level;
 
     level.amplitude = 0.1;
-    level.wavelength = 0.1;
+    level.frequency = 0.1;
 
     _current->addLevel(level);
 
@@ -330,7 +330,7 @@ void DialogNoise::levelChanged(int row)
         ((PreviewLevel*)previewLevel)->setLevel(row);
 
         slider_height->setValue(_current_level_params.amplitude * 1000.0);
-        slider_scaling->setValue(_current_level_params.wavelength * 1000.0);
+        slider_scaling->setValue(_current_level_params.frequency * 1000.0);
     }
     // TODO else ...
 }
@@ -345,7 +345,7 @@ void DialogNoise::heightChanged(int value)
 
 void DialogNoise::scalingChanged(int value)
 {
-    _current_level_params.wavelength = ((double)value) / 1000.0;
+    _current_level_params.frequency = ((double)value) / 1000.0;
     _current->setLevel(_current_level, _current_level_params);
     previewLevel->redraw();
     previewTotal->redraw();

@@ -10,6 +10,10 @@ SUBDIRS = \
     render/opengl \
     interface/commandline \
     interface/desktop \
-    interface/quick \
-    tests/googletest \
-    tests
+    interface/quick
+
+exists( tests/googletest/sources/src/gtest-all.cc ) {
+    SUBDIRS += \
+        tests/googletest \
+        tests
+}

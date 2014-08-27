@@ -45,7 +45,7 @@ void NoiseGenerator::save(PackStream* stream)
     {
         NoiseLevel* level = levels + x;
 
-        stream->write(&level->wavelength);
+        stream->write(&level->frequency);
         stream->write(&level->amplitude);
         stream->write(&level->minvalue);
     }
@@ -69,7 +69,7 @@ void NoiseGenerator::load(PackStream* stream)
     {
         NoiseLevel* level = levels + x;
 
-        stream->read(&level->wavelength);
+        stream->read(&level->frequency);
         stream->read(&level->amplitude);
         stream->read(&level->minvalue);
     }
@@ -215,7 +215,7 @@ void NoiseGenerator::addLevelSimple(double scaling, double minvalue, double maxv
 {
     NoiseLevel level;
 
-    level.wavelength = scaling;
+    level.frequency = 1.0 / scaling;
     level.minvalue = minvalue;
     level.amplitude = maxvalue - minvalue;
 
@@ -230,7 +230,7 @@ void NoiseGenerator::addLevels(int level_count, NoiseLevel start_level, double s
     {
         addLevel(start_level);
         start_level.minvalue += start_level.amplitude * (1.0 - amplitude_factor) * center_factor;
-        start_level.wavelength *= scaling_factor;
+        start_level.frequency /= scaling_factor;
         start_level.amplitude *= amplitude_factor;
     }
 }
@@ -239,7 +239,7 @@ void NoiseGenerator::addLevelsSimple(int level_count, double scaling, double min
 {
     NoiseLevel level;
 
-    level.wavelength = scaling;
+    level.frequency = 1.0 / scaling;
     level.minvalue = minvalue;
     level.amplitude = maxvalue - minvalue;
     addLevels(level_count, level, 0.5, 0.5, center_factor);
@@ -284,7 +284,7 @@ void NoiseGenerator::setLevelSimple(int index, double scaling, double minvalue, 
 {
     NoiseLevel level;
 
-    level.wavelength = scaling;
+    level.frequency = 1.0 / scaling;
     level.minvalue = minvalue;
     level.amplitude = maxvalue - minvalue;
 
@@ -313,7 +313,7 @@ void NoiseGenerator::normalizeAmplitude(double minvalue, double maxvalue, int ad
         levels[level].amplitude *= factor;
         if (adjust_scaling)
         {
-            levels[level].wavelength *= factor;
+            levels[level].frequency /= factor;
         }
     }
     height_offset = minvalue + (height_offset - current_minvalue) * factor;
@@ -371,7 +371,7 @@ static inline double _fixValue(double value, double ridge, double curve)
 
 inline double NoiseGenerator::_get1DLevelValue(NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x)
 {
-    return level->minvalue + _fixValue(_func_noise_1d(x / level->wavelength + offset.x), function.ridge_factor, function.curve_factor) * level->amplitude;
+    return level->minvalue + _fixValue(_func_noise_1d(x * level->frequency + offset.x), function.ridge_factor, function.curve_factor) * level->amplitude;
 }
 
 double NoiseGenerator::get1DLevel(int level, double x)
@@ -428,7 +428,7 @@ double NoiseGenerator::get1DDetail(double x, double detail)
 
 inline double NoiseGenerator::_get2DLevelValue(NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x, double y)
 {
-    return level->minvalue + _fixValue(_func_noise_2d(x / level->wavelength + offset.x, y / level->wavelength + offset.y), function.ridge_factor, function.curve_factor) * level->amplitude;
+    return level->minvalue + _fixValue(_func_noise_2d(x * level->frequency + offset.x, y * level->frequency + offset.y), function.ridge_factor, function.curve_factor) * level->amplitude;
 }
 
 double NoiseGenerator::get2DLevel(int level, double x, double y)
@@ -485,7 +485,7 @@ double NoiseGenerator::get2DDetail(double x, double y, double detail)
 
 inline double NoiseGenerator::_get3DLevelValue(NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x, double y, double z)
 {
-    return level->minvalue + _fixValue(_func_noise_3d(x / level->wavelength + offset.x, y / level->wavelength + offset.y, z / level->wavelength + offset.z), function.ridge_factor, function.curve_factor) * level->amplitude;
+    return level->minvalue + _fixValue(_func_noise_3d(x * level->frequency + offset.x, y * level->frequency + offset.y, z * level->frequency + offset.z), function.ridge_factor, function.curve_factor) * level->amplitude;
 }
 
 double NoiseGenerator::get3DLevel(int level, double x, double y, double z)

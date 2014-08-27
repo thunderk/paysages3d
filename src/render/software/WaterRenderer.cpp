@@ -263,7 +263,7 @@ bool WaterRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
             light.color.b *= factor;
             light.reflection *= factor;
 
-            return true;
+            return factor > 0.0;
         }
         else
         {

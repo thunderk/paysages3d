@@ -13,10 +13,10 @@ DEFINES += GOOGLETEST_LIBRARY
 
 QMAKE_CXXFLAGS += -pthread -Wno-missing-field-initializers
 
-INCLUDEPATH += . ./include
+INCLUDEPATH += ./sources ./sources/include
 
 SOURCES += \
-    src/gtest-all.cc
+    sources/src/gtest-all.cc
 
 HEADERS +=
 

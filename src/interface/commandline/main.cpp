@@ -5,16 +5,18 @@
 
 #include "CameraDefinition.h"
 #include "AtmosphereDefinition.h"
-#include "SoftwareRenderer.h"
+#include "SoftwareCanvasRenderer.h"
 #include "Scenery.h"
+#include "RenderConfig.h"
+#include "ColorProfile.h"
 
-void startRender(SoftwareRenderer* renderer, char* outputpath, RenderArea::RenderParams params)
+void startRender(SoftwareCanvasRenderer *renderer, char *outputpath)
 {
     printf("\rRendering %s ...                   \n", outputpath);
-    renderer->start(params);
+    renderer->render();
     printf("\rSaving %s ...                      \n", outputpath);
     remove(outputpath);
-    renderer->render_area->saveToFile(outputpath);
+    renderer->saveToDisk(outputpath);
 }
 
 void displayHelp()
@@ -43,9 +45,9 @@ void _previewUpdate(double progress)
 
 int main(int argc, char** argv)
 {
-    SoftwareRenderer* renderer;
+    SoftwareCanvasRenderer* renderer;
     char* conf_file_path = NULL;
-    RenderArea::RenderParams conf_render_params = {800, 600, 1, 5};
+    RenderConfig conf_render_params(800, 600, 1, 5);
     int conf_first_picture = 0;
     int conf_nb_pictures = 1;
     double conf_daytime_start = 0.4;
@@ -177,13 +179,14 @@ int main(int argc, char** argv)
         Vector3 step = {conf_camera_step_x, conf_camera_step_y, conf_camera_step_z};
         camera->setLocation(camera->getLocation().add(step));
 
-        renderer = new SoftwareRenderer(scenery);
-        renderer->setPreviewCallbacks(NULL, NULL, _previewUpdate);
+        renderer = new SoftwareCanvasRenderer();
+        renderer->setConfig(conf_render_params);
+        renderer->setScenery(scenery);
 
         if (outputcount >= conf_first_picture)
         {
             sprintf(outputpath, "output/pic%05d.png", outputcount);
-            startRender(renderer, outputpath, conf_render_params);
+            startRender(renderer, outputpath);
         }
 
         delete renderer;

@@ -1,35 +1,61 @@
-Paysages 3D
-===========
+# Paysages 3D
 
 [![Build Status](https://travis-ci.org/thunderk/paysages3d.png)](https://travis-ci.org/thunderk/paysages3d)
 
-About
------
+
+## About
 
 [Paysages 3D](http://www.paysages3d.com) is a work-in-progress landscape generator, modeler and renderer software.
 
-It is written in C++ 11, using Qt 5.2 as only dependency.
+It is written in C++ 11, using Qt 5.2 as only dependency (and Google Test for unit testing).
 
 [![Screenshot 1](data/screenshots/small1.jpg)](data/screenshots/large1.jpg) [![Screenshot 2](data/screenshots/small2.jpg)](data/screenshots/large2.jpg) [![Screenshot 3](data/screenshots/small3.jpg)](data/screenshots/large3.jpg)
 
-Build/Run
----------
 
-At the moment, the build system is only well tested using the latest [QtSDK](http://qt-project.org/downloads) installation, and [QtCreator](http://qt-project.org/downloads#qt-creator). Later work will remove this dependency.
+## Build/Run
 
-Simply open the *src/paysages.pro* file in QtCreator, and make a shadow build.
+### Using QtSDK (All platforms)
 
-You can then run the compiled program **from the top project directory** (the one that contains *src* and *data*).
+Download and install the latest [QtSDK](http://qt-project.org/downloads).
 
-Licensing
----------
+Launch QtCreator, and open the project file *src/paysages.pro*.
+
+Go to the "Projects" tab to edit the directory in which the executable will be run, and set **the top project directory** (the one that contains *src* and *data*). If you don't do this, some data files will not be found.
+
+### Using a packaged Qt (Linux)
+
+You need at least the 5.2 packaged version of Qt, with qMake and QtCore, QtGui and QtOpengl modules.
+
+On Ubuntu/Mint:
+
+    sudo apt-get install qt5-qmake libqt5core5a libqt5gui5 libqt5widgets5 libqt5opengl5-dev
+
+Then to build and run the software:
+
+    make run
+
+### Unit tests
+
+Running the unit tests needs the Google Test framework:
+
+    git submodule init
+    git submodule update
+
+Then build and run the tests:
+
+    make tests
+
+If you're using QtCreator, you can run the "tests" executable, not forgetting to change the directory in which the executable is run.
+
+
+## Licensing
 
 The source code is subject to the terms of the [Mozilla Public License, v. 2.0](http://mozilla.org/MPL/2.0/). Read the full terms in the LICENSE file.
 
-Credits
--------
+
+## Credits
 
 * [Michaël Lemaire](http://thunderk.net) - Main developer
 * [Eric Bruneton and Fabrice Neyet](http://www-evasion.imag.fr/Membres/Eric.Bruneton/) - Publication and source code from *Precomputed Atmospheric Scattering (2008)*
 * [Qt](http://qt-project.org/) - Library in use
-* [GoogleTest](https://code.google.com/p/googletest/) - Included library
+* [GoogleTest](https://code.google.com/p/googletest/) - Used for unit testing

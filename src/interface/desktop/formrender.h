@@ -5,7 +5,7 @@
 
 #include "baseform.h"
 
-#include "RenderArea.h"
+#include "RenderConfig.h"
 
 class FormRender : public BaseForm
 {
@@ -29,9 +29,9 @@ protected slots:
     virtual void configChangeEvent();
 
 private:
-    RenderArea::RenderParams _params;
+    RenderConfig _params;
     CameraDefinition* _camera;
-    SoftwareRenderer* _renderer;
+    SoftwareCanvasRenderer* _renderer;
     bool _renderer_inited;
     BasePreview* _preview_landscape;
     Base2dPreviewRenderer* _preview_landscape_renderer;

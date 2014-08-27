@@ -3,12 +3,13 @@
 
 #include "software_global.h"
 
+#include "Rasterizer.h"
 #include "Vector3.h"
 
 namespace paysages {
 namespace software {
 
-class SOFTWARESHARED_EXPORT TerrainRasterizer
+class SOFTWARESHARED_EXPORT TerrainRasterizer: public Rasterizer
 {
 public:
     typedef struct
@@ -21,35 +22,29 @@ public:
     } TerrainChunkInfo;
 
 public:
-    TerrainRasterizer(SoftwareRenderer* renderer);
+    TerrainRasterizer(SoftwareRenderer* renderer, int client_id);
 
     /**
      * Method called for each chunk tessellated by getTessellationInfo.
      */
-    int processChunk(TerrainChunkInfo* chunk, double progress);
+    void processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, double progress);
 
     /**
      * Tessellate the terrain, calling processChunk for each chunk.
      *
      * The terrain will be broken in chunks, most detailed near the camera.
      */
-    void getTessellationInfo(int displaced);
+    void getTessellationInfo(CanvasPortion* canvas, int displaced);
 
     /**
      * Tessellate a terrain chunk, pushing the quads in the render area.
      */
-    void tessellateChunk(TerrainChunkInfo* chunk, int detail);
+    void tessellateChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, int detail);
 
-    /**
-     * Start the final rasterization of terrain.
-     *
-     * This will push the rasterized quads in the render area, waiting for post process.
-     */
-    void renderSurface();
+    void renderQuad(CanvasPortion* canvas, double x, double z, double size, double water_height);
 
-private:
-    SoftwareRenderer* renderer;
-    ParallelQueue* queue;
+    virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
+    virtual Color shadeFragment(const CanvasFragment &fragment) const override;
 };
 
 }

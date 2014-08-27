@@ -10,16 +10,17 @@ SOURCES += main.cpp \
     Layers_Test.cpp \
     PackStream_Test.cpp \
     NoiseGenerator_Test.cpp \
-    Render_Test.cpp \
     TerrainPainting_Test.cpp \
     Zone_Test.cpp \
     Euclid_Test.cpp \
-    Bruneton_Test.cpp \
     Camera_Test.cpp \
     Clouds_Test.cpp \
     FluidMediumManager_Test.cpp \
     VertexArray_Test.cpp \
-    FractalNoise_Test.cpp
+    FractalNoise_Test.cpp \
+    Canvas_Test.cpp \
+    CanvasPortion_Test.cpp \
+    CanvasPreview_Test.cpp
 
 HEADERS += \
     BaseTestCase.h
@@ -27,8 +28,8 @@ HEADERS += \
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/googletest/release/ -lgoogletest
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/googletest/debug/ -lgoogletest
 else:unix: LIBS += -L$$OUT_PWD/googletest/ -lgoogletest
-INCLUDEPATH += $$PWD/googletest/include
-DEPENDPATH += $$PWD/googletest/include
+INCLUDEPATH += $$PWD/googletest/sources/include
+DEPENDPATH += $$PWD/googletest/sources/include
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../system/debug/ -lpaysages_system
