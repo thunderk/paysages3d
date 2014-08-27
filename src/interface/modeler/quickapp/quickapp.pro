@@ -53,4 +53,6 @@ DEPENDPATH += $$PWD/../../../render/opengl
 OTHER_FILES += \
     qml/main.qml \
     qml/ToolbarButton.qml \
-    qml/OpenGLView.qml
+    qml/OpenGLView.qml \
+    qml/Toolbar.qml \
+    qml/Tooltip.qml

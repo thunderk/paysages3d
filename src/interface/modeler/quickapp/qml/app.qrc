@@ -8,5 +8,10 @@
         <file>images/tab_terrain.png</file>
         <file>images/tab_textures.png</file>
         <file>images/tab_water.png</file>
+        <file>images/tab_display.png</file>
+        <file>Toolbar.qml</file>
+        <file>images/display_topdown.png</file>
+        <file>images/help.png</file>
+        <file>Tooltip.qml</file>
     </qresource>
 </RCC>

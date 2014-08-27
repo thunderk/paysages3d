@@ -2,76 +2,79 @@ import QtQuick 2.2
 import Paysages 1.0
 
 OpenGLView {
+    id: main_ui
+    state: "Init"
 
-    width: 640
-    height: 480
+    width: 800
+    height: 600
 
-    Item {
+    Tooltip {
+        id: tooltip_widget
+
+        anchors.top: parent.top
+        anchors.right: parent.right
+    }
+
+    Toolbar {
         id: primary_toolbar
-        x: 0
-        y: 0
-        width: 70
-        height: parent.height
+        color: "#90000000"
 
-        Rectangle {
-            width: parent.height
-            height: parent.width
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            transformOrigin: Item.Center
-            rotation: -90
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: "#605055FF" }
-                GradientStop { position: 1.0; color: "#005055FF" }
-            }
+        anchors.left: parent.left
+
+        ToolbarButton {
+            id: tool_display
+            picture: "images/tab_display.png"
+            hovertext: qsTr("Display options")
         }
-
-        Column {
-
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            spacing: (parent.height - 6 * tool_terrain.height) / 7
-
-            ToolbarButton {
-                id: tool_terrain
-                picture: "images/tab_terrain.png"
-            }
-            ToolbarButton {
-                id: tool_textures
-                picture: "images/tab_textures.png"
-            }
-            ToolbarButton {
-                id: tool_water
-                picture: "images/tab_water.png"
-            }
-            ToolbarButton {
-                id: tool_atmosphere
-                picture: "images/tab_atmosphere.png"
-            }
-            ToolbarButton {
-                id: tool_clouds
-                picture: "images/tab_clouds.png"
-            }
-            ToolbarButton {
-                id: tool_render
-                picture: "images/tab_render.png"
-            }
+        ToolbarButton {
+            id: tool_terrain
+            picture: "images/tab_terrain.png"
+        }
+        ToolbarButton {
+            id: tool_textures
+            picture: "images/tab_textures.png"
+        }
+        ToolbarButton {
+            id: tool_water
+            picture: "images/tab_water.png"
+        }
+        ToolbarButton {
+            id: tool_atmosphere
+            picture: "images/tab_atmosphere.png"
+        }
+        ToolbarButton {
+            id: tool_clouds
+            picture: "images/tab_clouds.png"
+        }
+        ToolbarButton {
+            id: tool_render
+            picture: "images/tab_render.png"
         }
     }
 
-    Rectangle {
-        id: toolbar_render
-        anchors.top: primary_toolbar.top
+    Toolbar {
+        id: display_toolbar
+        opacity: 0
         anchors.left: primary_toolbar.right
-        width: primary_toolbar.width
-        height: primary_toolbar.height
-        color: "#8800FF00"
 
-        SequentialAnimation on width {
-            loops: Animation.Infinite
-            PropertyAnimation { to: 0; duration: 1000 }
-            PropertyAnimation { to: primary_toolbar.width; duration: 1000 }
+        ToolbarButton {
+            id: tool_display_topdown
+            picture: "images/display_topdown.png"
+            hovertext: qsTr("Top-down view")
+            helptext: qsTr("Drag the mouse on the map to change the viewpoint.")
         }
     }
+
+    states: [
+        State {
+            name: "Display Mode"
+            when: tool_display.selected
+
+            PropertyChanges {
+                target: display_toolbar
+                opacity: 1
+            }
+        }
+    ]
 
 }
