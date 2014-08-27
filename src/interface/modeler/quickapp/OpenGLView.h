@@ -18,8 +18,13 @@ public slots:
     void handleWindowChanged(QQuickWindow *win);
     void paint();
 
+protected:
+    virtual void hoverMoveEvent(QHoverEvent *event) override;
+    virtual void timerEvent(QTimerEvent *event) override;
+
 private:
     bool initialized;
+    QQuickWindow *window;
 };
 
 }

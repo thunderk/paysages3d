@@ -18,6 +18,7 @@ public:
     virtual ~OpenGLRenderer();
 
     void initialize();
+    void prepareOpenGLState();
     void resize(int width, int height);
     void paint();
 
@@ -31,6 +32,8 @@ public:
 
 private:
     bool ready;
+    int vp_width;
+    int vp_height;
 
     OpenGLFunctions* functions;
     OpenGLSharedState* shared_state;
