@@ -17,7 +17,7 @@ OpenGLView {
 
     Toolbar {
         id: primary_toolbar
-        color: "#90000000"
+        color: "#90888888"
 
         anchors.left: parent.left
 
@@ -36,7 +36,8 @@ OpenGLView {
         }
         ToolbarButton {
             id: tool_water
-            picture: "images/tab_water.png"
+            picture: "images/icon_water.png"
+            hovertext: "Water tools"
         }
         ToolbarButton {
             id: tool_atmosphere
@@ -65,6 +66,24 @@ OpenGLView {
         }
     }
 
+    Toolbar {
+        id: water_toolbar
+        opacity: 0
+        anchors.left: primary_toolbar.right
+
+        ToolbarButton {
+            id: tool_water_level
+            picture: "images/icon_water_level.png"
+            hovertext: qsTr("Change the water altitude")
+        }
+    }
+
+    PanelWaterLevel {
+        id: panel_water_level
+        visible: false
+        tool: tool_water_level
+    }
+
     states: [
         State {
             name: "Display Mode"
@@ -72,6 +91,15 @@ OpenGLView {
 
             PropertyChanges {
                 target: display_toolbar
+                opacity: 1
+            }
+        },
+        State {
+            name: "Water Mode"
+            when: tool_water.selected
+
+            PropertyChanges {
+                target: water_toolbar
                 opacity: 1
             }
         }

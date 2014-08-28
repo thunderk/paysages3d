@@ -5,7 +5,8 @@ Rectangle {
     default property alias children : inner_space.children
     width: 70
     height: parent.height
-    color: "#50000000"
+    color: "#50888888"
+    enabled: opacity > 0
 
     Column {
         id: inner_space

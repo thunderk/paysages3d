@@ -5,7 +5,8 @@ QT += qml quick widgets
 include(../../../common.pri)
 
 SOURCES += main.cpp \
-    OpenGLView.cpp
+    OpenGLView.cpp \
+    MainModelerWindow.cpp
 
 RESOURCES += \
     qml/app.qrc
@@ -20,7 +21,8 @@ include(deployment.pri)
 
 HEADERS += \
     OpenGLView.h \
-    modeler_global.h
+    modeler_global.h \
+    MainModelerWindow.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../../system/debug/ -lpaysages_system
@@ -57,4 +59,6 @@ OTHER_FILES += \
     qml/ToolbarButton.qml \
     qml/OpenGLView.qml \
     qml/Toolbar.qml \
-    qml/Tooltip.qml
+    qml/Tooltip.qml \
+    qml/BasePanel.qml \
+    qml/PanelWaterLevel.qml

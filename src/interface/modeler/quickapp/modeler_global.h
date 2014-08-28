@@ -7,7 +7,8 @@
 
 namespace paysages {
 namespace modeler {
-    class ItemOpenGLView;
+    class MainModelerWindow;
+    class OpenGLView;
 }
 }
 

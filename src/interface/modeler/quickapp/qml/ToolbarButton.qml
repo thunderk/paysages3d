@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtGraphicalEffects 1.0
 
 Item {
     property string picture
@@ -13,7 +14,7 @@ Item {
     Rectangle {
         id: glow
         anchors.fill: parent
-        color: "white"
+        color: "#cccccc"
         radius: 8
 
         opacity: parent.selected ? 1.0 : (parent.hovered ? 0.5 : 0.0)
@@ -21,6 +22,13 @@ Item {
             PropertyAnimation {
                 duration: 200
             }
+        }
+        RectangularGlow {
+            anchors.fill: glow
+            glowRadius: 8
+            spread: 0.2
+            color: "white"
+            cornerRadius: glow.radius + glowRadius
         }
     }
 
@@ -30,6 +38,16 @@ Item {
         anchors.centerIn: parent
         width: 32
         height: 32
+        antialiasing: true
+    }
+    DropShadow {
+        anchors.fill: image
+        horizontalOffset: 2
+        verticalOffset: 2
+        radius: 4.0
+        samples: 16
+        color: "#80000000"
+        source: image
     }
 
     MouseArea {

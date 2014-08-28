@@ -1,19 +1,12 @@
 #include <QGuiApplication>
-#include <QQuickView>
-#include <QtQml>
 
-#include "OpenGLView.h"
+#include "MainModelerWindow.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
-    qmlRegisterType<OpenGLView>("Paysages", 1, 0, "OpenGLView");
-
-    QQuickView view;
-    view.setTitle(QObject::tr("Paysages 3D"));
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl("qrc:///main.qml"));
+    MainModelerWindow view;
     view.show();
 
     return app.exec();

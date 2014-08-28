@@ -13,5 +13,9 @@
         <file>images/display_topdown.png</file>
         <file>images/help.png</file>
         <file>Tooltip.qml</file>
+        <file>images/icon_water.png</file>
+        <file>images/icon_water_level.png</file>
+        <file>BasePanel.qml</file>
+        <file>PanelWaterLevel.qml</file>
     </qresource>
 </RCC>

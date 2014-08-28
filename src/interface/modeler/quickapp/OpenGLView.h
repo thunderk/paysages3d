@@ -24,7 +24,8 @@ protected:
 
 private:
     bool initialized;
-    QQuickWindow *window;
+    MainModelerWindow *window;
+    OpenGLRenderer *renderer;
 };
 
 }
