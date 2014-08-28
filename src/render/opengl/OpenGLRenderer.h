@@ -17,6 +17,10 @@ public:
     OpenGLRenderer(Scenery* scenery=0);
     virtual ~OpenGLRenderer();
 
+    inline OpenGLSkybox *getSkybox() const {return skybox;}
+    inline OpenGLWater *getWater() const {return water;}
+    inline OpenGLTerrain *getTerrain() const {return terrain;}
+
     void initialize();
     void prepareOpenGLState();
     void resize(int width, int height);

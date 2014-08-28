@@ -46,6 +46,11 @@ public:
     virtual void copy(BaseDefinition* destination) const override;
     virtual void validate() override;
 
+    /**
+     * Set the daytime from a 0.0-1.0 value.
+     */
+    void setDaytime(double value);
+
     void applyPreset(AtmospherePreset preset);
     void generateStars(int count);
 

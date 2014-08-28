@@ -1,10 +1,10 @@
 import QtQuick 2.2
-import QtQuick.Controls 1.2
 
 BasePanel {
     width: 20
 
-    Slider {
+    BaseSlider {
+        objectName: "water_level"
         orientation: Qt.Vertical
         anchors.fill: parent
     }

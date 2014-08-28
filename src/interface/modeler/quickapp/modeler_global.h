@@ -9,6 +9,9 @@ namespace paysages {
 namespace modeler {
     class MainModelerWindow;
     class OpenGLView;
+
+    class AtmosphereModeler;
+    class WaterModeler;
 }
 }
 

@@ -17,5 +17,13 @@
         <file>images/icon_water_level.png</file>
         <file>BasePanel.qml</file>
         <file>PanelWaterLevel.qml</file>
+        <file>images/icon_atmosphere.png</file>
+        <file>images/icon_atmosphere_daytime.png</file>
+        <file>BaseSlider.qml</file>
+        <file>PanelAtmosphereDaytime.qml</file>
+        <file>images/icon_atmosphere_day.png</file>
+        <file>images/icon_atmosphere_night.png</file>
+        <file>BaseChoice.qml</file>
+        <file>BaseChoiceItem.qml</file>
     </qresource>
 </RCC>

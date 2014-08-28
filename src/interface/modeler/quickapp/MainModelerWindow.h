@@ -15,11 +15,17 @@ public:
     MainModelerWindow();
     virtual ~MainModelerWindow();
 
+    QObject *findQmlObject(const QString& objectName);
+
+    inline Scenery *getScenery() const {return scenery;}
     inline OpenGLRenderer *getRenderer() const {return renderer;}
 
 private:
     OpenGLRenderer *renderer;
     Scenery *scenery;
+
+    AtmosphereModeler *atmosphere;
+    WaterModeler *water;
 };
 
 }

@@ -19,4 +19,14 @@ Rectangle {
             duration: 200
         }
     }
+
+    onEnabledChanged: {
+        if (!enabled)
+        {
+            for (var i = 0; i < children.length; i++)
+            {
+                children[i].selected = false;
+            }
+        }
+    }
 }

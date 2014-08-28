@@ -3,6 +3,8 @@
 #include "OpenGLView.h"
 #include "Scenery.h"
 #include "OpenGLRenderer.h"
+#include "AtmosphereModeler.h"
+#include "WaterModeler.h"
 
 MainModelerWindow::MainModelerWindow()
 {
@@ -15,10 +17,21 @@ MainModelerWindow::MainModelerWindow()
     setTitle(QObject::tr("Paysages 3D"));
     setResizeMode(QQuickView::SizeRootObjectToView);
     setSource(QUrl("qrc:///main.qml"));
+
+    atmosphere = new AtmosphereModeler(this);
+    water = new WaterModeler(this);
 }
 
 MainModelerWindow::~MainModelerWindow()
 {
+    delete atmosphere;
+    delete water;
+
     delete renderer;
     delete scenery;
+}
+
+QObject *MainModelerWindow::findQmlObject(const QString &objectName)
+{
+    return rootObject()->findChild<QObject *>(objectName);
 }

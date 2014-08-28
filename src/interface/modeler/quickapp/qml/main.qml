@@ -41,7 +41,8 @@ OpenGLView {
         }
         ToolbarButton {
             id: tool_atmosphere
-            picture: "images/tab_atmosphere.png"
+            picture: "images/icon_atmosphere.png"
+            hovertext: "Atmosphere/weather tools"
         }
         ToolbarButton {
             id: tool_clouds
@@ -78,10 +79,25 @@ OpenGLView {
         }
     }
 
+    Toolbar {
+        id: atmosphere_toolbar
+        opacity: 0
+        anchors.left: primary_toolbar.right
+
+        ToolbarButton {
+            id: tool_atmosphere_daytime
+            picture: "images/icon_atmosphere_daytime.png"
+            hovertext: qsTr("Change the time of day")
+        }
+    }
+
     PanelWaterLevel {
         id: panel_water_level
-        visible: false
         tool: tool_water_level
+    }
+    PanelAtmosphereDaytime {
+        id: panel_atmosphere_daytime
+        tool: tool_atmosphere_daytime
     }
 
     states: [
@@ -100,6 +116,15 @@ OpenGLView {
 
             PropertyChanges {
                 target: water_toolbar
+                opacity: 1
+            }
+        },
+        State {
+            name: "Atmosphere Mode"
+            when: tool_atmosphere.selected
+
+            PropertyChanges {
+                target: atmosphere_toolbar
                 opacity: 1
             }
         }

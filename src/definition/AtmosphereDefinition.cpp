@@ -105,6 +105,22 @@ void AtmosphereDefinition::validate()
     _daytime = (double)hour / 24.0 + (double)minute / 1440.0;
 }
 
+void AtmosphereDefinition::setDaytime(double value)
+{
+    if (value >= 0.0)
+    {
+        value = fmod(value, 1.0);
+    }
+    else
+    {
+        value = 1.0 - fmod(-value, 1.0);
+    }
+    value *= 1440.0;
+    hour = value / 60.0;
+    minute = value - 60.0 * hour;
+    validate();
+}
+
 void AtmosphereDefinition::applyPreset(AtmospherePreset preset)
 {
     sun_color.r = 1.0;

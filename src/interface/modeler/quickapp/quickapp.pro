@@ -6,7 +6,9 @@ include(../../../common.pri)
 
 SOURCES += main.cpp \
     OpenGLView.cpp \
-    MainModelerWindow.cpp
+    MainModelerWindow.cpp \
+    WaterModeler.cpp \
+    AtmosphereModeler.cpp
 
 RESOURCES += \
     qml/app.qrc
@@ -22,7 +24,9 @@ include(deployment.pri)
 HEADERS += \
     OpenGLView.h \
     modeler_global.h \
-    MainModelerWindow.h
+    MainModelerWindow.h \
+    WaterModeler.h \
+    AtmosphereModeler.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../../system/debug/ -lpaysages_system
@@ -61,4 +65,8 @@ OTHER_FILES += \
     qml/Toolbar.qml \
     qml/Tooltip.qml \
     qml/BasePanel.qml \
-    qml/PanelWaterLevel.qml
+    qml/PanelWaterLevel.qml \
+    qml/PanelAtmosphereDaytime.qml \
+    qml/BaseSlider.qml \
+    qml/BaseChoice.qml \
+    qml/BaseChoiceItem.qml
