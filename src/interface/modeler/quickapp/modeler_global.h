@@ -12,6 +12,9 @@ namespace modeler {
 
     class AtmosphereModeler;
     class WaterModeler;
+
+    class RenderPreviewProvider;
+    class RenderProcess;
 }
 }
 

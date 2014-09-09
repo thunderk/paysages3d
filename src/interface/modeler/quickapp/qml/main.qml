@@ -91,6 +91,12 @@ OpenGLView {
         }
     }
 
+    RenderDialog {
+        id: render_dialog
+        opacity: 0
+        anchors.fill: parent
+    }
+
     PanelWaterLevel {
         id: panel_water_level
         tool: tool_water_level
@@ -125,6 +131,19 @@ OpenGLView {
 
             PropertyChanges {
                 target: atmosphere_toolbar
+                opacity: 1
+            }
+        },
+        State {
+            name: "Render Dialog"
+            when: tool_display.selected
+
+            PropertyChanges {
+                target: primary_toolbar
+                opacity: 0
+            }
+            PropertyChanges {
+                target: render_dialog
                 opacity: 1
             }
         }

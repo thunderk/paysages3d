@@ -8,7 +8,9 @@ SOURCES += main.cpp \
     OpenGLView.cpp \
     MainModelerWindow.cpp \
     WaterModeler.cpp \
-    AtmosphereModeler.cpp
+    AtmosphereModeler.cpp \
+    RenderPreviewProvider.cpp \
+    RenderProcess.cpp
 
 RESOURCES += \
     qml/app.qrc
@@ -26,7 +28,9 @@ HEADERS += \
     modeler_global.h \
     MainModelerWindow.h \
     WaterModeler.h \
-    AtmosphereModeler.h
+    AtmosphereModeler.h \
+    RenderPreviewProvider.h \
+    RenderProcess.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../../system/debug/ -lpaysages_system
@@ -69,4 +73,5 @@ OTHER_FILES += \
     qml/PanelAtmosphereDaytime.qml \
     qml/BaseSlider.qml \
     qml/BaseChoice.qml \
-    qml/BaseChoiceItem.qml
+    qml/BaseChoiceItem.qml \
+    qml/RenderDialog.qml

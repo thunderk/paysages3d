@@ -25,5 +25,6 @@
         <file>images/icon_atmosphere_night.png</file>
         <file>BaseChoice.qml</file>
         <file>BaseChoiceItem.qml</file>
+        <file>RenderDialog.qml</file>
     </qresource>
 </RCC>
