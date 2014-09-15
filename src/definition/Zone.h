@@ -8,8 +8,6 @@
 namespace paysages {
 namespace definition {
 
-class Circle;
-
 class DEFINITIONSHARED_EXPORT Zone : public BaseDefinition
 {
 public:
@@ -25,9 +23,6 @@ public:
 
     void setAbsoluteHeight();
     void setRelativeHeight(double min, double middle, double max);
-
-    void includeCircleArea(double value, double centerx, double centerz, double softradius, double hardradius);
-    void excludeCircleArea(double centerx, double centerz, double softradius, double hardradius);
 
     void getHeightCurve(Curve* curve) const;
     void setHeightCurve(Curve* curve);
@@ -47,9 +42,6 @@ private:
 
     Curve* value_by_height;
     Curve* value_by_slope;
-
-    Circle* circles_included;
-    int circles_included_count;
 };
 
 }
