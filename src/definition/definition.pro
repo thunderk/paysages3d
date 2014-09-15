@@ -27,8 +27,10 @@ SOURCES += \
     Zone.cpp \
     TerrainDefinition.cpp \
     TerrainHeightMap.cpp \
-    TerrainHeightMapBrush.cpp \
-    Scenery.cpp
+    Scenery.cpp \
+    PaintedGrid.cpp \
+    PaintedGridBrush.cpp \
+    PaintedGridData.cpp
 
 HEADERS +=\
         definition_global.h \
@@ -45,8 +47,10 @@ HEADERS +=\
     Zone.h \
     TerrainDefinition.h \
     TerrainHeightMap.h \
-    TerrainHeightMapBrush.h \
-    Scenery.h
+    Scenery.h \
+    PaintedGrid.h \
+    PaintedGridBrush.h \
+    PaintedGridData.h
 
 unix:!symbian {
     maemo5 {

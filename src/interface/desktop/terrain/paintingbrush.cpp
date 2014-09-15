@@ -5,7 +5,7 @@
 #include "NoiseGenerator.h"
 #include "TerrainDefinition.h"
 #include "TerrainHeightMap.h"
-#include "TerrainHeightMapBrush.h"
+#include "PaintedGridBrush.h"
 
 PaintingBrush::PaintingBrush()
 {
@@ -104,13 +104,12 @@ QString PaintingBrush::getHelpText()
 void PaintingBrush::applyToTerrain(TerrainDefinition* terrain, double x, double z, double duration, bool reverse)
 {
     double brush_strength;
-    TerrainHeightMapBrush brush;
 
-    brush.relative_x = x;
-    brush.relative_z = z;
-    brush.hard_radius = _size * (1.0 - _smoothing);
-    brush.smoothed_size = _size * _smoothing;
-    brush.total_radius = brush.hard_radius + brush.smoothed_size;
+    double hard_radius = _size * (1.0 - _smoothing);
+    double smoothed_size = _size * _smoothing;
+    double total_radius = hard_radius + smoothed_size;
+
+    PaintedGridBrush brush(hard_radius, smoothed_size, total_radius);
 
     brush_strength = 0.5 * _strength * duration / 0.1;
 
@@ -121,16 +120,16 @@ void PaintingBrush::applyToTerrain(TerrainDefinition* terrain, double x, double 
         {
             brush_strength = -brush_strength;
         }
-        terrain->height_map->brushElevation(brush, brush_strength * 2.0);
+        terrain->height_map->brushElevation(brush, x, z, brush_strength * 2.0);
         break;
     case PAINTING_BRUSH_SMOOTH:
         if (reverse)
         {
-            terrain->height_map->brushSmooth(brush, brush_strength * 30.0);
+            terrain->height_map->brushSmooth(brush, x, z, brush_strength * 30.0);
         }
         else
         {
-            terrain->height_map->brushAddNoise(brush, _noise, brush_strength * 0.3);
+            terrain->height_map->brushAddNoise(brush, x, z, _noise, brush_strength * 0.3);
         }
         break;
     case PAINTING_BRUSH_FLATTEN:
@@ -140,11 +139,11 @@ void PaintingBrush::applyToTerrain(TerrainDefinition* terrain, double x, double 
         }
         else
         {
-            terrain->height_map->brushFlatten(brush, _height, brush_strength * 30.0);
+            terrain->height_map->brushFlatten(brush, x, z, _height, brush_strength * 30.0);
         }
         break;
     case PAINTING_BRUSH_RESTORE:
-        terrain->height_map->brushReset(brush, brush_strength * 30.0);
+        terrain->height_map->brushReset(brush, x, z, brush_strength * 30.0);
         break;
     default:
         return;

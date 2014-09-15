@@ -3,49 +3,30 @@
 
 #include "definition_global.h"
 
-#include "BaseDefinition.h"
+#include "PaintedGrid.h"
 
 namespace paysages {
 namespace definition {
 
-class TerrainHeightMapData;
-
-class DEFINITIONSHARED_EXPORT TerrainHeightMap : public BaseDefinition
+class DEFINITIONSHARED_EXPORT TerrainHeightMap : public PaintedGrid
 {
 public:
-    TerrainHeightMap(TerrainDefinition* terrain);
-    virtual ~TerrainHeightMap();
+    TerrainHeightMap(TerrainDefinition *terrain);
 
-    virtual void copy(BaseDefinition* destination) const override;
-    virtual void save(PackStream* stream) const override;
-    virtual void load(PackStream* stream) override;
+    virtual void copy(BaseDefinition *destination) const override;
 
     inline TerrainDefinition* getTerrain() const {return terrain;}
-    int getInterpolatedHeight(double x, double z, double* result);
-    int getGridHeight(int x, int z, double* result);
 
-    bool isPainted(int x, int z);
-    unsigned long getMemoryStats() const;
+    virtual double getInitialValue(double x, double y) const override;
 
-    void clearPainting();
-    void brushElevation(const TerrainHeightMapBrush &brush, double value);
-    void brushSmooth(const TerrainHeightMapBrush &brush, double value);
-    void brushAddNoise(const TerrainHeightMapBrush &brush, NoiseGenerator* generator, double value);
-    void brushReset(const TerrainHeightMapBrush &brush, double value);
-    void brushFlatten(const TerrainHeightMapBrush &brush, double height, double force);
-    void endBrushStroke();
-
-    friend class TerrainHeightMapBrush;
-    friend class TerrainHeightMapBrushSmooth;
-    friend class TerrainHeightMapBrushReset;
-
-protected:
-    double* getDataPointer(TerrainHeightMapData* data, int x, int z, TerrainHeightMapData* fallback, TerrainDefinition* terrain, int grow);
+    void brushElevation(const PaintedGridBrush &brush, double x, double y, double value);
+    void brushSmooth(const PaintedGridBrush &brush, double x, double y, double value);
+    void brushAddNoise(const PaintedGridBrush &brush, double x, double y, NoiseGenerator* generator, double value);
+    void brushReset(const PaintedGridBrush &brush, double x, double y, double value);
+    void brushFlatten(const PaintedGridBrush &brush, double x, double y, double height, double force);
 
 private:
     TerrainDefinition* terrain;
-    TerrainHeightMapData* merged_data;
-    TerrainHeightMapData* brush_data;
 };
 
 }
