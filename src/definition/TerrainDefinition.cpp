@@ -86,7 +86,7 @@ double TerrainDefinition::getGridHeight(int x, int z, int with_painting)
 {
     double h;
 
-    if (!with_painting || !height_map->getGridHeight(x, z, &h))
+    if (!with_painting || !height_map->getGridValue(x, z, &h))
     {
         h = _height_noise->get2DTotal((double)x, (double)z);
     }
@@ -100,7 +100,7 @@ double TerrainDefinition::getInterpolatedHeight(double x, double z, int scaled, 
     x /= scaling;
     z /= scaling;
 
-    if (!with_painting || !height_map->getInterpolatedHeight(x, z, &h))
+    if (!with_painting || !height_map->getInterpolatedValue(x, z, &h))
     {
         h = _height_noise->get2DTotal(x, z);
     }

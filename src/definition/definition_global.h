@@ -27,12 +27,14 @@ namespace definition {
     class TextureLayerDefinition;
     class TerrainDefinition;
     class TerrainHeightMap;
-    class TerrainHeightMapBrush;
-    class TerrainHeightMapBrushElevation;
-    class TerrainHeightMapBrushSmooth;
-    class TerrainHeightMapBrushAddNoise;
-    class TerrainHeightMapBrushReset;
-    class TerrainHeightMapBrushFlatten;
+    class PaintedGrid;
+    class PaintedGridData;
+    class PaintedGridBrush;
+    class PaintedGridBrushRaiseLower;
+    class PaintedGridBrushSmooth;
+    class PaintedGridBrushAddNoise;
+    class PaintedGridBrushReset;
+    class PaintedGridBrushFlatten;
 }
 }
 using namespace paysages::definition;
