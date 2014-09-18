@@ -106,6 +106,14 @@ void OpenGLRenderer::prepareOpenGLState()
     }
 }
 
+void OpenGLRenderer::setCamera(CameraDefinition *camera)
+{
+    camera->copy(render_camera);
+    getScenery()->setCamera(camera);
+    getScenery()->getCamera(camera);
+    cameraChangeEvent(camera);
+}
+
 void OpenGLRenderer::resize(int width, int height)
 {
     vp_width = width;

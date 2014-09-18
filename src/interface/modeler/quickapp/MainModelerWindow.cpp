@@ -5,6 +5,7 @@
 #include "OpenGLRenderer.h"
 #include "AtmosphereModeler.h"
 #include "WaterModeler.h"
+#include "ModelerCameras.h"
 #include "RenderPreviewProvider.h"
 #include "RenderProcess.h"
 #include "RenderConfig.h"
@@ -28,6 +29,7 @@ MainModelerWindow::MainModelerWindow()
     setResizeMode(QQuickView::SizeRootObjectToView);
     setSource(QUrl("qrc:///main.qml"));
 
+    cameras = new ModelerCameras(this);
     atmosphere = new AtmosphereModeler(this);
     water = new WaterModeler(this);
 }
@@ -36,6 +38,7 @@ MainModelerWindow::~MainModelerWindow()
 {
     delete atmosphere;
     delete water;
+    delete cameras;
 
     delete render_preview_provider;
     delete render_process;

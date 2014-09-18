@@ -19,7 +19,7 @@ OpenGLView::OpenGLView(QQuickItem *parent) :
     setKeepMouseGrab(true);
 
     connect(this, SIGNAL(windowChanged(QQuickWindow*)), this, SLOT(handleWindowChanged(QQuickWindow*)));
-    startTimer(250);
+    startTimer(50);
 }
 
 void OpenGLView::handleWindowChanged(QQuickWindow *win)
@@ -65,7 +65,7 @@ void OpenGLView::hoverMoveEvent(QHoverEvent *event)
         return;
     }
 
-    CameraDefinition camera;
+    /*CameraDefinition camera;
     renderer->getScenery()->getCamera(&camera);
 
     QPointF diff = event->posF() - event->oldPosF();
@@ -80,7 +80,7 @@ void OpenGLView::hoverMoveEvent(QHoverEvent *event)
     if (window)
     {
         window->update();
-    }
+    }*/
 }
 
 void OpenGLView::timerEvent(QTimerEvent *)

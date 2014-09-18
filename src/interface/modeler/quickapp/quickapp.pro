@@ -10,7 +10,8 @@ SOURCES += main.cpp \
     WaterModeler.cpp \
     AtmosphereModeler.cpp \
     RenderPreviewProvider.cpp \
-    RenderProcess.cpp
+    RenderProcess.cpp \
+    ModelerCameras.cpp
 
 RESOURCES += \
     qml/app.qrc
@@ -30,7 +31,8 @@ HEADERS += \
     WaterModeler.h \
     AtmosphereModeler.h \
     RenderPreviewProvider.h \
-    RenderProcess.h
+    RenderProcess.h \
+    ModelerCameras.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../../system/debug/ -lpaysages_system
@@ -74,4 +76,5 @@ OTHER_FILES += \
     qml/BaseSlider.qml \
     qml/BaseChoice.qml \
     qml/BaseChoiceItem.qml \
-    qml/RenderDialog.qml
+    qml/RenderDialog.qml \
+    qml/CameraChoice.qml

@@ -91,6 +91,12 @@ OpenGLView {
         }
     }
 
+    CameraChoice {
+        id: camera_choice
+        anchors.bottom: main_ui.bottom
+        anchors.horizontalCenter: main_ui.horizontalCenter
+    }
+
     RenderDialog {
         id: render_dialog
         opacity: 0

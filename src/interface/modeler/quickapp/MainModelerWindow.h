@@ -30,6 +30,8 @@ private:
     AtmosphereModeler *atmosphere;
     WaterModeler *water;
 
+    ModelerCameras *cameras;
+
     RenderPreviewProvider *render_preview_provider;
     RenderProcess *render_process;
 };

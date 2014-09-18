@@ -15,6 +15,8 @@ namespace modeler {
 
     class RenderPreviewProvider;
     class RenderProcess;
+
+    class ModelerCameras;
 }
 }
 

@@ -26,5 +26,6 @@
         <file>BaseChoice.qml</file>
         <file>BaseChoiceItem.qml</file>
         <file>RenderDialog.qml</file>
+        <file>CameraChoice.qml</file>
     </qresource>
 </RCC>
