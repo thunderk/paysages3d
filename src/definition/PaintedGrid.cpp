@@ -223,7 +223,7 @@ double *PaintedGrid::getDataPointer(PaintedGridData *data, int x, int y, Painted
     /* Check rows */
     for (i = 1; i < data->rows_count; i++)
     {
-        assert(data->rows[i].z > data->rows[i - 1].z);
+        assert(data->rows[i].y > data->rows[i - 1].y);
     }
 #endif
 
