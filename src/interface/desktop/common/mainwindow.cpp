@@ -39,16 +39,11 @@ int main(int argc, char** argv)
 
     QApplication app(argc, argv);
 
-    if (not QFileInfo("./data/.paysages_data").isReadable())
-    {
-        QMessageBox::critical(NULL, QObject::tr("Paysages 3D - Data error"), QObject::tr("Application data were not found. Please ensure the software is run from its original directory."));
-        return 1;
-    }
-
     QTranslator qtTranslator;
     QTranslator myTranslator;
 
-    if (myTranslator.load("paysages_" + QLocale::system().name(), "./data/i18n") || myTranslator.load("paysages_" + QLocale::system().name(), "/usr/share/paysages3d/i18n"))
+    QString i18ndir = QString::fromStdString(DataFile::findDir("i18n"));
+    if (not i18ndir.isEmpty() and myTranslator.load("paysages_" + QLocale::system().name(), i18ndir))
     {
         app.installTranslator(&myTranslator);
 

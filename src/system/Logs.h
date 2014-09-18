@@ -3,6 +3,7 @@
 
 #include "system_global.h"
 
+#define logDebug qDebug
 #define logWarning qWarning
 #define logError qCritical
 

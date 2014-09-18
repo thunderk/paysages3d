@@ -9,16 +9,14 @@ namespace system {
 class SYSTEMSHARED_EXPORT CacheFile
 {
 public:
-    CacheFile(const char* module, const char* ext, const char* tag1, int tag2, int tag3, int tag4, int tag5, int tag6);
-    ~CacheFile();
+    CacheFile(const std::string &module, const std::string &ext, const std::string &tag1, int tag2, int tag3, int tag4, int tag5, int tag6);
 
     bool isReadable();
     bool isWritable();
-    const char* getPath();
+    std::string getPath();
 
 private:
-    char* datapath;
-    char* filepath;
+    std::string filepath;
 };
 
 }

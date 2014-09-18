@@ -1,23 +1,16 @@
 #include "CacheFile.h"
 
-CacheFile::CacheFile(const char* module, const char* ext, const char* tag1, int tag2, int tag3, int tag4, int tag5, int tag6)
-{
-    datapath = (char*)malloc(sizeof(char) * 501);
-    filepath = (char*)malloc(sizeof(char) * 501);
+#include <QString>
+#include "DataFile.h"
 
-    snprintf(datapath, 500, "./data/cache/%s-%s-%d-%d-%d-%d-%d.%s", module, tag1, tag2, tag3, tag4, tag5, tag6, ext);
-    snprintf(filepath, 500, "./cache/%s-%s-%d-%d-%d-%d-%d.%s", module, tag1, tag2, tag3, tag4, tag5, tag6, ext);
-}
-
-CacheFile::~CacheFile()
+CacheFile::CacheFile(const std::string &module, const std::string &ext, const std::string &tag1, int tag2, int tag3, int tag4, int tag5, int tag6)
 {
-    free(datapath);
-    free(filepath);
+    filepath = QString("cache/%1-%2-%3-%4-%5-%6-%7.%8").arg(QString::fromStdString(module)).arg(QString::fromStdString(tag1)).arg(tag2).arg(tag3).arg(tag4).arg(tag5).arg(tag6).arg(QString::fromStdString(ext)).toStdString();
 }
 
 bool CacheFile::isReadable()
 {
-    FILE* f = fopen(filepath, "rb");
+    FILE* f = fopen(filepath.c_str(), "rb");
     if (f)
     {
         fclose(f);
@@ -25,22 +18,30 @@ bool CacheFile::isReadable()
     }
     else
     {
-        FILE* f = fopen(datapath, "rb");
-        if (f)
+        std::string datapath = DataFile::findFile(filepath);
+        if (datapath.empty())
         {
-            fclose(f);
-            return true;
+            return false;
         }
         else
         {
-            return false;
+            FILE* f = fopen(datapath.c_str(), "rb");
+            if (f)
+            {
+                fclose(f);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
 
 bool CacheFile::isWritable()
 {
-    FILE* f = fopen("./cache/.test", "wb");
+    FILE* f = fopen("cache/.test", "wb");
     if (f)
     {
         fclose(f);
@@ -52,16 +53,15 @@ bool CacheFile::isWritable()
     }
 }
 
-const char* CacheFile::getPath()
+std::string CacheFile::getPath()
 {
-    FILE* f = fopen(datapath, "rb");
-    if (f)
+    std::string datapath = DataFile::findFile(filepath);
+    if (datapath.empty())
     {
-        fclose(f);
-        return datapath;
+        return filepath;
     }
     else
     {
-        return filepath;
+        return datapath;
     }
 }

@@ -3,7 +3,7 @@
 
 #include <QColor>
 #include <QDialog>
-#include <QDir>
+#include "DataFile.h"
 
 #include "Color.h"
 
@@ -15,15 +15,7 @@ static inline QColor colorToQColor(Color color)
 
 static inline QString getDataPath(QString path)
 {
-    QFile datafile(QDir("/usr/share/paysages3d/").absoluteFilePath(path));
-    if (datafile.exists())
-    {
-        return datafile.fileName();
-    }
-    else
-    {
-        return QDir("./data").absoluteFilePath(path);
-    }
+    return QString::fromStdString(DataFile::findFile(path.toStdString()));
 }
 
 QString getHumanMemory(qint64 memused);

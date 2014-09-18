@@ -27,7 +27,8 @@ SOURCES += \
     ParallelPool.cpp \
     ParallelWorker.cpp \
     Semaphore.cpp \
-    FileSystem.cpp
+    FileSystem.cpp \
+    DataFile.cpp
 
 HEADERS += \
     system_global.h \
@@ -44,7 +45,8 @@ HEADERS += \
     ParallelPool.h \
     ParallelWorker.h \
     Semaphore.h \
-    FileSystem.h
+    FileSystem.h \
+    DataFile.h
 
 unix:!symbian {
     maemo5 {
