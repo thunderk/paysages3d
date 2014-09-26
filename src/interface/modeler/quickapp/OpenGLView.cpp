@@ -3,9 +3,8 @@
 #include <QQuickWindow>
 #include <QHoverEvent>
 #include "MainModelerWindow.h"
-#include "CameraDefinition.h"
 #include "OpenGLRenderer.h"
-#include "Scenery.h"
+#include "ModelerCameras.h"
 
 OpenGLView::OpenGLView(QQuickItem *parent) :
     QQuickItem(parent)
@@ -15,8 +14,8 @@ OpenGLView::OpenGLView(QQuickItem *parent) :
     renderer = NULL;
 
     setAcceptedMouseButtons(Qt::AllButtons);
-    setAcceptHoverEvents(true);
-    setKeepMouseGrab(true);
+
+    mouse_button = Qt::NoButton;
 
     connect(this, SIGNAL(windowChanged(QQuickWindow*)), this, SLOT(handleWindowChanged(QQuickWindow*)));
     startTimer(50);
@@ -42,7 +41,7 @@ void OpenGLView::handleWindowChanged(QQuickWindow *win)
 
 void OpenGLView::paint()
 {
-    if (not initialized)
+    if (not initialized or not renderer)
     {
         renderer->initialize();
         initialized = true;
@@ -58,29 +57,30 @@ void OpenGLView::paint()
     }
 }
 
-void OpenGLView::hoverMoveEvent(QHoverEvent *event)
+void OpenGLView::wheelEvent(QWheelEvent *event)
 {
-    if (!renderer)
+    window->getCamera()->processZoom(0.1 * (double)event->angleDelta().y());
+}
+
+void OpenGLView::mousePressEvent(QMouseEvent *event)
+{
+    mouse_button = event->button();
+    mouse_pos = event->windowPos();
+}
+
+void OpenGLView::mouseReleaseEvent(QMouseEvent *)
+{
+    mouse_button = Qt::NoButton;
+}
+
+void OpenGLView::mouseMoveEvent(QMouseEvent *event)
+{
+    QPointF diff = event->windowPos() - mouse_pos;
+    if (mouse_button == Qt::MidButton)
     {
-        return;
+        window->getCamera()->processScroll(-0.1 * diff.x(), 0.1 * diff.y());
     }
-
-    /*CameraDefinition camera;
-    renderer->getScenery()->getCamera(&camera);
-
-    QPointF diff = event->posF() - event->oldPosF();
-    camera.strafeRight(diff.x() * 0.1);
-    camera.strafeUp(diff.y() * 0.1);
-    camera.validate();
-
-    camera.copy(renderer->render_camera);
-    renderer->getScenery()->setCamera(&camera);
-    renderer->getScenery()->getCamera(&camera);
-    renderer->cameraChangeEvent(&camera);
-    if (window)
-    {
-        window->update();
-    }*/
+    mouse_pos = event->windowPos();
 }
 
 void OpenGLView::timerEvent(QTimerEvent *)

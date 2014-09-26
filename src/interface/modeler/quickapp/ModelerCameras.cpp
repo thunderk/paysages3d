@@ -32,11 +32,22 @@ ModelerCameras::~ModelerCameras()
     delete topdown;
 }
 
+void ModelerCameras::processZoom(double value)
+{
+    active->strafeForward(value);
+}
+
+void ModelerCameras::processScroll(double xvalue, double yvalue)
+{
+    active->strafeRight(xvalue);
+    active->strafeUp(yvalue);
+}
+
 void ModelerCameras::timerEvent(QTimerEvent *)
 {
     OpenGLRenderer *renderer = parent->getRenderer();
 
-    current->transitionToAnother(active, 0.1);
+    current->transitionToAnother(active, 0.3);
     renderer->setCamera(current);
 }
 

@@ -19,13 +19,19 @@ public slots:
     void paint();
 
 protected:
-    virtual void hoverMoveEvent(QHoverEvent *event) override;
+    virtual void wheelEvent(QWheelEvent *event) override;
+    virtual void mousePressEvent(QMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QMouseEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
     virtual void timerEvent(QTimerEvent *event) override;
 
 private:
     bool initialized;
     MainModelerWindow *window;
     OpenGLRenderer *renderer;
+
+    Qt::MouseButton mouse_button;
+    QPointF mouse_pos;
 };
 
 }

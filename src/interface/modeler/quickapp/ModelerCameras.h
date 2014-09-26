@@ -19,6 +19,16 @@ public:
     ModelerCameras(MainModelerWindow *parent);
     ~ModelerCameras();
 
+    /**
+     * Process a zoom request.
+     */
+    void processZoom(double value);
+
+    /**
+     * Process a scroll request.
+     */
+    void processScroll(double xvalue, double yvalue);
+
 protected:
     void timerEvent(QTimerEvent *event);
 
