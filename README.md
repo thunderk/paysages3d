@@ -1,6 +1,6 @@
 # Paysages 3D
 
-[![Build Status](https://travis-ci.org/thunderk/paysages3d.png)](https://travis-ci.org/thunderk/paysages3d)
+[![Build Status](https://travis-ci.org/thunderk/paysages3d.svg?branch=master)](https://travis-ci.org/thunderk/paysages3d)
 
 
 ## About
