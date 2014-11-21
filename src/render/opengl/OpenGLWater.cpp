@@ -24,7 +24,7 @@ void OpenGLWater::initialize()
 {
     program = createShader("water");
     program->addVertexSource("water");
-    program->addFragmentSource("bruneton");
+    program->addFragmentSource("atmosphere");
     program->addFragmentSource("tonemapping");
     program->addFragmentSource("fadeout");
     program->addFragmentSource("noise");

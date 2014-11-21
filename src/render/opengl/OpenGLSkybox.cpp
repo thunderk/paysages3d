@@ -25,7 +25,7 @@ void OpenGLSkybox::initialize()
 {
     program = createShader("skybox");
     program->addVertexSource("skybox");
-    program->addFragmentSource("bruneton");
+    program->addFragmentSource("atmosphere");
     program->addFragmentSource("tonemapping");
     program->addFragmentSource("skybox");
 

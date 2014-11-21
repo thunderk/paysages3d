@@ -52,7 +52,7 @@ void OpenGLTerrain::initialize()
     // Prepare shader programs
     program = createShader("terrain");
     program->addVertexSource("terrain");
-    program->addFragmentSource("bruneton");
+    program->addFragmentSource("atmosphere");
     program->addFragmentSource("tonemapping");
     program->addFragmentSource("fadeout");
     program->addFragmentSource("terrain");
