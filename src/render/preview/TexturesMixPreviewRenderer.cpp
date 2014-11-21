@@ -53,6 +53,6 @@ void TexturesMixPreviewRenderer::updateEvent()
 Color TexturesMixPreviewRenderer::getColor2D(double x, double y, double scaling)
 {
     TerrainRenderer* terrain_renderer = getTerrainRenderer();
-    Vector3 location(x, terrain_renderer->getHeight(x, y, 1), y);
+    Vector3 location(x, terrain_renderer->getHeight(x, y, true), y);
     return terrain_renderer->getFinalColor(location, scaling);
 }

@@ -17,7 +17,7 @@ TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer, int client_id):
 
 static inline Vector3 _getPoint(SoftwareRenderer* renderer, double x, double z)
 {
-    return Vector3(x, renderer->getTerrainRenderer()->getHeight(x, z, 1), z);
+    return Vector3(x, renderer->getTerrainRenderer()->getHeight(x, z, true), z);
 }
 
 void TerrainRasterizer::tessellateChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, int detail)
@@ -52,19 +52,19 @@ void TerrainRasterizer::renderQuad(CanvasPortion *canvas, double x, double z, do
 
     ov1.x = x;
     ov1.z = z;
-    dv1 = renderer->getTerrainRenderer()->getResult(x, z, 1, 1).location;
+    dv1 = renderer->getTerrainRenderer()->getResult(x, z, true, true).location;
 
     ov2.x = x;
     ov2.z = z + size;
-    dv2 = renderer->getTerrainRenderer()->getResult(x, z + size, 1, 1).location;
+    dv2 = renderer->getTerrainRenderer()->getResult(x, z + size, true, true).location;
 
     ov3.x = x + size;
     ov3.z = z + size;
-    dv3 = renderer->getTerrainRenderer()->getResult(x + size, z + size, 1, 1).location;
+    dv3 = renderer->getTerrainRenderer()->getResult(x + size, z + size, true, true).location;
 
     ov4.x = x + size;
     ov4.z = z;
-    dv4 = renderer->getTerrainRenderer()->getResult(x + size, z, 1, 1).location;
+    dv4 = renderer->getTerrainRenderer()->getResult(x + size, z, true, true).location;
 
     if (dv1.y > water_height || dv2.y > water_height || dv3.y > water_height || dv4.y > water_height)
     {
@@ -72,12 +72,12 @@ void TerrainRasterizer::renderQuad(CanvasPortion *canvas, double x, double z, do
     }
 }
 
-static void _getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, int displaced)
+static void _getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, bool displaced)
 {
-    chunk->point_nw = renderer->getTerrainRenderer()->getResult(x, z, 1, displaced).location;
-    chunk->point_sw = renderer->getTerrainRenderer()->getResult(x, z + size, 1, displaced).location;
-    chunk->point_se = renderer->getTerrainRenderer()->getResult(x + size, z + size, 1, displaced).location;
-    chunk->point_ne = renderer->getTerrainRenderer()->getResult(x + size, z, 1, displaced).location;
+    chunk->point_nw = renderer->getTerrainRenderer()->getResult(x, z, true, displaced).location;
+    chunk->point_sw = renderer->getTerrainRenderer()->getResult(x, z + size, true, displaced).location;
+    chunk->point_se = renderer->getTerrainRenderer()->getResult(x + size, z + size, true, displaced).location;
+    chunk->point_ne = renderer->getTerrainRenderer()->getResult(x + size, z, true, displaced).location;
 
     double displacement_power;
     if (displaced)
@@ -125,7 +125,7 @@ static void _getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChun
     }
 }
 
-void TerrainRasterizer::getTessellationInfo(CanvasPortion* canvas, int displaced)
+void TerrainRasterizer::getTessellationInfo(CanvasPortion* canvas, bool displaced)
 {
     TerrainChunkInfo chunk;
     int chunk_factor, chunk_count, i;
@@ -199,7 +199,7 @@ void TerrainRasterizer::processChunk(CanvasPortion* canvas, TerrainChunkInfo* ch
 
 void TerrainRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
 {
-    getTessellationInfo(canvas, 0);
+    getTessellationInfo(canvas, false);
 }
 
 Color TerrainRasterizer::shadeFragment(const CanvasFragment &fragment) const

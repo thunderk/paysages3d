@@ -85,7 +85,7 @@ bool ExplorerChunkTerrain::maintain()
                         double x = _startx + _tessellation_step * (float)i;
                         double z = _startz + _tessellation_step * (float)j;
 
-                        double height = _renderer->getTerrainRenderer()->getHeight(x, z, 1);
+                        double height = _renderer->getTerrainRenderer()->getHeight(x, z, true);
                         if (height >= _water_height)
                         {
                             overwater = true;
