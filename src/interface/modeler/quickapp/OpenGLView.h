@@ -26,6 +26,9 @@ protected:
     virtual void timerEvent(QTimerEvent *event) override;
 
 private:
+    double getSpeedFactor(QInputEvent *event);
+
+private:
     bool initialized;
     MainModelerWindow *window;
     OpenGLRenderer *renderer;

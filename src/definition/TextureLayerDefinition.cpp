@@ -152,8 +152,8 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset)
             displacement_height = 0.1;
             displacement_scaling = 1.0;
             displacement_offset = 0.0;
-            material->base = colorToHSL(Color(1.0, 1.0, 1.0, 1.0));
-            material->reflection = 0.25;
+            material->base = colorToHSL(Color(5.0, 5.0, 5.0, 1.0));
+            material->reflection = 0.02;
             material->shininess = 0.6;
             break;
         default:
