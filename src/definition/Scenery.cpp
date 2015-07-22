@@ -43,7 +43,7 @@ void Scenery::validate()
 {
     BaseDefinition::validate();
 
-    checkCameraAboveGround();
+    keepCameraAboveGround(camera);
 }
 
 Scenery::FileOperationResult Scenery::saveGlobal(const std::string &filepath) const
@@ -131,7 +131,7 @@ void Scenery::getAtmosphere(AtmosphereDefinition* atmosphere)
 void Scenery::setCamera(CameraDefinition* camera)
 {
     camera->copy(this->camera);
-    checkCameraAboveGround();
+    keepCameraAboveGround(this->camera);
 }
 
 void Scenery::getCamera(CameraDefinition* camera)
@@ -179,7 +179,7 @@ void Scenery::getWater(WaterDefinition* water)
     this->water->copy(water);
 }
 
-void Scenery::checkCameraAboveGround()
+void Scenery::keepCameraAboveGround(CameraDefinition* camera)
 {
     Vector3 camera_location = camera->getLocation();
     double terrain_height = terrain->getInterpolatedHeight(camera_location.x, camera_location.z, true, true) + 2.0;

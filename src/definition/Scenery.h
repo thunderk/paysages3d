@@ -62,7 +62,7 @@ public:
     inline WaterDefinition* getWater() const {return water;}
     void getWater(WaterDefinition* water);
 
-    void checkCameraAboveGround();
+    void keepCameraAboveGround(CameraDefinition* camera);
 
 private:
     AtmosphereDefinition* atmosphere;

@@ -65,6 +65,8 @@ void ModelerCameras::timerEvent(QTimerEvent *)
 
 void ModelerCameras::validate()
 {
+    parent->getScenery()->keepCameraAboveGround(active);
+
     if (active == render) {
         parent->getScenery()->setCamera(active);
     }
