@@ -42,17 +42,17 @@ else
 	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${BUILDPATH}/tests/paysages-tests
 endif
 
+run:build
+	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/modeler/quickapp/paysages-modeler $(ARGS)
+
 run_cli:build
 	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/commandline/paysages-cli $(ARGS)
 
-run_modeler:build
-	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/modeler/quickapp/paysages-modeler $(ARGS)
-
-run:build
+run_legacy:build
 	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/desktop/paysages-gui $(ARGS)
 
 profile:build
-	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g ${BUILDPATH}/interface/desktop/paysages-gui $(ARGS)
+	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g ${BUILDPATH}/interface/modeler/quickapp/paysages-modeler $(ARGS)
 	perf report -g
 
 profile_cli:build
