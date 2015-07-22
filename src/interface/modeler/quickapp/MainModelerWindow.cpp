@@ -11,6 +11,7 @@
 #include "RenderConfig.h"
 
 #include <QQmlEngine>
+#include <QGuiApplication>
 
 MainModelerWindow::MainModelerWindow()
 {
@@ -72,5 +73,12 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
         render_process->stopRender();
 
         rootObject()->setProperty("state", QString("Init"));
+    }
+    else if (event->key() == Qt::Key_Q)
+    {
+        if (event->modifiers() & Qt::ControlModifier)
+        {
+            QGuiApplication::instance()->exit();
+        }
     }
 }

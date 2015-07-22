@@ -76,9 +76,13 @@ void OpenGLView::mouseReleaseEvent(QMouseEvent *)
 void OpenGLView::mouseMoveEvent(QMouseEvent *event)
 {
     QPointF diff = event->windowPos() - mouse_pos;
-    if (mouse_button == Qt::MidButton)
+    if (mouse_button == Qt::LeftButton)
     {
         window->getCamera()->processScroll(-0.1 * diff.x(), 0.1 * diff.y());
+    }
+    else if (mouse_button == Qt::RightButton)
+    {
+        window->getCamera()->processPanning(0.006 * diff.x(), 0.002 * diff.y());
     }
     mouse_pos = event->windowPos();
 }

@@ -4,6 +4,18 @@ Rectangle {
     width: 400
     height: 300
 
+    function refresh() {
+        preview_image.source = "";
+        preview_image.source = "image://renderpreviewprovider/live";
+    }
+
+    onOpacityChanged: {
+        refresh();
+    }
+    onVisibleChanged: {
+        refresh();
+    }
+
     Image {
         id: preview_image
         objectName: "preview_image"
@@ -20,8 +32,7 @@ Rectangle {
         repeat: true
 
         onTriggered: {
-            preview_image.source = "";
-            preview_image.source = "image://renderpreviewprovider/live";
+            refresh();
         }
     }
 }

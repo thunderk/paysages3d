@@ -70,8 +70,8 @@ void RenderPreviewProvider::canvasResized(int width, int height)
     {
         delete pixbuf;
         pixbuf = new QImage(width, height, QImage::Format_ARGB32);
-        pixbuf->fill(Qt::black);
     }
+    pixbuf->fill(Qt::black);
 }
 
 void RenderPreviewProvider::canvasCleared(const Color &col)

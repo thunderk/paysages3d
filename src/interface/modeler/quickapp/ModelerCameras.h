@@ -29,8 +29,18 @@ public:
      */
     void processScroll(double xvalue, double yvalue);
 
+    /**
+     * Process a panning rotation.
+     */
+    void processPanning(double xvalue, double yvalue);
+
 protected:
     void timerEvent(QTimerEvent *event);
+
+    /**
+     * Validate current camera, pushing it to rendered scenery if needed.
+     */
+    void validate();
 
 public slots:
     void changeActiveCamera(const QString &name);

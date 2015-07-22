@@ -35,12 +35,24 @@ ModelerCameras::~ModelerCameras()
 void ModelerCameras::processZoom(double value)
 {
     active->strafeForward(value);
+
+    validate();
 }
 
 void ModelerCameras::processScroll(double xvalue, double yvalue)
 {
     active->strafeRight(xvalue);
     active->strafeUp(yvalue);
+
+    validate();
+}
+
+void ModelerCameras::processPanning(double xvalue, double yvalue)
+{
+    active->rotateYaw(xvalue);
+    active->rotatePitch(yvalue);
+
+    validate();
 }
 
 void ModelerCameras::timerEvent(QTimerEvent *)
@@ -49,6 +61,13 @@ void ModelerCameras::timerEvent(QTimerEvent *)
 
     current->transitionToAnother(active, 0.3);
     renderer->setCamera(current);
+}
+
+void ModelerCameras::validate()
+{
+    if (active == render) {
+        parent->getScenery()->setCamera(active);
+    }
 }
 
 void ModelerCameras::changeActiveCamera(const QString &name)
