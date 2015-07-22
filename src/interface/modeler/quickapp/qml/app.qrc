@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ToolbarButton.qml</file>
+        <file>main.qml</file>
+        <file>images/tab_atmosphere.png</file>
+        <file>images/tab_clouds.png</file>
+        <file>images/tab_render.png</file>
+        <file>images/tab_terrain.png</file>
+        <file>images/tab_textures.png</file>
+        <file>images/tab_water.png</file>
+        <file>images/tab_display.png</file>
+        <file>Toolbar.qml</file>
+        <file>images/display_topdown.png</file>
+        <file>images/help.png</file>
+        <file>Tooltip.qml</file>
+        <file>images/icon_water.png</file>
+        <file>images/icon_water_level.png</file>
+        <file>BasePanel.qml</file>
+        <file>PanelWaterLevel.qml</file>
+        <file>images/icon_atmosphere.png</file>
+        <file>images/icon_atmosphere_daytime.png</file>
+        <file>BaseSlider.qml</file>
+        <file>PanelAtmosphereDaytime.qml</file>
+        <file>images/icon_atmosphere_day.png</file>
+        <file>images/icon_atmosphere_night.png</file>
+        <file>BaseChoice.qml</file>
+        <file>BaseChoiceItem.qml</file>
+        <file>RenderDialog.qml</file>
+        <file>CameraChoice.qml</file>
+    </qresource>
+</RCC>

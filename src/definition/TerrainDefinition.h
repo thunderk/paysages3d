@@ -27,8 +27,8 @@ public:
     virtual void copy(BaseDefinition* destination) const override;
     virtual void validate() override;
 
-    double getGridHeight(int x, int z, int with_painting);
-    double getInterpolatedHeight(double x, double z, int scaled, int with_painting);
+    double getGridHeight(int x, int z, bool with_painting);
+    double getInterpolatedHeight(double x, double z, bool scaled, bool with_painting);
     unsigned long getMemoryStats();
     HeightInfo getHeightInfo();
 

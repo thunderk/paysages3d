@@ -24,6 +24,7 @@ public:
 
     inline const Canvas *getCanvas() const {return canvas;}
     inline double getProgress() const {return progress;}
+    inline bool isFinished() const {return finished;}
 
     /**
      * Set the renderer configuration.
@@ -78,6 +79,7 @@ private:
     int samples;
     std::vector<Rasterizer*> rasterizers;
     bool started;
+    bool finished;
     bool interrupted;
 
     ParallelWork *current_work;

@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/ToolbarButton.qml</file>
+        <file>qml/OpenGLView.qml</file>
+    </qresource>
+</RCC>

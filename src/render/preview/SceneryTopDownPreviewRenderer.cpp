@@ -46,7 +46,7 @@ void SceneryTopDownPreviewRenderer::updateEvent()
 Color SceneryTopDownPreviewRenderer::getColor2D(double x, double y, double scaling)
 {
     Vector3 location;
-    double height = getTerrainRenderer()->getHeight(x, y, 1);
+    double height = getTerrainRenderer()->getHeight(x, y, true);
 
     if (height < getWaterRenderer()->getHeightInfo().max_height)
     {

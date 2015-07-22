@@ -17,6 +17,7 @@
 SoftwareCanvasRenderer::SoftwareCanvasRenderer()
 {
     started = false;
+    finished = false;
     interrupted = false;
     canvas = new Canvas();
     progress = 0.0;
@@ -95,6 +96,7 @@ void SoftwareCanvasRenderer::render()
             progress = (double)i / (double)n;
         }
     }
+    finished = true;
 }
 
 void SoftwareCanvasRenderer::interrupt()

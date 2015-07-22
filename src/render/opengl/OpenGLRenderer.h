@@ -17,10 +17,21 @@ public:
     OpenGLRenderer(Scenery* scenery=0);
     virtual ~OpenGLRenderer();
 
+    inline OpenGLSkybox *getSkybox() const {return skybox;}
+    inline OpenGLWater *getWater() const {return water;}
+    inline OpenGLTerrain *getTerrain() const {return terrain;}
+
     void initialize();
+    void prepareOpenGLState();
     void resize(int width, int height);
     void paint();
 
+    /**
+     * Change the camera location.
+     *
+     * This may change the camera passed as argument (to stay above ground for example).
+     */
+    void setCamera(CameraDefinition *camera);
     void cameraChangeEvent(CameraDefinition* camera);
 
     inline OpenGLFunctions* getOpenGlFunctions() const {return functions;}
@@ -31,6 +42,8 @@ public:
 
 private:
     bool ready;
+    int vp_width;
+    int vp_height;
 
     OpenGLFunctions* functions;
     OpenGLSharedState* shared_state;

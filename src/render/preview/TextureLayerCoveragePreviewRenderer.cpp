@@ -53,7 +53,7 @@ Color TextureLayerCoveragePreviewRenderer::getColor2D(double x, double y, double
     TexturesRenderer* textures_renderer = getTexturesRenderer();
     TerrainRenderer* terrain_renderer = getTerrainRenderer();
 
-    double presence = textures_renderer->getBasePresence(layer, terrain_renderer->getResult(x, y, 1, 0));
+    double presence = textures_renderer->getBasePresence(layer, terrain_renderer->getResult(x, y, true, false));
 
     return Color(presence, presence, presence);
 }

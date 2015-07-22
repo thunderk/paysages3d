@@ -224,3 +224,53 @@ vec4 getSkyColor(vec3 location, vec3 direction)
     result += sunTransmittance + vec4(inscattering, 0.0);
     return result;
 }
+
+vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float shininess)
+{
+    float material_hardness = 0.3;
+    float material_reflection = 1.0;
+
+    float r0 = Rg + location.y * WORLD_SCALING;
+    vec3 sun_position = sunDirection * SUN_DISTANCE;
+    float muS = dot(vec3(0.0, 1.0, 0.0), normalize(sun_position - vec3(0.0, r0, 0.0)));
+
+    vec4 light_color = _transmittanceWithShadow(r0, muS);
+
+    vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
+
+    /* diffused light */
+    float diffuse = dot(sunDirection, normal);
+    float sign = (diffuse < 0.0) ? -1.0 : 1.0;
+    if (material_hardness <= 0.5)
+    {
+        float hardness = material_hardness * 2.0;
+        diffuse = (1.0 - hardness) * (diffuse * diffuse) * sign + hardness * diffuse;
+    }
+    else if (diffuse != 0.0)
+    {
+        float hardness = (material_hardness - 0.5) * 2.0;
+        diffuse = (1.0 - hardness) * diffuse + hardness * sign * sqrt(abs(diffuse));
+    }
+    if (diffuse > 0.0)
+    {
+        result += diffuse * color * light_color;
+    }
+
+    /* specular reflection */
+    if (shininess > 0.0 && material_reflection > 0.0)
+    {
+        vec3 view = normalize(location - cameraLocation);
+        vec3 reflect = sunDirection - normal * 2.0 * dot(sunDirection, normal);
+        float specular = dot(reflect, view);
+        if (specular > 0.0)
+        {
+            specular = pow(specular, shininess) * material_reflection;
+            if (specular > 0.0)
+            {
+                result += specular * light_color;
+            }
+        }
+    }
+
+    return result;
+}

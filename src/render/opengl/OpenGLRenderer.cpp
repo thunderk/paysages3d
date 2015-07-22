@@ -16,6 +16,8 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     SoftwareRenderer(scenery)
 {
     ready = false;
+    vp_width = 1;
+    vp_height = 1;
 
     render_quality = 3;
 
@@ -50,25 +52,7 @@ void OpenGLRenderer::initialize()
 
     if (ready)
     {
-        functions->glClearColor(0.0, 0.0, 0.0, 0.0);
-
-        functions->glDisable(GL_LIGHTING);
-
-        functions->glFrontFace(GL_CCW);
-        functions->glCullFace(GL_BACK);
-        functions->glEnable(GL_CULL_FACE);
-
-        functions->glDepthFunc(GL_LESS);
-        functions->glDepthMask(1);
-        functions->glEnable(GL_DEPTH_TEST);
-
-        functions->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        functions->glEnable(GL_LINE_SMOOTH);
-        functions->glLineWidth(1.0);
-
-        functions->glDisable(GL_FOG);
-
-        functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        prepareOpenGLState();
 
         prepare();
 
@@ -92,27 +76,62 @@ void OpenGLRenderer::initialize()
     }
 }
 
-void OpenGLRenderer::resize(int width, int height)
+void OpenGLRenderer::prepareOpenGLState()
 {
     if (ready)
     {
-        functions->glViewport(0, 0, width, height);
+        functions->glDisable(GL_LIGHTING);
+
+        functions->glFrontFace(GL_CCW);
+        functions->glCullFace(GL_BACK);
+        functions->glEnable(GL_CULL_FACE);
+
+        functions->glDepthFunc(GL_LESS);
+        functions->glDepthMask(1);
+        functions->glEnable(GL_DEPTH_TEST);
+
+        functions->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        functions->glEnable(GL_LINE_SMOOTH);
+        functions->glLineWidth(1.0);
+
+        functions->glDisable(GL_FOG);
+
+        functions->glEnable(GL_BLEND);
+        functions->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        functions->glClearColor(0.0, 0.0, 0.0, 0.0);
+        functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        functions->glViewport(0, 0, vp_width, vp_height);
     }
+}
+
+void OpenGLRenderer::setCamera(CameraDefinition *camera)
+{
+    camera->copy(render_camera);
+    getScenery()->setCamera(camera);
+    getScenery()->getCamera(camera);
+    cameraChangeEvent(camera);
+}
+
+void OpenGLRenderer::resize(int width, int height)
+{
+    vp_width = width;
+    vp_height = height;
+
     getScenery()->getCamera()->setRenderSize(width, height);
     render_camera->setRenderSize(width, height);
 
     cameraChangeEvent(getScenery()->getCamera());
+
+    prepareOpenGLState();
 }
 
 void OpenGLRenderer::paint()
 {
     if (ready)
     {
-        functions->glClearColor(0.0, 0.0, 0.0, 0.0);
         functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        functions->glEnable(GL_BLEND);
-        functions->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         skybox->render();
         terrain->render();

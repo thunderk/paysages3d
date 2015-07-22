@@ -82,7 +82,7 @@ void TerrainDefinition::load(PackStream* stream)
     validate();
 }
 
-double TerrainDefinition::getGridHeight(int x, int z, int with_painting)
+double TerrainDefinition::getGridHeight(int x, int z, bool with_painting)
 {
     double h;
 
@@ -94,7 +94,7 @@ double TerrainDefinition::getGridHeight(int x, int z, int with_painting)
     return h;
 }
 
-double TerrainDefinition::getInterpolatedHeight(double x, double z, int scaled, int with_painting)
+double TerrainDefinition::getInterpolatedHeight(double x, double z, bool scaled, bool with_painting)
 {
     double h;
     x /= scaling;

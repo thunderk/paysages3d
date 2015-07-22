@@ -218,7 +218,7 @@ void WidgetHeightMap::timerEvent(QTimerEvent*)
     _last_time = new_time;
 
     // Update top camera
-    Vector3 target = {_target_x, _terrain->getInterpolatedHeight(_target_x, _target_z, 1, 1), _target_z};
+    Vector3 target = {_target_x, _terrain->getInterpolatedHeight(_target_x, _target_z, true, true), _target_z};
     _top_camera->setLocationCoords(target.x, target.y + 1.0, target.z + 0.1);
     _top_camera->setTarget(target);
     _top_camera->setZoomToTarget(_zoom);

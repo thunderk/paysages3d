@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     FractalNoise_Test.cpp \
     Canvas_Test.cpp \
     CanvasPortion_Test.cpp \
-    CanvasPreview_Test.cpp
+    CanvasPreview_Test.cpp \
+    AtmosphereDefinition_Test.cpp
 
 HEADERS += \
     BaseTestCase.h

@@ -23,9 +23,9 @@ void TerrainRenderer::update()
     walker->update();
 }
 
-double TerrainRenderer::getHeight(double x, double z, int with_painting)
+double TerrainRenderer::getHeight(double x, double z, bool with_painting)
 {
-    return parent->getScenery()->getTerrain()->getInterpolatedHeight(x, z, 1, with_painting);
+    return parent->getScenery()->getTerrain()->getInterpolatedHeight(x, z, true, with_painting);
 }
 
 static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, Vector3 south, Vector3 west)
@@ -50,7 +50,7 @@ static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south)
     return south.sub(center).crossProduct(east.sub(center)).normalize();
 }
 
-TerrainRenderer::TerrainResult TerrainRenderer::getResult(double x, double z, int with_painting, int with_textures)
+TerrainRenderer::TerrainResult TerrainRenderer::getResult(double x, double z, bool with_painting, bool with_textures)
 {
     TerrainResult result;
     double detail = 0.001; /* TODO */

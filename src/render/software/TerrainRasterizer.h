@@ -34,7 +34,7 @@ public:
      *
      * The terrain will be broken in chunks, most detailed near the camera.
      */
-    void getTessellationInfo(CanvasPortion* canvas, int displaced);
+    void getTessellationInfo(CanvasPortion* canvas, bool displaced);
 
     /**
      * Tessellate a terrain chunk, pushing the quads in the render area.
