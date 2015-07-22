@@ -1,4 +1,5 @@
 import QtQuick 2.2
+import QtQuick.Controls 1.2
 
 Rectangle {
     width: 400
@@ -11,9 +12,11 @@ Rectangle {
 
     onOpacityChanged: {
         refresh();
+        render_progress.value = 0;
     }
     onVisibleChanged: {
         refresh();
+        render_progress.value = 0;
     }
 
     Image {
@@ -24,6 +27,15 @@ Rectangle {
         height: 100
         source: ""
         cache: false
+    }
+
+    ProgressBar {
+        id: render_progress
+        objectName: "render_progress"
+        width: parent.width * 0.8
+        anchors.top: preview_image.bottom
+        anchors.horizontalCenter: preview_image.horizontalCenter
+        anchors.topMargin: 20
     }
 
     Timer {

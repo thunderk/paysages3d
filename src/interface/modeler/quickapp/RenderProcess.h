@@ -13,7 +13,7 @@ class RenderProcess: public QObject
     Q_OBJECT
 
 public:
-    RenderProcess(RenderPreviewProvider *destination);
+    RenderProcess(MainModelerWindow *window, RenderPreviewProvider *destination);
     virtual ~RenderProcess();
 
     /**
@@ -35,6 +35,7 @@ protected:
     virtual void timerEvent(QTimerEvent *event) override;
 
 private:
+    MainModelerWindow *window;
     RenderPreviewProvider *destination;
     bool rendering;
     SoftwareCanvasRenderer *renderer;

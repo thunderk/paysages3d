@@ -20,7 +20,7 @@ MainModelerWindow::MainModelerWindow()
     renderer = new OpenGLRenderer(scenery);
 
     render_preview_provider = new RenderPreviewProvider();
-    render_process = new RenderProcess(render_preview_provider);
+    render_process = new RenderProcess(this, render_preview_provider);
 
     qmlRegisterType<OpenGLView>("Paysages", 1, 0, "OpenGLView");
     engine()->addImageProvider("renderpreviewprovider", render_preview_provider);
@@ -58,7 +58,14 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_F5)
     {
         // Start render in a thread
-        render_process->startRender(scenery, RenderConfig(400, 300, 1, 3));
+        if (event->modifiers() & Qt::ControlModifier)
+        {
+            render_process->startRender(scenery, RenderConfig(1920, 1080, 4, 8));
+        }
+        else
+        {
+            render_process->startRender(scenery, RenderConfig(400, 300, 1, 3));
+        }
 
         // Resize preview
         QSize preview_size = render_process->getPreviewSize();

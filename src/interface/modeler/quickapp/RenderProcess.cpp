@@ -1,6 +1,7 @@
 #include "RenderProcess.h"
 
 #include <QSize>
+#include "MainModelerWindow.h"
 #include "SoftwareCanvasRenderer.h"
 #include "RenderPreviewProvider.h"
 #include "RenderConfig.h"
@@ -22,8 +23,8 @@ private:
     SoftwareCanvasRenderer *renderer;
 };
 
-RenderProcess::RenderProcess(RenderPreviewProvider *destination):
-    destination(destination)
+RenderProcess::RenderProcess(MainModelerWindow *window, RenderPreviewProvider *destination):
+    window(window), destination(destination)
 {
     rendering = false;
     renderer = NULL;
@@ -107,5 +108,14 @@ void RenderProcess::timerEvent(QTimerEvent *)
         render_thread->join();
         delete render_thread;
         render_thread = NULL;
+    }
+
+    if (renderer)
+    {
+        QObject *progress = window->findQmlObject("render_progress");
+        if (progress)
+        {
+            progress->setProperty("value", renderer->getProgress());
+        }
     }
 }
