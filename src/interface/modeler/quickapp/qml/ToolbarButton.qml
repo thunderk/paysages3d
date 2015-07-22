@@ -7,6 +7,7 @@ Item {
     property bool hovered: false
     property string helptext
     property string hovertext
+    signal clicked
 
     width: image.width + 10
     height: image.height + 10
@@ -82,6 +83,7 @@ Item {
             {
                 tooltip_widget.helptext = "";
             }
+            parent.clicked();
         }
     }
 }

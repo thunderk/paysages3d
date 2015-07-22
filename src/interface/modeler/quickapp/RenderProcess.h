@@ -31,12 +31,31 @@ public:
      */
     const QSize getPreviewSize();
 
+    inline bool isRendering() const {return rendering;}
+
+public slots:
+    /**
+     * Start a quick render.
+     */
+    void startQuickRender();
+
+    /**
+     * Start a final render.
+     */
+    void startFinalRender();
+
+    /**
+     * Show the previous rendering.
+     */
+    void showPreviousRender();
+
 protected:
     virtual void timerEvent(QTimerEvent *event) override;
 
 private:
     MainModelerWindow *window;
     RenderPreviewProvider *destination;
+    bool has_render;
     bool rendering;
     SoftwareCanvasRenderer *renderer;
     Thread *render_thread;

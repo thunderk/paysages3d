@@ -91,6 +91,19 @@ OpenGLView {
         }
     }
 
+    Toolbar {
+        id: render_toolbar
+        opacity: 0
+        anchors.left: primary_toolbar.right
+
+        ToolbarButton {
+            id: tool_render_quick
+            objectName: "tool_render_quick"
+            picture: "images/tab_render.png"
+            hovertext: qsTr("Start a quick render")
+        }
+    }
+
     CameraChoice {
         id: camera_choice
         anchors.bottom: main_ui.bottom
@@ -137,6 +150,15 @@ OpenGLView {
 
             PropertyChanges {
                 target: atmosphere_toolbar
+                opacity: 1
+            }
+        },
+        State {
+            name: "Render Mode"
+            when: tool_render.selected
+
+            PropertyChanges {
+                target: render_toolbar
                 opacity: 1
             }
         },

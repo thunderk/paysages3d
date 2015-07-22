@@ -20,7 +20,6 @@ MainModelerWindow::MainModelerWindow()
     renderer = new OpenGLRenderer(scenery);
 
     render_preview_provider = new RenderPreviewProvider();
-    render_process = new RenderProcess(this, render_preview_provider);
 
     qmlRegisterType<OpenGLView>("Paysages", 1, 0, "OpenGLView");
     engine()->addImageProvider("renderpreviewprovider", render_preview_provider);
@@ -33,6 +32,8 @@ MainModelerWindow::MainModelerWindow()
     cameras = new ModelerCameras(this);
     atmosphere = new AtmosphereModeler(this);
     water = new WaterModeler(this);
+
+    render_process = new RenderProcess(this, render_preview_provider);
 }
 
 MainModelerWindow::~MainModelerWindow()
@@ -53,6 +54,20 @@ QObject *MainModelerWindow::findQmlObject(const QString &objectName)
     return rootObject()->findChild<QObject *>(objectName);
 }
 
+void MainModelerWindow::setQmlProperty(const QString &objectName, const QString &propertyName, const QVariant &value)
+{
+    QObject *item = findQmlObject(objectName);
+    if (item)
+    {
+        item->setProperty(propertyName.toLocal8Bit(), value);
+    }
+}
+
+void MainModelerWindow::setState(const QString &stateName)
+{
+    rootObject()->setProperty("state", stateName);
+}
+
 void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_F5)
@@ -60,20 +75,16 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
         // Start render in a thread
         if (event->modifiers() & Qt::ControlModifier)
         {
-            render_process->startRender(scenery, RenderConfig(1920, 1080, 4, 8));
+            render_process->startFinalRender();
         }
         else
         {
-            render_process->startRender(scenery, RenderConfig(400, 300, 1, 3));
+            render_process->startQuickRender();
         }
-
-        // Resize preview
-        QSize preview_size = render_process->getPreviewSize();
-        findQmlObject("preview_image")->setProperty("width", preview_size.width());
-        findQmlObject("preview_image")->setProperty("height", preview_size.height());
-
-        // Show render dialog
-        rootObject()->setProperty("state", QString("Render Dialog"));
+    }
+    else if (event->key() == Qt::Key_F6)
+    {
+        render_process->showPreviousRender();
     }
     else if (event->key() == Qt::Key_Escape)
     {
