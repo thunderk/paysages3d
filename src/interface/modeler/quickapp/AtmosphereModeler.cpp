@@ -5,6 +5,7 @@
 #include "AtmosphereDefinition.h"
 #include "OpenGLRenderer.h"
 #include "OpenGLSkybox.h"
+#include "OpenGLTerrain.h"
 
 AtmosphereModeler::AtmosphereModeler(MainModelerWindow *main):
     main(main)
@@ -23,4 +24,7 @@ void AtmosphereModeler::daytimeChanged(double value)
     main->getRenderer()->getScenery()->setAtmosphere(main->getScenery()->getAtmosphere());
 
     main->getRenderer()->getSkybox()->update();
+
+    // Update terrain textures according to new lighting
+    main->getRenderer()->getTerrain()->resetTextures();
 }

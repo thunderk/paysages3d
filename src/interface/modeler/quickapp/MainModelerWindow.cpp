@@ -90,7 +90,7 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
     {
         render_process->stopRender();
 
-        rootObject()->setProperty("state", QString("Init"));
+        setState("Init");
     }
     else if (event->key() == Qt::Key_Q)
     {

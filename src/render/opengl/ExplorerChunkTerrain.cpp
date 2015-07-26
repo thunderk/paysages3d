@@ -13,7 +13,8 @@ ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, d
     _renderer(renderer)
 {
     priority = 0.0;
-    _reset_needed = false;
+    _reset_topology = false;
+    _reset_texture = false;
 
     interrupt = false;
 
@@ -58,12 +59,16 @@ bool ExplorerChunkTerrain::maintain()
     bool subchanged;
 
     _lock_data.lock();
-    if (_reset_needed)
+    if (_reset_topology)
     {
-        _reset_needed = false;
-        _texture_current_size = 0;
+        _reset_topology = false;
         _tessellation_current_size = 0;
         overwater = false;
+    }
+    if (_reset_texture)
+    {
+        _reset_texture = false;
+        _texture_current_size = 0;
     }
     _lock_data.unlock();
 
@@ -103,7 +108,7 @@ bool ExplorerChunkTerrain::maintain()
                         tessellated->setGridVertex(tessellation_count, i, j, v);
                     }
                 }
-                if (interrupt or _reset_needed)
+                if (interrupt or _reset_topology)
                 {
                     return false;
                 }
@@ -143,7 +148,7 @@ bool ExplorerChunkTerrain::maintain()
                 }
             }
 
-            if (interrupt or _reset_needed)
+            if (interrupt or _reset_texture)
             {
                 return false;
             }
@@ -216,7 +221,7 @@ void ExplorerChunkTerrain::updatePriority(CameraDefinition* camera)
     }
 
     // Update priority
-    if (_reset_needed || (_texture_max_size > 1 && _texture_current_size <= 1))
+    if (_reset_topology || _reset_texture || (_texture_max_size > 1 && _texture_current_size <= 1))
     {
         priority = 1000.0;
     }
@@ -259,7 +264,7 @@ void ExplorerChunkTerrain::render(QOpenGLShaderProgram* program, OpenGLFunctions
     _lock_data.unlock();
 
     // Render tessellated mesh
-    if (!_reset_needed)
+    if (!_reset_topology)
     {
         _lock_data.lock();
         int tessellation_size = _tessellation_current_size;
@@ -280,9 +285,10 @@ void ExplorerChunkTerrain::render(QOpenGLShaderProgram* program, OpenGLFunctions
     }
 }
 
-void ExplorerChunkTerrain::askReset()
+void ExplorerChunkTerrain::askReset(bool topology, bool texture)
 {
-    _reset_needed = true;
+    _reset_topology = _reset_topology or topology;
+    _reset_texture = _reset_texture or texture;
 }
 
 void ExplorerChunkTerrain::askInterrupt()

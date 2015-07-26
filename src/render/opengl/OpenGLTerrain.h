@@ -23,6 +23,11 @@ public:
     virtual void render() override;
     virtual void interrupt() override;
 
+    /**
+     * Reset the color textures, without changing the tessellation.
+     */
+    void resetTextures();
+
     void performChunksMaintenance();
 
 private:

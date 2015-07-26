@@ -27,7 +27,7 @@ public:
     void updatePriority(CameraDefinition* camera);
     void render(QOpenGLShaderProgram* program, OpenGLFunctions* functions);
 
-    void askReset();
+    void askReset(bool topology = true, bool texture = true);
     void askInterrupt();
 
     Color getTextureColor(double x, double y);
@@ -54,7 +54,8 @@ private:
 
     OpenGLRenderer* _renderer;
 
-    bool _reset_needed;
+    bool _reset_topology;
+    bool _reset_texture;
     bool interrupt;
 
     QImage* _texture;

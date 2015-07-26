@@ -95,9 +95,17 @@ void OpenGLTerrain::render()
 
 void OpenGLTerrain::interrupt()
 {
-    for (auto chunk: _chunks)
+    for (auto &chunk: _chunks)
     {
         chunk->askInterrupt();
+    }
+}
+
+void OpenGLTerrain::resetTextures()
+{
+    for (auto &chunk: _chunks)
+    {
+        chunk->askReset(false, true);
     }
 }
 
