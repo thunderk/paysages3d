@@ -48,9 +48,6 @@ run:build
 run_cli:build
 	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/commandline/paysages-cli $(ARGS)
 
-run_legacy:build
-	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/desktop/paysages-gui $(ARGS)
-
 profile:build
 	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g ${BUILDPATH}/interface/modeler/quickapp/paysages-modeler $(ARGS)
 	perf report -g
@@ -70,8 +67,8 @@ package:build
 	cp $(BUILDPATH)/render/software/libpaysages_render_software.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/render/preview/libpaysages_render_preview.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/render/opengl/libpaysages_render_opengl.so* paysages3d-linux/lib/
-	cp $(BUILDPATH)/interface/desktop/paysages-gui paysages3d-linux/lib/
-	chmod +x paysages3d-linux/lib/paysages-gui
+	cp $(BUILDPATH)/interface/modeler/quickapp/paysages-modeler paysages3d-linux/lib/
+	chmod +x paysages3d-linux/lib/paysages-modeler
 	cp -r data paysages3d-linux/
 	cp dist/paysages3d.sh paysages3d-linux/
 	chmod +x paysages3d-linux/paysages3d.sh

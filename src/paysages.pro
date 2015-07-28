@@ -9,7 +9,6 @@ SUBDIRS = \
     render/preview \
     render/opengl \
     interface/commandline \
-    interface/desktop \
     interface/modeler
 
 exists( tests/googletest/sources/src/gtest-all.cc ) {
