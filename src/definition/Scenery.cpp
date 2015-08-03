@@ -49,19 +49,21 @@ void Scenery::validate()
 Scenery::FileOperationResult Scenery::saveGlobal(const std::string &filepath) const
 {
     PackStream stream;
-    double app_header, version_header;
+    double app_header = (double)APP_HEADER;
+    double version_header = (double)DATA_VERSION;
 
     if (not stream.bindToFile(filepath, true))
     {
         return FILE_OPERATION_IOERROR;
     }
 
-    app_header = (double)APP_HEADER;
     stream.write(&app_header);
-    version_header = (double)DATA_VERSION;
     stream.write(&version_header);
 
     save(&stream);
+
+    stream.write(&version_header);
+    stream.write(&app_header);
 
     return FILE_OPERATION_OK;
 }
@@ -89,6 +91,18 @@ Scenery::FileOperationResult Scenery::loadGlobal(const std::string &filepath)
     }
 
     load(&stream);
+
+    stream.read(&version_header);
+    if ((int)version_header != DATA_VERSION)
+    {
+        return FILE_OPERATION_VERSION_MISMATCH;
+    }
+
+    stream.read(&app_header);
+    if (app_header != APP_HEADER)
+    {
+        return FILE_OPERATION_APP_MISMATCH;
+    }
 
     return FILE_OPERATION_OK;
 }
