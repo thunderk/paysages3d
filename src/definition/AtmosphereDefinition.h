@@ -3,7 +3,7 @@
 
 #include "definition_global.h"
 
-#include "BaseDefinition.h"
+#include "DefinitionNode.h"
 
 #include "Vector3.h"
 #include "Color.h"
@@ -11,7 +11,7 @@
 namespace paysages {
 namespace definition {
 
-class DEFINITIONSHARED_EXPORT AtmosphereDefinition : public BaseDefinition
+class DEFINITIONSHARED_EXPORT AtmosphereDefinition : public DefinitionNode
 {
 public:
     typedef struct
@@ -37,13 +37,13 @@ public:
     } AtmospherePreset;
 
 public:
-    AtmosphereDefinition(BaseDefinition* parent);
+    AtmosphereDefinition(DefinitionNode* parent);
     virtual ~AtmosphereDefinition();
 
     virtual void save(PackStream* stream) const override;
     virtual void load(PackStream* stream) override;
 
-    virtual void copy(BaseDefinition* destination) const override;
+    virtual void copy(DefinitionNode* destination) const override;
     virtual void validate() override;
 
     /**

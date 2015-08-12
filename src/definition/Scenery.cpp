@@ -15,7 +15,7 @@ static const double APP_HEADER = 19866544632.125;
 static const int DATA_VERSION = 1;
 
 Scenery::Scenery():
-    BaseDefinition(NULL, "scenery")
+    DefinitionNode(NULL, "scenery")
 {
     addChild(atmosphere = new AtmosphereDefinition(this));
     addChild(camera = new CameraDefinition);
@@ -25,7 +25,7 @@ Scenery::Scenery():
     addChild(water = new WaterDefinition(this));
 }
 
-void Scenery::copy(BaseDefinition *destination_) const
+void Scenery::copy(DefinitionNode *destination_) const
 {
     Scenery* destination = (Scenery*)destination_;
 
@@ -41,7 +41,7 @@ void Scenery::copy(BaseDefinition *destination_) const
 
 void Scenery::validate()
 {
-    BaseDefinition::validate();
+    DefinitionNode::validate();
 
     keepCameraAboveGround(camera);
 }

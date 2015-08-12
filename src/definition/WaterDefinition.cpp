@@ -5,8 +5,8 @@
 #include "Color.h"
 #include "SurfaceMaterial.h"
 
-WaterDefinition::WaterDefinition(BaseDefinition* parent):
-    BaseDefinition(parent, "water")
+WaterDefinition::WaterDefinition(DefinitionNode* parent):
+    DefinitionNode(parent, "water")
 {
     material = new SurfaceMaterial;
     depth_color = new Color;
@@ -34,7 +34,7 @@ WaterDefinition::~WaterDefinition()
 
 void WaterDefinition::save(PackStream* stream) const
 {
-    BaseDefinition::save(stream);
+    DefinitionNode::save(stream);
 
     material->save(stream);
     depth_color->save(stream);
@@ -56,7 +56,7 @@ void WaterDefinition::save(PackStream* stream) const
 
 void WaterDefinition::load(PackStream* stream)
 {
-    BaseDefinition::load(stream);
+    DefinitionNode::load(stream);
 
     material->load(stream);
     depth_color->load(stream);
@@ -78,9 +78,9 @@ void WaterDefinition::load(PackStream* stream)
     validate();
 }
 
-void WaterDefinition::copy(BaseDefinition* _destination) const
+void WaterDefinition::copy(DefinitionNode* _destination) const
 {
-    BaseDefinition::copy(_destination);
+    DefinitionNode::copy(_destination);
 
     WaterDefinition* destination = (WaterDefinition*)_destination;
     *destination->material = *material;
@@ -100,7 +100,7 @@ void WaterDefinition::copy(BaseDefinition* _destination) const
 
 void WaterDefinition::validate()
 {
-    BaseDefinition::validate();
+    DefinitionNode::validate();
 
     material->validate();
     foam_material->validate();

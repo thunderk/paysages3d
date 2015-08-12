@@ -11,7 +11,7 @@ namespace definition {
 class DEFINITIONSHARED_EXPORT CloudsDefinition : public Layers
 {
 public:
-    CloudsDefinition(BaseDefinition* parent);
+    CloudsDefinition(DefinitionNode* parent);
 
     inline CloudLayerDefinition* getCloudLayer(int position) const {return (CloudLayerDefinition*)getLayer(position);}
 

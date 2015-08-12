@@ -3,30 +3,30 @@
 
 #include "definition_global.h"
 
-#include "BaseDefinition.h"
+#include "DefinitionNode.h"
 
 namespace paysages {
 namespace definition {
 
-typedef BaseDefinition* (*LayerConstructor)(Layers* parent);
+typedef DefinitionNode* (*LayerConstructor)(Layers* parent);
 
 /**
  * @brief Layers of definitions, ideally all of the same type.
  */
-class DEFINITIONSHARED_EXPORT Layers:public BaseDefinition
+class DEFINITIONSHARED_EXPORT Layers:public DefinitionNode
 {
 public:
-    Layers(BaseDefinition* parent, const std::string &name, LayerConstructor layer_constructor);
+    Layers(DefinitionNode* parent, const std::string &name, LayerConstructor layer_constructor);
     virtual ~Layers();
 
-    virtual void copy(BaseDefinition* destination) const override;
+    virtual void copy(DefinitionNode* destination) const override;
     Layers* newCopy() const;
 
     void setMaxLayerCount(int max_layer_count);
 
     int count() const;
-    BaseDefinition* getLayer(int position) const;
-    int findLayer(BaseDefinition* layer) const;
+    DefinitionNode* getLayer(int position) const;
+    int findLayer(DefinitionNode* layer) const;
 
     /**
      * @brief Add a new layer
@@ -35,19 +35,19 @@ public:
      * this object (even if the layer could not be added).
      * @return The position of the new layer, -1 if it couldn't be added.
      */
-    int addLayer(BaseDefinition *layer);
+    int addLayer(DefinitionNode *layer);
     int addLayer();
     void removeLayer(int position);
-    void removeLayer(BaseDefinition* layer);
+    void removeLayer(DefinitionNode* layer);
     void moveLayer(int old_position, int new_position);
-    void moveLayer(BaseDefinition* layer, int new_position);
+    void moveLayer(DefinitionNode* layer, int new_position);
     void clear();
 
 public:
     LayerConstructor layer_constructor;
     int max_layer_count;
-    std::vector<BaseDefinition*> layers;
-    BaseDefinition* null_layer;
+    std::vector<DefinitionNode*> layers;
+    DefinitionNode* null_layer;
 };
 
 }

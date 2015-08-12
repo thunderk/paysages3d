@@ -3,21 +3,21 @@
 
 #include "definition_global.h"
 
-#include "BaseDefinition.h"
+#include "DefinitionNode.h"
 
 namespace paysages {
 namespace definition {
 
-class DEFINITIONSHARED_EXPORT WaterDefinition: public BaseDefinition
+class DEFINITIONSHARED_EXPORT WaterDefinition: public DefinitionNode
 {
 public:
-    WaterDefinition(BaseDefinition* parent);
+    WaterDefinition(DefinitionNode* parent);
     virtual ~WaterDefinition();
 
     virtual void save(PackStream* stream) const override;
     virtual void load(PackStream* stream) override;
 
-    virtual void copy(BaseDefinition* destination) const override;
+    virtual void copy(DefinitionNode* destination) const override;
     virtual void validate() override;
 
 public:

@@ -2,8 +2,8 @@
 
 #include "Logs.h"
 
-Layers::Layers(BaseDefinition* parent, const std::string &name, LayerConstructor layer_constructor):
-    BaseDefinition(parent, name), layer_constructor(layer_constructor)
+Layers::Layers(DefinitionNode* parent, const std::string &name, LayerConstructor layer_constructor):
+    DefinitionNode(parent, name), layer_constructor(layer_constructor)
 {
     max_layer_count = 100;
     null_layer = layer_constructor(this);
@@ -15,9 +15,9 @@ Layers::~Layers()
     delete null_layer;
 }
 
-void Layers::copy(BaseDefinition* destination_) const
+void Layers::copy(DefinitionNode* destination_) const
 {
-    BaseDefinition::copy(destination_);
+    DefinitionNode::copy(destination_);
 
     Layers* destination = (Layers*)destination_;
 
@@ -30,7 +30,7 @@ void Layers::copy(BaseDefinition* destination_) const
     for (auto layer: layers)
     {
         int position = destination->addLayer();
-        BaseDefinition* new_layer = destination->getLayer(position);
+        DefinitionNode* new_layer = destination->getLayer(position);
         layer->copy(new_layer);
     }
 }
@@ -53,7 +53,7 @@ int Layers::count() const
     return layers.size();
 }
 
-BaseDefinition* Layers::getLayer(int position) const
+DefinitionNode* Layers::getLayer(int position) const
 {
     if (position >= 0 and position < (int)layers.size())
     {
@@ -66,7 +66,7 @@ BaseDefinition* Layers::getLayer(int position) const
     }
 }
 
-int Layers::findLayer(BaseDefinition* layer) const
+int Layers::findLayer(DefinitionNode* layer) const
 {
     int i = 0;
     for (auto it:layers)
@@ -81,7 +81,7 @@ int Layers::findLayer(BaseDefinition* layer) const
     return -1;
 }
 
-int Layers::addLayer(BaseDefinition* layer)
+int Layers::addLayer(DefinitionNode* layer)
 {
     if ((int)layers.size() < max_layer_count)
     {
@@ -106,7 +106,7 @@ void Layers::removeLayer(int position)
 {
     if (position >= 0 and position < (int)layers.size())
     {
-        BaseDefinition* removed = layers[position];
+        DefinitionNode* removed = layers[position];
         removeChild(removed);
         layers.erase(layers.begin() + position);
         delete removed;
@@ -117,7 +117,7 @@ void Layers::removeLayer(int position)
     }
 }
 
-void Layers::removeLayer(BaseDefinition* layer)
+void Layers::removeLayer(DefinitionNode* layer)
 {
     removeLayer(findLayer(layer));
 }
@@ -126,13 +126,13 @@ void Layers::moveLayer(int old_position, int new_position)
 {
     if (old_position >= 0 and old_position < (int)layers.size() and new_position >= 0 and new_position < (int)layers.size())
     {
-        BaseDefinition* layer = layers[old_position];
+        DefinitionNode* layer = layers[old_position];
         layers.erase(layers.begin() + old_position);
         layers.insert(layers.begin() + new_position, layer);
     }
 }
 
-void Layers::moveLayer(BaseDefinition* layer, int new_position)
+void Layers::moveLayer(DefinitionNode* layer, int new_position)
 {
     moveLayer(findLayer(layer), new_position);
 }

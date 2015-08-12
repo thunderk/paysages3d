@@ -3,7 +3,7 @@
 
 #include "definition_global.h"
 
-#include "BaseDefinition.h"
+#include "DefinitionNode.h"
 
 namespace paysages {
 namespace definition {
@@ -15,16 +15,16 @@ typedef struct
     double base_height;
 } HeightInfo;
 
-class DEFINITIONSHARED_EXPORT TerrainDefinition : public BaseDefinition
+class DEFINITIONSHARED_EXPORT TerrainDefinition : public DefinitionNode
 {
 public:
-    TerrainDefinition(BaseDefinition* parent);
+    TerrainDefinition(DefinitionNode* parent);
     virtual ~TerrainDefinition();
 
     virtual void save(PackStream* stream) const override;
     virtual void load(PackStream* stream) override;
 
-    virtual void copy(BaseDefinition* destination) const override;
+    virtual void copy(DefinitionNode* destination) const override;
     virtual void validate() override;
 
     double getGridHeight(int x, int z, bool with_painting);

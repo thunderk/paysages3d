@@ -3,7 +3,7 @@
 
 #include "definition_global.h"
 
-#include "BaseDefinition.h"
+#include "DefinitionNode.h"
 
 namespace paysages {
 namespace definition {
@@ -15,13 +15,13 @@ namespace definition {
  *
  * Grid cells are considered to be 1.0-sized.
  */
-class DEFINITIONSHARED_EXPORT PaintedGrid: public BaseDefinition
+class DEFINITIONSHARED_EXPORT PaintedGrid: public DefinitionNode
 {
 public:
-    PaintedGrid(BaseDefinition *parent=0);
+    PaintedGrid(DefinitionNode *parent=0);
     virtual ~PaintedGrid();
 
-    virtual void copy(BaseDefinition *destination) const override;
+    virtual void copy(DefinitionNode *destination) const override;
     virtual void save(PackStream *stream) const override;
     virtual void load(PackStream *stream) override;
 

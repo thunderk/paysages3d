@@ -4,8 +4,8 @@
 #include "PackStream.h"
 #include "BoundingBox.h"
 
-CameraDefinition::CameraDefinition(BaseDefinition *parent):
-    BaseDefinition(parent, "camera")
+CameraDefinition::CameraDefinition(DefinitionNode *parent):
+    DefinitionNode(parent, "camera")
 {
     location.x = 0.0;
     location.y = 0.0;
@@ -47,7 +47,7 @@ void CameraDefinition::load(PackStream* stream)
     validate();
 }
 
-void CameraDefinition::copy(BaseDefinition* _destination) const
+void CameraDefinition::copy(DefinitionNode* _destination) const
 {
     CameraDefinition* destination = (CameraDefinition*)_destination;
 

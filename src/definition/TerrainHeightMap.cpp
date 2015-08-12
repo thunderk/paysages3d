@@ -8,7 +8,7 @@ TerrainHeightMap::TerrainHeightMap(TerrainDefinition* terrain):
 {
 }
 
-void TerrainHeightMap::copy(BaseDefinition* _destination) const
+void TerrainHeightMap::copy(DefinitionNode* _destination) const
 {
     TerrainHeightMap* destination = (TerrainHeightMap*)_destination;
 

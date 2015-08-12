@@ -2,12 +2,12 @@
 
 #include "CloudLayerDefinition.h"
 
-static BaseDefinition* _layerConstructor(Layers* parent)
+static DefinitionNode* _layerConstructor(Layers* parent)
 {
     return new CloudLayerDefinition(parent);
 }
 
-CloudsDefinition::CloudsDefinition(BaseDefinition* parent):
+CloudsDefinition::CloudsDefinition(DefinitionNode* parent):
     Layers(parent, "clouds", _layerConstructor)
 {
 }

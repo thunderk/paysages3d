@@ -3,8 +3,8 @@
 #include "PackStream.h"
 #include "RandomGenerator.h"
 
-AtmosphereDefinition::AtmosphereDefinition(BaseDefinition* parent):
-    BaseDefinition(parent, "atmosphere")
+AtmosphereDefinition::AtmosphereDefinition(DefinitionNode* parent):
+    DefinitionNode(parent, "atmosphere")
 {
 }
 
@@ -64,7 +64,7 @@ void AtmosphereDefinition::load(PackStream* stream)
     validate();
 }
 
-void AtmosphereDefinition::copy(BaseDefinition* _destination) const
+void AtmosphereDefinition::copy(DefinitionNode* _destination) const
 {
     AtmosphereDefinition* destination = (AtmosphereDefinition*)_destination;
 

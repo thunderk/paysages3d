@@ -3,28 +3,28 @@
 
 #include "definition_global.h"
 
-#include "BaseDefinition.h"
+#include "DefinitionNode.h"
 
 #include "NoiseState.h"
 
 namespace paysages {
 namespace definition {
 
-class DEFINITIONSHARED_EXPORT CloudLayerDefinition : public BaseDefinition
+class DEFINITIONSHARED_EXPORT CloudLayerDefinition : public DefinitionNode
 {
 public:
-    CloudLayerDefinition(BaseDefinition* parent);
+    CloudLayerDefinition(DefinitionNode* parent);
     virtual ~CloudLayerDefinition();
 
     inline const NoiseState &getNoiseState() const {return noise_state;}
 
-    static CloudLayerDefinition* newCopy(const CloudLayerDefinition& other, BaseDefinition* parent);
-    CloudLayerDefinition* newCopy(BaseDefinition* parent) const;
+    static CloudLayerDefinition* newCopy(const CloudLayerDefinition& other, DefinitionNode* parent);
+    CloudLayerDefinition* newCopy(DefinitionNode* parent) const;
 
     virtual void save(PackStream* pack) const override;
     virtual void load(PackStream* pack) override;
 
-    virtual void copy(BaseDefinition* destination) const override;
+    virtual void copy(DefinitionNode* destination) const override;
     virtual void validate() override;
 
 public:

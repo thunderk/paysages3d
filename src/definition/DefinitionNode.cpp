@@ -1,8 +1,8 @@
-#include "BaseDefinition.h"
+#include "DefinitionNode.h"
 
 #include "PackStream.h"
 
-BaseDefinition::BaseDefinition(BaseDefinition* parent, const std::string &name):
+DefinitionNode::DefinitionNode(DefinitionNode* parent, const std::string &name):
     parent(parent), name(name)
 {
     if (parent)
@@ -16,7 +16,7 @@ BaseDefinition::BaseDefinition(BaseDefinition* parent, const std::string &name):
     }
 }
 
-BaseDefinition::~BaseDefinition()
+DefinitionNode::~DefinitionNode()
 {
     if (parent)
     {
@@ -25,7 +25,7 @@ BaseDefinition::~BaseDefinition()
     }
 
     // Work on a copy, because the child destructor will modify the array by removing itself using removeChild
-    std::vector<BaseDefinition*> children_copy = children;
+    std::vector<DefinitionNode*> children_copy = children;
     for (auto child:children_copy)
     {
         if (child->getParent() == this)
@@ -35,12 +35,12 @@ BaseDefinition::~BaseDefinition()
     }
 }
 
-void BaseDefinition::setName(const std::string &name)
+void DefinitionNode::setName(const std::string &name)
 {
     this->name = name;
 }
 
-Scenery* BaseDefinition::getScenery()
+Scenery* DefinitionNode::getScenery()
 {
     if (parent)
     {
@@ -52,7 +52,7 @@ Scenery* BaseDefinition::getScenery()
     }
 }
 
-std::string BaseDefinition::toString(int indent) const
+std::string DefinitionNode::toString(int indent) const
 {
     std::string result;
     for (int i = 0; i < indent; i++)
@@ -70,7 +70,7 @@ std::string BaseDefinition::toString(int indent) const
     return result;
 }
 
-void BaseDefinition::save(PackStream* stream) const
+void DefinitionNode::save(PackStream* stream) const
 {
     stream->write(name);
     for (auto child: children)
@@ -79,7 +79,7 @@ void BaseDefinition::save(PackStream* stream) const
     }
 }
 
-void BaseDefinition::load(PackStream* stream)
+void DefinitionNode::load(PackStream* stream)
 {
     name = stream->readString();
     for (auto child: children)
@@ -88,13 +88,13 @@ void BaseDefinition::load(PackStream* stream)
     }
 }
 
-void BaseDefinition::copy(BaseDefinition* destination) const
+void DefinitionNode::copy(DefinitionNode* destination) const
 {
     destination->setName(name);
     // can't copy children as we don't know their types...
 }
 
-void BaseDefinition::validate()
+void DefinitionNode::validate()
 {
     for (auto child: children)
     {
@@ -102,7 +102,7 @@ void BaseDefinition::validate()
     }
 }
 
-void BaseDefinition::addChild(BaseDefinition* child)
+void DefinitionNode::addChild(DefinitionNode* child)
 {
     if (std::find(children.begin(), children.end(), child) == children.end())
     {
@@ -112,9 +112,9 @@ void BaseDefinition::addChild(BaseDefinition* child)
     }
 }
 
-void BaseDefinition::removeChild(BaseDefinition* child)
+void DefinitionNode::removeChild(DefinitionNode* child)
 {
-    std::vector<BaseDefinition*>::iterator it = std::find(children.begin(), children.end(), child);
+    std::vector<DefinitionNode*>::iterator it = std::find(children.begin(), children.end(), child);
     if (it != children.end())
     {
         child->parent = NULL;

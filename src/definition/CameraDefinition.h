@@ -3,7 +3,7 @@
 
 #include "definition_global.h"
 
-#include "BaseDefinition.h"
+#include "DefinitionNode.h"
 
 #include "Vector3.h"
 #include "Matrix4.h"
@@ -19,15 +19,15 @@ typedef struct
     double zfar;
 } CameraPerspective;
 
-class DEFINITIONSHARED_EXPORT CameraDefinition: public BaseDefinition
+class DEFINITIONSHARED_EXPORT CameraDefinition: public DefinitionNode
 {
 public:
-    CameraDefinition(BaseDefinition *parent = NULL);
+    CameraDefinition(DefinitionNode *parent = NULL);
 
     virtual void save(PackStream* pack) const override;
     virtual void load(PackStream* pack) override;
 
-    virtual void copy(BaseDefinition* destination) const override;
+    virtual void copy(DefinitionNode* destination) const override;
     virtual void validate() override;
 
     inline Vector3 getLocation() const {return location;}

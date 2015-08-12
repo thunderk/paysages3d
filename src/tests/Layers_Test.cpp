@@ -3,14 +3,14 @@
 #include "Layers.h"
 #include "PackStream.h"
 
-BaseDefinition* _construc1(Layers*)
+DefinitionNode* _construc1(Layers*)
 {
-    return new BaseDefinition(NULL, "test");
+    return new DefinitionNode(NULL, "test");
 }
 
-BaseDefinition* _construc2(Layers* parent)
+DefinitionNode* _construc2(Layers* parent)
 {
-    BaseDefinition* result = new BaseDefinition(parent, "test");
+    DefinitionNode* result = new DefinitionNode(parent, "test");
     return result;
 }
 
@@ -26,8 +26,8 @@ TEST(Layers, NullLayer)
 
     for (int i = -2; i < 5; i++)
     {
-        BaseDefinition* layer = layers1.getLayer(0);
-        EXPECT_NE((BaseDefinition*)NULL, layer);
+        DefinitionNode* layer = layers1.getLayer(0);
+        EXPECT_NE((DefinitionNode*)NULL, layer);
 
         EXPECT_EQ(NULL, layer->getParent());
         EXPECT_EQ(layer, layer->getRoot());

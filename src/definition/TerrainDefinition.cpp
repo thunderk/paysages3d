@@ -4,8 +4,8 @@
 #include "NoiseGenerator.h"
 #include "PackStream.h"
 
-TerrainDefinition::TerrainDefinition(BaseDefinition* parent):
-    BaseDefinition(parent, "terrain")
+TerrainDefinition::TerrainDefinition(DefinitionNode* parent):
+    DefinitionNode(parent, "terrain")
 {
     height = 1.0;
     scaling = 1.0;
@@ -41,7 +41,7 @@ void TerrainDefinition::validate()
     /* TODO Alter with heightmap min/max */
 }
 
-void TerrainDefinition::copy(BaseDefinition* _destination) const
+void TerrainDefinition::copy(DefinitionNode* _destination) const
 {
     TerrainDefinition* destination = (TerrainDefinition*)_destination;
 
@@ -60,7 +60,7 @@ void TerrainDefinition::copy(BaseDefinition* _destination) const
 
 void TerrainDefinition::save(PackStream* stream) const
 {
-    BaseDefinition::save(stream);
+    DefinitionNode::save(stream);
 
     stream->write(&height);
     stream->write(&scaling);
@@ -71,7 +71,7 @@ void TerrainDefinition::save(PackStream* stream) const
 
 void TerrainDefinition::load(PackStream* stream)
 {
-    BaseDefinition::load(stream);
+    DefinitionNode::load(stream);
 
     stream->read(&height);
     stream->read(&scaling);

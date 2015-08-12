@@ -7,8 +7,8 @@
 #include "Scenery.h"
 #include "TerrainDefinition.h"
 
-TextureLayerDefinition::TextureLayerDefinition(BaseDefinition* parent):
-    BaseDefinition(parent, "texture")
+TextureLayerDefinition::TextureLayerDefinition(DefinitionNode* parent):
+    DefinitionNode(parent, "texture")
 {
     terrain_zone = new Zone;
     _displacement_noise = new NoiseGenerator;
@@ -29,7 +29,7 @@ TextureLayerDefinition::~TextureLayerDefinition()
 
 void TextureLayerDefinition::validate()
 {
-    BaseDefinition::validate();
+    DefinitionNode::validate();
 
     if (displacement_scaling < 0.000001)
     {
@@ -58,9 +58,9 @@ void TextureLayerDefinition::validate()
     }
 }
 
-void TextureLayerDefinition::copy(BaseDefinition *_destination) const
+void TextureLayerDefinition::copy(DefinitionNode *_destination) const
 {
-    BaseDefinition::copy(_destination);
+    DefinitionNode::copy(_destination);
 
     TextureLayerDefinition* destination = (TextureLayerDefinition*)_destination;
 
@@ -77,7 +77,7 @@ void TextureLayerDefinition::copy(BaseDefinition *_destination) const
 
 void TextureLayerDefinition::save(PackStream* stream) const
 {
-    BaseDefinition::save(stream);
+    DefinitionNode::save(stream);
 
     terrain_zone->save(stream);
     stream->write(&displacement_scaling);
@@ -91,7 +91,7 @@ void TextureLayerDefinition::save(PackStream* stream) const
 
 void TextureLayerDefinition::load(PackStream* stream)
 {
-    BaseDefinition::load(stream);
+    DefinitionNode::load(stream);
 
     terrain_zone->load(stream);
     stream->read(&displacement_scaling);

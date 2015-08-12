@@ -11,7 +11,7 @@ namespace definition {
 class DEFINITIONSHARED_EXPORT TexturesDefinition : public Layers
 {
 public:
-    TexturesDefinition(BaseDefinition *parent);
+    TexturesDefinition(DefinitionNode *parent);
 
     inline TextureLayerDefinition* getTextureLayer(int position) const {return (TextureLayerDefinition*)getLayer(position);}
 

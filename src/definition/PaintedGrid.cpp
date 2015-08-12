@@ -6,8 +6,8 @@
 #include "PaintedGridData.h"
 #include "PaintedGridBrush.h"
 
-PaintedGrid::PaintedGrid(BaseDefinition *parent):
-    BaseDefinition(parent, "grid")
+PaintedGrid::PaintedGrid(DefinitionNode *parent):
+    DefinitionNode(parent, "grid")
 {
     merged_data = new PaintedGridData;
     brush_data = new PaintedGridData;
@@ -19,7 +19,7 @@ PaintedGrid::~PaintedGrid()
     delete brush_data;
 }
 
-void PaintedGrid::copy(BaseDefinition *_destination) const
+void PaintedGrid::copy(DefinitionNode *_destination) const
 {
     PaintedGrid* destination = (PaintedGrid *)_destination;
 

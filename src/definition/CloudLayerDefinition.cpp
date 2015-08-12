@@ -5,8 +5,8 @@
 #include "SurfaceMaterial.h"
 #include "PackStream.h"
 
-CloudLayerDefinition::CloudLayerDefinition(BaseDefinition* parent):
-    BaseDefinition(parent, "layer")
+CloudLayerDefinition::CloudLayerDefinition(DefinitionNode* parent):
+    DefinitionNode(parent, "layer")
 {
     type = CIRRUS;
     altitude = 0.5;
@@ -18,14 +18,14 @@ CloudLayerDefinition::~CloudLayerDefinition()
 {
 }
 
-CloudLayerDefinition* CloudLayerDefinition::newCopy(const CloudLayerDefinition& other, BaseDefinition* parent)
+CloudLayerDefinition* CloudLayerDefinition::newCopy(const CloudLayerDefinition& other, DefinitionNode* parent)
 {
     CloudLayerDefinition* layer = new CloudLayerDefinition(parent);
     other.copy(layer);
     return layer;
 }
 
-CloudLayerDefinition* CloudLayerDefinition::newCopy(BaseDefinition* parent) const
+CloudLayerDefinition* CloudLayerDefinition::newCopy(DefinitionNode* parent) const
 {
     CloudLayerDefinition* layer = new CloudLayerDefinition(parent);
     copy(layer);
@@ -34,7 +34,7 @@ CloudLayerDefinition* CloudLayerDefinition::newCopy(BaseDefinition* parent) cons
 
 void CloudLayerDefinition::save(PackStream* stream) const
 {
-    BaseDefinition::save(stream);
+    DefinitionNode::save(stream);
 
     int clouds_type = (int)type;
 
@@ -48,7 +48,7 @@ void CloudLayerDefinition::save(PackStream* stream) const
 
 void CloudLayerDefinition::load(PackStream* stream)
 {
-    BaseDefinition::load(stream);
+    DefinitionNode::load(stream);
 
     int clouds_type;
 
@@ -63,9 +63,9 @@ void CloudLayerDefinition::load(PackStream* stream)
     validate();
 }
 
-void CloudLayerDefinition::copy(BaseDefinition* _destination) const
+void CloudLayerDefinition::copy(DefinitionNode* _destination) const
 {
-    BaseDefinition::copy(_destination);
+    DefinitionNode::copy(_destination);
 
     CloudLayerDefinition* destination = (CloudLayerDefinition*)_destination;
 

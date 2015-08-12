@@ -2,12 +2,12 @@
 
 #include "TextureLayerDefinition.h"
 
-static BaseDefinition* _layer_constructor(Layers* parent)
+static DefinitionNode* _layer_constructor(Layers* parent)
 {
     return new TextureLayerDefinition(parent);
 }
 
-TexturesDefinition::TexturesDefinition(BaseDefinition *parent):
+TexturesDefinition::TexturesDefinition(DefinitionNode *parent):
     Layers(parent, "textures", _layer_constructor)
 {
 }

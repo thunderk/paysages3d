@@ -5,8 +5,8 @@
 #include "PackStream.h"
 #include "Vector3.h"
 
-Zone::Zone(BaseDefinition *parent):
-    BaseDefinition(parent, "zone")
+Zone::Zone(DefinitionNode *parent):
+    DefinitionNode(parent, "zone")
 {
     value_by_height = new Curve;
     absolute_height = 1;
@@ -43,7 +43,7 @@ void Zone::load(PackStream* stream)
     value_by_slope->load(stream);
 }
 
-void Zone::copy(BaseDefinition* _destination) const
+void Zone::copy(DefinitionNode* _destination) const
 {
     Zone* destination = (Zone*)_destination;
 

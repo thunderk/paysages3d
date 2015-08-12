@@ -14,7 +14,6 @@ DEFINES += DEFINITION_LIBRARY
 include(../common.pri)
 
 SOURCES += \
-    BaseDefinition.cpp \
     Layers.cpp \
     WaterDefinition.cpp \
     SurfaceMaterial.cpp \
@@ -30,11 +29,11 @@ SOURCES += \
     Scenery.cpp \
     PaintedGrid.cpp \
     PaintedGridBrush.cpp \
-    PaintedGridData.cpp
+    PaintedGridData.cpp \
+    DefinitionNode.cpp
 
 HEADERS +=\
         definition_global.h \
-    BaseDefinition.h \
     Layers.h \
     WaterDefinition.h \
     SurfaceMaterial.h \
@@ -50,7 +49,8 @@ HEADERS +=\
     Scenery.h \
     PaintedGrid.h \
     PaintedGridBrush.h \
-    PaintedGridData.h
+    PaintedGridData.h \
+    DefinitionNode.h
 
 unix:!symbian {
     maemo5 {

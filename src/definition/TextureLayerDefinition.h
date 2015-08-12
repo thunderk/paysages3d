@@ -3,12 +3,12 @@
 
 #include "definition_global.h"
 
-#include "BaseDefinition.h"
+#include "DefinitionNode.h"
 
 namespace paysages {
 namespace definition {
 
-class DEFINITIONSHARED_EXPORT TextureLayerDefinition : public BaseDefinition
+class DEFINITIONSHARED_EXPORT TextureLayerDefinition : public DefinitionNode
 {
 public:
     typedef enum
@@ -27,13 +27,13 @@ public:
     } TextureLayerPreset;
 
 public:
-    TextureLayerDefinition(BaseDefinition* parent);
+    TextureLayerDefinition(DefinitionNode* parent);
     virtual ~TextureLayerDefinition();
 
     virtual void save(PackStream* stream) const override;
     virtual void load(PackStream* stream) override;
 
-    virtual void copy(BaseDefinition* destination) const override;
+    virtual void copy(DefinitionNode* destination) const override;
     virtual void validate() override;
 
     void applyPreset(TextureLayerPreset preset);

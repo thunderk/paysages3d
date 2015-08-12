@@ -3,7 +3,7 @@
 
 #include "definition_global.h"
 
-#include "BaseDefinition.h"
+#include "DefinitionNode.h"
 
 namespace paysages {
 namespace definition {
@@ -13,7 +13,7 @@ namespace definition {
  *
  * This class contains the whole scenery definition.
  */
-class DEFINITIONSHARED_EXPORT Scenery: public BaseDefinition
+class DEFINITIONSHARED_EXPORT Scenery: public DefinitionNode
 {
 public:
     typedef enum {
@@ -29,7 +29,7 @@ public:
     Scenery();
 
     virtual void validate() override;
-    virtual void copy(BaseDefinition *destination) const override;
+    virtual void copy(DefinitionNode *destination) const override;
 
     FileOperationResult saveGlobal(const std::string &filepath) const;
     FileOperationResult loadGlobal(const std::string &filepath);

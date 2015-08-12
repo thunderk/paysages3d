@@ -13,7 +13,7 @@ class DEFINITIONSHARED_EXPORT TerrainHeightMap : public PaintedGrid
 public:
     TerrainHeightMap(TerrainDefinition *terrain);
 
-    virtual void copy(BaseDefinition *destination) const override;
+    virtual void copy(DefinitionNode *destination) const override;
 
     inline TerrainDefinition* getTerrain() const {return terrain;}
 
