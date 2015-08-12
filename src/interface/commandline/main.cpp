@@ -9,17 +9,48 @@
 #include "Scenery.h"
 #include "RenderConfig.h"
 #include "ColorProfile.h"
+#include "Thread.h"
 
-void startRender(SoftwareCanvasRenderer *renderer, char *outputpath)
+class RenderThread: public Thread
 {
+public:
+    RenderThread(SoftwareCanvasRenderer *renderer, char *outputpath):
+        renderer(renderer), outputpath(outputpath)
+    {
+    }
+
+    virtual void run() override
+    {
+        renderer->render();
+    }
+
+private:
+    SoftwareCanvasRenderer *renderer;
+    char *outputpath;
+};
+
+static void startRender(SoftwareCanvasRenderer *renderer, char *outputpath)
+{
+    RenderThread thread(renderer, outputpath);
+
     printf("\rRendering %s ...                   \n", outputpath);
-    renderer->render();
+    thread.start();
+
+    while (thread.isWorking())
+    {
+        Thread::timeSleepMs(200);
+
+        printf("\rProgress : %0.1f%%                         ", renderer->getProgress() * 100.0);
+        fflush(stdout);
+    }
+    thread.join();
+
     printf("\rSaving %s ...                      \n", outputpath);
     remove(outputpath);
     renderer->saveToDisk(outputpath);
 }
 
-void displayHelp()
+static void displayHelp()
 {
     printf("Usage : paysages-cli [options]\n");
     printf("Options :\n");
@@ -37,17 +68,11 @@ void displayHelp()
     printf(" -cz z  Camera Z step (double)\n");
 }
 
-void _previewUpdate(double progress)
-{
-    printf("\rProgress : %0.1f%%                         ", progress * 100.0);
-    fflush(stdout);
-}
-
 int main(int argc, char** argv)
 {
     SoftwareCanvasRenderer* renderer;
     char* conf_file_path = NULL;
-    RenderConfig conf_render_params(800, 600, 1, 5);
+    RenderConfig conf_render_params(400, 300, 1, 3);
     int conf_first_picture = 0;
     int conf_nb_pictures = 1;
     double conf_daytime_start = 0.4;
@@ -185,7 +210,7 @@ int main(int argc, char** argv)
 
         if (outputcount >= conf_first_picture)
         {
-            sprintf(outputpath, "output/pic%05d.png", outputcount);
+            sprintf(outputpath, "pic%05d.png", outputcount);
             startRender(renderer, outputpath);
         }
 

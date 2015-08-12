@@ -11,37 +11,44 @@ namespace system
 
 typedef void* (*ThreadFunction)(void* data);
 
-/*!
- * \brief System thread
+/**
+ * System thread
  */
 class SYSTEMSHARED_EXPORT Thread: private QThread
 {
 public:
-    /*!
-     * \brief Create a new thread
+    /**
+     * Create a new thread.
      *
      * The thread is not started automatically. A call to method start() needs to be done.
-     * \param function Function to call inside the thread once it is started
+     *
+     * Either the *function* argument should be provided (with the function to call from the
+     * thread), or the *run* method overridden.
      */
     Thread(ThreadFunction function=0);
 
-    /*!
-     * \brief Start the thread
-     * \param data User data to pass to the threaded function
+    /**
+     * Start the thread, with custom data.
      */
     void start(void* data=0);
 
-    /*!
-     * \brief Wait for the thread to end, and collect its result.
-     * \return The value returned by the threaded function.
+    /**
+     * Wait for the thread to end, and collect its result.
+     *
+     * Returns the value returned by the threaded function.
      */
     void* join();
+
+    /**
+     * Return true if the thread is currently running.
+     */
+    inline bool isWorking() const {return not isFinished();}
 
     static inline void timeSleepMs(unsigned long ms){ QThread::msleep(ms); }
 
 protected:
-    /*!
-     * \brief Function to reimplement if no ThreadFunction has been passed to the constructor.
+    /**
+     * Function to reimplement if no ThreadFunction has been passed to the constructor.
      */
     virtual void run();
 
