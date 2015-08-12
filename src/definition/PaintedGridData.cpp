@@ -6,14 +6,14 @@
 PaintedGridData::PaintedGridData()
 {
     rows_count = 0;
-    rows = new HeightMapRow[1];
+    rows = (HeightMapRow *)malloc(sizeof(HeightMapRow));
     memsize = 0;
 }
 
 PaintedGridData::~PaintedGridData()
 {
     clear();
-    delete[] rows;
+    free(rows);
 }
 
 void PaintedGridData::copy(PaintedGridData *destination) const
@@ -119,7 +119,7 @@ void PaintedGridData::clear()
         free(rows[i].pixel_groups);
     }
     rows_count = 0;
-    delete[] rows;
-    rows = new HeightMapRow[1];
+    free(rows);
+    rows = (HeightMapRow *)malloc(sizeof(HeightMapRow));
     memsize = 0;
 }

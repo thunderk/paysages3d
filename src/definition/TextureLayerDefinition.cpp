@@ -14,6 +14,9 @@ TextureLayerDefinition::TextureLayerDefinition(BaseDefinition* parent):
     _displacement_noise = new NoiseGenerator;
     _detail_noise = new NoiseGenerator;
     material = new SurfaceMaterial;
+
+    displacement_height = 0.0;
+    displacement_scaling = 1.0;
 }
 
 TextureLayerDefinition::~TextureLayerDefinition()

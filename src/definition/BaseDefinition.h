@@ -28,6 +28,7 @@ public:
 
     inline const BaseDefinition* getParent() const {return parent;}
     inline const BaseDefinition* getRoot() const {return root;}
+    inline int getChildrenCount() const {return children.size();}
 
     /**
      * Return a string representation of the tree (mainly for debugging purposes).

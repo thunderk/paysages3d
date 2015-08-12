@@ -1,58 +1,26 @@
-Technology Preview 2 :
-- Add initial terrain offset so that the (0,0) coordinates are above water (to avoid starting at the middle of a sea).
-- Use water height as 0.0 (offset the terrain).
-- Add missing cloud models.
-- Finish material dialog.
-- Finish texture dialog.
+Technlology Preview 2 :
+- Rewrite UI in QtQuick, with full-window OpenGL editor.
+- Streamline the definition system, with undo and events.
+- Implement copy-on-write on definitions (to avoid copying whole heightmaps for instance).
+- Add clouds to OpenGL with 3d textures.
+- Fix potential holes in land rendering (OpenGL and software).
+
+Technology Preview 3 :
+- Alter aerial perspective using estimation of the amount of light left after cloud layers traversal.
 - Fix rendering when inside a cloud layer, with other upper or lower layers.
 - Fix the moon being backlit by its own light.
-- Translations.
-
-Technlogy Preview 3 :
-- FOCUS : Streamlining, with undo system
-- FOCUS : Vegetation
-- Implement copy-on-write on definitions (to avoid copying whole heightmaps for instance).
-- Alter aerial perspective using estimation of the amount of light left after cloud layers traversal.
-- Add a map preview to terrain editor.
-- Better time selection widget for atmosphere.
 - Clouds should keep distance to ground.
-- Fully move layer management from BaseForm to BaseFormLayer.
 - Allow render saving in HDR compatible format.
-- Add clouds to explorer with 3d textures.
 - Add fresnel effect to specular lighting.
 - Add shadow control ("minimum lighting") to material.
 - Start using OpenCL to optimize rendering.
-- Fully restore render progress (with first pass).
-- Rethink the quality settings and detail smoothing in the distance.
-   => When quality setting is set to 10, add boost options
-   => Add detail boost (adds granularity)
-   => Add step boost (for marching algorithms)
-- Add logarithmic sliders for some float values.
-- Improve previews.
-   => Add user markers on OSD.
-   => Add areas marking.
-- Add a noise automatic filler.
-- Lock some previews together (eg: terrain height and colored preview).
-- Find a new licence.
 
 Technology Preview 4 :
 - Implement Sub Surface Scattering for water, textures and clouds.
 - Implement earth curvature.
 - Use bicubic interpolation for antialiasing.
-- Allow for larger renders/antialias (will need several two-pass chunks).
-- Add a progress indicator on previews.
-- Mark modified tabs and ask for losing modifications (idem for layers).
-- Fix potential holes in land rendering.
-- Progressive final render (increasing resolution, for second pass only).
-- Improve 3d explorer
-   => Restore LOD and intelligent poly count (and raise max tessellation)
-   => Better handling of high altitude
-   => Interrupt chunk rendering when quitting dialog
-   => Don't display the water if it's below all ground
-   => Try to overcome the near frustum cutting
-   => Add toggles (for water...)
-   => Max texture size should depend on GPU memory available
-- Interrupt preview chunk renderings that will be discarded at commit, or that are no more visible.
+- Add translations.
+- Find a new licence.
 
 Release Candidate :
 - Polish all features and UI.

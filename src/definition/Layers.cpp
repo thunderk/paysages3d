@@ -92,6 +92,7 @@ int Layers::addLayer(BaseDefinition* layer)
     else
     {
         logWarning("Add layer ignored because limit of %d reached", max_layer_count);
+        delete layer;
         return -1;
     }
 }

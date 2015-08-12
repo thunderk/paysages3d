@@ -24,7 +24,9 @@ BaseDefinition::~BaseDefinition()
         parent = NULL;
     }
 
-    for (auto child:children)
+    // Work on a copy, because the child destructor will modify the array by removing itself using removeChild
+    std::vector<BaseDefinition*> children_copy = children;
+    for (auto child:children_copy)
     {
         if (child->getParent() == this)
         {
