@@ -203,15 +203,15 @@ void ExplorerChunkTerrain::updatePriority(CameraDefinition* camera)
     {
         _texture_wanted_size = 2;
     }
-    else if (distance_to_camera < 50.0)
+    else if (distance_to_camera < 60.0)
     {
         _texture_wanted_size = _texture_max_size;
     }
-    else if (distance_to_camera < 100.0)
+    else if (distance_to_camera < 140.0)
     {
         _texture_wanted_size = _texture_max_size / 4;
     }
-    else if (distance_to_camera < 200.0)
+    else if (distance_to_camera < 300.0)
     {
         _texture_wanted_size = _texture_max_size / 8;
     }

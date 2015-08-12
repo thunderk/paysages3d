@@ -58,7 +58,7 @@ void OpenGLTerrain::initialize()
     program->addFragmentSource("terrain");
 
     // Add terrain chunks
-    int chunks = 20;
+    int chunks = 12;
     double size = 800.0;
     double chunksize = size / (double) chunks;
     double start = -size / 2.0;
