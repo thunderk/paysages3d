@@ -1,7 +1,9 @@
 #include "Layers.h"
 
-Layers::Layers(BaseDefinition* parent, LayerConstructor layer_constructor):
-    BaseDefinition(parent), layer_constructor(layer_constructor)
+#include "Logs.h"
+
+Layers::Layers(BaseDefinition* parent, const std::string &name, LayerConstructor layer_constructor):
+    BaseDefinition(parent, name), layer_constructor(layer_constructor)
 {
     max_layer_count = 100;
     null_layer = layer_constructor(this);
@@ -35,7 +37,7 @@ void Layers::copy(BaseDefinition* destination_) const
 
 Layers* Layers::newCopy() const
 {
-    Layers* result = new Layers(NULL, layer_constructor);
+    Layers* result = new Layers(NULL, getName(), layer_constructor);
     copy(result);
     return result;
 }
@@ -59,7 +61,7 @@ BaseDefinition* Layers::getLayer(int position) const
     }
     else
     {
-        qWarning("Asked for a undefined layer %d on a total of %d", position, (int)layers.size());
+        logWarning("Asked for a undefined layer %d on a total of %d", position, (int)layers.size());
         return null_layer;
     }
 }
@@ -75,7 +77,7 @@ int Layers::findLayer(BaseDefinition* layer) const
         }
         i++;
     }
-    qWarning("Layer %p (%s) not found, on a total of %d", layer, layer->getName().c_str(), (int)layers.size());
+    logWarning("Layer %p (%s) not found, on a total of %d", layer, layer->getName().c_str(), (int)layers.size());
     return -1;
 }
 
@@ -89,7 +91,7 @@ int Layers::addLayer(BaseDefinition* layer)
     }
     else
     {
-        qWarning("Add layer ignored because limit of %d reached", max_layer_count);
+        logWarning("Add layer ignored because limit of %d reached", max_layer_count);
         return -1;
     }
 }
@@ -110,7 +112,7 @@ void Layers::removeLayer(int position)
     }
     else
     {
-        qWarning("Removing unknown layer %d on %d from '%s'", position, (int)layers.size(), getName().c_str());
+        logWarning("Removing unknown layer %d on %d from '%s'", position, (int)layers.size(), getName().c_str());
     }
 }
 

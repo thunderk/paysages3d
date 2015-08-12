@@ -8,9 +8,8 @@ static BaseDefinition* _layerConstructor(Layers* parent)
 }
 
 CloudsDefinition::CloudsDefinition(BaseDefinition* parent):
-    Layers(parent, _layerConstructor)
+    Layers(parent, "clouds", _layerConstructor)
 {
-    setName("clouds");
 }
 
 void CloudsDefinition::applyPreset(CloudsPreset preset)

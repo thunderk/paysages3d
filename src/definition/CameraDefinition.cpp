@@ -4,8 +4,8 @@
 #include "PackStream.h"
 #include "BoundingBox.h"
 
-CameraDefinition::CameraDefinition():
-    BaseDefinition(NULL)
+CameraDefinition::CameraDefinition(BaseDefinition *parent):
+    BaseDefinition(parent, "camera")
 {
     location.x = 0.0;
     location.y = 0.0;

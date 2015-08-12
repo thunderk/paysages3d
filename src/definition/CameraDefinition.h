@@ -22,7 +22,7 @@ typedef struct
 class DEFINITIONSHARED_EXPORT CameraDefinition: public BaseDefinition
 {
 public:
-    CameraDefinition();
+    CameraDefinition(BaseDefinition *parent = NULL);
 
     virtual void save(PackStream* pack) const override;
     virtual void load(PackStream* pack) override;

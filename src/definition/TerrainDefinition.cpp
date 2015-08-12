@@ -5,7 +5,7 @@
 #include "PackStream.h"
 
 TerrainDefinition::TerrainDefinition(BaseDefinition* parent):
-    BaseDefinition(parent)
+    BaseDefinition(parent, "terrain")
 {
     height = 1.0;
     scaling = 1.0;

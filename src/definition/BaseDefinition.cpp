@@ -2,12 +2,13 @@
 
 #include "PackStream.h"
 
-BaseDefinition::BaseDefinition(BaseDefinition* parent):
-    parent(parent)
+BaseDefinition::BaseDefinition(BaseDefinition* parent, const std::string &name):
+    parent(parent), name(name)
 {
     if (parent)
     {
         root = parent->root;
+        parent->addChild(this);
     }
     else
     {
@@ -17,9 +18,18 @@ BaseDefinition::BaseDefinition(BaseDefinition* parent):
 
 BaseDefinition::~BaseDefinition()
 {
+    if (parent)
+    {
+        parent->removeChild(this);
+        parent = NULL;
+    }
+
     for (auto child:children)
     {
-        delete child;
+        if (child->getParent() == this)
+        {
+            delete child;
+        }
     }
 }
 
@@ -38,6 +48,24 @@ Scenery* BaseDefinition::getScenery()
     {
         return NULL;
     }
+}
+
+std::string BaseDefinition::toString(int indent) const
+{
+    std::string result;
+    for (int i = 0; i < indent; i++)
+    {
+        result += " ";
+    }
+    result += name;
+    if (not children.empty())
+    {
+        for (auto &child: children)
+        {
+            result += "\n" + child->toString(indent + 1);
+        }
+    }
+    return result;
 }
 
 void BaseDefinition::save(PackStream* stream) const
@@ -87,6 +115,7 @@ void BaseDefinition::removeChild(BaseDefinition* child)
     std::vector<BaseDefinition*>::iterator it = std::find(children.begin(), children.end(), child);
     if (it != children.end())
     {
+        child->parent = NULL;
         children.erase(it);
     }
     else

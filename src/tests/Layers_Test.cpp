@@ -5,25 +5,24 @@
 
 BaseDefinition* _construc1(Layers*)
 {
-    return new BaseDefinition(NULL);
+    return new BaseDefinition(NULL, "test");
 }
 
 BaseDefinition* _construc2(Layers* parent)
 {
-    BaseDefinition* result = new BaseDefinition(parent);
-    result->setName("test");
+    BaseDefinition* result = new BaseDefinition(parent, "test");
     return result;
 }
 
 TEST(Layers, Constructor)
 {
-    Layers layers1(NULL, _construc1);
+    Layers layers1(NULL, "test", _construc1);
     EXPECT_EQ(0, layers1.count());
 }
 
 TEST(Layers, NullLayer)
 {
-    Layers layers1(NULL, _construc1);
+    Layers layers1(NULL, "test", _construc1);
 
     for (int i = -2; i < 5; i++)
     {
@@ -33,7 +32,7 @@ TEST(Layers, NullLayer)
         EXPECT_EQ(NULL, layer->getParent());
         EXPECT_EQ(layer, layer->getRoot());
 
-        EXPECT_EQ("", layer->getName());
+        EXPECT_EQ("test", layer->getName());
     }
 
     EXPECT_EQ(0, layers1.count());
@@ -41,12 +40,12 @@ TEST(Layers, NullLayer)
 
 TEST(Layers, copy)
 {
-    Layers layers1(NULL, _construc2);
+    Layers layers1(NULL, "test", _construc2);
     layers1.addLayer();
     EXPECT_EQ(1, layers1.count());
 
     // Copy with the same constructor
-    Layers layers2(NULL, _construc2);
+    Layers layers2(NULL, "test", _construc2);
     EXPECT_EQ(0, layers2.count());
     layers1.copy(&layers2);
     EXPECT_EQ(1, layers2.count());
@@ -59,7 +58,7 @@ TEST(Layers, copy)
 
 TEST(Layers, maxLayerCount)
 {
-    Layers layers1(NULL, _construc1);
+    Layers layers1(NULL, "test", _construc1);
     layers1.setMaxLayerCount(2);
 
     EXPECT_EQ(0, layers1.count());

@@ -1,5 +1,6 @@
 #include "MainModelerWindow.h"
 
+#include "Logs.h"
 #include "OpenGLView.h"
 #include "Scenery.h"
 #include "OpenGLRenderer.h"
@@ -17,6 +18,9 @@ MainModelerWindow::MainModelerWindow()
 {
     scenery = new Scenery();
     scenery->autoPreset();
+
+    logDebug("Initialized scenery:\n%s", QString::fromStdString(scenery->toString()).toLatin1().data());
+
     renderer = new OpenGLRenderer(scenery);
 
     render_preview_provider = new RenderPreviewProvider();

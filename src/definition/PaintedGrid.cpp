@@ -7,7 +7,7 @@
 #include "PaintedGridBrush.h"
 
 PaintedGrid::PaintedGrid(BaseDefinition *parent):
-    BaseDefinition(parent)
+    BaseDefinition(parent, "grid")
 {
     merged_data = new PaintedGridData;
     brush_data = new PaintedGridData;

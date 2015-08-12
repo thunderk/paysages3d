@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     CanvasPortion_Test.cpp \
     CanvasPreview_Test.cpp \
     AtmosphereDefinition_Test.cpp \
-    Scenery_Test.cpp
+    Scenery_Test.cpp \
+    BaseDefinition_Test.cpp
 
 HEADERS += \
     BaseTestCase.h

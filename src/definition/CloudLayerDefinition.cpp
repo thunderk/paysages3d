@@ -6,7 +6,7 @@
 #include "PackStream.h"
 
 CloudLayerDefinition::CloudLayerDefinition(BaseDefinition* parent):
-    BaseDefinition(parent)
+    BaseDefinition(parent, "layer")
 {
     type = CIRRUS;
     altitude = 0.5;

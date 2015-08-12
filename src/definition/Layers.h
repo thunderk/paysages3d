@@ -16,7 +16,7 @@ typedef BaseDefinition* (*LayerConstructor)(Layers* parent);
 class DEFINITIONSHARED_EXPORT Layers:public BaseDefinition
 {
 public:
-    Layers(BaseDefinition* parent, LayerConstructor layer_constructor);
+    Layers(BaseDefinition* parent, const std::string &name, LayerConstructor layer_constructor);
     virtual ~Layers();
 
     virtual void copy(BaseDefinition* destination) const override;

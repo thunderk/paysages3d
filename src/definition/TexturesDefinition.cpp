@@ -7,8 +7,8 @@ static BaseDefinition* _layer_constructor(Layers* parent)
     return new TextureLayerDefinition(parent);
 }
 
-TexturesDefinition::TexturesDefinition(BaseDefinition *parent)
-    : Layers(parent, _layer_constructor)
+TexturesDefinition::TexturesDefinition(BaseDefinition *parent):
+    Layers(parent, "textures", _layer_constructor)
 {
 }
 

@@ -12,7 +12,7 @@ namespace definition {
 class DEFINITIONSHARED_EXPORT BaseDefinition
 {
 public:
-    BaseDefinition(BaseDefinition* parent);
+    BaseDefinition(BaseDefinition* parent, const std::string &name);
     virtual ~BaseDefinition();
 
     virtual void save(PackStream* stream) const;
@@ -28,6 +28,11 @@ public:
 
     inline const BaseDefinition* getParent() const {return parent;}
     inline const BaseDefinition* getRoot() const {return root;}
+
+    /**
+     * Return a string representation of the tree (mainly for debugging purposes).
+     */
+    virtual std::string toString(int indent = 0) const;
 
 protected:
     void addChild(BaseDefinition* child);
