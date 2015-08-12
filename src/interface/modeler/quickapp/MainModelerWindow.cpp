@@ -19,7 +19,7 @@ MainModelerWindow::MainModelerWindow()
     scenery = new Scenery();
     scenery->autoPreset();
 
-    logDebug("Initialized scenery:\n%s", QString::fromStdString(scenery->toString()).toLatin1().data());
+    Logs::debug() << "Initialized scenery:\n" << scenery->toString() << std::endl;
 
     renderer = new OpenGLRenderer(scenery);
 

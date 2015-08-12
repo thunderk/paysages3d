@@ -23,7 +23,7 @@ std::string DataFile::findDir(const std::string &relpath)
 
 bool DataFile::tryDataDir(const QDir &dir)
 {
-    logDebug("[System] Try data dir %s", dir.absolutePath().toLocal8Bit().data());
+    Logs::debug() << "[System] Try data dir " << dir.absolutePath().toStdString() << std::endl;
     return dir.exists("data/.paysages_data");
 }
 
@@ -58,13 +58,13 @@ std::string DataFile::initDataDir()
     std::string parent = locateDataDir();
     if (parent.empty())
     {
-        logWarning("[System] Data files not found");
+        Logs::warning() << "[System] Data files not found" << std::endl;
         return parent;
     }
     else
     {
         std::string result = QDir(QString::fromStdString(parent)).absoluteFilePath("data").toStdString();
-        logDebug("[System] Data files found : %s", result.c_str());
+        Logs::debug() << "[System] Data files found : " << result << std::endl;
         return result;
     }
 }

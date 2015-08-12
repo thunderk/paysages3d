@@ -72,7 +72,7 @@ void OpenGLRenderer::initialize()
     }
     else
     {
-        logError("Failed to initialize OpenGL bindings");
+        Logs::error() << "Failed to initialize OpenGL bindings" << std::endl;
     }
 }
 
@@ -140,7 +140,7 @@ void OpenGLRenderer::paint()
         int error_code;
         while ((error_code = glGetError()) != GL_NO_ERROR)
         {
-            logWarning("[OpenGL] ERROR : %s", (const char*)gluErrorString(error_code));
+            Logs::warning() << "[OpenGL] ERROR : " << (const char*)gluErrorString(error_code) << std::endl;
         }
     }
 }

@@ -14,6 +14,7 @@
 
 namespace paysages {
 namespace system {
+    class Logs;
     class PackStream;
     class ParallelWork;
     class ParallelPool;

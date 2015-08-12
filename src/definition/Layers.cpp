@@ -61,7 +61,7 @@ DefinitionNode* Layers::getLayer(int position) const
     }
     else
     {
-        logWarning("Asked for a undefined layer %d on a total of %d", position, (int)layers.size());
+        Logs::warning() << "Asked for a undefined layer " << position << " on a total of " << (int)layers.size() << std::endl;
         return null_layer;
     }
 }
@@ -77,7 +77,7 @@ int Layers::findLayer(DefinitionNode* layer) const
         }
         i++;
     }
-    logWarning("Layer %p (%s) not found, on a total of %d", layer, layer->getName().c_str(), (int)layers.size());
+    Logs::warning() << "Layer " << layer << " (" << layer->getName() << " not found, on a total of " << (int)layers.size() << std::endl;
     return -1;
 }
 
@@ -91,7 +91,7 @@ int Layers::addLayer(DefinitionNode* layer)
     }
     else
     {
-        logWarning("Add layer ignored because limit of %d reached", max_layer_count);
+        Logs::warning() << "Add layer ignored because limit of " << max_layer_count << " reached" << std::endl;
         delete layer;
         return -1;
     }
@@ -113,7 +113,7 @@ void Layers::removeLayer(int position)
     }
     else
     {
-        logWarning("Removing unknown layer %d on %d from '%s'", position, (int)layers.size(), getName().c_str());
+        Logs::warning() << "Removing unknown layer " << position << " on " << (int)layers.size() << " from '" << getName() << "'" << std::endl;
     }
 }
 

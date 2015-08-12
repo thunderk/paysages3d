@@ -33,7 +33,7 @@ void OpenGLShaderProgram::addVertexSource(QString path)
     }
     else
     {
-        logError() << "Can't open vertex file " << file.fileName();
+        Logs::error() << "Can't open vertex file " << file.fileName().toStdString() << std::endl;
     }
 }
 
@@ -46,7 +46,7 @@ void OpenGLShaderProgram::addFragmentSource(QString path)
     }
     else
     {
-        logError() << "Can't open fragment file " << file.fileName();
+        Logs::error() << "Can't open fragment file " << file.fileName().toStdString() << std::endl;
     }
 }
 
