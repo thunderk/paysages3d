@@ -7,7 +7,7 @@
 
 [Paysages 3D](http://www.paysages3d.com) is a work-in-progress landscape generator, modeler and renderer software.
 
-It is written in C++ 11, using Qt 5.2 as only dependency (and Google Test for unit testing).
+It is written in C++ 11, using Qt 5.4 as only external dependency.
 
 [![Screenshot 1](data/screenshots/small1.jpg)](data/screenshots/large1.jpg) [![Screenshot 2](data/screenshots/small2.jpg)](data/screenshots/large2.jpg) [![Screenshot 3](data/screenshots/small3.jpg)](data/screenshots/large3.jpg)
 
@@ -18,13 +18,14 @@ It is written in C++ 11, using Qt 5.2 as only dependency (and Google Test for un
 
 Download and install the latest [QtSDK](http://qt-project.org/downloads).
 
-Launch QtCreator, and open the project file *src/paysages.pro*.
+Launch QtCreator, open the project file *src/paysages.pro* and build it.
 
-Go to the "Projects" tab to edit the directory in which the executable will be run, and set **the top project directory** (the one that contains *src* and *data*). If you don't do this, some data files will not be found.
+To run the program, choose the *quickapp* target.
+To run the unit tests, choose the *tests* target.
 
 ### Using a packaged Qt (Linux)
 
-You need at least the 5.2 packaged version of Qt, with qMake and QtCore, QtGui and QtOpengl modules.
+You need at least the 5.4 packaged version of Qt, with qMake and QtCore, QtGui and QtOpengl modules.
 
 On Ubuntu/Mint:
 
@@ -34,18 +35,9 @@ Then to build and run the software:
 
     make run
 
-### Unit tests
-
-Running the unit tests needs the Google Test framework:
-
-    git submodule init
-    git submodule update
-
-Then build and run the tests:
+To tun the unit tests, use:
 
     make tests
-
-If you're using QtCreator, you can run the "tests" executable, not forgetting to change the directory in which the executable is run.
 
 
 ## Licensing
@@ -57,5 +49,5 @@ The source code is subject to the terms of the [Mozilla Public License, v. 2.0](
 
 * [Michaël Lemaire](http://thunderk.net) - Main developer
 * [Eric Bruneton and Fabrice Neyet](http://www-evasion.imag.fr/Membres/Eric.Bruneton/) - Publication and source code from *Precomputed Atmospheric Scattering (2008)*
-* [Qt](http://qt-project.org/) - Library in use
+* [Qt](http://qt-project.org/) - Base framework
 * [GoogleTest](https://code.google.com/p/googletest/) - Used for unit testing
