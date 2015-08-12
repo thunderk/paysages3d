@@ -6,7 +6,6 @@ SUBDIRS = \
     basics \
     definition \
     render/software \
-    render/preview \
     render/opengl \
     interface/commandline \
     interface/modeler
