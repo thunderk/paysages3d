@@ -77,3 +77,31 @@ TEST(Layers, maxLayerCount)
     layers1.addLayer();
     EXPECT_EQ(2, layers1.count());
 }
+
+TEST(Layers, saveLoad)
+{
+    PackStream *stream;
+
+    Layers layers1(NULL, "test", _construc1);
+    layers1.addLayer();
+    layers1.addLayer();
+    ASSERT_EQ(2, layers1.count());
+    layers1.getLayer(0)->setName("first");
+    layers1.getLayer(1)->setName("second");
+
+    stream = new PackStream();
+    stream->bindToFile("/tmp/test_paysages_pack", true);
+    layers1.save(stream);
+    delete stream;
+
+    Layers layers2(NULL, "test", _construc1);
+
+    stream = new PackStream();
+    stream->bindToFile("/tmp/test_paysages_pack");
+    layers2.load(stream);
+    delete stream;
+
+    ASSERT_EQ(2, layers2.count());
+    EXPECT_EQ("first", layers2.getLayer(0)->getName());
+    EXPECT_EQ("second", layers2.getLayer(1)->getName());
+}

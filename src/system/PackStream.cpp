@@ -1,5 +1,6 @@
 #include "PackStream.h"
 
+#include "Logs.h"
 #include <QFile>
 #include <QDataStream>
 #include <QString>
@@ -7,15 +8,15 @@
 PackStream::PackStream()
 {
     file = NULL;
-    stream = NULL;
+    buffer = new QByteArray();
+    stream = new QDataStream(buffer, QIODevice::WriteOnly);
+    stream->setVersion(QDataStream::Qt_5_2);
 }
 
 PackStream::~PackStream()
 {
-    if (stream)
-    {
-        delete stream;
-    }
+    delete buffer;
+    delete stream;
     if (file)
     {
         delete file;
@@ -24,7 +25,7 @@ PackStream::~PackStream()
 
 bool PackStream::bindToFile(const std::string &filepath, bool write)
 {
-    if (not file and not stream)
+    if (not file)
     {
         file = new QFile(QString::fromStdString(filepath));
         if (not file->open(write ? QIODevice::WriteOnly : QIODevice::ReadOnly))
@@ -32,14 +33,28 @@ bool PackStream::bindToFile(const std::string &filepath, bool write)
             return false;
         }
 
-        stream = new QDataStream(file);
+        QDataStream *new_stream = new QDataStream(file);
+        if (new_stream)
+        {
+            delete stream;
+            stream = new_stream;
+            stream->setVersion(QDataStream::Qt_5_2);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
-    return stream != NULL;
+    else
+    {
+        return false;
+    }
 }
 
 void PackStream::write(const int *value)
 {
-    if (stream and value)
+    if (value)
     {
         *stream << *value;
     }
@@ -47,7 +62,7 @@ void PackStream::write(const int *value)
 
 void PackStream::write(const double *value)
 {
-    if (stream and value)
+    if (value)
     {
         *stream << *value;
     }
@@ -55,7 +70,7 @@ void PackStream::write(const double *value)
 
 void PackStream::write(const char *value, int max_length)
 {
-    if (stream and value)
+    if (value)
     {
         int length = qstrlen(value);
         *stream << QString::fromUtf8(value, length > max_length ? max_length : length);
@@ -64,15 +79,29 @@ void PackStream::write(const char *value, int max_length)
 
 void PackStream::write(const std::string &value)
 {
-    if (stream)
+    *stream << QString::fromStdString(value);
+}
+
+void PackStream::writeFromBuffer(const PackStream &other, bool prepend_size)
+{
+    if (other.file)
     {
-        *stream << QString::fromStdString(value);
+        Logs::error() << "Try to write from a substream bound to a file: " << other.file->fileName().toStdString() << std::endl;
+    }
+    else
+    {
+        if (prepend_size)
+        {
+            int buffer_size = (int)other.buffer->size();
+            write(&buffer_size);
+        }
+        stream->writeRawData(other.buffer->data(), other.buffer->size());
     }
 }
 
 void PackStream::read(int* value)
 {
-    if (stream and value and not stream->atEnd())
+    if (value and not stream->atEnd())
     {
         int output;
         *stream >> output;
@@ -82,7 +111,7 @@ void PackStream::read(int* value)
 
 void PackStream::read(double* value)
 {
-    if (stream and value and not stream->atEnd())
+    if (value and not stream->atEnd())
     {
         double output;
         *stream >> output;
@@ -92,7 +121,7 @@ void PackStream::read(double* value)
 
 void PackStream::read(char* value, int max_length)
 {
-    if (stream and value and not stream->atEnd())
+    if (value and not stream->atEnd())
     {
         QString output;
         *stream >> output;
@@ -103,7 +132,7 @@ void PackStream::read(char* value, int max_length)
 
 std::string PackStream::readString()
 {
-    if (stream and not stream->atEnd())
+    if (not stream->atEnd())
     {
         QString output;
         *stream >> output;
@@ -123,4 +152,9 @@ void PackStream::skip(const int &value, int count)
 void PackStream::skip(const double &value, int count)
 {
     stream->skipRawData(sizeof(value) * count);
+}
+
+void paysages::system::PackStream::skipBytes(int bytes)
+{
+    stream->skipRawData(bytes);
 }

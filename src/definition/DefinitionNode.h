@@ -38,6 +38,15 @@ public:
 protected:
     void addChild(DefinitionNode* child);
     void removeChild(DefinitionNode* child);
+    virtual DefinitionNode *findChildByName(const std::string name);
+
+    /**
+     * Get the size in bytes this child will consume when serialized to a stream.
+     *
+     * Return -1 if it can't be known. In this case, the saving will be done in a temporary
+     * stream to know the exact size, which will not be very efficient.
+     */
+    int getStreamSize() const;
 
 private:
     DefinitionNode* parent;

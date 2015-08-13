@@ -45,6 +45,9 @@ public:
     void moveLayer(DefinitionNode* layer, int new_position);
     void clear();
 
+protected:
+    virtual DefinitionNode *findChildByName(const std::string name) override;
+
 public:
     LayerConstructor layer_constructor;
     int max_layer_count;

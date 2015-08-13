@@ -1,5 +1,6 @@
 #include "DefinitionNode.h"
 
+#include "Logs.h"
 #include "PackStream.h"
 
 DefinitionNode::DefinitionNode(DefinitionNode* parent, const std::string &name):
@@ -72,19 +73,56 @@ std::string DefinitionNode::toString(int indent) const
 
 void DefinitionNode::save(PackStream* stream) const
 {
-    stream->write(name);
+    int children_count = (int)children.size();
+    stream->write(&children_count);
+
     for (auto child: children)
     {
-        child->save(stream);
+        stream->write(child->name);
+
+        int child_size = child->getStreamSize();
+        if (child_size >= 0)
+        {
+            stream->write(&child_size);
+            child->save(stream);
+        }
+        else
+        {
+            // Child size not known, write it to a temporary stream to know it
+            Logs::debug() << "Unknown size for child " << child->name << ", unefficient writing to temporary stream" << std::endl;
+            PackStream substream;
+            child->save(&substream);
+            stream->writeFromBuffer(substream, true);
+        }
     }
 }
 
 void DefinitionNode::load(PackStream* stream)
 {
-    name = stream->readString();
-    for (auto child: children)
+    int children_count;
+
+    stream->read(&children_count);
+
+    for (int i = 0; i < children_count; i++)
     {
-        child->load(stream);
+        std::string child_name = stream->readString();
+
+        int child_size;
+        stream->read(&child_size);
+
+        DefinitionNode *child = findChildByName(child_name);
+        if (child)
+        {
+            // TODO type check
+            child->load(stream);
+        }
+        else
+        {
+            // TODO Ask subclass if it can instanciate a child
+            // Else skip length of unknown child
+            stream->skipBytes(child_size);
+            Logs::warning() << "Skipped unknown child '" << child_name << "'" << std::endl;
+        }
     }
 }
 
@@ -122,6 +160,23 @@ void DefinitionNode::removeChild(DefinitionNode* child)
     }
     else
     {
-        qWarning("Trying to remove not found child '%s' from '%s'", child->name.c_str(), name.c_str());
+        Logs::warning() << "Trying to remove not found child '" << child->name << "' from '" << name << "'" << std::endl;
     }
+}
+
+DefinitionNode *DefinitionNode::findChildByName(const std::string name)
+{
+    for (auto child: children)
+    {
+        if (child->name == name)
+        {
+            return child;
+        }
+    }
+    return NULL;
+}
+
+int DefinitionNode::getStreamSize() const
+{
+    return -1;
 }

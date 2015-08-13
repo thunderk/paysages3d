@@ -30,7 +30,8 @@ SOURCES += \
     PaintedGrid.cpp \
     PaintedGridBrush.cpp \
     PaintedGridData.cpp \
-    DefinitionNode.cpp
+    DefinitionNode.cpp \
+    FloatNode.cpp
 
 HEADERS +=\
         definition_global.h \
@@ -50,7 +51,8 @@ HEADERS +=\
     PaintedGrid.h \
     PaintedGridBrush.h \
     PaintedGridData.h \
-    DefinitionNode.h
+    DefinitionNode.h \
+    FloatNode.h
 
 unix:!symbian {
     maemo5 {

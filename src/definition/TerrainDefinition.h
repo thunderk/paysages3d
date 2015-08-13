@@ -52,6 +52,9 @@ public:
     NoiseGenerator* _height_noise;
     double _min_height;
     double _max_height;
+
+private:
+    FloatNode *_water_height;
 };
 
 }

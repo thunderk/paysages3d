@@ -14,6 +14,7 @@
 namespace paysages {
 namespace definition {
     class DefinitionNode;
+    class FloatNode;
     class Scenery;
     class CameraDefinition;
     class SurfaceMaterial;

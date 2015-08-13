@@ -3,6 +3,7 @@
 #include "TerrainHeightMap.h"
 #include "NoiseGenerator.h"
 #include "PackStream.h"
+#include "FloatNode.h"
 
 TerrainDefinition::TerrainDefinition(DefinitionNode* parent):
     DefinitionNode(parent, "terrain")
@@ -15,6 +16,7 @@ TerrainDefinition::TerrainDefinition(DefinitionNode* parent):
     addChild(height_map);
 
     water_height = -0.3;
+    _water_height = new FloatNode(this, "water_height", -0.3);
 
     _height_noise = new NoiseGenerator;
 }

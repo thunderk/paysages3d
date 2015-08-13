@@ -21,7 +21,11 @@ void Layers::save(PackStream *stream) const
     int layer_count = (int)layers.size();
     stream->write(&layer_count);
 
-    DefinitionNode::save(stream);
+    for (int i = 0; i < layer_count; i++)
+    {
+        stream->write(layers[i]->getName());
+        layers[i]->save(stream);
+    }
 }
 
 void Layers::load(PackStream *stream)
@@ -36,10 +40,13 @@ void Layers::load(PackStream *stream)
     clear();
     for (int i = 0; i < layer_count; i++)
     {
-        addLayer();
+        int position = addLayer();
+        if (position >= 0)
+        {
+            layers[position]->setName(stream->readString());
+            layers[position]->load(stream);
+        }
     }
-
-    DefinitionNode::load(stream);
 }
 
 void Layers::copy(DefinitionNode* destination_) const
@@ -169,5 +176,28 @@ void Layers::clear()
     while (layers.size() > 0)
     {
         removeLayer(0);
+    }
+}
+
+DefinitionNode *Layers::findChildByName(const std::string name)
+{
+    DefinitionNode *result = DefinitionNode::findChildByName(name);
+    if (result)
+    {
+        return result;
+    }
+    else
+    {
+        int position = addLayer();
+        if (position >= 0)
+        {
+            result = getLayer(position);
+            result->setName(name);
+            return result;
+        }
+        else
+        {
+            return NULL;
+        }
     }
 }

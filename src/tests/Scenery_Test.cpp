@@ -1,6 +1,7 @@
 #include "BaseTestCase.h"
 
 #include "Scenery.h"
+#include "Logs.h"
 
 TEST(Scenery, saveGlobal)
 {
