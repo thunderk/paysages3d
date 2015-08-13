@@ -20,6 +20,13 @@ public:
     PackStream();
     ~PackStream();
 
+    /**
+     * Open a reading stream for another stream.
+     *
+     * The other stream must not have been bound to a file (still a memory buffer).
+     */
+    PackStream(const PackStream *other);
+
     bool bindToFile(const std::string &filepath, bool write=false);
 
     void write(const int *value);

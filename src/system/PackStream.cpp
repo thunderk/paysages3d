@@ -23,6 +23,22 @@ PackStream::~PackStream()
     }
 }
 
+PackStream::PackStream(const PackStream *other)
+{
+    file = NULL;
+    buffer = new QByteArray();
+    if (other->file)
+    {
+        Logs::error() << "Try to read from a substream bound to a file: " << other->file->fileName().toStdString() << std::endl;
+        stream = new QDataStream(buffer, QIODevice::ReadOnly);
+    }
+    else
+    {
+        stream = new QDataStream(other->buffer, QIODevice::ReadOnly);
+    }
+    stream->setVersion(QDataStream::Qt_5_2);
+}
+
 bool PackStream::bindToFile(const std::string &filepath, bool write)
 {
     if (not file)

@@ -39,6 +39,7 @@ TEST(DefinitionNode, attachDetach)
 TEST(DefinitionNode, saveLoad)
 {
     PackStream *stream;
+    int check_in = 42, check_out = 0;
 
     DefinitionNode* before = new DefinitionNode(NULL, "root");
     DefinitionNode* before1 = new DefinitionNode(before, "before1");
@@ -52,6 +53,7 @@ TEST(DefinitionNode, saveLoad)
     stream = new PackStream();
     stream->bindToFile("/tmp/test_paysages_pack", true);
     before->save(stream);
+    stream->write(&check_in);
     delete stream;
 
     // Same definition tree, but with missing nodes, and added ones
@@ -65,12 +67,14 @@ TEST(DefinitionNode, saveLoad)
     stream = new PackStream();
     stream->bindToFile("/tmp/test_paysages_pack");
     after->load(stream);
+    stream->read(&check_out);
     delete stream;
 
     EXPECT_DOUBLE_EQ(-4.3, after12->getValue());
     EXPECT_DOUBLE_EQ(0.0, after13->getValue());
     EXPECT_DOUBLE_EQ(6.7, after3->getValue());
     EXPECT_DOUBLE_EQ(0.0, after4->getValue());
+    EXPECT_EQ(42, check_out);
 
     delete before;
     delete after;
