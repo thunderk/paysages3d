@@ -29,6 +29,12 @@ void NoiseState::load(PackStream *stream)
     int levels;
     stream->read(&levels);
     level_offsets.clear();
+
+    if (levels > 1000)
+    {
+        levels = 1000;
+    }
+
     for (int i = 0; i < levels; i++)
     {
         NoiseOffset level_offset;

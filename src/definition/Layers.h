@@ -19,6 +19,8 @@ public:
     Layers(DefinitionNode* parent, const std::string &name, LayerConstructor layer_constructor);
     virtual ~Layers();
 
+    virtual void save(PackStream *stream) const override;
+    virtual void load(PackStream *stream) override;
     virtual void copy(DefinitionNode* destination) const override;
     Layers* newCopy() const;
 
@@ -48,6 +50,7 @@ public:
     int max_layer_count;
     std::vector<DefinitionNode*> layers;
     DefinitionNode* null_layer;
+
 };
 
 }

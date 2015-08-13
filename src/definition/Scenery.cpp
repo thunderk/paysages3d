@@ -92,6 +92,10 @@ Scenery::FileOperationResult Scenery::loadGlobal(const std::string &filepath)
 
     load(&stream);
 
+    // Reset read headers, to test them again
+    app_header = -1;
+    version_header = -1;
+
     stream.read(&version_header);
     if ((int)version_header != DATA_VERSION)
     {

@@ -1,5 +1,6 @@
 #include "Layers.h"
 
+#include "PackStream.h"
 #include "Logs.h"
 
 Layers::Layers(DefinitionNode* parent, const std::string &name, LayerConstructor layer_constructor):
@@ -13,6 +14,32 @@ Layers::~Layers()
 {
     clear();
     delete null_layer;
+}
+
+void Layers::save(PackStream *stream) const
+{
+    int layer_count = (int)layers.size();
+    stream->write(&layer_count);
+
+    DefinitionNode::save(stream);
+}
+
+void Layers::load(PackStream *stream)
+{
+    int layer_count;
+    stream->read(&layer_count);
+
+    if (layer_count > max_layer_count)
+    {
+        layer_count = max_layer_count;
+    }
+    clear();
+    for (int i = 0; i < layer_count; i++)
+    {
+        addLayer();
+    }
+
+    DefinitionNode::load(stream);
 }
 
 void Layers::copy(DefinitionNode* destination_) const

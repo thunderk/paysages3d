@@ -65,6 +65,11 @@ void NoiseGenerator::load(PackStream* stream)
     stream->read(&height_offset);
     stream->read(&level_count);
 
+    if (level_count > MAX_LEVEL_COUNT)
+    {
+        level_count = MAX_LEVEL_COUNT;
+    }
+
     for (x = 0; x < level_count; x++)
     {
         NoiseLevel* level = levels + x;
