@@ -22,7 +22,7 @@ RenderPreviewProvider::~RenderPreviewProvider()
     delete pixbuf;
 }
 
-QImage RenderPreviewProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
+QImage RenderPreviewProvider::requestImage(const QString &, QSize *size, const QSize &)
 {
     if (canvas)
     {

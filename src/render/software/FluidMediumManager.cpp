@@ -29,7 +29,7 @@ Color FluidMediumManager::applyTraversal(const Vector3 &eye, const Vector3 &loca
     int max_segments = media.size();
     FluidMediumSegment* segments;
     segments = new FluidMediumSegment[max_segments];
-    int segment_count = getTraversedMedia(segments, ray, max_segments);
+    getTraversedMedia(segments, ray, max_segments);
 
     delete[] segments;
     return color;

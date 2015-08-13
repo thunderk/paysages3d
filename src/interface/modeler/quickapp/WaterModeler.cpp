@@ -12,7 +12,7 @@ WaterModeler::WaterModeler(MainModelerWindow *main):
     }
 }
 
-void WaterModeler::waterLevelChanged(double value)
+void WaterModeler::waterLevelChanged(double)
 {
     // TODO
     //qDebug() << "water level : " << value;

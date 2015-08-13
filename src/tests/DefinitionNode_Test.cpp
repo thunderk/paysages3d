@@ -42,12 +42,12 @@ TEST(DefinitionNode, saveLoad)
 
     DefinitionNode* before = new DefinitionNode(NULL, "root");
     DefinitionNode* before1 = new DefinitionNode(before, "before1");
-    FloatNode* before11 = new FloatNode(before1, "before11", 2.1);
-    FloatNode* before12 = new FloatNode(before1, "before12", -4.3);
+    new FloatNode(before1, "before11", 2.1);
+    new FloatNode(before1, "before12", -4.3);
     DefinitionNode* before2 = new DefinitionNode(before, "before2");
-    DefinitionNode* before21 = new DefinitionNode(before2, "before21");
-    FloatNode* before22 = new FloatNode(before2, "before22");
-    FloatNode* before3 = new FloatNode(before, "before3", 6.7);
+    new DefinitionNode(before2, "before21");
+    new FloatNode(before2, "before22");
+    new FloatNode(before, "before3", 6.7);
 
     stream = new PackStream();
     stream->bindToFile("/tmp/test_paysages_pack", true);
@@ -71,4 +71,7 @@ TEST(DefinitionNode, saveLoad)
     EXPECT_DOUBLE_EQ(0.0, after13->getValue());
     EXPECT_DOUBLE_EQ(6.7, after3->getValue());
     EXPECT_DOUBLE_EQ(0.0, after4->getValue());
+
+    delete before;
+    delete after;
 }

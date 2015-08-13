@@ -192,7 +192,7 @@ void TerrainRasterizer::getTessellationInfo(CanvasPortion* canvas, bool displace
     }
 }
 
-void TerrainRasterizer::processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, double progress)
+void TerrainRasterizer::processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, double)
 {
     tessellateChunk(canvas, chunk, chunk->detail_hint);
 }
