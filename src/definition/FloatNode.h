@@ -23,6 +23,12 @@ public:
     virtual void load(PackStream* stream) override;
     virtual void copy(DefinitionNode* destination) const override;
 
+    /**
+     * Change the float value stored.
+     *
+     * The DiffManager is used as intermediary, so that the change may not happen immediately.
+     */
+    void setValue(double new_value);
     const FloatDiff *produceDiff(double new_value) const;
     virtual bool applyDiff(const DefinitionDiff *diff, bool backward=false) override;
 private:

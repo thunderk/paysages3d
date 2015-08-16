@@ -15,6 +15,35 @@ TEST(DefinitionNode, toString)
     EXPECT_EQ("branch\n leaf1\n leaf2", branch.toString());
 }
 
+TEST(DefinitionNode, getPath)
+{
+    DefinitionNode root(NULL, "root");
+    DefinitionNode branch(&root, "branch");
+    DefinitionNode leaf(&branch, "leaf");
+
+    EXPECT_EQ("/", root.getPath());
+    EXPECT_EQ("/branch", branch.getPath());
+    EXPECT_EQ("/branch/leaf", leaf.getPath());
+}
+
+TEST(DefinitionNode, findByPath)
+{
+    DefinitionNode root(NULL, "root");
+    DefinitionNode branch(&root, "branch");
+    DefinitionNode leaf(&branch, "leaf");
+
+    EXPECT_EQ(&root, root.findByPath("/"));
+    EXPECT_EQ(&branch, root.findByPath("/branch"));
+    EXPECT_EQ(NULL, root.findByPath("/branche"));
+    EXPECT_EQ(&leaf, root.findByPath("/branch/leaf"));
+    EXPECT_EQ(NULL, root.findByPath("/branche/leaf"));
+    EXPECT_EQ(NULL, root.findByPath("/branch/leave"));
+
+    EXPECT_EQ(&branch, root.findByPath("branch"));
+    EXPECT_EQ(&leaf, root.findByPath("branch/leaf"));
+    EXPECT_EQ(&leaf, branch.findByPath("leaf"));
+}
+
 TEST(DefinitionNode, attachDetach)
 {
     DefinitionNode* root = new DefinitionNode(NULL, "root");

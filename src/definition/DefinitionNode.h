@@ -28,14 +28,27 @@ public:
 
     virtual Scenery* getScenery();
 
-    inline const DefinitionNode* getParent() const {return parent;}
-    inline const DefinitionNode* getRoot() const {return root;}
+    inline const DefinitionNode *getParent() const {return parent;}
+    inline const DefinitionNode *getRoot() const {return root;}
+    inline DiffManager *getDiffManager() const {return diffs;}
     inline int getChildrenCount() const {return children.size();}
 
     /**
      * Return a string representation of the tree (mainly for debugging purposes).
      */
     virtual std::string toString(int indent = 0) const;
+
+    /**
+     * Return the path to this node, using '/' delimited syntax, with the first '/' being the root node.
+     */
+    std::string getPath() const;
+
+    /**
+     * Find a node in this tree, by its path (as returned by getPath).
+     *
+     * Return NULL if the path does not exists.
+     */
+    DefinitionNode *findByPath(const std::string &path) const;
 
     /**
      * Apply a diff to the internal value of this node.
@@ -47,6 +60,13 @@ public:
      * Return true if the diff could be applied.
      */
     virtual bool applyDiff(const DefinitionDiff *diff, bool backward=false);
+
+    /**
+     * Add a watcher over this node.
+     *
+     * The watcher will receive DefinitionDiff objects when this node changes.
+     */
+    void addWatcher(DefinitionWatcher *watcher);
 
 protected:
     void addChild(DefinitionNode* child);
@@ -61,9 +81,19 @@ protected:
      */
     int getStreamSize() const;
 
+    /**
+     * Add a diff to the DiffManager of this definition tree, for the current node.
+     *
+     * The manager will take immediate ownership of the diff, handling its freeing.
+     *
+     * The manager will decide if the diff should be committed and will call *applyDiff* if needed.
+     */
+    void addDiff(const DefinitionDiff *diff);
+
 private:
-    DefinitionNode* parent;
-    DefinitionNode* root;
+    DefinitionNode *parent;
+    DefinitionNode *root;
+    DiffManager *diffs;
     std::string type_name;
     std::string name;
     std::vector<DefinitionNode*> children;

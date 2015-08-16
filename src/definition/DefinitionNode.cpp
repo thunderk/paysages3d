@@ -3,6 +3,9 @@
 #include "Logs.h"
 #include "PackStream.h"
 #include "DefinitionDiff.h"
+#include "DiffManager.h"
+
+#include <cassert>
 
 DefinitionNode::DefinitionNode(DefinitionNode* parent, const std::string &name, const std::string &type_name):
     parent(parent), type_name(type_name), name(name)
@@ -11,10 +14,12 @@ DefinitionNode::DefinitionNode(DefinitionNode* parent, const std::string &name, 
     {
         root = parent->root;
         parent->addChild(this);
+        diffs = NULL;
     }
     else
     {
         root = this;
+        diffs = new DiffManager(this);
     }
 }
 
@@ -24,6 +29,12 @@ DefinitionNode::~DefinitionNode()
     {
         parent->removeChild(this);
         parent = NULL;
+    }
+
+    if (diffs)
+    {
+        delete diffs;
+        diffs = NULL;
     }
 
     // Work on a copy, because the child destructor will modify the array by removing itself using removeChild
@@ -72,6 +83,66 @@ std::string DefinitionNode::toString(int indent) const
     return result;
 }
 
+std::string DefinitionNode::getPath() const
+{
+    if (parent == root)
+    {
+        return parent->getPath() + name;
+    }
+    else if (parent)
+    {
+        return parent->getPath() + "/" + name;
+    }
+    else
+    {
+        return "/";
+    }
+}
+
+DefinitionNode *DefinitionNode::findByPath(const std::string &path) const
+{
+    if (path.empty())
+    {
+        return NULL;
+    }
+    else if (path[0] == '/')
+    {
+        if (path.length() == 1)
+        {
+            return root;
+        }
+        else if (root == this)
+        {
+            return findByPath(path.substr(1));
+        }
+        else
+        {
+            return root->findByPath(path);
+        }
+    }
+    else
+    {
+        size_t seppos = path.find("/");
+        std::string child_name = (seppos == std::string::npos) ? path : path.substr(0, seppos);
+        DefinitionNode *child = ((DefinitionNode *)this)->findChildByName(child_name);  // FIXME findChildByName should be const
+        if (child)
+        {
+            if (seppos == std::string::npos)
+            {
+                return child;
+            }
+            else
+            {
+                return child->findByPath(path.substr(seppos + 1));
+            }
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+}
+
 bool DefinitionNode::applyDiff(const DefinitionDiff *diff, bool)
 {
     // Only do type check, subclasses will do the rest
@@ -83,6 +154,14 @@ bool DefinitionNode::applyDiff(const DefinitionDiff *diff, bool)
     {
         Logs::error() << "Can't apply " << diff->getTypeName() << " diff to " << getName() << " " << type_name << " node" << std::endl;
         return false;
+    }
+}
+
+void DefinitionNode::addWatcher(DefinitionWatcher *watcher)
+{
+    if (root && root->diffs)
+    {
+        root->diffs->addWatcher(this, watcher);
     }
 }
 
@@ -201,4 +280,14 @@ DefinitionNode *DefinitionNode::findChildByName(const std::string name)
 int DefinitionNode::getStreamSize() const
 {
     return -1;
+}
+
+void DefinitionNode::addDiff(const DefinitionDiff *diff)
+{
+    assert(diff->getTypeName() == type_name);
+
+    if (root && root->diffs)
+    {
+        root->diffs->addDiff(this, diff);
+    }
 }

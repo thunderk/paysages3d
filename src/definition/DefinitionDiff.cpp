@@ -2,7 +2,7 @@
 
 #include "DefinitionNode.h"
 
-DefinitionDiff::DefinitionDiff(const std::string &type_name):
-    type_name(type_name)
+DefinitionDiff::DefinitionDiff(const DefinitionNode *node):
+    type_name(node->getTypeName()), path(node->getPath())
 {
 }

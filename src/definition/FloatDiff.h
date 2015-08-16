@@ -14,7 +14,7 @@ namespace definition {
 class DEFINITIONSHARED_EXPORT FloatDiff: public DefinitionDiff
 {
 public:
-    FloatDiff(double oldvalue, double newvalue);
+    FloatDiff(const DefinitionNode *node, double oldvalue, double newvalue);
 
     inline double getOldValue() const {return oldvalue;}
     inline double getNewValue() const {return newvalue;}

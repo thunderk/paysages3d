@@ -24,7 +24,8 @@ SOURCES += main.cpp \
     AtmosphereDefinition_Test.cpp \
     Scenery_Test.cpp \
     DefinitionNode_Test.cpp \
-    FloatNode_Test.cpp
+    FloatNode_Test.cpp \
+    DiffManager_Test.cpp
 
 HEADERS += \
     BaseTestCase.h

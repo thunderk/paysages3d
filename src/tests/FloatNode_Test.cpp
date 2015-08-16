@@ -67,8 +67,9 @@ TEST(FloatNode, produceDiff)
 TEST(FloatNode, applyDiff)
 {
     FloatNode node(NULL, "test", 1.2);
-    FloatDiff diff(1.2, 2.4);
-    DefinitionDiff odiff("badtype");
+    FloatDiff diff(&node, 1.2, 2.4);
+    DefinitionNode onode(NULL, "test", "badtype");
+    DefinitionDiff odiff(&onode);
     bool result;
 
     EXPECT_DOUBLE_EQ(1.2, node.getValue());

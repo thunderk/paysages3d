@@ -42,9 +42,14 @@ void FloatNode::copy(DefinitionNode *destination) const
     }
 }
 
+void FloatNode::setValue(double new_value)
+{
+    addDiff(produceDiff(new_value));
+}
+
 const FloatDiff *FloatNode::produceDiff(double new_value) const
 {
-    return new FloatDiff(value, new_value);
+    return new FloatDiff(this, value, new_value);
 }
 
 bool FloatNode::applyDiff(const DefinitionDiff *diff, bool backward)
