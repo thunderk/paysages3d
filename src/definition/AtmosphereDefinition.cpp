@@ -4,7 +4,7 @@
 #include "RandomGenerator.h"
 
 AtmosphereDefinition::AtmosphereDefinition(DefinitionNode* parent):
-    DefinitionNode(parent, "atmosphere")
+    DefinitionNode(parent, "atmosphere", "atmosphere")
 {
 }
 

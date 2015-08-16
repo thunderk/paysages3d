@@ -5,7 +5,7 @@
 #include "BoundingBox.h"
 
 CameraDefinition::CameraDefinition(DefinitionNode *parent):
-    DefinitionNode(parent, "camera")
+    DefinitionNode(parent, "camera", "camera")
 {
     location.x = 0.0;
     location.y = 0.0;

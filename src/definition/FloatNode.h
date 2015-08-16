@@ -22,6 +22,9 @@ public:
     virtual void save(PackStream* stream) const override;
     virtual void load(PackStream* stream) override;
     virtual void copy(DefinitionNode* destination) const override;
+
+    const FloatDiff *produceDiff(double new_value) const;
+    virtual bool applyDiff(const DefinitionDiff *diff, bool backward=false) override;
 private:
     double value;
 };

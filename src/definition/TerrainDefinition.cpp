@@ -6,7 +6,7 @@
 #include "FloatNode.h"
 
 TerrainDefinition::TerrainDefinition(DefinitionNode* parent):
-    DefinitionNode(parent, "terrain")
+    DefinitionNode(parent, "terrain", "terrain")
 {
     height = 1.0;
     scaling = 1.0;

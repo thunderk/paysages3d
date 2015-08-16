@@ -1,10 +1,13 @@
 #include "FloatNode.h"
 
 #include "PackStream.h"
+#include "FloatDiff.h"
+#include "Logs.h"
 #include <sstream>
+#include <cassert>
 
 FloatNode::FloatNode(DefinitionNode* parent, const std::string &name, double value):
-    DefinitionNode(parent, name), value(value)
+    DefinitionNode(parent, name, "float"), value(value)
 {
 }
 
@@ -29,7 +32,42 @@ void FloatNode::load(PackStream *stream)
 
 void FloatNode::copy(DefinitionNode *destination) const
 {
-    // TODO type check
+    if (destination->getTypeName() == getTypeName())
+    {
+        ((FloatNode *)destination)->value = value;
+    }
+    else
+    {
+        Logs::error() << "Can't copy from " << getTypeName() << " to " << destination->getTypeName() << std::endl;
+    }
+}
 
-    ((FloatNode *)destination)->value = value;
+const FloatDiff *FloatNode::produceDiff(double new_value) const
+{
+    return new FloatDiff(value, new_value);
+}
+
+bool FloatNode::applyDiff(const DefinitionDiff *diff, bool backward)
+{
+    if (!DefinitionNode::applyDiff(diff, backward))
+    {
+        return false;
+    }
+
+    assert(diff->getTypeName() == "float");
+    const FloatDiff *float_diff = (const FloatDiff *)diff;
+
+    double previous = backward ? float_diff->getNewValue() : float_diff->getOldValue();
+    double next = backward ? float_diff->getOldValue() : float_diff->getNewValue();
+
+    if (value == previous)
+    {
+        value = next;
+        return true;
+    }
+    else
+    {
+        Logs::error() << "Can't apply float diff " << previous << " => " << next << " to " << getName() << std::endl;
+        return false;
+    }
 }

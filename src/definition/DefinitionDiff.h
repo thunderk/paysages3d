@@ -1,0 +1,28 @@
+#ifndef DEFINITIONDIFF_H
+#define DEFINITIONDIFF_H
+
+#include "definition_global.h"
+
+namespace paysages {
+namespace definition {
+
+/**
+ * Base class for diffs produced by the definition tree.
+ *
+ * Diffs are used to undo/redo changes.
+ */
+class DEFINITIONSHARED_EXPORT DefinitionDiff
+{
+public:
+    DefinitionDiff(const std::string &type_name);
+
+    inline const std::string &getTypeName() const {return type_name;}
+
+private:
+    std::string type_name;
+};
+
+}
+}
+
+#endif // DEFINITIONDIFF_H

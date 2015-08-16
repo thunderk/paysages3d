@@ -8,7 +8,7 @@
 #include "TerrainDefinition.h"
 
 TextureLayerDefinition::TextureLayerDefinition(DefinitionNode* parent):
-    DefinitionNode(parent, "texture")
+    DefinitionNode(parent, "texture", "texturelayer")
 {
     terrain_zone = new Zone;
     _displacement_noise = new NoiseGenerator;

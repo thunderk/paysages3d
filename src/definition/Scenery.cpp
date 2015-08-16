@@ -15,7 +15,7 @@ static const double APP_HEADER = 19866544632.125;
 static const int DATA_VERSION = 1;
 
 Scenery::Scenery():
-    DefinitionNode(NULL, "scenery")
+    DefinitionNode(NULL, "scenery", "scenery")
 {
     addChild(atmosphere = new AtmosphereDefinition(this));
     addChild(camera = new CameraDefinition);

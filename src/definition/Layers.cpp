@@ -4,7 +4,7 @@
 #include "Logs.h"
 
 Layers::Layers(DefinitionNode* parent, const std::string &name, LayerConstructor layer_constructor):
-    DefinitionNode(parent, name), layer_constructor(layer_constructor)
+    DefinitionNode(parent, name, "layers" + name), layer_constructor(layer_constructor)
 {
     max_layer_count = 100;
     null_layer = layer_constructor(this);

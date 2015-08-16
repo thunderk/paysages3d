@@ -2,9 +2,10 @@
 
 #include "Logs.h"
 #include "PackStream.h"
+#include "DefinitionDiff.h"
 
-DefinitionNode::DefinitionNode(DefinitionNode* parent, const std::string &name):
-    parent(parent), name(name)
+DefinitionNode::DefinitionNode(DefinitionNode* parent, const std::string &name, const std::string &type_name):
+    parent(parent), type_name(type_name), name(name)
 {
     if (parent)
     {
@@ -71,6 +72,20 @@ std::string DefinitionNode::toString(int indent) const
     return result;
 }
 
+bool DefinitionNode::applyDiff(const DefinitionDiff *diff, bool)
+{
+    // Only do type check, subclasses will do the rest
+    if (diff->getTypeName() == type_name)
+    {
+        return true;
+    }
+    else
+    {
+        Logs::error() << "Can't apply " << diff->getTypeName() << " diff to " << getName() << " " << type_name << " node" << std::endl;
+        return false;
+    }
+}
+
 void DefinitionNode::save(PackStream* stream) const
 {
     int children_count = (int)children.size();
@@ -128,8 +143,15 @@ void DefinitionNode::load(PackStream* stream)
 
 void DefinitionNode::copy(DefinitionNode* destination) const
 {
-    destination->setName(name);
-    // can't copy children as we don't know their types...
+    if (destination->getTypeName() == getTypeName())
+    {
+        destination->setName(name);
+        // TODO Copy children ?
+    }
+    else
+    {
+        Logs::error() << "Can't copy from " << getTypeName() << " to " << destination->getTypeName() << std::endl;
+    }
 }
 
 void DefinitionNode::validate()

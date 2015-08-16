@@ -6,7 +6,7 @@
 #include "Vector3.h"
 
 Zone::Zone(DefinitionNode *parent):
-    DefinitionNode(parent, "zone")
+    DefinitionNode(parent, "zone", "zone")
 {
     value_by_height = new Curve;
     absolute_height = 1;

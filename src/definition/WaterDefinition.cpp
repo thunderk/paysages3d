@@ -6,7 +6,7 @@
 #include "SurfaceMaterial.h"
 
 WaterDefinition::WaterDefinition(DefinitionNode* parent):
-    DefinitionNode(parent, "water")
+    DefinitionNode(parent, "water", "water")
 {
     material = new SurfaceMaterial;
     depth_color = new Color;

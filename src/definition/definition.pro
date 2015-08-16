@@ -31,7 +31,9 @@ SOURCES += \
     PaintedGridBrush.cpp \
     PaintedGridData.cpp \
     DefinitionNode.cpp \
-    FloatNode.cpp
+    FloatNode.cpp \
+    DefinitionDiff.cpp \
+    FloatDiff.cpp
 
 HEADERS +=\
         definition_global.h \
@@ -52,7 +54,9 @@ HEADERS +=\
     PaintedGridBrush.h \
     PaintedGridData.h \
     DefinitionNode.h \
-    FloatNode.h
+    FloatNode.h \
+    DefinitionDiff.h \
+    FloatDiff.h
 
 unix:!symbian {
     maemo5 {

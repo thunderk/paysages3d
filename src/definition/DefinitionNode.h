@@ -12,7 +12,7 @@ namespace definition {
 class DEFINITIONSHARED_EXPORT DefinitionNode
 {
 public:
-    DefinitionNode(DefinitionNode* parent, const std::string &name);
+    DefinitionNode(DefinitionNode* parent, const std::string &name, const std::string &type_name = "");
     virtual ~DefinitionNode();
 
     virtual void save(PackStream* stream) const;
@@ -24,6 +24,8 @@ public:
     inline const std::string &getName() const {return name;}
     virtual void setName(const std::string &name);
 
+    inline const std::string &getTypeName() const {return type_name;}
+
     virtual Scenery* getScenery();
 
     inline const DefinitionNode* getParent() const {return parent;}
@@ -34,6 +36,17 @@ public:
      * Return a string representation of the tree (mainly for debugging purposes).
      */
     virtual std::string toString(int indent = 0) const;
+
+    /**
+     * Apply a diff to the internal value of this node.
+     *
+     * All internal node modifications should be done using this method, to be reversible.
+     *
+     * If *backward* is true, the diff will be reversed, instead of applied.
+     *
+     * Return true if the diff could be applied.
+     */
+    virtual bool applyDiff(const DefinitionDiff *diff, bool backward=false);
 
 protected:
     void addChild(DefinitionNode* child);
@@ -51,6 +64,7 @@ protected:
 private:
     DefinitionNode* parent;
     DefinitionNode* root;
+    std::string type_name;
     std::string name;
     std::vector<DefinitionNode*> children;
 };
