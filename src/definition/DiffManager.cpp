@@ -16,6 +16,13 @@ void DiffManager::addWatcher(const DefinitionNode *node, DefinitionWatcher *watc
 
 void DiffManager::addDiff(DefinitionNode *node, const DefinitionDiff *diff)
 {
+    while (undone > 0)
+    {
+        // truncate diffs ahead
+        diffs.pop_back();
+        undone--;
+    }
+
     diffs.push_back(diff);
 
     // TODO Delayed commit (with merge of consecutive diffs)
@@ -29,7 +36,7 @@ void DiffManager::addDiff(DefinitionNode *node, const DefinitionDiff *diff)
 
 void DiffManager::undo()
 {
-    if (undone <= (int)diffs.size())
+    if (undone < (int)diffs.size())
     {
         undone++;
         const DefinitionDiff *diff = diffs[diffs.size() - undone];
