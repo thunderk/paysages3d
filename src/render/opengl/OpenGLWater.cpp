@@ -8,6 +8,8 @@
 #include "WaterDefinition.h"
 #include "SurfaceMaterial.h"
 #include "NoiseFunctionSimplex.h"
+#include "FloatNode.h"
+#include "FloatDiff.h"
 
 OpenGLWater::OpenGLWater(OpenGLRenderer *renderer):
     OpenGLPart(renderer)
@@ -34,6 +36,9 @@ void OpenGLWater::initialize()
     setVertex(1, -1.0f, 0.0f, 1.0f);
     setVertex(2, 1.0f, 0.0f, -1.0f);
     setVertex(3, 1.0f, 0.0f, 1.0f);
+
+    // Watch for definition changes
+    renderer->getScenery()->getTerrain()->propWaterHeight()->addWatcher(this, true);
 }
 
 void OpenGLWater::update()
@@ -57,4 +62,12 @@ void OpenGLWater::setVertex(int i, float x, float y, float z)
     vertices[i * 3] = x;
     vertices[i * 3 + 1] = y;
     vertices[i * 3 + 2] = z;
+}
+
+void OpenGLWater::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
+{
+    if (node->getPath() == "/terrain/water_height")
+    {
+        renderer->getSharedState()->set("waterOffset", renderer->getScenery()->getTerrain()->getWaterOffset());
+    }
 }

@@ -15,6 +15,11 @@ class DEFINITIONSHARED_EXPORT DefinitionWatcher
 {
 public:
     DefinitionWatcher();
+
+    /**
+     * Abstract method called when a node changed.
+     */
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) = 0;
 };
 
 }

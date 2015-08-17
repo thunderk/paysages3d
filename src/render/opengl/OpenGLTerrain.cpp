@@ -9,6 +9,8 @@
 #include "WaterRenderer.h"
 #include "CameraDefinition.h"
 #include "Scenery.h"
+#include "FloatNode.h"
+#include "FloatDiff.h"
 
 class ChunkMaintenanceThreads:public ParallelPool
 {
@@ -62,12 +64,11 @@ void OpenGLTerrain::initialize()
     double size = 800.0;
     double chunksize = size / (double) chunks;
     double start = -size / 2.0;
-    double water_height = renderer->getWaterRenderer()->getHeightInfo().base_height;
     for (int i = 0; i < chunks; i++)
     {
         for (int j = 0; j < chunks; j++)
         {
-            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(renderer, start + chunksize * (double) i, start + chunksize * (double) j, chunksize, chunks, water_height);
+            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(renderer, start + chunksize * (double) i, start + chunksize * (double) j, chunksize, chunks);
             _chunks.append(chunk);
             _updateQueue.append(chunk);
         }
@@ -75,6 +76,9 @@ void OpenGLTerrain::initialize()
 
     // Start chunks maintenance
     work->start();
+
+    // Watch for definition changes
+    renderer->getScenery()->getTerrain()->propWaterHeight()->addWatcher(this);
 }
 
 void OpenGLTerrain::update()
@@ -141,4 +145,13 @@ void OpenGLTerrain::performChunksMaintenance()
     }
     qSort(_updateQueue.begin(), _updateQueue.end(), _cmpChunks);
     _lock_chunks.unlock();
+}
+
+
+void OpenGLTerrain::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
+{
+    if (node->getPath() == "/terrain/water_height")
+    {
+        resetTextures();
+    }
 }

@@ -62,11 +62,20 @@ public:
     virtual bool applyDiff(const DefinitionDiff *diff, bool backward=false);
 
     /**
+     * Fill a diff array to be applied to initialize a proper state for a watcher.
+     *
+     * This method should be overridden by subclasses.
+     */
+    virtual void generateInitDiffs(std::vector<const DefinitionDiff *> *diffs) const;
+
+    /**
      * Add a watcher over this node.
      *
      * The watcher will receive DefinitionDiff objects when this node changes.
+     *
+     * If *init_diff* is set to true, a first diff (or several) will be be pushed immediately to initialize the state.
      */
-    void addWatcher(DefinitionWatcher *watcher);
+    void addWatcher(DefinitionWatcher *watcher, bool init_diff=false);
 
 protected:
     void addChild(DefinitionNode* child);

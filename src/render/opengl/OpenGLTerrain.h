@@ -4,6 +4,7 @@
 #include "opengl_global.h"
 
 #include "OpenGLPart.h"
+#include "DefinitionWatcher.h"
 
 #include <QVector>
 #include <QList>
@@ -12,7 +13,7 @@
 namespace paysages {
 namespace opengl {
 
-class OPENGLSHARED_EXPORT OpenGLTerrain:public OpenGLPart
+class OPENGLSHARED_EXPORT OpenGLTerrain: public OpenGLPart, public DefinitionWatcher
 {
 public:
     OpenGLTerrain(OpenGLRenderer* renderer);
@@ -30,6 +31,7 @@ public:
 
     void performChunksMaintenance();
 
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
 private:
     OpenGLShaderProgram* program;
 
@@ -38,6 +40,7 @@ private:
     QVector<ExplorerChunkTerrain*> _chunks;
     QList<ExplorerChunkTerrain*> _updateQueue;
     QMutex _lock_chunks;
+
 };
 
 }

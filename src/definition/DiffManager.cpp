@@ -2,11 +2,21 @@
 
 #include "DefinitionNode.h"
 #include "DefinitionDiff.h"
+#include "DefinitionWatcher.h"
 
 DiffManager::DiffManager(DefinitionNode *tree):
     tree(tree)
 {
     undone = 0;
+}
+
+DiffManager::~DiffManager()
+{
+    for (auto diff: diffs)
+    {
+        delete diff;
+    }
+    diffs.clear();
 }
 
 void DiffManager::addWatcher(const DefinitionNode *node, DefinitionWatcher *watcher)
@@ -19,6 +29,7 @@ void DiffManager::addDiff(DefinitionNode *node, const DefinitionDiff *diff)
     while (undone > 0)
     {
         // truncate diffs ahead
+        delete diffs.back();
         diffs.pop_back();
         undone--;
     }
@@ -28,9 +39,9 @@ void DiffManager::addDiff(DefinitionNode *node, const DefinitionDiff *diff)
     // TODO Delayed commit (with merge of consecutive diffs)
     node->applyDiff(diff);
 
-    for (auto &watcher: watchers[node])
+    for (auto watcher: watchers[node])
     {
-        // TODO
+        watcher->nodeChanged(node, diff);
     }
 }
 

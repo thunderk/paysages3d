@@ -2,6 +2,7 @@
 
 #include "Logs.h"
 #include "PackStream.h"
+#include "DefinitionWatcher.h"
 #include "DefinitionDiff.h"
 #include "DiffManager.h"
 
@@ -157,10 +158,25 @@ bool DefinitionNode::applyDiff(const DefinitionDiff *diff, bool)
     }
 }
 
-void DefinitionNode::addWatcher(DefinitionWatcher *watcher)
+void DefinitionNode::generateInitDiffs(std::vector<const DefinitionDiff *> *) const
+{
+}
+
+void DefinitionNode::addWatcher(DefinitionWatcher *watcher, bool init_diff)
 {
     if (root && root->diffs)
     {
+        if (init_diff)
+        {
+            std::vector<const DefinitionDiff *> diffs;
+            generateInitDiffs(&diffs);
+
+            for (auto diff: diffs)
+            {
+                watcher->nodeChanged(this, diff);
+                delete diff;
+            }
+        }
         root->diffs->addWatcher(this, watcher);
     }
 }

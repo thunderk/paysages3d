@@ -15,8 +15,7 @@ TerrainDefinition::TerrainDefinition(DefinitionNode* parent):
     height_map = new TerrainHeightMap(this);
     addChild(height_map);
 
-    water_height = -0.3;
-    _water_height = new FloatNode(this, "water_height", -0.3);
+    water_height = new FloatNode(this, "water_height", -0.3);
 
     _height_noise = new NoiseGenerator;
 }
@@ -67,7 +66,6 @@ void TerrainDefinition::save(PackStream* stream) const
     stream->write(&height);
     stream->write(&scaling);
     stream->write(&shadow_smoothing);
-    stream->write(&water_height);
     _height_noise->save(stream);
 }
 
@@ -78,7 +76,6 @@ void TerrainDefinition::load(PackStream* stream)
     stream->read(&height);
     stream->read(&scaling);
     stream->read(&shadow_smoothing);
-    stream->read(&water_height);
     _height_noise->load(stream);
 
     validate();
@@ -96,7 +93,7 @@ double TerrainDefinition::getGridHeight(int x, int z, bool with_painting)
     return h;
 }
 
-double TerrainDefinition::getInterpolatedHeight(double x, double z, bool scaled, bool with_painting)
+double TerrainDefinition::getInterpolatedHeight(double x, double z, bool scaled, bool with_painting, bool water_offset)
 {
     double h;
     x /= scaling;
@@ -109,12 +106,17 @@ double TerrainDefinition::getInterpolatedHeight(double x, double z, bool scaled,
 
     if (scaled)
     {
-        return (h - water_height) * height * scaling;
+        return (water_offset ? (h - water_height->getValue()) : h) * height * scaling;
     }
     else
     {
         return h;
     }
+}
+
+double TerrainDefinition::getWaterOffset() const
+{
+    return -water_height->getValue() * height * scaling;
 }
 
 HeightInfo TerrainDefinition::getHeightInfo()
@@ -124,7 +126,7 @@ HeightInfo TerrainDefinition::getHeightInfo()
     result.min_height = _min_height;
     result.max_height = _max_height;
     /* TODO This is duplicated in ter_render.c (_realGetWaterHeight) */
-    result.base_height = water_height * height * scaling;
+    result.base_height = water_height->getValue() * height * scaling;
 
     return result;
 }

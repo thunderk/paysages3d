@@ -52,6 +52,11 @@ const FloatDiff *FloatNode::produceDiff(double new_value) const
     return new FloatDiff(this, value, new_value);
 }
 
+void FloatNode::generateInitDiffs(std::vector<const DefinitionDiff *> *diffs) const
+{
+    diffs->push_back(produceDiff(value));
+}
+
 bool FloatNode::applyDiff(const DefinitionDiff *diff, bool backward)
 {
     if (!DefinitionNode::applyDiff(diff, backward))

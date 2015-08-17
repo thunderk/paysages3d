@@ -27,8 +27,11 @@ public:
     virtual void copy(DefinitionNode* destination) const override;
     virtual void validate() override;
 
+    inline FloatNode *propWaterHeight() const {return water_height;}
+
     double getGridHeight(int x, int z, bool with_painting);
-    double getInterpolatedHeight(double x, double z, bool scaled, bool with_painting);
+    double getInterpolatedHeight(double x, double z, bool scaled, bool with_painting, bool water_offset=true);
+    double getWaterOffset() const;
     unsigned long getMemoryStats();
     HeightInfo getHeightInfo();
 
@@ -46,15 +49,13 @@ public:
 
     TerrainHeightMap* height_map;
 
-    double water_height;
-
     double _detail;
     NoiseGenerator* _height_noise;
     double _min_height;
     double _max_height;
 
 private:
-    FloatNode *_water_height;
+    FloatNode *water_height;
 };
 
 }

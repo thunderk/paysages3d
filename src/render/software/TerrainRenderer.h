@@ -27,7 +27,7 @@ public:
     virtual void update();
 
     virtual RayCastingResult castRay(const Vector3 &start, const Vector3 &direction);
-    virtual double getHeight(double x, double z, bool with_painting);
+    virtual double getHeight(double x, double z, bool with_painting, bool water_offset=true);
     virtual TerrainResult getResult(double x, double z, bool with_painting, bool with_textures);
     virtual Color getFinalColor(const Vector3 &location, double precision);
     virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override;

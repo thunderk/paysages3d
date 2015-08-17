@@ -23,9 +23,9 @@ void TerrainRenderer::update()
     walker->update();
 }
 
-double TerrainRenderer::getHeight(double x, double z, bool with_painting)
+double TerrainRenderer::getHeight(double x, double z, bool with_painting, bool water_offset)
 {
-    return parent->getScenery()->getTerrain()->getInterpolatedHeight(x, z, true, with_painting);
+    return parent->getScenery()->getTerrain()->getInterpolatedHeight(x, z, true, with_painting, water_offset);
 }
 
 static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, Vector3 south, Vector3 west)

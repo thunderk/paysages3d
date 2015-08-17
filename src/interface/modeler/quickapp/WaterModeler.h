@@ -18,6 +18,7 @@ public slots:
     void waterLevelChanged(double value);
 
 private:
+    FloatNode *propWaterHeight() const;
     MainModelerWindow *main;
 };
 

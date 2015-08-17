@@ -9,7 +9,7 @@
 #include "TerrainRenderer.h"
 #include "VertexArray.h"
 
-ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, double z, double size, int nbchunks, double water_height):
+ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, double z, double size, int nbchunks):
     _renderer(renderer)
 {
     priority = 0.0;
@@ -32,7 +32,6 @@ ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, d
 
     distance_to_camera = 0.0;
 
-    _water_height = water_height;
     overwater = false;
 
     tessellation_count = 33;
@@ -90,8 +89,8 @@ bool ExplorerChunkTerrain::maintain()
                         double x = _startx + _tessellation_step * (float)i;
                         double z = _startz + _tessellation_step * (float)j;
 
-                        double height = _renderer->getTerrainRenderer()->getHeight(x, z, true);
-                        if (height >= _water_height)
+                        double height = _renderer->getTerrainRenderer()->getHeight(x, z, true, false);
+                        if (height >= 0.0)
                         {
                             overwater = true;
                         }
@@ -270,7 +269,7 @@ void ExplorerChunkTerrain::render(QOpenGLShaderProgram* program, OpenGLFunctions
         int tessellation_size = _tessellation_current_size;
         _lock_data.unlock();
 
-        if (tessellation_size <= 1 or not overwater)
+        if (tessellation_size <= 1)
         {
             return;
         }

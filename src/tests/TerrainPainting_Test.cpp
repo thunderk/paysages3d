@@ -5,6 +5,7 @@
 #include "TerrainDefinition.h"
 #include "TerrainHeightMap.h"
 #include "PaintedGridBrush.h"
+#include "FloatNode.h"
 
 /* Noise sin period is defined at 20.0 */
 #define X_FACTOR (M_PI / 10.0)
@@ -31,7 +32,7 @@ protected:
         terrain->height = 3.0;
         terrain->scaling = 1.0;
         terrain->_height_noise->clearLevels();
-        terrain->water_height = 0.0;
+        terrain->propWaterHeight()->setValue(0.0);
         NoiseGenerator::NoiseLevel level = {1.0, 2.0, -1.0};
         terrain->_height_noise->addLevel(level);
         noise_state.resetOffsets();

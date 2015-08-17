@@ -18,6 +18,7 @@ class DEFINITIONSHARED_EXPORT DiffManager
 {
 public:
     DiffManager(DefinitionNode *tree);
+    ~DiffManager();
 
     /**
      * Add a watcher for a specific node.

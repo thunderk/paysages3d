@@ -20,7 +20,7 @@ public:
     } TerrainVertex;
 
 public:
-    ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, double z, double size, int nbchunks, double water_height);
+    ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, double z, double size, int nbchunks);
     ~ExplorerChunkTerrain();
 
     bool maintain();
@@ -41,8 +41,6 @@ private:
     double _startz;
     double _size;
     double _overall_step;
-
-    double _water_height;
 
     int tessellation_count;
     VertexArray<TerrainVertex> *tessellated;

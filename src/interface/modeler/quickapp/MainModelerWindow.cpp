@@ -10,6 +10,7 @@
 #include "RenderPreviewProvider.h"
 #include "RenderProcess.h"
 #include "RenderConfig.h"
+#include "DiffManager.h"
 
 #include <QQmlEngine>
 #include <QGuiApplication>
@@ -101,6 +102,27 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
         if (event->modifiers() & Qt::ControlModifier)
         {
             QGuiApplication::instance()->exit();
+        }
+    }
+    else if (event->key() == Qt::Key_Z)
+    {
+        if (event->modifiers() & Qt::ControlModifier)
+        {
+            if (event->modifiers() & Qt::ShiftModifier)
+            {
+                scenery->getDiffManager()->redo();
+            }
+            else
+            {
+                scenery->getDiffManager()->undo();
+            }
+        }
+    }
+    else if (event->key() == Qt::Key_Y)
+    {
+        if (event->modifiers() & Qt::ControlModifier)
+        {
+            scenery->getDiffManager()->undo();
         }
     }
 }
