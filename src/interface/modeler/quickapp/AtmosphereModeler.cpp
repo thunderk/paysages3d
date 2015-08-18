@@ -6,6 +6,7 @@
 #include "OpenGLRenderer.h"
 #include "OpenGLSkybox.h"
 #include "OpenGLTerrain.h"
+#include "FloatNode.h"
 
 AtmosphereModeler::AtmosphereModeler(MainModelerWindow *main):
     main(main)
@@ -13,18 +14,17 @@ AtmosphereModeler::AtmosphereModeler(MainModelerWindow *main):
     QObject *item = main->findQmlObject("atmosphere_daytime");
     if (item)
     {
+        item->setProperty("value", propDayTime()->getValue());
         connect(item, SIGNAL(changed(double)), this, SLOT(daytimeChanged(double)));
     }
 }
 
 void AtmosphereModeler::daytimeChanged(double value)
 {
-    main->getScenery()->getAtmosphere()->setDaytime(value);
+    propDayTime()->setValue(value);
+}
 
-    main->getRenderer()->getScenery()->setAtmosphere(main->getScenery()->getAtmosphere());
-
-    main->getRenderer()->getSkybox()->update();
-
-    // Update terrain textures according to new lighting
-    main->getRenderer()->getTerrain()->resetTextures();
+FloatNode *AtmosphereModeler::propDayTime() const
+{
+    return main->getScenery()->getAtmosphere()->propDayTime();
 }

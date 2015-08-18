@@ -17,12 +17,12 @@
 
 MainModelerWindow::MainModelerWindow()
 {
-    scenery = new Scenery();
-    scenery->autoPreset();
+    Scenery scenery;
+    scenery.autoPreset();
 
-    Logs::debug() << "Initialized scenery:\n" << scenery->toString() << std::endl;
+    Logs::debug() << "Initialized scenery:\n" << scenery.toString() << std::endl;
 
-    renderer = new OpenGLRenderer(scenery);
+    renderer = new OpenGLRenderer(&scenery);
 
     render_preview_provider = new RenderPreviewProvider();
 
@@ -51,7 +51,6 @@ MainModelerWindow::~MainModelerWindow()
     delete render_process;
 
     delete renderer;
-    delete scenery;
 }
 
 QObject *MainModelerWindow::findQmlObject(const QString &objectName)
@@ -76,6 +75,11 @@ QString MainModelerWindow::getState() const
 void MainModelerWindow::setState(const QString &stateName)
 {
     rootObject()->setProperty("state", stateName);
+}
+
+Scenery *MainModelerWindow::getScenery() const
+{
+    return renderer->getScenery();
 }
 
 void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
@@ -120,11 +124,11 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
             {
                 if (event->modifiers() & Qt::ShiftModifier)
                 {
-                    scenery->getDiffManager()->redo();
+                    getScenery()->getDiffManager()->redo();
                 }
                 else
                 {
-                    scenery->getDiffManager()->undo();
+                    getScenery()->getDiffManager()->undo();
                 }
             }
         }
@@ -132,7 +136,7 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
         {
             if (event->modifiers() & Qt::ControlModifier)
             {
-                scenery->getDiffManager()->undo();
+                getScenery()->getDiffManager()->undo();
             }
         }
     }

@@ -2,35 +2,37 @@
 
 #include "AtmosphereDefinition.h"
 
-TEST(AtmosphereDefinition, setDaytime)
+static void check_daytime(const AtmosphereDefinition &atmo, int expected_hour, int expected_minute=0, int expected_second=0)
+{
+    int hour, minute, second;
+    atmo.getHMS(&hour, &minute, &second);
+    EXPECT_EQ(expected_hour, hour);
+    EXPECT_EQ(expected_minute, minute);
+    EXPECT_EQ(expected_second, second);
+}
+
+TEST(AtmosphereDefinition, setDayTime)
 {
     AtmosphereDefinition atmo(NULL);
 
-    atmo.setDaytime(0.0);
-    EXPECT_EQ(atmo.hour, 0);
-    EXPECT_EQ(atmo.minute, 0);
+    atmo.setDayTime(0.0);
+    check_daytime(atmo, 0);
 
-    atmo.setDaytime(0.1);
-    EXPECT_EQ(atmo.hour, 2);
-    EXPECT_EQ(atmo.minute, 24);
+    atmo.setDayTime(0.1);
+    check_daytime(atmo, 2, 24);
 
-    atmo.setDaytime(0.25);
-    EXPECT_EQ(atmo.hour, 6);
-    EXPECT_EQ(atmo.minute, 0);
+    atmo.setDayTime(0.25);
+    check_daytime(atmo, 6);
 
-    atmo.setDaytime(0.5);
-    EXPECT_EQ(atmo.hour, 12);
-    EXPECT_EQ(atmo.minute, 0);
+    atmo.setDayTime(0.5);
+    check_daytime(atmo, 12);
 
-    atmo.setDaytime(1.0);
-    EXPECT_EQ(atmo.hour, 0);
-    EXPECT_EQ(atmo.minute, 0);
+    atmo.setDayTime(1.0);
+    check_daytime(atmo, 0);
 
-    atmo.setDaytime(-0.5);
-    EXPECT_EQ(atmo.hour, 12);
-    EXPECT_EQ(atmo.minute, 0);
+    atmo.setDayTime(-0.5);
+    check_daytime(atmo, 12);
 
-    atmo.setDaytime(1.5);
-    EXPECT_EQ(atmo.hour, 12);
-    EXPECT_EQ(atmo.minute, 0);
+    atmo.setDayTime(1.5);
+    check_daytime(atmo, 12);
 }

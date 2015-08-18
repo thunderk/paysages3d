@@ -8,12 +8,12 @@
 #include "AtmosphereDefinition.h"
 #include "AtmosphereRenderer.h"
 #include "AtmosphereModelBruneton.h"
+#include "FloatNode.h"
 
 OpenGLSkybox::OpenGLSkybox(OpenGLRenderer* renderer):
     OpenGLPart(renderer)
 {
     vertices = new float[14 * 3];
-    daytime = renderer->getScenery()->getAtmosphere()->_daytime;
 }
 
 OpenGLSkybox::~OpenGLSkybox()
@@ -50,16 +50,13 @@ void OpenGLSkybox::initialize()
     setVertex(11, 1.0f, 1.0f, -1.0f);
 
     setVertex(9, -1.0f, 1.0f, -1.0f);
+
+    // Watch for definition changes
+    renderer->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this, true);
 }
 
 void OpenGLSkybox::update()
 {
-    Vector3 sun_direction = renderer->getAtmosphereRenderer()->getSunDirection();
-    renderer->getSharedState()->set("sunDirection", sun_direction);
-
-    Color sun_color = renderer->getScenery()->getAtmosphere()->sun_color;
-    renderer->getSharedState()->set("sunColor", sun_color);
-
     SoftwareBrunetonAtmosphereRenderer* bruneton = (SoftwareBrunetonAtmosphereRenderer*)renderer->getAtmosphereRenderer();
     renderer->getSharedState()->set("transmittanceTexture", bruneton->getModel()->getTextureTransmittance());
     renderer->getSharedState()->set("inscatterTexture", bruneton->getModel()->getTextureInscatter());
@@ -68,6 +65,18 @@ void OpenGLSkybox::update()
 void OpenGLSkybox::render()
 {
     program->drawTriangleStrip(vertices, 14);
+}
+
+void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
+{
+    if (node->getPath() == "/atmosphere/daytime")
+    {
+        Vector3 sun_direction = renderer->getAtmosphereRenderer()->getSunDirection(false);
+        renderer->getSharedState()->set("sunDirection", sun_direction);
+
+        Color sun_color = renderer->getScenery()->getAtmosphere()->sun_color;
+        renderer->getSharedState()->set("sunColor", sun_color);
+    }
 }
 
 void OpenGLSkybox::setVertex(int i, float x, float y, float z)

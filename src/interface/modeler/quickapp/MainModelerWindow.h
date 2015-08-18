@@ -21,7 +21,7 @@ public:
     QString getState() const;
     void setState(const QString &stateName);
 
-    inline Scenery *getScenery() const {return scenery;}
+    Scenery *getScenery() const;
     inline OpenGLRenderer *getRenderer() const {return renderer;}
     inline ModelerCameras *getCamera() const {return cameras;}
 
@@ -30,7 +30,6 @@ protected:
 
 private:
     OpenGLRenderer *renderer;
-    Scenery *scenery;
 
     AtmosphereModeler *atmosphere;
     WaterModeler *water;

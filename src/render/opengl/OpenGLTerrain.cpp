@@ -8,6 +8,7 @@
 #include "ExplorerChunkTerrain.h"
 #include "WaterRenderer.h"
 #include "CameraDefinition.h"
+#include "AtmosphereDefinition.h"
 #include "Scenery.h"
 #include "FloatNode.h"
 #include "FloatDiff.h"
@@ -84,6 +85,7 @@ void OpenGLTerrain::initialize()
 
     // Watch for definition changes
     renderer->getScenery()->getTerrain()->propWaterHeight()->addWatcher(this);
+    renderer->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this);
 }
 
 void OpenGLTerrain::update()
@@ -171,6 +173,10 @@ void OpenGLTerrain::performChunksMaintenance()
 void OpenGLTerrain::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
 {
     if (node->getPath() == "/terrain/water_height")
+    {
+        resetTextures();
+    }
+    else if (node->getPath() == "/atmosphere/daytime")
     {
         resetTextures();
     }

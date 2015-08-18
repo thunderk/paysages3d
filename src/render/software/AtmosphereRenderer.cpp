@@ -9,6 +9,7 @@
 #include "LightStatus.h"
 #include "Scenery.h"
 #include "NightSky.h"
+#include "FloatNode.h"
 
 /* Factor to convert software units to kilometers */
 #define WORLD_SCALING 0.05
@@ -41,7 +42,7 @@ static inline void _applyWeatherEffects(AtmosphereDefinition* definition, Atmosp
     }
     distancefactor = (distance > max_distance ? max_distance : distance) / max_distance;
     /* TODO Get day lighting from model */
-    dayfactor = _getDayFactor(definition->_daytime);
+    dayfactor = _getDayFactor(definition->propDayTime()->getValue());
 
     /* Fog masking */
     if (definition->humidity > 0.3)
@@ -105,16 +106,16 @@ AtmosphereResult BaseAtmosphereRenderer::getSkyColor(Vector3)
     return result;
 }
 
-Vector3 BaseAtmosphereRenderer::getSunDirection()
+Vector3 BaseAtmosphereRenderer::getSunDirection(bool cache) const
 {
-    if (lights.size() > 0)
+    if (cache and lights.size() > 0)
     {
         return lights[0].direction.scale(-1.0);
     }
     else
     {
         AtmosphereDefinition* atmosphere = getDefinition();
-        double sun_angle = (atmosphere->_daytime + 0.75) * M_PI * 2.0;
+        double sun_angle = (atmosphere->propDayTime()->getValue() + 0.75) * M_PI * 2.0;
         return Vector3(cos(sun_angle), sin(sun_angle), 0.0);
     }
 }
@@ -153,7 +154,7 @@ void BaseAtmosphereRenderer::setStaticLights(const std::vector<LightComponent> &
     this->lights = lights;
 }
 
-AtmosphereDefinition* BaseAtmosphereRenderer::getDefinition()
+AtmosphereDefinition* BaseAtmosphereRenderer::getDefinition() const
 {
     return parent->getScenery()->getAtmosphere();
 }

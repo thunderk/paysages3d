@@ -2,10 +2,12 @@
 
 #include "PackStream.h"
 #include "RandomGenerator.h"
+#include "FloatNode.h"
 
 AtmosphereDefinition::AtmosphereDefinition(DefinitionNode* parent):
     DefinitionNode(parent, "atmosphere", "atmosphere")
 {
+    daytime = new FloatNode(this, "daytime");
 }
 
 AtmosphereDefinition::~AtmosphereDefinition()
@@ -15,8 +17,6 @@ AtmosphereDefinition::~AtmosphereDefinition()
 void AtmosphereDefinition::save(PackStream* stream) const
 {
     stream->write((int*)&model);
-    stream->write(&hour);
-    stream->write(&minute);
     sun_color.save(stream);
     stream->write(&sun_radius);
     stream->write(&dome_lighting);
@@ -38,8 +38,6 @@ void AtmosphereDefinition::save(PackStream* stream) const
 void AtmosphereDefinition::load(PackStream* stream)
 {
     stream->read((int*)&model);
-    stream->read(&hour);
-    stream->read(&minute);
     sun_color.load(stream);
     stream->read(&sun_radius);
     stream->read(&dome_lighting);
@@ -68,9 +66,9 @@ void AtmosphereDefinition::copy(DefinitionNode* _destination) const
 {
     AtmosphereDefinition* destination = (AtmosphereDefinition*)_destination;
 
+    daytime->copy(destination->daytime);
+
     destination->model = model;
-    destination->hour = hour;
-    destination->minute = minute;
     destination->sun_color = sun_color;
     destination->sun_radius = sun_radius;
     destination->dome_lighting = dome_lighting;
@@ -83,30 +81,19 @@ void AtmosphereDefinition::copy(DefinitionNode* _destination) const
     destination->validate();
 }
 
-void AtmosphereDefinition::validate()
+void AtmosphereDefinition::setDayTime(double value)
 {
-    if (hour < 0)
-    {
-        hour = 0;
-    }
-    if (hour > 23)
-    {
-        hour = 23;
-    }
-    if (minute < 0)
-    {
-        minute = 0;
-    }
-    if (minute > 59)
-    {
-        minute = 59;
-    }
-
-    _daytime = (double)hour / 24.0 + (double)minute / 1440.0;
+    daytime->setValue(value);
 }
 
-void AtmosphereDefinition::setDaytime(double value)
+void AtmosphereDefinition::setDayTime(int hour, int minute, int second)
 {
+    setDayTime((double)hour / 24.0 + (double)minute / 1440.0 + (double)second / 86400.0);
+}
+
+void AtmosphereDefinition::getHMS(int *hour, int *minute, int *second) const
+{
+    double value = daytime->getValue();
     if (value >= 0.0)
     {
         value = fmod(value, 1.0);
@@ -115,10 +102,11 @@ void AtmosphereDefinition::setDaytime(double value)
     {
         value = 1.0 - fmod(-value, 1.0);
     }
-    value *= 1440.0;
-    hour = value / 60.0;
-    minute = value - 60.0 * hour;
-    validate();
+    value *= 86400.0;
+    *hour = value / 3600.0;
+    value -= 3600.0 * *hour;
+    *minute = value / 60.0;
+    *second = value - *minute * 60.0;
 }
 
 void AtmosphereDefinition::applyPreset(AtmospherePreset preset)
@@ -138,31 +126,26 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset)
     switch (preset)
     {
         case ATMOSPHERE_PRESET_CLEAR_DAY:
-            hour = 15;
-            minute = 0;
+            setDayTime(15);
             dome_lighting = 0.2;
             break;
         case ATMOSPHERE_PRESET_CLEAR_SUNSET:
-            hour = 17;
-            minute = 45;
+            setDayTime(17, 45);
             dome_lighting = 0.3;
             sun_radius = 0.03;
             break;
         case ATMOSPHERE_PRESET_HAZY_MORNING:
-            hour = 8;
-            minute = 30;
+            setDayTime(8, 30);
             dome_lighting = 0.25;
             humidity = 0.4;
             break;
         case ATMOSPHERE_PRESET_FOGGY:
-            hour = 15;
-            minute = 0;
+            setDayTime(15);
             dome_lighting = 0.1;
             humidity = 0.7;
             break;
         case ATMOSPHERE_PRESET_STORMY:
-            hour = 15;
-            minute = 0;
+            setDayTime(15);
             dome_lighting = 0.05;
             humidity = 0.9;
             break;

@@ -44,20 +44,27 @@ public:
     virtual void load(PackStream* stream) override;
 
     virtual void copy(DefinitionNode* destination) const override;
-    virtual void validate() override;
+
+    inline FloatNode *propDayTime() const {return daytime;}
 
     /**
      * Set the daytime from a 0.0-1.0 value.
      */
-    void setDaytime(double value);
+    void setDayTime(double value);
+    /**
+     * Set the daytime from hour/minute/second info.
+     */
+    void setDayTime(int hour, int minute=0, int second=0);
+    /**
+     * Get the daytime info, in hour/minute/second.
+     */
+    void getHMS(int *hour, int *minute, int *second) const;
 
     void applyPreset(AtmospherePreset preset);
     void generateStars(int count);
 
 public:
     AtmosphereModel model;
-    int hour;
-    int minute;
     double humidity;
     Color sun_color;
     double sun_radius;
@@ -67,9 +74,10 @@ public:
     double moon_theta;
     double moon_phi;
 
-    double _daytime;
-
     std::vector<Star> stars;
+
+private:
+    FloatNode *daytime;
 };
 
 }

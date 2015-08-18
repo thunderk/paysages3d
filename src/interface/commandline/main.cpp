@@ -196,8 +196,7 @@ int main(int argc, char** argv)
     for (outputcount = 0; outputcount < conf_first_picture + conf_nb_pictures; outputcount++)
     {
         AtmosphereDefinition* atmo = scenery->getAtmosphere();
-        atmo->hour = (int)floor(conf_daytime_start * 24.0);
-        atmo->minute = (int)floor(fmod(conf_daytime_start, 1.0 / 24.0) * 24.0 * 60.0);
+        atmo->setDayTime(conf_daytime_start);
         atmo->validate();
 
         CameraDefinition* camera = scenery->getCamera();

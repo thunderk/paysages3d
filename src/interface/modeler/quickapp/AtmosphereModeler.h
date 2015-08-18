@@ -18,6 +18,8 @@ public slots:
     void daytimeChanged(double value);
 
 private:
+    FloatNode *propDayTime() const;
+
     MainModelerWindow *main;
 };
 

@@ -18,13 +18,13 @@ public:
     virtual void getLightingStatus(LightStatus* status, Vector3 normal, int opaque);
     virtual AtmosphereResult applyAerialPerspective(Vector3 location, Color base);
     virtual AtmosphereResult getSkyColor(Vector3 direction);
-    virtual Vector3 getSunDirection();
+    virtual Vector3 getSunDirection(bool cache=true) const;
 
     void setBasicLights();
     void setStaticLights(const std::vector<LightComponent> &lights);
 
 protected:
-    virtual AtmosphereDefinition* getDefinition();
+    virtual AtmosphereDefinition* getDefinition() const;
     SoftwareRenderer* parent;
     std::vector<LightComponent> lights;
 };
