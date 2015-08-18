@@ -3,24 +3,17 @@
 
 #include "modeler_global.h"
 
-#include <QObject>
-
 namespace paysages {
 namespace modeler {
 
-class AtmosphereModeler : public QObject
+class AtmosphereModeler
 {
-    Q_OBJECT
 public:
     AtmosphereModeler(MainModelerWindow *main);
-
-public slots:
-    void daytimeChanged(double value);
+    ~AtmosphereModeler();
 
 private:
-    FloatNode *propDayTime() const;
-
-    MainModelerWindow *main;
+    FloatPropertyBind *prop_daytime;
 };
 
 }

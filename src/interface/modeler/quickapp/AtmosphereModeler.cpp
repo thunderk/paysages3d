@@ -3,28 +3,14 @@
 #include "MainModelerWindow.h"
 #include "Scenery.h"
 #include "AtmosphereDefinition.h"
-#include "OpenGLRenderer.h"
-#include "OpenGLSkybox.h"
-#include "OpenGLTerrain.h"
-#include "FloatNode.h"
+#include "FloatPropertyBind.h"
 
-AtmosphereModeler::AtmosphereModeler(MainModelerWindow *main):
-    main(main)
+AtmosphereModeler::AtmosphereModeler(MainModelerWindow *main)
 {
-    QObject *item = main->findQmlObject("atmosphere_daytime");
-    if (item)
-    {
-        item->setProperty("value", propDayTime()->getValue());
-        connect(item, SIGNAL(changed(double)), this, SLOT(daytimeChanged(double)));
-    }
+    prop_daytime = new FloatPropertyBind(main, "atmosphere_daytime", "value", main->getScenery()->getAtmosphere()->propDayTime());
 }
 
-void AtmosphereModeler::daytimeChanged(double value)
+AtmosphereModeler::~AtmosphereModeler()
 {
-    propDayTime()->setValue(value);
-}
-
-FloatNode *AtmosphereModeler::propDayTime() const
-{
-    return main->getScenery()->getAtmosphere()->propDayTime();
+    delete prop_daytime;
 }

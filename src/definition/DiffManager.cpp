@@ -55,6 +55,12 @@ void DiffManager::undo()
         // Obtain the node by path and reverse apply diff on it
         DefinitionNode *node = tree->findByPath(diff->getPath());
         node->applyDiff(diff, true);
+
+        for (auto watcher: watchers[node])
+        {
+            // FIXME Reverse diff
+            watcher->nodeChanged(node, diff);
+        }
     }
 }
 
@@ -68,6 +74,11 @@ void DiffManager::redo()
         // Obtain the node by path and re-apply diff on it
         DefinitionNode *node = tree->findByPath(diff->getPath());
         node->applyDiff(diff);
+
+        for (auto watcher: watchers[node])
+        {
+            watcher->nodeChanged(node, diff);
+        }
     }
 }
 

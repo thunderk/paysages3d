@@ -17,6 +17,8 @@ namespace modeler {
     class RenderProcess;
 
     class ModelerCameras;
+
+    class FloatPropertyBind;
 }
 }
 

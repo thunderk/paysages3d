@@ -3,26 +3,14 @@
 #include "MainModelerWindow.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"
-#include "FloatNode.h"
-#include "Logs.h"
+#include "FloatPropertyBind.h"
 
-WaterModeler::WaterModeler(MainModelerWindow *main):
-    main(main)
+WaterModeler::WaterModeler(MainModelerWindow *main)
 {
-    QObject *item = main->findQmlObject("water_level");
-    if (item)
-    {
-        item->setProperty("value", propWaterHeight()->getValue() * 0.5 + 0.5);
-        connect(item, SIGNAL(changed(double)), this, SLOT(waterLevelChanged(double)));
-    }
+    prop_water_height = new FloatPropertyBind(main, "water_height", "value", main->getScenery()->getTerrain()->propWaterHeight());
 }
 
-void WaterModeler::waterLevelChanged(double value)
+WaterModeler::~WaterModeler()
 {
-    propWaterHeight()->setValue(value * 2.0 - 1.0);
-}
-
-FloatNode *WaterModeler::propWaterHeight() const
-{
-    return main->getScenery()->getTerrain()->propWaterHeight();
+    delete prop_water_height;
 }

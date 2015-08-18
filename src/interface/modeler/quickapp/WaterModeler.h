@@ -3,23 +3,17 @@
 
 #include "modeler_global.h"
 
-#include <QObject>
-
 namespace paysages {
 namespace modeler {
 
-class WaterModeler: public QObject
+class WaterModeler
 {
-    Q_OBJECT
 public:
     WaterModeler(MainModelerWindow *main);
-
-public slots:
-    void waterLevelChanged(double value);
+    ~WaterModeler();
 
 private:
-    FloatNode *propWaterHeight() const;
-    MainModelerWindow *main;
+    FloatPropertyBind *prop_water_height;
 };
 
 }
