@@ -21,6 +21,9 @@ ModelerCameras::ModelerCameras(MainModelerWindow *parent):
     QObject *widget = parent->findQmlObject("camera_choice");
     connect(widget, SIGNAL(stateChanged(QString)), this, SLOT(changeActiveCamera(QString)));
 
+    // Validate to apply initial camera to scenery
+    validate();
+
     // Start update timer
     startTimer(50);
 }
@@ -57,14 +60,13 @@ void ModelerCameras::processPanning(double xvalue, double yvalue)
 
 void ModelerCameras::timerEvent(QTimerEvent *)
 {
-    OpenGLRenderer *renderer = parent->getRenderer();
-
     current->transitionToAnother(active, 0.3);
-    renderer->setCamera(current);
+    parent->getRenderer()->setCamera(current);
 }
 
 void ModelerCameras::validate()
 {
+    parent->getScenery()->keepCameraAboveGround(current);
     parent->getScenery()->keepCameraAboveGround(active);
 
     if (active == render) {

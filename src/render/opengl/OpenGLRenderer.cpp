@@ -69,7 +69,7 @@ void OpenGLRenderer::initialize()
         terrain->initialize();
         terrain->updateScenery();
 
-        cameraChangeEvent(getScenery()->getCamera());
+        cameraChangeEvent(render_camera);
     }
     else
     {
@@ -110,9 +110,8 @@ void OpenGLRenderer::prepareOpenGLState()
 void OpenGLRenderer::setCamera(CameraDefinition *camera)
 {
     camera->copy(render_camera);
-    getScenery()->setCamera(camera);
-    getScenery()->getCamera(camera);
-    cameraChangeEvent(camera);
+    getScenery()->keepCameraAboveGround(render_camera);
+    cameraChangeEvent(render_camera);
 }
 
 void OpenGLRenderer::resize(int width, int height)
@@ -120,10 +119,10 @@ void OpenGLRenderer::resize(int width, int height)
     vp_width = width;
     vp_height = height;
 
-    getScenery()->getCamera()->setRenderSize(width, height);
+    getScenery()->getCamera()->setRenderSize(width, height);  // FIXME Should not be needed
     render_camera->setRenderSize(width, height);
 
-    cameraChangeEvent(getScenery()->getCamera());
+    cameraChangeEvent(render_camera);
 
     prepareOpenGLState();
 }

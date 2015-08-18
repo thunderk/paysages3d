@@ -26,6 +26,8 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery):
     render_quality = 5;
     render_camera = new CameraDefinition;
 
+    scenery->getCamera()->copy(render_camera);
+
     atmosphere_renderer = new BaseAtmosphereRenderer(this);
     clouds_renderer = new CloudsRenderer(this);
     terrain_renderer = new TerrainRenderer(this);
@@ -60,8 +62,6 @@ SoftwareRenderer::~SoftwareRenderer()
 
 void SoftwareRenderer::prepare()
 {
-    scenery->getCamera()->copy(render_camera);
-
     // Prepare sub renderers
     // TODO Don't recreate the renderer each time
     delete atmosphere_renderer;

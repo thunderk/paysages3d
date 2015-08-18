@@ -39,8 +39,6 @@ public:
 
     /**
      * Change the camera location.
-     *
-     * This may change the camera passed as argument (to stay above ground for example).
      */
     void setCamera(CameraDefinition *camera);
     void cameraChangeEvent(CameraDefinition* camera);

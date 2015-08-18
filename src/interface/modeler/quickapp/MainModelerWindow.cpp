@@ -51,6 +51,7 @@ MainModelerWindow::~MainModelerWindow()
     delete render_process;
 
     delete renderer;
+    delete scenery;
 }
 
 QObject *MainModelerWindow::findQmlObject(const QString &objectName)
