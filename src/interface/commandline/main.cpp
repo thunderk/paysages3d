@@ -203,9 +203,8 @@ int main(int argc, char** argv)
         Vector3 step = {conf_camera_step_x, conf_camera_step_y, conf_camera_step_z};
         camera->setLocation(camera->getLocation().add(step));
 
-        renderer = new SoftwareCanvasRenderer();
+        renderer = new SoftwareCanvasRenderer(scenery);
         renderer->setConfig(conf_render_params);
-        renderer->setScenery(scenery);
 
         if (outputcount >= conf_first_picture)
         {

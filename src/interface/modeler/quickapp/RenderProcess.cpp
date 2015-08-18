@@ -76,8 +76,7 @@ void RenderProcess::startRender(Scenery *scenery, const RenderConfig &config)
         delete renderer;
     }
 
-    renderer = new SoftwareCanvasRenderer();
-    renderer->setScenery(scenery);
+    renderer = new SoftwareCanvasRenderer(scenery);
     renderer->setConfig(config);
 
     destination->setCanvas(renderer->getCanvas());

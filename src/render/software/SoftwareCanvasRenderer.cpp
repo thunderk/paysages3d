@@ -14,7 +14,8 @@
 #include "ColorProfile.h"
 #include "CanvasPreview.h"
 
-SoftwareCanvasRenderer::SoftwareCanvasRenderer()
+SoftwareCanvasRenderer::SoftwareCanvasRenderer(Scenery *scenery):
+    SoftwareRenderer(scenery)
 {
     started = false;
     finished = false;

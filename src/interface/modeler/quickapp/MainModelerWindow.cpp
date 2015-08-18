@@ -17,12 +17,12 @@
 
 MainModelerWindow::MainModelerWindow()
 {
-    Scenery scenery;
-    scenery.autoPreset();
+    scenery = new Scenery();
+    scenery->autoPreset();
 
-    Logs::debug() << "Initialized scenery:\n" << scenery.toString() << std::endl;
+    Logs::debug() << "Initialized scenery:\n" << scenery->toString() << std::endl;
 
-    renderer = new OpenGLRenderer(&scenery);
+    renderer = new OpenGLRenderer(scenery);
 
     render_preview_provider = new RenderPreviewProvider();
 
@@ -75,11 +75,6 @@ QString MainModelerWindow::getState() const
 void MainModelerWindow::setState(const QString &stateName)
 {
     rootObject()->setProperty("state", stateName);
-}
-
-Scenery *MainModelerWindow::getScenery() const
-{
-    return renderer->getScenery();
 }
 
 void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)

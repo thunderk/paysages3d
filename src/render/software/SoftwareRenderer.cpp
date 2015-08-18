@@ -20,14 +20,9 @@
 #include "System.h"
 #include "Thread.h"
 
-SoftwareRenderer::SoftwareRenderer(Scenery* scenery)
+SoftwareRenderer::SoftwareRenderer(Scenery* scenery):
+    scenery(scenery)
 {
-    this->scenery = new Scenery;
-    if (scenery)
-    {
-        scenery->copy(this->scenery);
-    }
-
     render_quality = 5;
     render_camera = new CameraDefinition;
 
@@ -61,13 +56,6 @@ SoftwareRenderer::~SoftwareRenderer()
     delete terrain_renderer;
     delete textures_renderer;
     delete water_renderer;
-
-    delete scenery;
-}
-
-void SoftwareRenderer::setScenery(Scenery* scenery)
-{
-    scenery->copy(this->scenery);
 }
 
 void SoftwareRenderer::prepare()

@@ -11,15 +11,18 @@ class FluidMediumManager_Test:public BaseTestCase
 protected:
     virtual void setUp()
     {
-        renderer = new SoftwareRenderer();
+        scenery = new Scenery();
+        renderer = new SoftwareRenderer(scenery);
     }
 
     virtual void tearDown()
     {
         delete renderer;
+        delete scenery;
     }
 
-    SoftwareRenderer* renderer;
+    Scenery *scenery;
+    SoftwareRenderer *renderer;
 };
 
 

@@ -14,7 +14,7 @@ namespace opengl {
 class OPENGLSHARED_EXPORT OpenGLRenderer: public SoftwareRenderer
 {
 public:
-    OpenGLRenderer(Scenery* scenery=0);
+    OpenGLRenderer(Scenery* scenery);
     virtual ~OpenGLRenderer();
 
     inline OpenGLSkybox *getSkybox() const {return skybox;}

@@ -19,7 +19,7 @@ namespace software {
 class SOFTWARESHARED_EXPORT SoftwareCanvasRenderer: public SoftwareRenderer
 {
 public:
-    SoftwareCanvasRenderer();
+    SoftwareCanvasRenderer(Scenery *scenery);
     virtual ~SoftwareCanvasRenderer();
 
     inline const Canvas *getCanvas() const {return canvas;}

@@ -15,7 +15,7 @@ class SOFTWARESHARED_EXPORT SoftwareRenderer
 {
 
 public:
-    SoftwareRenderer(Scenery* scenery=0);
+    SoftwareRenderer(Scenery* scenery);
     virtual ~SoftwareRenderer();
 
     /* Render base configuration */
@@ -29,13 +29,6 @@ public:
     virtual double getPrecision(const Vector3 &location);
     virtual Vector3 projectPoint(const Vector3 &point);
     virtual Vector3 unprojectPoint(const Vector3 &point);
-
-    /*!
-     * \brief Set the scenery to render.
-     *
-     * Don't call this after rendering has already started.
-     */
-    virtual void setScenery(Scenery* scenery);
 
     /*!
      * \brief Prepare the renderer sub-systems.
