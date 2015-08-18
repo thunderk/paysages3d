@@ -20,6 +20,16 @@ Item {
         anchors.fill: parent
     }
 
+    onValueChanged: {
+        for (var i = 0; i < children.length; i++)
+        {
+            if (children[i].value == value)
+            {
+                choice_group.current = children[i];
+            }
+        }
+    }
+
     onChildrenChanged: {
         for (var i = 0; i < children.length; i++)
         {

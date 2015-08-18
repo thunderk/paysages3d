@@ -9,7 +9,14 @@ BasePanel {
     default property real value: day_night.value == 2 ? 1.0 : slider.value * 0.54 + 0.23;
     signal changed(real value)
 
-    onValueChanged: changed(value)
+    onValueChanged: {
+        changed(value);
+        day_night.value = (value >= 0.23 && value <= 0.77) ? 1 : 2;
+        if (day_night.value == 1)
+        {
+            slider.value = (value - 0.23) / 0.54;
+        }
+    }
 
     ColumnLayout
     {

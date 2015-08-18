@@ -61,13 +61,16 @@ void ModelerCameras::processPanning(double xvalue, double yvalue)
 void ModelerCameras::timerEvent(QTimerEvent *)
 {
     current->transitionToAnother(active, 0.3);
+    parent->getScenery()->keepCameraAboveGround(current);
     parent->getRenderer()->setCamera(current);
 }
 
 void ModelerCameras::validate()
 {
-    parent->getScenery()->keepCameraAboveGround(current);
     parent->getScenery()->keepCameraAboveGround(active);
+
+    parent->getScenery()->keepCameraAboveGround(current);
+    parent->getRenderer()->setCamera(current);
 
     if (active == render) {
         parent->getScenery()->setCamera(active);
