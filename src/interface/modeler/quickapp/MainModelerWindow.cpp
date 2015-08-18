@@ -68,6 +68,11 @@ void MainModelerWindow::setQmlProperty(const QString &objectName, const QString 
     }
 }
 
+QString MainModelerWindow::getState() const
+{
+    return rootObject()->property("state").toString();
+}
+
 void MainModelerWindow::setState(const QString &stateName)
 {
     rootObject()->setProperty("state", stateName);
@@ -75,54 +80,60 @@ void MainModelerWindow::setState(const QString &stateName)
 
 void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_F5)
+    if (getState() == "Render Dialog")
     {
-        // Start render in a thread
-        if (event->modifiers() & Qt::ControlModifier)
+        if (event->key() == Qt::Key_Escape)
         {
-            render_process->startFinalRender();
-        }
-        else
-        {
-            render_process->startQuickRender();
-        }
-    }
-    else if (event->key() == Qt::Key_F6)
-    {
-        render_process->showPreviousRender();
-    }
-    else if (event->key() == Qt::Key_Escape)
-    {
-        render_process->stopRender();
+            render_process->stopRender();
 
-        setState("Init");
-    }
-    else if (event->key() == Qt::Key_Q)
-    {
-        if (event->modifiers() & Qt::ControlModifier)
-        {
-            QGuiApplication::instance()->exit();
+            setState("Init");
         }
     }
-    else if (event->key() == Qt::Key_Z)
+    else
     {
-        if (event->modifiers() & Qt::ControlModifier)
+        if (event->key() == Qt::Key_F5)
         {
-            if (event->modifiers() & Qt::ShiftModifier)
+            // Start render in a thread
+            if (event->modifiers() & Qt::ControlModifier)
             {
-                scenery->getDiffManager()->redo();
+                render_process->startFinalRender();
             }
             else
             {
-                scenery->getDiffManager()->undo();
+                render_process->startQuickRender();
             }
         }
-    }
-    else if (event->key() == Qt::Key_Y)
-    {
-        if (event->modifiers() & Qt::ControlModifier)
+        else if (event->key() == Qt::Key_F6)
         {
-            scenery->getDiffManager()->undo();
+            render_process->showPreviousRender();
+        }
+        else if (event->key() == Qt::Key_Q)
+        {
+            if (event->modifiers() & Qt::ControlModifier)
+            {
+                QGuiApplication::instance()->exit();
+            }
+        }
+        else if (event->key() == Qt::Key_Z)
+        {
+            if (event->modifiers() & Qt::ControlModifier)
+            {
+                if (event->modifiers() & Qt::ShiftModifier)
+                {
+                    scenery->getDiffManager()->redo();
+                }
+                else
+                {
+                    scenery->getDiffManager()->undo();
+                }
+            }
+        }
+        else if (event->key() == Qt::Key_Y)
+        {
+            if (event->modifiers() & Qt::ControlModifier)
+            {
+                scenery->getDiffManager()->undo();
+            }
         }
     }
 }

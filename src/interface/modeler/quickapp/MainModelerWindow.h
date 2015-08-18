@@ -17,6 +17,8 @@ public:
 
     QObject *findQmlObject(const QString &objectName);
     void setQmlProperty(const QString &objectName, const QString &propertyName, const QVariant &value);
+
+    QString getState() const;
     void setState(const QString &stateName);
 
     inline Scenery *getScenery() const {return scenery;}

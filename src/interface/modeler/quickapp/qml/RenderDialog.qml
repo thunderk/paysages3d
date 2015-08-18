@@ -1,7 +1,7 @@
 import QtQuick 2.2
 import QtQuick.Controls 1.2
 
-Rectangle {
+BaseRectangle {
     width: 400
     height: 300
 

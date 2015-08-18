@@ -1,6 +1,6 @@
 import QtQuick 2.0
 
-Rectangle {
+BaseRectangle {
     property string helptext
     property string hovertext
     width: content.width

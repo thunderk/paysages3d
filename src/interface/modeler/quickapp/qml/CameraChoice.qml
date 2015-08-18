@@ -1,6 +1,6 @@
 import QtQuick 2.0
 
-Rectangle {
+BaseRectangle {
     id: camera_choice
     width: 200
     height: 50

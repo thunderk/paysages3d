@@ -56,7 +56,7 @@ OpenGLView {
 
     Toolbar {
         id: display_toolbar
-        opacity: 0
+        enabled: false
         anchors.left: primary_toolbar.right
 
         ToolbarButton {
@@ -69,7 +69,7 @@ OpenGLView {
 
     Toolbar {
         id: water_toolbar
-        opacity: 0
+        enabled: false
         anchors.left: primary_toolbar.right
 
         ToolbarButton {
@@ -81,7 +81,7 @@ OpenGLView {
 
     Toolbar {
         id: atmosphere_toolbar
-        opacity: 0
+        enabled: false
         anchors.left: primary_toolbar.right
 
         ToolbarButton {
@@ -93,7 +93,7 @@ OpenGLView {
 
     Toolbar {
         id: render_toolbar
-        opacity: 0
+        enabled: false
         anchors.left: primary_toolbar.right
 
         ToolbarButton {
@@ -112,7 +112,7 @@ OpenGLView {
 
     RenderDialog {
         id: render_dialog
-        opacity: 0
+        enabled: false
         anchors.fill: parent
     }
 
@@ -132,7 +132,7 @@ OpenGLView {
 
             PropertyChanges {
                 target: display_toolbar
-                opacity: 1
+                enabled: true
             }
         },
         State {
@@ -141,7 +141,7 @@ OpenGLView {
 
             PropertyChanges {
                 target: water_toolbar
-                opacity: 1
+                enabled: true
             }
         },
         State {
@@ -150,7 +150,7 @@ OpenGLView {
 
             PropertyChanges {
                 target: atmosphere_toolbar
-                opacity: 1
+                enabled: true
             }
         },
         State {
@@ -159,20 +159,23 @@ OpenGLView {
 
             PropertyChanges {
                 target: render_toolbar
-                opacity: 1
+                enabled: true
             }
         },
         State {
             name: "Render Dialog"
-            when: tool_display.selected
 
             PropertyChanges {
                 target: primary_toolbar
-                opacity: 0
+                enabled: false
+            }
+            PropertyChanges {
+                target: camera_choice
+                enabled: false
             }
             PropertyChanges {
                 target: render_dialog
-                opacity: 1
+                enabled: true
             }
         }
     ]

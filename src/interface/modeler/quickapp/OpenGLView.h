@@ -26,6 +26,7 @@ protected:
     virtual void timerEvent(QTimerEvent *event) override;
 
 private:
+    bool acceptInputs() const;
     double getSpeedFactor(QInputEvent *event);
 
 private:

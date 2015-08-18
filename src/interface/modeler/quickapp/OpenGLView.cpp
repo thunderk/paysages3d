@@ -59,23 +59,43 @@ void OpenGLView::paint()
 
 void OpenGLView::wheelEvent(QWheelEvent *event)
 {
+    if (not acceptInputs())
+    {
+        return;
+    }
+
     double factor = getSpeedFactor(event);
     window->getCamera()->processZoom(0.1 * factor * (double)event->angleDelta().y());
 }
 
 void OpenGLView::mousePressEvent(QMouseEvent *event)
 {
+    if (not acceptInputs())
+    {
+        return;
+    }
+
     mouse_button = event->button();
     mouse_pos = event->windowPos();
 }
 
 void OpenGLView::mouseReleaseEvent(QMouseEvent *)
 {
+    if (not acceptInputs())
+    {
+        return;
+    }
+
     mouse_button = Qt::NoButton;
 }
 
 void OpenGLView::mouseMoveEvent(QMouseEvent *event)
 {
+    if (not acceptInputs())
+    {
+        return;
+    }
+
     double factor = getSpeedFactor(event);
     QPointF diff = event->windowPos() - mouse_pos;
     if (mouse_button == Qt::LeftButton)
@@ -95,6 +115,11 @@ void OpenGLView::timerEvent(QTimerEvent *)
     {
         window->update();
     }
+}
+
+bool OpenGLView::acceptInputs() const
+{
+    return window->getState() != "Render Dialog";
 }
 
 double OpenGLView::getSpeedFactor(QInputEvent *event)
