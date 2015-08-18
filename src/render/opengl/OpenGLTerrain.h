@@ -24,6 +24,10 @@ public:
     virtual void render() override;
     virtual void interrupt() override;
 
+    void pause();
+    void resume();
+    inline bool isPaused() const { return paused; }
+
     /**
      * Reset the color textures, without changing the tessellation.
      */
@@ -36,6 +40,7 @@ private:
     OpenGLShaderProgram* program;
 
     ParallelPool* work;
+    bool paused;
 
     QVector<ExplorerChunkTerrain*> _chunks;
     QList<ExplorerChunkTerrain*> _updateQueue;

@@ -24,7 +24,11 @@ public:
     {
         while (running)
         {
-            terrain->performChunksMaintenance();
+            if (not terrain->isPaused())
+            {
+                terrain->performChunksMaintenance();
+            }
+
             Thread::timeSleepMs(10);
         }
     }
@@ -37,6 +41,7 @@ OpenGLTerrain::OpenGLTerrain(OpenGLRenderer *renderer):
     OpenGLPart(renderer)
 {
     work = new ChunkMaintenanceThreads(this);
+    paused = false;
 }
 
 OpenGLTerrain::~OpenGLTerrain()
@@ -103,6 +108,21 @@ void OpenGLTerrain::interrupt()
     {
         chunk->askInterrupt();
     }
+}
+
+void OpenGLTerrain::pause()
+{
+    paused = true;
+    interrupt();
+}
+
+void OpenGLTerrain::resume()
+{
+    for (auto &chunk: _chunks)
+    {
+        chunk->askResume();
+    }
+    paused = false;
 }
 
 void OpenGLTerrain::resetTextures()

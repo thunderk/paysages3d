@@ -16,6 +16,7 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     SoftwareRenderer(scenery)
 {
     ready = false;
+    paused = false;
     vp_width = 1;
     vp_height = 1;
 
@@ -129,7 +130,7 @@ void OpenGLRenderer::resize(int width, int height)
 
 void OpenGLRenderer::paint()
 {
-    if (ready)
+    if (ready and not paused)
     {
         functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -143,6 +144,18 @@ void OpenGLRenderer::paint()
             Logs::warning() << "[OpenGL] ERROR : " << (const char*)gluErrorString(error_code) << std::endl;
         }
     }
+}
+
+void OpenGLRenderer::pause()
+{
+    paused = true;
+    terrain->pause();
+}
+
+void OpenGLRenderer::resume()
+{
+    paused = false;
+    terrain->resume();
 }
 
 void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera)

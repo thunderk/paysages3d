@@ -8,6 +8,7 @@
 #include "Thread.h"
 #include "Canvas.h"
 #include "CanvasPreview.h"
+#include "OpenGLRenderer.h"
 
 class RenderThread: public Thread
 {
@@ -89,6 +90,9 @@ void RenderProcess::startRender(Scenery *scenery, const RenderConfig &config)
         image->setProperty("height", preview_size.height());
     }
 
+    // Pause OpenGL renderer
+    window->getRenderer()->pause();
+
     // Start render thread
     render_thread = new RenderThread(renderer);
     render_thread->start();
@@ -145,6 +149,8 @@ void RenderProcess::timerEvent(QTimerEvent *)
         render_thread->join();
         delete render_thread;
         render_thread = NULL;
+
+        window->getRenderer()->resume();
     }
 
     if (renderer)

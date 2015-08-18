@@ -295,6 +295,11 @@ void ExplorerChunkTerrain::askInterrupt()
     interrupt = true;
 }
 
+void ExplorerChunkTerrain::askResume()
+{
+    interrupt = false;
+}
+
 Color ExplorerChunkTerrain::getTextureColor(double x, double y)
 {
     Vector3 location = {_startx + x * _size, 0.0, _startz + y * _size};

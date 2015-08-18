@@ -27,6 +27,17 @@ public:
     void paint();
 
     /**
+     * Pause the rendering process.
+     *
+     * This will prevent paintings and stop background tasks, until resume() is called.
+     */
+    void pause();
+    /**
+     * Resume the rendering process, put on hold by pause().
+     */
+    void resume();
+
+    /**
      * Change the camera location.
      *
      * This may change the camera passed as argument (to stay above ground for example).
@@ -42,6 +53,7 @@ public:
 
 private:
     bool ready;
+    bool paused;
     int vp_width;
     int vp_height;
 

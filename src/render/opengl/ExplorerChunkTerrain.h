@@ -29,6 +29,7 @@ public:
 
     void askReset(bool topology = true, bool texture = true);
     void askInterrupt();
+    void askResume();
 
     Color getTextureColor(double x, double y);
 
