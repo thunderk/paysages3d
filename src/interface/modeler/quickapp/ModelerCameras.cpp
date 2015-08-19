@@ -13,10 +13,6 @@ ModelerCameras::ModelerCameras(MainModelerWindow *parent):
     current = new CameraDefinition();
     active = render;
 
-    topdown->strafeForward(-10.0);
-    topdown->strafeUp(25.0);
-    topdown->rotatePitch(-0.8);
-
     // Watch GUI choice
     QObject *widget = parent->findQmlObject("camera_choice");
     connect(widget, SIGNAL(stateChanged(QString)), this, SLOT(changeActiveCamera(QString)));
@@ -85,6 +81,15 @@ void ModelerCameras::changeActiveCamera(const QString &name)
     }
     else if (name == "Top-down camera")
     {
+        topdown->setLocation(render->getLocation());
+        topdown->setTarget(render->getTarget());
+
+        topdown->strafeForward(-10.0);
+        topdown->strafeUp(25.0);
+        topdown->rotatePitch(-0.8);
+
+        topdown->validate();
+
         active = topdown;
     }
 }
