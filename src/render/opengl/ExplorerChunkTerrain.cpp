@@ -8,6 +8,8 @@
 #include "OpenGLRenderer.h"
 #include "TerrainRenderer.h"
 #include "VertexArray.h"
+#include "Scenery.h"
+#include "TerrainDefinition.h"
 
 ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, double z, double size, int nbchunks):
     _renderer(renderer)
@@ -31,8 +33,9 @@ ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, d
     _overall_step = size * (double) nbchunks;
 
     distance_to_camera = 0.0;
-
-    overwater = false;
+    underwater = false;
+    lowest = 0.0;
+    highest = 0.0;
 
     tessellation_count = 33;
     tessellated = new VertexArray<TerrainVertex>();
@@ -62,14 +65,22 @@ bool ExplorerChunkTerrain::maintain()
     {
         _reset_topology = false;
         _tessellation_current_size = 0;
-        overwater = false;
+        lowest = 10000.0;
+        highest = -10000.0;
+        underwater = false;
     }
     if (_reset_texture)
     {
         _reset_texture = false;
         _texture_current_size = 0;
+        underwater = false;
     }
     _lock_data.unlock();
+
+    if (underwater)
+    {
+        return false;
+    }
 
     // Improve heightmap resolution
     if (_tessellation_current_size < _tessellation_max_size)
@@ -90,9 +101,13 @@ bool ExplorerChunkTerrain::maintain()
                         double z = _startz + _tessellation_step * (float)j;
 
                         double height = _renderer->getTerrainRenderer()->getHeight(x, z, true, false);
-                        if (height >= 0.0)
+                        if (height >= highest)
                         {
-                            overwater = true;
+                            highest = height;
+                        }
+                        if (height <= lowest)
+                        {
+                            lowest = height;
                         }
 
                         TerrainVertex v;
@@ -112,6 +127,8 @@ bool ExplorerChunkTerrain::maintain()
                     return false;
                 }
             }
+
+            underwater = highest < -_renderer->getScenery()->getTerrain()->getWaterOffset();
 
             _lock_data.lock();
             _tessellation_current_size = new_tessellation_size;
@@ -170,6 +187,14 @@ bool ExplorerChunkTerrain::maintain()
 
 void ExplorerChunkTerrain::updatePriority(CameraDefinition* camera)
 {
+    // Under water check
+    underwater = highest < -_renderer->getScenery()->getTerrain()->getWaterOffset();
+    if (underwater)
+    {
+        priority = -10000.0;
+        return;
+    }
+
     Vector3 camera_location = camera->getLocation();
 
     // Handle position
@@ -198,11 +223,7 @@ void ExplorerChunkTerrain::updatePriority(CameraDefinition* camera)
     _lock_data.unlock();
 
     // Update wanted LOD
-    if (not overwater)
-    {
-        _texture_wanted_size = 2;
-    }
-    else if (distance_to_camera < 60.0)
+    if (distance_to_camera < 60.0)
     {
         _texture_wanted_size = _texture_max_size;
     }
@@ -237,6 +258,11 @@ void ExplorerChunkTerrain::updatePriority(CameraDefinition* camera)
 
 void ExplorerChunkTerrain::render(QOpenGLShaderProgram* program, OpenGLFunctions* functions)
 {
+    if (underwater)
+    {
+        return;
+    }
+
     // Put texture in place
     _lock_data.lock();
     if (_texture_changed)

@@ -65,8 +65,10 @@ private:
     int _texture_max_size;
 
     // LOD control
+    bool underwater;
+    double lowest;
+    double highest;
     double distance_to_camera;
-    bool overwater;
 };
 
 }
