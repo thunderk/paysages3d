@@ -2,7 +2,7 @@
 
 #include "Color.h"
 
-static double _hue2rgb(double p, double q, double t)
+static inline double _hue2rgb(double p, double q, double t)
 {
     if (t < 0.0) t += 1;
     if (t > 1.0) t -= 1;
@@ -12,7 +12,7 @@ static double _hue2rgb(double p, double q, double t)
     return p;
 }
 
-Color colorFromHSL(ColorHSL col)
+Color colorFromHSL(const ColorHSL &col)
 {
     Color result;
 
@@ -34,7 +34,7 @@ Color colorFromHSL(ColorHSL col)
     return result;
 }
 
-ColorHSL colorToHSL(Color col)
+ColorHSL colorToHSL(const Color &col)
 {
     ColorHSL result;
     double min, max;

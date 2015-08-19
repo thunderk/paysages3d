@@ -115,7 +115,7 @@ void WaterDefinition::applyPreset(WaterPreset preset)
         transparency = 0.5;
         reflection = 0.2;
         transparency_depth = 4.0;
-        material->base = colorToHSL(Color(0.08, 0.15, 0.2, 1.0));
+        material->setColor(0.08, 0.15, 0.2, 1.0);
         depth_color->r = 0.0;
         depth_color->g = 0.1;
         depth_color->b = 0.1;
@@ -131,7 +131,7 @@ void WaterDefinition::applyPreset(WaterPreset preset)
         transparency = 0.3;
         reflection = 0.07;
         transparency_depth = 3.0;
-        material->base = colorToHSL(Color(0.05, 0.18, 0.2, 1.0));
+        material->setColor(0.05, 0.18, 0.2, 1.0);
         depth_color->r = 0.0;
         depth_color->g = 0.18;
         depth_color->b = 0.15;
@@ -144,11 +144,11 @@ void WaterDefinition::applyPreset(WaterPreset preset)
     }
 
     depth_color->a = 1.0;
-    material->base.a = 1.0;
+    material->base->a = 1.0;
     material->reflection = 1.0;
     material->shininess = 16.0;
     material->hardness = 0.3;
-    foam_material->base = colorToHSL(Color(0.8, 0.8, 0.8, 1.0));
+    foam_material->setColor(0.8, 0.8, 0.8, 1.0);
     foam_material->reflection = 0.1;
     foam_material->shininess = 1.5;
     foam_material->hardness = 0.2;

@@ -10,6 +10,7 @@ class BASICSSHARED_EXPORT Color
 {
 public:
     Color();
+    Color(const Color &col);
     Color(double r, double g, double b, double a=1.0);
 
     void save(PackStream* stream) const;

@@ -74,9 +74,9 @@ Color LightingManager::applyFinalComponent(const LightComponent &component, cons
     diffuse = (diffuse + (1.0 - normal_norm)) / (1.0 + (1.0 - normal_norm));
     if (diffuse > 0.0)
     {
-        result.r += diffuse * material._rgb.r * light_color.r;
-        result.g += diffuse * material._rgb.g * light_color.g;
-        result.b += diffuse * material._rgb.b * light_color.b;
+        result.r += diffuse * material.base->r * light_color.r;
+        result.g += diffuse * material.base->g * light_color.g;
+        result.b += diffuse * material.base->b * light_color.b;
     }
 
     /* specular reflection */

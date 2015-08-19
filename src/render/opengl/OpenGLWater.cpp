@@ -43,7 +43,7 @@ void OpenGLWater::initialize()
 
 void OpenGLWater::update()
 {
-    Color water_color = renderer->getScenery()->getWater()->material->_rgb;
+    Color water_color = *renderer->getScenery()->getWater()->material->base;
     renderer->getSharedState()->set("waterColor", water_color);
 
     double water_reflection = renderer->getScenery()->getWater()->reflection;

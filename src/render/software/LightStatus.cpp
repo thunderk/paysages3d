@@ -40,6 +40,6 @@ Color LightStatus::apply(const Vector3 &normal, const SurfaceMaterial &material)
         final = final.add(manager->applyFinalComponent(component, eye, location, normal, material));
     }
 
-    final.a = material.base.a;
+    final.a = material.base->a;
     return final;
 }

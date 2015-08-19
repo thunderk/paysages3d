@@ -176,8 +176,7 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
     segment_count = _findSegments(model, parent, start, direction, 20, transparency_depth, max_length, &inside_length, &total_length, segments);
     for (i = segment_count - 1; i >= 0; i--)
     {
-        SurfaceMaterial material;
-        material.base = colorToHSL(COLOR_WHITE);
+        SurfaceMaterial material(COLOR_WHITE);
         material.hardness = 0.25;
         material.reflection = 0.0;
         material.shininess = 0.0;

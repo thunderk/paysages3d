@@ -3,10 +3,6 @@
 
 #include "definition_global.h"
 
-// TODO Change to pointers and forward declaration
-#include "ColorHSL.h"
-#include "Color.h"
-
 namespace paysages {
 namespace definition {
 
@@ -15,6 +11,9 @@ class DEFINITIONSHARED_EXPORT SurfaceMaterial
 public:
     SurfaceMaterial();
     SurfaceMaterial(const Color& color);
+    ~SurfaceMaterial();
+
+    void setColor(double r, double g, double b, double a);
 
     void save(PackStream* stream) const;
     void load(PackStream* stream);
@@ -22,15 +21,13 @@ public:
     void validate();
 
 public:
-    ColorHSL base;
+    Color *base;
 
     double hardness;
     double reflection;
     double shininess;
 
     double receive_shadows;
-
-    Color _rgb;
 };
 
 }

@@ -20,7 +20,11 @@ METHSPEC Color::Color():
 METHSPEC Color::Color(double r, double g, double b, double a):
     r(r), g(g), b(b), a(a)
 {
+}
 
+METHSPEC Color::Color(const Color &col):
+    r(col.r), g(col.g), b(col.b), a(col.a)
+{
 }
 
 METHSPEC unsigned int Color::to32BitRGBA() const

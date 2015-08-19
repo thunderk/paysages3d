@@ -236,7 +236,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     /* Bring color to the camera */
     color = parent->applyMediumTraversal(location, color);
 
-    result.base = definition->material->_rgb;
+    result.base = *definition->material->base;
     result.final = color;
 
     return result;

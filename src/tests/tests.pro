@@ -25,7 +25,8 @@ SOURCES += main.cpp \
     Scenery_Test.cpp \
     DefinitionNode_Test.cpp \
     FloatNode_Test.cpp \
-    DiffManager_Test.cpp
+    DiffManager_Test.cpp \
+    ColorHSL_Test.cpp
 
 HEADERS += \
     BaseTestCase.h

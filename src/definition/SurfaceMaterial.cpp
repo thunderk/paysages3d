@@ -1,6 +1,7 @@
 #include "SurfaceMaterial.h"
 
 #include "PackStream.h"
+#include "Color.h"
 
 SurfaceMaterial::SurfaceMaterial():
     SurfaceMaterial(COLOR_BLACK)
@@ -9,18 +10,29 @@ SurfaceMaterial::SurfaceMaterial():
 
 SurfaceMaterial::SurfaceMaterial(const Color &color)
 {
-    base = colorToHSL(color);
+    base = new Color(color);
     hardness = 0.5;
     reflection = 0.0;
     shininess = 0.0;
     receive_shadows = 1.0;
 }
 
+SurfaceMaterial::~SurfaceMaterial()
+{
+    delete base;
+}
+
+void SurfaceMaterial::setColor(double r, double g, double b, double a)
+{
+    base->r = r;
+    base->g = g;
+    base->b = b;
+    base->a = a;
+}
+
 void SurfaceMaterial::save(PackStream* stream) const
 {
-    stream->write(&base.h);
-    stream->write(&base.l);
-    stream->write(&base.s);
+    base->save(stream);
 
     stream->write(&hardness);
     stream->write(&reflection);
@@ -31,20 +43,15 @@ void SurfaceMaterial::save(PackStream* stream) const
 
 void SurfaceMaterial::load(PackStream* stream)
 {
-    stream->read(&base.h);
-    stream->read(&base.l);
-    stream->read(&base.s);
+    base->load(stream);
 
     stream->read(&hardness);
     stream->read(&reflection);
     stream->read(&shininess);
 
     stream->read(&receive_shadows);
-
-    validate();
 }
 
 void SurfaceMaterial::validate()
 {
-    _rgb = colorFromHSL(base);
 }
