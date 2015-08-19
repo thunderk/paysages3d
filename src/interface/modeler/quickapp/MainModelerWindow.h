@@ -25,6 +25,12 @@ public:
     inline OpenGLRenderer *getRenderer() const {return renderer;}
     inline ModelerCameras *getCamera() const {return cameras;}
 
+public slots:
+    void newFile();
+    void saveFile();
+    void loadFile();
+    void exit();
+
 protected:
     virtual void keyReleaseEvent(QKeyEvent *event) override;
 

@@ -1,7 +1,7 @@
 import QtQuick 2.2
 
 BasePanel {
-    width: 20
+    width: 40
 
     BaseSlider {
         objectName: "water_height"
@@ -9,5 +9,6 @@ BasePanel {
         maximumValue: 1
         orientation: Qt.Vertical
         anchors.fill: parent
+        anchors.margins: 10
     }
 }

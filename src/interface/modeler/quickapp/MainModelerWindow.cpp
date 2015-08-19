@@ -37,6 +37,24 @@ MainModelerWindow::MainModelerWindow()
     water = new WaterModeler(this);
 
     render_process = new RenderProcess(this, render_preview_provider);
+
+    // Bind file buttons
+    QObject *button_new = findQmlObject("tool_file_new");
+    if (button_new) {
+        connect(button_new, SIGNAL(clicked()), this, SLOT(newFile()));
+    }
+    QObject *button_save = findQmlObject("tool_file_save");
+    if (button_save) {
+        connect(button_save, SIGNAL(clicked()), this, SLOT(saveFile()));
+    }
+    QObject *button_load = findQmlObject("tool_file_load");
+    if (button_load) {
+        connect(button_load, SIGNAL(clicked()), this, SLOT(loadFile()));
+    }
+    QObject *button_exit = findQmlObject("tool_file_exit");
+    if (button_exit) {
+        connect(button_exit, SIGNAL(clicked()), this, SLOT(exit()));
+    }
 }
 
 MainModelerWindow::~MainModelerWindow()
@@ -76,6 +94,32 @@ void MainModelerWindow::setState(const QString &stateName)
     rootObject()->setProperty("state", stateName);
 }
 
+void MainModelerWindow::newFile()
+{
+    getScenery()->autoPreset();
+    renderer->reset();
+}
+
+void MainModelerWindow::saveFile()
+{
+    getScenery()->saveGlobal("saved.p3d");
+}
+
+void MainModelerWindow::loadFile()
+{
+    Scenery loaded;
+    if (loaded.loadGlobal("saved.p3d") == Scenery::FILE_OPERATION_OK)
+    {
+        loaded.copy(scenery);
+        renderer->reset();
+    }
+}
+
+void MainModelerWindow::exit()
+{
+    QGuiApplication::instance()->exit();
+}
+
 void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
 {
     if (getState() == "Render Dialog")
@@ -113,30 +157,28 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
         {
             if (event->modifiers() & Qt::ControlModifier)
             {
-                QGuiApplication::instance()->exit();
+                exit();
             }
         }
         else if (event->key() == Qt::Key_N)
         {
             if (event->modifiers() & Qt::ControlModifier)
             {
-                getScenery()->autoPreset();
-                renderer->reset();
+                newFile();
             }
         }
         else if (event->key() == Qt::Key_S)
         {
             if (event->modifiers() & Qt::ControlModifier)
             {
-                getScenery()->saveGlobal("saved.p3d");
+                saveFile();
             }
         }
         else if (event->key() == Qt::Key_L or event->key() == Qt::Key_O)
         {
             if (event->modifiers() & Qt::ControlModifier)
             {
-                getScenery()->loadGlobal("saved.p3d");
-                renderer->reset();
+                loadFile();
             }
         }
         else if (event->key() == Qt::Key_Z)

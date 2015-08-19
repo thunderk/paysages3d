@@ -28,5 +28,14 @@
         <file>RenderDialog.qml</file>
         <file>CameraChoice.qml</file>
         <file>BaseRectangle.qml</file>
+        <file>BaseSecondaryToolbar.qml</file>
+        <file>images/icon_exit.png</file>
+        <file>images/icon_file_load.png</file>
+        <file>images/icon_file_new.png</file>
+        <file>images/icon_file_save.png</file>
+        <file>images/tab_file.png</file>
+        <file>images/arrow_down.png</file>
+        <file>images/arrow_up.png</file>
+        <file>ClickableImage.qml</file>
     </qresource>
 </RCC>

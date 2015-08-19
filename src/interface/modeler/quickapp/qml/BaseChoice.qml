@@ -4,9 +4,8 @@ import QtQuick.Layouts 1.1
 
 Item {
     default property alias children : inner_layout.children
+    property alias spacing : inner_layout.spacing
     property int value
-    width: 100
-    height: 32
 
     ExclusiveGroup {
         id: choice_group

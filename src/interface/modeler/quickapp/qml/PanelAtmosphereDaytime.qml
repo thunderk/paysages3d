@@ -3,10 +3,11 @@ import QtQuick.Controls 1.1
 import QtQuick.Layouts 1.1
 
 BasePanel {
-    width: 70
+    id: daytime
+    width: 100
 
     objectName: "atmosphere_daytime"
-    default property real value: day_night.value == 2 ? 1.0 : slider.value * 0.54 + 0.23;
+    default property real value: day_night.value == 2 ? 0.0 : slider.value * 0.54 + 0.23;
     signal changed(real value)
 
     onValueChanged: {
@@ -20,15 +21,19 @@ BasePanel {
 
     ColumnLayout
     {
-        anchors.fill: parent
-        anchors.margins: 10
+        height: parent.height
+        anchors.horizontalCenter: parent.horizontalCenter
         spacing: 20
+
+        Item {height: 1}
 
         BaseChoice {
             id: day_night
-            width: parent.width
 
-            Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+            Layout.alignment: Qt.AlignHCenter
+            spacing: 10
+            width: 90
+            height: 40
 
             BaseChoiceItem {
                 icon: "images/icon_atmosphere_day.png"
@@ -47,7 +52,97 @@ BasePanel {
             Layout.maximumWidth: 15
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignHCenter
-            visible: day_night.value == 1
         }
+
+        Grid {
+            id: clock
+            property int hour: daytime.value * 86400 / 3600
+            property int minute: (daytime.value * 86400 - 3600 * hour) / 60
+            property int second: daytime.value * 86400 - 3600 * hour - 60 * minute
+            rows: 3
+            columns: 5
+            rowSpacing: 4
+
+            ClickableImage {
+                width: 20
+                height: 10
+                source: "qrc:/images/arrow_up.png"
+                onClicked: slider.value += (1.0 / 24.0) / 0.54
+            }
+            Item {width: 1; height: 1}
+            ClickableImage {
+                width: 20
+                height: 10
+                source: "qrc:/images/arrow_up.png"
+                onClicked: slider.value += (1.0 / 3600.0) / 0.54
+            }
+            Item {width: 1; height: 1}
+            ClickableImage {
+                width: 20
+                height: 10
+                source: "qrc:/images/arrow_up.png"
+                onClicked: slider.value += (1.0 / 86400.0) / 0.54
+            }
+
+            Text {
+                text: (clock.hour > 9 ? "" : "0") + clock.hour.toString()
+                font.pixelSize: 14
+            }
+            Text {
+                text: " : "
+                font.pixelSize: 14
+            }
+            Text {
+                text: (clock.minute > 9 ? "" : "0") + clock.minute.toString()
+                font.pixelSize: 14
+            }
+            Text {
+                text: " : "
+                font.pixelSize: 14
+            }
+            Text {
+                text: (clock.second > 9 ? "" : "0") + clock.second.toString()
+                font.pixelSize: 14
+            }
+
+            ClickableImage {
+                width: 20
+                height: 10
+                source: "qrc:/images/arrow_down.png"
+                onClicked: slider.value -= (1.0 / 24.0) / 0.54
+            }
+            Item {width: 1; height: 1}
+            ClickableImage {
+                width: 20
+                height: 10
+                source: "qrc:/images/arrow_down.png"
+                onClicked: slider.value -= (1.0 / 1440.0) / 0.54
+            }
+            Item {width: 1; height: 1}
+            ClickableImage {
+                width: 20
+                height: 10
+                source: "qrc:/images/arrow_down.png"
+                onClicked: slider.value -= (1.0 / 86400.0) / 0.54
+            }
+        }
+
+        Item {height: 1}
     }
+
+    states: [
+        State {
+            name: "night"
+            when: day_night.value == 2
+            PropertyChanges {
+                target: slider
+                enabled: false
+            }
+            PropertyChanges {
+                target: clock
+                enabled: false
+            }
+        }
+
+    ]
 }

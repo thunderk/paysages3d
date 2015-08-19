@@ -59,6 +59,7 @@ Item {
         onEntered: {
             parent.hovered = true;
             tooltip_widget.hovertext = hovertext;
+            tooltip_widget.hovered = this;
         }
         onExited: {
             parent.hovered = false;

@@ -11,66 +11,58 @@ OpenGLView {
     Tooltip {
         id: tooltip_widget
 
-        anchors.top: parent.top
-        anchors.right: parent.right
+        anchors.top: primary_toolbar.bottom
+        anchors.right: primary_toolbar.right
     }
 
     Toolbar {
         id: primary_toolbar
+        horizontal:  true
         color: "#90888888"
+        property var current
 
+        anchors.top: parent.top
         anchors.left: parent.left
 
         ToolbarButton {
-            id: tool_display
-            picture: "images/tab_display.png"
-            hovertext: qsTr("Display options")
-        }
-        ToolbarButton {
             id: tool_terrain
             picture: "images/tab_terrain.png"
+            hovertext: qsTr("Terrain edition")
         }
         ToolbarButton {
             id: tool_textures
             picture: "images/tab_textures.png"
+            hovertext: qsTr("Terrain textures")
         }
         ToolbarButton {
             id: tool_water
             picture: "images/icon_water.png"
-            hovertext: "Water tools"
+            hovertext: qsTr("Water tools")
         }
         ToolbarButton {
             id: tool_atmosphere
             picture: "images/icon_atmosphere.png"
-            hovertext: "Atmosphere/weather tools"
+            hovertext: qsTr("Atmosphere/weather control")
         }
         ToolbarButton {
             id: tool_clouds
             picture: "images/tab_clouds.png"
+            hovertext: qsTr("Cloud layers")
         }
         ToolbarButton {
             id: tool_render
             picture: "images/tab_render.png"
+            hovertext: qsTr("Rendering")
         }
-    }
-
-    Toolbar {
-        id: display_toolbar
-        enabled: false
-        anchors.left: primary_toolbar.right
-
         ToolbarButton {
-            id: tool_display_topdown
-            picture: "images/display_topdown.png"
-            hovertext: qsTr("Top-down view")
-            helptext: qsTr("Drag the mouse on the map to change the viewpoint.")
+            id: tool_file
+            picture: "images/tab_file.png"
+            hovertext: qsTr("File")
         }
     }
 
-    Toolbar {
+    BaseSecondaryToolbar {
         id: water_toolbar
-        enabled: false
-        anchors.left: primary_toolbar.right
 
         ToolbarButton {
             id: tool_water_level
@@ -79,10 +71,8 @@ OpenGLView {
         }
     }
 
-    Toolbar {
+    BaseSecondaryToolbar {
         id: atmosphere_toolbar
-        enabled: false
-        anchors.left: primary_toolbar.right
 
         ToolbarButton {
             id: tool_atmosphere_daytime
@@ -91,10 +81,8 @@ OpenGLView {
         }
     }
 
-    Toolbar {
+    BaseSecondaryToolbar {
         id: render_toolbar
-        enabled: false
-        anchors.left: primary_toolbar.right
 
         ToolbarButton {
             id: tool_render_quick
@@ -104,10 +92,43 @@ OpenGLView {
         }
     }
 
+    BaseSecondaryToolbar {
+        id: file_toolbar
+
+        ToolbarButton {
+            id: tool_file_new
+            objectName: "tool_file_new"
+            picture: "images/icon_file_new.png"
+            hovertext: qsTr("Generate a new scene")
+        }
+
+        ToolbarButton {
+            id: tool_file_save
+            objectName: "tool_file_save"
+            picture: "images/icon_file_save.png"
+            hovertext: qsTr("Save the current scene to a file")
+        }
+
+        ToolbarButton {
+            id: tool_file_load
+            objectName: "tool_file_load"
+            picture: "images/icon_file_load.png"
+            hovertext: qsTr("Load a scene from a file")
+        }
+
+        ToolbarButton {
+            id: tool_file_exit
+            objectName: "tool_file_exit"
+            picture: "images/icon_exit.png"
+            hovertext: qsTr("Exit the program")
+        }
+    }
+
     CameraChoice {
         id: camera_choice
-        anchors.bottom: main_ui.bottom
-        anchors.horizontalCenter: main_ui.horizontalCenter
+        height: 150
+        anchors.right: main_ui.right
+        anchors.verticalCenter: main_ui.verticalCenter
     }
 
     RenderDialog {
@@ -126,15 +147,6 @@ OpenGLView {
     }
 
     states: [
-        State {
-            name: "Display Mode"
-            when: tool_display.selected
-
-            PropertyChanges {
-                target: display_toolbar
-                enabled: true
-            }
-        },
         State {
             name: "Water Mode"
             when: tool_water.selected
@@ -159,6 +171,15 @@ OpenGLView {
 
             PropertyChanges {
                 target: render_toolbar
+                enabled: true
+            }
+        },
+        State {
+            name: "File Mode"
+            when: tool_file.selected
+
+            PropertyChanges {
+                target: file_toolbar
                 enabled: true
             }
         },
