@@ -86,11 +86,6 @@ void SoftwareRenderer::prepare()
     //fluid_medium->registerMedium(water_renderer);
 }
 
-void SoftwareRenderer::disableClouds()
-{
-    scenery->getClouds()->clear();
-}
-
 void SoftwareRenderer::disableAtmosphere()
 {
     LightComponent light;

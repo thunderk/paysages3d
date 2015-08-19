@@ -17,6 +17,7 @@
 CloudsRenderer::CloudsRenderer(SoftwareRenderer* parent):
     parent(parent)
 {
+    enabled = true;
     fake_renderer = new BaseCloudLayerRenderer(parent);
 
     CloudLayerDefinition* fake_layer = new CloudLayerDefinition(NULL);
@@ -37,6 +38,11 @@ CloudsRenderer::~CloudsRenderer()
     }
     delete fake_model->getLayer();
     delete fake_model;
+}
+
+void CloudsRenderer::setEnabled(bool enabled)
+{
+    this->enabled = enabled;
 }
 
 void CloudsRenderer::update()
@@ -138,7 +144,7 @@ Color CloudsRenderer::getColor(const Vector3 &eye, const Vector3 &location, cons
     CloudsDefinition* definition = parent->getScenery()->getClouds();
 
     int n = definition->count();
-    if (n < 1)
+    if (not enabled or n < 1)
     {
         return base;
     }
@@ -164,7 +170,7 @@ bool CloudsRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
     CloudsDefinition* definition = parent->getScenery()->getClouds();
 
     int n = definition->count();
-    if (n < 1)
+    if (not enabled or n < 1)
     {
         return true;
     }

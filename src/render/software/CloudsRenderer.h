@@ -17,6 +17,11 @@ public:
     CloudsRenderer(SoftwareRenderer* parent);
     virtual ~CloudsRenderer();
 
+    /**
+     * Enable or disable the whole cloud rendering.
+     */
+    void setEnabled(bool enabled);
+
     /*!
      * \brief Update the renderer with the bound scenery.
      *
@@ -58,6 +63,7 @@ public:
      */
     virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override;
 private:
+    bool enabled;
     SoftwareRenderer* parent;
 
     std::vector<BaseCloudLayerRenderer*> layer_renderers;

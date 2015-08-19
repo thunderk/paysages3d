@@ -6,6 +6,7 @@
 #include "OpenGLSkybox.h"
 #include "OpenGLWater.h"
 #include "OpenGLTerrain.h"
+#include "CloudsRenderer.h"
 #include "Scenery.h"
 #include "LightingManager.h"
 #include "Logs.h"
@@ -57,7 +58,7 @@ void OpenGLRenderer::initialize()
 
         prepare();
 
-        disableClouds();
+        getCloudsRenderer()->setEnabled(false);
         getLightingManager()->setSpecularity(false);
 
         skybox->initialize();
