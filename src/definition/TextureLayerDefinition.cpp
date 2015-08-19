@@ -113,15 +113,15 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset)
     switch (preset)
     {
         case TEXTURES_LAYER_PRESET_MUD:
-            displacement_height = 0.05;
+            displacement_height = 0.02;
             displacement_scaling = 3.0;
             displacement_offset = 0.0;
-            material->base = colorToHSL(Color(0.4, 0.38, 0.35, 1.0));
+            material->base = colorToHSL(Color(0.015, 0.014, 0.014, 1.0));
             material->reflection = 0.003;
             material->shininess = 4.0;
             break;
         case TEXTURES_LAYER_PRESET_ROCK:
-            terrain_zone->addHeightRangeQuick(1.0, 0.5, 0.55, 1.0, 1.0);
+            terrain_zone->addHeightRangeQuick(1.0, 0.6, 0.7, 1.0, 1.0);
             displacement_height = 0.3;
             displacement_scaling = 2.0;
             displacement_offset = 0.0;
@@ -140,12 +140,12 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset)
             material->shininess = 4.0;
             break;
         case TEXTURES_LAYER_PRESET_SAND:
-            terrain_zone->addHeightRangeQuick(1.0, 0.498, 0.502, 0.505, 0.51);
-            terrain_zone->addSlopeRangeQuick(1.0, 0.0, 0.0, 0.7, 0.1);
-            displacement_height = 0.02;
+            terrain_zone->addHeightRangeQuick(1.0, 0.495, 0.505, 0.56, 0.63);
+            terrain_zone->addSlopeRangeQuick(1.0, 0.0, 0.0, 0.1, 0.4);
+            displacement_height = 0.05;
             displacement_scaling = 5.0;
             displacement_offset = 0.0;
-            material->base = colorToHSL(Color(0.93, 0.9, 0.8, 1.0));
+            material->base = colorToHSL(Color(1.2, 1.1, 0.9, 1.0));
             material->reflection = 0.008;
             material->shininess = 1.0;
             break;

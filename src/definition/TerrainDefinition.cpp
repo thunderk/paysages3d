@@ -126,7 +126,7 @@ HeightInfo TerrainDefinition::getHeightInfo()
     result.min_height = _min_height;
     result.max_height = _max_height;
     /* TODO This is duplicated in ter_render.c (_realGetWaterHeight) */
-    result.base_height = water_height->getValue() * height * scaling;
+    result.base_height = -getWaterOffset();
 
     return result;
 }
