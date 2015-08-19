@@ -27,6 +27,11 @@ public:
     void paint();
 
     /**
+     * Reset the whole state (when the scenery has been massively updated).
+     */
+    void reset();
+
+    /**
      * Pause the rendering process.
      *
      * This will prevent paintings and stop background tasks, until resume() is called.

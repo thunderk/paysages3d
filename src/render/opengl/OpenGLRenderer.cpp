@@ -146,6 +146,18 @@ void OpenGLRenderer::paint()
     }
 }
 
+void OpenGLRenderer::reset()
+{
+    if (ready)
+    {
+        skybox->updateScenery();
+        water->updateScenery();
+        terrain->updateScenery();
+
+        cameraChangeEvent(render_camera);
+    }
+}
+
 void OpenGLRenderer::pause()
 {
     paused = true;

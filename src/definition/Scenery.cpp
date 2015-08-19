@@ -10,6 +10,7 @@
 #include "TerrainDefinition.h"
 #include "TexturesDefinition.h"
 #include "WaterDefinition.h"
+#include "Logs.h"
 
 static const double APP_HEADER = 19866544632.125;
 static const int DATA_VERSION = 1;
@@ -65,6 +66,7 @@ Scenery::FileOperationResult Scenery::saveGlobal(const std::string &filepath) co
     stream.write(&version_header);
     stream.write(&app_header);
 
+    Logs::debug() << "Scenery saved to file: " << filepath << std::endl;
     return FILE_OPERATION_OK;
 }
 
@@ -108,6 +110,7 @@ Scenery::FileOperationResult Scenery::loadGlobal(const std::string &filepath)
         return FILE_OPERATION_APP_MISMATCH;
     }
 
+    Logs::debug() << "Scenery loaded from file: " << filepath << std::endl;
     return FILE_OPERATION_OK;
 }
 
@@ -134,6 +137,8 @@ void Scenery::autoPreset(int seed)
     camera->setTarget(VECTOR_NORTH);
 
     validate();
+
+    Logs::debug() << "New scenery generated from seed " << seed << ":\n" << toString() << std::endl;
 }
 
 void Scenery::setAtmosphere(AtmosphereDefinition* atmosphere)

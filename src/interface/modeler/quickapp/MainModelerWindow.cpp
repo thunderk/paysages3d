@@ -20,8 +20,6 @@ MainModelerWindow::MainModelerWindow()
     scenery = new Scenery();
     scenery->autoPreset();
 
-    Logs::debug() << "Initialized scenery:\n" << scenery->toString() << std::endl;
-
     renderer = new OpenGLRenderer(scenery);
 
     render_preview_provider = new RenderPreviewProvider();
@@ -112,6 +110,29 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
             if (event->modifiers() & Qt::ControlModifier)
             {
                 QGuiApplication::instance()->exit();
+            }
+        }
+        else if (event->key() == Qt::Key_N)
+        {
+            if (event->modifiers() & Qt::ControlModifier)
+            {
+                getScenery()->autoPreset();
+                renderer->reset();
+            }
+        }
+        else if (event->key() == Qt::Key_S)
+        {
+            if (event->modifiers() & Qt::ControlModifier)
+            {
+                getScenery()->saveGlobal("saved.p3d");
+            }
+        }
+        else if (event->key() == Qt::Key_L or event->key() == Qt::Key_O)
+        {
+            if (event->modifiers() & Qt::ControlModifier)
+            {
+                getScenery()->loadGlobal("saved.p3d");
+                renderer->reset();
             }
         }
         else if (event->key() == Qt::Key_Z)

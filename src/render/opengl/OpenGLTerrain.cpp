@@ -90,6 +90,10 @@ void OpenGLTerrain::initialize()
 
 void OpenGLTerrain::update()
 {
+    for (auto &chunk: _chunks)
+    {
+        chunk->askReset(true, true);
+    }
 }
 
 void OpenGLTerrain::render()
