@@ -105,6 +105,10 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
         {
             render_process->showPreviousRender();
         }
+        else if (event->key() == Qt::Key_F12)
+        {
+            Logs::warning() << "Current scenery dump:" << std::endl << scenery->toString() << std::endl;
+        }
         else if (event->key() == Qt::Key_Q)
         {
             if (event->modifiers() & Qt::ControlModifier)

@@ -16,6 +16,8 @@ AtmosphereDefinition::~AtmosphereDefinition()
 
 void AtmosphereDefinition::save(PackStream* stream) const
 {
+    DefinitionNode::save(stream);
+
     stream->write((int*)&model);
     sun_color.save(stream);
     stream->write(&sun_radius);
@@ -37,6 +39,8 @@ void AtmosphereDefinition::save(PackStream* stream) const
 
 void AtmosphereDefinition::load(PackStream* stream)
 {
+    DefinitionNode::load(stream);
+
     stream->read((int*)&model);
     sun_color.load(stream);
     stream->read(&sun_radius);
@@ -64,6 +68,8 @@ void AtmosphereDefinition::load(PackStream* stream)
 
 void AtmosphereDefinition::copy(DefinitionNode* _destination) const
 {
+    DefinitionNode::copy(_destination);
+
     AtmosphereDefinition* destination = (AtmosphereDefinition*)_destination;
 
     daytime->copy(destination->daytime);

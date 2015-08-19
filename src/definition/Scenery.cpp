@@ -138,7 +138,7 @@ void Scenery::autoPreset(int seed)
 
     validate();
 
-    Logs::debug() << "New scenery generated from seed " << seed << ":\n" << toString() << std::endl;
+    Logs::debug() << "New scenery generated from seed " << seed << std::endl;
 }
 
 void Scenery::setAtmosphere(AtmosphereDefinition* atmosphere)
