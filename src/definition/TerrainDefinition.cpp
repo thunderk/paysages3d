@@ -15,7 +15,7 @@ TerrainDefinition::TerrainDefinition(DefinitionNode* parent):
     height_map = new TerrainHeightMap(this);
     addChild(height_map);
 
-    water_height = new FloatNode(this, "water_height", -0.3);
+    water_height = new FloatNode(this, "water_height");
 
     _height_noise = new NoiseGenerator;
 }
@@ -155,6 +155,8 @@ void TerrainDefinition::applyPreset(TerrainPreset preset)
     default:
         ;
     }
+
+    water_height->setValue(-0.3);
 
     height_map->clearPainting();
     validate();
