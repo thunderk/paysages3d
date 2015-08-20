@@ -89,6 +89,7 @@ OpenGLView {
             objectName: "tool_render_quick"
             picture: "images/icon_render_quick.png"
             hovertext: qsTr("Start a quick render")
+            shortcut: "F5"
         }
 
         ToolbarButton {
@@ -96,6 +97,7 @@ OpenGLView {
             objectName: "tool_render_final"
             picture: "images/tab_render.png"
             hovertext: qsTr("Start a final render")
+            shortcut: "Ctrl+F5"
         }
 
         ToolbarButton {
@@ -103,6 +105,7 @@ OpenGLView {
             objectName: "tool_render_show"
             picture: "images/icon_render_show.png"
             hovertext: qsTr("Show last rendered image")
+            shortcut: "F6"
         }
     }
 
@@ -114,6 +117,7 @@ OpenGLView {
             objectName: "tool_file_new"
             picture: "images/icon_file_new.png"
             hovertext: qsTr("Generate a new scene")
+            shortcut: "Ctrl+N"
         }
 
         ToolbarButton {
@@ -121,6 +125,7 @@ OpenGLView {
             objectName: "tool_file_save"
             picture: "images/icon_file_save.png"
             hovertext: qsTr("Save the current scene to a file")
+            shortcut: "Ctrl+S"
         }
 
         ToolbarButton {
@@ -128,6 +133,7 @@ OpenGLView {
             objectName: "tool_file_load"
             picture: "images/icon_file_load.png"
             hovertext: qsTr("Load a scene from a file")
+            shortcut: "Ctrl+L"
         }
 
         ToolbarButton {
@@ -135,6 +141,7 @@ OpenGLView {
             objectName: "tool_file_exit"
             picture: "images/icon_exit.png"
             hovertext: qsTr("Exit the program")
+            shortcut: "Ctrl+Q"
         }
     }
 

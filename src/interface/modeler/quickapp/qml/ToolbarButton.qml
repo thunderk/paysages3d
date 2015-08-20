@@ -9,6 +9,7 @@ Item {
     property bool toggle: false
     property string helptext
     property string hovertext
+    property string shortcut
     signal clicked
     signal changed(bool value)
 
@@ -70,7 +71,7 @@ Item {
 
         onEntered: {
             button.hovered = true;
-            tooltip_widget.hovertext = hovertext;
+            tooltip_widget.hovertext = button.hovertext + (button.shortcut ? (" (" + button.shortcut + ")") : "");
             tooltip_widget.hovered = this;
         }
         onExited: {
