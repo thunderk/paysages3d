@@ -87,8 +87,22 @@ OpenGLView {
         ToolbarButton {
             id: tool_render_quick
             objectName: "tool_render_quick"
-            picture: "images/tab_render.png"
+            picture: "images/icon_render_quick.png"
             hovertext: qsTr("Start a quick render")
+        }
+
+        ToolbarButton {
+            id: tool_render_final
+            objectName: "tool_render_final"
+            picture: "images/tab_render.png"
+            hovertext: qsTr("Start a final render")
+        }
+
+        ToolbarButton {
+            id: tool_render_show
+            objectName: "tool_render_show"
+            picture: "images/icon_render_show.png"
+            hovertext: qsTr("Show last rendered image")
         }
     }
 

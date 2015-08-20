@@ -14,8 +14,15 @@ Item {
 
     width: image.width + 10
     height: image.height + 10
+    opacity: enabled ? 1.0 : 0.1
 
     onSelectedChanged: changed(selected)
+
+    Behavior on opacity {
+        PropertyAnimation {
+            duration: 200
+        }
+    }
 
     Rectangle {
         id: glow

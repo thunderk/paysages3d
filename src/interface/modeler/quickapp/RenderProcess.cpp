@@ -37,6 +37,17 @@ RenderProcess::RenderProcess(MainModelerWindow *window, RenderPreviewProvider *d
         connect(button_quick, SIGNAL(clicked()), this, SLOT(startQuickRender()));
     }
 
+    QObject *button_final = window->findQmlObject("tool_render_final");
+    if (button_final) {
+        connect(button_final, SIGNAL(clicked()), this, SLOT(startFinalRender()));
+    }
+
+    QObject *button_show = window->findQmlObject("tool_render_show");
+    if (button_show) {
+        button_show->setProperty("enabled", false);
+        connect(button_show, SIGNAL(clicked()), this, SLOT(showPreviousRender()));
+    }
+
     startTimer(100);
 }
 
@@ -66,6 +77,12 @@ void RenderProcess::startRender(Scenery *scenery, const RenderConfig &config)
     if (rendering)
     {
         return;
+    }
+
+    // Enable "show last render" button
+    QObject *button_show = window->findQmlObject("tool_render_show");
+    if (button_show) {
+        button_show->setProperty("enabled", true);
     }
 
     has_render = true;
