@@ -9,6 +9,7 @@ const float HM = 1.2;
 const vec3 betaMSca = vec3(4e-3);
 const vec3 betaMEx = vec3(4e-3 / 0.9);
 const float mieG = 0.8;
+const float WORKAROUND_OFFSET = 0.2;
 const float SPHERE_SIZE = 20000.0;
 const float WORLD_SCALING = 0.05;
 const float SUN_DISTANCE = 149597870.0;
@@ -187,7 +188,7 @@ vec3 _getInscatterColor(inout vec3 x, inout float t, vec3 v, vec3 s, out float r
 
 vec4 applyAerialPerspective(vec4 base)
 {
-    vec3 x = vec3(0.0, Rg + cameraLocation.y * WORLD_SCALING, 0.0);
+    vec3 x = vec3(0.0, Rg + WORKAROUND_OFFSET + cameraLocation.y * WORLD_SCALING, 0.0);
     vec3 v = normalize(unprojected - cameraLocation);
     vec3 s = normalize(sunDirection * SUN_DISTANCE_SCALED - x);
 
@@ -230,7 +231,7 @@ vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float shininess)
     float material_hardness = 0.3;
     float material_reflection = 1.0;
 
-    float r0 = Rg + location.y * WORLD_SCALING;
+    float r0 = Rg + WORKAROUND_OFFSET + location.y * WORLD_SCALING;
     vec3 sun_position = sunDirection * SUN_DISTANCE;
     float muS = dot(vec3(0.0, 1.0, 0.0), normalize(sun_position - vec3(0.0, r0, 0.0)));
 

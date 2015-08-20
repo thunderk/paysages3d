@@ -31,6 +31,7 @@
 #define SUN_DISTANCE_SCALED (SUN_DISTANCE / WORLD_SCALING)
 #define SUN_RADIUS 6.955e5
 #define SUN_RADIUS_SCALED (SUN_RADIUS / WORLD_SCALING)
+#define WORKAROUND_OFFSET 0.2
 
 /*********************** Constants ***********************/
 
@@ -1187,7 +1188,7 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
 
     Vector3 direction = location.sub(eye).scale(WORLD_SCALING);
 
-    Vector3 x = {0.0, Rg + eye.y * WORLD_SCALING, 0.0};
+    Vector3 x = {0.0, Rg + WORKAROUND_OFFSET + eye.y * WORLD_SCALING, 0.0};
     Vector3 v = direction.normalize();
     Vector3 s = sun_position.sub(x).normalize();
 
@@ -1222,7 +1223,7 @@ void AtmosphereModelBruneton::fillLightingStatus(LightStatus *status, const Vect
 
     double altitude = status->getLocation().y * WORLD_SCALING;
 
-    double r0 = Rg + altitude;
+    double r0 = Rg + WORKAROUND_OFFSET + altitude;
     Vector3 up = {0.0, 1.0, 0.0};
     Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(SUN_DISTANCE);
     Vector3 x = {0.0, r0, 0.0};
