@@ -19,6 +19,15 @@ Toolbar {
         hovertext: qsTr("Top-down camera")
     }
 
+    ToolbarButton {
+        id: camera_toggle_water
+        objectName: "camera_toggle_water"
+        toggle: true
+        selected: true
+        picture: "images/toggle_water.png"
+        hovertext: qsTr("Toggle water rendering")
+    }
+
     states: [
         State {
             name: "Render camera"

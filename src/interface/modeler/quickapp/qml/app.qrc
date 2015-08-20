@@ -37,5 +37,6 @@
         <file>images/arrow_down.png</file>
         <file>images/arrow_up.png</file>
         <file>ClickableImage.qml</file>
+        <file>images/toggle_water.png</file>
     </qresource>
 </RCC>

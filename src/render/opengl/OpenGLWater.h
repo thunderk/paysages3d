@@ -20,9 +20,15 @@ public:
     virtual void render() override;
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
+
+    /**
+     * Enable or disable the water surface rendering.
+     */
+    void setEnabled(bool enabled);
 private:
     void setVertex(int i, float x, float y, float z);
 
+    bool enabled;
     OpenGLShaderProgram* program;
     float* vertices;
 };

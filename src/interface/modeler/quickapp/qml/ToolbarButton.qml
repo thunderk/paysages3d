@@ -2,23 +2,28 @@ import QtQuick 2.0
 import QtGraphicalEffects 1.0
 
 Item {
+    id: button
     property string picture
     property bool selected: false
     property bool hovered: false
+    property bool toggle: false
     property string helptext
     property string hovertext
     signal clicked
+    signal changed(bool value)
 
     width: image.width + 10
     height: image.height + 10
 
+    onSelectedChanged: changed(selected)
+
     Rectangle {
         id: glow
         anchors.fill: parent
-        color: "#cccccc"
+        color: parent.toggle ? "#bbccbb" : "#cccccc"
         radius: 8
 
-        opacity: parent.selected ? 1.0 : (parent.hovered ? 0.5 : 0.0)
+        opacity: button.selected ? 1.0 : (button.hovered ? 0.5 : 0.0)
         Behavior on opacity {
             PropertyAnimation {
                 duration: 200
@@ -28,14 +33,14 @@ Item {
             anchors.fill: glow
             glowRadius: 8
             spread: 0.2
-            color: "white"
+            color: button.toggle ? "#99aa99" : "#ffffff"
             cornerRadius: glow.radius + glowRadius
         }
     }
 
     Image {
         id: image
-        source: parent.picture
+        source: button.picture
         anchors.centerIn: parent
         width: 32
         height: 32
@@ -57,34 +62,37 @@ Item {
         cursorShape: Qt.PointingHandCursor
 
         onEntered: {
-            parent.hovered = true;
+            button.hovered = true;
             tooltip_widget.hovertext = hovertext;
             tooltip_widget.hovered = this;
         }
         onExited: {
-            parent.hovered = false;
+            button.hovered = false;
             tooltip_widget.hovertext = "";
         }
         onClicked: {
-            parent.selected = !parent.selected;
-            if (parent.selected)
+            button.selected = !button.selected;
+            if (!button.toggle)
             {
-                var toolbar = parent.parent;
-                for (var i = 0; i < toolbar.children.length; ++i)
+                if (button.selected)
                 {
-                    var child = toolbar.children[i]
-                    if (child !== parent)
+                    var toolbar = button.parent;
+                    for (var i = 0; i < toolbar.children.length; ++i)
                     {
-                        child.selected = false;
+                        var child = toolbar.children[i]
+                        if (child !== button && !child.toggle)
+                        {
+                            child.selected = false;
+                        }
                     }
+                    tooltip_widget.helptext = helptext;
                 }
-                tooltip_widget.helptext = helptext;
+                else
+                {
+                    tooltip_widget.helptext = "";
+                }
             }
-            else
-            {
-                tooltip_widget.helptext = "";
-            }
-            parent.clicked();
+            button.clicked();
         }
     }
 }

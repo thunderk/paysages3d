@@ -15,6 +15,7 @@ OpenGLWater::OpenGLWater(OpenGLRenderer *renderer):
     OpenGLPart(renderer)
 {
     vertices = new float[4 * 3];
+    enabled = true;
 }
 
 OpenGLWater::~OpenGLWater()
@@ -54,7 +55,10 @@ void OpenGLWater::update()
 
 void OpenGLWater::render()
 {
-    program->drawTriangleStrip(vertices, 4);
+    if (enabled)
+    {
+        program->drawTriangleStrip(vertices, 4);
+    }
 }
 
 void OpenGLWater::setVertex(int i, float x, float y, float z)
@@ -70,4 +74,9 @@ void OpenGLWater::nodeChanged(const DefinitionNode *node, const DefinitionDiff *
     {
         renderer->getSharedState()->set("waterOffset", renderer->getScenery()->getTerrain()->getWaterOffset());
     }
+}
+
+void OpenGLWater::setEnabled(bool enabled)
+{
+    this->enabled = enabled;
 }

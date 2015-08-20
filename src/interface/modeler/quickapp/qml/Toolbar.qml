@@ -21,7 +21,10 @@ BaseRectangle {
         {
             for (var i = 0; i < children.length; i++)
             {
-                children[i].selected = false;
+                if (!children[i].toggle)
+                {
+                    children[i].selected = false;
+                }
             }
         }
     }
