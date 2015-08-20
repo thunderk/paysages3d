@@ -37,7 +37,7 @@ ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, d
     lowest = 0.0;
     highest = 0.0;
 
-    tessellation_count = 33;
+    tessellation_count = 65;
     tessellated = new VertexArray<TerrainVertex>();
     tessellated->setGridSize(tessellation_count);
     tessellated->setAutoGridIndices(tessellation_count);
@@ -87,7 +87,7 @@ bool ExplorerChunkTerrain::maintain()
     {
         while (_tessellation_current_size < _tessellation_max_size)
         {
-            int new_tessellation_size = _tessellation_current_size ? _tessellation_current_size * 4 : 2;
+            int new_tessellation_size = _tessellation_current_size ? _tessellation_current_size * 4 : 4;
             int old_tessellation_inc = _tessellation_current_size ? _tessellation_max_size / _tessellation_current_size : 1;
             int new_tessellation_inc = _tessellation_max_size / new_tessellation_size;
             float internal_step = 1.0f / (float)_tessellation_max_size;
