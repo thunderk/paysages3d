@@ -65,7 +65,7 @@ void OpenGLView::wheelEvent(QWheelEvent *event)
     }
 
     double factor = getSpeedFactor(event);
-    window->getCamera()->processZoom(0.1 * factor * (double)event->angleDelta().y());
+    window->getCamera()->processZoom(0.01 * factor * (double)event->angleDelta().y());
 }
 
 void OpenGLView::mousePressEvent(QMouseEvent *event)
@@ -100,11 +100,11 @@ void OpenGLView::mouseMoveEvent(QMouseEvent *event)
     QPointF diff = event->windowPos() - mouse_pos;
     if (mouse_button == Qt::LeftButton)
     {
-        window->getCamera()->processPanning(0.006 * factor * diff.x(), 0.002 * factor * diff.y());
+        window->getCamera()->processPanning(0.002 * factor * diff.x(), 0.001 * factor * diff.y());
     }
     else if (mouse_button == Qt::RightButton)
     {
-        window->getCamera()->processScroll(-0.1 * factor * diff.x(), 0.1 * factor * diff.y());
+        window->getCamera()->processScroll(-0.02 * factor * diff.x(), 0.02 * factor * diff.y());
     }
     mouse_pos = event->windowPos();
 }

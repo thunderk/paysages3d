@@ -56,7 +56,7 @@ void ModelerCameras::processPanning(double xvalue, double yvalue)
 
 void ModelerCameras::timerEvent(QTimerEvent *)
 {
-    current->transitionToAnother(active, 0.3);
+    current->transitionToAnother(active, 0.5);
     parent->getScenery()->keepCameraAboveGround(current);
     parent->getRenderer()->setCamera(current);
 }
