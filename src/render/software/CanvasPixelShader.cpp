@@ -6,16 +6,18 @@
 #include "CanvasPixel.h"
 #include "CanvasFragment.h"
 #include "Rasterizer.h"
+#include "RenderProgress.h"
 
-CanvasPixelShader::CanvasPixelShader(const SoftwareCanvasRenderer &renderer, CanvasPortion *portion, int chunk_size, int sub_chunk_size, int chunks_x, int chunks_y):
-    renderer(renderer), portion(portion), chunk_size(chunk_size), sub_chunk_size(sub_chunk_size), chunks_x(chunks_x), chunks_y(chunks_y)
+
+CanvasPixelShader::CanvasPixelShader(const SoftwareCanvasRenderer &renderer, CanvasPortion *portion, RenderProgress *progress, int chunk_size, int sub_chunk_size, int chunks_x, int chunks_y):
+    renderer(renderer), portion(portion), progress(progress), chunk_size(chunk_size), sub_chunk_size(sub_chunk_size), chunks_x(chunks_x), chunks_y(chunks_y)
 {
 }
 
 void CanvasPixelShader::processParallelUnit(int unit)
 {
     // Locate the chunk we work on
-    int prev_sub_chunk_size = chunk_size * 2;
+    int prev_sub_chunk_size = sub_chunk_size * 2;
     int chunk_x = unit / chunks_y;
     int chunk_y = unit % chunks_y;
     int base_x = chunk_x * chunk_size;
@@ -29,6 +31,7 @@ void CanvasPixelShader::processParallelUnit(int unit)
     // Iterate on sub-chunks
     for (int x = 0; x < limit_x; x += sub_chunk_size)
     {
+        int done = 0;
         for (int y = 0; y < limit_y; y += sub_chunk_size)
         {
             if (interrupted)
@@ -57,7 +60,10 @@ void CanvasPixelShader::processParallelUnit(int unit)
                         portion->setColor(base_x + x + fx, base_y + y + fy, composite);
                     }
                 }
+
+                done++;
             }
         }
+        progress->add(done);
     }
 }

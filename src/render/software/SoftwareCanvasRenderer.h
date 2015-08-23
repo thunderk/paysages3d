@@ -23,8 +23,12 @@ public:
     virtual ~SoftwareCanvasRenderer();
 
     inline const Canvas *getCanvas() const {return canvas;}
-    inline double getProgress() const {return progress;}
     inline bool isFinished() const {return finished;}
+
+    /**
+     * Get the global rendering progress (0.0-1.0).
+     */
+    double getProgress() const;
 
     /**
      * Set the renderer configuration.
@@ -72,8 +76,7 @@ protected:
     void applyPixelShader(CanvasPortion *portion);
 
 private:
-    double progress;
-    double progress_segment;
+    RenderProgress *progress;
 
     Canvas *canvas;
     int samples;

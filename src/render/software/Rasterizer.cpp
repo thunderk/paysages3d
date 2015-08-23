@@ -5,6 +5,7 @@
 #include "CanvasPortion.h"
 #include "CanvasFragment.h"
 #include "Vector3.h"
+#include "RenderProgress.h"
 
 struct paysages::software::ScanPoint
 {
@@ -31,14 +32,12 @@ struct paysages::software::RenderScanlines
     int right;
 };
 
-Rasterizer::Rasterizer(SoftwareRenderer* renderer, int client_id, const Color &color):
-    renderer(renderer), client_id(client_id)
+Rasterizer::Rasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int client_id, const Color &color):
+    renderer(renderer), progress(progress), client_id(client_id)
 {
     this->color = new Color(color);
 
     interrupted = false;
-    predicted_poly_count = 0;
-    done_poly_count = 0;
 }
 
 Rasterizer::~Rasterizer()
@@ -49,16 +48,6 @@ Rasterizer::~Rasterizer()
 void Rasterizer::interrupt()
 {
     interrupted = true;
-}
-
-void Rasterizer::addPredictedPolys(int count)
-{
-    predicted_poly_count += count;
-}
-
-void Rasterizer::addDonePolys(int count)
-{
-    done_poly_count += count;
 }
 
 void Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3)

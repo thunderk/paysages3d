@@ -11,10 +11,15 @@ namespace software {
 class SOFTWARESHARED_EXPORT SkyRasterizer: public Rasterizer
 {
 public:
-    SkyRasterizer(SoftwareRenderer* renderer, int client_id);
+    SkyRasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int client_id);
 
+    virtual int prepareRasterization() override;
     virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
     virtual Color shadeFragment(const CanvasFragment &fragment) const override;
+
+private:
+    int res_i;
+    int res_j;
 };
 
 }

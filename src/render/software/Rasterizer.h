@@ -15,19 +15,24 @@ typedef struct RenderScanlines RenderScanlines;
 class SOFTWARESHARED_EXPORT Rasterizer
 {
 public:
-    Rasterizer(SoftwareRenderer *renderer, int client_id, const Color &color);
+    Rasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id, const Color &color);
     virtual ~Rasterizer();
 
     inline SoftwareRenderer *getRenderer() const {return renderer;}
 
-    virtual void rasterizeToCanvas(CanvasPortion* canvas) = 0;
     virtual Color shadeFragment(const CanvasFragment &fragment) const = 0;
     virtual void interrupt();
 
-protected:
-    void addPredictedPolys(int count=1);
-    void addDonePolys(int count=1);
+    /**
+     * Abstract method to prepare for the rasterization process, and return the estimated progress count.
+     */
+    virtual int prepareRasterization() = 0;
+    /**
+     * Abstract method to effectively do the rasterization on a canvas.
+     */
+    virtual void rasterizeToCanvas(CanvasPortion* canvas) = 0;
 
+protected:
     void pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3);
 
     void pushTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3);
@@ -37,6 +42,7 @@ protected:
 
     Color* color;
     SoftwareRenderer *renderer;
+    RenderProgress *progress;
     int client_id;
     bool interrupted;
 
@@ -46,9 +52,6 @@ private:
     void pushScanPoint(CanvasPortion *canvas, RenderScanlines *scanlines, ScanPoint *point);
     void pushScanLineEdge(CanvasPortion *canvas, RenderScanlines *scanlines, ScanPoint *point1, ScanPoint *point2);
     void renderScanLines(CanvasPortion *canvas, RenderScanlines *scanlines);
-
-    int predicted_poly_count;
-    int done_poly_count;
 };
 
 }

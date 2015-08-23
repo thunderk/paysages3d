@@ -3,9 +3,10 @@
 #include "SoftwareRenderer.h"
 #include "WaterRenderer.h"
 #include "CanvasFragment.h"
+#include "RenderProgress.h"
 
-WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer, int client_id):
-    Rasterizer(renderer, client_id, Color(0.9, 0.95, 1.0))
+WaterRasterizer::WaterRasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int client_id):
+    Rasterizer(renderer, progress, client_id, Color(0.9, 0.95, 1.0))
 {
 }
 
@@ -32,9 +33,25 @@ void WaterRasterizer::rasterizeQuad(CanvasPortion* canvas, double x, double z, d
     pushQuad(canvas, v1, v2, v3, v4);
 }
 
+int WaterRasterizer::prepareRasterization()
+{
+    return performTessellation(NULL);
+}
+
 void WaterRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
 {
-    int chunk_factor, chunk_count, i;
+    performTessellation(canvas);
+}
+
+Color WaterRasterizer::shadeFragment(const CanvasFragment &fragment) const
+{
+    Vector3 location = fragment.getLocation();
+    return renderer->getWaterRenderer()->getResult(location.x, location.z).final;
+}
+
+int WaterRasterizer::performTessellation(CanvasPortion *canvas)
+{
+    int chunk_factor, chunk_count, i, result;
     Vector3 cam = renderer->getCameraLocation(VECTOR_ZERO);
     double radius_int, radius_ext, base_chunk_size, chunk_size;
 
@@ -44,6 +61,7 @@ void WaterRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
         base_chunk_size *= 0.5;
     }
 
+    result = 0;
     chunk_factor = 1;
     chunk_count = 2;
     radius_int = 0.0;
@@ -57,15 +75,23 @@ void WaterRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
     {
         if (interrupted)
         {
-            return;
+            return result;
         }
 
         for (i = 0; i < chunk_count - 1; i++)
         {
-            rasterizeQuad(canvas, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size);
-            rasterizeQuad(canvas, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size);
-            rasterizeQuad(canvas, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size);
-            rasterizeQuad(canvas, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size);
+            result++;
+            if (canvas)
+            {
+                rasterizeQuad(canvas, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size);
+                rasterizeQuad(canvas, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size);
+                rasterizeQuad(canvas, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size);
+                rasterizeQuad(canvas, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size);
+            }
+        }
+        if (canvas)
+        {
+            progress->add(chunk_count - 1);
         }
 
         if (radius_int > 20.0 && chunk_count % 64 == 0 && (double)chunk_factor < radius_int / 20.0)
@@ -78,10 +104,6 @@ void WaterRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
         radius_int = radius_ext;
         radius_ext += chunk_size;
     }
-}
 
-Color WaterRasterizer::shadeFragment(const CanvasFragment &fragment) const
-{
-    Vector3 location = fragment.getLocation();
-    return renderer->getWaterRenderer()->getResult(location.x, location.z).final;
+    return result;
 }

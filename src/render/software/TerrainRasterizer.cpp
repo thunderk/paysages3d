@@ -9,9 +9,10 @@
 #include "Scenery.h"
 #include "CanvasPortion.h"
 #include "CanvasFragment.h"
+#include "RenderProgress.h"
 
-TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer, int client_id):
-    Rasterizer(renderer, client_id, Color(1.0, 0.9, 0.9))
+TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int client_id):
+    Rasterizer(renderer, progress, client_id, Color(1.0, 0.9, 0.9))
 {
 }
 
@@ -22,11 +23,6 @@ static inline Vector3 _getPoint(SoftwareRenderer* renderer, double x, double z)
 
 void TerrainRasterizer::tessellateChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, int detail)
 {
-    if (detail < 1)
-    {
-        return;
-    }
-
     double water_height = renderer->getWaterRenderer()->getHeightInfo().min_height;
 
     double startx = chunk->point_nw.x;
@@ -40,6 +36,7 @@ void TerrainRasterizer::tessellateChunk(CanvasPortion* canvas, TerrainChunkInfo*
         {
             renderQuad(canvas, startx + (double)i * size, startz + (double)j * size, size, water_height);
         }
+        progress->add(detail);
     }
 }
 
@@ -125,12 +122,11 @@ static void _getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChun
     }
 }
 
-void TerrainRasterizer::getTessellationInfo(CanvasPortion* canvas, bool displaced)
+int TerrainRasterizer::performTessellation(CanvasPortion* canvas, bool displaced)
 {
     TerrainChunkInfo chunk;
-    int chunk_factor, chunk_count, i;
+    int chunk_factor, chunk_count, i, result;
     Vector3 cam = renderer->getCameraLocation(VECTOR_ZERO);
-    double progress;
     double radius_int, radius_ext;
     double base_chunk_size, chunk_size;
 
@@ -141,42 +137,69 @@ void TerrainRasterizer::getTessellationInfo(CanvasPortion* canvas, bool displace
     radius_int = 0.0;
     radius_ext = base_chunk_size;
     chunk_size = base_chunk_size;
-    progress = 0.0;
+    result = 0;
 
     double cx = cam.x - fmod(cam.x, base_chunk_size);
     double cz = cam.z - fmod(cam.x, base_chunk_size);
 
     while (radius_int < 20000.0)
     {
-        progress = radius_int / 20000.0;
         for (i = 0; i < chunk_count - 1; i++)
         {
             _getChunk(renderer, &chunk, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size, displaced);
-            processChunk(canvas, &chunk, progress);
+            if (chunk.detail_hint > 0)
+            {
+                result += chunk.detail_hint * chunk.detail_hint;
+                if (canvas)
+                {
+                    processChunk(canvas, &chunk);
+                }
+            }
             if (interrupted)
             {
-                return;
+                return result;
             }
 
             _getChunk(renderer, &chunk, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size, displaced);
-            processChunk(canvas, &chunk, progress);
+            if (chunk.detail_hint > 0)
+            {
+                result += chunk.detail_hint * chunk.detail_hint;
+                if (canvas)
+                {
+                    processChunk(canvas, &chunk);
+                }
+            }
             if (interrupted)
             {
-                return;
+                return result;
             }
 
             _getChunk(renderer, &chunk, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size, displaced);
-            processChunk(canvas, &chunk, progress);
+            if (chunk.detail_hint > 0)
+            {
+                result += chunk.detail_hint * chunk.detail_hint;
+                if (canvas)
+                {
+                    processChunk(canvas, &chunk);
+                }
+            }
             if (interrupted)
             {
-                return;
+                return result;
             }
 
             _getChunk(renderer, &chunk, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size, displaced);
-            processChunk(canvas, &chunk, progress);
+            if (chunk.detail_hint > 0)
+            {
+                result += chunk.detail_hint * chunk.detail_hint;
+                if (canvas)
+                {
+                    processChunk(canvas, &chunk);
+                }
+            }
             if (interrupted)
             {
-                return;
+                return result;
             }
         }
 
@@ -190,16 +213,24 @@ void TerrainRasterizer::getTessellationInfo(CanvasPortion* canvas, bool displace
         radius_int = radius_ext;
         radius_ext += chunk_size;
     }
+
+    return result;
 }
 
-void TerrainRasterizer::processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, double)
+void TerrainRasterizer::processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk)
 {
     tessellateChunk(canvas, chunk, chunk->detail_hint);
 }
 
+int TerrainRasterizer::prepareRasterization()
+{
+    // TODO Chunks could be saved and reused in rasterizeToCanvas
+    return performTessellation(NULL, false);
+}
+
 void TerrainRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
 {
-    getTessellationInfo(canvas, false);
+    performTessellation(canvas, false);
 }
 
 Color TerrainRasterizer::shadeFragment(const CanvasFragment &fragment) const

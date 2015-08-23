@@ -13,6 +13,7 @@
 #include "RenderConfig.h"
 #include "ColorProfile.h"
 #include "CanvasPreview.h"
+#include "RenderProgress.h"
 
 SoftwareCanvasRenderer::SoftwareCanvasRenderer(Scenery *scenery):
     SoftwareRenderer(scenery)
@@ -21,12 +22,12 @@ SoftwareCanvasRenderer::SoftwareCanvasRenderer(Scenery *scenery):
     finished = false;
     interrupted = false;
     canvas = new Canvas();
-    progress = 0.0;
+    progress = new RenderProgress();
     samples = 1;
 
-    rasterizers.push_back(new SkyRasterizer(this, 0));
-    rasterizers.push_back(new WaterRasterizer(this, 1));
-    rasterizers.push_back(new TerrainRasterizer(this, 2));
+    rasterizers.push_back(new SkyRasterizer(this, progress, 0));
+    rasterizers.push_back(new WaterRasterizer(this, progress, 1));
+    rasterizers.push_back(new TerrainRasterizer(this, progress, 2));
 
     current_work = NULL;
 }
@@ -34,11 +35,17 @@ SoftwareCanvasRenderer::SoftwareCanvasRenderer(Scenery *scenery):
 SoftwareCanvasRenderer::~SoftwareCanvasRenderer()
 {
     delete canvas;
+    delete progress;
 
     for (auto &rasterizer: rasterizers)
     {
         delete rasterizer;
     }
+}
+
+double SoftwareCanvasRenderer::getProgress() const
+{
+    return progress->get();
 }
 
 void SoftwareCanvasRenderer::setConfig(const RenderConfig &config)
@@ -62,7 +69,6 @@ void SoftwareCanvasRenderer::setSize(int width, int height, int samples)
 void SoftwareCanvasRenderer::render()
 {
     started = true;
-    progress = 0.0;
 
     render_camera->setRenderSize(canvas->getWidth(), canvas->getHeight());
 
@@ -71,32 +77,33 @@ void SoftwareCanvasRenderer::render()
     // Iterate portions
     int nx = canvas->getHorizontalPortionCount();
     int ny = canvas->getVerticalPortionCount();
-    int i = 0;
     int n = nx * ny;
+    progress->enterSub(n);
     for (int y = 0; y < ny; y++)
     {
         for (int x = 0; x < nx; x++)
         {
             CanvasPortion *portion = canvas->at(x, y);
 
+            progress->enterSub(2);
+
             if (not interrupted)
             {
-                progress_segment = 0.2 / (double)n;
                 portion->preparePixels();
                 rasterize(portion);
             }
 
             if (not interrupted)
             {
-                progress_segment = 0.8 / (double)n;
                 applyPixelShader(portion);
             }
 
             portion->discardPixels();
-            i++;
-            progress = (double)i / (double)n;
+
+            progress->exitSub();
         }
     }
+    progress->exitSub();
     finished = true;
 }
 
@@ -126,11 +133,18 @@ bool SoftwareCanvasRenderer::saveToDisk(const std::string &filepath) const
 
 void SoftwareCanvasRenderer::rasterize(CanvasPortion *portion)
 {
+    int count = 0;
+    for (auto &rasterizer:rasterizers)
+    {
+        count += rasterizer->prepareRasterization();
+    }
+
+    progress->enterSub(count);
     for (auto &rasterizer:rasterizers)
     {
         rasterizer->rasterizeToCanvas(portion);
-        progress += progress_segment / (double)rasterizers.size();
     }
+    progress->exitSub();
 }
 
 void SoftwareCanvasRenderer::applyPixelShader(CanvasPortion *portion)
@@ -141,14 +155,8 @@ void SoftwareCanvasRenderer::applyPixelShader(CanvasPortion *portion)
     int chunks_y = (portion->getHeight() - 1) / chunk_size + 1;
     int units = chunks_x * chunks_y;
 
-    // Estimate chunks
-    int n = 0;
-    for (int sub_chunk_size = chunk_size; sub_chunk_size >= 1; sub_chunk_size /= 2)
-    {
-        n += chunk_size / sub_chunk_size;
-    }
-
     // Render chunks in parallel
+    progress->enterSub(portion->getWidth() * portion->getHeight());
     for (int sub_chunk_size = chunk_size; sub_chunk_size >= 1; sub_chunk_size /= 2)
     {
         if (interrupted)
@@ -156,12 +164,12 @@ void SoftwareCanvasRenderer::applyPixelShader(CanvasPortion *portion)
             break;
         }
 
-        CanvasPixelShader shader(*this, portion, chunk_size, sub_chunk_size, chunks_x, chunks_y);
+        CanvasPixelShader shader(*this, portion, progress, chunk_size, sub_chunk_size, chunks_x, chunks_y);
         ParallelWork work(&shader, units);
 
         current_work = &work;
         work.perform();
         current_work = NULL;
-        progress += progress_segment * (double)(chunk_size / sub_chunk_size) / (double)n;
     }
+    progress->exitSub();
 }

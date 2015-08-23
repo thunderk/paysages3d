@@ -50,7 +50,8 @@ SOURCES += SoftwareRenderer.cpp \
     CanvasPictureWriter.cpp \
     clouds/CloudModelAltoCumulus.cpp \
     clouds/CloudModelCirrus.cpp \
-    clouds/CloudModelCumuloNimbus.cpp
+    clouds/CloudModelCumuloNimbus.cpp \
+    RenderProgress.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -90,7 +91,8 @@ HEADERS += SoftwareRenderer.h\
     CanvasPictureWriter.h \
     clouds/CloudModelAltoCumulus.h \
     clouds/CloudModelCirrus.h \
-    clouds/CloudModelCumuloNimbus.h
+    clouds/CloudModelCumuloNimbus.h \
+    RenderProgress.h
 
 unix:!symbian {
     maemo5 {

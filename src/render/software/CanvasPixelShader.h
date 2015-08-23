@@ -18,13 +18,14 @@ namespace software {
 class CanvasPixelShader: public ParallelWorker
 {
 public:
-    CanvasPixelShader(const SoftwareCanvasRenderer &renderer, CanvasPortion *portion, int chunk_size, int sub_chunk_size, int chunks_x, int chunks_y);
+    CanvasPixelShader(const SoftwareCanvasRenderer &renderer, CanvasPortion *portion, RenderProgress *progress, int chunk_size, int sub_chunk_size, int chunks_x, int chunks_y);
 
     virtual void processParallelUnit(int unit) override;
 
 private:
     const SoftwareCanvasRenderer &renderer;
     CanvasPortion *portion;
+    RenderProgress *progress;
     int chunk_size;
     int sub_chunk_size;
     int chunks_x;

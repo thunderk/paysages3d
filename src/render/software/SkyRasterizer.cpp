@@ -8,25 +8,31 @@
 #include "CloudsRenderer.h"
 #include "Rasterizer.h"
 #include "CanvasFragment.h"
+#include "RenderProgress.h"
 
 #define SPHERE_SIZE 20000.0
 
-SkyRasterizer::SkyRasterizer(SoftwareRenderer* renderer, int client_id):
-    Rasterizer(renderer, client_id, Color(0.9, 0.9, 1.0))
+SkyRasterizer::SkyRasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int client_id):
+    Rasterizer(renderer, progress, client_id, Color(0.9, 0.9, 1.0))
 {
+}
+
+int SkyRasterizer::prepareRasterization()
+{
+    res_i = renderer->render_quality * 40;
+    res_j = renderer->render_quality * 20;
+
+    return res_i * res_j;
 }
 
 void SkyRasterizer::rasterizeToCanvas(CanvasPortion* canvas)
 {
-    int res_i, res_j;
     int i, j;
     double step_i, step_j;
     double current_i, current_j;
     Vector3 vertex1, vertex2, vertex3, vertex4;
     Vector3 camera_location, direction;
 
-    res_i = renderer->render_quality * 40;
-    res_j = renderer->render_quality * 20;
     step_i = M_PI * 2.0 / (double)res_i;
     step_j = M_PI / (double)res_j;
 
@@ -68,6 +74,7 @@ void SkyRasterizer::rasterizeToCanvas(CanvasPortion* canvas)
             /* TODO Triangles at poles */
             pushQuad(canvas, vertex1, vertex4, vertex3, vertex2);
         }
+        progress->add(res_i);
     }
 }
 

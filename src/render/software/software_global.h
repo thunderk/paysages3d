@@ -16,6 +16,7 @@ namespace software {
     class SoftwareRenderer;
     class SoftwareCanvasRenderer;
     class RenderConfig;
+    class RenderProgress;
 
     class FluidMediumManager;
     class FluidMediumInterface;
