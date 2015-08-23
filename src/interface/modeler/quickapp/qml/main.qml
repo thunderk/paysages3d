@@ -5,8 +5,8 @@ OpenGLView {
     id: main_ui
     state: "Init"
 
-    width: 800
-    height: 600
+    width: 1000
+    height: 700
 
     Tooltip {
         id: tooltip_widget

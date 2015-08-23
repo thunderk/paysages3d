@@ -23,6 +23,7 @@ CanvasPictureWriter::CanvasPictureWriter(const Canvas *canvas):
 CanvasPictureWriter::~CanvasPictureWriter()
 {
     delete profile;
+    delete[] cache;
 }
 
 void CanvasPictureWriter::setAntialias(int antialias)
@@ -84,7 +85,7 @@ Color CanvasPictureWriter::getRawPixel(int x, int y)
     if (not (y >= cache_y && y < cache_y + antialias))
     {
         // Load rows into cache
-        delete [] cache;
+        delete[] cache;
         cache_y = y;
         cache_width = canvas->getWidth();
         cache = new Color[cache_width * antialias];
@@ -117,6 +118,8 @@ Color CanvasPictureWriter::getRawPixel(int x, int y)
                 itcolor++;
             }
         }
+
+        delete stream;
     }
 
     // Hit the cache
