@@ -29,7 +29,6 @@ public:
     Scenery();
 
     virtual void validate() override;
-    virtual void copy(DefinitionNode *destination) const override;
 
     FileOperationResult saveGlobal(const std::string &filepath) const;
     FileOperationResult loadGlobal(const std::string &filepath);

@@ -241,7 +241,18 @@ void DefinitionNode::copy(DefinitionNode* destination) const
     if (destination->getTypeName() == getTypeName())
     {
         destination->setName(name);
-        // TODO Copy children ?
+        for (auto &child: children)
+        {
+            DefinitionNode *dest_child = destination->findChildByName(child->name);
+            if (dest_child)
+            {
+                child->copy(dest_child);
+            }
+            else
+            {
+                Logs::warning() << "Can't copy to child " << child->name << " of " << destination->getTypeName() << std::endl;
+            }
+        }
     }
     else
     {

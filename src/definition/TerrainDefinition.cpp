@@ -52,8 +52,6 @@ void TerrainDefinition::copy(DefinitionNode* _destination) const
 
     height_map->copy(destination->height_map);
 
-    water_height->copy(destination->water_height);
-
     _height_noise->copy(destination->_height_noise);
 
     destination->validate();

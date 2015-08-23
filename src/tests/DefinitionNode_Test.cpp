@@ -65,7 +65,7 @@ TEST(DefinitionNode, attachDetach)
     delete root;
 }
 
-TEST(DefinitionNode, saveLoad)
+TEST(DefinitionNode, saveLoadCopy)
 {
     PackStream *stream;
     int check_in = 42, check_out = 0;
@@ -104,6 +104,18 @@ TEST(DefinitionNode, saveLoad)
     EXPECT_DOUBLE_EQ(6.7, after3->getValue());
     EXPECT_DOUBLE_EQ(0.0, after4->getValue());
     EXPECT_EQ(42, check_out);
+
+    // Test copy, that should work like "save then load"
+    after12->setValue(1.1);
+    after13->setValue(1.1);
+    after3->setValue(1.1);
+    after4->setValue(1.1);
+    before->copy(after);
+
+    EXPECT_DOUBLE_EQ(-4.3, after12->getValue());
+    EXPECT_DOUBLE_EQ(1.1, after13->getValue());
+    EXPECT_DOUBLE_EQ(6.7, after3->getValue());
+    EXPECT_DOUBLE_EQ(1.1, after4->getValue());
 
     delete before;
     delete after;

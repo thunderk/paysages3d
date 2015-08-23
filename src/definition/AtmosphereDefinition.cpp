@@ -71,8 +71,6 @@ void AtmosphereDefinition::copy(DefinitionNode* _destination) const
 
     AtmosphereDefinition* destination = (AtmosphereDefinition*)_destination;
 
-    daytime->copy(destination->daytime);
-
     destination->model = model;
     destination->sun_color = sun_color;
     destination->sun_radius = sun_radius;

@@ -18,26 +18,12 @@ static const int DATA_VERSION = 1;
 Scenery::Scenery():
     DefinitionNode(NULL, "scenery", "scenery")
 {
-    addChild(atmosphere = new AtmosphereDefinition(this));
-    addChild(camera = new CameraDefinition);
-    addChild(clouds = new CloudsDefinition(this));
-    addChild(terrain = new TerrainDefinition(this));
-    addChild(textures = new TexturesDefinition(this));
-    addChild(water = new WaterDefinition(this));
-}
-
-void Scenery::copy(DefinitionNode *destination_) const
-{
-    Scenery* destination = (Scenery*)destination_;
-
-    atmosphere->copy(destination->atmosphere);
-    camera->copy(destination->camera);
-    clouds->copy(destination->clouds);
-    terrain->copy(destination->terrain);
-    textures->copy(destination->textures);
-    water->copy(destination->water);
-
-    destination->validate();
+    atmosphere = new AtmosphereDefinition(this);
+    camera = new CameraDefinition(this);
+    clouds = new CloudsDefinition(this);
+    terrain = new TerrainDefinition(this);
+    textures = new TexturesDefinition(this);
+    water = new WaterDefinition(this);
 }
 
 void Scenery::validate()
