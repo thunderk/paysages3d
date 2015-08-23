@@ -13,6 +13,12 @@ BaseSection {
             picture: "images/icon_atmosphere_daytime.png"
             hovertext: qsTr("Change the time of day")
         }
+
+        ToolbarButton {
+            id: tool_humidity
+            picture: "images/icon_atmosphere_humidity.png"
+            hovertext: qsTr("Humidity factor in the air")
+        }
     }
 
     PanelAtmosphereDaytime {
@@ -21,12 +27,27 @@ BaseSection {
         enabled: false
     }
 
+    PanelSimpleFloat {
+        id: panel_humidity
+        anchors.left: toolbar.right
+        enabled: false
+        objectName: "atmosphere_humidity"
+    }
+
     states: [
         State {
             name: "DayTime"
             when: tool_daytime.selected
             PropertyChanges {
                 target: panel_daytime
+                enabled: true
+            }
+        },
+        State {
+            name: "Humidity"
+            when: tool_humidity.selected
+            PropertyChanges {
+                target: panel_humidity
                 enabled: true
             }
         }

@@ -15,20 +15,13 @@ BaseSection {
         }
     }
 
-    BasePanel {
+    PanelSimpleFloat {
         id: panel_water_level
-        width: 40
-        anchors.left: toolbar.right
         enabled: false
-
-        BaseSlider {
-            objectName: "water_height"
-            minimumValue: -1
-            maximumValue: 1
-            orientation: Qt.Vertical
-            anchors.fill: parent
-            anchors.margins: 10
-        }
+        anchors.left: toolbar.right
+        minimumValue: -1
+        maximumValue: 1
+        objectName: "water_height"
     }
 
     states: [

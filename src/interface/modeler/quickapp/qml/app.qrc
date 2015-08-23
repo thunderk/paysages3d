@@ -42,5 +42,6 @@
         <file>WaterSection.qml</file>
         <file>BaseSection.qml</file>
         <file>AtmosphereSection.qml</file>
+        <file>PanelSimpleFloat.qml</file>
     </qresource>
 </RCC>

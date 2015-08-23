@@ -46,6 +46,7 @@ public:
     virtual void copy(DefinitionNode* destination) const override;
 
     inline FloatNode *propDayTime() const {return daytime;}
+    inline FloatNode *propHumidity() const {return humidity;}
 
     /**
      * Set the daytime from a 0.0-1.0 value.
@@ -65,7 +66,7 @@ public:
 
 public:
     AtmosphereModel model;
-    double humidity;
+
     Color sun_color;
     double sun_radius;
     double dome_lighting;
@@ -77,6 +78,7 @@ public:
     std::vector<Star> stars;
 
 private:
+    FloatNode *humidity;
     FloatNode *daytime;
 };
 

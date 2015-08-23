@@ -14,6 +14,7 @@ public:
 
 private:
     FloatPropertyBind *prop_daytime;
+    FloatPropertyBind *prop_humidity;
 };
 
 }

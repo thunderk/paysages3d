@@ -33,7 +33,7 @@ static inline void _applyWeatherEffects(AtmosphereDefinition* definition, Atmosp
     }
 
     double distance = result->distance;
-    double max_distance = 100.0 - 90.0 * definition->humidity;
+    double max_distance = 100.0 - 90.0 * definition->propHumidity()->getValue();
     double distancefactor, dayfactor;
 
     if (distance > max_distance)
@@ -44,33 +44,35 @@ static inline void _applyWeatherEffects(AtmosphereDefinition* definition, Atmosp
     /* TODO Get day lighting from model */
     dayfactor = _getDayFactor(definition->propDayTime()->getValue());
 
+    double humidity = definition->propHumidity()->getValue();
+
     /* Fog masking */
-    if (definition->humidity > 0.3)
+    if (humidity > 0.3)
     {
-        result->mask.r = result->mask.g = result->mask.b = (10.0 - 8.0 * definition->humidity) * dayfactor;
-        result->mask.a = distancefactor * (definition->humidity - 0.3) / 0.7;
+        result->mask.r = result->mask.g = result->mask.b = (10.0 - 8.0 * humidity) * dayfactor;
+        result->mask.a = distancefactor * (humidity - 0.3) / 0.7;
     }
 
     /* Scattering tweaking */
-    if (definition->humidity < 0.15)
+    if (humidity < 0.15)
     {
         /* Limit scattering on ultra clear day */
-        double force = (0.15 - definition->humidity) / 0.15;
+        double force = (0.15 - humidity) / 0.15;
         result->inscattering.limitPower(100.0 - 90.0 * pow(force, 0.1));
     }
     else
     {
         /* Scattering boost */
-        double force = 1.2 * (definition->humidity < 0.5 ? sqrt((definition->humidity - 0.15) / 0.35) : 1.0 - (definition->humidity - 0.5) / 0.5);
-        result->inscattering.r *= 1.0 + force * distancefactor * (definition->humidity - 0.15) / 0.85;
-        result->inscattering.g *= 1.0 + force * distancefactor * (definition->humidity - 0.15) / 0.85;
-        result->inscattering.b *= 1.0 + force * distancefactor * (definition->humidity - 0.15) / 0.85;
+        double force = 1.2 * (humidity < 0.5 ? sqrt((humidity - 0.15) / 0.35) : 1.0 - (humidity - 0.5) / 0.5);
+        result->inscattering.r *= 1.0 + force * distancefactor * (humidity - 0.15) / 0.85;
+        result->inscattering.g *= 1.0 + force * distancefactor * (humidity - 0.15) / 0.85;
+        result->inscattering.b *= 1.0 + force * distancefactor * (humidity - 0.15) / 0.85;
     }
 
     /* Attenuation */
-    result->attenuation.r *= 1.0 - 0.4 * distancefactor * definition->humidity;
-    result->attenuation.g *= 1.0 - 0.4 * distancefactor * definition->humidity;
-    result->attenuation.b *= 1.0 - 0.4 * distancefactor * definition->humidity;
+    result->attenuation.r *= 1.0 - 0.4 * distancefactor * humidity;
+    result->attenuation.g *= 1.0 - 0.4 * distancefactor * humidity;
+    result->attenuation.b *= 1.0 - 0.4 * distancefactor * humidity;
 
     result->updateFinal();
 }

@@ -8,6 +8,7 @@ AtmosphereDefinition::AtmosphereDefinition(DefinitionNode* parent):
     DefinitionNode(parent, "atmosphere", "atmosphere")
 {
     daytime = new FloatNode(this, "daytime");
+    humidity = new FloatNode(this, "humidity");
 }
 
 AtmosphereDefinition::~AtmosphereDefinition()
@@ -22,7 +23,6 @@ void AtmosphereDefinition::save(PackStream* stream) const
     sun_color.save(stream);
     stream->write(&sun_radius);
     stream->write(&dome_lighting);
-    stream->write(&humidity);
     stream->write(&moon_radius);
     stream->write(&moon_theta);
     stream->write(&moon_phi);
@@ -45,7 +45,6 @@ void AtmosphereDefinition::load(PackStream* stream)
     sun_color.load(stream);
     stream->read(&sun_radius);
     stream->read(&dome_lighting);
-    stream->read(&humidity);
     stream->read(&moon_radius);
     stream->read(&moon_theta);
     stream->read(&moon_phi);
@@ -78,7 +77,6 @@ void AtmosphereDefinition::copy(DefinitionNode* _destination) const
     destination->sun_color = sun_color;
     destination->sun_radius = sun_radius;
     destination->dome_lighting = dome_lighting;
-    destination->humidity = humidity;
     destination->moon_radius = moon_radius;
     destination->moon_theta = moon_theta;
     destination->moon_phi = moon_phi;
@@ -125,7 +123,6 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset)
     moon_radius = 1.0;
     moon_theta = 0.3;
     moon_phi = 0.5;
-    humidity = 0.1;
 
     model = ATMOSPHERE_MODEL_BRUNETON;
 
@@ -133,27 +130,29 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset)
     {
         case ATMOSPHERE_PRESET_CLEAR_DAY:
             setDayTime(15);
+            humidity->setValue(0.1);
             dome_lighting = 0.2;
             break;
         case ATMOSPHERE_PRESET_CLEAR_SUNSET:
             setDayTime(17, 45);
+            humidity->setValue(0.1);
             dome_lighting = 0.3;
             sun_radius = 0.03;
             break;
         case ATMOSPHERE_PRESET_HAZY_MORNING:
             setDayTime(8, 30);
+            humidity->setValue(0.4);
             dome_lighting = 0.25;
-            humidity = 0.4;
             break;
         case ATMOSPHERE_PRESET_FOGGY:
             setDayTime(15);
+            humidity->setValue(0.7);
             dome_lighting = 0.1;
-            humidity = 0.7;
             break;
         case ATMOSPHERE_PRESET_STORMY:
             setDayTime(15);
+            humidity->setValue(0.9);
             dome_lighting = 0.05;
-            humidity = 0.9;
             break;
         default:
             ;
