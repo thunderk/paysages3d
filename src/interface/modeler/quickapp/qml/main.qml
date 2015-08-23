@@ -15,7 +15,7 @@ OpenGLView {
         anchors.right: primary_toolbar.right
     }
 
-    Toolbar {
+    BaseToolbar {
         id: primary_toolbar
         horizontal:  true
         color: "#90888888"
@@ -61,24 +61,14 @@ OpenGLView {
         }
     }
 
-    BaseSecondaryToolbar {
-        id: water_toolbar
-
-        ToolbarButton {
-            id: tool_water_level
-            picture: "images/icon_water_level.png"
-            hovertext: qsTr("Change the water altitude")
-        }
+    WaterSection {
+        id: water_section
+        enabled: false
     }
 
-    BaseSecondaryToolbar {
-        id: atmosphere_toolbar
-
-        ToolbarButton {
-            id: tool_atmosphere_daytime
-            picture: "images/icon_atmosphere_daytime.png"
-            hovertext: qsTr("Change the time of day")
-        }
+    AtmosphereSection {
+        id: atmosphere_section
+        enabled: false
     }
 
     BaseSecondaryToolbar {
@@ -158,22 +148,13 @@ OpenGLView {
         anchors.fill: parent
     }
 
-    PanelWaterLevel {
-        id: panel_water_level
-        tool: tool_water_level
-    }
-    PanelAtmosphereDaytime {
-        id: panel_atmosphere_daytime
-        tool: tool_atmosphere_daytime
-    }
-
     states: [
         State {
             name: "Water Mode"
             when: tool_water.selected
 
             PropertyChanges {
-                target: water_toolbar
+                target: water_section
                 enabled: true
             }
         },
@@ -182,7 +163,7 @@ OpenGLView {
             when: tool_atmosphere.selected
 
             PropertyChanges {
-                target: atmosphere_toolbar
+                target: atmosphere_section
                 enabled: true
             }
         },

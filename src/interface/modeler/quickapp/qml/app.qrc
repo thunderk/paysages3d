@@ -9,14 +9,13 @@
         <file>images/tab_textures.png</file>
         <file>images/tab_water.png</file>
         <file>images/tab_display.png</file>
-        <file>Toolbar.qml</file>
+        <file>BaseToolbar.qml</file>
         <file>images/display_topdown.png</file>
         <file>images/help.png</file>
         <file>Tooltip.qml</file>
         <file>images/icon_water.png</file>
         <file>images/icon_water_level.png</file>
         <file>BasePanel.qml</file>
-        <file>PanelWaterLevel.qml</file>
         <file>images/icon_atmosphere.png</file>
         <file>images/icon_atmosphere_daytime.png</file>
         <file>BaseSlider.qml</file>
@@ -40,5 +39,8 @@
         <file>images/toggle_water.png</file>
         <file>images/icon_render_quick.png</file>
         <file>images/icon_render_show.png</file>
+        <file>WaterSection.qml</file>
+        <file>BaseSection.qml</file>
+        <file>AtmosphereSection.qml</file>
     </qresource>
 </RCC>

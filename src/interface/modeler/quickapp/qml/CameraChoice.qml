@@ -1,6 +1,6 @@
 import QtQuick 2.0
 
-Toolbar {
+BaseToolbar {
     id: camera_choice
     horizontal: false
     color: "#90888888"

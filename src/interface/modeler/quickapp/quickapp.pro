@@ -67,16 +67,4 @@ INCLUDEPATH += $$PWD/../../../render/opengl
 DEPENDPATH += $$PWD/../../../render/opengl
 
 OTHER_FILES += \
-    qml/main.qml \
-    qml/ToolbarButton.qml \
-    qml/OpenGLView.qml \
-    qml/Toolbar.qml \
-    qml/Tooltip.qml \
-    qml/BasePanel.qml \
-    qml/PanelWaterLevel.qml \
-    qml/PanelAtmosphereDaytime.qml \
-    qml/BaseSlider.qml \
-    qml/BaseChoice.qml \
-    qml/BaseChoiceItem.qml \
-    qml/RenderDialog.qml \
-    qml/CameraChoice.qml
+    qml/*.qml
