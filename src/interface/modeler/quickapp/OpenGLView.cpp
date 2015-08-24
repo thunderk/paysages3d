@@ -18,6 +18,8 @@ OpenGLView::OpenGLView(QQuickItem *parent) :
     mouse_button = Qt::NoButton;
 
     connect(this, SIGNAL(windowChanged(QQuickWindow*)), this, SLOT(handleWindowChanged(QQuickWindow*)));
+    connect(this, SIGNAL(widthChanged()), this, SLOT(handleResize()));
+    connect(this, SIGNAL(heightChanged()), this, SLOT(handleResize()));
     startTimer(50);
 }
 
@@ -45,9 +47,15 @@ void OpenGLView::paint()
     {
         renderer->initialize();
         initialized = true;
+        resized = true;
     }
 
-    renderer->resize(width(), height());
+    if (resized)
+    {
+        renderer->resize(width(), height());
+        resized = false;
+    }
+
     renderer->prepareOpenGLState();
     renderer->paint();
 
@@ -55,6 +63,11 @@ void OpenGLView::paint()
     {
         window->resetOpenGLState();
     }
+}
+
+void OpenGLView::handleResize()
+{
+    resized = true;
 }
 
 void OpenGLView::wheelEvent(QWheelEvent *event)

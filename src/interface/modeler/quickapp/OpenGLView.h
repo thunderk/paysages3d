@@ -17,6 +17,7 @@ public:
 public slots:
     void handleWindowChanged(QQuickWindow *win);
     void paint();
+    void handleResize();
 
 protected:
     virtual void wheelEvent(QWheelEvent *event) override;
@@ -31,6 +32,7 @@ private:
 
 private:
     bool initialized;
+    bool resized;
     MainModelerWindow *window;
     OpenGLRenderer *renderer;
 
