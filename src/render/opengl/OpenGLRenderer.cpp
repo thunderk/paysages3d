@@ -112,20 +112,22 @@ void OpenGLRenderer::setCamera(CameraDefinition *camera)
 {
     camera->copy(render_camera);
     getScenery()->keepCameraAboveGround(render_camera);
+    render_camera->setRenderSize(vp_width, vp_height);
     cameraChangeEvent(render_camera);
 }
 
 void OpenGLRenderer::resize(int width, int height)
 {
-    vp_width = width;
-    vp_height = height;
+    if (ready)
+    {
+        vp_width = width;
+        vp_height = height;
 
-    getScenery()->getCamera()->setRenderSize(width, height);  // FIXME Should not be needed
-    render_camera->setRenderSize(width, height);
+        render_camera->setRenderSize(width, height);
+        cameraChangeEvent(render_camera);
 
-    cameraChangeEvent(render_camera);
-
-    prepareOpenGLState();
+        prepareOpenGLState();
+    }
 }
 
 void OpenGLRenderer::paint()
