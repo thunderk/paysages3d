@@ -63,7 +63,7 @@ MainModelerWindow::~MainModelerWindow()
     delete water;
     delete cameras;
 
-    delete render_preview_provider;
+    //delete render_preview_provider;  // don't delete it, addImageProvider took ownership
     delete render_process;
 
     delete renderer;
@@ -117,7 +117,7 @@ void MainModelerWindow::loadFile()
 
 void MainModelerWindow::exit()
 {
-    QGuiApplication::instance()->exit();
+    close();
 }
 
 void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
