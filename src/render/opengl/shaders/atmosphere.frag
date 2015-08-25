@@ -282,7 +282,7 @@ vec4 getSkyColor(vec3 location, vec3 direction)
     vec3 inscattering = _getInscatterColor(x, t, v, s, r, mu, attenuation);
 
     vec3 nightsky = vec3(0.01, 0.012, 0.03);
-    return vec4(applyWeatherEffects(SPHERE_SIZE, nightsky + sunTransmittance.rgb, vec3(0), inscattering), 1.0);
+    return vec4(applyWeatherEffects(SPHERE_SIZE, nightsky + sunTransmittance.rgb, vec3(1), inscattering), 1.0);
 }
 
 vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float shininess)
