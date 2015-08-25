@@ -4,6 +4,7 @@ import Paysages 1.0
 OpenGLView {
     id: main_ui
     state: "Init"
+    property string previous_state
 
     width: 1000
     height: 700
@@ -148,6 +149,13 @@ OpenGLView {
         anchors.fill: parent
     }
 
+    onStateChanged: {
+        if (state != "Render Dialog")
+        {
+            previous_state = state;
+        }
+    }
+
     states: [
         State {
             name: "Water Mode"
@@ -156,6 +164,10 @@ OpenGLView {
             PropertyChanges {
                 target: water_section
                 enabled: true
+            }
+            PropertyChanges {
+                target: tool_water
+                selected: true
             }
         },
         State {
@@ -166,6 +178,10 @@ OpenGLView {
                 target: atmosphere_section
                 enabled: true
             }
+            PropertyChanges {
+                target: tool_atmosphere
+                selected: true
+            }
         },
         State {
             name: "Render Mode"
@@ -174,6 +190,10 @@ OpenGLView {
             PropertyChanges {
                 target: render_toolbar
                 enabled: true
+            }
+            PropertyChanges {
+                target: tool_render
+                selected: true
             }
         },
         State {
@@ -184,18 +204,14 @@ OpenGLView {
                 target: file_toolbar
                 enabled: true
             }
+            PropertyChanges {
+                target: tool_file
+                selected: true
+            }
         },
         State {
             name: "Render Dialog"
 
-            PropertyChanges {
-                target: primary_toolbar
-                enabled: false
-            }
-            PropertyChanges {
-                target: camera_choice
-                enabled: false
-            }
             PropertyChanges {
                 target: render_dialog
                 enabled: true

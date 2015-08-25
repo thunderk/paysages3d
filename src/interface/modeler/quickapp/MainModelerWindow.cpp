@@ -128,7 +128,7 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
         {
             render_process->stopRender();
 
-            setState("Init");
+            setState(rootObject()->property("previous_state").toString());
         }
     }
     else

@@ -10,13 +10,12 @@ BaseRectangle {
         preview_image.source = "image://renderpreviewprovider/live";
     }
 
-    onOpacityChanged: {
-        refresh();
-        render_progress.value = 0;
-    }
     onVisibleChanged: {
-        refresh();
-        render_progress.value = 0;
+        if (visible)
+        {
+            refresh();
+            render_progress.value = 0;
+        }
     }
 
     Image {
