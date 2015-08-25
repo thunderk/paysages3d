@@ -81,8 +81,7 @@ void ModelerCameras::changeActiveCamera(const QString &name)
     }
     else if (name == "Top-down camera")
     {
-        topdown->setLocation(render->getLocation());
-        topdown->setTarget(render->getTarget());
+        render->copy(topdown);
 
         topdown->strafeForward(-10.0);
         topdown->strafeUp(25.0);
