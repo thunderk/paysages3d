@@ -28,7 +28,7 @@ SOURCES += \
     OpenGLTerrain.cpp
 
 HEADERS +=\
-        opengl_global.h \
+    opengl_global.h \
     OpenGLRenderer.h \
     ExplorerChunkTerrain.h \
     WidgetExplorer.h \
@@ -78,14 +78,5 @@ RESOURCES += \
     shaders/resources.qrc
 
 OTHER_FILES += \
-    shaders/skybox.frag \
-    shaders/skybox.vert \
-    shaders/water.vert \
-    shaders/water.frag \
-    shaders/bruneton.frag \
-    shaders/bruneton.frag \
-    shaders/tonemapping.frag \
-    shaders/terrain.frag \
-    shaders/terrain.vert \
-    shaders/fadeout.frag \
-    shaders/noise.frag
+    shaders/*.frag \
+    shaders/*.vert

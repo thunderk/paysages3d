@@ -24,9 +24,11 @@ const int RES_R = 32;
 const int RES_NU = 8;
 
 uniform float waterHeight;
+uniform float atmosphereHumidity;
 uniform vec3 cameraLocation;
 uniform vec3 sunDirection;
 uniform vec4 sunColor;
+uniform float dayTime;
 const float sunRadius = 1.0; // TODO -> uniform
 
 varying vec3 unprojected;
@@ -186,6 +188,64 @@ vec3 _getInscatterColor(inout vec3 x, inout float t, vec3 v, vec3 s, out float r
     return result * ISun;
 }
 
+float getDayFactor(float _daytime)
+{
+    float daytime = 1.0 - abs(0.5 - _daytime) / 0.5;
+    return daytime < 0.45 ? 0.0 : sqrt((daytime - 0.45) / 0.55);
+}
+
+void limitPower(inout vec3 color, float max_power)
+{
+    float power = color.r + color.g + color.b;
+
+    if (power > max_power)
+    {
+        float factor = max_power / power;
+
+        color.r *= factor;
+        color.g *= factor;
+        color.b *= factor;
+    }
+}
+
+vec3 applyWeatherEffects(float distance, vec3 base, vec3 _attenuation, vec3 _inscattering)
+{
+    vec3 attenuation = _attenuation;
+    vec3 inscattering = _inscattering;
+    float max_distance = 100.0 - 90.0 * atmosphereHumidity;
+
+    if (distance > max_distance)
+    {
+        distance = max_distance;
+    }
+    float distancefactor = (distance > max_distance ? max_distance : distance) / max_distance;
+    float dayfactor = getDayFactor(dayTime);
+
+    if (atmosphereHumidity < 0.15)
+    {
+        float force = (0.15 - atmosphereHumidity) / 0.15;
+        limitPower(inscattering, 100.0 - 90.0 * pow(force, 0.1));
+    }
+    else
+    {
+        float force = 1.2 * (atmosphereHumidity < 0.5 ? sqrt((atmosphereHumidity - 0.15) / 0.35) : 1.0 - (atmosphereHumidity - 0.5) / 0.5);
+        inscattering.r *= 1.0 + force * distancefactor * (atmosphereHumidity - 0.15) / 0.85;
+        inscattering.g *= 1.0 + force * distancefactor * (atmosphereHumidity - 0.15) / 0.85;
+        inscattering.b *= 1.0 + force * distancefactor * (atmosphereHumidity - 0.15) / 0.85;
+    }
+
+    attenuation.r *= 1.0 - 0.4 * distancefactor * atmosphereHumidity;
+    attenuation.g *= 1.0 - 0.4 * distancefactor * atmosphereHumidity;
+    attenuation.b *= 1.0 - 0.4 * distancefactor * atmosphereHumidity;
+
+    vec3 result = base * attenuation + inscattering;
+    if (atmosphereHumidity > 0.3)
+    {
+        result = mix(result, vec3((10.0 - 8.0 * atmosphereHumidity) * dayfactor), distancefactor * (atmosphereHumidity - 0.3) / 0.7);
+    }
+    return result;
+}
+
 vec4 applyAerialPerspective(vec4 base)
 {
     vec3 x = vec3(0.0, Rg + WORKAROUND_OFFSET + cameraLocation.y * WORLD_SCALING, 0.0);
@@ -204,7 +264,7 @@ vec4 applyAerialPerspective(vec4 base)
     vec3 attenuation;
     vec3 inscattering = _getInscatterColor(x, t, v, s, r, mu, attenuation);
 
-    return base * vec4(attenuation, 0.0) + vec4(inscattering, 0.0);
+    return vec4(applyWeatherEffects(length(unprojected - cameraLocation), base.rgb, attenuation, inscattering), base.a);
 }
 
 vec4 getSkyColor(vec3 location, vec3 direction)
@@ -221,9 +281,8 @@ vec4 getSkyColor(vec3 location, vec3 direction)
     vec3 attenuation;
     vec3 inscattering = _getInscatterColor(x, t, v, s, r, mu, attenuation);
 
-    vec4 result = vec4(0.01, 0.012, 0.03, 1.0); // night sky
-    result += sunTransmittance + vec4(inscattering, 0.0);
-    return result;
+    vec3 nightsky = vec3(0.01, 0.012, 0.03);
+    return vec4(applyWeatherEffects(SPHERE_SIZE, nightsky + sunTransmittance.rgb, vec3(0), inscattering), 1.0);
 }
 
 vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float shininess)

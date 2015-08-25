@@ -32,8 +32,9 @@ static inline void _applyWeatherEffects(AtmosphereDefinition* definition, Atmosp
         return;
     }
 
+    double humidity = definition->propHumidity()->getValue();
     double distance = result->distance;
-    double max_distance = 100.0 - 90.0 * definition->propHumidity()->getValue();
+    double max_distance = 100.0 - 90.0 * humidity;
     double distancefactor, dayfactor;
 
     if (distance > max_distance)
@@ -43,8 +44,6 @@ static inline void _applyWeatherEffects(AtmosphereDefinition* definition, Atmosp
     distancefactor = (distance > max_distance ? max_distance : distance) / max_distance;
     /* TODO Get day lighting from model */
     dayfactor = _getDayFactor(definition->propDayTime()->getValue());
-
-    double humidity = definition->propHumidity()->getValue();
 
     /* Fog masking */
     if (humidity > 0.3)

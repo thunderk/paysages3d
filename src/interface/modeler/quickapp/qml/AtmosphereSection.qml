@@ -16,7 +16,7 @@ BaseSection {
 
         ToolbarButton {
             id: tool_humidity
-            picture: "images/icon_atmosphere_humidity.png"
+            picture: "images/icon_atmosphere.png"
             hovertext: qsTr("Humidity factor in the air")
         }
     }

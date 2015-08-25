@@ -53,6 +53,7 @@ void OpenGLSkybox::initialize()
 
     // Watch for definition changes
     renderer->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this, true);
+    renderer->getScenery()->getAtmosphere()->propHumidity()->addWatcher(this, true);
 }
 
 void OpenGLSkybox::update()
@@ -66,7 +67,7 @@ void OpenGLSkybox::render()
 {
     program->drawTriangleStrip(vertices, 14);
 }
-
+#include "Logs.h"
 void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
 {
     if (node->getPath() == "/atmosphere/daytime")
@@ -76,6 +77,12 @@ void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff 
 
         Color sun_color = renderer->getScenery()->getAtmosphere()->sun_color;
         renderer->getSharedState()->set("sunColor", sun_color);
+
+        renderer->getSharedState()->set("dayTime", renderer->getScenery()->getAtmosphere()->propDayTime()->getValue());
+    }
+    else if (node->getPath() == "/atmosphere/humidity")
+    {
+        renderer->getSharedState()->set("atmosphereHumidity", renderer->getScenery()->getAtmosphere()->propHumidity()->getValue());
     }
 }
 
