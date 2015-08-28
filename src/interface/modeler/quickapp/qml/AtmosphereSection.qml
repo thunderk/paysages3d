@@ -9,7 +9,7 @@ BaseSection {
 
         ToolbarButton {
             id: tool_daytime
-            selected: true
+            checked: true
             picture: "images/icon_atmosphere_daytime.png"
             hovertext: qsTr("Change the time of day")
         }
@@ -37,7 +37,7 @@ BaseSection {
     states: [
         State {
             name: "DayTime"
-            when: tool_daytime.selected
+            when: tool_daytime.checked
             PropertyChanges {
                 target: panel_daytime
                 enabled: true
@@ -45,7 +45,7 @@ BaseSection {
         },
         State {
             name: "Humidity"
-            when: tool_humidity.selected
+            when: tool_humidity.checked
             PropertyChanges {
                 target: panel_humidity
                 enabled: true

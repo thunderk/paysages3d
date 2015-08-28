@@ -13,7 +13,7 @@ WaterModeler::WaterModeler(MainModelerWindow *ui):
     QObject *toggle_water = ui->findQmlObject("camera_toggle_water");
     if (toggle_water)
     {
-        connect(toggle_water, SIGNAL(changed(bool)), this, SLOT(enableRendering(bool)));
+        connect(toggle_water, SIGNAL(toggled(bool)), this, SLOT(enableRendering(bool)));
     }
 
     prop_water_height = new FloatPropertyBind(ui, "water_height", "value", ui->getScenery()->getTerrain()->propWaterHeight());

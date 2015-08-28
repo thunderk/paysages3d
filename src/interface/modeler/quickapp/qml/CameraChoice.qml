@@ -10,7 +10,7 @@ BaseToolbar {
         id: camera_choice_render
         picture: "images/tab_display.png"
         hovertext: qsTr("Final render camera")
-        selected: true
+        checked: true
     }
 
     ToolbarButton {
@@ -23,7 +23,7 @@ BaseToolbar {
         id: camera_toggle_water
         objectName: "camera_toggle_water"
         toggle: true
-        selected: true
+        checked: true
         picture: "images/toggle_water.png"
         hovertext: qsTr("Toggle water rendering")
     }
@@ -31,11 +31,11 @@ BaseToolbar {
     states: [
         State {
             name: "Render camera"
-            when: camera_choice_render.selected
+            when: camera_choice_render.checked
         },
         State {
             name: "Top-down camera"
-            when: camera_choice_topdown.selected
+            when: camera_choice_topdown.checked
         }
     ]
 }

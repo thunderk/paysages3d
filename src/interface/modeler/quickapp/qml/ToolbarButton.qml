@@ -1,23 +1,36 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
+import QtQuick.Controls 1.2
 
 Item {
     id: button
+    property var toolbar: null
     property string picture
-    property bool selected: false
+    property bool checked: false
     property bool hovered: false
     property bool toggle: false
+    property ExclusiveGroup exclusiveGroup: null
     property string helptext
     property string hovertext
     property string shortcut
     signal clicked
-    signal changed(bool value)
+    signal toggled(bool value)
 
     width: image.width + 10
     height: image.height + 10
     opacity: enabled ? 1.0 : 0.1
 
-    onSelectedChanged: changed(selected)
+    onExclusiveGroupChanged: {
+        if (exclusiveGroup)
+            exclusiveGroup.bindCheckable(button)
+    }
+
+    onCheckedChanged: {
+        toggled(checked);
+        if (toolbar && !toggle && checked) {
+            toolbar.current = button;
+        }
+    }
 
     Behavior on opacity {
         PropertyAnimation {
@@ -31,7 +44,7 @@ Item {
         color: parent.toggle ? "#bbccbb" : "#cccccc"
         radius: 8
 
-        opacity: button.selected ? 1.0 : (button.hovered ? 0.5 : 0.0)
+        opacity: button.checked ? 1.0 : (button.hovered ? 0.5 : 0.0)
         Behavior on opacity {
             PropertyAnimation {
                 duration: 200
@@ -79,20 +92,11 @@ Item {
             tooltip_widget.hovertext = "";
         }
         onClicked: {
-            button.selected = !button.selected;
+            button.checked = !button.checked;
             if (!button.toggle)
             {
-                if (button.selected)
+                if (button.checked)
                 {
-                    var toolbar = button.parent;
-                    for (var i = 0; i < toolbar.children.length; ++i)
-                    {
-                        var child = toolbar.children[i]
-                        if (child !== button && !child.toggle)
-                        {
-                            child.selected = false;
-                        }
-                    }
                     tooltip_widget.helptext = helptext;
                 }
                 else

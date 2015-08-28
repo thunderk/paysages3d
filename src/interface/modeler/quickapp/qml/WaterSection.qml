@@ -9,7 +9,7 @@ BaseSection {
 
         ToolbarButton {
             id: tool_water_level
-            selected: true
+            checked: true
             picture: "images/icon_water_level.png"
             hovertext: qsTr("Change the water altitude")
         }
@@ -27,7 +27,7 @@ BaseSection {
     states: [
         State {
             name: "WaterHeight"
-            when: tool_water_level.selected
+            when: tool_water_level.checked
             PropertyChanges {
                 target: panel_water_level
                 enabled: true

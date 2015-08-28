@@ -159,54 +159,38 @@ OpenGLView {
     states: [
         State {
             name: "Water Mode"
-            when: tool_water.selected
+            when: primary_toolbar.current === tool_water
 
             PropertyChanges {
                 target: water_section
                 enabled: true
             }
-            PropertyChanges {
-                target: tool_water
-                selected: true
-            }
         },
         State {
             name: "Atmosphere Mode"
-            when: tool_atmosphere.selected
+            when: primary_toolbar.current === tool_atmosphere
 
             PropertyChanges {
                 target: atmosphere_section
                 enabled: true
             }
-            PropertyChanges {
-                target: tool_atmosphere
-                selected: true
-            }
         },
         State {
             name: "Render Mode"
-            when: tool_render.selected
+            when: primary_toolbar.current === tool_render
 
             PropertyChanges {
                 target: render_toolbar
                 enabled: true
             }
-            PropertyChanges {
-                target: tool_render
-                selected: true
-            }
         },
         State {
             name: "File Mode"
-            when: tool_file.selected
+            when: primary_toolbar.current === tool_file
 
             PropertyChanges {
                 target: file_toolbar
                 enabled: true
-            }
-            PropertyChanges {
-                target: tool_file
-                selected: true
             }
         },
         State {
