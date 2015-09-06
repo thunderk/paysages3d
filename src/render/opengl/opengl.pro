@@ -13,12 +13,9 @@ DEFINES += OPENGL_LIBRARY
 
 include(../../common.pri)
 
-unix:LIBS += -lGLU
-
 SOURCES += \
     OpenGLRenderer.cpp \
     ExplorerChunkTerrain.cpp \
-    WidgetExplorer.cpp \
     OpenGLShaderProgram.cpp \
     OpenGLPart.cpp \
     OpenGLSkybox.cpp \
@@ -31,7 +28,6 @@ HEADERS +=\
     opengl_global.h \
     OpenGLRenderer.h \
     ExplorerChunkTerrain.h \
-    WidgetExplorer.h \
     OpenGLShaderProgram.h \
     OpenGLPart.h \
     OpenGLSkybox.h \

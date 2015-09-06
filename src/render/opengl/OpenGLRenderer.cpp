@@ -12,8 +12,6 @@
 #include "Logs.h"
 #include "Vector3.h"
 
-#include "GL/glu.h" // TEMP
-
 OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     SoftwareRenderer(scenery)
 {
@@ -160,7 +158,7 @@ void OpenGLRenderer::paint()
         int error_code;
         while ((error_code = glGetError()) != GL_NO_ERROR)
         {
-            Logs::warning() << "[OpenGL] ERROR : " << (const char*)gluErrorString(error_code) << std::endl;
+            Logs::warning() << "[OpenGL] ERROR : " << error_code << std::endl;
         }
     }
 }
