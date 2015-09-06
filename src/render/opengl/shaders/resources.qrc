@@ -10,5 +10,6 @@
         <file>terrain.vert</file>
         <file>fadeout.frag</file>
         <file>noise.frag</file>
+        <file>ui.frag</file>
     </qresource>
 </RCC>

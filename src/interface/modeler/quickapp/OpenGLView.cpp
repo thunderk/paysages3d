@@ -14,6 +14,7 @@ OpenGLView::OpenGLView(QQuickItem *parent) :
     renderer = NULL;
 
     setAcceptedMouseButtons(Qt::AllButtons);
+    setAcceptHoverEvents(true);
 
     mouse_button = Qt::NoButton;
 
@@ -120,6 +121,13 @@ void OpenGLView::mouseMoveEvent(QMouseEvent *event)
         window->getCamera()->processScroll(-0.02 * factor * diff.x(), 0.02 * factor * diff.y());
     }
     mouse_pos = event->windowPos();
+
+    renderer->setMouseLocation(event->pos().x(), height() - event->pos().y());
+}
+
+void OpenGLView::hoverMoveEvent(QHoverEvent *event)
+{
+    renderer->setMouseLocation(event->pos().x(), height() - event->pos().y());
 }
 
 void OpenGLView::timerEvent(QTimerEvent *)

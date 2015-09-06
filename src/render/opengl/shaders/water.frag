@@ -15,5 +15,7 @@ void main(void)
 
     gl_FragColor = applyToneMapping(gl_FragColor);
 
+    gl_FragColor = applyMouseTracking(unprojected, gl_FragColor);
+
     gl_FragColor.a = distanceFadeout();
 }

@@ -10,6 +10,7 @@
 #include "Scenery.h"
 #include "LightingManager.h"
 #include "Logs.h"
+#include "Vector3.h"
 
 #include "GL/glu.h" // TEMP
 
@@ -20,6 +21,13 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     paused = false;
     vp_width = 1;
     vp_height = 1;
+
+    mouse_tracking = true;
+    mouse_x = 0;
+    mouse_y = 0;
+    mouse_projected = new Vector3();
+
+    view_matrix = new QMatrix4x4;
 
     render_quality = 3;
 
@@ -39,6 +47,10 @@ OpenGLRenderer::~OpenGLRenderer()
     terrain->interrupt();
     water->interrupt();
     skybox->interrupt();
+
+    delete mouse_projected;
+
+    delete view_matrix;
 
     delete skybox;
     delete water;
@@ -140,6 +152,11 @@ void OpenGLRenderer::paint()
         terrain->render();
         water->render();
 
+        if (mouse_tracking)
+        {
+            updateMouseProjection();
+        }
+
         int error_code;
         while ((error_code = glGetError()) != GL_NO_ERROR)
         {
@@ -172,6 +189,17 @@ void OpenGLRenderer::resume()
     terrain->resume();
 }
 
+void OpenGLRenderer::setMouseLocation(int x, int y)
+{
+    mouse_x = x;
+    mouse_y = y;
+}
+
+const Vector3 &OpenGLRenderer::getMouseProjection()
+{
+    return *mouse_projected;
+}
+
 void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera)
 {
     // Get camera info
@@ -191,9 +219,11 @@ void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera)
     projection.setToIdentity();
     projection.perspective(perspective.yfov * 180.0 / M_PI, perspective.xratio, perspective.znear, perspective.zfar);
 
+    *view_matrix = projection * transform;
+
     // Set in shaders
     shared_state->set("cameraLocation", location);
-    shared_state->set("viewMatrix", projection * transform);
+    shared_state->set("viewMatrix", *view_matrix);
 }
 
 double OpenGLRenderer::getPrecision(const Vector3 &)
@@ -204,4 +234,16 @@ double OpenGLRenderer::getPrecision(const Vector3 &)
 Color OpenGLRenderer::applyMediumTraversal(Vector3, Color color)
 {
     return color;
+}
+
+void OpenGLRenderer::updateMouseProjection()
+{
+    GLfloat z;
+    functions->glReadPixels(mouse_x, mouse_y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
+
+    QVector4D located(mouse_x / render_camera->getWidth(), mouse_y / render_camera->getHeight(), z, 1.0);
+    QVector4D unprojected = view_matrix->inverted() * 2.0 * (located - QVector4D(0.5, 0.5, 0.5, 0.5));
+    *mouse_projected = Vector3(unprojected.x() / unprojected.w(), unprojected.y() / unprojected.w(), unprojected.z() / unprojected.w());
+
+    shared_state->set("mouseProjection", *mouse_projected);
 }

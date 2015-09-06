@@ -39,6 +39,8 @@ public:
     inline const Matrix4 &getTransformationMatrix() const {return projector;}
     inline VectorSpherical getDirectionSpherical() const {return direction;}
     inline CameraPerspective getPerspective() const {return perspective;}
+    inline double getWidth() const {return width;}
+    inline double getHeight() const {return height;}
 
     double getRealDepth(const Vector3 &projected) const;
 

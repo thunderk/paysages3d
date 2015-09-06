@@ -63,6 +63,7 @@ void OpenGLTerrain::initialize()
     program->addFragmentSource("atmosphere");
     program->addFragmentSource("tonemapping");
     program->addFragmentSource("fadeout");
+    program->addFragmentSource("ui");
     program->addFragmentSource("terrain");
 
     // Add terrain chunks

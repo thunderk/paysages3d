@@ -30,6 +30,7 @@ void OpenGLWater::initialize()
     program->addFragmentSource("atmosphere");
     program->addFragmentSource("tonemapping");
     program->addFragmentSource("fadeout");
+    program->addFragmentSource("ui");
     program->addFragmentSource("noise");
     program->addFragmentSource("water");
 

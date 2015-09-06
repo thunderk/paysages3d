@@ -5,6 +5,8 @@
 
 #include "SoftwareRenderer.h"
 
+class QMatrix4x4;
+
 namespace paysages {
 namespace opengl {
 
@@ -43,6 +45,16 @@ public:
     void resume();
 
     /**
+     * Set the current mouse location, for use by getMouseProjection().
+     */
+    void setMouseLocation(int x, int y);
+
+    /**
+     * Get the coordinates of the mouse, projected in world space.
+     */
+    const Vector3 &getMouseProjection();
+
+    /**
      * Change the camera location.
      */
     void setCamera(CameraDefinition *camera);
@@ -55,10 +67,23 @@ public:
     virtual Color applyMediumTraversal(Vector3 location, Color color) override;
 
 private:
+    /**
+     * Update the mouse_projected member.
+     */
+    void updateMouseProjection();
+
+private:
     bool ready;
     bool paused;
     int vp_width;
     int vp_height;
+
+    bool mouse_tracking;
+    int mouse_x;
+    int mouse_y;
+    Vector3 *mouse_projected;
+
+    QMatrix4x4 *view_matrix;
 
     OpenGLFunctions* functions;
     OpenGLSharedState* shared_state;
