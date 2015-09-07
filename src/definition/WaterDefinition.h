@@ -20,6 +20,8 @@ public:
     virtual void copy(DefinitionNode* destination) const override;
     virtual void validate() override;
 
+    inline FloatNode *propReflection() const {return reflection;}
+
 public:
     typedef enum
     {
@@ -30,7 +32,6 @@ public:
 
 public:
     double transparency;
-    double reflection;
     SurfaceMaterial* material;
     Color* depth_color;
     double transparency_depth;
@@ -45,6 +46,9 @@ public:
     SurfaceMaterial* foam_material;
 
     NoiseState* noise_state;
+
+private:
+    FloatNode *reflection;
 };
 
 }

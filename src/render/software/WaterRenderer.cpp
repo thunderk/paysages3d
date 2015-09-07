@@ -8,6 +8,7 @@
 #include "Scenery.h"
 #include "SurfaceMaterial.h"
 #include "NoiseFunctionSimplex.h"
+#include "FloatNode.h"
 
 WaterRenderer::WaterRenderer(SoftwareRenderer* parent):
     parent(parent)
@@ -172,6 +173,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     Vector3 location, normal, look_direction;
     Color color, foam;
     double detail, depth;
+    double reflection = definition->propReflection()->getValue();
 
     location.x = x;
     location.y = _getHeight(noise, x, z);
@@ -188,7 +190,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     look_direction = location.sub(parent->getCameraLocation(location)).normalize();
 
     /* Reflection */
-    if (definition->reflection == 0.0)
+    if (reflection == 0.0)
     {
         result.reflected = COLOR_BLACK;
     }
@@ -225,9 +227,9 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     /* Lighting from environment */
     color = parent->applyLightingToSurface(location, normal, *definition->material);
 
-    color.r += result.reflected.r * definition->reflection + result.refracted.r * definition->transparency;
-    color.g += result.reflected.g * definition->reflection + result.refracted.g * definition->transparency;
-    color.b += result.reflected.b * definition->reflection + result.refracted.b * definition->transparency;
+    color.r += result.reflected.r * reflection + result.refracted.r * definition->transparency;
+    color.g += result.reflected.g * reflection + result.refracted.g * definition->transparency;
+    color.b += result.reflected.b * reflection + result.refracted.b * definition->transparency;
 
     /* Merge with foam */
     foam = _getFoamMask(parent, definition, noise, location, normal, detail);

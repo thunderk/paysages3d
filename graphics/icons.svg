@@ -14,7 +14,7 @@
    height="297mm"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="icons.svg"
    inkscape:export-filename="/home/michael/workspace/paysages3d/graphics/icons.png"
    inkscape:export-xdpi="154.89854"
@@ -28,19 +28,21 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="468.77289"
-     inkscape:cy="831.55692"
+     inkscape:zoom="2.8"
+     inkscape:cx="274.84974"
+     inkscape:cy="462.35469"
      inkscape:document-units="px"
      inkscape:current-layer="g3986"
      showgrid="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1030"
+     inkscape:window-height="1037"
      inkscape:window-x="1440"
-     inkscape:window-y="25"
-     inkscape:window-maximized="1"
+     inkscape:window-y="20"
+     inkscape:window-maximized="0"
      showguides="true"
-     inkscape:snap-object-midpoints="false">
+     inkscape:snap-object-midpoints="false"
+     inkscape:object-nodes="false"
+     inkscape:snap-grids="true">
     <inkscape:grid
        type="xygrid"
        id="grid3004" />
@@ -99,6 +101,13 @@
        sodipodi:nodetypes="ccccccccccc" />
     <g
        id="g3986">
+      <rect
+         style="opacity:1;fill:#656565;fill-opacity:1;stroke:none;stroke-width:3.4000001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect4171-0"
+         width="50"
+         height="30.000034"
+         x="180"
+         y="567.36218" />
       <g
          id="g3969">
         <path
@@ -109,7 +118,7 @@
            sodipodi:cy="187.36218"
            sodipodi:rx="35"
            sodipodi:ry="35"
-           d="m 105,187.36218 c 0,19.32997 -15.670034,35 -35,35 -19.329966,0 -35,-15.67003 -35,-35 0,-19.32996 15.670034,-35 35,-35 19.329966,0 35,15.67004 35,35 z"
+           d="m 105,187.36218 a 35,35 0 0 1 -35,35 35,35 0 0 1 -35,-35 35,35 0 0 1 35,-35 35,35 0 0 1 35,35 z"
            transform="translate(5.3571428,58.571429)" />
         <g
            id="g3961">
@@ -191,6 +200,18 @@
          d="m 440,292.36218 65,95 70,-95"
          id="path4025"
          inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.80700541;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 104.66045,597.62168 200.67929,0 -22.85304,-57.73976 -152.74134,0 z"
+         id="path4169"
+         inkscape:connector-curvature="0" />
+      <rect
+         style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3.4000001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect4171"
+         width="50"
+         height="75"
+         x="180"
+         y="492.36221" />
     </g>
   </g>
 </svg>

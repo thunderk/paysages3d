@@ -43,5 +43,6 @@
         <file>BaseSection.qml</file>
         <file>AtmosphereSection.qml</file>
         <file>PanelSimpleFloat.qml</file>
+        <file>images/icon_water_reflection.png</file>
     </qresource>
 </RCC>

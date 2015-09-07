@@ -156,7 +156,7 @@ void OpenGLRenderer::paint()
         }
 
         int error_code;
-        while ((error_code = glGetError()) != GL_NO_ERROR)
+        while ((error_code = functions->glGetError()) != GL_NO_ERROR)
         {
             Logs::warning() << "[OpenGL] ERROR : " << error_code << std::endl;
         }

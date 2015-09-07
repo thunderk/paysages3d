@@ -41,15 +41,13 @@ void OpenGLWater::initialize()
 
     // Watch for definition changes
     renderer->getScenery()->getTerrain()->propWaterHeight()->addWatcher(this, true);
+    renderer->getScenery()->getWater()->propReflection()->addWatcher(this, true);
 }
 
 void OpenGLWater::update()
 {
     Color water_color = *renderer->getScenery()->getWater()->material->base;
     renderer->getSharedState()->set("waterColor", water_color);
-
-    double water_reflection = renderer->getScenery()->getWater()->reflection;
-    renderer->getSharedState()->set("waterReflection", water_reflection);
 
     renderer->getSharedState()->set("simplexSampler", NoiseFunctionSimplex::getNormalTexture(), true, true);
 }
@@ -74,6 +72,10 @@ void OpenGLWater::nodeChanged(const DefinitionNode *node, const DefinitionDiff *
     if (node->getPath() == "/terrain/water_height")
     {
         renderer->getSharedState()->set("waterOffset", renderer->getScenery()->getTerrain()->getWaterOffset());
+    }
+    else if (node->getPath() == "/water/reflection")
+    {
+        renderer->getSharedState()->set("waterReflection", renderer->getScenery()->getWater()->propReflection()->getValue());
     }
 }
 

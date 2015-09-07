@@ -13,6 +13,13 @@ BaseSection {
             picture: "images/icon_water_level.png"
             hovertext: qsTr("Change the water altitude")
         }
+
+        ToolbarButton {
+            id: tool_water_reflection
+            checked: false
+            picture: "images/icon_water_reflection.png"
+            hovertext: qsTr("Reflection of the water surface")
+        }
     }
 
     PanelSimpleFloat {
@@ -24,12 +31,27 @@ BaseSection {
         objectName: "water_height"
     }
 
+    PanelSimpleFloat {
+        id: panel_water_reflection
+        enabled: false
+        anchors.left: toolbar.right
+        objectName: "water_reflection"
+    }
+
     states: [
         State {
             name: "WaterHeight"
             when: tool_water_level.checked
             PropertyChanges {
                 target: panel_water_level
+                enabled: true
+            }
+        },
+        State {
+            name: "WaterReflection"
+            when: tool_water_reflection.checked
+            PropertyChanges {
+                target: panel_water_reflection
                 enabled: true
             }
         }
