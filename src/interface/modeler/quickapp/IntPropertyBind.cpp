@@ -1,19 +1,17 @@
-#include "FloatPropertyBind.h"
+#include "IntPropertyBind.h"
 
 #include "MainModelerWindow.h"
-#include "FloatNode.h"
+#include "IntNode.h"
 #include "Logs.h"
 
-#include <cmath>
-
-FloatPropertyBind::FloatPropertyBind(MainModelerWindow *window, const QString &object_name, const QString &property_name, FloatNode *node):
+IntPropertyBind::IntPropertyBind(MainModelerWindow *window, const QString &object_name, const QString &property_name, IntNode *node):
     QObject(window), node(node), property(property_name)
 {
     item = window->findQmlObject(object_name);
     if (item)
     {
         node->addWatcher(this, true);
-        connect(item, SIGNAL(changed(double)), this, SLOT(propertyChanged(double)));
+        connect(item, SIGNAL(changed(int)), this, SLOT(propertyChanged(int)));
     }
     else
     {
@@ -22,7 +20,7 @@ FloatPropertyBind::FloatPropertyBind(MainModelerWindow *window, const QString &o
     }
 }
 
-void FloatPropertyBind::nodeChanged(const DefinitionNode *, const DefinitionDiff *)
+void IntPropertyBind::nodeChanged(const DefinitionNode *, const DefinitionDiff *)
 {
     if (item)
     {
@@ -30,9 +28,9 @@ void FloatPropertyBind::nodeChanged(const DefinitionNode *, const DefinitionDiff
     }
 }
 
-void FloatPropertyBind::propertyChanged(double value)
+void IntPropertyBind::propertyChanged(int value)
 {
-    if (fabs(value - node->getValue()) > 0.00000001)
+    if (value != node->getValue())
     {
         node->setValue(value);
     }

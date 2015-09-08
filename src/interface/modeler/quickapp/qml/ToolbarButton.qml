@@ -13,6 +13,8 @@ Item {
     property string helptext
     property string hovertext
     property string shortcut
+    property alias image_width: image.width
+    property alias image_height: image.height
     signal clicked
     signal toggled(bool value)
 

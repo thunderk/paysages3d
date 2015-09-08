@@ -4,11 +4,12 @@
 #include "definition_global.h"
 
 #include "DefinitionNode.h"
+#include "DefinitionWatcher.h"
 
 namespace paysages {
 namespace definition {
 
-class DEFINITIONSHARED_EXPORT WaterDefinition: public DefinitionNode
+class DEFINITIONSHARED_EXPORT WaterDefinition: public DefinitionNode, public DefinitionWatcher
 {
 public:
     WaterDefinition(DefinitionNode* parent);
@@ -20,9 +21,11 @@ public:
     virtual void copy(DefinitionNode* destination) const override;
     virtual void validate() override;
 
+    inline IntNode *propModel() const {return model;}
     inline FloatNode *propReflection() const {return reflection;}
 
-public:
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff);
+
     typedef enum
     {
         WATER_PRESET_LAKE,
@@ -48,6 +51,7 @@ public:
     NoiseState* noise_state;
 
 private:
+    IntNode *model;
     FloatNode *reflection;
 };
 

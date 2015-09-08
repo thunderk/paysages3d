@@ -19,6 +19,7 @@ namespace modeler {
     class ModelerCameras;
 
     class FloatPropertyBind;
+    class IntPropertyBind;
 }
 }
 

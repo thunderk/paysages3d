@@ -44,5 +44,10 @@
         <file>AtmosphereSection.qml</file>
         <file>PanelSimpleFloat.qml</file>
         <file>images/icon_water_reflection.png</file>
+        <file>PanelPictureChoice.qml</file>
+        <file>PictureChoiceItem.qml</file>
+        <file>images/preset_water_lake.jpg</file>
+        <file>images/preset_water_sea.jpg</file>
+        <file>images/icon_preset.png</file>
     </qresource>
 </RCC>

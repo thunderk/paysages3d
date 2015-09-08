@@ -35,7 +35,9 @@ SOURCES += \
     DefinitionDiff.cpp \
     FloatDiff.cpp \
     DiffManager.cpp \
-    DefinitionWatcher.cpp
+    DefinitionWatcher.cpp \
+    IntNode.cpp \
+    IntDiff.cpp
 
 HEADERS +=\
         definition_global.h \
@@ -60,7 +62,9 @@ HEADERS +=\
     DefinitionDiff.h \
     FloatDiff.h \
     DiffManager.h \
-    DefinitionWatcher.h
+    DefinitionWatcher.h \
+    IntNode.h \
+    IntDiff.h
 
 unix:!symbian {
     maemo5 {

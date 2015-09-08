@@ -20,8 +20,9 @@ public slots:
 
 private:
     MainModelerWindow *ui;
-    FloatPropertyBind *prop_water_height;
-    FloatPropertyBind *prop_water_reflexion;
+    IntPropertyBind *prop_model;
+    FloatPropertyBind *prop_height;
+    FloatPropertyBind *prop_reflexion;
 };
 
 }

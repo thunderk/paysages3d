@@ -4,11 +4,13 @@
 #include "NoiseState.h"
 #include "Color.h"
 #include "SurfaceMaterial.h"
+#include "IntNode.h"
 #include "FloatNode.h"
 
 WaterDefinition::WaterDefinition(DefinitionNode* parent):
     DefinitionNode(parent, "water", "water")
 {
+    model = new IntNode(this, "model", -1);
     reflection = new FloatNode(this, "reflection");
 
     material = new SurfaceMaterial;
@@ -24,6 +26,8 @@ WaterDefinition::WaterDefinition(DefinitionNode* parent):
     detail_height = 0.0;
     turbulence = 0.0;
     foam_coverage = 0.0;
+
+    model->addWatcher(this, true);
 }
 
 WaterDefinition::~WaterDefinition()
@@ -101,47 +105,6 @@ void WaterDefinition::validate()
 {
     DefinitionNode::validate();
 
-    material->validate();
-    foam_material->validate();
-}
-
-void WaterDefinition::applyPreset(WaterPreset preset)
-{
-    noise_state->randomizeOffsets();
-
-    if (preset == WATER_PRESET_LAKE)
-    {
-        transparency = 0.5;
-        reflection->setValue(0.2);
-        transparency_depth = 4.0;
-        material->setColor(0.08, 0.15, 0.2, 1.0);
-        depth_color->r = 0.0;
-        depth_color->g = 0.1;
-        depth_color->b = 0.1;
-        lighting_depth = 6.0;
-        scaling = 1.0;
-        waves_height = 0.8;
-        detail_height = 0.05;
-        turbulence = 0.1;
-        foam_coverage = 0.15;
-    }
-    else if (preset == WATER_PRESET_SEA)
-    {
-        transparency = 0.3;
-        reflection->setValue(0.07);
-        transparency_depth = 3.0;
-        material->setColor(0.05, 0.18, 0.2, 1.0);
-        depth_color->r = 0.0;
-        depth_color->g = 0.18;
-        depth_color->b = 0.15;
-        lighting_depth = 4.0;
-        scaling = 1.5;
-        waves_height = 1.0;
-        detail_height = 0.06;
-        turbulence = 0.3;
-        foam_coverage = 0.4;
-    }
-
     depth_color->a = 1.0;
     material->base->a = 1.0;
     material->reflection = 1.0;
@@ -152,5 +115,61 @@ void WaterDefinition::applyPreset(WaterPreset preset)
     foam_material->shininess = 1.5;
     foam_material->hardness = 0.2;
 
-    validate();
+    material->validate();
+    foam_material->validate();
+}
+
+void WaterDefinition::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
+{
+    if (node == model)
+    {
+        noise_state->randomizeOffsets();
+
+        switch (model->getValue())
+        {
+        case 1:
+            transparency = 0.3;
+            reflection->setValue(0.07);
+            transparency_depth = 3.0;
+            material->setColor(0.05, 0.18, 0.2, 1.0);
+            depth_color->r = 0.0;
+            depth_color->g = 0.18;
+            depth_color->b = 0.15;
+            lighting_depth = 4.0;
+            scaling = 1.5;
+            waves_height = 1.0;
+            detail_height = 0.06;
+            turbulence = 0.3;
+            foam_coverage = 0.4;
+            break;
+        case 0:
+        default:
+            transparency = 0.5;
+            reflection->setValue(0.2);
+            transparency_depth = 4.0;
+            material->setColor(0.08, 0.15, 0.2, 1.0);
+            depth_color->r = 0.0;
+            depth_color->g = 0.1;
+            depth_color->b = 0.1;
+            lighting_depth = 6.0;
+            scaling = 1.0;
+            waves_height = 0.8;
+            detail_height = 0.05;
+            turbulence = 0.1;
+            foam_coverage = 0.15;
+            break;
+        }
+    }
+}
+
+void WaterDefinition::applyPreset(WaterPreset preset)
+{
+    if (preset == WATER_PRESET_LAKE)
+    {
+        model->setValue(0);
+    }
+    else if (preset == WATER_PRESET_SEA)
+    {
+        model->setValue(1);
+    }
 }

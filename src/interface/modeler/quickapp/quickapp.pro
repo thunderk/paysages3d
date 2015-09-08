@@ -12,7 +12,8 @@ SOURCES += main.cpp \
     RenderPreviewProvider.cpp \
     RenderProcess.cpp \
     ModelerCameras.cpp \
-    FloatPropertyBind.cpp
+    FloatPropertyBind.cpp \
+    IntPropertyBind.cpp
 
 RESOURCES += \
     qml/app.qrc
@@ -34,7 +35,8 @@ HEADERS += \
     RenderPreviewProvider.h \
     RenderProcess.h \
     ModelerCameras.h \
-    FloatPropertyBind.h
+    FloatPropertyBind.h \
+    IntPropertyBind.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../../system/debug/ -lpaysages_system
