@@ -94,6 +94,10 @@ Item {
             tooltip_widget.hovertext = "";
         }
         onClicked: {
+            if (button.checked && button.exclusiveGroup) {
+                return;
+            }
+
             button.checked = !button.checked;
             if (!button.toggle)
             {
