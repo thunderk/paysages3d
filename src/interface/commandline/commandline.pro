@@ -7,7 +7,9 @@ TARGET = paysages-cli
 include(../../common.pri)
 
 SOURCES += \
-    main.cpp
+    main.cpp \
+    tests.cpp \
+    render.cpp
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../system/debug/ -lpaysages_system

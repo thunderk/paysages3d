@@ -69,6 +69,7 @@ void SoftwareCanvasRenderer::setSize(int width, int height, int samples)
 void SoftwareCanvasRenderer::render()
 {
     started = true;
+    progress->reset();
 
     render_camera->setRenderSize(canvas->getWidth(), canvas->getHeight());
 

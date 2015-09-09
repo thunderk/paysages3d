@@ -14,6 +14,19 @@ paysages::software::RenderProgress::~RenderProgress()
     delete lock;
 }
 
+void RenderProgress::reset()
+{
+    lock->acquire();
+
+    global = 0.0;
+    while (not subs.empty())
+    {
+        subs.pop();
+    }
+
+    lock->release();
+}
+
 void RenderProgress::add(int value)
 {
     lock->acquire();

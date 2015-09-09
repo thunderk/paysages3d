@@ -122,7 +122,11 @@ void MainModelerWindow::exit()
 
 void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
 {
-    if (getState() == "Render Dialog")
+    if (event->modifiers() & Qt::ControlModifier && event->key() == Qt::Key_Q)
+    {
+        exit();
+    }
+    else if (getState() == "Render Dialog")
     {
         if (event->key() == Qt::Key_Escape)
         {
@@ -152,13 +156,6 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
         else if (event->key() == Qt::Key_F12)
         {
             Logs::warning() << "Current scenery dump:" << std::endl << scenery->toString() << std::endl;
-        }
-        else if (event->key() == Qt::Key_Q)
-        {
-            if (event->modifiers() & Qt::ControlModifier)
-            {
-                exit();
-            }
         }
         else if (event->key() == Qt::Key_N)
         {

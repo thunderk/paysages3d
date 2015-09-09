@@ -24,11 +24,11 @@ void TerrainRayWalker::update()
     ymin = info.min_height - disp;
     ymax = info.max_height + disp;
 
-    ydispmax = disp * (0.5 + (double)renderer->render_quality * 0.1);
+    ydispmax = disp * (0.5 + (double)renderer->render_quality * 0.05);
     ydispmin = -ydispmax;
 
-    minstep = 1.0 * terrain->scaling / (double)(renderer->render_quality * renderer->render_quality);
-    maxstep = 10.0 * terrain->scaling / (double)renderer->render_quality;
+    minstep = 0.5 * terrain->scaling / (double)renderer->render_quality;
+    maxstep = 50.0 * terrain->scaling / (double)renderer->render_quality;
 }
 
 static inline Vector3 _getShiftAxis(const Vector3 &direction)
@@ -63,7 +63,14 @@ bool TerrainRayWalker::startWalking(const Vector3 &start, Vector3 direction, dou
     if (escape_angle != 0.0)
     {
         // Prepare escape
-        shift_step = escape_angle / (double)(renderer->render_quality * renderer->render_quality);
+        if (renderer->render_quality >= 7)
+        {
+            shift_step = escape_angle / (double)(renderer->render_quality * renderer->render_quality);
+        }
+        else
+        {
+            shift_step = escape_angle / (double)renderer->render_quality;
+        }
         shift_matrix = Matrix4::newRotateAxis(-shift_step, _getShiftAxis(direction));
     }
 
@@ -121,7 +128,7 @@ bool TerrainRayWalker::startWalking(const Vector3 &start, Vector3 direction, dou
             previous_cursor = cursor;
             walked_length += step_length;
 
-            step_length = diff * 3.0 / (double)renderer->render_quality;
+            step_length = diff * 10.0 / (double)renderer->render_quality;
             if (step_length < minstep)
             {
                 step_length = minstep;

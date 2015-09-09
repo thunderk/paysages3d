@@ -175,6 +175,7 @@ bool TerrainRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
 
     // Walk to find an intersection
     double escape_angle = definition->shadow_smoothing;
+    // TODO max length should depend on the sun light angle and altitude range
     if (walker->startWalking(at, direction_to_light, escape_angle, 100.0, walk_result))
     {
         if (walk_result.escape_angle == 0.0)

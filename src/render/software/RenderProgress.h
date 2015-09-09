@@ -26,6 +26,7 @@ public:
 
     inline double get() const {return global;}
 
+    void reset();
     void add(int value=1);
     void enterSub(int count);
     void exitSub();

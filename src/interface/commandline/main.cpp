@@ -1,71 +1,31 @@
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
-#include <cmath>
-
-#include "CameraDefinition.h"
-#include "AtmosphereDefinition.h"
 #include "SoftwareCanvasRenderer.h"
-#include "Scenery.h"
 #include "RenderConfig.h"
-#include "ColorProfile.h"
-#include "Thread.h"
+#include "Scenery.h"
+#include "AtmosphereDefinition.h"
+#include "CameraDefinition.h"
 
-class RenderThread: public Thread
-{
-public:
-    RenderThread(SoftwareCanvasRenderer *renderer, char *outputpath):
-        renderer(renderer), outputpath(outputpath)
-    {
-    }
+#include <cstring>
 
-    virtual void run() override
-    {
-        renderer->render();
-    }
-
-private:
-    SoftwareCanvasRenderer *renderer;
-    char *outputpath;
-};
-
-static void startRender(SoftwareCanvasRenderer *renderer, char *outputpath)
-{
-    RenderThread thread(renderer, outputpath);
-
-    printf("\rRendering %s ...                   \n", outputpath);
-    thread.start();
-
-    while (thread.isWorking())
-    {
-        Thread::timeSleepMs(200);
-
-        printf("\rProgress : %0.1f%%                         ", renderer->getProgress() * 100.0);
-        fflush(stdout);
-    }
-    thread.join();
-
-    printf("\rSaving %s ...                      \n", outputpath);
-    remove(outputpath);
-    renderer->saveToDisk(outputpath);
-}
+void startRender(SoftwareCanvasRenderer *renderer, const char *outputpath);
+void runTestSuite();
 
 static void displayHelp()
 {
     printf("Usage : paysages-cli [options]\n");
     printf("Options :\n");
-    printf(" -h     Show this help\n");
-    printf(" -f x   Saved file to load (str)\n");
-    printf(" -n     Number of pictures in the sequence\n");
-    printf(" -rw x  Render width (int)\n");
-    printf(" -rh x  Render height (int)\n");
-    printf(" -rq x  Render quality (int, 1 to 10)\n");
-    printf(" -ra x  Render anti-aliasing (int, 1 to 4)\n");
-    printf(" -di x  Day start time (double, 0.0 to 1.0)\n");
-    printf(" -ds x  Day step time (double)\n");
-    printf(" -cx x  Camera X step (double)\n");
-    printf(" -cy y  Camera Y step (double)\n");
-    printf(" -cz z  Camera Z step (double)\n");
+    printf(" -h      Show this help\n");
+    printf(" -ts     Run the render test suite\n");
+    printf(" -f x    Saved file to load (str)\n");
+    printf(" -n      Number of pictures in the sequence\n");
+    printf(" -rw x   Render width (int)\n");
+    printf(" -rh x   Render height (int)\n");
+    printf(" -rq x   Render quality (int, 1 to 10)\n");
+    printf(" -ra x   Render anti-aliasing (int, 1 to 4)\n");
+    printf(" -di x   Day start time (double, 0.0 to 1.0)\n");
+    printf(" -ds x   Day step time (double)\n");
+    printf(" -cx x   Camera X step (double)\n");
+    printf(" -cy y   Camera Y step (double)\n");
+    printf(" -cz z   Camera Z step (double)\n");
 }
 
 int main(int argc, char** argv)
@@ -91,6 +51,11 @@ int main(int argc, char** argv)
         if (strcmp(*argv, "-h") == 0 || strcmp(*argv, "--help") == 0)
         {
             displayHelp();
+            return 0;
+        }
+        else if (strcmp(*argv, "-ts") == 0 || strcmp(*argv, "--testsuite") == 0)
+        {
+            runTestSuite();
             return 0;
         }
         else if (strcmp(*argv, "-f") == 0 || strcmp(*argv, "--file") == 0)
