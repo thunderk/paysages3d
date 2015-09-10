@@ -24,6 +24,11 @@ public:
     virtual void interrupt();
 
     /**
+     * Set the rasterization quality factor.
+     */
+    virtual void setQuality(double factor);
+
+    /**
      * Abstract method to prepare for the rasterization process, and return the estimated progress count.
      */
     virtual int prepareRasterization() = 0;

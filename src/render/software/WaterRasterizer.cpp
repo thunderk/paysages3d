@@ -49,17 +49,20 @@ Color WaterRasterizer::shadeFragment(const CanvasFragment &fragment) const
     return renderer->getWaterRenderer()->getResult(location.x, location.z).final;
 }
 
+void WaterRasterizer::setQuality(double factor)
+{
+    base_chunk_size = 10.0 / (1.0 + factor * 7.0);
+    if (factor > 0.6)
+    {
+        base_chunk_size *= 0.5;
+    }
+}
+
 int WaterRasterizer::performTessellation(CanvasPortion *canvas)
 {
     int chunk_factor, chunk_count, i, result;
     Vector3 cam = renderer->getCameraLocation(VECTOR_ZERO);
-    double radius_int, radius_ext, base_chunk_size, chunk_size;
-
-    base_chunk_size = 2.0 / (double)renderer->render_quality;
-    if (renderer->render_quality > 7)
-    {
-        base_chunk_size *= 0.5;
-    }
+    double radius_int, radius_ext, chunk_size;
 
     result = 0;
     chunk_factor = 1;

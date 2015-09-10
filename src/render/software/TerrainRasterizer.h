@@ -24,6 +24,16 @@ public:
 public:
     TerrainRasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int client_id);
 
+    /**
+     * Set the rasterization quality.
+     *
+     * @param base_chunk_size Size of chunks near the camera
+     * @param detail_factor Precision factor of a chunk's tessellation, depending on screen coverage
+     * @param max_chunk_detail Maximal tessellation of chunks
+     */
+    void setQuality(double base_chunk_size, double detail_factor, int max_chunk_detail);
+    virtual void setQuality(double factor) override;
+
     virtual int prepareRasterization() override;
     virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
     virtual Color shadeFragment(const CanvasFragment &fragment) const override;
@@ -51,6 +61,14 @@ private:
     void tessellateChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, int detail);
 
     void renderQuad(CanvasPortion* canvas, double x, double z, double size, double water_height);
+
+    void getChunk(TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, bool displaced);
+
+private:
+    // Quality control
+    double base_chunk_size;
+    double detail_factor;
+    int max_chunk_detail;
 };
 
 }

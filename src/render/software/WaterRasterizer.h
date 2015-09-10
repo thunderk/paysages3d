@@ -19,8 +19,14 @@ public:
     virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
     virtual Color shadeFragment(const CanvasFragment &fragment) const override;
 
+    virtual void setQuality(double factor) override;
+
 private:
     int performTessellation(CanvasPortion* canvas);
+
+private:
+    // Quality control
+    double base_chunk_size;
 };
 
 }

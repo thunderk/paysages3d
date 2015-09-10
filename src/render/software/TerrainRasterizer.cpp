@@ -16,6 +16,20 @@ TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer, RenderProgress 
 {
 }
 
+void TerrainRasterizer::setQuality(double base_chunk_size, double detail_factor, int max_chunk_detail)
+{
+    this->base_chunk_size = base_chunk_size;
+    this->detail_factor = detail_factor;
+    this->max_chunk_detail = max_chunk_detail;
+}
+
+void TerrainRasterizer::setQuality(double factor)
+{
+    setQuality(5.0 - 4.5 * factor * factor,
+               1.0 / (25.0 - 20.0 * factor),
+               1 + 49 * factor * factor);
+}
+
 static inline Vector3 _getPoint(SoftwareRenderer* renderer, double x, double z)
 {
     return Vector3(x, renderer->getTerrainRenderer()->getHeight(x, z, true), z);
@@ -69,7 +83,7 @@ void TerrainRasterizer::renderQuad(CanvasPortion *canvas, double x, double z, do
     }
 }
 
-static void _getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, bool displaced)
+void TerrainRasterizer::getChunk(TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, bool displaced)
 {
     chunk->point_nw = renderer->getTerrainRenderer()->getResult(x, z, true, displaced).location;
     chunk->point_sw = renderer->getTerrainRenderer()->getResult(x, z + size, true, displaced).location;
@@ -109,10 +123,10 @@ static void _getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChun
     int coverage = renderer->render_camera->isUnprojectedBoxInView(box);
     if (coverage > 0)
     {
-        chunk->detail_hint = (int)ceil(sqrt((double)coverage) / (double)(25 - 2 * renderer->render_quality));
-        if (chunk->detail_hint > 5 * renderer->render_quality)
+        chunk->detail_hint = (int)ceil(sqrt((double)coverage) * detail_factor);
+        if (chunk->detail_hint > max_chunk_detail)
         {
-            chunk->detail_hint = 5 * renderer->render_quality;
+            chunk->detail_hint = max_chunk_detail;
         }
     }
     else
@@ -128,9 +142,7 @@ int TerrainRasterizer::performTessellation(CanvasPortion* canvas, bool displaced
     int chunk_factor, chunk_count, i, result;
     Vector3 cam = renderer->getCameraLocation(VECTOR_ZERO);
     double radius_int, radius_ext;
-    double base_chunk_size, chunk_size;
-
-    base_chunk_size = 5.0 / (double)renderer->render_quality;
+    double chunk_size;
 
     chunk_factor = 1;
     chunk_count = 2;
@@ -146,7 +158,7 @@ int TerrainRasterizer::performTessellation(CanvasPortion* canvas, bool displaced
     {
         for (i = 0; i < chunk_count - 1; i++)
         {
-            _getChunk(renderer, &chunk, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size, displaced);
+            getChunk(&chunk, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size, displaced);
             if (chunk.detail_hint > 0)
             {
                 result += chunk.detail_hint * chunk.detail_hint;
@@ -160,7 +172,7 @@ int TerrainRasterizer::performTessellation(CanvasPortion* canvas, bool displaced
                 return result;
             }
 
-            _getChunk(renderer, &chunk, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size, displaced);
+            getChunk(&chunk, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size, displaced);
             if (chunk.detail_hint > 0)
             {
                 result += chunk.detail_hint * chunk.detail_hint;
@@ -174,7 +186,7 @@ int TerrainRasterizer::performTessellation(CanvasPortion* canvas, bool displaced
                 return result;
             }
 
-            _getChunk(renderer, &chunk, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size, displaced);
+            getChunk(&chunk, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size, displaced);
             if (chunk.detail_hint > 0)
             {
                 result += chunk.detail_hint * chunk.detail_hint;
@@ -188,7 +200,7 @@ int TerrainRasterizer::performTessellation(CanvasPortion* canvas, bool displaced
                 return result;
             }
 
-            _getChunk(renderer, &chunk, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size, displaced);
+            getChunk(&chunk, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size, displaced);
             if (chunk.detail_hint > 0)
             {
                 result += chunk.detail_hint * chunk.detail_hint;

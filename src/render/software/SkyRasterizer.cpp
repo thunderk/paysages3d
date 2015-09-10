@@ -19,9 +19,6 @@ SkyRasterizer::SkyRasterizer(SoftwareRenderer* renderer, RenderProgress *progres
 
 int SkyRasterizer::prepareRasterization()
 {
-    res_i = renderer->render_quality * 40;
-    res_j = renderer->render_quality * 20;
-
     return res_i * res_j;
 }
 
@@ -92,4 +89,15 @@ Color SkyRasterizer::shadeFragment(const CanvasFragment &fragment) const
     result = renderer->getCloudsRenderer()->getColor(camera_location, camera_location.add(direction.scale(10.0)), result);
 
     return result;
+}
+
+void SkyRasterizer::setQuality(int res_i, int res_j)
+{
+    this->res_i = res_i;
+    this->res_j = res_j;
+}
+
+void SkyRasterizer::setQuality(double factor)
+{
+    setQuality(20.0 * (1.0 + factor * 10.0), 10.0 * (1.0 + factor * 10.0));
 }

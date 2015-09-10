@@ -23,7 +23,6 @@
 SoftwareRenderer::SoftwareRenderer(Scenery* scenery):
     scenery(scenery)
 {
-    render_quality = 5;
     render_camera = new CameraDefinition;
 
     scenery->getCamera()->copy(render_camera);
@@ -42,6 +41,8 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery):
     lighting->registerFilter(water_renderer);
     lighting->registerFilter(terrain_renderer);
     lighting->registerFilter(clouds_renderer);
+
+    setQuality(0.5);
 }
 
 SoftwareRenderer::~SoftwareRenderer()

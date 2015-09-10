@@ -25,6 +25,8 @@ SoftwareCanvasRenderer::SoftwareCanvasRenderer(Scenery *scenery):
     progress = new RenderProgress();
     samples = 1;
 
+    postprocess_enabled = true;
+
     rasterizers.push_back(new SkyRasterizer(this, progress, 0));
     rasterizers.push_back(new WaterRasterizer(this, progress, 1));
     rasterizers.push_back(new TerrainRasterizer(this, progress, 2));
@@ -43,6 +45,16 @@ SoftwareCanvasRenderer::~SoftwareCanvasRenderer()
     }
 }
 
+void SoftwareCanvasRenderer::setQuality(double factor)
+{
+    SoftwareRenderer::setQuality(factor);
+
+    for (auto &rasterizer:rasterizers)
+    {
+        rasterizer->setQuality(factor);
+    }
+}
+
 double SoftwareCanvasRenderer::getProgress() const
 {
     return progress->get();
@@ -53,8 +65,13 @@ void SoftwareCanvasRenderer::setConfig(const RenderConfig &config)
     if (not started)
     {
         setSize(config.width, config.height, config.antialias);
-        render_quality = config.quality;
+        setQuality((double)(config.quality - 1) / 9.0);
     }
+}
+
+void SoftwareCanvasRenderer::enablePostprocess(bool enabled)
+{
+    this->postprocess_enabled = enabled;
 }
 
 void SoftwareCanvasRenderer::setSize(int width, int height, int samples)
@@ -94,7 +111,7 @@ void SoftwareCanvasRenderer::render()
                 rasterize(portion);
             }
 
-            if (not interrupted)
+            if (not interrupted and postprocess_enabled)
             {
                 applyPixelShader(portion);
             }

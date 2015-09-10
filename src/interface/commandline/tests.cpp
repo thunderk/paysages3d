@@ -66,8 +66,24 @@ static void testGroundShadowQuality()
     }
 }
 
+static void testRasterizationQuality()
+{
+    Scenery scenery;
+    scenery.autoPreset(12);
+
+    SoftwareCanvasRenderer renderer(&scenery);
+    renderer.setSize(800, 600);
+    renderer.enablePostprocess(false);
+    for (int i = 0; i < 6; i++)
+    {
+        renderer.setQuality((double)i / 5.0);
+        startTestRender(&renderer, "rasterization_quality", i);
+    }
+}
+
 void runTestSuite()
 {
     testGroundShadowQuality();
+    testRasterizationQuality();
 }
 

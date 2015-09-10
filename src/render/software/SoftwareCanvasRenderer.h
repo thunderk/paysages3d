@@ -25,6 +25,8 @@ public:
     inline const Canvas *getCanvas() const {return canvas;}
     inline bool isFinished() const {return finished;}
 
+    virtual void setQuality(double factor) override;
+
     /**
      * Get the global rendering progress (0.0-1.0).
      */
@@ -34,6 +36,11 @@ public:
      * Set the renderer configuration.
      */
     void setConfig(const RenderConfig &config);
+
+    /**
+     * Enable or disable the post processing.
+     */
+    void enablePostprocess(bool enabled);
 
     /**
      * @brief Set the rendering size in pixels.
@@ -84,6 +91,8 @@ private:
     bool started;
     bool finished;
     bool interrupted;
+
+    bool postprocess_enabled;
 
     ParallelWork *current_work;
 };

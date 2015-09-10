@@ -38,6 +38,8 @@ Rasterizer::Rasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int
     this->color = new Color(color);
 
     interrupted = false;
+
+    setQuality(0.5);
 }
 
 Rasterizer::~Rasterizer()
@@ -48,6 +50,10 @@ Rasterizer::~Rasterizer()
 void Rasterizer::interrupt()
 {
     interrupted = true;
+}
+
+void Rasterizer::setQuality(double)
+{
 }
 
 void Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3)
