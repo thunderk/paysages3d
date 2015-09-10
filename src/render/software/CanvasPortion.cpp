@@ -69,7 +69,6 @@ void CanvasPortion::preparePixels()
         delete[] pixels;
     }
     pixels = new CanvasPixel[width * height];
-    clear();
 }
 
 void CanvasPortion::discardPixels(bool save)

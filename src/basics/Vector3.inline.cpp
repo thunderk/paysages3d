@@ -14,10 +14,6 @@ METHSPEC Vector3::Vector3(double x, double y, double z):
 {
 }
 
-METHSPEC Vector3::Vector3()
-{
-}
-
 METHSPEC Vector3 Vector3::add(double x, double y, double z) const
 {
     return Vector3(this->x + x, this->y + y, this->z + z);

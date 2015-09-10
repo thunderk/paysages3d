@@ -23,6 +23,7 @@ const CanvasFragment *CanvasPixel::getFrontFragment() const
 void CanvasPixel::reset()
 {
     count = 0;
+    composite = COLOR_BLACK;
 }
 
 void CanvasPixel::pushFragment(const CanvasFragment &fragment)

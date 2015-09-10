@@ -15,7 +15,7 @@ namespace software {
 class SOFTWARESHARED_EXPORT CanvasFragment
 {
 public:
-    CanvasFragment();
+    CanvasFragment() = default;
     CanvasFragment(double z, const Vector3 &location, int client=0, bool opaque=true);
 
     void setColor(const Color &col);

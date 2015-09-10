@@ -5,7 +5,7 @@
 
 #include "CanvasFragment.h"
 
-const int MAX_FRAGMENT_COUNT = 7;
+const int MAX_FRAGMENT_COUNT = 2;
 
 namespace paysages {
 namespace software {
