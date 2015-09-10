@@ -44,7 +44,6 @@ public:
 
 public:
     double height;
-    double scaling;
     double shadow_smoothing;
 
     TerrainHeightMap* height_map;

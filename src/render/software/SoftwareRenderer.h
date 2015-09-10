@@ -22,8 +22,6 @@ public:
     int render_quality;
     CameraDefinition* render_camera;
 
-    void* customData[10];
-
     virtual Vector3 getCameraLocation(const Vector3 &target);
     virtual Vector3 getCameraDirection(const Vector3 &target);
     virtual double getPrecision(const Vector3 &location);
@@ -37,6 +35,15 @@ public:
      * After this call, don't update the scenery when renderer is in use.
      */
     virtual void prepare();
+
+    /*!
+     * Set the global quality control factor.
+     *
+     * Values between 0.0 and 1.0 are standard quality (1.0 is considered a "very good" production quality value).
+     *
+     * Values above 1.0 are used for boosting ("extra" quality, for demanding renders).
+     */
+    virtual void setQuality(double quality);
 
     /*!
      * \brief Disable atmosphere and sky lighting, replacing it by static lights.

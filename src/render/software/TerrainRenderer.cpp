@@ -10,17 +10,34 @@
 TerrainRenderer::TerrainRenderer(SoftwareRenderer* parent):
     parent(parent)
 {
-    walker = new TerrainRayWalker(parent);
+    walker_ray = new TerrainRayWalker(parent);
+    walker_shadows = new TerrainRayWalker(parent);
+    quad_normals = false;
 }
 
 TerrainRenderer::~TerrainRenderer()
 {
-    delete walker;
+    delete walker_ray;
+    delete walker_shadows;
 }
 
 void TerrainRenderer::update()
 {
-    walker->update();
+    walker_ray->update();
+    walker_shadows->update();
+}
+
+void TerrainRenderer::setQuality(bool quad_normals, double ray_precision, double shadow_precision)
+{
+    this->quad_normals = quad_normals;
+
+    walker_ray->setQuality(ray_precision);
+    walker_shadows->setQuality(shadow_precision);
+}
+
+void TerrainRenderer::setQuality(double factor)
+{
+    setQuality(factor > 0.6, factor, factor * factor);
 }
 
 double TerrainRenderer::getHeight(double x, double z, bool with_painting, bool water_offset)
@@ -135,7 +152,7 @@ RayCastingResult TerrainRenderer::castRay(const Vector3 &start, const Vector3 &d
 {
     RayCastingResult result;
     TerrainRayWalker::TerrainHitResult walk_result;
-    if (walker->startWalking(start, direction.normalize(), 0.0, 200.0, walk_result))
+    if (walker_ray->startWalking(start, direction.normalize(), 0.0, walk_result))
     {
         result.hit = true;
         result.hit_location = walk_result.hit_location;
@@ -176,7 +193,7 @@ bool TerrainRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
     // Walk to find an intersection
     double escape_angle = definition->shadow_smoothing;
     // TODO max length should depend on the sun light angle and altitude range
-    if (walker->startWalking(at, direction_to_light, escape_angle, 100.0, walk_result))
+    if (walker_shadows->startWalking(at, direction_to_light, escape_angle, walk_result))
     {
         if (walk_result.escape_angle == 0.0)
         {

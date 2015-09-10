@@ -9,7 +9,6 @@ TerrainDefinition::TerrainDefinition(DefinitionNode* parent):
     DefinitionNode(parent, "terrain", "terrain")
 {
     height = 1.0;
-    scaling = 1.0;
     shadow_smoothing = 0.0;
 
     height_map = new TerrainHeightMap(this);
@@ -36,8 +35,8 @@ void TerrainDefinition::validate()
 
     /* Get minimal and maximal height */
     _height_noise->getRange(&_min_height, &_max_height);
-    _min_height *= height * scaling;
-    _max_height *= height * scaling;
+    _min_height *= height;
+    _max_height *= height;
 
     /* TODO Alter with heightmap min/max */
 }
@@ -47,7 +46,6 @@ void TerrainDefinition::copy(DefinitionNode* _destination) const
     TerrainDefinition* destination = (TerrainDefinition*)_destination;
 
     destination->height = height;
-    destination->scaling = scaling;
     destination->shadow_smoothing = shadow_smoothing;
 
     height_map->copy(destination->height_map);
@@ -62,7 +60,6 @@ void TerrainDefinition::save(PackStream* stream) const
     DefinitionNode::save(stream);
 
     stream->write(&height);
-    stream->write(&scaling);
     stream->write(&shadow_smoothing);
     _height_noise->save(stream);
 }
@@ -72,7 +69,6 @@ void TerrainDefinition::load(PackStream* stream)
     DefinitionNode::load(stream);
 
     stream->read(&height);
-    stream->read(&scaling);
     stream->read(&shadow_smoothing);
     _height_noise->load(stream);
 
@@ -94,8 +90,6 @@ double TerrainDefinition::getGridHeight(int x, int z, bool with_painting)
 double TerrainDefinition::getInterpolatedHeight(double x, double z, bool scaled, bool with_painting, bool water_offset)
 {
     double h;
-    x /= scaling;
-    z /= scaling;
 
     if (!with_painting || !height_map->getInterpolatedValue(x, z, &h))
     {
@@ -104,7 +98,7 @@ double TerrainDefinition::getInterpolatedHeight(double x, double z, bool scaled,
 
     if (scaled)
     {
-        return (water_offset ? (h - water_height->getValue()) : h) * height * scaling;
+        return (water_offset ? (h - water_height->getValue()) : h) * height;
     }
     else
     {
@@ -114,7 +108,7 @@ double TerrainDefinition::getInterpolatedHeight(double x, double z, bool scaled,
 
 double TerrainDefinition::getWaterOffset() const
 {
-    return -water_height->getValue() * height * scaling;
+    return -water_height->getValue() * height;
 }
 
 HeightInfo TerrainDefinition::getHeightInfo()
@@ -123,7 +117,6 @@ HeightInfo TerrainDefinition::getHeightInfo()
 
     result.min_height = _min_height;
     result.max_height = _max_height;
-    /* TODO This is duplicated in ter_render.c (_realGetWaterHeight) */
     result.base_height = -getWaterOffset();
 
     return result;
@@ -146,7 +139,6 @@ void TerrainDefinition::applyPreset(TerrainPreset preset)
         _height_noise->addLevelsSimple(resolution - 2, pow(2.0, resolution - 1), -0.7, 0.7, 0.5);
         _height_noise->normalizeAmplitude(-1.0, 1.0, 0);
         _height_noise->setFunctionParams(NoiseGenerator::NOISE_FUNCTION_SIMPLEX, 0.0, 0.0);
-        scaling = 1.0;
         height = 30.0;
         shadow_smoothing = 0.03;
         break;

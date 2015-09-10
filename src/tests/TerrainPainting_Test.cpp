@@ -30,7 +30,6 @@ protected:
     virtual void SetUp() {
         terrain = new TerrainDefinition(NULL);
         terrain->height = 3.0;
-        terrain->scaling = 1.0;
         terrain->_height_noise->clearLevels();
         terrain->propWaterHeight()->setValue(0.0);
         NoiseGenerator::NoiseLevel level = {1.0, 2.0, -1.0};
@@ -74,21 +73,6 @@ TEST_F(TerrainPainting_Test, grid)
     EXPECT_DOUBLE_EQ(terrain->getInterpolatedHeight(0.0, 0.0, 1, 0), 0.0);
     EXPECT_DOUBLE_IN_RANGE(terrain->getInterpolatedHeight(0.5, 0.0, 1, 0), 3.0 * 0.1564, 3.0 * 0.1566);
     EXPECT_DOUBLE_EQ(terrain->getInterpolatedHeight(1.0, 0.0, 1, 0), 3.0 * sin(1.0 * X_FACTOR));
-
-    /* Test scaling */
-    terrain->scaling = 2.0;
-    EXPECT_DOUBLE_EQ(terrain->getGridHeight(0, 0, 0), 0.0);
-    EXPECT_DOUBLE_EQ(terrain->getGridHeight(1, 0, 0), sin(1.0 * X_FACTOR));
-    EXPECT_DOUBLE_EQ(terrain->getGridHeight(2, 0, 0), sin(2.0 * X_FACTOR));
-    EXPECT_DOUBLE_EQ(terrain->getGridHeight(3, 0, 0), sin(3.0 * X_FACTOR));
-    EXPECT_DOUBLE_EQ(terrain->getInterpolatedHeight(0, 0, 0, 0), 0.0);
-    EXPECT_DOUBLE_EQ(terrain->getInterpolatedHeight(1, 0, 0, 0), sin(0.5 * X_FACTOR));
-    EXPECT_DOUBLE_EQ(terrain->getInterpolatedHeight(2, 0, 0, 0), sin(1.0 * X_FACTOR));
-    EXPECT_DOUBLE_EQ(terrain->getInterpolatedHeight(3, 0, 0, 0), sin(1.5 * X_FACTOR));
-    EXPECT_DOUBLE_EQ(terrain->getInterpolatedHeight(0, 0, 1, 0), 0.0);
-    EXPECT_DOUBLE_EQ(terrain->getInterpolatedHeight(1, 0, 1, 0), 6.0 * sin(0.5 * X_FACTOR));
-    EXPECT_DOUBLE_EQ(terrain->getInterpolatedHeight(2, 0, 1, 0), 6.0 * sin(1.0 * X_FACTOR));
-    EXPECT_DOUBLE_EQ(terrain->getInterpolatedHeight(3, 0, 1, 0), 6.0 * sin(1.5 * X_FACTOR));
 }
 
 static void _checkBrushResultSides(TerrainDefinition* terrain, PaintedGridBrush*, double center, double midhard, double hard, double midsoft, double soft, double exter, double neg_midhard, double neg_hard, double neg_midsoft, double neg_soft, double neg_exter)
@@ -125,7 +109,6 @@ TEST_F(TerrainPainting_Test, brush_flatten)
     /* Set up */
     PaintedGridBrush brush(2.0, 2.0, 4.0);
     terrain->height = 1.0;
-    terrain->scaling = 1.0;
     terrain->_height_noise->forceValue(0.0);
 
     /* Test flattening center at 0.5 */
@@ -149,14 +132,6 @@ TEST_F(TerrainPainting_Test, brush_flatten)
     _checkBrushResult(terrain, &brush, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0);
     terrain->height_map->brushFlatten(brush, 0.0, 0.0, 0.5, 1.0);
     _checkBrushResult(terrain, &brush, 0.05, 0.05, 0.05, 0.025, 0.0, 0.0, 0);
-
-    /* Test with scaling modifier */
-    terrain->height = 10.0;
-    terrain->scaling = 2.0;
-    terrain->height_map->clearPainting();
-    _checkBrushResult(terrain, &brush, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0);
-    terrain->height_map->brushFlatten(brush, 0.0, 0.0, 0.5, 1.0);
-    _checkBrushResult(terrain, &brush, 0.05, 0.05, 0.05, 0.025, 0.0, 0.0, 0);
 }
 
 TEST_F(TerrainPainting_Test, brush_reset)
@@ -165,7 +140,6 @@ TEST_F(TerrainPainting_Test, brush_reset)
     PaintedGridBrush brush(2.0, 2.0, 4.0);
     PaintedGridBrush brush_full(4.0, 0.0, 4.0);
     terrain->height = 1.0;
-    terrain->scaling = 1.0;
     terrain->_height_noise->forceValue(1.0);
 
     /* Test resetting at center */
@@ -195,32 +169,4 @@ TEST_F(TerrainPainting_Test, brush_reset)
     _checkBrushResult(terrain, &brush, 1.1, 1.1, 1.1, 1.1, 1.1, 1.0, 0);
     terrain->height_map->brushReset(brush, 0.0, 0.0, 0.1);
     _checkBrushResult(terrain, &brush, 1.099, 1.099, 1.099, 1.0995, 1.1, 1.0, 0);
-
-    /* Test with scaling modifier */
-    terrain->height = 10.0;
-    terrain->scaling = 2.0;
-    terrain->height_map->clearPainting();
-    _checkBrushResult(terrain, &brush, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0);
-    terrain->height_map->brushFlatten(brush_full, 0.0, 0.0, 2.0, 1.0);
-    _checkBrushResult(terrain, &brush, 1.1, 1.1, 1.1, 1.1, 1.1, 1.0, 0);
-    terrain->height_map->brushReset(brush, 0.0, 0.0, 0.1);
-    _checkBrushResult(terrain, &brush, 1.099, 1.099, 1.099, 1.0995, 1.1, 1.0, 0);
-}
-
-TEST_F(TerrainPainting_Test, brush_reset_basevalue)
-{
-    /* Set up */
-    PaintedGridBrush brush(2.0, 2.0, 4.0);
-    PaintedGridBrush brush_full(4.0, 0.0, 4.0);
-    terrain->height = 1.0;
-    terrain->scaling = 1.0;
-
-    /* Test with scaling and the sinusoid setup (to test the basevalue sampling) */
-    terrain->height = 1.0;
-    terrain->scaling = 2.0;
-    _checkBrushResult(terrain, &brush, 0.0, 0.309016994375, 0.587785252292, 0.809016994375, 0.951056516295, 1.0, 1);
-    terrain->height_map->brushFlatten(brush_full, 0.0, 0.0, 2.0, 1.0);
-    _checkBrushResultSides(terrain, &brush, 2.0, 2.0, 2.0, 2.0, 2.0, 1.0, 2.0, 2.0, 2.0, 2.0, -1.0);
-    terrain->height_map->brushReset(brush, 0.0, 0.0, 1.0);
-    _checkBrushResultSides(terrain, &brush, 0.0, 0.309016994375, 0.587785252292, 2.0 - (2.0 - 0.809016994375) * 0.5, 2.0, 1.0, -0.309016994375, -0.587785252292, 2.0 - (2.0 + 0.809016994375) * 0.5, 2.0, -1.0);
 }

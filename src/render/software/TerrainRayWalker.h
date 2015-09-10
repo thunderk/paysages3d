@@ -26,6 +26,19 @@ public:
 public:
     TerrainRayWalker(SoftwareRenderer* renderer);
 
+    /**
+     * Set the walker quality.
+     *
+     * @param displacement_safety Safety factor (around 1.0) to detect when displacement textures need to be applied
+     * @param minimal_step Minimal length of a walking step
+     * @param maximal_step Maximal length of a walking step
+     * @param step_factor Precision factor of steps, depending on terrain proximity
+     * @param max_distance Maximal distance allowed to travel before considering an escape
+     * @param escape_step Angle step when allowing an escape angle
+     */
+    void setQuality(double displacement_safety, double minimal_step, double maximal_step, double step_factor, double max_distance, double escape_step);
+    void setQuality(double factor);
+
     /*!
      * \brief Update the walker internal data, from the renderer and scenery.
      */
@@ -37,20 +50,24 @@ public:
      * \param start Point of origin of the ray
      * \param direction Ray direction (normalized vector)
      * \param escape_angle Maximal angle allowed to escape the terrain on hit (mainly for shadows computing)
-     * \param max_length Maximum length to walk before considering no hit
      * \param result Object to store the results info
      * \return true if there was a hit
      */
-    bool startWalking(const Vector3 &start, Vector3 direction, double escape_angle, double max_length, TerrainHitResult &result);
+    bool startWalking(const Vector3 &start, Vector3 direction, double escape_angle, TerrainHitResult &result);
 
 private:
     SoftwareRenderer* renderer;
     double ymin;
     double ymax;
-    double ydispmin;
-    double ydispmax;
-    double minstep;
-    double maxstep;
+    double displacement_base;
+
+    // Quality control
+    double displacement_safety;
+    double minimal_step;
+    double maximal_step;
+    double step_factor;
+    double max_distance;
+    double escape_step;
 };
 
 }

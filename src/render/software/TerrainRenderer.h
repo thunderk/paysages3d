@@ -25,6 +25,8 @@ public:
     virtual ~TerrainRenderer();
 
     virtual void update();
+    void setQuality(bool quad_normals, double ray_precision, double shadow_precision);
+    void setQuality(double factor);
 
     virtual RayCastingResult castRay(const Vector3 &start, const Vector3 &direction);
     virtual double getHeight(double x, double z, bool with_painting, bool water_offset=true);
@@ -33,8 +35,11 @@ public:
     virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override;
 
 private:
-    SoftwareRenderer* parent;
-    TerrainRayWalker* walker;
+    SoftwareRenderer *parent;
+    TerrainRayWalker *walker_ray;
+    TerrainRayWalker *walker_shadows;
+
+    bool quad_normals;
 };
 
 }

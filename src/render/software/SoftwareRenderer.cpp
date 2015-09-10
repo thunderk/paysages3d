@@ -86,6 +86,14 @@ void SoftwareRenderer::prepare()
     //fluid_medium->registerMedium(water_renderer);
 }
 
+void SoftwareRenderer::setQuality(double quality)
+{
+    terrain_renderer->setQuality(quality);
+
+    // TEMP compat with old code
+    render_quality = (int)(quality * 9.0) + 1;
+}
+
 void SoftwareRenderer::disableAtmosphere()
 {
     LightComponent light;

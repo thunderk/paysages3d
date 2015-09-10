@@ -19,7 +19,7 @@ void TerrainHeightMap::copy(DefinitionNode* _destination) const
 
 double TerrainHeightMap::getInitialValue(double x, double y) const
 {
-    return terrain->getInterpolatedHeight(x * terrain->scaling, y * terrain->scaling, false, false);
+    return terrain->getInterpolatedHeight(x, y, false, false);
 }
 
 void TerrainHeightMap::brushElevation(const PaintedGridBrush &brush, double x, double y, double value)

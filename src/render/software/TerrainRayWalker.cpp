@@ -11,6 +11,27 @@
 TerrainRayWalker::TerrainRayWalker(SoftwareRenderer* renderer):
     renderer(renderer)
 {
+    setQuality(0.5);
+}
+
+void TerrainRayWalker::setQuality(double displacement_safety, double minimal_step, double maximal_step, double step_factor, double max_distance, double escape_step)
+{
+    this->displacement_safety = displacement_safety;
+    this->minimal_step = minimal_step;
+    this->maximal_step = maximal_step;
+    this->step_factor = step_factor;
+    this->max_distance = max_distance;
+    this->escape_step = escape_step;
+}
+
+void TerrainRayWalker::setQuality(double factor)
+{
+    setQuality(0.2 + 0.8 * factor,
+               1.0 / (factor * factor * 30.0 + 1.0),
+               50.0 / (factor * 10.0 + 1.0),
+               1.0 / (factor * 10.0 + 1.0),
+               10.0 + factor * 200.0,
+               factor * factor * 100.0);
 }
 
 void TerrainRayWalker::update()
@@ -19,16 +40,10 @@ void TerrainRayWalker::update()
     HeightInfo info = terrain->getHeightInfo();
 
     TexturesDefinition* textures = renderer->getScenery()->getTextures();
-    double disp = textures->getMaximalDisplacement();
+    displacement_base = textures->getMaximalDisplacement();
 
-    ymin = info.min_height - disp;
-    ymax = info.max_height + disp;
-
-    ydispmax = disp * (0.5 + (double)renderer->render_quality * 0.05);
-    ydispmin = -ydispmax;
-
-    minstep = 0.5 * terrain->scaling / (double)renderer->render_quality;
-    maxstep = 50.0 * terrain->scaling / (double)renderer->render_quality;
+    ymin = info.min_height - displacement_base;
+    ymax = info.max_height + displacement_base;
 }
 
 static inline Vector3 _getShiftAxis(const Vector3 &direction)
@@ -44,7 +59,7 @@ static inline Vector3 _getShiftAxis(const Vector3 &direction)
     }
 }
 
-bool TerrainRayWalker::startWalking(const Vector3 &start, Vector3 direction, double escape_angle, double max_length, TerrainHitResult &result)
+bool TerrainRayWalker::startWalking(const Vector3 &start, Vector3 direction, double escape_angle, TerrainHitResult &result)
 {
     TerrainRenderer* terrain_renderer = renderer->getTerrainRenderer();
     TexturesRenderer* textures_renderer = renderer->getTexturesRenderer();
@@ -56,21 +71,14 @@ bool TerrainRayWalker::startWalking(const Vector3 &start, Vector3 direction, dou
 
     Vector3 previous_cursor = start;
     bool hit = false;
-    double step_length = minstep;
+    double step_length = minimal_step;
     double walked_length = 0.0;
 
     result.escape_angle = 0.0;
     if (escape_angle != 0.0)
     {
         // Prepare escape
-        if (renderer->render_quality >= 7)
-        {
-            shift_step = escape_angle / (double)(renderer->render_quality * renderer->render_quality);
-        }
-        else
-        {
-            shift_step = escape_angle / (double)renderer->render_quality;
-        }
+        shift_step = escape_angle / escape_step;
         shift_matrix = Matrix4::newRotateAxis(-shift_step, _getShiftAxis(direction));
     }
 
@@ -84,13 +92,13 @@ bool TerrainRayWalker::startWalking(const Vector3 &start, Vector3 direction, dou
         diff = cursor.y - terrain_result.location.y;
 
         // If we are very under the terrain, consider a hit
-        if (diff < ydispmin)
+        if (diff < -displacement_base * displacement_safety)
         {
             hit = true;
         }
 
         // If we are close enough to the terrain, apply displacement
-        else if (diff < ydispmax)
+        else if (diff < displacement_base * displacement_safety)
         {
             displaced = textures_renderer->displaceTerrain(terrain_result);
             diff = cursor.y - displaced.y;
@@ -128,17 +136,17 @@ bool TerrainRayWalker::startWalking(const Vector3 &start, Vector3 direction, dou
             previous_cursor = cursor;
             walked_length += step_length;
 
-            step_length = diff * 10.0 / (double)renderer->render_quality;
-            if (step_length < minstep)
+            step_length = diff * step_factor;
+            if (step_length < minimal_step)
             {
-                step_length = minstep;
+                step_length = minimal_step;
             }
-            else if (step_length > maxstep)
+            else if (step_length > maximal_step)
             {
-                step_length = maxstep;
+                step_length = maximal_step;
             }
         }
-    } while (not hit and cursor.y < ymax and walked_length < max_length);
+    } while (not hit and cursor.y < ymax and walked_length < max_distance);
 
     return hit or result.escape_angle > 0.0;
 }

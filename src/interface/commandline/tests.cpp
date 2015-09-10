@@ -1,4 +1,5 @@
 #include "SoftwareCanvasRenderer.h"
+#include "TerrainRenderer.h"
 #include "Scenery.h"
 #include "CameraDefinition.h"
 #include "TerrainDefinition.h"
@@ -56,10 +57,11 @@ static void testGroundShadowQuality()
 
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(400, 300);
-    for (int i = 1; i <= 10; i++)
+    renderer.setQuality(0.2);
+    for (int i = 0; i < 6; i++)
     {
         // TODO keep same rasterization across renders, or keep rasterization quality low
-        renderer.render_quality = i;
+        renderer.getTerrainRenderer()->setQuality((double)i / 5.0);
         startTestRender(&renderer, "ground_shadow_quality", i);
     }
 }

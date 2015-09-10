@@ -27,7 +27,7 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
 
     view_matrix = new QMatrix4x4;
 
-    render_quality = 3;
+    setQuality(0.3);
 
     functions = new OpenGLFunctions();
     shared_state = new OpenGLSharedState();
