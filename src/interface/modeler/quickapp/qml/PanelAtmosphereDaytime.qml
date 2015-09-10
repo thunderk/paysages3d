@@ -74,7 +74,7 @@ BasePanel {
                 width: 20
                 height: 10
                 source: "qrc:/images/arrow_up.png"
-                onClicked: slider.value += (1.0 / 3600.0) / 0.54
+                onClicked: slider.value += (1.0 / 1440.0) / 0.54
             }
             Item {width: 1; height: 1}
             ClickableImage {
