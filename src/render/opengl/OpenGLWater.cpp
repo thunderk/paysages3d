@@ -10,6 +10,7 @@
 #include "NoiseFunctionSimplex.h"
 #include "FloatNode.h"
 #include "FloatDiff.h"
+#include "IntNode.h"
 
 OpenGLWater::OpenGLWater(OpenGLRenderer *renderer):
     OpenGLPart(renderer)
@@ -42,12 +43,16 @@ void OpenGLWater::initialize()
     // Watch for definition changes
     renderer->getScenery()->getTerrain()->propWaterHeight()->addWatcher(this, true);
     renderer->getScenery()->getWater()->propReflection()->addWatcher(this, true);
+    renderer->getScenery()->getWater()->propModel()->addWatcher(this, false);
 }
 
 void OpenGLWater::update()
 {
-    Color water_color = *renderer->getScenery()->getWater()->material->base;
-    renderer->getSharedState()->set("waterColor", water_color);
+    WaterDefinition *water = renderer->getScenery()->getWater();
+    renderer->getSharedState()->set("waterMaterialColor", *water->material->base);
+    renderer->getSharedState()->set("waterMaterialReflection", water->material->reflection);
+    renderer->getSharedState()->set("waterMaterialShininess", water->material->shininess);
+    renderer->getSharedState()->set("waterMaterialHardness", water->material->hardness);
 
     renderer->getSharedState()->set("simplexSampler", NoiseFunctionSimplex::getNormalTexture(), true, true);
 }
@@ -76,6 +81,10 @@ void OpenGLWater::nodeChanged(const DefinitionNode *node, const DefinitionDiff *
     else if (node->getPath() == "/water/reflection")
     {
         renderer->getSharedState()->set("waterReflection", renderer->getScenery()->getWater()->propReflection()->getValue());
+    }
+    else if (node->getPath() == "/water/model")
+    {
+        update();
     }
 }
 

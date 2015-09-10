@@ -285,11 +285,8 @@ vec4 getSkyColor(vec3 location, vec3 direction)
     return vec4(applyWeatherEffects(SPHERE_SIZE, nightsky + sunTransmittance.rgb, vec3(1), inscattering), 1.0);
 }
 
-vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float shininess)
+vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float reflection, float shininess, float hardness)
 {
-    float material_hardness = 0.3;
-    float material_reflection = 1.0;
-
     float r0 = Rg + WORKAROUND_OFFSET + location.y * WORLD_SCALING;
     vec3 sun_position = sunDirection * SUN_DISTANCE;
     float muS = dot(vec3(0.0, 1.0, 0.0), normalize(sun_position - vec3(0.0, r0, 0.0)));
@@ -301,15 +298,15 @@ vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float shininess)
     /* diffused light */
     float diffuse = dot(sunDirection, normal);
     float sign = (diffuse < 0.0) ? -1.0 : 1.0;
-    if (material_hardness <= 0.5)
+    if (hardness <= 0.5)
     {
-        float hardness = material_hardness * 2.0;
-        diffuse = (1.0 - hardness) * (diffuse * diffuse) * sign + hardness * diffuse;
+        float hardness_factor = hardness * 2.0;
+        diffuse = (1.0 - hardness_factor) * (diffuse * diffuse) * sign + hardness_factor * diffuse;
     }
     else if (diffuse != 0.0)
     {
-        float hardness = (material_hardness - 0.5) * 2.0;
-        diffuse = (1.0 - hardness) * diffuse + hardness * sign * sqrt(abs(diffuse));
+        float hardness_factor = (hardness - 0.5) * 2.0;
+        diffuse = (1.0 - hardness) * diffuse + hardness_factor * sign * sqrt(abs(diffuse));
     }
     if (diffuse > 0.0)
     {
@@ -317,14 +314,14 @@ vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float shininess)
     }
 
     /* specular reflection */
-    if (shininess > 0.0 && material_reflection > 0.0)
+    if (shininess > 0.0 && reflection > 0.0)
     {
         vec3 view = normalize(location - cameraLocation);
         vec3 reflect = sunDirection - normal * 2.0 * dot(sunDirection, normal);
         float specular = dot(reflect, view);
         if (specular > 0.0)
         {
-            specular = pow(specular, shininess) * material_reflection;
+            specular = pow(specular, shininess) * reflection * ISun;
             if (specular > 0.0)
             {
                 result += specular * light_color;

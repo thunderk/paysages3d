@@ -80,7 +80,7 @@ Color LightingManager::applyFinalComponent(const LightComponent &component, cons
     }
 
     /* specular reflection */
-    if (material.reflection > 0.0 && component.reflection > 0.0)
+    if (material.shininess > 0.0 && material.reflection > 0.0 && component.reflection > 0.0)
     {
         Vector3 view = location.sub(eye).normalize();
         Vector3 reflect = direction_inv.sub(normal.scale(2.0 * direction_inv.dotProduct(normal)));
