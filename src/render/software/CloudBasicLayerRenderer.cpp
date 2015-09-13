@@ -9,13 +9,14 @@
 #include "LightComponent.h"
 #include "clouds/BaseCloudsModel.h"
 #include "SurfaceMaterial.h"
+#include "Logs.h"
 
-typedef struct
+struct CloudSegment
 {
     Vector3 start;
     Vector3 end;
     double length;
-} CloudSegment;
+};
 
 CloudBasicLayerRenderer::CloudBasicLayerRenderer(SoftwareRenderer* parent):
     BaseCloudLayerRenderer(parent)
@@ -43,7 +44,7 @@ static inline double _getDistanceToBorder(BaseCloudsModel* model, Vector3 positi
  * @param out_segments Allocated space to fill found segments
  * @return Number of segments found
  */
-static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vector3 start, Vector3 direction, int max_segments, double max_inside_length, double max_total_length, double* inside_length, double* total_length, CloudSegment* out_segments)
+int CloudBasicLayerRenderer::findSegments(BaseCloudsModel *model, const Vector3 &start, const Vector3 &direction, int max_segments, double max_inside_length, double max_total_length, double* inside_length, double* total_length, CloudSegment* out_segments)
 {
     double ymin, ymax;
     int inside, segment_count;
@@ -62,16 +63,7 @@ static int _findSegments(BaseCloudsModel* model, SoftwareRenderer* renderer, Vec
     model->getAltitudeRange(&ymin, &ymax);
 
     model->getDetailRange(&min_step, &max_step);
-    render_precision = 15.2 - 1.5 * (double)renderer->render_quality;
-    render_precision = render_precision * (ymax - ymin) / 50.0;
-    if (render_precision < min_step)
-    {
-        render_precision = min_step;
-    }
-    else if (render_precision > max_step)
-    {
-        render_precision = max_step;
-    }
+    render_precision = max_step - quality * (max_step - min_step);
     if (render_precision > max_total_length / 10.0)
     {
         render_precision = max_total_length / 10.0;
@@ -173,7 +165,7 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
     model->getAltitudeRange(&ymin, &ymax);
     double transparency_depth = (ymax - ymin) * 0.5;
 
-    segment_count = _findSegments(model, parent, start, direction, 20, transparency_depth, max_length, &inside_length, &total_length, segments);
+    segment_count = findSegments(model, start, direction, 20, transparency_depth, max_length, &inside_length, &total_length, segments);
     for (i = segment_count - 1; i >= 0; i--)
     {
         SurfaceMaterial material(COLOR_WHITE);
@@ -224,7 +216,7 @@ bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent*
     double ymin, ymax;
     model->getAltitudeRange(&ymin, &ymax);
     double light_traversal = (ymax - ymin) * 1.2;
-    _findSegments(model, parent, start, direction, 20, light_traversal, end.sub(start).getNorm(), &inside_depth, &total_depth, segments);
+    findSegments(model, start, direction, 20, light_traversal, end.sub(start).getNorm(), &inside_depth, &total_depth, segments);
 
     if (light_traversal < 0.0001)
     {

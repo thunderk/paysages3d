@@ -18,6 +18,11 @@ public:
     virtual ~CloudsRenderer();
 
     /**
+     * Set the quality factor (0.0-1.0) for clouds rendering.
+     */
+    void setQuality(double factor);
+
+    /**
      * Enable or disable the whole cloud rendering.
      */
     void setEnabled(bool enabled);
@@ -63,6 +68,8 @@ public:
      */
     virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override;
 private:
+    double quality;
+
     bool enabled;
     SoftwareRenderer* parent;
 

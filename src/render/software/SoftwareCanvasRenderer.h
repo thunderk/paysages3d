@@ -23,9 +23,17 @@ public:
     virtual ~SoftwareCanvasRenderer();
 
     inline const Canvas *getCanvas() const {return canvas;}
+    inline RenderProgress *getProgressHelper() const {return progress;}
     inline bool isFinished() const {return finished;}
 
     virtual void setQuality(double factor) override;
+
+    /**
+     * Clear the rasterizers list, and put a single one.
+     *
+     * The renderer takes ownership of the rasterizer.
+     */
+    void setSoloRasterizer(Rasterizer *rasterizer);
 
     /**
      * Get the global rendering progress (0.0-1.0).

@@ -9,6 +9,7 @@
 #include "WaterDefinition.h"
 #include "SurfaceMaterial.h"
 #include "FloatNode.h"
+#include "SkyRasterizer.h"
 
 #include <sstream>
 
@@ -60,7 +61,7 @@ static void testGroundShadowQuality()
     renderer.setQuality(0.2);
     for (int i = 0; i < 6; i++)
     {
-        // TODO keep same rasterization across renders, or keep rasterization quality low
+        // TODO keep same rasterization across renders
         renderer.getTerrainRenderer()->setQuality((double)i / 5.0);
         startTestRender(&renderer, "ground_shadow_quality", i);
     }
@@ -81,9 +82,31 @@ static void testRasterizationQuality()
     }
 }
 
+static void testCloudQuality()
+{
+    Scenery scenery;
+    scenery.autoPreset(3);
+    scenery.getCamera()->setLocation(Vector3(5.0, 5.0, 5.0));
+    scenery.getCamera()->setTarget(Vector3(8.0, 7.25, 8.0));
+    scenery.getTerrain()->height = 0.0;
+    scenery.getTerrain()->validate();
+
+    SoftwareCanvasRenderer renderer(&scenery);
+    renderer.setSize(600, 800);
+    SkyRasterizer *rasterizer = new SkyRasterizer(&renderer, renderer.getProgressHelper(), 0);
+    renderer.setSoloRasterizer(rasterizer);
+    for (int i = 0; i < 6; i++)
+    {
+        renderer.setQuality((double)i / 5.0);
+        rasterizer->setQuality(0.2);
+        startTestRender(&renderer, "cloud_quality", i);
+    }
+}
+
 void runTestSuite()
 {
     testGroundShadowQuality();
     testRasterizationQuality();
+    testCloudQuality();
 }
 

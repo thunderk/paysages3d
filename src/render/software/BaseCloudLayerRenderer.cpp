@@ -6,6 +6,7 @@
 BaseCloudLayerRenderer::BaseCloudLayerRenderer(SoftwareRenderer* parent):
     parent(parent)
 {
+    setQuality(0.5);
 }
 
 BaseCloudLayerRenderer::~BaseCloudLayerRenderer()
@@ -21,6 +22,11 @@ Color BaseCloudLayerRenderer::getColor(BaseCloudsModel *, const Vector3 &, const
 bool BaseCloudLayerRenderer::alterLight(BaseCloudsModel *, LightComponent *, const Vector3 &, const Vector3 &)
 {
     return false;
+}
+
+void BaseCloudLayerRenderer::setQuality(double quality)
+{
+    this->quality = quality;
 }
 
 bool BaseCloudLayerRenderer::optimizeSearchLimits(BaseCloudsModel *model, Vector3 *start, Vector3 *end)

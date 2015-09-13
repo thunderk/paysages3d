@@ -55,6 +55,16 @@ void SoftwareCanvasRenderer::setQuality(double factor)
     }
 }
 
+void SoftwareCanvasRenderer::setSoloRasterizer(Rasterizer *rasterizer)
+{
+    for (auto &rast: rasterizers)
+    {
+        delete rast;
+    }
+    rasterizers.clear();
+    rasterizers.push_back(rasterizer);
+}
+
 double SoftwareCanvasRenderer::getProgress() const
 {
     return progress->get();

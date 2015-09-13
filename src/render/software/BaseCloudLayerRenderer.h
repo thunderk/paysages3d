@@ -17,8 +17,11 @@ public:
     virtual Color getColor(BaseCloudsModel *model, const Vector3 &eye, const Vector3 &location);
     virtual bool alterLight(BaseCloudsModel *model, LightComponent* light, const Vector3 &eye, const Vector3 &location);
 
+    virtual void setQuality(double quality);
+
 protected:
     SoftwareRenderer* parent;
+    double quality;
 };
 
 }

@@ -90,6 +90,7 @@ void SoftwareRenderer::prepare()
 void SoftwareRenderer::setQuality(double quality)
 {
     terrain_renderer->setQuality(quality);
+    clouds_renderer->setQuality(quality);
 
     // TEMP compat with old code
     render_quality = (int)(quality * 9.0) + 1;

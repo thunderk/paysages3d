@@ -17,6 +17,7 @@
 CloudsRenderer::CloudsRenderer(SoftwareRenderer* parent):
     parent(parent)
 {
+    quality = 0.5;
     enabled = true;
     fake_renderer = new BaseCloudLayerRenderer(parent);
 
@@ -38,6 +39,15 @@ CloudsRenderer::~CloudsRenderer()
     }
     delete fake_model->getLayer();
     delete fake_model;
+}
+
+void CloudsRenderer::setQuality(double factor)
+{
+    this->quality = factor;
+    for (auto &renderer: layer_renderers)
+    {
+        renderer->setQuality(factor);
+    }
 }
 
 void CloudsRenderer::setEnabled(bool enabled)
@@ -94,6 +104,8 @@ void CloudsRenderer::update()
         layer_models.push_back(model);
         model->update();
     }
+
+    setQuality(quality);
 }
 
 BaseCloudLayerRenderer* CloudsRenderer::getLayerRenderer(unsigned int layer)
