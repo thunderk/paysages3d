@@ -30,11 +30,26 @@ public:
     void add(int value=1);
     void enterSub(int count);
     void exitSub();
+    void end();
+
+    /**
+     * Get the render duration in milliseconds.
+     */
+    unsigned long getDuration() const;
+
+    /**
+     * Get the estimated remaining time in milliseconds.
+     *
+     * Returns 0 if unknown.
+     */
+    unsigned long estimateRemainingTime() const;
 
 private:
     Mutex *lock;
     double global;
     double step;
+    unsigned long start_time;
+    unsigned long end_time;
     std::stack<RenderSub> subs;
 };
 

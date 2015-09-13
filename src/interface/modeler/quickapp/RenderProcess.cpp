@@ -1,10 +1,12 @@
 #include "RenderProcess.h"
 
 #include <QSize>
+#include <QTime>
 #include "MainModelerWindow.h"
 #include "SoftwareCanvasRenderer.h"
 #include "RenderPreviewProvider.h"
 #include "RenderConfig.h"
+#include "RenderProgress.h"
 #include "Thread.h"
 #include "Canvas.h"
 #include "CanvasPreview.h"
@@ -171,6 +173,19 @@ void RenderProcess::timerEvent(QTimerEvent *)
 
     if (renderer)
     {
+        QTime t = QTime(0, 0, 0).addMSecs(renderer->getProgressHelper()->getDuration());
+        QString info = QString("Elapsed time: ") + t.toString("hh:mm:ss");
+        if (rendering)
+        {
+            unsigned long remaining = renderer->getProgressHelper()->estimateRemainingTime();
+            if (remaining > 10000)
+            {
+                t = QTime(0, 0, 0).addMSecs(remaining);
+                info += " - Remaining: ~" + t.toString("hh:mm:ss");
+            }
+        }
+        window->setQmlProperty("render_timing", "text", info);
+
         window->setQmlProperty("render_progress", "value", renderer->getProgress());
     }
 }

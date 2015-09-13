@@ -1,12 +1,16 @@
 #include "RenderProgress.h"
 
 #include "Mutex.h"
+#include "Time.h"
+#include "Logs.h"
 
 RenderProgress::RenderProgress(int count)
 {
     lock = new Mutex();
     global = 0.0;
     step = 1.0 / (double)count;
+    start_time = Time::getRelativeTimeMs();
+    end_time = 0;
 }
 
 paysages::software::RenderProgress::~RenderProgress()
@@ -23,6 +27,8 @@ void RenderProgress::reset()
     {
         subs.pop();
     }
+
+    start_time = Time::getRelativeTimeMs();
 
     lock->release();
 }
@@ -64,4 +70,40 @@ void RenderProgress::exitSub()
     subs.pop();
 
     lock->release();
+}
+
+void RenderProgress::end()
+{
+    if (subs.size() > 0)
+    {
+        Logs::error() << subs.size() << " progress subs remaining at the end of render" << std::endl;
+    }
+
+    end_time = Time::getRelativeTimeMs();
+}
+
+unsigned long RenderProgress::getDuration() const
+{
+    if (end_time)
+    {
+        return end_time - start_time;
+    }
+    else
+    {
+        return Time::getRelativeTimeMs() - start_time;
+    }
+}
+
+unsigned long RenderProgress::estimateRemainingTime() const
+{
+    if (global < 0.00001)
+    {
+        return 0;
+    }
+    else
+    {
+        unsigned long done = getDuration();
+        unsigned long total = (unsigned long)((double)done / global);
+        return total - done;
+    }
 }

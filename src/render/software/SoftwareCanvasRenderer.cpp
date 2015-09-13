@@ -132,6 +132,7 @@ void SoftwareCanvasRenderer::render()
         }
     }
     progress->exitSub();
+    progress->end();
     finished = true;
 }
 

@@ -37,6 +37,14 @@ BaseRectangle {
         anchors.topMargin: 20
     }
 
+    Text {
+        id: render_timing
+        objectName: "render_timing"
+        anchors.top: render_progress.bottom
+        anchors.horizontalCenter: render_progress.horizontalCenter
+        anchors.topMargin: 20
+    }
+
     Timer {
         interval: 500
         running: true

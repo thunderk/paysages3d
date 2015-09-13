@@ -23,6 +23,7 @@ namespace system {
     class Mutex;
     class Semaphore;
     class PictureWriter;
+    class Time;
 }
 }
 using namespace paysages::system;
