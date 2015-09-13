@@ -51,5 +51,6 @@
         <file>images/icon_preset.png</file>
         <file>images/icon_render_medium.png</file>
         <file>images/icon_render_final.png</file>
+        <file>images/icon_cancel.png</file>
     </qresource>
 </RCC>

@@ -9,6 +9,7 @@ Item {
     property bool checked: false
     property bool hovered: false
     property bool toggle: false
+    property bool checkable: true
     property ExclusiveGroup exclusiveGroup: null
     property string helptext
     property string hovertext
@@ -98,18 +99,22 @@ Item {
                 return;
             }
 
-            button.checked = !button.checked;
-            if (!button.toggle)
+            if (button.checkable)
             {
-                if (button.checked)
+                button.checked = !button.checked;
+                if (!button.toggle)
                 {
-                    tooltip_widget.helptext = helptext;
-                }
-                else
-                {
-                    tooltip_widget.helptext = "";
+                    if (button.checked)
+                    {
+                        tooltip_widget.helptext = helptext;
+                    }
+                    else
+                    {
+                        tooltip_widget.helptext = "";
+                    }
                 }
             }
+
             button.clicked();
         }
     }

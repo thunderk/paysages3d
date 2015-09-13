@@ -131,8 +131,6 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
         if (event->key() == Qt::Key_Escape)
         {
             render_process->stopRender();
-
-            setState(rootObject()->property("previous_state").toString());
         }
     }
     else

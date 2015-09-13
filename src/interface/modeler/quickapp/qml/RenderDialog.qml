@@ -1,9 +1,11 @@
 import QtQuick 2.2
 import QtQuick.Controls 1.2
+import QtGraphicalEffects 1.0
 
 BaseRectangle {
     width: 400
     height: 300
+    color: "#222429"
 
     function refresh() {
         preview_image.source = "";
@@ -18,9 +20,29 @@ BaseRectangle {
         }
     }
 
+    ToolbarButton {
+        id: render_cancel
+        objectName: "render_cancel"
+        picture: "images/icon_cancel.png"
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: 10
+        checkable: false
+        image_width: 48
+        image_height: 48
+    }
+
+    RectangularGlow {
+        anchors.fill: preview_image
+        glowRadius: 8
+        spread: 0.2
+        color: "#e0e0e8"
+        cornerRadius: glowRadius
+    }
+
     Image {
         id: preview_image
-        objectName: "preview_image"
+        objectName: "render_preview_image"
         anchors.centerIn: parent
         width: 100
         height: 100
@@ -43,6 +65,7 @@ BaseRectangle {
         anchors.top: render_progress.bottom
         anchors.horizontalCenter: render_progress.horizontalCenter
         anchors.topMargin: 20
+        color: "#dddddd"
     }
 
     Timer {

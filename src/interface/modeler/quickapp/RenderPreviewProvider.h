@@ -31,6 +31,11 @@ public:
     void releaseCanvas();
 
     /**
+     * Call when the image is hidden, to clear it for next render.
+     */
+    void hide();
+
+    /**
      * Set the tone mapping to apply to pixel colors.
      */
     void setToneMapping(const ColorProfile &profile);

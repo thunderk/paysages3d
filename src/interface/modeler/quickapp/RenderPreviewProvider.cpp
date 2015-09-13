@@ -15,6 +15,7 @@ RenderPreviewProvider::RenderPreviewProvider() :
 {
     canvas = NULL;
     pixbuf = new QImage(1, 1, QImage::Format_ARGB32);
+    hide();
 }
 
 RenderPreviewProvider::~RenderPreviewProvider()
@@ -42,6 +43,7 @@ void RenderPreviewProvider::setCanvas(const Canvas *canvas)
     if (not this->canvas)
     {
         this->canvas = canvas;
+        pixbuf->fill(Qt::black);
         canvas->getPreview()->initLive(this);
     }
 }
@@ -53,6 +55,11 @@ void RenderPreviewProvider::releaseCanvas()
         canvas->getPreview()->updateLive(this);
         canvas = NULL;
     }
+}
+
+void RenderPreviewProvider::hide()
+{
+    pixbuf->fill(Qt::black);
 }
 
 void RenderPreviewProvider::setToneMapping(const ColorProfile &profile)

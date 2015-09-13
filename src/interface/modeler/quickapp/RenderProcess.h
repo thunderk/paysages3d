@@ -22,11 +22,6 @@ public:
     void startRender(Scenery *scenery, const RenderConfig &config);
 
     /**
-     * Stop any currently running render.
-     */
-    void stopRender();
-
-    /**
      * Get the size of the preview image.
      */
     const QSize getPreviewSize();
@@ -53,6 +48,11 @@ public slots:
      * Show the previous rendering.
      */
     void showPreviousRender();
+
+    /**
+     * Stop any currently running render.
+     */
+    void stopRender();
 
 protected:
     virtual void timerEvent(QTimerEvent *event) override;

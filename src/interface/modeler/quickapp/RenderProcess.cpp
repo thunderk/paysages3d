@@ -2,6 +2,7 @@
 
 #include <QSize>
 #include <QTime>
+#include <QQuickItem>
 #include "MainModelerWindow.h"
 #include "SoftwareCanvasRenderer.h"
 #include "RenderPreviewProvider.h"
@@ -53,6 +54,11 @@ RenderProcess::RenderProcess(MainModelerWindow *window, RenderPreviewProvider *d
     if (button_show) {
         button_show->setProperty("enabled", false);
         connect(button_show, SIGNAL(clicked()), this, SLOT(showPreviousRender()));
+    }
+
+    QObject *button_cancel = window->findQmlObject("render_cancel");
+    if (button_cancel) {
+        connect(button_cancel, SIGNAL(clicked()), this, SLOT(stopRender()));
     }
 
     startTimer(100);
@@ -107,7 +113,7 @@ void RenderProcess::startRender(Scenery *scenery, const RenderConfig &config)
 
     // Resize preview
     QSize preview_size = getPreviewSize();
-    QObject *image = window->findQmlObject("preview_image");
+    QObject *image = window->findQmlObject("render_preview_image");
     if (image) {
         image->setProperty("width", preview_size.width());
         image->setProperty("height", preview_size.height());
@@ -143,6 +149,9 @@ void RenderProcess::showPreviousRender()
 {
     if (not rendering and has_render)
     {
+        destination->setCanvas(renderer->getCanvas());
+        destination->releaseCanvas();
+
         window->setState("Render Dialog");
     }
 }
@@ -152,6 +161,11 @@ void RenderProcess::stopRender()
     if (rendering)
     {
         renderer->interrupt();
+    }
+    else
+    {
+        destination->hide();
+        window->setState(window->rootObject()->property("previous_state").toString());
     }
 }
 
