@@ -19,8 +19,8 @@ CameraDefinition::CameraDefinition(DefinitionNode *parent):
     height = 1.0;
     perspective.yfov = 1.0;
     perspective.xratio = 1.0;
-    perspective.znear = 1.0;
-    perspective.zfar = 1000.0;
+    perspective.znear = 0.5;
+    perspective.zfar = 20000.0;
 
     validate();
 }
