@@ -140,9 +140,13 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
         if (event->key() == Qt::Key_F5)
         {
             // Start render in a thread
-            if (event->modifiers() & Qt::ControlModifier)
+            if ((event->modifiers() & Qt::ControlModifier) and (event->modifiers() & Qt::ShiftModifier))
             {
                 render_process->startFinalRender();
+            }
+            else if (event->modifiers() & Qt::ControlModifier)
+            {
+                render_process->startMediumRender();
             }
             else
             {

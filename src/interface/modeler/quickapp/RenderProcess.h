@@ -40,6 +40,11 @@ public slots:
     void startQuickRender();
 
     /**
+     * Start a medium render.
+     */
+    void startMediumRender();
+
+    /**
      * Start a final render.
      */
     void startFinalRender();

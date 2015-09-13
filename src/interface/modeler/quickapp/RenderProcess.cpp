@@ -39,6 +39,11 @@ RenderProcess::RenderProcess(MainModelerWindow *window, RenderPreviewProvider *d
         connect(button_quick, SIGNAL(clicked()), this, SLOT(startQuickRender()));
     }
 
+    QObject *button_medium = window->findQmlObject("tool_render_medium");
+    if (button_medium) {
+        connect(button_medium, SIGNAL(clicked()), this, SLOT(startMediumRender()));
+    }
+
     QObject *button_final = window->findQmlObject("tool_render_final");
     if (button_final) {
         connect(button_final, SIGNAL(clicked()), this, SLOT(startFinalRender()));
@@ -121,7 +126,12 @@ void RenderProcess::startRender(Scenery *scenery, const RenderConfig &config)
 
 void RenderProcess::startQuickRender()
 {
-    startRender(window->getScenery(), RenderConfig(400, 300, 1, 3));
+    startRender(window->getScenery(), RenderConfig(480, 270, 1, 3));
+}
+
+void RenderProcess::startMediumRender()
+{
+    startRender(window->getScenery(), RenderConfig(800, 450, 1, 5));
 }
 
 void RenderProcess::startFinalRender()

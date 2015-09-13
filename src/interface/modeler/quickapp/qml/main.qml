@@ -6,8 +6,8 @@ OpenGLView {
     state: "Init"
     property string previous_state
 
-    width: 1000
-    height: 700
+    width: 1280
+    height: 720
 
     Tooltip {
         id: tooltip_widget
@@ -84,11 +84,19 @@ OpenGLView {
         }
 
         ToolbarButton {
+            id: tool_render_medium
+            objectName: "tool_render_medium"
+            picture: "images/icon_render_medium.png"
+            hovertext: qsTr("Start a medium quality render")
+            shortcut: "Ctrl+F5"
+        }
+
+        ToolbarButton {
             id: tool_render_final
             objectName: "tool_render_final"
-            picture: "images/tab_render.png"
+            picture: "images/icon_render_final.png"
             hovertext: qsTr("Start a final render")
-            shortcut: "Ctrl+F5"
+            shortcut: "Ctrl+Shift+F5"
         }
 
         ToolbarButton {

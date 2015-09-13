@@ -49,5 +49,7 @@
         <file>images/preset_water_lake.jpg</file>
         <file>images/preset_water_sea.jpg</file>
         <file>images/icon_preset.png</file>
+        <file>images/icon_render_medium.png</file>
+        <file>images/icon_render_final.png</file>
     </qresource>
 </RCC>

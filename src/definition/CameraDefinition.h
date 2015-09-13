@@ -30,15 +30,15 @@ public:
     virtual void copy(DefinitionNode* destination) const override;
     virtual void validate() override;
 
-    inline Vector3 getLocation() const {return location;}
-    inline Vector3 getTarget() const {return target;}
-    inline Vector3 getUpVector() const {return up;}
+    inline const Vector3 &getLocation() const {return location;}
+    inline const Vector3 &getTarget() const {return target;}
+    inline const Vector3 &getUpVector() const {return up;}
     inline double getRoll() const {return roll;}
     inline Vector3 getDirection() const {return Vector3(direction);}
-    inline Vector3 getDirectionNormalized() const {return forward;}
+    inline const Vector3 &getDirectionNormalized() const {return forward;}
     inline const Matrix4 &getTransformationMatrix() const {return projector;}
-    inline VectorSpherical getDirectionSpherical() const {return direction;}
-    inline CameraPerspective getPerspective() const {return perspective;}
+    inline const VectorSpherical &getDirectionSpherical() const {return direction;}
+    inline const CameraPerspective &getPerspective() const {return perspective;}
     inline double getWidth() const {return width;}
     inline double getHeight() const {return height;}
 
