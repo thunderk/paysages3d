@@ -1,11 +1,15 @@
 import QtQuick 2.2
 import QtQuick.Controls 1.2
+import QtQuick.Dialogs 1.0
 import QtGraphicalEffects 1.0
 
 BaseRectangle {
+    id: render_dialog
+    objectName: "render_dialog"
     width: 400
     height: 300
     color: "#222429"
+    property bool rendering: false
 
     function refresh() {
         preview_image.source = "";
@@ -18,6 +22,41 @@ BaseRectangle {
             refresh();
             render_progress.value = 0;
         }
+    }
+
+    Rectangle {
+        width: parent.width
+        height: 80
+        anchors.top: parent.top
+        anchors.left: parent.left
+        color: "#667080"
+    }
+
+    FileDialog {
+        id: render_save_dialog
+        objectName: "render_save_dialog"
+        title: "Choose a file to save the rendered image"
+        folder: shortcuts.documents
+        selectExisting: false
+
+        signal saveRequired(string filepath);
+
+        onAccepted: saveRequired(render_save_dialog.fileUrls[0].toString())
+    }
+
+    ToolbarButton {
+        id: render_save
+        objectName: "render_save"
+        picture: "images/icon_file_save.png"
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.margins: 10
+        enabled: !render_dialog.rendering
+        checkable: false
+        image_width: 48
+        image_height: 48
+
+        onClicked: render_save_dialog.open()
     }
 
     ToolbarButton {
@@ -53,6 +92,7 @@ BaseRectangle {
     ProgressBar {
         id: render_progress
         objectName: "render_progress"
+        visible: render_dialog.rendering
         width: parent.width * 0.8
         anchors.top: preview_image.bottom
         anchors.horizontalCenter: preview_image.horizontalCenter

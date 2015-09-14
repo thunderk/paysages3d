@@ -61,6 +61,11 @@ RenderProcess::RenderProcess(MainModelerWindow *window, RenderPreviewProvider *d
         connect(button_cancel, SIGNAL(clicked()), this, SLOT(stopRender()));
     }
 
+    QObject *dialog_save = window->findQmlObject("render_save_dialog");
+    if (dialog_save) {
+        connect(dialog_save, SIGNAL(saveRequired(QString)), this, SLOT(savePicture(QString)));
+    }
+
     startTimer(100);
 }
 
@@ -93,10 +98,8 @@ void RenderProcess::startRender(Scenery *scenery, const RenderConfig &config)
     }
 
     // Enable "show last render" button
-    QObject *button_show = window->findQmlObject("tool_render_show");
-    if (button_show) {
-        button_show->setProperty("enabled", true);
-    }
+    window->setQmlProperty("tool_render_show", "enabled", true);
+    window->setQmlProperty("render_dialog", "rendering", true);
 
     has_render = true;
     rendering = true;
@@ -169,6 +172,11 @@ void RenderProcess::stopRender()
     }
 }
 
+void RenderProcess::savePicture(QString path)
+{
+    renderer->saveToDisk(path.replace("file://", "").toStdString());
+}
+
 const QSize RenderProcess::getPreviewSize()
 {
     if (renderer)
@@ -192,6 +200,7 @@ void RenderProcess::timerEvent(QTimerEvent *)
         delete render_thread;
         render_thread = NULL;
 
+        window->setQmlProperty("render_dialog", "rendering", false);
         window->getRenderer()->resume();
     }
 

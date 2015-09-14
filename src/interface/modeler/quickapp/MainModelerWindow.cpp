@@ -27,7 +27,7 @@ MainModelerWindow::MainModelerWindow()
     qmlRegisterType<OpenGLView>("Paysages", 1, 0, "OpenGLView");
     engine()->addImageProvider("renderpreviewprovider", render_preview_provider);
 
-    setMinimumSize(QSize(1000, 800));
+    setMinimumSize(QSize(1280, 720));
     setTitle(QObject::tr("Paysages 3D"));
     setResizeMode(QQuickView::SizeRootObjectToView);
     setSource(QUrl("qrc:///main.qml"));

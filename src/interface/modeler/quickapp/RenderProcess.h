@@ -54,6 +54,11 @@ public slots:
      */
     void stopRender();
 
+    /**
+     * Save the current picture to a given path on disk.
+     */
+    void savePicture(QString path);
+
 protected:
     virtual void timerEvent(QTimerEvent *event) override;
 
