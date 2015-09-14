@@ -13,7 +13,7 @@ namespace opengl {
 class OPENGLSHARED_EXPORT OpenGLShaderProgram
 {
 public:
-    OpenGLShaderProgram(QString name, OpenGLRenderer* renderer);
+    OpenGLShaderProgram(const std::string &name, OpenGLRenderer* renderer);
     ~OpenGLShaderProgram();
 
     void addVertexSource(QString path);
@@ -38,7 +38,7 @@ private:
 
     OpenGLRenderer* renderer;
 
-    QString name;
+    std::string name;
     QOpenGLShaderProgram* program;
     OpenGLFunctions* functions;
 

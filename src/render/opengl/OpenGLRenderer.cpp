@@ -17,6 +17,7 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
 {
     ready = false;
     paused = false;
+    displayed = false;
     vp_width = 1;
     vp_height = 1;
 
@@ -160,6 +161,8 @@ void OpenGLRenderer::paint()
         {
             Logs::warning() << "[OpenGL] ERROR : " << error_code << std::endl;
         }
+
+        displayed = true;
     }
 }
 

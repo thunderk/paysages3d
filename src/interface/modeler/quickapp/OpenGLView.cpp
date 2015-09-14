@@ -12,6 +12,7 @@ OpenGLView::OpenGLView(QQuickItem *parent) :
     initialized = false;
     window = NULL;
     renderer = NULL;
+    delayed = 10;
 
     setAcceptedMouseButtons(Qt::AllButtons);
     setAcceptHoverEvents(true);
@@ -44,6 +45,11 @@ void OpenGLView::handleWindowChanged(QQuickWindow *win)
 
 void OpenGLView::paint()
 {
+    if (delayed > 1)
+    {
+        return;
+    }
+
     if (not initialized or not renderer)
     {
         renderer->initialize();
@@ -132,6 +138,19 @@ void OpenGLView::hoverMoveEvent(QHoverEvent *event)
 
 void OpenGLView::timerEvent(QTimerEvent *)
 {
+    if (delayed > 1)
+    {
+        delayed--;
+    }
+    else if (delayed == 1)
+    {
+        if (renderer->isDisplayed())
+        {
+            delayed = 0;
+            window->setState("Init");
+        }
+    }
+
     if (window)
     {
         window->update();

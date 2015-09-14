@@ -1,5 +1,7 @@
 #include "Logs.h"
 
+#include "Time.h"
+
 static std::ostream NULL_STREAM(0);
 static bool enabled = true;
 
@@ -44,6 +46,11 @@ std::ostream &Logs::error()
     {
         return NULL_STREAM;
     }
+}
+
+void Logs::debugTimestamp(const std::string &message)
+{
+    debug() << Time::getRelativeTimeMs() << " - " << message << std::endl;
 }
 
 void Logs::disable()

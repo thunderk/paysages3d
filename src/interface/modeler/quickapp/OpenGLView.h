@@ -32,6 +32,7 @@ private:
     double getSpeedFactor(QInputEvent *event);
 
 private:
+    int delayed;
     bool initialized;
     bool resized;
     MainModelerWindow *window;

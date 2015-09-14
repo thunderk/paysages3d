@@ -18,6 +18,9 @@ public:
     static std::ostream &warning();
     static std::ostream &error();
 
+    // Log a timestamp on the debug output
+    static void debugTimestamp(const std::string &message);
+
     // Disable all logs from now on
     static void disable();
 };

@@ -11,7 +11,7 @@
 #include "Color.h"
 #include "Logs.h"
 
-OpenGLShaderProgram::OpenGLShaderProgram(QString name, OpenGLRenderer* renderer):
+OpenGLShaderProgram::OpenGLShaderProgram(const std::string &name, OpenGLRenderer* renderer):
     renderer(renderer), name(name)
 {
     program = new QOpenGLShaderProgram();
@@ -57,11 +57,11 @@ void OpenGLShaderProgram::compile()
 
     if (not program->link())
     {
-        qWarning() << "Error while compiling shader " << name << "\n" << program->log() << "\n";
+        Logs::warning() << "Error while compiling shader " << name << std::endl << program->log().toStdString() << std::endl;
     }
     else if (program->log().length() > 0)
     {
-        qDebug() << "Shader " << name << " compilation output:\n" << program->log() << "\n";
+        Logs::debug() << "Shader " << name << " compilation output:" << std::endl << program->log().toStdString() << std::endl;
     }
 }
 

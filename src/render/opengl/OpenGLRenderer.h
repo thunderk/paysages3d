@@ -22,6 +22,7 @@ public:
     inline OpenGLSkybox *getSkybox() const {return skybox;}
     inline OpenGLWater *getWater() const {return water;}
     inline OpenGLTerrain *getTerrain() const {return terrain;}
+    inline bool isDisplayed() const {return displayed;}
 
     void initialize();
     void prepareOpenGLState();
@@ -75,6 +76,7 @@ private:
 private:
     bool ready;
     bool paused;
+    bool displayed;
     int vp_width;
     int vp_height;
 

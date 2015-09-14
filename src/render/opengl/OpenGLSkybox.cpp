@@ -67,7 +67,7 @@ void OpenGLSkybox::render()
 {
     program->drawTriangleStrip(vertices, 14);
 }
-#include "Logs.h"
+
 void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
 {
     if (node->getPath() == "/atmosphere/daytime")

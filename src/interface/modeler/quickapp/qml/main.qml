@@ -3,7 +3,7 @@ import Paysages 1.0
 
 OpenGLView {
     id: main_ui
-    state: "Init"
+    state: "Loading"
     property string previous_state
 
     width: 1280
@@ -157,6 +157,19 @@ OpenGLView {
         anchors.fill: parent
     }
 
+    BaseRectangle {
+        id: loader
+        enabled: false
+        anchors.fill: parent
+        color: "#222429"
+
+        Text {
+            color: "#dddddd"
+            text: "Welcome to Paysages 3D..."
+            anchors.centerIn: parent
+        }
+    }
+
     onStateChanged: {
         if (state != "Render Dialog")
         {
@@ -165,6 +178,14 @@ OpenGLView {
     }
 
     states: [
+        State {
+            name: "Loading"
+
+            PropertyChanges {
+                target: loader
+                enabled: true
+            }
+        },
         State {
             name: "Water Mode"
             when: primary_toolbar.current === tool_water
