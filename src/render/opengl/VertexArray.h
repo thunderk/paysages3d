@@ -132,7 +132,7 @@ public:
         program->setAttributeArray(uv, GL_FLOAT, (void*)(ptr + offsetof(Vertex, uv)), 2, sizeof(Vertex));
         program->enableAttributeArray(uv);
 
-        functions->glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_SHORT, indices);
+        functions->glDrawRangeElements(GL_TRIANGLES, 0, vertex_count - 1, index_count, GL_UNSIGNED_SHORT, indices);
 
         program->disableAttributeArray(vertex);
         program->disableAttributeArray(uv);
