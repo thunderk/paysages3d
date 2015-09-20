@@ -26,6 +26,8 @@ public:
      */
     void clear();
 
+    inline bool hasData() const {return rows_count > 0;}
+
 private:
     typedef struct
     {

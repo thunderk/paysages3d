@@ -45,6 +45,11 @@ public:
     double getFinalValue(double x, double y) const;
 
     /**
+     * Returns true if the grid has any painting.
+     */
+    bool hasPainting() const;
+
+    /**
      * Returns true if a grid point is user-specified, false if it's the initial value.
      */
     bool isPainted(int x, int y) const;

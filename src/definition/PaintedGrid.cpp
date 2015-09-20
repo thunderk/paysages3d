@@ -119,6 +119,11 @@ double PaintedGrid::getFinalValue(double x, double y) const
     }
 }
 
+bool PaintedGrid::hasPainting() const
+{
+    return merged_data->hasData() || brush_data->hasData();
+}
+
 bool PaintedGrid::isPainted(int x, int y) const
 {
     return getDataPointer(brush_data, x, y, NULL, false) || getDataPointer(merged_data, x, y, NULL, false);

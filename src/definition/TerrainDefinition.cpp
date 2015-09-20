@@ -12,6 +12,7 @@ TerrainDefinition::TerrainDefinition(DefinitionNode* parent):
     shadow_smoothing = 0.0;
 
     height_map = new TerrainHeightMap(this);
+    has_painting = false;
     addChild(height_map);
 
     water_height = new FloatNode(this, "water_height");
@@ -38,7 +39,8 @@ void TerrainDefinition::validate()
     _min_height *= height;
     _max_height *= height;
 
-    /* TODO Alter with heightmap min/max */
+    /* TODO Alter limits with heightmap min/max */
+    has_painting = height_map->hasPainting();
 }
 
 void TerrainDefinition::copy(DefinitionNode* _destination) const
@@ -79,7 +81,7 @@ double TerrainDefinition::getGridHeight(int x, int z, bool with_painting)
 {
     double h;
 
-    if (!with_painting || !height_map->getGridValue(x, z, &h))
+    if (!with_painting || !has_painting || !height_map->getGridValue(x, z, &h))
     {
         h = _height_noise->get2DTotal((double)x, (double)z);
     }
@@ -91,7 +93,7 @@ double TerrainDefinition::getInterpolatedHeight(double x, double z, bool scaled,
 {
     double h;
 
-    if (!with_painting || !height_map->getInterpolatedValue(x, z, &h))
+    if (!with_painting || !has_painting || !height_map->getInterpolatedValue(x, z, &h))
     {
         h = _height_noise->get2DTotal(x, z);
     }

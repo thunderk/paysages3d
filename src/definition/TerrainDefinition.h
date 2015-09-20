@@ -47,6 +47,7 @@ public:
     double shadow_smoothing;
 
     TerrainHeightMap* height_map;
+    bool has_painting;
 
     double _detail;
     NoiseGenerator* _height_noise;

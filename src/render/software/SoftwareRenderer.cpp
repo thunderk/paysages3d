@@ -63,6 +63,8 @@ SoftwareRenderer::~SoftwareRenderer()
 
 void SoftwareRenderer::prepare()
 {
+    scenery->validate();
+
     // Prepare sub renderers
     // TODO Don't recreate the renderer each time
     delete atmosphere_renderer;
