@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 {
     SoftwareCanvasRenderer* renderer;
     char* conf_file_path = NULL;
-    RenderConfig conf_render_params(400, 300, 1, 3);
+    RenderConfig conf_render_params(480, 270, 1, 3);
     int conf_first_picture = 0;
     int conf_nb_pictures = 1;
     double conf_daytime_start = 0.4;

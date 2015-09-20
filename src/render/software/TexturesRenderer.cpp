@@ -67,7 +67,6 @@ double TexturesRenderer::getMaximalDisplacement(TexturesDefinition *textures)
 
 static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, Vector3 south, Vector3 west)
 {
-    /* TODO This is duplicated in terrain/main.c */
     Vector3 dnorth, deast, dsouth, dwest, normal;
 
     dnorth = north.sub(center);
@@ -85,7 +84,6 @@ static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, V
 
 static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south)
 {
-    /* TODO This is duplicated in terrain/main.c */
     return south.sub(center).crossProduct(east.sub(center)).normalize();
 }
 
@@ -175,28 +173,23 @@ TexturesRenderer::TexturesResult TexturesRenderer::applyToTerrain(double x, doub
     TexturesDefinition* textures = parent->getScenery()->getTextures();
     TexturesResult result;
 
-    /* Displacement */
+    // Displacement
     TerrainRenderer::TerrainResult terrain = parent->getTerrainRenderer()->getResult(x, z, 1, 1);
 
-    /* TODO Displaced textures had their presence already computed before, store that result and use it */
+    // TODO Displaced textures had their presence already computed before, store that result and use it
 
-    /* Find presence of each layer */
-    int i, n;
-    n = textures->count();
-    for (i = 0; i < n; i++)
+    // Find presence of each layer
+    int n = textures->count();
+    int start = 0;
+    for (int i = 0; i < n; i++)
     {
-        TexturesLayerResult* info = result.layers + i;
-        info->layer = textures->getTextureLayer(i);
-        info->presence = getBasePresence(i, terrain);
-        if (info->presence > 0.0)
+        TexturesLayerResult &layer = result.layers[i];
+
+        layer.definition = textures->getTextureLayer(i);
+        layer.presence = getBasePresence(i, terrain);
+        if (layer.presence > 0.9999)
         {
-            Vector3 normal = _getDetailNormal(parent, terrain.location, terrain.normal, info->layer);
-            Vector3 location(x, terrain.location.y, z);
-            info->color = parent->applyLightingToSurface(location, normal, *info->layer->material);
-        }
-        else
-        {
-            info->color = COLOR_TRANSPARENT;
+            start = i;
         }
     }
     result.layer_count = n;
@@ -205,12 +198,23 @@ TexturesRenderer::TexturesResult TexturesRenderer::applyToTerrain(double x, doub
     result.base_normal = terrain.normal;
     result.final_location = terrain.location;
     result.final_color = COLOR_GREEN;
-    for (i = 0; i < n; i++)
+
+    // Compute and merge colors of visible layers
+    for (int i = start; i < n; i++)
     {
-        if (result.layers[i].presence > 0.0)
+        TexturesLayerResult &layer = result.layers[i];
+
+        if (layer.presence > 0.0)
         {
-            result.layers[i].color.a = result.layers[i].presence;
-            result.final_color.mask(result.layers[i].color);
+            Vector3 normal = _getDetailNormal(parent, terrain.location, terrain.normal, layer.definition);
+            Vector3 location(x, terrain.location.y, z);
+            layer.color = parent->applyLightingToSurface(location, normal, *layer.definition->material);
+            layer.color.a = layer.presence;
+            result.final_color.mask(layer.color);
+        }
+        else
+        {
+            layer.color = COLOR_TRANSPARENT;
         }
     }
 

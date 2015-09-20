@@ -15,7 +15,7 @@ class SOFTWARESHARED_EXPORT TexturesRenderer
 public:
     typedef struct
     {
-        TextureLayerDefinition* layer;
+        TextureLayerDefinition* definition;
         double presence;
         Color color;
     } TexturesLayerResult;
