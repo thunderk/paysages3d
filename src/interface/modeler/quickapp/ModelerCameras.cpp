@@ -15,6 +15,7 @@ ModelerCameras::ModelerCameras(MainModelerWindow *parent):
     topdown = new CameraDefinition();
     current = new CameraDefinition();
     tool = new CameraDefinition();
+    previous = render;
     active = render;
     tool_mode = TOOL_NONE;
 
@@ -63,6 +64,8 @@ void ModelerCameras::processPanning(double xvalue, double yvalue)
 void ModelerCameras::startSunTool()
 {
     tool_mode = TOOL_SUN;
+
+    previous = active;
     current->copy(tool);
     active = tool;
 
@@ -71,7 +74,7 @@ void ModelerCameras::startSunTool()
 
 void ModelerCameras::endTool()
 {
-    active = render;
+    active = previous;
     tool_mode = TOOL_NONE;
 
     validate();
@@ -124,6 +127,8 @@ void ModelerCameras::changeActiveCamera(const QString &name)
 
         active = topdown;
     }
+
+    previous = active;
 }
 
 void ModelerCameras::toolChanged(const QString &tool)

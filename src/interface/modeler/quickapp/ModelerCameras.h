@@ -66,6 +66,7 @@ private:
     CameraDefinition *render;
     CameraDefinition *topdown;
     CameraDefinition *tool;
+    CameraDefinition *previous;
 
     typedef enum
     {
