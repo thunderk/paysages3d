@@ -3,6 +3,7 @@
 #include "DefinitionNode.h"
 #include "FloatNode.h"
 #include "PackStream.h"
+#include "DefinitionWatcher.h"
 
 TEST(DefinitionNode, toString)
 {
@@ -24,6 +25,25 @@ TEST(DefinitionNode, getPath)
     EXPECT_EQ("/", root.getPath());
     EXPECT_EQ("/branch", branch.getPath());
     EXPECT_EQ("/branch/leaf", leaf.getPath());
+}
+
+class FakeWatcher: public DefinitionWatcher
+{
+    virtual void nodeChanged(const DefinitionNode *, const DefinitionDiff *) override
+    {
+    }
+};
+
+TEST(DefinitionNode, addWatcher)
+{
+    DefinitionNode root(NULL, "root");
+    FakeWatcher watcher;
+
+    EXPECT_EQ(0, root.getWatcherCount());
+    root.addWatcher(&watcher);
+    EXPECT_EQ(1, root.getWatcherCount());
+    root.addWatcher(&watcher);
+    EXPECT_EQ(1, root.getWatcherCount());
 }
 
 TEST(DefinitionNode, findByPath)

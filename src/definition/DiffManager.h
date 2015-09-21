@@ -28,6 +28,11 @@ public:
     void addWatcher(const DefinitionNode *node, DefinitionWatcher *watcher);
 
     /**
+     * Get the number of watchers registered for a given node.
+     */
+    int getWatcherCount(const DefinitionNode *node);
+
+    /**
      * Add a new diff of a node to the change flow.
      */
     void addDiff(DefinitionNode *node, const DefinitionDiff *diff);

@@ -77,6 +77,11 @@ public:
      */
     void addWatcher(DefinitionWatcher *watcher, bool init_diff=false);
 
+    /**
+     * Get the current number of watchers.
+     */
+    int getWatcherCount() const;
+
 protected:
     void addChild(DefinitionNode* child);
     void removeChild(DefinitionNode* child);

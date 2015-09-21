@@ -21,7 +21,15 @@ DiffManager::~DiffManager()
 
 void DiffManager::addWatcher(const DefinitionNode *node, DefinitionWatcher *watcher)
 {
-    watchers[node].push_back(watcher);
+    if (std::find(watchers[node].begin(), watchers[node].end(), watcher) == watchers[node].end())
+    {
+        watchers[node].push_back(watcher);
+    }
+}
+
+int DiffManager::getWatcherCount(const DefinitionNode *node)
+{
+    return watchers[node].size();
 }
 
 void DiffManager::addDiff(DefinitionNode *node, const DefinitionDiff *diff)

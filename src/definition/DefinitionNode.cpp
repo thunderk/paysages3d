@@ -181,6 +181,18 @@ void DefinitionNode::addWatcher(DefinitionWatcher *watcher, bool init_diff)
     }
 }
 
+int DefinitionNode::getWatcherCount() const
+{
+    if (root && root->diffs)
+    {
+        return root->diffs->getWatcherCount(this);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 void DefinitionNode::save(PackStream* stream) const
 {
     int children_count = (int)children.size();
