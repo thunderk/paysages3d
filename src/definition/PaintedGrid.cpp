@@ -140,7 +140,7 @@ void PaintedGrid::clearPainting()
     brush_data->clear();
 }
 
-void PaintedGrid::applyBrush(const PaintedGridBrush &brush, double x, double y, double force)
+void PaintedGrid::applyBrush(const PaintedGridBrush &brush, double x, double y, double force, bool commit)
 {
     int xstart, xend, ystart, yend;
 
@@ -164,6 +164,11 @@ void PaintedGrid::applyBrush(const PaintedGridBrush &brush, double x, double y, 
                 *dpointer = brush.getValue(this, dx, dy, *dpointer, influence, force);
             }
         }
+    }
+
+    if (commit)
+    {
+        endBrushStroke();
     }
 }
 

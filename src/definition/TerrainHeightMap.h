@@ -19,11 +19,14 @@ public:
 
     virtual double getInitialValue(double x, double y) const override;
 
-    void brushElevation(const PaintedGridBrush &brush, double x, double y, double value);
-    void brushSmooth(const PaintedGridBrush &brush, double x, double y, double value);
-    void brushAddNoise(const PaintedGridBrush &brush, double x, double y, NoiseGenerator* generator, double value);
-    void brushReset(const PaintedGridBrush &brush, double x, double y, double value);
-    void brushFlatten(const PaintedGridBrush &brush, double x, double y, double height, double force);
+    void brushElevation(const PaintedGridBrush &brush, double x, double y, double value, bool commit=false);
+    void brushSmooth(const PaintedGridBrush &brush, double x, double y, double value, bool commit=false);
+    void brushAddNoise(const PaintedGridBrush &brush, double x, double y, NoiseGenerator* generator, double value, bool commit=false);
+    void brushReset(const PaintedGridBrush &brush, double x, double y, double value, bool commit=false);
+    void brushFlatten(const PaintedGridBrush &brush, double x, double y, double height, double force, bool commit=false);
+
+    virtual void clearPainting() override;
+    virtual void endBrushStroke() override;
 
 private:
     TerrainDefinition* terrain;

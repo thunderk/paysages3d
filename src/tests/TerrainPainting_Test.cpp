@@ -113,24 +113,24 @@ TEST_F(TerrainPainting_Test, brush_flatten)
 
     /* Test flattening center at 0.5 */
     _checkBrushResult(terrain, &brush, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0);
-    terrain->height_map->brushFlatten(brush, 0.0, 0.0, 0.5, 1.0);
+    terrain->height_map->brushFlatten(brush, 0.0, 0.0, 0.5, 1.0, true);
     _checkBrushResult(terrain, &brush, 0.5, 0.5, 0.5, 0.25, 0.0, 0.0, 0);
 
     /* Test brush strength */
     terrain->height_map->clearPainting();
     _checkBrushResult(terrain, &brush, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0);
-    terrain->height_map->brushFlatten(brush, 0.0, 0.0, 0.5, 0.01);
+    terrain->height_map->brushFlatten(brush, 0.0, 0.0, 0.5, 0.01, true);
     _checkBrushResult(terrain, &brush, 0.005, 0.005, 0.005, 0.0025, 0.0, 0.0, 0);
 
     /* Test cumulative effect */
-    terrain->height_map->brushFlatten(brush, 0.0, 0.0, 0.5, 0.01);
+    terrain->height_map->brushFlatten(brush, 0.0, 0.0, 0.5, 0.01, true);
     _checkBrushResult(terrain, &brush, 0.00995, 0.00995, 0.00995, 0.0049875, 0.0, 0.0, 0);
 
     /* Test with height modifier */
     terrain->height = 10.0;
     terrain->height_map->clearPainting();
     _checkBrushResult(terrain, &brush, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0);
-    terrain->height_map->brushFlatten(brush, 0.0, 0.0, 0.5, 1.0);
+    terrain->height_map->brushFlatten(brush, 0.0, 0.0, 0.5, 1.0, true);
     _checkBrushResult(terrain, &brush, 0.05, 0.05, 0.05, 0.025, 0.0, 0.0, 0);
 }
 
@@ -144,29 +144,29 @@ TEST_F(TerrainPainting_Test, brush_reset)
 
     /* Test resetting at center */
     _checkBrushResult(terrain, &brush, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0);
-    terrain->height_map->brushFlatten(brush_full, 0.0, 0.0, 2.0, 1.0);
+    terrain->height_map->brushFlatten(brush_full, 0.0, 0.0, 2.0, 1.0, true);
     _checkBrushResult(terrain, &brush, 2.0, 2.0, 2.0, 2.0, 2.0, 1.0, 0);
-    terrain->height_map->brushReset(brush, 0.0, 0.0, 1.0);
+    terrain->height_map->brushReset(brush, 0.0, 0.0, 1.0, true);
     _checkBrushResult(terrain, &brush, 1.0, 1.0, 1.0, 1.5, 2.0, 1.0, 0);
 
     /* Test brush strength */
     terrain->height_map->clearPainting();
     _checkBrushResult(terrain, &brush, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0);
-    terrain->height_map->brushFlatten(brush_full, 0.0, 0.0, 2.0, 1.0);
+    terrain->height_map->brushFlatten(brush_full, 0.0, 0.0, 2.0, 1.0, true);
     _checkBrushResult(terrain, &brush, 2.0, 2.0, 2.0, 2.0, 2.0, 1.0, 0);
-    terrain->height_map->brushReset(brush, 0.0, 0.0, 0.1);
+    terrain->height_map->brushReset(brush, 0.0, 0.0, 0.1, true);
     _checkBrushResult(terrain, &brush, 1.9, 1.9, 1.9, 1.95, 2.0, 1.0, 0);
 
     /* Test cumulative effect */
-    terrain->height_map->brushReset(brush, 0.0, 0.0, 0.1);
+    terrain->height_map->brushReset(brush, 0.0, 0.0, 0.1, true);
     _checkBrushResult(terrain, &brush, 1.81, 1.81, 1.81, 1.9025, 2.0, 1.0, 0);
 
     /* Test with height modifier */
     terrain->height = 10.0;
     terrain->height_map->clearPainting();
     _checkBrushResult(terrain, &brush, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0);
-    terrain->height_map->brushFlatten(brush_full, 0.0, 0.0, 2.0, 1.0);
+    terrain->height_map->brushFlatten(brush_full, 0.0, 0.0, 2.0, 1.0, true);
     _checkBrushResult(terrain, &brush, 1.1, 1.1, 1.1, 1.1, 1.1, 1.0, 0);
-    terrain->height_map->brushReset(brush, 0.0, 0.0, 0.1);
+    terrain->height_map->brushReset(brush, 0.0, 0.0, 0.1, true);
     _checkBrushResult(terrain, &brush, 1.099, 1.099, 1.099, 1.0995, 1.1, 1.0, 0);
 }

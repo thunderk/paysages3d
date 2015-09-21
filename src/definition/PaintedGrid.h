@@ -62,17 +62,17 @@ public:
     /**
      * Clear all painting and reset the initial value everywhere.
      */
-    void clearPainting();
+    virtual void clearPainting();
 
     /**
      * Apply a brush stroke at a grid location (locating the brush center).
      */
-    void applyBrush(const PaintedGridBrush &brush, double x, double y, double force);
+    virtual void applyBrush(const PaintedGridBrush &brush, double x, double y, double force, bool commit=false);
 
     /**
      * Commit previous brush strokes.
      */
-    void endBrushStroke();
+    virtual void endBrushStroke();
 
     /**
      * Virtual method that can be reimplemented to provide the initial value at a grid location.
