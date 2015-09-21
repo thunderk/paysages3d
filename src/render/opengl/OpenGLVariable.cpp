@@ -17,6 +17,7 @@ OpenGLVariable::OpenGLVariable(const std::string &name):
 {
     type = TYPE_NONE;
     texture_toupload = false;
+    texture_id = 0;
 }
 
 void OpenGLVariable::apply(OpenGLShaderProgram *program, int &texture_unit)
