@@ -14,8 +14,6 @@ const float SPHERE_SIZE = 20000.0;
 const float WORLD_SCALING = 0.05;
 const float SUN_DISTANCE = 149597870.0;
 const float SUN_DISTANCE_SCALED = (SUN_DISTANCE / WORLD_SCALING);
-const float SUN_RADIUS = 6.955e5;
-const float SUN_RADIUS_SCALED = (SUN_RADIUS / WORLD_SCALING);
 const float M_PI = 3.141592657;
 
 const int RES_MU = 128;
@@ -29,7 +27,7 @@ uniform vec3 cameraLocation;
 uniform vec3 sunDirection;
 uniform vec4 sunColor;
 uniform float dayTime;
-const float sunRadius = 1.0; // TODO -> uniform
+uniform float sunRadius;
 
 varying vec3 unprojected;
 

@@ -5,6 +5,8 @@ Technlology Preview 2 :
 - Add clouds to OpenGL with 3d textures.
 - Fix potential holes in land rendering (OpenGL and software).
 - Fix polygon culling near the camera in low-res renders (automatic tessellation ?).
+- Fix sun size not being consistent between opengl and software
+- Fix tool camera not reverting to previous camera
 
 Technology Preview 3 :
 - Alter aerial perspective using estimation of the amount of light left after cloud layers traversal.

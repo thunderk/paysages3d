@@ -22,6 +22,7 @@
 #include "Texture2D.h"
 #include "Texture4D.h"
 #include "CacheFile.h"
+#include "FloatNode.h"
 
 /* Factor to convert software units to kilometers */
 // TODO This is copied in AtmosphereRenderer
@@ -29,8 +30,6 @@
 #define WORLD_SCALING 0.05
 #define SUN_DISTANCE 149597870.0
 #define SUN_DISTANCE_SCALED (SUN_DISTANCE / WORLD_SCALING)
-#define SUN_RADIUS 6.955e5
-#define SUN_RADIUS_SCALED (SUN_RADIUS / WORLD_SCALING)
 #define WORKAROUND_OFFSET 0.2
 
 /*********************** Constants ***********************/
@@ -1166,7 +1165,7 @@ AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3
 
     AtmosphereResult result;
     Vector3 attenuation;
-    Color sunColor = _sunColor(v, s, r, mu, parent->getScenery()->getAtmosphere()->sun_radius); /* L0 */
+    Color sunColor = _sunColor(v, s, r, mu, parent->getScenery()->getAtmosphere()->propSunRadius()->getValue()); /* L0 */
 
     /*result.base.r = base.r + sunColor.r;
     result.base.g = base.g + sunColor.g;

@@ -4,6 +4,9 @@
 #include "OpenGLRenderer.h"
 #include "Scenery.h"
 #include "CameraDefinition.h"
+#include "AtmosphereDefinition.h"
+#include "FloatNode.h"
+#include "AtmosphereRenderer.h"
 
 ModelerCameras::ModelerCameras(MainModelerWindow *parent):
     QObject(parent), parent(parent)
@@ -11,11 +14,13 @@ ModelerCameras::ModelerCameras(MainModelerWindow *parent):
     render = new CameraDefinition();
     topdown = new CameraDefinition();
     current = new CameraDefinition();
+    tool = new CameraDefinition();
     active = render;
+    tool_mode = TOOL_NONE;
 
     // Watch GUI choice
-    QObject *widget = parent->findQmlObject("camera_choice");
-    connect(widget, SIGNAL(stateChanged(QString)), this, SLOT(changeActiveCamera(QString)));
+    parent->connectQmlSignal("camera_choice", SIGNAL(stateChanged(QString)), this, SLOT(changeActiveCamera(QString)));
+    parent->connectQmlSignal("ui", SIGNAL(mainToolChanged(QString)), this, SLOT(toolChanged(QString)));
 
     // Validate to apply initial camera to scenery
     validate();
@@ -29,6 +34,7 @@ ModelerCameras::~ModelerCameras()
     delete current;
     delete render;
     delete topdown;
+    delete tool;
 }
 
 void ModelerCameras::processZoom(double value)
@@ -54,11 +60,37 @@ void ModelerCameras::processPanning(double xvalue, double yvalue)
     validate();
 }
 
+void ModelerCameras::startSunTool()
+{
+    tool_mode = TOOL_SUN;
+    current->copy(tool);
+    active = tool;
+
+    parent->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this, true);
+}
+
+void ModelerCameras::endTool()
+{
+    active = render;
+    tool_mode = TOOL_NONE;
+
+    validate();
+}
+
 void ModelerCameras::timerEvent(QTimerEvent *)
 {
     current->transitionToAnother(active, 0.5);
     parent->getScenery()->keepCameraAboveGround(current);
     parent->getRenderer()->setCamera(current);
+}
+
+void ModelerCameras::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
+{
+    if (node->getPath() == "/atmosphere/daytime" && tool_mode == TOOL_SUN)
+    {
+        Vector3 direction = parent->getRenderer()->getAtmosphereRenderer()->getSunDirection();
+        tool->setTarget(tool->getLocation().add(direction));
+    }
 }
 
 void ModelerCameras::validate()
@@ -68,7 +100,8 @@ void ModelerCameras::validate()
     parent->getScenery()->keepCameraAboveGround(current);
     parent->getRenderer()->setCamera(current);
 
-    if (active == render) {
+    if (active == render)
+    {
         parent->getScenery()->setCamera(active);
     }
 }
@@ -90,5 +123,17 @@ void ModelerCameras::changeActiveCamera(const QString &name)
         topdown->validate();
 
         active = topdown;
+    }
+}
+
+void ModelerCameras::toolChanged(const QString &tool)
+{
+    if (tool.isEmpty())
+    {
+        endTool();
+    }
+    else if (tool == "sun")
+    {
+        startSunTool();
     }
 }

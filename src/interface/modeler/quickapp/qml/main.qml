@@ -5,9 +5,15 @@ OpenGLView {
     id: main_ui
     state: "Loading"
     property string previous_state
+    property var current: null
+    property string tool: (current && current.tool) ? current.tool : ""
+
+    signal mainToolChanged(string tool)
 
     width: 1280
     height: 720
+
+    onToolChanged: mainToolChanged(tool)
 
     Tooltip {
         id: tooltip_widget
@@ -194,6 +200,10 @@ OpenGLView {
                 target: water_section
                 enabled: true
             }
+            PropertyChanges {
+                target: main_ui
+                current: water_section
+            }
         },
         State {
             name: "Atmosphere Mode"
@@ -202,6 +212,10 @@ OpenGLView {
             PropertyChanges {
                 target: atmosphere_section
                 enabled: true
+            }
+            PropertyChanges {
+                target: main_ui
+                current: atmosphere_section
             }
         },
         State {

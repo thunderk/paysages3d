@@ -72,7 +72,14 @@ MainModelerWindow::~MainModelerWindow()
 
 QObject *MainModelerWindow::findQmlObject(const QString &objectName)
 {
-    return rootObject()->findChild<QObject *>(objectName);
+    if (objectName == "ui" || objectName == "root")
+    {
+        return rootObject();
+    }
+    else
+    {
+        return rootObject()->findChild<QObject *>(objectName);
+    }
 }
 
 void MainModelerWindow::setQmlProperty(const QString &objectName, const QString &propertyName, const QVariant &value)
@@ -81,6 +88,23 @@ void MainModelerWindow::setQmlProperty(const QString &objectName, const QString 
     if (item)
     {
         item->setProperty(propertyName.toLocal8Bit(), value);
+    }
+    else
+    {
+        Logs::error() << "QML object not found :" << objectName.toStdString() << std::endl;
+    }
+}
+
+void MainModelerWindow::connectQmlSignal(const QString &objectName, const char *signal, const QObject *receiver, const char *method)
+{
+    QObject *item = findQmlObject(objectName);
+    if (item)
+    {
+        connect(item, signal, receiver, method);
+    }
+    else
+    {
+        Logs::error() << "QML object not found :" << objectName.toStdString() << std::endl;
     }
 }
 

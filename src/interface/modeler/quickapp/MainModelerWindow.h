@@ -17,6 +17,7 @@ public:
 
     QObject *findQmlObject(const QString &objectName);
     void setQmlProperty(const QString &objectName, const QString &propertyName, const QVariant &value);
+    void connectQmlSignal(const QString &objectName, const char *signal, const QObject *receiver, const char *method);
 
     QString getState() const;
     void setState(const QString &stateName);

@@ -9,6 +9,7 @@ AtmosphereDefinition::AtmosphereDefinition(DefinitionNode* parent):
 {
     daytime = new FloatNode(this, "daytime");
     humidity = new FloatNode(this, "humidity");
+    sun_radius = new FloatNode(this, "sun_radius");
 }
 
 AtmosphereDefinition::~AtmosphereDefinition()
@@ -21,7 +22,6 @@ void AtmosphereDefinition::save(PackStream* stream) const
 
     stream->write((int*)&model);
     sun_color.save(stream);
-    stream->write(&sun_radius);
     stream->write(&dome_lighting);
     stream->write(&moon_radius);
     stream->write(&moon_theta);
@@ -43,7 +43,6 @@ void AtmosphereDefinition::load(PackStream* stream)
 
     stream->read((int*)&model);
     sun_color.load(stream);
-    stream->read(&sun_radius);
     stream->read(&dome_lighting);
     stream->read(&moon_radius);
     stream->read(&moon_theta);
@@ -73,7 +72,6 @@ void AtmosphereDefinition::copy(DefinitionNode* _destination) const
 
     destination->model = model;
     destination->sun_color = sun_color;
-    destination->sun_radius = sun_radius;
     destination->dome_lighting = dome_lighting;
     destination->moon_radius = moon_radius;
     destination->moon_theta = moon_theta;
@@ -117,7 +115,7 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset)
     sun_color.g = 0.95;
     sun_color.b = 0.9;
     sun_color.a = 1.0;
-    sun_radius = 1.0;
+    sun_radius->setValue(0.7);
     moon_radius = 1.0;
     moon_theta = 0.3;
     moon_phi = 0.5;
@@ -135,7 +133,6 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset)
             setDayTime(17, 45);
             humidity->setValue(0.1);
             dome_lighting = 0.3;
-            sun_radius = 0.03;
             break;
         case ATMOSPHERE_PRESET_HAZY_MORNING:
             setDayTime(8, 30);

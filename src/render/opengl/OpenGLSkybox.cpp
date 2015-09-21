@@ -54,6 +54,7 @@ void OpenGLSkybox::initialize()
     // Watch for definition changes
     renderer->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this, true);
     renderer->getScenery()->getAtmosphere()->propHumidity()->addWatcher(this, true);
+    renderer->getScenery()->getAtmosphere()->propSunRadius()->addWatcher(this, true);
 }
 
 void OpenGLSkybox::update()
@@ -83,6 +84,10 @@ void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff 
     else if (node->getPath() == "/atmosphere/humidity")
     {
         renderer->getSharedState()->set("atmosphereHumidity", renderer->getScenery()->getAtmosphere()->propHumidity()->getValue());
+    }
+    else if (node->getPath() == "/atmosphere/sun_radius")
+    {
+        renderer->getSharedState()->set("sunRadius", renderer->getScenery()->getAtmosphere()->propSunRadius()->getValue());
     }
 }
 

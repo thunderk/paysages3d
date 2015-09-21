@@ -47,6 +47,7 @@ public:
 
     inline FloatNode *propDayTime() const {return daytime;}
     inline FloatNode *propHumidity() const {return humidity;}
+    inline FloatNode *propSunRadius() const {return sun_radius;}
 
     /**
      * Set the daytime from a 0.0-1.0 value.
@@ -68,7 +69,6 @@ public:
     AtmosphereModel model;
 
     Color sun_color;
-    double sun_radius;
     double dome_lighting;
 
     double moon_radius;
@@ -80,6 +80,7 @@ public:
 private:
     FloatNode *humidity;
     FloatNode *daytime;
+    FloatNode *sun_radius;
 };
 
 }

@@ -15,6 +15,12 @@ BaseSection {
         }
 
         ToolbarButton {
+            id: tool_sun_radius
+            picture: "images/icon_sun_radius.png"
+            hovertext: qsTr("Radius of the sun")
+        }
+
+        ToolbarButton {
             id: tool_humidity
             picture: "images/icon_atmosphere.png"
             hovertext: qsTr("Humidity factor in the air")
@@ -34,6 +40,15 @@ BaseSection {
         objectName: "atmosphere_humidity"
     }
 
+    PanelSimpleFloat {
+        id: panel_sun_radius
+        anchors.left: toolbar.right
+        minimumValue: 0
+        maximumValue: 3
+        enabled: false
+        objectName: "atmosphere_sun_radius"
+    }
+
     states: [
         State {
             name: "DayTime"
@@ -41,6 +56,18 @@ BaseSection {
             PropertyChanges {
                 target: panel_daytime
                 enabled: true
+            }
+        },
+        State {
+            name: "Sun radius"
+            when: tool_sun_radius.checked
+            PropertyChanges {
+                target: panel_sun_radius
+                enabled: true
+            }
+            PropertyChanges {
+                target: section
+                tool: "sun"
             }
         },
         State {
