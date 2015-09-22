@@ -187,9 +187,15 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
         col.a = (segments[i].length >= transparency_depth) ? 1.0 : (segments[i].length / transparency_depth);
         result.mask(col);
     }
+
+    // Opacify when hitting inside_length limit
     if (inside_length >= transparency_depth)
     {
         result.a = 1.0;
+    }
+    else if (inside_length >= transparency_depth * 0.8)
+    {
+        result.a += (1.0 - result.a) * ((inside_length - transparency_depth * 0.8) / (transparency_depth * 0.2));
     }
 
     double a = result.a;
