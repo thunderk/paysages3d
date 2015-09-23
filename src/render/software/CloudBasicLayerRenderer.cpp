@@ -176,13 +176,11 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
 
         col = parent->applyLightingToSurface(segments[i].start, parent->getAtmosphereRenderer()->getSunDirection(), material);
 
-        double power = col.getPower();
-        if (power > 0.2)
-        {
-            col.r += (power - 0.2) * 1.5;
-            col.g += (power - 0.2) * 1.5;
-            col.b += (power - 0.2) * 1.5;
-        }
+        // Boost highly lighted area
+        double boost = 1.0 + (col.getPower() * col.getPower());
+        col.r *= boost;
+        col.g *= boost;
+        col.b *= boost;
 
         col.a = (segments[i].length >= transparency_depth) ? 1.0 : (segments[i].length / transparency_depth);
         result.mask(col);
@@ -235,9 +233,13 @@ bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent*
         {
             factor = 1.0;
         }
+        else if (factor > 0.00001)
+        {
+            factor = sqrt(factor);
+        }
     }
 
-    double miminum_light = 0.3;
+    double miminum_light = 0.5;
     factor = 1.0 - (1.0 - miminum_light) * factor;
 
     light->color.r *= factor;
