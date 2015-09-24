@@ -80,15 +80,6 @@ static inline void _applyWeatherEffects(AtmosphereDefinition* definition, Atmosp
 BaseAtmosphereRenderer::BaseAtmosphereRenderer(SoftwareRenderer* renderer):
     parent(renderer)
 {
-
-}
-
-void BaseAtmosphereRenderer::getLightingStatus(LightStatus* status, Vector3, int)
-{
-    for (LightComponent light:lights)
-    {
-        status->pushComponent(light);
-    }
 }
 
 AtmosphereResult BaseAtmosphereRenderer::applyAerialPerspective(Vector3, Color base)
@@ -109,50 +100,14 @@ AtmosphereResult BaseAtmosphereRenderer::getSkyColor(Vector3)
 
 Vector3 BaseAtmosphereRenderer::getSunDirection(bool cache) const
 {
-    if (cache and lights.size() > 0)
-    {
-        return lights[0].direction.scale(-1.0);
-    }
-    else
-    {
-        AtmosphereDefinition* atmosphere = getDefinition();
-        double sun_angle = (atmosphere->propDayTime()->getValue() + 0.75) * M_PI * 2.0;
-        return Vector3(cos(sun_angle), sin(sun_angle), 0.0);
-    }
+    AtmosphereDefinition* atmosphere = getDefinition();
+    double sun_angle = (atmosphere->propDayTime()->getValue() + 0.75) * M_PI * 2.0;
+    return Vector3(cos(sun_angle), sin(sun_angle), 0.0);
 }
 
-void BaseAtmosphereRenderer::setBasicLights()
+bool BaseAtmosphereRenderer::getLightsAt(std::vector<LightComponent> &, const Vector3 &) const
 {
-    LightComponent light;
-
-    lights.clear();
-
-    light.color.r = 0.6;
-    light.color.g = 0.6;
-    light.color.b = 0.6;
-    light.direction.x = -1.0;
-    light.direction.y = -0.5;
-    light.direction.z = 1.0;
-    light.direction = light.direction.normalize();
-    light.altered = 1;
-    light.reflection = 0.0;
-    lights.push_back(light);
-
-    light.color.r = 0.2;
-    light.color.g = 0.2;
-    light.color.b = 0.2;
-    light.direction.x = 1.0;
-    light.direction.y = -0.5;
-    light.direction.z = -1.0;
-    light.direction = light.direction.normalize();
-    light.altered = 0;
-    light.reflection = 0.0;
-    lights.push_back(light);
-}
-
-void BaseAtmosphereRenderer::setStaticLights(const std::vector<LightComponent> &lights)
-{
-    this->lights = lights;
+    return false;
 }
 
 AtmosphereDefinition* BaseAtmosphereRenderer::getDefinition() const
@@ -169,12 +124,6 @@ SoftwareBrunetonAtmosphereRenderer::SoftwareBrunetonAtmosphereRenderer(SoftwareR
 SoftwareBrunetonAtmosphereRenderer::~SoftwareBrunetonAtmosphereRenderer()
 {
     delete model;
-}
-
-void SoftwareBrunetonAtmosphereRenderer::getLightingStatus(LightStatus* status, Vector3 normal, int opaque)
-{
-    model->fillLightingStatus(status, normal, opaque);
-    parent->getNightSky()->fillLightingStatus(status, normal, opaque);
 }
 
 AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(Vector3 location, Color base)
@@ -257,4 +206,12 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
     _applyWeatherEffects(definition, &result);
 
     return result;
+}
+
+bool SoftwareBrunetonAtmosphereRenderer::getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const
+{
+    bool changed = false;
+    changed |= model->getLightsAt(result, location);
+    changed |= parent->getNightSky()->getLightsAt(result, location);
+    return changed;
 }

@@ -3,13 +3,15 @@
 
 #include "software_global.h"
 
+#include "LightSource.h"
+
 namespace paysages {
 namespace software {
 
 /*!
  * \brief Night sky renderer.
  */
-class SOFTWARESHARED_EXPORT NightSky
+class SOFTWARESHARED_EXPORT NightSky: public LightSource
 {
 public:
     NightSky(SoftwareRenderer* renderer);
@@ -26,7 +28,7 @@ public:
      */
     virtual const Color getColor(double altitude, const Vector3 &direction);
 
-    virtual void fillLightingStatus(LightStatus *status, const Vector3 &normal, int opaque);
+    virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override;
 
 private:
     SoftwareRenderer* renderer;

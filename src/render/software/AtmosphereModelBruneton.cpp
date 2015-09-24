@@ -15,6 +15,7 @@
 #include "Scenery.h"
 #include "AtmosphereDefinition.h"
 #include "AtmosphereRenderer.h"
+#include "AtmosphereResult.h"
 #include "SoftwareRenderer.h"
 #include "WaterRenderer.h"
 #include "LightComponent.h"
@@ -1153,6 +1154,10 @@ AtmosphereModelBruneton::AtmosphereModelBruneton(SoftwareRenderer *parent):
 {
 }
 
+AtmosphereModelBruneton::~AtmosphereModelBruneton()
+{
+}
+
 AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3 &direction, const Vector3 &sun_position, const Color &base)
 {
     Vector3 x = {0.0, Rg + eye.y * WORLD_SCALING, 0.0};
@@ -1215,12 +1220,12 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
     return result;
 }
 
-void AtmosphereModelBruneton::fillLightingStatus(LightStatus *status, const Vector3 &, int)
+bool AtmosphereModelBruneton::getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const
 {
     LightComponent sun, irradiance;
     double muS;
 
-    double altitude = status->getLocation().y * WORLD_SCALING;
+    double altitude = location.y * WORLD_SCALING;
 
     double r0 = Rg + WORKAROUND_OFFSET + altitude;
     Vector3 up = {0.0, 1.0, 0.0};
@@ -1241,14 +1246,16 @@ void AtmosphereModelBruneton::fillLightingStatus(LightStatus *status, const Vect
     sun.reflection = ISun;
     sun.altered = 1;
 
-    status->pushComponent(sun);
+    result.push_back(sun);
 
     irradiance.color = _irradiance(_irradianceTexture, r0, muS);
     irradiance.direction = VECTOR_DOWN;
     irradiance.reflection = 0.0;
     irradiance.altered = 0;
 
-    status->pushComponent(irradiance);
+    result.push_back(irradiance);
+
+    return true;
 }
 
 Texture2D *AtmosphereModelBruneton::getTextureTransmittance() const

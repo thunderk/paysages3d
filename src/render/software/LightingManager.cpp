@@ -2,6 +2,8 @@
 
 #include "LightFilter.h"
 #include "LightComponent.h"
+#include "LightStatus.h"
+#include "LightSource.h"
 #include "Color.h"
 #include "SurfaceMaterial.h"
 
@@ -10,9 +12,55 @@ LightingManager::LightingManager()
     specularity = true;
 }
 
+int LightingManager::getStaticLightsCount() const
+{
+    return static_lights.size();
+}
+
+int LightingManager::getSourcesCount() const
+{
+    return sources.size();
+}
+
+int LightingManager::getFiltersCount() const
+{
+    return filters.size();
+}
+
+void LightingManager::clearStaticLights()
+{
+    static_lights.clear();
+}
+
+void LightingManager::addStaticLight(const LightComponent &light)
+{
+    static_lights.push_back(light);
+}
+
+void LightingManager::registerSource(LightSource *source)
+{
+    if (std::find(sources.begin(), sources.end(), source) == sources.end())
+    {
+        sources.push_back(source);
+    }
+}
+
+void LightingManager::unregisterSource(LightSource *source)
+{
+    sources.erase(std::find(sources.begin(), sources.end(), source));
+}
+
 void LightingManager::registerFilter(LightFilter* filter)
 {
-    filters.push_back(filter);
+    if (std::find(filters.begin(), filters.end(), filter) == filters.end())
+    {
+        filters.push_back(filter);
+    }
+}
+
+void LightingManager::unregisterFilter(LightFilter *filter)
+{
+    filters.erase(std::find(filters.begin(), filters.end(), filter));
 }
 
 bool LightingManager::alterLight(LightComponent &component, const Vector3 &location)
@@ -118,4 +166,27 @@ Color LightingManager::applyFinalComponent(const LightComponent &component, cons
     }*/
 
     return result;
+}
+
+Color LightingManager::apply(const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material)
+{
+    LightStatus status(this, location, eye);
+
+    for (auto &light: static_lights)
+    {
+        status.pushComponent(light);
+    }
+    for (auto source: sources)
+    {
+        std::vector<LightComponent> lights;
+        if (source->getLightsAt(lights, location))
+        {
+            for (auto &light: lights)
+            {
+                status.pushComponent(light);
+            }
+        }
+    }
+
+    return status.apply(normal, material);
 }

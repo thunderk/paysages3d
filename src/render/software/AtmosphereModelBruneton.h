@@ -3,19 +3,20 @@
 
 #include "software_global.h"
 
-#include "AtmosphereResult.h"
+#include "LightSource.h"
 
 namespace paysages {
 namespace software {
 
-class SOFTWARESHARED_EXPORT AtmosphereModelBruneton
+class SOFTWARESHARED_EXPORT AtmosphereModelBruneton: public LightSource
 {
 public:
     AtmosphereModelBruneton(SoftwareRenderer *parent);
+    virtual ~AtmosphereModelBruneton();
 
     AtmosphereResult getSkyColor(Vector3 eye, const Vector3 &direction, const Vector3 &sun_position, const Color &base);
     AtmosphereResult applyAerialPerspective(Vector3 location, const Color &base);
-    void fillLightingStatus(LightStatus *status, const Vector3 &normal, int opaque);
+    virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override;
 
     /* Functions to get access to internal textures (for opengl shaders) */
     Texture2D* getTextureTransmittance() const;

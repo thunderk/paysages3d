@@ -45,16 +45,6 @@ public:
      */
     virtual void setQuality(double quality);
 
-    /*!
-     * \brief Disable atmosphere and sky lighting, replacing it by static lights.
-     *
-     * This function needs to be called after each prepare().
-     *
-     * WARNING : This method changes the scenery attached to the renderer !
-     */
-    void disableAtmosphere();
-    void disableAtmosphere(const std::vector<LightComponent> &lights);
-
     inline Scenery* getScenery() const {return scenery;}
 
     inline BaseAtmosphereRenderer* getAtmosphereRenderer() const {return atmosphere_renderer;}

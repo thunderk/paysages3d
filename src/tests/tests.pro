@@ -28,7 +28,8 @@ SOURCES += main.cpp \
     DiffManager_Test.cpp \
     ColorHSL_Test.cpp \
     RenderProgress_Test.cpp \
-    IntNode_Test.cpp
+    IntNode_Test.cpp \
+    LightingManager_Test.cpp
 
 HEADERS += \
     BaseTestCase.h

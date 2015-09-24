@@ -43,6 +43,7 @@ namespace software {
     class LightStatus;
     class LightFilter;
     class LightComponent;
+    class LightSource;
 
     class NightSky;
 

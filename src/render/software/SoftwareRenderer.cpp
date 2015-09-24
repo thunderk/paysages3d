@@ -41,6 +41,7 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery):
     lighting->registerFilter(water_renderer);
     lighting->registerFilter(terrain_renderer);
     lighting->registerFilter(clouds_renderer);
+    lighting->registerSource(atmosphere_renderer);
 
     setQuality(0.5);
 }
@@ -66,7 +67,8 @@ void SoftwareRenderer::prepare()
     scenery->validate();
 
     // Prepare sub renderers
-    // TODO Don't recreate the renderer each time
+    // TODO Don't recreate the renderer each time, only when it changes
+    lighting->unregisterSource(atmosphere_renderer);
     delete atmosphere_renderer;
     if (getScenery()->getAtmosphere()->model == AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON)
     {
@@ -76,6 +78,7 @@ void SoftwareRenderer::prepare()
     {
         atmosphere_renderer = new BaseAtmosphereRenderer(this);
     }
+    lighting->registerSource(atmosphere_renderer);
 
     clouds_renderer->update();
     terrain_renderer->update();
@@ -98,50 +101,9 @@ void SoftwareRenderer::setQuality(double quality)
     render_quality = (int)(quality * 9.0) + 1;
 }
 
-void SoftwareRenderer::disableAtmosphere()
-{
-    LightComponent light;
-    std::vector<LightComponent> lights;
-
-    light.color.r = 1.5;
-    light.color.g = 1.5;
-    light.color.b = 1.5;
-    light.direction.x = -1.0;
-    light.direction.y = -0.3;
-    light.direction.z = 1.0;
-    light.direction = light.direction.normalize();
-    light.altered = 1;
-    light.reflection = 0.0;
-    lights.push_back(light);
-
-    light.color.r = 0.25;
-    light.color.g = 0.25;
-    light.color.b = 0.265;
-    light.direction.x = 1.0;
-    light.direction.y = -0.5;
-    light.direction.z = -1.0;
-    light.direction = light.direction.normalize();
-    light.altered = 0;
-    light.reflection = 0.0;
-    lights.push_back(light);
-
-    disableAtmosphere(lights);
-}
-
-void SoftwareRenderer::disableAtmosphere(const std::vector<LightComponent> &lights)
-{
-    scenery->getAtmosphere()->model = AtmosphereDefinition::ATMOSPHERE_MODEL_DISABLED;
-
-    delete atmosphere_renderer;
-    atmosphere_renderer = new BaseAtmosphereRenderer(this);
-    atmosphere_renderer->setStaticLights(lights);
-}
-
 Color SoftwareRenderer::applyLightingToSurface(const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material)
 {
-    LightStatus status(lighting, location, getCameraLocation(location));
-    atmosphere_renderer->getLightingStatus(&status, normal, 0);
-    return status.apply(normal, material);
+    return lighting->apply(getCameraLocation(location), location, normal, material);
 }
 
 Color SoftwareRenderer::applyMediumTraversal(Vector3 location, Color color)

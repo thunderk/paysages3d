@@ -95,7 +95,7 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction)
 
 }
 
-void NightSky::fillLightingStatus(LightStatus *status, const Vector3 &, int)
+bool NightSky::getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const
 {
     LightComponent moon, sky;
 
@@ -107,12 +107,14 @@ void NightSky::fillLightingStatus(LightStatus *status, const Vector3 &, int)
     moon.reflection = 0.2;
     moon.altered = 1;
 
-    status->pushComponent(moon);
+    result.push_back(moon);
 
     sky.color = Color(0.01, 0.012, 0.03);
     sky.direction = VECTOR_DOWN;
     sky.reflection = 0.0;
     sky.altered = 0;
 
-    status->pushComponent(sky);
+    result.push_back(sky);
+
+    return true;
 }
