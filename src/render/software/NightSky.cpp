@@ -95,7 +95,7 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction)
 
 }
 
-bool NightSky::getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const
+bool NightSky::getLightsAt(std::vector<LightComponent> &result, const Vector3 &) const
 {
     LightComponent moon, sky;
 

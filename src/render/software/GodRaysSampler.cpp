@@ -1,10 +1,13 @@
 #include "GodRaysSampler.h"
 
+#include "GodRaysDefinition.h"
+#include "AtmosphereDefinition.h"
 #include "SoftwareRenderer.h"
 #include "Vector3.h"
 #include "SpaceSegment.h"
 #include "GodRaysResult.h"
 #include "LightingManager.h"
+#include "FloatNode.h"
 #include "LightStatus.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"
@@ -16,6 +19,7 @@ GodRaysSampler::GodRaysSampler()
 {
     enabled = true;
     bounds = new SpaceSegment();
+    definition = new GodRaysDefinition(NULL);
     camera_location = new Vector3(0, 0, 0);
     lighting = NULL;
     low_altitude = -1.0;
@@ -28,6 +32,7 @@ GodRaysSampler::GodRaysSampler()
 
 GodRaysSampler::~GodRaysSampler()
 {
+    delete definition;
     delete bounds;
     delete camera_location;
     delete[] data;
@@ -38,6 +43,7 @@ void GodRaysSampler::prepare(SoftwareRenderer *renderer)
     setCameraLocation(renderer->getCameraLocation(VECTOR_ZERO));
     setLighting(renderer->getLightingManager());
     setAltitudes(renderer->getScenery()->getTerrain()->getHeightInfo().min_height, renderer->getCloudsRenderer()->getHighestAltitude());
+    renderer->getScenery()->getAtmosphere()->childGodRays()->copy(definition);
     reset();
 }
 
@@ -178,7 +184,13 @@ Color GodRaysSampler::apply(const Color &raw, const Color &atmosphered, const Ve
     if (enabled)
     {
         GodRaysResult result = getResult(SpaceSegment(*camera_location, location));
-        return result.apply(raw, atmosphered);
+
+        GodRaysResult::GodRaysParams params;
+        params.penetration = definition->propPenetration()->getValue();
+        params.resistance = definition->propResistance()->getValue();
+        params.boost = definition->propBoost()->getValue();
+
+        return result.apply(raw, atmosphered, params);
     }
     else
     {

@@ -14,13 +14,20 @@ namespace software {
 class SOFTWARESHARED_EXPORT GodRaysResult
 {
 public:
+    typedef struct {
+        double penetration;
+        double resistance;
+        double boost;
+    } GodRaysParams;
+
+public:
     GodRaysResult() = default;
     GodRaysResult(double inside_length, double full_length);
 
     /**
      * Apply the result on a base color.
      */
-    Color apply(const Color &raw, const Color &atmosphered);
+    Color apply(const Color &raw, const Color &atmosphered, const GodRaysParams &params);
 
 private:
     double inside_length;

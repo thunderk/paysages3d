@@ -3,10 +3,12 @@
 #include "PackStream.h"
 #include "RandomGenerator.h"
 #include "FloatNode.h"
+#include "GodRaysDefinition.h"
 
 AtmosphereDefinition::AtmosphereDefinition(DefinitionNode* parent):
     DefinitionNode(parent, "atmosphere", "atmosphere")
 {
+    godrays = new GodRaysDefinition(this);
     daytime = new FloatNode(this, "daytime");
     humidity = new FloatNode(this, "humidity");
     sun_radius = new FloatNode(this, "sun_radius");

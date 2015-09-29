@@ -5,6 +5,7 @@
 #include "TerrainDefinition.h"
 #include "AtmosphereDefinition.h"
 #include "TexturesDefinition.h"
+#include "GodRaysDefinition.h"
 #include "TextureLayerDefinition.h"
 #include "WaterDefinition.h"
 #include "SurfaceMaterial.h"
@@ -157,11 +158,37 @@ static void testGodRays()
     TestLightFilter filter;
     renderer.getLightingManager()->clearFilters();
     renderer.getLightingManager()->registerFilter(&filter);
+
+    // quality
     for (int i = 0; i < 6; i++)
     {
         renderer.setQuality((double)i / 5.0);
         rasterizer->setQuality(0.2);
-        startTestRender(&renderer, "god_rays", i);
+        startTestRender(&renderer, "god_rays_quality", i);
+    }
+    renderer.setQuality(0.5);
+
+    // penetration
+    for (int i = 0; i < 3; i++)
+    {
+        scenery.getAtmosphere()->childGodRays()->propPenetration()->setValue(0.01 + 0.02 * (double)i);
+        startTestRender(&renderer, "god_rays_penetration", i);
+    }
+
+    // resistance
+    scenery.getAtmosphere()->childGodRays()->propPenetration()->setValue(0.01);
+    for (int i = 0; i < 3; i++)
+    {
+        scenery.getAtmosphere()->childGodRays()->propResistance()->setValue(0.1 + 0.1 * (double)i);
+        startTestRender(&renderer, "god_rays_resistance", i);
+    }
+
+    // boost
+    scenery.getAtmosphere()->childGodRays()->propResistance()->setValue(0.3);
+    for (int i = 0; i < 3; i++)
+    {
+        scenery.getAtmosphere()->childGodRays()->propBoost()->setValue(2.0 + 4.0 * (double)i);
+        startTestRender(&renderer, "god_rays_boost", i);
     }
 }
 

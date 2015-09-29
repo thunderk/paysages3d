@@ -45,6 +45,7 @@ public:
 
     virtual void copy(DefinitionNode* destination) const override;
 
+    inline GodRaysDefinition *childGodRays() const {return godrays;}
     inline FloatNode *propDayTime() const {return daytime;}
     inline FloatNode *propHumidity() const {return humidity;}
     inline FloatNode *propSunRadius() const {return sun_radius;}
@@ -78,6 +79,7 @@ public:
     std::vector<Star> stars;
 
 private:
+    GodRaysDefinition *godrays;
     FloatNode *humidity;
     FloatNode *daytime;
     FloatNode *sun_radius;

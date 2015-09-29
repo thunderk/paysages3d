@@ -99,6 +99,8 @@ private:
     bool enabled;
     SpaceSegment *bounds;
 
+    GodRaysDefinition *definition;
+
     double sampling_step;
     double max_length;
     double walk_step;
