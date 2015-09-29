@@ -67,6 +67,11 @@ public:
      * Return true if the light was altered.
      */
     virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override;
+
+    /**
+     * Get the highest altitude of all layers.
+     */
+    double getHighestAltitude();
 private:
     double quality;
 

@@ -239,7 +239,7 @@ bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent*
         }
     }
 
-    double miminum_light = 0.5;
+    double miminum_light = 0.3;
     factor = 1.0 - (1.0 - miminum_light) * factor;
 
     light->color.r *= factor;

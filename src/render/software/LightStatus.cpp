@@ -1,32 +1,41 @@
 #include "LightStatus.h"
 
 #include "LightingManager.h"
+#include "LightComponent.h"
 #include "Color.h"
 #include "SurfaceMaterial.h"
 
-LightStatus::LightStatus(LightingManager *manager, const Vector3 &location, const Vector3 &eye)
+LightStatus::LightStatus(LightingManager *manager, const Vector3 &location, const Vector3 &eye, bool filtered)
 {
     this->max_power = 0.0;
     this->manager = manager;
     this->location = location;
     this->eye = eye;
+    this->filtered = filtered;
 }
 
 void LightStatus::pushComponent(LightComponent component)
 {
-    double power = component.color.getPower();
-    if (component.altered && (power < max_power * 0.05 || power < 0.001))
+    if (filtered)
     {
-        // Exclude filtered lights that are owerpowered by a previous one
-        return;
-    }
-
-    if (manager->alterLight(component, location))
-    {
-        if (power > max_power)
+        double power = component.color.getPower();
+        if (component.altered && (power < max_power * 0.05 || power < 0.001))
         {
-            max_power = power;
+            // Exclude filtered lights that are owerpowered by a previous one
+            return;
         }
+
+        if (manager->alterLight(component, location))
+        {
+            if (power > max_power)
+            {
+                max_power = power;
+            }
+            components.push_back(component);
+        }
+    }
+    else
+    {
         components.push_back(component);
     }
 }
@@ -41,5 +50,17 @@ Color LightStatus::apply(const Vector3 &normal, const SurfaceMaterial &material)
     }
 
     final.a = material.base->a;
+    return final;
+}
+
+Color LightStatus::getSum() const
+{
+    Color final = COLOR_BLACK;
+
+    for (auto component: components)
+    {
+        final = final.add(component.color);
+    }
+
     return final;
 }

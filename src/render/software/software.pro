@@ -52,7 +52,9 @@ SOURCES += SoftwareRenderer.cpp \
     clouds/CloudModelCirrus.cpp \
     clouds/CloudModelCumuloNimbus.cpp \
     RenderProgress.cpp \
-    LightSource.cpp
+    LightSource.cpp \
+    GodRaysSampler.cpp \
+    GodRaysResult.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -94,7 +96,9 @@ HEADERS += SoftwareRenderer.h\
     clouds/CloudModelCirrus.h \
     clouds/CloudModelCumuloNimbus.h \
     RenderProgress.h \
-    LightSource.h
+    LightSource.h \
+    GodRaysSampler.h \
+    GodRaysResult.h
 
 unix:!symbian {
     maemo5 {

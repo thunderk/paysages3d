@@ -9,6 +9,7 @@
 #include "Rasterizer.h"
 #include "CanvasFragment.h"
 #include "RenderProgress.h"
+#include "GodRaysSampler.h"
 
 #define SPHERE_SIZE 20000.0
 
@@ -68,7 +69,7 @@ void SkyRasterizer::rasterizeToCanvas(CanvasPortion* canvas)
             direction.z = SPHERE_SIZE * sin(current_i) * cos(current_j + step_j);
             vertex4 = camera_location.add(direction);
 
-            /* TODO Triangles at poles */
+            // TODO Triangles at poles
             pushQuad(canvas, vertex1, vertex4, vertex3, vertex2);
         }
         progress->add(res_i);
@@ -84,7 +85,7 @@ Color SkyRasterizer::shadeFragment(const CanvasFragment &fragment) const
     camera_location = renderer->getCameraLocation(location);
     direction = location.sub(camera_location);
 
-    /* TODO Don't compute result->color if it's fully covered by clouds */
+    // TODO Don't compute sky color if it's fully covered by clouds
     result = renderer->getAtmosphereRenderer()->getSkyColor(direction.normalize()).final;
     result = renderer->getCloudsRenderer()->getColor(camera_location, camera_location.add(direction.scale(10.0)), result);
 

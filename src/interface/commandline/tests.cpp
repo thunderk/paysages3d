@@ -10,6 +10,11 @@
 #include "SurfaceMaterial.h"
 #include "FloatNode.h"
 #include "SkyRasterizer.h"
+#include "CloudsDefinition.h"
+#include "LightComponent.h"
+#include "LightingManager.h"
+#include "LightFilter.h"
+#include "GodRaysSampler.h"
 
 #include <sstream>
 
@@ -103,10 +108,68 @@ static void testCloudQuality()
     }
 }
 
+static void testGodRays()
+{
+    class TestLightFilter: public LightFilter
+    {
+        virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override
+        {
+            if (Vector3(0.0, 100.0, 0.0).sub(at).normalize().y > 0.97)
+            {
+                light.color = COLOR_BLACK;
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    };
+    class TestRenderer: public SoftwareCanvasRenderer
+    {
+    public:
+        TestRenderer(Scenery *scenery): SoftwareCanvasRenderer(scenery) {}
+    private:
+        virtual void prepare() override
+        {
+            SoftwareRenderer::prepare();
+
+            getLightingManager()->clearSources();
+            getLightingManager()->addStaticLight(LightComponent(COLOR_WHITE, VECTOR_DOWN));
+            getGodRaysSampler()->setAltitudes(0.0, 30.0);
+            getGodRaysSampler()->reset();
+        }
+    };
+
+    Scenery scenery;
+    scenery.autoPreset(63);
+    scenery.getAtmosphere()->setDayTime(12);
+    scenery.getCamera()->setLocation(Vector3(0.0, 1.0, -50.0));
+    scenery.getCamera()->setTarget(Vector3(0.0, 15.0, 0.0));
+    scenery.getTerrain()->height = 0.0;
+    scenery.getTerrain()->validate();
+    scenery.getClouds()->clear();
+
+    TestRenderer renderer(&scenery);
+    renderer.setSize(500, 300);
+    SkyRasterizer *rasterizer = new SkyRasterizer(&renderer, renderer.getProgressHelper(), 0);
+    renderer.setSoloRasterizer(rasterizer);
+    TestLightFilter filter;
+    renderer.getLightingManager()->clearFilters();
+    renderer.getLightingManager()->registerFilter(&filter);
+    for (int i = 0; i < 6; i++)
+    {
+        renderer.setQuality((double)i / 5.0);
+        rasterizer->setQuality(0.2);
+        startTestRender(&renderer, "god_rays", i);
+    }
+}
+
 void runTestSuite()
 {
     testGroundShadowQuality();
     testRasterizationQuality();
     testCloudQuality();
+    testGodRays();
 }
 

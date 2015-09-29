@@ -57,6 +57,7 @@ public:
 
     inline FluidMediumManager* getFluidMediumManager() const {return fluid_medium;}
     inline LightingManager* getLightingManager() const {return lighting;}
+    inline GodRaysSampler* getGodRaysSampler() const {return godrays;}
 
     virtual Color applyLightingToSurface(const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material);
     virtual Color applyMediumTraversal(Vector3 location, Color color);
@@ -67,6 +68,7 @@ private:
 
     FluidMediumManager* fluid_medium;
     LightingManager* lighting;
+    GodRaysSampler* godrays;
 
     BaseAtmosphereRenderer* atmosphere_renderer;
     CloudsRenderer* clouds_renderer;

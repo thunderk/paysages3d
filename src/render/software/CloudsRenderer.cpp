@@ -198,3 +198,23 @@ bool CloudsRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
 
     return true;
 }
+
+double CloudsRenderer::getHighestAltitude()
+{
+    CloudsDefinition* definition = parent->getScenery()->getClouds();
+    double highest = 0.0;
+
+    int n = definition->count();
+    double low, high;
+    for (int i = 0; i < n; i++)
+    {
+        BaseCloudsModel* layer_model = getLayerModel(i);
+        layer_model->getAltitudeRange(&low, &high);
+        if (high > highest)
+        {
+            highest = high;
+        }
+    }
+
+    return highest;
+}

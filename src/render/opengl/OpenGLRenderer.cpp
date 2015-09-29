@@ -9,6 +9,7 @@
 #include "CloudsRenderer.h"
 #include "Scenery.h"
 #include "LightingManager.h"
+#include "GodRaysSampler.h"
 #include "Logs.h"
 #include "Vector3.h"
 
@@ -71,6 +72,7 @@ void OpenGLRenderer::initialize()
 
         getCloudsRenderer()->setEnabled(false);
         getLightingManager()->setSpecularity(false);
+        getGodRaysSampler()->setEnabled(false);
 
         skybox->initialize();
         skybox->updateScenery();

@@ -37,6 +37,11 @@ void LightingManager::addStaticLight(const LightComponent &light)
     static_lights.push_back(light);
 }
 
+void LightingManager::clearSources()
+{
+    sources.clear();
+}
+
 void LightingManager::registerSource(LightSource *source)
 {
     if (std::find(sources.begin(), sources.end(), source) == sources.end())
@@ -47,7 +52,15 @@ void LightingManager::registerSource(LightSource *source)
 
 void LightingManager::unregisterSource(LightSource *source)
 {
-    sources.erase(std::find(sources.begin(), sources.end(), source));
+    if (std::find(sources.begin(), sources.end(), source) != sources.end())
+    {
+        sources.erase(std::find(sources.begin(), sources.end(), source));
+    }
+}
+
+void LightingManager::clearFilters()
+{
+    filters.clear();
 }
 
 void LightingManager::registerFilter(LightFilter* filter)
@@ -60,7 +73,10 @@ void LightingManager::registerFilter(LightFilter* filter)
 
 void LightingManager::unregisterFilter(LightFilter *filter)
 {
-    filters.erase(std::find(filters.begin(), filters.end(), filter));
+    if (std::find(filters.begin(), filters.end(), filter) != filters.end())
+    {
+        filters.erase(std::find(filters.begin(), filters.end(), filter));
+    }
 }
 
 bool LightingManager::alterLight(LightComponent &component, const Vector3 &location)
@@ -168,10 +184,8 @@ Color LightingManager::applyFinalComponent(const LightComponent &component, cons
     return result;
 }
 
-Color LightingManager::apply(const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material)
+void LightingManager::fillStatus(LightStatus &status, const Vector3 &location) const
 {
-    LightStatus status(this, location, eye);
-
     for (auto &light: static_lights)
     {
         status.pushComponent(light);
@@ -187,6 +201,11 @@ Color LightingManager::apply(const Vector3 &eye, const Vector3 &location, const 
             }
         }
     }
+}
 
+Color LightingManager::apply(const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material)
+{
+    LightStatus status(this, location, eye);
+    fillStatus(status, location);
     return status.apply(normal, material);
 }
