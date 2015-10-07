@@ -65,6 +65,7 @@ class GodRayLightSource: public LightSource
     virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override
     {
         LightComponent light;
+        light.altered = true;
         light.color = Color(fabs(location.x), fabs(location.y), fabs(location.z));
         result.push_back(light);
         return true;
