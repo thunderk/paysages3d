@@ -191,8 +191,8 @@ void Scenery::getWater(WaterDefinition* water)
 void Scenery::keepCameraAboveGround(CameraDefinition* camera)
 {
     Vector3 camera_location = camera->getLocation();
-    double terrain_height = terrain->getInterpolatedHeight(camera_location.x, camera_location.z, true, true) + 2.0;
-    double water_height = 1.5;
+    double terrain_height = terrain->getInterpolatedHeight(camera_location.x, camera_location.z, true, true) + 1.0;
+    double water_height = 0.5;
     if (camera_location.y < water_height || camera_location.y < terrain_height)
     {
         double diff = ((water_height > terrain_height) ? water_height : terrain_height) - camera_location.y;

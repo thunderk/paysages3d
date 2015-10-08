@@ -19,6 +19,7 @@ public:
     virtual ~Rasterizer();
 
     inline SoftwareRenderer *getRenderer() const {return renderer;}
+    inline int getTriangleCount() const {return triangle_count;}
 
     virtual Color shadeFragment(const CanvasFragment &fragment) const = 0;
     virtual void interrupt();
@@ -29,21 +30,32 @@ public:
     virtual void setQuality(double factor);
 
     /**
+     * Set the edge length under which to stop auto-cutting triangles near the camera.
+     */
+    void setAutoCutLimit(double limit);
+
+    /**
+     * Reset the internal triangle counter to 0.
+     */
+    void resetTriangleCount();
+
+    /**
      * Abstract method to prepare for the rasterization process, and return the estimated progress count.
      */
     virtual int prepareRasterization() = 0;
     /**
      * Abstract method to effectively do the rasterization on a canvas.
      */
-    virtual void rasterizeToCanvas(CanvasPortion* canvas) = 0;
-
-protected:
-    void pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3);
+    virtual void rasterizeToCanvas(CanvasPortion *canvas) = 0;
 
     void pushTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3);
-    void pushQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4);
     void pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3);
+
+    void pushQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4);
     void pushDisplacedQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3, const Vector3 &ov4);
+
+protected:
+    bool pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3);
 
     Color* color;
     SoftwareRenderer *renderer;
@@ -57,6 +69,9 @@ private:
     void pushScanPoint(CanvasPortion *canvas, RenderScanlines *scanlines, ScanPoint *point);
     void pushScanLineEdge(CanvasPortion *canvas, RenderScanlines *scanlines, ScanPoint *point1, ScanPoint *point2);
     void renderScanLines(CanvasPortion *canvas, RenderScanlines *scanlines);
+
+    int triangle_count;
+    double auto_cut_limit;
 };
 
 }

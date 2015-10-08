@@ -38,6 +38,8 @@ Rasterizer::Rasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int
     this->color = new Color(color);
 
     interrupted = false;
+    triangle_count = 0;
+    auto_cut_limit = 0.01;
 
     setQuality(0.5);
 }
@@ -56,7 +58,17 @@ void Rasterizer::setQuality(double)
 {
 }
 
-void Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3)
+void Rasterizer::setAutoCutLimit(double limit)
+{
+    this->auto_cut_limit = limit;
+}
+
+void Rasterizer::resetTriangleCount()
+{
+    triangle_count = 0;
+}
+
+bool Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3)
 {
     ScanPoint point1, point2, point3;
     double limit_width = (double)(canvas->getWidth() - 1);
@@ -67,13 +79,20 @@ void Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pix
     Vector3 dpixel2 = pixel2.sub(canvas_offset);
     Vector3 dpixel3 = pixel3.sub(canvas_offset);
 
-    /* Filter if outside screen */
-    if (dpixel1.z < 1.0 || dpixel2.z < 1.0 || dpixel3.z < 1.0 || (dpixel1.x < 0.0 && dpixel2.x < 0.0 && dpixel3.x < 0.0) || (dpixel1.y < 0.0 && dpixel2.y < 0.0 && dpixel3.y < 0.0) || (dpixel1.x > limit_width && dpixel2.x > limit_width && dpixel3.x > limit_width) || (dpixel1.y > limit_height && dpixel2.y > limit_height && dpixel3.y > limit_height))
+    double limit_near = renderer->render_camera->getPerspective().znear;
+    if ((dpixel1.z < limit_near && dpixel2.z < limit_near && dpixel3.z < limit_near) || (dpixel1.x < 0.0 && dpixel2.x < 0.0 && dpixel3.x < 0.0) || (dpixel1.y < 0.0 && dpixel2.y < 0.0 && dpixel3.y < 0.0) || (dpixel1.x > limit_width && dpixel2.x > limit_width && dpixel3.x > limit_width) || (dpixel1.y > limit_height && dpixel2.y > limit_height && dpixel3.y > limit_height))
     {
-        return;
+        // Fully outside screen
+        return false;
+    }
+    else if (dpixel1.z < limit_near || dpixel2.z < limit_near || dpixel3.z < limit_near)
+    {
+        // Intersects the near frustum plane, needs cutting
+        // ... except if the triangle is already small
+        return location1.sub(location2).getNorm() > auto_cut_limit && location2.sub(location3).getNorm() > auto_cut_limit && location3.sub(location1).getNorm() > auto_cut_limit;
     }
 
-    /* Prepare vertices */
+    // Prepare vertices
     point1.pixel.x = dpixel1.x;
     point1.pixel.y = dpixel1.y;
     point1.pixel.z = dpixel1.z;
@@ -98,7 +117,7 @@ void Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pix
     point3.location.z = location3.z;
     point3.client = client_id;
 
-    /* Prepare scanlines */
+    // Prepare scanlines
     // TODO Don't create scanlines for each triangles (one by thread is more appropriate)
     RenderScanlines scanlines;
     int width = canvas->getWidth();
@@ -107,17 +126,20 @@ void Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pix
     scanlines.up = new ScanPoint[width];
     scanlines.down = new ScanPoint[width];
 
-    /* Render edges in scanlines */
+    // Render edges in scanlines
     pushScanLineEdge(canvas, &scanlines, &point1, &point2);
     pushScanLineEdge(canvas, &scanlines, &point2, &point3);
     pushScanLineEdge(canvas, &scanlines, &point3, &point1);
 
-    /* Commit scanlines to area */
+    // Commit scanlines to area
     renderScanLines(canvas, &scanlines);
 
-    /* Free scalines */
+    // Free scalines
     delete[] scanlines.up;
     delete[] scanlines.down;
+
+    triangle_count++;
+    return false;
 }
 
 void Rasterizer::pushTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3)
@@ -128,13 +150,17 @@ void Rasterizer::pushTriangle(CanvasPortion *canvas, const Vector3 &v1, const Ve
     p2 = getRenderer()->projectPoint(v2);
     p3 = getRenderer()->projectPoint(v3);
 
-    pushProjectedTriangle(canvas, p1, p2, p3, v1, v2, v3);
-}
-
-void Rasterizer::pushQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4)
-{
-    pushTriangle(canvas, v2, v3, v1);
-    pushTriangle(canvas, v4, v1, v3);
+    if (pushProjectedTriangle(canvas, p1, p2, p3, v1, v2, v3))
+    {
+        // Cutting needed
+        Vector3 vm1 = v1.midPointTo(v2);
+        Vector3 vm2 = v2.midPointTo(v3);
+        Vector3 vm3 = v3.midPointTo(v1);
+        pushTriangle(canvas, v1, vm1, vm3);
+        pushTriangle(canvas, v2, vm1, vm2);
+        pushTriangle(canvas, v3, vm3, vm2);
+        pushTriangle(canvas, vm1, vm2, vm3);
+    }
 }
 
 void Rasterizer::pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3)
@@ -145,7 +171,26 @@ void Rasterizer::pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1,
     p2 = getRenderer()->projectPoint(v2);
     p3 = getRenderer()->projectPoint(v3);
 
-    pushProjectedTriangle(canvas, p1, p2, p3, ov1, ov2, ov3);
+    if (pushProjectedTriangle(canvas, p1, p2, p3, ov1, ov2, ov3))
+    {
+        // Cutting needed
+        Vector3 vm1 = v1.midPointTo(v2);
+        Vector3 vm2 = v2.midPointTo(v3);
+        Vector3 vm3 = v3.midPointTo(v1);
+        Vector3 ovm1 = ov1.midPointTo(ov2);
+        Vector3 ovm2 = ov2.midPointTo(ov3);
+        Vector3 ovm3 = ov3.midPointTo(ov1);
+        pushDisplacedTriangle(canvas, v1, vm1, vm3, ov1, ovm1, ovm3);
+        pushDisplacedTriangle(canvas, v2, vm1, vm2, ov2, ovm1, ovm2);
+        pushDisplacedTriangle(canvas, v3, vm3, vm2, ov3, ovm3, ovm2);
+        pushDisplacedTriangle(canvas, vm1, vm2, vm3, ovm1, ovm2, ovm3);
+    }
+}
+
+void Rasterizer::pushQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4)
+{
+    pushTriangle(canvas, v2, v3, v1);
+    pushTriangle(canvas, v4, v1, v3);
 }
 
 void Rasterizer::pushDisplacedQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3, const Vector3 &ov4)

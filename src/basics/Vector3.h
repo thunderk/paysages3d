@@ -61,6 +61,11 @@ public:
     double dotProduct(const Vector3 &other) const;
     Vector3 crossProduct(const Vector3 &other) const;
 
+    /**
+     * Get the mid-point of the segment between *this* point and *other*.
+     */
+    Vector3 midPointTo(const Vector3 &other) const;
+
     VectorSpherical toSpherical() const;
 
 public:

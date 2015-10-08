@@ -31,7 +31,9 @@ SOURCES += main.cpp \
     IntNode_Test.cpp \
     LightingManager_Test.cpp \
     GodRaysSampler_Test.cpp \
-    Interpolation_Test.cpp
+    Interpolation_Test.cpp \
+    Rasterizer_Test.cpp \
+    Vector3_Test.cpp
 
 HEADERS += \
     BaseTestCase.h

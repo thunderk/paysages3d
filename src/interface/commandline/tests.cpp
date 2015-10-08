@@ -21,14 +21,18 @@
 
 void startRender(SoftwareCanvasRenderer *renderer, const char *outputpath);
 
-static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string &name, int iteration)
+static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string &name, int iteration=-1)
 {
     std::ostringstream stream;
 
-    stream << "pic_test_" << name << "_";
-    stream.width(4);
-    stream.fill('0');
-    stream << iteration;
+    stream << "pic_test_" << name;
+    if (iteration >= 0)
+    {
+        stream << "_";
+        stream.width(4);
+        stream.fill('0');
+        stream << iteration;
+    }
     stream << ".png";
 
     startRender(renderer, stream.str().data());
@@ -192,11 +196,25 @@ static void testGodRays()
     }
 }
 
+static void testNearFrustum()
+{
+    Scenery scenery;
+    scenery.autoPreset(3);
+    scenery.getCamera()->setLocation(Vector3(0.0, 0.0, 0.0));
+    scenery.getCamera()->setTarget(Vector3(1.0, 0.0, 1.0));
+    scenery.keepCameraAboveGround(scenery.getCamera());
+
+    SoftwareCanvasRenderer renderer(&scenery);
+    renderer.setSize(400, 300);
+    renderer.setQuality(0.1);
+    startTestRender(&renderer, "near_frustum");
+}
+
 void runTestSuite()
 {
     testGroundShadowQuality();
     testRasterizationQuality();
     testCloudQuality();
     testGodRays();
+    testNearFrustum();
 }
-

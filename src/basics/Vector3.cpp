@@ -76,3 +76,8 @@ VectorSpherical Vector3::toSpherical() const
 
     return result;
 }
+
+Vector3 Vector3::midPointTo(const Vector3 &other) const
+{
+    return Vector3((other.x + x) * 0.5, (other.y + y) * 0.5, (other.z + z) * 0.5);
+}
