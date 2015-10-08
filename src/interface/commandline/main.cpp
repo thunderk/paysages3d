@@ -35,7 +35,7 @@ int main(int argc, char** argv)
     RenderConfig conf_render_params(480, 270, 1, 3);
     int conf_first_picture = 0;
     int conf_nb_pictures = 1;
-    double conf_daytime_start = 0.4;
+    double conf_daytime_start = -1.0;
     double conf_daytime_step = 0.0;
     double conf_camera_step_x = 0.0;
     double conf_camera_step_y = 0.0;
@@ -160,9 +160,12 @@ int main(int argc, char** argv)
 
     for (outputcount = 0; outputcount < conf_first_picture + conf_nb_pictures; outputcount++)
     {
-        AtmosphereDefinition* atmo = scenery->getAtmosphere();
-        atmo->setDayTime(conf_daytime_start);
-        atmo->validate();
+        if (conf_daytime_start >= 0.0)
+        {
+            AtmosphereDefinition* atmo = scenery->getAtmosphere();
+            atmo->setDayTime(conf_daytime_start);
+            atmo->validate();
+        }
 
         CameraDefinition* camera = scenery->getCamera();
         Vector3 step = {conf_camera_step_x, conf_camera_step_y, conf_camera_step_z};
