@@ -210,6 +210,23 @@ static void testNearFrustum()
     startTestRender(&renderer, "near_frustum");
 }
 
+static void testCloudsNearGround()
+{
+    Scenery scenery;
+    scenery.autoPreset(8);
+    scenery.getAtmosphere()->setDayTime(6, 20);
+
+    SoftwareCanvasRenderer renderer(&scenery);
+    renderer.setSize(400, 300);
+    renderer.setQuality(0.3);
+
+    startTestRender(&renderer, "clouds_near_ground", 1);
+
+    scenery.getCamera()->strafeUp(6.0);
+    scenery.getCamera()->copy(renderer.render_camera);
+    startTestRender(&renderer, "clouds_near_ground", 2);
+}
+
 void runTestSuite()
 {
     testGroundShadowQuality();
@@ -217,4 +234,5 @@ void runTestSuite()
     testCloudQuality();
     testGodRays();
     testNearFrustum();
+    testCloudsNearGround();
 }

@@ -1191,6 +1191,12 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
     Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(SUN_DISTANCE);
 
     Vector3 direction = location.sub(eye).scale(WORLD_SCALING);
+    double t = direction.getNorm();
+    if (t < 0.000001)
+    {
+        direction = parent->getCameraDirection(location).scale(0.001 * WORLD_SCALING);
+        t = direction.getNorm();
+    }
 
     Vector3 x = {0.0, Rg + WORKAROUND_OFFSET + eye.y * WORLD_SCALING, 0.0};
     Vector3 v = direction.normalize();
@@ -1203,7 +1209,6 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
 
     double r = x.getNorm();
     double mu = x.dotProduct(v) / r;
-    double t = direction.getNorm();
 
     AtmosphereResult result;
     Vector3 attenuation;

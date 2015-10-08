@@ -11,6 +11,8 @@
 #include "SurfaceMaterial.h"
 #include "Logs.h"
 
+#include <cassert>
+
 struct CloudSegment
 {
     Vector3 start;
@@ -196,9 +198,16 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
         result.a += (1.0 - result.a) * ((inside_length - transparency_depth * 0.8) / (transparency_depth * 0.2));
     }
 
-    double a = result.a;
-    result = parent->getAtmosphereRenderer()->applyAerialPerspective(start, result).final;
-    result.a = a;
+    // Apply aerial perspective
+    if (result.a > 0.00001)
+    {
+        assert(segment_count > 0);
+
+        double a = result.a;
+        // TODO Don't apply it only at first segment
+        result = parent->getAtmosphereRenderer()->applyAerialPerspective(segments[0].start, result).final;
+        result.a = a;
+    }
 
     return result;
 }
