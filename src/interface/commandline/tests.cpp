@@ -16,6 +16,7 @@
 #include "LightingManager.h"
 #include "LightFilter.h"
 #include "GodRaysSampler.h"
+#include "Rasterizer.h"
 
 #include <sstream>
 
@@ -207,7 +208,10 @@ static void testNearFrustum()
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(400, 300);
     renderer.setQuality(0.1);
-    startTestRender(&renderer, "near_frustum");
+    startTestRender(&renderer, "near_frustum_good");
+
+    renderer.getWaterRasterizer()->setAutoCutLimit(1000.0);
+    startTestRender(&renderer, "near_frustum_bad");
 }
 
 static void testCloudsNearGround()

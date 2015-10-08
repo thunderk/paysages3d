@@ -26,6 +26,10 @@ public:
     inline RenderProgress *getProgressHelper() const {return progress;}
     inline bool isFinished() const {return finished;}
 
+    inline Rasterizer *getSkyRasterizer() const {return rasterizers[0];}
+    inline Rasterizer *getWaterRasterizer() const {return rasterizers[1];}
+    inline Rasterizer *getTerrainRasterizer() const {return rasterizers[2];}
+
     virtual void setQuality(double factor) override;
 
     /**
