@@ -37,7 +37,8 @@ SOURCES += \
     DiffManager.cpp \
     DefinitionWatcher.cpp \
     IntNode.cpp \
-    IntDiff.cpp
+    IntDiff.cpp \
+    GodRaysDefinition.cpp
 
 HEADERS +=\
         definition_global.h \
@@ -64,7 +65,8 @@ HEADERS +=\
     DiffManager.h \
     DefinitionWatcher.h \
     IntNode.h \
-    IntDiff.h
+    IntDiff.h \
+    GodRaysDefinition.h
 
 unix:!symbian {
     maemo5 {

@@ -5,6 +5,7 @@
 #include "AtmosphereDefinition.h"
 #include "AtmosphereModelBruneton.h"
 #include "AtmosphereResult.h"
+#include "GodRaysSampler.h"
 #include "LightComponent.h"
 #include "LightStatus.h"
 #include "Scenery.h"
@@ -98,7 +99,7 @@ AtmosphereResult BaseAtmosphereRenderer::getSkyColor(Vector3)
     return result;
 }
 
-Vector3 BaseAtmosphereRenderer::getSunDirection(bool cache) const
+Vector3 BaseAtmosphereRenderer::getSunDirection(bool) const
 {
     AtmosphereDefinition* atmosphere = getDefinition();
     double sun_angle = (atmosphere->propDayTime()->getValue() + 0.75) * M_PI * 2.0;
@@ -131,7 +132,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(Vect
     AtmosphereDefinition* definition = getDefinition();
     AtmosphereResult result;
 
-    /* Get base perspective */
+    // Get base perspective
     switch (definition->model)
     {
     case AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON:
@@ -141,7 +142,10 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(Vect
         ;
     }
 
-    /* Apply weather effects */
+    // Apply god rays ponderation
+    result.inscattering = parent->getGodRaysSampler()->apply(COLOR_BLACK, result.inscattering, location);
+
+    // Apply weather effects
     _applyWeatherEffects(definition, &result);
 
     return result;
@@ -162,10 +166,10 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
 
     base = COLOR_BLACK;
 
-    /* Get night sky */
+    // Get night sky
     base = base.add(parent->getNightSky()->getColor(camera_location.y, direction));
 
-    /* Get sun shape */
+    // Get sun shape
     /*if (v3Dot(sun_direction, direction) >= 0)
     {
         double sun_radius = definition->sun_radius * SUN_RADIUS_SCALED * 5.0; // FIXME Why should we multiply by 5 ?
@@ -190,7 +194,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
         }
     }*/
 
-    /* Get scattering */
+    // Get scattering
     AtmosphereResult result;
     Vector3 location = camera_location.add(direction.scale(6421.0));
     switch (definition->model)
@@ -202,7 +206,10 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
         result = BaseAtmosphereRenderer::applyAerialPerspective(location, result.base);
     }
 
-    /* Apply weather effects */
+    // Apply god rays ponderation
+    result.inscattering = parent->getGodRaysSampler()->apply(COLOR_BLACK, result.inscattering, location);
+
+    // Apply weather effects
     _applyWeatherEffects(definition, &result);
 
     return result;

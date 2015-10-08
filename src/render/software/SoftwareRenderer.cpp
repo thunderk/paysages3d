@@ -17,6 +17,8 @@
 #include "NightSky.h"
 #include "LightStatus.h"
 #include "LightingManager.h"
+#include "GodRaysSampler.h"
+#include "GodRaysResult.h"
 #include "System.h"
 #include "Thread.h"
 
@@ -37,6 +39,7 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery):
 
     fluid_medium = new FluidMediumManager(this);
     lighting = new LightingManager();
+    godrays = new GodRaysSampler();
 
     lighting->registerFilter(water_renderer);
     lighting->registerFilter(terrain_renderer);
@@ -52,6 +55,7 @@ SoftwareRenderer::~SoftwareRenderer()
 
     delete fluid_medium;
     delete lighting;
+    delete godrays;
 
     delete nightsky_renderer;
 
@@ -88,6 +92,7 @@ void SoftwareRenderer::prepare()
     nightsky_renderer->update();
 
     // Prepare global tools
+    godrays->prepare(this);
     fluid_medium->clearMedia();
     //fluid_medium->registerMedium(water_renderer);
 }
@@ -96,6 +101,7 @@ void SoftwareRenderer::setQuality(double quality)
 {
     terrain_renderer->setQuality(quality);
     clouds_renderer->setQuality(quality);
+    godrays->setQuality(quality);
 
     // TEMP compat with old code
     render_quality = (int)(quality * 9.0) + 1;

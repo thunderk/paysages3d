@@ -20,6 +20,10 @@ public:
     inline Vector3 getStart() const {return start;}
     inline Vector3 getEnd() const {return end;}
 
+    inline double getXDiff() const {return end.x - start.x;}
+    inline double getYDiff() const {return end.y - start.y;}
+    inline double getZDiff() const {return end.z - start.z;}
+
     /*!
      * \brief Keep only the intersection with a slice orthogonal to the Y axis.
      * \return true if a segment remains

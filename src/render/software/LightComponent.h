@@ -17,7 +17,8 @@ namespace software {
 class SOFTWARESHARED_EXPORT LightComponent
 {
 public:
-    //LightComponent();
+    LightComponent() = default;
+    LightComponent(const Color &color, const Vector3 &direction, double reflection = 0.0, bool altered = true);
 
     Color color;        // Light power
     Vector3 direction;  // Direction the light is travelling

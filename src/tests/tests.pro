@@ -29,7 +29,9 @@ SOURCES += main.cpp \
     ColorHSL_Test.cpp \
     RenderProgress_Test.cpp \
     IntNode_Test.cpp \
-    LightingManager_Test.cpp
+    LightingManager_Test.cpp \
+    GodRaysSampler_Test.cpp \
+    Interpolation_Test.cpp
 
 HEADERS += \
     BaseTestCase.h

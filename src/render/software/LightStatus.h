@@ -16,7 +16,7 @@ namespace software {
 class SOFTWARESHARED_EXPORT LightStatus
 {
 public:
-    LightStatus(LightingManager *manager, const Vector3 &location, const Vector3 &eye);
+    LightStatus(LightingManager *manager, const Vector3 &location, const Vector3 &eye, bool filtered=true);
 
     inline Vector3 getLocation() const {return location;}
 
@@ -24,11 +24,17 @@ public:
 
     Color apply(const Vector3 &normal, const SurfaceMaterial &material);
 
+    /**
+     * Return the sum of all received lights.
+     */
+    Color getSum() const;
+
 private:
     double max_power;
     LightingManager* manager;
     Vector3 location;
     Vector3 eye;
+    bool filtered;
     std::vector<LightComponent> components;
 };
 

@@ -49,6 +49,9 @@ namespace software {
 
     class TerrainRayWalker;
 
+    class GodRaysSampler;
+    class GodRaysResult;
+
     class Canvas;
     class CanvasPortion;
     class CanvasPixel;

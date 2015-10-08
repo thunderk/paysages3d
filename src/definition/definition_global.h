@@ -30,6 +30,7 @@ namespace definition {
     class CloudsDefinition;
     class CloudLayerDefinition;
     class AtmosphereDefinition;
+    class GodRaysDefinition;
     class TexturesDefinition;
     class TextureLayerDefinition;
     class TerrainDefinition;

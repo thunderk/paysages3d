@@ -36,6 +36,11 @@ public:
     void addStaticLight(const LightComponent &light);
 
     /**
+     * Remove all registered sources.
+     */
+    void clearSources();
+
+    /**
      * Register a source of dynamic lighting.
      */
     void registerSource(LightSource *source);
@@ -44,6 +49,11 @@ public:
      * Remove a registered light source.
      */
     void unregisterSource(LightSource *source);
+
+    /**
+     * Remove all registered filters.
+     */
+    void clearFilters();
 
     /**
      * Register a filter that will receive all alterable lights.
@@ -71,6 +81,11 @@ public:
      * Apply a final component on a surface material.
      */
     Color applyFinalComponent(const LightComponent &component, const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material);
+
+    /**
+     * Compute the light status at a given location.
+     */
+    void fillStatus(LightStatus &status, const Vector3 &location) const;
 
     /**
      * Apply lighting to a surface at a given location.
