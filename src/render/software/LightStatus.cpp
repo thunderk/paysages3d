@@ -7,6 +7,7 @@
 
 LightStatus::LightStatus(LightingManager *manager, const Vector3 &location, const Vector3 &eye, bool filtered)
 {
+    this->safety_offset = -0.0000001;
     this->max_power = 0.0;
     this->manager = manager;
     this->location = location;
@@ -25,7 +26,7 @@ void LightStatus::pushComponent(LightComponent component)
             return;
         }
 
-        if (manager->alterLight(component, location))
+        if (manager->alterLight(component, location.add(component.direction.scale(safety_offset))))
         {
             if (power > max_power)
             {
@@ -63,4 +64,9 @@ Color LightStatus::getSum() const
     }
 
     return final;
+}
+
+void LightStatus::setSafetyOffset(double safety_offset)
+{
+    this->safety_offset = -safety_offset;
 }

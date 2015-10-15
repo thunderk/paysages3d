@@ -10,6 +10,7 @@
 LightingManager::LightingManager()
 {
     specularity = true;
+    filtering = true;
 }
 
 int LightingManager::getStaticLightsCount() const
@@ -81,7 +82,7 @@ void LightingManager::unregisterFilter(LightFilter *filter)
 
 bool LightingManager::alterLight(LightComponent &component, const Vector3 &location)
 {
-    if (component.altered)
+    if (filtering and component.altered)
     {
         for (auto filter:filters)
         {
@@ -103,6 +104,11 @@ bool LightingManager::alterLight(LightComponent &component, const Vector3 &locat
 void LightingManager::setSpecularity(bool enabled)
 {
     specularity = enabled;
+}
+
+void LightingManager::setFiltering(bool enabled)
+{
+    filtering = enabled;
 }
 
 Color LightingManager::applyFinalComponent(const LightComponent &component, const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material)

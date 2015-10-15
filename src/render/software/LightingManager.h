@@ -78,6 +78,11 @@ public:
     void setSpecularity(bool enabled);
 
     /**
+     * Enable or disable the filtering (shadows).
+     */
+    void setFiltering(bool enabled);
+
+    /**
      * Apply a final component on a surface material.
      */
     Color applyFinalComponent(const LightComponent &component, const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material);
@@ -93,11 +98,11 @@ public:
     Color apply(const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material);
 
 private:
-    int specularity;
+    bool specularity;
+    bool filtering;
     std::vector<LightComponent> static_lights;
     std::vector<LightFilter *> filters;
     std::vector<LightSource *> sources;
-
 };
 
 }

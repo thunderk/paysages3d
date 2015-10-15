@@ -110,6 +110,7 @@ Color GodRaysSampler::getRawLight(const Vector3 &location, bool filtered) const
     if (lighting)
     {
         LightStatus status(lighting, location, *camera_location, filtered);
+        status.setSafetyOffset(0.0);  // Not a hard surface, safety offset not needed
         lighting->fillStatus(status, location);
         return status.getSum();
     }
