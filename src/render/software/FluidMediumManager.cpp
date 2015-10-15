@@ -2,6 +2,7 @@
 
 #include "SoftwareRenderer.h"
 #include "FluidMediumInterface.h"
+#include "Color.h"
 
 FluidMediumManager::FluidMediumManager(SoftwareRenderer* renderer):
     renderer(renderer)

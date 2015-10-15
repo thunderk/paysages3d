@@ -45,6 +45,9 @@ namespace software {
     class LightComponent;
     class LightSource;
 
+    class RayCastingManager;
+    class RayCastingResult;
+
     class NightSky;
 
     class TerrainRayWalker;

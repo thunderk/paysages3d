@@ -5,7 +5,7 @@
 
 #include "LightFilter.h"
 
-#include "RayCastingManager.h"
+#include "Vector3.h"
 #include "Color.h"
 
 namespace paysages {

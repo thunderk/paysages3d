@@ -9,6 +9,7 @@
 #include "SurfaceMaterial.h"
 #include "NoiseFunctionSimplex.h"
 #include "FloatNode.h"
+#include "RayCastingResult.h"
 
 WaterRenderer::WaterRenderer(SoftwareRenderer* parent):
     parent(parent)

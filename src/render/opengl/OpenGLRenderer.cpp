@@ -7,6 +7,7 @@
 #include "OpenGLWater.h"
 #include "OpenGLTerrain.h"
 #include "CloudsRenderer.h"
+#include "Color.h"
 #include "Scenery.h"
 #include "LightingManager.h"
 #include "GodRaysSampler.h"

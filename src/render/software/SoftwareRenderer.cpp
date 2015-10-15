@@ -21,6 +21,7 @@
 #include "GodRaysResult.h"
 #include "System.h"
 #include "Thread.h"
+#include "RayCastingResult.h"
 
 SoftwareRenderer::SoftwareRenderer(Scenery* scenery):
     scenery(scenery)

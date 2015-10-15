@@ -53,6 +53,7 @@ SOURCES += SoftwareRenderer.cpp \
     clouds/CloudModelCumuloNimbus.cpp \
     RenderProgress.cpp \
     LightSource.cpp \
+    RayCastingResult.cpp \
     GodRaysSampler.cpp \
     GodRaysResult.cpp
 
@@ -97,6 +98,7 @@ HEADERS += SoftwareRenderer.h\
     clouds/CloudModelCumuloNimbus.h \
     RenderProgress.h \
     LightSource.h \
+    RayCastingResult.h \
     GodRaysSampler.h \
     GodRaysResult.h
 

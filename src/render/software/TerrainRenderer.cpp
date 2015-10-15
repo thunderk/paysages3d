@@ -6,6 +6,7 @@
 #include "TexturesRenderer.h"
 #include "LightComponent.h"
 #include "TerrainRayWalker.h"
+#include "RayCastingResult.h"
 
 TerrainRenderer::TerrainRenderer(SoftwareRenderer* parent):
     parent(parent)
