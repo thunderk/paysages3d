@@ -69,6 +69,7 @@ SoftwareRenderer::~SoftwareRenderer()
 void SoftwareRenderer::prepare()
 {
     scenery->validate();
+    scenery->getCamera()->copy(render_camera);
 
     // Prepare sub renderers
     // TODO Don't recreate the renderer each time, only when it changes

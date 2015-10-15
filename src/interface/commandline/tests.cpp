@@ -203,7 +203,6 @@ static void testNearFrustum()
     scenery.autoPreset(3);
     scenery.getCamera()->setLocation(Vector3(0.0, 0.0, 0.0));
     scenery.getCamera()->setTarget(Vector3(1.0, 0.0, 1.0));
-    scenery.keepCameraAboveGround(scenery.getCamera());
 
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(400, 300);
@@ -231,6 +230,27 @@ static void testCloudsNearGround()
     startTestRender(&renderer, "clouds_near_ground", 2);
 }
 
+static void testSunNearHorizon()
+{
+    Scenery scenery;
+    scenery.autoPreset(28);
+    scenery.getCamera()->setLocation(VECTOR_ZERO);
+    scenery.getCamera()->setTarget(VECTOR_EAST);
+    scenery.getClouds()->clear();
+    scenery.getTextures()->applyPreset(TexturesDefinition::TEXTURES_PRESET_CANYON);
+    scenery.getTerrain()->propWaterHeight()->setValue(-1.0);
+
+    SoftwareCanvasRenderer renderer(&scenery);
+    renderer.setSize(400, 300);
+    renderer.setQuality(0.3);
+
+    for (int i = 0; i <= 20; i++)
+    {
+        scenery.getAtmosphere()->propDayTime()->setValue(0.24 + 0.001 * (double)i);
+        startTestRender(&renderer, "sun_near_horizon", i);
+    }
+}
+
 void runTestSuite()
 {
     testGroundShadowQuality();
@@ -239,4 +259,5 @@ void runTestSuite()
     testGodRays();
     testNearFrustum();
     testCloudsNearGround();
+    testSunNearHorizon();
 }

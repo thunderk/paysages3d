@@ -3,6 +3,7 @@
 #include "Scenery.h"
 #include "AtmosphereDefinition.h"
 #include "CameraDefinition.h"
+#include "TimeManager.h"
 
 #include <cstring>
 
@@ -21,6 +22,8 @@ static void displayHelp()
     printf(" -rh x   Render height (int)\n");
     printf(" -rq x   Render quality (int, 1 to 10)\n");
     printf(" -ra x   Render anti-aliasing (int, 1 to 4)\n");
+    printf(" -wx x   Wind power in X direction (double)\n");
+    printf(" -wz z   Wind power in Z direction (double)\n");
     printf(" -di x   Day start time (double, 0.0 to 1.0)\n");
     printf(" -ds x   Day step time (double)\n");
     printf(" -cx x   Camera X step (double)\n");
@@ -40,6 +43,8 @@ int main(int argc, char** argv)
     double conf_camera_step_x = 0.0;
     double conf_camera_step_y = 0.0;
     double conf_camera_step_z = 0.0;
+    double conf_wind_x = 0.0;
+    double conf_wind_z = 0.0;
     int outputcount;
     char outputpath[500];
 
@@ -107,6 +112,20 @@ int main(int argc, char** argv)
                 conf_render_params.antialias = atoi(*(++argv));
             }
         }
+        else if (strcmp(*argv, "-wx") == 0 || strcmp(*argv, "--windx") == 0)
+        {
+            if (argc--)
+            {
+                conf_wind_x = atof(*(++argv));
+            }
+        }
+        else if (strcmp(*argv, "-wz") == 0 || strcmp(*argv, "--windz") == 0)
+        {
+            if (argc--)
+            {
+                conf_wind_z = atof(*(++argv));
+            }
+        }
         else if (strcmp(*argv, "-di") == 0 || strcmp(*argv, "--daystart") == 0)
         {
             if (argc--)
@@ -158,15 +177,15 @@ int main(int argc, char** argv)
         scenery->autoPreset();
     }
 
+    TimeManager time;
+    time.setWind(conf_wind_x, conf_wind_z);
+    if (conf_daytime_start >= 0.0)
+    {
+        scenery->getAtmosphere()->setDayTime(conf_daytime_start);
+    }
+
     for (outputcount = 0; outputcount < conf_first_picture + conf_nb_pictures; outputcount++)
     {
-        if (conf_daytime_start >= 0.0)
-        {
-            AtmosphereDefinition* atmo = scenery->getAtmosphere();
-            atmo->setDayTime(conf_daytime_start);
-            atmo->validate();
-        }
-
         CameraDefinition* camera = scenery->getCamera();
         Vector3 step = {conf_camera_step_x, conf_camera_step_y, conf_camera_step_z};
         camera->setLocation(camera->getLocation().add(step));
@@ -182,7 +201,7 @@ int main(int argc, char** argv)
 
         delete renderer;
 
-        conf_daytime_start += conf_daytime_step;
+        time.moveForward(scenery, conf_daytime_step);
     }
 
     printf("Cleaning up ...\n");

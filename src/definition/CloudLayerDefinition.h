@@ -17,6 +17,8 @@ public:
     virtual ~CloudLayerDefinition();
 
     inline const NoiseState &getNoiseState() const {return noise_state;}
+    inline FloatNode *propXOffset() const {return xoffset;}
+    inline FloatNode *propZOffset() const {return zoffset;}
 
     static CloudLayerDefinition* newCopy(const CloudLayerDefinition& other, DefinitionNode* parent);
     CloudLayerDefinition* newCopy(DefinitionNode* parent) const;
@@ -48,6 +50,10 @@ public:
     double altitude;
     double scaling;
     double coverage;
+
+private:
+    FloatNode *xoffset;
+    FloatNode *zoffset;
 };
 
 }

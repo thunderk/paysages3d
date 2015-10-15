@@ -43,6 +43,7 @@ namespace definition {
     class PaintedGridBrushAddNoise;
     class PaintedGridBrushReset;
     class PaintedGridBrushFlatten;
+    class TimeManager;
 }
 }
 using namespace paysages::definition;

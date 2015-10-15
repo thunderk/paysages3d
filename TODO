@@ -6,6 +6,7 @@ Technlology Preview 2 :
 - Refactor medium traversal to unify clouds, atmosphere and god rays.
 - Fix potential holes in land rendering (OpenGL and software).
 - Fix sun size not being consistent between opengl and software
+- Fix CanvasPortion saves colliding on disk when running several instances
 
 Technology Preview 3 :
 - Alter aerial perspective using estimation of the amount of light left after cloud layers traversal.

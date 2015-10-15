@@ -10,6 +10,7 @@
 #include "clouds/BaseCloudsModel.h"
 #include "SurfaceMaterial.h"
 #include "Logs.h"
+#include "FloatNode.h"
 
 #include <cassert>
 
@@ -25,7 +26,7 @@ CloudBasicLayerRenderer::CloudBasicLayerRenderer(SoftwareRenderer* parent):
 {
 }
 
-static inline double _getDistanceToBorder(BaseCloudsModel* model, Vector3 position)
+static inline double _getDistanceToBorder(BaseCloudsModel* model, const Vector3 &position)
 {
     return model->getDensity(position);
 }
@@ -54,7 +55,7 @@ int CloudBasicLayerRenderer::findSegments(BaseCloudsModel *model, const Vector3 
     double step_length, segment_length;
     double min_step, max_step;
     double noise_distance;
-    Vector3 walker, step, segment_start;
+    Vector3 walker, step, segment_start, offset;
     double render_precision;
 
     if (max_segments <= 0)
@@ -80,7 +81,8 @@ int CloudBasicLayerRenderer::findSegments(BaseCloudsModel *model, const Vector3 
     current_inside_length = 0.0;
     segment_length = 0.0;
     walker = start;
-    noise_distance = _getDistanceToBorder(model, start) * render_precision;
+    offset = Vector3(model->getLayer()->propXOffset()->getValue(), 0.0, model->getLayer()->propZOffset()->getValue());
+    noise_distance = _getDistanceToBorder(model, start.add(offset)) * render_precision;
     inside = 0;
     step = direction.scale(render_precision);
 
@@ -88,7 +90,7 @@ int CloudBasicLayerRenderer::findSegments(BaseCloudsModel *model, const Vector3 
     {
         walker = walker.add(step);
         step_length = step.getNorm();
-        noise_distance = _getDistanceToBorder(model, walker) * render_precision;
+        noise_distance = _getDistanceToBorder(model, walker.add(offset)) * render_precision;
         current_total_length += step_length;
 
         if (noise_distance > 0.0)

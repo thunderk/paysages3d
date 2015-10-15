@@ -32,6 +32,8 @@ public:
     const FloatDiff *produceDiff(double new_value) const;
     void generateInitDiffs(std::vector<const DefinitionDiff *> *diffs) const;
     virtual bool applyDiff(const DefinitionDiff *diff, bool backward=false) override;
+
+    void addValue(double added);
 private:
     double value;
 };

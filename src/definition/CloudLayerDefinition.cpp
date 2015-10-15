@@ -4,6 +4,7 @@
 #include "NoiseGenerator.h"
 #include "SurfaceMaterial.h"
 #include "PackStream.h"
+#include "FloatNode.h"
 
 CloudLayerDefinition::CloudLayerDefinition(DefinitionNode* parent):
     DefinitionNode(parent, "layer", "cloudlayer")
@@ -12,6 +13,9 @@ CloudLayerDefinition::CloudLayerDefinition(DefinitionNode* parent):
     altitude = 0.5;
     scaling = 0.5;
     coverage = 0.5;
+
+    xoffset = new FloatNode(this, "xoffset");
+    zoffset = new FloatNode(this, "zoffset");
 }
 
 CloudLayerDefinition::~CloudLayerDefinition()
@@ -79,6 +83,8 @@ void CloudLayerDefinition::copy(DefinitionNode* _destination) const
 
 void CloudLayerDefinition::validate()
 {
+    DefinitionNode::validate();
+
     if (scaling < 0.1)
     {
         scaling = 0.1;

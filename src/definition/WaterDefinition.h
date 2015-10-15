@@ -23,6 +23,8 @@ public:
 
     inline IntNode *propModel() const {return model;}
     inline FloatNode *propReflection() const {return reflection;}
+    inline FloatNode *propXOffset() const {return xoffset;}
+    inline FloatNode *propZOffset() const {return zoffset;}
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff);
 
@@ -53,6 +55,8 @@ public:
 private:
     IntNode *model;
     FloatNode *reflection;
+    FloatNode *xoffset;
+    FloatNode *zoffset;
 };
 
 }

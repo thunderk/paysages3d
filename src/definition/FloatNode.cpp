@@ -81,3 +81,8 @@ bool FloatNode::applyDiff(const DefinitionDiff *diff, bool backward)
         return false;
     }
 }
+
+void FloatNode::addValue(double added)
+{
+    setValue(value + added);
+}

@@ -29,12 +29,12 @@ void WaterRenderer::update()
     noise->setStep(0.3);
 }
 
-static inline double _getHeight(FractalNoise* noise, double x, double z)
+static inline double _getHeight(WaterDefinition* definition, FractalNoise* noise, double x, double z)
 {
-    return noise->get2d(0.00001, x, z);
+    return noise->get2d(0.00001, x + definition->propXOffset()->getValue(), z + definition->propZOffset()->getValue());
 }
 
-static inline Vector3 _getNormal(FractalNoise* noise, Vector3 base, double detail)
+static inline Vector3 _getNormal(WaterDefinition* definition, FractalNoise* noise, Vector3 base, double detail)
 {
     Vector3 back, right;
     double x, z;
@@ -43,12 +43,12 @@ static inline Vector3 _getNormal(FractalNoise* noise, Vector3 base, double detai
     z = base.z;
 
     back.x = x;
-    back.y = _getHeight(noise, x, z + detail);
+    back.y = _getHeight(definition, noise, x, z + detail);
     back.z = z + detail;
     back = back.sub(base);
 
     right.x = x + detail;
-    right.y = _getHeight(noise, x + detail, z);
+    right.y = _getHeight(definition, noise, x + detail, z);
     right.z = z;
     right = right.sub(base);
 
@@ -89,26 +89,26 @@ static inline Color _getFoamMask(SoftwareRenderer* renderer, WaterDefinition* de
 
     foam_factor = 0.0;
     location.x += location_offset;
-    normal_diff = 1.0 - normal.dotProduct(_getNormal(noise, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, noise, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.x -= location_offset * 2.0;
-    normal_diff = 1.0 - normal.dotProduct(_getNormal(noise, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, noise, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.x += location_offset;
     location.z -= location_offset;
-    normal_diff = 1.0 - normal.dotProduct(_getNormal(noise, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, noise, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
     }
     location.z += location_offset * 2.0;
-    normal_diff = 1.0 - normal.dotProduct(_getNormal(noise, location, detail));
+    normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, noise, location, detail));
     if (normal_diff > foam_factor)
     {
         foam_factor = normal_diff;
@@ -162,7 +162,7 @@ HeightInfo WaterRenderer::getHeightInfo()
 
 double WaterRenderer::getHeight(double x, double z)
 {
-    return _getHeight(noise, x, z);
+    return _getHeight(parent->getScenery()->getWater(), noise, x, z);
 }
 
 WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
@@ -176,7 +176,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     double reflection = definition->propReflection()->getValue();
 
     location.x = x;
-    location.y = _getHeight(noise, x, z);
+    location.y = _getHeight(definition, noise, x, z);
     location.z = z;
     result.location = location;
 
@@ -186,7 +186,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
         detail = 0.00001;
     }
 
-    normal = _getNormal(noise, location, detail);
+    normal = _getNormal(definition, noise, location, detail);
     look_direction = location.sub(parent->getCameraLocation(location)).normalize();
 
     /* Reflection */

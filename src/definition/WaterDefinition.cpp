@@ -12,6 +12,8 @@ WaterDefinition::WaterDefinition(DefinitionNode* parent):
 {
     model = new IntNode(this, "model", -1);
     reflection = new FloatNode(this, "reflection");
+    xoffset = new FloatNode(this, "xoffset");
+    zoffset = new FloatNode(this, "zoffset");
 
     material = new SurfaceMaterial;
     depth_color = new Color;
