@@ -34,6 +34,12 @@ SOURCES += \
     Texture4D.cpp \
     NoiseState.cpp \
     FractalNoise.cpp \
+    CappedCylinder.cpp \
+    InfiniteCylinder.cpp \
+    InfiniteRay.cpp \
+    Sphere.cpp \
+    InfinitePlane.cpp \
+    Disk.cpp \
     SpaceGridIterator.cpp
 
 HEADERS +=\
@@ -56,6 +62,12 @@ HEADERS +=\
     Texture4D.h \
     NoiseState.h \
     FractalNoise.h \
+    CappedCylinder.h \
+    InfiniteCylinder.h \
+    InfiniteRay.h \
+    Sphere.h \
+    InfinitePlane.h \
+    Disk.h \
     SpaceGridIterator.h
 
 unix:!symbian {

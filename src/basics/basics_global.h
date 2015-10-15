@@ -26,6 +26,10 @@ namespace basics {
     class Texture2D;
     class Texture3D;
     class Texture4D;
+    class CappedCylinder;
+    class InfiniteRay;
+    class Sphere;
+    class InfinitePlane;
 }
 }
 using namespace paysages::basics;

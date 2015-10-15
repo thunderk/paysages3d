@@ -34,6 +34,11 @@ SOURCES += main.cpp \
     GodRaysSampler_Test.cpp \
     Interpolation_Test.cpp \
     Rasterizer_Test.cpp \
+    CappedCylinder_Test.cpp \
+    InfiniteCylinder_Test.cpp \
+    Sphere_Test.cpp \
+    InfinitePlane_Test.cpp \
+    Disk_Test.cpp \
     Vector3_Test.cpp
 
 HEADERS += \
