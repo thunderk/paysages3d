@@ -6,6 +6,10 @@
 namespace paysages {
 namespace software {
 
+const int RASTERIZER_CLIENT_SKY = 0;
+const int RASTERIZER_CLIENT_WATER = 1;
+const int RASTERIZER_CLIENT_TERRAIN = 2;
+
 typedef struct ScanPoint ScanPoint;
 typedef struct RenderScanlines RenderScanlines;
 
@@ -21,9 +25,6 @@ public:
     inline SoftwareRenderer *getRenderer() const {return renderer;}
     inline int getTriangleCount() const {return triangle_count;}
 
-    virtual Color shadeFragment(const CanvasFragment &fragment) const = 0;
-    virtual void interrupt();
-
     /**
      * Set the rasterization quality factor.
      */
@@ -35,18 +36,32 @@ public:
     void setAutoCutLimit(double limit);
 
     /**
-     * Reset the internal triangle counter to 0.
-     */
-    void resetTriangleCount();
-
-    /**
      * Abstract method to prepare for the rasterization process, and return the estimated progress count.
      */
     virtual int prepareRasterization() = 0;
+
     /**
      * Abstract method to effectively do the rasterization on a canvas.
      */
     virtual void rasterizeToCanvas(CanvasPortion *canvas) = 0;
+
+    /**
+     * Abstract method to render a fragment stored on a canvas, to a color.
+     */
+    virtual Color shadeFragment(const CanvasFragment &fragment, const CanvasFragment *previous) const = 0;
+
+    /**
+     * Ask for an interrupt in rasterization process.
+     */
+    virtual void interrupt();
+
+    void setColor(const Color &color);
+    void setBackFaceCulling(bool cull);
+
+    /**
+     * Reset the internal triangle counter to 0.
+     */
+    void resetTriangleCount();
 
     void pushTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3);
     void pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3);
@@ -72,6 +87,7 @@ private:
 
     int triangle_count;
     double auto_cut_limit;
+    bool backface_culling;
 };
 
 }

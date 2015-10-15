@@ -14,7 +14,7 @@ public:
     FakeRasterizer(SoftwareRenderer *renderer): Rasterizer(renderer, NULL, 0, COLOR_WHITE)
     {
     }
-    virtual Color shadeFragment(const CanvasFragment &) const override
+    virtual Color shadeFragment(const CanvasFragment &, const CanvasFragment *) const override
     {
         return COLOR_RED;
     }

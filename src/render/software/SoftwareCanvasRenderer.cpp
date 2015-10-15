@@ -27,9 +27,9 @@ SoftwareCanvasRenderer::SoftwareCanvasRenderer(Scenery *scenery):
 
     postprocess_enabled = true;
 
-    rasterizers.push_back(new SkyRasterizer(this, progress, 0));
-    rasterizers.push_back(new WaterRasterizer(this, progress, 1));
-    rasterizers.push_back(new TerrainRasterizer(this, progress, 2));
+    rasterizers.push_back(new SkyRasterizer(this, progress, RASTERIZER_CLIENT_SKY));
+    rasterizers.push_back(new WaterRasterizer(this, progress, RASTERIZER_CLIENT_WATER));
+    rasterizers.push_back(new TerrainRasterizer(this, progress, RASTERIZER_CLIENT_TERRAIN));
 
     current_work = NULL;
 }

@@ -15,7 +15,7 @@ public:
 
     virtual int prepareRasterization() override;
     virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
-    virtual Color shadeFragment(const CanvasFragment &fragment) const override;
+    virtual Color shadeFragment(const CanvasFragment &fragment, const CanvasFragment *previous) const override;
 
     void setQuality(int res_i, int res_j);
     virtual void setQuality(double factor) override;

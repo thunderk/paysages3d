@@ -43,7 +43,7 @@ void WaterRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
     performTessellation(canvas);
 }
 
-Color WaterRasterizer::shadeFragment(const CanvasFragment &fragment) const
+Color WaterRasterizer::shadeFragment(const CanvasFragment &fragment, const CanvasFragment *) const
 {
     Vector3 location = fragment.getLocation();
     return renderer->getWaterRenderer()->getResult(location.x, location.z).final;

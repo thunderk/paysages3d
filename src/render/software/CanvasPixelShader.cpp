@@ -45,11 +45,13 @@ void CanvasPixelShader::processParallelUnit(int unit)
                 const CanvasPixel &pixel = portion->at(base_x + x, base_y + y);
                 int n = pixel.getFragmentCount();
                 Color composite = COLOR_BLACK;
+                const CanvasFragment *previous = NULL;
                 for (int i = 0; i < n; i++)
                 {
                     const CanvasFragment &fragment = pixel.getFragment(i);
                     const Rasterizer &rasterizer = renderer.getRasterizer(fragment.getClient());
-                    composite.mask(rasterizer.shadeFragment(fragment));
+                    composite.mask(rasterizer.shadeFragment(fragment, previous));
+                    previous = &fragment;
                 }
 
                 // Fill the square area

@@ -21,6 +21,7 @@ SOURCES += main.cpp \
     SpaceSegment_Test.cpp \
     Canvas_Test.cpp \
     CanvasPortion_Test.cpp \
+    CanvasPixel_Test.cpp \
     CanvasPreview_Test.cpp \
     AtmosphereDefinition_Test.cpp \
     Scenery_Test.cpp \

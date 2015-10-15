@@ -22,6 +22,7 @@ struct paysages::software::ScanPoint
         double z;
     } location;
     int client;
+    bool front_facing;
 };
 
 struct paysages::software::RenderScanlines
@@ -38,6 +39,7 @@ Rasterizer::Rasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int
     this->color = new Color(color);
 
     interrupted = false;
+    backface_culling = false;
     triangle_count = 0;
     auto_cut_limit = 0.01;
 
@@ -56,6 +58,16 @@ void Rasterizer::interrupt()
 
 void Rasterizer::setQuality(double)
 {
+}
+
+void Rasterizer::setColor(const Color &color)
+{
+    *this->color = color;
+}
+
+void Rasterizer::setBackFaceCulling(bool cull)
+{
+    this->backface_culling = cull;
 }
 
 void Rasterizer::setAutoCutLimit(double limit)
@@ -92,6 +104,14 @@ bool Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pix
         return location1.sub(location2).getNorm() > auto_cut_limit && location2.sub(location3).getNorm() > auto_cut_limit && location3.sub(location1).getNorm() > auto_cut_limit;
     }
 
+    // Check the poylgon's facing (front-face or back-face)
+    Vector3 normal = dpixel2.sub(dpixel1).crossProduct(dpixel3.sub(dpixel1));
+    bool front_facing = (normal.z >= 0.0);
+    if (backface_culling and not front_facing)
+    {
+        return false;
+    }
+
     // Prepare vertices
     point1.pixel.x = dpixel1.x;
     point1.pixel.y = dpixel1.y;
@@ -100,6 +120,7 @@ bool Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pix
     point1.location.y = location1.y;
     point1.location.z = location1.z;
     point1.client = client_id;
+    point1.front_facing = front_facing;
 
     point2.pixel.x = dpixel2.x;
     point2.pixel.y = dpixel2.y;
@@ -108,6 +129,7 @@ bool Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pix
     point2.location.y = location2.y;
     point2.location.z = location2.z;
     point2.client = client_id;
+    point2.front_facing = front_facing;
 
     point3.pixel.x = dpixel3.x;
     point3.pixel.y = dpixel3.y;
@@ -116,6 +138,7 @@ bool Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pix
     point3.location.y = location3.y;
     point3.location.z = location3.z;
     point3.client = client_id;
+    point3.front_facing = front_facing;
 
     // Prepare scanlines
     // TODO Don't create scanlines for each triangles (one by thread is more appropriate)
@@ -167,6 +190,7 @@ void Rasterizer::pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1,
 {
     Vector3 p1, p2, p3;
 
+    // TODO v1, v2 and v3 are lost, but may be useful (avoid need to unproject)
     p1 = getRenderer()->projectPoint(v1);
     p2 = getRenderer()->projectPoint(v2);
     p3 = getRenderer()->projectPoint(v3);
@@ -225,6 +249,7 @@ void Rasterizer::scanInterpolate(CameraDefinition* camera, ScanPoint* v1, ScanPo
     result->location.y = ((1.0 - value) * (v1->location.y * v1depth) + value * (v1->location.y + diff->location.y) * v2depth) * factor;
     result->location.z = ((1.0 - value) * (v1->location.z * v1depth) + value * (v1->location.z + diff->location.z) * v2depth) * factor;
     result->client = v1->client;
+    result->front_facing = v1->front_facing;
 }
 
 void Rasterizer::pushScanPoint(CanvasPortion* canvas, RenderScanlines* scanlines, ScanPoint* point)
@@ -397,13 +422,17 @@ void Rasterizer::renderScanLines(CanvasPortion *canvas, RenderScanlines* scanlin
                     scanInterpolate(renderer->render_camera, &down, &diff, fy / dy, &current);
                 }
 
-                CanvasFragment fragment(current.pixel.z, Vector3(current.location.x, current.location.y, current.location.z), current.client);
+                Vector3 pixel(current.pixel.x + canvas->getXOffset(), current.pixel.y + canvas->getYOffset(), current.pixel.z);
+                Vector3 location(current.location.x, current.location.y, current.location.z);
+                CanvasFragment fragment(current.front_facing, pixel, location, current.client, color->a == 1.0);
 
                 Color frag_color = *color;
+                frag_color.a = 1.0;
                 if (cury == starty || cury == endy)
                 {
                     frag_color.mask(Color(0.0, 0.0, 0.0, 0.3));
                 }
+                frag_color.a = color->a;
                 fragment.setColor(frag_color);
 
                 canvas->pushFragment(current.x, current.y, fragment);

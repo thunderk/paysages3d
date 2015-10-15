@@ -44,19 +44,19 @@ TEST(CanvasPortion, pushFragment_opaque)
     portion.setSize(10, 10);
     portion.preparePixels();
 
-    pushed = CanvasFragment(2.0, VECTOR_ZERO, 0);
+    pushed = CanvasFragment(true, Vector3(0.0, 0.0, 2.0), VECTOR_ZERO, 0);
     portion.pushFragment(2, 2, pushed);
 
     ASSERT_EQ(1, portion.getFragmentCount(2, 2));
     EXPECT_DOUBLE_EQ(2.0, portion.getFrontFragment(2, 2)->getZ());
 
-    pushed = CanvasFragment(1.0, VECTOR_ZERO, 0);
+    pushed = CanvasFragment(true, Vector3(0.0, 0.0, 1.0), VECTOR_ZERO, 0);
     portion.pushFragment(2, 2, pushed);
 
     ASSERT_EQ(1, portion.getFragmentCount(2, 2));
     EXPECT_DOUBLE_EQ(2.0, portion.getFrontFragment(2, 2)->getZ());
 
-    pushed = CanvasFragment(4.0, VECTOR_ZERO, 0);
+    pushed = CanvasFragment(true, Vector3(0.0, 0.0, 4.0), VECTOR_ZERO, 0);
     portion.pushFragment(2, 2, pushed);
 
     ASSERT_EQ(1, portion.getFragmentCount(2, 2));
@@ -71,19 +71,19 @@ TEST(CanvasPortion, pushFragment_transparent)
     portion.setSize(10, 10);
     portion.preparePixels();
 
-    pushed = CanvasFragment(2.0, VECTOR_ZERO, 0, false);
+    pushed = CanvasFragment(true, Vector3(0.0, 0.0, 2.0), VECTOR_ZERO, 0, false);
     portion.pushFragment(2, 2, pushed);
 
     ASSERT_EQ(1, portion.getFragmentCount(2, 2));
     EXPECT_DOUBLE_EQ(2.0, portion.getFrontFragment(2, 2)->getZ());
 
-    pushed = CanvasFragment(3.0, VECTOR_ZERO, 0, true);
+    pushed = CanvasFragment(true, Vector3(0.0, 0.0, 3.0), VECTOR_ZERO, 0, true);
     portion.pushFragment(2, 2, pushed);
 
     ASSERT_EQ(1, portion.getFragmentCount(2, 2));
     EXPECT_DOUBLE_EQ(3.0, portion.getFrontFragment(2, 2)->getZ());
 
-    pushed = CanvasFragment(4.0, VECTOR_ZERO, 0, false);
+    pushed = CanvasFragment(true, Vector3(0.0, 0.0, 4.0), VECTOR_ZERO, 0, false);
     portion.pushFragment(2, 2, pushed);
 
     ASSERT_EQ(2, portion.getFragmentCount(2, 2));

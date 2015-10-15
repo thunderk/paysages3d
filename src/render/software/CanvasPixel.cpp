@@ -35,7 +35,7 @@ void CanvasPixel::pushFragment(const CanvasFragment &fragment)
     }
     else
     {
-        if (fragments[0].getOpaque() and fragment.getZ() < fragments[0].getZ())
+        if (fragments[0].getOpaque() and fragment.getZ() <= fragments[0].getZ())
         {
             // behind opaque fragment, don't bother
             return;
@@ -43,9 +43,15 @@ void CanvasPixel::pushFragment(const CanvasFragment &fragment)
 
         // find expected position
         int i = 0;
-        while (i < count and fragment.getZ() > fragments[i].getZ())
+        while (i < count and fragment.getZ() >= fragments[i].getZ())
         {
             i++;
+        }
+
+        if (i > 0 and fragments[i - 1].getZ() == fragment.getZ() and fragments[i - 1].getClient() == fragment.getClient())
+        {
+            // Pixel already pushed by same client, don't do anything
+            return;
         }
 
         if (fragment.getOpaque())
@@ -62,28 +68,32 @@ void CanvasPixel::pushFragment(const CanvasFragment &fragment)
             }
             fragments[0] = fragment;
         }
-        else if (i < count)
-        {
-            // Need to make room for the incoming fragment
-            if (count < MAX_FRAGMENT_COUNT)
-            {
-                memmove(fragments + i + 1, fragments + i, sizeof(CanvasFragment) * (count - i));
-                fragments[i] = fragment;
-                count++;
-            }
-        }
         else
         {
-            if (count == MAX_FRAGMENT_COUNT)
+            // Transparent pixel
+            if (i < count)
             {
-                // Replace nearest fragment
-                fragments[count - 1] = fragment;
+                // Need to make room for the incoming fragment
+                if (count < MAX_FRAGMENTS_PER_PIXEL)
+                {
+                    memmove(fragments + i + 1, fragments + i, sizeof(CanvasFragment) * (count - i));
+                    fragments[i] = fragment;
+                    count++;
+                }
             }
             else
             {
-                // Append
-                fragments[count] = fragment;
-                count++;
+                if (count == MAX_FRAGMENTS_PER_PIXEL)
+                {
+                    // Replace nearest fragment
+                    fragments[count - 1] = fragment;
+                }
+                else
+                {
+                    // Append
+                    fragments[count] = fragment;
+                    count++;
+                }
             }
         }
     }

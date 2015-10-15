@@ -76,7 +76,7 @@ void SkyRasterizer::rasterizeToCanvas(CanvasPortion* canvas)
     }
 }
 
-Color SkyRasterizer::shadeFragment(const CanvasFragment &fragment) const
+Color SkyRasterizer::shadeFragment(const CanvasFragment &fragment, const CanvasFragment *) const
 {
     Vector3 location = fragment.getLocation();
     Vector3 camera_location, direction;

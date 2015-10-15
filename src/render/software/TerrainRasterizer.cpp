@@ -245,7 +245,7 @@ void TerrainRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
     performTessellation(canvas, false);
 }
 
-Color TerrainRasterizer::shadeFragment(const CanvasFragment &fragment) const
+Color TerrainRasterizer::shadeFragment(const CanvasFragment &fragment, const CanvasFragment *) const
 {
     Vector3 point = fragment.getLocation();
     double precision = renderer->getPrecision(_getPoint(renderer, point.x, point.z));

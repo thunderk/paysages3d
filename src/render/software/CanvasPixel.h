@@ -5,7 +5,7 @@
 
 #include "CanvasFragment.h"
 
-const int MAX_FRAGMENT_COUNT = 2;
+const int MAX_FRAGMENTS_PER_PIXEL = 2;
 
 namespace paysages {
 namespace software {
@@ -32,7 +32,7 @@ public:
 
 private:
     int count;
-    CanvasFragment fragments[MAX_FRAGMENT_COUNT];
+    CanvasFragment fragments[MAX_FRAGMENTS_PER_PIXEL];
     Color composite;
 };
 
