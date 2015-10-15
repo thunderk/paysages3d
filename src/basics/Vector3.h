@@ -68,6 +68,13 @@ public:
 
     VectorSpherical toSpherical() const;
 
+    /**
+     * Produce a random vector in a sphere domain.
+     *
+     * If *only_surface* is true, produce a vector with *radius* as length.
+     */
+    static Vector3 randomInSphere(double radius=1.0, bool only_surface=false);
+
 public:
     // TODO Make private
     double x;

@@ -38,5 +38,8 @@ using namespace paysages::basics;
 #ifndef M_PI_4
 #define M_PI_4 0.78539816339744830962
 #endif
+#ifndef M_2PI
+#define M_2PI 6.28318530717958647692
+#endif
 
 #endif // BASICS_GLOBAL_H

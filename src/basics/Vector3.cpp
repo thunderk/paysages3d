@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include "PackStream.h"
+#include "RandomGenerator.h"
 
 const Vector3 paysages::basics::VECTOR_ZERO(0.0, 0.0, 0.0);
 const Vector3 paysages::basics::VECTOR_DOWN(0.0, -1.0, 0.0);
@@ -80,4 +81,16 @@ VectorSpherical Vector3::toSpherical() const
 Vector3 Vector3::midPointTo(const Vector3 &other) const
 {
     return Vector3((other.x + x) * 0.5, (other.y + y) * 0.5, (other.z + z) * 0.5);
+}
+
+Vector3 Vector3::randomInSphere(double radius, bool only_surface)
+{
+    // TODO More uniform spatial repartition
+    //  The current randomization clusters result near the center and at the poles
+    VectorSpherical vec = {
+        only_surface ? radius : RandomGenerator::random() * radius,
+        (RandomGenerator::random() - 0.5) * M_PI,
+        RandomGenerator::random() * M_2PI
+    };
+    return Vector3(vec);
 }
