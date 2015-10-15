@@ -17,7 +17,7 @@ public:
 
     void save(PackStream* stream) const;
     void load(PackStream* stream);
-
+    void copy(SurfaceMaterial *destination) const;
     void validate();
 
 public:

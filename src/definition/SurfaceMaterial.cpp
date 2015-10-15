@@ -52,6 +52,16 @@ void SurfaceMaterial::load(PackStream* stream)
     stream->read(&receive_shadows);
 }
 
+void SurfaceMaterial::copy(SurfaceMaterial *destination) const
+{
+    *destination->base = *base;
+    destination->hardness = hardness;
+    destination->reflection = reflection;
+    destination->shininess = shininess;
+    destination->receive_shadows = receive_shadows;
+    destination->validate();
+}
+
 void SurfaceMaterial::validate()
 {
 }
