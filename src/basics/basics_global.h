@@ -15,6 +15,7 @@ namespace basics {
     class Vector3;
     class Matrix4;
     class BoundingBox;
+    class SpaceGridIterator;
     class SpaceSegment;
     class Color;
     class NoiseGenerator;

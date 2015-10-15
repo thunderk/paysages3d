@@ -33,7 +33,8 @@ SOURCES += \
     Texture3D.cpp \
     Texture4D.cpp \
     NoiseState.cpp \
-    FractalNoise.cpp
+    FractalNoise.cpp \
+    SpaceGridIterator.cpp
 
 HEADERS +=\
         basics_global.h \
@@ -54,7 +55,8 @@ HEADERS +=\
     Texture3D.h \
     Texture4D.h \
     NoiseState.h \
-    FractalNoise.h
+    FractalNoise.h \
+    SpaceGridIterator.h
 
 unix:!symbian {
     maemo5 {
