@@ -102,7 +102,7 @@ Scenery::FileOperationResult Scenery::loadGlobal(const std::string &filepath)
     return FILE_OPERATION_OK;
 }
 
-Scenery* Scenery::getScenery()
+const Scenery* Scenery::getScenery() const
 {
     return this;
 }

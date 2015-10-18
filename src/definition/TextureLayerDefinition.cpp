@@ -50,7 +50,7 @@ void TextureLayerDefinition::validate()
     material->validate();
 
     /* Update zone height range */
-    Scenery* scenery = getScenery();
+    const Scenery* scenery = getScenery();
     if (scenery)
     {
         TerrainDefinition* terrain = scenery->getTerrain();

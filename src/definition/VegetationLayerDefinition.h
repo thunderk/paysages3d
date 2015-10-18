@@ -15,12 +15,9 @@ class DEFINITIONSHARED_EXPORT VegetationLayerDefinition : public DefinitionNode
 {
 public:
     VegetationLayerDefinition(DefinitionNode *parent);
-    virtual ~VegetationLayerDefinition();
 
-    virtual void save(PackStream *stream) const override;
-    virtual void load(PackStream *stream) override;
-    virtual void copy(DefinitionNode *destination) const override;
-    virtual void validate() override;
+    inline const VegetationPresenceDefinition *getPresence() const {return presence;}
+    inline const VegetationModelDefinition *getModel() const {return model;}
 
     typedef enum
     {
@@ -32,7 +29,7 @@ private:
     /**
      * Geographic area of presence of this layer.
      */
-    TerrainHeightMap *area;
+    VegetationPresenceDefinition *presence;
 
     /**
      * Base vegetation model to use for this layer.

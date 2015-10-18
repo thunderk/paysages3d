@@ -26,7 +26,7 @@ public:
 
     inline const std::string &getTypeName() const {return type_name;}
 
-    virtual Scenery* getScenery();
+    virtual const Scenery* getScenery() const;
 
     inline const DefinitionNode *getParent() const {return parent;}
     inline const DefinitionNode *getRoot() const {return root;}

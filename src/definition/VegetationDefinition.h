@@ -15,7 +15,6 @@ class DEFINITIONSHARED_EXPORT VegetationDefinition : public Layers
 {
 public:
     VegetationDefinition(DefinitionNode* parent);
-    virtual ~VegetationDefinition();
 
     /**
      * Get a vegetation layer by its position.
@@ -27,9 +26,6 @@ public:
         VEGETATION_PRESET_TEMPERATE
     } VegetationPreset;
     void applyPreset(VegetationPreset preset);
-
-    // TEMP
-    VegetationModelDefinition *debug_model;
 };
 
 }

@@ -22,8 +22,12 @@ public:
 
     /**
      * Perform ray casting on a single instance.
+     *
+     * If *only_hit* is true, only care about hitting or not, do not compute the color.
+     *
+     * If *displaced* is true, *instance* is considered on already displaced terrain, else, terrain displacement is applied.
      */
-    RayCastingResult renderInstance(const SpaceSegment &segment, const VegetationInstance &instance, bool only_hit=false);
+    RayCastingResult renderInstance(const SpaceSegment &segment, const VegetationInstance &instance, bool only_hit=false, bool displaced=false);
 
     /**
      * Perform ray casting on a given segment.

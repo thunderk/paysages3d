@@ -11,12 +11,6 @@ static DefinitionNode* _layer_constructor(Layers* parent)
 VegetationDefinition::VegetationDefinition(DefinitionNode* parent) :
     Layers(parent, "vegetation", _layer_constructor)
 {
-    debug_model = new VegetationModelDefinition(this);
-}
-
-VegetationDefinition::~VegetationDefinition()
-{
-    delete debug_model;
 }
 
 void VegetationDefinition::applyPreset(VegetationPreset preset)

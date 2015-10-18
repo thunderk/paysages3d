@@ -59,7 +59,6 @@ SOURCES += SoftwareRenderer.cpp \
     GodRaysResult.cpp \
     VegetationRasterizer.cpp \
     VegetationRenderer.cpp \
-    VegetationInstance.cpp \
     VegetationResult.cpp
 
 HEADERS += SoftwareRenderer.h\
@@ -109,7 +108,6 @@ HEADERS += SoftwareRenderer.h\
     GodRaysResult.h \
     VegetationRasterizer.h \
     VegetationRenderer.h \
-    VegetationInstance.h \
     VegetationResult.h
 
 unix:!symbian {

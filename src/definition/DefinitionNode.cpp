@@ -54,7 +54,7 @@ void DefinitionNode::setName(const std::string &name)
     this->name = name;
 }
 
-Scenery* DefinitionNode::getScenery()
+const Scenery* DefinitionNode::getScenery() const
 {
     if (parent)
     {

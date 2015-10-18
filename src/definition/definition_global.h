@@ -38,6 +38,8 @@ namespace definition {
     class VegetationDefinition;
     class VegetationLayerDefinition;
     class VegetationModelDefinition;
+    class VegetationPresenceDefinition;
+    class VegetationInstance;
     class PaintedGrid;
     class PaintedGridData;
     class PaintedGridBrush;

@@ -9,17 +9,20 @@
 #include "Scenery.h"
 #include "TerrainRenderer.h"
 #include "VegetationDefinition.h"
+#include "VegetationLayerDefinition.h"
+#include "VegetationPresenceDefinition.h"
+#include "VegetationInstance.h"
 #include "VegetationResult.h"
 #include "LightComponent.h"
 
-const double DEBUG_DENSITY_FACTOR = 0.5;
-
-// TEMP
+/**
+ * Grid iterator to collect instances of a layer, in small squares.
+ */
 class VegetationGridIterator: public SpaceGridIterator
 {
 public:
-    VegetationGridIterator(const SpaceSegment &segment, VegetationRenderer *renderer, VegetationModelDefinition *model, bool only_hit):
-        segment(segment), renderer(renderer), model(model), only_hit(only_hit)
+    VegetationGridIterator(const SpaceSegment &segment, VegetationRenderer *renderer, VegetationLayerDefinition *layer, bool only_hit):
+        segment(segment), renderer(renderer), layer(layer), only_hit(only_hit)
     {
     }
 
@@ -27,17 +30,24 @@ public:
 
     virtual bool onCell(int x, int, int z) override
     {
-        double dx = ((double)x + 0.5) * DEBUG_DENSITY_FACTOR;
-        double dz = ((double)z + 0.5) * DEBUG_DENSITY_FACTOR;
-        Vector3 base = renderer->getParent()->getTerrainRenderer()->getResult(dx, dz, 1, 1).location;
-        VegetationInstance instance(*model, base, 0.2);
-        result = renderer->renderInstance(segment, instance, only_hit);
-        return not result.hit;
+        std::vector<VegetationInstance> instances;
+
+        layer->getPresence()->collectInstances(&instances, *layer->getModel(), x - 0.5, z - 0.5, x + 0.5, z + 0.5);
+
+        for (auto &instance: instances)
+        {
+            result = renderer->renderInstance(segment, instance, only_hit);
+            if (result.hit)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 private:
     const SpaceSegment &segment;
     VegetationRenderer *renderer;
-    VegetationModelDefinition *model;
+    VegetationLayerDefinition *layer;
     RayCastingResult result;
     bool only_hit;
 };
@@ -52,10 +62,18 @@ void VegetationRenderer::setEnabled(bool enabled)
     this->enabled = enabled;
 }
 
-RayCastingResult VegetationRenderer::renderInstance(const SpaceSegment &segment, const VegetationInstance &instance, bool only_hit)
+RayCastingResult VegetationRenderer::renderInstance(const SpaceSegment &segment, const VegetationInstance &instance, bool only_hit, bool displaced)
 {
-    RayCastingResult final;
+    if (!displaced)
+    {
+        // Recursive call on displaced instance
+        const Vector3 &base = instance.getBase();
+        TerrainRenderer::TerrainResult terrain = parent->getTerrainRenderer()->getResult(base.x, base.z, true, true);
+        VegetationInstance displaced_instance = instance.displace(terrain.location, terrain.normal);
+        return renderInstance(segment, displaced_instance, only_hit, true);
+    }
 
+    RayCastingResult final;
     VegetationModelRenderer model_renderer(parent, &instance.getModel());
     SpaceSegment scaled_segment(segment.getStart().sub(instance.getBase()).scale(1.0 / instance.getSize()),
                                 segment.getEnd().sub(instance.getBase()).scale(1.0 / instance.getSize()));
@@ -78,17 +96,19 @@ RayCastingResult VegetationRenderer::getResult(const SpaceSegment &segment, bool
 {
     if (enabled)
     {
-        // Find instances potentially crossing the segment
-        // TODO Collect the nearest hit, don't stop at the first one
-        VegetationGridIterator it(segment, this, parent->getScenery()->getVegetation()->debug_model, only_hit);
-        if (not segment.projectedOnYPlane().scaled(1.0 / DEBUG_DENSITY_FACTOR).iterateOnGrid(it))
+        VegetationDefinition *vegetation = parent->getScenery()->getVegetation();
+        int n = vegetation->count();
+        // TODO Don't stop at first layer, find the nearest hit
+        for (int i = 0; i < n; i++)
         {
-            return it.getResult();
+            // Find instances potentially crossing the segment
+            VegetationGridIterator it(segment, this, vegetation->getVegetationLayer(i), only_hit);
+            if (not segment.projectedOnYPlane().iterateOnGrid(it))
+            {
+                return it.getResult();
+            }
         }
-        else
-        {
-            return RayCastingResult();
-        }
+        return RayCastingResult();
     }
     else
     {

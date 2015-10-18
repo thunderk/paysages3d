@@ -33,7 +33,7 @@ public:
     FileOperationResult saveGlobal(const std::string &filepath) const;
     FileOperationResult loadGlobal(const std::string &filepath);
 
-    virtual Scenery* getScenery() override;
+    virtual const Scenery* getScenery() const override;
 
     void autoPreset(int seed=0);
 

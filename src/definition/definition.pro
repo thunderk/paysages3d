@@ -30,6 +30,7 @@ SOURCES += \
     VegetationLayerDefinition.cpp \
     VegetationDefinition.cpp \
     VegetationModelDefinition.cpp \
+    VegetationInstance.cpp \
     PaintedGrid.cpp \
     PaintedGridBrush.cpp \
     PaintedGridData.cpp \
@@ -42,7 +43,8 @@ SOURCES += \
     IntNode.cpp \
     IntDiff.cpp \
     GodRaysDefinition.cpp \
-    TimeManager.cpp
+    TimeManager.cpp \
+    VegetationPresenceDefinition.cpp
 
 HEADERS +=\
         definition_global.h \
@@ -62,6 +64,7 @@ HEADERS +=\
     VegetationLayerDefinition.h \
     VegetationDefinition.h \
     VegetationModelDefinition.h \
+    VegetationInstance.h \
     PaintedGrid.h \
     PaintedGridBrush.h \
     PaintedGridData.h \
@@ -74,7 +77,8 @@ HEADERS +=\
     IntNode.h \
     IntDiff.h \
     GodRaysDefinition.h \
-    TimeManager.h
+    TimeManager.h \
+    VegetationPresenceDefinition.h
 
 unix:!symbian {
     maemo5 {
