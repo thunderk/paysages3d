@@ -26,6 +26,10 @@ public:
      * It's the renderer role to apply the correct displacement.
      */
     bool collectInstances(std::vector<VegetationInstance> *result, const VegetationModelDefinition &model, double xmin, double zmin, double xmax, double zmax, bool outcomers=true) const;
+
+private:
+    NoiseNode *noise;
+    FloatNode *interval;
 };
 
 }

@@ -155,7 +155,7 @@ void VegetationModelDefinition::randomize()
     }
 
     // Add foliage items
-    for (int i = 0; i < 150; i++)
+    for (int i = 0; i < 50; i++)
     {
         double radius = 0.15;
         Vector3 dir = Vector3::randomInSphere(1.0 - radius);
