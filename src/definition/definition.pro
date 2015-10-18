@@ -42,6 +42,7 @@ SOURCES += \
     DefinitionWatcher.cpp \
     IntNode.cpp \
     IntDiff.cpp \
+    NoiseNode.cpp \
     GodRaysDefinition.cpp \
     TimeManager.cpp \
     VegetationPresenceDefinition.cpp
@@ -76,6 +77,7 @@ HEADERS +=\
     DefinitionWatcher.h \
     IntNode.h \
     IntDiff.h \
+    NoiseNode.h \
     GodRaysDefinition.h \
     TimeManager.h \
     VegetationPresenceDefinition.h
