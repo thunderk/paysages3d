@@ -24,6 +24,8 @@ public:
     inline OpenGLTerrain *getTerrain() const {return terrain;}
     inline bool isDisplayed() const {return displayed;}
 
+    virtual void prepare() override;
+
     void initialize();
     void prepareOpenGLState();
     void resize(int width, int height);

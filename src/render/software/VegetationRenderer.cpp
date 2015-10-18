@@ -47,6 +47,11 @@ VegetationRenderer::VegetationRenderer(SoftwareRenderer *parent):
 {
 }
 
+void VegetationRenderer::setEnabled(bool enabled)
+{
+    this->enabled = enabled;
+}
+
 RayCastingResult VegetationRenderer::renderInstance(const SpaceSegment &segment, const VegetationInstance &instance, bool only_hit)
 {
     RayCastingResult final;
@@ -71,12 +76,19 @@ RayCastingResult VegetationRenderer::renderInstance(const SpaceSegment &segment,
 
 RayCastingResult VegetationRenderer::getResult(const SpaceSegment &segment, bool only_hit)
 {
-    // Find instances potentially crossing the segment
-    // TODO Collect the nearest hit, don't stop at the first one
-    VegetationGridIterator it(segment, this, parent->getScenery()->getVegetation()->debug_model, only_hit);
-    if (not segment.projectedOnYPlane().scaled(1.0 / DEBUG_DENSITY_FACTOR).iterateOnGrid(it))
+    if (enabled)
     {
-        return it.getResult();
+        // Find instances potentially crossing the segment
+        // TODO Collect the nearest hit, don't stop at the first one
+        VegetationGridIterator it(segment, this, parent->getScenery()->getVegetation()->debug_model, only_hit);
+        if (not segment.projectedOnYPlane().scaled(1.0 / DEBUG_DENSITY_FACTOR).iterateOnGrid(it))
+        {
+            return it.getResult();
+        }
+        else
+        {
+            return RayCastingResult();
+        }
     }
     else
     {
@@ -86,12 +98,19 @@ RayCastingResult VegetationRenderer::getResult(const SpaceSegment &segment, bool
 
 bool VegetationRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
 {
-    // Get segment to iterate
-    SpaceSegment segment(at, at.add(light.direction.scale(-1.0 * parent->render_quality)));
-    if (getResult(segment, true).hit)
+    if (enabled)
     {
-        light.color = COLOR_BLACK;
-        return false;
+        // Get segment to iterate
+        SpaceSegment segment(at, at.add(light.direction.scale(-1.0 * parent->render_quality)));
+        if (getResult(segment, true).hit)
+        {
+            light.color = COLOR_BLACK;
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
     else
     {

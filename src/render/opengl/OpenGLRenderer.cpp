@@ -7,6 +7,7 @@
 #include "OpenGLWater.h"
 #include "OpenGLTerrain.h"
 #include "CloudsRenderer.h"
+#include "VegetationRenderer.h"
 #include "Color.h"
 #include "Scenery.h"
 #include "LightingManager.h"
@@ -61,6 +62,16 @@ OpenGLRenderer::~OpenGLRenderer()
     delete shared_state;
 }
 
+void OpenGLRenderer::prepare()
+{
+    SoftwareRenderer::prepare();
+
+    getCloudsRenderer()->setEnabled(false);
+    getLightingManager()->setSpecularity(false);
+    getGodRaysSampler()->setEnabled(false);
+    getVegetationRenderer()->setEnabled(false);
+}
+
 void OpenGLRenderer::initialize()
 {
     ready = functions->initializeOpenGLFunctions();
@@ -70,10 +81,6 @@ void OpenGLRenderer::initialize()
         prepareOpenGLState();
 
         prepare();
-
-        getCloudsRenderer()->setEnabled(false);
-        getLightingManager()->setSpecularity(false);
-        getGodRaysSampler()->setEnabled(false);
 
         skybox->initialize();
         skybox->updateScenery();

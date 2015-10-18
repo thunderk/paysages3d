@@ -13,6 +13,11 @@ class SOFTWARESHARED_EXPORT VegetationRenderer: public LightFilter
 public:
     VegetationRenderer(SoftwareRenderer *parent);
 
+    /**
+     * Totally enable or disable the vegetation layers rendering.
+     */
+    void setEnabled(bool enabled);
+
     inline SoftwareRenderer *getParent() const {return parent;}
 
     /**
@@ -29,6 +34,7 @@ public:
 
 private:
     SoftwareRenderer *parent;
+    bool enabled;
 };
 
 }
