@@ -54,6 +54,10 @@ namespace software {
 
     class GodRaysSampler;
     class GodRaysResult;
+    class VegetationResult;
+    class VegetationInstance;
+    class VegetationRenderer;
+    class VegetationModelRenderer;
 
     class Canvas;
     class CanvasPortion;

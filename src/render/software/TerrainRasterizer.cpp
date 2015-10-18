@@ -14,6 +14,8 @@
 TerrainRasterizer::TerrainRasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int client_id):
     Rasterizer(renderer, progress, client_id, Color(1.0, 0.9, 0.9))
 {
+    setBackFaceCulling(true);
+    yoffset = 0.0;
 }
 
 void TerrainRasterizer::setQuality(double base_chunk_size, double detail_factor, int max_chunk_detail)
@@ -77,18 +79,39 @@ void TerrainRasterizer::renderQuad(CanvasPortion *canvas, double x, double z, do
     ov4.z = z;
     dv4 = renderer->getTerrainRenderer()->getResult(x + size, z, true, true).location;
 
+    if (yoffset != 0.0)
+    {
+        dv1.y += yoffset;
+        dv2.y += yoffset;
+        dv3.y += yoffset;
+        dv4.y += yoffset;
+    }
+
     if (dv1.y > water_height || dv2.y > water_height || dv3.y > water_height || dv4.y > water_height)
     {
         pushDisplacedQuad(canvas, dv1, dv2, dv3, dv4, ov1, ov2, ov3, ov4);
     }
 }
 
-void TerrainRasterizer::getChunk(TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, bool displaced)
+void TerrainRasterizer::setYOffset(double offset)
+{
+    this->yoffset = offset;
+}
+
+void TerrainRasterizer::getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, int displaced)
 {
     chunk->point_nw = renderer->getTerrainRenderer()->getResult(x, z, true, displaced).location;
     chunk->point_sw = renderer->getTerrainRenderer()->getResult(x, z + size, true, displaced).location;
     chunk->point_se = renderer->getTerrainRenderer()->getResult(x + size, z + size, true, displaced).location;
     chunk->point_ne = renderer->getTerrainRenderer()->getResult(x + size, z, true, displaced).location;
+
+    if (yoffset != 0.0)
+    {
+        chunk->point_nw.y += yoffset;
+        chunk->point_sw.y += yoffset;
+        chunk->point_se.y += yoffset;
+        chunk->point_ne.y += yoffset;
+    }
 
     double displacement_power;
     if (displaced)
@@ -158,7 +181,7 @@ int TerrainRasterizer::performTessellation(CanvasPortion* canvas, bool displaced
     {
         for (i = 0; i < chunk_count - 1; i++)
         {
-            getChunk(&chunk, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size, displaced);
+            getChunk(renderer, &chunk, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size, displaced);
             if (chunk.detail_hint > 0)
             {
                 result += chunk.detail_hint * chunk.detail_hint;
@@ -172,7 +195,7 @@ int TerrainRasterizer::performTessellation(CanvasPortion* canvas, bool displaced
                 return result;
             }
 
-            getChunk(&chunk, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size, displaced);
+            getChunk(renderer, &chunk, cx + radius_int, cz - radius_ext + chunk_size * i, chunk_size, displaced);
             if (chunk.detail_hint > 0)
             {
                 result += chunk.detail_hint * chunk.detail_hint;
@@ -186,7 +209,7 @@ int TerrainRasterizer::performTessellation(CanvasPortion* canvas, bool displaced
                 return result;
             }
 
-            getChunk(&chunk, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size, displaced);
+            getChunk(renderer, &chunk, cx + radius_int - chunk_size * i, cz + radius_int, chunk_size, displaced);
             if (chunk.detail_hint > 0)
             {
                 result += chunk.detail_hint * chunk.detail_hint;
@@ -200,7 +223,7 @@ int TerrainRasterizer::performTessellation(CanvasPortion* canvas, bool displaced
                 return result;
             }
 
-            getChunk(&chunk, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size, displaced);
+            getChunk(renderer, &chunk, cx - radius_ext, cz + radius_int - chunk_size * i, chunk_size, displaced);
             if (chunk.detail_hint > 0)
             {
                 result += chunk.detail_hint * chunk.detail_hint;

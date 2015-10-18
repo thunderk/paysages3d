@@ -35,6 +35,9 @@ namespace definition {
     class TextureLayerDefinition;
     class TerrainDefinition;
     class TerrainHeightMap;
+    class VegetationDefinition;
+    class VegetationLayerDefinition;
+    class VegetationModelDefinition;
     class PaintedGrid;
     class PaintedGridData;
     class PaintedGridBrush;

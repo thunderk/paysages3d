@@ -27,6 +27,9 @@ SOURCES += \
     TerrainDefinition.cpp \
     TerrainHeightMap.cpp \
     Scenery.cpp \
+    VegetationLayerDefinition.cpp \
+    VegetationDefinition.cpp \
+    VegetationModelDefinition.cpp \
     PaintedGrid.cpp \
     PaintedGridBrush.cpp \
     PaintedGridData.cpp \
@@ -56,6 +59,9 @@ HEADERS +=\
     TerrainDefinition.h \
     TerrainHeightMap.h \
     Scenery.h \
+    VegetationLayerDefinition.h \
+    VegetationDefinition.h \
+    VegetationModelDefinition.h \
     PaintedGrid.h \
     PaintedGridBrush.h \
     PaintedGridData.h \

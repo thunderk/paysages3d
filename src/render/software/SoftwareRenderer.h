@@ -50,6 +50,7 @@ public:
     inline TerrainRenderer* getTerrainRenderer() const {return terrain_renderer;}
     inline TexturesRenderer* getTexturesRenderer() const {return textures_renderer;}
     inline WaterRenderer* getWaterRenderer() const {return water_renderer;}
+    inline VegetationRenderer* getVegetationRenderer() const {return vegetation_renderer;}
 
     inline NightSky* getNightSky() const {return nightsky_renderer;}
 
@@ -74,6 +75,7 @@ private:
     TexturesRenderer* textures_renderer;
     WaterRenderer* water_renderer;
     NightSky* nightsky_renderer;
+    VegetationRenderer *vegetation_renderer;
 };
 
 }

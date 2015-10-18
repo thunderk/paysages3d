@@ -6,6 +6,7 @@
 #include "TerrainRasterizer.h"
 #include "WaterRasterizer.h"
 #include "SkyRasterizer.h"
+#include "VegetationRasterizer.h"
 #include "CameraDefinition.h"
 #include "ParallelWork.h"
 #include "CanvasPortion.h"
@@ -30,6 +31,7 @@ SoftwareCanvasRenderer::SoftwareCanvasRenderer(Scenery *scenery):
     rasterizers.push_back(new SkyRasterizer(this, progress, RASTERIZER_CLIENT_SKY));
     rasterizers.push_back(new WaterRasterizer(this, progress, RASTERIZER_CLIENT_WATER));
     rasterizers.push_back(new TerrainRasterizer(this, progress, RASTERIZER_CLIENT_TERRAIN));
+    rasterizers.push_back(new VegetationRasterizer(this, progress, RASTERIZER_CLIENT_VEGETATION));
 
     current_work = NULL;
 }

@@ -38,6 +38,14 @@ public:
     virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
     virtual Color shadeFragment(const CanvasFragment &fragment, const CanvasFragment *previous) const override;
 
+protected:
+    /**
+     * Add a vertical offset to rasterized polygons.
+     *
+     * This may be used to rasterize a covering layer on top of ground.
+     */
+    void setYOffset(double offset);
+
 private:
     /**
      * Method called for each chunk tessellated by performTessellation.
@@ -62,9 +70,11 @@ private:
 
     void renderQuad(CanvasPortion* canvas, double x, double z, double size, double water_height);
 
-    void getChunk(TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, bool displaced);
+    void getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, int displaced);
 
 private:
+    double yoffset;
+
     // Quality control
     double base_chunk_size;
     double detail_factor;

@@ -37,6 +37,7 @@ SOURCES += SoftwareRenderer.cpp \
     RayCastingManager.cpp \
     NightSky.cpp \
     TerrainRayWalker.cpp \
+    VegetationModelRenderer.cpp \
     Canvas.cpp \
     CanvasPortion.cpp \
     CanvasPixel.cpp \
@@ -55,7 +56,11 @@ SOURCES += SoftwareRenderer.cpp \
     LightSource.cpp \
     RayCastingResult.cpp \
     GodRaysSampler.cpp \
-    GodRaysResult.cpp
+    GodRaysResult.cpp \
+    VegetationRasterizer.cpp \
+    VegetationRenderer.cpp \
+    VegetationInstance.cpp \
+    VegetationResult.cpp
 
 HEADERS += SoftwareRenderer.h\
         software_global.h \
@@ -82,6 +87,7 @@ HEADERS += SoftwareRenderer.h\
     RayCastingManager.h \
     NightSky.h \
     TerrainRayWalker.h \
+    VegetationModelRenderer.h \
     Canvas.h \
     CanvasPortion.h \
     CanvasPixel.h \
@@ -100,7 +106,11 @@ HEADERS += SoftwareRenderer.h\
     LightSource.h \
     RayCastingResult.h \
     GodRaysSampler.h \
-    GodRaysResult.h
+    GodRaysResult.h \
+    VegetationRasterizer.h \
+    VegetationRenderer.h \
+    VegetationInstance.h \
+    VegetationResult.h
 
 unix:!symbian {
     maemo5 {

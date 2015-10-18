@@ -9,6 +9,7 @@ namespace software {
 const int RASTERIZER_CLIENT_SKY = 0;
 const int RASTERIZER_CLIENT_WATER = 1;
 const int RASTERIZER_CLIENT_TERRAIN = 2;
+const int RASTERIZER_CLIENT_VEGETATION = 3;
 
 typedef struct ScanPoint ScanPoint;
 typedef struct RenderScanlines RenderScanlines;

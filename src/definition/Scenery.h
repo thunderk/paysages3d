@@ -57,6 +57,10 @@ public:
     inline TexturesDefinition* getTextures() const {return textures;}
     void getTextures(TexturesDefinition* textures);
 
+    void setVegetation(VegetationDefinition* Vegetation);
+    inline VegetationDefinition* getVegetation() const {return vegetation;}
+    void getVegetation(VegetationDefinition* Vegetation);
+
     void setWater(WaterDefinition* water);
     inline WaterDefinition* getWater() const {return water;}
     void getWater(WaterDefinition* water);
@@ -69,6 +73,7 @@ private:
     CloudsDefinition* clouds;
     TerrainDefinition* terrain;
     TexturesDefinition* textures;
+    VegetationDefinition* vegetation;
     WaterDefinition* water;
 };
 
