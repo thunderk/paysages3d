@@ -19,6 +19,7 @@ namespace definition {
     class FloatDiff;
     class IntNode;
     class IntDiff;
+    class NoiseNode;
     class DiffManager;
     class DefinitionWatcher;
     class Scenery;

@@ -29,7 +29,7 @@ NoiseGenerator::~NoiseGenerator()
 {
 }
 
-void NoiseGenerator::save(PackStream* stream)
+void NoiseGenerator::save(PackStream* stream) const
 {
     int x;
 
@@ -43,7 +43,7 @@ void NoiseGenerator::save(PackStream* stream)
 
     for (x = 0; x < level_count; x++)
     {
-        NoiseLevel* level = levels + x;
+        const NoiseLevel* level = levels + x;
 
         stream->write(&level->frequency);
         stream->write(&level->amplitude);
@@ -84,7 +84,7 @@ void NoiseGenerator::load(PackStream* stream)
     validate();
 }
 
-void NoiseGenerator::copy(NoiseGenerator* destination)
+void NoiseGenerator::copy(NoiseGenerator* destination) const
 {
     destination->function = function;
     destination->height_offset = height_offset;
@@ -94,7 +94,7 @@ void NoiseGenerator::copy(NoiseGenerator* destination)
 
     state.copy(&destination->state);
 
-    validate();
+    destination->validate();
 }
 
 void NoiseGenerator::validate()
@@ -189,13 +189,13 @@ void NoiseGenerator::forceValue(double value)
     addLevelSimple(1.0, 0.0, 0.0); /* FIXME Should not be needed */
 }
 
-void NoiseGenerator::getRange(double* minvalue, double* maxvalue)
+void NoiseGenerator::getRange(double* minvalue, double* maxvalue) const
 {
     *minvalue = _min_value;
     *maxvalue = _max_value;
 }
 
-int NoiseGenerator::getLevelCount()
+int NoiseGenerator::getLevelCount() const
 {
     return level_count;
 }
@@ -263,7 +263,7 @@ void NoiseGenerator::removeLevel(int level)
     }
 }
 
-int NoiseGenerator::getLevel(int level, NoiseLevel* params)
+int NoiseGenerator::getLevel(int level, NoiseLevel* params) const
 {
     if (level >= 0 && level < level_count)
     {
@@ -374,12 +374,12 @@ static inline double _fixValue(double value, double ridge, double curve)
 
 
 
-inline double NoiseGenerator::_get1DLevelValue(NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x)
+inline double NoiseGenerator::_get1DLevelValue(const NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x) const
 {
     return level->minvalue + _fixValue(_func_noise_1d(x * level->frequency + offset.x), function.ridge_factor, function.curve_factor) * level->amplitude;
 }
 
-double NoiseGenerator::get1DLevel(int level, double x)
+double NoiseGenerator::get1DLevel(int level, double x) const
 {
     if (level >= 0 && level < level_count)
     {
@@ -391,7 +391,7 @@ double NoiseGenerator::get1DLevel(int level, double x)
     }
 }
 
-double NoiseGenerator::get1DTotal(double x)
+double NoiseGenerator::get1DTotal(double x) const
 {
     int level;
     double result;
@@ -404,7 +404,7 @@ double NoiseGenerator::get1DTotal(double x)
     return result + height_offset;
 }
 
-double NoiseGenerator::get1DDetail(double x, double detail)
+double NoiseGenerator::get1DDetail(double x, double detail) const
 {
     int level;
     double result, height, factor;
@@ -431,12 +431,12 @@ double NoiseGenerator::get1DDetail(double x, double detail)
 
 
 
-inline double NoiseGenerator::_get2DLevelValue(NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x, double y)
+inline double NoiseGenerator::_get2DLevelValue(const NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x, double y) const
 {
     return level->minvalue + _fixValue(_func_noise_2d(x * level->frequency + offset.x, y * level->frequency + offset.y), function.ridge_factor, function.curve_factor) * level->amplitude;
 }
 
-double NoiseGenerator::get2DLevel(int level, double x, double y)
+double NoiseGenerator::get2DLevel(int level, double x, double y) const
 {
     if (level >= 0 && level < level_count)
     {
@@ -448,7 +448,7 @@ double NoiseGenerator::get2DLevel(int level, double x, double y)
     }
 }
 
-double NoiseGenerator::get2DTotal(double x, double y)
+double NoiseGenerator::get2DTotal(double x, double y) const
 {
     int level;
     double result;
@@ -461,7 +461,7 @@ double NoiseGenerator::get2DTotal(double x, double y)
     return result + height_offset;
 }
 
-double NoiseGenerator::get2DDetail(double x, double y, double detail)
+double NoiseGenerator::get2DDetail(double x, double y, double detail) const
 {
     int level;
     double result, height, factor;
@@ -488,12 +488,12 @@ double NoiseGenerator::get2DDetail(double x, double y, double detail)
 
 
 
-inline double NoiseGenerator::_get3DLevelValue(NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x, double y, double z)
+inline double NoiseGenerator::_get3DLevelValue(const NoiseLevel* level, const NoiseState::NoiseOffset &offset, double x, double y, double z) const
 {
     return level->minvalue + _fixValue(_func_noise_3d(x * level->frequency + offset.x, y * level->frequency + offset.y, z * level->frequency + offset.z), function.ridge_factor, function.curve_factor) * level->amplitude;
 }
 
-double NoiseGenerator::get3DLevel(int level, double x, double y, double z)
+double NoiseGenerator::get3DLevel(int level, double x, double y, double z) const
 {
     if (level >= 0 && level < level_count)
     {
@@ -505,7 +505,7 @@ double NoiseGenerator::get3DLevel(int level, double x, double y, double z)
     }
 }
 
-double NoiseGenerator::get3DTotal(double x, double y, double z)
+double NoiseGenerator::get3DTotal(double x, double y, double z) const
 {
     int level;
     double result;
@@ -518,7 +518,7 @@ double NoiseGenerator::get3DTotal(double x, double y, double z)
     return result + height_offset;
 }
 
-double NoiseGenerator::get3DDetail(double x, double y, double z, double detail)
+double NoiseGenerator::get3DDetail(double x, double y, double z, double detail) const
 {
     int level;
     double result, height, factor;
