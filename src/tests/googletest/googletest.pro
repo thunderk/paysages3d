@@ -15,10 +15,7 @@ QMAKE_CXXFLAGS += -pthread -Wno-missing-field-initializers
 
 INCLUDEPATH += ./sources ./sources/include
 
-SOURCES += \
-    sources/src/gtest-all.cc
-
-HEADERS +=
+SOURCES += sources/src/gtest-all.cc
 
 unix:!symbian {
     maemo5 {

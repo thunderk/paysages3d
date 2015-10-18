@@ -6,14 +6,8 @@ CONFIG += qt plugin
 TARGET = $$qtLibraryTarget($$TARGET)
 uri = Paysages
 
-# Input
-SOURCES += \
-    extension_plugin.cpp \
-    paysages.cpp
-
-HEADERS += \
-    extension_plugin.h \
-    paysages.h
+SOURCES += $$files(*.cpp)
+HEADERS += $$files(*.h)
 
 OTHER_FILES = qmldir
 

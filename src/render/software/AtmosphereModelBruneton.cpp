@@ -1147,11 +1147,15 @@ int brunetonInit()
     return 1;
 }
 
-static const int _init = brunetonInit();
+static int _inited;
 
 AtmosphereModelBruneton::AtmosphereModelBruneton(SoftwareRenderer *parent):
     parent(parent)
 {
+    if (not _inited)
+    {
+        _inited = brunetonInit();
+    }
 }
 
 AtmosphereModelBruneton::~AtmosphereModelBruneton()

@@ -13,62 +13,8 @@ DEFINES += BASICS_LIBRARY
 
 include(../common.pri)
 
-SOURCES += \
-    NoiseGenerator.cpp \
-    NoiseFunctionPerlin.cpp \
-    NoiseFunctionSimplex.cpp \
-    Interpolation.cpp \
-    Vector3.cpp \
-    Vector3.inline.cpp \
-    SpaceSegment.cpp \
-    Color.cpp \
-    Color.inline.cpp \
-    ColorHSL.cpp \
-    BoundingBox.cpp \
-    Matrix4.cpp \
-    Curve.cpp \
-    ColorProfile.cpp \
-    Geometry.cpp \
-    Texture2D.cpp \
-    Texture3D.cpp \
-    Texture4D.cpp \
-    NoiseState.cpp \
-    FractalNoise.cpp \
-    CappedCylinder.cpp \
-    InfiniteCylinder.cpp \
-    InfiniteRay.cpp \
-    Sphere.cpp \
-    InfinitePlane.cpp \
-    Disk.cpp \
-    SpaceGridIterator.cpp
-
-HEADERS +=\
-        basics_global.h \
-    NoiseGenerator.h \
-    NoiseFunctionPerlin.h \
-    NoiseFunctionSimplex.h \
-    Interpolation.h \
-    Vector3.h \
-    SpaceSegment.h \
-    Color.h \
-    ColorHSL.h \
-    BoundingBox.h \
-    Matrix4.h \
-    Curve.h \
-    ColorProfile.h \
-    Geometry.h \
-    Texture2D.h \
-    Texture3D.h \
-    Texture4D.h \
-    NoiseState.h \
-    FractalNoise.h \
-    CappedCylinder.h \
-    InfiniteCylinder.h \
-    InfiniteRay.h \
-    Sphere.h \
-    InfinitePlane.h \
-    Disk.h \
-    SpaceGridIterator.h
+SOURCES += $$files(*.cpp)
+HEADERS += $$files(*.h)
 
 unix:!symbian {
     maemo5 {

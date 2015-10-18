@@ -5,6 +5,11 @@
 
 std::string DataFile::findFile(const std::string &relpath)
 {
+    if (dataDir.empty())
+    {
+        dataDir = initDataDir();
+    }
+
     QDir dir(QString::fromStdString(dataDir));
     if (dir.exists(QString::fromStdString(relpath)))
     {
@@ -69,4 +74,4 @@ std::string DataFile::initDataDir()
     }
 }
 
-std::string DataFile::dataDir = DataFile::initDataDir();
+std::string DataFile::dataDir;

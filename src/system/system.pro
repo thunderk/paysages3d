@@ -13,42 +13,8 @@ DEFINES += SYSTEM_LIBRARY
 
 include(../common.pri)
 
-SOURCES += \
-    Thread.cpp \
-    Mutex.cpp \
-    System.cpp \
-    PackStream.cpp \
-    RandomGenerator.cpp \
-    Memory.cpp \
-    ParallelWork.cpp \
-    CacheFile.cpp \
-    PictureWriter.cpp \
-    Logs.cpp \
-    ParallelPool.cpp \
-    ParallelWorker.cpp \
-    Semaphore.cpp \
-    FileSystem.cpp \
-    DataFile.cpp \
-    Time.cpp
-
-HEADERS += \
-    system_global.h \
-    Thread.h \
-    Mutex.h \
-    System.h \
-    PackStream.h \
-    RandomGenerator.h \
-    Memory.h \
-    ParallelWork.h \
-    CacheFile.h \
-    PictureWriter.h \
-    Logs.h \
-    ParallelPool.h \
-    ParallelWorker.h \
-    Semaphore.h \
-    FileSystem.h \
-    DataFile.h \
-    Time.h
+SOURCES += $$files(*.cpp)
+HEADERS += $$files(*.h)
 
 unix:!symbian {
     maemo5 {
