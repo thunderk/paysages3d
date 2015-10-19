@@ -13,102 +13,11 @@ DEFINES += SOFTWARE_LIBRARY
 
 include(../../common.pri)
 
-SOURCES += SoftwareRenderer.cpp \
-    FluidMediumInterface.cpp \
-    FluidMediumManager.cpp \
-    AtmosphereRenderer.cpp \
-    CloudsRenderer.cpp \
-    BaseCloudLayerRenderer.cpp \
-    SkyRasterizer.cpp \
-    CloudBasicLayerRenderer.cpp \
-    clouds/BaseCloudsModel.cpp \
-    clouds/CloudModelStratoCumulus.cpp \
-    TerrainRasterizer.cpp \
-    WaterRasterizer.cpp \
-    LightingManager.cpp \
-    LightStatus.cpp \
-    LightFilter.cpp \
-    LightComponent.cpp \
-    AtmosphereResult.cpp \
-    AtmosphereModelBruneton.cpp \
-    TerrainRenderer.cpp \
-    TexturesRenderer.cpp \
-    WaterRenderer.cpp \
-    RayCastingManager.cpp \
-    NightSky.cpp \
-    TerrainRayWalker.cpp \
-    VegetationModelRenderer.cpp \
-    Canvas.cpp \
-    CanvasPortion.cpp \
-    CanvasPixel.cpp \
-    CanvasFragment.cpp \
-    SoftwareCanvasRenderer.cpp \
-    Rasterizer.cpp \
-    CanvasLiveClient.cpp \
-    CanvasPreview.cpp \
-    RenderConfig.cpp \
-    CanvasPixelShader.cpp \
-    CanvasPictureWriter.cpp \
-    clouds/CloudModelAltoCumulus.cpp \
-    clouds/CloudModelCirrus.cpp \
-    clouds/CloudModelCumuloNimbus.cpp \
-    RenderProgress.cpp \
-    LightSource.cpp \
-    RayCastingResult.cpp \
-    GodRaysSampler.cpp \
-    GodRaysResult.cpp \
-    VegetationRasterizer.cpp \
-    VegetationRenderer.cpp \
-    VegetationResult.cpp
+SOURCES += $$files(*.cpp)
+HEADERS += $$files(*.h)
 
-HEADERS += SoftwareRenderer.h\
-        software_global.h \
-    FluidMediumInterface.h \
-    FluidMediumManager.h \
-    AtmosphereRenderer.h \
-    CloudsRenderer.h \
-    BaseCloudLayerRenderer.h \
-    SkyRasterizer.h \
-    CloudBasicLayerRenderer.h \
-    clouds/BaseCloudsModel.h \
-    clouds/CloudModelStratoCumulus.h \
-    TerrainRasterizer.h \
-    WaterRasterizer.h \
-    LightingManager.h \
-    LightStatus.h \
-    LightFilter.h \
-    LightComponent.h \
-    AtmosphereResult.h \
-    AtmosphereModelBruneton.h \
-    TerrainRenderer.h \
-    TexturesRenderer.h \
-    WaterRenderer.h \
-    RayCastingManager.h \
-    NightSky.h \
-    TerrainRayWalker.h \
-    VegetationModelRenderer.h \
-    Canvas.h \
-    CanvasPortion.h \
-    CanvasPixel.h \
-    CanvasFragment.h \
-    SoftwareCanvasRenderer.h \
-    Rasterizer.h \
-    CanvasLiveClient.h \
-    CanvasPreview.h \
-    RenderConfig.h \
-    CanvasPixelShader.h \
-    CanvasPictureWriter.h \
-    clouds/CloudModelAltoCumulus.h \
-    clouds/CloudModelCirrus.h \
-    clouds/CloudModelCumuloNimbus.h \
-    RenderProgress.h \
-    LightSource.h \
-    RayCastingResult.h \
-    GodRaysSampler.h \
-    GodRaysResult.h \
-    VegetationRasterizer.h \
-    VegetationRenderer.h \
-    VegetationResult.h
+SOURCES += $$files(clouds/*.cpp)
+HEADERS += $$files(clouds/*.h)
 
 unix:!symbian {
     maemo5 {

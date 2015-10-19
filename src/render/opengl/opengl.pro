@@ -13,29 +13,8 @@ DEFINES += OPENGL_LIBRARY
 
 include(../../common.pri)
 
-SOURCES += \
-    OpenGLRenderer.cpp \
-    ExplorerChunkTerrain.cpp \
-    OpenGLShaderProgram.cpp \
-    OpenGLPart.cpp \
-    OpenGLSkybox.cpp \
-    OpenGLWater.cpp \
-    OpenGLSharedState.cpp \
-    OpenGLVariable.cpp \
-    OpenGLTerrain.cpp
-
-HEADERS +=\
-    opengl_global.h \
-    OpenGLRenderer.h \
-    ExplorerChunkTerrain.h \
-    OpenGLShaderProgram.h \
-    OpenGLPart.h \
-    OpenGLSkybox.h \
-    OpenGLWater.h \
-    OpenGLSharedState.h \
-    OpenGLVariable.h \
-    OpenGLTerrain.h \
-    VertexArray.h
+SOURCES += $$files(*.cpp)
+HEADERS += $$files(*.h)
 
 unix:!symbian {
     maemo5 {

@@ -4,16 +4,8 @@ QT += qml quick widgets
 
 include(../../../common.pri)
 
-SOURCES += main.cpp \
-    OpenGLView.cpp \
-    MainModelerWindow.cpp \
-    WaterModeler.cpp \
-    AtmosphereModeler.cpp \
-    RenderPreviewProvider.cpp \
-    RenderProcess.cpp \
-    ModelerCameras.cpp \
-    FloatPropertyBind.cpp \
-    IntPropertyBind.cpp
+SOURCES += $$files(*.cpp)
+HEADERS += $$files(*.h)
 
 RESOURCES += \
     qml/app.qrc
@@ -25,18 +17,6 @@ QML_IMPORT_PATH = ../extension
 
 # Default rules for deployment.
 include(deployment.pri)
-
-HEADERS += \
-    OpenGLView.h \
-    modeler_global.h \
-    MainModelerWindow.h \
-    WaterModeler.h \
-    AtmosphereModeler.h \
-    RenderPreviewProvider.h \
-    RenderProcess.h \
-    ModelerCameras.h \
-    FloatPropertyBind.h \
-    IntPropertyBind.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../../system/release/ -lpaysages_system
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../../system/debug/ -lpaysages_system

@@ -6,44 +6,8 @@ TARGET = paysages-tests
 
 include(../common.pri)
 
-SOURCES += main.cpp \
-    Layers_Test.cpp \
-    PackStream_Test.cpp \
-    NoiseGenerator_Test.cpp \
-    TerrainPainting_Test.cpp \
-    Zone_Test.cpp \
-    Euclid_Test.cpp \
-    Camera_Test.cpp \
-    Clouds_Test.cpp \
-    FluidMediumManager_Test.cpp \
-    VertexArray_Test.cpp \
-    FractalNoise_Test.cpp \
-    SpaceSegment_Test.cpp \
-    Canvas_Test.cpp \
-    CanvasPortion_Test.cpp \
-    CanvasPixel_Test.cpp \
-    CanvasPreview_Test.cpp \
-    AtmosphereDefinition_Test.cpp \
-    Scenery_Test.cpp \
-    DefinitionNode_Test.cpp \
-    FloatNode_Test.cpp \
-    DiffManager_Test.cpp \
-    ColorHSL_Test.cpp \
-    RenderProgress_Test.cpp \
-    IntNode_Test.cpp \
-    LightingManager_Test.cpp \
-    GodRaysSampler_Test.cpp \
-    Interpolation_Test.cpp \
-    Rasterizer_Test.cpp \
-    CappedCylinder_Test.cpp \
-    InfiniteCylinder_Test.cpp \
-    Sphere_Test.cpp \
-    InfinitePlane_Test.cpp \
-    Disk_Test.cpp \
-    Vector3_Test.cpp
-
-HEADERS += \
-    BaseTestCase.h
+SOURCES += $$files(*.cpp)
+HEADERS += $$files(*.h)
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/googletest/release/ -lgoogletest
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/googletest/debug/ -lgoogletest
