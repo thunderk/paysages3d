@@ -55,6 +55,7 @@ private:
 VegetationRenderer::VegetationRenderer(SoftwareRenderer *parent):
     parent(parent)
 {
+    enabled = true;
 }
 
 void VegetationRenderer::setEnabled(bool enabled)
