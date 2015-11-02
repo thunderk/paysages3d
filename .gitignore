@@ -24,3 +24,5 @@ ui_*.h
 /paysages3d-linux.tar.bz2
 /config.vim
 /callgrind.out.*
+*.p3d
+

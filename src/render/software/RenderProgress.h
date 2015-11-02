@@ -42,14 +42,21 @@ public:
      *
      * Returns 0 if unknown.
      */
-    unsigned long estimateRemainingTime() const;
+    unsigned long estimateRemainingTime();
 
 private:
     Mutex *lock;
+
     double global;
     double step;
+
     unsigned long start_time;
     unsigned long end_time;
+
+    unsigned long prev_est_spent;
+    double prev_est_done;
+    double prev_est_speed;
+
     std::stack<RenderSub> subs;
 };
 
