@@ -59,3 +59,18 @@ TEST(SpaceSegment, iterateOnGrid_Negative)
     ASSERT_EQ(1, (int)it.locations.size());
     EXPECT_VECTOR3_COORDS(it.locations[0], -9.0, -9.0, -9.0);
 }
+
+TEST(SpaceSegment, intersectBoundingBox)
+{
+    SpaceSegment bbox(Vector3(-1.0, -1.0, -1.0), Vector3(1.0, 4.0, 1.0));
+
+    EXPECT_TRUE(SpaceSegment(Vector3(0.0, 0.0, 0.0), Vector3(1.0, 1.0, 1.0)).intersectBoundingBox(bbox));
+
+    EXPECT_TRUE(SpaceSegment(Vector3(-5.0, 0.0, 0.0), Vector3(5.0, 0.0, 0.0)).intersectBoundingBox(bbox));
+    EXPECT_FALSE(SpaceSegment(Vector3(-5.0, -2.0, 0.0), Vector3(5.0, -2.0, 0.0)).intersectBoundingBox(bbox));
+
+    EXPECT_TRUE(SpaceSegment(Vector3(-5.0, 0.0, -5.0), Vector3(5.0, 0.0, 5.0)).intersectBoundingBox(bbox));
+    EXPECT_FALSE(SpaceSegment(Vector3(-5.0, -2.0, 0.0), Vector3(5.0, -2.0, 5.0)).intersectBoundingBox(bbox));
+
+    EXPECT_FALSE(SpaceSegment(Vector3(-10.0, 0.0, 0.0), Vector3(10.0, -6.0, 0.0)).intersectBoundingBox(bbox));
+}

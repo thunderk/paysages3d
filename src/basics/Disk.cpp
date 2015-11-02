@@ -2,10 +2,6 @@
 
 #include "PackStream.h"
 
-Disk::Disk()
-{
-}
-
 Disk::Disk(const Vector3 &point, const Vector3 &normal, double radius):
     InfinitePlane(point, normal), radius(radius)
 {

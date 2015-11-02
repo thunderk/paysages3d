@@ -17,6 +17,12 @@
 #include "LightFilter.h"
 #include "GodRaysSampler.h"
 #include "Rasterizer.h"
+#include "SpaceSegment.h"
+#include "OverlayRasterizer.h"
+#include "VegetationModelDefinition.h"
+#include "VegetationInstance.h"
+#include "VegetationRenderer.h"
+#include "RayCastingResult.h"
 
 #include <sstream>
 
@@ -251,6 +257,50 @@ static void testSunNearHorizon()
     }
 }
 
+static void testVegetationModels()
+{
+    class TestRasterizer: public OverlayRasterizer
+    {
+    public:
+        TestRasterizer(SoftwareCanvasRenderer *renderer, const VegetationModelDefinition &model):
+            OverlayRasterizer(renderer, renderer->getProgressHelper()),
+            instance(model, VECTOR_ZERO),
+            vegetation(renderer->getVegetationRenderer())
+        {
+        }
+
+        virtual Color processPixel(int, int, double relx, double rely) const override
+        {
+            relx *= 0.75;
+            rely *= 0.75;
+            SpaceSegment segment(Vector3(relx, rely + 0.5, -5.0), Vector3(relx, rely + 0.5, 5.0));
+            RayCastingResult result = vegetation->renderInstance(segment, instance, false, true);
+            return result.hit ? result.hit_color : Color(0.6, 0.7, 0.9);
+        }
+
+        VegetationInstance instance;
+        VegetationRenderer *vegetation;
+    };
+
+    Scenery scenery;
+    scenery.autoPreset(1);
+    scenery.getClouds()->clear();
+    scenery.getTerrain()->propWaterHeight()->setValue(1.0);
+    scenery.getCamera()->setTarget(VECTOR_ZERO);
+    scenery.getCamera()->setLocation(Vector3(0.0, 0.0, -5.0));
+    int width = 800;
+    int height = 800;
+
+    SoftwareCanvasRenderer renderer(&scenery);
+    renderer.setSize(width, height);
+    renderer.setQuality(0.5);
+
+    VegetationModelDefinition model(NULL);
+    renderer.setSoloRasterizer(new TestRasterizer(&renderer, model));
+
+    startTestRender(&renderer, "vegetation_model_basic");
+}
+
 void runTestSuite()
 {
     testGroundShadowQuality();
@@ -260,4 +310,5 @@ void runTestSuite()
     testNearFrustum();
     testCloudsNearGround();
     testSunNearHorizon();
+    testVegetationModels();
 }

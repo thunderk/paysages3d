@@ -113,7 +113,6 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
         material.shininess = 3.0;
         material.hardness = 0.3;
         material.validate();
-        // FIXME Can't use reference to temporary material
         return VegetationResult(location, normal, material);
     }
     else

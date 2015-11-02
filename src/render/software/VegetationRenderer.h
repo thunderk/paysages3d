@@ -34,6 +34,11 @@ public:
      */
     RayCastingResult getResult(const SpaceSegment &segment, bool only_hit=false);
 
+    /**
+     * Perform ray casting on a squared region.
+     */
+    RayCastingResult getBoundResult(const SpaceSegment &segment, double x, double z, bool only_hit=false, double xsize=1.0, double zsize=1.0);
+
     virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override;
 
 private:

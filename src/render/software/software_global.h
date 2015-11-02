@@ -36,6 +36,7 @@ namespace software {
     class WaterRenderer;
 
     class Rasterizer;
+    class OverlayRasterizer;
     class SkyRasterizer;
     class TerrainRasterizer;
 

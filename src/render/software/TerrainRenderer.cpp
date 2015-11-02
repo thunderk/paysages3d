@@ -220,3 +220,18 @@ bool TerrainRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
         return true;
     }
 }
+
+void TerrainRenderer::estimateMinMaxHeight(double x1, double z1, double x2, double z2, double *ymin, double *ymax)
+{
+    double y1 = getHeight(x1, z1, true);
+    double y2 = getHeight(x2, z2, true);
+
+    // TODO Add quality factor
+    // TODO Use all 4 corners
+    // TODO Apply max slope
+    // TODO Estimate displacement
+
+    std::pair<double, double>minmax = std::minmax(y1, y2);
+    *ymin = minmax.first;
+    *ymax = minmax.second;
+}

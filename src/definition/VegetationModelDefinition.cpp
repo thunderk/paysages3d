@@ -119,7 +119,6 @@ static void addBranchRecurse(std::vector<CappedCylinder> &branches, const Vector
     if (length > 0.1)
     {
         int split_count = 3;
-        Vector3 new_base = base.add(direction.scale(length));
         Matrix4 pivot1 = Matrix4::newRotateAxis(randomizeValue(1.0 - 0.6 * length, 0.9, 1.1), VECTOR_EAST);
         Vector3 new_direction = pivot1.multPoint(direction);
         for (int i = 0; i < split_count; i++)
@@ -127,7 +126,8 @@ static void addBranchRecurse(std::vector<CappedCylinder> &branches, const Vector
             Matrix4 pivot2 = Matrix4::newRotateAxis(randomizeValue(M_PI * 2.0 / (double)split_count, 0.9, 1.1), direction);
             new_direction = pivot2.multPoint(new_direction);
 
-            addBranchRecurse(branches, new_base, new_direction, randomizeValue(radius, 0.65, 0.75), randomizeValue(length, 0.55, 0.65));
+            Vector3 new_base = base.add(direction.scale(randomizeValue(length, 0.4, 1.0)));
+            addBranchRecurse(branches, new_base, new_direction, randomizeValue(radius, 0.45, 0.6), randomizeValue(length, 0.55, 0.85));
         }
     }
 }
@@ -140,7 +140,7 @@ void VegetationModelDefinition::randomize()
     foliage_items.clear();
 
     // Add trunk and branches
-    addBranchRecurse(solid_volumes, VECTOR_ZERO, VECTOR_UP, 0.05, 0.5);
+    addBranchRecurse(solid_volumes, VECTOR_ZERO, VECTOR_UP, 0.04, 0.5);
 
     // Add foliage groups
     for (const auto &branch: solid_volumes)
@@ -150,7 +150,7 @@ void VegetationModelDefinition::randomize()
         {
             double radius = length * 0.5;
             Vector3 center = branch.getAxis().getOrigin().add(branch.getAxis().getDirection().scale(radius));
-            foliage_groups.push_back(Sphere(center, radius * 5.0));
+            foliage_groups.push_back(Sphere(center, radius * 3.0));
         }
     }
 
@@ -159,7 +159,7 @@ void VegetationModelDefinition::randomize()
     {
         double radius = 0.15;
         Vector3 dir = Vector3::randomInSphere(1.0 - radius);
-        Vector3 normal = dir.add(Vector3::randomInSphere(0.4)).add(Vector3(0.0, 0.6, 0.0)).normalize();
+        Vector3 normal = dir.add(Vector3::randomInSphere(0.4)).add(Vector3(0.0, 0.3, 0.0)).normalize();
         Disk leaf(dir, normal, randomizeValue(radius, 0.8, 1.0));
         foliage_items.push_back(leaf);
     }

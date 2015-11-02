@@ -21,8 +21,8 @@
 class VegetationGridIterator: public SpaceGridIterator
 {
 public:
-    VegetationGridIterator(const SpaceSegment &segment, VegetationRenderer *renderer, VegetationLayerDefinition *layer, bool only_hit):
-        segment(segment), renderer(renderer), layer(layer), only_hit(only_hit)
+    VegetationGridIterator(const SpaceSegment &segment, VegetationRenderer *renderer, bool only_hit):
+        segment(segment), renderer(renderer), only_hit(only_hit)
     {
     }
 
@@ -30,24 +30,12 @@ public:
 
     virtual bool onCell(int x, int, int z) override
     {
-        std::vector<VegetationInstance> instances;
-
-        layer->getPresence()->collectInstances(&instances, *layer->getModel(), x - 0.5, z - 0.5, x + 0.5, z + 0.5);
-
-        for (auto &instance: instances)
-        {
-            result = renderer->renderInstance(segment, instance, only_hit);
-            if (result.hit)
-            {
-                return false;
-            }
-        }
-        return true;
+        result = renderer->getBoundResult(segment, (double)x, (double)z, only_hit);
+        return not result.hit;
     }
 private:
     const SpaceSegment &segment;
     VegetationRenderer *renderer;
-    VegetationLayerDefinition *layer;
     RayCastingResult result;
     bool only_hit;
 };
@@ -97,17 +85,11 @@ RayCastingResult VegetationRenderer::getResult(const SpaceSegment &segment, bool
 {
     if (enabled)
     {
-        VegetationDefinition *vegetation = parent->getScenery()->getVegetation();
-        int n = vegetation->count();
-        // TODO Don't stop at first layer, find the nearest hit
-        for (int i = 0; i < n; i++)
+        // Find instances potentially crossing the segment
+        VegetationGridIterator it(segment, this, only_hit);
+        if (not segment.projectedOnYPlane().iterateOnGrid(it))
         {
-            // Find instances potentially crossing the segment
-            VegetationGridIterator it(segment, this, vegetation->getVegetationLayer(i), only_hit);
-            if (not segment.projectedOnYPlane().iterateOnGrid(it))
-            {
-                return it.getResult();
-            }
+            return it.getResult();
         }
         return RayCastingResult();
     }
@@ -115,6 +97,42 @@ RayCastingResult VegetationRenderer::getResult(const SpaceSegment &segment, bool
     {
         return RayCastingResult();
     }
+}
+
+RayCastingResult VegetationRenderer::getBoundResult(const SpaceSegment &segment, double x, double z, bool only_hit, double xsize, double zsize)
+{
+    // Early check if we may cross any vegetation
+    double ymin, ymax;
+    double vegetation_max_height = 0.0;  // TODO
+    parent->getTerrainRenderer()->estimateMinMaxHeight(x, z, x + xsize, z + zsize, &ymin, &ymax);
+    ymax += vegetation_max_height;
+    SpaceSegment bbox(Vector3(x, ymin, z), Vector3(x + xsize, ymax, z + zsize));
+    if (not segment.intersectBoundingBox(bbox)) {
+        return RayCastingResult();
+    }
+
+    // Iterate all layers and instances
+    VegetationDefinition *vegetation = parent->getScenery()->getVegetation();
+    int n = vegetation->count();
+    for (int i = 0; i < n; i++)
+    {
+        VegetationLayerDefinition *layer = vegetation->getVegetationLayer(i);
+
+        std::vector<VegetationInstance> instances;
+        layer->getPresence()->collectInstances(&instances, *layer->getModel(), x, z, x + xsize, z + zsize);
+
+        for (auto &instance: instances)
+        {
+            RayCastingResult result = renderInstance(segment, instance, only_hit);
+            if (result.hit)
+            {
+                // TODO Don't stop at first hit, find the nearest one
+                return result;
+            }
+        }
+    }
+
+    return RayCastingResult();
 }
 
 bool VegetationRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
