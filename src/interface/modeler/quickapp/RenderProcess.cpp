@@ -211,9 +211,9 @@ void RenderProcess::timerEvent(QTimerEvent *)
         if (rendering)
         {
             unsigned long remaining = renderer->getProgressHelper()->estimateRemainingTime();
-            if (remaining > 10000)
+            if (remaining > 0)
             {
-                t = QTime(0, 0, 0).addMSecs(remaining);
+                t = QTime(0, 0, 0).addMSecs(999 + remaining);
                 info += " - Remaining: ~" + t.toString("hh:mm:ss");
             }
         }
