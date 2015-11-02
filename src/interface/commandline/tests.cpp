@@ -295,10 +295,14 @@ static void testVegetationModels()
     renderer.setSize(width, height);
     renderer.setQuality(0.5);
 
-    VegetationModelDefinition model(NULL);
-    renderer.setSoloRasterizer(new TestRasterizer(&renderer, model));
+    for (int i = 0; i < 10; i++)
+    {
+        // TODO Make random sequence repeatable
+        VegetationModelDefinition model(NULL);
+        renderer.setSoloRasterizer(new TestRasterizer(&renderer, model));
 
-    startTestRender(&renderer, "vegetation_model_basic");
+        startTestRender(&renderer, "vegetation_model_basic", i);
+    }
 }
 
 void runTestSuite()

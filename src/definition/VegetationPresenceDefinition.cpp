@@ -19,6 +19,16 @@ VegetationPresenceDefinition::VegetationPresenceDefinition(VegetationLayerDefini
 
 bool VegetationPresenceDefinition::collectInstances(std::vector<VegetationInstance> *result, const VegetationModelDefinition &model, double xmin, double zmin, double xmax, double zmax, bool outcomers) const
 {
+    if (outcomers)
+    {
+        // Expand the area to include outcoming instances
+        double max_radius = getMaxHeight();
+        xmin -= max_radius;
+        zmin -= max_radius;
+        xmax += max_radius;
+        zmax += max_radius;
+    }
+
     bool added = 0;
 
     const NoiseGenerator *generator = noise->getGenerator();
@@ -45,4 +55,9 @@ bool VegetationPresenceDefinition::collectInstances(std::vector<VegetationInstan
     }
 
     return added > 0;
+}
+
+double VegetationPresenceDefinition::getMaxHeight() const
+{
+    return 0.3;
 }

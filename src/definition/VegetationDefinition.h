@@ -21,6 +21,11 @@ public:
      */
     inline VegetationLayerDefinition* getVegetationLayer(int position) const {return (VegetationLayerDefinition*)getLayer(position);}
 
+    /**
+     * Get the max height of all layers assembled.
+     */
+    double getMaxHeight() const;
+
     typedef enum
     {
         VEGETATION_PRESET_TEMPERATE

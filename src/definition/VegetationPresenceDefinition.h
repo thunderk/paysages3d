@@ -27,6 +27,8 @@ public:
      */
     bool collectInstances(std::vector<VegetationInstance> *result, const VegetationModelDefinition &model, double xmin, double zmin, double xmax, double zmax, bool outcomers=true) const;
 
+    double getMaxHeight() const;
+
 private:
     NoiseNode *noise;
     FloatNode *interval;

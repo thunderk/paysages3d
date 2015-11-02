@@ -13,6 +13,23 @@ VegetationDefinition::VegetationDefinition(DefinitionNode* parent) :
 {
 }
 
+double VegetationDefinition::getMaxHeight() const
+{
+    double max_height = 0.0;
+    int n = count();
+
+    for (int i = 0; i < n; i++)
+    {
+        double layer_height = getVegetationLayer(i)->getMaxHeight();
+        if (layer_height > max_height)
+        {
+            max_height = layer_height;
+        }
+    }
+
+    return max_height;
+}
+
 void VegetationDefinition::applyPreset(VegetationPreset preset)
 {
     VegetationLayerDefinition *layer;

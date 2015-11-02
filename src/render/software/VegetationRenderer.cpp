@@ -101,18 +101,18 @@ RayCastingResult VegetationRenderer::getResult(const SpaceSegment &segment, bool
 
 RayCastingResult VegetationRenderer::getBoundResult(const SpaceSegment &segment, double x, double z, bool only_hit, double xsize, double zsize)
 {
+    VegetationDefinition *vegetation = parent->getScenery()->getVegetation();
+
     // Early check if we may cross any vegetation
     double ymin, ymax;
-    double vegetation_max_height = 0.0;  // TODO
     parent->getTerrainRenderer()->estimateMinMaxHeight(x, z, x + xsize, z + zsize, &ymin, &ymax);
-    ymax += vegetation_max_height;
+    ymax += vegetation->getMaxHeight();
     SpaceSegment bbox(Vector3(x, ymin, z), Vector3(x + xsize, ymax, z + zsize));
     if (not segment.intersectBoundingBox(bbox)) {
         return RayCastingResult();
     }
 
     // Iterate all layers and instances
-    VegetationDefinition *vegetation = parent->getScenery()->getVegetation();
     int n = vegetation->count();
     for (int i = 0; i < n; i++)
     {

@@ -19,6 +19,8 @@ public:
     inline const VegetationPresenceDefinition *getPresence() const {return presence;}
     inline const VegetationModelDefinition *getModel() const {return model;}
 
+    double getMaxHeight() const;
+
     typedef enum
     {
         VEGETATION_BASIC_TREES
