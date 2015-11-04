@@ -158,9 +158,10 @@ void VegetationModelDefinition::randomize()
     for (int i = 0; i < 50; i++)
     {
         double radius = 0.15;
+        double scale = randomizeValue(radius, 0.5, 1.0);
         Vector3 dir = Vector3::randomInSphere(1.0 - radius);
         Vector3 normal = dir.add(Vector3::randomInSphere(0.4)).add(Vector3(0.0, 0.3, 0.0)).normalize();
-        Disk leaf(dir, normal, randomizeValue(radius, 0.8, 1.0));
+        Disk leaf(dir, normal, scale);
         foliage_items.push_back(leaf);
     }
 }

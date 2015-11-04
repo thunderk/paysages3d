@@ -69,11 +69,26 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
 
             for (const auto &leaf: model->getFoliageItems())
             {
-                Disk sized_leaf(leaf.getPoint(), leaf.getNormal(), leaf.getRadius() * leaf.getRadius() / foliage.getRadius());
-                if (sized_leaf.checkRayIntersection(subray, &near) == 1)
+                Sphere leafcap(leaf.getPoint(), leaf.getRadius() * leaf.getRadius() / foliage.getRadius());
+                // TODO Add cap intersection to Sphere class
+                Vector3 capnear, capfar;
+                if (leafcap.checkRayIntersection(subray, &capnear, &capfar) == 2)
                 {
-                    near = near.scale(foliage.getRadius()).add(foliage.getCenter());
-                    distance = ray.getCursor(near);
+                    if (capnear.sub(leaf.getPoint()).normalize().dotProduct(leaf.getNormal()) < 0.5)
+                    {
+                        if (capfar.sub(leaf.getPoint()).normalize().dotProduct(leaf.getNormal()) < 0.5)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            capnear = capfar;
+                        }
+                    }
+
+                    Vector3 capnormal = capnear.sub(leaf.getPoint()).normalize();
+                    capnear = capnear.scale(foliage.getRadius()).add(foliage.getCenter());
+                    distance = ray.getCursor(capnear);
 
                     if (distance >= 0.0 and distance <= maximal)
                     {
@@ -89,8 +104,8 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
                             nearest = distance;
 
                             hit = true;
-                            location = near;
-                            normal = sized_leaf.getNormal();
+                            location = capnear;
+                            normal = capnormal;
 
                             if (normal.dotProduct(location.sub(segment.getStart())) > 0.0)
                             {
@@ -109,9 +124,9 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
     if (hit)
     {
         SurfaceMaterial material(result);
-        material.reflection = 0.003;
-        material.shininess = 3.0;
-        material.hardness = 0.3;
+        material.reflection = 0.001;
+        material.shininess = 2.0;
+        material.hardness = 0.1;
         material.validate();
         return VegetationResult(location, normal, material);
     }
