@@ -14,6 +14,8 @@ public:
     SurfaceMaterial(const SurfaceMaterial &other);
     ~SurfaceMaterial();
 
+    static const SurfaceMaterial &getDefault();
+
     void setColor(double r, double g, double b, double a);
 
     void save(PackStream *stream) const;

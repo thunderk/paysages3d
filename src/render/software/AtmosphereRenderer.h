@@ -14,8 +14,8 @@ public:
     BaseAtmosphereRenderer(SoftwareRenderer* parent);
     virtual ~BaseAtmosphereRenderer() {}
 
-    virtual AtmosphereResult applyAerialPerspective(Vector3 location, Color base);
-    virtual AtmosphereResult getSkyColor(Vector3 direction);
+    virtual AtmosphereResult applyAerialPerspective(const Vector3 &location, const Color &base);
+    virtual AtmosphereResult getSkyColor(const Vector3 &direction);
     virtual Vector3 getSunDirection(bool cache=true) const;
 
     virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override;
@@ -31,8 +31,8 @@ public:
     SoftwareBrunetonAtmosphereRenderer(SoftwareRenderer* parent);
     virtual ~SoftwareBrunetonAtmosphereRenderer();
 
-    virtual AtmosphereResult applyAerialPerspective(Vector3 location, Color base) override;
-    virtual AtmosphereResult getSkyColor(Vector3 direction) override;
+    virtual AtmosphereResult applyAerialPerspective(const Vector3 &location, const Color &base) override;
+    virtual AtmosphereResult getSkyColor(const Vector3 &direction) override;
 
     virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override;
 

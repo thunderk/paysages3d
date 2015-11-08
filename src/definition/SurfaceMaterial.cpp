@@ -3,6 +3,8 @@
 #include "PackStream.h"
 #include "Color.h"
 
+static SurfaceMaterial DEFAULT;
+
 SurfaceMaterial::SurfaceMaterial():
     SurfaceMaterial(COLOR_BLACK)
 {
@@ -26,6 +28,11 @@ SurfaceMaterial::SurfaceMaterial(const SurfaceMaterial &other):
 SurfaceMaterial::~SurfaceMaterial()
 {
     delete base;
+}
+
+const SurfaceMaterial &SurfaceMaterial::getDefault()
+{
+    return DEFAULT;
 }
 
 void SurfaceMaterial::setColor(double r, double g, double b, double a)

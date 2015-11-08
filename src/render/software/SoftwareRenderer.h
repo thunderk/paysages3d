@@ -59,7 +59,7 @@ public:
     inline GodRaysSampler* getGodRaysSampler() const {return godrays;}
 
     virtual Color applyLightingToSurface(const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material);
-    virtual Color applyMediumTraversal(Vector3 location, Color color);
+    virtual Color applyMediumTraversal(const Vector3 &location, const Color &color);
     virtual RayCastingResult rayWalking(const Vector3 &location, const Vector3 &direction, int terrain, int water, int sky, int clouds);
 
 private:
