@@ -83,7 +83,7 @@ BaseAtmosphereRenderer::BaseAtmosphereRenderer(SoftwareRenderer* renderer):
 {
 }
 
-AtmosphereResult BaseAtmosphereRenderer::applyAerialPerspective(Vector3, Color base)
+AtmosphereResult BaseAtmosphereRenderer::applyAerialPerspective(const Vector3 &, const Color &base)
 {
     AtmosphereResult result;
     result.base = result.final = base;
@@ -91,7 +91,7 @@ AtmosphereResult BaseAtmosphereRenderer::applyAerialPerspective(Vector3, Color b
     return result;
 }
 
-AtmosphereResult BaseAtmosphereRenderer::getSkyColor(Vector3)
+AtmosphereResult BaseAtmosphereRenderer::getSkyColor(const Vector3 &)
 {
     AtmosphereResult result;
     result.base = result.final = COLOR_WHITE;
@@ -127,7 +127,7 @@ SoftwareBrunetonAtmosphereRenderer::~SoftwareBrunetonAtmosphereRenderer()
     delete model;
 }
 
-AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(Vector3 location, Color base)
+AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(const Vector3 &location, const Color &base)
 {
     AtmosphereDefinition* definition = getDefinition();
     AtmosphereResult result;
@@ -151,7 +151,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(Vect
     return result;
 }
 
-AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 direction)
+AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &direction)
 {
     AtmosphereDefinition* definition;
     Vector3 sun_direction, sun_position, camera_location;
@@ -161,13 +161,13 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
     camera_location = parent->getCameraLocation(VECTOR_ZERO);
 
     sun_direction = getSunDirection();
-    direction = direction.normalize();
+    Vector3 direction_norm = direction.normalize();
     sun_position = sun_direction.scale(SUN_DISTANCE_SCALED);
 
     base = COLOR_BLACK;
 
     // Get night sky
-    base = base.add(parent->getNightSky()->getColor(camera_location.y, direction));
+    base = base.add(parent->getNightSky()->getColor(camera_location.y, direction_norm));
 
     // Get sun shape
     /*if (v3Dot(sun_direction, direction) >= 0)
@@ -196,11 +196,11 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(Vector3 directi
 
     // Get scattering
     AtmosphereResult result;
-    Vector3 location = camera_location.add(direction.scale(6421.0));
+    Vector3 location = camera_location.add(direction_norm.scale(6421.0));
     switch (definition->model)
     {
     case AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON:
-        result = model->getSkyColor(camera_location, direction, sun_position, base);
+        result = model->getSkyColor(camera_location, direction_norm, sun_position, base);
         break;
     default:
         result = BaseAtmosphereRenderer::applyAerialPerspective(location, result.base);

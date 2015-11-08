@@ -65,7 +65,7 @@ public:
     inline OpenGLSharedState* getSharedState() const {return shared_state;}
 
     virtual double getPrecision(const Vector3 &location) override;
-    virtual Color applyMediumTraversal(Vector3 location, Color color) override;
+    virtual Color applyMediumTraversal(const Vector3 &location, const Color &color) override;
 
 private:
     /**

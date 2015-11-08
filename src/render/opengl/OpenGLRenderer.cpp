@@ -235,7 +235,7 @@ double OpenGLRenderer::getPrecision(const Vector3 &)
     return 0.0000001;
 }
 
-Color OpenGLRenderer::applyMediumTraversal(Vector3, Color color)
+Color OpenGLRenderer::applyMediumTraversal(const Vector3&, const Color &color)
 {
     return color;
 }

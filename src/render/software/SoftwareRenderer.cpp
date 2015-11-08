@@ -114,14 +114,11 @@ Color SoftwareRenderer::applyLightingToSurface(const Vector3 &location, const Ve
     return lighting->apply(getCameraLocation(location), location, normal, material);
 }
 
-Color SoftwareRenderer::applyMediumTraversal(Vector3 location, Color color)
+Color SoftwareRenderer::applyMediumTraversal(const Vector3 &location, const Color &color)
 {
-    color = atmosphere_renderer->applyAerialPerspective(location, color).final;
-    color = clouds_renderer->getColor(getCameraLocation(location), location, color);
-    return color;
-
-    /*Vector3 eye = cameraGetLocation(scenery->getCamera());
-    return fluid_medium->applyTraversal(eye, location, color);*/
+    Color result = atmosphere_renderer->applyAerialPerspective(location, color).final;
+    result = clouds_renderer->getColor(getCameraLocation(location), location, result);
+    return result;
 }
 
 RayCastingResult SoftwareRenderer::rayWalking(const Vector3 &location, const Vector3 &direction, int, int, int, int)
