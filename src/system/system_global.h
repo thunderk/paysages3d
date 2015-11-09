@@ -7,23 +7,23 @@
 
 #include <QtCore/qglobal.h>
 #if defined(SYSTEM_LIBRARY)
-#  define SYSTEMSHARED_EXPORT Q_DECL_EXPORT
+#define SYSTEMSHARED_EXPORT Q_DECL_EXPORT
 #else
-#  define SYSTEMSHARED_EXPORT Q_DECL_IMPORT
+#define SYSTEMSHARED_EXPORT Q_DECL_IMPORT
 #endif
 
 namespace paysages {
 namespace system {
-    class Logs;
-    class PackStream;
-    class ParallelWork;
-    class ParallelPool;
-    class ParallelWorker;
-    class Thread;
-    class Mutex;
-    class Semaphore;
-    class PictureWriter;
-    class Time;
+class Logs;
+class PackStream;
+class ParallelWork;
+class ParallelPool;
+class ParallelWorker;
+class Thread;
+class Mutex;
+class Semaphore;
+class PictureWriter;
+class Time;
 }
 }
 using namespace paysages::system;

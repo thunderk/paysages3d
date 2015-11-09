@@ -11,9 +11,8 @@ namespace definition {
  *
  * Watchers will be registered in DiffManager to receive DefinitionDiff objects.
  */
-class DEFINITIONSHARED_EXPORT DefinitionWatcher
-{
-public:
+class DEFINITIONSHARED_EXPORT DefinitionWatcher {
+  public:
     DefinitionWatcher();
 
     /**
@@ -21,7 +20,6 @@ public:
      */
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) = 0;
 };
-
 }
 }
 

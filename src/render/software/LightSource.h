@@ -9,9 +9,8 @@ namespace software {
 /**
  * Source of dynamic lights.
  */
-class SOFTWARESHARED_EXPORT LightSource
-{
-public:
+class SOFTWARESHARED_EXPORT LightSource {
+  public:
     LightSource() = default;
 
     /**
@@ -21,7 +20,6 @@ public:
      */
     virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const = 0;
 };
-
 }
 }
 

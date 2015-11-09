@@ -16,9 +16,8 @@ namespace software {
  * There are both static and dynamic lights.
  * A dynamic light depends on the location at which the lighting occurs.
  */
-class SOFTWARESHARED_EXPORT LightingManager
-{
-public:
+class SOFTWARESHARED_EXPORT LightingManager {
+  public:
     LightingManager();
 
     int getStaticLightsCount() const;
@@ -85,7 +84,8 @@ public:
     /**
      * Apply a final component on a surface material.
      */
-    Color applyFinalComponent(const LightComponent &component, const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material);
+    Color applyFinalComponent(const LightComponent &component, const Vector3 &eye, const Vector3 &location,
+                              const Vector3 &normal, const SurfaceMaterial &material);
 
     /**
      * Compute the light status at a given location.
@@ -97,14 +97,13 @@ public:
      */
     Color apply(const Vector3 &eye, const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material);
 
-private:
+  private:
     bool specularity;
     bool filtering;
     std::vector<LightComponent> static_lights;
     std::vector<LightFilter *> filters;
     std::vector<LightSource *> sources;
 };
-
 }
 }
 

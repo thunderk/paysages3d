@@ -3,8 +3,7 @@
 #include "InfiniteRay.h"
 #include "Sphere.h"
 
-TEST(Sphere, checkRayIntersection)
-{
+TEST(Sphere, checkRayIntersection) {
     Sphere sphere(Vector3(2.0, 1.0, 1.0), 0.5);
 
     int intersect_count;

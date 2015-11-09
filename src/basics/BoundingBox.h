@@ -6,15 +6,14 @@
 namespace paysages {
 namespace basics {
 
-class BASICSSHARED_EXPORT BoundingBox
-{
-public:
+class BASICSSHARED_EXPORT BoundingBox {
+  public:
     BoundingBox();
 
     void reset();
     void pushPoint(const Vector3 &point);
 
-public:
+  public:
     int empty;
     double xmin;
     double xmax;
@@ -23,7 +22,6 @@ public:
     double zmin;
     double zmax;
 };
-
 }
 }
 

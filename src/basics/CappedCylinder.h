@@ -11,13 +11,14 @@ namespace basics {
 /**
  * Geometric cylinder, with capped ends (not infinite).
  */
-class BASICSSHARED_EXPORT CappedCylinder: public InfiniteCylinder
-{
-public:
+class BASICSSHARED_EXPORT CappedCylinder : public InfiniteCylinder {
+  public:
     CappedCylinder();
     CappedCylinder(const Vector3 &base, const Vector3 &direction, double radius, double length);
 
-    inline double getLength() const {return length;}
+    inline double getLength() const {
+        return length;
+    }
 
     /**
      * Check the intersection between the cylinder and an infinite ray.
@@ -32,10 +33,9 @@ public:
     virtual void save(PackStream *stream) const override;
     virtual void load(PackStream *stream) override;
 
-private:
+  private:
     double length;
 };
-
 }
 }
 

@@ -9,16 +9,15 @@ namespace system {
 /*!
  * Pool to handle a group of threads doing the same task.
  */
-class SYSTEMSHARED_EXPORT ParallelPool
-{
-public:
+class SYSTEMSHARED_EXPORT ParallelPool {
+  public:
     ParallelPool();
     virtual ~ParallelPool();
 
     /*!
      * Start the effective work.
      */
-    void start(int thread_count=-1);
+    void start(int thread_count = -1);
 
     /*!
      * Method called from each thread to do actual work.
@@ -30,13 +29,12 @@ public:
      */
     virtual void interrupt();
 
-protected:
+  protected:
     bool running;
 
-private:
-    std::vector<Thread*> threads;
+  private:
+    std::vector<Thread *> threads;
 };
-
 }
 }
 

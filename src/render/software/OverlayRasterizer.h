@@ -13,9 +13,8 @@ namespace software {
  *
  * It's a rasterizer that puts a single quad in front of camera, in order to apply a shader on each pixel.
  */
-class SOFTWARESHARED_EXPORT OverlayRasterizer: public Rasterizer
-{
-public:
+class SOFTWARESHARED_EXPORT OverlayRasterizer : public Rasterizer {
+  public:
     OverlayRasterizer(SoftwareRenderer *renderer, RenderProgress *progress);
 
     /**
@@ -23,12 +22,11 @@ public:
      */
     virtual Color processPixel(int x, int y, double relx, double rely) const = 0;
 
-private:
+  private:
     virtual int prepareRasterization();
     virtual void rasterizeToCanvas(CanvasPortion *canvas);
     virtual Color shadeFragment(const CanvasFragment &fragment, const CanvasFragment *previous) const;
 };
-
 }
 }
 

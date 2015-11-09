@@ -15,8 +15,7 @@
 #include <QQmlEngine>
 #include <QGuiApplication>
 
-MainModelerWindow::MainModelerWindow()
-{
+MainModelerWindow::MainModelerWindow() {
     scenery = new Scenery();
     scenery->autoPreset();
 
@@ -57,171 +56,118 @@ MainModelerWindow::MainModelerWindow()
     }
 }
 
-MainModelerWindow::~MainModelerWindow()
-{
+MainModelerWindow::~MainModelerWindow() {
     delete atmosphere;
     delete water;
     delete cameras;
 
-    //delete render_preview_provider;  // don't delete it, addImageProvider took ownership
+    // delete render_preview_provider;  // don't delete it, addImageProvider took ownership
     delete render_process;
 
     delete renderer;
     delete scenery;
 }
 
-QObject *MainModelerWindow::findQmlObject(const QString &objectName)
-{
-    if (objectName == "ui" || objectName == "root")
-    {
+QObject *MainModelerWindow::findQmlObject(const QString &objectName) {
+    if (objectName == "ui" || objectName == "root") {
         return rootObject();
-    }
-    else
-    {
+    } else {
         return rootObject()->findChild<QObject *>(objectName);
     }
 }
 
-void MainModelerWindow::setQmlProperty(const QString &objectName, const QString &propertyName, const QVariant &value)
-{
+void MainModelerWindow::setQmlProperty(const QString &objectName, const QString &propertyName, const QVariant &value) {
     QObject *item = findQmlObject(objectName);
-    if (item)
-    {
+    if (item) {
         item->setProperty(propertyName.toLocal8Bit(), value);
-    }
-    else
-    {
+    } else {
         Logs::error() << "QML object not found :" << objectName.toStdString() << std::endl;
     }
 }
 
-void MainModelerWindow::connectQmlSignal(const QString &objectName, const char *signal, const QObject *receiver, const char *method)
-{
+void MainModelerWindow::connectQmlSignal(const QString &objectName, const char *signal, const QObject *receiver,
+                                         const char *method) {
     QObject *item = findQmlObject(objectName);
-    if (item)
-    {
+    if (item) {
         connect(item, signal, receiver, method);
-    }
-    else
-    {
+    } else {
         Logs::error() << "QML object not found :" << objectName.toStdString() << std::endl;
     }
 }
 
-QString MainModelerWindow::getState() const
-{
+QString MainModelerWindow::getState() const {
     return rootObject()->property("state").toString();
 }
 
-void MainModelerWindow::setState(const QString &stateName)
-{
+void MainModelerWindow::setState(const QString &stateName) {
     rootObject()->setProperty("state", stateName);
 }
 
-void MainModelerWindow::newFile()
-{
+void MainModelerWindow::newFile() {
     getScenery()->autoPreset();
     renderer->reset();
 }
 
-void MainModelerWindow::saveFile()
-{
+void MainModelerWindow::saveFile() {
     getScenery()->saveGlobal("saved.p3d");
 }
 
-void MainModelerWindow::loadFile()
-{
+void MainModelerWindow::loadFile() {
     Scenery loaded;
-    if (loaded.loadGlobal("saved.p3d") == Scenery::FILE_OPERATION_OK)
-    {
+    if (loaded.loadGlobal("saved.p3d") == Scenery::FILE_OPERATION_OK) {
         loaded.copy(scenery);
         renderer->reset();
     }
 }
 
-void MainModelerWindow::exit()
-{
+void MainModelerWindow::exit() {
     close();
 }
 
-void MainModelerWindow::keyReleaseEvent(QKeyEvent *event)
-{
-    if (event->modifiers() & Qt::ControlModifier && event->key() == Qt::Key_Q)
-    {
+void MainModelerWindow::keyReleaseEvent(QKeyEvent *event) {
+    if (event->modifiers() & Qt::ControlModifier && event->key() == Qt::Key_Q) {
         exit();
-    }
-    else if (getState() == "Render Dialog")
-    {
-        if (event->key() == Qt::Key_Escape)
-        {
+    } else if (getState() == "Render Dialog") {
+        if (event->key() == Qt::Key_Escape) {
             render_process->stopRender();
         }
-    }
-    else
-    {
-        if (event->key() == Qt::Key_F5)
-        {
+    } else {
+        if (event->key() == Qt::Key_F5) {
             // Start render in a thread
-            if ((event->modifiers() & Qt::ControlModifier) and (event->modifiers() & Qt::ShiftModifier))
-            {
+            if ((event->modifiers() & Qt::ControlModifier) and (event->modifiers() & Qt::ShiftModifier)) {
                 render_process->startFinalRender();
-            }
-            else if (event->modifiers() & Qt::ControlModifier)
-            {
+            } else if (event->modifiers() & Qt::ControlModifier) {
                 render_process->startMediumRender();
-            }
-            else
-            {
+            } else {
                 render_process->startQuickRender();
             }
-        }
-        else if (event->key() == Qt::Key_F6)
-        {
+        } else if (event->key() == Qt::Key_F6) {
             render_process->showPreviousRender();
-        }
-        else if (event->key() == Qt::Key_F12)
-        {
-            Logs::warning() << "Current scenery dump:" << std::endl << scenery->toString() << std::endl;
-        }
-        else if (event->key() == Qt::Key_N)
-        {
-            if (event->modifiers() & Qt::ControlModifier)
-            {
+        } else if (event->key() == Qt::Key_F12) {
+            Logs::warning() << "Current scenery dump:" << std::endl
+                            << scenery->toString() << std::endl;
+        } else if (event->key() == Qt::Key_N) {
+            if (event->modifiers() & Qt::ControlModifier) {
                 newFile();
             }
-        }
-        else if (event->key() == Qt::Key_S)
-        {
-            if (event->modifiers() & Qt::ControlModifier)
-            {
+        } else if (event->key() == Qt::Key_S) {
+            if (event->modifiers() & Qt::ControlModifier) {
                 saveFile();
             }
-        }
-        else if (event->key() == Qt::Key_L or event->key() == Qt::Key_O)
-        {
-            if (event->modifiers() & Qt::ControlModifier)
-            {
+        } else if (event->key() == Qt::Key_L or event->key() == Qt::Key_O) {
+            if (event->modifiers() & Qt::ControlModifier) {
                 loadFile();
             }
-        }
-        else if (event->key() == Qt::Key_Z)
-        {
-            if (event->modifiers() & Qt::ControlModifier)
-            {
-                if (event->modifiers() & Qt::ShiftModifier)
-                {
+        } else if (event->key() == Qt::Key_Z) {
+            if (event->modifiers() & Qt::ControlModifier) {
+                if (event->modifiers() & Qt::ShiftModifier) {
                     getScenery()->getDiffManager()->redo();
-                }
-                else
-                {
+                } else {
                     getScenery()->getDiffManager()->undo();
                 }
             }
-        }
-        else if (event->key() == Qt::Key_Y)
-        {
-            if (event->modifiers() & Qt::ControlModifier)
-            {
+        } else if (event->key() == Qt::Key_Y) {
+            if (event->modifiers() & Qt::ControlModifier) {
                 getScenery()->getDiffManager()->undo();
             }
         }

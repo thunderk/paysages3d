@@ -4,16 +4,14 @@
 #include "FloatDiff.h"
 #include "PackStream.h"
 
-TEST(FloatNode, toString)
-{
+TEST(FloatNode, toString) {
     FloatNode test(NULL, "test", 2.1);
 
     EXPECT_EQ("test 2.1", test.toString(0));
     EXPECT_EQ("  test 2.1", test.toString(2));
 }
 
-TEST(FloatNode, saveLoadAndSkip)
-{
+TEST(FloatNode, saveLoadAndSkip) {
     DefinitionNode root1(NULL, "root");
     FloatNode testa1(&root1, "testa", 1.5);
     FloatNode testb1(&root1, "testb", 4.3);
@@ -30,8 +28,7 @@ TEST(FloatNode, saveLoadAndSkip)
     EXPECT_DOUBLE_EQ(4.3, testb2.getValue());
 }
 
-TEST(FloatNode, copy)
-{
+TEST(FloatNode, copy) {
     FloatNode base(NULL, "test", 2.1);
     FloatNode other(NULL, "test", 4.3);
     DefinitionNode badother(NULL, "test");
@@ -47,8 +44,7 @@ TEST(FloatNode, copy)
     // can't check anything, just useful in valgrind
 }
 
-TEST(FloatNode, produceDiff)
-{
+TEST(FloatNode, produceDiff) {
     FloatNode node(NULL, "test", 8.3);
     const FloatDiff *diff = node.produceDiff(-4.1);
 
@@ -64,8 +60,7 @@ TEST(FloatNode, produceDiff)
     delete diff;
 }
 
-TEST(FloatNode, applyDiff)
-{
+TEST(FloatNode, applyDiff) {
     FloatNode node(NULL, "test", 1.2);
     FloatDiff diff(&node, 1.2, 2.4);
     DefinitionNode onode(NULL, "test", "badtype");

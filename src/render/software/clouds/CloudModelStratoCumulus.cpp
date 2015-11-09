@@ -4,19 +4,15 @@
 #include "Vector3.h"
 #include "CloudLayerDefinition.h"
 
-CloudModelStratoCumulus::CloudModelStratoCumulus(CloudLayerDefinition* layer):
-    BaseCloudsModel(layer)
-{
+CloudModelStratoCumulus::CloudModelStratoCumulus(CloudLayerDefinition *layer) : BaseCloudsModel(layer) {
     noise = new NoiseGenerator();
 }
 
-CloudModelStratoCumulus::~CloudModelStratoCumulus()
-{
+CloudModelStratoCumulus::~CloudModelStratoCumulus() {
     delete noise;
 }
 
-void CloudModelStratoCumulus::update()
-{
+void CloudModelStratoCumulus::update() {
     noise->clearLevels();
     noise->addLevelSimple(1.0, -1.0, 1.0);
     noise->addLevelSimple(1.0 / 2.0, -0.6, 0.6);
@@ -36,31 +32,27 @@ void CloudModelStratoCumulus::update()
     noise->setState(layer->getNoiseState());
 }
 
-void CloudModelStratoCumulus::getAltitudeRange(double *min_altitude, double *max_altitude) const
-{
+void CloudModelStratoCumulus::getAltitudeRange(double *min_altitude, double *max_altitude) const {
     *min_altitude = 10.0 + 10.0 * layer->altitude;
     *max_altitude = *min_altitude + 11.0 * layer->scaling;
 }
 
-double CloudModelStratoCumulus::getDensity(const Vector3 &location) const
-{
+double CloudModelStratoCumulus::getDensity(const Vector3 &location) const {
     double val;
     double min_altitude, max_altitude;
     double noise_scaling = 25.0 * layer->scaling;
 
     getAltitudeRange(&min_altitude, &max_altitude);
 
-    if (location.y < min_altitude || location.y > max_altitude)
-    {
+    if (location.y < min_altitude || location.y > max_altitude) {
         return 0.0;
-    }
-    else
-    {
+    } else {
         double x = 0.3 * location.x / noise_scaling;
         double y = (location.y - min_altitude) / noise_scaling;
         double z = 0.3 * location.z / noise_scaling;
 
-        //double coverage = layer->coverage * layer->_coverage_by_altitude->getValue((position.y - layer->altitude) / layer->scaling);
+        // double coverage = layer->coverage * layer->_coverage_by_altitude->getValue((position.y - layer->altitude) /
+        // layer->scaling);
         double coverage = layer->coverage;
 
         val = 0.5 * noise->get3DTotal(x, y, z);

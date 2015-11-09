@@ -11,10 +11,9 @@ namespace opengl {
 
 // Class that can be inherited by scenery parts, to use OpenGL features
 
-class OPENGLSHARED_EXPORT OpenGLPart
-{
-public:
-    OpenGLPart(OpenGLRenderer* renderer);
+class OPENGLSHARED_EXPORT OpenGLPart {
+  public:
+    OpenGLPart(OpenGLRenderer *renderer);
     virtual ~OpenGLPart();
 
     // Initialize the part rendering (create shaders, prepare static textures...)
@@ -29,17 +28,17 @@ public:
     // Interrupt the rendering
     virtual void interrupt();
 
-    void updateScenery(bool onlyCommon=false);
+    void updateScenery(bool onlyCommon = false);
 
-protected:
+  protected:
     // Create a shader program
-    OpenGLShaderProgram* createShader(QString name);
+    OpenGLShaderProgram *createShader(QString name);
 
     // Access to the main scenery renderer
-    OpenGLRenderer* renderer;
+    OpenGLRenderer *renderer;
 
-private:
-    QMap<QString, OpenGLShaderProgram*> shaders;
+  private:
+    QMap<QString, OpenGLShaderProgram *> shaders;
 };
 }
 }

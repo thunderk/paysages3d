@@ -11,10 +11,9 @@ namespace software {
 /**
  * Renderer of a single instance of vegetation model (e.g a single tree).
  */
-class SOFTWARESHARED_EXPORT VegetationModelRenderer: public LightFilter
-{
-public:
-    VegetationModelRenderer(SoftwareRenderer* parent, const VegetationModelDefinition *model);
+class SOFTWARESHARED_EXPORT VegetationModelRenderer : public LightFilter {
+  public:
+    VegetationModelRenderer(SoftwareRenderer *parent, const VegetationModelDefinition *model);
     virtual ~VegetationModelRenderer();
 
     /**
@@ -24,7 +23,7 @@ public:
      *
      * If only_hit is True, we only look whether there is a hit or not.
      */
-    VegetationResult getResult(const SpaceSegment &segment, bool only_hit=false) const;
+    VegetationResult getResult(const SpaceSegment &segment, bool only_hit = false) const;
 
     /**
      * Internal (relative) light filter.
@@ -33,11 +32,10 @@ public:
      */
     virtual bool applyLightFilter(LightComponent &light, const Vector3 &at);
 
-private:
-    SoftwareRenderer* parent;
-    const VegetationModelDefinition* model;
+  private:
+    SoftwareRenderer *parent;
+    const VegetationModelDefinition *model;
 };
-
 }
 }
 

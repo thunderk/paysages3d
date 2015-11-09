@@ -9,10 +9,9 @@
 namespace paysages {
 namespace opengl {
 
-class OPENGLSHARED_EXPORT OpenGLSkybox: public OpenGLPart, public DefinitionWatcher
-{
-public:
-    OpenGLSkybox(OpenGLRenderer* renderer);
+class OPENGLSHARED_EXPORT OpenGLSkybox : public OpenGLPart, public DefinitionWatcher {
+  public:
+    OpenGLSkybox(OpenGLRenderer *renderer);
     virtual ~OpenGLSkybox();
 
     virtual void initialize() override;
@@ -20,13 +19,13 @@ public:
     virtual void render() override;
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
-private:
+
+  private:
     void setVertex(int i, float x, float y, float z);
 
-    OpenGLShaderProgram* program;
-    float* vertices;
+    OpenGLShaderProgram *program;
+    float *vertices;
 };
-
 }
 }
 

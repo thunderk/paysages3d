@@ -6,21 +6,19 @@
 namespace paysages {
 namespace system {
 
-class SYSTEMSHARED_EXPORT PictureWriter
-{
-public:
+class SYSTEMSHARED_EXPORT PictureWriter {
+  public:
     /**
      * @brief Start saving the picture in a file.
      */
     bool save(const std::string &filepath, int width, int height);
 
-protected:
+  protected:
     /**
      * @brief Get the (x, y) pixel, in BGRA format
      */
     virtual unsigned int getPixel(int x, int y) = 0;
 };
-
 }
 }
 

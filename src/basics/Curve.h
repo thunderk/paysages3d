@@ -11,18 +11,19 @@ typedef struct {
     double value;
 } CurvePoint;
 
-class BASICSSHARED_EXPORT Curve
-{
-public:
+class BASICSSHARED_EXPORT Curve {
+  public:
     Curve();
     ~Curve();
 
-    void copy(Curve* destination) const;
-    void save(PackStream* stream) const;
-    void load(PackStream* stream);
+    void copy(Curve *destination) const;
+    void save(PackStream *stream) const;
+    void load(PackStream *stream);
     void validate();
 
-    inline int getPointCount() const {return nbpoints;}
+    inline int getPointCount() const {
+        return nbpoints;
+    }
     CurvePoint getPoint(int number) const;
     bool getPoint(int number, CurvePoint *point) const;
 
@@ -35,12 +36,11 @@ public:
     void setPoint(int number, const CurvePoint &point);
     void removePoint(int number);
 
-private:
+  private:
     double default_value;
     int nbpoints;
-    CurvePoint* points;
+    CurvePoint *points;
 };
-
 }
 }
 

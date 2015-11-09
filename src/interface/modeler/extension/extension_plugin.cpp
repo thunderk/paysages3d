@@ -3,10 +3,7 @@
 
 #include <qqml.h>
 
-void ExtensionPlugin::registerTypes(const char *uri)
-{
+void ExtensionPlugin::registerTypes(const char *uri) {
     // @uri Paysages
     qmlRegisterType<Paysages>(uri, 1, 0, "Paysages");
 }
-
-

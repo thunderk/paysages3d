@@ -24,9 +24,7 @@
 #include "Thread.h"
 #include "RayCastingResult.h"
 
-SoftwareRenderer::SoftwareRenderer(Scenery* scenery):
-    scenery(scenery)
-{
+SoftwareRenderer::SoftwareRenderer(Scenery *scenery) : scenery(scenery) {
     render_camera = new CameraDefinition;
 
     scenery->getCamera()->copy(render_camera);
@@ -53,8 +51,7 @@ SoftwareRenderer::SoftwareRenderer(Scenery* scenery):
     setQuality(0.5);
 }
 
-SoftwareRenderer::~SoftwareRenderer()
-{
+SoftwareRenderer::~SoftwareRenderer() {
     delete render_camera;
 
     delete fluid_medium;
@@ -70,8 +67,7 @@ SoftwareRenderer::~SoftwareRenderer()
     delete water_renderer;
 }
 
-void SoftwareRenderer::prepare()
-{
+void SoftwareRenderer::prepare() {
     scenery->validate();
     scenery->getCamera()->copy(render_camera);
 
@@ -79,12 +75,9 @@ void SoftwareRenderer::prepare()
     // TODO Don't recreate the renderer each time, only when it changes
     lighting->unregisterSource(atmosphere_renderer);
     delete atmosphere_renderer;
-    if (getScenery()->getAtmosphere()->model == AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON)
-    {
+    if (getScenery()->getAtmosphere()->model == AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON) {
         atmosphere_renderer = new SoftwareBrunetonAtmosphereRenderer(this);
-    }
-    else
-    {
+    } else {
         atmosphere_renderer = new BaseAtmosphereRenderer(this);
     }
     lighting->registerSource(atmosphere_renderer);
@@ -99,11 +92,10 @@ void SoftwareRenderer::prepare()
     // Prepare global tools
     godrays->prepare(this);
     fluid_medium->clearMedia();
-    //fluid_medium->registerMedium(water_renderer);
+    // fluid_medium->registerMedium(water_renderer);
 }
 
-void SoftwareRenderer::setQuality(double quality)
-{
+void SoftwareRenderer::setQuality(double quality) {
     terrain_renderer->setQuality(quality);
     clouds_renderer->setQuality(quality);
     godrays->setQuality(quality);
@@ -112,26 +104,23 @@ void SoftwareRenderer::setQuality(double quality)
     render_quality = (int)(quality * 9.0) + 1;
 }
 
-Color SoftwareRenderer::applyLightingToSurface(const Vector3 &location, const Vector3 &normal, const SurfaceMaterial &material)
-{
+Color SoftwareRenderer::applyLightingToSurface(const Vector3 &location, const Vector3 &normal,
+                                               const SurfaceMaterial &material) {
     return lighting->apply(getCameraLocation(location), location, normal, material);
 }
 
-Color SoftwareRenderer::applyMediumTraversal(const Vector3 &location, const Color &color)
-{
+Color SoftwareRenderer::applyMediumTraversal(const Vector3 &location, const Color &color) {
     Color result = atmosphere_renderer->applyAerialPerspective(location, color).final;
     result = clouds_renderer->getColor(getCameraLocation(location), location, result);
     return result;
 }
 
-RayCastingResult SoftwareRenderer::rayWalking(const Vector3 &location, const Vector3 &direction, int, int, int, int)
-{
+RayCastingResult SoftwareRenderer::rayWalking(const Vector3 &location, const Vector3 &direction, int, int, int, int) {
     RayCastingResult result;
     Color sky_color;
 
     result = terrain_renderer->castRay(location, direction);
-    if (!result.hit)
-    {
+    if (!result.hit) {
         sky_color = atmosphere_renderer->getSkyColor(direction).final;
 
         result.hit = 1;
@@ -142,33 +131,28 @@ RayCastingResult SoftwareRenderer::rayWalking(const Vector3 &location, const Vec
     return result;
 }
 
-Vector3 SoftwareRenderer::getCameraLocation(const Vector3 &)
-{
+Vector3 SoftwareRenderer::getCameraLocation(const Vector3 &) {
     return render_camera->getLocation();
 }
 
-Vector3 SoftwareRenderer::getCameraDirection(const Vector3 &)
-{
+Vector3 SoftwareRenderer::getCameraDirection(const Vector3 &) {
     return render_camera->getDirectionNormalized();
 }
 
-double SoftwareRenderer::getPrecision(const Vector3 &location)
-{
+double SoftwareRenderer::getPrecision(const Vector3 &location) {
     Vector3 projected;
 
     projected = render_camera->project(location);
     projected.x += 1.0;
-    //projected.y += 1.0;
+    // projected.y += 1.0;
 
     return render_camera->unproject(projected).sub(location).getNorm(); // / (double)render_quality;
 }
 
-Vector3 SoftwareRenderer::projectPoint(const Vector3 &point)
-{
+Vector3 SoftwareRenderer::projectPoint(const Vector3 &point) {
     return render_camera->project(point);
 }
 
-Vector3 SoftwareRenderer::unprojectPoint(const Vector3 &point)
-{
+Vector3 SoftwareRenderer::unprojectPoint(const Vector3 &point) {
     return render_camera->unproject(point);
 }

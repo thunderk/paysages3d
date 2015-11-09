@@ -8,17 +8,14 @@
 namespace paysages {
 namespace system {
 
-class SYSTEMSHARED_EXPORT RandomGenerator
-{
-public:
+class SYSTEMSHARED_EXPORT RandomGenerator {
+  public:
     RandomGenerator();
 
-    static inline double random()
-    {
+    static inline double random() {
         return ((double)rand()) / (double)RAND_MAX;
     }
 };
-
 }
 }
 

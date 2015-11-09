@@ -1,15 +1,12 @@
 #include "ParallelWorker.h"
 
-ParallelWorker::ParallelWorker()
-{
+ParallelWorker::ParallelWorker() {
     interrupted = false;
 }
 
-ParallelWorker::~ParallelWorker()
-{
+ParallelWorker::~ParallelWorker() {
 }
 
-void ParallelWorker::interrupt()
-{
+void ParallelWorker::interrupt() {
     interrupted = true;
 }

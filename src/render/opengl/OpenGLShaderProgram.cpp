@@ -11,64 +11,50 @@
 #include "Color.h"
 #include "Logs.h"
 
-OpenGLShaderProgram::OpenGLShaderProgram(const std::string &name, OpenGLRenderer* renderer):
-    renderer(renderer), name(name)
-{
+OpenGLShaderProgram::OpenGLShaderProgram(const std::string &name, OpenGLRenderer *renderer)
+    : renderer(renderer), name(name) {
     program = new QOpenGLShaderProgram();
     functions = renderer->getOpenGlFunctions();
     compiled = false;
 }
 
-OpenGLShaderProgram::~OpenGLShaderProgram()
-{
+OpenGLShaderProgram::~OpenGLShaderProgram() {
     delete program;
 }
 
-void OpenGLShaderProgram::addVertexSource(QString path)
-{
+void OpenGLShaderProgram::addVertexSource(QString path) {
     QFile file(QString(":/shaders/%1.vert").arg(path));
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         source_vertex += QString(file.readAll()).toStdString();
-    }
-    else
-    {
+    } else {
         Logs::error() << "Can't open vertex file " << file.fileName().toStdString() << std::endl;
     }
 }
 
-void OpenGLShaderProgram::addFragmentSource(QString path)
-{
+void OpenGLShaderProgram::addFragmentSource(QString path) {
     QFile file(QString(":/shaders/%1.frag").arg(path));
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         source_fragment += QString(file.readAll()).toStdString();
-    }
-    else
-    {
+    } else {
         Logs::error() << "Can't open fragment file " << file.fileName().toStdString() << std::endl;
     }
 }
 
-void OpenGLShaderProgram::compile()
-{
+void OpenGLShaderProgram::compile() {
     program->addShaderFromSourceCode(QOpenGLShader::Vertex, QString::fromStdString(source_vertex));
     program->addShaderFromSourceCode(QOpenGLShader::Fragment, QString::fromStdString(source_fragment));
 
-    if (not program->link())
-    {
-        Logs::warning() << "Error while compiling shader " << name << std::endl << program->log().toStdString() << std::endl;
-    }
-    else if (program->log().length() > 0)
-    {
-        Logs::debug() << "Shader " << name << " compilation output:" << std::endl << program->log().toStdString() << std::endl;
+    if (not program->link()) {
+        Logs::warning() << "Error while compiling shader " << name << std::endl
+                        << program->log().toStdString() << std::endl;
+    } else if (program->log().length() > 0) {
+        Logs::debug() << "Shader " << name << " compilation output:" << std::endl
+                      << program->log().toStdString() << std::endl;
     }
 }
 
-void OpenGLShaderProgram::bind()
-{
-    if (not compiled)
-    {
+void OpenGLShaderProgram::bind() {
+    if (not compiled) {
         compile();
         compiled = true;
     }
@@ -79,13 +65,11 @@ void OpenGLShaderProgram::bind()
     renderer->getSharedState()->apply(this, texture_unit);
 }
 
-void OpenGLShaderProgram::release()
-{
+void OpenGLShaderProgram::release() {
     program->release();
 }
 
-void OpenGLShaderProgram::drawTriangles(float* vertices, int triangle_count)
-{
+void OpenGLShaderProgram::drawTriangles(float *vertices, int triangle_count) {
     bind();
 
     GLuint vertex = program->attributeLocation("vertex");
@@ -99,8 +83,7 @@ void OpenGLShaderProgram::drawTriangles(float* vertices, int triangle_count)
     release();
 }
 
-void OpenGLShaderProgram::drawTriangleStrip(float* vertices, int vertex_count)
-{
+void OpenGLShaderProgram::drawTriangleStrip(float *vertices, int vertex_count) {
     bind();
 
     GLuint vertex = program->attributeLocation("vertex");

@@ -14,23 +14,22 @@ namespace modeler {
  *
  * The FloatNode must exist through this object lifetime.
  */
-class FloatPropertyBind : public QObject, public DefinitionWatcher
-{
+class FloatPropertyBind : public QObject, public DefinitionWatcher {
     Q_OBJECT
-public:
-    FloatPropertyBind(MainModelerWindow *window, const QString &object_name, const QString &property_name, FloatNode *node);
+  public:
+    FloatPropertyBind(MainModelerWindow *window, const QString &object_name, const QString &property_name,
+                      FloatNode *node);
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
 
-private slots:
+  private slots:
     void propertyChanged(double value);
 
-private:
+  private:
     FloatNode *node;
     QString property;
     QObject *item;
 };
-
 }
 }
 

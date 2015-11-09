@@ -2,11 +2,9 @@
 
 #include "FractalNoise.h"
 
-class TestFractalNoise:public FractalNoise
-{
-public:
-    TestFractalNoise(double value=0.0):FractalNoise(), value(value)
-    {
+class TestFractalNoise : public FractalNoise {
+  public:
+    TestFractalNoise(double value = 0.0) : FractalNoise(), value(value) {
         NoiseState state;
         state.resetOffsets();
         setState(state);
@@ -14,20 +12,19 @@ public:
         calls = 0;
     }
 
-    virtual double getBase3d(double x, double y, double z) const override
-    {
-        ((TestFractalNoise*)this)->calls++;
+    virtual double getBase3d(double x, double y, double z) const override {
+        ((TestFractalNoise *)this)->calls++;
         return value + x + y + z;
     }
 
-public:
+  public:
     int calls;
-private:
+
+  private:
     double value;
 };
 
-TEST(FractalNoise, AutoBase2d)
-{
+TEST(FractalNoise, AutoBase2d) {
     TestFractalNoise noise(0.2);
 
     double result = noise.getBase2d(0.4, 0.1);
@@ -36,8 +33,7 @@ TEST(FractalNoise, AutoBase2d)
     EXPECT_DOUBLE_EQ(0.7, result);
 }
 
-TEST(FractalNoise, AutoBase1d)
-{
+TEST(FractalNoise, AutoBase1d) {
     TestFractalNoise noise(0.2);
 
     double result = noise.getBase1d(0.4);
@@ -46,8 +42,7 @@ TEST(FractalNoise, AutoBase1d)
     EXPECT_DOUBLE_EQ(0.6, result);
 }
 
-TEST(FractalNoise, NoStep)
-{
+TEST(FractalNoise, NoStep) {
     TestFractalNoise noise(0.1);
 
     double result = noise.get1d(1.1, 1.0);
@@ -56,8 +51,7 @@ TEST(FractalNoise, NoStep)
     EXPECT_DOUBLE_EQ(0.0, result);
 }
 
-TEST(FractalNoise, SingleStep)
-{
+TEST(FractalNoise, SingleStep) {
     TestFractalNoise noise(0.1);
 
     double result = noise.get1d(0.7, 1.0);
@@ -66,8 +60,7 @@ TEST(FractalNoise, SingleStep)
     EXPECT_DOUBLE_EQ(1.1, result);
 }
 
-TEST(FractalNoise, Sum2Steps)
-{
+TEST(FractalNoise, Sum2Steps) {
     TestFractalNoise noise(0.1);
 
     double result = noise.get1d(0.3, 1.0);
@@ -76,8 +69,7 @@ TEST(FractalNoise, Sum2Steps)
     EXPECT_DOUBLE_EQ(1.1 + 1.05, result);
 }
 
-TEST(FractalNoise, Sum3Steps)
-{
+TEST(FractalNoise, Sum3Steps) {
     TestFractalNoise noise(0.1);
 
     double result = noise.get1d(0.2, 1.0);
@@ -86,8 +78,7 @@ TEST(FractalNoise, Sum3Steps)
     EXPECT_DOUBLE_EQ(1.1 + 1.05 + 1.025, result);
 }
 
-TEST(FractalNoise, InitialScaling)
-{
+TEST(FractalNoise, InitialScaling) {
     TestFractalNoise noise(0.8);
     noise.setScaling(0.5);
 
@@ -97,8 +88,7 @@ TEST(FractalNoise, InitialScaling)
     EXPECT_DOUBLE_EQ(1.4 + 1.2, result);
 }
 
-TEST(FractalNoise, InitialHeight)
-{
+TEST(FractalNoise, InitialHeight) {
     TestFractalNoise noise(0.8);
     noise.setScaling(1.0, 0.5);
 
@@ -108,8 +98,7 @@ TEST(FractalNoise, InitialHeight)
     EXPECT_DOUBLE_EQ(0.9 + 0.7, result);
 }
 
-TEST(FractalNoise, InitialScalingAndHeight)
-{
+TEST(FractalNoise, InitialScalingAndHeight) {
     TestFractalNoise noise(0.8);
     noise.setScaling(0.5, 0.5);
 
@@ -119,8 +108,7 @@ TEST(FractalNoise, InitialScalingAndHeight)
     EXPECT_DOUBLE_EQ(0.7 + 0.6, result);
 }
 
-TEST(FractalNoise, StepScaling)
-{
+TEST(FractalNoise, StepScaling) {
     TestFractalNoise noise(0.1);
     noise.setStep(0.8);
 
@@ -130,8 +118,7 @@ TEST(FractalNoise, StepScaling)
     EXPECT_DOUBLE_EQ(1.1 + 1.08 + 1.064, result);
 }
 
-TEST(FractalNoise, StepHeight)
-{
+TEST(FractalNoise, StepHeight) {
     TestFractalNoise noise(0.1);
     noise.setStep(0.5, 0.8);
 
@@ -141,8 +128,7 @@ TEST(FractalNoise, StepHeight)
     EXPECT_DOUBLE_EQ(1.1 + 0.84, result);
 }
 
-TEST(FractalNoise, StepScalingAndHeight)
-{
+TEST(FractalNoise, StepScalingAndHeight) {
     TestFractalNoise noise(0.8);
     noise.setStep(0.5, 0.5);
 
@@ -152,8 +138,7 @@ TEST(FractalNoise, StepScalingAndHeight)
     EXPECT_DOUBLE_EQ(1.8 + 0.7 + 0.3, result);
 }
 
-TEST(FractalNoise, StateOffset)
-{
+TEST(FractalNoise, StateOffset) {
     TestFractalNoise noise(0.8);
     NoiseState state;
     state.resetOffsets(0.2);
@@ -165,8 +150,7 @@ TEST(FractalNoise, StateOffset)
     EXPECT_DOUBLE_EQ(2.0 + 1.5, result);
 }
 
-TEST(FractalNoise, StateOffsetIter)
-{
+TEST(FractalNoise, StateOffsetIter) {
     TestFractalNoise noise(0.8);
     NoiseState state;
     state.setLevel(0, 0.1, 0.1, 0.1);
@@ -179,8 +163,7 @@ TEST(FractalNoise, StateOffsetIter)
     EXPECT_DOUBLE_EQ(1.9 + 1.7, result);
 }
 
-TEST(FractalNoise, StateOffsetLoop)
-{
+TEST(FractalNoise, StateOffsetLoop) {
     TestFractalNoise noise(0.8);
     NoiseState state;
     state.setLevelCount(2);
@@ -194,8 +177,7 @@ TEST(FractalNoise, StateOffsetLoop)
     EXPECT_DOUBLE_EQ(1.9 + 1.7 + 1.225, result);
 }
 
-TEST(FractalNoise, Noise2d)
-{
+TEST(FractalNoise, Noise2d) {
     TestFractalNoise noise(0.8);
     NoiseState state;
     state.setLevelCount(2);
@@ -209,8 +191,7 @@ TEST(FractalNoise, Noise2d)
     EXPECT_DOUBLE_EQ(2.6 + 2.55, result);
 }
 
-TEST(FractalNoise, Noise3d)
-{
+TEST(FractalNoise, Noise3d) {
     TestFractalNoise noise(0.8);
     NoiseState state;
     state.setLevelCount(2);

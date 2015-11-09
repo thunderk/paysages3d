@@ -4,16 +4,14 @@
 #include "IntDiff.h"
 #include "PackStream.h"
 
-TEST(IntNode, toString)
-{
+TEST(IntNode, toString) {
     IntNode test(NULL, "test", 2);
 
     EXPECT_EQ("test 2", test.toString(0));
     EXPECT_EQ("  test 2", test.toString(2));
 }
 
-TEST(IntNode, saveLoadAndSkip)
-{
+TEST(IntNode, saveLoadAndSkip) {
     DefinitionNode root1(NULL, "root");
     IntNode testa1(&root1, "testa", 1);
     IntNode testb1(&root1, "testb", 4);
@@ -30,8 +28,7 @@ TEST(IntNode, saveLoadAndSkip)
     EXPECT_DOUBLE_EQ(4, testb2.getValue());
 }
 
-TEST(IntNode, copy)
-{
+TEST(IntNode, copy) {
     IntNode base(NULL, "test", 2);
     IntNode other(NULL, "test", 4);
     DefinitionNode badother(NULL, "test");
@@ -47,8 +44,7 @@ TEST(IntNode, copy)
     // can't check anything, just useful in valgrind
 }
 
-TEST(IntNode, produceDiff)
-{
+TEST(IntNode, produceDiff) {
     IntNode node(NULL, "test", 8);
     const IntDiff *diff = node.produceDiff(-4);
 
@@ -64,8 +60,7 @@ TEST(IntNode, produceDiff)
     delete diff;
 }
 
-TEST(IntNode, applyDiff)
-{
+TEST(IntNode, applyDiff) {
     IntNode node(NULL, "test", 1);
     IntDiff diff(&node, 1, 2);
     DefinitionNode onode(NULL, "test", "badtype");
@@ -110,4 +105,3 @@ TEST(IntNode, applyDiff)
     EXPECT_TRUE(result);
     EXPECT_DOUBLE_EQ(2, node.getValue());
 }
-

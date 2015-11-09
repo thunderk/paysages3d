@@ -3,8 +3,7 @@
 #include "InfiniteRay.h"
 #include "InfinitePlane.h"
 
-TEST(InfinitePlane, checkRayIntersection)
-{
+TEST(InfinitePlane, checkRayIntersection) {
     InfinitePlane plane(VECTOR_UP, VECTOR_UP);
 
     int result;
@@ -21,8 +20,7 @@ TEST(InfinitePlane, checkRayIntersection)
     ASSERT_EQ(-1, result);
 }
 
-TEST(InfinitePlane, checkRayIntersection_oblique)
-{
+TEST(InfinitePlane, checkRayIntersection_oblique) {
     InfinitePlane plane(Vector3(14.0, -5.0, 3.5), Vector3(1.0, 0.0, 0.0));
     InfiniteRay ray(Vector3(2.0, 2.0, 2.0), Vector3(1.0, 1.0, 1.0).normalize());
     int result;

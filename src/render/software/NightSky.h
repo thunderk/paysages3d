@@ -11,10 +11,9 @@ namespace software {
 /*!
  * \brief Night sky renderer.
  */
-class SOFTWARESHARED_EXPORT NightSky: public LightSource
-{
-public:
-    NightSky(SoftwareRenderer* renderer);
+class SOFTWARESHARED_EXPORT NightSky : public LightSource {
+  public:
+    NightSky(SoftwareRenderer *renderer);
     virtual ~NightSky();
 
     /*!
@@ -30,10 +29,9 @@ public:
 
     virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override;
 
-private:
-    SoftwareRenderer* renderer;
+  private:
+    SoftwareRenderer *renderer;
 };
-
 }
 }
 

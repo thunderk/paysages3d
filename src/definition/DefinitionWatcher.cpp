@@ -1,7 +1,4 @@
 #include "DefinitionWatcher.h"
 
-DefinitionWatcher::DefinitionWatcher()
-{
-
+DefinitionWatcher::DefinitionWatcher() {
 }
-

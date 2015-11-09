@@ -5,18 +5,15 @@
 #include "CameraDefinition.h"
 #include "CanvasFragment.h"
 
-OverlayRasterizer::OverlayRasterizer(SoftwareRenderer *renderer, RenderProgress *progress):
-    Rasterizer(renderer, progress, 0, COLOR_WHITE)
-{
+OverlayRasterizer::OverlayRasterizer(SoftwareRenderer *renderer, RenderProgress *progress)
+    : Rasterizer(renderer, progress, 0, COLOR_WHITE) {
 }
 
-int OverlayRasterizer::prepareRasterization()
-{
+int OverlayRasterizer::prepareRasterization() {
     return 1;
 }
 
-void OverlayRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
-{
+void OverlayRasterizer::rasterizeToCanvas(CanvasPortion *canvas) {
     double width = (double)renderer->render_camera->getWidth();
     double height = (double)renderer->render_camera->getHeight();
     Vector3 topleft = renderer->unprojectPoint(Vector3(height, 0.0, 1.0));
@@ -27,8 +24,7 @@ void OverlayRasterizer::rasterizeToCanvas(CanvasPortion *canvas)
     pushQuad(canvas, topleft, bottomleft, bottomright, topright);
 }
 
-Color OverlayRasterizer::shadeFragment(const CanvasFragment &fragment, const CanvasFragment *) const
-{
+Color OverlayRasterizer::shadeFragment(const CanvasFragment &fragment, const CanvasFragment *) const {
     double width = (double)renderer->render_camera->getWidth() - 1.0;
     double height = (double)renderer->render_camera->getHeight() - 1.0;
     double relx;
@@ -36,17 +32,13 @@ Color OverlayRasterizer::shadeFragment(const CanvasFragment &fragment, const Can
     double x = floor(fragment.getPixel().x);
     double y = floor(fragment.getPixel().y);
 
-    if (width > height)
-    {
+    if (width > height) {
         relx = 2.0 * ((x - (width - height) * 0.5) / height - 0.5);
         rely = 2.0 * (y / height - 0.5);
-    }
-    else
-    {
+    } else {
         relx = 2.0 * (x / height - 0.5);
         rely = 2.0 * ((y - (height - width) * 0.5) / height - 0.5);
     }
 
     return processPixel((int)x, (int)y, relx, rely);
 }
-

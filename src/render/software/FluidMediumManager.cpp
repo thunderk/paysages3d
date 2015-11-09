@@ -4,31 +4,25 @@
 #include "FluidMediumInterface.h"
 #include "Color.h"
 
-FluidMediumManager::FluidMediumManager(SoftwareRenderer* renderer):
-    renderer(renderer)
-{
+FluidMediumManager::FluidMediumManager(SoftwareRenderer *renderer) : renderer(renderer) {
 }
 
-FluidMediumManager::~FluidMediumManager()
-{
+FluidMediumManager::~FluidMediumManager() {
 }
 
-void FluidMediumManager::clearMedia()
-{
+void FluidMediumManager::clearMedia() {
     media.clear();
 }
 
-void FluidMediumManager::registerMedium(FluidMediumInterface *medium)
-{
+void FluidMediumManager::registerMedium(FluidMediumInterface *medium) {
     media.push_back(medium);
 }
 
-Color FluidMediumManager::applyTraversal(const Vector3 &eye, const Vector3 &location, const Color &color) const
-{
+Color FluidMediumManager::applyTraversal(const Vector3 &eye, const Vector3 &location, const Color &color) const {
     // Collect potential segments
     SpaceSegment ray(eye, location);
     int max_segments = media.size();
-    FluidMediumSegment* segments;
+    FluidMediumSegment *segments;
     segments = new FluidMediumSegment[max_segments];
     getTraversedMedia(segments, ray, max_segments);
 
@@ -36,14 +30,12 @@ Color FluidMediumManager::applyTraversal(const Vector3 &eye, const Vector3 &loca
     return color;
 }
 
-int FluidMediumManager::getTraversedMedia(FluidMediumSegment segments[], const SpaceSegment &ray, int max_segments) const
-{
+int FluidMediumManager::getTraversedMedia(FluidMediumSegment segments[], const SpaceSegment &ray,
+                                          int max_segments) const {
     int added = 0;
-    for (auto &medium : media)
-    {
+    for (auto &medium : media) {
         SpaceSegment ray_inter(ray);
-        if (added < max_segments and medium->checkInfluence(ray_inter))
-        {
+        if (added < max_segments and medium->checkInfluence(ray_inter)) {
             // The medium intersect with the ray
             segments[added++] = {medium, ray_inter};
         }

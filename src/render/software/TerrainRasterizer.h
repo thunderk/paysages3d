@@ -9,11 +9,9 @@
 namespace paysages {
 namespace software {
 
-class SOFTWARESHARED_EXPORT TerrainRasterizer: public Rasterizer
-{
-public:
-    typedef struct
-    {
+class SOFTWARESHARED_EXPORT TerrainRasterizer : public Rasterizer {
+  public:
+    typedef struct {
         Vector3 point_nw;
         Vector3 point_sw;
         Vector3 point_se;
@@ -21,8 +19,8 @@ public:
         int detail_hint;
     } TerrainChunkInfo;
 
-public:
-    TerrainRasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int client_id);
+  public:
+    TerrainRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id);
 
     /**
      * Set the rasterization quality.
@@ -35,10 +33,10 @@ public:
     virtual void setQuality(double factor) override;
 
     virtual int prepareRasterization() override;
-    virtual void rasterizeToCanvas(CanvasPortion* canvas) override;
+    virtual void rasterizeToCanvas(CanvasPortion *canvas) override;
     virtual Color shadeFragment(const CanvasFragment &fragment, const CanvasFragment *previous) const override;
 
-protected:
+  protected:
     /**
      * Add a vertical offset to rasterized polygons.
      *
@@ -46,11 +44,11 @@ protected:
      */
     void setYOffset(double offset);
 
-private:
+  private:
     /**
      * Method called for each chunk tessellated by performTessellation.
      */
-    void processChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk);
+    void processChunk(CanvasPortion *canvas, TerrainChunkInfo *chunk);
 
     /**
      * Tessellate the terrain, calling processChunk for each chunk.
@@ -61,18 +59,19 @@ private:
      *
      * *canvas* may be NULL to only simulate the tessellation.
      */
-    int performTessellation(CanvasPortion* canvas, bool displaced);
+    int performTessellation(CanvasPortion *canvas, bool displaced);
 
     /**
      * Tessellate a terrain chunk, pushing the quads in the render area.
      */
-    void tessellateChunk(CanvasPortion* canvas, TerrainChunkInfo* chunk, int detail);
+    void tessellateChunk(CanvasPortion *canvas, TerrainChunkInfo *chunk, int detail);
 
-    void renderQuad(CanvasPortion* canvas, double x, double z, double size, double water_height);
+    void renderQuad(CanvasPortion *canvas, double x, double z, double size, double water_height);
 
-    void getChunk(SoftwareRenderer* renderer, TerrainRasterizer::TerrainChunkInfo* chunk, double x, double z, double size, int displaced);
+    void getChunk(SoftwareRenderer *renderer, TerrainRasterizer::TerrainChunkInfo *chunk, double x, double z,
+                  double size, int displaced);
 
-private:
+  private:
     double yoffset;
 
     // Quality control
@@ -80,7 +79,6 @@ private:
     double detail_factor;
     int max_chunk_detail;
 };
-
 }
 }
 

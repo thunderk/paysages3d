@@ -3,19 +3,15 @@
 #include "VegetationModelDefinition.h"
 #include "VegetationPresenceDefinition.h"
 
-VegetationLayerDefinition::VegetationLayerDefinition(DefinitionNode* parent) :
-    DefinitionNode(parent, "layer")
-{
+VegetationLayerDefinition::VegetationLayerDefinition(DefinitionNode *parent) : DefinitionNode(parent, "layer") {
     model = new VegetationModelDefinition(this);
     presence = new VegetationPresenceDefinition(this);
 }
 
-double VegetationLayerDefinition::getMaxHeight() const
-{
+double VegetationLayerDefinition::getMaxHeight() const {
     return presence->getMaxHeight();
 }
 
-void VegetationLayerDefinition::applyPreset(VegetationLayerPreset preset)
-{
+void VegetationLayerDefinition::applyPreset(VegetationLayerPreset preset) {
     model->randomize();
 }

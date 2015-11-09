@@ -8,27 +8,26 @@
 namespace paysages {
 namespace software {
 
-class BaseAtmosphereRenderer: public LightSource
-{
-public:
-    BaseAtmosphereRenderer(SoftwareRenderer* parent);
-    virtual ~BaseAtmosphereRenderer() {}
+class BaseAtmosphereRenderer : public LightSource {
+  public:
+    BaseAtmosphereRenderer(SoftwareRenderer *parent);
+    virtual ~BaseAtmosphereRenderer() {
+    }
 
     virtual AtmosphereResult applyAerialPerspective(const Vector3 &location, const Color &base);
     virtual AtmosphereResult getSkyColor(const Vector3 &direction);
-    virtual Vector3 getSunDirection(bool cache=true) const;
+    virtual Vector3 getSunDirection(bool cache = true) const;
 
     virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override;
 
-protected:
-    virtual AtmosphereDefinition* getDefinition() const;
-    SoftwareRenderer* parent;
+  protected:
+    virtual AtmosphereDefinition *getDefinition() const;
+    SoftwareRenderer *parent;
 };
 
-class SoftwareBrunetonAtmosphereRenderer: public BaseAtmosphereRenderer
-{
-public:
-    SoftwareBrunetonAtmosphereRenderer(SoftwareRenderer* parent);
+class SoftwareBrunetonAtmosphereRenderer : public BaseAtmosphereRenderer {
+  public:
+    SoftwareBrunetonAtmosphereRenderer(SoftwareRenderer *parent);
     virtual ~SoftwareBrunetonAtmosphereRenderer();
 
     virtual AtmosphereResult applyAerialPerspective(const Vector3 &location, const Color &base) override;
@@ -36,12 +35,13 @@ public:
 
     virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override;
 
-    inline const AtmosphereModelBruneton* getModel() const {return model;}
+    inline const AtmosphereModelBruneton *getModel() const {
+        return model;
+    }
 
-private:
-    AtmosphereModelBruneton* model;
+  private:
+    AtmosphereModelBruneton *model;
 };
-
 }
 }
 

@@ -2,13 +2,11 @@
 
 #include "Vector3.h"
 
-BoundingBox::BoundingBox()
-{
+BoundingBox::BoundingBox() {
     reset();
 }
 
-void BoundingBox::reset()
-{
+void BoundingBox::reset() {
     empty = 1;
     xmin = 10000000000.0;
     xmax = -10000000000.0;
@@ -18,31 +16,24 @@ void BoundingBox::reset()
     zmax = -10000000000.0;
 }
 
-void BoundingBox::pushPoint(const Vector3 &point)
-{
+void BoundingBox::pushPoint(const Vector3 &point) {
     empty = 0;
-    if (point.x < xmin)
-    {
+    if (point.x < xmin) {
         xmin = point.x;
     }
-    if (point.x > xmax)
-    {
+    if (point.x > xmax) {
         xmax = point.x;
     }
-    if (point.y < ymin)
-    {
+    if (point.y < ymin) {
         ymin = point.y;
     }
-    if (point.y > ymax)
-    {
+    if (point.y > ymax) {
         ymax = point.y;
     }
-    if (point.z < zmin)
-    {
+    if (point.z < zmin) {
         zmin = point.z;
     }
-    if (point.z > zmax)
-    {
+    if (point.z > zmax) {
         zmax = point.z;
     }
 }

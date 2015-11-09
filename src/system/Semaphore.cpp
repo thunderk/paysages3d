@@ -1,6 +1,4 @@
 #include "Semaphore.h"
 
-Semaphore::Semaphore(int resources):
-    QSemaphore(resources)
-{
+Semaphore::Semaphore(int resources) : QSemaphore(resources) {
 }

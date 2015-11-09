@@ -15,32 +15,27 @@ typedef struct {
 
 std::vector<PixelCall> calls;
 
-class MockOverlayRasterizer: public OverlayRasterizer
-{
-public:
-    MockOverlayRasterizer(SoftwareCanvasRenderer *renderer):
-        OverlayRasterizer(renderer, renderer->getProgressHelper())
-    {
+class MockOverlayRasterizer : public OverlayRasterizer {
+  public:
+    MockOverlayRasterizer(SoftwareCanvasRenderer *renderer)
+        : OverlayRasterizer(renderer, renderer->getProgressHelper()) {
     }
 
-    virtual Color processPixel(int x, int y, double relx, double rely) const override
-    {
+    virtual Color processPixel(int x, int y, double relx, double rely) const override {
         PixelCall call = {x, y, relx, rely};
         calls.push_back(call);
         return COLOR_BLUE;
     }
 };
 
-void checkCall(const PixelCall &call, int x, int y, double relx, double rely)
-{
+void checkCall(const PixelCall &call, int x, int y, double relx, double rely) {
     EXPECT_EQ(x, call.x);
     EXPECT_EQ(y, call.y);
     EXPECT_DOUBLE_EQ(relx, call.relx);
     EXPECT_DOUBLE_EQ(rely, call.rely);
 }
 
-TEST(OverlayRasterizer, pixelProcessing)
-{
+TEST(OverlayRasterizer, pixelProcessing) {
     calls.clear();
 
     Scenery scenery;

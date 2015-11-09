@@ -11,35 +11,33 @@ namespace basics {
  *
  * This state contains the noise offsets for noise layers.
  */
-class BASICSSHARED_EXPORT NoiseState
-{
-public:
+class BASICSSHARED_EXPORT NoiseState {
+  public:
     typedef struct {
         double x;
         double y;
         double z;
     } NoiseOffset;
 
-public:
+  public:
     NoiseState();
 
-    void save(PackStream* stream) const;
-    void load(PackStream* stream);
-    void copy(NoiseState* destination) const;
+    void save(PackStream *stream) const;
+    void load(PackStream *stream);
+    void copy(NoiseState *destination) const;
 
     void randomizeOffsets();
-    void resetOffsets(double x=0.0, double y=0.0, double z=0.0);
+    void resetOffsets(double x = 0.0, double y = 0.0, double z = 0.0);
 
     void setLevel(int level, double x, double y, double z);
     void setLevelCount(int level_count);
 
-private:
+  private:
     std::vector<NoiseOffset> level_offsets;
 
     friend class NoiseGenerator;
     friend class FractalNoise;
 };
-
 }
 }
 

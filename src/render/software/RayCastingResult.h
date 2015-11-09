@@ -9,16 +9,14 @@
 namespace paysages {
 namespace software {
 
-class SOFTWARESHARED_EXPORT RayCastingResult
-{
-public:
+class SOFTWARESHARED_EXPORT RayCastingResult {
+  public:
     RayCastingResult();
 
     bool hit;
     Color hit_color;
     Vector3 hit_location;
 };
-
 }
 }
 

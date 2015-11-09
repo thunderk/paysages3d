@@ -13,18 +13,15 @@
 
 #define SPHERE_SIZE 20000.0
 
-SkyRasterizer::SkyRasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int client_id):
-    Rasterizer(renderer, progress, client_id, Color(0.9, 0.9, 1.0))
-{
+SkyRasterizer::SkyRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id)
+    : Rasterizer(renderer, progress, client_id, Color(0.9, 0.9, 1.0)) {
 }
 
-int SkyRasterizer::prepareRasterization()
-{
+int SkyRasterizer::prepareRasterization() {
     return res_i * res_j;
 }
 
-void SkyRasterizer::rasterizeToCanvas(CanvasPortion* canvas)
-{
+void SkyRasterizer::rasterizeToCanvas(CanvasPortion *canvas) {
     int i, j;
     double step_i, step_j;
     double current_i, current_j;
@@ -36,17 +33,14 @@ void SkyRasterizer::rasterizeToCanvas(CanvasPortion* canvas)
 
     camera_location = renderer->getCameraLocation(VECTOR_ZERO);
 
-    for (j = 0; j < res_j; j++)
-    {
-        if (interrupted)
-        {
+    for (j = 0; j < res_j; j++) {
+        if (interrupted) {
             return;
         }
 
         current_j = (double)(j - res_j / 2) * step_j;
 
-        for (i = 0; i < res_i; i++)
-        {
+        for (i = 0; i < res_i; i++) {
             current_i = (double)i * step_i;
 
             direction.x = SPHERE_SIZE * cos(current_i) * cos(current_j);
@@ -76,8 +70,7 @@ void SkyRasterizer::rasterizeToCanvas(CanvasPortion* canvas)
     }
 }
 
-Color SkyRasterizer::shadeFragment(const CanvasFragment &fragment, const CanvasFragment *) const
-{
+Color SkyRasterizer::shadeFragment(const CanvasFragment &fragment, const CanvasFragment *) const {
     Vector3 location = fragment.getLocation();
     Vector3 camera_location, direction;
     Color result;
@@ -87,18 +80,17 @@ Color SkyRasterizer::shadeFragment(const CanvasFragment &fragment, const CanvasF
 
     // TODO Don't compute sky color if it's fully covered by clouds
     result = renderer->getAtmosphereRenderer()->getSkyColor(direction.normalize()).final;
-    result = renderer->getCloudsRenderer()->getColor(camera_location, camera_location.add(direction.scale(10.0)), result);
+    result =
+        renderer->getCloudsRenderer()->getColor(camera_location, camera_location.add(direction.scale(10.0)), result);
 
     return result;
 }
 
-void SkyRasterizer::setQuality(int res_i, int res_j)
-{
+void SkyRasterizer::setQuality(int res_i, int res_j) {
     this->res_i = res_i;
     this->res_j = res_j;
 }
 
-void SkyRasterizer::setQuality(double factor)
-{
+void SkyRasterizer::setQuality(double factor) {
     setQuality(20.0 * (1.0 + factor * 10.0), 10.0 * (1.0 + factor * 10.0));
 }

@@ -4,38 +4,29 @@
 #include "DefinitionDiff.h"
 #include "DefinitionWatcher.h"
 
-DiffManager::DiffManager(DefinitionNode *tree):
-    tree(tree)
-{
+DiffManager::DiffManager(DefinitionNode *tree) : tree(tree) {
     undone = 0;
 }
 
-DiffManager::~DiffManager()
-{
-    for (auto diff: diffs)
-    {
+DiffManager::~DiffManager() {
+    for (auto diff : diffs) {
         delete diff;
     }
     diffs.clear();
 }
 
-void DiffManager::addWatcher(const DefinitionNode *node, DefinitionWatcher *watcher)
-{
-    if (std::find(watchers[node].begin(), watchers[node].end(), watcher) == watchers[node].end())
-    {
+void DiffManager::addWatcher(const DefinitionNode *node, DefinitionWatcher *watcher) {
+    if (std::find(watchers[node].begin(), watchers[node].end(), watcher) == watchers[node].end()) {
         watchers[node].push_back(watcher);
     }
 }
 
-int DiffManager::getWatcherCount(const DefinitionNode *node)
-{
+int DiffManager::getWatcherCount(const DefinitionNode *node) {
     return watchers[node].size();
 }
 
-void DiffManager::addDiff(DefinitionNode *node, const DefinitionDiff *diff)
-{
-    while (undone > 0)
-    {
+void DiffManager::addDiff(DefinitionNode *node, const DefinitionDiff *diff) {
+    while (undone > 0) {
         // truncate diffs ahead
         delete diffs.back();
         diffs.pop_back();
@@ -47,16 +38,13 @@ void DiffManager::addDiff(DefinitionNode *node, const DefinitionDiff *diff)
     // TODO Delayed commit (with merge of consecutive diffs)
     node->applyDiff(diff);
 
-    for (auto watcher: watchers[node])
-    {
+    for (auto watcher : watchers[node]) {
         watcher->nodeChanged(node, diff);
     }
 }
 
-void DiffManager::undo()
-{
-    if (undone < (int)diffs.size())
-    {
+void DiffManager::undo() {
+    if (undone < (int)diffs.size()) {
         undone++;
         const DefinitionDiff *diff = diffs[diffs.size() - undone];
 
@@ -64,18 +52,15 @@ void DiffManager::undo()
         DefinitionNode *node = tree->findByPath(diff->getPath());
         node->applyDiff(diff, true);
 
-        for (auto watcher: watchers[node])
-        {
+        for (auto watcher : watchers[node]) {
             // FIXME Reverse diff
             watcher->nodeChanged(node, diff);
         }
     }
 }
 
-void DiffManager::redo()
-{
-    if (undone > 0)
-    {
+void DiffManager::redo() {
+    if (undone > 0) {
         const DefinitionDiff *diff = diffs[diffs.size() - undone];
         undone--;
 
@@ -83,10 +68,8 @@ void DiffManager::redo()
         DefinitionNode *node = tree->findByPath(diff->getPath());
         node->applyDiff(diff);
 
-        for (auto watcher: watchers[node])
-        {
+        for (auto watcher : watchers[node]) {
             watcher->nodeChanged(node, diff);
         }
     }
 }
-

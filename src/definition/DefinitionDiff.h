@@ -11,19 +11,21 @@ namespace definition {
  *
  * Diffs are used to undo/redo changes.
  */
-class DEFINITIONSHARED_EXPORT DefinitionDiff
-{
-public:
+class DEFINITIONSHARED_EXPORT DefinitionDiff {
+  public:
     DefinitionDiff(const DefinitionNode *node);
 
-    inline const std::string &getTypeName() const {return type_name;}
-    inline const std::string &getPath() const {return path;}
+    inline const std::string &getTypeName() const {
+        return type_name;
+    }
+    inline const std::string &getPath() const {
+        return path;
+    }
 
-private:
+  private:
     std::string type_name;
     std::string path;
 };
-
 }
 }
 

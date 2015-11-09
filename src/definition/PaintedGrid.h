@@ -15,10 +15,9 @@ namespace definition {
  *
  * Grid cells are considered to be 1.0-sized.
  */
-class DEFINITIONSHARED_EXPORT PaintedGrid: public DefinitionNode
-{
-public:
-    PaintedGrid(DefinitionNode *parent=0);
+class DEFINITIONSHARED_EXPORT PaintedGrid : public DefinitionNode {
+  public:
+    PaintedGrid(DefinitionNode *parent = 0);
     virtual ~PaintedGrid();
 
     virtual void copy(DefinitionNode *destination) const override;
@@ -67,7 +66,7 @@ public:
     /**
      * Apply a brush stroke at a grid location (locating the brush center).
      */
-    virtual void applyBrush(const PaintedGridBrush &brush, double x, double y, double force, bool commit=false);
+    virtual void applyBrush(const PaintedGridBrush &brush, double x, double y, double force, bool commit = false);
 
     /**
      * Commit previous brush strokes.
@@ -81,14 +80,13 @@ public:
      */
     virtual double getInitialValue(double x, double y) const;
 
-private:
+  private:
     double *getDataPointer(PaintedGridData *data, int x, int y, PaintedGridData *fallback, bool grow) const;
 
-private:
+  private:
     PaintedGridData *merged_data;
     PaintedGridData *brush_data;
 };
-
 }
 }
 

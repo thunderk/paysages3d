@@ -3,8 +3,7 @@
 #include "CanvasPreview.h"
 #include "Color.h"
 
-TEST(CanvasPreview, setSize)
-{
+TEST(CanvasPreview, setSize) {
     CanvasPreview preview;
 
     preview.setSize(800, 600, 400, 300);
@@ -13,8 +12,7 @@ TEST(CanvasPreview, setSize)
     EXPECT_EQ(300, preview.getHeight());
 }
 
-TEST(CanvasPreview, pushPixel_accumulate)
-{
+TEST(CanvasPreview, pushPixel_accumulate) {
     CanvasPreview preview;
     Color col;
     preview.setSize(800, 600, 400, 300);
@@ -41,8 +39,7 @@ TEST(CanvasPreview, pushPixel_accumulate)
     EXPECT_COLOR_RGBA(col, 0.25, 0.25, 0.0, 1.0);
 }
 
-TEST(CanvasPreview, pushPixel_border)
-{
+TEST(CanvasPreview, pushPixel_border) {
     CanvasPreview preview;
     preview.setSize(759, 237, 9, 14);
 

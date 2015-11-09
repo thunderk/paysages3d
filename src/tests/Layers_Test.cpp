@@ -3,31 +3,26 @@
 #include "Layers.h"
 #include "PackStream.h"
 
-DefinitionNode* _construc1(Layers*)
-{
+DefinitionNode *_construc1(Layers *) {
     return new DefinitionNode(NULL, "test");
 }
 
-DefinitionNode* _construc2(Layers* parent)
-{
-    DefinitionNode* result = new DefinitionNode(parent, "test");
+DefinitionNode *_construc2(Layers *parent) {
+    DefinitionNode *result = new DefinitionNode(parent, "test");
     return result;
 }
 
-TEST(Layers, Constructor)
-{
+TEST(Layers, Constructor) {
     Layers layers1(NULL, "test", _construc1);
     EXPECT_EQ(0, layers1.count());
 }
 
-TEST(Layers, NullLayer)
-{
+TEST(Layers, NullLayer) {
     Layers layers1(NULL, "test", _construc1);
 
-    for (int i = -2; i < 5; i++)
-    {
-        DefinitionNode* layer = layers1.getLayer(0);
-        EXPECT_NE((DefinitionNode*)NULL, layer);
+    for (int i = -2; i < 5; i++) {
+        DefinitionNode *layer = layers1.getLayer(0);
+        EXPECT_NE((DefinitionNode *)NULL, layer);
 
         EXPECT_EQ(NULL, layer->getParent());
         EXPECT_EQ(layer, layer->getRoot());
@@ -38,8 +33,7 @@ TEST(Layers, NullLayer)
     EXPECT_EQ(0, layers1.count());
 }
 
-TEST(Layers, copy)
-{
+TEST(Layers, copy) {
     Layers layers1(NULL, "test", _construc2);
     layers1.addLayer();
     EXPECT_EQ(1, layers1.count());
@@ -56,8 +50,7 @@ TEST(Layers, copy)
     EXPECT_NE(layers1.getLayer(0), layers2.getLayer(0));
 }
 
-TEST(Layers, maxLayerCount)
-{
+TEST(Layers, maxLayerCount) {
     Layers layers1(NULL, "test", _construc1);
     layers1.setMaxLayerCount(2);
 
@@ -78,8 +71,7 @@ TEST(Layers, maxLayerCount)
     EXPECT_EQ(2, layers1.count());
 }
 
-TEST(Layers, saveLoad)
-{
+TEST(Layers, saveLoad) {
     PackStream *stream;
 
     Layers layers1(NULL, "test", _construc1);

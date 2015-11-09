@@ -6,8 +6,7 @@
 #include "FloatDiff.h"
 #include "FloatNode.h"
 
-TEST(DiffManager, undoRedo)
-{
+TEST(DiffManager, undoRedo) {
     DefinitionNode root(NULL, "root");
     DiffManager *diffs = root.getDiffManager();
 
@@ -33,8 +32,7 @@ TEST(DiffManager, undoRedo)
     EXPECT_DOUBLE_EQ(-2.1, leaf.getValue());
 }
 
-TEST(DiffManager, undoTooMuch)
-{
+TEST(DiffManager, undoTooMuch) {
     DefinitionNode root(NULL, "root");
     DiffManager *diffs = root.getDiffManager();
 
@@ -54,8 +52,7 @@ TEST(DiffManager, undoTooMuch)
     EXPECT_DOUBLE_EQ(2.2, leaf.getValue());
 }
 
-TEST(DiffManager, redoTooMuch)
-{
+TEST(DiffManager, redoTooMuch) {
     DefinitionNode root(NULL, "root");
     DiffManager *diffs = root.getDiffManager();
 
@@ -78,8 +75,7 @@ TEST(DiffManager, redoTooMuch)
     EXPECT_DOUBLE_EQ(1.1, leaf.getValue());
 }
 
-TEST(DiffManager, undoBranch)
-{
+TEST(DiffManager, undoBranch) {
     DefinitionNode root(NULL, "root");
     DiffManager *diffs = root.getDiffManager();
 
@@ -114,17 +110,15 @@ TEST(DiffManager, undoBranch)
     EXPECT_DOUBLE_EQ(4.4, leaf.getValue());
 }
 
-class TestWatcher: public DefinitionWatcher
-{
-public:
-    TestWatcher(DefinitionNode* expected_node, double expected_old_value, double expected_new_value):
-        DefinitionWatcher(), expected_node(expected_node), expected_old_value(expected_old_value), expected_new_value(expected_new_value)
-    {
+class TestWatcher : public DefinitionWatcher {
+  public:
+    TestWatcher(DefinitionNode *expected_node, double expected_old_value, double expected_new_value)
+        : DefinitionWatcher(), expected_node(expected_node), expected_old_value(expected_old_value),
+          expected_new_value(expected_new_value) {
         calls = 0;
     }
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override
-    {
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override {
         EXPECT_EQ(expected_node, node);
         ASSERT_EQ("float", diff->getTypeName());
         const FloatDiff *float_diff = (const FloatDiff *)diff;
@@ -134,13 +128,12 @@ public:
     }
 
     int calls;
-    DefinitionNode* expected_node;
+    DefinitionNode *expected_node;
     double expected_old_value;
     double expected_new_value;
 };
 
-TEST(DiffManager, addWatcher)
-{
+TEST(DiffManager, addWatcher) {
     FloatNode node(NULL, "node");
     TestWatcher watcher(&node, 1.3, -4.0);
 
@@ -154,8 +147,7 @@ TEST(DiffManager, addWatcher)
     EXPECT_EQ(1, watcher.calls);
 }
 
-TEST(DiffManager, addWatcherWithInitDiffs)
-{
+TEST(DiffManager, addWatcherWithInitDiffs) {
     FloatNode node(NULL, "node", 1.3);
     TestWatcher watcher(&node, 1.3, 1.3);
 

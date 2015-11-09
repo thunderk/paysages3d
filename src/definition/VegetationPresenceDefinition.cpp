@@ -9,18 +9,17 @@
 #include "NoiseNode.h"
 #include "NoiseGenerator.h"
 
-VegetationPresenceDefinition::VegetationPresenceDefinition(VegetationLayerDefinition *parent):
-    DefinitionNode(parent, "presence")
-{
+VegetationPresenceDefinition::VegetationPresenceDefinition(VegetationLayerDefinition *parent)
+    : DefinitionNode(parent, "presence") {
     noise = new NoiseNode(this);
     noise->setLevels(4);
     interval = new FloatNode(this, "interval", 0.1);
 }
 
-bool VegetationPresenceDefinition::collectInstances(std::vector<VegetationInstance> *result, const VegetationModelDefinition &model, double xmin, double zmin, double xmax, double zmax, bool outcomers) const
-{
-    if (outcomers)
-    {
+bool VegetationPresenceDefinition::collectInstances(std::vector<VegetationInstance> *result,
+                                                    const VegetationModelDefinition &model, double xmin, double zmin,
+                                                    double xmax, double zmax, bool outcomers) const {
+    if (outcomers) {
         // Expand the area to include outcoming instances
         double max_radius = getMaxHeight();
         xmin -= max_radius;
@@ -36,15 +35,13 @@ bool VegetationPresenceDefinition::collectInstances(std::vector<VegetationInstan
 
     double xstart = xmin - fmod(xmin, interval_value);
     double zstart = zmin - fmod(zmin, interval_value);
-    for (double x = xstart; x < xmax; x += interval_value)
-    {
-        for (double z = zstart; z < zmax; z += interval_value)
-        {
+    for (double x = xstart; x < xmax; x += interval_value) {
+        for (double z = zstart; z < zmax; z += interval_value) {
             double noise_presence = generator->get2DTotal(x * 0.1, z * 0.1);
-            if (noise_presence > 0.0)
-            {
-                double size = 0.1 + 0.2 * fabs(generator->get2DTotal(z * 10.0, x * 10.0)) * (noise_presence * 0.5 + 0.5);
-                double angle = 3.0 * generator->get2DTotal(-x * 20.0, z * 20.0);  // TODO balanced distribution
+            if (noise_presence > 0.0) {
+                double size =
+                    0.1 + 0.2 * fabs(generator->get2DTotal(z * 10.0, x * 10.0)) * (noise_presence * 0.5 + 0.5);
+                double angle = 3.0 * generator->get2DTotal(-x * 20.0, z * 20.0); // TODO balanced distribution
                 double xoffset = fabs(generator->get2DTotal(x * 12.0, -z * 12.0));
                 double zoffset = fabs(generator->get2DTotal(-x * 27.0, -z * 27.0));
                 double y = getScenery()->getTerrain()->getInterpolatedHeight(x + xoffset, z + zoffset, true, true);
@@ -57,7 +54,6 @@ bool VegetationPresenceDefinition::collectInstances(std::vector<VegetationInstan
     return added > 0;
 }
 
-double VegetationPresenceDefinition::getMaxHeight() const
-{
+double VegetationPresenceDefinition::getMaxHeight() const {
     return 0.3;
 }

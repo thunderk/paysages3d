@@ -3,8 +3,7 @@
 #include "InfiniteRay.h"
 #include "Disk.h"
 
-TEST(Disk, checkRayIntersection)
-{
+TEST(Disk, checkRayIntersection) {
     Disk disk(VECTOR_UP, VECTOR_UP, 0.8);
 
     int result;

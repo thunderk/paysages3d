@@ -13,20 +13,14 @@
 #include "FloatNode.h"
 #include "FloatDiff.h"
 
-class ChunkMaintenanceThreads:public ParallelPool
-{
-public:
-    ChunkMaintenanceThreads(OpenGLTerrain* terrain):
-        terrain(terrain)
-    {
+class ChunkMaintenanceThreads : public ParallelPool {
+  public:
+    ChunkMaintenanceThreads(OpenGLTerrain *terrain) : terrain(terrain) {
     }
 
-    virtual void work() override
-    {
-        while (running)
-        {
-            if (not terrain->isPaused())
-            {
+    virtual void work() override {
+        while (running) {
+            if (not terrain->isPaused()) {
                 terrain->performChunksMaintenance();
             }
 
@@ -34,29 +28,24 @@ public:
         }
     }
 
-private:
-    OpenGLTerrain* terrain;
+  private:
+    OpenGLTerrain *terrain;
 };
 
-OpenGLTerrain::OpenGLTerrain(OpenGLRenderer *renderer):
-    OpenGLPart(renderer)
-{
+OpenGLTerrain::OpenGLTerrain(OpenGLRenderer *renderer) : OpenGLPart(renderer) {
     work = new ChunkMaintenanceThreads(this);
     paused = false;
 }
 
-OpenGLTerrain::~OpenGLTerrain()
-{
+OpenGLTerrain::~OpenGLTerrain() {
     delete work;
 
-    for (int i = 0; i < _chunks.count(); i++)
-    {
+    for (int i = 0; i < _chunks.count(); i++) {
         delete _chunks[i];
     }
 }
 
-void OpenGLTerrain::initialize()
-{
+void OpenGLTerrain::initialize() {
     // Prepare shader programs
     program = createShader("terrain");
     program->addVertexSource("terrain");
@@ -69,13 +58,12 @@ void OpenGLTerrain::initialize()
     // Add terrain chunks
     int chunks = 12;
     double size = 800.0;
-    double chunksize = size / (double) chunks;
+    double chunksize = size / (double)chunks;
     double start = -size / 2.0;
-    for (int i = 0; i < chunks; i++)
-    {
-        for (int j = 0; j < chunks; j++)
-        {
-            ExplorerChunkTerrain* chunk = new ExplorerChunkTerrain(renderer, start + chunksize * (double) i, start + chunksize * (double) j, chunksize, chunks);
+    for (int i = 0; i < chunks; i++) {
+        for (int j = 0; j < chunks; j++) {
+            ExplorerChunkTerrain *chunk = new ExplorerChunkTerrain(renderer, start + chunksize * (double)i,
+                                                                   start + chunksize * (double)j, chunksize, chunks);
             _chunks.append(chunk);
             _updateQueue.append(chunk);
         }
@@ -89,75 +77,59 @@ void OpenGLTerrain::initialize()
     renderer->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this);
 }
 
-void OpenGLTerrain::update()
-{
-    for (auto &chunk: _chunks)
-    {
+void OpenGLTerrain::update() {
+    for (auto &chunk : _chunks) {
         chunk->askReset(true, true);
     }
 }
 
-void OpenGLTerrain::render()
-{
+void OpenGLTerrain::render() {
     program->bind();
 
-    for (int i = 0; i < _chunks.count(); i++)
-    {
+    for (int i = 0; i < _chunks.count(); i++) {
         _chunks[i]->render(program->getProgram(), renderer->getOpenGlFunctions());
     }
 
     program->release();
 }
 
-void OpenGLTerrain::interrupt()
-{
-    for (auto &chunk: _chunks)
-    {
+void OpenGLTerrain::interrupt() {
+    for (auto &chunk : _chunks) {
         chunk->askInterrupt();
     }
 }
 
-void OpenGLTerrain::pause()
-{
+void OpenGLTerrain::pause() {
     paused = true;
     interrupt();
 }
 
-void OpenGLTerrain::resume()
-{
-    for (auto &chunk: _chunks)
-    {
+void OpenGLTerrain::resume() {
+    for (auto &chunk : _chunks) {
         chunk->askResume();
     }
     paused = false;
 }
 
-void OpenGLTerrain::resetTextures()
-{
-    for (auto &chunk: _chunks)
-    {
+void OpenGLTerrain::resetTextures() {
+    for (auto &chunk : _chunks) {
         chunk->askReset(false, true);
     }
 }
 
-static bool _cmpChunks(const ExplorerChunkTerrain* c1, const ExplorerChunkTerrain* c2)
-{
+static bool _cmpChunks(const ExplorerChunkTerrain *c1, const ExplorerChunkTerrain *c2) {
     return c1->priority > c2->priority;
 }
 
-void OpenGLTerrain::performChunksMaintenance()
-{
-    CameraDefinition* camera = renderer->getScenery()->getCamera();
-    ExplorerChunkTerrain* chunk;
+void OpenGLTerrain::performChunksMaintenance() {
+    CameraDefinition *camera = renderer->getScenery()->getCamera();
+    ExplorerChunkTerrain *chunk;
 
     _lock_chunks.lock();
-    if (_updateQueue.count() > 0)
-    {
+    if (_updateQueue.count() > 0) {
         chunk = _updateQueue.takeFirst();
         _lock_chunks.unlock();
-    }
-    else
-    {
+    } else {
         _lock_chunks.unlock();
         return;
     }
@@ -166,23 +138,17 @@ void OpenGLTerrain::performChunksMaintenance()
 
     _lock_chunks.lock();
     _updateQueue.append(chunk);
-    for (int i = 0; i < _chunks.count(); i++)
-    {
+    for (int i = 0; i < _chunks.count(); i++) {
         _chunks[i]->updatePriority(camera);
     }
     qSort(_updateQueue.begin(), _updateQueue.end(), _cmpChunks);
     _lock_chunks.unlock();
 }
 
-
-void OpenGLTerrain::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
-{
-    if (node->getPath() == "/terrain/water_height")
-    {
+void OpenGLTerrain::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
+    if (node->getPath() == "/terrain/water_height") {
         resetTextures();
-    }
-    else if (node->getPath() == "/atmosphere/daytime")
-    {
+    } else if (node->getPath() == "/atmosphere/daytime") {
         resetTextures();
     }
 }

@@ -7,21 +7,18 @@
 #include "CloudLayerDefinition.h"
 #include "WaterDefinition.h"
 
-TimeManager::TimeManager()
-{
+TimeManager::TimeManager() {
     wind_x = 0.0;
     wind_z = 0.0;
 }
 
-void TimeManager::moveForward(Scenery *scenery, double amount)
-{
+void TimeManager::moveForward(Scenery *scenery, double amount) {
     // Move the sun
     scenery->getAtmosphere()->setDayTime(scenery->getAtmosphere()->propDayTime()->getValue() + amount);
 
     // Move the clouds
     int n = scenery->getClouds()->count();
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         CloudLayerDefinition *cloud = scenery->getClouds()->getCloudLayer(i);
         cloud->propXOffset()->addValue(-wind_x * amount * 100.0);
         cloud->propZOffset()->addValue(-wind_z * amount * 100.0);
@@ -35,8 +32,7 @@ void TimeManager::moveForward(Scenery *scenery, double amount)
     // TODO Alter noise offsets
 }
 
-void TimeManager::setWind(double wind_x, double wind_z)
-{
+void TimeManager::setWind(double wind_x, double wind_z) {
     this->wind_x = wind_x;
     this->wind_z = wind_z;
 }

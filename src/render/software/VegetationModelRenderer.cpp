@@ -10,17 +10,14 @@
 #include "VegetationModelDefinition.h"
 #include "VegetationResult.h"
 
-VegetationModelRenderer::VegetationModelRenderer(SoftwareRenderer* parent, const VegetationModelDefinition* model):
-    parent(parent), model(model)
-{
+VegetationModelRenderer::VegetationModelRenderer(SoftwareRenderer *parent, const VegetationModelDefinition *model)
+    : parent(parent), model(model) {
 }
 
-VegetationModelRenderer::~VegetationModelRenderer()
-{
+VegetationModelRenderer::~VegetationModelRenderer() {
 }
 
-VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment, bool only_hit) const
-{
+VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment, bool only_hit) const {
     InfiniteRay ray(segment.getStart(), segment.getDirection());
     int intersections;
     const SurfaceMaterial *material = &SurfaceMaterial::getDefault();
@@ -31,57 +28,47 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
     maximal = segment.getLength();
     nearest = maximal;
 
-    for (const auto &branch: model->getSolidVolumes())
-    {
+    for (const auto &branch : model->getSolidVolumes()) {
         Vector3 near, far;
-        if (branch.checkRayIntersection(ray, &near, &far))
-        {
+        if (branch.checkRayIntersection(ray, &near, &far)) {
             distance = ray.getCursor(near);
-            if (distance >= 0.0 and distance <= maximal)
-            {
+            if (distance >= 0.0 and distance <= maximal) {
                 // Got a branch hit
-                if (only_hit)
-                {
+                if (only_hit) {
                     return VegetationResult(true);
                 }
 
-                if (distance < nearest)
-                {
+                if (distance < nearest) {
                     material = &model->getSolidMaterial();
                     nearest = distance;
 
                     hit = true;
                     location = near;
-                    normal = near.sub(branch.getAxis().getOrigin()).crossProduct(branch.getAxis().getDirection()).normalize();
+                    normal = near.sub(branch.getAxis().getOrigin())
+                                 .crossProduct(branch.getAxis().getDirection())
+                                 .normalize();
                     normal = branch.getAxis().getDirection().crossProduct(normal).normalize();
                 }
             }
         }
     }
 
-    for (const auto &foliage: model->getFoliageGroups())
-    {
+    for (const auto &foliage : model->getFoliageGroups()) {
         Vector3 near, far;
         intersections = foliage.checkRayIntersection(ray, &near, &far);
-        if (intersections == 2)
-        {
-            InfiniteRay subray(ray.getOrigin().sub(foliage.getCenter()).scale(1.0 / foliage.getRadius()), ray.getDirection());
+        if (intersections == 2) {
+            InfiniteRay subray(ray.getOrigin().sub(foliage.getCenter()).scale(1.0 / foliage.getRadius()),
+                               ray.getDirection());
 
-            for (const auto &leaf: model->getFoliageItems())
-            {
+            for (const auto &leaf : model->getFoliageItems()) {
                 Sphere leafcap(leaf.getPoint(), leaf.getRadius() * leaf.getRadius() / foliage.getRadius());
                 // TODO Add cap intersection to Sphere class
                 Vector3 capnear, capfar;
-                if (leafcap.checkRayIntersection(subray, &capnear, &capfar) == 2)
-                {
-                    if (capnear.sub(leaf.getPoint()).normalize().dotProduct(leaf.getNormal()) < 0.5)
-                    {
-                        if (capfar.sub(leaf.getPoint()).normalize().dotProduct(leaf.getNormal()) < 0.5)
-                        {
+                if (leafcap.checkRayIntersection(subray, &capnear, &capfar) == 2) {
+                    if (capnear.sub(leaf.getPoint()).normalize().dotProduct(leaf.getNormal()) < 0.5) {
+                        if (capfar.sub(leaf.getPoint()).normalize().dotProduct(leaf.getNormal()) < 0.5) {
                             continue;
-                        }
-                        else
-                        {
+                        } else {
                             capnear = capfar;
                         }
                     }
@@ -90,16 +77,13 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
                     capnear = capnear.scale(foliage.getRadius()).add(foliage.getCenter());
                     distance = ray.getCursor(capnear);
 
-                    if (distance >= 0.0 and distance <= maximal)
-                    {
+                    if (distance >= 0.0 and distance <= maximal) {
                         // Got a foliage hit
-                        if (only_hit)
-                        {
+                        if (only_hit) {
                             return VegetationResult(true);
                         }
 
-                        if (distance < nearest)
-                        {
+                        if (distance < nearest) {
                             material = &model->getFoliageMaterial();
                             nearest = distance;
 
@@ -107,30 +91,24 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
                             location = capnear;
                             normal = capnormal;
 
-                            if (normal.dotProduct(location.sub(segment.getStart())) > 0.0)
-                            {
+                            if (normal.dotProduct(location.sub(segment.getStart())) > 0.0) {
                                 // We look at backside
                                 normal = normal.scale(-1.0);
                             }
                         }
-
                     }
                 }
             }
         }
     }
 
-    if (hit)
-    {
+    if (hit) {
         return VegetationResult(location, normal, *material);
-    }
-    else
-    {
+    } else {
         return VegetationResult();
     }
 }
 
-bool VegetationModelRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
-{
+bool VegetationModelRenderer::applyLightFilter(LightComponent &light, const Vector3 &at) {
     return getResult(SpaceSegment(at, light.direction.scale(-2.0)), true).isHit();
 }

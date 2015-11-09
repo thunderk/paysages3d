@@ -15,18 +15,27 @@ namespace definition {
 /**
  * Model of vegetation.
  */
-class DEFINITIONSHARED_EXPORT VegetationModelDefinition: public DefinitionNode
-{
-public:
+class DEFINITIONSHARED_EXPORT VegetationModelDefinition : public DefinitionNode {
+  public:
     VegetationModelDefinition(DefinitionNode *parent);
     virtual ~VegetationModelDefinition();
 
-    inline const SurfaceMaterial &getSolidMaterial() const {return *solid_material;}
-    inline const SurfaceMaterial &getFoliageMaterial() const {return *foliage_material;}
+    inline const SurfaceMaterial &getSolidMaterial() const {
+        return *solid_material;
+    }
+    inline const SurfaceMaterial &getFoliageMaterial() const {
+        return *foliage_material;
+    }
 
-    inline const std::vector<CappedCylinder> &getSolidVolumes() const {return solid_volumes;}
-    inline const std::vector<Sphere> &getFoliageGroups() const {return foliage_groups;}
-    inline const std::vector<Disk> &getFoliageItems() const {return foliage_items;}
+    inline const std::vector<CappedCylinder> &getSolidVolumes() const {
+        return solid_volumes;
+    }
+    inline const std::vector<Sphere> &getFoliageGroups() const {
+        return foliage_groups;
+    }
+    inline const std::vector<Disk> &getFoliageItems() const {
+        return foliage_items;
+    }
 
     virtual void save(PackStream *stream) const override;
     virtual void load(PackStream *stream) override;
@@ -38,14 +47,13 @@ public:
      */
     void randomize();
 
-private:
+  private:
     SurfaceMaterial *solid_material;
     SurfaceMaterial *foliage_material;
     std::vector<CappedCylinder> solid_volumes;
     std::vector<Sphere> foliage_groups;
     std::vector<Disk> foliage_items;
 };
-
 }
 }
 

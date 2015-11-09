@@ -18,43 +18,39 @@
 /**
  * Grid iterator to collect instances of a layer, in small squares.
  */
-class VegetationGridIterator: public SpaceGridIterator
-{
-public:
-    VegetationGridIterator(const SpaceSegment &segment, VegetationRenderer *renderer, bool only_hit):
-        segment(segment), renderer(renderer), only_hit(only_hit)
-    {
+class VegetationGridIterator : public SpaceGridIterator {
+  public:
+    VegetationGridIterator(const SpaceSegment &segment, VegetationRenderer *renderer, bool only_hit)
+        : segment(segment), renderer(renderer), only_hit(only_hit) {
     }
 
-    inline const RayCastingResult &getResult() const {return result;}
+    inline const RayCastingResult &getResult() const {
+        return result;
+    }
 
-    virtual bool onCell(int x, int, int z) override
-    {
+    virtual bool onCell(int x, int, int z) override {
         result = renderer->getBoundResult(segment, (double)x, (double)z, only_hit);
         return not result.hit;
     }
-private:
+
+  private:
     const SpaceSegment &segment;
     VegetationRenderer *renderer;
     RayCastingResult result;
     bool only_hit;
 };
 
-VegetationRenderer::VegetationRenderer(SoftwareRenderer *parent):
-    parent(parent)
-{
+VegetationRenderer::VegetationRenderer(SoftwareRenderer *parent) : parent(parent) {
     enabled = true;
 }
 
-void VegetationRenderer::setEnabled(bool enabled)
-{
+void VegetationRenderer::setEnabled(bool enabled) {
     this->enabled = enabled;
 }
 
-RayCastingResult VegetationRenderer::renderInstance(const SpaceSegment &segment, const VegetationInstance &instance, bool only_hit, bool displaced)
-{
-    if (!displaced)
-    {
+RayCastingResult VegetationRenderer::renderInstance(const SpaceSegment &segment, const VegetationInstance &instance,
+                                                    bool only_hit, bool displaced) {
+    if (!displaced) {
         // Recursive call on displaced instance
         const Vector3 &base = instance.getBase();
         TerrainRenderer::TerrainResult terrain = parent->getTerrainRenderer()->getResult(base.x, base.z, true, true);
@@ -70,8 +66,7 @@ RayCastingResult VegetationRenderer::renderInstance(const SpaceSegment &segment,
 
     final.hit = result.isHit();
 
-    if (final.hit and not only_hit)
-    {
+    if (final.hit and not only_hit) {
         Vector3 location = result.getLocation().scale(instance.getSize()).add(instance.getBase());
         final.hit_color = parent->applyLightingToSurface(location, result.getNormal(), result.getMaterial());
         final.hit_color = parent->applyMediumTraversal(location, final.hit_color);
@@ -81,26 +76,21 @@ RayCastingResult VegetationRenderer::renderInstance(const SpaceSegment &segment,
     return final;
 }
 
-RayCastingResult VegetationRenderer::getResult(const SpaceSegment &segment, bool only_hit)
-{
-    if (enabled)
-    {
+RayCastingResult VegetationRenderer::getResult(const SpaceSegment &segment, bool only_hit) {
+    if (enabled) {
         // Find instances potentially crossing the segment
         VegetationGridIterator it(segment, this, only_hit);
-        if (not segment.projectedOnYPlane().iterateOnGrid(it))
-        {
+        if (not segment.projectedOnYPlane().iterateOnGrid(it)) {
             return it.getResult();
         }
         return RayCastingResult();
-    }
-    else
-    {
+    } else {
         return RayCastingResult();
     }
 }
 
-RayCastingResult VegetationRenderer::getBoundResult(const SpaceSegment &segment, double x, double z, bool only_hit, double xsize, double zsize)
-{
+RayCastingResult VegetationRenderer::getBoundResult(const SpaceSegment &segment, double x, double z, bool only_hit,
+                                                    double xsize, double zsize) {
     VegetationDefinition *vegetation = parent->getScenery()->getVegetation();
 
     // Early check if we may cross any vegetation
@@ -114,18 +104,15 @@ RayCastingResult VegetationRenderer::getBoundResult(const SpaceSegment &segment,
 
     // Iterate all layers and instances
     int n = vegetation->count();
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         VegetationLayerDefinition *layer = vegetation->getVegetationLayer(i);
 
         std::vector<VegetationInstance> instances;
         layer->getPresence()->collectInstances(&instances, *layer->getModel(), x, z, x + xsize, z + zsize);
 
-        for (auto &instance: instances)
-        {
+        for (auto &instance : instances) {
             RayCastingResult result = renderInstance(segment, instance, only_hit);
-            if (result.hit)
-            {
+            if (result.hit) {
                 // TODO Don't stop at first hit, find the nearest one
                 return result;
             }
@@ -135,24 +122,17 @@ RayCastingResult VegetationRenderer::getBoundResult(const SpaceSegment &segment,
     return RayCastingResult();
 }
 
-bool VegetationRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
-{
-    if (enabled)
-    {
+bool VegetationRenderer::applyLightFilter(LightComponent &light, const Vector3 &at) {
+    if (enabled) {
         // Get segment to iterate
         SpaceSegment segment(at, at.add(light.direction.scale(-1.0 * parent->render_quality)));
-        if (getResult(segment, true).hit)
-        {
+        if (getResult(segment, true).hit) {
             light.color = COLOR_BLACK;
             return false;
-        }
-        else
-        {
+        } else {
             return true;
         }
-    }
-    else
-    {
+    } else {
         return true;
     }
 }

@@ -6,15 +6,14 @@
 namespace paysages {
 namespace basics {
 
-class BASICSSHARED_EXPORT Color
-{
-public:
+class BASICSSHARED_EXPORT Color {
+  public:
     Color() = default;
     Color(const Color &col);
-    Color(double r, double g, double b, double a=1.0);
+    Color(double r, double g, double b, double a = 1.0);
 
-    void save(PackStream* stream) const;
-    void load(PackStream* stream);
+    void save(PackStream *stream) const;
+    void load(PackStream *stream);
 
     unsigned int to32BitRGBA() const;
     unsigned int to32BitBGRA() const;
@@ -26,16 +25,16 @@ public:
     static Color from32BitARGB(unsigned int col);
     static Color from32BitABGR(unsigned int col);
 
-    void mask(const Color& mask);
+    void mask(const Color &mask);
     double normalize();
     double getValue() const;
     double getPower() const;
     void limitPower(double max_power);
 
-    Color add(const Color& other) const;
-    Color lerp(const Color& other, double f) const;
+    Color add(const Color &other) const;
+    Color lerp(const Color &other, double f) const;
 
-public:
+  public:
     double r;
     double g;
     double b;
@@ -49,7 +48,6 @@ BASICSSHARED_EXPORT extern const Color COLOR_GREEN;
 BASICSSHARED_EXPORT extern const Color COLOR_BLUE;
 BASICSSHARED_EXPORT extern const Color COLOR_WHITE;
 BASICSSHARED_EXPORT extern const Color COLOR_GREY;
-
 }
 }
 

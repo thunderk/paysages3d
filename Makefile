@@ -7,6 +7,9 @@ PATH:=${QTSDK}/bin:${PATH}
 
 all:build
 
+format:
+	find src \( \( -name '*.cpp' -or -name '*.h' \) -and \! -path '*/googletest/*' \) -exec clang-format -i \{\} \;
+
 dirs:
 	mkdir -p ${BUILDPATH}
 

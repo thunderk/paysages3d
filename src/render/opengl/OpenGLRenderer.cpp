@@ -15,9 +15,7 @@
 #include "Logs.h"
 #include "Vector3.h"
 
-OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
-    SoftwareRenderer(scenery)
-{
+OpenGLRenderer::OpenGLRenderer(Scenery *scenery) : SoftwareRenderer(scenery) {
     ready = false;
     paused = false;
     displayed = false;
@@ -44,8 +42,7 @@ OpenGLRenderer::OpenGLRenderer(Scenery* scenery):
     terrain = new OpenGLTerrain(this);
 }
 
-OpenGLRenderer::~OpenGLRenderer()
-{
+OpenGLRenderer::~OpenGLRenderer() {
     terrain->interrupt();
     water->interrupt();
     skybox->interrupt();
@@ -62,8 +59,7 @@ OpenGLRenderer::~OpenGLRenderer()
     delete shared_state;
 }
 
-void OpenGLRenderer::prepare()
-{
+void OpenGLRenderer::prepare() {
     SoftwareRenderer::prepare();
 
     getCloudsRenderer()->setEnabled(false);
@@ -72,12 +68,10 @@ void OpenGLRenderer::prepare()
     getVegetationRenderer()->setEnabled(false);
 }
 
-void OpenGLRenderer::initialize()
-{
+void OpenGLRenderer::initialize() {
     ready = functions->initializeOpenGLFunctions();
 
-    if (ready)
-    {
+    if (ready) {
         prepareOpenGLState();
 
         prepare();
@@ -92,17 +86,13 @@ void OpenGLRenderer::initialize()
         terrain->updateScenery();
 
         cameraChangeEvent(render_camera);
-    }
-    else
-    {
+    } else {
         Logs::error() << "Failed to initialize OpenGL bindings" << std::endl;
     }
 }
 
-void OpenGLRenderer::prepareOpenGLState()
-{
-    if (ready)
-    {
+void OpenGLRenderer::prepareOpenGLState() {
+    if (ready) {
         functions->glDisable(GL_LIGHTING);
 
         functions->glFrontFace(GL_CCW);
@@ -129,18 +119,15 @@ void OpenGLRenderer::prepareOpenGLState()
     }
 }
 
-void OpenGLRenderer::setCamera(CameraDefinition *camera)
-{
+void OpenGLRenderer::setCamera(CameraDefinition *camera) {
     camera->copy(render_camera);
     getScenery()->keepCameraAboveGround(render_camera);
     render_camera->setRenderSize(vp_width, vp_height);
     cameraChangeEvent(render_camera);
 }
 
-void OpenGLRenderer::resize(int width, int height)
-{
-    if (ready)
-    {
+void OpenGLRenderer::resize(int width, int height) {
+    if (ready) {
         vp_width = width;
         vp_height = height;
 
@@ -151,24 +138,20 @@ void OpenGLRenderer::resize(int width, int height)
     }
 }
 
-void OpenGLRenderer::paint()
-{
-    if (ready and not paused)
-    {
+void OpenGLRenderer::paint() {
+    if (ready and not paused) {
         functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         skybox->render();
         terrain->render();
         water->render();
 
-        if (mouse_tracking)
-        {
+        if (mouse_tracking) {
             updateMouseProjection();
         }
 
         int error_code;
-        while ((error_code = functions->glGetError()) != GL_NO_ERROR)
-        {
+        while ((error_code = functions->glGetError()) != GL_NO_ERROR) {
             Logs::warning() << "[OpenGL] ERROR : " << error_code << std::endl;
         }
 
@@ -176,10 +159,8 @@ void OpenGLRenderer::paint()
     }
 }
 
-void OpenGLRenderer::reset()
-{
-    if (ready)
-    {
+void OpenGLRenderer::reset() {
+    if (ready) {
         skybox->updateScenery();
         water->updateScenery();
         terrain->updateScenery();
@@ -188,31 +169,26 @@ void OpenGLRenderer::reset()
     }
 }
 
-void OpenGLRenderer::pause()
-{
+void OpenGLRenderer::pause() {
     paused = true;
     terrain->pause();
 }
 
-void OpenGLRenderer::resume()
-{
+void OpenGLRenderer::resume() {
     paused = false;
     terrain->resume();
 }
 
-void OpenGLRenderer::setMouseLocation(int x, int y)
-{
+void OpenGLRenderer::setMouseLocation(int x, int y) {
     mouse_x = x;
     mouse_y = y;
 }
 
-const Vector3 &OpenGLRenderer::getMouseProjection()
-{
+const Vector3 &OpenGLRenderer::getMouseProjection() {
     return *mouse_projected;
 }
 
-void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera)
-{
+void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera) {
     // Get camera info
     Vector3 location = camera->getLocation();
     Vector3 target = camera->getTarget();
@@ -222,39 +198,36 @@ void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera)
     // Compute matrix
     QMatrix4x4 transform;
     transform.setToIdentity();
-    transform.lookAt(QVector3D(location.x, location.y, location.z),
-                  QVector3D(target.x, target.y, target.z),
-                  QVector3D(up.x, up.y, up.z));
+    transform.lookAt(QVector3D(location.x, location.y, location.z), QVector3D(target.x, target.y, target.z),
+                     QVector3D(up.x, up.y, up.z));
 
     QMatrix4x4 projection;
     projection.setToIdentity();
     projection.perspective(perspective.yfov * 180.0 / M_PI, perspective.xratio, perspective.znear, perspective.zfar);
 
-    *view_matrix = projection * transform;
+    *view_matrix = projection *transform;
 
     // Set in shaders
     shared_state->set("cameraLocation", location);
     shared_state->set("viewMatrix", *view_matrix);
 }
 
-double OpenGLRenderer::getPrecision(const Vector3 &)
-{
+double OpenGLRenderer::getPrecision(const Vector3 &) {
     return 0.0000001;
 }
 
-Color OpenGLRenderer::applyMediumTraversal(const Vector3&, const Color &color)
-{
+Color OpenGLRenderer::applyMediumTraversal(const Vector3 &, const Color &color) {
     return color;
 }
 
-void OpenGLRenderer::updateMouseProjection()
-{
+void OpenGLRenderer::updateMouseProjection() {
     GLfloat z;
     functions->glReadPixels(mouse_x, mouse_y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
 
     QVector4D located(mouse_x / render_camera->getWidth(), mouse_y / render_camera->getHeight(), z, 1.0);
     QVector4D unprojected = view_matrix->inverted() * 2.0 * (located - QVector4D(0.5, 0.5, 0.5, 0.5));
-    *mouse_projected = Vector3(unprojected.x() / unprojected.w(), unprojected.y() / unprojected.w(), unprojected.z() / unprojected.w());
+    *mouse_projected = Vector3(unprojected.x() / unprojected.w(), unprojected.y() / unprojected.w(),
+                               unprojected.z() / unprojected.w());
 
     shared_state->set("mouseProjection", *mouse_projected);
 }

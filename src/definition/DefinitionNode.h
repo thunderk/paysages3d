@@ -9,29 +9,40 @@ namespace definition {
 /**
  * Base class for all nodes of the definition tree.
  */
-class DEFINITIONSHARED_EXPORT DefinitionNode
-{
-public:
-    DefinitionNode(DefinitionNode* parent, const std::string &name, const std::string &type_name = "");
+class DEFINITIONSHARED_EXPORT DefinitionNode {
+  public:
+    DefinitionNode(DefinitionNode *parent, const std::string &name, const std::string &type_name = "");
     virtual ~DefinitionNode();
 
-    virtual void save(PackStream* stream) const;
-    virtual void load(PackStream* stream);
+    virtual void save(PackStream *stream) const;
+    virtual void load(PackStream *stream);
 
-    virtual void copy(DefinitionNode* destination) const;
+    virtual void copy(DefinitionNode *destination) const;
     virtual void validate();
 
-    inline const std::string &getName() const {return name;}
+    inline const std::string &getName() const {
+        return name;
+    }
     virtual void setName(const std::string &name);
 
-    inline const std::string &getTypeName() const {return type_name;}
+    inline const std::string &getTypeName() const {
+        return type_name;
+    }
 
-    virtual const Scenery* getScenery() const;
+    virtual const Scenery *getScenery() const;
 
-    inline const DefinitionNode *getParent() const {return parent;}
-    inline const DefinitionNode *getRoot() const {return root;}
-    inline DiffManager *getDiffManager() const {return diffs;}
-    inline int getChildrenCount() const {return children.size();}
+    inline const DefinitionNode *getParent() const {
+        return parent;
+    }
+    inline const DefinitionNode *getRoot() const {
+        return root;
+    }
+    inline DiffManager *getDiffManager() const {
+        return diffs;
+    }
+    inline int getChildrenCount() const {
+        return children.size();
+    }
 
     /**
      * Return a string representation of the tree (mainly for debugging purposes).
@@ -59,7 +70,7 @@ public:
      *
      * Return true if the diff could be applied.
      */
-    virtual bool applyDiff(const DefinitionDiff *diff, bool backward=false);
+    virtual bool applyDiff(const DefinitionDiff *diff, bool backward = false);
 
     /**
      * Fill a diff array to be applied to initialize a proper state for a watcher.
@@ -75,16 +86,16 @@ public:
      *
      * If *init_diff* is set to true, a first diff (or several) will be be pushed immediately to initialize the state.
      */
-    void addWatcher(DefinitionWatcher *watcher, bool init_diff=false);
+    void addWatcher(DefinitionWatcher *watcher, bool init_diff = false);
 
     /**
      * Get the current number of watchers.
      */
     int getWatcherCount() const;
 
-protected:
-    void addChild(DefinitionNode* child);
-    void removeChild(DefinitionNode* child);
+  protected:
+    void addChild(DefinitionNode *child);
+    void removeChild(DefinitionNode *child);
     virtual DefinitionNode *findChildByName(const std::string name);
 
     /**
@@ -104,15 +115,14 @@ protected:
      */
     void addDiff(const DefinitionDiff *diff);
 
-private:
+  private:
     DefinitionNode *parent;
     DefinitionNode *root;
     DiffManager *diffs;
     std::string type_name;
     std::string name;
-    std::vector<DefinitionNode*> children;
+    std::vector<DefinitionNode *> children;
 };
-
 }
 }
 

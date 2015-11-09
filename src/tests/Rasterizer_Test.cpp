@@ -8,27 +8,21 @@
 #include "Color.h"
 #include "CanvasPortion.h"
 
-class FakeRasterizer: public Rasterizer
-{
-public:
-    FakeRasterizer(SoftwareRenderer *renderer): Rasterizer(renderer, NULL, 0, COLOR_WHITE)
-    {
+class FakeRasterizer : public Rasterizer {
+  public:
+    FakeRasterizer(SoftwareRenderer *renderer) : Rasterizer(renderer, NULL, 0, COLOR_WHITE) {
     }
-    virtual Color shadeFragment(const CanvasFragment &, const CanvasFragment *) const override
-    {
+    virtual Color shadeFragment(const CanvasFragment &, const CanvasFragment *) const override {
         return COLOR_RED;
     }
-    virtual int prepareRasterization() override
-    {
+    virtual int prepareRasterization() override {
         return 0;
     }
-    virtual void rasterizeToCanvas(CanvasPortion *) override
-    {
+    virtual void rasterizeToCanvas(CanvasPortion *) override {
     }
 };
 
-TEST(Rasterizer, autoSplitNearFrustum)
-{
+TEST(Rasterizer, autoSplitNearFrustum) {
     Scenery scenery;
     scenery.getCamera()->setLocation(Vector3(0.0, 5.0, 0.0));
     scenery.getCamera()->setTarget(Vector3(0.0, 5.0, 1.0));

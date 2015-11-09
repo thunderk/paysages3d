@@ -28,13 +28,11 @@
 
 void startRender(SoftwareCanvasRenderer *renderer, const char *outputpath);
 
-static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string &name, int iteration=-1)
-{
+static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string &name, int iteration = -1) {
     std::ostringstream stream;
 
     stream << "pic_test_" << name;
-    if (iteration >= 0)
-    {
+    if (iteration >= 0) {
         stream << "_";
         stream.width(4);
         stream.fill('0');
@@ -45,8 +43,7 @@ static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string 
     startRender(renderer, stream.str().data());
 }
 
-static void testGroundShadowQuality()
-{
+static void testGroundShadowQuality() {
     Scenery scenery;
     srand(5);
     scenery.getTerrain()->applyPreset(TerrainDefinition::TERRAIN_PRESET_STANDARD);
@@ -76,31 +73,27 @@ static void testGroundShadowQuality()
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(400, 300);
     renderer.setQuality(0.2);
-    for (int i = 0; i < 6; i++)
-    {
+    for (int i = 0; i < 6; i++) {
         // TODO keep same rasterization across renders
         renderer.getTerrainRenderer()->setQuality((double)i / 5.0);
         startTestRender(&renderer, "ground_shadow_quality", i);
     }
 }
 
-static void testRasterizationQuality()
-{
+static void testRasterizationQuality() {
     Scenery scenery;
     scenery.autoPreset(12);
 
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(800, 600);
     renderer.enablePostprocess(false);
-    for (int i = 0; i < 6; i++)
-    {
+    for (int i = 0; i < 6; i++) {
         renderer.setQuality((double)i / 5.0);
         startTestRender(&renderer, "rasterization_quality", i);
     }
 }
 
-static void testCloudQuality()
-{
+static void testCloudQuality() {
     Scenery scenery;
     scenery.autoPreset(3);
     scenery.getCamera()->setLocation(Vector3(5.0, 5.0, 5.0));
@@ -112,38 +105,31 @@ static void testCloudQuality()
     renderer.setSize(600, 800);
     SkyRasterizer rasterizer(&renderer, renderer.getProgressHelper(), 0);
     renderer.setSoloRasterizer(&rasterizer);
-    for (int i = 0; i < 6; i++)
-    {
+    for (int i = 0; i < 6; i++) {
         renderer.setQuality((double)i / 5.0);
         rasterizer.setQuality(0.2);
         startTestRender(&renderer, "cloud_quality", i);
     }
 }
 
-static void testGodRays()
-{
-    class TestLightFilter: public LightFilter
-    {
-        virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override
-        {
-            if (Vector3(0.0, 100.0, 0.0).sub(at).normalize().y > 0.97)
-            {
+static void testGodRays() {
+    class TestLightFilter : public LightFilter {
+        virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override {
+            if (Vector3(0.0, 100.0, 0.0).sub(at).normalize().y > 0.97) {
                 light.color = COLOR_BLACK;
                 return false;
-            }
-            else
-            {
+            } else {
                 return true;
             }
         }
     };
-    class TestRenderer: public SoftwareCanvasRenderer
-    {
-    public:
-        TestRenderer(Scenery *scenery): SoftwareCanvasRenderer(scenery) {}
-    private:
-        virtual void prepare() override
-        {
+    class TestRenderer : public SoftwareCanvasRenderer {
+      public:
+        TestRenderer(Scenery *scenery) : SoftwareCanvasRenderer(scenery) {
+        }
+
+      private:
+        virtual void prepare() override {
             SoftwareRenderer::prepare();
 
             getLightingManager()->clearSources();
@@ -171,8 +157,7 @@ static void testGodRays()
     renderer.getLightingManager()->registerFilter(&filter);
 
     // quality
-    for (int i = 0; i < 6; i++)
-    {
+    for (int i = 0; i < 6; i++) {
         renderer.setQuality((double)i / 5.0);
         rasterizer.setQuality(0.2);
         startTestRender(&renderer, "god_rays_quality", i);
@@ -180,31 +165,27 @@ static void testGodRays()
     renderer.setQuality(0.5);
 
     // penetration
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         scenery.getAtmosphere()->childGodRays()->propPenetration()->setValue(0.01 + 0.02 * (double)i);
         startTestRender(&renderer, "god_rays_penetration", i);
     }
 
     // resistance
     scenery.getAtmosphere()->childGodRays()->propPenetration()->setValue(0.01);
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         scenery.getAtmosphere()->childGodRays()->propResistance()->setValue(0.1 + 0.1 * (double)i);
         startTestRender(&renderer, "god_rays_resistance", i);
     }
 
     // boost
     scenery.getAtmosphere()->childGodRays()->propResistance()->setValue(0.3);
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         scenery.getAtmosphere()->childGodRays()->propBoost()->setValue(2.0 + 4.0 * (double)i);
         startTestRender(&renderer, "god_rays_boost", i);
     }
 }
 
-static void testNearFrustum()
-{
+static void testNearFrustum() {
     Scenery scenery;
     scenery.autoPreset(3);
     scenery.getCamera()->setLocation(Vector3(0.0, 0.0, 0.0));
@@ -219,8 +200,7 @@ static void testNearFrustum()
     startTestRender(&renderer, "near_frustum_bad");
 }
 
-static void testCloudsNearGround()
-{
+static void testCloudsNearGround() {
     Scenery scenery;
     scenery.autoPreset(8);
     scenery.getAtmosphere()->setDayTime(6, 20);
@@ -236,8 +216,7 @@ static void testCloudsNearGround()
     startTestRender(&renderer, "clouds_near_ground", 2);
 }
 
-static void testSunNearHorizon()
-{
+static void testSunNearHorizon() {
     Scenery scenery;
     scenery.autoPreset(28);
     scenery.getCamera()->setLocation(VECTOR_ZERO);
@@ -250,47 +229,37 @@ static void testSunNearHorizon()
     renderer.setSize(400, 300);
     renderer.setQuality(0.3);
 
-    for (int i = 0; i <= 20; i++)
-    {
+    for (int i = 0; i <= 20; i++) {
         scenery.getAtmosphere()->propDayTime()->setValue(0.24 + 0.001 * (double)i);
         startTestRender(&renderer, "sun_near_horizon", i);
     }
 }
 
-static void testVegetationModels()
-{
-    class InstanceRenderer: public SoftwareCanvasRenderer, public OverlayRasterizer, public LightFilter
-    {
-    public:
-        InstanceRenderer(Scenery *scenery, const VegetationModelDefinition &model):
-            SoftwareCanvasRenderer(scenery),
-            OverlayRasterizer(this, this->getProgressHelper()),
-            instance(model, VECTOR_ZERO),
-            vegetation(renderer->getVegetationRenderer())
-        {
+static void testVegetationModels() {
+    class InstanceRenderer : public SoftwareCanvasRenderer, public OverlayRasterizer, public LightFilter {
+      public:
+        InstanceRenderer(Scenery *scenery, const VegetationModelDefinition &model)
+            : SoftwareCanvasRenderer(scenery), OverlayRasterizer(this, this->getProgressHelper()),
+              instance(model, VECTOR_ZERO), vegetation(renderer->getVegetationRenderer()) {
         }
-        virtual void prepare() override
-        {
+        virtual void prepare() override {
             SoftwareCanvasRenderer::prepare();
 
             getLightingManager()->clearFilters();
             getLightingManager()->registerFilter(this);
             // TODO Add filter for vegetation instance (for self shadows)
         }
-        virtual Color applyMediumTraversal(const Vector3&, const Color &color) override
-        {
+        virtual Color applyMediumTraversal(const Vector3 &, const Color &color) override {
             return color;
         }
-        virtual Color processPixel(int, int, double relx, double rely) const override
-        {
+        virtual Color processPixel(int, int, double relx, double rely) const override {
             relx *= 0.75;
             rely *= 0.75;
             SpaceSegment segment(Vector3(relx, rely + 0.5, 5.0), Vector3(relx, rely + 0.5, -5.0));
             RayCastingResult result = vegetation->renderInstance(segment, instance, false, true);
             return result.hit ? result.hit_color : Color(0.6, 0.7, 0.9);
         }
-        virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override
-        {
+        virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override {
             SpaceSegment segment(at, at.add(light.direction.scale(-5.0)));
             RayCastingResult result = vegetation->renderInstance(segment, instance, true, true);
             return not result.hit;
@@ -307,8 +276,7 @@ static void testVegetationModels()
     int width = 800;
     int height = 800;
 
-    for (int i = 0; i < 10; i++)
-    {
+    for (int i = 0; i < 10; i++) {
         // TODO Make random sequence repeatable
         VegetationModelDefinition model(NULL);
         InstanceRenderer renderer(&scenery, model);
@@ -319,8 +287,7 @@ static void testVegetationModels()
     }
 }
 
-void runTestSuite()
-{
+void runTestSuite() {
     testGroundShadowQuality();
     testRasterizationQuality();
     testCloudQuality();

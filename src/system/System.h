@@ -3,20 +3,16 @@
 
 #include "system_global.h"
 
-namespace paysages
-{
-namespace system
-{
+namespace paysages {
+namespace system {
 
 /*!
  * \brief Access to system info
  */
-class SYSTEMSHARED_EXPORT System
-{
-public:
+class SYSTEMSHARED_EXPORT System {
+  public:
     static int getCoreCount();
 };
-
 }
 }
 

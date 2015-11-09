@@ -33,16 +33,14 @@ namespace basics {
  *   X=0  Y=-1 Z=0   =>  THETA=-PI/2
  */
 
-typedef struct
-{
+typedef struct {
     double r;
     double theta;
     double phi;
 } VectorSpherical;
 
-class BASICSSHARED_EXPORT Vector3
-{
-public:
+class BASICSSHARED_EXPORT Vector3 {
+  public:
     Vector3() = default;
     Vector3(double x, double y, double z);
     Vector3(const VectorSpherical &v);
@@ -73,9 +71,9 @@ public:
      *
      * If *only_surface* is true, produce a vector with *radius* as length.
      */
-    static Vector3 randomInSphere(double radius=1.0, bool only_surface=false);
+    static Vector3 randomInSphere(double radius = 1.0, bool only_surface = false);
 
-public:
+  public:
     // TODO Make private
     double x;
     double y;
@@ -89,7 +87,6 @@ BASICSSHARED_EXPORT extern const Vector3 VECTOR_NORTH;
 BASICSSHARED_EXPORT extern const Vector3 VECTOR_SOUTH;
 BASICSSHARED_EXPORT extern const Vector3 VECTOR_EAST;
 BASICSSHARED_EXPORT extern const Vector3 VECTOR_WEST;
-
 }
 }
 

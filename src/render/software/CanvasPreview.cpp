@@ -7,14 +7,13 @@
 
 #include <cassert>
 
-#define CHECK_COORDINATES(_x_, _y_) \
-    assert(_x_ >= 0); \
-    assert(_y_ >= 0); \
-    assert(_x_ < this->width); \
-    assert(_y_ < this->height) \
+#define CHECK_COORDINATES(_x_, _y_)                                                                                    \
+    assert(_x_ >= 0);                                                                                                  \
+    assert(_y_ >= 0);                                                                                                  \
+    assert(_x_ < this->width);                                                                                         \
+    assert(_y_ < this->height)
 
-CanvasPreview::CanvasPreview()
-{
+CanvasPreview::CanvasPreview() {
     width = 1;
     height = 1;
     pixels = new Color[1];
@@ -33,25 +32,22 @@ CanvasPreview::CanvasPreview()
     profile = new ColorProfile();
 }
 
-CanvasPreview::~CanvasPreview()
-{
-    delete [] pixels;
+CanvasPreview::~CanvasPreview() {
+    delete[] pixels;
     delete lock;
     delete profile;
 }
 
-const Color &CanvasPreview::getFinalPixel(int x, int y) const
-{
+const Color &CanvasPreview::getFinalPixel(int x, int y) const {
     CHECK_COORDINATES(x, y);
 
     return pixels[y * width + x];
 }
 
-void CanvasPreview::setSize(int real_width, int real_height, int preview_width, int preview_height)
-{
+void CanvasPreview::setSize(int real_width, int real_height, int preview_width, int preview_height) {
     lock->acquire();
 
-    delete [] pixels;
+    delete[] pixels;
     pixels = new Color[preview_width * preview_height];
 
     width = preview_width;
@@ -72,43 +68,36 @@ void CanvasPreview::setSize(int real_width, int real_height, int preview_width, 
     reset();
 }
 
-void CanvasPreview::setToneMapping(const ColorProfile &profile)
-{
+void CanvasPreview::setToneMapping(const ColorProfile &profile) {
     profile.copy(this->profile);
     setAllDirty();
 }
 
-void CanvasPreview::reset()
-{
+void CanvasPreview::reset() {
     lock->acquire();
 
     int n = width * height;
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         pixels[i] = COLOR_BLACK;
     }
 
     lock->release();
 }
 
-void CanvasPreview::initLive(CanvasLiveClient *client)
-{
+void CanvasPreview::initLive(CanvasLiveClient *client) {
     client->canvasResized(width, height);
     client->canvasCleared(COLOR_BLACK);
 
     setAllDirty();
 }
 
-void CanvasPreview::updateLive(CanvasLiveClient *client)
-{
+void CanvasPreview::updateLive(CanvasLiveClient *client) {
     int x, y;
 
     lock->acquire();
 
-    for (y = dirty_down; y <= dirty_up; y++)
-    {
-        for (x = dirty_left; x <= dirty_right; x++)
-        {
+    for (y = dirty_down; y <= dirty_up; y++) {
+        for (x = dirty_left; x <= dirty_right; x++) {
             client->canvasPainted(x, y, profile->apply(pixels[y * width + x]));
         }
     }
@@ -121,20 +110,16 @@ void CanvasPreview::updateLive(CanvasLiveClient *client)
     lock->release();
 }
 
-void CanvasPreview::pushPixel(int real_x, int real_y, const Color &old_color, const Color &new_color)
-{
+void CanvasPreview::pushPixel(int real_x, int real_y, const Color &old_color, const Color &new_color) {
     int x, y;
 
-    if (scaled)
-    {
+    if (scaled) {
         x = int(real_x * factor_x);
         y = int(real_y * factor_y);
 
         x = (x >= width) ? width - 1 : x;
         y = (y >= height) ? height - 1 : y;
-    }
-    else
-    {
+    } else {
         x = real_x;
         y = real_y;
     }
@@ -143,34 +128,29 @@ void CanvasPreview::pushPixel(int real_x, int real_y, const Color &old_color, co
 
     lock->acquire();
 
-    Color* pixel = pixels + (y * width + x);
+    Color *pixel = pixels + (y * width + x);
     pixel->r = pixel->r - old_color.r * factor + new_color.r * factor;
     pixel->g = pixel->g - old_color.g * factor + new_color.g * factor;
     pixel->b = pixel->b - old_color.b * factor + new_color.b * factor;
 
     // Set pixel dirty
-    if (x < dirty_left)
-    {
+    if (x < dirty_left) {
         dirty_left = x;
     }
-    if (x > dirty_right)
-    {
+    if (x > dirty_right) {
         dirty_right = x;
     }
-    if (y < dirty_down)
-    {
+    if (y < dirty_down) {
         dirty_down = y;
     }
-    if (y > dirty_up)
-    {
+    if (y > dirty_up) {
         dirty_up = y;
     }
 
     lock->release();
 }
 
-void CanvasPreview::setAllDirty()
-{
+void CanvasPreview::setAllDirty() {
     lock->acquire();
 
     dirty_left = 0;

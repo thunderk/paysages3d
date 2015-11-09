@@ -11,23 +11,23 @@ namespace definition {
 /**
  * Definition of one vegetation layer.
  */
-class DEFINITIONSHARED_EXPORT VegetationLayerDefinition : public DefinitionNode
-{
-public:
+class DEFINITIONSHARED_EXPORT VegetationLayerDefinition : public DefinitionNode {
+  public:
     VegetationLayerDefinition(DefinitionNode *parent);
 
-    inline const VegetationPresenceDefinition *getPresence() const {return presence;}
-    inline const VegetationModelDefinition *getModel() const {return model;}
+    inline const VegetationPresenceDefinition *getPresence() const {
+        return presence;
+    }
+    inline const VegetationModelDefinition *getModel() const {
+        return model;
+    }
 
     double getMaxHeight() const;
 
-    typedef enum
-    {
-        VEGETATION_BASIC_TREES
-    } VegetationLayerPreset;
+    typedef enum { VEGETATION_BASIC_TREES } VegetationLayerPreset;
     void applyPreset(VegetationLayerPreset preset);
 
-private:
+  private:
     /**
      * Geographic area of presence of this layer.
      */
@@ -38,7 +38,6 @@ private:
      */
     VegetationModelDefinition *model;
 };
-
 }
 }
 

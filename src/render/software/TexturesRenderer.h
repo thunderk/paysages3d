@@ -10,18 +10,15 @@
 namespace paysages {
 namespace software {
 
-class SOFTWARESHARED_EXPORT TexturesRenderer
-{
-public:
-    typedef struct
-    {
-        TextureLayerDefinition* definition;
+class SOFTWARESHARED_EXPORT TexturesRenderer {
+  public:
+    typedef struct {
+        TextureLayerDefinition *definition;
         double presence;
         Color color;
     } TexturesLayerResult;
 
-    typedef struct
-    {
+    typedef struct {
         Vector3 base_location;
         Vector3 base_normal;
         int layer_count;
@@ -30,7 +27,7 @@ public:
         Color final_color;
     } TexturesResult;
 
-public:
+  public:
     TexturesRenderer(SoftwareRenderer *parent);
     virtual ~TexturesRenderer();
 
@@ -44,10 +41,9 @@ public:
     virtual double getBasePresence(int layer, const TerrainRenderer::TerrainResult &terrain);
     virtual TexturesResult applyToTerrain(double x, double z);
 
-private:
+  private:
     SoftwareRenderer *parent;
 };
-
 }
 }
 

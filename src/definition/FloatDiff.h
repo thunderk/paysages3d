@@ -11,19 +11,21 @@ namespace definition {
 /**
  * Diff for a FloatNode.
  */
-class DEFINITIONSHARED_EXPORT FloatDiff: public DefinitionDiff
-{
-public:
+class DEFINITIONSHARED_EXPORT FloatDiff : public DefinitionDiff {
+  public:
     FloatDiff(const DefinitionNode *node, double oldvalue, double newvalue);
 
-    inline double getOldValue() const {return oldvalue;}
-    inline double getNewValue() const {return newvalue;}
+    inline double getOldValue() const {
+        return oldvalue;
+    }
+    inline double getNewValue() const {
+        return newvalue;
+    }
 
-private:
+  private:
     double oldvalue;
     double newvalue;
 };
-
 }
 }
 

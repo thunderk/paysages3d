@@ -54,22 +54,20 @@ using namespace std;
 // TOOLS
 // ----------------------------------------------------------------------------
 
-void loadTIFF(const char *name, unsigned char *tex)
-{
+void loadTIFF(const char *name, unsigned char *tex) {
     tstrip_t strip = 0;
     tsize_t off = 0;
     tsize_t n = 0;
-    TIFF* tf = TIFFOpen(name, "r");
-    while ((n = TIFFReadEncodedStrip(tf, strip, tex + off, (tsize_t) -1)) > 0) {
-    	strip += 1;
+    TIFF *tf = TIFFOpen(name, "r");
+    while ((n = TIFFReadEncodedStrip(tf, strip, tex + off, (tsize_t)-1)) > 0) {
+        strip += 1;
         off += n;
     };
     TIFFClose(tf);
 }
 
-string* loadFile(const string &fileName)
-{
-    string* result = new string();
+string *loadFile(const string &fileName) {
+    string *result = new string();
     ifstream file(fileName.c_str());
     if (!file) {
         std::cerr << "Cannot open file " << fileName << endl;
@@ -84,8 +82,7 @@ string* loadFile(const string &fileName)
     return result;
 }
 
-void printShaderLog(int shaderId)
-{
+void printShaderLog(int shaderId) {
     int logLength;
     glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 0) {
@@ -96,8 +93,7 @@ void printShaderLog(int shaderId)
     }
 }
 
-unsigned int loadProgram(const vector<string> &files)
-{
+unsigned int loadProgram(const vector<string> &files) {
     unsigned int programId = glCreateProgram();
     unsigned int vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
     unsigned int fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
@@ -105,12 +101,12 @@ unsigned int loadProgram(const vector<string> &files)
     glAttachShader(programId, fragmentShaderId);
 
     int n = files.size();
-    string **strs = new string*[n];
-    const char** lines = new const char*[n + 1];
+    string **strs = new string *[n];
+    const char **lines = new const char *[n + 1];
     cout << "loading program " << files[n - 1] << "..." << endl;
     bool geo = false;
     for (int i = 0; i < n; ++i) {
-        string* s = loadFile(files[i]);
+        string *s = loadFile(files[i]);
         strs[i] = s;
         lines[i + 1] = s->c_str();
         if (strstr(lines[i + 1], "_GEOMETRY_") != NULL) {
@@ -151,8 +147,7 @@ unsigned int loadProgram(const vector<string> &files)
     return programId;
 }
 
-void drawQuad()
-{
+void drawQuad() {
     glBegin(GL_TRIANGLE_STRIP);
     glVertex2f(-1.0, -1.0);
     glVertex2f(+1.0, -1.0);
@@ -174,14 +169,14 @@ const int deltaSRUnit = 5;
 const int deltaSMUnit = 6;
 const int deltaJUnit = 7;
 
-unsigned int reflectanceTexture;//unit 0, ground reflectance texture
-unsigned int transmittanceTexture;//unit 1, T table
-unsigned int irradianceTexture;//unit 2, E table
-unsigned int inscatterTexture;//unit 3, S table
-unsigned int deltaETexture;//unit 4, deltaE table
-unsigned int deltaSRTexture;//unit 5, deltaS table (Rayleigh part)
-unsigned int deltaSMTexture;//unit 6, deltaS table (Mie part)
-unsigned int deltaJTexture;//unit 7, deltaJ table
+unsigned int reflectanceTexture; // unit 0, ground reflectance texture
+unsigned int transmittanceTexture; // unit 1, T table
+unsigned int irradianceTexture; // unit 2, E table
+unsigned int inscatterTexture; // unit 3, S table
+unsigned int deltaETexture; // unit 4, deltaE table
+unsigned int deltaSRTexture; // unit 5, deltaS table (Rayleigh part)
+unsigned int deltaSMTexture; // unit 6, deltaS table (Mie part)
+unsigned int deltaJTexture; // unit 7, deltaJ table
 
 unsigned int transmittanceProg;
 unsigned int irradiance1Prog;
@@ -197,8 +192,7 @@ unsigned int fbo;
 
 unsigned int drawProg;
 
-void setLayer(unsigned int prog, int layer)
-{
+void setLayer(unsigned int prog, int layer) {
     double r = layer / (RES_R - 1.0);
     r = r * r;
     r = sqrt(Rg * Rg + r * (Rt * Rt - Rg * Rg)) + (layer == 0 ? 0.01 : (layer == RES_R - 1 ? -0.001 : 0.0));
@@ -211,9 +205,8 @@ void setLayer(unsigned int prog, int layer)
     glUniform1i(glGetUniformLocation(prog, "layer"), layer);
 }
 
-void loadData()
-{
-    //return;
+void loadData() {
+    // return;
     cout << "loading Earth texture..." << endl;
     glActiveTexture(GL_TEXTURE0 + reflectanceUnit);
     glGenTextures(1, &reflectanceTexture);
@@ -230,8 +223,7 @@ void loadData()
     delete[] tex;
 }
 
-void precompute()
-{
+void precompute() {
     glActiveTexture(GL_TEXTURE0 + transmittanceUnit);
     glGenTextures(1, &transmittanceTexture);
     glBindTexture(GL_TEXTURE_2D, transmittanceTexture);
@@ -397,7 +389,7 @@ void precompute()
     // Rayleigh and Mie separated in deltaSR + deltaSM
     glFramebufferTextureEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, deltaSRTexture, 0);
     glFramebufferTextureEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT1_EXT, deltaSMTexture, 0);
-    unsigned int bufs[2] = { GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT };
+    unsigned int bufs[2] = {GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT};
     glDrawBuffers(2, bufs);
     glViewport(0, 0, RES_MU_S * RES_NU, RES_MU);
     glUseProgram(inscatter1Prog);
@@ -506,8 +498,7 @@ void precompute()
     glUseProgram(drawProg);
 }
 
-void recompute()
-{
+void recompute() {
     glDeleteTextures(1, &transmittanceTexture);
     glDeleteTextures(1, &irradianceTexture);
     glDeleteTextures(1, &inscatterTexture);
@@ -549,39 +540,34 @@ mat4d view;
 
 double exposure = 0.4;
 
-void updateView()
-{
-	double co = cos(lon);
-	double so = sin(lon);
-	double ca = cos(lat);
-	double sa = sin(lat);
-	vec3d po = vec3d(co*ca, so*ca, sa) * Rg;
-	vec3d px = vec3d(-so, co, 0);
-    vec3d py = vec3d(-co*sa, -so*sa, ca);
-    vec3d pz = vec3d(co*ca, so*ca, sa);
+void updateView() {
+    double co = cos(lon);
+    double so = sin(lon);
+    double ca = cos(lat);
+    double sa = sin(lat);
+    vec3d po = vec3d(co * ca, so * ca, sa) * Rg;
+    vec3d px = vec3d(-so, co, 0);
+    vec3d py = vec3d(-co * sa, -so * sa, ca);
+    vec3d pz = vec3d(co * ca, so * ca, sa);
 
     double ct = cos(theta);
     double st = sin(theta);
     double cp = cos(phi);
     double sp = sin(phi);
     vec3d cx = px * cp + py * sp;
-    vec3d cy = -px * sp*ct + py * cp*ct + pz * st;
-    vec3d cz = px * sp*st - py * cp*st + pz * ct;
+    vec3d cy = -px * sp * ct + py * cp * ct + pz * st;
+    vec3d cz = px * sp * st - py * cp * st + pz * ct;
     position = po + cz * d;
 
     if (position.length() < Rg + 0.01) {
-    	position.normalize(Rg + 0.01);
+        position.normalize(Rg + 0.01);
     }
 
-    view = mat4d(cx.x, cx.y, cx.z, 0,
-            cy.x, cy.y, cy.z, 0,
-            cz.x, cz.y, cz.z, 0,
-            0, 0, 0, 1);
+    view = mat4d(cx.x, cx.y, cx.z, 0, cy.x, cy.y, cy.z, 0, cz.x, cz.y, cz.z, 0, 0, 0, 0, 1);
     view = view * mat4d::translate(-position);
 }
 
-void redisplayFunc()
-{
+void redisplayFunc() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     float h = position.length() - Rg;
@@ -592,10 +578,9 @@ void redisplayFunc()
     mat4d iview = view.inverse();
     vec3d c = iview * vec3d(0.0, 0.0, 0.0);
 
-    mat4f iviewf = mat4f(iview[0][0], iview[0][1], iview[0][2], iview[0][3],
-        iview[1][0], iview[1][1], iview[1][2], iview[1][3],
-        iview[2][0], iview[2][1], iview[2][2], iview[2][3],
-        iview[3][0], iview[3][1], iview[3][2], iview[3][3]);
+    mat4f iviewf =
+        mat4f(iview[0][0], iview[0][1], iview[0][2], iview[0][3], iview[1][0], iview[1][1], iview[1][2], iview[1][3],
+              iview[2][0], iview[2][1], iview[2][2], iview[2][3], iview[3][0], iview[3][1], iview[3][2], iview[3][3]);
 
     glUniform3f(glGetUniformLocation(drawProg, "c"), c.x, c.y, c.z);
     glUniform3f(glGetUniformLocation(drawProg, "s"), s.x, s.y, s.z);
@@ -611,92 +596,86 @@ void redisplayFunc()
 // USER INTERFACE
 // ----------------------------------------------------------------------------
 
-void reshapeFunc(int x, int y)
-{
+void reshapeFunc(int x, int y) {
     width = x;
     height = y;
     glViewport(0, 0, x, y);
     glutPostRedisplay();
 }
 
-void mouseClickFunc(int button, int state, int x, int y)
-{
+void mouseClickFunc(int button, int state, int x, int y) {
     oldx = x;
     oldy = y;
     int modifiers = glutGetModifiers();
     bool ctrl = (modifiers & GLUT_ACTIVE_CTRL) != 0;
     bool shift = (modifiers & GLUT_ACTIVE_SHIFT) != 0;
     if (ctrl) {
-    	move = 0;
+        move = 0;
     } else if (shift) {
         move = 1;
     } else {
-    	move = 2;
+        move = 2;
     }
 }
 
-void mouseMotionFunc(int x, int y)
-{
+void mouseMotionFunc(int x, int y) {
     if (move == 0) {
-    	phi += (oldx - x) / 500.0;
-    	theta += (oldy - y) / 500.0;
+        phi += (oldx - x) / 500.0;
+        theta += (oldy - y) / 500.0;
         theta = max(0.0, min(M_PI, theta));
         updateView();
         oldx = x;
         oldy = y;
     } else if (move == 1) {
-    	double factor = position.length() - Rg;
-    	factor = factor / Rg;
-    	lon += (oldx - x) / 400.0 * factor;
-    	lat -= (oldy - y) / 400.0 * factor;
+        double factor = position.length() - Rg;
+        factor = factor / Rg;
+        lon += (oldx - x) / 400.0 * factor;
+        lat -= (oldy - y) / 400.0 * factor;
         lat = max(-M_PI / 2.0, min(M_PI / 2.0, lat));
         updateView();
         oldx = x;
         oldy = y;
     } else if (move == 2) {
-    	float vangle = asin(s.z);
-    	float hangle = atan2(s.y, s.x);
-    	vangle += (oldy - y) / 180.0 * M_PI / 4;
-    	hangle += (oldx - x) / 180.0 * M_PI / 4;
-    	s.x = cos(vangle) * cos(hangle);
-    	s.y = cos(vangle) * sin(hangle);
-    	s.z = sin(vangle);
+        float vangle = asin(s.z);
+        float hangle = atan2(s.y, s.x);
+        vangle += (oldy - y) / 180.0 * M_PI / 4;
+        hangle += (oldx - x) / 180.0 * M_PI / 4;
+        s.x = cos(vangle) * cos(hangle);
+        s.y = cos(vangle) * sin(hangle);
+        s.z = sin(vangle);
         oldx = x;
         oldy = y;
     }
 }
 
-void specialKeyFunc(int c, int x, int y)
-{
+void specialKeyFunc(int c, int x, int y) {
     switch (c) {
     case GLUT_KEY_PAGE_UP:
-    	d = d * 1.05;
+        d = d * 1.05;
         updateView();
         break;
     case GLUT_KEY_PAGE_DOWN:
-    	d = d / 1.05;
+        d = d / 1.05;
         updateView();
         break;
     case GLUT_KEY_F5:
-	    recompute();
+        recompute();
         glViewport(0, 0, width, height);
         break;
     }
 }
 
-void keyboardFunc(unsigned char c, int x, int y)
-{
+void keyboardFunc(unsigned char c, int x, int y) {
     if (c == 27) {
         ::exit(0);
     } else if (c == '+') {
-		exposure *= 1.1;
-	} else if (c == '-') {
-		exposure /= 1.1;
-	}
+        exposure *= 1.1;
+    } else if (c == '-') {
+        exposure /= 1.1;
+    }
 }
 
-void idleFunc()
-{
+void idleFunc() {
     glutPostRedisplay();
 }
 
@@ -705,11 +684,10 @@ void idleFunc()
 #include "Color.h"
 #include "Logs.h"
 #include "PackStream.h"
-void dumpTextures()
-{
+void dumpTextures() {
     PackStream stream;
     int x, y, z, w;
-    float* texdata;
+    float *texdata;
 
     /* Dump irradiance */
     Texture2D irradiance(SKY_W, SKY_H);
@@ -719,11 +697,9 @@ void dumpTextures()
     glBindTexture(GL_TEXTURE_2D, irradianceTexture);
     glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, texdata);
 
-    for (x = 0; x < SKY_W; x++)
-    {
-        for (y = 0; y < SKY_H; y++)
-        {
-            float* pixel = texdata + (y * SKY_W + x) * 3;
+    for (x = 0; x < SKY_W; x++) {
+        for (y = 0; y < SKY_H; y++) {
+            float *pixel = texdata + (y * SKY_W + x) * 3;
             irradiance.setPixel(x, y, Color(pixel[0], pixel[1], pixel[2], 1.0));
         }
     }
@@ -742,11 +718,9 @@ void dumpTextures()
     glBindTexture(GL_TEXTURE_2D, transmittanceTexture);
     glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, texdata);
 
-    for (x = 0; x < TRANSMITTANCE_W; x++)
-    {
-        for (y = 0; y < TRANSMITTANCE_H; y++)
-        {
-            float* pixel = texdata + (y * TRANSMITTANCE_W + x) * 3;
+    for (x = 0; x < TRANSMITTANCE_W; x++) {
+        for (y = 0; y < TRANSMITTANCE_H; y++) {
+            float *pixel = texdata + (y * TRANSMITTANCE_W + x) * 3;
             transmittance.setPixel(x, y, Color(pixel[0], pixel[1], pixel[2], 1.0));
         }
     }
@@ -759,22 +733,19 @@ void dumpTextures()
 
     /* Dump inscatter */
     Texture4D inscatter(RES_MU, RES_MU_S, RES_NU, RES_R);
-    //Texture3D inscatter(RES_MU_S * RES_NU, RES_MU, RES_R);
+    // Texture3D inscatter(RES_MU_S * RES_NU, RES_MU, RES_R);
 
     texdata = new float[RES_MU * RES_MU_S * RES_NU * RES_R * 4 * sizeof(float)];
 
     glBindTexture(GL_TEXTURE_3D, inscatterTexture);
     glGetTexImage(GL_TEXTURE_3D, 0, GL_RGBA, GL_FLOAT, texdata);
 
-    for (x = 0; x < RES_MU; x++)
-    {
-        for (y = 0; y < RES_MU_S; y++)
-        {
-            for (z = 0; z < RES_NU; z++)
-            {
-                for (w = 0; w < RES_R; w++)
-                {
-                    float* pixel = texdata + (w * (RES_MU * RES_MU_S * RES_NU) + z * (RES_MU_S) + y + x * (RES_MU_S * RES_NU)) * 4;
+    for (x = 0; x < RES_MU; x++) {
+        for (y = 0; y < RES_MU_S; y++) {
+            for (z = 0; z < RES_NU; z++) {
+                for (w = 0; w < RES_R; w++) {
+                    float *pixel =
+                        texdata + (w * (RES_MU * RES_MU_S * RES_NU) + z * (RES_MU_S) + y + x * (RES_MU_S * RES_NU)) * 4;
                     inscatter.setPixel(x, y, z, w, Color(pixel[0], pixel[1], pixel[2], pixel[3]));
                 }
             }
@@ -789,15 +760,13 @@ void dumpTextures()
 
     /* Check errors */
     int error_code;
-    while ((error_code = glGetError()) != GL_NO_ERROR)
-    {
-        logWarning("[OpenGL] ERROR : %s", (const char*)gluErrorString(error_code));
+    while ((error_code = glGetError()) != GL_NO_ERROR) {
+        logWarning("[OpenGL] ERROR : %s", (const char *)gluErrorString(error_code));
     }
 }
 
-int main(int argc, char* argv[])
-{
-	glutInit(&argc, argv);
+int main(int argc, char *argv[]) {
+    glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(1024, 768);
     glutCreateWindow("Precomputed Atmospheric Scattering");

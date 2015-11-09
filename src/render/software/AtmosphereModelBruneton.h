@@ -8,9 +8,8 @@
 namespace paysages {
 namespace software {
 
-class SOFTWARESHARED_EXPORT AtmosphereModelBruneton: public LightSource
-{
-public:
+class SOFTWARESHARED_EXPORT AtmosphereModelBruneton : public LightSource {
+  public:
     AtmosphereModelBruneton(SoftwareRenderer *parent);
     virtual ~AtmosphereModelBruneton();
 
@@ -19,14 +18,13 @@ public:
     virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override;
 
     /* Functions to get access to internal textures (for opengl shaders) */
-    Texture2D* getTextureTransmittance() const;
-    Texture2D* getTextureIrradiance() const;
-    Texture4D* getTextureInscatter() const;
+    Texture2D *getTextureTransmittance() const;
+    Texture2D *getTextureIrradiance() const;
+    Texture4D *getTextureInscatter() const;
 
-private:
-    SoftwareRenderer* parent;
+  private:
+    SoftwareRenderer *parent;
 };
-
 }
 }
 

@@ -11,17 +11,15 @@
 namespace paysages {
 namespace software {
 
-class SOFTWARESHARED_EXPORT TerrainRenderer: public LightFilter
-{
-public:
-    typedef struct
-    {
+class SOFTWARESHARED_EXPORT TerrainRenderer : public LightFilter {
+  public:
+    typedef struct {
         Vector3 location;
         Vector3 normal;
     } TerrainResult;
 
-public:
-    TerrainRenderer(SoftwareRenderer* parent);
+  public:
+    TerrainRenderer(SoftwareRenderer *parent);
     virtual ~TerrainRenderer();
 
     virtual void update();
@@ -29,7 +27,7 @@ public:
     void setQuality(double factor);
 
     virtual RayCastingResult castRay(const Vector3 &start, const Vector3 &direction);
-    virtual double getHeight(double x, double z, bool with_painting, bool water_offset=true);
+    virtual double getHeight(double x, double z, bool with_painting, bool water_offset = true);
     virtual TerrainResult getResult(double x, double z, bool with_painting, bool with_textures);
     virtual Color getFinalColor(const Vector3 &location, double precision);
     virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override;
@@ -39,14 +37,13 @@ public:
      */
     void estimateMinMaxHeight(double x1, double z1, double x2, double z2, double *ymin, double *ymax);
 
-private:
+  private:
     SoftwareRenderer *parent;
     TerrainRayWalker *walker_ray;
     TerrainRayWalker *walker_shadows;
 
     bool quad_normals;
 };
-
 }
 }
 

@@ -13,16 +13,23 @@ namespace opengl {
 /*!
  * \brief Scenery renderer in an OpenGL context.
  */
-class OPENGLSHARED_EXPORT OpenGLRenderer: public SoftwareRenderer
-{
-public:
-    OpenGLRenderer(Scenery* scenery);
+class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
+  public:
+    OpenGLRenderer(Scenery *scenery);
     virtual ~OpenGLRenderer();
 
-    inline OpenGLSkybox *getSkybox() const {return skybox;}
-    inline OpenGLWater *getWater() const {return water;}
-    inline OpenGLTerrain *getTerrain() const {return terrain;}
-    inline bool isDisplayed() const {return displayed;}
+    inline OpenGLSkybox *getSkybox() const {
+        return skybox;
+    }
+    inline OpenGLWater *getWater() const {
+        return water;
+    }
+    inline OpenGLTerrain *getTerrain() const {
+        return terrain;
+    }
+    inline bool isDisplayed() const {
+        return displayed;
+    }
 
     virtual void prepare() override;
 
@@ -61,21 +68,25 @@ public:
      * Change the camera location.
      */
     void setCamera(CameraDefinition *camera);
-    void cameraChangeEvent(CameraDefinition* camera);
+    void cameraChangeEvent(CameraDefinition *camera);
 
-    inline OpenGLFunctions* getOpenGlFunctions() const {return functions;}
-    inline OpenGLSharedState* getSharedState() const {return shared_state;}
+    inline OpenGLFunctions *getOpenGlFunctions() const {
+        return functions;
+    }
+    inline OpenGLSharedState *getSharedState() const {
+        return shared_state;
+    }
 
     virtual double getPrecision(const Vector3 &location) override;
     virtual Color applyMediumTraversal(const Vector3 &location, const Color &color) override;
 
-private:
+  private:
     /**
      * Update the mouse_projected member.
      */
     void updateMouseProjection();
 
-private:
+  private:
     bool ready;
     bool paused;
     bool displayed;
@@ -89,14 +100,13 @@ private:
 
     QMatrix4x4 *view_matrix;
 
-    OpenGLFunctions* functions;
-    OpenGLSharedState* shared_state;
+    OpenGLFunctions *functions;
+    OpenGLSharedState *shared_state;
 
-    OpenGLSkybox* skybox;
-    OpenGLWater* water;
-    OpenGLTerrain* terrain;
+    OpenGLSkybox *skybox;
+    OpenGLWater *water;
+    OpenGLTerrain *terrain;
 };
-
 }
 }
 

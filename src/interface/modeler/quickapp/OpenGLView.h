@@ -8,18 +8,17 @@
 namespace paysages {
 namespace modeler {
 
-class OpenGLView : public QQuickItem
-{
+class OpenGLView : public QQuickItem {
     Q_OBJECT
-public:
+  public:
     explicit OpenGLView(QQuickItem *parent = 0);
 
-public slots:
+  public slots:
     void handleWindowChanged(QQuickWindow *win);
     void paint();
     void handleResize();
 
-protected:
+  protected:
     virtual void wheelEvent(QWheelEvent *event) override;
     virtual void mousePressEvent(QMouseEvent *event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
@@ -27,11 +26,11 @@ protected:
     virtual void hoverMoveEvent(QHoverEvent *event) override;
     virtual void timerEvent(QTimerEvent *event) override;
 
-private:
+  private:
     bool acceptInputs() const;
     double getSpeedFactor(QInputEvent *event);
 
-private:
+  private:
     int delayed;
     bool initialized;
     bool resized;
@@ -41,7 +40,6 @@ private:
     Qt::MouseButton mouse_button;
     QPointF mouse_pos;
 };
-
 }
 }
 

@@ -8,27 +8,26 @@
 namespace paysages {
 namespace definition {
 
-typedef DefinitionNode* (*LayerConstructor)(Layers* parent);
+typedef DefinitionNode *(*LayerConstructor)(Layers *parent);
 
 /**
  * @brief Layers of definitions, ideally all of the same type.
  */
-class DEFINITIONSHARED_EXPORT Layers:public DefinitionNode
-{
-public:
-    Layers(DefinitionNode* parent, const std::string &name, LayerConstructor layer_constructor);
+class DEFINITIONSHARED_EXPORT Layers : public DefinitionNode {
+  public:
+    Layers(DefinitionNode *parent, const std::string &name, LayerConstructor layer_constructor);
     virtual ~Layers();
 
     virtual void save(PackStream *stream) const override;
     virtual void load(PackStream *stream) override;
-    virtual void copy(DefinitionNode* destination) const override;
-    Layers* newCopy() const;
+    virtual void copy(DefinitionNode *destination) const override;
+    Layers *newCopy() const;
 
     void setMaxLayerCount(int max_layer_count);
 
     int count() const;
-    DefinitionNode* getLayer(int position) const;
-    int findLayer(DefinitionNode* layer) const;
+    DefinitionNode *getLayer(int position) const;
+    int findLayer(DefinitionNode *layer) const;
 
     /**
      * @brief Add a new layer
@@ -40,22 +39,20 @@ public:
     int addLayer(DefinitionNode *layer);
     int addLayer();
     void removeLayer(int position);
-    void removeLayer(DefinitionNode* layer);
+    void removeLayer(DefinitionNode *layer);
     void moveLayer(int old_position, int new_position);
-    void moveLayer(DefinitionNode* layer, int new_position);
+    void moveLayer(DefinitionNode *layer, int new_position);
     void clear();
 
-protected:
+  protected:
     virtual DefinitionNode *findChildByName(const std::string name) override;
 
-public:
+  public:
     LayerConstructor layer_constructor;
     int max_layer_count;
-    std::vector<DefinitionNode*> layers;
-    DefinitionNode* null_layer;
-
+    std::vector<DefinitionNode *> layers;
+    DefinitionNode *null_layer;
 };
-
 }
 }
 

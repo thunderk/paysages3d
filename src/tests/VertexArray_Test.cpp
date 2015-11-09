@@ -2,24 +2,18 @@
 
 #include "VertexArray.h"
 
-class TestVertex
-{
-public:
+class TestVertex {
+  public:
     float uv[2];
     int loc[3];
 
-    bool operator==(const TestVertex &other) const
-    {
-        return other.uv[0] == uv[0]
-                and other.uv[1] == uv[1]
-                and other.loc[0] == loc[0]
-                and other.loc[1] == loc[1]
-                and other.loc[2] == loc[2];
+    bool operator==(const TestVertex &other) const {
+        return other.uv[0] == uv[0] and other.uv[1] == uv[1] and other.loc[0] == loc[0] and other.loc[1] == loc[1] and
+               other.loc[2] == loc[2];
     }
 };
 
-TEST(VertexArray, grid)
-{
+TEST(VertexArray, grid) {
     VertexArray<TestVertex> array;
 
     array.setGridSize(3);
@@ -36,8 +30,7 @@ TEST(VertexArray, grid)
     EXPECT_EQ(v1, vgot);
 }
 
-TEST(VertexArray, gridIndices)
-{
+TEST(VertexArray, gridIndices) {
     VertexArray<TestVertex> array;
 
     array.setGridSize(3);
@@ -66,8 +59,7 @@ TEST(VertexArray, gridIndices)
     EXPECT_EQ(4, array.getIndex(14));
 }
 
-TEST(VertexArray, gridIndicesStride)
-{
+TEST(VertexArray, gridIndicesStride) {
     VertexArray<TestVertex> array;
 
     array.setGridSize(5);

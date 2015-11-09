@@ -12,20 +12,16 @@
 #include "FloatDiff.h"
 #include "IntNode.h"
 
-OpenGLWater::OpenGLWater(OpenGLRenderer *renderer):
-    OpenGLPart(renderer)
-{
+OpenGLWater::OpenGLWater(OpenGLRenderer *renderer) : OpenGLPart(renderer) {
     vertices = new float[4 * 3];
     enabled = true;
 }
 
-OpenGLWater::~OpenGLWater()
-{
+OpenGLWater::~OpenGLWater() {
     delete[] vertices;
 }
 
-void OpenGLWater::initialize()
-{
+void OpenGLWater::initialize() {
     program = createShader("water");
     program->addVertexSource("water");
     program->addFragmentSource("atmosphere");
@@ -46,8 +42,7 @@ void OpenGLWater::initialize()
     renderer->getScenery()->getWater()->propModel()->addWatcher(this, false);
 }
 
-void OpenGLWater::update()
-{
+void OpenGLWater::update() {
     WaterDefinition *water = renderer->getScenery()->getWater();
     renderer->getSharedState()->set("waterMaterialColor", *water->material->base);
     renderer->getSharedState()->set("waterMaterialReflection", water->material->reflection);
@@ -57,38 +52,29 @@ void OpenGLWater::update()
     renderer->getSharedState()->set("simplexSampler", NoiseFunctionSimplex::getNormalTexture(), true, true);
 }
 
-void OpenGLWater::render()
-{
-    if (enabled)
-    {
+void OpenGLWater::render() {
+    if (enabled) {
         program->drawTriangleStrip(vertices, 4);
     }
 }
 
-void OpenGLWater::setVertex(int i, float x, float y, float z)
-{
+void OpenGLWater::setVertex(int i, float x, float y, float z) {
     vertices[i * 3] = x;
     vertices[i * 3 + 1] = y;
     vertices[i * 3 + 2] = z;
 }
 
-void OpenGLWater::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
-{
-    if (node->getPath() == "/terrain/water_height")
-    {
+void OpenGLWater::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
+    if (node->getPath() == "/terrain/water_height") {
         renderer->getSharedState()->set("waterOffset", renderer->getScenery()->getTerrain()->getWaterOffset());
-    }
-    else if (node->getPath() == "/water/reflection")
-    {
-        renderer->getSharedState()->set("waterReflection", renderer->getScenery()->getWater()->propReflection()->getValue());
-    }
-    else if (node->getPath() == "/water/model")
-    {
+    } else if (node->getPath() == "/water/reflection") {
+        renderer->getSharedState()->set("waterReflection",
+                                        renderer->getScenery()->getWater()->propReflection()->getValue());
+    } else if (node->getPath() == "/water/model") {
         update();
     }
 }
 
-void OpenGLWater::setEnabled(bool enabled)
-{
+void OpenGLWater::setEnabled(bool enabled) {
     this->enabled = enabled;
 }

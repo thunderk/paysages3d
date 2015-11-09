@@ -9,8 +9,7 @@
 #include "LightComponent.h"
 #include "Color.h"
 
-TEST(GodRaysSampler, getBounds)
-{
+TEST(GodRaysSampler, getBounds) {
     GodRaysSampler sampler;
 
     sampler.setAltitudes(-5.0, 300.0);
@@ -24,8 +23,7 @@ TEST(GodRaysSampler, getBounds)
     EXPECT_VECTOR3_COORDS(bounds.getEnd(), 600.0, 300.0, 8500.0);
 }
 
-TEST(GodRaysSampler, getSamples)
-{
+TEST(GodRaysSampler, getSamples) {
     GodRaysSampler sampler;
 
     sampler.setAltitudes(-50.0, 100.0);
@@ -40,8 +38,7 @@ TEST(GodRaysSampler, getSamples)
     EXPECT_EQ(21, z);
 }
 
-TEST(GodRaysSampler, setQuality)
-{
+TEST(GodRaysSampler, setQuality) {
     GodRaysSampler sampler;
 
     sampler.setQuality(0.0);
@@ -60,10 +57,8 @@ TEST(GodRaysSampler, setQuality)
     EXPECT_DOUBLE_EQ(0.06172839506, sampler.getWalkStep());
 }
 
-class GodRayLightSource: public LightSource
-{
-    virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override
-    {
+class GodRayLightSource : public LightSource {
+    virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override {
         LightComponent light;
         light.altered = true;
         light.color = Color(fabs(location.x), fabs(location.y), fabs(location.z));
@@ -72,19 +67,13 @@ class GodRayLightSource: public LightSource
     }
 };
 
-TEST(GodRaysSampler, getRawLight)
-{
-    class TestLightFilter: public LightFilter
-    {
-        virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override
-        {
-            if (at.x > 0.5)
-            {
+TEST(GodRaysSampler, getRawLight) {
+    class TestLightFilter : public LightFilter {
+        virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override {
+            if (at.x > 0.5) {
                 light.color.r = 0.1;
                 return true;
-            }
-            else
-            {
+            } else {
                 return true;
             }
         }
@@ -106,12 +95,9 @@ TEST(GodRaysSampler, getRawLight)
     EXPECT_COLOR_RGBA(sampler.getRawLight(Vector3(1.0, 2.0, -6.0), true), 0.1, 2.0, 6.0, 1.0);
 }
 
-TEST(GodRaysSampler, getCachedLight)
-{
-    class TestLightFilter: public LightFilter
-    {
-        virtual bool applyLightFilter(LightComponent &, const Vector3 &at) override
-        {
+TEST(GodRaysSampler, getCachedLight) {
+    class TestLightFilter : public LightFilter {
+        virtual bool applyLightFilter(LightComponent &, const Vector3 &at) override {
             return at.x <= 10.0 or at.x >= 50.0;
         }
     };

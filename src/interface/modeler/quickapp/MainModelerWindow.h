@@ -8,10 +8,9 @@
 namespace paysages {
 namespace modeler {
 
-class MainModelerWindow: public QQuickView
-{
+class MainModelerWindow : public QQuickView {
     Q_OBJECT
-public:
+  public:
     MainModelerWindow();
     virtual ~MainModelerWindow();
 
@@ -22,20 +21,26 @@ public:
     QString getState() const;
     void setState(const QString &stateName);
 
-    inline Scenery *getScenery() const {return scenery;}
-    inline OpenGLRenderer *getRenderer() const {return renderer;}
-    inline ModelerCameras *getCamera() const {return cameras;}
+    inline Scenery *getScenery() const {
+        return scenery;
+    }
+    inline OpenGLRenderer *getRenderer() const {
+        return renderer;
+    }
+    inline ModelerCameras *getCamera() const {
+        return cameras;
+    }
 
-public slots:
+  public slots:
     void newFile();
     void saveFile();
     void loadFile();
     void exit();
 
-protected:
+  protected:
     virtual void keyReleaseEvent(QKeyEvent *event) override;
 
-private:
+  private:
     Scenery *scenery;
     OpenGLRenderer *renderer;
 
@@ -47,7 +52,6 @@ private:
     RenderPreviewProvider *render_preview_provider;
     RenderProcess *render_process;
 };
-
 }
 }
 

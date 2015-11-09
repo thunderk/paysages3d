@@ -13,10 +13,9 @@
 namespace paysages {
 namespace opengl {
 
-class OPENGLSHARED_EXPORT OpenGLTerrain: public OpenGLPart, public DefinitionWatcher
-{
-public:
-    OpenGLTerrain(OpenGLRenderer* renderer);
+class OPENGLSHARED_EXPORT OpenGLTerrain : public OpenGLPart, public DefinitionWatcher {
+  public:
+    OpenGLTerrain(OpenGLRenderer *renderer);
     virtual ~OpenGLTerrain();
 
     virtual void initialize() override;
@@ -26,7 +25,9 @@ public:
 
     void pause();
     void resume();
-    inline bool isPaused() const { return paused; }
+    inline bool isPaused() const {
+        return paused;
+    }
 
     /**
      * Reset the color textures, without changing the tessellation.
@@ -36,18 +37,17 @@ public:
     void performChunksMaintenance();
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
-private:
-    OpenGLShaderProgram* program;
 
-    ParallelPool* work;
+  private:
+    OpenGLShaderProgram *program;
+
+    ParallelPool *work;
     bool paused;
 
-    QVector<ExplorerChunkTerrain*> _chunks;
-    QList<ExplorerChunkTerrain*> _updateQueue;
+    QVector<ExplorerChunkTerrain *> _chunks;
+    QList<ExplorerChunkTerrain *> _updateQueue;
     QMutex _lock_chunks;
-
 };
-
 }
 }
 

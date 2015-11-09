@@ -8,23 +8,21 @@
 namespace paysages {
 namespace modeler {
 
-class WaterModeler: public QObject
-{
+class WaterModeler : public QObject {
     Q_OBJECT
-public:
+  public:
     WaterModeler(MainModelerWindow *ui);
     ~WaterModeler();
 
-public slots:
+  public slots:
     void enableRendering(bool enable);
 
-private:
+  private:
     MainModelerWindow *ui;
     IntPropertyBind *prop_model;
     FloatPropertyBind *prop_height;
     FloatPropertyBind *prop_reflexion;
 };
-
 }
 }
 

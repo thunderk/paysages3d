@@ -11,9 +11,8 @@ namespace system {
 /**
  * Locator of data files.
  */
-class SYSTEMSHARED_EXPORT DataFile
-{
-public:
+class SYSTEMSHARED_EXPORT DataFile {
+  public:
     /**
      * Find a data file.
      *
@@ -28,13 +27,12 @@ public:
      */
     static std::string findDir(const std::string &relpath);
 
-private:
+  private:
     static bool tryDataDir(const QDir &dir);
     static std::string locateDataDir();
     static std::string initDataDir();
     static std::string dataDir;
 };
-
 }
 }
 

@@ -8,9 +8,7 @@
 #include "FloatNode.h"
 #include "AtmosphereRenderer.h"
 
-ModelerCameras::ModelerCameras(MainModelerWindow *parent):
-    QObject(parent), parent(parent)
-{
+ModelerCameras::ModelerCameras(MainModelerWindow *parent) : QObject(parent), parent(parent) {
     render = new CameraDefinition();
     topdown = new CameraDefinition();
     current = new CameraDefinition();
@@ -30,39 +28,34 @@ ModelerCameras::ModelerCameras(MainModelerWindow *parent):
     startTimer(50);
 }
 
-ModelerCameras::~ModelerCameras()
-{
+ModelerCameras::~ModelerCameras() {
     delete current;
     delete render;
     delete topdown;
     delete tool;
 }
 
-void ModelerCameras::processZoom(double value)
-{
+void ModelerCameras::processZoom(double value) {
     active->strafeForward(value);
 
     validate();
 }
 
-void ModelerCameras::processScroll(double xvalue, double yvalue)
-{
+void ModelerCameras::processScroll(double xvalue, double yvalue) {
     active->strafeRight(xvalue);
     active->strafeUp(yvalue);
 
     validate();
 }
 
-void ModelerCameras::processPanning(double xvalue, double yvalue)
-{
+void ModelerCameras::processPanning(double xvalue, double yvalue) {
     active->rotateYaw(xvalue);
     active->rotatePitch(yvalue);
 
     validate();
 }
 
-void ModelerCameras::startSunTool()
-{
+void ModelerCameras::startSunTool() {
     tool_mode = TOOL_SUN;
 
     previous = active;
@@ -72,51 +65,41 @@ void ModelerCameras::startSunTool()
     parent->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this, true);
 }
 
-void ModelerCameras::endTool()
-{
+void ModelerCameras::endTool() {
     active = previous;
     tool_mode = TOOL_NONE;
 
     validate();
 }
 
-void ModelerCameras::timerEvent(QTimerEvent *)
-{
+void ModelerCameras::timerEvent(QTimerEvent *) {
     current->transitionToAnother(active, 0.5);
     parent->getScenery()->keepCameraAboveGround(current);
     parent->getRenderer()->setCamera(current);
 }
 
-void ModelerCameras::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
-{
-    if (node->getPath() == "/atmosphere/daytime" && tool_mode == TOOL_SUN)
-    {
+void ModelerCameras::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
+    if (node->getPath() == "/atmosphere/daytime" && tool_mode == TOOL_SUN) {
         Vector3 direction = parent->getRenderer()->getAtmosphereRenderer()->getSunDirection();
         tool->setTarget(tool->getLocation().add(direction));
     }
 }
 
-void ModelerCameras::validate()
-{
+void ModelerCameras::validate() {
     parent->getScenery()->keepCameraAboveGround(active);
 
     parent->getScenery()->keepCameraAboveGround(current);
     parent->getRenderer()->setCamera(current);
 
-    if (active == render)
-    {
+    if (active == render) {
         parent->getScenery()->setCamera(active);
     }
 }
 
-void ModelerCameras::changeActiveCamera(const QString &name)
-{
-    if (name == "Render camera")
-    {
+void ModelerCameras::changeActiveCamera(const QString &name) {
+    if (name == "Render camera") {
         active = render;
-    }
-    else if (name == "Top-down camera")
-    {
+    } else if (name == "Top-down camera") {
         render->copy(topdown);
 
         topdown->strafeForward(-10.0);
@@ -131,14 +114,10 @@ void ModelerCameras::changeActiveCamera(const QString &name)
     previous = active;
 }
 
-void ModelerCameras::toolChanged(const QString &tool)
-{
-    if (tool.isEmpty())
-    {
+void ModelerCameras::toolChanged(const QString &tool) {
+    if (tool.isEmpty()) {
         endTool();
-    }
-    else if (tool == "sun")
-    {
+    } else if (tool == "sun") {
         startSunTool();
     }
 }

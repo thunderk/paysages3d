@@ -7,19 +7,19 @@
 
 namespace paysages {
 namespace modeler {
-    class MainModelerWindow;
-    class OpenGLView;
+class MainModelerWindow;
+class OpenGLView;
 
-    class AtmosphereModeler;
-    class WaterModeler;
+class AtmosphereModeler;
+class WaterModeler;
 
-    class RenderPreviewProvider;
-    class RenderProcess;
+class RenderPreviewProvider;
+class RenderProcess;
 
-    class ModelerCameras;
+class ModelerCameras;
 
-    class FloatPropertyBind;
-    class IntPropertyBind;
+class FloatPropertyBind;
+class IntPropertyBind;
 }
 }
 

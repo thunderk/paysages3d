@@ -11,9 +11,8 @@ namespace system {
 /**
  * Logger streams
  */
-class Logs
-{
-public:
+class Logs {
+  public:
     static std::ostream &debug();
     static std::ostream &warning();
     static std::ostream &error();
@@ -24,7 +23,6 @@ public:
     // Disable all logs from now on
     static void disable();
 };
-
 }
 }
 

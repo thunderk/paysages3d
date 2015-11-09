@@ -11,9 +11,8 @@ namespace software {
 /**
  * Picture writer to create the final image from canvas portions.
  */
-class SOFTWARESHARED_EXPORT CanvasPictureWriter: public PictureWriter
-{
-public:
+class SOFTWARESHARED_EXPORT CanvasPictureWriter : public PictureWriter {
+  public:
     CanvasPictureWriter(const Canvas *canvas);
     virtual ~CanvasPictureWriter();
 
@@ -34,13 +33,13 @@ public:
      */
     bool saveCanvas(const std::string &filepath);
 
-protected:
+  protected:
     virtual unsigned int getPixel(int x, int y) override;
 
-private:
+  private:
     Color getRawPixel(int x, int y);
 
-private:
+  private:
     const Canvas *canvas;
     int antialias;
     int width;
@@ -51,7 +50,6 @@ private:
     int cache_width;
     Color *cache;
 };
-
 }
 }
 

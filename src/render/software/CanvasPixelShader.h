@@ -15,14 +15,14 @@ namespace software {
  *
  * This worker will be set to work on a given chunk of a canvas portion.
  */
-class CanvasPixelShader: public ParallelWorker
-{
-public:
-    CanvasPixelShader(const SoftwareCanvasRenderer &renderer, CanvasPortion *portion, RenderProgress *progress, int chunk_size, int sub_chunk_size, int chunks_x, int chunks_y);
+class CanvasPixelShader : public ParallelWorker {
+  public:
+    CanvasPixelShader(const SoftwareCanvasRenderer &renderer, CanvasPortion *portion, RenderProgress *progress,
+                      int chunk_size, int sub_chunk_size, int chunks_x, int chunks_y);
 
     virtual void processParallelUnit(int unit) override;
 
-private:
+  private:
     const SoftwareCanvasRenderer &renderer;
     CanvasPortion *portion;
     RenderProgress *progress;
@@ -31,7 +31,6 @@ private:
     int chunks_x;
     int chunks_y;
 };
-
 }
 }
 

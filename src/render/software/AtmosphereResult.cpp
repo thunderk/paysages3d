@@ -1,7 +1,6 @@
 #include "AtmosphereResult.h"
 
-AtmosphereResult::AtmosphereResult()
-{
+AtmosphereResult::AtmosphereResult() {
     base = COLOR_BLACK;
     inscattering = COLOR_BLACK;
     attenuation = COLOR_WHITE;
@@ -10,8 +9,7 @@ AtmosphereResult::AtmosphereResult()
     final = COLOR_BLACK;
 }
 
-void AtmosphereResult::updateFinal()
-{
+void AtmosphereResult::updateFinal() {
     final.r = base.r * attenuation.r + inscattering.r;
     final.g = base.g * attenuation.g + inscattering.g;
     final.b = base.b * attenuation.b + inscattering.b;

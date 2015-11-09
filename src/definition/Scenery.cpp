@@ -16,9 +16,7 @@
 static const double APP_HEADER = 19866544632.125;
 static const int DATA_VERSION = 1;
 
-Scenery::Scenery():
-    DefinitionNode(NULL, "scenery", "scenery")
-{
+Scenery::Scenery() : DefinitionNode(NULL, "scenery", "scenery") {
     atmosphere = new AtmosphereDefinition(this);
     camera = new CameraDefinition(this);
     clouds = new CloudsDefinition(this);
@@ -28,21 +26,18 @@ Scenery::Scenery():
     vegetation = new VegetationDefinition(this);
 }
 
-void Scenery::validate()
-{
+void Scenery::validate() {
     DefinitionNode::validate();
 
     keepCameraAboveGround(camera);
 }
 
-Scenery::FileOperationResult Scenery::saveGlobal(const std::string &filepath) const
-{
+Scenery::FileOperationResult Scenery::saveGlobal(const std::string &filepath) const {
     PackStream stream;
     double app_header = (double)APP_HEADER;
     double version_header = (double)DATA_VERSION;
 
-    if (not stream.bindToFile(filepath, true))
-    {
+    if (not stream.bindToFile(filepath, true)) {
         return FILE_OPERATION_IOERROR;
     }
 
@@ -58,25 +53,21 @@ Scenery::FileOperationResult Scenery::saveGlobal(const std::string &filepath) co
     return FILE_OPERATION_OK;
 }
 
-Scenery::FileOperationResult Scenery::loadGlobal(const std::string &filepath)
-{
+Scenery::FileOperationResult Scenery::loadGlobal(const std::string &filepath) {
     PackStream stream;
     double app_header, version_header;
 
-    if (not stream.bindToFile(filepath, false))
-    {
+    if (not stream.bindToFile(filepath, false)) {
         return FILE_OPERATION_IOERROR;
     }
 
     stream.read(&app_header);
-    if (app_header != APP_HEADER)
-    {
+    if (app_header != APP_HEADER) {
         return FILE_OPERATION_APP_MISMATCH;
     }
 
     stream.read(&version_header);
-    if ((int)version_header != DATA_VERSION)
-    {
+    if ((int)version_header != DATA_VERSION) {
         return FILE_OPERATION_VERSION_MISMATCH;
     }
 
@@ -87,14 +78,12 @@ Scenery::FileOperationResult Scenery::loadGlobal(const std::string &filepath)
     version_header = -1;
 
     stream.read(&version_header);
-    if ((int)version_header != DATA_VERSION)
-    {
+    if ((int)version_header != DATA_VERSION) {
         return FILE_OPERATION_VERSION_MISMATCH;
     }
 
     stream.read(&app_header);
-    if (app_header != APP_HEADER)
-    {
+    if (app_header != APP_HEADER) {
         return FILE_OPERATION_APP_MISMATCH;
     }
 
@@ -102,15 +91,12 @@ Scenery::FileOperationResult Scenery::loadGlobal(const std::string &filepath)
     return FILE_OPERATION_OK;
 }
 
-const Scenery* Scenery::getScenery() const
-{
+const Scenery *Scenery::getScenery() const {
     return this;
 }
 
-void Scenery::autoPreset(int seed)
-{
-    if (!seed)
-    {
+void Scenery::autoPreset(int seed) {
+    if (!seed) {
         seed = time(NULL);
     }
     srand(seed);
@@ -130,84 +116,68 @@ void Scenery::autoPreset(int seed)
     Logs::debug() << "New scenery generated from seed " << seed << std::endl;
 }
 
-void Scenery::setAtmosphere(AtmosphereDefinition* atmosphere)
-{
+void Scenery::setAtmosphere(AtmosphereDefinition *atmosphere) {
     atmosphere->copy(this->atmosphere);
 }
 
-void Scenery::getAtmosphere(AtmosphereDefinition* atmosphere)
-{
+void Scenery::getAtmosphere(AtmosphereDefinition *atmosphere) {
     this->atmosphere->copy(atmosphere);
 }
 
-void Scenery::setCamera(CameraDefinition* camera)
-{
+void Scenery::setCamera(CameraDefinition *camera) {
     camera->copy(this->camera);
     keepCameraAboveGround(this->camera);
 }
 
-void Scenery::getCamera(CameraDefinition* camera)
-{
+void Scenery::getCamera(CameraDefinition *camera) {
     this->camera->copy(camera);
 }
 
-void Scenery::setClouds(CloudsDefinition* clouds)
-{
+void Scenery::setClouds(CloudsDefinition *clouds) {
     clouds->copy(this->clouds);
 }
 
-void Scenery::getClouds(CloudsDefinition* clouds)
-{
+void Scenery::getClouds(CloudsDefinition *clouds) {
     this->clouds->copy(clouds);
 }
 
-void Scenery::setTerrain(TerrainDefinition* terrain)
-{
+void Scenery::setTerrain(TerrainDefinition *terrain) {
     terrain->copy(this->terrain);
 }
 
-void Scenery::getTerrain(TerrainDefinition* terrain)
-{
+void Scenery::getTerrain(TerrainDefinition *terrain) {
     this->terrain->copy(terrain);
 }
 
-void Scenery::setTextures(TexturesDefinition* textures)
-{
+void Scenery::setTextures(TexturesDefinition *textures) {
     textures->copy(this->textures);
 }
 
-void Scenery::getTextures(TexturesDefinition* textures)
-{
+void Scenery::getTextures(TexturesDefinition *textures) {
     this->textures->copy(textures);
 }
 
-void Scenery::setVegetation(VegetationDefinition* vegetation)
-{
+void Scenery::setVegetation(VegetationDefinition *vegetation) {
     vegetation->copy(this->vegetation);
 }
 
-void Scenery::getVegetation(VegetationDefinition* vegetation)
-{
+void Scenery::getVegetation(VegetationDefinition *vegetation) {
     this->vegetation->copy(vegetation);
 }
 
-void Scenery::setWater(WaterDefinition* water)
-{
+void Scenery::setWater(WaterDefinition *water) {
     water->copy(this->water);
 }
 
-void Scenery::getWater(WaterDefinition* water)
-{
+void Scenery::getWater(WaterDefinition *water) {
     this->water->copy(water);
 }
 
-void Scenery::keepCameraAboveGround(CameraDefinition* camera)
-{
+void Scenery::keepCameraAboveGround(CameraDefinition *camera) {
     Vector3 camera_location = camera->getLocation();
     double terrain_height = terrain->getInterpolatedHeight(camera_location.x, camera_location.z, true, true) + 1.0;
     double water_height = 0.5;
-    if (camera_location.y < water_height || camera_location.y < terrain_height)
-    {
+    if (camera_location.y < water_height || camera_location.y < terrain_height) {
         double diff = ((water_height > terrain_height) ? water_height : terrain_height) - camera_location.y;
         camera->setLocation(camera_location.add(Vector3(0.0, diff, 0.0)));
     }

@@ -11,9 +11,8 @@ namespace basics {
  *
  * This may be useful for ray marching algorithms for example.
  */
-class BASICSSHARED_EXPORT SpaceGridIterator
-{
-public:
+class BASICSSHARED_EXPORT SpaceGridIterator {
+  public:
     SpaceGridIterator();
 
     /**
@@ -23,7 +22,6 @@ public:
      */
     virtual bool onCell(int x, int y, int z) = 0;
 };
-
 }
 }
 

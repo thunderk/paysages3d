@@ -9,9 +9,8 @@ namespace definition {
 /**
  * Time manager, handling the inexorable passing of time.
  */
-class DEFINITIONSHARED_EXPORT TimeManager
-{
-public:
+class DEFINITIONSHARED_EXPORT TimeManager {
+  public:
     TimeManager();
 
     /**
@@ -26,11 +25,10 @@ public:
      */
     void setWind(double wind_x, double wind_z);
 
-private:
+  private:
     double wind_x;
     double wind_z;
 };
-
 }
 }
 
