@@ -21,6 +21,9 @@ public:
     VegetationModelDefinition(DefinitionNode *parent);
     virtual ~VegetationModelDefinition();
 
+    inline const SurfaceMaterial &getSolidMaterial() const {return *solid_material;}
+    inline const SurfaceMaterial &getFoliageMaterial() const {return *foliage_material;}
+
     inline const std::vector<CappedCylinder> &getSolidVolumes() const {return solid_volumes;}
     inline const std::vector<Sphere> &getFoliageGroups() const {return foliage_groups;}
     inline const std::vector<Disk> &getFoliageItems() const {return foliage_items;}

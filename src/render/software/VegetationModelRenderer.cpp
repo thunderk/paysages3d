@@ -23,7 +23,7 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
 {
     InfiniteRay ray(segment.getStart(), segment.getDirection());
     int intersections;
-    Color result = COLOR_TRANSPARENT;
+    const SurfaceMaterial *material = &SurfaceMaterial::getDefault();
     bool hit = false;
     Vector3 location, normal;
     double distance, nearest, maximal;
@@ -47,7 +47,7 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
 
                 if (distance < nearest)
                 {
-                    result = Color(0.2, 0.15, 0.15);
+                    material = &model->getSolidMaterial();
                     nearest = distance;
 
                     hit = true;
@@ -100,7 +100,7 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
 
                         if (distance < nearest)
                         {
-                            result = Color(0.3, 0.5, 0.3);
+                            material = &model->getFoliageMaterial();
                             nearest = distance;
 
                             hit = true;
@@ -110,7 +110,6 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
                             if (normal.dotProduct(location.sub(segment.getStart())) > 0.0)
                             {
                                 // We look at backside
-                                result = Color(0.3, 0.4, 0.3);
                                 normal = normal.scale(-1.0);
                             }
                         }
@@ -123,12 +122,7 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
 
     if (hit)
     {
-        SurfaceMaterial material(result);
-        material.reflection = 0.001;
-        material.shininess = 2.0;
-        material.hardness = 0.1;
-        material.validate();
-        return VegetationResult(location, normal, material);
+        return VegetationResult(location, normal, *material);
     }
     else
     {

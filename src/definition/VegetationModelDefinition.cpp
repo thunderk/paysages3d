@@ -4,13 +4,23 @@
 #include "RandomGenerator.h"
 #include "Matrix4.h"
 #include "SurfaceMaterial.h"
+#include "Color.h"
 #include "PackStream.h"
 
 VegetationModelDefinition::VegetationModelDefinition(DefinitionNode *parent):
     DefinitionNode(parent, "model")
 {
-    solid_material = new SurfaceMaterial();
-    foliage_material = new SurfaceMaterial();
+    solid_material = new SurfaceMaterial(Color(0.2, 0.15, 0.15));
+    solid_material->reflection = 0.002;
+    solid_material->shininess = 2.0;
+    solid_material->hardness = 0.3;
+    solid_material->validate();
+
+    foliage_material = new SurfaceMaterial(Color(0.4, 0.8, 0.45));
+    foliage_material->reflection = 0.007;
+    foliage_material->shininess = 12.0;
+    foliage_material->hardness = 0.2;
+    foliage_material->validate();
 
     randomize();
 }
@@ -127,7 +137,10 @@ static void addBranchRecurse(std::vector<CappedCylinder> &branches, const Vector
             new_direction = pivot2.multPoint(new_direction);
 
             Vector3 new_base = base.add(direction.scale(randomizeValue(length, 0.4, 1.0)));
-            addBranchRecurse(branches, new_base, new_direction, randomizeValue(radius, 0.45, 0.6), randomizeValue(length, 0.55, 0.85));
+            if (new_base.add(new_direction).y > 0.1)
+            {
+                addBranchRecurse(branches, new_base, new_direction, randomizeValue(radius, 0.45, 0.6), randomizeValue(length, 0.55, 0.85));
+            }
         }
     }
 }
@@ -140,7 +153,7 @@ void VegetationModelDefinition::randomize()
     foliage_items.clear();
 
     // Add trunk and branches
-    addBranchRecurse(solid_volumes, VECTOR_ZERO, VECTOR_UP, 0.04, 0.5);
+    addBranchRecurse(solid_volumes, VECTOR_ZERO, VECTOR_UP, randomizeValue(0.05, 0.6, 1.0), randomizeValue(0.5, 0.8, 1.0));
 
     // Add foliage groups
     for (const auto &branch: solid_volumes)
@@ -155,7 +168,7 @@ void VegetationModelDefinition::randomize()
     }
 
     // Add foliage items
-    for (int i = 0; i < 50; i++)
+    for (int i = 0; i < 30; i++)
     {
         double radius = 0.15;
         double scale = randomizeValue(radius, 0.5, 1.0);

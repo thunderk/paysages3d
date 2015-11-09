@@ -110,12 +110,12 @@ static void testCloudQuality()
 
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(600, 800);
-    SkyRasterizer *rasterizer = new SkyRasterizer(&renderer, renderer.getProgressHelper(), 0);
-    renderer.setSoloRasterizer(rasterizer);
+    SkyRasterizer rasterizer(&renderer, renderer.getProgressHelper(), 0);
+    renderer.setSoloRasterizer(&rasterizer);
     for (int i = 0; i < 6; i++)
     {
         renderer.setQuality((double)i / 5.0);
-        rasterizer->setQuality(0.2);
+        rasterizer.setQuality(0.2);
         startTestRender(&renderer, "cloud_quality", i);
     }
 }
@@ -164,8 +164,8 @@ static void testGodRays()
 
     TestRenderer renderer(&scenery);
     renderer.setSize(500, 300);
-    SkyRasterizer *rasterizer = new SkyRasterizer(&renderer, renderer.getProgressHelper(), 0);
-    renderer.setSoloRasterizer(rasterizer);
+    SkyRasterizer rasterizer(&renderer, renderer.getProgressHelper(), 0);
+    renderer.setSoloRasterizer(&rasterizer);
     TestLightFilter filter;
     renderer.getLightingManager()->clearFilters();
     renderer.getLightingManager()->registerFilter(&filter);
@@ -174,7 +174,7 @@ static void testGodRays()
     for (int i = 0; i < 6; i++)
     {
         renderer.setQuality((double)i / 5.0);
-        rasterizer->setQuality(0.2);
+        rasterizer.setQuality(0.2);
         startTestRender(&renderer, "god_rays_quality", i);
     }
     renderer.setQuality(0.5);
@@ -259,25 +259,42 @@ static void testSunNearHorizon()
 
 static void testVegetationModels()
 {
-    class TestRasterizer: public OverlayRasterizer
+    class InstanceRenderer: public SoftwareCanvasRenderer, public OverlayRasterizer, public LightFilter
     {
     public:
-        TestRasterizer(SoftwareCanvasRenderer *renderer, const VegetationModelDefinition &model):
-            OverlayRasterizer(renderer, renderer->getProgressHelper()),
+        InstanceRenderer(Scenery *scenery, const VegetationModelDefinition &model):
+            SoftwareCanvasRenderer(scenery),
+            OverlayRasterizer(this, this->getProgressHelper()),
             instance(model, VECTOR_ZERO),
             vegetation(renderer->getVegetationRenderer())
         {
         }
+        virtual void prepare() override
+        {
+            SoftwareCanvasRenderer::prepare();
 
+            getLightingManager()->clearFilters();
+            getLightingManager()->registerFilter(this);
+            // TODO Add filter for vegetation instance (for self shadows)
+        }
+        virtual Color applyMediumTraversal(const Vector3&, const Color &color) override
+        {
+            return color;
+        }
         virtual Color processPixel(int, int, double relx, double rely) const override
         {
             relx *= 0.75;
             rely *= 0.75;
-            SpaceSegment segment(Vector3(relx, rely + 0.5, -5.0), Vector3(relx, rely + 0.5, 5.0));
+            SpaceSegment segment(Vector3(relx, rely + 0.5, 5.0), Vector3(relx, rely + 0.5, -5.0));
             RayCastingResult result = vegetation->renderInstance(segment, instance, false, true);
             return result.hit ? result.hit_color : Color(0.6, 0.7, 0.9);
         }
-
+        virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override
+        {
+            SpaceSegment segment(at, at.add(light.direction.scale(-5.0)));
+            RayCastingResult result = vegetation->renderInstance(segment, instance, true, true);
+            return not result.hit;
+        }
         VegetationInstance instance;
         VegetationRenderer *vegetation;
     };
@@ -285,21 +302,18 @@ static void testVegetationModels()
     Scenery scenery;
     scenery.autoPreset(1);
     scenery.getClouds()->clear();
-    scenery.getTerrain()->propWaterHeight()->setValue(1.0);
     scenery.getCamera()->setTarget(VECTOR_ZERO);
-    scenery.getCamera()->setLocation(Vector3(0.0, 0.0, -5.0));
+    scenery.getCamera()->setLocation(Vector3(0.0, 0.0, 5.0));
     int width = 800;
     int height = 800;
-
-    SoftwareCanvasRenderer renderer(&scenery);
-    renderer.setSize(width, height);
-    renderer.setQuality(0.5);
 
     for (int i = 0; i < 10; i++)
     {
         // TODO Make random sequence repeatable
         VegetationModelDefinition model(NULL);
-        renderer.setSoloRasterizer(new TestRasterizer(&renderer, model));
+        InstanceRenderer renderer(&scenery, model);
+        renderer.setSize(width, height);
+        renderer.setSoloRasterizer(&renderer);
 
         startTestRender(&renderer, "vegetation_model_basic", i);
     }

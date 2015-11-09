@@ -26,16 +26,15 @@ public:
     inline RenderProgress *getProgressHelper() const {return progress;}
     inline bool isFinished() const {return finished;}
 
-    inline Rasterizer *getSkyRasterizer() const {return rasterizers[0];}
-    inline Rasterizer *getWaterRasterizer() const {return rasterizers[1];}
-    inline Rasterizer *getTerrainRasterizer() const {return rasterizers[2];}
+    inline Rasterizer *getSkyRasterizer() const {return rasterizer_sky;}
+    inline Rasterizer *getWaterRasterizer() const {return rasterizer_water;}
+    inline Rasterizer *getTerrainRasterizer() const {return rasterizer_terrain;}
+    inline Rasterizer *getVegetationRasterizer() const {return rasterizer_vegetation;}
 
     virtual void setQuality(double factor) override;
 
     /**
      * Clear the rasterizers list, and put a single one.
-     *
-     * The renderer takes ownership of the rasterizer.
      */
     void setSoloRasterizer(Rasterizer *rasterizer);
 
@@ -99,7 +98,13 @@ private:
 
     Canvas *canvas;
     int samples;
-    std::vector<Rasterizer*> rasterizers;
+
+    std::vector<Rasterizer *> rasterizers;
+    Rasterizer *rasterizer_sky;
+    Rasterizer *rasterizer_water;
+    Rasterizer *rasterizer_terrain;
+    Rasterizer *rasterizer_vegetation;
+
     bool started;
     bool finished;
     bool interrupted;
