@@ -10,6 +10,7 @@ OverlayRasterizer::OverlayRasterizer(SoftwareRenderer *renderer, RenderProgress 
 }
 
 int OverlayRasterizer::prepareRasterization() {
+    setPerspectiveCorrection(false);
     return 1;
 }
 

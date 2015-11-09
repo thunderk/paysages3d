@@ -61,6 +61,7 @@ class SOFTWARESHARED_EXPORT Rasterizer {
 
     void setColor(const Color &color);
     void setBackFaceCulling(bool cull);
+    void setPerspectiveCorrection(bool active);
 
     /**
      * Reset the internal triangle counter to 0.
@@ -97,6 +98,7 @@ class SOFTWARESHARED_EXPORT Rasterizer {
     int triangle_count;
     double auto_cut_limit;
     bool backface_culling;
+    bool perspective_correction;
 };
 }
 }
