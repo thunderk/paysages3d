@@ -5,9 +5,7 @@
 #include "PackStream.h"
 #include "FloatNode.h"
 
-TerrainDefinition::TerrainDefinition(DefinitionNode* parent):
-    DefinitionNode(parent, "terrain", "terrain")
-{
+TerrainDefinition::TerrainDefinition(DefinitionNode *parent) : DefinitionNode(parent, "terrain", "terrain") {
     height = 1.0;
     shadow_smoothing = 0.0;
 
@@ -20,17 +18,14 @@ TerrainDefinition::TerrainDefinition(DefinitionNode* parent):
     _height_noise = new NoiseGenerator;
 }
 
-TerrainDefinition::~TerrainDefinition()
-{
+TerrainDefinition::~TerrainDefinition() {
     delete _height_noise;
 }
 
-void TerrainDefinition::validate()
-{
+void TerrainDefinition::validate() {
     _height_noise->validate();
 
-    if (height < 1.0)
-    {
+    if (height < 1.0) {
         height = 1.0;
     }
 
@@ -43,9 +38,8 @@ void TerrainDefinition::validate()
     has_painting = height_map->hasPainting();
 }
 
-void TerrainDefinition::copy(DefinitionNode* _destination) const
-{
-    TerrainDefinition* destination = (TerrainDefinition*)_destination;
+void TerrainDefinition::copy(DefinitionNode *_destination) const {
+    TerrainDefinition *destination = (TerrainDefinition *)_destination;
 
     destination->height = height;
     destination->shadow_smoothing = shadow_smoothing;
@@ -57,8 +51,7 @@ void TerrainDefinition::copy(DefinitionNode* _destination) const
     destination->validate();
 }
 
-void TerrainDefinition::save(PackStream* stream) const
-{
+void TerrainDefinition::save(PackStream *stream) const {
     DefinitionNode::save(stream);
 
     stream->write(&height);
@@ -66,8 +59,7 @@ void TerrainDefinition::save(PackStream* stream) const
     _height_noise->save(stream);
 }
 
-void TerrainDefinition::load(PackStream* stream)
-{
+void TerrainDefinition::load(PackStream *stream) {
     DefinitionNode::load(stream);
 
     stream->read(&height);
@@ -77,44 +69,36 @@ void TerrainDefinition::load(PackStream* stream)
     validate();
 }
 
-double TerrainDefinition::getGridHeight(int x, int z, bool with_painting)
-{
+double TerrainDefinition::getGridHeight(int x, int z, bool with_painting) {
     double h;
 
-    if (!with_painting || !has_painting || !height_map->getGridValue(x, z, &h))
-    {
+    if (!with_painting || !has_painting || !height_map->getGridValue(x, z, &h)) {
         h = _height_noise->get2DTotal((double)x, (double)z);
     }
 
     return h;
 }
 
-double TerrainDefinition::getInterpolatedHeight(double x, double z, bool scaled, bool with_painting, bool water_offset)
-{
+double TerrainDefinition::getInterpolatedHeight(double x, double z, bool scaled, bool with_painting,
+                                                bool water_offset) {
     double h;
 
-    if (!with_painting || !has_painting || !height_map->getInterpolatedValue(x, z, &h))
-    {
+    if (!with_painting || !has_painting || !height_map->getInterpolatedValue(x, z, &h)) {
         h = _height_noise->get2DTotal(x, z);
     }
 
-    if (scaled)
-    {
+    if (scaled) {
         return (water_offset ? (h - water_height->getValue()) : h) * height;
-    }
-    else
-    {
+    } else {
         return h;
     }
 }
 
-double TerrainDefinition::getWaterOffset() const
-{
+double TerrainDefinition::getWaterOffset() const {
     return -water_height->getValue() * height;
 }
 
-HeightInfo TerrainDefinition::getHeightInfo()
-{
+HeightInfo TerrainDefinition::getHeightInfo() {
     HeightInfo result;
 
     result.min_height = _min_height;
@@ -124,16 +108,13 @@ HeightInfo TerrainDefinition::getHeightInfo()
     return result;
 }
 
-unsigned long TerrainDefinition::getMemoryStats()
-{
+unsigned long TerrainDefinition::getMemoryStats() {
     return height_map->getMemoryStats();
 }
 
-void TerrainDefinition::applyPreset(TerrainPreset preset)
-{
+void TerrainDefinition::applyPreset(TerrainPreset preset) {
     int resolution = 8;
-    switch (preset)
-    {
+    switch (preset) {
     case TERRAIN_PRESET_STANDARD:
         _height_noise->randomizeOffsets();
         _height_noise->clearLevels();

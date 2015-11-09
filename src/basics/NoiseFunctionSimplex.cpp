@@ -14,84 +14,78 @@
 #include "Geometry.h"
 #include "Vector3.h"
 
-typedef struct
-{
+typedef struct {
     double x;
     double y;
     double z;
 } Grad3;
 
-typedef struct
-{
+typedef struct {
     double x;
     double y;
     double z;
     double w;
 } Grad4;
 
-static Grad3 _grad3[] = {
-    {1, 1, 0},
-    {-1, 1, 0},
-    {1, -1, 0},
-    {-1, -1, 0},
-    {1, 0, 1},
-    {-1, 0, 1},
-    {1, 0, -1},
-    {-1, 0, -1},
-    {0, 1, 1},
-    {0, -1, 1},
-    {0, 1, -1},
-    {0, -1, -1}
-};
+static Grad3 _grad3[] = {{1, 1, 0},
+                         {-1, 1, 0},
+                         {1, -1, 0},
+                         {-1, -1, 0},
+                         {1, 0, 1},
+                         {-1, 0, 1},
+                         {1, 0, -1},
+                         {-1, 0, -1},
+                         {0, 1, 1},
+                         {0, -1, 1},
+                         {0, 1, -1},
+                         {0, -1, -1}};
 
-static Grad4 _grad4[] = {
-    {0, 1, 1, 1},
-    {0, 1, 1, -1},
-    {0, 1, -1, 1},
-    {0, 1, -1, -1},
-    {0, -1, 1, 1},
-    {0, -1, 1, -1},
-    {0, -1, -1, 1},
-    {0, -1, -1, -1},
-    {1, 0, 1, 1},
-    {1, 0, 1, -1},
-    {1, 0, -1, 1},
-    {1, 0, -1, -1},
-    {-1, 0, 1, 1},
-    {-1, 0, 1, -1},
-    {-1, 0, -1, 1},
-    {-1, 0, -1, -1},
-    {1, 1, 0, 1},
-    {1, 1, 0, -1},
-    {1, -1, 0, 1},
-    {1, -1, 0, -1},
-    {-1, 1, 0, 1},
-    {-1, 1, 0, -1},
-    {-1, -1, 0, 1},
-    {-1, -1, 0, -1},
-    {1, 1, 1, 0},
-    {1, 1, -1, 0},
-    {1, -1, 1, 0},
-    {1, -1, -1, 0},
-    {-1, 1, 1, 0},
-    {-1, 1, -1, 0},
-    {-1, -1, 1, 0},
-    {-1, -1, -1, 0}
-};
+static Grad4 _grad4[] = {{0, 1, 1, 1},
+                         {0, 1, 1, -1},
+                         {0, 1, -1, 1},
+                         {0, 1, -1, -1},
+                         {0, -1, 1, 1},
+                         {0, -1, 1, -1},
+                         {0, -1, -1, 1},
+                         {0, -1, -1, -1},
+                         {1, 0, 1, 1},
+                         {1, 0, 1, -1},
+                         {1, 0, -1, 1},
+                         {1, 0, -1, -1},
+                         {-1, 0, 1, 1},
+                         {-1, 0, 1, -1},
+                         {-1, 0, -1, 1},
+                         {-1, 0, -1, -1},
+                         {1, 1, 0, 1},
+                         {1, 1, 0, -1},
+                         {1, -1, 0, 1},
+                         {1, -1, 0, -1},
+                         {-1, 1, 0, 1},
+                         {-1, 1, 0, -1},
+                         {-1, -1, 0, 1},
+                         {-1, -1, 0, -1},
+                         {1, 1, 1, 0},
+                         {1, 1, -1, 0},
+                         {1, -1, 1, 0},
+                         {1, -1, -1, 0},
+                         {-1, 1, 1, 0},
+                         {-1, 1, -1, 0},
+                         {-1, -1, 1, 0},
+                         {-1, -1, -1, 0}};
 
-static short _permutations[] = {151, 160, 137, 91, 90, 15,
-    131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23,
-    190, 6, 148, 247, 120, 234, 75, 0, 26, 197, 62, 94, 252, 219, 203, 117, 35, 11, 32, 57, 177, 33,
-    88, 237, 149, 56, 87, 174, 20, 125, 136, 171, 168, 68, 175, 74, 165, 71, 134, 139, 48, 27, 166,
-    77, 146, 158, 231, 83, 111, 229, 122, 60, 211, 133, 230, 220, 105, 92, 41, 55, 46, 245, 40, 244,
-    102, 143, 54, 65, 25, 63, 161, 1, 216, 80, 73, 209, 76, 132, 187, 208, 89, 18, 169, 200, 196,
-    135, 130, 116, 188, 159, 86, 164, 100, 109, 198, 173, 186, 3, 64, 52, 217, 226, 250, 124, 123,
-    5, 202, 38, 147, 118, 126, 255, 82, 85, 212, 207, 206, 59, 227, 47, 16, 58, 17, 182, 189, 28, 42,
-    223, 183, 170, 213, 119, 248, 152, 2, 44, 154, 163, 70, 221, 153, 101, 155, 167, 43, 172, 9,
-    129, 22, 39, 253, 19, 98, 108, 110, 79, 113, 224, 232, 178, 185, 112, 104, 218, 246, 97, 228,
-    251, 34, 242, 193, 238, 210, 144, 12, 191, 179, 162, 241, 81, 51, 145, 235, 249, 14, 239, 107,
-    49, 192, 214, 31, 181, 199, 106, 157, 184, 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254,
-    138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180};
+static short _permutations[] = {
+    151, 160, 137, 91,  90,  15,  131, 13,  201, 95,  96,  53,  194, 233, 7,   225, 140, 36,  103, 30,  69,  142,
+    8,   99,  37,  240, 21,  10,  23,  190, 6,   148, 247, 120, 234, 75,  0,   26,  197, 62,  94,  252, 219, 203,
+    117, 35,  11,  32,  57,  177, 33,  88,  237, 149, 56,  87,  174, 20,  125, 136, 171, 168, 68,  175, 74,  165,
+    71,  134, 139, 48,  27,  166, 77,  146, 158, 231, 83,  111, 229, 122, 60,  211, 133, 230, 220, 105, 92,  41,
+    55,  46,  245, 40,  244, 102, 143, 54,  65,  25,  63,  161, 1,   216, 80,  73,  209, 76,  132, 187, 208, 89,
+    18,  169, 200, 196, 135, 130, 116, 188, 159, 86,  164, 100, 109, 198, 173, 186, 3,   64,  52,  217, 226, 250,
+    124, 123, 5,   202, 38,  147, 118, 126, 255, 82,  85,  212, 207, 206, 59,  227, 47,  16,  58,  17,  182, 189,
+    28,  42,  223, 183, 170, 213, 119, 248, 152, 2,   44,  154, 163, 70,  221, 153, 101, 155, 167, 43,  172, 9,
+    129, 22,  39,  253, 19,  98,  108, 110, 79,  113, 224, 232, 178, 185, 112, 104, 218, 246, 97,  228, 251, 34,
+    242, 193, 238, 210, 144, 12,  191, 179, 162, 241, 81,  51,  145, 235, 249, 14,  239, 107, 49,  192, 214, 31,
+    181, 199, 106, 157, 184, 84,  204, 176, 115, 121, 50,  45,  127, 4,   150, 254, 138, 236, 205, 93,  222, 114,
+    67,  29,  24,  72,  243, 141, 128, 195, 78,  66,  215, 61,  156, 180};
 static short _permutations2[512];
 static short _permutationsMod12[512];
 
@@ -102,36 +96,30 @@ static double _G3;
 static double _F4;
 static double _G4;
 
-static inline int _fastfloor(double x)
-{
-    int xi = (int) x;
+static inline int _fastfloor(double x) {
+    int xi = (int)x;
     return x < xi ? xi - 1 : xi;
 }
 
-static inline double _dot2(Grad3 g, double x, double y)
-{
+static inline double _dot2(Grad3 g, double x, double y) {
     return g.x * x + g.y * y;
 }
 
-static inline double _dot3(Grad3 g, double x, double y, double z)
-{
+static inline double _dot3(Grad3 g, double x, double y, double z) {
     return g.x * x + g.y * y + g.z * z;
 }
 
-static inline double _dot4(Grad4 g, double x, double y, double z, double w)
-{
+static inline double _dot4(Grad4 g, double x, double y, double z, double w) {
     return g.x * x + g.y * y + g.z * z + g.w * w;
 }
 
-static int noiseSimplexInit()
-{
+static int noiseSimplexInit() {
     int i;
 
     /* To remove the need for index wrapping, double the permutation table length */
-    for (i = 0; i < 512; i++)
-    {
+    for (i = 0; i < 512; i++) {
         _permutations2[i] = _permutations[i & 255];
-        _permutationsMod12[i] = (short) (_permutations2[i] % 12);
+        _permutationsMod12[i] = (short)(_permutations2[i] % 12);
     }
 
     /* Skewing and unskewing factors for 2, 3, and 4 dimensions */
@@ -147,14 +135,12 @@ static int noiseSimplexInit()
 
 static int _inited = noiseSimplexInit();
 
-double noiseSimplexGet1DValue(double x)
-{
+double noiseSimplexGet1DValue(double x) {
     /* TODO Find custom function */
     return noiseSimplexGet2DValue(x, 0.0);
 }
 
-double noiseSimplexGet2DValue(double x, double y)
-{
+double noiseSimplexGet2DValue(double x, double y) {
     double n0, n1, n2; /* Noise contributions from the three corners */
     /* Skew the input space to determine which simplex cell we're in */
     double s = (x + y) * _F2; /* Hairy factor for 2D */
@@ -168,19 +154,17 @@ double noiseSimplexGet2DValue(double x, double y)
     /* For the 2D case, the simplex shape is an equilateral triangle.
        Determine which simplex we are in. */
     int i1, j1; /* Offsets for second (middle) corner of simplex in (i,j) coords */
-    if (x0 > y0)
-    {
+    if (x0 > y0) {
         i1 = 1;
         j1 = 0;
     } /* lower triangle, XY order: (0,0)->(1,0)->(1,1) */
-    else
-    {
+    else {
         i1 = 0;
         j1 = 1;
-    } /* upper triangle, YX order: (0,0)->(0,1)->(1,1) */
-    /* A step of (1,0) in (i,j) means a step of (1-c,-c) in (x,y), and
-       a step of (0,1) in (i,j) means a step of (-c,1-c) in (x,y), where
-       c = (3-sqrt(3))/6 */
+    }                          /* upper triangle, YX order: (0,0)->(0,1)->(1,1) */
+                               /* A step of (1,0) in (i,j) means a step of (1-c,-c) in (x,y), and
+                                  a step of (0,1) in (i,j) means a step of (-c,1-c) in (x,y), where
+                                  c = (3-sqrt(3))/6 */
     double x1 = x0 - i1 + _G2; /* Offsets for middle corner in (x,y) unskewed coords */
     double y1 = y0 - j1 + _G2;
     double x2 = x0 - 1.0 + 2.0 * _G2; /* Offsets for last corner in (x,y) unskewed coords */
@@ -192,24 +176,24 @@ double noiseSimplexGet2DValue(double x, double y)
     int gi1 = _permutationsMod12[ii + i1 + _permutations2[jj + j1]];
     int gi2 = _permutationsMod12[ii + 1 + _permutations2[jj + 1]];
     /* Calculate the contribution from the three corners */
-    double t0 = 0.5 - x0 * x0 - y0*y0;
-    if (t0 < 0) n0 = 0.0;
-    else
-    {
+    double t0 = 0.5 - x0 * x0 - y0 * y0;
+    if (t0 < 0)
+        n0 = 0.0;
+    else {
         t0 *= t0;
         n0 = t0 * t0 * _dot2(_grad3[gi0], x0, y0); /* (x,y) of _grad3 used for 2D gradient */
     }
-    double t1 = 0.5 - x1 * x1 - y1*y1;
-    if (t1 < 0) n1 = 0.0;
-    else
-    {
+    double t1 = 0.5 - x1 * x1 - y1 * y1;
+    if (t1 < 0)
+        n1 = 0.0;
+    else {
         t1 *= t1;
         n1 = t1 * t1 * _dot2(_grad3[gi1], x1, y1);
     }
-    double t2 = 0.5 - x2 * x2 - y2*y2;
-    if (t2 < 0) n2 = 0.0;
-    else
-    {
+    double t2 = 0.5 - x2 * x2 - y2 * y2;
+    if (t2 < 0)
+        n2 = 0.0;
+    else {
         t2 *= t2;
         n2 = t2 * t2 * _dot2(_grad3[gi2], x2, y2);
     }
@@ -218,8 +202,7 @@ double noiseSimplexGet2DValue(double x, double y)
     return 35.0 * (n0 + n1 + n2) + 0.5;
 }
 
-double noiseSimplexGet3DValue(double x, double y, double z)
-{
+double noiseSimplexGet3DValue(double x, double y, double z) {
     double n0, n1, n2, n3; /* Noise contributions from the four corners */
     /* Skew the input space to determine which simplex cell we're in */
     double s = (x + y + z) * _F3; /* Very nice and simple skew factor for 3D */
@@ -237,10 +220,8 @@ double noiseSimplexGet3DValue(double x, double y, double z)
        Determine which simplex we are in. */
     int i1, j1, k1; /* Offsets for second corner of simplex in (i,j,k) coords */
     int i2, j2, k2; /* Offsets for third corner of simplex in (i,j,k) coords */
-    if (x0 >= y0)
-    {
-        if (y0 >= z0)
-        {
+    if (x0 >= y0) {
+        if (y0 >= z0) {
             i1 = 1;
             j1 = 0;
             k1 = 0;
@@ -248,8 +229,7 @@ double noiseSimplexGet3DValue(double x, double y, double z)
             j2 = 1;
             k2 = 0;
         } /* X Y Z order */
-        else if (x0 >= z0)
-        {
+        else if (x0 >= z0) {
             i1 = 1;
             j1 = 0;
             k1 = 0;
@@ -257,20 +237,16 @@ double noiseSimplexGet3DValue(double x, double y, double z)
             j2 = 0;
             k2 = 1;
         } /* X Z Y order */
-        else
-        {
+        else {
             i1 = 0;
             j1 = 0;
             k1 = 1;
             i2 = 1;
             j2 = 0;
             k2 = 1;
-        } /* Z X Y order */
-    }
-    else
-    { /* x0<y0 */
-        if (y0 < z0)
-        {
+        }    /* Z X Y order */
+    } else { /* x0<y0 */
+        if (y0 < z0) {
             i1 = 0;
             j1 = 0;
             k1 = 1;
@@ -278,8 +254,7 @@ double noiseSimplexGet3DValue(double x, double y, double z)
             j2 = 1;
             k2 = 1;
         } /* Z Y X order */
-        else if (x0 < z0)
-        {
+        else if (x0 < z0) {
             i1 = 0;
             j1 = 1;
             k1 = 0;
@@ -287,8 +262,7 @@ double noiseSimplexGet3DValue(double x, double y, double z)
             j2 = 1;
             k2 = 1;
         } /* Y Z X order */
-        else
-        {
+        else {
             i1 = 0;
             j1 = 1;
             k1 = 0;
@@ -319,31 +293,31 @@ double noiseSimplexGet3DValue(double x, double y, double z)
     int gi2 = _permutationsMod12[ii + i2 + _permutations2[jj + j2 + _permutations2[kk + k2]]];
     int gi3 = _permutationsMod12[ii + 1 + _permutations2[jj + 1 + _permutations2[kk + 1]]];
     /* Calculate the contribution from the four corners */
-    double t0 = 0.6 - x0 * x0 - y0 * y0 - z0*z0;
-    if (t0 < 0) n0 = 0.0;
-    else
-    {
+    double t0 = 0.6 - x0 * x0 - y0 * y0 - z0 * z0;
+    if (t0 < 0)
+        n0 = 0.0;
+    else {
         t0 *= t0;
         n0 = t0 * t0 * _dot3(_grad3[gi0], x0, y0, z0);
     }
-    double t1 = 0.6 - x1 * x1 - y1 * y1 - z1*z1;
-    if (t1 < 0) n1 = 0.0;
-    else
-    {
+    double t1 = 0.6 - x1 * x1 - y1 * y1 - z1 * z1;
+    if (t1 < 0)
+        n1 = 0.0;
+    else {
         t1 *= t1;
         n1 = t1 * t1 * _dot3(_grad3[gi1], x1, y1, z1);
     }
-    double t2 = 0.6 - x2 * x2 - y2 * y2 - z2*z2;
-    if (t2 < 0) n2 = 0.0;
-    else
-    {
+    double t2 = 0.6 - x2 * x2 - y2 * y2 - z2 * z2;
+    if (t2 < 0)
+        n2 = 0.0;
+    else {
         t2 *= t2;
         n2 = t2 * t2 * _dot3(_grad3[gi2], x2, y2, z2);
     }
-    double t3 = 0.6 - x3 * x3 - y3 * y3 - z3*z3;
-    if (t3 < 0) n3 = 0.0;
-    else
-    {
+    double t3 = 0.6 - x3 * x3 - y3 * y3 - z3 * z3;
+    if (t3 < 0)
+        n3 = 0.0;
+    else {
         t3 *= t3;
         n3 = t3 * t3 * _dot3(_grad3[gi3], x3, y3, z3);
     }
@@ -352,8 +326,7 @@ double noiseSimplexGet3DValue(double x, double y, double z)
     return 16.0 * (n0 + n1 + n2 + n3) + 0.5;
 }
 
-double noiseSimplexGet4DValue(double x, double y, double z, double w)
-{
+double noiseSimplexGet4DValue(double x, double y, double z, double w) {
     double n0, n1, n2, n3, n4; /* Noise contributions from the five corners */
     /* Skew the (x,y,z,w) space to determine which cell of 24 simplices we're in */
     double s = (x + y + z + w) * _F4; /* Factor for 4D skewing */
@@ -362,7 +335,7 @@ double noiseSimplexGet4DValue(double x, double y, double z, double w)
     int k = _fastfloor(z + s);
     int l = _fastfloor(w + s);
     double t = (i + j + k + l) * _G4; /* Factor for 4D unskewing */
-    double X0 = i - t; /* Unskew the cell origin back to (x,y,z,w) space */
+    double X0 = i - t;                /* Unskew the cell origin back to (x,y,z,w) space */
     double Y0 = j - t;
     double Z0 = k - t;
     double W0 = l - t;
@@ -379,26 +352,38 @@ double noiseSimplexGet4DValue(double x, double y, double z, double w)
     int ranky = 0;
     int rankz = 0;
     int rankw = 0;
-    if (x0 > y0) rankx++;
-    else ranky++;
-    if (x0 > z0) rankx++;
-    else rankz++;
-    if (x0 > w0) rankx++;
-    else rankw++;
-    if (y0 > z0) ranky++;
-    else rankz++;
-    if (y0 > w0) ranky++;
-    else rankw++;
-    if (z0 > w0) rankz++;
-    else rankw++;
+    if (x0 > y0)
+        rankx++;
+    else
+        ranky++;
+    if (x0 > z0)
+        rankx++;
+    else
+        rankz++;
+    if (x0 > w0)
+        rankx++;
+    else
+        rankw++;
+    if (y0 > z0)
+        ranky++;
+    else
+        rankz++;
+    if (y0 > w0)
+        ranky++;
+    else
+        rankw++;
+    if (z0 > w0)
+        rankz++;
+    else
+        rankw++;
     int i1, j1, k1, l1; /* The integer offsets for the second simplex corner */
     int i2, j2, k2, l2; /* The integer offsets for the third simplex corner */
     int i3, j3, k3, l3; /* The integer offsets for the fourth simplex corner */
-    /* simplex[c] is a 4-vector with the numbers 0, 1, 2 and 3 in some order.
-       Many values of c will never occur, since e.g. x>y>z>w makes x<z, y<w and x<w
-       impossible. Only the 24 indices which have non-zero entries make any sense.
-       We use a thresholding to set the coordinates in turn from the largest magnitude.
-       Rank 3 denotes the largest coordinate. */
+                        /* simplex[c] is a 4-vector with the numbers 0, 1, 2 and 3 in some order.
+                           Many values of c will never occur, since e.g. x>y>z>w makes x<z, y<w and x<w
+                           impossible. Only the 24 indices which have non-zero entries make any sense.
+                           We use a thresholding to set the coordinates in turn from the largest magnitude.
+                           Rank 3 denotes the largest coordinate. */
     i1 = rankx >= 3 ? 1 : 0;
     j1 = ranky >= 3 ? 1 : 0;
     k1 = rankz >= 3 ? 1 : 0;
@@ -436,43 +421,46 @@ double noiseSimplexGet4DValue(double x, double y, double z, double w)
     int kk = k & 255;
     int ll = l & 255;
     int gi0 = _permutations2[ii + _permutations2[jj + _permutations2[kk + _permutations2[ll]]]] % 32;
-    int gi1 = _permutations2[ii + i1 + _permutations2[jj + j1 + _permutations2[kk + k1 + _permutations2[ll + l1]]]] % 32;
-    int gi2 = _permutations2[ii + i2 + _permutations2[jj + j2 + _permutations2[kk + k2 + _permutations2[ll + l2]]]] % 32;
-    int gi3 = _permutations2[ii + i3 + _permutations2[jj + j3 + _permutations2[kk + k3 + _permutations2[ll + l3]]]] % 32;
+    int gi1 =
+        _permutations2[ii + i1 + _permutations2[jj + j1 + _permutations2[kk + k1 + _permutations2[ll + l1]]]] % 32;
+    int gi2 =
+        _permutations2[ii + i2 + _permutations2[jj + j2 + _permutations2[kk + k2 + _permutations2[ll + l2]]]] % 32;
+    int gi3 =
+        _permutations2[ii + i3 + _permutations2[jj + j3 + _permutations2[kk + k3 + _permutations2[ll + l3]]]] % 32;
     int gi4 = _permutations2[ii + 1 + _permutations2[jj + 1 + _permutations2[kk + 1 + _permutations2[ll + 1]]]] % 32;
     /* Calculate the contribution from the five corners */
-    double t0 = 0.6 - x0 * x0 - y0 * y0 - z0 * z0 - w0*w0;
-    if (t0 < 0) n0 = 0.0;
-    else
-    {
+    double t0 = 0.6 - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0;
+    if (t0 < 0)
+        n0 = 0.0;
+    else {
         t0 *= t0;
         n0 = t0 * t0 * _dot4(_grad4[gi0], x0, y0, z0, w0);
     }
-    double t1 = 0.6 - x1 * x1 - y1 * y1 - z1 * z1 - w1*w1;
-    if (t1 < 0) n1 = 0.0;
-    else
-    {
+    double t1 = 0.6 - x1 * x1 - y1 * y1 - z1 * z1 - w1 * w1;
+    if (t1 < 0)
+        n1 = 0.0;
+    else {
         t1 *= t1;
         n1 = t1 * t1 * _dot4(_grad4[gi1], x1, y1, z1, w1);
     }
-    double t2 = 0.6 - x2 * x2 - y2 * y2 - z2 * z2 - w2*w2;
-    if (t2 < 0) n2 = 0.0;
-    else
-    {
+    double t2 = 0.6 - x2 * x2 - y2 * y2 - z2 * z2 - w2 * w2;
+    if (t2 < 0)
+        n2 = 0.0;
+    else {
         t2 *= t2;
         n2 = t2 * t2 * _dot4(_grad4[gi2], x2, y2, z2, w2);
     }
-    double t3 = 0.6 - x3 * x3 - y3 * y3 - z3 * z3 - w3*w3;
-    if (t3 < 0) n3 = 0.0;
-    else
-    {
+    double t3 = 0.6 - x3 * x3 - y3 * y3 - z3 * z3 - w3 * w3;
+    if (t3 < 0)
+        n3 = 0.0;
+    else {
         t3 *= t3;
         n3 = t3 * t3 * _dot4(_grad4[gi3], x3, y3, z3, w3);
     }
-    double t4 = 0.6 - x4 * x4 - y4 * y4 - z4 * z4 - w4*w4;
-    if (t4 < 0) n4 = 0.0;
-    else
-    {
+    double t4 = 0.6 - x4 * x4 - y4 * y4 - z4 * z4 - w4 * w4;
+    if (t4 < 0)
+        n4 = 0.0;
+    else {
         t4 *= t4;
         n4 = t4 * t4 * _dot4(_grad4[gi4], x4, y4, z4, w4);
     }
@@ -480,31 +468,25 @@ double noiseSimplexGet4DValue(double x, double y, double z, double w)
     return 13.5 * (n0 + n1 + n2 + n3 + n4) + 0.5;
 }
 
-double NoiseFunctionSimplex::getBase2d(double x, double y) const
-{
+double NoiseFunctionSimplex::getBase2d(double x, double y) const {
     return noiseSimplexGet2DValue(x, y);
 }
 
-double NoiseFunctionSimplex::getBase3d(double x, double y, double z) const
-{
+double NoiseFunctionSimplex::getBase3d(double x, double y, double z) const {
     return noiseSimplexGet3DValue(x, y, z);
 }
 
 static Texture2D *_valueTexture = NULL;
 
-const Texture2D *NoiseFunctionSimplex::getValueTexture()
-{
-    if (!_valueTexture)
-    {
+const Texture2D *NoiseFunctionSimplex::getValueTexture() {
+    if (!_valueTexture) {
         const int width = 1024;
         const int height = 1024;
 
         _valueTexture = new Texture2D(width, height);
 
-        for (int x = 0; x < width; x++)
-        {
-            for (int z = 0; z < height; z++)
-            {
+        for (int x = 0; x < width; x++) {
+            for (int z = 0; z < height; z++) {
                 double val = noiseSimplexGet2DValue((double)x, (double)z);
                 _valueTexture->setPixel(x, z, Color(val, val, val));
             }
@@ -516,27 +498,21 @@ const Texture2D *NoiseFunctionSimplex::getValueTexture()
 
 static Texture2D *_normalTexture = NULL;
 
-const Texture2D *NoiseFunctionSimplex::getNormalTexture()
-{
-    if (!_normalTexture)
-    {
+const Texture2D *NoiseFunctionSimplex::getNormalTexture() {
+    if (!_normalTexture) {
         const int width = 1024;
         const int height = 1024;
 
         _normalTexture = new Texture2D(width, height);
 
-        for (int x = 0; x < width; x++)
-        {
-            for (int z = 0; z < height; z++)
-            {
+        for (int x = 0; x < width; x++) {
+            for (int z = 0; z < height; z++) {
                 double vcenter = noiseSimplexGet2DValue(0.01 * (double)x, 0.01 * (double)z);
                 double vsouth = noiseSimplexGet2DValue(0.01 * (double)x, 0.01 * (double)z + 0.001);
                 double veast = noiseSimplexGet2DValue(0.01 * (double)x + 0.001, 0.01 * (double)z);
 
-                Vector3 normal = Geometry::getNormalFromTriangle(Vector3(0.0, vcenter, 0.0),
-                                                                 Vector3(0.0, vsouth, 0.01),
-                                                                 Vector3(0.01, veast, 0.0)
-                                                                 );
+                Vector3 normal = Geometry::getNormalFromTriangle(Vector3(0.0, vcenter, 0.0), Vector3(0.0, vsouth, 0.01),
+                                                                 Vector3(0.01, veast, 0.0));
 
                 _normalTexture->setPixel(x, z, Color(normal.x, normal.y, normal.z));
             }

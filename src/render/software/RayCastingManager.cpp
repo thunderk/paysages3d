@@ -1,5 +1,4 @@
 #include "RayCastingManager.h"
 
-RayCastingManager::RayCastingManager()
-{
+RayCastingManager::RayCastingManager() {
 }

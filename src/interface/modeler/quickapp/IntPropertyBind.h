@@ -14,23 +14,21 @@ namespace modeler {
  *
  * The IntNode must exist through this object lifetime.
  */
-class IntPropertyBind : public QObject, public DefinitionWatcher
-{
+class IntPropertyBind : public QObject, public DefinitionWatcher {
     Q_OBJECT
-public:
+  public:
     IntPropertyBind(MainModelerWindow *window, const QString &object_name, const QString &property_name, IntNode *node);
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
 
-private slots:
+  private slots:
     void propertyChanged(int value);
 
-private:
+  private:
     IntNode *node;
     QString property;
     QObject *item;
 };
-
 }
 }
 #endif // INTPROPERTYBIND_H

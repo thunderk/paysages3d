@@ -3,19 +3,15 @@
 #include "NoiseGenerator.h"
 #include "Logs.h"
 
-NoiseNode::NoiseNode(DefinitionNode *parent):
-    DefinitionNode(parent, "noise")
-{
+NoiseNode::NoiseNode(DefinitionNode *parent) : DefinitionNode(parent, "noise") {
     noise = new NoiseGenerator();
 }
 
-NoiseNode::~NoiseNode()
-{
+NoiseNode::~NoiseNode() {
     delete noise;
 }
 
-void NoiseNode::setLevels(int levels, double min_value, double max_value)
-{
+void NoiseNode::setLevels(int levels, double min_value, double max_value) {
     noise->clearLevels();
     noise->addLevelsSimple(levels, 1.0, -1.0, 1.0, 0.5);
     noise->normalizeAmplitude(min_value, max_value, false);
@@ -23,29 +19,22 @@ void NoiseNode::setLevels(int levels, double min_value, double max_value)
     noise->validate();
 }
 
-void NoiseNode::save(PackStream *stream) const
-{
+void NoiseNode::save(PackStream *stream) const {
     noise->save(stream);
 }
 
-void NoiseNode::load(PackStream *stream)
-{
+void NoiseNode::load(PackStream *stream) {
     noise->load(stream);
 }
 
-void NoiseNode::copy(DefinitionNode *destination) const
-{
-    if (destination->getTypeName() == getTypeName())
-    {
+void NoiseNode::copy(DefinitionNode *destination) const {
+    if (destination->getTypeName() == getTypeName()) {
         noise->copy(((NoiseNode *)destination)->noise);
-    }
-    else
-    {
+    } else {
         Logs::error() << "Can't copy from " << getTypeName() << " to " << destination->getTypeName() << std::endl;
     }
 }
 
-void NoiseNode::validate()
-{
+void NoiseNode::validate() {
     noise->validate();
 }

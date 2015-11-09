@@ -22,13 +22,11 @@
 
 void startRender(SoftwareCanvasRenderer *renderer, const char *outputpath);
 
-static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string &name, int iteration=-1)
-{
+static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string &name, int iteration = -1) {
     std::ostringstream stream;
 
     stream << "pic_test_" << name;
-    if (iteration >= 0)
-    {
+    if (iteration >= 0) {
         stream << "_";
         stream.width(4);
         stream.fill('0');
@@ -39,8 +37,7 @@ static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string 
     startRender(renderer, stream.str().data());
 }
 
-static void testGroundShadowQuality()
-{
+static void testGroundShadowQuality() {
     Scenery scenery;
     srand(5);
     scenery.getTerrain()->applyPreset(TerrainDefinition::TERRAIN_PRESET_STANDARD);
@@ -70,31 +67,27 @@ static void testGroundShadowQuality()
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(400, 300);
     renderer.setQuality(0.2);
-    for (int i = 0; i < 6; i++)
-    {
+    for (int i = 0; i < 6; i++) {
         // TODO keep same rasterization across renders
         renderer.getTerrainRenderer()->setQuality((double)i / 5.0);
         startTestRender(&renderer, "ground_shadow_quality", i);
     }
 }
 
-static void testRasterizationQuality()
-{
+static void testRasterizationQuality() {
     Scenery scenery;
     scenery.autoPreset(12);
 
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(800, 600);
     renderer.enablePostprocess(false);
-    for (int i = 0; i < 6; i++)
-    {
+    for (int i = 0; i < 6; i++) {
         renderer.setQuality((double)i / 5.0);
         startTestRender(&renderer, "rasterization_quality", i);
     }
 }
 
-static void testCloudQuality()
-{
+static void testCloudQuality() {
     Scenery scenery;
     scenery.autoPreset(3);
     scenery.getCamera()->setLocation(Vector3(5.0, 5.0, 5.0));
@@ -106,38 +99,31 @@ static void testCloudQuality()
     renderer.setSize(600, 800);
     SkyRasterizer *rasterizer = new SkyRasterizer(&renderer, renderer.getProgressHelper(), 0);
     renderer.setSoloRasterizer(rasterizer);
-    for (int i = 0; i < 6; i++)
-    {
+    for (int i = 0; i < 6; i++) {
         renderer.setQuality((double)i / 5.0);
         rasterizer->setQuality(0.2);
         startTestRender(&renderer, "cloud_quality", i);
     }
 }
 
-static void testGodRays()
-{
-    class TestLightFilter: public LightFilter
-    {
-        virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override
-        {
-            if (Vector3(0.0, 100.0, 0.0).sub(at).normalize().y > 0.97)
-            {
+static void testGodRays() {
+    class TestLightFilter : public LightFilter {
+        virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override {
+            if (Vector3(0.0, 100.0, 0.0).sub(at).normalize().y > 0.97) {
                 light.color = COLOR_BLACK;
                 return false;
-            }
-            else
-            {
+            } else {
                 return true;
             }
         }
     };
-    class TestRenderer: public SoftwareCanvasRenderer
-    {
-    public:
-        TestRenderer(Scenery *scenery): SoftwareCanvasRenderer(scenery) {}
-    private:
-        virtual void prepare() override
-        {
+    class TestRenderer : public SoftwareCanvasRenderer {
+      public:
+        TestRenderer(Scenery *scenery) : SoftwareCanvasRenderer(scenery) {
+        }
+
+      private:
+        virtual void prepare() override {
             SoftwareRenderer::prepare();
 
             getLightingManager()->clearSources();
@@ -165,8 +151,7 @@ static void testGodRays()
     renderer.getLightingManager()->registerFilter(&filter);
 
     // quality
-    for (int i = 0; i < 6; i++)
-    {
+    for (int i = 0; i < 6; i++) {
         renderer.setQuality((double)i / 5.0);
         rasterizer->setQuality(0.2);
         startTestRender(&renderer, "god_rays_quality", i);
@@ -174,31 +159,27 @@ static void testGodRays()
     renderer.setQuality(0.5);
 
     // penetration
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         scenery.getAtmosphere()->childGodRays()->propPenetration()->setValue(0.01 + 0.02 * (double)i);
         startTestRender(&renderer, "god_rays_penetration", i);
     }
 
     // resistance
     scenery.getAtmosphere()->childGodRays()->propPenetration()->setValue(0.01);
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         scenery.getAtmosphere()->childGodRays()->propResistance()->setValue(0.1 + 0.1 * (double)i);
         startTestRender(&renderer, "god_rays_resistance", i);
     }
 
     // boost
     scenery.getAtmosphere()->childGodRays()->propResistance()->setValue(0.3);
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         scenery.getAtmosphere()->childGodRays()->propBoost()->setValue(2.0 + 4.0 * (double)i);
         startTestRender(&renderer, "god_rays_boost", i);
     }
 }
 
-static void testNearFrustum()
-{
+static void testNearFrustum() {
     Scenery scenery;
     scenery.autoPreset(3);
     scenery.getCamera()->setLocation(Vector3(0.0, 0.0, 0.0));
@@ -213,8 +194,7 @@ static void testNearFrustum()
     startTestRender(&renderer, "near_frustum_bad");
 }
 
-static void testCloudsNearGround()
-{
+static void testCloudsNearGround() {
     Scenery scenery;
     scenery.autoPreset(8);
     scenery.getAtmosphere()->setDayTime(6, 20);
@@ -230,8 +210,7 @@ static void testCloudsNearGround()
     startTestRender(&renderer, "clouds_near_ground", 2);
 }
 
-static void testSunNearHorizon()
-{
+static void testSunNearHorizon() {
     Scenery scenery;
     scenery.autoPreset(28);
     scenery.getCamera()->setLocation(VECTOR_ZERO);
@@ -244,15 +223,13 @@ static void testSunNearHorizon()
     renderer.setSize(400, 300);
     renderer.setQuality(0.3);
 
-    for (int i = 0; i <= 20; i++)
-    {
+    for (int i = 0; i <= 20; i++) {
         scenery.getAtmosphere()->propDayTime()->setValue(0.24 + 0.001 * (double)i);
         startTestRender(&renderer, "sun_near_horizon", i);
     }
 }
 
-void runTestSuite()
-{
+void runTestSuite() {
     testGroundShadowQuality();
     testRasterizationQuality();
     testCloudQuality();

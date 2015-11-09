@@ -7,8 +7,7 @@
 #include "Vector3.h"
 #include "RenderProgress.h"
 
-struct paysages::software::ScanPoint
-{
+struct paysages::software::ScanPoint {
     int x;
     int y;
     struct {
@@ -25,17 +24,15 @@ struct paysages::software::ScanPoint
     bool front_facing;
 };
 
-struct paysages::software::RenderScanlines
-{
-    ScanPoint* up;
-    ScanPoint* down;
+struct paysages::software::RenderScanlines {
+    ScanPoint *up;
+    ScanPoint *down;
     int left;
     int right;
 };
 
-Rasterizer::Rasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int client_id, const Color &color):
-    renderer(renderer), progress(progress), client_id(client_id)
-{
+Rasterizer::Rasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id, const Color &color)
+    : renderer(renderer), progress(progress), client_id(client_id) {
     this->color = new Color(color);
 
     interrupted = false;
@@ -46,42 +43,36 @@ Rasterizer::Rasterizer(SoftwareRenderer* renderer, RenderProgress *progress, int
     setQuality(0.5);
 }
 
-Rasterizer::~Rasterizer()
-{
+Rasterizer::~Rasterizer() {
     delete color;
 }
 
-void Rasterizer::interrupt()
-{
+void Rasterizer::interrupt() {
     interrupted = true;
 }
 
-void Rasterizer::setQuality(double)
-{
+void Rasterizer::setQuality(double) {
 }
 
-void Rasterizer::setColor(const Color &color)
-{
+void Rasterizer::setColor(const Color &color) {
     *this->color = color;
 }
 
-void Rasterizer::setBackFaceCulling(bool cull)
-{
+void Rasterizer::setBackFaceCulling(bool cull) {
     this->backface_culling = cull;
 }
 
-void Rasterizer::setAutoCutLimit(double limit)
-{
+void Rasterizer::setAutoCutLimit(double limit) {
     this->auto_cut_limit = limit;
 }
 
-void Rasterizer::resetTriangleCount()
-{
+void Rasterizer::resetTriangleCount() {
     triangle_count = 0;
 }
 
-bool Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3)
-{
+bool Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2,
+                                       const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2,
+                                       const Vector3 &location3) {
     ScanPoint point1, point2, point3;
     double limit_width = (double)(canvas->getWidth() - 1);
     double limit_height = (double)(canvas->getHeight() - 1);
@@ -92,23 +83,25 @@ bool Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pix
     Vector3 dpixel3 = pixel3.sub(canvas_offset);
 
     double limit_near = renderer->render_camera->getPerspective().znear;
-    if ((dpixel1.z < limit_near && dpixel2.z < limit_near && dpixel3.z < limit_near) || (dpixel1.x < 0.0 && dpixel2.x < 0.0 && dpixel3.x < 0.0) || (dpixel1.y < 0.0 && dpixel2.y < 0.0 && dpixel3.y < 0.0) || (dpixel1.x > limit_width && dpixel2.x > limit_width && dpixel3.x > limit_width) || (dpixel1.y > limit_height && dpixel2.y > limit_height && dpixel3.y > limit_height))
-    {
+    if ((dpixel1.z < limit_near && dpixel2.z < limit_near && dpixel3.z < limit_near) ||
+        (dpixel1.x < 0.0 && dpixel2.x < 0.0 && dpixel3.x < 0.0) ||
+        (dpixel1.y < 0.0 && dpixel2.y < 0.0 && dpixel3.y < 0.0) ||
+        (dpixel1.x > limit_width && dpixel2.x > limit_width && dpixel3.x > limit_width) ||
+        (dpixel1.y > limit_height && dpixel2.y > limit_height && dpixel3.y > limit_height)) {
         // Fully outside screen
         return false;
-    }
-    else if (dpixel1.z < limit_near || dpixel2.z < limit_near || dpixel3.z < limit_near)
-    {
+    } else if (dpixel1.z < limit_near || dpixel2.z < limit_near || dpixel3.z < limit_near) {
         // Intersects the near frustum plane, needs cutting
         // ... except if the triangle is already small
-        return location1.sub(location2).getNorm() > auto_cut_limit && location2.sub(location3).getNorm() > auto_cut_limit && location3.sub(location1).getNorm() > auto_cut_limit;
+        return location1.sub(location2).getNorm() > auto_cut_limit &&
+               location2.sub(location3).getNorm() > auto_cut_limit &&
+               location3.sub(location1).getNorm() > auto_cut_limit;
     }
 
     // Check the poylgon's facing (front-face or back-face)
     Vector3 normal = dpixel2.sub(dpixel1).crossProduct(dpixel3.sub(dpixel1));
     bool front_facing = (normal.z >= 0.0);
-    if (backface_culling and not front_facing)
-    {
+    if (backface_culling and not front_facing) {
         return false;
     }
 
@@ -165,16 +158,14 @@ bool Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pix
     return false;
 }
 
-void Rasterizer::pushTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3)
-{
+void Rasterizer::pushTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3) {
     Vector3 p1, p2, p3;
 
     p1 = getRenderer()->projectPoint(v1);
     p2 = getRenderer()->projectPoint(v2);
     p3 = getRenderer()->projectPoint(v3);
 
-    if (pushProjectedTriangle(canvas, p1, p2, p3, v1, v2, v3))
-    {
+    if (pushProjectedTriangle(canvas, p1, p2, p3, v1, v2, v3)) {
         // Cutting needed
         Vector3 vm1 = v1.midPointTo(v2);
         Vector3 vm2 = v2.midPointTo(v3);
@@ -186,8 +177,8 @@ void Rasterizer::pushTriangle(CanvasPortion *canvas, const Vector3 &v1, const Ve
     }
 }
 
-void Rasterizer::pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3)
-{
+void Rasterizer::pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3,
+                                       const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3) {
     Vector3 p1, p2, p3;
 
     // TODO v1, v2 and v3 are lost, but may be useful (avoid need to unproject)
@@ -195,8 +186,7 @@ void Rasterizer::pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1,
     p2 = getRenderer()->projectPoint(v2);
     p3 = getRenderer()->projectPoint(v3);
 
-    if (pushProjectedTriangle(canvas, p1, p2, p3, ov1, ov2, ov3))
-    {
+    if (pushProjectedTriangle(canvas, p1, p2, p3, ov1, ov2, ov3)) {
         // Cutting needed
         Vector3 vm1 = v1.midPointTo(v2);
         Vector3 vm2 = v2.midPointTo(v3);
@@ -211,20 +201,20 @@ void Rasterizer::pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1,
     }
 }
 
-void Rasterizer::pushQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4)
-{
+void Rasterizer::pushQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3,
+                          const Vector3 &v4) {
     pushTriangle(canvas, v2, v3, v1);
     pushTriangle(canvas, v4, v1, v3);
 }
 
-void Rasterizer::pushDisplacedQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3, const Vector3 &ov4)
-{
+void Rasterizer::pushDisplacedQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3,
+                                   const Vector3 &v4, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3,
+                                   const Vector3 &ov4) {
     pushDisplacedTriangle(canvas, v2, v3, v1, ov2, ov3, ov1);
     pushDisplacedTriangle(canvas, v4, v1, v3, ov4, ov1, ov3);
 }
 
-void Rasterizer::scanGetDiff(ScanPoint* v1, ScanPoint* v2, ScanPoint* result)
-{
+void Rasterizer::scanGetDiff(ScanPoint *v1, ScanPoint *v2, ScanPoint *result) {
     result->pixel.x = v2->pixel.x - v1->pixel.x;
     result->pixel.y = v2->pixel.y - v1->pixel.y;
     result->pixel.z = v2->pixel.z - v1->pixel.z;
@@ -234,8 +224,8 @@ void Rasterizer::scanGetDiff(ScanPoint* v1, ScanPoint* v2, ScanPoint* result)
     result->client = v1->client;
 }
 
-void Rasterizer::scanInterpolate(CameraDefinition* camera, ScanPoint* v1, ScanPoint* diff, double value, ScanPoint* result)
-{
+void Rasterizer::scanInterpolate(CameraDefinition *camera, ScanPoint *v1, ScanPoint *diff, double value,
+                                 ScanPoint *result) {
     Vector3 vec1(v1->pixel.x, v1->pixel.y, v1->pixel.z);
     Vector3 vecdiff(diff->pixel.x, diff->pixel.y, diff->pixel.z);
     double v1depth = 1.0 / camera->getRealDepth(vec1);
@@ -245,112 +235,88 @@ void Rasterizer::scanInterpolate(CameraDefinition* camera, ScanPoint* v1, ScanPo
     result->pixel.x = v1->pixel.x + diff->pixel.x * value;
     result->pixel.y = v1->pixel.y + diff->pixel.y * value;
     result->pixel.z = v1->pixel.z + diff->pixel.z * value;
-    result->location.x = ((1.0 - value) * (v1->location.x * v1depth) + value * (v1->location.x + diff->location.x) * v2depth) * factor;
-    result->location.y = ((1.0 - value) * (v1->location.y * v1depth) + value * (v1->location.y + diff->location.y) * v2depth) * factor;
-    result->location.z = ((1.0 - value) * (v1->location.z * v1depth) + value * (v1->location.z + diff->location.z) * v2depth) * factor;
+    result->location.x =
+        ((1.0 - value) * (v1->location.x * v1depth) + value * (v1->location.x + diff->location.x) * v2depth) * factor;
+    result->location.y =
+        ((1.0 - value) * (v1->location.y * v1depth) + value * (v1->location.y + diff->location.y) * v2depth) * factor;
+    result->location.z =
+        ((1.0 - value) * (v1->location.z * v1depth) + value * (v1->location.z + diff->location.z) * v2depth) * factor;
     result->client = v1->client;
     result->front_facing = v1->front_facing;
 }
 
-void Rasterizer::pushScanPoint(CanvasPortion* canvas, RenderScanlines* scanlines, ScanPoint* point)
-{
+void Rasterizer::pushScanPoint(CanvasPortion *canvas, RenderScanlines *scanlines, ScanPoint *point) {
     point->x = (int)floor(point->pixel.x);
     point->y = (int)floor(point->pixel.y);
 
-    if (point->x < 0 || point->x >= canvas->getWidth())
-    {
+    if (point->x < 0 || point->x >= canvas->getWidth()) {
         // Point outside scanline range
         return;
-    }
-    else if (scanlines->right < 0)
-    {
+    } else if (scanlines->right < 0) {
         // First point pushed
         scanlines->left = point->x;
         scanlines->right = point->x;
         scanlines->up[point->x] = *point;
         scanlines->down[point->x] = *point;
-    }
-    else if (point->x > scanlines->right)
-    {
+    } else if (point->x > scanlines->right) {
         // Grow scanlines to right
-        for (int x = scanlines->right + 1; x < point->x; x++)
-        {
+        for (int x = scanlines->right + 1; x < point->x; x++) {
             scanlines->up[x].y = -1;
             scanlines->down[x].y = canvas->getHeight();
         }
         scanlines->right = point->x;
         scanlines->up[point->x] = *point;
         scanlines->down[point->x] = *point;
-    }
-    else if (point->x < scanlines->left)
-    {
+    } else if (point->x < scanlines->left) {
         // Grow scanlines to left
-        for (int x = point->x + 1; x < scanlines->left; x++)
-        {
+        for (int x = point->x + 1; x < scanlines->left; x++) {
             scanlines->up[x].y = -1;
             scanlines->down[x].y = canvas->getHeight();
         }
         scanlines->left = point->x;
         scanlines->up[point->x] = *point;
         scanlines->down[point->x] = *point;
-    }
-    else
-    {
+    } else {
         // Expand existing scanline
-        if (point->y > scanlines->up[point->x].y)
-        {
+        if (point->y > scanlines->up[point->x].y) {
             scanlines->up[point->x] = *point;
         }
-        if (point->y < scanlines->down[point->x].y)
-        {
+        if (point->y < scanlines->down[point->x].y) {
             scanlines->down[point->x] = *point;
         }
     }
 }
 
-void Rasterizer::pushScanLineEdge(CanvasPortion *canvas, RenderScanlines *scanlines, ScanPoint *point1, ScanPoint *point2)
-{
+void Rasterizer::pushScanLineEdge(CanvasPortion *canvas, RenderScanlines *scanlines, ScanPoint *point1,
+                                  ScanPoint *point2) {
     double dx, fx;
     ScanPoint diff, point;
     int startx = lround(point1->pixel.x);
     int endx = lround(point2->pixel.x);
     int curx;
 
-    if (endx < startx)
-    {
+    if (endx < startx) {
         pushScanLineEdge(canvas, scanlines, point2, point1);
-    }
-    else if (endx < 0 || startx >= canvas->getWidth())
-    {
+    } else if (endx < 0 || startx >= canvas->getWidth()) {
         return;
-    }
-    else if (startx == endx)
-    {
+    } else if (startx == endx) {
         pushScanPoint(canvas, scanlines, point1);
         pushScanPoint(canvas, scanlines, point2);
-    }
-    else
-    {
-        if (startx < 0)
-        {
+    } else {
+        if (startx < 0) {
             startx = 0;
         }
-        if (endx >= canvas->getWidth())
-        {
+        if (endx >= canvas->getWidth()) {
             endx = canvas->getWidth() - 1;
         }
 
         dx = point2->pixel.x - point1->pixel.x;
         scanGetDiff(point1, point2, &diff);
-        for (curx = startx; curx <= endx; curx++)
-        {
+        for (curx = startx; curx <= endx; curx++) {
             fx = (double)curx + 0.5;
-            if (fx < point1->pixel.x)
-            {
+            if (fx < point1->pixel.x) {
                 fx = point1->pixel.x;
-            }
-            else if (fx > point2->pixel.x)
-            {
+            } else if (fx > point2->pixel.x) {
                 fx = point2->pixel.x;
             }
             fx = fx - point1->pixel.x;
@@ -363,34 +329,28 @@ void Rasterizer::pushScanLineEdge(CanvasPortion *canvas, RenderScanlines *scanli
     }
 }
 
-void Rasterizer::renderScanLines(CanvasPortion *canvas, RenderScanlines* scanlines)
-{
+void Rasterizer::renderScanLines(CanvasPortion *canvas, RenderScanlines *scanlines) {
     int x, starty, endy, cury;
     ScanPoint diff;
     double dy, fy;
     ScanPoint up, down, current;
 
-    if (scanlines->right > 0)
-    {
-        for (x = scanlines->left; x <= scanlines->right; x++)
-        {
+    if (scanlines->right > 0) {
+        for (x = scanlines->left; x <= scanlines->right; x++) {
             up = scanlines->up[x];
             down = scanlines->down[x];
 
             starty = down.y;
             endy = up.y;
 
-            if (endy < 0 || starty >= canvas->getHeight())
-            {
+            if (endy < 0 || starty >= canvas->getHeight()) {
                 continue;
             }
 
-            if (starty < 0)
-            {
+            if (starty < 0) {
                 starty = 0;
             }
-            if (endy >= canvas->getHeight())
-            {
+            if (endy >= canvas->getHeight()) {
                 endy = canvas->getHeight() - 1;
             }
 
@@ -398,22 +358,15 @@ void Rasterizer::renderScanLines(CanvasPortion *canvas, RenderScanlines* scanlin
             scanGetDiff(&down, &up, &diff);
 
             current.x = x;
-            for (cury = starty; cury <= endy; cury++)
-            {
-                if (dy == 0)
-                {
+            for (cury = starty; cury <= endy; cury++) {
+                if (dy == 0) {
                     // Down and up are the same
                     current = down;
-                }
-                else
-                {
+                } else {
                     fy = (double)cury + 0.5;
-                    if (fy < down.pixel.y)
-                    {
+                    if (fy < down.pixel.y) {
                         fy = down.pixel.y;
-                    }
-                    else if (fy > up.pixel.y)
-                    {
+                    } else if (fy > up.pixel.y) {
                         fy = up.pixel.y;
                     }
                     fy = fy - down.pixel.y;
@@ -422,14 +375,14 @@ void Rasterizer::renderScanLines(CanvasPortion *canvas, RenderScanlines* scanlin
                     scanInterpolate(renderer->render_camera, &down, &diff, fy / dy, &current);
                 }
 
-                Vector3 pixel(current.pixel.x + canvas->getXOffset(), current.pixel.y + canvas->getYOffset(), current.pixel.z);
+                Vector3 pixel(current.pixel.x + canvas->getXOffset(), current.pixel.y + canvas->getYOffset(),
+                              current.pixel.z);
                 Vector3 location(current.location.x, current.location.y, current.location.z);
                 CanvasFragment fragment(current.front_facing, pixel, location, current.client, color->a == 1.0);
 
                 Color frag_color = *color;
                 frag_color.a = 1.0;
-                if (cury == starty || cury == endy)
-                {
+                if (cury == starty || cury == endy) {
                     frag_color.mask(Color(0.0, 0.0, 0.0, 0.3));
                 }
                 frag_color.a = color->a;

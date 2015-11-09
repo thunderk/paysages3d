@@ -6,12 +6,10 @@
 namespace paysages {
 namespace basics {
 
-class NoiseFunctionPerlin
-{
-public:
+class NoiseFunctionPerlin {
+  public:
     NoiseFunctionPerlin();
 };
-
 }
 }
 

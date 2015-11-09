@@ -3,12 +3,10 @@
 #include <QtCore/QDebug>
 #include "Logs.h"
 
-void noMessageOutput(QtMsgType, const QMessageLogContext&, const QString&)
-{
+void noMessageOutput(QtMsgType, const QMessageLogContext &, const QString &) {
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     int result;
 
     qInstallMessageHandler(noMessageOutput);
@@ -19,4 +17,3 @@ int main(int argc, char **argv)
 
     return result;
 }
-

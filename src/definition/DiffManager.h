@@ -14,9 +14,8 @@ namespace definition {
  *
  * Watchers can register themselves to received these diffs.
  */
-class DEFINITIONSHARED_EXPORT DiffManager
-{
-public:
+class DEFINITIONSHARED_EXPORT DiffManager {
+  public:
     DiffManager(DefinitionNode *tree);
     ~DiffManager();
 
@@ -47,13 +46,12 @@ public:
      */
     void redo();
 
-private:
+  private:
     DefinitionNode *tree;
     int undone;
     std::vector<const DefinitionDiff *> diffs;
     std::map<const DefinitionNode *, std::vector<DefinitionWatcher *>> watchers;
 };
-
 }
 }
 

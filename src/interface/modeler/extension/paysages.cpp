@@ -1,8 +1,6 @@
 #include "paysages.h"
 
-Paysages::Paysages(QQuickItem *parent):
-    QQuickItem(parent)
-{
+Paysages::Paysages(QQuickItem *parent) : QQuickItem(parent) {
     // By default, QQuickItem does not draw anything. If you subclass
     // QQuickItem to create a visual item, you will need to uncomment the
     // following line and re-implement updatePaintNode()
@@ -10,7 +8,5 @@ Paysages::Paysages(QQuickItem *parent):
     // setFlag(ItemHasContents, true);
 }
 
-Paysages::~Paysages()
-{
+Paysages::~Paysages() {
 }
-

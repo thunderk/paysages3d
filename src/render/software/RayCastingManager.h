@@ -6,14 +6,13 @@
 namespace paysages {
 namespace software {
 
-typedef RayCastingResult (*FuncGeneralCastRay)(SoftwareRenderer* renderer, const Vector3 &start, const Vector3 &direction);
+typedef RayCastingResult (*FuncGeneralCastRay)(SoftwareRenderer *renderer, const Vector3 &start,
+                                               const Vector3 &direction);
 
-class SOFTWARESHARED_EXPORT RayCastingManager
-{
-public:
+class SOFTWARESHARED_EXPORT RayCastingManager {
+  public:
     RayCastingManager();
 };
-
 }
 }
 

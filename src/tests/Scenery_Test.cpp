@@ -6,8 +6,7 @@
 #include "AtmosphereDefinition.h"
 #include "FloatNode.h"
 
-TEST(Scenery, saveGlobal)
-{
+TEST(Scenery, saveGlobal) {
     Scenery scenery1;
     scenery1.autoPreset();
     scenery1.getTerrain()->propWaterHeight()->setValue(0.2);

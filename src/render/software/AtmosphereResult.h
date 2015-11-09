@@ -8,9 +8,8 @@
 namespace paysages {
 namespace software {
 
-class SOFTWARESHARED_EXPORT AtmosphereResult
-{
-public:
+class SOFTWARESHARED_EXPORT AtmosphereResult {
+  public:
     AtmosphereResult();
     void updateFinal();
 
@@ -21,7 +20,6 @@ public:
     Color mask;
     Color final;
 };
-
 }
 }
 

@@ -40,15 +40,14 @@
 /**
  * A 4x4 matrix.
  */
-template <typename type> class mat4
-{
-protected:
+template <typename type> class mat4 {
+  protected:
     union {
         type m[4][4];
         type _m[16];
     };
 
-public:
+  public:
     /**
      * Creates a new, uninitialized matrix.
      */
@@ -58,52 +57,50 @@ public:
      * Creates a new matrix with the given components. The first index is the
      * row index, the second one is the column index.
      */
-    mat4(type m00, type m01, type m02, type m03,
-                type m10, type m11, type m12, type m13,
-                type m20, type m21, type m22, type m23,
-                type m30, type m31, type m32, type m33);
+    mat4(type m00, type m01, type m02, type m03, type m10, type m11, type m12, type m13, type m20, type m21, type m22,
+         type m23, type m30, type m31, type m32, type m33);
 
     /**
      * Returns the coefficients of this matrix.
      */
-    const type* coefficients() const;
+    const type *coefficients() const;
 
     /**
      * Returns the row of this matrix whose index is given.
      */
-    const type* operator[](int iRow) const;
+    const type *operator[](int iRow) const;
 
     /**
      * Returns true is this matrix is equal to the given matrix.
      */
-    bool operator==(const mat4& m2) const;
+    bool operator==(const mat4 &m2) const;
 
     /**
      * Returns true is this matrix is different from the given matrix.
      */
-    bool operator!=(const mat4& m2) const;
+    bool operator!=(const mat4 &m2) const;
 
     /**
      * Returns the sum of this matrix and of the given matrix.
      */
-    mat4 operator+(const mat4& m2) const;
+    mat4 operator+(const mat4 &m2) const;
 
     /**
      * Returns the difference of this matrix and of the given matrix.
      */
-    mat4 operator-(const mat4& m2) const;
+    mat4 operator-(const mat4 &m2) const;
 
     /**
      * Returns the product of this matrix and of the given matrix.
      */
-    mat4 operator*(const mat4& m2) const;
+    mat4 operator*(const mat4 &m2) const;
 
     /**
      * Returns the product of this matrix and of the given vector. The given
      * vector w coordinate is set to 1, and the 4 vector result is converted
      * to a 3 vector by dividing its xyz components by its w component.
      */
-    vec3<type> operator*(const vec3<type>& v) const;
+    vec3<type> operator*(const vec3<type> &v) const;
 
     /**
      * Returns the product of this matrix and of the given scalar.
@@ -134,7 +131,7 @@ public:
      * Returns the translation matrix corresponding to the given translation
      * vector.
      */
-    static mat4 translate(const vec3<type>& v);
+    static mat4 translate(const vec3<type> &v);
 
     /**
      * Returns the perspective projection matrix corresponding to the given
@@ -158,17 +155,12 @@ typedef mat4<float> mat4f;
  */
 typedef mat4<double> mat4d;
 
-template <typename type>
-inline mat4<type>::mat4()
-{
+template <typename type> inline mat4<type>::mat4() {
 }
 
 template <typename type>
-inline mat4<type>::mat4(type m00, type m01, type m02, type m03,
-                        type m10, type m11, type m12, type m13,
-                        type m20, type m21, type m22, type m23,
-                        type m30, type m31, type m32, type m33)
-{
+inline mat4<type>::mat4(type m00, type m01, type m02, type m03, type m10, type m11, type m12, type m13, type m20,
+                        type m21, type m22, type m23, type m30, type m31, type m32, type m33) {
     m[0][0] = m00;
     m[0][1] = m01;
     m[0][2] = m02;
@@ -187,24 +179,17 @@ inline mat4<type>::mat4(type m00, type m01, type m02, type m03,
     m[3][3] = m33;
 }
 
-template <typename type>
-inline const type* mat4<type>::coefficients() const
-{
+template <typename type> inline const type *mat4<type>::coefficients() const {
     return _m;
 }
 
-template <typename type>
-inline const type* mat4<type>::operator[](int iRow) const
-{
-    //assert(iRow < 4);
+template <typename type> inline const type *mat4<type>::operator[](int iRow) const {
+    // assert(iRow < 4);
     return m[iRow];
 }
 
-template <typename type>
-inline bool mat4<type>::operator==(const mat4<type>& m2) const
-{
-    if (
-        m[0][0] != m2.m[0][0] || m[0][1] != m2.m[0][1] || m[0][2] != m2.m[0][2] || m[0][3] != m2.m[0][3] ||
+template <typename type> inline bool mat4<type>::operator==(const mat4<type> &m2) const {
+    if (m[0][0] != m2.m[0][0] || m[0][1] != m2.m[0][1] || m[0][2] != m2.m[0][2] || m[0][3] != m2.m[0][3] ||
         m[1][0] != m2.m[1][0] || m[1][1] != m2.m[1][1] || m[1][2] != m2.m[1][2] || m[1][3] != m2.m[1][3] ||
         m[2][0] != m2.m[2][0] || m[2][1] != m2.m[2][1] || m[2][2] != m2.m[2][2] || m[2][3] != m2.m[2][3] ||
         m[3][0] != m2.m[3][0] || m[3][1] != m2.m[3][1] || m[3][2] != m2.m[3][2] || m[3][3] != m2.m[3][3])
@@ -213,11 +198,8 @@ inline bool mat4<type>::operator==(const mat4<type>& m2) const
     return true;
 }
 
-template <typename type>
-inline bool mat4<type>::operator!=(const mat4<type>& m2) const
-{
-    if (
-        m[0][0] != m2.m[0][0] || m[0][1] != m2.m[0][1] || m[0][2] != m2.m[0][2] || m[0][3] != m2.m[0][3] ||
+template <typename type> inline bool mat4<type>::operator!=(const mat4<type> &m2) const {
+    if (m[0][0] != m2.m[0][0] || m[0][1] != m2.m[0][1] || m[0][2] != m2.m[0][2] || m[0][3] != m2.m[0][3] ||
         m[1][0] != m2.m[1][0] || m[1][1] != m2.m[1][1] || m[1][2] != m2.m[1][2] || m[1][3] != m2.m[1][3] ||
         m[2][0] != m2.m[2][0] || m[2][1] != m2.m[2][1] || m[2][2] != m2.m[2][2] || m[2][3] != m2.m[2][3] ||
         m[3][0] != m2.m[3][0] || m[3][1] != m2.m[3][1] || m[3][2] != m2.m[3][2] || m[3][3] != m2.m[3][3])
@@ -226,9 +208,7 @@ inline bool mat4<type>::operator!=(const mat4<type>& m2) const
     return false;
 }
 
-template <typename type>
-inline mat4<type> mat4<type>::operator+(const mat4<type>& m2) const
-{
+template <typename type> inline mat4<type> mat4<type>::operator+(const mat4<type> &m2) const {
     mat4<type> r;
 
     r.m[0][0] = m[0][0] + m2.m[0][0];
@@ -254,9 +234,7 @@ inline mat4<type> mat4<type>::operator+(const mat4<type>& m2) const
     return r;
 }
 
-template <typename type>
-inline mat4<type> mat4<type>::operator-(const mat4<type>& m2) const
-{
+template <typename type> inline mat4<type> mat4<type>::operator-(const mat4<type> &m2) const {
     mat4 r;
     r.m[0][0] = m[0][0] - m2.m[0][0];
     r.m[0][1] = m[0][1] - m2.m[0][1];
@@ -281,9 +259,7 @@ inline mat4<type> mat4<type>::operator-(const mat4<type>& m2) const
     return r;
 }
 
-template <typename type>
-inline mat4<type> mat4<type>::operator*(const mat4<type>& m2) const
-{
+template <typename type> inline mat4<type> mat4<type>::operator*(const mat4<type> &m2) const {
     mat4 r;
     r.m[0][0] = m[0][0] * m2.m[0][0] + m[0][1] * m2.m[1][0] + m[0][2] * m2.m[2][0] + m[0][3] * m2.m[3][0];
     r.m[0][1] = m[0][0] * m2.m[0][1] + m[0][1] * m2.m[1][1] + m[0][2] * m2.m[2][1] + m[0][3] * m2.m[3][1];
@@ -308,9 +284,7 @@ inline mat4<type> mat4<type>::operator*(const mat4<type>& m2) const
     return r;
 }
 
-template <typename type>
-inline vec3<type> mat4<type>::operator*(const vec3<type>& v) const
-{
+template <typename type> inline vec3<type> mat4<type>::operator*(const vec3<type> &v) const {
     vec3<type> r;
 
     float fInvW = 1.0 / (m[3][0] * v.x + m[3][1] * v.y + m[3][2] * v.z + m[3][3]);
@@ -322,9 +296,7 @@ inline vec3<type> mat4<type>::operator*(const vec3<type>& v) const
     return r;
 }
 
-template <typename type>
-inline mat4<type> mat4<type>::operator*(type f) const
-{
+template <typename type> inline mat4<type> mat4<type>::operator*(type f) const {
     mat4<type> r;
 
     r.m[0][0] = m[0][0] * f;
@@ -350,80 +322,50 @@ inline mat4<type> mat4<type>::operator*(type f) const
     return r;
 }
 
-template <typename type>
-inline mat4<type> mat4<type>::transpose(void) const
-{
-    return mat4(m[0][0], m[1][0], m[2][0], m[3][0],
-                m[0][1], m[1][1], m[2][1], m[3][1],
-                m[0][2], m[1][2], m[2][2], m[3][2],
-                m[0][3], m[1][3], m[2][3], m[3][3]);
+template <typename type> inline mat4<type> mat4<type>::transpose(void) const {
+    return mat4(m[0][0], m[1][0], m[2][0], m[3][0], m[0][1], m[1][1], m[2][1], m[3][1], m[0][2], m[1][2], m[2][2],
+                m[3][2], m[0][3], m[1][3], m[2][3], m[3][3]);
 }
 
 template <typename type>
-inline static float
-MINOR(const mat4<type>& m, int r0, int r1, int r2, int c0, int c1, int c2)
-{
-    return m[r0][c0] *(m[r1][c1] * m[r2][c2] - m[r2][c1] * m[r1][c2]) -
-           m[r0][c1] *(m[r1][c0] * m[r2][c2] - m[r2][c0] * m[r1][c2]) +
-           m[r0][c2] *(m[r1][c0] * m[r2][c1] - m[r2][c0] * m[r1][c1]);
+inline static float MINOR(const mat4<type> &m, int r0, int r1, int r2, int c0, int c1, int c2) {
+    return m[r0][c0] * (m[r1][c1] * m[r2][c2] - m[r2][c1] * m[r1][c2]) -
+           m[r0][c1] * (m[r1][c0] * m[r2][c2] - m[r2][c0] * m[r1][c2]) +
+           m[r0][c2] * (m[r1][c0] * m[r2][c1] - m[r2][c0] * m[r1][c1]);
 }
 
-template <typename type>
-mat4<type> mat4<type>::adjoint() const
-{
-    return mat4(MINOR(*this, 1, 2, 3, 1, 2, 3),
-                -MINOR(*this, 0, 2, 3, 1, 2, 3),
-                MINOR(*this, 0, 1, 3, 1, 2, 3),
+template <typename type> mat4<type> mat4<type>::adjoint() const {
+    return mat4(MINOR(*this, 1, 2, 3, 1, 2, 3), -MINOR(*this, 0, 2, 3, 1, 2, 3), MINOR(*this, 0, 1, 3, 1, 2, 3),
                 -MINOR(*this, 0, 1, 2, 1, 2, 3),
 
-                -MINOR(*this, 1, 2, 3, 0, 2, 3),
-                MINOR(*this, 0, 2, 3, 0, 2, 3),
-                -MINOR(*this, 0, 1, 3, 0, 2, 3),
+                -MINOR(*this, 1, 2, 3, 0, 2, 3), MINOR(*this, 0, 2, 3, 0, 2, 3), -MINOR(*this, 0, 1, 3, 0, 2, 3),
                 MINOR(*this, 0, 1, 2, 0, 2, 3),
 
-                MINOR(*this, 1, 2, 3, 0, 1, 3),
-                -MINOR(*this, 0, 2, 3, 0, 1, 3),
-                MINOR(*this, 0, 1, 3, 0, 1, 3),
+                MINOR(*this, 1, 2, 3, 0, 1, 3), -MINOR(*this, 0, 2, 3, 0, 1, 3), MINOR(*this, 0, 1, 3, 0, 1, 3),
                 -MINOR(*this, 0, 1, 2, 0, 1, 3),
 
-                -MINOR(*this, 1, 2, 3, 0, 1, 2),
-                MINOR(*this, 0, 2, 3, 0, 1, 2),
-                -MINOR(*this, 0, 1, 3, 0, 1, 2),
+                -MINOR(*this, 1, 2, 3, 0, 1, 2), MINOR(*this, 0, 2, 3, 0, 1, 2), -MINOR(*this, 0, 1, 3, 0, 1, 2),
                 MINOR(*this, 0, 1, 2, 0, 1, 2));
 }
 
-template <typename type>
-mat4<type> mat4<type>::inverse() const
-{
+template <typename type> mat4<type> mat4<type>::inverse() const {
     return adjoint() * (1.0f / determinant());
 }
 
-template <typename type>
-float mat4<type>::determinant() const
-{
-    return m[0][0] * MINOR(*this, 1, 2, 3, 1, 2, 3) -
-           m[0][1] * MINOR(*this, 1, 2, 3, 0, 2, 3) +
-           m[0][2] * MINOR(*this, 1, 2, 3, 0, 1, 3) -
-           m[0][3] * MINOR(*this, 1, 2, 3, 0, 1, 2);
+template <typename type> float mat4<type>::determinant() const {
+    return m[0][0] * MINOR(*this, 1, 2, 3, 1, 2, 3) - m[0][1] * MINOR(*this, 1, 2, 3, 0, 2, 3) +
+           m[0][2] * MINOR(*this, 1, 2, 3, 0, 1, 3) - m[0][3] * MINOR(*this, 1, 2, 3, 0, 1, 2);
+}
+
+template <typename type> inline mat4<type> mat4<type>::translate(const vec3<type> &v) {
+    return mat4<type>(1, 0, 0, v.x, 0, 1, 0, v.y, 0, 0, 1, v.z, 0, 0, 0, 1);
 }
 
 template <typename type>
-inline mat4<type> mat4<type>::translate(const vec3<type> &v)
-{
-    return mat4<type>(1, 0, 0, v.x,
-                      0, 1, 0, v.y,
-                      0, 0, 1, v.z,
-                      0, 0, 0, 1);
-}
-
-template <typename type>
-inline mat4<type> mat4<type>::perspectiveProjection(type fovy, type aspect, type zNear, type zFar)
-{
-    type f = (type) 1 / tan(fovy * M_PI / 180.0 / 2);
-    return mat4<type>(f / aspect, 0, 0,                         0,
-                      0,        f, 0,                         0,
-                      0,        0, (zFar + zNear) / (zNear - zFar), (2*zFar*zNear) / (zNear - zFar),
-                      0,        0, -1,                        0);
+inline mat4<type> mat4<type>::perspectiveProjection(type fovy, type aspect, type zNear, type zFar) {
+    type f = (type)1 / tan(fovy * M_PI / 180.0 / 2);
+    return mat4<type>(f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, (zFar + zNear) / (zNear - zFar),
+                      (2 * zFar * zNear) / (zNear - zFar), 0, 0, -1, 0);
 }
 
 #endif /*MAT4_H_*/

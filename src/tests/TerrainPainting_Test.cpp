@@ -10,23 +10,20 @@
 /* Noise sin period is defined at 20.0 */
 #define X_FACTOR (M_PI / 10.0)
 
-static double _noise1dMock(double x)
-{
+static double _noise1dMock(double x) {
     return sin(x * X_FACTOR) * 0.5 + 0.5;
 }
 
-static double _noise2dMock(double x, double)
-{
+static double _noise2dMock(double x, double) {
     return sin(x * X_FACTOR) * 0.5 + 0.5;
 }
 
-static double _noise3dMock(double x, double, double)
-{
+static double _noise3dMock(double x, double, double) {
     return sin(x * X_FACTOR) * 0.5 + 0.5;
 }
 
 class TerrainPainting_Test : public BaseTestCase {
-protected:
+  protected:
     virtual void SetUp() {
         terrain = new TerrainDefinition(NULL);
         terrain->height = 3.0;
@@ -39,17 +36,15 @@ protected:
         terrain->_height_noise->setCustomFunction(_noise1dMock, _noise2dMock, _noise3dMock);
     }
 
-    virtual void TearDown()
-    {
+    virtual void TearDown() {
         delete terrain;
     }
 
-    TerrainDefinition* terrain;
+    TerrainDefinition *terrain;
     NoiseState noise_state;
 };
 
-TEST_F(TerrainPainting_Test, grid)
-{
+TEST_F(TerrainPainting_Test, grid) {
     /* Test base grid */
     EXPECT_DOUBLE_EQ(0.0, terrain->getGridHeight(0, 0, 0));
     EXPECT_DOUBLE_EQ(0.0, terrain->getGridHeight(0, 1, 0));
@@ -75,8 +70,9 @@ TEST_F(TerrainPainting_Test, grid)
     EXPECT_DOUBLE_EQ(terrain->getInterpolatedHeight(1.0, 0.0, 1, 0), 3.0 * sin(1.0 * X_FACTOR));
 }
 
-static void _checkBrushResultSides(TerrainDefinition* terrain, PaintedGridBrush*, double center, double midhard, double hard, double midsoft, double soft, double exter, double neg_midhard, double neg_hard, double neg_midsoft, double neg_soft, double neg_exter)
-{
+static void _checkBrushResultSides(TerrainDefinition *terrain, PaintedGridBrush *, double center, double midhard,
+                                   double hard, double midsoft, double soft, double exter, double neg_midhard,
+                                   double neg_hard, double neg_midsoft, double neg_soft, double neg_exter) {
     EXPECT_DOUBLE_EQ(terrain->getGridHeight(0, 0, 1), center);
 
     EXPECT_DOUBLE_EQ(terrain->getGridHeight(1, 0, 1), midhard);
@@ -92,20 +88,18 @@ static void _checkBrushResultSides(TerrainDefinition* terrain, PaintedGridBrush*
     EXPECT_DOUBLE_EQ(terrain->getGridHeight(-5, 0, 1), neg_exter);
 }
 
-static void _checkBrushResult(TerrainDefinition* terrain, PaintedGridBrush* brush, double center, double midhard, double hard, double midsoft, double soft, double exter, int mirror)
-{
-    if (mirror)
-    {
-        _checkBrushResultSides(terrain, brush, center, midhard, hard, midsoft, soft, exter, -midhard, -hard, -midsoft, -soft, -exter);
-    }
-    else
-    {
-        _checkBrushResultSides(terrain, brush, center, midhard, hard, midsoft, soft, exter, midhard, hard, midsoft, soft, exter);
+static void _checkBrushResult(TerrainDefinition *terrain, PaintedGridBrush *brush, double center, double midhard,
+                              double hard, double midsoft, double soft, double exter, int mirror) {
+    if (mirror) {
+        _checkBrushResultSides(terrain, brush, center, midhard, hard, midsoft, soft, exter, -midhard, -hard, -midsoft,
+                               -soft, -exter);
+    } else {
+        _checkBrushResultSides(terrain, brush, center, midhard, hard, midsoft, soft, exter, midhard, hard, midsoft,
+                               soft, exter);
     }
 }
 
-TEST_F(TerrainPainting_Test, brush_flatten)
-{
+TEST_F(TerrainPainting_Test, brush_flatten) {
     /* Set up */
     PaintedGridBrush brush(2.0, 2.0, 4.0);
     terrain->height = 1.0;
@@ -134,8 +128,7 @@ TEST_F(TerrainPainting_Test, brush_flatten)
     _checkBrushResult(terrain, &brush, 0.05, 0.05, 0.05, 0.025, 0.0, 0.0, 0);
 }
 
-TEST_F(TerrainPainting_Test, brush_reset)
-{
+TEST_F(TerrainPainting_Test, brush_reset) {
     /* Set up */
     PaintedGridBrush brush(2.0, 2.0, 4.0);
     PaintedGridBrush brush_full(4.0, 0.0, 4.0);

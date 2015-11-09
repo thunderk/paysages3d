@@ -3,8 +3,7 @@
 
 #include "basics_global.h"
 
-typedef struct
-{
+typedef struct {
     double h;
     double s;
     double l;

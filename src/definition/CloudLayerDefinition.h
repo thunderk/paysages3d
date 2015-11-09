@@ -10,28 +10,32 @@
 namespace paysages {
 namespace definition {
 
-class DEFINITIONSHARED_EXPORT CloudLayerDefinition : public DefinitionNode
-{
-public:
-    CloudLayerDefinition(DefinitionNode* parent);
+class DEFINITIONSHARED_EXPORT CloudLayerDefinition : public DefinitionNode {
+  public:
+    CloudLayerDefinition(DefinitionNode *parent);
     virtual ~CloudLayerDefinition();
 
-    inline const NoiseState &getNoiseState() const {return noise_state;}
-    inline FloatNode *propXOffset() const {return xoffset;}
-    inline FloatNode *propZOffset() const {return zoffset;}
+    inline const NoiseState &getNoiseState() const {
+        return noise_state;
+    }
+    inline FloatNode *propXOffset() const {
+        return xoffset;
+    }
+    inline FloatNode *propZOffset() const {
+        return zoffset;
+    }
 
-    static CloudLayerDefinition* newCopy(const CloudLayerDefinition& other, DefinitionNode* parent);
-    CloudLayerDefinition* newCopy(DefinitionNode* parent) const;
+    static CloudLayerDefinition *newCopy(const CloudLayerDefinition &other, DefinitionNode *parent);
+    CloudLayerDefinition *newCopy(DefinitionNode *parent) const;
 
-    virtual void save(PackStream* pack) const override;
-    virtual void load(PackStream* pack) override;
+    virtual void save(PackStream *pack) const override;
+    virtual void load(PackStream *pack) override;
 
-    virtual void copy(DefinitionNode* destination) const override;
+    virtual void copy(DefinitionNode *destination) const override;
     virtual void validate() override;
 
-public:
-    typedef enum
-    {
+  public:
+    typedef enum {
         STRATUS,
         NIMBOSTRATUS,
         CUMULUS,
@@ -44,18 +48,17 @@ public:
         CIRRUS
     } CloudsType;
 
-public:
+  public:
     CloudsType type;
     NoiseState noise_state;
     double altitude;
     double scaling;
     double coverage;
 
-private:
+  private:
     FloatNode *xoffset;
     FloatNode *zoffset;
 };
-
 }
 }
 

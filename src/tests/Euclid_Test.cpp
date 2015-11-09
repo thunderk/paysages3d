@@ -6,7 +6,8 @@
 
 /*static inline int _Vector3_cmp(Vector3 v1, Vector3 v2)
 {
-    return fabs(v1.x - v2.z) >= 0.00000000001 && fabs(v1.y - v2.y) >= 0.00000000001 && fabs(v1.z - v2.z) >= 0.00000000001;
+    return fabs(v1.x - v2.z) >= 0.00000000001 && fabs(v1.y - v2.y) >= 0.00000000001 && fabs(v1.z - v2.z) >=
+0.00000000001;
 }
 
 static inline void _Vector3_str(Vector3 v, char* buffer, int length)
@@ -15,8 +16,7 @@ static inline void _Vector3_str(Vector3 v, char* buffer, int length)
 }
 DEFINE_COMPARE_ASSERT(Vector3, _Vector3_cmp, _Vector3_str);*/
 
-TEST(Euclid, get2DAngle)
-{
+TEST(Euclid, get2DAngle) {
     EXPECT_DOUBLE_EQ(Geometry::get2DAngle(0.0, 0.0), 0.0);
 
     EXPECT_DOUBLE_EQ(Geometry::get2DAngle(0.1, 0.0), 0.0);
@@ -59,8 +59,7 @@ TEST(Euclid, get2DAngle)
     EXPECT_EQ(v3Scale(v1, -0.5), v3);
 }*/
 
-TEST(Euclid, VectorSpherical)
-{
+TEST(Euclid, VectorSpherical) {
     Vector3 v1;
     VectorSpherical v2;
 

@@ -6,23 +6,22 @@
 namespace paysages {
 namespace definition {
 
-class DEFINITIONSHARED_EXPORT SurfaceMaterial
-{
-public:
+class DEFINITIONSHARED_EXPORT SurfaceMaterial {
+  public:
     SurfaceMaterial();
-    SurfaceMaterial(const Color& color);
+    SurfaceMaterial(const Color &color);
     ~SurfaceMaterial();
 
     static const SurfaceMaterial &getDefault();
 
     void setColor(double r, double g, double b, double a);
 
-    void save(PackStream* stream) const;
-    void load(PackStream* stream);
+    void save(PackStream *stream) const;
+    void load(PackStream *stream);
     void copy(SurfaceMaterial *destination) const;
     void validate();
 
-public:
+  public:
     Color *base;
 
     double hardness;
@@ -31,7 +30,6 @@ public:
 
     double receive_shadows;
 };
-
 }
 }
 

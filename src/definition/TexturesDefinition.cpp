@@ -2,27 +2,22 @@
 
 #include "TextureLayerDefinition.h"
 
-static DefinitionNode* _layer_constructor(Layers* parent)
-{
+static DefinitionNode *_layer_constructor(Layers *parent) {
     return new TextureLayerDefinition(parent);
 }
 
-TexturesDefinition::TexturesDefinition(DefinitionNode *parent):
-    Layers(parent, "textures", _layer_constructor)
-{
+TexturesDefinition::TexturesDefinition(DefinitionNode *parent) : Layers(parent, "textures", _layer_constructor) {
 }
 
-void TexturesDefinition::applyPreset(TexturesPreset preset)
-{
-    TextureLayerDefinition* layer;
+void TexturesDefinition::applyPreset(TexturesPreset preset) {
+    TextureLayerDefinition *layer;
     clear();
 
     layer = getTextureLayer(addLayer());
     layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_MUD);
     layer->setName("Mud");
 
-    if (preset == TEXTURES_PRESET_FULL)
-    {
+    if (preset == TEXTURES_PRESET_FULL) {
         layer = getTextureLayer(addLayer());
         layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
         layer->setName("Ground");
@@ -38,9 +33,7 @@ void TexturesDefinition::applyPreset(TexturesPreset preset)
         layer = getTextureLayer(addLayer());
         layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SNOW);
         layer->setName("Snow");
-    }
-    else if (preset == TEXTURES_PRESET_IRELAND)
-    {
+    } else if (preset == TEXTURES_PRESET_IRELAND) {
         layer = getTextureLayer(addLayer());
         layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
         layer->setName("Ground");
@@ -48,9 +41,7 @@ void TexturesDefinition::applyPreset(TexturesPreset preset)
         layer = getTextureLayer(addLayer());
         layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_GRASS);
         layer->setName("Grass");
-    }
-    else if (preset == TEXTURES_PRESET_ALPS)
-    {
+    } else if (preset == TEXTURES_PRESET_ALPS) {
         layer = getTextureLayer(addLayer());
         layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
         layer->setName("Ground");
@@ -58,19 +49,15 @@ void TexturesDefinition::applyPreset(TexturesPreset preset)
         layer = getTextureLayer(addLayer());
         layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SNOW);
         layer->setName("Snow");
-    }
-    else if (preset == TEXTURES_PRESET_CANYON)
-    {
+    } else if (preset == TEXTURES_PRESET_CANYON) {
         /* TODO */
     }
 }
 
-double TexturesDefinition::getMaximalDisplacement()
-{
+double TexturesDefinition::getMaximalDisplacement() {
     double result = 0.0;
     int n = count();
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         result += getTextureLayer(i)->displacement_height;
     }
     return result;

@@ -8,20 +8,17 @@
 namespace paysages {
 namespace definition {
 
-class DEFINITIONSHARED_EXPORT CloudsDefinition : public Layers
-{
-public:
-    CloudsDefinition(DefinitionNode* parent);
+class DEFINITIONSHARED_EXPORT CloudsDefinition : public Layers {
+  public:
+    CloudsDefinition(DefinitionNode *parent);
 
-    inline CloudLayerDefinition* getCloudLayer(int position) const {return (CloudLayerDefinition*)getLayer(position);}
+    inline CloudLayerDefinition *getCloudLayer(int position) const {
+        return (CloudLayerDefinition *)getLayer(position);
+    }
 
-    typedef enum
-    {
-        CLOUDS_PRESET_PARTLY_CLOUDY
-    } CloudsPreset;
+    typedef enum { CLOUDS_PRESET_PARTLY_CLOUDY } CloudsPreset;
     void applyPreset(CloudsPreset preset);
 };
-
 }
 }
 

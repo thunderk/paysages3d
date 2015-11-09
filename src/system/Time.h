@@ -6,15 +6,13 @@
 namespace paysages {
 namespace system {
 
-class SYSTEMSHARED_EXPORT Time
-{
-public:
+class SYSTEMSHARED_EXPORT Time {
+  public:
     /**
      * Get a timestamp in milliseconds.
      */
     static unsigned long getRelativeTimeMs();
 };
-
 }
 }
 

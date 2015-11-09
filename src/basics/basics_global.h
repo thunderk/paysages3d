@@ -3,33 +3,33 @@
 
 #include <QtCore/qglobal.h>
 #if defined(BASICS_LIBRARY)
-#  define BASICSSHARED_EXPORT Q_DECL_EXPORT
+#define BASICSSHARED_EXPORT Q_DECL_EXPORT
 #else
-#  define BASICSSHARED_EXPORT Q_DECL_IMPORT
+#define BASICSSHARED_EXPORT Q_DECL_IMPORT
 #endif
 
 #include "system_global.h"
 
 namespace paysages {
 namespace basics {
-    class Vector3;
-    class Matrix4;
-    class BoundingBox;
-    class SpaceGridIterator;
-    class SpaceSegment;
-    class Color;
-    class NoiseGenerator;
-    class NoiseState;
-    class FractalNoise;
-    class Curve;
-    class ColorProfile;
-    class Texture2D;
-    class Texture3D;
-    class Texture4D;
-    class CappedCylinder;
-    class InfiniteRay;
-    class Sphere;
-    class InfinitePlane;
+class Vector3;
+class Matrix4;
+class BoundingBox;
+class SpaceGridIterator;
+class SpaceSegment;
+class Color;
+class NoiseGenerator;
+class NoiseState;
+class FractalNoise;
+class Curve;
+class ColorProfile;
+class Texture2D;
+class Texture3D;
+class Texture4D;
+class CappedCylinder;
+class InfiniteRay;
+class Sphere;
+class InfinitePlane;
 }
 }
 using namespace paysages::basics;

@@ -9,11 +9,10 @@ namespace definition {
 /**
  * Internal storage class to hold data for a PaintedGrid.
  */
-class PaintedGridData
-{
+class PaintedGridData {
     friend class PaintedGrid;
 
-public:
+  public:
     PaintedGridData();
     ~PaintedGridData();
 
@@ -26,28 +25,27 @@ public:
      */
     void clear();
 
-    inline bool hasData() const {return rows_count > 0;}
+    inline bool hasData() const {
+        return rows_count > 0;
+    }
 
-private:
-    typedef struct
-    {
+  private:
+    typedef struct {
         int xstart;
         int xend;
-        double* height;
+        double *height;
     } HeightMapPixelGroup;
 
-    typedef struct
-    {
+    typedef struct {
         int y;
         int pixel_groups_count;
-        HeightMapPixelGroup* pixel_groups;
+        HeightMapPixelGroup *pixel_groups;
     } HeightMapRow;
 
     int memsize;
     int rows_count;
-    HeightMapRow* rows;
+    HeightMapRow *rows;
 };
-
 }
 }
 

@@ -1,6 +1,5 @@
 #include "LightFilter.h"
 
-bool LightFilter::applyLightFilter(LightComponent &, const Vector3 &)
-{
+bool LightFilter::applyLightFilter(LightComponent &, const Vector3 &) {
     return false;
 }

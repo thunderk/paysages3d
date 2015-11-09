@@ -10,19 +10,15 @@
 #include "AtmosphereModelBruneton.h"
 #include "FloatNode.h"
 
-OpenGLSkybox::OpenGLSkybox(OpenGLRenderer* renderer):
-    OpenGLPart(renderer)
-{
+OpenGLSkybox::OpenGLSkybox(OpenGLRenderer *renderer) : OpenGLPart(renderer) {
     vertices = new float[14 * 3];
 }
 
-OpenGLSkybox::~OpenGLSkybox()
-{
+OpenGLSkybox::~OpenGLSkybox() {
     delete[] vertices;
 }
 
-void OpenGLSkybox::initialize()
-{
+void OpenGLSkybox::initialize() {
     program = createShader("skybox");
     program->addVertexSource("skybox");
     program->addFragmentSource("atmosphere");
@@ -57,22 +53,19 @@ void OpenGLSkybox::initialize()
     renderer->getScenery()->getAtmosphere()->propSunRadius()->addWatcher(this, true);
 }
 
-void OpenGLSkybox::update()
-{
-    SoftwareBrunetonAtmosphereRenderer* bruneton = (SoftwareBrunetonAtmosphereRenderer*)renderer->getAtmosphereRenderer();
+void OpenGLSkybox::update() {
+    SoftwareBrunetonAtmosphereRenderer *bruneton =
+        (SoftwareBrunetonAtmosphereRenderer *)renderer->getAtmosphereRenderer();
     renderer->getSharedState()->set("transmittanceTexture", bruneton->getModel()->getTextureTransmittance());
     renderer->getSharedState()->set("inscatterTexture", bruneton->getModel()->getTextureInscatter());
 }
 
-void OpenGLSkybox::render()
-{
+void OpenGLSkybox::render() {
     program->drawTriangleStrip(vertices, 14);
 }
 
-void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
-{
-    if (node->getPath() == "/atmosphere/daytime")
-    {
+void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
+    if (node->getPath() == "/atmosphere/daytime") {
         Vector3 sun_direction = renderer->getAtmosphereRenderer()->getSunDirection(false);
         renderer->getSharedState()->set("sunDirection", sun_direction);
 
@@ -80,19 +73,16 @@ void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff 
         renderer->getSharedState()->set("sunColor", sun_color);
 
         renderer->getSharedState()->set("dayTime", renderer->getScenery()->getAtmosphere()->propDayTime()->getValue());
-    }
-    else if (node->getPath() == "/atmosphere/humidity")
-    {
-        renderer->getSharedState()->set("atmosphereHumidity", renderer->getScenery()->getAtmosphere()->propHumidity()->getValue());
-    }
-    else if (node->getPath() == "/atmosphere/sun_radius")
-    {
-        renderer->getSharedState()->set("sunRadius", renderer->getScenery()->getAtmosphere()->propSunRadius()->getValue());
+    } else if (node->getPath() == "/atmosphere/humidity") {
+        renderer->getSharedState()->set("atmosphereHumidity",
+                                        renderer->getScenery()->getAtmosphere()->propHumidity()->getValue());
+    } else if (node->getPath() == "/atmosphere/sun_radius") {
+        renderer->getSharedState()->set("sunRadius",
+                                        renderer->getScenery()->getAtmosphere()->propSunRadius()->getValue());
     }
 }
 
-void OpenGLSkybox::setVertex(int i, float x, float y, float z)
-{
+void OpenGLSkybox::setVertex(int i, float x, float y, float z) {
     vertices[i * 3] = x;
     vertices[i * 3 + 1] = y;
     vertices[i * 3 + 2] = z;

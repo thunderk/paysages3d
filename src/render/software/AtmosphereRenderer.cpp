@@ -19,16 +19,13 @@
 #define SUN_RADIUS 6.955e5
 #define SUN_RADIUS_SCALED (SUN_RADIUS / WORLD_SCALING)
 
-static inline double _getDayFactor(double daytime)
-{
+static inline double _getDayFactor(double daytime) {
     daytime = 1.0 - fabs(0.5 - daytime) / 0.5;
     return daytime < 0.45 ? 0.0 : sqrt((daytime - 0.45) / 0.55);
 }
 
-static inline void _applyWeatherEffects(AtmosphereDefinition* definition, AtmosphereResult* result)
-{
-    if (definition->model == AtmosphereDefinition::ATMOSPHERE_MODEL_DISABLED)
-    {
+static inline void _applyWeatherEffects(AtmosphereDefinition *definition, AtmosphereResult *result) {
+    if (definition->model == AtmosphereDefinition::ATMOSPHERE_MODEL_DISABLED) {
         result->updateFinal();
         return;
     }
@@ -38,8 +35,7 @@ static inline void _applyWeatherEffects(AtmosphereDefinition* definition, Atmosp
     double max_distance = 100.0 - 90.0 * humidity;
     double distancefactor, dayfactor;
 
-    if (distance > max_distance)
-    {
+    if (distance > max_distance) {
         distance = max_distance;
     }
     distancefactor = (distance > max_distance ? max_distance : distance) / max_distance;
@@ -47,21 +43,17 @@ static inline void _applyWeatherEffects(AtmosphereDefinition* definition, Atmosp
     dayfactor = _getDayFactor(definition->propDayTime()->getValue());
 
     /* Fog masking */
-    if (humidity > 0.3)
-    {
+    if (humidity > 0.3) {
         result->mask.r = result->mask.g = result->mask.b = (10.0 - 8.0 * humidity) * dayfactor;
         result->mask.a = distancefactor * (humidity - 0.3) / 0.7;
     }
 
     /* Scattering tweaking */
-    if (humidity < 0.15)
-    {
+    if (humidity < 0.15) {
         /* Limit scattering on ultra clear day */
         double force = (0.15 - humidity) / 0.15;
         result->inscattering.limitPower(100.0 - 90.0 * pow(force, 0.1));
-    }
-    else
-    {
+    } else {
         /* Scattering boost */
         double force = 1.2 * (humidity < 0.5 ? sqrt((humidity - 0.15) / 0.35) : 1.0 - (humidity - 0.5) / 0.5);
         result->inscattering.r *= 1.0 + force * distancefactor * (humidity - 0.15) / 0.85;
@@ -77,64 +69,53 @@ static inline void _applyWeatherEffects(AtmosphereDefinition* definition, Atmosp
     result->updateFinal();
 }
 
-
-BaseAtmosphereRenderer::BaseAtmosphereRenderer(SoftwareRenderer* renderer):
-    parent(renderer)
-{
+BaseAtmosphereRenderer::BaseAtmosphereRenderer(SoftwareRenderer *renderer) : parent(renderer) {
 }
 
-AtmosphereResult BaseAtmosphereRenderer::applyAerialPerspective(const Vector3 &, const Color &base)
-{
+AtmosphereResult BaseAtmosphereRenderer::applyAerialPerspective(const Vector3 &, const Color &base) {
     AtmosphereResult result;
     result.base = result.final = base;
     result.inscattering = result.attenuation = COLOR_BLACK;
     return result;
 }
 
-AtmosphereResult BaseAtmosphereRenderer::getSkyColor(const Vector3 &)
-{
+AtmosphereResult BaseAtmosphereRenderer::getSkyColor(const Vector3 &) {
     AtmosphereResult result;
     result.base = result.final = COLOR_WHITE;
     result.inscattering = result.attenuation = COLOR_BLACK;
     return result;
 }
 
-Vector3 BaseAtmosphereRenderer::getSunDirection(bool) const
-{
-    AtmosphereDefinition* atmosphere = getDefinition();
+Vector3 BaseAtmosphereRenderer::getSunDirection(bool) const {
+    AtmosphereDefinition *atmosphere = getDefinition();
     double sun_angle = (atmosphere->propDayTime()->getValue() + 0.75) * M_PI * 2.0;
     return Vector3(cos(sun_angle), sin(sun_angle), 0.0);
 }
 
-bool BaseAtmosphereRenderer::getLightsAt(std::vector<LightComponent> &, const Vector3 &) const
-{
+bool BaseAtmosphereRenderer::getLightsAt(std::vector<LightComponent> &, const Vector3 &) const {
     return false;
 }
 
-AtmosphereDefinition* BaseAtmosphereRenderer::getDefinition() const
-{
+AtmosphereDefinition *BaseAtmosphereRenderer::getDefinition() const {
     return parent->getScenery()->getAtmosphere();
 }
 
-SoftwareBrunetonAtmosphereRenderer::SoftwareBrunetonAtmosphereRenderer(SoftwareRenderer* renderer):
-    BaseAtmosphereRenderer(renderer)
-{
+SoftwareBrunetonAtmosphereRenderer::SoftwareBrunetonAtmosphereRenderer(SoftwareRenderer *renderer)
+    : BaseAtmosphereRenderer(renderer) {
     model = new AtmosphereModelBruneton(parent);
 }
 
-SoftwareBrunetonAtmosphereRenderer::~SoftwareBrunetonAtmosphereRenderer()
-{
+SoftwareBrunetonAtmosphereRenderer::~SoftwareBrunetonAtmosphereRenderer() {
     delete model;
 }
 
-AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(const Vector3 &location, const Color &base)
-{
-    AtmosphereDefinition* definition = getDefinition();
+AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(const Vector3 &location,
+                                                                            const Color &base) {
+    AtmosphereDefinition *definition = getDefinition();
     AtmosphereResult result;
 
     // Get base perspective
-    switch (definition->model)
-    {
+    switch (definition->model) {
     case AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON:
         result = model->applyAerialPerspective(location, base);
         break;
@@ -151,9 +132,8 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(cons
     return result;
 }
 
-AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &direction)
-{
-    AtmosphereDefinition* definition;
+AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &direction) {
+    AtmosphereDefinition *definition;
     Vector3 sun_direction, sun_position, camera_location;
     Color base;
 
@@ -177,7 +157,8 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &
         int hits = euclidRayIntersectSphere(camera_location, direction, sun_position, sun_radius, &hit1, &hit2);
         if (hits > 1)
         {
-            double dist = v3Norm(v3Sub(hit2, hit1)) / sun_radius; // distance between intersection points (relative to radius)
+            double dist = v3Norm(v3Sub(hit2, hit1)) / sun_radius; // distance between intersection points (relative to
+    radius)
 
             Color sun_color = definition->sun_color;
             sun_color.r *= 100.0;
@@ -197,8 +178,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &
     // Get scattering
     AtmosphereResult result;
     Vector3 location = camera_location.add(direction_norm.scale(6421.0));
-    switch (definition->model)
-    {
+    switch (definition->model) {
     case AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON:
         result = model->getSkyColor(camera_location, direction_norm, sun_position, base);
         break;
@@ -215,8 +195,8 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &
     return result;
 }
 
-bool SoftwareBrunetonAtmosphereRenderer::getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const
-{
+bool SoftwareBrunetonAtmosphereRenderer::getLightsAt(std::vector<LightComponent> &result,
+                                                     const Vector3 &location) const {
     bool changed = false;
     changed |= model->getLightsAt(result, location);
     changed |= parent->getNightSky()->getLightsAt(result, location);

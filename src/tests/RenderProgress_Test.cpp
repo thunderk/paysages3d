@@ -2,8 +2,7 @@
 
 #include "RenderProgress.h"
 
-TEST(RenderProgress, RecursiveSections)
-{
+TEST(RenderProgress, RecursiveSections) {
     RenderProgress progress(2);
     EXPECT_DOUBLE_EQ(0.0, progress.get());
 

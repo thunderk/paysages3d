@@ -4,65 +4,65 @@
 #include <QtCore/qglobal.h>
 
 #if defined(SOFTWARE_LIBRARY)
-#  define SOFTWARESHARED_EXPORT Q_DECL_EXPORT
+#define SOFTWARESHARED_EXPORT Q_DECL_EXPORT
 #else
-#  define SOFTWARESHARED_EXPORT Q_DECL_IMPORT
+#define SOFTWARESHARED_EXPORT Q_DECL_IMPORT
 #endif
 
 #include "definition_global.h"
 
 namespace paysages {
 namespace software {
-    class SoftwareRenderer;
-    class SoftwareCanvasRenderer;
-    class RenderConfig;
-    class RenderProgress;
+class SoftwareRenderer;
+class SoftwareCanvasRenderer;
+class RenderConfig;
+class RenderProgress;
 
-    class FluidMediumManager;
-    class FluidMediumInterface;
-    class FluidMediumCollector;
+class FluidMediumManager;
+class FluidMediumInterface;
+class FluidMediumCollector;
 
-    class BaseAtmosphereRenderer;
-    class SoftwareBrunetonAtmosphereRenderer;
-    class AtmosphereResult;
-    class AtmosphereModelBruneton;
+class BaseAtmosphereRenderer;
+class SoftwareBrunetonAtmosphereRenderer;
+class AtmosphereResult;
+class AtmosphereModelBruneton;
 
-    class CloudsRenderer;
-    class BaseCloudLayerRenderer;
-    class BaseCloudsModel;
+class CloudsRenderer;
+class BaseCloudLayerRenderer;
+class BaseCloudsModel;
 
-    class TerrainRenderer;
-    class TexturesRenderer;
-    class WaterRenderer;
+class TerrainRenderer;
+class TexturesRenderer;
+class WaterRenderer;
 
-    class Rasterizer;
-    class SkyRasterizer;
-    class TerrainRasterizer;
+class Rasterizer;
+class SkyRasterizer;
+class TerrainRasterizer;
 
-    class LightingManager;
-    class LightStatus;
-    class LightFilter;
-    class LightComponent;
-    class LightSource;
+class LightingManager;
+class LightStatus;
+class LightFilter;
+class LightComponent;
+class LightSource;
 
-    class RayCastingManager;
-    class RayCastingResult;
+class RayCastingManager;
+class RayCastingResult;
 
-    class NightSky;
+class NightSky;
 
-    class TerrainRayWalker;
+class TerrainRayWalker;
 
-    class GodRaysSampler;
-    class GodRaysResult;
+class GodRaysSampler;
+class GodRaysResult;
 
-    class Canvas;
-    class CanvasPortion;
-    class CanvasPixel;
-    class CanvasFragment;
-    class CanvasLiveClient;
-    class CanvasPreview;
-    class CanvasPixelShader;
-    class CanvasPictureWriter;
+class Canvas;
+class CanvasPortion;
+class CanvasPixel;
+class CanvasFragment;
+class CanvasLiveClient;
+class CanvasPreview;
+class CanvasPixelShader;
+class CanvasPictureWriter;
 }
 }
 

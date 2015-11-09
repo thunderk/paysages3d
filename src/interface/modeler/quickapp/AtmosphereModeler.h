@@ -6,18 +6,16 @@
 namespace paysages {
 namespace modeler {
 
-class AtmosphereModeler
-{
-public:
+class AtmosphereModeler {
+  public:
     AtmosphereModeler(MainModelerWindow *main);
     ~AtmosphereModeler();
 
-private:
+  private:
     FloatPropertyBind *prop_daytime;
     FloatPropertyBind *prop_humidity;
     FloatPropertyBind *prop_sun_radius;
 };
-
 }
 }
 

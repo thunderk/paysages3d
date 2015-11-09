@@ -2,9 +2,8 @@
 
 #include "NoiseGenerator.h"
 
-TEST(NoiseGenerator, getRange)
-{
-    NoiseGenerator* noise;
+TEST(NoiseGenerator, getRange) {
+    NoiseGenerator *noise;
     double minvalue, maxvalue;
 
     noise = new NoiseGenerator();
@@ -21,10 +20,9 @@ TEST(NoiseGenerator, getRange)
     delete noise;
 }
 
-TEST(NoiseGenerator, normalizeAmplitude)
-{
+TEST(NoiseGenerator, normalizeAmplitude) {
     int x;
-    NoiseGenerator* noise;
+    NoiseGenerator *noise;
 
     noise = new NoiseGenerator();
 
@@ -32,8 +30,7 @@ TEST(NoiseGenerator, normalizeAmplitude)
     noise->addLevelsSimple(10, 1.0, -4.0, 4.0, 0.5);
     noise->validate();
     noise->normalizeAmplitude(-1.0, 1.0, 0);
-    for (x = 0; x < 1000; x++)
-    {
+    for (x = 0; x < 1000; x++) {
         double value = noise->get1DTotal(0.01 * (double)x);
         ASSERT_DOUBLE_IN_RANGE(value, -1.0, 1.0);
     }
@@ -43,8 +40,7 @@ TEST(NoiseGenerator, normalizeAmplitude)
     noise->addLevelsSimple(10, 1.0, -5.0, 5.0, 0.5);
     noise->validate();
     noise->normalizeAmplitude(0.0, 1.0, 0);
-    for (x = 0; x < 1000; x++)
-    {
+    for (x = 0; x < 1000; x++) {
         double value = noise->get1DTotal(0.01 * (double)x);
         ASSERT_DOUBLE_IN_RANGE(value, 0.0, 1.0);
     }
@@ -54,8 +50,7 @@ TEST(NoiseGenerator, normalizeAmplitude)
     noise->addLevelsSimple(10, 1.0, 0.0, 10.0, 0.0);
     noise->validate();
     noise->normalizeAmplitude(0.0, 1.0, 0);
-    for (x = 0; x < 1000; x++)
-    {
+    for (x = 0; x < 1000; x++) {
         double value = noise->get1DTotal(0.01 * (double)x);
         ASSERT_DOUBLE_IN_RANGE(value, 0.0, 1.0);
     }
@@ -65,8 +60,7 @@ TEST(NoiseGenerator, normalizeAmplitude)
     noise->addLevelsSimple(3, 1.0, -2.0, 8.0, 0.3);
     noise->validate();
     noise->normalizeAmplitude(-2.0, 4.0, 0.0);
-    for (x = 0; x < 1000; x++)
-    {
+    for (x = 0; x < 1000; x++) {
         double value = noise->get1DTotal(0.01 * (double)x);
         ASSERT_DOUBLE_IN_RANGE(value, -2.0, 4.0);
     }

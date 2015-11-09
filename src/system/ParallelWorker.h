@@ -9,9 +9,8 @@ namespace system {
 /**
  * @brief Worker that can be used by the ParallelWork object to perform tasks in several threads.
  */
-class SYSTEMSHARED_EXPORT ParallelWorker
-{
-public:
+class SYSTEMSHARED_EXPORT ParallelWorker {
+  public:
     ParallelWorker();
     virtual ~ParallelWorker();
 
@@ -27,10 +26,9 @@ public:
      */
     virtual void interrupt();
 
-protected:
+  protected:
     bool interrupted;
 };
-
 }
 }
 

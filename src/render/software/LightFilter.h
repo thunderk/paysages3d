@@ -9,9 +9,8 @@ namespace software {
 /**
  * @brief Interface for rendering parts that can alter light.
  */
-class SOFTWARESHARED_EXPORT LightFilter
-{
-public:
+class SOFTWARESHARED_EXPORT LightFilter {
+  public:
     /**
      * @brief Apply filtering on a light component.
      *
@@ -20,7 +19,6 @@ public:
      */
     virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) = 0;
 };
-
 }
 }
 

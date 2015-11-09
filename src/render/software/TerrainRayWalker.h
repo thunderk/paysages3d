@@ -15,16 +15,15 @@ namespace software {
  * a ray and the terrain (e.g. for raytracing), or a soft intersection
  * (e.g. for shadows).
  */
-class SOFTWARESHARED_EXPORT TerrainRayWalker
-{
-public:
+class SOFTWARESHARED_EXPORT TerrainRayWalker {
+  public:
     typedef struct {
         Vector3 hit_location; // Location of the hit
         double escape_angle;  // Angle used to shift the ray to escape the terrain (0.0 if no escape was possible)
     } TerrainHitResult;
 
-public:
-    TerrainRayWalker(SoftwareRenderer* renderer);
+  public:
+    TerrainRayWalker(SoftwareRenderer *renderer);
 
     /**
      * Set the walker quality.
@@ -36,7 +35,8 @@ public:
      * @param max_distance Maximal distance allowed to travel before considering an escape
      * @param escape_step Angle step when allowing an escape angle
      */
-    void setQuality(double displacement_safety, double minimal_step, double maximal_step, double step_factor, double max_distance, double escape_step);
+    void setQuality(double displacement_safety, double minimal_step, double maximal_step, double step_factor,
+                    double max_distance, double escape_step);
     void setQuality(double factor);
 
     /*!
@@ -55,8 +55,8 @@ public:
      */
     bool startWalking(const Vector3 &start, Vector3 direction, double escape_angle, TerrainHitResult &result);
 
-private:
-    SoftwareRenderer* renderer;
+  private:
+    SoftwareRenderer *renderer;
     double ymin;
     double ymax;
     double displacement_base;
@@ -69,7 +69,6 @@ private:
     double max_distance;
     double escape_step;
 };
-
 }
 }
 

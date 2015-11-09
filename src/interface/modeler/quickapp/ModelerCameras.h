@@ -12,11 +12,10 @@ namespace modeler {
 /**
  * Storage for modeler cameras.
  */
-class ModelerCameras: public QObject, public DefinitionWatcher
-{
+class ModelerCameras : public QObject, public DefinitionWatcher {
     Q_OBJECT
 
-public:
+  public:
     ModelerCameras(MainModelerWindow *parent);
     ~ModelerCameras();
 
@@ -45,7 +44,7 @@ public:
      */
     void endTool();
 
-protected:
+  protected:
     void timerEvent(QTimerEvent *event);
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
@@ -55,11 +54,11 @@ protected:
      */
     void validate();
 
-public slots:
+  public slots:
     void changeActiveCamera(const QString &name);
     void toolChanged(const QString &tool);
 
-private:
+  private:
     MainModelerWindow *parent;
     CameraDefinition *active;
     CameraDefinition *current;
@@ -68,14 +67,9 @@ private:
     CameraDefinition *tool;
     CameraDefinition *previous;
 
-    typedef enum
-    {
-        TOOL_NONE,
-        TOOL_SUN
-    } CameraToolMode;
+    typedef enum { TOOL_NONE, TOOL_SUN } CameraToolMode;
     CameraToolMode tool_mode;
 };
-
 }
 }
 

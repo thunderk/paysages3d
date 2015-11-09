@@ -1,5 +1,4 @@
 #include "SpaceGridIterator.h"
 
-SpaceGridIterator::SpaceGridIterator()
-{
+SpaceGridIterator::SpaceGridIterator() {
 }

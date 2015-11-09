@@ -11,32 +11,26 @@
 #include "FloatNode.h"
 #include "RayCastingResult.h"
 
-WaterRenderer::WaterRenderer(SoftwareRenderer* parent):
-    parent(parent)
-{
+WaterRenderer::WaterRenderer(SoftwareRenderer *parent) : parent(parent) {
     noise = new NoiseFunctionSimplex();
 }
 
-WaterRenderer::~WaterRenderer()
-{
+WaterRenderer::~WaterRenderer() {
     delete noise;
 }
 
-void WaterRenderer::update()
-{
-    WaterDefinition* definition = parent->getScenery()->getWater();
+void WaterRenderer::update() {
+    WaterDefinition *definition = parent->getScenery()->getWater();
     noise->setState(*definition->noise_state);
     noise->setScaling(definition->scaling * 0.3, definition->waves_height * 0.05);
     noise->setStep(0.3);
 }
 
-static inline double _getHeight(WaterDefinition* definition, FractalNoise* noise, double x, double z)
-{
+static inline double _getHeight(WaterDefinition *definition, FractalNoise *noise, double x, double z) {
     return noise->get2d(0.00001, x + definition->propXOffset()->getValue(), z + definition->propZOffset()->getValue());
 }
 
-static inline Vector3 _getNormal(WaterDefinition* definition, FractalNoise* noise, Vector3 base, double detail)
-{
+static inline Vector3 _getNormal(WaterDefinition *definition, FractalNoise *noise, Vector3 base, double detail) {
     Vector3 back, right;
     double x, z;
 
@@ -56,33 +50,28 @@ static inline Vector3 _getNormal(WaterDefinition* definition, FractalNoise* nois
     return back.crossProduct(right).normalize();
 }
 
-static inline Vector3 _reflectRay(Vector3 incoming, Vector3 normal)
-{
+static inline Vector3 _reflectRay(Vector3 incoming, Vector3 normal) {
     double c;
 
     c = normal.dotProduct(incoming.scale(-1.0));
     return incoming.add(normal.scale(2.0 * c));
 }
 
-static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal)
-{
+static inline Vector3 _refractRay(Vector3 incoming, Vector3 normal) {
     double c1, c2, f;
 
     f = 1.0 / 1.33;
     c1 = normal.dotProduct(incoming.scale(-1.0));
     c2 = sqrt(1.0 - pow(f, 2.0) * (1.0 - pow(c1, 2.0)));
-    if (c1 >= 0.0)
-    {
+    if (c1 >= 0.0) {
         return incoming.scale(f).add(normal.scale(f * c1 - c2));
-    }
-    else
-    {
+    } else {
         return incoming.scale(f).add(normal.scale(c2 - f * c1));
     }
 }
 
-static inline Color _getFoamMask(SoftwareRenderer* renderer, WaterDefinition* definition, FractalNoise* noise, Vector3 location, Vector3 normal, double detail)
-{
+static inline Color _getFoamMask(SoftwareRenderer *renderer, WaterDefinition *definition, FractalNoise *noise,
+                                 Vector3 location, Vector3 normal, double detail) {
     Color result;
     double foam_factor, normal_diff, location_offset;
 
@@ -91,38 +80,32 @@ static inline Color _getFoamMask(SoftwareRenderer* renderer, WaterDefinition* de
     foam_factor = 0.0;
     location.x += location_offset;
     normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, noise, location, detail));
-    if (normal_diff > foam_factor)
-    {
+    if (normal_diff > foam_factor) {
         foam_factor = normal_diff;
     }
     location.x -= location_offset * 2.0;
     normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, noise, location, detail));
-    if (normal_diff > foam_factor)
-    {
+    if (normal_diff > foam_factor) {
         foam_factor = normal_diff;
     }
     location.x += location_offset;
     location.z -= location_offset;
     normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, noise, location, detail));
-    if (normal_diff > foam_factor)
-    {
+    if (normal_diff > foam_factor) {
         foam_factor = normal_diff;
     }
     location.z += location_offset * 2.0;
     normal_diff = 1.0 - normal.dotProduct(_getNormal(definition, noise, location, detail));
-    if (normal_diff > foam_factor)
-    {
+    if (normal_diff > foam_factor) {
         foam_factor = normal_diff;
     }
 
     foam_factor *= 10.0;
-    if (foam_factor > 1.0)
-    {
+    if (foam_factor > 1.0) {
         foam_factor = 1.0;
     }
 
-    if (foam_factor <= 1.0 - definition->foam_coverage)
-    {
+    if (foam_factor <= 1.0 - definition->foam_coverage) {
         return COLOR_TRANSPARENT;
     }
     foam_factor = (foam_factor - (1.0 - definition->foam_coverage)) * definition->foam_coverage;
@@ -134,26 +117,22 @@ static inline Color _getFoamMask(SoftwareRenderer* renderer, WaterDefinition* de
     result.b *= 2.0;
 
     /* TODO This should be configurable */
-    if (foam_factor > 0.2)
-    {
+    if (foam_factor > 0.2) {
         result.a = 0.8;
-    }
-    else
-    {
+    } else {
         result.a = 0.8 * (foam_factor / 0.2);
     }
 
     return result;
 }
 
-HeightInfo WaterRenderer::getHeightInfo()
-{
+HeightInfo WaterRenderer::getHeightInfo() {
     HeightInfo info;
     double noise_minvalue, noise_maxvalue;
 
     info.base_height = 0.0;
     // TODO
-    //noise->getRange(&noise_minvalue, &noise_maxvalue);
+    // noise->getRange(&noise_minvalue, &noise_maxvalue);
     noise_minvalue = noise_maxvalue = 0.0;
     info.min_height = info.base_height + noise_minvalue;
     info.max_height = info.base_height + noise_maxvalue;
@@ -161,14 +140,12 @@ HeightInfo WaterRenderer::getHeightInfo()
     return info;
 }
 
-double WaterRenderer::getHeight(double x, double z)
-{
+double WaterRenderer::getHeight(double x, double z) {
     return _getHeight(parent->getScenery()->getWater(), noise, x, z);
 }
 
-WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
-{
-    WaterDefinition* definition = parent->getScenery()->getWater();
+WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z) {
+    WaterDefinition *definition = parent->getScenery()->getWater();
     WaterResult result;
     RayCastingResult refracted;
     Vector3 location, normal, look_direction;
@@ -182,8 +159,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     result.location = location;
 
     detail = parent->getPrecision(location) * 0.1;
-    if (detail < 0.00001)
-    {
+    if (detail < 0.00001) {
         detail = 0.00001;
     }
 
@@ -191,32 +167,23 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     look_direction = location.sub(parent->getCameraLocation(location)).normalize();
 
     /* Reflection */
-    if (reflection == 0.0)
-    {
+    if (reflection == 0.0) {
         result.reflected = COLOR_BLACK;
-    }
-    else
-    {
+    } else {
         result.reflected = parent->rayWalking(location, _reflectRay(look_direction, normal), 1, 0, 1, 1).hit_color;
     }
 
     /* Transparency/refraction */
-    if (definition->transparency == 0.0)
-    {
+    if (definition->transparency == 0.0) {
         result.refracted = COLOR_BLACK;
-    }
-    else
-    {
+    } else {
         Color depth_color = *definition->depth_color;
         refracted = parent->rayWalking(location, _refractRay(look_direction, normal), 1, 0, 1, 1);
         depth = location.sub(refracted.hit_location).getNorm();
         depth_color.limitPower(refracted.hit_color.getPower());
-        if (depth > definition->transparency_depth)
-        {
+        if (depth > definition->transparency_depth) {
             result.refracted = depth_color;
-        }
-        else
-        {
+        } else {
             depth /= definition->transparency_depth;
             result.refracted.r = refracted.hit_color.r * (1.0 - depth) + depth_color.r * depth;
             result.refracted.g = refracted.hit_color.g * (1.0 - depth) + depth_color.g * depth;
@@ -245,18 +212,14 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z)
     return result;
 }
 
-bool WaterRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
-{
-    WaterDefinition* definition = parent->getScenery()->getWater();
+bool WaterRenderer::applyLightFilter(LightComponent &light, const Vector3 &at) {
+    WaterDefinition *definition = parent->getScenery()->getWater();
     double factor;
 
-    if (at.y < 0.0)
-    {
-        if (light.direction.y <= -0.00001)
-        {
+    if (at.y < 0.0) {
+        if (light.direction.y <= -0.00001) {
             factor = -at.y / (-light.direction.y * definition->lighting_depth);
-            if (factor > 1.0)
-            {
+            if (factor > 1.0) {
                 factor = 1.0;
             }
             factor = 1.0 - factor;
@@ -267,15 +230,11 @@ bool WaterRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
             light.reflection *= factor;
 
             return factor > 0.0;
-        }
-        else
-        {
+        } else {
             light.color = COLOR_BLACK;
             return false;
         }
-    }
-    else
-    {
+    } else {
         return true;
     }
 }

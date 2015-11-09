@@ -2,8 +2,7 @@
 
 #include "CameraDefinition.h"
 
-TEST(Camera, Definition)
-{
+TEST(Camera, Definition) {
     CameraDefinition cam;
 
     cam.setLocationCoords(0.0, 1.0, 1.0);
@@ -13,8 +12,7 @@ TEST(Camera, Definition)
     EXPECT_VECTOR3_COORDS(cam.getTarget(), 0.0, 0.0, 0.0);
 }
 
-TEST(Camera, Projection)
-{
+TEST(Camera, Projection) {
     CameraDefinition cam;
 
     cam.setLocationCoords(0.0, 1.0, 1.0);
@@ -29,8 +27,7 @@ TEST(Camera, Projection)
     EXPECT_VECTOR3_COORDS(point, -25.1, 8.3, 1.3);
 }
 
-TEST(Camera, Depth)
-{
+TEST(Camera, Depth) {
     CameraDefinition cam;
 
     cam.setLocationCoords(0.0, 0.0, 0.0);

@@ -8,10 +8,9 @@
 namespace paysages {
 namespace system {
 
-class SYSTEMSHARED_EXPORT ParallelWork
-{
-public:
-    typedef int (*ParallelUnitFunction)(ParallelWork* work, int unit, void* data);
+class SYSTEMSHARED_EXPORT ParallelWork {
+  public:
+    typedef int (*ParallelUnitFunction)(ParallelWork *work, int unit, void *data);
 
     /**
      * Obscure thread class.
@@ -19,7 +18,7 @@ public:
     class ParallelThread;
     friend class ParallelThread;
 
-public:
+  public:
     /**
      * Create a parallel work handler.
      *
@@ -32,7 +31,7 @@ public:
      *
      * This is a compatibility constructor for older code, use the constructor with ParallelWorker instead.
      */
-    ParallelWork(ParallelUnitFunction func, int units, void* data);
+    ParallelWork(ParallelUnitFunction func, int units, void *data);
 
     /**
      * Delete a parallel work handler.
@@ -46,7 +45,7 @@ public:
      *
      * @param threads Number of threads to spaws, -1 for an optimal number.
      */
-    int perform(int thread_count=-1);
+    int perform(int thread_count = -1);
 
     /**
      * Tell the threads to interrupt what they are doing.
@@ -55,24 +54,23 @@ public:
      */
     void interrupt();
 
-private:
+  private:
     void returnThread(ParallelThread *thread);
 
-private:
+  private:
     int units;
     int running;
     ParallelWorker *worker;
     bool worker_compat;
 
     int thread_count;
-    Mutex* mutex;
-    Semaphore* semaphore;
-    ParallelThread** threads;
-    ParallelThread** available;
+    Mutex *mutex;
+    Semaphore *semaphore;
+    ParallelThread **threads;
+    ParallelThread **available;
     int available_offset;
     int available_length;
 };
-
 }
 }
 

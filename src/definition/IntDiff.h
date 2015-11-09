@@ -11,19 +11,21 @@ namespace definition {
 /**
  * Diff for an IntNode.
  */
-class DEFINITIONSHARED_EXPORT IntDiff: public DefinitionDiff
-{
-public:
+class DEFINITIONSHARED_EXPORT IntDiff : public DefinitionDiff {
+  public:
     IntDiff(const DefinitionNode *node, int oldvalue, int newvalue);
 
-    inline int getOldValue() const {return oldvalue;}
-    inline int getNewValue() const {return newvalue;}
+    inline int getOldValue() const {
+        return oldvalue;
+    }
+    inline int getNewValue() const {
+        return newvalue;
+    }
 
-private:
+  private:
     int oldvalue;
     int newvalue;
 };
-
 }
 }
 

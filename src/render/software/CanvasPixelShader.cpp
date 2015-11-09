@@ -8,14 +8,14 @@
 #include "Rasterizer.h"
 #include "RenderProgress.h"
 
-
-CanvasPixelShader::CanvasPixelShader(const SoftwareCanvasRenderer &renderer, CanvasPortion *portion, RenderProgress *progress, int chunk_size, int sub_chunk_size, int chunks_x, int chunks_y):
-    renderer(renderer), portion(portion), progress(progress), chunk_size(chunk_size), sub_chunk_size(sub_chunk_size), chunks_x(chunks_x), chunks_y(chunks_y)
-{
+CanvasPixelShader::CanvasPixelShader(const SoftwareCanvasRenderer &renderer, CanvasPortion *portion,
+                                     RenderProgress *progress, int chunk_size, int sub_chunk_size, int chunks_x,
+                                     int chunks_y)
+    : renderer(renderer), portion(portion), progress(progress), chunk_size(chunk_size), sub_chunk_size(sub_chunk_size),
+      chunks_x(chunks_x), chunks_y(chunks_y) {
 }
 
-void CanvasPixelShader::processParallelUnit(int unit)
-{
+void CanvasPixelShader::processParallelUnit(int unit) {
     // Locate the chunk we work on
     int prev_sub_chunk_size = sub_chunk_size * 2;
     int chunk_x = unit / chunks_y;
@@ -29,25 +29,20 @@ void CanvasPixelShader::processParallelUnit(int unit)
     limit_y = (limit_y > chunk_size) ? chunk_size : limit_y;
 
     // Iterate on sub-chunks
-    for (int x = 0; x < limit_x; x += sub_chunk_size)
-    {
+    for (int x = 0; x < limit_x; x += sub_chunk_size) {
         int done = 0;
-        for (int y = 0; y < limit_y; y += sub_chunk_size)
-        {
-            if (interrupted)
-            {
+        for (int y = 0; y < limit_y; y += sub_chunk_size) {
+            if (interrupted) {
                 return;
             }
 
-            if (sub_chunk_size == chunk_size or x % prev_sub_chunk_size != 0 or y % prev_sub_chunk_size != 0)
-            {
+            if (sub_chunk_size == chunk_size or x % prev_sub_chunk_size != 0 or y % prev_sub_chunk_size != 0) {
                 // Resolve the pixel color
                 const CanvasPixel &pixel = portion->at(base_x + x, base_y + y);
                 int n = pixel.getFragmentCount();
                 Color composite = COLOR_BLACK;
                 const CanvasFragment *previous = NULL;
-                for (int i = 0; i < n; i++)
-                {
+                for (int i = 0; i < n; i++) {
                     const CanvasFragment &fragment = pixel.getFragment(i);
                     const Rasterizer &rasterizer = renderer.getRasterizer(fragment.getClient());
                     composite.mask(rasterizer.shadeFragment(fragment, previous));
@@ -55,10 +50,8 @@ void CanvasPixelShader::processParallelUnit(int unit)
                 }
 
                 // Fill the square area
-                for (int fx = 0; fx + x < limit_x and fx < sub_chunk_size; fx++)
-                {
-                    for (int fy = 0; fy + y < limit_y and fy < sub_chunk_size; fy++)
-                    {
+                for (int fx = 0; fx + x < limit_x and fx < sub_chunk_size; fx++) {
+                    for (int fy = 0; fy + y < limit_y and fy < sub_chunk_size; fy++) {
                         portion->setColor(base_x + x + fx, base_y + y + fy, composite);
                     }
                 }

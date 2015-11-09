@@ -18,16 +18,17 @@ struct RenderSub {
 /**
  * Utility to keep track of render progress.
  */
-class SOFTWARESHARED_EXPORT RenderProgress
-{
-public:
-    RenderProgress(int count=1);
+class SOFTWARESHARED_EXPORT RenderProgress {
+  public:
+    RenderProgress(int count = 1);
     ~RenderProgress();
 
-    inline double get() const {return global;}
+    inline double get() const {
+        return global;
+    }
 
     void reset();
-    void add(int value=1);
+    void add(int value = 1);
     void enterSub(int count);
     void exitSub();
     void end();
@@ -44,7 +45,7 @@ public:
      */
     unsigned long estimateRemainingTime();
 
-private:
+  private:
     Mutex *lock;
 
     double global;
@@ -59,7 +60,6 @@ private:
 
     std::stack<RenderSub> subs;
 };
-
 }
 }
 

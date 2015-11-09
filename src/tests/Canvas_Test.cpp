@@ -4,19 +4,17 @@
 #include "CanvasPortion.h"
 #include "CanvasPreview.h"
 
-static void checkPortion(Canvas &canvas, int x, int y, int width, int height)
-{
+static void checkPortion(Canvas &canvas, int x, int y, int width, int height) {
     ASSERT_LT(x, canvas.getHorizontalPortionCount());
     ASSERT_LT(y, canvas.getVerticalPortionCount());
 
-    CanvasPortion* portion = canvas.at(x, y);
+    CanvasPortion *portion = canvas.at(x, y);
 
     EXPECT_EQ(width, portion->getWidth());
     EXPECT_EQ(height, portion->getHeight());
 }
 
-TEST(Canvas, SizingAndCutting)
-{
+TEST(Canvas, SizingAndCutting) {
     Canvas canvas;
 
     canvas.setSize(200, 100);

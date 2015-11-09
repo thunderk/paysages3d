@@ -8,11 +8,10 @@
 namespace paysages {
 namespace modeler {
 
-class RenderProcess: public QObject
-{
+class RenderProcess : public QObject {
     Q_OBJECT
 
-public:
+  public:
     RenderProcess(MainModelerWindow *window, RenderPreviewProvider *destination);
     virtual ~RenderProcess();
 
@@ -26,9 +25,11 @@ public:
      */
     const QSize getPreviewSize();
 
-    inline bool isRendering() const {return rendering;}
+    inline bool isRendering() const {
+        return rendering;
+    }
 
-public slots:
+  public slots:
     /**
      * Start a quick render.
      */
@@ -59,10 +60,10 @@ public slots:
      */
     void savePicture(QString path);
 
-protected:
+  protected:
     virtual void timerEvent(QTimerEvent *event) override;
 
-private:
+  private:
     MainModelerWindow *window;
     RenderPreviewProvider *destination;
     bool has_render;
@@ -70,7 +71,6 @@ private:
     SoftwareCanvasRenderer *renderer;
     Thread *render_thread;
 };
-
 }
 }
 

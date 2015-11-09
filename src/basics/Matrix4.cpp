@@ -4,15 +4,13 @@
 #include "PackStream.h"
 #include "Vector3.h"
 
-Matrix4::Matrix4(bool identity)
-{
+Matrix4::Matrix4(bool identity) {
     b = c = d = e = g = h = 0.0;
     i = j = l = m = n = o = 0.0;
     a = f = k = p = (identity ? 1.0 : 0.0);
 }
 
-void Matrix4::save(PackStream* stream) const
-{
+void Matrix4::save(PackStream *stream) const {
     stream->write(&a);
     stream->write(&b);
     stream->write(&c);
@@ -31,8 +29,7 @@ void Matrix4::save(PackStream* stream) const
     stream->write(&p);
 }
 
-void Matrix4::load(PackStream* stream)
-{
+void Matrix4::load(PackStream *stream) {
     stream->read(&a);
     stream->read(&b);
     stream->read(&c);
@@ -51,8 +48,7 @@ void Matrix4::load(PackStream* stream)
     stream->read(&p);
 }
 
-Matrix4 Matrix4::mult(const Matrix4 &other) const
-{
+Matrix4 Matrix4::mult(const Matrix4 &other) const {
     Matrix4 result;
     result.a = a * other.a + b * other.e + c * other.i + d * other.m;
     result.b = a * other.b + b * other.f + c * other.j + d * other.n;
@@ -73,8 +69,7 @@ Matrix4 Matrix4::mult(const Matrix4 &other) const
     return result;
 }
 
-Vector3 Matrix4::multPoint(const Vector3 &v) const
-{
+Vector3 Matrix4::multPoint(const Vector3 &v) const {
     Vector3 result;
     result.x = a * v.x + b * v.y + c * v.z + d;
     result.y = e * v.x + f * v.y + g * v.z + h;
@@ -82,30 +77,19 @@ Vector3 Matrix4::multPoint(const Vector3 &v) const
     return result;
 }
 
-Vector3 Matrix4::transform(const Vector3 &v) const
-{
+Vector3 Matrix4::transform(const Vector3 &v) const {
     double w = m * v.x + n * v.y + o * v.z + p;
-    if (w != 0.0)
-    {
+    if (w != 0.0) {
         w = 1.0 / w;
-        return Vector3(
-            (a * v.x + b * v.y + c * v.z + d) * w,
-            (e * v.x + f * v.y + g * v.z + h) * w,
-            (i * v.x + j * v.y + k * v.z + l) * w
-        );
-    }
-    else
-    {
-        return Vector3(
-            a * v.x + b * v.y + c * v.z + d,
-            e * v.x + f * v.y + g * v.z + h,
-            i * v.x + j * v.y + k * v.z + l
-        );
+        return Vector3((a * v.x + b * v.y + c * v.z + d) * w, (e * v.x + f * v.y + g * v.z + h) * w,
+                       (i * v.x + j * v.y + k * v.z + l) * w);
+    } else {
+        return Vector3(a * v.x + b * v.y + c * v.z + d, e * v.x + f * v.y + g * v.z + h,
+                       i * v.x + j * v.y + k * v.z + l);
     }
 }
 
-Matrix4 Matrix4::transposed() const
-{
+Matrix4 Matrix4::transposed() const {
     Matrix4 result;
     result.a = a;
     result.e = b;
@@ -126,8 +110,7 @@ Matrix4 Matrix4::transposed() const
     return result;
 }
 
-Matrix4 Matrix4::newScale(double x, double y, double z)
-{
+Matrix4 Matrix4::newScale(double x, double y, double z) {
     Matrix4 result;
     result.a = x;
     result.f = y;
@@ -135,8 +118,7 @@ Matrix4 Matrix4::newScale(double x, double y, double z)
     return result;
 }
 
-Matrix4 Matrix4::newTranslate(double x, double y, double z)
-{
+Matrix4 Matrix4::newTranslate(double x, double y, double z) {
     Matrix4 result;
     result.d = x;
     result.h = y;
@@ -144,8 +126,7 @@ Matrix4 Matrix4::newTranslate(double x, double y, double z)
     return result;
 }
 
-Matrix4 Matrix4::newRotateX(double angle)
-{
+Matrix4 Matrix4::newRotateX(double angle) {
     Matrix4 result;
     double si = sin(angle);
     double co = cos(angle);
@@ -155,8 +136,7 @@ Matrix4 Matrix4::newRotateX(double angle)
     return result;
 }
 
-Matrix4 Matrix4::newRotateY(double angle)
-{
+Matrix4 Matrix4::newRotateY(double angle) {
     Matrix4 result;
     double si = sin(angle);
     double co = cos(angle);
@@ -166,8 +146,7 @@ Matrix4 Matrix4::newRotateY(double angle)
     return result;
 }
 
-Matrix4 Matrix4::newRotateZ(double angle)
-{
+Matrix4 Matrix4::newRotateZ(double angle) {
     Matrix4 result;
     double si = sin(angle);
     double co = cos(angle);
@@ -177,8 +156,7 @@ Matrix4 Matrix4::newRotateZ(double angle)
     return result;
 }
 
-Matrix4 Matrix4::newRotateAxis(double angle, const Vector3 &_axis)
-{
+Matrix4 Matrix4::newRotateAxis(double angle, const Vector3 &_axis) {
     Matrix4 result;
     double si = sin(angle);
     double co = cos(angle);
@@ -196,8 +174,7 @@ Matrix4 Matrix4::newRotateAxis(double angle, const Vector3 &_axis)
     return result;
 }
 
-Matrix4 Matrix4::newRotateEuler(double heading, double attitude, double bank)
-{
+Matrix4 Matrix4::newRotateEuler(double heading, double attitude, double bank) {
     Matrix4 result;
     double ch = cos(heading);
     double sh = sin(heading);
@@ -217,8 +194,7 @@ Matrix4 Matrix4::newRotateEuler(double heading, double attitude, double bank)
     return result;
 }
 
-Matrix4 Matrix4::newRotateTripleAxis(const Vector3 &x, const Vector3 &y, const Vector3 &z)
-{
+Matrix4 Matrix4::newRotateTripleAxis(const Vector3 &x, const Vector3 &y, const Vector3 &z) {
     Matrix4 result;
     result.a = x.x;
     result.b = y.x;
@@ -232,8 +208,7 @@ Matrix4 Matrix4::newRotateTripleAxis(const Vector3 &x, const Vector3 &y, const V
     return result;
 }
 
-Matrix4 Matrix4::newLookAt(const Vector3 &eye, const Vector3 &at, const Vector3 &up)
-{
+Matrix4 Matrix4::newLookAt(const Vector3 &eye, const Vector3 &at, const Vector3 &up) {
     Vector3 z = at.sub(eye).normalize();
     Vector3 x = up.crossProduct(z).normalize();
     Vector3 y = z.crossProduct(x);
@@ -244,8 +219,7 @@ Matrix4 Matrix4::newLookAt(const Vector3 &eye, const Vector3 &at, const Vector3 
     return result.inversed();
 }
 
-Matrix4 Matrix4::newPerspective(double fov_y, double aspect, double near, double far)
-{
+Matrix4 Matrix4::newPerspective(double fov_y, double aspect, double near, double far) {
     Matrix4 result;
     double fo = 1 / tan(fov_y / 2.0);
     result.a = fo / aspect;
@@ -257,29 +231,16 @@ Matrix4 Matrix4::newPerspective(double fov_y, double aspect, double near, double
     return result;
 }
 
-double Matrix4::getDeterminant() const
-{
-    return ((a * f - e * b)
-            * (k * p - o * l)
-            - (a * j - i * b)
-            * (g * p - o * h)
-            + (a * n - m * b)
-            * (g * l - k * h)
-            + (e * j - i * f)
-            * (c * p - o * d)
-            - (e * n - m * f)
-            * (c * l - k * d)
-            + (i * n - m * j)
-            * (c * h - g * d));
+double Matrix4::getDeterminant() const {
+    return ((a * f - e * b) * (k * p - o * l) - (a * j - i * b) * (g * p - o * h) + (a * n - m * b) * (g * l - k * h) +
+            (e * j - i * f) * (c * p - o * d) - (e * n - m * f) * (c * l - k * d) + (i * n - m * j) * (c * h - g * d));
 }
 
-Matrix4 Matrix4::inversed() const
-{
+Matrix4 Matrix4::inversed() const {
     Matrix4 result;
     double det = getDeterminant();
 
-    if (fabs(det) >= 0.00001)
-    {
+    if (fabs(det) >= 0.00001) {
         det = 1.0 / det;
 
         result.a = det * (f * (k * p - o * l) + j * (o * h - g * p) + n * (g * l - k * h));
@@ -301,7 +262,6 @@ Matrix4 Matrix4::inversed() const
         result.h = det * (c * (i * h - e * l) + g * (a * l - i * d) + k * (e * d - a * h));
         result.l = det * (d * (i * f - e * j) + h * (a * j - i * b) + l * (e * b - a * f));
         result.p = det * (a * (f * k - j * g) + e * (j * c - b * k) + i * (b * g - f * c));
-
     }
 
     return result;

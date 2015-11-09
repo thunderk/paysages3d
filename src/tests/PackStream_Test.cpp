@@ -2,20 +2,18 @@
 
 #include "PackStream.h"
 
-TEST(PackStream, All)
-{
-    PackStream* stream;
+TEST(PackStream, All) {
+    PackStream *stream;
     int i;
     int data_i;
     double data_d;
-    const char* data_s;
+    const char *data_s;
     char buffer[100];
 
     /* Writing to pack */
     stream = new PackStream();
     stream->bindToFile("/tmp/test_paysages_pack", true);
-    for (i = 0; i < 5; i++)
-    {
+    for (i = 0; i < 5; i++) {
         data_i = i;
         stream->write(&data_i);
 
@@ -32,8 +30,7 @@ TEST(PackStream, All)
     /* Reading from pack */
     stream = new PackStream();
     stream->bindToFile("/tmp/test_paysages_pack");
-    for (i = 0; i < 5; i++)
-    {
+    for (i = 0; i < 5; i++) {
         stream->read(&data_i);
         ASSERT_EQ(i, data_i);
 
@@ -50,11 +47,10 @@ TEST(PackStream, All)
     delete stream;
 }
 
-TEST(PackStream, Skip)
-{
-    PackStream* stream;
-    int i1=1, i2=2, i3=3;
-    double d1=1.1, d2=2.2;
+TEST(PackStream, Skip) {
+    PackStream *stream;
+    int i1 = 1, i2 = 2, i3 = 3;
+    double d1 = 1.1, d2 = 2.2;
 
     stream = new PackStream();
     stream->bindToFile("/tmp/test_paysages_pack", true);

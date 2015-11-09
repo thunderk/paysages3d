@@ -10,13 +10,12 @@
 namespace paysages {
 namespace basics {
 
-class BASICSSHARED_EXPORT Matrix4
-{
-public:
-    Matrix4(bool identity=true);
+class BASICSSHARED_EXPORT Matrix4 {
+  public:
+    Matrix4(bool identity = true);
 
-    void save(PackStream* stream) const;
-    void load(PackStream* stream);
+    void save(PackStream *stream) const;
+    void load(PackStream *stream);
 
     Matrix4 mult(const Matrix4 &other) const;
     Vector3 multPoint(const Vector3 &v) const;
@@ -39,14 +38,11 @@ public:
 
 #ifdef QT_GUI_LIB
     inline QMatrix4x4 toQMatrix() const {
-        return QMatrix4x4(a, b, c, d,
-                          e, f, g, h,
-                          i, j, k, l,
-                          m, n, o, p);
+        return QMatrix4x4(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p);
     }
 #endif
 
-private:
+  private:
     double a;
     double b;
     double c;
@@ -64,7 +60,6 @@ private:
     double o;
     double p;
 };
-
 }
 }
 

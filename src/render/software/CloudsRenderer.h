@@ -11,10 +11,9 @@ namespace software {
 /*!
  * \brief Software renderer of a group of cloud layers.
  */
-class SOFTWARESHARED_EXPORT CloudsRenderer: public LightFilter
-{
-public:
-    CloudsRenderer(SoftwareRenderer* parent);
+class SOFTWARESHARED_EXPORT CloudsRenderer : public LightFilter {
+  public:
+    CloudsRenderer(SoftwareRenderer *parent);
     virtual ~CloudsRenderer();
 
     /**
@@ -39,14 +38,14 @@ public:
      *
      * The returned renderer is managed by this object and should not be deleted.
      */
-    virtual BaseCloudLayerRenderer* getLayerRenderer(unsigned int layer);
+    virtual BaseCloudLayerRenderer *getLayerRenderer(unsigned int layer);
 
     /*!
      * \brief Get the cloud model for a given layer.
      *
      * The returned model is managed by this object and should not be deleted.
      */
-    virtual BaseCloudsModel* getLayerModel(unsigned int layer);
+    virtual BaseCloudsModel *getLayerModel(unsigned int layer);
 
     /*!
      * \brief Override de default density model for a given layer.
@@ -54,7 +53,7 @@ public:
      * This must be called after each update().
      * Ownership of the model is taken.
      */
-    virtual void setLayerModel(unsigned int layer, BaseCloudsModel* model, bool delete_old=true);
+    virtual void setLayerModel(unsigned int layer, BaseCloudsModel *model, bool delete_old = true);
 
     /*!
      * \brief Get the composited color, as applied on a base color and location.
@@ -72,19 +71,19 @@ public:
      * Get the highest altitude of all layers.
      */
     double getHighestAltitude();
-private:
+
+  private:
     double quality;
 
     bool enabled;
-    SoftwareRenderer* parent;
+    SoftwareRenderer *parent;
 
-    std::vector<BaseCloudLayerRenderer*> layer_renderers;
-    BaseCloudLayerRenderer* fake_renderer;
+    std::vector<BaseCloudLayerRenderer *> layer_renderers;
+    BaseCloudLayerRenderer *fake_renderer;
 
-    std::vector<BaseCloudsModel*> layer_models;
-    BaseCloudsModel* fake_model;
+    std::vector<BaseCloudsModel *> layer_models;
+    BaseCloudsModel *fake_model;
 };
-
 }
 }
 

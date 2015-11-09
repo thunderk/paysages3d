@@ -7,9 +7,7 @@
 #include "IntNode.h"
 #include "FloatNode.h"
 
-WaterDefinition::WaterDefinition(DefinitionNode* parent):
-    DefinitionNode(parent, "water", "water")
-{
+WaterDefinition::WaterDefinition(DefinitionNode *parent) : DefinitionNode(parent, "water", "water") {
     model = new IntNode(this, "model", -1);
     reflection = new FloatNode(this, "reflection");
     xoffset = new FloatNode(this, "xoffset");
@@ -32,16 +30,14 @@ WaterDefinition::WaterDefinition(DefinitionNode* parent):
     model->addWatcher(this, true);
 }
 
-WaterDefinition::~WaterDefinition()
-{
+WaterDefinition::~WaterDefinition() {
     delete material;
     delete depth_color;
     delete foam_material;
     delete noise_state;
 }
 
-void WaterDefinition::save(PackStream* stream) const
-{
+void WaterDefinition::save(PackStream *stream) const {
     DefinitionNode::save(stream);
 
     material->save(stream);
@@ -61,8 +57,7 @@ void WaterDefinition::save(PackStream* stream) const
     noise_state->save(stream);
 }
 
-void WaterDefinition::load(PackStream* stream)
-{
+void WaterDefinition::load(PackStream *stream) {
     DefinitionNode::load(stream);
 
     material->load(stream);
@@ -84,11 +79,10 @@ void WaterDefinition::load(PackStream* stream)
     validate();
 }
 
-void WaterDefinition::copy(DefinitionNode* _destination) const
-{
+void WaterDefinition::copy(DefinitionNode *_destination) const {
     DefinitionNode::copy(_destination);
 
-    WaterDefinition* destination = (WaterDefinition*)_destination;
+    WaterDefinition *destination = (WaterDefinition *)_destination;
     *destination->material = *material;
     *destination->depth_color = *depth_color;
     destination->transparency_depth = transparency_depth;
@@ -103,8 +97,7 @@ void WaterDefinition::copy(DefinitionNode* _destination) const
     noise_state->copy(destination->noise_state);
 }
 
-void WaterDefinition::validate()
-{
+void WaterDefinition::validate() {
     DefinitionNode::validate();
 
     depth_color->a = 1.0;
@@ -121,14 +114,11 @@ void WaterDefinition::validate()
     foam_material->validate();
 }
 
-void WaterDefinition::nodeChanged(const DefinitionNode *node, const DefinitionDiff *)
-{
-    if (node == model)
-    {
+void WaterDefinition::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
+    if (node == model) {
         noise_state->randomizeOffsets();
 
-        switch (model->getValue())
-        {
+        switch (model->getValue()) {
         case 1:
             transparency = 0.3;
             reflection->setValue(0.07);
@@ -164,14 +154,10 @@ void WaterDefinition::nodeChanged(const DefinitionNode *node, const DefinitionDi
     }
 }
 
-void WaterDefinition::applyPreset(WaterPreset preset)
-{
-    if (preset == WATER_PRESET_LAKE)
-    {
+void WaterDefinition::applyPreset(WaterPreset preset) {
+    if (preset == WATER_PRESET_LAKE) {
         model->setValue(0);
-    }
-    else if (preset == WATER_PRESET_SEA)
-    {
+    } else if (preset == WATER_PRESET_SEA) {
         model->setValue(1);
     }
 }

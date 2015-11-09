@@ -11,9 +11,8 @@ namespace basics {
 /**
  * Infinite 3d geometric plane.
  */
-class BASICSSHARED_EXPORT InfinitePlane
-{
-public:
+class BASICSSHARED_EXPORT InfinitePlane {
+  public:
     InfinitePlane();
     InfinitePlane(const Vector3 &point, const Vector3 &normal);
 
@@ -24,19 +23,22 @@ public:
      *
      * Returns -1 if the ray is on the plane, and make for an infinite number of intersection points.
      */
-    int checkRayIntersection(const InfiniteRay& ray, Vector3 *intersection) const;
+    int checkRayIntersection(const InfiniteRay &ray, Vector3 *intersection) const;
 
-    inline const Vector3 &getPoint() const {return point;}
-    inline const Vector3 &getNormal() const {return normal;}
+    inline const Vector3 &getPoint() const {
+        return point;
+    }
+    inline const Vector3 &getNormal() const {
+        return normal;
+    }
 
     virtual void save(PackStream *stream) const;
     virtual void load(PackStream *stream);
 
-private:
+  private:
     Vector3 point;
     Vector3 normal;
 };
-
 }
 }
 

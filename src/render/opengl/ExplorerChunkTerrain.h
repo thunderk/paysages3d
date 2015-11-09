@@ -10,22 +10,20 @@ class QOpenGLShaderProgram;
 namespace paysages {
 namespace opengl {
 
-class OPENGLSHARED_EXPORT ExplorerChunkTerrain
-{
-public:
-    typedef struct
-    {
+class OPENGLSHARED_EXPORT ExplorerChunkTerrain {
+  public:
+    typedef struct {
         float location[3];
         float uv[2];
     } TerrainVertex;
 
-public:
-    ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, double z, double size, int nbchunks);
+  public:
+    ExplorerChunkTerrain(OpenGLRenderer *renderer, double x, double z, double size, int nbchunks);
     ~ExplorerChunkTerrain();
 
     bool maintain();
-    void updatePriority(CameraDefinition* camera);
-    void render(QOpenGLShaderProgram* program, OpenGLFunctions* functions);
+    void updatePriority(CameraDefinition *camera);
+    void render(QOpenGLShaderProgram *program, OpenGLFunctions *functions);
 
     void askReset(bool topology = true, bool texture = true);
     void askInterrupt();
@@ -35,7 +33,7 @@ public:
 
     double priority;
 
-private:
+  private:
     Vector3 getCenter();
 
     double _startx;
@@ -51,13 +49,13 @@ private:
 
     QMutex _lock_data;
 
-    OpenGLRenderer* _renderer;
+    OpenGLRenderer *_renderer;
 
     bool _reset_topology;
     bool _reset_texture;
     bool interrupt;
 
-    QImage* _texture;
+    QImage *_texture;
     unsigned int texture_id;
     bool _texture_changed;
     int _texture_current_size;
@@ -70,7 +68,6 @@ private:
     double highest;
     double distance_to_camera;
 };
-
 }
 }
 

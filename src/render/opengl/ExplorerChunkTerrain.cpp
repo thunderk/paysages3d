@@ -11,9 +11,8 @@
 #include "Scenery.h"
 #include "TerrainDefinition.h"
 
-ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, double z, double size, int nbchunks):
-    _renderer(renderer)
-{
+ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer *renderer, double x, double z, double size, int nbchunks)
+    : _renderer(renderer) {
     priority = 0.0;
     _reset_topology = false;
     _reset_texture = false;
@@ -30,7 +29,7 @@ ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, d
     _startx = x;
     _startz = z;
     _size = size;
-    _overall_step = size * (double) nbchunks;
+    _overall_step = size * (double)nbchunks;
 
     distance_to_camera = 0.0;
     underwater = false;
@@ -43,70 +42,60 @@ ExplorerChunkTerrain::ExplorerChunkTerrain(OpenGLRenderer* renderer, double x, d
     tessellated->setAutoGridIndices(tessellation_count);
     _tessellation_max_size = tessellation_count - 1;
     _tessellation_current_size = 0;
-    _tessellation_step = _size / (double) _tessellation_max_size;
+    _tessellation_step = _size / (double)_tessellation_max_size;
 
     maintain();
 }
 
-ExplorerChunkTerrain::~ExplorerChunkTerrain()
-{
+ExplorerChunkTerrain::~ExplorerChunkTerrain() {
     _lock_data.lock();
     delete _texture;
     delete tessellated;
     _lock_data.unlock();
 }
 
-bool ExplorerChunkTerrain::maintain()
-{
+bool ExplorerChunkTerrain::maintain() {
     bool subchanged;
 
     _lock_data.lock();
-    if (_reset_topology)
-    {
+    if (_reset_topology) {
         _reset_topology = false;
         _tessellation_current_size = 0;
         lowest = 10000.0;
         highest = -10000.0;
         underwater = false;
     }
-    if (_reset_texture)
-    {
+    if (_reset_texture) {
         _reset_texture = false;
         _texture_current_size = 0;
         underwater = false;
     }
     _lock_data.unlock();
 
-    if (underwater)
-    {
+    if (underwater) {
         return false;
     }
 
     // Improve heightmap resolution
-    if (_tessellation_current_size < _tessellation_max_size)
-    {
-        while (_tessellation_current_size < _tessellation_max_size)
-        {
+    if (_tessellation_current_size < _tessellation_max_size) {
+        while (_tessellation_current_size < _tessellation_max_size) {
             int new_tessellation_size = _tessellation_current_size ? _tessellation_current_size * 4 : 4;
-            int old_tessellation_inc = _tessellation_current_size ? _tessellation_max_size / _tessellation_current_size : 1;
+            int old_tessellation_inc =
+                _tessellation_current_size ? _tessellation_max_size / _tessellation_current_size : 1;
             int new_tessellation_inc = _tessellation_max_size / new_tessellation_size;
             float internal_step = 1.0f / (float)_tessellation_max_size;
-            for (int j = 0; j <= _tessellation_max_size; j += new_tessellation_inc)
-            {
-                for (int i = 0; i <= _tessellation_max_size; i += new_tessellation_inc)
-                {
-                    if (_tessellation_current_size == 0 || i % old_tessellation_inc != 0 || j % old_tessellation_inc != 0)
-                    {
+            for (int j = 0; j <= _tessellation_max_size; j += new_tessellation_inc) {
+                for (int i = 0; i <= _tessellation_max_size; i += new_tessellation_inc) {
+                    if (_tessellation_current_size == 0 || i % old_tessellation_inc != 0 ||
+                        j % old_tessellation_inc != 0) {
                         double x = _startx + _tessellation_step * (float)i;
                         double z = _startz + _tessellation_step * (float)j;
 
                         double height = _renderer->getTerrainRenderer()->getHeight(x, z, true, false);
-                        if (height >= highest)
-                        {
+                        if (height >= highest) {
                             highest = height;
                         }
-                        if (height <= lowest)
-                        {
+                        if (height <= lowest) {
                             lowest = height;
                         }
 
@@ -122,8 +111,7 @@ bool ExplorerChunkTerrain::maintain()
                         tessellated->setGridVertex(tessellation_count, i, j, v);
                     }
                 }
-                if (interrupt or _reset_topology)
-                {
+                if (interrupt or _reset_topology) {
                     return false;
                 }
             }
@@ -135,37 +123,31 @@ bool ExplorerChunkTerrain::maintain()
             tessellated->setAutoGridIndices(tessellation_count, new_tessellation_inc);
             _lock_data.unlock();
 
-            if (_tessellation_current_size >= 4)
-            {
+            if (_tessellation_current_size >= 4) {
                 break;
             }
         }
         subchanged = true;
-    }
-    else
-    {
+    } else {
         subchanged = false;
     }
 
     // Improve texture resolution
-    if (_texture_current_size < _texture_wanted_size)
-    {
+    if (_texture_current_size < _texture_wanted_size) {
         int new_texture_size = _texture_current_size ? _texture_current_size * 2 : 1;
-        QImage* new_image = new QImage(_texture->scaled(new_texture_size + 1, new_texture_size + 1, Qt::IgnoreAspectRatio, Qt::FastTransformation));
-        for (int j = 0; j <= new_texture_size; j++)
-        {
-            for (int i = 0; i <= new_texture_size; i++)
-            {
-                if (_texture_current_size <= 1 || i % 2 != 0 || j % 2 != 0)
-                {
-                    Color color = getTextureColor((double)i / (double)new_texture_size, (double)j / (double)new_texture_size);
+        QImage *new_image = new QImage(_texture->scaled(new_texture_size + 1, new_texture_size + 1,
+                                                        Qt::IgnoreAspectRatio, Qt::FastTransformation));
+        for (int j = 0; j <= new_texture_size; j++) {
+            for (int i = 0; i <= new_texture_size; i++) {
+                if (_texture_current_size <= 1 || i % 2 != 0 || j % 2 != 0) {
+                    Color color =
+                        getTextureColor((double)i / (double)new_texture_size, (double)j / (double)new_texture_size);
                     color.normalize();
                     new_image->setPixel(i, j, color.to32BitRGBA());
                 }
             }
 
-            if (interrupt or _reset_texture)
-            {
+            if (interrupt or _reset_texture) {
                 return false;
             }
         }
@@ -178,19 +160,15 @@ bool ExplorerChunkTerrain::maintain()
         _lock_data.unlock();
 
         return true;
-    }
-    else
-    {
+    } else {
         return subchanged;
     }
 }
 
-void ExplorerChunkTerrain::updatePriority(CameraDefinition* camera)
-{
+void ExplorerChunkTerrain::updatePriority(CameraDefinition *camera) {
     // Under water check
     underwater = highest < -_renderer->getScenery()->getTerrain()->getWaterOffset();
-    if (underwater)
-    {
+    if (underwater) {
         priority = -10000.0;
         return;
     }
@@ -199,23 +177,19 @@ void ExplorerChunkTerrain::updatePriority(CameraDefinition* camera)
 
     // Handle position
     _lock_data.lock();
-    if (camera_location.x > _startx + _overall_step * 0.5)
-    {
+    if (camera_location.x > _startx + _overall_step * 0.5) {
         _startx += _overall_step;
         askReset();
     }
-    if (camera_location.z > _startz + _overall_step * 0.5)
-    {
+    if (camera_location.z > _startz + _overall_step * 0.5) {
         _startz += _overall_step;
         askReset();
     }
-    if (camera_location.x < _startx - _overall_step * 0.5)
-    {
+    if (camera_location.x < _startx - _overall_step * 0.5) {
         _startx -= _overall_step;
         askReset();
     }
-    if (camera_location.z < _startz - _overall_step * 0.5)
-    {
+    if (camera_location.z < _startz - _overall_step * 0.5) {
         _startz -= _overall_step;
         askReset();
     }
@@ -223,57 +197,41 @@ void ExplorerChunkTerrain::updatePriority(CameraDefinition* camera)
     _lock_data.unlock();
 
     // Update wanted LOD
-    if (distance_to_camera < 60.0)
-    {
+    if (distance_to_camera < 60.0) {
         _texture_wanted_size = _texture_max_size;
-    }
-    else if (distance_to_camera < 140.0)
-    {
+    } else if (distance_to_camera < 140.0) {
         _texture_wanted_size = _texture_max_size / 4;
-    }
-    else if (distance_to_camera < 300.0)
-    {
+    } else if (distance_to_camera < 300.0) {
         _texture_wanted_size = _texture_max_size / 8;
-    }
-    else
-    {
+    } else {
         _texture_wanted_size = 8;
     }
 
     // Update priority
-    if (_reset_topology || _reset_texture || (_texture_max_size > 1 && _texture_current_size <= 1))
-    {
+    if (_reset_topology || _reset_texture || (_texture_max_size > 1 && _texture_current_size <= 1)) {
         priority = 1000.0;
-    }
-    else if (_texture_current_size == _texture_wanted_size)
-    {
+    } else if (_texture_current_size == _texture_wanted_size) {
         priority = -1000.0;
-    }
-    else
-    {
+    } else {
         priority = _texture_wanted_size / _texture_current_size;
     }
-
 }
 
-void ExplorerChunkTerrain::render(QOpenGLShaderProgram* program, OpenGLFunctions* functions)
-{
-    if (underwater)
-    {
+void ExplorerChunkTerrain::render(QOpenGLShaderProgram *program, OpenGLFunctions *functions) {
+    if (underwater) {
         return;
     }
 
     // Put texture in place
     _lock_data.lock();
-    if (_texture_changed)
-    {
+    if (_texture_changed) {
         _texture_changed = false;
 
         // TODO Only do the scale if not power-of-two textures are unsupported by GPU
-        QImage tex = _texture->scaled(_texture_current_size, _texture_current_size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        QImage tex = _texture->scaled(_texture_current_size, _texture_current_size, Qt::IgnoreAspectRatio,
+                                      Qt::SmoothTransformation);
 
-        if (texture_id == 0)
-        {
+        if (texture_id == 0) {
             GLuint texid;
             functions->glGenTextures(1, &texid);
             texture_id = texid;
@@ -284,19 +242,18 @@ void ExplorerChunkTerrain::render(QOpenGLShaderProgram* program, OpenGLFunctions
         functions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         functions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         functions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        functions->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex.width(), tex.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
+        functions->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex.width(), tex.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                                tex.bits());
     }
     _lock_data.unlock();
 
     // Render tessellated mesh
-    if (!_reset_topology)
-    {
+    if (!_reset_topology) {
         _lock_data.lock();
         int tessellation_size = _tessellation_current_size;
         _lock_data.unlock();
 
-        if (tessellation_size <= 1)
-        {
+        if (tessellation_size <= 1) {
             return;
         }
 
@@ -310,30 +267,25 @@ void ExplorerChunkTerrain::render(QOpenGLShaderProgram* program, OpenGLFunctions
     }
 }
 
-void ExplorerChunkTerrain::askReset(bool topology, bool texture)
-{
+void ExplorerChunkTerrain::askReset(bool topology, bool texture) {
     _reset_topology = _reset_topology or topology;
     _reset_texture = _reset_texture or texture;
 }
 
-void ExplorerChunkTerrain::askInterrupt()
-{
+void ExplorerChunkTerrain::askInterrupt() {
     interrupt = true;
 }
 
-void ExplorerChunkTerrain::askResume()
-{
+void ExplorerChunkTerrain::askResume() {
     interrupt = false;
 }
 
-Color ExplorerChunkTerrain::getTextureColor(double x, double y)
-{
+Color ExplorerChunkTerrain::getTextureColor(double x, double y) {
     Vector3 location = {_startx + x * _size, 0.0, _startz + y * _size};
     return _renderer->getTerrainRenderer()->getFinalColor(location, 0.01);
 }
 
-Vector3 ExplorerChunkTerrain::getCenter()
-{
+Vector3 ExplorerChunkTerrain::getCenter() {
     Vector3 result;
 
     result.x = _startx + _size / 2.0;

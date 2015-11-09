@@ -2,16 +2,14 @@
 
 #include "CanvasPixel.h"
 
-TEST(CanvasPixel, MaxFragments)
-{
+TEST(CanvasPixel, MaxFragments) {
     CanvasPixel pixel;
 
     // One opaque fragment
     pixel.pushFragment(CanvasFragment(true, Vector3(0.0, 0.0, 0.0), Vector3(), 0, true));
 
     // Overflow max fragment count with transparent fragments
-    for (int i = 0; i < MAX_FRAGMENTS_PER_PIXEL * 2; i++)
-    {
+    for (int i = 0; i < MAX_FRAGMENTS_PER_PIXEL * 2; i++) {
         pixel.pushFragment(CanvasFragment(true, Vector3(0.0, 0.0, (double)i), Vector3(), 0, false));
     }
 
@@ -22,8 +20,7 @@ TEST(CanvasPixel, MaxFragments)
     EXPECT_EQ(pixel.getFragment(MAX_FRAGMENTS_PER_PIXEL - 1).getOpaque(), false);
 }
 
-TEST(CanvasPixel, SameTransparent)
-{
+TEST(CanvasPixel, SameTransparent) {
     CanvasPixel pixel;
 
     pixel.pushFragment(CanvasFragment(true, Vector3(0.0, 0.0, 1.4), Vector3(), 0, false));
@@ -39,8 +36,7 @@ TEST(CanvasPixel, SameTransparent)
     EXPECT_EQ(pixel.getFragment(1).getClient(), 1);
 }
 
-TEST(CanvasPixel, SameOpaque)
-{
+TEST(CanvasPixel, SameOpaque) {
     CanvasPixel pixel;
 
     pixel.pushFragment(CanvasFragment(true, Vector3(0.0, 0.0, 1.4), Vector3(), 0, true));

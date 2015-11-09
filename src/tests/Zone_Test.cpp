@@ -4,21 +4,19 @@
 #include "Vector3.h"
 
 class Zone_Test : public BaseTestCase {
-protected:
+  protected:
     virtual void SetUp() {
         zone = new Zone;
     }
 
-    virtual void TearDown()
-    {
+    virtual void TearDown() {
         delete zone;
     }
 
-    Zone* zone;
+    Zone *zone;
 };
 
-TEST_F(Zone_Test, absolute_height)
-{
+TEST_F(Zone_Test, absolute_height) {
     zone->addHeightRangeQuick(1.0, -1.0, 2.0, 5.0, 6.0);
 
     EXPECT_DOUBLE_EQ(zone->getValue(Vector3(0.0, -10.0, 0.0), VECTOR_UP), 0.0);
@@ -39,8 +37,7 @@ TEST_F(Zone_Test, absolute_height)
     EXPECT_DOUBLE_EQ(zone->getValue(Vector3(0.0, 150.0, 0.0), VECTOR_UP), 0.0);
 }
 
-TEST_F(Zone_Test, relative_height)
-{
+TEST_F(Zone_Test, relative_height) {
     zone->addHeightRangeQuick(1.0, 0.2, 0.3, 0.6, 0.9);
     zone->setRelativeHeight(-2.0, 2.0, 8.0);
 

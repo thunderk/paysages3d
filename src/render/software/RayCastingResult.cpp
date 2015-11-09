@@ -1,6 +1,5 @@
 #include "RayCastingResult.h"
 
-RayCastingResult::RayCastingResult()
-{
+RayCastingResult::RayCastingResult() {
     hit = false;
 }

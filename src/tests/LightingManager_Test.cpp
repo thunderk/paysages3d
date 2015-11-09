@@ -4,16 +4,13 @@
 #include "LightSource.h"
 #include "LightFilter.h"
 
-class FakeLightSource: public LightSource
-{
-    virtual bool getLightsAt(std::vector<LightComponent> &, const Vector3 &) const override
-    {
+class FakeLightSource : public LightSource {
+    virtual bool getLightsAt(std::vector<LightComponent> &, const Vector3 &) const override {
         return false;
     }
 };
 
-TEST(LightingManager, registerSource)
-{
+TEST(LightingManager, registerSource) {
     LightingManager manager;
     FakeLightSource source;
 
@@ -32,16 +29,13 @@ TEST(LightingManager, registerSource)
     EXPECT_EQ(0, manager.getSourcesCount());
 }
 
-class FakeLightFilter: public LightFilter
-{
-    virtual bool applyLightFilter(LightComponent &, const Vector3 &) override
-    {
+class FakeLightFilter : public LightFilter {
+    virtual bool applyLightFilter(LightComponent &, const Vector3 &) override {
         return false;
     }
 };
 
-TEST(LightingManager, registerFilter)
-{
+TEST(LightingManager, registerFilter) {
     LightingManager manager;
     FakeLightFilter filter;
 
@@ -59,4 +53,3 @@ TEST(LightingManager, registerFilter)
 
     EXPECT_EQ(0, manager.getFiltersCount());
 }
-

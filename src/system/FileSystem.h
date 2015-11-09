@@ -6,9 +6,8 @@
 namespace paysages {
 namespace system {
 
-class SYSTEMSHARED_EXPORT FileSystem
-{
-public:
+class SYSTEMSHARED_EXPORT FileSystem {
+  public:
     /**
      * Get an absolute path to a temporary file.
      *
@@ -21,7 +20,6 @@ public:
      */
     static bool isFile(const std::string &filepath);
 };
-
 }
 }
 

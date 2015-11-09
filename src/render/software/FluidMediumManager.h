@@ -9,7 +9,7 @@ namespace paysages {
 namespace software {
 
 typedef struct {
-    FluidMediumInterface* medium;
+    FluidMediumInterface *medium;
     SpaceSegment segment;
 } FluidMediumSegment;
 
@@ -20,9 +20,8 @@ typedef struct {
  * medium density and properties.
  * It is mainly used to compute the alteration made by such media on light.
  */
-class SOFTWARESHARED_EXPORT FluidMediumManager
-{
-public:
+class SOFTWARESHARED_EXPORT FluidMediumManager {
+  public:
     FluidMediumManager(SoftwareRenderer *renderer);
     virtual ~FluidMediumManager();
 
@@ -50,11 +49,10 @@ public:
      */
     virtual int getTraversedMedia(FluidMediumSegment segments[], const SpaceSegment &ray, int max_segments) const;
 
-private:
+  private:
     SoftwareRenderer *renderer;
-    std::vector<FluidMediumInterface*> media;
+    std::vector<FluidMediumInterface *> media;
 };
-
 }
 }
 

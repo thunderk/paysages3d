@@ -9,15 +9,20 @@ namespace software {
 /**
  * @brief Smaller preview of a Canvas rendering, that can be watched live.
  */
-class SOFTWARESHARED_EXPORT CanvasPreview
-{
-public:
+class SOFTWARESHARED_EXPORT CanvasPreview {
+  public:
     CanvasPreview();
     ~CanvasPreview();
 
-    inline int getWidth() const {return width;}
-    inline int getHeight() const {return height;}
-    inline const ColorProfile *getToneMapping() const {return profile;}
+    inline int getWidth() const {
+        return width;
+    }
+    inline int getHeight() const {
+        return height;
+    }
+    inline const ColorProfile *getToneMapping() const {
+        return profile;
+    }
 
     const Color &getFinalPixel(int x, int y) const;
 
@@ -30,10 +35,10 @@ public:
 
     void pushPixel(int real_x, int real_y, const Color &old_color, const Color &new_color);
 
-protected:
+  protected:
     void setAllDirty();
 
-private:
+  private:
     Mutex *lock;
 
     Color *pixels;
@@ -52,7 +57,6 @@ private:
     double factor_x;
     double factor_y;
 };
-
 }
 }
 

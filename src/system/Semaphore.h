@@ -5,20 +5,20 @@
 
 #include <QSemaphore>
 
-namespace paysages
-{
-namespace system
-{
+namespace paysages {
+namespace system {
 
-class Semaphore: private QSemaphore
-{
-public:
+class Semaphore : private QSemaphore {
+  public:
     Semaphore(int resources);
 
-    inline void acquire() {QSemaphore::acquire();}
-    inline void release() {QSemaphore::release();}
+    inline void acquire() {
+        QSemaphore::acquire();
+    }
+    inline void release() {
+        QSemaphore::release();
+    }
 };
-
 }
 }
 

@@ -15,14 +15,19 @@ namespace software {
  *
  * A pixel stores superimposed fragments (CanvasFragment), sorted by their distance to camera.
  */
-class SOFTWARESHARED_EXPORT CanvasPixel
-{
-public:
+class SOFTWARESHARED_EXPORT CanvasPixel {
+  public:
     CanvasPixel();
 
-    inline int getFragmentCount() const {return count;}
-    inline const Color &getComposite() const {return composite;}
-    inline const CanvasFragment &getFragment(int position) const {return fragments[position];}
+    inline int getFragmentCount() const {
+        return count;
+    }
+    inline const Color &getComposite() const {
+        return composite;
+    }
+    inline const CanvasFragment &getFragment(int position) const {
+        return fragments[position];
+    }
     const CanvasFragment *getFrontFragment() const;
 
     void reset();
@@ -30,12 +35,11 @@ public:
     void updateComposite();
     void setComposite(const Color &color);
 
-private:
+  private:
     int count;
     CanvasFragment fragments[MAX_FRAGMENTS_PER_PIXEL];
     Color composite;
 };
-
 }
 }
 

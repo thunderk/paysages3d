@@ -16,19 +16,30 @@ namespace software {
  *
  * It tries to keep a canvas portion rasterized ahead of the post processing.
  */
-class SOFTWARESHARED_EXPORT SoftwareCanvasRenderer: public SoftwareRenderer
-{
-public:
+class SOFTWARESHARED_EXPORT SoftwareCanvasRenderer : public SoftwareRenderer {
+  public:
     SoftwareCanvasRenderer(Scenery *scenery);
     virtual ~SoftwareCanvasRenderer();
 
-    inline const Canvas *getCanvas() const {return canvas;}
-    inline RenderProgress *getProgressHelper() const {return progress;}
-    inline bool isFinished() const {return finished;}
+    inline const Canvas *getCanvas() const {
+        return canvas;
+    }
+    inline RenderProgress *getProgressHelper() const {
+        return progress;
+    }
+    inline bool isFinished() const {
+        return finished;
+    }
 
-    inline Rasterizer *getSkyRasterizer() const {return rasterizers[0];}
-    inline Rasterizer *getWaterRasterizer() const {return rasterizers[1];}
-    inline Rasterizer *getTerrainRasterizer() const {return rasterizers[2];}
+    inline Rasterizer *getSkyRasterizer() const {
+        return rasterizers[0];
+    }
+    inline Rasterizer *getWaterRasterizer() const {
+        return rasterizers[1];
+    }
+    inline Rasterizer *getTerrainRasterizer() const {
+        return rasterizers[2];
+    }
 
     virtual void setQuality(double factor) override;
 
@@ -59,7 +70,7 @@ public:
      *
      * Set 'samples' to something bigger than 1 to allow for the multi-sampling of pixels.
      */
-    void setSize(int width, int height, int samples=1);
+    void setSize(int width, int height, int samples = 1);
 
     /**
      * @brief Start the two-pass render process.
@@ -83,7 +94,7 @@ public:
      */
     bool saveToDisk(const std::string &filepath) const;
 
-protected:
+  protected:
     /**
      * @brief Rasterize the scenery into a canvas portion.
      */
@@ -94,12 +105,12 @@ protected:
      */
     void applyPixelShader(CanvasPortion *portion);
 
-private:
+  private:
     RenderProgress *progress;
 
     Canvas *canvas;
     int samples;
-    std::vector<Rasterizer*> rasterizers;
+    std::vector<Rasterizer *> rasterizers;
     bool started;
     bool finished;
     bool interrupted;
@@ -108,7 +119,6 @@ private:
 
     ParallelWork *current_work;
 };
-
 }
 }
 

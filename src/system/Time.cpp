@@ -4,8 +4,6 @@
 
 static QTime EPOCH = QTime::currentTime();
 
-unsigned long Time::getRelativeTimeMs()
-{
+unsigned long Time::getRelativeTimeMs() {
     return EPOCH.msecsTo(QTime::currentTime());
 }
-

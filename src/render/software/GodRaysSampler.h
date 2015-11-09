@@ -9,16 +9,23 @@ namespace software {
 /**
  * 3D sampler for "god rays".
  */
-class SOFTWARESHARED_EXPORT GodRaysSampler
-{
-public:
+class SOFTWARESHARED_EXPORT GodRaysSampler {
+  public:
     GodRaysSampler();
     ~GodRaysSampler();
 
-    inline const SpaceSegment &getBounds() const {return *bounds;}
-    inline double getSamplingStep() const {return sampling_step;}
-    inline double getMaxLength() const {return max_length;}
-    inline double getWalkStep() const {return walk_step;}
+    inline const SpaceSegment &getBounds() const {
+        return *bounds;
+    }
+    inline double getSamplingStep() const {
+        return sampling_step;
+    }
+    inline double getMaxLength() const {
+        return max_length;
+    }
+    inline double getWalkStep() const {
+        return walk_step;
+    }
 
     /**
      * Prepare the sampler from a renderer.
@@ -92,10 +99,10 @@ public:
      */
     Color apply(const Color &raw, const Color &atmosphered, const Vector3 &location);
 
-private:
+  private:
     double getCache(int x, int y, int z);
 
-private:
+  private:
     bool enabled;
     SpaceSegment *bounds;
 
@@ -117,7 +124,6 @@ private:
 
     double *data;
 };
-
 }
 }
 

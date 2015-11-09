@@ -2,8 +2,8 @@
 
 #include "AtmosphereDefinition.h"
 
-static void check_daytime(const AtmosphereDefinition &atmo, int expected_hour, int expected_minute=0, int expected_second=0)
-{
+static void check_daytime(const AtmosphereDefinition &atmo, int expected_hour, int expected_minute = 0,
+                          int expected_second = 0) {
     int hour, minute, second;
     atmo.getHMS(&hour, &minute, &second);
     EXPECT_EQ(expected_hour, hour);
@@ -11,8 +11,7 @@ static void check_daytime(const AtmosphereDefinition &atmo, int expected_hour, i
     EXPECT_EQ(expected_second, second);
 }
 
-TEST(AtmosphereDefinition, setDayTime)
-{
+TEST(AtmosphereDefinition, setDayTime) {
     AtmosphereDefinition atmo(NULL);
 
     atmo.setDayTime(0.0);

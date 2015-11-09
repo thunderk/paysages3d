@@ -13,21 +13,28 @@ namespace software {
  *
  * Pixels are not allocated until preparePixels is called.
  */
-class SOFTWARESHARED_EXPORT CanvasPortion
-{
-public:
-    CanvasPortion(int index=0, CanvasPreview *preview=NULL);
+class SOFTWARESHARED_EXPORT CanvasPortion {
+  public:
+    CanvasPortion(int index = 0, CanvasPreview *preview = NULL);
     virtual ~CanvasPortion();
 
-    inline int getWidth() const {return width;}
-    inline int getHeight() const {return height;}
-    inline int getXOffset() const {return xoffset;}
-    inline int getYOffset() const {return yoffset;}
+    inline int getWidth() const {
+        return width;
+    }
+    inline int getHeight() const {
+        return height;
+    }
+    inline int getXOffset() const {
+        return xoffset;
+    }
+    inline int getYOffset() const {
+        return yoffset;
+    }
     int getFragmentCount(int x, int y) const;
     const CanvasFragment *getFrontFragment(int x, int y) const;
 
     void clear();
-    void setSize(int width, int height, int xoffset=0, int yoffset=0);
+    void setSize(int width, int height, int xoffset = 0, int yoffset = 0);
 
     /**
      * Prepare (allocate in memory) the pixels area.
@@ -39,7 +46,7 @@ public:
      *
      * If save is true, the portion will be saved to disk before.
      */
-    void discardPixels(bool save=true);
+    void discardPixels(bool save = true);
 
     /**
      * Save the portion to a picture file on disk.
@@ -51,7 +58,7 @@ public:
      *
      * Returns true if the stream was successfully located, false if it was not possible.
      */
-    bool getReadStream(PackStream &stream, int x=0, int y=0);
+    bool getReadStream(PackStream &stream, int x = 0, int y = 0);
 
     /**
      * Add a fragment to the pixel located at (x, y).
@@ -74,7 +81,7 @@ public:
      */
     void setColor(int x, int y, const Color &color);
 
-private:
+  private:
     int index;
     int width;
     int height;
@@ -84,7 +91,6 @@ private:
     CanvasPreview *preview;
     std::string filepath;
 };
-
 }
 }
 

@@ -13,23 +13,20 @@
 #include "CanvasPreview.h"
 #include "OpenGLRenderer.h"
 
-class RenderThread: public Thread
-{
-public:
-    RenderThread(SoftwareCanvasRenderer *renderer): renderer(renderer)
-    {
+class RenderThread : public Thread {
+  public:
+    RenderThread(SoftwareCanvasRenderer *renderer) : renderer(renderer) {
     }
-    virtual void run() override
-    {
+    virtual void run() override {
         renderer->render();
     }
-private:
+
+  private:
     SoftwareCanvasRenderer *renderer;
 };
 
-RenderProcess::RenderProcess(MainModelerWindow *window, RenderPreviewProvider *destination):
-    window(window), destination(destination)
-{
+RenderProcess::RenderProcess(MainModelerWindow *window, RenderPreviewProvider *destination)
+    : window(window), destination(destination) {
     has_render = false;
     rendering = false;
     renderer = NULL;
@@ -69,31 +66,25 @@ RenderProcess::RenderProcess(MainModelerWindow *window, RenderPreviewProvider *d
     startTimer(100);
 }
 
-RenderProcess::~RenderProcess()
-{
-    if (rendering)
-    {
+RenderProcess::~RenderProcess() {
+    if (rendering) {
         renderer->interrupt();
     }
 
     rendering = false;
 
-    if (render_thread)
-    {
+    if (render_thread) {
         render_thread->join();
         delete render_thread;
     }
 
-    if (renderer)
-    {
+    if (renderer) {
         delete renderer;
     }
 }
 
-void RenderProcess::startRender(Scenery *scenery, const RenderConfig &config)
-{
-    if (rendering)
-    {
+void RenderProcess::startRender(Scenery *scenery, const RenderConfig &config) {
+    if (rendering) {
         return;
     }
 
@@ -104,8 +95,7 @@ void RenderProcess::startRender(Scenery *scenery, const RenderConfig &config)
     has_render = true;
     rendering = true;
 
-    if (renderer)
-    {
+    if (renderer) {
         delete renderer;
     }
 
@@ -133,25 +123,20 @@ void RenderProcess::startRender(Scenery *scenery, const RenderConfig &config)
     window->setState("Render Dialog");
 }
 
-void RenderProcess::startQuickRender()
-{
+void RenderProcess::startQuickRender() {
     startRender(window->getScenery(), RenderConfig(480, 270, 1, 3));
 }
 
-void RenderProcess::startMediumRender()
-{
+void RenderProcess::startMediumRender() {
     startRender(window->getScenery(), RenderConfig(800, 450, 1, 5));
 }
 
-void RenderProcess::startFinalRender()
-{
+void RenderProcess::startFinalRender() {
     startRender(window->getScenery(), RenderConfig(1920, 1080, 4, 8));
 }
 
-void RenderProcess::showPreviousRender()
-{
-    if (not rendering and has_render)
-    {
+void RenderProcess::showPreviousRender() {
+    if (not rendering and has_render) {
         destination->setCanvas(renderer->getCanvas());
         destination->releaseCanvas();
 
@@ -159,40 +144,29 @@ void RenderProcess::showPreviousRender()
     }
 }
 
-void RenderProcess::stopRender()
-{
-    if (rendering)
-    {
+void RenderProcess::stopRender() {
+    if (rendering) {
         renderer->interrupt();
-    }
-    else
-    {
+    } else {
         destination->hide();
         window->setState(window->rootObject()->property("previous_state").toString());
     }
 }
 
-void RenderProcess::savePicture(QString path)
-{
+void RenderProcess::savePicture(QString path) {
     renderer->saveToDisk(path.replace("file://", "").toStdString());
 }
 
-const QSize RenderProcess::getPreviewSize()
-{
-    if (renderer)
-    {
+const QSize RenderProcess::getPreviewSize() {
+    if (renderer) {
         return QSize(renderer->getCanvas()->getPreview()->getWidth(), renderer->getCanvas()->getPreview()->getHeight());
-    }
-    else
-    {
+    } else {
         return QSize(10, 10);
     }
 }
 
-void RenderProcess::timerEvent(QTimerEvent *)
-{
-    if (rendering and renderer->isFinished())
-    {
+void RenderProcess::timerEvent(QTimerEvent *) {
+    if (rendering and renderer->isFinished()) {
         destination->releaseCanvas();
         rendering = false;
 
@@ -204,15 +178,12 @@ void RenderProcess::timerEvent(QTimerEvent *)
         window->getRenderer()->resume();
     }
 
-    if (renderer)
-    {
+    if (renderer) {
         QTime t = QTime(0, 0, 0).addMSecs(renderer->getProgressHelper()->getDuration());
         QString info = QString("Elapsed time: ") + t.toString("hh:mm:ss");
-        if (rendering)
-        {
+        if (rendering) {
             unsigned long remaining = renderer->getProgressHelper()->estimateRemainingTime();
-            if (remaining > 0)
-            {
+            if (remaining > 0) {
                 t = QTime(0, 0, 0).addMSecs(999 + remaining);
                 info += " - Remaining: ~" + t.toString("hh:mm:ss");
             }

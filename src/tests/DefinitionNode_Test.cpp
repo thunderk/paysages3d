@@ -5,8 +5,7 @@
 #include "PackStream.h"
 #include "DefinitionWatcher.h"
 
-TEST(DefinitionNode, toString)
-{
+TEST(DefinitionNode, toString) {
     DefinitionNode root(NULL, "root");
     DefinitionNode branch(&root, "branch");
     DefinitionNode leaf1(&branch, "leaf1");
@@ -16,8 +15,7 @@ TEST(DefinitionNode, toString)
     EXPECT_EQ("branch\n leaf1\n leaf2", branch.toString());
 }
 
-TEST(DefinitionNode, getPath)
-{
+TEST(DefinitionNode, getPath) {
     DefinitionNode root(NULL, "root");
     DefinitionNode branch(&root, "branch");
     DefinitionNode leaf(&branch, "leaf");
@@ -27,15 +25,12 @@ TEST(DefinitionNode, getPath)
     EXPECT_EQ("/branch/leaf", leaf.getPath());
 }
 
-class FakeWatcher: public DefinitionWatcher
-{
-    virtual void nodeChanged(const DefinitionNode *, const DefinitionDiff *) override
-    {
+class FakeWatcher : public DefinitionWatcher {
+    virtual void nodeChanged(const DefinitionNode *, const DefinitionDiff *) override {
     }
 };
 
-TEST(DefinitionNode, addWatcher)
-{
+TEST(DefinitionNode, addWatcher) {
     DefinitionNode root(NULL, "root");
     FakeWatcher watcher;
 
@@ -46,8 +41,7 @@ TEST(DefinitionNode, addWatcher)
     EXPECT_EQ(1, root.getWatcherCount());
 }
 
-TEST(DefinitionNode, findByPath)
-{
+TEST(DefinitionNode, findByPath) {
     DefinitionNode root(NULL, "root");
     DefinitionNode branch(&root, "branch");
     DefinitionNode leaf(&branch, "leaf");
@@ -64,11 +58,10 @@ TEST(DefinitionNode, findByPath)
     EXPECT_EQ(&leaf, branch.findByPath("leaf"));
 }
 
-TEST(DefinitionNode, attachDetach)
-{
-    DefinitionNode* root = new DefinitionNode(NULL, "root");
-    DefinitionNode* child1 = new DefinitionNode(root, "child1");
-    DefinitionNode* child2 = new DefinitionNode(root, "child2");
+TEST(DefinitionNode, attachDetach) {
+    DefinitionNode *root = new DefinitionNode(NULL, "root");
+    DefinitionNode *child1 = new DefinitionNode(root, "child1");
+    DefinitionNode *child2 = new DefinitionNode(root, "child2");
 
     EXPECT_EQ(root, child1->getParent());
     EXPECT_EQ(root, child2->getParent());
@@ -85,16 +78,15 @@ TEST(DefinitionNode, attachDetach)
     delete root;
 }
 
-TEST(DefinitionNode, saveLoadCopy)
-{
+TEST(DefinitionNode, saveLoadCopy) {
     PackStream *stream;
     int check_in = 42, check_out = 0;
 
-    DefinitionNode* before = new DefinitionNode(NULL, "root");
-    DefinitionNode* before1 = new DefinitionNode(before, "before1");
+    DefinitionNode *before = new DefinitionNode(NULL, "root");
+    DefinitionNode *before1 = new DefinitionNode(before, "before1");
     new FloatNode(before1, "before11", 2.1);
     new FloatNode(before1, "before12", -4.3);
-    DefinitionNode* before2 = new DefinitionNode(before, "before2");
+    DefinitionNode *before2 = new DefinitionNode(before, "before2");
     new DefinitionNode(before2, "before21");
     new FloatNode(before2, "before22");
     new FloatNode(before, "before3", 6.7);
@@ -106,12 +98,12 @@ TEST(DefinitionNode, saveLoadCopy)
     delete stream;
 
     // Same definition tree, but with missing nodes, and added ones
-    DefinitionNode* after = new DefinitionNode(NULL, "root");
-    DefinitionNode* after1 = new DefinitionNode(after, "before1");
-    FloatNode* after12 = new FloatNode(after1, "before12");
-    FloatNode* after13 = new FloatNode(after1, "before13");
-    FloatNode* after3 = new FloatNode(after, "before3");
-    FloatNode* after4 = new FloatNode(after, "before4");
+    DefinitionNode *after = new DefinitionNode(NULL, "root");
+    DefinitionNode *after1 = new DefinitionNode(after, "before1");
+    FloatNode *after12 = new FloatNode(after1, "before12");
+    FloatNode *after13 = new FloatNode(after1, "before13");
+    FloatNode *after3 = new FloatNode(after, "before3");
+    FloatNode *after4 = new FloatNode(after, "before4");
 
     stream = new PackStream();
     stream->bindToFile("/tmp/test_paysages_pack");

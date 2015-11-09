@@ -3,8 +3,7 @@
 #include "CanvasPortion.h"
 #include "CanvasFragment.h"
 
-TEST(CanvasPortion, setSize)
-{
+TEST(CanvasPortion, setSize) {
     CanvasPortion portion;
 
     portion.setSize(150, 30);
@@ -13,8 +12,7 @@ TEST(CanvasPortion, setSize)
     EXPECT_EQ(30, portion.getHeight());
 }
 
-TEST(CanvasPortion, pushFragment)
-{
+TEST(CanvasPortion, pushFragment) {
     CanvasPortion portion;
     CanvasFragment pushed;
     const CanvasFragment *got;
@@ -36,8 +34,7 @@ TEST(CanvasPortion, pushFragment)
     ASSERT_TRUE(got);
 }
 
-TEST(CanvasPortion, pushFragment_opaque)
-{
+TEST(CanvasPortion, pushFragment_opaque) {
     CanvasPortion portion;
     CanvasFragment pushed;
 
@@ -63,8 +60,7 @@ TEST(CanvasPortion, pushFragment_opaque)
     EXPECT_DOUBLE_EQ(4.0, portion.getFrontFragment(2, 2)->getZ());
 }
 
-TEST(CanvasPortion, pushFragment_transparent)
-{
+TEST(CanvasPortion, pushFragment_transparent) {
     CanvasPortion portion;
     CanvasFragment pushed;
 
@@ -90,8 +86,7 @@ TEST(CanvasPortion, pushFragment_transparent)
     EXPECT_DOUBLE_EQ(4.0, portion.getFrontFragment(2, 2)->getZ());
 }
 
-TEST(CanvasPortion, clear)
-{
+TEST(CanvasPortion, clear) {
     CanvasPortion portion;
     CanvasFragment fragment;
 

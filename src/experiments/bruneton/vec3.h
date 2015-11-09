@@ -36,9 +36,8 @@
 /**
  * A 3D vector.
  */
-template <typename type> class vec3
-{
-public:
+template <typename type> class vec3 {
+  public:
     type x, y, z;
 
     /**
@@ -59,7 +58,7 @@ public:
     /**
      * Creates a new vector as a copy of the given vector.
      */
-    vec3(const vec3& v);
+    vec3(const vec3 &v);
 
     /**
      * Returns the coordinate of this vector whose index is given.
@@ -69,38 +68,38 @@ public:
     /**
      * Returns the coordinate of this vector whose index is given.
      */
-    type& operator[](const int i);
+    type &operator[](const int i);
 
     /**
      * Assigns the given vector to this vector.
      */
-    void operator=(const vec3& v);
+    void operator=(const vec3 &v);
 
     /**
      * Returns true if this vector is equal to the given vector.
      */
-    bool operator==(const vec3& v) const;
+    bool operator==(const vec3 &v) const;
 
     /**
      * Returns true if this vector is different from the given vector.
      */
-    bool operator!=(const vec3& v) const;
+    bool operator!=(const vec3 &v) const;
 
     /**
      * Returns the sum of this vector and of the given vector.
      */
-    vec3 operator+(const vec3& v) const;
+    vec3 operator+(const vec3 &v) const;
 
     /**
      * Returns the difference of this vector and of the given vector.
      */
-    vec3 operator-(const vec3& v) const;
+    vec3 operator-(const vec3 &v) const;
 
     /**
      * Returns the product of this vector and of the given vector. The
      * product is done component by component.
      */
-    vec3 operator*(const vec3& v) const;
+    vec3 operator*(const vec3 &v) const;
 
     /**
      * Returns the product of this vector and of the given scalar.
@@ -111,7 +110,7 @@ public:
      * Returns the division of this vector and of the given vector. The
      * division is done component by component.
      */
-    vec3 operator/(const vec3& v) const;
+    vec3 operator/(const vec3 &v) const;
 
     /**
      * Returns the division of this vector and of the given scalar.
@@ -126,22 +125,22 @@ public:
     /**
      * Adds the given vector to this vector.
      */
-    vec3& operator+=(const vec3& v);
+    vec3 &operator+=(const vec3 &v);
 
     /**
      * Substracts the given vector from this vector.
      */
-    vec3& operator-=(const vec3& v);
+    vec3 &operator-=(const vec3 &v);
 
     /**
      * Multiplies this vector by the given scalar.
      */
-    vec3& operator*=(const type& scalar);
+    vec3 &operator*=(const type &scalar);
 
     /**
      * Divides this vector by the given scalar.
      */
-    vec3& operator/=(const type& scalar);
+    vec3 &operator/=(const type &scalar);
 
     /**
      * Returns the length of this vector.
@@ -156,7 +155,7 @@ public:
     /**
      * Returns the dot product of this vector and of the given vector.
      */
-    type dotproduct(const vec3& v) const;
+    type dotproduct(const vec3 &v) const;
 
     /**
      * Normalizes this vector and returns its initial length.
@@ -171,7 +170,7 @@ public:
     /**
      * Returns he cross product of this vector and of the given vector.
      */
-    vec3 crossProduct(const vec3& v) const;
+    vec3 crossProduct(const vec3 &v) const;
 
     /**
      * The null vector (0,0,0).
@@ -209,134 +208,94 @@ typedef vec3<double> vec3d;
  */
 typedef vec3<int> vec3i;
 
-template <typename type>
-inline vec3<type>::vec3()
-{
+template <typename type> inline vec3<type>::vec3() {
 }
 
-template <typename type>
-inline vec3<type>::vec3(type xi, type yi, type zi) : x(xi), y(yi), z(zi)
-{
+template <typename type> inline vec3<type>::vec3(type xi, type yi, type zi) : x(xi), y(yi), z(zi) {
 }
 
-template <typename type>
-inline vec3<type>::vec3(const type v[3]) : x(v[0]), y(v[1]), z(v[2])
-{
+template <typename type> inline vec3<type>::vec3(const type v[3]) : x(v[0]), y(v[1]), z(v[2]) {
 }
 
-template <typename type>
-inline vec3<type>::vec3(const vec3& v) : x(v.x), y(v.y), z(v.z)
-{
+template <typename type> inline vec3<type>::vec3(const vec3 &v) : x(v.x), y(v.y), z(v.z) {
 }
 
-template <typename type>
-inline type vec3<type>::operator[](const int i) const
-{
-    //assert(i<3);
+template <typename type> inline type vec3<type>::operator[](const int i) const {
+    // assert(i<3);
     return *(&x + i);
 }
 
-template <typename type>
-inline type& vec3<type>::operator[](const int i)
-{
-    //assert(i<3);
+template <typename type> inline type &vec3<type>::operator[](const int i) {
+    // assert(i<3);
     return *(&x + i);
 }
 
-template <typename type>
-inline void vec3<type>::operator=(const vec3<type>& v)
-{
+template <typename type> inline void vec3<type>::operator=(const vec3<type> &v) {
     x = v.x;
     y = v.y;
     z = v.z;
 }
 
-template <typename type>
-inline bool vec3<type>::operator==(const vec3<type>& v) const
-{
+template <typename type> inline bool vec3<type>::operator==(const vec3<type> &v) const {
     return (x == v.x && y == v.y && z == v.z);
 }
 
-template <typename type>
-inline bool vec3<type>::operator!=(const vec3<type>& v) const
-{
+template <typename type> inline bool vec3<type>::operator!=(const vec3<type> &v) const {
     return (x != v.x || y != v.y || z != v.z);
 }
 
-template <typename type>
-inline vec3<type> vec3<type>::operator+(const vec3<type>& v) const
-{
+template <typename type> inline vec3<type> vec3<type>::operator+(const vec3<type> &v) const {
     return vec3(x + v.x, y + v.y, z + v.z);
 }
 
-template <typename type>
-inline vec3<type> vec3<type>::operator-(const vec3<type>& v) const
-{
+template <typename type> inline vec3<type> vec3<type>::operator-(const vec3<type> &v) const {
     return vec3(x - v.x, y - v.y, z - v.z);
 }
 
-template <typename type>
-inline vec3<type> vec3<type>::operator*(const vec3<type>& v) const
-{
+template <typename type> inline vec3<type> vec3<type>::operator*(const vec3<type> &v) const {
     return vec3(x * v.x, y * v.y, z * v.z);
 }
 
-template <typename type>
-inline vec3<type> vec3<type>::operator*(const type scalar) const
-{
+template <typename type> inline vec3<type> vec3<type>::operator*(const type scalar) const {
     return vec3(x * scalar, y * scalar, z * scalar);
 }
 
-template <typename type>
-inline vec3<type> vec3<type>::operator/(const vec3<type>& v) const
-{
+template <typename type> inline vec3<type> vec3<type>::operator/(const vec3<type> &v) const {
     return vec3(x / v.x, y / v.y, z / v.z);
 }
 
-template <typename type>
-inline vec3<type> vec3<type>::operator/(const type scalar) const
-{
+template <typename type> inline vec3<type> vec3<type>::operator/(const type scalar) const {
     assert(scalar != 0);
     type inv = 1 / scalar;
     return vec3(x * inv, y * inv, z * inv);
 }
 
-template <typename type>
-inline vec3<type> vec3<type>::operator-() const
-{
+template <typename type> inline vec3<type> vec3<type>::operator-() const {
     return vec3(-x, -y, -z);
 }
 
-template <typename type>
-inline vec3<type>& vec3<type>::operator+=(const vec3<type>& v)
-{
+template <typename type> inline vec3<type> &vec3<type>::operator+=(const vec3<type> &v) {
     x += v.x;
     y += v.y;
     z += v.z;
     return *this;
 }
 
-template <typename type>
-inline vec3<type>& vec3<type>::operator-=(const vec3<type>& v)
-{
+template <typename type> inline vec3<type> &vec3<type>::operator-=(const vec3<type> &v) {
     x -= v.x;
     y -= v.y;
     z -= v.z;
     return *this;
 }
 
-template <typename type>
-inline vec3<type>& vec3<type>::operator*=(const type& scalar)
-{
+template <typename type> inline vec3<type> &vec3<type>::operator*=(const type &scalar) {
     x *= scalar;
     y *= scalar;
     z *= scalar;
     return *this;
 }
 
-template <typename type>
-inline vec3<type>& vec3<type>::operator/=(const type& scalar)
-{
+template <typename type> inline vec3<type> &vec3<type>::operator/=(const type &scalar) {
     assert(scalar != 0);
     type inv = 1 / scalar;
     x *= inv;
@@ -345,27 +304,19 @@ inline vec3<type>& vec3<type>::operator/=(const type& scalar)
     return *this;
 }
 
-template <typename type>
-inline type vec3<type>::length() const
-{
-    return sqrt(x*x + y*y + z*z);
+template <typename type> inline type vec3<type>::length() const {
+    return sqrt(x * x + y * y + z * z);
 }
 
-template <typename type>
-inline type vec3<type>::squaredlength() const
-{
-    return (x*x + y*y + z*z);
+template <typename type> inline type vec3<type>::squaredlength() const {
+    return (x * x + y * y + z * z);
 }
 
-template <typename type>
-inline type vec3<type>::dotproduct(const vec3<type>& v) const
-{
-    return (x*v.x + y*v.y + z*v.z);
+template <typename type> inline type vec3<type>::dotproduct(const vec3<type> &v) const {
+    return (x * v.x + y * v.y + z * v.z);
 }
 
-template <typename type>
-inline type vec3<type>::normalize()
-{
+template <typename type> inline type vec3<type>::normalize() {
     type length = sqrt(x * x + y * y + z * z);
     type invLength = 1.0 / length;
     x *= invLength;
@@ -374,9 +325,7 @@ inline type vec3<type>::normalize()
     return length;
 }
 
-template <typename type>
-inline type vec3<type>::normalize(type l)
-{
+template <typename type> inline type vec3<type>::normalize(type l) {
     type length = sqrt(x * x + y * y + z * z);
     type invLength = l / length;
     x *= invLength;
@@ -385,22 +334,16 @@ inline type vec3<type>::normalize(type l)
     return length;
 }
 
-template <typename type>
-inline vec3<type> vec3<type>::crossProduct(const vec3<type>& v) const
-{
-    return vec3(y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x);
+template <typename type> inline vec3<type> vec3<type>::crossProduct(const vec3<type> &v) const {
+    return vec3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
 }
 
-template <typename type>
-const vec3<type> vec3<type>::ZERO(0, 0, 0);
+template <typename type> const vec3<type> vec3<type>::ZERO(0, 0, 0);
 
-template <typename type>
-const vec3<type> vec3<type>::UNIT_X(1, 0, 0);
+template <typename type> const vec3<type> vec3<type>::UNIT_X(1, 0, 0);
 
-template <typename type>
-const vec3<type> vec3<type>::UNIT_Y(0, 1, 0);
+template <typename type> const vec3<type> vec3<type>::UNIT_Y(0, 1, 0);
 
-template <typename type>
-const vec3<type> vec3<type>::UNIT_Z(0, 0, 1);
+template <typename type> const vec3<type> vec3<type>::UNIT_Z(0, 0, 1);
 
 #endif /*VEC3_H_*/

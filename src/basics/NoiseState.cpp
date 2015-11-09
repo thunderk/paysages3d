@@ -3,40 +3,33 @@
 #include "PackStream.h"
 #include "RandomGenerator.h"
 
-NoiseState::NoiseState()
-{
-    for (int i = 0; i < 30; i++)
-    {
+NoiseState::NoiseState() {
+    for (int i = 0; i < 30; i++) {
         level_offsets.push_back(NoiseOffset());
     }
     randomizeOffsets();
 }
 
-void NoiseState::save(PackStream *stream) const
-{
+void NoiseState::save(PackStream *stream) const {
     int levels = level_offsets.size();
     stream->write(&levels);
-    for (const auto &level_offset:level_offsets)
-    {
+    for (const auto &level_offset : level_offsets) {
         stream->write(&level_offset.x);
         stream->write(&level_offset.y);
         stream->write(&level_offset.z);
     }
 }
 
-void NoiseState::load(PackStream *stream)
-{
+void NoiseState::load(PackStream *stream) {
     int levels;
     stream->read(&levels);
     level_offsets.clear();
 
-    if (levels > 1000)
-    {
+    if (levels > 1000) {
         levels = 1000;
     }
 
-    for (int i = 0; i < levels; i++)
-    {
+    for (int i = 0; i < levels; i++) {
         NoiseOffset level_offset;
         stream->read(&level_offset.x);
         stream->read(&level_offset.y);
@@ -45,38 +38,31 @@ void NoiseState::load(PackStream *stream)
     }
 }
 
-void NoiseState::copy(NoiseState *destination) const
-{
+void NoiseState::copy(NoiseState *destination) const {
     destination->level_offsets = level_offsets;
 }
 
-void NoiseState::randomizeOffsets()
-{
-    for (auto &level_offset:level_offsets)
-    {
+void NoiseState::randomizeOffsets() {
+    for (auto &level_offset : level_offsets) {
         level_offset.x = RandomGenerator::random();
         level_offset.y = RandomGenerator::random();
         level_offset.z = RandomGenerator::random();
     }
 }
 
-void NoiseState::resetOffsets(double x, double y, double z)
-{
-    for (auto &level_offset:level_offsets)
-    {
+void NoiseState::resetOffsets(double x, double y, double z) {
+    for (auto &level_offset : level_offsets) {
         level_offset.x = x;
         level_offset.y = y;
         level_offset.z = z;
     }
 }
 
-void NoiseState::setLevel(int level, double x, double y, double z)
-{
+void NoiseState::setLevel(int level, double x, double y, double z) {
     NoiseOffset offset = {x, y, z};
     level_offsets.at(level) = offset;
 }
 
-void NoiseState::setLevelCount(int level_count)
-{
+void NoiseState::setLevelCount(int level_count) {
     level_offsets.resize(level_count);
 }

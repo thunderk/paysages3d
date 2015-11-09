@@ -1,8 +1,7 @@
 #include "BaseTestCase.h"
 #include "Interpolation.h"
 
-TEST(Interpolation, trilinear)
-{
+TEST(Interpolation, trilinear) {
     double p[8] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0};
 
     EXPECT_DOUBLE_EQ(0.0, Interpolation::trilinear(p, 0.0, 0.0, 0.0));
@@ -24,4 +23,3 @@ TEST(Interpolation, trilinear)
 
     EXPECT_DOUBLE_EQ(3.5, Interpolation::trilinear(p, 0.5, 0.5, 0.5));
 }
-

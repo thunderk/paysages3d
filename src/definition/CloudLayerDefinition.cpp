@@ -6,9 +6,7 @@
 #include "PackStream.h"
 #include "FloatNode.h"
 
-CloudLayerDefinition::CloudLayerDefinition(DefinitionNode* parent):
-    DefinitionNode(parent, "layer", "cloudlayer")
-{
+CloudLayerDefinition::CloudLayerDefinition(DefinitionNode *parent) : DefinitionNode(parent, "layer", "cloudlayer") {
     type = CIRRUS;
     altitude = 0.5;
     scaling = 0.5;
@@ -18,26 +16,22 @@ CloudLayerDefinition::CloudLayerDefinition(DefinitionNode* parent):
     zoffset = new FloatNode(this, "zoffset");
 }
 
-CloudLayerDefinition::~CloudLayerDefinition()
-{
+CloudLayerDefinition::~CloudLayerDefinition() {
 }
 
-CloudLayerDefinition* CloudLayerDefinition::newCopy(const CloudLayerDefinition& other, DefinitionNode* parent)
-{
-    CloudLayerDefinition* layer = new CloudLayerDefinition(parent);
+CloudLayerDefinition *CloudLayerDefinition::newCopy(const CloudLayerDefinition &other, DefinitionNode *parent) {
+    CloudLayerDefinition *layer = new CloudLayerDefinition(parent);
     other.copy(layer);
     return layer;
 }
 
-CloudLayerDefinition* CloudLayerDefinition::newCopy(DefinitionNode* parent) const
-{
-    CloudLayerDefinition* layer = new CloudLayerDefinition(parent);
+CloudLayerDefinition *CloudLayerDefinition::newCopy(DefinitionNode *parent) const {
+    CloudLayerDefinition *layer = new CloudLayerDefinition(parent);
     copy(layer);
     return layer;
 }
 
-void CloudLayerDefinition::save(PackStream* stream) const
-{
+void CloudLayerDefinition::save(PackStream *stream) const {
     DefinitionNode::save(stream);
 
     int clouds_type = (int)type;
@@ -50,8 +44,7 @@ void CloudLayerDefinition::save(PackStream* stream) const
     noise_state.save(stream);
 }
 
-void CloudLayerDefinition::load(PackStream* stream)
-{
+void CloudLayerDefinition::load(PackStream *stream) {
     DefinitionNode::load(stream);
 
     int clouds_type;
@@ -67,11 +60,10 @@ void CloudLayerDefinition::load(PackStream* stream)
     validate();
 }
 
-void CloudLayerDefinition::copy(DefinitionNode* _destination) const
-{
+void CloudLayerDefinition::copy(DefinitionNode *_destination) const {
     DefinitionNode::copy(_destination);
 
-    CloudLayerDefinition* destination = (CloudLayerDefinition*)_destination;
+    CloudLayerDefinition *destination = (CloudLayerDefinition *)_destination;
 
     destination->type = type;
     destination->altitude = altitude;
@@ -81,12 +73,10 @@ void CloudLayerDefinition::copy(DefinitionNode* _destination) const
     noise_state.copy(&destination->noise_state);
 }
 
-void CloudLayerDefinition::validate()
-{
+void CloudLayerDefinition::validate() {
     DefinitionNode::validate();
 
-    if (scaling < 0.1)
-    {
+    if (scaling < 0.1) {
         scaling = 0.1;
     }
 }

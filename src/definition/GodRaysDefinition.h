@@ -8,21 +8,25 @@
 namespace paysages {
 namespace definition {
 
-class DEFINITIONSHARED_EXPORT GodRaysDefinition: public DefinitionNode
-{
-public:
+class DEFINITIONSHARED_EXPORT GodRaysDefinition : public DefinitionNode {
+  public:
     GodRaysDefinition(DefinitionNode *parent);
 
-    inline FloatNode *propPenetration() const {return penetration;}
-    inline FloatNode *propResistance() const {return resistance;}
-    inline FloatNode *propBoost() const {return boost;}
+    inline FloatNode *propPenetration() const {
+        return penetration;
+    }
+    inline FloatNode *propResistance() const {
+        return resistance;
+    }
+    inline FloatNode *propBoost() const {
+        return boost;
+    }
 
-private:
+  private:
     FloatNode *penetration;
     FloatNode *resistance;
     FloatNode *boost;
 };
-
 }
 }
 

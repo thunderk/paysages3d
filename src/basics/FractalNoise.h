@@ -11,14 +11,13 @@ namespace basics {
 /*!
  * \brief Fractal noise generator, based on a sum of simple noise functions.
  */
-class BASICSSHARED_EXPORT FractalNoise
-{
-public:
+class BASICSSHARED_EXPORT FractalNoise {
+  public:
     FractalNoise();
     virtual ~FractalNoise();
 
-    void setScaling(double scaling, double height=1.0);
-    void setStep(double scaling_factor, double height_factor=1.0);
+    void setScaling(double scaling, double height = 1.0);
+    void setStep(double scaling_factor, double height_factor = 1.0);
     void setSlope(double slope_factor);
     void setRidge(double ridge_factor);
     void setState(const NoiseState &state);
@@ -31,7 +30,7 @@ public:
     virtual double getBase2d(double x, double y) const;
     virtual double getBase3d(double x, double y, double z) const = 0;
 
-private:
+  private:
     NoiseState state;
 
     double scaling;
@@ -41,7 +40,6 @@ private:
     double slope;
     double ridge;
 };
-
 }
 }
 

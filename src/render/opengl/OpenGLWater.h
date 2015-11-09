@@ -9,10 +9,9 @@
 namespace paysages {
 namespace opengl {
 
-class OPENGLSHARED_EXPORT OpenGLWater: public OpenGLPart, public DefinitionWatcher
-{
-public:
-    OpenGLWater(OpenGLRenderer* renderer);
+class OPENGLSHARED_EXPORT OpenGLWater : public OpenGLPart, public DefinitionWatcher {
+  public:
+    OpenGLWater(OpenGLRenderer *renderer);
     virtual ~OpenGLWater();
 
     virtual void initialize() override;
@@ -25,14 +24,14 @@ public:
      * Enable or disable the water surface rendering.
      */
     void setEnabled(bool enabled);
-private:
+
+  private:
     void setVertex(int i, float x, float y, float z);
 
     bool enabled;
-    OpenGLShaderProgram* program;
-    float* vertices;
+    OpenGLShaderProgram *program;
+    float *vertices;
 };
-
 }
 }
 

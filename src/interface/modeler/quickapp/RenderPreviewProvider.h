@@ -12,9 +12,8 @@ namespace modeler {
 /**
  * Provider for a Qml Image content, filled from a canvas rendering.
  */
-class RenderPreviewProvider : public QQuickImageProvider, public CanvasLiveClient
-{
-public:
+class RenderPreviewProvider : public QQuickImageProvider, public CanvasLiveClient {
+  public:
     RenderPreviewProvider();
     virtual ~RenderPreviewProvider();
 
@@ -40,18 +39,17 @@ public:
      */
     void setToneMapping(const ColorProfile &profile);
 
-protected:
+  protected:
     virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
 
     virtual void canvasResized(int width, int height) override;
     virtual void canvasCleared(const Color &col) override;
     virtual void canvasPainted(int x, int y, const Color &col) override;
 
-private:
-    QImage* pixbuf;
+  private:
+    QImage *pixbuf;
     const Canvas *canvas;
 };
-
 }
 }
 

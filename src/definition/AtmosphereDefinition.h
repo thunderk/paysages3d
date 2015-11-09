@@ -11,24 +11,17 @@
 namespace paysages {
 namespace definition {
 
-class DEFINITIONSHARED_EXPORT AtmosphereDefinition : public DefinitionNode
-{
-public:
-    typedef struct
-    {
+class DEFINITIONSHARED_EXPORT AtmosphereDefinition : public DefinitionNode {
+  public:
+    typedef struct {
         Vector3 location;
         double radius;
         Color col;
     } Star;
 
-public:
-    typedef enum
-    {
-        ATMOSPHERE_MODEL_DISABLED = 0,
-        ATMOSPHERE_MODEL_BRUNETON = 1
-    } AtmosphereModel;
-    typedef enum
-    {
+  public:
+    typedef enum { ATMOSPHERE_MODEL_DISABLED = 0, ATMOSPHERE_MODEL_BRUNETON = 1 } AtmosphereModel;
+    typedef enum {
         ATMOSPHERE_PRESET_CLEAR_DAY = 0,
         ATMOSPHERE_PRESET_CLEAR_SUNSET = 1,
         ATMOSPHERE_PRESET_HAZY_MORNING = 2,
@@ -36,19 +29,27 @@ public:
         ATMOSPHERE_PRESET_STORMY = 4
     } AtmospherePreset;
 
-public:
-    AtmosphereDefinition(DefinitionNode* parent);
+  public:
+    AtmosphereDefinition(DefinitionNode *parent);
     virtual ~AtmosphereDefinition();
 
-    virtual void save(PackStream* stream) const override;
-    virtual void load(PackStream* stream) override;
+    virtual void save(PackStream *stream) const override;
+    virtual void load(PackStream *stream) override;
 
-    virtual void copy(DefinitionNode* destination) const override;
+    virtual void copy(DefinitionNode *destination) const override;
 
-    inline GodRaysDefinition *childGodRays() const {return godrays;}
-    inline FloatNode *propDayTime() const {return daytime;}
-    inline FloatNode *propHumidity() const {return humidity;}
-    inline FloatNode *propSunRadius() const {return sun_radius;}
+    inline GodRaysDefinition *childGodRays() const {
+        return godrays;
+    }
+    inline FloatNode *propDayTime() const {
+        return daytime;
+    }
+    inline FloatNode *propHumidity() const {
+        return humidity;
+    }
+    inline FloatNode *propSunRadius() const {
+        return sun_radius;
+    }
 
     /**
      * Set the daytime from a 0.0-1.0 value.
@@ -57,7 +58,7 @@ public:
     /**
      * Set the daytime from hour/minute/second info.
      */
-    void setDayTime(int hour, int minute=0, int second=0);
+    void setDayTime(int hour, int minute = 0, int second = 0);
     /**
      * Get the daytime info, in hour/minute/second.
      */
@@ -66,7 +67,7 @@ public:
     void applyPreset(AtmospherePreset preset);
     void generateStars(int count);
 
-public:
+  public:
     AtmosphereModel model;
 
     Color sun_color;
@@ -78,13 +79,12 @@ public:
 
     std::vector<Star> stars;
 
-private:
+  private:
     GodRaysDefinition *godrays;
     FloatNode *humidity;
     FloatNode *daytime;
     FloatNode *sun_radius;
 };
-
 }
 }
 

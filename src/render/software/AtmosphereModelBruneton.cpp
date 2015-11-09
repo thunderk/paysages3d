@@ -70,9 +70,9 @@ static const double AVERAGE_GROUND_REFLECTANCE = 0.1;
 #define INSCATTER_SPHERICAL_INTEGRAL_SAMPLES 8
 #endif
 
-Texture2D* _transmittanceTexture = NULL;
-Texture2D* _irradianceTexture = NULL;
-Texture4D* _inscatterTexture = NULL;
+Texture2D *_transmittanceTexture = NULL;
+Texture2D *_irradianceTexture = NULL;
+Texture4D *_inscatterTexture = NULL;
 
 /* Rayleigh */
 static const double HR = 8.0;
@@ -97,56 +97,63 @@ static const double mieG = 0.65;*/
 
 /*********************** Shader helpers ***********************/
 
-#define step(_a_,_b_) ((_b_) < (_a_) ? 0.0 : 1.0)
+#define step(_a_, _b_) ((_b_) < (_a_) ? 0.0 : 1.0)
 #define sign(_a_) ((_a_) < 0.0 ? -1.0 : ((_a_) > 0.0 ? 1.0 : 0.0))
-#define mix(_x_,_y_,_a_) ((_x_) * (1.0 - (_a_)) + (_y_) * (_a_))
-static inline double min(double a, double b)
-{
+#define mix(_x_, _y_, _a_) ((_x_) * (1.0 - (_a_)) + (_y_) * (_a_))
+static inline double min(double a, double b) {
     return a < b ? a : b;
 }
-static inline double max(double a, double b)
-{
+static inline double max(double a, double b) {
     return a > b ? a : b;
 }
-static inline Color vec4mix(Color v1, Color v2, double a)
-{
+static inline Color vec4mix(Color v1, Color v2, double a) {
     v1.r = mix(v1.r, v2.r, a);
     v1.g = mix(v1.g, v2.g, a);
     v1.b = mix(v1.b, v2.b, a);
     v1.a = mix(v1.a, v2.a, a);
     return v1;
 }
-static inline double clamp(double x, double minVal, double maxVal)
-{
-    if (x < minVal)
-    {
+static inline double clamp(double x, double minVal, double maxVal) {
+    if (x < minVal) {
         x = minVal;
     }
     return (x > maxVal) ? maxVal : x;
 }
-static inline double smoothstep(double edge0, double edge1, double x)
-{
+static inline double smoothstep(double edge0, double edge1, double x) {
     double t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
     return t * t * (3.0 - 2.0 * t);
 }
-static inline void _fixVec4Min(Color* vec, double minVal)
-{
-    if (vec->r < minVal) { vec->r = minVal; }
-    if (vec->g < minVal) { vec->g = minVal; }
-    if (vec->b < minVal) { vec->b = minVal; }
-    if (vec->a < minVal) { vec->a = minVal; }
+static inline void _fixVec4Min(Color *vec, double minVal) {
+    if (vec->r < minVal) {
+        vec->r = minVal;
+    }
+    if (vec->g < minVal) {
+        vec->g = minVal;
+    }
+    if (vec->b < minVal) {
+        vec->b = minVal;
+    }
+    if (vec->a < minVal) {
+        vec->a = minVal;
+    }
 }
-static inline Color vec4max(Color vec, double minVal)
-{
-    if (vec.r < minVal) { vec.r = minVal; }
-    if (vec.g < minVal) { vec.g = minVal; }
-    if (vec.b < minVal) { vec.b = minVal; }
-    if (vec.a < minVal) { vec.a = minVal; }
+static inline Color vec4max(Color vec, double minVal) {
+    if (vec.r < minVal) {
+        vec.r = minVal;
+    }
+    if (vec.g < minVal) {
+        vec.g = minVal;
+    }
+    if (vec.b < minVal) {
+        vec.b = minVal;
+    }
+    if (vec.a < minVal) {
+        vec.a = minVal;
+    }
     return vec;
 }
 
-static inline Vector3 vec3(double x, double y, double z)
-{
+static inline Vector3 vec3(double x, double y, double z) {
     Vector3 result;
     result.x = x;
     result.y = y;
@@ -154,8 +161,7 @@ static inline Vector3 vec3(double x, double y, double z)
     return result;
 }
 
-static inline Color vec4(double r, double g, double b, double a)
-{
+static inline Color vec4(double r, double g, double b, double a) {
     Color result;
     result.r = r;
     result.g = g;
@@ -166,17 +172,20 @@ static inline Color vec4(double r, double g, double b, double a)
 
 /*********************** Texture manipulation ***********************/
 
-static Color _texture4D(Texture4D* tex, double r, double mu, double muS, double nu)
-{
-    if (r < Rg + 0.00000001) r = Rg + 0.00000001;
+static Color _texture4D(Texture4D *tex, double r, double mu, double muS, double nu) {
+    if (r < Rg + 0.00000001)
+        r = Rg + 0.00000001;
     double H = sqrt(Rt * Rt - Rg * Rg);
     double rho = sqrt(r * r - Rg * Rg);
     double rmu = r * mu;
     double delta = rmu * rmu - r * r + Rg * Rg;
-    Color cst = (rmu < 0.0 && delta > 0.0) ? vec4(1.0, 0.0, 0.0, 0.5 - 0.5 / (double)(RES_MU)) : vec4(-1.0, H * H, H, 0.5 + 0.5 / (double)(RES_MU));
+    Color cst = (rmu < 0.0 && delta > 0.0) ? vec4(1.0, 0.0, 0.0, 0.5 - 0.5 / (double)(RES_MU))
+                                           : vec4(-1.0, H * H, H, 0.5 + 0.5 / (double)(RES_MU));
     double uR = 0.5 / (double)(RES_R) + rho / H * (1.0 - 1.0 / (double)(RES_R));
     double uMu = cst.a + (rmu * cst.r + sqrt(delta + cst.g)) / (rho + cst.b) * (0.5 - 1.0 / (double)(RES_MU));
-    double uMuS = 0.5 / (double)(RES_MU_S) + (atan(max(muS, -0.1975) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / (double)(RES_MU_S));
+    double uMuS =
+        0.5 / (double)(RES_MU_S) +
+        (atan(max(muS, -0.1975) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / (double)(RES_MU_S));
 
     return tex->getLinear(uMu, uMuS, nu, uR);
 }
@@ -184,20 +193,18 @@ static Color _texture4D(Texture4D* tex, double r, double mu, double muS, double 
 /*********************** Physics functions ***********************/
 
 /* Rayleigh phase function */
-static double _phaseFunctionR(double mu)
-{
+static double _phaseFunctionR(double mu) {
     return (3.0 / (16.0 * M_PI)) * (1.0 + mu * mu);
 }
 
 /* Mie phase function */
-static double _phaseFunctionM(double mu)
-{
-    return 1.5 * 1.0 / (4.0 * M_PI) * (1.0 - mieG * mieG) * pow(1.0 + (mieG * mieG) - 2.0 * mieG * mu, -3.0 / 2.0) * (1.0 + mu * mu) / (2.0 + mieG * mieG);
+static double _phaseFunctionM(double mu) {
+    return 1.5 * 1.0 / (4.0 * M_PI) * (1.0 - mieG * mieG) * pow(1.0 + (mieG * mieG) - 2.0 * mieG * mu, -3.0 / 2.0) *
+           (1.0 + mu * mu) / (2.0 + mieG * mieG);
 }
 
 /* approximated single Mie scattering (cf. approximate Cm in paragraph "Angular precision") */
-static Color _getMie(Color rayMie)
-{
+static Color _getMie(Color rayMie) {
     Color result;
 
     result.r = rayMie.r * rayMie.a / max(rayMie.r, 1e-4) * (betaR.r / betaR.r);
@@ -211,8 +218,7 @@ static Color _getMie(Color rayMie)
 /* optical depth for ray (r,mu) of length d, using analytic formula
    (mu=cos(view zenith angle)), intersections with ground ignored
    H=height scale of exponential density function */
-static double _opticalDepth(double H, double r, double mu, double d)
-{
+static double _opticalDepth(double H, double r, double mu, double d) {
     double a = sqrt((0.5 / H) * r);
     double ax = a * (mu);
     double ay = a * (mu + d / r);
@@ -226,9 +232,9 @@ static double _opticalDepth(double H, double r, double mu, double d)
     return sqrt((6.2831 * H) * r) * exp((Rg - r) / H) * (x + yx - yy);
 }
 
-static inline void _getTransmittanceUV(double r, double mu, double* u, double* v)
-{
-    if (r < Rg + 0.00000001) r = Rg + 0.00000001;
+static inline void _getTransmittanceUV(double r, double mu, double *u, double *v) {
+    if (r < Rg + 0.00000001)
+        r = Rg + 0.00000001;
     double dr = (r - Rg) / (Rt - Rg);
     *v = sqrt(dr);
     *u = atan((mu + 0.15) / (1.0 + 0.15) * tan(1.5)) / 1.5;
@@ -236,8 +242,7 @@ static inline void _getTransmittanceUV(double r, double mu, double* u, double* v
 
 /* transmittance(=transparency) of atmosphere for infinite ray (r,mu)
    (mu=cos(view zenith angle)), intersections with ground ignored */
-static Color _transmittance(double r, double mu)
-{
+static Color _transmittance(double r, double mu) {
     double u, v;
     _getTransmittanceUV(r, mu, &u, &v);
     return _transmittanceTexture->getLinear(u, v);
@@ -246,18 +251,14 @@ static Color _transmittance(double r, double mu)
 /* transmittance(=transparency) of atmosphere between x and x0
  * assume segment x,x0 not intersecting ground
  * d = distance between x and x0, mu=cos(zenith angle of [x,x0) ray at x) */
-static Color _transmittance3(double r, double mu, double d)
-{
+static Color _transmittance3(double r, double mu, double d) {
     Color result, t1, t2;
     double r1 = sqrt(r * r + d * d + 2.0 * r * mu * d);
     double mu1 = (r * mu + d) / r1;
-    if (mu > 0.0)
-    {
+    if (mu > 0.0) {
         t1 = _transmittance(r, mu);
         t2 = _transmittance(r1, mu1);
-    }
-    else
-    {
+    } else {
         t1 = _transmittance(r1, -mu1);
         t2 = _transmittance(r, -mu);
     }
@@ -268,20 +269,17 @@ static Color _transmittance3(double r, double mu, double d)
     return result;
 }
 
-static void _getIrradianceRMuS(double x, double y, double* r, double* muS)
-{
-    *r = Rg + y * (Rt - Rg);
-    *muS = -0.2 + x * (1.0 + 0.2);
+static void _getIrradianceRMuS(double x, double y, double *r, double *muS) {
+    *r = Rg + y *(Rt - Rg);
+    *muS = -0.2 + x *(1.0 + 0.2);
 }
 
 /* nearest intersection of ray r,mu with ground or top atmosphere boundary
  * mu=cos(ray zenith angle at ray origin) */
-static double _limit(double r, double mu)
-{
+static double _limit(double r, double mu) {
     double dout = -r * mu + sqrt(r * r * (mu * mu - 1.0) + RL * RL);
     double delta2 = r * r * (mu * mu - 1.0) + Rg * Rg;
-    if (delta2 >= 0.0)
-    {
+    if (delta2 >= 0.0) {
         double din = -r * mu - sqrt(delta2);
         if (din >= 0.0) {
             dout = min(dout, din);
@@ -293,8 +291,7 @@ static double _limit(double r, double mu)
 /* transmittance(=transparency) of atmosphere for ray (r,mu) of length d
    (mu=cos(view zenith angle)), intersections with ground ignored
    uses analytic formula instead of transmittance texture */
-static Vector3 _analyticTransmittance(double r, double mu, double d)
-{
+static Vector3 _analyticTransmittance(double r, double mu, double d) {
     Vector3 result;
 
     result.x = exp(-betaR.r * _opticalDepth(HR, r, mu, d) - betaMEx.x * _opticalDepth(HM, r, mu, d));
@@ -306,28 +303,24 @@ static Vector3 _analyticTransmittance(double r, double mu, double d)
 
 /* transmittance(=transparency) of atmosphere for infinite ray (r,mu)
    (mu=cos(view zenith angle)), or zero if ray intersects ground */
-static Color _transmittanceWithShadow(double r, double mu)
-{
+static Color _transmittanceWithShadow(double r, double mu) {
     return mu < -sqrt(1.0 - (Rg / r) * (Rg / r)) ? COLOR_BLACK : _transmittance(r, mu);
 }
 
-static void _texCoordToMuMuSNu(double x, double y, double z, double r, Color dhdH, double* mu, double* muS, double* nu)
-{
+static void _texCoordToMuMuSNu(double x, double y, double z, double r, Color dhdH, double *mu, double *muS,
+                               double *nu) {
     double d;
 
     x /= (double)RES_MU;
     y /= (double)RES_MU_S;
     z /= (double)RES_NU;
 
-    if (x < 0.5)
-    {
+    if (x < 0.5) {
         d = 1.0 - x / 0.5;
         d = min(max(dhdH.b, d * dhdH.a), dhdH.a * 0.999);
         *mu = (Rg * Rg - r * r - d * d) / (2.0 * r * d);
         *mu = min(*mu, -sqrt(1.0 - (Rg / r) * (Rg / r)) - 0.001);
-    }
-    else
-    {
+    } else {
         d = (x - 0.5) / 0.5;
         d = min(max(dhdH.r, d * dhdH.g), dhdH.g * 0.999);
         *mu = (Rt * Rt - r * r - d * d) / (2.0 * r * d);
@@ -336,14 +329,12 @@ static void _texCoordToMuMuSNu(double x, double y, double z, double r, Color dhd
     *nu = -1.0 + z / 2.0;
 }
 
-static void _getIrradianceUV(double r, double muS, double* uMuS, double* uR)
-{
+static void _getIrradianceUV(double r, double muS, double *uMuS, double *uR) {
     *uR = (r - Rg) / (Rt - Rg);
     *uMuS = (muS + 0.2) / (1.0 + 0.2);
 }
 
-static Color _irradiance(Texture2D* sampler, double r, double muS)
-{
+static Color _irradiance(Texture2D *sampler, double r, double muS) {
     double u, v;
     _getIrradianceUV(r, muS, &u, &v);
     return sampler->getLinear(u, v);
@@ -351,14 +342,12 @@ static Color _irradiance(Texture2D* sampler, double r, double muS)
 
 /*********************** transmittance.glsl ***********************/
 
-static void _getTransmittanceRMu(double x, double y, double* r, double* muS)
-{
+static void _getTransmittanceRMu(double x, double y, double *r, double *muS) {
     *r = Rg + (y * y) * (Rt - Rg);
     *muS = -0.15 + tan(1.5 * x) / tan(1.5) * (1.0 + 0.15);
 }
 
-static double _opticalDepthTransmittance(double H, double r, double mu)
-{
+static double _opticalDepthTransmittance(double H, double r, double mu) {
     double result = 0.0;
     double dx = _limit(r, mu) / (double)TRANSMITTANCE_INTEGRAL_SAMPLES;
     double yi = exp(-(r - Rg) / H);
@@ -372,14 +361,11 @@ static double _opticalDepthTransmittance(double H, double r, double mu)
     return mu < -sqrt(1.0 - (Rg / r) * (Rg / r)) ? 1e9 : result;
 }
 
-static void _precomputeTransmittanceTexture()
-{
+static void _precomputeTransmittanceTexture() {
     int x, y;
 
-    for (x = 0; x < TRANSMITTANCE_W; x++)
-    {
-        for (y = 0; y < TRANSMITTANCE_H; y++)
-        {
+    for (x = 0; x < TRANSMITTANCE_W; x++) {
+        for (y = 0; y < TRANSMITTANCE_H; y++) {
             double r, muS;
             _getTransmittanceRMu((double)(x + 0.5) / TRANSMITTANCE_W, (double)(y + 0.5) / TRANSMITTANCE_H, &r, &muS);
             double depth1 = _opticalDepthTransmittance(HR, r, muS);
@@ -396,15 +382,12 @@ static void _precomputeTransmittanceTexture()
 
 /*********************** irradiance1.glsl ***********************/
 
-static void _precomputeIrrDeltaETexture(Texture2D* destination)
-{
+static void _precomputeIrrDeltaETexture(Texture2D *destination) {
     int x, y;
 
     /* Irradiance program */
-    for (x = 0; x < SKY_W; x++)
-    {
-        for (y = 0; y < SKY_H; y++)
-        {
+    for (x = 0; x < SKY_W; x++) {
+        for (y = 0; y < SKY_H; y++) {
             double r, muS;
             Color trans, irr;
             _getIrradianceRMuS((double)x / SKY_W, (double)y / SKY_H, &r, &muS);
@@ -420,8 +403,7 @@ static void _precomputeIrrDeltaETexture(Texture2D* destination)
     }
 }
 
-static void _getLayerParams(int layer, double* _r, Color* _dhdH)
-{
+static void _getLayerParams(int layer, double *_r, Color *_dhdH) {
     double r = layer / (RES_R - 1.0);
     r = r * r;
     r = sqrt(Rg * Rg + r * (Rt * Rt - Rg * Rg)) + (layer == 0 ? 0.01 : (layer == RES_R - 1 ? -0.001 : 0.0));
@@ -439,13 +421,11 @@ static void _getLayerParams(int layer, double* _r, Color* _dhdH)
 
 /*********************** inscatter1.glsl ***********************/
 
-static void _integrand1(double r, double mu, double muS, double nu, double t, Color* ray, Color* mie)
-{
+static void _integrand1(double r, double mu, double muS, double nu, double t, Color *ray, Color *mie) {
     double ri = sqrt(r * r + t * t + 2.0 * r * mu * t);
     double muSi = (nu * t + muS * r) / ri;
     ri = max(Rg, ri);
-    if (muSi >= -sqrt(1.0 - Rg * Rg / (ri * ri)))
-    {
+    if (muSi >= -sqrt(1.0 - Rg * Rg / (ri * ri))) {
         Color t1, t2;
         t1 = _transmittance3(r, mu, t);
         t2 = _transmittance(ri, muSi);
@@ -457,16 +437,13 @@ static void _integrand1(double r, double mu, double muS, double nu, double t, Co
         mie->r = fM * t1.r * t2.r;
         mie->g = fM * t1.g * t2.g;
         mie->b = fM * t1.b * t2.b;
-    }
-    else
-    {
+    } else {
         ray->r = ray->g = ray->b = 0.0;
         mie->r = mie->g = mie->b = 0.0;
     }
 }
 
-static void _inscatter1(double r, double mu, double muS, double nu, Color* ray, Color* mie)
-{
+static void _inscatter1(double r, double mu, double muS, double nu, Color *ray, Color *mie) {
     ray->r = ray->g = ray->b = 0.0;
     mie->r = mie->g = mie->b = 0.0;
     double dx = _limit(r, mu) / (double)(INSCATTER_INTEGRAL_SAMPLES);
@@ -474,9 +451,8 @@ static void _inscatter1(double r, double mu, double muS, double nu, Color* ray, 
     Color miei;
     _integrand1(r, mu, muS, nu, 0.0, &rayi, &miei);
     int i;
-    for (i = 1; i <= INSCATTER_INTEGRAL_SAMPLES; ++i)
-    {
-        double xj = (double)(i) * dx;
+    for (i = 1; i <= INSCATTER_INTEGRAL_SAMPLES; ++i) {
+        double xj = (double)(i)*dx;
         Color rayj;
         Color miej;
         _integrand1(r, mu, muS, nu, xj, &rayj, &miej);
@@ -497,27 +473,22 @@ static void _inscatter1(double r, double mu, double muS, double nu, Color* ray, 
     mie->b *= betaMSca.z;
 }
 
-typedef struct
-{
-    Texture4D* ray;
-    Texture4D* mie;
+typedef struct {
+    Texture4D *ray;
+    Texture4D *mie;
 } Inscatter1Params;
 
-static int _inscatter1Worker(ParallelWork*, int layer, void* data)
-{
-    Inscatter1Params* params = (Inscatter1Params*)data;
+static int _inscatter1Worker(ParallelWork *, int layer, void *data) {
+    Inscatter1Params *params = (Inscatter1Params *)data;
 
     double r;
     Color dhdH;
     _getLayerParams(layer, &r, &dhdH);
 
     int x, y, z;
-    for (x = 0; x < RES_MU; x++)
-    {
-        for (y = 0; y < RES_MU_S; y++)
-        {
-            for (z = 0; z < RES_NU; z++)
-            {
+    for (x = 0; x < RES_MU; x++) {
+        for (y = 0; y < RES_MU_S; y++) {
+            for (z = 0; z < RES_NU; z++) {
                 Color ray = COLOR_BLACK;
                 Color mie = COLOR_BLACK;
                 double mu, muS, nu;
@@ -535,8 +506,8 @@ static int _inscatter1Worker(ParallelWork*, int layer, void* data)
 
 /*********************** inscatterS.glsl ***********************/
 
-static Color _inscatterS(double r, double mu, double muS, double nu, int first, Texture2D* deltaE, Texture4D* deltaSR, Texture4D* deltaSM)
-{
+static Color _inscatterS(double r, double mu, double muS, double nu, int first, Texture2D *deltaE, Texture4D *deltaSR,
+                         Texture4D *deltaSM) {
     Color raymie = COLOR_BLACK;
 
     double dphi = M_PI / (double)(INSCATTER_SPHERICAL_INTEGRAL_SAMPLES);
@@ -556,16 +527,14 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
 
     /* integral over 4.PI around x with two nested loops over w directions (theta,phi) -- Eq (7) */
     int itheta;
-    for (itheta = 0; itheta < INSCATTER_SPHERICAL_INTEGRAL_SAMPLES; ++itheta)
-    {
+    for (itheta = 0; itheta < INSCATTER_SPHERICAL_INTEGRAL_SAMPLES; ++itheta) {
         double theta = ((double)(itheta) + 0.5) * dtheta;
         double ctheta = cos(theta);
 
         double greflectance = 0.0;
         double dground = 0.0;
         Color gtransp = {0.0, 0.0, 0.0, 0.0};
-        if (ctheta < cthetamin)
-        {
+        if (ctheta < cthetamin) {
             /* if ground visible in direction w
              * compute transparency gtransp between x and ground */
             greflectance = AVERAGE_GROUND_REFLECTANCE / M_PI;
@@ -574,8 +543,7 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
         }
 
         int iphi;
-        for (iphi = 0; iphi < 2 * INSCATTER_SPHERICAL_INTEGRAL_SAMPLES; ++iphi)
-        {
+        for (iphi = 0; iphi < 2 * INSCATTER_SPHERICAL_INTEGRAL_SAMPLES; ++iphi) {
             double phi = ((double)(iphi) + 0.5) * dphi;
             double dw = dtheta * dphi * sin(theta);
             Vector3 w = vec3(cos(phi) * sin(theta), sin(phi) * sin(theta), ctheta);
@@ -600,8 +568,7 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
             raymie1.b = greflectance * girradiance.b * gtransp.b;
 
             /* second term = inscattered light, =deltaS */
-            if (first)
-            {
+            if (first) {
                 /* first iteration is special because Rayleigh and Mie were stored separately,
                  * without the phase functions factors; they must be reintroduced here */
                 double pr1 = _phaseFunctionR(nu1);
@@ -611,9 +578,7 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
                 raymie1.r += ray1.r * pr1 + mie1.r * pm1;
                 raymie1.g += ray1.g * pr1 + mie1.g * pm1;
                 raymie1.b += ray1.b * pr1 + mie1.b * pm1;
-            }
-            else
-            {
+            } else {
                 Color col = _texture4D(deltaSR, r, w.z, muS, nu1);
                 raymie1.r += col.r;
                 raymie1.g += col.g;
@@ -633,30 +598,25 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
     return raymie;
 }
 
-typedef struct
-{
-    Texture4D* result;
-    Texture2D* deltaE;
-    Texture4D* deltaSR;
-    Texture4D* deltaSM;
+typedef struct {
+    Texture4D *result;
+    Texture2D *deltaE;
+    Texture4D *deltaSR;
+    Texture4D *deltaSM;
     int first;
 } jParams;
 
-static int _jWorker(ParallelWork*, int layer, void* data)
-{
-    jParams* params = (jParams*)data;
+static int _jWorker(ParallelWork *, int layer, void *data) {
+    jParams *params = (jParams *)data;
 
     double r;
     Color dhdH;
     _getLayerParams(layer, &r, &dhdH);
 
     int x, y, z;
-    for (x = 0; x < RES_MU; x++)
-    {
-        for (y = 0; y < RES_MU_S; y++)
-        {
-            for (z = 0; z < RES_NU; z++)
-            {
+    for (x = 0; x < RES_MU; x++) {
+        for (y = 0; y < RES_MU_S; y++) {
+            for (z = 0; z < RES_NU; z++) {
                 Color raymie;
                 double mu, muS, nu;
                 _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
@@ -670,15 +630,12 @@ static int _jWorker(ParallelWork*, int layer, void* data)
 
 /*********************** irradianceN.glsl ***********************/
 
-void _irradianceNProg(Texture2D* destination, Texture4D* deltaSR, Texture4D* deltaSM, int first)
-{
+void _irradianceNProg(Texture2D *destination, Texture4D *deltaSR, Texture4D *deltaSM, int first) {
     int x, y;
     double dphi = M_PI / (double)(IRRADIANCE_INTEGRAL_SAMPLES);
     double dtheta = M_PI / (double)(IRRADIANCE_INTEGRAL_SAMPLES);
-    for (x = 0; x < SKY_W; x++)
-    {
-        for (y = 0; y < SKY_H; y++)
-        {
+    for (x = 0; x < SKY_W; x++) {
+        for (y = 0; y < SKY_H; y++) {
             double r, muS;
             int iphi;
             _getIrradianceRMuS((double)x / SKY_W, (double)y / SKY_H, &r, &muS);
@@ -686,18 +643,15 @@ void _irradianceNProg(Texture2D* destination, Texture4D* deltaSR, Texture4D* del
 
             Color result = COLOR_BLACK;
             /* integral over 2.PI around x with two nested loops over w directions (theta,phi) -- Eq (15) */
-            for (iphi = 0; iphi < 2 * IRRADIANCE_INTEGRAL_SAMPLES; ++iphi)
-            {
+            for (iphi = 0; iphi < 2 * IRRADIANCE_INTEGRAL_SAMPLES; ++iphi) {
                 double phi = ((double)(iphi) + 0.5) * dphi;
                 int itheta;
-                for (itheta = 0; itheta < IRRADIANCE_INTEGRAL_SAMPLES / 2; ++itheta)
-                {
+                for (itheta = 0; itheta < IRRADIANCE_INTEGRAL_SAMPLES / 2; ++itheta) {
                     double theta = ((double)(itheta) + 0.5) * dtheta;
                     double dw = dtheta * dphi * sin(theta);
                     Vector3 w = vec3(cos(phi) * sin(theta), sin(phi) * sin(theta), cos(theta));
                     double nu = s.dotProduct(w);
-                    if (first)
-                    {
+                    if (first) {
                         /* first iteration is special because Rayleigh and Mie were stored separately,
                            without the phase functions factors; they must be reintroduced here */
                         double pr1 = _phaseFunctionR(nu);
@@ -707,9 +661,7 @@ void _irradianceNProg(Texture2D* destination, Texture4D* deltaSR, Texture4D* del
                         result.r += (ray1.r * pr1 + mie1.r * pm1) * w.z * dw;
                         result.g += (ray1.g * pr1 + mie1.g * pm1) * w.z * dw;
                         result.b += (ray1.b * pr1 + mie1.b * pm1) * w.z * dw;
-                    }
-                    else
-                    {
+                    } else {
                         Color col = _texture4D(deltaSR, r, w.z, muS, nu);
                         result.r += col.r * w.z * dw;
                         result.g += col.g * w.z * dw;
@@ -725,14 +677,12 @@ void _irradianceNProg(Texture2D* destination, Texture4D* deltaSR, Texture4D* del
 
 /*********************** inscatterN.glsl ***********************/
 
-typedef struct
-{
-    Texture4D* destination;
-    Texture4D* deltaJ;
+typedef struct {
+    Texture4D *destination;
+    Texture4D *deltaJ;
 } InscatterNParams;
 
-static Color _integrand2(Texture4D* deltaJ, double r, double mu, double muS, double nu, double t)
-{
+static Color _integrand2(Texture4D *deltaJ, double r, double mu, double muS, double nu, double t) {
     double ri = sqrt(r * r + t * t + 2.0 * r * mu * t);
     double mui = (r * mu + t) / ri;
     double muSi = (nu * t + muS * r) / ri;
@@ -746,15 +696,13 @@ static Color _integrand2(Texture4D* deltaJ, double r, double mu, double muS, dou
     return c1;
 }
 
-static Color _inscatterN(Texture4D* deltaJ, double r, double mu, double muS, double nu)
-{
+static Color _inscatterN(Texture4D *deltaJ, double r, double mu, double muS, double nu) {
     Color raymie = COLOR_BLACK;
     double dx = _limit(r, mu) / (double)(INSCATTER_INTEGRAL_SAMPLES);
     Color raymiei = _integrand2(deltaJ, r, mu, muS, nu, 0.0);
     int i;
-    for (i = 1; i <= INSCATTER_INTEGRAL_SAMPLES; ++i)
-    {
-        double xj = (double)(i) * dx;
+    for (i = 1; i <= INSCATTER_INTEGRAL_SAMPLES; ++i) {
+        double xj = (double)(i)*dx;
         Color raymiej = _integrand2(deltaJ, r, mu, muS, nu, xj);
         raymie.r += (raymiei.r + raymiej.r) / 2.0 * dx;
         raymie.g += (raymiei.g + raymiej.g) / 2.0 * dx;
@@ -764,21 +712,17 @@ static Color _inscatterN(Texture4D* deltaJ, double r, double mu, double muS, dou
     return raymie;
 }
 
-static int _inscatterNWorker(ParallelWork*, int layer, void* data)
-{
-    InscatterNParams* params = (InscatterNParams*)data;
+static int _inscatterNWorker(ParallelWork *, int layer, void *data) {
+    InscatterNParams *params = (InscatterNParams *)data;
 
     double r;
     Color dhdH;
     _getLayerParams(layer, &r, &dhdH);
 
     int x, y, z;
-    for (x = 0; x < RES_MU; x++)
-    {
-        for (y = 0; y < RES_MU_S; y++)
-        {
-            for (z = 0; z < RES_NU; z++)
-            {
+    for (x = 0; x < RES_MU; x++) {
+        for (y = 0; y < RES_MU_S; y++) {
+            for (z = 0; z < RES_NU; z++) {
                 double mu, muS, nu;
                 _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
                 params->destination->setPixel(x, y, z, layer, _inscatterN(params->deltaJ, r, mu, muS, nu));
@@ -790,27 +734,22 @@ static int _inscatterNWorker(ParallelWork*, int layer, void* data)
 
 /*********************** copyInscatterN.glsl ***********************/
 
-typedef struct
-{
-    Texture4D* source;
-    Texture4D* destination;
+typedef struct {
+    Texture4D *source;
+    Texture4D *destination;
 } CopyInscatterNParams;
 
-static int _copyInscatterNWorker(ParallelWork*, int layer, void* data)
-{
-    CopyInscatterNParams* params = (CopyInscatterNParams*)data;
+static int _copyInscatterNWorker(ParallelWork *, int layer, void *data) {
+    CopyInscatterNParams *params = (CopyInscatterNParams *)data;
 
     double r;
     Color dhdH;
     _getLayerParams(layer, &r, &dhdH);
 
     int x, y, z;
-    for (x = 0; x < RES_MU; x++)
-    {
-        for (y = 0; y < RES_MU_S; y++)
-        {
-            for (z = 0; z < RES_NU; z++)
-            {
+    for (x = 0; x < RES_MU; x++) {
+        for (y = 0; y < RES_MU_S; y++) {
+            for (z = 0; z < RES_NU; z++) {
                 double mu, muS, nu;
                 _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
                 Color col1 = params->source->getPixel(x, y, z, layer);
@@ -827,8 +766,7 @@ static int _copyInscatterNWorker(ParallelWork*, int layer, void* data)
 
 /*********************** Final getters ***********************/
 
-static inline Color _applyInscatter(Color inscatter, Color attmod, Color samp)
-{
+static inline Color _applyInscatter(Color inscatter, Color attmod, Color samp) {
     inscatter.r = inscatter.r - attmod.r * samp.r;
     inscatter.g = inscatter.g - attmod.g * samp.g;
     inscatter.b = inscatter.b - attmod.b * samp.b;
@@ -837,15 +775,14 @@ static inline Color _applyInscatter(Color inscatter, Color attmod, Color samp)
 }
 
 /* inscattered light along ray x+tv, when sun in direction s (=S[L]-T(x,x0)S[L]|x0) */
-static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, double* _r, double* _mu, Vector3* attenuation)
-{
+static Color _getInscatterColor(Vector3 *_x, double *_t, Vector3 v, Vector3 s, double *_r, double *_mu,
+                                Vector3 *attenuation) {
     Color result;
     double r = _x->getNorm();
     double mu = _x->dotProduct(v) / r;
     double d = -r * mu - sqrt(r * r * (mu * mu - 1.0) + Rt * Rt);
     attenuation->x = attenuation->y = attenuation->z = 0.0;
-    if (d > 0.0)
-    {
+    if (d > 0.0) {
         /* if x in space and ray intersects atmosphere
            move x to nearest intersection of ray with top atmosphere boundary */
         _x->x += d * v.x;
@@ -857,16 +794,14 @@ static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, d
     }
     double t = *_t;
     Vector3 x = *_x;
-    if (r <= Rt)
-    {
+    if (r <= Rt) {
         /* if ray intersects atmosphere */
         double nu = v.dotProduct(s);
         double muS = x.dotProduct(s) / r;
         double phaseR = _phaseFunctionR(nu);
         double phaseM = _phaseFunctionM(nu);
         Color inscatter = vec4max(_texture4D(_inscatterTexture, r, mu, muS, nu), 0.0);
-        if (t > 0.0)
-        {
+        if (t > 0.0) {
             Vector3 x0 = x.add(v.scale(t));
             double r0 = x0.getNorm();
             double rMu0 = x0.dotProduct(v);
@@ -874,17 +809,16 @@ static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, d
             double muS0 = x0.dotProduct(s) / r0;
             /* avoids imprecision problems in transmittance computations based on textures */
             *attenuation = _analyticTransmittance(r, mu, t);
-            if (r0 > Rg + 0.001)
-            {
+            if (r0 > Rg + 0.001) {
                 /* computes S[L]-T(x,x0)S[L]|x0 */
                 Color attmod = {attenuation->x, attenuation->y, attenuation->z, attenuation->x};
                 Color samp = _texture4D(_inscatterTexture, r0, mu0, muS0, nu);
                 inscatter = _applyInscatter(inscatter, attmod, samp);
-                /* avoids imprecision problems near horizon by interpolating between two points above and below horizon */
+                /* avoids imprecision problems near horizon by interpolating between two points above and below horizon
+                 */
                 const double EPS = 0.02;
                 double muHoriz = -sqrt(1.0 - (Rg / r) * (Rg / r));
-                if (fabs(mu - muHoriz) < EPS)
-                {
+                if (fabs(mu - muHoriz) < EPS) {
                     double a = ((mu - muHoriz) + EPS) / (2.0 * EPS);
 
                     mu = muHoriz - EPS;
@@ -913,9 +847,7 @@ static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, d
         result.b = inscatter.b * phaseR + mie.b * phaseM;
         result.a = 1.0;
         _fixVec4Min(&result, 0.0);
-    }
-    else
-    {
+    } else {
         /* x in space and ray looking in space */
         result = COLOR_BLACK;
     }
@@ -930,8 +862,7 @@ static Color _getInscatterColor(Vector3* _x, double* _t, Vector3 v, Vector3 s, d
 }
 
 /* direct sun light for ray x+tv, when sun in direction s (=L0) */
-static Color _sunColor(Vector3 v, Vector3 s, double r, double mu, double radius)
-{
+static Color _sunColor(Vector3 v, Vector3 s, double r, double mu, double radius) {
     Color transmittance = r <= Rt ? _transmittanceWithShadow(r, mu) : COLOR_WHITE; /* T(x,xo) */
     double d = _limit(r, mu);
     radius *= (1.0 + 25.0 * d / Rt); /* Inflating due to lens effect near horizon */
@@ -945,103 +876,86 @@ static Color _sunColor(Vector3 v, Vector3 s, double r, double mu, double radius)
 
 /*********************** Cache/debug methods ***********************/
 
-static int _tryLoadCache2D(Texture2D* tex, const char* tag, int order)
-{
+static int _tryLoadCache2D(Texture2D *tex, const char *tag, int order) {
     int xsize, ysize;
     tex->getSize(&xsize, &ysize);
 
     CacheFile cache("atmo-br", "cache", tag, xsize, ysize, 0, 0, order);
-    if (cache.isReadable())
-    {
+    if (cache.isReadable()) {
         PackStream stream;
         stream.bindToFile(cache.getPath());
         tex->load(&stream);
 
         return 1;
-    }
-    else
-    {
+    } else {
         return 0;
     }
 }
 
-static void _saveCache2D(Texture2D* tex, const char* tag, int order)
-{
+static void _saveCache2D(Texture2D *tex, const char *tag, int order) {
     int xsize, ysize;
     tex->getSize(&xsize, &ysize);
 
     CacheFile cache("atmo-br", "cache", tag, xsize, ysize, 0, 0, order);
-    if (cache.isWritable())
-    {
+    if (cache.isWritable()) {
         PackStream stream;
         stream.bindToFile(cache.getPath());
         tex->save(&stream);
     }
 }
 
-static void _saveDebug2D(Texture2D* tex, const char* tag, int order)
-{
+static void _saveDebug2D(Texture2D *tex, const char *tag, int order) {
     int xsize, ysize;
     tex->getSize(&xsize, &ysize);
 
     CacheFile cache("atmo-br", "png", tag, xsize, ysize, 0, 0, order);
-    if (cache.isWritable())
-    {
+    if (cache.isWritable()) {
         tex->saveToFile(cache.getPath());
     }
 }
 
-static int _tryLoadCache4D(Texture4D* tex, const char* tag, int order)
-{
+static int _tryLoadCache4D(Texture4D *tex, const char *tag, int order) {
     int xsize, ysize, zsize, wsize;
     tex->getSize(&xsize, &ysize, &zsize, &wsize);
 
     CacheFile cache("atmo-br", "cache", tag, xsize, ysize, zsize, wsize, order);
-    if (cache.isReadable())
-    {
+    if (cache.isReadable()) {
         PackStream stream;
         stream.bindToFile(cache.getPath());
         tex->load(&stream);
 
         return 1;
-    }
-    else
-    {
+    } else {
         return 0;
     }
 }
 
-static void _saveCache4D(Texture4D* tex, const char* tag, int order)
-{
+static void _saveCache4D(Texture4D *tex, const char *tag, int order) {
     int xsize, ysize, zsize, wsize;
     tex->getSize(&xsize, &ysize, &zsize, &wsize);
 
     CacheFile cache("atmo-br", "cache", tag, xsize, ysize, zsize, wsize, order);
-    if (cache.isWritable())
-    {
+    if (cache.isWritable()) {
         PackStream stream;
         stream.bindToFile(cache.getPath());
         tex->save(&stream);
     }
 }
 
-static void _saveDebug4D(Texture4D* tex, const char* tag, int order)
-{
+static void _saveDebug4D(Texture4D *tex, const char *tag, int order) {
     int xsize, ysize, zsize, wsize;
     tex->getSize(&xsize, &ysize, &zsize, &wsize);
 
     CacheFile cache("atmo-br", "png", tag, xsize, ysize, zsize, wsize, order);
-    if (cache.isWritable())
-    {
+    if (cache.isWritable()) {
         tex->saveToFile(cache.getPath());
     }
 }
 
 /*********************** Public methods ***********************/
-int brunetonInit()
-{
+int brunetonInit() {
     int x, y, z, w, order;
-    ParallelWork* work;
+    ParallelWork *work;
 
     assert(_inscatterTexture == NULL);
 
@@ -1051,17 +965,15 @@ int brunetonInit()
     _inscatterTexture = new Texture4D(RES_MU, RES_MU_S, RES_NU, RES_R);
 
     /* try loading from cache */
-    if (_tryLoadCache2D(_transmittanceTexture, "transmittance", 0)
-     && _tryLoadCache2D(_irradianceTexture, "irradiance", 0)
-     && _tryLoadCache4D(_inscatterTexture, "inscatter", 0))
-    {
+    if (_tryLoadCache2D(_transmittanceTexture, "transmittance", 0) &&
+        _tryLoadCache2D(_irradianceTexture, "irradiance", 0) && _tryLoadCache4D(_inscatterTexture, "inscatter", 0)) {
         return 1;
     }
 
-    Texture2D* _deltaETexture = new Texture2D(SKY_W, SKY_H);
-    Texture4D* _deltaSMTexture = new Texture4D(RES_MU, RES_MU_S, RES_NU, RES_R);
-    Texture4D* _deltaSRTexture = new Texture4D(RES_MU, RES_MU_S, RES_NU, RES_R);
-    Texture4D* _deltaJTexture = new Texture4D(RES_MU, RES_MU_S, RES_NU, RES_R);
+    Texture2D *_deltaETexture = new Texture2D(SKY_W, SKY_H);
+    Texture4D *_deltaSMTexture = new Texture4D(RES_MU, RES_MU_S, RES_NU, RES_R);
+    Texture4D *_deltaSRTexture = new Texture4D(RES_MU, RES_MU_S, RES_NU, RES_R);
+    Texture4D *_deltaJTexture = new Texture4D(RES_MU, RES_MU_S, RES_NU, RES_R);
 
     /* computes transmittance texture T (line 1 in algorithm 4.1) */
     _precomputeTransmittanceTexture();
@@ -1085,14 +997,10 @@ int brunetonInit()
     _irradianceTexture->fill(COLOR_BLACK);
 
     /* copies deltaS into inscatter texture S (line 5 in algorithm 4.1) */
-    for (x = 0; x < RES_MU; x++)
-    {
-        for (y = 0; y < RES_MU_S; y++)
-        {
-            for (z = 0; z < RES_NU; z++)
-            {
-                for (w = 0; w < RES_R; w++)
-                {
+    for (x = 0; x < RES_MU; x++) {
+        for (y = 0; y < RES_MU_S; y++) {
+            for (z = 0; z < RES_NU; z++) {
+                for (w = 0; w < RES_R; w++) {
                     Color result = _deltaSRTexture->getPixel(x, y, z, w);
                     Color mie = _deltaSMTexture->getPixel(x, y, z, w);
                     result.a = mie.r;
@@ -1104,8 +1012,7 @@ int brunetonInit()
     _saveDebug4D(_inscatterTexture, "inscatter", 0);
 
     /* loop for each scattering order (line 6 in algorithm 4.1) */
-    for (order = 2; order <= 4; ++order)
-    {
+    for (order = 2; order <= 4; ++order) {
         /* computes deltaJ (line 7 in algorithm 4.1) */
         jParams jparams = {_deltaJTexture, _deltaETexture, _deltaSRTexture, _deltaSMTexture, order == 2};
         work = new ParallelWork(_jWorker, RES_R, &jparams);
@@ -1149,21 +1056,17 @@ int brunetonInit()
 
 static int _inited;
 
-AtmosphereModelBruneton::AtmosphereModelBruneton(SoftwareRenderer *parent):
-    parent(parent)
-{
-    if (not _inited)
-    {
+AtmosphereModelBruneton::AtmosphereModelBruneton(SoftwareRenderer *parent) : parent(parent) {
+    if (not _inited) {
         _inited = brunetonInit();
     }
 }
 
-AtmosphereModelBruneton::~AtmosphereModelBruneton()
-{
+AtmosphereModelBruneton::~AtmosphereModelBruneton() {
 }
 
-AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3 &direction, const Vector3 &sun_position, const Color &base)
-{
+AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3 &direction,
+                                                      const Vector3 &sun_position, const Color &base) {
     Vector3 x = {0.0, Rg + eye.y * WORLD_SCALING, 0.0};
     Vector3 v = direction.normalize();
     Vector3 s = sun_position.sub(x).normalize();
@@ -1174,7 +1077,8 @@ AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3
 
     AtmosphereResult result;
     Vector3 attenuation;
-    Color sunColor = _sunColor(v, s, r, mu, parent->getScenery()->getAtmosphere()->propSunRadius()->getValue()); /* L0 */
+    Color sunColor =
+        _sunColor(v, s, r, mu, parent->getScenery()->getAtmosphere()->propSunRadius()->getValue()); /* L0 */
 
     /*result.base.r = base.r + sunColor.r;
     result.base.g = base.g + sunColor.g;
@@ -1189,15 +1093,13 @@ AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3
     return result;
 }
 
-AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 location, const Color &base)
-{
+AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 location, const Color &base) {
     Vector3 eye = parent->getCameraLocation(location);
     Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(SUN_DISTANCE);
 
     Vector3 direction = location.sub(eye).scale(WORLD_SCALING);
     double t = direction.getNorm();
-    if (t < 0.000001)
-    {
+    if (t < 0.000001) {
         direction = parent->getCameraDirection(location).scale(0.001 * WORLD_SCALING);
         t = direction.getNorm();
     }
@@ -1206,8 +1108,7 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
     Vector3 v = direction.normalize();
     Vector3 s = sun_position.sub(x).normalize();
 
-    if (v.y == 0.0)
-    {
+    if (v.y == 0.0) {
         v.y = -0.000001;
     }
 
@@ -1229,8 +1130,7 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
     return result;
 }
 
-bool AtmosphereModelBruneton::getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const
-{
+bool AtmosphereModelBruneton::getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const {
     LightComponent sun, irradiance;
     double muS;
 
@@ -1243,12 +1143,9 @@ bool AtmosphereModelBruneton::getLightsAt(std::vector<LightComponent> &result, c
     Vector3 s = sun_position.sub(x).normalize();
 
     muS = up.dotProduct(s);
-    if (altitude > RL)
-    {
+    if (altitude > RL) {
         sun.color = parent->getScenery()->getAtmosphere()->sun_color;
-    }
-    else
-    {
+    } else {
         sun.color = _transmittanceWithShadow(r0, muS);
     }
     sun.direction = s.scale(-1.0);
@@ -1267,17 +1164,14 @@ bool AtmosphereModelBruneton::getLightsAt(std::vector<LightComponent> &result, c
     return true;
 }
 
-Texture2D *AtmosphereModelBruneton::getTextureTransmittance() const
-{
+Texture2D *AtmosphereModelBruneton::getTextureTransmittance() const {
     return _transmittanceTexture;
 }
 
-Texture2D *AtmosphereModelBruneton::getTextureIrradiance() const
-{
+Texture2D *AtmosphereModelBruneton::getTextureIrradiance() const {
     return _irradianceTexture;
 }
 
-Texture4D *AtmosphereModelBruneton::getTextureInscatter() const
-{
+Texture4D *AtmosphereModelBruneton::getTextureInscatter() const {
     return _inscatterTexture;
 }

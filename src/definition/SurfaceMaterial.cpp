@@ -5,13 +5,10 @@
 
 static SurfaceMaterial DEFAULT;
 
-SurfaceMaterial::SurfaceMaterial():
-    SurfaceMaterial(COLOR_BLACK)
-{
+SurfaceMaterial::SurfaceMaterial() : SurfaceMaterial(COLOR_BLACK) {
 }
 
-SurfaceMaterial::SurfaceMaterial(const Color &color)
-{
+SurfaceMaterial::SurfaceMaterial(const Color &color) {
     base = new Color(color);
     hardness = 0.5;
     reflection = 0.0;
@@ -19,26 +16,22 @@ SurfaceMaterial::SurfaceMaterial(const Color &color)
     receive_shadows = 1.0;
 }
 
-SurfaceMaterial::~SurfaceMaterial()
-{
+SurfaceMaterial::~SurfaceMaterial() {
     delete base;
 }
 
-const SurfaceMaterial &SurfaceMaterial::getDefault()
-{
+const SurfaceMaterial &SurfaceMaterial::getDefault() {
     return DEFAULT;
 }
 
-void SurfaceMaterial::setColor(double r, double g, double b, double a)
-{
+void SurfaceMaterial::setColor(double r, double g, double b, double a) {
     base->r = r;
     base->g = g;
     base->b = b;
     base->a = a;
 }
 
-void SurfaceMaterial::save(PackStream* stream) const
-{
+void SurfaceMaterial::save(PackStream *stream) const {
     base->save(stream);
 
     stream->write(&hardness);
@@ -48,8 +41,7 @@ void SurfaceMaterial::save(PackStream* stream) const
     stream->write(&receive_shadows);
 }
 
-void SurfaceMaterial::load(PackStream* stream)
-{
+void SurfaceMaterial::load(PackStream *stream) {
     base->load(stream);
 
     stream->read(&hardness);
@@ -59,8 +51,7 @@ void SurfaceMaterial::load(PackStream* stream)
     stream->read(&receive_shadows);
 }
 
-void SurfaceMaterial::copy(SurfaceMaterial *destination) const
-{
+void SurfaceMaterial::copy(SurfaceMaterial *destination) const {
     *destination->base = *base;
     destination->hardness = hardness;
     destination->reflection = reflection;
@@ -69,6 +60,5 @@ void SurfaceMaterial::copy(SurfaceMaterial *destination) const
     destination->validate();
 }
 
-void SurfaceMaterial::validate()
-{
+void SurfaceMaterial::validate() {
 }

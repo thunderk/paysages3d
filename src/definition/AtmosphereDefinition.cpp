@@ -5,24 +5,21 @@
 #include "FloatNode.h"
 #include "GodRaysDefinition.h"
 
-AtmosphereDefinition::AtmosphereDefinition(DefinitionNode* parent):
-    DefinitionNode(parent, "atmosphere", "atmosphere")
-{
+AtmosphereDefinition::AtmosphereDefinition(DefinitionNode *parent)
+    : DefinitionNode(parent, "atmosphere", "atmosphere") {
     godrays = new GodRaysDefinition(this);
     daytime = new FloatNode(this, "daytime");
     humidity = new FloatNode(this, "humidity");
     sun_radius = new FloatNode(this, "sun_radius");
 }
 
-AtmosphereDefinition::~AtmosphereDefinition()
-{
+AtmosphereDefinition::~AtmosphereDefinition() {
 }
 
-void AtmosphereDefinition::save(PackStream* stream) const
-{
+void AtmosphereDefinition::save(PackStream *stream) const {
     DefinitionNode::save(stream);
 
-    stream->write((int*)&model);
+    stream->write((int *)&model);
     sun_color.save(stream);
     stream->write(&dome_lighting);
     stream->write(&moon_radius);
@@ -31,19 +28,17 @@ void AtmosphereDefinition::save(PackStream* stream) const
 
     int star_count = stars.size();
     stream->write(&star_count);
-    for (const auto &star : stars)
-    {
+    for (const auto &star : stars) {
         star.location.save(stream);
         star.col.save(stream);
         stream->write(&star.radius);
     }
 }
 
-void AtmosphereDefinition::load(PackStream* stream)
-{
+void AtmosphereDefinition::load(PackStream *stream) {
     DefinitionNode::load(stream);
 
-    stream->read((int*)&model);
+    stream->read((int *)&model);
     sun_color.load(stream);
     stream->read(&dome_lighting);
     stream->read(&moon_radius);
@@ -52,8 +47,7 @@ void AtmosphereDefinition::load(PackStream* stream)
 
     int star_count;
     stream->read(&star_count);
-    for (int i = 0; i < star_count; i++)
-    {
+    for (int i = 0; i < star_count; i++) {
         Star star;
 
         star.location.load(stream);
@@ -66,11 +60,10 @@ void AtmosphereDefinition::load(PackStream* stream)
     validate();
 }
 
-void AtmosphereDefinition::copy(DefinitionNode* _destination) const
-{
+void AtmosphereDefinition::copy(DefinitionNode *_destination) const {
     DefinitionNode::copy(_destination);
 
-    AtmosphereDefinition* destination = (AtmosphereDefinition*)_destination;
+    AtmosphereDefinition *destination = (AtmosphereDefinition *)_destination;
 
     destination->model = model;
     destination->sun_color = sun_color;
@@ -83,25 +76,19 @@ void AtmosphereDefinition::copy(DefinitionNode* _destination) const
     destination->validate();
 }
 
-void AtmosphereDefinition::setDayTime(double value)
-{
+void AtmosphereDefinition::setDayTime(double value) {
     daytime->setValue(value);
 }
 
-void AtmosphereDefinition::setDayTime(int hour, int minute, int second)
-{
+void AtmosphereDefinition::setDayTime(int hour, int minute, int second) {
     setDayTime((double)hour / 24.0 + (double)minute / 1440.0 + (double)second / 86400.0);
 }
 
-void AtmosphereDefinition::getHMS(int *hour, int *minute, int *second) const
-{
+void AtmosphereDefinition::getHMS(int *hour, int *minute, int *second) const {
     double value = daytime->getValue();
-    if (value >= 0.0)
-    {
+    if (value >= 0.0) {
         value = fmod(value, 1.0);
-    }
-    else
-    {
+    } else {
         value = 1.0 - fmod(-value, 1.0);
     }
     value *= 86400.0;
@@ -111,8 +98,7 @@ void AtmosphereDefinition::getHMS(int *hour, int *minute, int *second) const
     *second = value - *minute * 60.0;
 }
 
-void AtmosphereDefinition::applyPreset(AtmospherePreset preset)
-{
+void AtmosphereDefinition::applyPreset(AtmospherePreset preset) {
     sun_color.r = 1.0;
     sun_color.g = 0.95;
     sun_color.b = 0.9;
@@ -124,35 +110,34 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset)
 
     model = ATMOSPHERE_MODEL_BRUNETON;
 
-    switch (preset)
-    {
-        case ATMOSPHERE_PRESET_CLEAR_DAY:
-            setDayTime(15);
-            humidity->setValue(0.1);
-            dome_lighting = 0.2;
-            break;
-        case ATMOSPHERE_PRESET_CLEAR_SUNSET:
-            setDayTime(17, 45);
-            humidity->setValue(0.1);
-            dome_lighting = 0.3;
-            break;
-        case ATMOSPHERE_PRESET_HAZY_MORNING:
-            setDayTime(8, 30);
-            humidity->setValue(0.4);
-            dome_lighting = 0.25;
-            break;
-        case ATMOSPHERE_PRESET_FOGGY:
-            setDayTime(15);
-            humidity->setValue(0.7);
-            dome_lighting = 0.1;
-            break;
-        case ATMOSPHERE_PRESET_STORMY:
-            setDayTime(15);
-            humidity->setValue(0.9);
-            dome_lighting = 0.05;
-            break;
-        default:
-            ;
+    switch (preset) {
+    case ATMOSPHERE_PRESET_CLEAR_DAY:
+        setDayTime(15);
+        humidity->setValue(0.1);
+        dome_lighting = 0.2;
+        break;
+    case ATMOSPHERE_PRESET_CLEAR_SUNSET:
+        setDayTime(17, 45);
+        humidity->setValue(0.1);
+        dome_lighting = 0.3;
+        break;
+    case ATMOSPHERE_PRESET_HAZY_MORNING:
+        setDayTime(8, 30);
+        humidity->setValue(0.4);
+        dome_lighting = 0.25;
+        break;
+    case ATMOSPHERE_PRESET_FOGGY:
+        setDayTime(15);
+        humidity->setValue(0.7);
+        dome_lighting = 0.1;
+        break;
+    case ATMOSPHERE_PRESET_STORMY:
+        setDayTime(15);
+        humidity->setValue(0.9);
+        dome_lighting = 0.05;
+        break;
+    default:
+        ;
     }
 
     generateStars(2000);
@@ -160,22 +145,22 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset)
     validate();
 }
 
-void AtmosphereDefinition::generateStars(int count)
-{
+void AtmosphereDefinition::generateStars(int count) {
     stars.clear();
 
-    for (int i = 0; i < count; ++i)
-    {
+    for (int i = 0; i < count; ++i) {
         Star star;
 
-        star.location = Vector3((RandomGenerator::random() - 0.5) * 100000.0, (RandomGenerator::random() * 0.5) * 100000.0, (RandomGenerator::random() - 0.5) * 100000.0);
-        if (star.location.getNorm() < 30000.0)
-        {
+        star.location =
+            Vector3((RandomGenerator::random() - 0.5) * 100000.0, (RandomGenerator::random() * 0.5) * 100000.0,
+                    (RandomGenerator::random() - 0.5) * 100000.0);
+        if (star.location.getNorm() < 30000.0) {
             i--;
             continue;
         }
         double brillance = RandomGenerator::random() * 0.05 + 0.1;
-        star.col = Color(brillance + RandomGenerator::random() * 0.03, brillance + RandomGenerator::random() * 0.03, brillance + RandomGenerator::random() * 0.03, 1.0);
+        star.col = Color(brillance + RandomGenerator::random() * 0.03, brillance + RandomGenerator::random() * 0.03,
+                         brillance + RandomGenerator::random() * 0.03, 1.0);
         star.radius = 30.0 + RandomGenerator::random() * 20.0;
 
         stars.push_back(star);

@@ -16,14 +16,17 @@ typedef struct RenderScanlines RenderScanlines;
 /**
  * @brief Base abstract class for scenery pieces that can be rasterized to polygons.
  */
-class SOFTWARESHARED_EXPORT Rasterizer
-{
-public:
+class SOFTWARESHARED_EXPORT Rasterizer {
+  public:
     Rasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id, const Color &color);
     virtual ~Rasterizer();
 
-    inline SoftwareRenderer *getRenderer() const {return renderer;}
-    inline int getTriangleCount() const {return triangle_count;}
+    inline SoftwareRenderer *getRenderer() const {
+        return renderer;
+    }
+    inline int getTriangleCount() const {
+        return triangle_count;
+    }
 
     /**
      * Set the rasterization quality factor.
@@ -64,21 +67,26 @@ public:
     void resetTriangleCount();
 
     void pushTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3);
-    void pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3);
+    void pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3,
+                               const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3);
 
     void pushQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4);
-    void pushDisplacedQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector3 &v4, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3, const Vector3 &ov4);
+    void pushDisplacedQuad(CanvasPortion *canvas, const Vector3 &v1, const Vector3 &v2, const Vector3 &v3,
+                           const Vector3 &v4, const Vector3 &ov1, const Vector3 &ov2, const Vector3 &ov3,
+                           const Vector3 &ov4);
 
-protected:
-    bool pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2, const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2, const Vector3 &location3);
+  protected:
+    bool pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pixel1, const Vector3 &pixel2,
+                               const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2,
+                               const Vector3 &location3);
 
-    Color* color;
+    Color *color;
     SoftwareRenderer *renderer;
     RenderProgress *progress;
     int client_id;
     bool interrupted;
 
-private:
+  private:
     void scanGetDiff(ScanPoint *v1, ScanPoint *v2, ScanPoint *result);
     void scanInterpolate(CameraDefinition *camera, ScanPoint *v1, ScanPoint *diff, double value, ScanPoint *result);
     void pushScanPoint(CanvasPortion *canvas, RenderScanlines *scanlines, ScanPoint *point);
@@ -89,7 +97,6 @@ private:
     double auto_cut_limit;
     bool backface_culling;
 };
-
 }
 }
 
