@@ -13,7 +13,7 @@ namespace basics {
  */
 class BASICSSHARED_EXPORT InfiniteCylinder {
   public:
-    InfiniteCylinder();
+    InfiniteCylinder() = default;
     InfiniteCylinder(const InfiniteRay &axis, double radius);
 
     inline const InfiniteRay &getAxis() const {
@@ -33,9 +33,21 @@ class BASICSSHARED_EXPORT InfiniteCylinder {
     virtual void save(PackStream *stream) const;
     virtual void load(PackStream *stream);
 
+  private:
+    void validate();
+
   protected:
     InfiniteRay axis;
     double radius;
+
+  private:
+    // Stored equation factors, to speed up ray intersection
+    double R[3][3];
+    double A[3][3];
+    double C;
+    double ox;
+    double oy;
+    double oz;
 };
 }
 }

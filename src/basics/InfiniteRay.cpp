@@ -1,8 +1,5 @@
 #include "InfiniteRay.h"
 
-InfiniteRay::InfiniteRay() {
-}
-
 InfiniteRay::InfiniteRay(const Vector3 &origin, const Vector3 &direction)
     : origin(origin), direction(direction.normalize()) {
 }

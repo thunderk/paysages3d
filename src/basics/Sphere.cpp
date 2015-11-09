@@ -3,9 +3,6 @@
 #include "PackStream.h"
 #include "InfiniteRay.h"
 
-Sphere::Sphere() {
-}
-
 Sphere::Sphere(const Vector3 &center, double radius) : center(center), radius(radius) {
     radius2 = radius * radius;
 }

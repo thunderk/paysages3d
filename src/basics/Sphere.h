@@ -13,7 +13,7 @@ namespace basics {
  */
 class BASICSSHARED_EXPORT Sphere {
   public:
-    Sphere();
+    Sphere() = default;
     Sphere(const Vector3 &center, double radius);
 
     inline const Vector3 &getCenter() const {

@@ -13,7 +13,7 @@ namespace basics {
  */
 class BASICSSHARED_EXPORT CappedCylinder : public InfiniteCylinder {
   public:
-    CappedCylinder();
+    CappedCylinder() = default;
     CappedCylinder(const Vector3 &base, const Vector3 &direction, double radius, double length);
 
     inline double getLength() const {

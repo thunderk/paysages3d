@@ -12,6 +12,6 @@ double VegetationLayerDefinition::getMaxHeight() const {
     return presence->getMaxHeight();
 }
 
-void VegetationLayerDefinition::applyPreset(VegetationLayerPreset preset) {
+void VegetationLayerDefinition::applyPreset(VegetationLayerPreset) {
     model->randomize();
 }

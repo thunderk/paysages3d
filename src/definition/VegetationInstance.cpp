@@ -5,6 +5,6 @@ VegetationInstance::VegetationInstance(const VegetationModelDefinition &model, c
     : model(model), base(base), size(size), angle(angle) {
 }
 
-VegetationInstance VegetationInstance::displace(const Vector3 &location, const Vector3 &normal) const {
+VegetationInstance VegetationInstance::displace(const Vector3 &location, const Vector3 &) const {
     return VegetationInstance(model, location, size, angle);
 }

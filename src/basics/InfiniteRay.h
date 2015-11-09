@@ -13,7 +13,7 @@ namespace basics {
  */
 class BASICSSHARED_EXPORT InfiniteRay {
   public:
-    InfiniteRay();
+    InfiniteRay() = default;
     InfiniteRay(const Vector3 &origin, const Vector3 &direction);
 
     static InfiniteRay fromPoints(const Vector3 &point1, const Vector3 &point2);
