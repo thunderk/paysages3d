@@ -8,7 +8,7 @@ InfiniteCylinder::InfiniteCylinder(const InfiniteRay &axis, double radius) : axi
     validate();
 }
 
-int InfiniteCylinder::checkRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection,
+int InfiniteCylinder::findRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection,
                                            Vector3 *second_intersection) const {
     /*
      * Original algorithm has been altered, because it didn't work with non-(0,0,0) axis origin.

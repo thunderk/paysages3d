@@ -24,11 +24,18 @@ class BASICSSHARED_EXPORT Sphere {
     }
 
     /**
-     * Check the intersection between the sphere and an infinite ray.
+     * Check for intersections between the sphere and an infinite ray.
+     *
+     * Returns the number of intersections (0, 1 or 2).
+     */
+    int checkRayIntersection(const InfiniteRay &ray) const;
+
+    /**
+     * Get the intersections between the sphere and an infinite ray.
      *
      * Returns the number of intersections (0, 1 or 2) and fill the intersection points.
      */
-    int checkRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection, Vector3 *second_intersection) const;
+    int findRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection, Vector3 *second_intersection) const;
 
     void save(PackStream *stream) const;
     void load(PackStream *stream);

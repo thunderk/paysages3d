@@ -28,7 +28,7 @@ class BASICSSHARED_EXPORT InfiniteCylinder {
      *
      * Returns the number of intersections (0, 1 or 2) and fill the intersection points.
      */
-    int checkRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection, Vector3 *second_intersection) const;
+    int findRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection, Vector3 *second_intersection) const;
 
     virtual void save(PackStream *stream) const;
     virtual void load(PackStream *stream);

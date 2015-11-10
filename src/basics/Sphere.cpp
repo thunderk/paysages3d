@@ -7,8 +7,23 @@ Sphere::Sphere(const Vector3 &center, double radius) : center(center), radius(ra
     radius2 = radius * radius;
 }
 
-int Sphere::checkRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection,
-                                 Vector3 *second_intersection) const {
+int Sphere::checkRayIntersection(const InfiniteRay &ray) const {
+    Vector3 L = ray.getOrigin().sub(center);
+    double b = 2.0 * ray.getDirection().dotProduct(L);
+    double c = L.dotProduct(L) - radius2;
+
+    double discr = b * b - 4.0 * c;
+    if (discr < 0) {
+        return 0;
+    } else if (discr == 0) {
+        return 1;
+    } else {
+        return 2;
+    }
+}
+
+int Sphere::findRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection,
+                               Vector3 *second_intersection) const {
     Vector3 L = ray.getOrigin().sub(center);
     double b = 2.0 * ray.getDirection().dotProduct(L);
     double c = L.dotProduct(L) - radius2;

@@ -30,7 +30,7 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
 
     for (const auto &branch : model->getSolidVolumes()) {
         Vector3 near, far;
-        if (branch.checkRayIntersection(ray, &near, &far)) {
+        if (branch.findRayIntersection(ray, &near, &far)) {
             distance = ray.getCursor(near);
             if (distance >= 0.0 and distance <= maximal) {
                 // Got a branch hit
@@ -54,8 +54,7 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
     }
 
     for (const auto &foliage : model->getFoliageGroups()) {
-        Vector3 near, far;
-        intersections = foliage.checkRayIntersection(ray, &near, &far);
+        intersections = foliage.checkRayIntersection(ray);
         if (intersections == 2) {
             InfiniteRay subray(ray.getOrigin().sub(foliage.getCenter()).scale(1.0 / foliage.getRadius()),
                                ray.getDirection());
@@ -63,19 +62,19 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
             for (const auto &leaf : model->getFoliageItems()) {
                 Sphere leafcap(leaf.getPoint(), leaf.getRadius() * leaf.getRadius() / foliage.getRadius());
                 // TODO Add cap intersection to Sphere class
-                Vector3 capnear, capfar;
-                if (leafcap.checkRayIntersection(subray, &capnear, &capfar) == 2) {
-                    if (capnear.sub(leaf.getPoint()).normalize().dotProduct(leaf.getNormal()) < 0.5) {
-                        if (capfar.sub(leaf.getPoint()).normalize().dotProduct(leaf.getNormal()) < 0.5) {
+                Vector3 near, far;
+                if (leafcap.findRayIntersection(subray, &near, &far) == 2) {
+                    if (near.sub(leaf.getPoint()).normalize().dotProduct(leaf.getNormal()) < 0.5) {
+                        if (far.sub(leaf.getPoint()).normalize().dotProduct(leaf.getNormal()) < 0.5) {
                             continue;
                         } else {
-                            capnear = capfar;
+                            near = far;
                         }
                     }
 
-                    Vector3 capnormal = capnear.sub(leaf.getPoint()).normalize();
-                    capnear = capnear.scale(foliage.getRadius()).add(foliage.getCenter());
-                    distance = ray.getCursor(capnear);
+                    Vector3 capnormal = near.sub(leaf.getPoint()).normalize();
+                    near = near.scale(foliage.getRadius()).add(foliage.getCenter());
+                    distance = ray.getCursor(near);
 
                     if (distance >= 0.0 and distance <= maximal) {
                         // Got a foliage hit
@@ -88,7 +87,7 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
                             nearest = distance;
 
                             hit = true;
-                            location = capnear;
+                            location = near;
                             normal = capnormal;
 
                             if (normal.dotProduct(location.sub(segment.getStart())) > 0.0) {
