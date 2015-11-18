@@ -9,7 +9,7 @@ CappedCylinder::CappedCylinder(const Vector3 &base, const Vector3 &direction, do
 }
 
 int CappedCylinder::findRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection,
-                                         Vector3 *second_intersection) const {
+                                        Vector3 *second_intersection) const {
     if (not container.checkRayIntersection(ray)) {
         // We don't hit the containing sphere at all
         return 0;
@@ -34,8 +34,8 @@ int CappedCylinder::findRayIntersection(const InfiniteRay &ray, Vector3 *first_i
                     return 0;
                 }
             }
-        } else // count == 1
-        {
+        } else {
+            // count == 1
             if (checkPointProjection(first_intersection)) {
                 return 1;
             } else {

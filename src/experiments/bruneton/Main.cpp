@@ -169,14 +169,14 @@ const int deltaSRUnit = 5;
 const int deltaSMUnit = 6;
 const int deltaJUnit = 7;
 
-unsigned int reflectanceTexture; // unit 0, ground reflectance texture
+unsigned int reflectanceTexture;   // unit 0, ground reflectance texture
 unsigned int transmittanceTexture; // unit 1, T table
-unsigned int irradianceTexture; // unit 2, E table
-unsigned int inscatterTexture; // unit 3, S table
-unsigned int deltaETexture; // unit 4, deltaE table
-unsigned int deltaSRTexture; // unit 5, deltaS table (Rayleigh part)
-unsigned int deltaSMTexture; // unit 6, deltaS table (Mie part)
-unsigned int deltaJTexture; // unit 7, deltaJ table
+unsigned int irradianceTexture;    // unit 2, E table
+unsigned int inscatterTexture;     // unit 3, S table
+unsigned int deltaETexture;        // unit 4, deltaE table
+unsigned int deltaSRTexture;       // unit 5, deltaS table (Rayleigh part)
+unsigned int deltaSMTexture;       // unit 6, deltaS table (Mie part)
+unsigned int deltaJTexture;        // unit 7, deltaJ table
 
 unsigned int transmittanceProg;
 unsigned int irradiance1Prog;

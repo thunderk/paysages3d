@@ -23,7 +23,7 @@ int Sphere::checkRayIntersection(const InfiniteRay &ray) const {
 }
 
 int Sphere::findRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection,
-                               Vector3 *second_intersection) const {
+                                Vector3 *second_intersection) const {
     Vector3 L = ray.getOrigin().sub(center);
     double b = 2.0 * ray.getDirection().dotProduct(L);
     double c = L.dotProduct(L) - radius2;

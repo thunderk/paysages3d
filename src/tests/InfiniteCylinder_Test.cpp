@@ -34,8 +34,8 @@ TEST(InfiniteCylinder, getRayIntersection2) {
     int intersect_count;
     Vector3 p1, p2;
 
-    intersect_count = cylinder.findRayIntersection(
-        InfiniteRay::fromPoints(Vector3(0.0, 1.5, 0.0), Vector3(0.0, 1.5, 2.0)), &p1, &p2);
+    intersect_count =
+        cylinder.findRayIntersection(InfiniteRay::fromPoints(Vector3(0.0, 1.5, 0.0), Vector3(0.0, 1.5, 2.0)), &p1, &p2);
     EXPECT_EQ(2, intersect_count);
     EXPECT_VECTOR3_COORDS(p1, 0.0, 1.5, 0.5);
     EXPECT_VECTOR3_COORDS(p2, 0.0, 1.5, 1.5);

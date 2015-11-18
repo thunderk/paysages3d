@@ -10,13 +10,13 @@
 VegetationModelDefinition::VegetationModelDefinition(DefinitionNode *parent) : DefinitionNode(parent, "model") {
     solid_material = new SurfaceMaterial(Color(0.2, 0.15, 0.15));
     solid_material->reflection = 0.002;
-    solid_material->shininess = 2.0;
+    solid_material->shininess = 1.0;
     solid_material->hardness = 0.3;
     solid_material->validate();
 
     foliage_material = new SurfaceMaterial(Color(0.4, 0.8, 0.45));
     foliage_material->reflection = 0.007;
-    foliage_material->shininess = 12.0;
+    foliage_material->shininess = 2.0;
     foliage_material->hardness = 0.2;
     foliage_material->validate();
 
