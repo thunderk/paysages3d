@@ -1,11 +1,14 @@
 #include "CanvasPortion.h"
 
 #include <cassert>
+#include <stdlib.h>
+#include <vector>
 
 #include "CanvasPixel.h"
 #include "CanvasPreview.h"
 #include "PackStream.h"
 #include "FileSystem.h"
+#include "System.h"
 
 #define CHECK_COORDINATES()                                                                                            \
     assert(x >= 0);                                                                                                    \
@@ -13,6 +16,15 @@
     assert(y >= 0);                                                                                                    \
     assert(y < height);                                                                                                \
     assert(pixels != NULL)
+
+// Keep track of created files to erase them at program exit
+static std::vector<std::string> _files;
+static void clean_all_files() {
+    for (auto &filepath : _files) {
+        FileSystem::removeFile(filepath);
+    }
+}
+static int _atexit = std::atexit(clean_all_files);
 
 CanvasPortion::CanvasPortion(int index, CanvasPreview *preview) : index(index), preview(preview) {
     width = 1;
@@ -73,7 +85,9 @@ void CanvasPortion::discardPixels(bool save) {
 
 void CanvasPortion::saveToDisk() {
     if (pixels) {
-        filepath = FileSystem::getTempFile("paysages_portion_" + std::to_string(index) + ".dat");
+        auto pid = System::getProcessId();
+        filepath =
+            FileSystem::getTempFile("paysages_portion_" + std::to_string(index) + "_" + std::to_string(pid) + ".dat");
         PackStream stream;
         stream.bindToFile(filepath, true);
         stream.write(&width);
@@ -83,6 +97,7 @@ void CanvasPortion::saveToDisk() {
                 pixels[y * width + x].getComposite().save(&stream);
             }
         }
+        _files.push_back(filepath);
     }
 }
 

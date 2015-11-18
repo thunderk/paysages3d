@@ -19,6 +19,11 @@ class SYSTEMSHARED_EXPORT FileSystem {
      * Returns true if the given path points to a file.
      */
     static bool isFile(const std::string &filepath);
+
+    /**
+     * Remove a file by its absolute path.
+     */
+    static bool removeFile(const std::string &filepath);
 };
 }
 }
