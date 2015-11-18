@@ -5,6 +5,8 @@
 
 #include "SoftwareRenderer.h"
 
+#include <vector>
+
 namespace paysages {
 namespace software {
 

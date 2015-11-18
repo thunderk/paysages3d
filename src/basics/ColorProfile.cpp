@@ -1,6 +1,7 @@
 #include "ColorProfile.h"
 
 #include "PackStream.h"
+#include <cmath>
 
 ColorProfile::ColorProfile() {
     setToneMapping(TONE_MAPPING_UNCHARTED, 1.6);

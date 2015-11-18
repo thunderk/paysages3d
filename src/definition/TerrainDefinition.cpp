@@ -1,5 +1,6 @@
 #include "TerrainDefinition.h"
 
+#include <cmath>
 #include "TerrainHeightMap.h"
 #include "NoiseGenerator.h"
 #include "PackStream.h"

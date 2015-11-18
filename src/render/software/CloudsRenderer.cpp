@@ -7,6 +7,7 @@
 #include "BaseCloudLayerRenderer.h"
 #include "CloudBasicLayerRenderer.h"
 #include "CameraDefinition.h"
+#include "Logs.h"
 
 #include "clouds/BaseCloudsModel.h"
 #include "clouds/CloudModelAltoCumulus.h"
@@ -99,7 +100,7 @@ BaseCloudLayerRenderer *CloudsRenderer::getLayerRenderer(unsigned int layer) {
     if (layer < layer_renderers.size()) {
         return layer_renderers[layer];
     } else {
-        qWarning("Asked for unknown layer renderer %d", layer);
+        Logs::warning() << "Asked for unknown layer renderer " << layer << std::endl;
         return fake_renderer;
     }
 }
@@ -108,7 +109,7 @@ BaseCloudsModel *CloudsRenderer::getLayerModel(unsigned int layer) {
     if (layer < layer_models.size()) {
         return layer_models[layer];
     } else {
-        qWarning("Asked for unknown layer model %d", layer);
+        Logs::warning() << "Asked for unknown layer model" << layer << std::endl;
         return fake_model;
     }
 }
@@ -120,7 +121,7 @@ void CloudsRenderer::setLayerModel(unsigned int layer, BaseCloudsModel *model, b
         }
         layer_models[layer] = model;
     } else {
-        qWarning("Asked to set an unknown layer model %d", layer);
+        Logs::warning() << "Asked to set an unknown layer model" << layer << std::endl;
         delete model;
     }
 }

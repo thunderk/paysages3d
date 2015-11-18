@@ -1,5 +1,6 @@
 #include "Memory.h"
 
+#include <string>
 #include <cstring>
 #include <cassert>
 

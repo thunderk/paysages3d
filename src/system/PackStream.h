@@ -5,6 +5,7 @@
 
 class QFile;
 class QDataStream;
+class QByteArray;
 
 namespace paysages {
 namespace system {

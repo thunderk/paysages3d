@@ -1,6 +1,7 @@
 #include "PaintedGrid.h"
 
 #include <cassert>
+#include <cmath>
 #include "Memory.h"
 #include "Interpolation.h"
 #include "PaintedGridData.h"

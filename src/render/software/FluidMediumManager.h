@@ -5,6 +5,8 @@
 
 #include "SpaceSegment.h"
 
+#include <vector>
+
 namespace paysages {
 namespace software {
 

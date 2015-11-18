@@ -1,5 +1,6 @@
 #include "TerrainRenderer.h"
 
+#include <algorithm>
 #include "SoftwareRenderer.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"

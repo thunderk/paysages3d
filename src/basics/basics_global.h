@@ -1,14 +1,13 @@
 #ifndef BASICS_GLOBAL_H
 #define BASICS_GLOBAL_H
 
-#include <QtCore/qglobal.h>
+#include "system_global.h"
+
 #if defined(BASICS_LIBRARY)
 #define BASICSSHARED_EXPORT Q_DECL_EXPORT
 #else
 #define BASICSSHARED_EXPORT Q_DECL_IMPORT
 #endif
-
-#include "system_global.h"
 
 namespace paysages {
 namespace basics {

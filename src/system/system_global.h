@@ -1,11 +1,17 @@
 #ifndef SYSTEM_GLOBAL_H
 #define SYSTEM_GLOBAL_H
 
-#ifndef __MINGW32__
+#include <string>
+
+#ifdef __MINGW32__
+#define Q_DECL_EXPORT __declspec(dllexport)
+#define Q_DECL_IMPORT __declspec(dllimport)
+#else
 #define PAYSAGES_USE_INLINING 1
+#define Q_DECL_EXPORT __attribute__((visibility("default")))
+#define Q_DECL_IMPORT __attribute__((visibility("default")))
 #endif
 
-#include <QtCore/qglobal.h>
 #if defined(SYSTEM_LIBRARY)
 #define SYSTEMSHARED_EXPORT Q_DECL_EXPORT
 #else
