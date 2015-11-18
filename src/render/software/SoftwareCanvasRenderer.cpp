@@ -84,9 +84,8 @@ void SoftwareCanvasRenderer::render() {
     started = true;
     progress->reset();
 
-    render_camera->setRenderSize(canvas->getWidth(), canvas->getHeight());
-
     prepare();
+    render_camera->setRenderSize(canvas->getWidth(), canvas->getHeight());
 
     // Iterate portions
     int nx = canvas->getHorizontalPortionCount();
