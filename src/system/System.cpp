@@ -1,6 +1,7 @@
 #include "System.h"
 
 #include <QThread>
+#include <QCoreApplication>
 
 static int core_count = -1;
 
@@ -17,4 +18,8 @@ int System::getCoreCount() {
 #endif
     }
     return core_count;
+}
+
+int System::getProcessId() {
+    return QCoreApplication::applicationPid();
 }

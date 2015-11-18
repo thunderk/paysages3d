@@ -133,6 +133,6 @@ void PackStream::skip(const double &value, int count) {
     stream->skipRawData(sizeof(value) * count);
 }
 
-void paysages::system::PackStream::skipBytes(int bytes) {
+void PackStream::skipBytes(int bytes) {
     stream->skipRawData(bytes);
 }
