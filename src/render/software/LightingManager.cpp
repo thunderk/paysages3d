@@ -1,5 +1,6 @@
 #include "LightingManager.h"
 
+#include <algorithm>
 #include "LightFilter.h"
 #include "LightComponent.h"
 #include "LightStatus.h"

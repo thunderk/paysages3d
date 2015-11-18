@@ -5,6 +5,8 @@
 
 #include "LightComponent.h"
 
+#include <vector>
+
 namespace paysages {
 namespace software {
 

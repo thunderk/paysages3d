@@ -7,6 +7,7 @@
 #include "DiffManager.h"
 
 #include <cassert>
+#include <algorithm>
 
 DefinitionNode::DefinitionNode(DefinitionNode *parent, const std::string &name, const std::string &type_name)
     : parent(parent), type_name(type_name), name(name) {

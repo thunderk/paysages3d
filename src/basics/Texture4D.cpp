@@ -1,6 +1,7 @@
 #include "Texture4D.h"
 
 #include <cassert>
+#include <cmath>
 #include "Color.h"
 #include "PackStream.h"
 #include "PictureWriter.h"

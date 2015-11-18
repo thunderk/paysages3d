@@ -5,6 +5,8 @@
 
 #include "LightFilter.h"
 
+#include <vector>
+
 namespace paysages {
 namespace software {
 

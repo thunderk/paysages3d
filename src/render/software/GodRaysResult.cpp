@@ -1,5 +1,7 @@
 #include "GodRaysResult.h"
 
+#include <cmath>
+
 GodRaysResult::GodRaysResult(double inside_length, double full_length)
     : inside_length(inside_length), full_length(full_length) {
 }

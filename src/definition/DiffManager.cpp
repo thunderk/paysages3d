@@ -1,5 +1,6 @@
 #include "DiffManager.h"
 
+#include <algorithm>
 #include "DefinitionNode.h"
 #include "DefinitionDiff.h"
 #include "DefinitionWatcher.h"
