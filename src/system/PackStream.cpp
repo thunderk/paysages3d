@@ -33,6 +33,13 @@ PackStream::PackStream(const PackStream *other) {
     stream->setVersion(QDataStream::Qt_5_2);
 }
 
+PackStream::PackStream(const std::string &buffer_content) {
+    file = NULL;
+    buffer = new QByteArray(buffer_content.c_str(), buffer_content.size());
+    stream = new QDataStream(buffer, QIODevice::ReadOnly);
+    stream->setVersion(QDataStream::Qt_5_2);
+}
+
 bool PackStream::bindToFile(const std::string &filepath, bool write) {
     if (not file) {
         file = new QFile(QString::fromStdString(filepath));
@@ -87,6 +94,16 @@ void PackStream::writeFromBuffer(const PackStream &other, bool prepend_size) {
             write(&buffer_size);
         }
         stream->writeRawData(other.buffer->data(), other.buffer->size());
+    }
+}
+
+std::string PackStream::getBuffer() {
+    if (file) {
+        Logs::error() << "Try to get buffer on a stream bound to a file: " << file->fileName().toStdString()
+                      << std::endl;
+        return "";
+    } else {
+        return buffer->toStdString();
     }
 }
 

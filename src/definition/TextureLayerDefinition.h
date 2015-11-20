@@ -20,7 +20,7 @@ class DEFINITIONSHARED_EXPORT TextureLayerDefinition : public DefinitionNode {
     } TextureLayerPreset;
 
   public:
-    TextureLayerDefinition(DefinitionNode *parent);
+    TextureLayerDefinition(DefinitionNode *parent, const std::string &name);
     virtual ~TextureLayerDefinition();
 
     virtual void save(PackStream *stream) const override;

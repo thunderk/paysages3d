@@ -10,7 +10,9 @@ int main(int argc, char **argv) {
     int result;
 
     qInstallMessageHandler(noMessageOutput);
+#ifdef NDEBUG
     Logs::disable();
+#endif
 
     testing::InitGoogleTest(&argc, argv);
     result = RUN_ALL_TESTS();

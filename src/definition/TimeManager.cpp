@@ -17,7 +17,7 @@ void TimeManager::moveForward(Scenery *scenery, double amount) {
     scenery->getAtmosphere()->setDayTime(scenery->getAtmosphere()->propDayTime()->getValue() + amount);
 
     // Move the clouds
-    int n = scenery->getClouds()->count();
+    int n = scenery->getClouds()->getLayerCount();
     for (int i = 0; i < n; i++) {
         CloudLayerDefinition *cloud = scenery->getClouds()->getCloudLayer(i);
         cloud->propXOffset()->addValue(-wind_x * amount * 100.0);

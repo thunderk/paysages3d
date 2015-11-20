@@ -25,6 +25,11 @@ class SYSTEMSHARED_EXPORT PackStream {
      */
     PackStream(const PackStream *other);
 
+    /**
+     * Open a reading stream on a buffer content.
+     */
+    PackStream(const std::string &buffer_content);
+
     bool bindToFile(const std::string &filepath, bool write = false);
 
     void write(const int *value);
@@ -40,6 +45,11 @@ class SYSTEMSHARED_EXPORT PackStream {
      * If *prepend_size* is true, an integer will be written on front with the number of bytes written.
      */
     void writeFromBuffer(const PackStream &other, bool prepend_size = false);
+
+    /**
+     * Get the contents of the memory buffer, if this stream is not bound to a file.
+     */
+    std::string getBuffer();
 
     void read(int *value);
     void read(double *value);
