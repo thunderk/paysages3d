@@ -4,6 +4,7 @@
 #include "DefinitionNode.h"
 #include "DefinitionDiff.h"
 #include "DefinitionWatcher.h"
+#include "Logs.h"
 
 DiffManager::DiffManager(DefinitionNode *tree) : tree(tree) {
     undone = 0;
@@ -46,16 +47,21 @@ void DiffManager::addDiff(DefinitionNode *node, const DefinitionDiff *diff) {
 
 void DiffManager::undo() {
     if (undone < (int)diffs.size()) {
-        undone++;
-        const DefinitionDiff *diff = diffs[diffs.size() - undone];
+        const DefinitionDiff *diff = diffs[diffs.size() - undone - 1];
 
         // Obtain the node by path and reverse apply diff on it
         DefinitionNode *node = tree->findByPath(diff->getPath());
-        node->applyDiff(diff, true);
+        if (node) {
+            undone++;
 
-        for (auto watcher : watchers[node]) {
-            // FIXME Reverse diff
-            watcher->nodeChanged(node, diff);
+            node->applyDiff(diff, true);
+
+            for (auto watcher : watchers[node]) {
+                // FIXME Reverse diff
+                watcher->nodeChanged(node, diff);
+            }
+        } else {
+            Logs::error() << "Can't find node to undo diff : " << diff->getPath() << std::endl;
         }
     }
 }
@@ -63,14 +69,19 @@ void DiffManager::undo() {
 void DiffManager::redo() {
     if (undone > 0) {
         const DefinitionDiff *diff = diffs[diffs.size() - undone];
-        undone--;
 
         // Obtain the node by path and re-apply diff on it
         DefinitionNode *node = tree->findByPath(diff->getPath());
-        node->applyDiff(diff);
+        if (node) {
+            undone--;
 
-        for (auto watcher : watchers[node]) {
-            watcher->nodeChanged(node, diff);
+            node->applyDiff(diff);
+
+            for (auto watcher : watchers[node]) {
+                watcher->nodeChanged(node, diff);
+            }
+        } else {
+            Logs::error() << "Can't find node to redo diff : " << diff->getPath() << std::endl;
         }
     }
 }

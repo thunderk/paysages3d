@@ -46,7 +46,7 @@ double TexturesRenderer::getTriplanarNoise(NoiseGenerator *noise, const Vector3 
 double TexturesRenderer::getMaximalDisplacement(TexturesDefinition *textures) {
     int i, n;
     double disp = 0.0;
-    n = textures->count();
+    n = textures->getLayerCount();
     for (i = 0; i < n; i++) {
         TextureLayerDefinition *layer = textures->getTextureLayer(i);
 
@@ -129,7 +129,7 @@ Vector3 TexturesRenderer::displaceTerrain(const TerrainRenderer::TerrainResult &
     double offset = 0.0;
     int i, n;
 
-    n = textures->count();
+    n = textures->getLayerCount();
     for (i = 0; i < n; i++) {
         TextureLayerDefinition *layer = textures->getTextureLayer(i);
 
@@ -161,7 +161,7 @@ TexturesRenderer::TexturesResult TexturesRenderer::applyToTerrain(double x, doub
     // TODO Displaced textures had their presence already computed before, store that result and use it
 
     // Find presence of each layer
-    int n = textures->count();
+    int n = textures->getLayerCount();
     int start = 0;
     for (int i = 0; i < n; i++) {
         TexturesLayerResult &layer = result.layers[i];

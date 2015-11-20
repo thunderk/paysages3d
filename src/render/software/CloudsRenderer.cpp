@@ -20,7 +20,7 @@ CloudsRenderer::CloudsRenderer(SoftwareRenderer *parent) : parent(parent) {
     enabled = true;
     fake_renderer = new BaseCloudLayerRenderer(parent);
 
-    CloudLayerDefinition *fake_layer = new CloudLayerDefinition(NULL);
+    CloudLayerDefinition *fake_layer = new CloudLayerDefinition(NULL, "#fake#");
     fake_model = new BaseCloudsModel(fake_layer);
 }
 
@@ -60,7 +60,7 @@ void CloudsRenderer::update() {
     layer_models.clear();
 
     CloudsDefinition *clouds = parent->getScenery()->getClouds();
-    int n = clouds->count();
+    int n = clouds->getLayerCount();
     for (int i = 0; i < n; i++) {
         layer_renderers.push_back(new CloudBasicLayerRenderer(parent));
 
@@ -129,7 +129,7 @@ void CloudsRenderer::setLayerModel(unsigned int layer, BaseCloudsModel *model, b
 Color CloudsRenderer::getColor(const Vector3 &eye, const Vector3 &location, const Color &base) {
     CloudsDefinition *definition = parent->getScenery()->getClouds();
 
-    int n = definition->count();
+    int n = definition->getLayerCount();
     if (not enabled or n < 1) {
         return base;
     }
@@ -152,7 +152,7 @@ Color CloudsRenderer::getColor(const Vector3 &eye, const Vector3 &location, cons
 bool CloudsRenderer::applyLightFilter(LightComponent &light, const Vector3 &at) {
     CloudsDefinition *definition = parent->getScenery()->getClouds();
 
-    int n = definition->count();
+    int n = definition->getLayerCount();
     if (not enabled or n < 1) {
         return true;
     }
@@ -172,7 +172,7 @@ double CloudsRenderer::getHighestAltitude() {
     CloudsDefinition *definition = parent->getScenery()->getClouds();
     double highest = 0.0;
 
-    int n = definition->count();
+    int n = definition->getLayerCount();
     double low, high;
     for (int i = 0; i < n; i++) {
         BaseCloudsModel *layer_model = getLayerModel(i);

@@ -20,6 +20,13 @@ class DEFINITIONSHARED_EXPORT DiffManager {
     ~DiffManager();
 
     /**
+     * Get the total number of diff stored.
+     */
+    inline int getDiffCount(int include_undone = true) {
+        return include_undone ? diffs.size() : diffs.size() - undone;
+    }
+
+    /**
      * Add a watcher for a specific node.
      *
      * The watcher reference must remain valid through the manager lifetime.

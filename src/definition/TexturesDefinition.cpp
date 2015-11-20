@@ -2,53 +2,53 @@
 
 #include "TextureLayerDefinition.h"
 
-static DefinitionNode *_layer_constructor(Layers *parent) {
-    return new TextureLayerDefinition(parent);
+static DefinitionNode *_layer_constructor(Layers *parent, const std::string &name) {
+    return new TextureLayerDefinition(parent, name);
 }
 
 TexturesDefinition::TexturesDefinition(DefinitionNode *parent) : Layers(parent, "textures", _layer_constructor) {
 }
 
 void TexturesDefinition::applyPreset(TexturesPreset preset) {
-    TextureLayerDefinition *layer;
+    TextureLayerDefinition layer(NULL, "temp");
     clear();
 
-    layer = getTextureLayer(addLayer());
-    layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_MUD);
-    layer->setName("Mud");
+    layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_MUD);
+    layer.setName("Mud");
+    addLayer(layer);
 
     if (preset == TEXTURES_PRESET_FULL) {
-        layer = getTextureLayer(addLayer());
-        layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
-        layer->setName("Ground");
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
+        layer.setName("Ground");
+        addLayer(layer);
 
-        layer = getTextureLayer(addLayer());
-        layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_GRASS);
-        layer->setName("Grass");
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_GRASS);
+        layer.setName("Grass");
+        addLayer(layer);
 
-        layer = getTextureLayer(addLayer());
-        layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SAND);
-        layer->setName("Sand");
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SAND);
+        layer.setName("Sand");
+        addLayer(layer);
 
-        layer = getTextureLayer(addLayer());
-        layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SNOW);
-        layer->setName("Snow");
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SNOW);
+        layer.setName("Snow");
+        addLayer(layer);
     } else if (preset == TEXTURES_PRESET_IRELAND) {
-        layer = getTextureLayer(addLayer());
-        layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
-        layer->setName("Ground");
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
+        layer.setName("Ground");
+        addLayer(layer);
 
-        layer = getTextureLayer(addLayer());
-        layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_GRASS);
-        layer->setName("Grass");
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_GRASS);
+        layer.setName("Grass");
+        addLayer(layer);
     } else if (preset == TEXTURES_PRESET_ALPS) {
-        layer = getTextureLayer(addLayer());
-        layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
-        layer->setName("Ground");
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
+        layer.setName("Ground");
+        addLayer(layer);
 
-        layer = getTextureLayer(addLayer());
-        layer->applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SNOW);
-        layer->setName("Snow");
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SNOW);
+        layer.setName("Snow");
+        addLayer(layer);
     } else if (preset == TEXTURES_PRESET_CANYON) {
         /* TODO */
     }
@@ -56,7 +56,7 @@ void TexturesDefinition::applyPreset(TexturesPreset preset) {
 
 double TexturesDefinition::getMaximalDisplacement() {
     double result = 0.0;
-    int n = count();
+    int n = getLayerCount();
     for (int i = 0; i < n; i++) {
         result += getTextureLayer(i)->displacement_height;
     }

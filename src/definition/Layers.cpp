@@ -2,15 +2,15 @@
 
 #include "PackStream.h"
 #include "Logs.h"
+#include "LayersDiff.h"
 
 Layers::Layers(DefinitionNode *parent, const std::string &name, LayerConstructor layer_constructor)
     : DefinitionNode(parent, name, "layers" + name), layer_constructor(layer_constructor) {
     max_layer_count = 100;
-    null_layer = layer_constructor(this);
+    null_layer = layer_constructor(this, "#NULL#");
 }
 
 Layers::~Layers() {
-    clear();
     delete null_layer;
 }
 
@@ -28,16 +28,12 @@ void Layers::load(PackStream *stream) {
     int layer_count;
     stream->read(&layer_count);
 
-    if (layer_count > max_layer_count) {
-        layer_count = max_layer_count;
-    }
     clear();
     for (int i = 0; i < layer_count; i++) {
-        int position = addLayer();
-        if (position >= 0) {
-            layers[position]->setName(stream->readString());
-            layers[position]->load(stream);
-        }
+        DefinitionNode *layer = layer_constructor(this, stream->readString());
+        layer->load(stream);
+        addLayer(*layer);
+        delete layer;
     }
 }
 
@@ -53,24 +49,18 @@ void Layers::copy(DefinitionNode *destination_) const {
     null_layer->copy(destination->null_layer);
 
     for (auto layer : layers) {
-        int position = destination->addLayer();
-        DefinitionNode *new_layer = destination->getLayer(position);
-        layer->copy(new_layer);
+        destination->addLayer(*layer);
     }
-}
-
-Layers *Layers::newCopy() const {
-    Layers *result = new Layers(NULL, getName(), layer_constructor);
-    copy(result);
-    return result;
 }
 
 void Layers::setMaxLayerCount(int max_layer_count) {
     this->max_layer_count = max_layer_count;
-    // TODO Delete overlimit layers ?
+    for (int i = getLayerCount(); i > max_layer_count; i--) {
+        removeLayer(i - 1);
+    }
 }
 
-int Layers::count() const {
+int Layers::getLayerCount() const {
     return layers.size();
 }
 
@@ -84,82 +74,79 @@ DefinitionNode *Layers::getLayer(int position) const {
     }
 }
 
-int Layers::findLayer(DefinitionNode *layer) const {
-    int i = 0;
-    for (auto it : layers) {
-        if (it == layer) {
-            return i;
+bool Layers::applyDiff(const DefinitionDiff *diff, bool backward) {
+    auto layer_diff = (LayersDiff *)diff;
+    LayersDiff::LayersDiffOp op = layer_diff->getOp();
+    int layer_count = getLayerCount();
+
+    if ((not backward and op == LayersDiff::LAYER_ADDED) or (backward and op == LayersDiff::LAYER_REMOVED)) {
+        if (layer_count >= max_layer_count) {
+            Logs::warning() << "Add layer ignored because limit of " << max_layer_count << " reached" << std::endl;
+            return false;
+        } else {
+            int position = layer_diff->getLayer1();
+            if (position < 0 or position > layer_count) {
+                Logs::error() << "Add layer ignored because requested position was incorrect" << std::endl;
+                return false;
+            } else {
+                DefinitionNode *layer = layer_constructor(this, "temp");
+                layer_diff->restoreSavedLayer(layer);
+                if (position == layer_count) {
+                    layers.push_back(layer);
+                } else {
+                    layers.insert(layers.begin() + position, layer);
+                }
+                addChild(layer);
+                return true;
+            }
         }
-        i++;
+    } else if ((not backward and op == LayersDiff::LAYER_REMOVED) or (backward and op == LayersDiff::LAYER_ADDED)) {
+        int position = layer_diff->getLayer1();
+        if (position < 0 or position >= layer_count) {
+            Logs::warning() << "Removing unknown layer " << position << " on " << layer_count << " from '" << getName()
+                            << "'" << std::endl;
+            return false;
+        } else {
+            DefinitionNode *removed = layers[position];
+            removeChild(removed);
+            layers.erase(layers.begin() + position);
+            delete removed;
+            return true;
+        }
     }
-    Logs::warning() << "Layer " << layer << " (" << layer->getName() << " not found, on a total of "
-                    << (int)layers.size() << std::endl;
-    return -1;
+    return false;
 }
 
-int Layers::addLayer(DefinitionNode *layer) {
-    if ((int)layers.size() < max_layer_count) {
-        layers.push_back(layer);
-        addChild(layer);
-        return layers.size() - 1;
-    } else {
-        Logs::warning() << "Add layer ignored because limit of " << max_layer_count << " reached" << std::endl;
-        delete layer;
-        return -1;
+void Layers::generateInitDiffs(std::vector<const DefinitionDiff *> *diffs) const {
+    int i = 0;
+    for (auto layer: layers) {
+        auto diff = new LayersDiff(this, LayersDiff::LAYER_ADDED, i++);
+        diff->saveLayer(*layer);
+        diffs->push_back(diff);
     }
 }
 
-int Layers::addLayer() {
-    return addLayer(layer_constructor(this));
+void Layers::addLayer(const DefinitionNode &tocopy) {
+    auto diff = new LayersDiff(this, LayersDiff::LAYER_ADDED, getLayerCount());
+    diff->saveLayer(tocopy);
+    addDiff(diff);
+}
+
+void Layers::addLayer(const std::string &name) {
+    auto layer = layer_constructor(this, name);
+    addLayer(*layer);
+    delete layer;
 }
 
 void Layers::removeLayer(int position) {
-    if (position >= 0 and position < (int)layers.size()) {
-        DefinitionNode *removed = layers[position];
-        removeChild(removed);
-        layers.erase(layers.begin() + position);
-        delete removed;
-    } else {
-        Logs::warning() << "Removing unknown layer " << position << " on " << (int)layers.size() << " from '"
-                        << getName() << "'" << std::endl;
-    }
-}
-
-void Layers::removeLayer(DefinitionNode *layer) {
-    removeLayer(findLayer(layer));
-}
-
-void Layers::moveLayer(int old_position, int new_position) {
-    if (old_position >= 0 and old_position < (int)layers.size() and new_position >= 0 and
-        new_position < (int)layers.size()) {
-        DefinitionNode *layer = layers[old_position];
-        layers.erase(layers.begin() + old_position);
-        layers.insert(layers.begin() + new_position, layer);
-    }
-}
-
-void Layers::moveLayer(DefinitionNode *layer, int new_position) {
-    moveLayer(findLayer(layer), new_position);
+    auto diff = new LayersDiff(this, LayersDiff::LAYER_REMOVED, position);
+    diff->saveLayer(*getLayer(position));
+    addDiff(diff);
 }
 
 void Layers::clear() {
-    while (layers.size() > 0) {
-        removeLayer(0);
-    }
-}
-
-DefinitionNode *Layers::findChildByName(const std::string name) {
-    DefinitionNode *result = DefinitionNode::findChildByName(name);
-    if (result) {
-        return result;
-    } else {
-        int position = addLayer();
-        if (position >= 0) {
-            result = getLayer(position);
-            result->setName(name);
-            return result;
-        } else {
-            return NULL;
-        }
+    int n = getLayerCount();
+    for (int i = n - 1; i >= 0; i--) {
+        removeLayer(i);
     }
 }

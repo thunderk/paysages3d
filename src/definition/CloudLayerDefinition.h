@@ -12,7 +12,7 @@ namespace definition {
 
 class DEFINITIONSHARED_EXPORT CloudLayerDefinition : public DefinitionNode {
   public:
-    CloudLayerDefinition(DefinitionNode *parent);
+    CloudLayerDefinition(DefinitionNode *parent, const std::string &name);
     virtual ~CloudLayerDefinition();
 
     inline const NoiseState &getNoiseState() const {

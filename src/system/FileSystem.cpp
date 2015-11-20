@@ -15,5 +15,8 @@ bool FileSystem::isFile(const std::string &filepath) {
 bool FileSystem::removeFile(const std::string &filepath) {
     if (FileSystem::isFile(filepath)) {
         remove(filepath.c_str());
+        return true;
+    } else {
+        return false;
     }
 }

@@ -6,7 +6,8 @@
 #include "PackStream.h"
 #include "FloatNode.h"
 
-CloudLayerDefinition::CloudLayerDefinition(DefinitionNode *parent) : DefinitionNode(parent, "layer", "cloudlayer") {
+CloudLayerDefinition::CloudLayerDefinition(DefinitionNode *parent, const std::string &name)
+    : DefinitionNode(parent, name, "cloudlayer") {
     type = CIRRUS;
     altitude = 0.5;
     scaling = 0.5;
@@ -20,13 +21,13 @@ CloudLayerDefinition::~CloudLayerDefinition() {
 }
 
 CloudLayerDefinition *CloudLayerDefinition::newCopy(const CloudLayerDefinition &other, DefinitionNode *parent) {
-    CloudLayerDefinition *layer = new CloudLayerDefinition(parent);
+    CloudLayerDefinition *layer = new CloudLayerDefinition(parent, other.getName());
     other.copy(layer);
     return layer;
 }
 
 CloudLayerDefinition *CloudLayerDefinition::newCopy(DefinitionNode *parent) const {
-    CloudLayerDefinition *layer = new CloudLayerDefinition(parent);
+    CloudLayerDefinition *layer = new CloudLayerDefinition(parent, getName());
     copy(layer);
     return layer;
 }

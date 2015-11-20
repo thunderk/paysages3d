@@ -8,7 +8,7 @@
 namespace paysages {
 namespace definition {
 
-typedef DefinitionNode *(*LayerConstructor)(Layers *parent);
+typedef DefinitionNode *(*LayerConstructor)(Layers *parent, const std::string &name);
 
 /**
  * @brief Layers of definitions, ideally all of the same type.
@@ -21,31 +21,49 @@ class DEFINITIONSHARED_EXPORT Layers : public DefinitionNode {
     virtual void save(PackStream *stream) const override;
     virtual void load(PackStream *stream) override;
     virtual void copy(DefinitionNode *destination) const override;
-    Layers *newCopy() const;
 
-    void setMaxLayerCount(int max_layer_count);
-
-    int count() const;
-    DefinitionNode *getLayer(int position) const;
-    int findLayer(DefinitionNode *layer) const;
+    virtual bool applyDiff(const DefinitionDiff *diff, bool backward = false) override;
+    virtual void generateInitDiffs(std::vector<const DefinitionDiff *> *diffs) const override;
 
     /**
-     * @brief Add a new layer
-     *
-     * This method takes ownership of the layer definition. In any case, it will be deleted by
-     * this object (even if the layer could not be added).
-     * @return The position of the new layer, -1 if it couldn't be added.
+     * Set the maximal layer count allowed.
      */
-    int addLayer(DefinitionNode *layer);
-    int addLayer();
-    void removeLayer(int position);
-    void removeLayer(DefinitionNode *layer);
-    void moveLayer(int old_position, int new_position);
-    void moveLayer(DefinitionNode *layer, int new_position);
-    void clear();
+    void setMaxLayerCount(int max_layer_count);
 
-  protected:
-    virtual DefinitionNode *findChildByName(const std::string name) override;
+    /**
+     * Get the current layer count.
+     */
+    int getLayerCount() const;
+
+    /**
+     * Retrieve a layer by its position.
+     */
+    DefinitionNode *getLayer(int position) const;
+
+    /**
+     * Retrieve a layer by its name.
+     */
+    DefinitionNode *getLayer(const std::string &name) const;
+
+    /**
+     * Add a new empty layer.
+     */
+    void addLayer(const std::string &name);
+
+    /**
+     * Add a new layer, copying another node into it.
+     */
+    void addLayer(const DefinitionNode &tocopy);
+
+    /**
+     * Remove a layer by its position.
+     */
+    void removeLayer(int position);
+
+    /**
+     * Clear this node of all layers.
+     */
+    void clear();
 
   public:
     LayerConstructor layer_constructor;

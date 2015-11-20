@@ -26,6 +26,7 @@ class SurfaceMaterial;
 class Zone;
 class WaterDefinition;
 class Layers;
+class LayersDiff;
 class CloudsDefinition;
 class CloudLayerDefinition;
 class AtmosphereDefinition;

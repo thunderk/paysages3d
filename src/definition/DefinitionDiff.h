@@ -14,6 +14,7 @@ namespace definition {
 class DEFINITIONSHARED_EXPORT DefinitionDiff {
   public:
     DefinitionDiff(const DefinitionNode *node);
+    virtual ~DefinitionDiff();
 
     inline const std::string &getTypeName() const {
         return type_name;
