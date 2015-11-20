@@ -3,8 +3,8 @@
 #include "VegetationLayerDefinition.h"
 #include "VegetationModelDefinition.h"
 
-static DefinitionNode *_layer_constructor(Layers *parent) {
-    return new VegetationLayerDefinition(parent);
+static DefinitionNode *_layer_constructor(Layers *parent, const std::string &name) {
+    return new VegetationLayerDefinition(parent, name);
 }
 
 VegetationDefinition::VegetationDefinition(DefinitionNode *parent) : Layers(parent, "vegetation", _layer_constructor) {
@@ -12,7 +12,7 @@ VegetationDefinition::VegetationDefinition(DefinitionNode *parent) : Layers(pare
 
 double VegetationDefinition::getMaxHeight() const {
     double max_height = 0.0;
-    int n = count();
+    int n = getLayerCount();
 
     for (int i = 0; i < n; i++) {
         double layer_height = getVegetationLayer(i)->getMaxHeight();
@@ -25,13 +25,13 @@ double VegetationDefinition::getMaxHeight() const {
 }
 
 void VegetationDefinition::applyPreset(VegetationPreset preset) {
-    VegetationLayerDefinition *layer;
+    VegetationLayerDefinition layer(this, "temp");
 
     clear();
 
     if (preset == VEGETATION_PRESET_TEMPERATE) {
-        layer = getVegetationLayer(addLayer());
-        layer->applyPreset(VegetationLayerDefinition::VEGETATION_BASIC_TREES);
-        layer->setName("Basic tree");
+        layer.applyPreset(VegetationLayerDefinition::VEGETATION_BASIC_TREES);
+        layer.setName("Basic tree");
+        addLayer(layer);
     }
 }

@@ -103,7 +103,7 @@ RayCastingResult VegetationRenderer::getBoundResult(const SpaceSegment &segment,
     }
 
     // Iterate all layers and instances
-    int n = vegetation->count();
+    int n = vegetation->getLayerCount();
     for (int i = 0; i < n; i++) {
         VegetationLayerDefinition *layer = vegetation->getVegetationLayer(i);
 

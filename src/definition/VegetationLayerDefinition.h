@@ -13,7 +13,7 @@ namespace definition {
  */
 class DEFINITIONSHARED_EXPORT VegetationLayerDefinition : public DefinitionNode {
   public:
-    VegetationLayerDefinition(DefinitionNode *parent);
+    VegetationLayerDefinition(DefinitionNode *parent, const std::string &name);
 
     inline const VegetationPresenceDefinition *getPresence() const {
         return presence;

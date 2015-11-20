@@ -119,7 +119,7 @@ bool Layers::applyDiff(const DefinitionDiff *diff, bool backward) {
 
 void Layers::generateInitDiffs(std::vector<const DefinitionDiff *> *diffs) const {
     int i = 0;
-    for (auto layer: layers) {
+    for (auto layer : layers) {
         auto diff = new LayersDiff(this, LayersDiff::LAYER_ADDED, i++);
         diff->saveLayer(*layer);
         diffs->push_back(diff);
