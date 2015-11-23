@@ -3,6 +3,9 @@
 Thread::Thread(ThreadFunction function) : data(0), result(0), function(function) {
 }
 
+Thread::~Thread() {
+}
+
 void Thread::start(void *data) {
     this->data = data;
     QThread::start();

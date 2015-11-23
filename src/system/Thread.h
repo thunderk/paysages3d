@@ -24,6 +24,8 @@ class SYSTEMSHARED_EXPORT Thread : private QThread {
      */
     Thread(ThreadFunction function = 0);
 
+    virtual ~Thread();
+
     /**
      * Start the thread, with custom data.
      */

@@ -7,6 +7,7 @@
 
 AtmosphereDefinition::AtmosphereDefinition(DefinitionNode *parent)
     : DefinitionNode(parent, "atmosphere", "atmosphere") {
+    model = ATMOSPHERE_MODEL_DISABLED;
     godrays = new GodRaysDefinition(this);
     daytime = new FloatNode(this, "daytime");
     humidity = new FloatNode(this, "humidity");

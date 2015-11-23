@@ -4,6 +4,7 @@
 #include "PackStream.h"
 #include "DiffManager.h"
 #include "IntNode.h"
+#include "DefinitionDiff.h"
 
 static DefinitionNode *_construc1(Layers *, const std::string &name) {
     return new DefinitionNode(NULL, name);
@@ -193,4 +194,8 @@ TEST(Layers, generateInitDiffs) {
     EXPECT_EQ("l1", layers1.getLayer(0)->getName());
     EXPECT_EQ("l2", layers1.getLayer(1)->getName());
     EXPECT_EQ("l3", layers1.getLayer(2)->getName());
+
+    for (auto diff : diffs) {
+        delete diff;
+    }
 }
