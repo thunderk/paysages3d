@@ -10,6 +10,13 @@
 #include "VegetationModelDefinition.h"
 #include "VegetationResult.h"
 
+#ifndef NDEBUG
+//#define DEBUG_VEGETATION_CONTAINERS 1
+#endif
+#ifdef DEBUG_VEGETATION_CONTAINERS
+SurfaceMaterial DEBUG_MATERIAL1(Color(1.0, 0.0, 0.0));
+#endif
+
 VegetationModelRenderer::VegetationModelRenderer(SoftwareRenderer *parent, const VegetationModelDefinition *model)
     : parent(parent), model(model) {
 }
@@ -98,6 +105,16 @@ VegetationResult VegetationModelRenderer::getResult(const SpaceSegment &segment,
                     }
                 }
             }
+#ifdef DEBUG_VEGETATION_CONTAINERS
+            if (!hit) {
+                Vector3 near, far;
+                intersections = foliage.findRayIntersection(ray, &near, &far);
+                location = near;
+                normal = VECTOR_ZERO;
+                material = &DEBUG_MATERIAL1;
+                hit = true;
+            }
+#endif
         }
     }
 

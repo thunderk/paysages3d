@@ -28,6 +28,9 @@ void OpenGLVariable::apply(OpenGLShaderProgram *program, int &texture_unit) {
     }
 
     switch (type) {
+    case TYPE_INTEGER:
+        pr->setUniformValue(name.c_str(), value_int);
+        break;
     case TYPE_FLOAT:
         pr->setUniformValue(name.c_str(), value_float);
         break;
@@ -86,6 +89,14 @@ void OpenGLVariable::set(const Texture4D *texture, bool repeat, bool color) {
     texture_toupload = true;
     texture_repeat = repeat;
     texture_color = color;
+}
+
+void OpenGLVariable::set(int value)
+{
+    assert(type == TYPE_NONE or type == TYPE_INTEGER);
+
+    type = TYPE_INTEGER;
+    value_int = value;
 }
 
 void OpenGLVariable::set(float value) {

@@ -6,6 +6,7 @@
 #include "OpenGLSkybox.h"
 #include "OpenGLWater.h"
 #include "OpenGLTerrain.h"
+#include "OpenGLVegetation.h"
 #include "CloudsRenderer.h"
 #include "VegetationRenderer.h"
 #include "Color.h"
@@ -40,9 +41,11 @@ OpenGLRenderer::OpenGLRenderer(Scenery *scenery) : SoftwareRenderer(scenery) {
     skybox = new OpenGLSkybox(this);
     water = new OpenGLWater(this);
     terrain = new OpenGLTerrain(this);
+    vegetation = new OpenGLVegetation(this);
 }
 
 OpenGLRenderer::~OpenGLRenderer() {
+    vegetation->interrupt();
     terrain->interrupt();
     water->interrupt();
     skybox->interrupt();
@@ -54,6 +57,7 @@ OpenGLRenderer::~OpenGLRenderer() {
     delete skybox;
     delete water;
     delete terrain;
+    delete vegetation;
 
     delete functions;
     delete shared_state;
@@ -69,9 +73,9 @@ void OpenGLRenderer::prepare() {
 }
 
 void OpenGLRenderer::initialize() {
-    ready = functions->initializeOpenGLFunctions();
+    bool init = functions->initializeOpenGLFunctions();
 
-    if (ready) {
+    if (init) {
         prepareOpenGLState();
 
         prepare();
@@ -85,7 +89,12 @@ void OpenGLRenderer::initialize() {
         terrain->initialize();
         terrain->updateScenery();
 
+        vegetation->initialize();
+        vegetation->updateScenery();
+
         cameraChangeEvent(render_camera);
+
+        ready = true;
     } else {
         Logs::error() << "Failed to initialize OpenGL bindings" << std::endl;
     }
@@ -100,7 +109,7 @@ void OpenGLRenderer::prepareOpenGLState() {
         functions->glEnable(GL_CULL_FACE);
 
         functions->glDepthFunc(GL_LESS);
-        functions->glDepthMask(1);
+        functions->glDepthMask(GL_TRUE);
         functions->glEnable(GL_DEPTH_TEST);
 
         functions->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -145,6 +154,7 @@ void OpenGLRenderer::paint() {
         skybox->render();
         terrain->render();
         water->render();
+        vegetation->render();
 
         if (mouse_tracking) {
             updateMouseProjection();
@@ -164,6 +174,7 @@ void OpenGLRenderer::reset() {
         skybox->updateScenery();
         water->updateScenery();
         terrain->updateScenery();
+        vegetation->updateScenery();
 
         cameraChangeEvent(render_camera);
     }
@@ -210,6 +221,9 @@ void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera) {
     // Set in shaders
     shared_state->set("cameraLocation", location);
     shared_state->set("viewMatrix", *view_matrix);
+
+    // Broadcast to parts
+    vegetation->cameraChanged(camera);
 }
 
 double OpenGLRenderer::getPrecision(const Vector3 &) {

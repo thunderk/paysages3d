@@ -30,6 +30,9 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
     inline OpenGLRenderer *getRenderer() const {
         return renderer;
     }
+    inline OpenGLSharedState *getState() const {
+        return state;
+    }
 
   protected:
     friend class OpenGLVariable;
@@ -44,6 +47,8 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
     std::string name;
     QOpenGLShaderProgram *program;
     OpenGLFunctions *functions;
+
+    OpenGLSharedState *state;
 
     std::string source_vertex;
     std::string source_fragment;

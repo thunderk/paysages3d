@@ -30,6 +30,16 @@ class OPENGLSHARED_EXPORT OpenGLPart {
 
     void updateScenery(bool onlyCommon = false);
 
+    /**
+     * Get access to rendered scenery.
+     */
+    Scenery *getScenery() const;
+
+    /**
+     * Get access to OpenGL functions.
+     */
+    OpenGLFunctions *getOpenGlFunctions() const;
+
   protected:
     // Create a shader program
     OpenGLShaderProgram *createShader(QString name);

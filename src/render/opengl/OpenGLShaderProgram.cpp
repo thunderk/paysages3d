@@ -15,11 +15,13 @@ OpenGLShaderProgram::OpenGLShaderProgram(const std::string &name, OpenGLRenderer
     : renderer(renderer), name(name) {
     program = new QOpenGLShaderProgram();
     functions = renderer->getOpenGlFunctions();
+    state = new OpenGLSharedState();
     compiled = false;
 }
 
 OpenGLShaderProgram::~OpenGLShaderProgram() {
     delete program;
+    delete state;
 }
 
 void OpenGLShaderProgram::addVertexSource(QString path) {
@@ -63,6 +65,7 @@ void OpenGLShaderProgram::bind() {
 
     int texture_unit = 0;
     renderer->getSharedState()->apply(this, texture_unit);
+    state->apply(this, texture_unit);
 }
 
 void OpenGLShaderProgram::release() {

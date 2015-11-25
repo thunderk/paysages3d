@@ -64,6 +64,7 @@ SoftwareRenderer::~SoftwareRenderer() {
     delete clouds_renderer;
     delete terrain_renderer;
     delete textures_renderer;
+    delete vegetation_renderer;
     delete water_renderer;
 }
 

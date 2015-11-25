@@ -11,6 +11,7 @@ namespace software {
 class SOFTWARESHARED_EXPORT VegetationRenderer : public LightFilter {
   public:
     VegetationRenderer(SoftwareRenderer *parent);
+    virtual ~VegetationRenderer();
 
     /**
      * Totally enable or disable the vegetation layers rendering.

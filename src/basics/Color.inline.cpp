@@ -118,6 +118,12 @@ METHSPEC double Color::normalize() {
     return max;*/
 }
 
+METHSPEC Color Color::normalized() {
+    Color col = *this;
+    col.normalize();
+    return col;
+}
+
 METHSPEC double Color::getValue() const {
     double max;
 

@@ -23,12 +23,15 @@
 #include "VegetationInstance.h"
 #include "VegetationRenderer.h"
 #include "RayCastingResult.h"
+#include "OpenGLVegetationImpostor.h"
+#include "Texture2D.h"
 
 #include <sstream>
+#include <iostream>
 
 void startRender(SoftwareCanvasRenderer *renderer, const char *outputpath);
 
-static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string &name, int iteration = -1) {
+static std::string getFileName(const std::string &name, int iteration = -1) {
     std::ostringstream stream;
 
     stream << "pic_test_" << name;
@@ -40,7 +43,11 @@ static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string 
     }
     stream << ".png";
 
-    startRender(renderer, stream.str().data());
+    return stream.str();
+}
+
+static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string &name, int iteration = -1) {
+    startRender(renderer, getFileName(name, iteration).data());
 }
 
 static void testGroundShadowQuality() {
@@ -288,6 +295,19 @@ static void testVegetationModels() {
     }
 }
 
+static void testOpenGLVegetationImpostor() {
+    std::string filename = getFileName("opengl_vegetation_impostor");
+    std::cout << "Rendering " << filename << "..." << std::endl;
+
+    Scenery scenery;
+    scenery.autoPreset(1);
+    OpenGLVegetationImpostor impostor(200);
+    VegetationModelDefinition model(NULL);
+    bool interrupted = false;
+    impostor.prepareTexture(model, scenery, &interrupted);
+    impostor.getTexture()->saveToFile(filename);
+}
+
 void runTestSuite() {
     testGroundShadowQuality();
     testRasterizationQuality();
@@ -297,4 +317,5 @@ void runTestSuite() {
     testCloudsNearGround();
     testSunNearHorizon();
     testVegetationModels();
+    testOpenGLVegetationImpostor();
 }

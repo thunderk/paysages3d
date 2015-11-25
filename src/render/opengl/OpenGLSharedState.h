@@ -28,6 +28,12 @@ class OPENGLSHARED_EXPORT OpenGLSharedState {
     OpenGLVariable *get(const std::string &name);
 
     // Shortcuts
+    inline void setInt(const std::string &name, int value) {
+        get(name)->set(value);
+    }
+    inline void set(const std::string &name, float value) {
+        get(name)->set(value);
+    }
     inline void set(const std::string &name, const Texture2D *texture, bool repeat = false, bool color = true) {
         get(name)->set(texture, repeat, color);
     }
@@ -36,9 +42,6 @@ class OPENGLSHARED_EXPORT OpenGLSharedState {
     }
     inline void set(const std::string &name, const Texture4D *texture, bool repeat = false, bool color = true) {
         get(name)->set(texture, repeat, color);
-    }
-    inline void set(const std::string &name, float value) {
-        get(name)->set(value);
     }
     inline void set(const std::string &name, const Vector3 &vector) {
         get(name)->set(vector);

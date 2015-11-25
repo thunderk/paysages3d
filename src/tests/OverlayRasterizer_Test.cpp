@@ -40,8 +40,9 @@ TEST(OverlayRasterizer, pixelProcessing) {
 
     Scenery scenery;
     SoftwareCanvasRenderer renderer(&scenery);
+    MockOverlayRasterizer rasterizer(&renderer);
     renderer.setSize(4, 3);
-    renderer.setSoloRasterizer(new MockOverlayRasterizer(&renderer));
+    renderer.setSoloRasterizer(&rasterizer);
     renderer.render();
 
     ASSERT_EQ(12, (int)calls.size());

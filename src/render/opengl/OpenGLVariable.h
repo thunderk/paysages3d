@@ -20,6 +20,7 @@ class OpenGLVariable {
         TYPE_TEXTURE_2D,
         TYPE_TEXTURE_3D,
         TYPE_TEXTURE_4D,
+        TYPE_INTEGER,
         TYPE_FLOAT,
         TYPE_VECTOR3,
         TYPE_MATRIX4,
@@ -34,6 +35,7 @@ class OpenGLVariable {
     void set(const Texture2D *texture, bool repeat = false, bool color = true);
     void set(const Texture3D *texture, bool repeat = false, bool color = true);
     void set(const Texture4D *texture, bool repeat = false, bool color = true);
+    void set(int value);
     void set(float value);
     void set(const Vector3 &vector);
     void set(const QVector3D &vector);
@@ -48,6 +50,7 @@ class OpenGLVariable {
     std::string name;
     OpenGLVariableType type;
 
+    int value_int;
     float value_float;
     QColor value_color;
     QVector3D value_vector3;

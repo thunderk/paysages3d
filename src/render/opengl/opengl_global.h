@@ -19,6 +19,10 @@ class OpenGLVariable;
 class OpenGLSkybox;
 class OpenGLWater;
 class OpenGLTerrain;
+class OpenGLVegetation;
+class OpenGLVegetationLayer;
+class OpenGLVegetationInstance;
+class OpenGLVegetationImpostor;
 class ExplorerChunkTerrain;
 template <typename Vertex> class VertexArray;
 }
