@@ -15,7 +15,7 @@ namespace opengl {
 class OPENGLSHARED_EXPORT OpenGLSharedState {
   public:
     OpenGLSharedState();
-     ~OpenGLSharedState();
+    ~OpenGLSharedState();
 
     /*!
      * \brief Apply the stored variables to the bound program.

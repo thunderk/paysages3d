@@ -27,7 +27,7 @@ class paysages::opengl::VegetationUpdater : public Thread {
         while (not interrupted) {
             std::vector<OpenGLVegetationLayer *> layers;
             vegetation->acquireLayers(layers);
-            for (auto layer: layers) {
+            for (auto layer : layers) {
                 layer->threadedUpdate();
             }
             vegetation->releaseLayers(layers);
@@ -50,7 +50,7 @@ OpenGLVegetation::OpenGLVegetation(OpenGLRenderer *renderer) : OpenGLPart(render
 }
 
 OpenGLVegetation::~OpenGLVegetation() {
-    for (auto layer: layers) {
+    for (auto layer : layers) {
         delete layer;
     }
     layers.clear();
@@ -81,7 +81,7 @@ void OpenGLVegetation::render() {
     if (enabled) {
         std::vector<OpenGLVegetationLayer *> layers;
         acquireLayers(layers);
-        for (auto layer: layers) {
+        for (auto layer : layers) {
             layer->render();
         }
         releaseLayers(layers);
@@ -94,16 +94,14 @@ void OpenGLVegetation::nodeChanged(const DefinitionNode *node, const DefinitionD
     }
 }
 
-Scenery *OpenGLVegetation::getScenery() const
-{
+Scenery *OpenGLVegetation::getScenery() const {
     return renderer->getScenery();
 }
 
-void OpenGLVegetation::cameraChanged(const CameraDefinition *camera)
-{
+void OpenGLVegetation::cameraChanged(const CameraDefinition *camera) {
     std::vector<OpenGLVegetationLayer *> layers;
     acquireLayers(layers);
-    for (auto layer: layers) {
+    for (auto layer : layers) {
         layer->setCamera(camera);
     }
     releaseLayers(layers);

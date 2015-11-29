@@ -75,13 +75,13 @@ void OpenGLShaderProgram::release() {
 void OpenGLShaderProgram::drawTriangles(float *vertices, int triangle_count) {
     bind();
 
-    GLuint vertex = program->attributeLocation("vertex");
-    program->setAttributeArray(vertex, GL_FLOAT, vertices, 3);
-    program->enableAttributeArray(vertex);
+    GLuint array_vertex = program->attributeLocation("vertex");
+    program->setAttributeArray(array_vertex, GL_FLOAT, vertices, 3);
+    program->enableAttributeArray(array_vertex);
 
     functions->glDrawArrays(GL_TRIANGLES, 0, triangle_count * 3);
 
-    program->disableAttributeArray(vertex);
+    program->disableAttributeArray(array_vertex);
 
     release();
 }
@@ -89,13 +89,51 @@ void OpenGLShaderProgram::drawTriangles(float *vertices, int triangle_count) {
 void OpenGLShaderProgram::drawTriangleStrip(float *vertices, int vertex_count) {
     bind();
 
-    GLuint vertex = program->attributeLocation("vertex");
-    program->setAttributeArray(vertex, GL_FLOAT, vertices, 3);
-    program->enableAttributeArray(vertex);
+    GLuint array_vertex = program->attributeLocation("vertex");
+    program->setAttributeArray(array_vertex, GL_FLOAT, vertices, 3);
+    program->enableAttributeArray(array_vertex);
 
     functions->glDrawArrays(GL_TRIANGLE_STRIP, 0, vertex_count);
 
-    program->disableAttributeArray(vertex);
+    program->disableAttributeArray(array_vertex);
+
+    release();
+}
+
+void OpenGLShaderProgram::drawTrianglesUV(float *vertices, float *uv, int triangle_count) {
+    bind();
+
+    GLuint array_vertex = program->attributeLocation("vertex");
+    program->setAttributeArray(array_vertex, GL_FLOAT, vertices, 3);
+    program->enableAttributeArray(array_vertex);
+
+    GLuint array_uv = program->attributeLocation("uv");
+    program->setAttributeArray(array_uv, GL_FLOAT, uv, 2);
+    program->enableAttributeArray(array_uv);
+
+    functions->glDrawArrays(GL_TRIANGLES, 0, triangle_count * 3);
+
+    program->disableAttributeArray(array_vertex);
+    program->disableAttributeArray(array_uv);
+
+    release();
+}
+
+void OpenGLShaderProgram::drawTriangleStripUV(float *vertices, float *uv, int vertex_count) {
+    bind();
+
+    GLuint array_vertex = program->attributeLocation("vertex");
+    program->setAttributeArray(array_vertex, GL_FLOAT, vertices, 3);
+    program->enableAttributeArray(array_vertex);
+
+    GLuint array_uv = program->attributeLocation("uv");
+    program->setAttributeArray(array_uv, GL_FLOAT, uv, 2);
+    program->enableAttributeArray(array_uv);
+
+    functions->glDrawArrays(GL_TRIANGLE_STRIP, 0, vertex_count);
+
+    program->disableAttributeArray(array_vertex);
+    program->disableAttributeArray(array_uv);
 
     release();
 }

@@ -296,16 +296,21 @@ static void testVegetationModels() {
 }
 
 static void testOpenGLVegetationImpostor() {
-    std::string filename = getFileName("opengl_vegetation_impostor");
-    std::cout << "Rendering " << filename << "..." << std::endl;
+    for (int i = 0; i < 4; i++) {
+        std::string filename = getFileName("opengl_vegetation_impostor", i);
+        std::cout << "Rendering " << filename << "..." << std::endl;
 
-    Scenery scenery;
-    scenery.autoPreset(1);
-    OpenGLVegetationImpostor impostor(200);
-    VegetationModelDefinition model(NULL);
-    bool interrupted = false;
-    impostor.prepareTexture(model, scenery, &interrupted);
-    impostor.getTexture()->saveToFile(filename);
+        Scenery scenery;
+        scenery.autoPreset(i);
+
+        OpenGLVegetationImpostor impostor(128);
+        VegetationModelDefinition model(NULL);
+
+        bool interrupted = false;
+        impostor.prepareTexture(model, scenery, &interrupted);
+
+        impostor.getTexture()->saveToFile(filename);
+    }
 }
 
 void runTestSuite() {

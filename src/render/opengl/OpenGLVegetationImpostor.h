@@ -21,18 +21,25 @@ class OPENGLSHARED_EXPORT OpenGLVegetationImpostor {
     /**
      * Render a single instance using this impostor.
      */
-    void render(OpenGLShaderProgram *program, const OpenGLVegetationInstance *instance, int index);
+    void render(OpenGLShaderProgram *program, const OpenGLVegetationInstance *instance, int instance_index,
+                const Vector3 &camera_location);
 
     /**
      * Prepare the texture grid for a given model.
      */
     void prepareTexture(const VegetationModelDefinition &model, const Scenery &environment, bool *interrupt);
 
+    /**
+     * Get the impostor grid index for an instance, to face the camera.
+     */
+    int getIndex(const Vector3 &camera, const Vector3 &instance) const;
+
   private:
-    void setVertex(int i, float x, float y, float z);
+    void setVertex(int i, float u, float v);
 
   private:
     float *vertices;
+    float *uv;
     int texture_size;
     bool texture_changed;
     Texture2D *texture;

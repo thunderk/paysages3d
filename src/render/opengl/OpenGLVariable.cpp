@@ -91,8 +91,7 @@ void OpenGLVariable::set(const Texture4D *texture, bool repeat, bool color) {
     texture_color = color;
 }
 
-void OpenGLVariable::set(int value)
-{
+void OpenGLVariable::set(int value) {
     assert(type == TYPE_NONE or type == TYPE_INTEGER);
 
     type = TYPE_INTEGER;

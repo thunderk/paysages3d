@@ -93,7 +93,7 @@ void OpenGLVegetationLayer::threadedUpdate() {
         zmax = newzmax;
         removeInstancesOutsideArea(xmin, xmax, zmin, zmax, &instances);
         instances.insert(instances.end(), new_instances.begin(), new_instances.end());
-        for (auto instance: instances) {
+        for (auto instance : instances) {
             instance->setDistance(instance->getBase().sub(*camera_location).getNorm());
         }
         std::sort(instances.begin(), instances.end(), compareInstances);
@@ -111,7 +111,7 @@ void OpenGLVegetationLayer::render() {
     // TODO Instanced rendering
     int index = 0;
     for (auto instance : instances) {
-        impostor->render(parent->getProgram(), instance, index++);
+        impostor->render(parent->getProgram(), instance, index++, *camera_location);
     }
 
     lock_instances->release();

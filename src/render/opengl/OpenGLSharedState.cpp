@@ -3,8 +3,7 @@
 OpenGLSharedState::OpenGLSharedState() {
 }
 
-OpenGLSharedState::~OpenGLSharedState()
-{
+OpenGLSharedState::~OpenGLSharedState() {
     for (const auto &pair : variables) {
         delete pair.second;
     }

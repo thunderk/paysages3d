@@ -21,6 +21,9 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
     void drawTriangles(float *vertices, int triangle_count);
     void drawTriangleStrip(float *vertices, int vertex_count);
 
+    void drawTrianglesUV(float *vertices, float *uv, int triangle_count);
+    void drawTriangleStripUV(float *vertices, float *uv, int vertex_count);
+
     void bind();
     void release();
 

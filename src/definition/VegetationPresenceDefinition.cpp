@@ -44,8 +44,7 @@ bool VegetationPresenceDefinition::collectInstances(std::vector<VegetationInstan
                 double angle = 3.0 * generator->get2DTotal(-x * 20.0, z * 20.0); // TODO balanced distribution
                 double xo = x + fabs(generator->get2DTotal(x * 12.0, -z * 12.0));
                 double zo = z + fabs(generator->get2DTotal(-x * 27.0, -z * 27.0));
-                if (xo >= xmin and xo < xmax and zo >= zmin and zo < zmax)
-                {
+                if (xo >= xmin and xo < xmax and zo >= zmin and zo < zmax) {
                     double y = getScenery()->getTerrain()->getInterpolatedHeight(xo, zo, true, true);
                     result->push_back(VegetationInstance(model, Vector3(xo, y, zo), size, angle));
                     added++;

@@ -1,5 +1,6 @@
 #include "OpenGLVegetationImpostor.h"
 
+#include <cassert>
 #include "OpenGLShaderProgram.h"
 #include "OpenGLSharedState.h"
 #include "OpenGLVegetationInstance.h"
@@ -16,16 +17,30 @@
 #include "LightingManager.h"
 #include "CameraDefinition.h"
 
-OpenGLVegetationImpostor::OpenGLVegetationImpostor(int partsize) {
-    vertices = new float[4 * 3];
-    texture_size = partsize * 4;
-    texture = new Texture2D(texture_size, texture_size);
-    texture_changed = true;
+// Get the rotation matrix for an impostor grid index
+static inline Matrix4 matrixForIndex(int index) {
+    if (index == 0) {
+        return Matrix4::newRotateZ(M_PI_2);
+    } else if (index < 6) {
+        return Matrix4::newRotateY(M_2PI * (double)(index - 1) * 0.2).mult(Matrix4::newRotateZ(M_PI_4));
+    } else {
+        return Matrix4::newRotateY(M_2PI * (double)(index - 6) * 0.1);
+    }
+}
 
-    setVertex(0, 0.0f, 0.0f, 0.0f);
-    setVertex(1, 0.0f, 0.0f, 1.0f);
-    setVertex(2, 0.0f, 1.0f, 0.0f);
-    setVertex(3, 0.0f, 1.0f, 1.0f);
+OpenGLVegetationImpostor::OpenGLVegetationImpostor(int partsize) {
+    int parts = 4;
+
+    vertices = new float[4 * parts * parts * 3];
+    uv = new float[4 * 2];
+    texture_size = partsize * parts;
+    texture = new Texture2D(texture_size, texture_size);
+    texture_changed = false;
+
+    setVertex(0, 0.0f, 0.0f);
+    setVertex(1, 0.0f, 1.0f);
+    setVertex(2, 1.0f, 0.0f);
+    setVertex(3, 1.0f, 1.0f);
 }
 
 OpenGLVegetationImpostor::~OpenGLVegetationImpostor() {
@@ -34,15 +49,17 @@ OpenGLVegetationImpostor::~OpenGLVegetationImpostor() {
 }
 
 void OpenGLVegetationImpostor::render(OpenGLShaderProgram *program, const OpenGLVegetationInstance *instance,
-                                      int index) {
-    if (index == 0 or texture_changed) {
+                                      int instance_index, const Vector3 &camera_location) {
+    if (instance_index == 0 or texture_changed) {
         texture_changed = false;
         program->getState()->set("impostorTexture", texture);
     }
-    program->getState()->setInt("index", 15); // TODO
+
+    int index = getIndex(camera_location, instance->getBase());
+    program->getState()->setInt("index", index);
     program->getState()->set("offset", instance->getBase());
-    program->getState()->set("size", instance->getSize());
-    program->drawTriangleStrip(vertices, 4);
+    program->getState()->set("size", 2.0 * instance->getSize());
+    program->drawTriangleStripUV(vertices + index * 4 * 3, uv, 4);
 }
 
 void OpenGLVegetationImpostor::prepareTexture(const VegetationModelDefinition &model, const Scenery &environment,
@@ -58,19 +75,12 @@ void OpenGLVegetationImpostor::prepareTexture(const VegetationModelDefinition &m
 
     int parts = 4;
     int partsize = texture_size / parts;
-    Matrix4 rotation;
     for (int py = 0; py < parts; py++) {
         for (int px = 0; px < parts; px++) {
             int index = py * parts + px;
-            if (index == 0) {
-                rotation = Matrix4::newRotateX(-M_PI_2);
-            } else if (index < 6) {
-                rotation = Matrix4::newRotateY(M_2PI * (double)(index - 1) * 0.2).mult(Matrix4::newRotateX(-M_PI_4));
-            } else {
-                rotation = Matrix4::newRotateY(M_2PI * (double)(index - 6) * 0.1);
-            }
+            Matrix4 rotation = matrixForIndex(index);
 
-            Vector3 cam(0.0, 0.0, 5.0);
+            Vector3 cam(5.0, 0.0, 0.0);
             scenery.getCamera()->setLocation(rotation.multPoint(cam));
             scenery.getCamera()->setTarget(VECTOR_ZERO);
             renderer.prepare();
@@ -83,10 +93,10 @@ void OpenGLVegetationImpostor::prepareTexture(const VegetationModelDefinition &m
                 for (int y = 0; y < partsize; y++) {
                     double dy = (double)y / (double)partsize;
 
-                    Vector3 near(dx - 0.5, dy - 0.5, 5.0);
-                    Vector3 far(dx - 0.5, dy - 0.5, -5.0);
-                    SpaceSegment segment(rotation.multPoint(near.scale(1.3)).add(VECTOR_UP.scale(0.5)),
-                                         rotation.multPoint(far.scale(1.3)).add(VECTOR_UP.scale(0.5)));
+                    Vector3 near(5.0, dy - 0.5, -(dx - 0.5));
+                    Vector3 far(-5.0, dy - 0.5, -(dx - 0.5));
+                    SpaceSegment segment(rotation.multPoint(near.scale(2.0)).add(VECTOR_UP.scale(0.5)),
+                                         rotation.multPoint(far.scale(2.0)).add(VECTOR_UP.scale(0.5)));
 
                     RayCastingResult result = vegetation->renderInstance(segment, instance, false, true);
                     texture->setPixel(startx + x, starty + y,
@@ -99,8 +109,40 @@ void OpenGLVegetationImpostor::prepareTexture(const VegetationModelDefinition &m
     texture_changed = true;
 }
 
-void OpenGLVegetationImpostor::setVertex(int i, float x, float y, float z) {
-    vertices[i * 3] = x;
-    vertices[i * 3 + 1] = y;
-    vertices[i * 3 + 2] = z;
+int OpenGLVegetationImpostor::getIndex(const Vector3 &camera, const Vector3 &instance) const {
+    int result;
+
+    VectorSpherical diff = camera.sub(instance).toSpherical();
+    if (diff.theta > 1.0) {
+        return 0;
+    } else {
+        double angle = diff.phi / M_2PI;
+        if (diff.theta > 0.4) {
+            angle = (angle >= 0.9) ? 0.0 : (angle + 0.1);
+            return 1 + (int)(5.0 * angle);
+        } else {
+            angle = (angle >= 0.95) ? 0.0 : (angle + 0.05);
+            return 6 + (int)(10.0 * angle);
+        }
+    }
+
+    assert(result >= 0 and result <= 16);
+    return result;
+}
+
+void OpenGLVegetationImpostor::setVertex(int i, float u, float v) {
+    int parts = 4;
+    for (int py = 0; py < parts; py++) {
+        for (int px = 0; px < parts; px++) {
+            int index = py * parts + px;
+            Matrix4 rotation = matrixForIndex(index);
+
+            Vector3 vertex = rotation.multPoint(Vector3(1.0, u, -(v - 0.5)));
+            vertices[index * 4 * 3 + i * 3] = vertex.x;
+            vertices[index * 4 * 3 + i * 3 + 1] = vertex.y;
+            vertices[index * 4 * 3 + i * 3 + 2] = vertex.z;
+        }
+    }
+    uv[i * 2] = u;
+    uv[i * 2 + 1] = v;
 }

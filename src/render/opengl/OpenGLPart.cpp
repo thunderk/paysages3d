@@ -41,12 +41,10 @@ void OpenGLPart::updateScenery(bool onlyCommon) {
     }
 }
 
-Scenery *OpenGLPart::getScenery() const
-{
+Scenery *OpenGLPart::getScenery() const {
     return renderer->getScenery();
 }
 
-OpenGLFunctions *OpenGLPart::getOpenGlFunctions() const
-{
+OpenGLFunctions *OpenGLPart::getOpenGlFunctions() const {
     return renderer->getOpenGlFunctions();
 }

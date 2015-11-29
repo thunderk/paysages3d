@@ -5,7 +5,6 @@
 OpenGLVegetationInstance::OpenGLVegetationInstance(const VegetationInstance &wrapped) : wrapped(wrapped) {
 }
 
-void OpenGLVegetationInstance::setDistance(double distance)
-{
+void OpenGLVegetationInstance::setDistance(double distance) {
     this->distance = distance;
 }

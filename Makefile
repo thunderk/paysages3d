@@ -62,6 +62,11 @@ profile_cli:build
 	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g ${BUILDPATH}/interface/commandline/paysages-cli $(ARGS)
 	perf report -g
 
+gltrace:build
+	rm -f *.trace
+	LD_PRELOAD=/usr/lib/x86_64-linux-gnu/apitrace/wrappers/glxtrace.so LD_LIBRARY_PATH=$(LIBRARY_PATH) ${BUILDPATH}/interface/modeler/quickapp/paysages-modeler $(ARGS)
+	qapitrace paysages-modeler.trace
+
 package:build
 	rm -rf paysages3d-linux
 	rm -f paysages3d-linux.tar.bz2

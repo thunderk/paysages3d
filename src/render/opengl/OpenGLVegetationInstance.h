@@ -33,7 +33,7 @@ class OPENGLSHARED_EXPORT OpenGLVegetationInstance {
      */
     void setDistance(double distance);
 
-private:
+  private:
     VegetationInstance wrapped;
     double distance;
 };
