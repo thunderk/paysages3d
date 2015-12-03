@@ -1,8 +1,8 @@
 #include "ExplorerChunkTerrain.h"
 
-#include OPENGL_FUNCTIONS_INCLUDE
 #include <cmath>
 #include <QImage>
+#include "OpenGLFunctions.h"
 #include "ColorProfile.h"
 #include "CameraDefinition.h"
 #include "OpenGLRenderer.h"

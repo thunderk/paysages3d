@@ -1,6 +1,6 @@
 #include "OpenGLTerrain.h"
 
-#include OPENGL_FUNCTIONS_INCLUDE
+#include "OpenGLFunctions.h"
 #include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
 #include "ParallelPool.h"

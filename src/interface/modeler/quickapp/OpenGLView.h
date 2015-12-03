@@ -17,6 +17,7 @@ class OpenGLView : public QQuickItem {
     void handleWindowChanged(QQuickWindow *win);
     void paint();
     void handleResize();
+    void handleSceneGraphReady();
 
   protected:
     virtual void wheelEvent(QWheelEvent *event) override;

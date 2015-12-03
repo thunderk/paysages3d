@@ -187,7 +187,7 @@ TEST(Layers, generateInitDiffs) {
     EXPECT_EQ(3, (int)diffs.size());
 
     Layers layers1(NULL, "layers", _construc1);
-    for (auto diff: diffs) {
+    for (auto diff : diffs) {
         layers1.applyDiff(diff);
     }
     ASSERT_EQ(3, layers1.getLayerCount());

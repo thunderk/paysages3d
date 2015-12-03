@@ -3,8 +3,7 @@
 OpenGLSharedState::OpenGLSharedState() {
 }
 
-paysages::opengl::OpenGLSharedState::~OpenGLSharedState()
-{
+paysages::opengl::OpenGLSharedState::~OpenGLSharedState() {
     for (const auto &pair : variables) {
         delete pair.second;
     }
