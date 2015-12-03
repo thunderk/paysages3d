@@ -24,7 +24,7 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
     void drawTrianglesUV(float *vertices, float *uv, int triangle_count);
     void drawTriangleStripUV(float *vertices, float *uv, int vertex_count);
 
-    void bind();
+    bool bind();
     void release();
 
     inline QOpenGLShaderProgram *getProgram() const {

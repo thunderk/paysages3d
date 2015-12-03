@@ -1,6 +1,6 @@
 #include "OpenGLRenderer.h"
 
-#include OPENGL_FUNCTIONS_INCLUDE
+#include "OpenGLFunctions.h"
 #include "CameraDefinition.h"
 #include "OpenGLSharedState.h"
 #include "OpenGLSkybox.h"
@@ -72,10 +72,20 @@ void OpenGLRenderer::prepare() {
     getVegetationRenderer()->setEnabled(false);
 }
 
+void OpenGLRenderer::checkForErrors(const std::string &domain) {
+    int error_code;
+    while ((error_code = functions->glGetError()) != GL_NO_ERROR) {
+        Logs::warning() << "[OpenGL] Error in " << domain << " : " << error_code << std::endl;
+    }
+}
+
 void OpenGLRenderer::initialize() {
     bool init = functions->initializeOpenGLFunctions();
 
     if (init) {
+        Logs::debug() << "[OpenGL] renderer started (version " << functions->glGetString(GL_VERSION)
+                      << ", glsl version " << functions->glGetString(GL_SHADING_LANGUAGE_VERSION) << ")" << std::endl;
+
         prepareOpenGLState();
 
         prepare();
@@ -94,9 +104,10 @@ void OpenGLRenderer::initialize() {
 
         cameraChangeEvent(render_camera);
 
+        checkForErrors("initialize");
         ready = true;
     } else {
-        Logs::error() << "Failed to initialize OpenGL bindings" << std::endl;
+        Logs::error() << "[OpenGL] Failed to initialize api bindings" << std::endl;
     }
 }
 
@@ -144,25 +155,31 @@ void OpenGLRenderer::resize(int width, int height) {
         cameraChangeEvent(render_camera);
 
         prepareOpenGLState();
+
+        checkForErrors("resize");
     }
 }
 
 void OpenGLRenderer::paint() {
     if (ready and not paused) {
+        checkForErrors("before_paint");
         functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         skybox->render();
+        checkForErrors("skybox");
+
         terrain->render();
+        checkForErrors("terrain");
+
         water->render();
+        checkForErrors("water");
+
         vegetation->render();
+        checkForErrors("vegetation");
 
         if (mouse_tracking) {
             updateMouseProjection();
-        }
-
-        int error_code;
-        while ((error_code = functions->glGetError()) != GL_NO_ERROR) {
-            Logs::warning() << "[OpenGL] ERROR : " << error_code << std::endl;
+            checkForErrors("mouse_tracking");
         }
 
         displayed = true;

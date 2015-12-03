@@ -1,8 +1,8 @@
 #include "OpenGLShaderProgram.h"
 
-#include OPENGL_FUNCTIONS_INCLUDE
 #include <QOpenGLShaderProgram>
 #include <QDir>
+#include "OpenGLFunctions.h"
 #include "OpenGLRenderer.h"
 #include "OpenGLSharedState.h"
 #include "Texture2D.h"
@@ -29,7 +29,7 @@ void OpenGLShaderProgram::addVertexSource(QString path) {
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         source_vertex += QString(file.readAll()).toStdString();
     } else {
-        Logs::error() << "Can't open vertex file " << file.fileName().toStdString() << std::endl;
+        Logs::error() << "[OpenGL] Can't open vertex file " << file.fileName().toStdString() << std::endl;
     }
 }
 
@@ -38,7 +38,7 @@ void OpenGLShaderProgram::addFragmentSource(QString path) {
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         source_fragment += QString(file.readAll()).toStdString();
     } else {
-        Logs::error() << "Can't open fragment file " << file.fileName().toStdString() << std::endl;
+        Logs::error() << "[OpenGL] Can't open fragment file " << file.fileName().toStdString() << std::endl;
     }
 }
 
@@ -47,25 +47,30 @@ void OpenGLShaderProgram::compile() {
     program->addShaderFromSourceCode(QOpenGLShader::Fragment, QString::fromStdString(source_fragment));
 
     if (not program->link()) {
-        Logs::warning() << "Error while compiling shader " << name << std::endl
+        Logs::warning() << "[OpenGL] Error while compiling shader " << name << std::endl
                         << program->log().toStdString() << std::endl;
     } else if (program->log().length() > 0) {
-        Logs::debug() << "Shader " << name << " compilation output:" << std::endl
+        Logs::debug() << "[OpenGL] Shader " << name << " compilation output:" << std::endl
                       << program->log().toStdString() << std::endl;
+    } else {
+        Logs::debug() << "[OpenGL] Shader " << name << " compiled" << std::endl;
     }
 }
 
-void OpenGLShaderProgram::bind() {
+bool OpenGLShaderProgram::bind() {
     if (not compiled) {
         compile();
         compiled = true;
     }
 
-    program->bind();
-
-    int texture_unit = 0;
-    renderer->getSharedState()->apply(this, texture_unit);
-    state->apply(this, texture_unit);
+    if (program->bind()) {
+        int texture_unit = 0;
+        renderer->getSharedState()->apply(this, texture_unit);
+        state->apply(this, texture_unit);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void OpenGLShaderProgram::release() {
@@ -73,67 +78,67 @@ void OpenGLShaderProgram::release() {
 }
 
 void OpenGLShaderProgram::drawTriangles(float *vertices, int triangle_count) {
-    bind();
+    if (bind()) {
+        GLuint array_vertex = program->attributeLocation("vertex");
+        program->setAttributeArray(array_vertex, GL_FLOAT, vertices, 3);
+        program->enableAttributeArray(array_vertex);
 
-    GLuint array_vertex = program->attributeLocation("vertex");
-    program->setAttributeArray(array_vertex, GL_FLOAT, vertices, 3);
-    program->enableAttributeArray(array_vertex);
+        functions->glDrawArrays(GL_TRIANGLES, 0, triangle_count * 3);
 
-    functions->glDrawArrays(GL_TRIANGLES, 0, triangle_count * 3);
+        program->disableAttributeArray(array_vertex);
 
-    program->disableAttributeArray(array_vertex);
-
-    release();
+        release();
+    }
 }
 
 void OpenGLShaderProgram::drawTriangleStrip(float *vertices, int vertex_count) {
-    bind();
+    if (bind()) {
+        GLuint array_vertex = program->attributeLocation("vertex");
+        program->setAttributeArray(array_vertex, GL_FLOAT, vertices, 3);
+        program->enableAttributeArray(array_vertex);
 
-    GLuint array_vertex = program->attributeLocation("vertex");
-    program->setAttributeArray(array_vertex, GL_FLOAT, vertices, 3);
-    program->enableAttributeArray(array_vertex);
+        functions->glDrawArrays(GL_TRIANGLE_STRIP, 0, vertex_count);
 
-    functions->glDrawArrays(GL_TRIANGLE_STRIP, 0, vertex_count);
+        program->disableAttributeArray(array_vertex);
 
-    program->disableAttributeArray(array_vertex);
-
-    release();
+        release();
+    }
 }
 
 void OpenGLShaderProgram::drawTrianglesUV(float *vertices, float *uv, int triangle_count) {
-    bind();
+    if (bind()) {
+        GLuint array_vertex = program->attributeLocation("vertex");
+        program->setAttributeArray(array_vertex, GL_FLOAT, vertices, 3);
+        program->enableAttributeArray(array_vertex);
 
-    GLuint array_vertex = program->attributeLocation("vertex");
-    program->setAttributeArray(array_vertex, GL_FLOAT, vertices, 3);
-    program->enableAttributeArray(array_vertex);
+        GLuint array_uv = program->attributeLocation("uv");
+        program->setAttributeArray(array_uv, GL_FLOAT, uv, 2);
+        program->enableAttributeArray(array_uv);
 
-    GLuint array_uv = program->attributeLocation("uv");
-    program->setAttributeArray(array_uv, GL_FLOAT, uv, 2);
-    program->enableAttributeArray(array_uv);
+        functions->glDrawArrays(GL_TRIANGLES, 0, triangle_count * 3);
 
-    functions->glDrawArrays(GL_TRIANGLES, 0, triangle_count * 3);
+        program->disableAttributeArray(array_vertex);
+        program->disableAttributeArray(array_uv);
 
-    program->disableAttributeArray(array_vertex);
-    program->disableAttributeArray(array_uv);
-
-    release();
+        release();
+    }
 }
 
 void OpenGLShaderProgram::drawTriangleStripUV(float *vertices, float *uv, int vertex_count) {
-    bind();
+    if (bind()) {
+        GLuint array_vertex = program->attributeLocation("vertex");
+        program->setAttributeArray(array_vertex, GL_FLOAT, vertices, 3);
+        program->enableAttributeArray(array_vertex);
 
-    GLuint array_vertex = program->attributeLocation("vertex");
-    program->setAttributeArray(array_vertex, GL_FLOAT, vertices, 3);
-    program->enableAttributeArray(array_vertex);
+        GLuint array_uv = program->attributeLocation("uv");
+        program->setAttributeArray(array_uv, GL_FLOAT, uv, 2);
+        program->enableAttributeArray(array_uv);
 
-    GLuint array_uv = program->attributeLocation("uv");
-    program->setAttributeArray(array_uv, GL_FLOAT, uv, 2);
-    program->enableAttributeArray(array_uv);
+        functions->glDrawArrays(GL_TRIANGLE_STRIP, 0, vertex_count);
 
-    functions->glDrawArrays(GL_TRIANGLE_STRIP, 0, vertex_count);
+        program->disableAttributeArray(array_vertex);
+        program->disableAttributeArray(array_uv);
 
-    program->disableAttributeArray(array_vertex);
-    program->disableAttributeArray(array_uv);
-
-    release();
+        release();
+    }
 }

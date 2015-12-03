@@ -20,7 +20,6 @@ OpenGLView::OpenGLView(QQuickItem *parent) : QQuickItem(parent) {
     connect(this, SIGNAL(windowChanged(QQuickWindow *)), this, SLOT(handleWindowChanged(QQuickWindow *)));
     connect(this, SIGNAL(widthChanged()), this, SLOT(handleResize()));
     connect(this, SIGNAL(heightChanged()), this, SLOT(handleResize()));
-    startTimer(50);
 }
 
 void OpenGLView::handleWindowChanged(QQuickWindow *win) {
@@ -28,12 +27,11 @@ void OpenGLView::handleWindowChanged(QQuickWindow *win) {
         window = qobject_cast<MainModelerWindow *>(win);
         if (window) {
             renderer = window->getRenderer();
-
-            connect(win, SIGNAL(beforeRendering()), this, SLOT(paint()), Qt::DirectConnection);
+            initialized = false;
 
             win->setClearBeforeRendering(false);
 
-            initialized = false;
+            connect(win, SIGNAL(sceneGraphInitialized()), this, SLOT(handleSceneGraphReady()));
         }
     }
 }
@@ -64,6 +62,11 @@ void OpenGLView::paint() {
 
 void OpenGLView::handleResize() {
     resized = true;
+}
+
+void OpenGLView::handleSceneGraphReady() {
+    connect(window, SIGNAL(beforeRendering()), this, SLOT(paint()), Qt::DirectConnection);
+    startTimer(50);
 }
 
 void OpenGLView::wheelEvent(QWheelEvent *event) {

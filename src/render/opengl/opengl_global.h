@@ -29,9 +29,8 @@ template <typename Vertex> class VertexArray;
 }
 using namespace paysages::opengl;
 
-//#define OpenGLFunctions QOpenGLFunctions_3_2_Core
 #define OpenGLFunctions QOpenGLFunctions_3_0
-#define OPENGL_FUNCTIONS_INCLUDE <OpenGLFunctions>
+//#define OpenGLFunctions QOpenGLFunctions_3_3_Core
 class OpenGLFunctions;
 
 #endif // OPENGL_GLOBAL_H

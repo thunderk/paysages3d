@@ -36,6 +36,13 @@ class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
 
     virtual void prepare() override;
 
+    /**
+     * Check for errors in OpenGL context.
+     *
+     * Will write the error on standard error output, with the *domain* specified.
+     */
+    void checkForErrors(const std::string &domain);
+
     void initialize();
     void prepareOpenGLState();
     void resize(int width, int height);

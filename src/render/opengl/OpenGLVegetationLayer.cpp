@@ -1,10 +1,10 @@
 #include "OpenGLVegetationLayer.h"
 
-#include OPENGL_FUNCTIONS_INCLUDE
 #include <algorithm>
 #include "Vector3.h"
 #include "CameraDefinition.h"
 #include "Mutex.h"
+#include "OpenGLFunctions.h"
 #include "OpenGLVegetation.h"
 #include "OpenGLVegetationInstance.h"
 #include "OpenGLVegetationImpostor.h"

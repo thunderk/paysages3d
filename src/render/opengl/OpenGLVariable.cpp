@@ -1,8 +1,8 @@
 #include "OpenGLVariable.h"
 
-#include OPENGL_FUNCTIONS_INCLUDE
 #include <QOpenGLShaderProgram>
 #include <cassert>
+#include "OpenGLFunctions.h"
 #include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
 #include "Vector3.h"

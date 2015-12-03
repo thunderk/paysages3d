@@ -49,7 +49,7 @@ Scenery::FileOperationResult Scenery::saveGlobal(const std::string &filepath) co
     stream.write(&version_header);
     stream.write(&app_header);
 
-    Logs::debug() << "Scenery saved to file: " << filepath << std::endl;
+    Logs::debug() << "[Definition] Scenery saved to file: " << filepath << std::endl;
     return FILE_OPERATION_OK;
 }
 
@@ -87,7 +87,7 @@ Scenery::FileOperationResult Scenery::loadGlobal(const std::string &filepath) {
         return FILE_OPERATION_APP_MISMATCH;
     }
 
-    Logs::debug() << "Scenery loaded from file: " << filepath << std::endl;
+    Logs::debug() << "[Definition] Scenery loaded from file: " << filepath << std::endl;
     return FILE_OPERATION_OK;
 }
 
@@ -113,7 +113,7 @@ void Scenery::autoPreset(int seed) {
 
     validate();
 
-    Logs::debug() << "New scenery generated from seed " << seed << std::endl;
+    Logs::debug() << "[Definition] New scenery generated from seed " << seed << std::endl;
 }
 
 void Scenery::setAtmosphere(AtmosphereDefinition *atmosphere) {

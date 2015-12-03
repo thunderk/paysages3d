@@ -8,6 +8,7 @@
 /output/
 /perf.*
 /pic*.png
+core
 *.pro.user
 *.pro.user.*
 qrc_*.cpp

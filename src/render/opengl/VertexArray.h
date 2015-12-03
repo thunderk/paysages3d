@@ -3,9 +3,9 @@
 
 #include "opengl_global.h"
 
-#include OPENGL_FUNCTIONS_INCLUDE
 #include <cassert>
 #include <QOpenGLShaderProgram>
+#include "OpenGLFunctions.h"
 
 namespace paysages {
 namespace opengl {
