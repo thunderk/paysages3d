@@ -1,5 +1,7 @@
+out vec4 final_color;
+
 void main(void)
 {
-    gl_FragColor = getSkyColor(cameraLocation, unprojected - cameraLocation);
-    gl_FragColor = applyToneMapping(gl_FragColor);
+    final_color = getSkyColor(cameraLocation, unprojected - cameraLocation);
+    final_color = applyToneMapping(final_color);
 }

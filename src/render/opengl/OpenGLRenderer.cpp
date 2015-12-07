@@ -97,10 +97,8 @@ void OpenGLRenderer::initialize() {
     }
 }
 
-void OpenGLRenderer::prepareOpenGLState() {
+void OpenGLRenderer::prepareOpenGLState(bool clear) {
     if (ready) {
-        functions->glDisable(GL_LIGHTING);
-
         functions->glFrontFace(GL_CCW);
         functions->glCullFace(GL_BACK);
         functions->glEnable(GL_CULL_FACE);
@@ -110,16 +108,16 @@ void OpenGLRenderer::prepareOpenGLState() {
         functions->glEnable(GL_DEPTH_TEST);
 
         functions->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        functions->glEnable(GL_LINE_SMOOTH);
-        functions->glLineWidth(1.0);
-
-        functions->glDisable(GL_FOG);
+        /*functions->glEnable(GL_LINE_SMOOTH);
+        functions->glLineWidth(1.0);*/
 
         functions->glEnable(GL_BLEND);
         functions->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         functions->glClearColor(0.0, 0.0, 0.0, 0.0);
-        functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        if (clear) {
+            functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
 
         functions->glViewport(0, 0, vp_width, vp_height);
     }
@@ -146,10 +144,12 @@ void OpenGLRenderer::resize(int width, int height) {
     }
 }
 
-void OpenGLRenderer::paint() {
+void OpenGLRenderer::paint(bool clear) {
     if (ready and not paused) {
         checkForErrors("before_paint");
-        functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        if (clear) {
+            functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
 
         skybox->render();
         checkForErrors("skybox");

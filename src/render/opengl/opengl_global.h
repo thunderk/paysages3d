@@ -16,17 +16,20 @@ class OpenGLRenderer;
 class OpenGLShaderProgram;
 class OpenGLSharedState;
 class OpenGLVariable;
+class OpenGLVertexArray;
 class OpenGLSkybox;
 class OpenGLWater;
 class OpenGLTerrain;
-class ExplorerChunkTerrain;
+class OpenGLTerrainChunk;
 template <typename Vertex> class VertexArray;
 }
 }
 using namespace paysages::opengl;
 
-#define OpenGLFunctions QOpenGLFunctions_3_0
-//#define OpenGLFunctions QOpenGLFunctions_3_3_Core
+#define OpenGLFunctions QOpenGLFunctions_3_3_Core
+#define OPENGL_GLSL_VERSION "330 core"
+#define OPENGL_MAJOR_VERSION 3
+#define OPENGL_MINOR_VERSION 3
 class OpenGLFunctions;
 
 #endif // OPENGL_GLOBAL_H

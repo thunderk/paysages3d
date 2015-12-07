@@ -3,22 +3,23 @@ uniform float waterMaterialReflection;
 uniform float waterMaterialShininess;
 uniform float waterMaterialHardness;
 uniform float waterReflection;
+out vec4 final_color;
 
 void main(void)
 {
     vec3 normal = noiseNormal2d(unprojected.xz, 0.001);
 
-    gl_FragColor = applyLighting(unprojected, normal, waterMaterialColor, waterMaterialReflection, waterMaterialShininess, waterMaterialHardness);
+    final_color = applyLighting(unprojected, normal, waterMaterialColor, waterMaterialReflection, waterMaterialShininess, waterMaterialHardness);
 
     vec3 reflected = reflect(unprojected - cameraLocation, normal);
     reflected.y = max(reflected.y, 0.0);
-    gl_FragColor += getSkyColor(unprojected, reflected) * waterReflection;
+    final_color += getSkyColor(unprojected, reflected) * waterReflection;
 
-    gl_FragColor = applyAerialPerspective(gl_FragColor);
+    final_color = applyAerialPerspective(final_color);
 
-    gl_FragColor = applyToneMapping(gl_FragColor);
+    final_color = applyToneMapping(final_color);
 
-    gl_FragColor = applyMouseTracking(unprojected, gl_FragColor);
+    final_color = applyMouseTracking(unprojected, final_color);
 
-    gl_FragColor.a = distanceFadeout();
+    final_color.a = distanceFadeout();
 }

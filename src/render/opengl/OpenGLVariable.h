@@ -3,9 +3,10 @@
 
 #include "opengl_global.h"
 
-#include <QColor>
-#include <QVector3D>
-#include <QMatrix4x4>
+class QColor;
+class QVector3D;
+class QMatrix4x4;
+class QImage;
 
 namespace paysages {
 namespace opengl {
@@ -28,10 +29,12 @@ class OpenGLVariable {
 
   public:
     OpenGLVariable(const std::string &name);
+    ~OpenGLVariable();
 
     void apply(OpenGLShaderProgram *program, int &texture_unit);
 
     void set(const Texture2D *texture, bool repeat = false, bool color = true);
+    void set(const QImage &texture, bool repeat = false, bool color = true);
     void set(const Texture3D *texture, bool repeat = false, bool color = true);
     void set(const Texture4D *texture, bool repeat = false, bool color = true);
     void set(float value);
@@ -49,13 +52,14 @@ class OpenGLVariable {
     OpenGLVariableType type;
 
     float value_float;
-    QColor value_color;
-    QVector3D value_vector3;
-    QMatrix4x4 value_matrix4;
-    const Texture2D *value_tex2d;
-    const Texture3D *value_tex3d;
-    const Texture4D *value_tex4d;
+    QColor *value_color;
+    QVector3D *value_vector3;
+    QMatrix4x4 *value_matrix4;
+    float *value_texture_data;
 
+    int texture_size_x;
+    int texture_size_y;
+    int texture_size_z;
     bool texture_toupload;
     bool texture_repeat;
     bool texture_color;

@@ -1,8 +1,8 @@
-attribute highp vec4 vertex;
+in highp vec4 vertex;
 uniform highp mat4 viewMatrix;
 uniform float waterHeight;
 uniform vec3 cameraLocation;
-varying vec3 unprojected;
+out vec3 unprojected;
 
 void main(void)
 {

@@ -1,37 +1,39 @@
 #include "OpenGLPart.h"
 
-#include <QDir>
-#include <cmath>
-#include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
-#include "CameraDefinition.h"
-#include "AtmosphereDefinition.h"
-#include "AtmosphereRenderer.h"
-#include "Scenery.h"
+#include "OpenGLVertexArray.h"
 
 OpenGLPart::OpenGLPart(OpenGLRenderer *renderer) : renderer(renderer) {
 }
 
 OpenGLPart::~OpenGLPart() {
-    QMapIterator<QString, OpenGLShaderProgram *> i(shaders);
-    while (i.hasNext()) {
-        i.next();
-        delete i.value();
+    for (auto &pair: shaders) {
+        delete pair.second;
+    }
+    for (auto &array: arrays) {
+        delete array;
     }
 }
 
 void OpenGLPart::interrupt() {
 }
 
-OpenGLShaderProgram *OpenGLPart::createShader(QString name) {
-    OpenGLShaderProgram *program = new OpenGLShaderProgram(name.toStdString(), renderer);
+OpenGLShaderProgram *OpenGLPart::createShader(const std::string &name) {
+    OpenGLShaderProgram *program = new OpenGLShaderProgram(name, renderer);
 
-    if (!shaders.contains(name)) {
+    if (shaders.find(name) == shaders.end()) {
         shaders[name] = program;
         return program;
     } else {
         return 0;
     }
+}
+
+OpenGLVertexArray *OpenGLPart::createVertexArray(bool has_uv, bool strip)
+{
+    OpenGLVertexArray *result = new OpenGLVertexArray(has_uv, strip);
+    arrays.push_back(result);
+    return result;
 }
 
 void OpenGLPart::updateScenery(bool onlyCommon) {

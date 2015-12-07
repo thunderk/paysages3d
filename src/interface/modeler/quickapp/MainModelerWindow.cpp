@@ -16,10 +16,10 @@
 #include <QGuiApplication>
 
 MainModelerWindow::MainModelerWindow() {
-    /*QSurfaceFormat new_format = format();
-    new_format.setVersion(3, 3);
+    QSurfaceFormat new_format = format();
+    new_format.setVersion(OPENGL_MAJOR_VERSION, OPENGL_MINOR_VERSION);
     new_format.setProfile(QSurfaceFormat::CoreProfile);
-    setFormat(new_format);*/
+    setFormat(new_format);
 
     scenery = new Scenery();
     scenery->autoPreset();

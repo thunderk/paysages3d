@@ -1,15 +1,16 @@
 uniform sampler2D groundTexture;
-varying vec2 texcoord;
+in vec2 texcoord;
+out vec4 final_color;
 
 void main(void)
 {
-    gl_FragColor = texture2D(groundTexture, texcoord);
+    final_color = texture(groundTexture, texcoord);
 
-    gl_FragColor = applyAerialPerspective(gl_FragColor);
+    final_color = applyAerialPerspective(final_color);
 
-    gl_FragColor = applyToneMapping(gl_FragColor);
+    final_color = applyToneMapping(final_color);
 
-    gl_FragColor = applyMouseTracking(unprojected, gl_FragColor);
+    final_color = applyMouseTracking(unprojected, final_color);
 
-    gl_FragColor.a = distanceFadeout();
+    final_color.a = distanceFadeout();
 }

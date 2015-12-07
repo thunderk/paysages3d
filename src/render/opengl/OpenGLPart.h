@@ -3,14 +3,15 @@
 
 #include "opengl_global.h"
 
-#include <QMap>
-#include <QString>
+#include <map>
+#include <vector>
 
 namespace paysages {
 namespace opengl {
 
-// Class that can be inherited by scenery parts, to use OpenGL features
-
+/**
+ * Class that can be inherited by scenery parts, to use OpenGL features.
+ */
 class OPENGLSHARED_EXPORT OpenGLPart {
   public:
     OpenGLPart(OpenGLRenderer *renderer);
@@ -31,14 +32,26 @@ class OPENGLSHARED_EXPORT OpenGLPart {
     void updateScenery(bool onlyCommon = false);
 
   protected:
-    // Create a shader program
-    OpenGLShaderProgram *createShader(QString name);
+    /**
+     * Create a shader program.
+     *
+     * The returned shader's ownership remains in this object. It will taks care of the destruction.
+     */
+    OpenGLShaderProgram *createShader(const std::string &name);
+
+    /**
+     * Create a vertex array.
+     *
+     * The returned array's ownership remains in this object. It will taks care of the destruction.
+     */
+    OpenGLVertexArray *createVertexArray(bool has_uv, bool strip);
 
     // Access to the main scenery renderer
     OpenGLRenderer *renderer;
 
   private:
-    QMap<QString, OpenGLShaderProgram *> shaders;
+    std::map<std::string, OpenGLShaderProgram *> shaders;
+    std::vector<OpenGLVertexArray *> arrays;
 };
 }
 }

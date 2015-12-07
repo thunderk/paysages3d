@@ -44,8 +44,8 @@ class OPENGLSHARED_EXPORT OpenGLTerrain : public OpenGLPart, public DefinitionWa
     ParallelPool *work;
     bool paused;
 
-    QVector<ExplorerChunkTerrain *> _chunks;
-    QList<ExplorerChunkTerrain *> _updateQueue;
+    QVector<OpenGLTerrainChunk *> _chunks;
+    QList<OpenGLTerrainChunk *> _updateQueue;
     QMutex _lock_chunks;
 };
 }

@@ -4,6 +4,7 @@
 #include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
 #include "OpenGLSharedState.h"
+#include "OpenGLVertexArray.h"
 #include "Scenery.h"
 #include "AtmosphereDefinition.h"
 #include "AtmosphereRenderer.h"
@@ -11,42 +12,43 @@
 #include "FloatNode.h"
 
 OpenGLSkybox::OpenGLSkybox(OpenGLRenderer *renderer) : OpenGLPart(renderer) {
-    vertices = new float[14 * 3];
-}
-
-OpenGLSkybox::~OpenGLSkybox() {
-    delete[] vertices;
-}
-
-void OpenGLSkybox::initialize() {
     program = createShader("skybox");
     program->addVertexSource("skybox");
     program->addFragmentSource("atmosphere");
     program->addFragmentSource("tonemapping");
     program->addFragmentSource("skybox");
 
-    setVertex(0, 1.0f, 1.0f, 1.0f);
-    setVertex(12, 1.0f, 1.0f, 1.0f);
+    vertices = createVertexArray(false, true);
 
-    setVertex(1, 1.0f, -1.0f, 1.0f);
-    setVertex(5, 1.0f, -1.0f, 1.0f);
-    setVertex(13, 1.0f, -1.0f, 1.0f);
+    vertices->setVertexCount(14);
 
-    setVertex(2, -1.0f, 1.0f, 1.0f);
-    setVertex(10, -1.0f, 1.0f, 1.0f);
+    vertices->set(0, Vector3(1.0f, 1.0f, 1.0f));
+    vertices->set(12, Vector3(1.0f, 1.0f, 1.0f));
 
-    setVertex(3, -1.0f, -1.0f, 1.0f);
+    vertices->set(1, Vector3(1.0f, -1.0f, 1.0f));
+    vertices->set(5, Vector3(1.0f, -1.0f, 1.0f));
+    vertices->set(13, Vector3(1.0f, -1.0f, 1.0f));
 
-    setVertex(4, -1.0f, -1.0f, -1.0f);
-    setVertex(8, -1.0f, -1.0f, -1.0f);
+    vertices->set(2, Vector3(-1.0f, 1.0f, 1.0f));
+    vertices->set(10, Vector3(-1.0f, 1.0f, 1.0f));
 
-    setVertex(6, 1.0f, -1.0f, -1.0f);
+    vertices->set(3, Vector3(-1.0f, -1.0f, 1.0f));
 
-    setVertex(7, 1.0f, 1.0f, -1.0f);
-    setVertex(11, 1.0f, 1.0f, -1.0f);
+    vertices->set(4, Vector3(-1.0f, -1.0f, -1.0f));
+    vertices->set(8, Vector3(-1.0f, -1.0f, -1.0f));
 
-    setVertex(9, -1.0f, 1.0f, -1.0f);
+    vertices->set(6, Vector3(1.0f, -1.0f, -1.0f));
 
+    vertices->set(7, Vector3(1.0f, 1.0f, -1.0f));
+    vertices->set(11, Vector3(1.0f, 1.0f, -1.0f));
+
+    vertices->set(9, Vector3(-1.0f, 1.0f, -1.0f));
+}
+
+OpenGLSkybox::~OpenGLSkybox() {
+}
+
+void OpenGLSkybox::initialize() {
     // Watch for definition changes
     renderer->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this, true);
     renderer->getScenery()->getAtmosphere()->propHumidity()->addWatcher(this, true);
@@ -61,7 +63,7 @@ void OpenGLSkybox::update() {
 }
 
 void OpenGLSkybox::render() {
-    program->drawTriangleStrip(vertices, 14);
+    program->draw(vertices);
 }
 
 void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
@@ -80,10 +82,4 @@ void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff 
         renderer->getSharedState()->set("sunRadius",
                                         renderer->getScenery()->getAtmosphere()->propSunRadius()->getValue());
     }
-}
-
-void OpenGLSkybox::setVertex(int i, float x, float y, float z) {
-    vertices[i * 3] = x;
-    vertices[i * 3 + 1] = y;
-    vertices[i * 3 + 2] = z;
 }

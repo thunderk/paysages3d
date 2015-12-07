@@ -39,9 +39,9 @@ class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
     void checkForErrors(const std::string &domain);
 
     void initialize();
-    void prepareOpenGLState();
+    void prepareOpenGLState(bool clear=true);
     void resize(int width, int height);
-    void paint();
+    void paint(bool clear=true);
 
     /**
      * Reset the whole state (when the scenery has been massively updated).

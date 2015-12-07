@@ -6,6 +6,8 @@
 #include <map>
 #include "OpenGLVariable.h"
 
+class QImage;
+
 namespace paysages {
 namespace opengl {
 
@@ -29,6 +31,9 @@ class OPENGLSHARED_EXPORT OpenGLSharedState {
 
     // Shortcuts
     inline void set(const std::string &name, const Texture2D *texture, bool repeat = false, bool color = true) {
+        get(name)->set(texture, repeat, color);
+    }
+    inline void set(const std::string &name, const QImage &texture, bool repeat = false, bool color = true) {
         get(name)->set(texture, repeat, color);
     }
     inline void set(const std::string &name, const Texture3D *texture, bool repeat = false, bool color = true) {
