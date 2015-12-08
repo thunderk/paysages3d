@@ -1,5 +1,6 @@
 #include "WaterRenderer.h"
 
+#include <cmath>
 #include "SoftwareRenderer.h"
 #include "TerrainRenderer.h"
 #include "WaterDefinition.h"

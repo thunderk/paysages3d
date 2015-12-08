@@ -1,5 +1,6 @@
 #include "SkyRasterizer.h"
 
+#include <cmath>
 #include "Vector3.h"
 #include "Color.h"
 #include "SoftwareRenderer.h"

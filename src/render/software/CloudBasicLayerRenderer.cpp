@@ -1,5 +1,7 @@
 #include "CloudBasicLayerRenderer.h"
 
+#include <cassert>
+#include <cmath>
 #include "CloudLayerDefinition.h"
 #include "SoftwareRenderer.h"
 #include "NoiseGenerator.h"
@@ -11,8 +13,6 @@
 #include "SurfaceMaterial.h"
 #include "Logs.h"
 #include "FloatNode.h"
-
-#include <cassert>
 
 struct CloudSegment {
     Vector3 start;

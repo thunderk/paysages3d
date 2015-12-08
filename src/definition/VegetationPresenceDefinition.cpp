@@ -1,5 +1,6 @@
 #include "VegetationPresenceDefinition.h"
 
+#include <cmath>
 #include "Scenery.h"
 #include "TerrainDefinition.h"
 #include "VegetationLayerDefinition.h"

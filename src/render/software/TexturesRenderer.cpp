@@ -1,5 +1,6 @@
 #include "TexturesRenderer.h"
 
+#include <cmath>
 #include "Scenery.h"
 #include "SoftwareRenderer.h"
 #include "TextureLayerDefinition.h"

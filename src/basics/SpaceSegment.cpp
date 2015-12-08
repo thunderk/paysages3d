@@ -1,5 +1,6 @@
 #include "SpaceSegment.h"
 
+#include <cmath>
 #include <climits>
 #include "SpaceGridIterator.h"
 using namespace std;

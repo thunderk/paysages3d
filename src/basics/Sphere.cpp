@@ -1,5 +1,6 @@
 #include "Sphere.h"
 
+#include <cmath>
 #include "PackStream.h"
 #include "InfiniteRay.h"
 

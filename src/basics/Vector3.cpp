@@ -1,4 +1,4 @@
-#include "Vector3.inline.cpp"
+#include "Vector3.h"
 
 #include <cmath>
 #include "PackStream.h"
@@ -16,6 +16,10 @@ Vector3::Vector3(const VectorSpherical &v)
     : x(v.r * cos(v.phi) * cos(v.theta)), y(v.r * sin(v.theta)), z(-v.r * sin(v.phi) * cos(v.theta)) {
 }
 
+Vector3::Vector3(double x, double y, double z) : x(x), y(y), z(z) {
+}
+
+
 void Vector3::save(PackStream *stream) const {
     stream->write(&x);
     stream->write(&y);
@@ -25,6 +29,48 @@ void Vector3::load(PackStream *stream) {
     stream->read(&x);
     stream->read(&y);
     stream->read(&z);
+}
+
+Vector3 Vector3::add(double x, double y, double z) const {
+    return Vector3(this->x + x, this->y + y, this->z + z);
+}
+
+Vector3 Vector3::add(const Vector3 &other) const {
+    return Vector3(x + other.x, y + other.y, z + other.z);
+}
+
+Vector3 Vector3::sub(const Vector3 &other) const {
+    return Vector3(x - other.x, y - other.y, z - other.z);
+}
+
+Vector3 Vector3::inverse() const {
+    return Vector3(-x, -y, -z);
+}
+
+Vector3 Vector3::scale(double scaling) const {
+    return Vector3(x * scaling, y * scaling, z * scaling);
+}
+
+double Vector3::getNorm() const {
+    return sqrt(x * x + y * y + z * z);
+}
+
+Vector3 Vector3::normalize() const {
+    double norm = sqrt(x * x + y * y + z * z);
+    if (norm == 0.0) {
+        return VECTOR_ZERO;
+    } else {
+        norm = 1.0 / norm;
+        return Vector3(x * norm, y * norm, z * norm);
+    }
+}
+
+double Vector3::dotProduct(const Vector3 &other) const {
+    return x * other.x + y * other.y + z * other.z;
+}
+
+Vector3 Vector3::crossProduct(const Vector3 &other) const {
+    return Vector3(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
 }
 
 static inline double _euclidGet2DAngle(double x, double y) {

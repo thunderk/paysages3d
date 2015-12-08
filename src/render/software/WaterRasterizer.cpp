@@ -1,5 +1,6 @@
 #include "WaterRasterizer.h"
 
+#include <cmath>
 #include "SoftwareRenderer.h"
 #include "WaterRenderer.h"
 #include "CanvasFragment.h"

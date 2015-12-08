@@ -1,5 +1,6 @@
 #include "Rasterizer.h"
 
+#include <cmath>
 #include "SoftwareRenderer.h"
 #include "CameraDefinition.h"
 #include "CanvasPortion.h"

@@ -1,5 +1,6 @@
 #include "OverlayRasterizer.h"
 
+#include <cmath>
 #include "Color.h"
 #include "SoftwareRenderer.h"
 #include "CameraDefinition.h"

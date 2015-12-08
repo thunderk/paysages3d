@@ -1,6 +1,7 @@
 #include "BaseTestCase.h"
 #include "GodRaysSampler.h"
 
+#include <cmath>
 #include "SpaceSegment.h"
 #include "Vector3.h"
 #include "LightingManager.h"
