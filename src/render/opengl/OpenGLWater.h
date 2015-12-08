@@ -26,11 +26,9 @@ class OPENGLSHARED_EXPORT OpenGLWater : public OpenGLPart, public DefinitionWatc
     void setEnabled(bool enabled);
 
   private:
-    void setVertex(int i, float x, float y, float z);
-
     bool enabled;
     OpenGLShaderProgram *program;
-    float *vertices;
+    OpenGLVertexArray *vertices;
 };
 }
 }

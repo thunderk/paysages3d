@@ -5,7 +5,7 @@
 #include "OpenGLShaderProgram.h"
 #include "ParallelPool.h"
 #include "Thread.h"
-#include "ExplorerChunkTerrain.h"
+#include "OpenGLTerrainChunk.h"
 #include "WaterRenderer.h"
 #include "CameraDefinition.h"
 #include "AtmosphereDefinition.h"
@@ -35,6 +35,14 @@ class ChunkMaintenanceThreads : public ParallelPool {
 OpenGLTerrain::OpenGLTerrain(OpenGLRenderer *renderer) : OpenGLPart(renderer) {
     work = new ChunkMaintenanceThreads(this);
     paused = false;
+
+    program = createShader("terrain");
+    program->addVertexSource("terrain");
+    program->addFragmentSource("atmosphere");
+    program->addFragmentSource("tonemapping");
+    program->addFragmentSource("fadeout");
+    program->addFragmentSource("ui");
+    program->addFragmentSource("terrain");
 }
 
 OpenGLTerrain::~OpenGLTerrain() {
@@ -46,15 +54,6 @@ OpenGLTerrain::~OpenGLTerrain() {
 }
 
 void OpenGLTerrain::initialize() {
-    // Prepare shader programs
-    program = createShader("terrain");
-    program->addVertexSource("terrain");
-    program->addFragmentSource("atmosphere");
-    program->addFragmentSource("tonemapping");
-    program->addFragmentSource("fadeout");
-    program->addFragmentSource("ui");
-    program->addFragmentSource("terrain");
-
     // Add terrain chunks
     int chunks = 12;
     double size = 800.0;
@@ -62,7 +61,7 @@ void OpenGLTerrain::initialize() {
     double start = -size / 2.0;
     for (int i = 0; i < chunks; i++) {
         for (int j = 0; j < chunks; j++) {
-            ExplorerChunkTerrain *chunk = new ExplorerChunkTerrain(renderer, start + chunksize * (double)i,
+            OpenGLTerrainChunk *chunk = new OpenGLTerrainChunk(renderer, start + chunksize * (double)i,
                                                                    start + chunksize * (double)j, chunksize, chunks);
             _chunks.append(chunk);
             _updateQueue.append(chunk);
@@ -84,13 +83,9 @@ void OpenGLTerrain::update() {
 }
 
 void OpenGLTerrain::render() {
-    program->bind();
-
     for (int i = 0; i < _chunks.count(); i++) {
-        _chunks[i]->render(program->getProgram(), renderer->getOpenGlFunctions());
+        _chunks[i]->render(program);
     }
-
-    program->release();
 }
 
 void OpenGLTerrain::interrupt() {
@@ -117,13 +112,13 @@ void OpenGLTerrain::resetTextures() {
     }
 }
 
-static bool _cmpChunks(const ExplorerChunkTerrain *c1, const ExplorerChunkTerrain *c2) {
+static bool _cmpChunks(const OpenGLTerrainChunk *c1, const OpenGLTerrainChunk *c2) {
     return c1->priority > c2->priority;
 }
 
 void OpenGLTerrain::performChunksMaintenance() {
     CameraDefinition *camera = renderer->getScenery()->getCamera();
-    ExplorerChunkTerrain *chunk;
+    OpenGLTerrainChunk *chunk;
 
     _lock_chunks.lock();
     if (_updateQueue.count() > 0) {

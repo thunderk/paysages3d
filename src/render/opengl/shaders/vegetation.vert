@@ -1,11 +1,11 @@
-attribute highp vec3 vertex;
-attribute highp vec2 uv;
+in highp vec3 vertex;
+in highp vec2 uv;
 uniform highp mat4 viewMatrix;
 uniform highp vec3 offset;
 uniform float size;
 uniform int index;
-varying vec3 unprojected;
-varying vec2 texcoord;
+out vec3 unprojected;
+out vec2 texcoord;
 uniform float waterOffset;
 
 void main(void)

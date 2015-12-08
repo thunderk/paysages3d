@@ -3,6 +3,7 @@
 #include <cassert>
 #include "OpenGLShaderProgram.h"
 #include "OpenGLSharedState.h"
+#include "OpenGLVertexArray.h"
 #include "OpenGLVegetationInstance.h"
 #include "Texture2D.h"
 #include "SoftwareRenderer.h"
@@ -31,11 +32,13 @@ static inline Matrix4 matrixForIndex(int index) {
 OpenGLVegetationImpostor::OpenGLVegetationImpostor(int partsize) {
     int parts = 4;
 
-    vertices = new float[4 * parts * parts * 3];
-    uv = new float[4 * 2];
+    vertices = new OpenGLVertexArray(true, true);
+    vertices->setVertexCount(4 * parts * parts);
     texture_size = partsize * parts;
     texture = new Texture2D(texture_size, texture_size);
     texture_changed = false;
+
+    state = new OpenGLSharedState();
 
     setVertex(0, 0.0f, 0.0f);
     setVertex(1, 0.0f, 1.0f);
@@ -44,7 +47,8 @@ OpenGLVegetationImpostor::OpenGLVegetationImpostor(int partsize) {
 }
 
 OpenGLVegetationImpostor::~OpenGLVegetationImpostor() {
-    delete[] vertices;
+    delete vertices;
+    delete state;
     delete texture;
 }
 
@@ -52,14 +56,14 @@ void OpenGLVegetationImpostor::render(OpenGLShaderProgram *program, const OpenGL
                                       int instance_index, const Vector3 &camera_location) {
     if (instance_index == 0 or texture_changed) {
         texture_changed = false;
-        program->getState()->set("impostorTexture", texture);
+        state->set("impostorTexture", texture);
     }
 
     int index = getIndex(camera_location, instance->getBase());
-    program->getState()->setInt("index", index);
-    program->getState()->set("offset", instance->getBase());
-    program->getState()->set("size", 2.0 * instance->getSize());
-    program->drawTriangleStripUV(vertices + index * 4 * 3, uv, 4);
+    state->setInt("index", index);
+    state->set("offset", instance->getBase());
+    state->set("size", 2.0 * instance->getSize());
+    program->draw(vertices, state, index * 4, 4);
 }
 
 void OpenGLVegetationImpostor::prepareTexture(const VegetationModelDefinition &model, const Scenery &environment,
@@ -138,11 +142,7 @@ void OpenGLVegetationImpostor::setVertex(int i, float u, float v) {
             Matrix4 rotation = matrixForIndex(index);
 
             Vector3 vertex = rotation.multPoint(Vector3(1.0, u, -(v - 0.5)));
-            vertices[index * 4 * 3 + i * 3] = vertex.x;
-            vertices[index * 4 * 3 + i * 3 + 1] = vertex.y;
-            vertices[index * 4 * 3 + i * 3 + 2] = vertex.z;
+            vertices->set(index * 4 + i, vertex, u, v);
         }
     }
-    uv[i * 2] = u;
-    uv[i * 2 + 1] = v;
 }

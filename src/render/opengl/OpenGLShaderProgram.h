@@ -3,8 +3,6 @@
 
 #include "opengl_global.h"
 
-#include <QString>
-
 class QOpenGLShaderProgram;
 
 namespace paysages {
@@ -15,20 +13,24 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
     OpenGLShaderProgram(const std::string &name, OpenGLRenderer *renderer);
     ~OpenGLShaderProgram();
 
-    void addVertexSource(QString path);
-    void addFragmentSource(QString path);
+    void addVertexSource(const std::string &path);
+    void addFragmentSource(const std::string &path);
 
-    void drawTriangles(float *vertices, int triangle_count);
-    void drawTriangleStrip(float *vertices, int vertex_count);
-
-    void drawTrianglesUV(float *vertices, float *uv, int triangle_count);
-    void drawTriangleStripUV(float *vertices, float *uv, int vertex_count);
-
-    bool bind();
-    void release();
+    /**
+     * Draw a VertexArray object.
+     *
+     * This will bind the program (compile it if needed), set the uniform variables, and
+     * ask the array object to bind its VAO and render itself.
+     *
+     * *state* is optional and may add ponctual variables to the global state.
+     */
+    void draw(OpenGLVertexArray *vertices, OpenGLSharedState *state = NULL, int start=0, int count=-1);
 
     inline QOpenGLShaderProgram *getProgram() const {
         return program;
+    }
+    inline OpenGLFunctions *getFunctions() const {
+        return functions;
     }
     inline OpenGLRenderer *getRenderer() const {
         return renderer;
@@ -41,6 +43,8 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
     friend class OpenGLVariable;
 
   private:
+    bool bind(OpenGLSharedState *state = NULL);
+    void release();
     void compile();
 
     bool compiled;

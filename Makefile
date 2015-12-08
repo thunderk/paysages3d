@@ -64,7 +64,7 @@ profile_cli:build
 
 gltrace:build
 	rm -f *.trace
-	LD_PRELOAD=/usr/lib/x86_64-linux-gnu/apitrace/wrappers/glxtrace.so LD_LIBRARY_PATH=$(LIBRARY_PATH) ${BUILDPATH}/interface/modeler/quickapp/paysages-modeler $(ARGS)
+	LD_PRELOAD="$(wildcard /usr/lib/x86_64-linux-gnu/apitrace/wrappers/glxtrace.so /usr/local/lib/x86_64-linux-gnu/apitrace/wrappers/glxtrace.so)" LD_LIBRARY_PATH=$(LIBRARY_PATH) ${BUILDPATH}/interface/modeler/quickapp/paysages-modeler $(ARGS)
 	qapitrace paysages-modeler.trace
 
 package:build

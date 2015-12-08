@@ -21,10 +21,8 @@ class OPENGLSHARED_EXPORT OpenGLSkybox : public OpenGLPart, public DefinitionWat
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
 
   private:
-    void setVertex(int i, float x, float y, float z);
-
     OpenGLShaderProgram *program;
-    float *vertices;
+    OpenGLVertexArray *vertices;
 };
 }
 }

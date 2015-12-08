@@ -1,15 +1,16 @@
-varying vec2 texcoord;
+in vec2 texcoord;
 uniform sampler2D impostorTexture;
+out vec4 final_color;
 
 void main(void)
 {
-    gl_FragColor = texture2D(impostorTexture, texcoord);
-    float alpha = gl_FragColor.a;
+    final_color = texture(impostorTexture, texcoord);
+    float alpha = final_color.a;
 
-    gl_FragColor = applyAerialPerspective(gl_FragColor);
+    final_color = applyAerialPerspective(final_color);
 
-    gl_FragColor = applyToneMapping(gl_FragColor);
+    final_color = applyToneMapping(final_color);
 
-    gl_FragColor = applyMouseTracking(unprojected, gl_FragColor);
-    gl_FragColor.a = alpha;
+    final_color = applyMouseTracking(unprojected, final_color);
+    final_color.a = alpha;
 }

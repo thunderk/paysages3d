@@ -52,8 +52,8 @@ void OpenGLView::paint() {
         resized = false;
     }
 
-    renderer->prepareOpenGLState();
-    renderer->paint();
+    renderer->prepareOpenGLState(false);
+    renderer->paint(false);
 
     if (window) {
         window->resetOpenGLState();

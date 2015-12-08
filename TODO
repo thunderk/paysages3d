@@ -5,7 +5,8 @@ Technlology Preview 2 :
 - Add clouds to OpenGL with 3d textures.
 - Refactor medium traversal to unify clouds, atmosphere and god rays.
 - Fix potential holes in land rendering (OpenGL and software).
-- Fix sun size not being consistent between opengl and software
+- Fix sun size not being consistent between opengl and software.
+- Remove Qt dependency in OpenGL renderer, except for OpenGLFunctions.
 
 Technology Preview 3 :
 - Alter aerial perspective using estimation of the amount of light left after cloud layers traversal.

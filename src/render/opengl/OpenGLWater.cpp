@@ -3,6 +3,7 @@
 #include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
 #include "OpenGLSharedState.h"
+#include "OpenGLVertexArray.h"
 #include "WaterRenderer.h"
 #include "Scenery.h"
 #include "WaterDefinition.h"
@@ -13,15 +14,8 @@
 #include "IntNode.h"
 
 OpenGLWater::OpenGLWater(OpenGLRenderer *renderer) : OpenGLPart(renderer) {
-    vertices = new float[4 * 3];
     enabled = true;
-}
 
-OpenGLWater::~OpenGLWater() {
-    delete[] vertices;
-}
-
-void OpenGLWater::initialize() {
     program = createShader("water");
     program->addVertexSource("water");
     program->addFragmentSource("atmosphere");
@@ -31,11 +25,18 @@ void OpenGLWater::initialize() {
     program->addFragmentSource("noise");
     program->addFragmentSource("water");
 
-    setVertex(0, -1.0f, 0.0f, -1.0f);
-    setVertex(1, -1.0f, 0.0f, 1.0f);
-    setVertex(2, 1.0f, 0.0f, -1.0f);
-    setVertex(3, 1.0f, 0.0f, 1.0f);
+    vertices = createVertexArray(false, true);
+    vertices->setVertexCount(4);
+    vertices->set(0, Vector3(-1.0f, 0.0f, -1.0f));
+    vertices->set(1, Vector3(-1.0f, 0.0f, 1.0f));
+    vertices->set(2, Vector3(1.0f, 0.0f, -1.0f));
+    vertices->set(3, Vector3(1.0f, 0.0f, 1.0f));
+}
 
+OpenGLWater::~OpenGLWater() {
+}
+
+void OpenGLWater::initialize() {
     // Watch for definition changes
     renderer->getScenery()->getTerrain()->propWaterHeight()->addWatcher(this, true);
     renderer->getScenery()->getWater()->propReflection()->addWatcher(this, true);
@@ -54,14 +55,8 @@ void OpenGLWater::update() {
 
 void OpenGLWater::render() {
     if (enabled) {
-        program->drawTriangleStrip(vertices, 4);
+        program->draw(vertices);
     }
-}
-
-void OpenGLWater::setVertex(int i, float x, float y, float z) {
-    vertices[i * 3] = x;
-    vertices[i * 3 + 1] = y;
-    vertices[i * 3 + 2] = z;
 }
 
 void OpenGLWater::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {

@@ -29,7 +29,7 @@ uniform vec4 sunColor;
 uniform float dayTime;
 uniform float sunRadius;
 
-varying vec3 unprojected;
+in vec3 unprojected;
 
 uniform sampler2D transmittanceTexture;
 uniform sampler3D inscatterTexture;
@@ -48,8 +48,8 @@ vec4 texture4D(sampler3D tex, float r, float mu, float muS, float nu)
 
     float sr = 1.0 / float(RES_R);
     int br = int(floor(uR / sr));
-    vec4 r1 = texture3D(tex, vec3(uMu, uMuS, float(br) * sr + nu * sr));
-    vec4 r2 = texture3D(tex, vec3(uMu, uMuS, float(br + 1) * sr + nu * sr));
+    vec4 r1 = texture(tex, vec3(uMu, uMuS, float(br) * sr + nu * sr));
+    vec4 r2 = texture(tex, vec3(uMu, uMuS, float(br + 1) * sr + nu * sr));
     return mix(r1, r2, (uR - float(br) * sr) / sr);
 }
 
@@ -77,7 +77,7 @@ vec2 _getTransmittanceUV(float r, float mu)
 vec4 _transmittance(float r, float mu)
 {
     vec2 uv = _getTransmittanceUV(r, mu);
-    return texture2D(transmittanceTexture, uv);
+    return texture(transmittanceTexture, uv);
 }
 
 vec4 _transmittanceWithShadow(float r, float mu)

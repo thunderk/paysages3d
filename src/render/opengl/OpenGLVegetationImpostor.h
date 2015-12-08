@@ -38,8 +38,8 @@ class OPENGLSHARED_EXPORT OpenGLVegetationImpostor {
     void setVertex(int i, float u, float v);
 
   private:
-    float *vertices;
-    float *uv;
+    OpenGLVertexArray *vertices;
+    OpenGLSharedState *state;
     int texture_size;
     bool texture_changed;
     Texture2D *texture;
