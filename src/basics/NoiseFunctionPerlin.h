@@ -6,7 +6,7 @@
 namespace paysages {
 namespace basics {
 
-class NoiseFunctionPerlin {
+class BASICSSHARED_EXPORT NoiseFunctionPerlin {
   public:
     NoiseFunctionPerlin();
 };

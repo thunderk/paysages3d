@@ -11,7 +11,7 @@ namespace system {
 /**
  * Logger streams
  */
-class Logs {
+class SYSTEMSHARED_EXPORT Logs {
   public:
     static std::ostream &debug();
     static std::ostream &warning();
