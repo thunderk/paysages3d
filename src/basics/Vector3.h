@@ -90,11 +90,4 @@ BASICSSHARED_EXPORT extern const Vector3 VECTOR_WEST;
 }
 }
 
-// Inlining
-#if PAYSAGES_USE_INLINING
-#ifndef VECTOR3_INLINE_CPP
-#include "Vector3.inline.cpp"
-#endif
-#endif
-
 #endif // VECTOR3_H

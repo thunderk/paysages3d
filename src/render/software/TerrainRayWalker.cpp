@@ -1,5 +1,6 @@
 #include "TerrainRayWalker.h"
 
+#include <cmath>
 #include "SoftwareRenderer.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"

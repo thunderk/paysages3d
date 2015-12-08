@@ -1,5 +1,6 @@
 #include "TerrainRasterizer.h"
 
+#include <cmath>
 #include "SoftwareRenderer.h"
 #include "BoundingBox.h"
 #include "CameraDefinition.h"

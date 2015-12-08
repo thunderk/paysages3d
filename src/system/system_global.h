@@ -7,7 +7,6 @@
 #define Q_DECL_EXPORT __declspec(dllexport)
 #define Q_DECL_IMPORT __declspec(dllimport)
 #else
-#define PAYSAGES_USE_INLINING 1
 #define Q_DECL_EXPORT __attribute__((visibility("default")))
 #define Q_DECL_IMPORT __attribute__((visibility("default")))
 #endif

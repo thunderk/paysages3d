@@ -1,5 +1,6 @@
 #include "AtmosphereDefinition.h"
 
+#include <cmath>
 #include "PackStream.h"
 #include "RandomGenerator.h"
 #include "FloatNode.h"
