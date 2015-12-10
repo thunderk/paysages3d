@@ -25,7 +25,7 @@ PackStream::PackStream(const PackStream *other) {
     buffer = new QByteArray();
     if (other->file) {
         Logs::error() << "Try to read from a substream bound to a file: " << other->file->fileName().toStdString()
-                      << std::endl;
+                      << endl;
         stream = new QDataStream(buffer, QIODevice::ReadOnly);
     } else {
         stream = new QDataStream(other->buffer, QIODevice::ReadOnly);
@@ -33,14 +33,14 @@ PackStream::PackStream(const PackStream *other) {
     stream->setVersion(QDataStream::Qt_5_2);
 }
 
-PackStream::PackStream(const std::string &buffer_content) {
+PackStream::PackStream(const string &buffer_content) {
     file = NULL;
     buffer = new QByteArray(buffer_content.c_str(), buffer_content.size());
     stream = new QDataStream(buffer, QIODevice::ReadOnly);
     stream->setVersion(QDataStream::Qt_5_2);
 }
 
-bool PackStream::bindToFile(const std::string &filepath, bool write) {
+bool PackStream::bindToFile(const string &filepath, bool write) {
     if (not file) {
         file = new QFile(QString::fromStdString(filepath));
         if (not file->open(write ? QIODevice::WriteOnly : QIODevice::ReadOnly)) {
@@ -80,14 +80,14 @@ void PackStream::write(const char *value, int max_length) {
     }
 }
 
-void PackStream::write(const std::string &value) {
+void PackStream::write(const string &value) {
     *stream << QString::fromStdString(value);
 }
 
 void PackStream::writeFromBuffer(const PackStream &other, bool prepend_size) {
     if (other.file) {
         Logs::error() << "Try to write from a substream bound to a file: " << other.file->fileName().toStdString()
-                      << std::endl;
+                      << endl;
     } else {
         if (prepend_size) {
             int buffer_size = (int)other.buffer->size();
@@ -97,10 +97,9 @@ void PackStream::writeFromBuffer(const PackStream &other, bool prepend_size) {
     }
 }
 
-std::string PackStream::getBuffer() {
+string PackStream::getBuffer() {
     if (file) {
-        Logs::error() << "Try to get buffer on a stream bound to a file: " << file->fileName().toStdString()
-                      << std::endl;
+        Logs::error() << "Try to get buffer on a stream bound to a file: " << file->fileName().toStdString() << endl;
         return "";
     } else {
         return buffer->toStdString();
@@ -132,7 +131,7 @@ void PackStream::read(char *value, int max_length) {
     }
 }
 
-std::string PackStream::readString() {
+string PackStream::readString() {
     if (not stream->atEnd()) {
         QString output;
         *stream >> output;

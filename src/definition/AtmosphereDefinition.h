@@ -77,7 +77,7 @@ class DEFINITIONSHARED_EXPORT AtmosphereDefinition : public DefinitionNode {
     double moon_theta;
     double moon_phi;
 
-    std::vector<Star> stars;
+    vector<Star> stars;
 
   private:
     GodRaysDefinition *godrays;

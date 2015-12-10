@@ -35,7 +35,7 @@ class BASICSSHARED_EXPORT NoiseState {
     void setLevelCount(int level_count);
 
   private:
-    std::vector<NoiseOffset> level_offsets;
+    vector<NoiseOffset> level_offsets;
 
     friend class NoiseGenerator;
     friend class FractalNoise;

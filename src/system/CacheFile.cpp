@@ -3,8 +3,8 @@
 #include <QString>
 #include "DataFile.h"
 
-CacheFile::CacheFile(const std::string &module, const std::string &ext, const std::string &tag1, int tag2, int tag3,
-                     int tag4, int tag5, int tag6) {
+CacheFile::CacheFile(const string &module, const string &ext, const string &tag1, int tag2, int tag3, int tag4,
+                     int tag5, int tag6) {
     filepath = QString("cache/%1-%2-%3-%4-%5-%6-%7.%8")
                    .arg(QString::fromStdString(module))
                    .arg(QString::fromStdString(tag1))
@@ -23,7 +23,7 @@ bool CacheFile::isReadable() {
         fclose(f);
         return true;
     } else {
-        std::string datapath = DataFile::findFile(filepath);
+        string datapath = DataFile::findFile(filepath);
         if (datapath.empty()) {
             return false;
         } else {
@@ -48,8 +48,8 @@ bool CacheFile::isWritable() {
     }
 }
 
-std::string CacheFile::getPath() {
-    std::string datapath = DataFile::findFile(filepath);
+string CacheFile::getPath() {
+    string datapath = DataFile::findFile(filepath);
     if (datapath.empty()) {
         return filepath;
     } else {

@@ -40,7 +40,7 @@ class OPENGLSHARED_EXPORT OpenGLPart {
      *
      * The returned shader's ownership remains in this object. It will taks care of the destruction.
      */
-    OpenGLShaderProgram *createShader(const std::string &name);
+    OpenGLShaderProgram *createShader(const string &name);
 
     /**
      * Create a vertex array.
@@ -55,8 +55,8 @@ class OPENGLSHARED_EXPORT OpenGLPart {
     OpenGLRenderer *renderer;
 
   private:
-    std::map<std::string, OpenGLShaderProgram *> shaders;
-    std::vector<OpenGLVertexArray *> arrays;
+    map<string, OpenGLShaderProgram *> shaders;
+    vector<OpenGLVertexArray *> arrays;
 };
 }
 }

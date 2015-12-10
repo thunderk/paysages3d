@@ -230,7 +230,7 @@ class Texture4DWriter : public PictureWriter {
     const Texture4D *tex;
 };
 
-void Texture4D::saveToFile(const std::string &filepath) const {
+void Texture4D::saveToFile(const string &filepath) const {
     Texture4DWriter writer(this);
     writer.save(filepath, xsize * wsize, ysize * zsize);
 }

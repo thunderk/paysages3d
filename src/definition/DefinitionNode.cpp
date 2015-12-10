@@ -9,7 +9,7 @@
 #include <cassert>
 #include <algorithm>
 
-DefinitionNode::DefinitionNode(DefinitionNode *parent, const std::string &name, const std::string &type_name)
+DefinitionNode::DefinitionNode(DefinitionNode *parent, const string &name, const string &type_name)
     : parent(parent), type_name(type_name), name(name) {
     if (parent) {
         root = parent->root;
@@ -33,7 +33,7 @@ DefinitionNode::~DefinitionNode() {
     }
 
     // Work on a copy, because the child destructor will modify the array by removing itself using removeChild
-    std::vector<DefinitionNode *> children_copy = children;
+    vector<DefinitionNode *> children_copy = children;
     for (auto child : children_copy) {
         if (child->getParent() == this) {
             delete child;
@@ -41,7 +41,7 @@ DefinitionNode::~DefinitionNode() {
     }
 }
 
-void DefinitionNode::setName(const std::string &name) {
+void DefinitionNode::setName(const string &name) {
     this->name = name;
 }
 
@@ -53,8 +53,8 @@ Scenery *DefinitionNode::getScenery() {
     }
 }
 
-std::string DefinitionNode::toString(int indent) const {
-    std::string result;
+string DefinitionNode::toString(int indent) const {
+    string result;
     for (int i = 0; i < indent; i++) {
         result += " ";
     }
@@ -67,7 +67,7 @@ std::string DefinitionNode::toString(int indent) const {
     return result;
 }
 
-std::string DefinitionNode::getPath() const {
+string DefinitionNode::getPath() const {
     if (parent == root) {
         return parent->getPath() + name;
     } else if (parent) {
@@ -77,7 +77,7 @@ std::string DefinitionNode::getPath() const {
     }
 }
 
-DefinitionNode *DefinitionNode::findByPath(const std::string &path) const {
+DefinitionNode *DefinitionNode::findByPath(const string &path) const {
     if (path.empty()) {
         return NULL;
     } else if (path[0] == '/') {
@@ -90,11 +90,11 @@ DefinitionNode *DefinitionNode::findByPath(const std::string &path) const {
         }
     } else {
         size_t seppos = path.find("/");
-        std::string child_name = (seppos == std::string::npos) ? path : path.substr(0, seppos);
+        string child_name = (seppos == string::npos) ? path : path.substr(0, seppos);
         DefinitionNode *child =
             ((DefinitionNode *)this)->findChildByName(child_name); // FIXME findChildByName should be const
         if (child) {
-            if (seppos == std::string::npos) {
+            if (seppos == string::npos) {
                 return child;
             } else {
                 return child->findByPath(path.substr(seppos + 1));
@@ -111,18 +111,18 @@ bool DefinitionNode::applyDiff(const DefinitionDiff *diff, bool) {
         return true;
     } else {
         Logs::error() << "[Definition] Can't apply " << diff->getTypeName() << " diff to " << getName() << " "
-                      << type_name << " node" << std::endl;
+                      << type_name << " node" << endl;
         return false;
     }
 }
 
-void DefinitionNode::generateInitDiffs(std::vector<const DefinitionDiff *> *) const {
+void DefinitionNode::generateInitDiffs(vector<const DefinitionDiff *> *) const {
 }
 
 void DefinitionNode::addWatcher(DefinitionWatcher *watcher, bool init_diff) {
     if (root && root->diffs) {
         if (init_diff) {
-            std::vector<const DefinitionDiff *> diffs;
+            vector<const DefinitionDiff *> diffs;
             generateInitDiffs(&diffs);
 
             for (auto diff : diffs) {
@@ -156,7 +156,7 @@ void DefinitionNode::save(PackStream *stream) const {
         } else {
             // Child size not known, write it to a temporary stream to know it
             Logs::debug() << "[Definition] Unknown size for child " << child->name
-                          << ", unefficient writing to temporary stream" << std::endl;
+                          << ", unefficient writing to temporary stream" << endl;
             PackStream substream;
             child->save(&substream);
             stream->writeFromBuffer(substream, true);
@@ -170,7 +170,7 @@ void DefinitionNode::load(PackStream *stream) {
     stream->read(&children_count);
 
     for (int i = 0; i < children_count; i++) {
-        std::string child_name = stream->readString();
+        string child_name = stream->readString();
 
         int child_size;
         stream->read(&child_size);
@@ -183,7 +183,7 @@ void DefinitionNode::load(PackStream *stream) {
             // TODO Ask subclass if it can instanciate a child
             // Else skip length of unknown child
             stream->skipBytes(child_size);
-            Logs::warning() << "[Definition] Skipped unknown child '" << child_name << "'" << std::endl;
+            Logs::warning() << "[Definition] Skipped unknown child '" << child_name << "'" << endl;
         }
     }
 }
@@ -197,12 +197,12 @@ void DefinitionNode::copy(DefinitionNode *destination) const {
                 child->copy(dest_child);
             } else {
                 Logs::warning() << "[Definition] Can't copy to child " << child->name << " of "
-                                << destination->getTypeName() << std::endl;
+                                << destination->getTypeName() << endl;
             }
         }
     } else {
         Logs::error() << "[Definition] Can't copy from " << getTypeName() << " to " << destination->getTypeName()
-                      << std::endl;
+                      << endl;
     }
 }
 
@@ -213,7 +213,7 @@ void DefinitionNode::validate() {
 }
 
 void DefinitionNode::addChild(DefinitionNode *child) {
-    if (std::find(children.begin(), children.end(), child) == children.end()) {
+    if (find(children.begin(), children.end(), child) == children.end()) {
         children.push_back(child);
         child->parent = this;
         child->root = this->root;
@@ -221,17 +221,17 @@ void DefinitionNode::addChild(DefinitionNode *child) {
 }
 
 void DefinitionNode::removeChild(DefinitionNode *child) {
-    std::vector<DefinitionNode *>::iterator it = std::find(children.begin(), children.end(), child);
+    vector<DefinitionNode *>::iterator it = find(children.begin(), children.end(), child);
     if (it != children.end()) {
         child->parent = NULL;
         children.erase(it);
     } else {
         Logs::warning() << "[Definition] Trying to remove not found child '" << child->name << "' from '" << name << "'"
-                        << std::endl;
+                        << endl;
     }
 }
 
-DefinitionNode *DefinitionNode::findChildByName(const std::string name) {
+DefinitionNode *DefinitionNode::findChildByName(const string name) {
     for (auto child : children) {
         if (child->name == name) {
             return child;

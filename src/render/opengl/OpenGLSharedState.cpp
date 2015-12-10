@@ -21,7 +21,7 @@ void OpenGLSharedState::destroy(OpenGLFunctions *functions) {
     }
 }
 
-OpenGLVariable *OpenGLSharedState::get(const std::string &name) {
+OpenGLVariable *OpenGLSharedState::get(const string &name) {
     OpenGLVariable *&var = variables[name];
     if (var == NULL) {
         var = new OpenGLVariable(name);

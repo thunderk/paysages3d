@@ -80,10 +80,10 @@ class SOFTWARESHARED_EXPORT CloudsRenderer : public LightFilter {
     bool enabled;
     SoftwareRenderer *parent;
 
-    std::vector<BaseCloudLayerRenderer *> layer_renderers;
+    vector<BaseCloudLayerRenderer *> layer_renderers;
     BaseCloudLayerRenderer *fake_renderer;
 
-    std::vector<BaseCloudsModel *> layer_models;
+    vector<BaseCloudsModel *> layer_models;
     BaseCloudsModel *fake_model;
 };
 }

@@ -30,7 +30,7 @@ void OpenGLPart::destroy() {
 void OpenGLPart::interrupt() {
 }
 
-OpenGLShaderProgram *OpenGLPart::createShader(const std::string &name) {
+OpenGLShaderProgram *OpenGLPart::createShader(const string &name) {
     OpenGLShaderProgram *program = new OpenGLShaderProgram(name, renderer);
 
     if (shaders.find(name) == shaders.end()) {

@@ -11,17 +11,17 @@ class RandomGenerator::RandomGeneratorPrivate {
     RandomGeneratorPrivate(unsigned int seed) : generator(seed) {
     }
 
-    std::default_random_engine generator;
-    std::uniform_real_distribution<double> distribution_double;
+    default_random_engine generator;
+    uniform_real_distribution<double> distribution_double;
 };
 
 RandomGenerator::RandomGenerator(RandomGenerator::Seed seed) {
     if (not seed) {
-        std::random_device true_random;
+        random_device true_random;
         if (true_random.entropy()) {
             seed = true_random();
         } else {
-            seed = std::chrono::system_clock::now().time_since_epoch().count();
+            seed = chrono::system_clock::now().time_since_epoch().count();
         }
     }
     data = new RandomGeneratorPrivate(seed);

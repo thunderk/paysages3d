@@ -6,7 +6,7 @@
 #include "PackStream.h"
 #include "FloatNode.h"
 
-CloudLayerDefinition::CloudLayerDefinition(DefinitionNode *parent, const std::string &name)
+CloudLayerDefinition::CloudLayerDefinition(DefinitionNode *parent, const string &name)
     : DefinitionNode(parent, name, "cloudlayer") {
     type = CIRRUS;
     altitude = 0.5;

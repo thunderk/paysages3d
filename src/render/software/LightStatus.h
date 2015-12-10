@@ -48,7 +48,7 @@ class SOFTWARESHARED_EXPORT LightStatus {
     Vector3 location;
     Vector3 eye;
     bool filtered;
-    std::vector<LightComponent> components;
+    vector<LightComponent> components;
 };
 }
 }

@@ -21,7 +21,7 @@ class BASICSSHARED_EXPORT Texture2D {
     void add(Texture2D *other);
     void save(PackStream *stream) const;
     void load(PackStream *stream);
-    void saveToFile(const std::string &filepath) const;
+    void saveToFile(const string &filepath) const;
 
   private:
     int xsize;

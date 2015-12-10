@@ -17,7 +17,7 @@
 #include "Texture3D.h"
 #include "Texture4D.h"
 
-OpenGLVariable::OpenGLVariable(const std::string &name) : name(name) {
+OpenGLVariable::OpenGLVariable(const string &name) : name(name) {
     type = TYPE_NONE;
     texture_toupload = false;
     texture_id = 0;
@@ -35,7 +35,7 @@ OpenGLVariable::~OpenGLVariable() {
     delete[] value_texture_data;
 
     if (texture_id) {
-        Logs::warning() << "[OpenGL] Texture ID not freed " << texture_id << std::endl;
+        Logs::warning() << "[OpenGL] Texture ID not freed " << texture_id << endl;
     }
 }
 

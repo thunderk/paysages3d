@@ -13,13 +13,13 @@ namespace definition {
  */
 class DEFINITIONSHARED_EXPORT FloatNode : public DefinitionNode {
   public:
-    FloatNode(DefinitionNode *parent, const std::string &name, double value = 0.0);
+    FloatNode(DefinitionNode *parent, const string &name, double value = 0.0);
 
     inline double getValue() const {
         return value;
     }
 
-    virtual std::string toString(int indent) const override;
+    virtual string toString(int indent) const override;
     virtual void save(PackStream *stream) const override;
     virtual void load(PackStream *stream) override;
     virtual void copy(DefinitionNode *destination) const override;
@@ -31,7 +31,7 @@ class DEFINITIONSHARED_EXPORT FloatNode : public DefinitionNode {
      */
     void setValue(double new_value);
     const FloatDiff *produceDiff(double new_value) const;
-    void generateInitDiffs(std::vector<const DefinitionDiff *> *diffs) const;
+    void generateInitDiffs(vector<const DefinitionDiff *> *diffs) const;
     virtual bool applyDiff(const DefinitionDiff *diff, bool backward = false) override;
 
     void addValue(double added);

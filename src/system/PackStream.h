@@ -28,14 +28,14 @@ class SYSTEMSHARED_EXPORT PackStream {
     /**
      * Open a reading stream on a buffer content.
      */
-    PackStream(const std::string &buffer_content);
+    PackStream(const string &buffer_content);
 
-    bool bindToFile(const std::string &filepath, bool write = false);
+    bool bindToFile(const string &filepath, bool write = false);
 
     void write(const int *value);
     void write(const double *value);
     void write(const char *value, const int max_length);
-    void write(const std::string &value);
+    void write(const string &value);
 
     /**
      * Write the contents of another stream into this one.
@@ -49,12 +49,12 @@ class SYSTEMSHARED_EXPORT PackStream {
     /**
      * Get the contents of the memory buffer, if this stream is not bound to a file.
      */
-    std::string getBuffer();
+    string getBuffer();
 
     void read(int *value);
     void read(double *value);
     void read(char *value, int max_length);
-    std::string readString();
+    string readString();
 
     void skip(const int &value, int count = 1);
     void skip(const double &value, int count = 1);

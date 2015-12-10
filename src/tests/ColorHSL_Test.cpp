@@ -4,7 +4,7 @@
 #include "ColorHSL.h"
 
 TEST(ColorHSL, colorFromHSL) {
-    std::vector<Color> colors;
+    vector<Color> colors;
     colors.push_back(Color());
     colors.push_back(Color(1.0, 0.0, 0.0, 1.0));
     colors.push_back(Color(0.7, 0.5, 0.3, 1.0));

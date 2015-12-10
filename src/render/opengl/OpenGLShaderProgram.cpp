@@ -12,7 +12,7 @@
 #include "Color.h"
 #include "Logs.h"
 
-OpenGLShaderProgram::OpenGLShaderProgram(const std::string &name, OpenGLRenderer *renderer)
+OpenGLShaderProgram::OpenGLShaderProgram(const string &name, OpenGLRenderer *renderer)
     : renderer(renderer), name(name) {
     program = new QOpenGLShaderProgram();
     functions = renderer->getOpenGlFunctions();
@@ -23,30 +23,30 @@ OpenGLShaderProgram::~OpenGLShaderProgram() {
     delete program;
 }
 
-void OpenGLShaderProgram::addVertexSource(const std::string &path) {
+void OpenGLShaderProgram::addVertexSource(const string &path) {
     QFile file(QString(":/shaders/%1.vert").arg(QString::fromStdString(path)));
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         source_vertex += QString(file.readAll()).toStdString();
     } else {
-        Logs::error() << "[OpenGL] Can't open vertex file " << file.fileName().toStdString() << std::endl;
+        Logs::error() << "[OpenGL] Can't open vertex file " << file.fileName().toStdString() << endl;
     }
 }
 
-void OpenGLShaderProgram::addFragmentSource(const std::string &path) {
+void OpenGLShaderProgram::addFragmentSource(const string &path) {
     QFile file(QString(":/shaders/%1.frag").arg(QString::fromStdString(path)));
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         source_fragment += QString(file.readAll()).toStdString();
     } else {
-        Logs::error() << "[OpenGL] Can't open fragment file " << file.fileName().toStdString() << std::endl;
+        Logs::error() << "[OpenGL] Can't open fragment file " << file.fileName().toStdString() << endl;
     }
 }
 
-void OpenGLShaderProgram::destroy(OpenGLFunctions *functions) {
+void OpenGLShaderProgram::destroy(OpenGLFunctions *) {
     program->removeAllShaders();
 }
 
 void OpenGLShaderProgram::compile() {
-    std::string prefix = std::string("#version ") + OPENGL_GLSL_VERSION + "\n\n";
+    string prefix = string("#version ") + OPENGL_GLSL_VERSION + "\n\n";
 
     program->addShaderFromSourceCode(QOpenGLShader::Vertex, QString::fromStdString(prefix + source_vertex));
     program->addShaderFromSourceCode(QOpenGLShader::Fragment, QString::fromStdString(prefix + source_fragment));
@@ -55,13 +55,13 @@ void OpenGLShaderProgram::compile() {
     program->bindAttributeLocation("uv", 1);
 
     if (not program->link()) {
-        Logs::warning() << "[OpenGL] Error while compiling shader " << name << std::endl
-                        << program->log().toStdString() << std::endl;
+        Logs::warning() << "[OpenGL] Error while compiling shader " << name << endl
+                        << program->log().toStdString() << endl;
     } else if (program->log().length() > 0) {
-        Logs::debug() << "[OpenGL] Shader " << name << " compilation output:" << std::endl
-                      << program->log().toStdString() << std::endl;
+        Logs::debug() << "[OpenGL] Shader " << name << " compilation output:" << endl
+                      << program->log().toStdString() << endl;
     } else {
-        Logs::debug() << "[OpenGL] Shader " << name << " compiled" << std::endl;
+        Logs::debug() << "[OpenGL] Shader " << name << " compiled" << endl;
     }
 }
 

@@ -92,7 +92,7 @@ Vector3 BaseAtmosphereRenderer::getSunDirection(bool) const {
     return Vector3(cos(sun_angle), sin(sun_angle), 0.0);
 }
 
-bool BaseAtmosphereRenderer::getLightsAt(std::vector<LightComponent> &, const Vector3 &) const {
+bool BaseAtmosphereRenderer::getLightsAt(vector<LightComponent> &, const Vector3 &) const {
     return false;
 }
 
@@ -195,8 +195,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &
     return result;
 }
 
-bool SoftwareBrunetonAtmosphereRenderer::getLightsAt(std::vector<LightComponent> &result,
-                                                     const Vector3 &location) const {
+bool SoftwareBrunetonAtmosphereRenderer::getLightsAt(vector<LightComponent> &result, const Vector3 &location) const {
     bool changed = false;
     changed |= model->getLightsAt(result, location);
     changed |= parent->getNightSky()->getLightsAt(result, location);

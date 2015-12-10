@@ -94,7 +94,7 @@ class SOFTWARESHARED_EXPORT SoftwareCanvasRenderer : public SoftwareRenderer {
      *
      * Returns true if the save was successful.
      */
-    bool saveToDisk(const std::string &filepath) const;
+    bool saveToDisk(const string &filepath) const;
 
   protected:
     /**
@@ -112,7 +112,7 @@ class SOFTWARESHARED_EXPORT SoftwareCanvasRenderer : public SoftwareRenderer {
 
     Canvas *canvas;
     int samples;
-    std::vector<Rasterizer *> rasterizers;
+    vector<Rasterizer *> rasterizers;
     bool started;
     bool finished;
     bool interrupted;

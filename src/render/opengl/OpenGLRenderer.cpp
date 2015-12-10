@@ -60,10 +60,10 @@ OpenGLRenderer::~OpenGLRenderer() {
     delete shared_state;
 }
 
-void OpenGLRenderer::checkForErrors(const std::string &domain) {
+void OpenGLRenderer::checkForErrors(const string &domain) {
     int error_code;
     while ((error_code = functions->glGetError()) != GL_NO_ERROR) {
-        Logs::warning() << "[OpenGL] Error in " << domain << " : " << error_code << std::endl;
+        Logs::warning() << "[OpenGL] Error in " << domain << " : " << error_code << endl;
     }
 }
 
@@ -82,7 +82,7 @@ void OpenGLRenderer::initialize() {
 
     if (ready) {
         Logs::debug() << "[OpenGL] renderer started (version " << functions->glGetString(GL_VERSION)
-                      << ", glsl version " << functions->glGetString(GL_SHADING_LANGUAGE_VERSION) << ")" << std::endl;
+                      << ", glsl version " << functions->glGetString(GL_SHADING_LANGUAGE_VERSION) << ")" << endl;
 
         prepareOpenGLState();
 
@@ -105,7 +105,7 @@ void OpenGLRenderer::initialize() {
 
         checkForErrors("initialize");
     } else {
-        Logs::error() << "[OpenGL] Failed to initialize api bindings" << std::endl;
+        Logs::error() << "[OpenGL] Failed to initialize api bindings" << endl;
     }
 }
 

@@ -56,8 +56,8 @@ class DEFINITIONSHARED_EXPORT DiffManager {
   private:
     DefinitionNode *tree;
     int undone;
-    std::vector<const DefinitionDiff *> diffs;
-    std::map<const DefinitionNode *, std::vector<DefinitionWatcher *>> watchers;
+    vector<const DefinitionDiff *> diffs;
+    map<const DefinitionNode *, vector<DefinitionWatcher *>> watchers;
 };
 }
 }

@@ -23,8 +23,8 @@
 
 void startRender(SoftwareCanvasRenderer *renderer, const char *outputpath);
 
-static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string &name, int iteration = -1) {
-    std::ostringstream stream;
+static void startTestRender(SoftwareCanvasRenderer *renderer, const string &name, int iteration = -1) {
+    ostringstream stream;
 
     stream << "pic_test_" << name;
     if (iteration >= 0) {

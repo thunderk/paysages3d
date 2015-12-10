@@ -16,16 +16,16 @@ class DEFINITIONSHARED_EXPORT DefinitionDiff {
     DefinitionDiff(const DefinitionNode *node);
     virtual ~DefinitionDiff();
 
-    inline const std::string &getTypeName() const {
+    inline const string &getTypeName() const {
         return type_name;
     }
-    inline const std::string &getPath() const {
+    inline const string &getPath() const {
         return path;
     }
 
   private:
-    std::string type_name;
-    std::string path;
+    string type_name;
+    string path;
 };
 }
 }

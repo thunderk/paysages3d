@@ -187,7 +187,7 @@ class Texture3DWriter : public PictureWriter {
     const Texture3D *tex;
 };
 
-void Texture3D::saveToFile(const std::string &filepath) const {
+void Texture3D::saveToFile(const string &filepath) const {
     Texture3DWriter writer(this);
     writer.save(filepath, xsize, ysize * zsize);
 }

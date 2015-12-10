@@ -1130,7 +1130,7 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
     return result;
 }
 
-bool AtmosphereModelBruneton::getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const {
+bool AtmosphereModelBruneton::getLightsAt(vector<LightComponent> &result, const Vector3 &location) const {
     LightComponent sun, irradiance;
     double muS;
 

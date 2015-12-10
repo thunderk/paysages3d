@@ -18,7 +18,7 @@ DiffManager::~DiffManager() {
 }
 
 void DiffManager::addWatcher(const DefinitionNode *node, DefinitionWatcher *watcher) {
-    if (std::find(watchers[node].begin(), watchers[node].end(), watcher) == watchers[node].end()) {
+    if (find(watchers[node].begin(), watchers[node].end(), watcher) == watchers[node].end()) {
         watchers[node].push_back(watcher);
     }
 }
@@ -61,7 +61,7 @@ void DiffManager::undo() {
                 watcher->nodeChanged(node, diff);
             }
         } else {
-            Logs::error() << "Can't find node to undo diff : " << diff->getPath() << std::endl;
+            Logs::error() << "Can't find node to undo diff : " << diff->getPath() << endl;
         }
     }
 }
@@ -81,7 +81,7 @@ void DiffManager::redo() {
                 watcher->nodeChanged(node, diff);
             }
         } else {
-            Logs::error() << "Can't find node to redo diff : " << diff->getPath() << std::endl;
+            Logs::error() << "Can't find node to redo diff : " << diff->getPath() << endl;
         }
     }
 }

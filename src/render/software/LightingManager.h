@@ -102,9 +102,9 @@ class SOFTWARESHARED_EXPORT LightingManager {
   private:
     bool specularity;
     bool filtering;
-    std::vector<LightComponent> static_lights;
-    std::vector<LightFilter *> filters;
-    std::vector<LightSource *> sources;
+    vector<LightComponent> static_lights;
+    vector<LightFilter *> filters;
+    vector<LightSource *> sources;
 };
 }
 }

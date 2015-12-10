@@ -18,7 +18,7 @@ class BaseAtmosphereRenderer : public LightSource {
     virtual AtmosphereResult getSkyColor(const Vector3 &direction);
     virtual Vector3 getSunDirection(bool cache = true) const;
 
-    virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override;
+    virtual bool getLightsAt(vector<LightComponent> &result, const Vector3 &location) const override;
 
   protected:
     virtual AtmosphereDefinition *getDefinition() const;
@@ -33,7 +33,7 @@ class SoftwareBrunetonAtmosphereRenderer : public BaseAtmosphereRenderer {
     virtual AtmosphereResult applyAerialPerspective(const Vector3 &location, const Color &base) override;
     virtual AtmosphereResult getSkyColor(const Vector3 &direction) override;
 
-    virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override;
+    virtual bool getLightsAt(vector<LightComponent> &result, const Vector3 &location) const override;
 
     inline const AtmosphereModelBruneton *getModel() const {
         return model;

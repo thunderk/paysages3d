@@ -8,14 +8,14 @@
 namespace paysages {
 namespace definition {
 
-typedef DefinitionNode *(*LayerConstructor)(Layers *parent, const std::string &name);
+typedef DefinitionNode *(*LayerConstructor)(Layers *parent, const string &name);
 
 /**
  * @brief Layers of definitions, ideally all of the same type.
  */
 class DEFINITIONSHARED_EXPORT Layers : public DefinitionNode {
   public:
-    Layers(DefinitionNode *parent, const std::string &name, LayerConstructor layer_constructor);
+    Layers(DefinitionNode *parent, const string &name, LayerConstructor layer_constructor);
     virtual ~Layers();
 
     virtual void save(PackStream *stream) const override;
@@ -23,7 +23,7 @@ class DEFINITIONSHARED_EXPORT Layers : public DefinitionNode {
     virtual void copy(DefinitionNode *destination) const override;
 
     virtual bool applyDiff(const DefinitionDiff *diff, bool backward = false) override;
-    virtual void generateInitDiffs(std::vector<const DefinitionDiff *> *diffs) const override;
+    virtual void generateInitDiffs(vector<const DefinitionDiff *> *diffs) const override;
 
     /**
      * Set the maximal layer count allowed.
@@ -43,12 +43,12 @@ class DEFINITIONSHARED_EXPORT Layers : public DefinitionNode {
     /**
      * Retrieve a layer by its name.
      */
-    DefinitionNode *getLayer(const std::string &name) const;
+    DefinitionNode *getLayer(const string &name) const;
 
     /**
      * Add a new empty layer.
      */
-    void addLayer(const std::string &name);
+    void addLayer(const string &name);
 
     /**
      * Add a new layer, copying another node into it.
@@ -68,7 +68,7 @@ class DEFINITIONSHARED_EXPORT Layers : public DefinitionNode {
   public:
     LayerConstructor layer_constructor;
     int max_layer_count;
-    std::vector<DefinitionNode *> layers;
+    vector<DefinitionNode *> layers;
     DefinitionNode *null_layer;
 };
 }

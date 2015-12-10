@@ -10,11 +10,11 @@ namespace opengl {
 
 class OPENGLSHARED_EXPORT OpenGLShaderProgram {
   public:
-    OpenGLShaderProgram(const std::string &name, OpenGLRenderer *renderer);
+    OpenGLShaderProgram(const string &name, OpenGLRenderer *renderer);
     ~OpenGLShaderProgram();
 
-    void addVertexSource(const std::string &path);
-    void addFragmentSource(const std::string &path);
+    void addVertexSource(const string &path);
+    void addFragmentSource(const string &path);
 
     /**
      * Release any allocated resource in the opengl context.
@@ -55,12 +55,12 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
 
     OpenGLRenderer *renderer;
 
-    std::string name;
+    string name;
     QOpenGLShaderProgram *program;
     OpenGLFunctions *functions;
 
-    std::string source_vertex;
-    std::string source_fragment;
+    string source_vertex;
+    string source_fragment;
 };
 }
 }

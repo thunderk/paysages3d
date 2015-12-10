@@ -27,7 +27,7 @@ class SOFTWARESHARED_EXPORT NightSky : public LightSource {
      */
     virtual const Color getColor(double altitude, const Vector3 &direction);
 
-    virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override;
+    virtual bool getLightsAt(vector<LightComponent> &result, const Vector3 &location) const override;
 
   private:
     SoftwareRenderer *renderer;

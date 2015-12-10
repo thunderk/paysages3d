@@ -36,4 +36,6 @@ extern RandomGenerator &RandomGeneratorDefault;
 }
 using namespace paysages::system;
 
+using namespace std;
+
 #endif // SYSTEM_GLOBAL_H

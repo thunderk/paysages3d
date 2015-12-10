@@ -42,7 +42,7 @@ class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
      *
      * Will write the error on standard error output, with the *domain* specified.
      */
-    void checkForErrors(const std::string &domain);
+    void checkForErrors(const string &domain);
 
     /**
      * Release any allocated resource in the opengl context.

@@ -30,7 +30,7 @@ void Scenery::validate() {
     keepCameraAboveGround(camera);
 }
 
-Scenery::FileOperationResult Scenery::saveGlobal(const std::string &filepath) const {
+Scenery::FileOperationResult Scenery::saveGlobal(const string &filepath) const {
     PackStream stream;
     double app_header = (double)APP_HEADER;
     double version_header = (double)DATA_VERSION;
@@ -47,11 +47,11 @@ Scenery::FileOperationResult Scenery::saveGlobal(const std::string &filepath) co
     stream.write(&version_header);
     stream.write(&app_header);
 
-    Logs::debug() << "[Definition] Scenery saved to file: " << filepath << std::endl;
+    Logs::debug() << "[Definition] Scenery saved to file: " << filepath << endl;
     return FILE_OPERATION_OK;
 }
 
-Scenery::FileOperationResult Scenery::loadGlobal(const std::string &filepath) {
+Scenery::FileOperationResult Scenery::loadGlobal(const string &filepath) {
     PackStream stream;
     double app_header, version_header;
 
@@ -85,7 +85,7 @@ Scenery::FileOperationResult Scenery::loadGlobal(const std::string &filepath) {
         return FILE_OPERATION_APP_MISMATCH;
     }
 
-    Logs::debug() << "[Definition] Scenery loaded from file: " << filepath << std::endl;
+    Logs::debug() << "[Definition] Scenery loaded from file: " << filepath << endl;
     return FILE_OPERATION_OK;
 }
 
@@ -105,7 +105,7 @@ void Scenery::autoPreset(RandomGenerator &random) {
 
     validate();
 
-    Logs::debug() << "[Definition] New scenery generated from seed " << random.getSeed() << std::endl;
+    Logs::debug() << "[Definition] New scenery generated from seed " << random.getSeed() << endl;
 }
 
 void Scenery::autoPreset(unsigned int seed) {

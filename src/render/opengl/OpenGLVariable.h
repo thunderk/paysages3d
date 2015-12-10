@@ -28,7 +28,7 @@ class OpenGLVariable {
     } OpenGLVariableType;
 
   public:
-    OpenGLVariable(const std::string &name);
+    OpenGLVariable(const string &name);
     ~OpenGLVariable();
 
     void apply(OpenGLShaderProgram *program, int &texture_unit);
@@ -55,7 +55,7 @@ class OpenGLVariable {
     void uploadTexture(OpenGLRenderer *renderer);
 
   private:
-    std::string name;
+    string name;
     OpenGLVariableType type;
 
     float value_float;

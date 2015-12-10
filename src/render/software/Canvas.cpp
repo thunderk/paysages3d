@@ -99,7 +99,7 @@ CanvasPortion *Canvas::atPixel(int x, int y) const {
     return at(px, py);
 }
 
-bool Canvas::saveToDisk(const std::string &filepath, const ColorProfile &profile, int antialias) const {
+bool Canvas::saveToDisk(const string &filepath, const ColorProfile &profile, int antialias) const {
     assert(antialias >= 1);
 
     CanvasPictureWriter writer(this);
