@@ -64,8 +64,8 @@ class DEFINITIONSHARED_EXPORT AtmosphereDefinition : public DefinitionNode {
      */
     void getHMS(int *hour, int *minute, int *second) const;
 
-    void applyPreset(AtmospherePreset preset);
-    void generateStars(int count);
+    void applyPreset(AtmospherePreset preset, RandomGenerator &random = RandomGeneratorDefault);
+    void generateStars(int count, RandomGenerator &random = RandomGeneratorDefault);
 
   public:
     AtmosphereModel model;

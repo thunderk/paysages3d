@@ -96,9 +96,9 @@ void TextureLayerDefinition::load(PackStream *stream) {
     _detail_noise->load(stream);
 }
 
-void TextureLayerDefinition::applyPreset(TextureLayerPreset preset) {
-    _displacement_noise->randomizeOffsets();
-    _detail_noise->randomizeOffsets();
+void TextureLayerDefinition::applyPreset(TextureLayerPreset preset, RandomGenerator &random) {
+    _displacement_noise->randomizeOffsets(random);
+    _detail_noise->randomizeOffsets(random);
 
     terrain_zone->clear();
 

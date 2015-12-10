@@ -28,7 +28,7 @@ class DEFINITIONSHARED_EXPORT VegetationDefinition : public Layers {
     double getMaxHeight() const;
 
     typedef enum { VEGETATION_PRESET_TEMPERATE } VegetationPreset;
-    void applyPreset(VegetationPreset preset);
+    void applyPreset(VegetationPreset preset, RandomGenerator &random = RandomGeneratorDefault);
 };
 }
 }

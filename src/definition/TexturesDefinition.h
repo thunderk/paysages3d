@@ -22,7 +22,7 @@ class DEFINITIONSHARED_EXPORT TexturesDefinition : public Layers {
         TEXTURES_PRESET_ALPS,
         TEXTURES_PRESET_CANYON
     } TexturesPreset;
-    void applyPreset(TexturesPreset preset);
+    void applyPreset(TexturesPreset preset, RandomGenerator &random = RandomGeneratorDefault);
 
     double getMaximalDisplacement();
 };

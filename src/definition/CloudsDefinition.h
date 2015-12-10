@@ -17,7 +17,7 @@ class DEFINITIONSHARED_EXPORT CloudsDefinition : public Layers {
     }
 
     typedef enum { CLOUDS_PRESET_PARTLY_CLOUDY } CloudsPreset;
-    void applyPreset(CloudsPreset preset);
+    void applyPreset(CloudsPreset preset, RandomGenerator &random = RandomGeneratorDefault);
 };
 }
 }

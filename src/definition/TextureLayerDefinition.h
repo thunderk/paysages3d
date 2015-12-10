@@ -29,7 +29,7 @@ class DEFINITIONSHARED_EXPORT TextureLayerDefinition : public DefinitionNode {
     virtual void copy(DefinitionNode *destination) const override;
     virtual void validate() override;
 
-    void applyPreset(TextureLayerPreset preset);
+    void applyPreset(TextureLayerPreset preset, RandomGenerator &random = RandomGeneratorDefault);
 
   public:
     Zone *terrain_zone;

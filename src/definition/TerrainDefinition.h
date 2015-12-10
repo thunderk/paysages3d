@@ -37,7 +37,7 @@ class DEFINITIONSHARED_EXPORT TerrainDefinition : public DefinitionNode {
 
   public:
     typedef enum { TERRAIN_PRESET_STANDARD } TerrainPreset;
-    void applyPreset(TerrainPreset preset);
+    void applyPreset(TerrainPreset preset, RandomGenerator &random = RandomGeneratorDefault);
 
   public:
     double height;

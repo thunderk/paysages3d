@@ -24,13 +24,13 @@ double VegetationDefinition::getMaxHeight() const {
     return max_height;
 }
 
-void VegetationDefinition::applyPreset(VegetationPreset preset) {
+void VegetationDefinition::applyPreset(VegetationPreset preset, RandomGenerator &random) {
     VegetationLayerDefinition layer(this, "temp");
 
     clear();
 
     if (preset == VEGETATION_PRESET_TEMPERATE) {
-        layer.applyPreset(VegetationLayerDefinition::VEGETATION_BASIC_TREES);
+        layer.applyPreset(VegetationLayerDefinition::VEGETATION_BASIC_TREES, random);
         layer.setName("Basic tree");
         addLayer(layer);
     }

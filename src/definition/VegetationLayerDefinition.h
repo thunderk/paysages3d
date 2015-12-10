@@ -25,7 +25,7 @@ class DEFINITIONSHARED_EXPORT VegetationLayerDefinition : public DefinitionNode 
     double getMaxHeight() const;
 
     typedef enum { VEGETATION_BASIC_TREES } VegetationLayerPreset;
-    void applyPreset(VegetationLayerPreset preset);
+    void applyPreset(VegetationLayerPreset preset, RandomGenerator &random = RandomGeneratorDefault);
 
   private:
     /**

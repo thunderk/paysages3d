@@ -45,7 +45,7 @@ class DEFINITIONSHARED_EXPORT VegetationModelDefinition : public DefinitionNode 
     /**
      * Randomize the model geometry.
      */
-    void randomize();
+    void randomize(RandomGenerator &random = RandomGeneratorDefault);
 
   private:
     SurfaceMaterial *solid_material;

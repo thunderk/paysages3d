@@ -9,44 +9,44 @@ static DefinitionNode *_layer_constructor(Layers *parent, const std::string &nam
 TexturesDefinition::TexturesDefinition(DefinitionNode *parent) : Layers(parent, "textures", _layer_constructor) {
 }
 
-void TexturesDefinition::applyPreset(TexturesPreset preset) {
+void TexturesDefinition::applyPreset(TexturesPreset preset, RandomGenerator &random) {
     TextureLayerDefinition layer(NULL, "temp");
     clear();
 
-    layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_MUD);
+    layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_MUD, random);
     layer.setName("Mud");
     addLayer(layer);
 
     if (preset == TEXTURES_PRESET_FULL) {
-        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK, random);
         layer.setName("Ground");
         addLayer(layer);
 
-        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_GRASS);
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_GRASS, random);
         layer.setName("Grass");
         addLayer(layer);
 
-        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SAND);
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SAND, random);
         layer.setName("Sand");
         addLayer(layer);
 
-        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SNOW);
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SNOW, random);
         layer.setName("Snow");
         addLayer(layer);
     } else if (preset == TEXTURES_PRESET_IRELAND) {
-        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK, random);
         layer.setName("Ground");
         addLayer(layer);
 
-        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_GRASS);
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_GRASS, random);
         layer.setName("Grass");
         addLayer(layer);
     } else if (preset == TEXTURES_PRESET_ALPS) {
-        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK, random);
         layer.setName("Ground");
         addLayer(layer);
 
-        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SNOW);
+        layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SNOW, random);
         layer.setName("Snow");
         addLayer(layer);
     } else if (preset == TEXTURES_PRESET_CANYON) {

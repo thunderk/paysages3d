@@ -39,7 +39,7 @@ class BASICSSHARED_EXPORT NoiseGenerator {
     }
     void setState(const NoiseState &state);
 
-    void randomizeOffsets();
+    void randomizeOffsets(RandomGenerator &random = RandomGeneratorDefault);
     NoiseFunction getFunction();
     void setCustomFunction(double (*func1d)(double x), double (*func2d)(double x, double y),
                            double (*func3d)(double x, double y, double z));

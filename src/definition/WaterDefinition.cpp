@@ -154,7 +154,7 @@ void WaterDefinition::nodeChanged(const DefinitionNode *node, const DefinitionDi
     }
 }
 
-void WaterDefinition::applyPreset(WaterPreset preset) {
+void WaterDefinition::applyPreset(WaterPreset preset, RandomGenerator &random) {
     if (preset == WATER_PRESET_LAKE) {
         model->setValue(0);
     } else if (preset == WATER_PRESET_SEA) {
