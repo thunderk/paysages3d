@@ -22,6 +22,7 @@ class OPENGLSHARED_EXPORT OpenGLTerrain : public OpenGLPart, public DefinitionWa
     virtual void update() override;
     virtual void render() override;
     virtual void interrupt() override;
+    virtual void destroy() override;
 
     void pause();
     void resume();

@@ -1,5 +1,6 @@
 #include "OpenGLPart.h"
 
+#include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
 #include "OpenGLVertexArray.h"
 
@@ -7,11 +8,22 @@ OpenGLPart::OpenGLPart(OpenGLRenderer *renderer) : renderer(renderer) {
 }
 
 OpenGLPart::~OpenGLPart() {
-    for (auto &pair: shaders) {
+    for (auto pair : shaders) {
         delete pair.second;
     }
-    for (auto &array: arrays) {
+    for (auto array : arrays) {
         delete array;
+    }
+}
+
+void OpenGLPart::destroy() {
+    OpenGLFunctions *functions = getFunctions();
+
+    for (auto shader : shaders) {
+        shader.second->destroy(functions);
+    }
+    for (auto array : arrays) {
+        array->destroy(functions);
     }
 }
 
@@ -29,11 +41,14 @@ OpenGLShaderProgram *OpenGLPart::createShader(const std::string &name) {
     }
 }
 
-OpenGLVertexArray *OpenGLPart::createVertexArray(bool has_uv, bool strip)
-{
+OpenGLVertexArray *OpenGLPart::createVertexArray(bool has_uv, bool strip) {
     OpenGLVertexArray *result = new OpenGLVertexArray(has_uv, strip);
     arrays.push_back(result);
     return result;
+}
+
+OpenGLFunctions *OpenGLPart::getFunctions() {
+    return renderer->getOpenGlFunctions();
 }
 
 void OpenGLPart::updateScenery(bool onlyCommon) {

@@ -30,8 +30,19 @@ OpenGLVertexArray::~OpenGLVertexArray() {
     free(array_uv);
 }
 
-void OpenGLVertexArray::destroy() {
-    // TODO
+void OpenGLVertexArray::destroy(OpenGLFunctions *functions) {
+    if (vbo_vertex) {
+        functions->glDeleteBuffers(1, &vbo_vertex);
+        vbo_vertex = 0;
+    }
+    if (vbo_uv) {
+        functions->glDeleteBuffers(1, &vbo_uv);
+        vbo_uv = 0;
+    }
+    if (vao) {
+        functions->glDeleteVertexArrays(1, &vao);
+        vao = 0;
+    }
 }
 
 void OpenGLVertexArray::render(OpenGLFunctions *functions) {
@@ -72,8 +83,7 @@ void OpenGLVertexArray::set(int index, const Vector3 &location, double u, double
     }
 }
 
-void OpenGLVertexArray::get(int index, Vector3 *location, double *u, double *v) const
-{
+void OpenGLVertexArray::get(int index, Vector3 *location, double *u, double *v) const {
     if (index >= 0 and index < vertexcount) {
         location->x = array_vertex[index * 3];
         location->y = array_vertex[index * 3 + 1];
@@ -85,8 +95,7 @@ void OpenGLVertexArray::get(int index, Vector3 *location, double *u, double *v) 
     }
 }
 
-void OpenGLVertexArray::copyTo(OpenGLVertexArray *destination) const
-{
+void OpenGLVertexArray::copyTo(OpenGLVertexArray *destination) const {
     destination->setVertexCount(vertexcount);
     if (vertexcount) {
         memcpy(destination->array_vertex, array_vertex, sizeof(float) * vertexcount * 3);

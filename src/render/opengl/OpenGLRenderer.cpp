@@ -18,6 +18,8 @@ OpenGLRenderer::OpenGLRenderer(Scenery *scenery) : SoftwareRenderer(scenery) {
     ready = false;
     paused = false;
     displayed = false;
+    stopping = false;
+    stopped = false;
     vp_width = 1;
     vp_height = 1;
 
@@ -63,6 +65,16 @@ void OpenGLRenderer::checkForErrors(const std::string &domain) {
     while ((error_code = functions->glGetError()) != GL_NO_ERROR) {
         Logs::warning() << "[OpenGL] Error in " << domain << " : " << error_code << std::endl;
     }
+}
+
+void OpenGLRenderer::destroy() {
+    shared_state->destroy(functions);
+
+    skybox->destroy();
+    terrain->destroy();
+    water->destroy();
+
+    checkForErrors("stopping");
 }
 
 void OpenGLRenderer::initialize() {
@@ -145,7 +157,12 @@ void OpenGLRenderer::resize(int width, int height) {
 }
 
 void OpenGLRenderer::paint(bool clear) {
-    if (ready and not paused) {
+    if (stopping) {
+        if (not stopped) {
+            destroy();
+            stopped = true;
+        }
+    } else if (ready and not paused) {
         checkForErrors("before_paint");
         if (clear) {
             functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -167,6 +184,11 @@ void OpenGLRenderer::paint(bool clear) {
 
         displayed = true;
     }
+}
+
+bool OpenGLRenderer::stop() {
+    stopping = true;
+    return stopped;
 }
 
 void OpenGLRenderer::reset() {

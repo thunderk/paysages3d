@@ -40,6 +40,9 @@ class MainModelerWindow : public QQuickView {
   protected:
     virtual void keyReleaseEvent(QKeyEvent *event) override;
 
+  protected slots:
+    void effectiveExit();
+
   private:
     Scenery *scenery;
     OpenGLRenderer *renderer;

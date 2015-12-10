@@ -42,23 +42,11 @@ MainModelerWindow::MainModelerWindow() {
 
     render_process = new RenderProcess(this, render_preview_provider);
 
-    // Bind file buttons
-    QObject *button_new = findQmlObject("tool_file_new");
-    if (button_new) {
-        connect(button_new, SIGNAL(clicked()), this, SLOT(newFile()));
-    }
-    QObject *button_save = findQmlObject("tool_file_save");
-    if (button_save) {
-        connect(button_save, SIGNAL(clicked()), this, SLOT(saveFile()));
-    }
-    QObject *button_load = findQmlObject("tool_file_load");
-    if (button_load) {
-        connect(button_load, SIGNAL(clicked()), this, SLOT(loadFile()));
-    }
-    QObject *button_exit = findQmlObject("tool_file_exit");
-    if (button_exit) {
-        connect(button_exit, SIGNAL(clicked()), this, SLOT(exit()));
-    }
+    connectQmlSignal("tool_file_new", SIGNAL(clicked()), this, SLOT(newFile()));
+    connectQmlSignal("tool_file_save", SIGNAL(clicked()), this, SLOT(saveFile()));
+    connectQmlSignal("tool_file_load", SIGNAL(clicked()), this, SLOT(loadFile()));
+    connectQmlSignal("tool_file_exit", SIGNAL(clicked()), this, SLOT(exit()));
+    connectQmlSignal("root", SIGNAL(stopped()), this, SLOT(effectiveExit()));
 }
 
 MainModelerWindow::~MainModelerWindow() {
@@ -126,7 +114,7 @@ void MainModelerWindow::loadFile() {
 }
 
 void MainModelerWindow::exit() {
-    close();
+    renderer->stop();
 }
 
 void MainModelerWindow::keyReleaseEvent(QKeyEvent *event) {
@@ -177,4 +165,8 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event) {
             }
         }
     }
+}
+
+void MainModelerWindow::effectiveExit() {
+    close();
 }

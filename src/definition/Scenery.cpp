@@ -108,8 +108,7 @@ void Scenery::autoPreset(RandomGenerator &random) {
     Logs::debug() << "[Definition] New scenery generated from seed " << random.getSeed() << std::endl;
 }
 
-void Scenery::autoPreset(unsigned int seed)
-{
+void Scenery::autoPreset(unsigned int seed) {
     RandomGenerator random(seed);
     autoPreset(random);
 }

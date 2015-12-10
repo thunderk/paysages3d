@@ -117,7 +117,7 @@ Vector3 Vector3::midPointTo(const Vector3 &other) const {
 Vector3 Vector3::randomInSphere(double radius, bool only_surface, RandomGenerator &random) {
     // TODO More uniform spatial repartition
     //  The current randomization clusters result near the center and at the poles
-    VectorSpherical vec = {only_surface ? radius : random.genDouble() * radius,
-                           (random.genDouble() - 0.5) * M_PI, random.genDouble() * M_2PI};
+    VectorSpherical vec = {only_surface ? radius : random.genDouble() * radius, (random.genDouble() - 0.5) * M_PI,
+                           random.genDouble() * M_2PI};
     return Vector3(vec);
 }

@@ -25,7 +25,7 @@ class OpenGLVertexArray {
      *
      * Must be called in the opengl rendering thread, and before the destructor is called.
      */
-    void destroy();
+    void destroy(OpenGLFunctions *functions);
 
     /**
      * Render this array in current opengl context.

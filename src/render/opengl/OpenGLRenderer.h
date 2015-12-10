@@ -10,8 +10,8 @@ class QMatrix4x4;
 namespace paysages {
 namespace opengl {
 
-/*!
- * \brief Scenery renderer in an OpenGL context.
+/**
+ * Scenery renderer in an OpenGL context.
  */
 class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
   public:
@@ -30,6 +30,12 @@ class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
     inline bool isDisplayed() const {
         return displayed;
     }
+    inline bool isStopping() const {
+        return stopping;
+    }
+    inline bool isStopped() const {
+        return stopped;
+    }
 
     /**
      * Check for errors in OpenGL context.
@@ -38,10 +44,26 @@ class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
      */
     void checkForErrors(const std::string &domain);
 
+    /**
+     * Release any allocated resource in the opengl context.
+     *
+     * Must be called in the opengl rendering thread, and before the destructor is called.
+     */
+    void destroy();
+
     void initialize();
-    void prepareOpenGLState(bool clear=true);
+    void prepareOpenGLState(bool clear = true);
     void resize(int width, int height);
-    void paint(bool clear=true);
+    void paint(bool clear = true);
+
+    /**
+     * Ask for the rendering to stop gracefully.
+     *
+     * Returns true if the rendering is stopped and resources freed.
+     *
+     * This should be called in an idle loop, while it returns false.
+     */
+    bool stop();
 
     /**
      * Reset the whole state (when the scenery has been massively updated).
@@ -95,6 +117,8 @@ class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
     bool ready;
     bool paused;
     bool displayed;
+    bool stopping;
+    bool stopped;
     int vp_width;
     int vp_height;
 

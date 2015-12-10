@@ -41,6 +41,10 @@ void OpenGLShaderProgram::addFragmentSource(const std::string &path) {
     }
 }
 
+void OpenGLShaderProgram::destroy(OpenGLFunctions *functions) {
+    program->removeAllShaders();
+}
+
 void OpenGLShaderProgram::compile() {
     std::string prefix = std::string("#version ") + OPENGL_GLSL_VERSION + "\n\n";
 

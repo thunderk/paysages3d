@@ -11,21 +11,28 @@ class QImage;
 namespace paysages {
 namespace opengl {
 
-/*!
- * \brief OpenGL variables that can be shared between shaders.
+/**
+ * OpenGL variables that can be shared between shaders.
  */
 class OPENGLSHARED_EXPORT OpenGLSharedState {
   public:
     OpenGLSharedState();
     ~OpenGLSharedState();
 
-    /*!
-     * \brief Apply the stored variables to the bound program.
+    /**
+     * Apply the stored variables to the bound program.
      */
     void apply(OpenGLShaderProgram *program, int &texture_unit);
 
-    /*!
-     * \brief Get or create a variable in the state.
+    /**
+     * Release any allocated resource in the opengl context.
+     *
+     * Must be called in the opengl rendering thread, and before the destructor is called.
+     */
+    void destroy(OpenGLFunctions *functions);
+
+    /**
+     * Get or create a variable in the state.
      */
     OpenGLVariable *get(const std::string &name);
 

@@ -153,9 +153,8 @@ void AtmosphereDefinition::generateStars(int count, RandomGenerator &random) {
     for (int i = 0; i < count; ++i) {
         Star star;
 
-        star.location =
-            Vector3((random.genDouble() - 0.5) * 100000.0, (random.genDouble() * 0.5) * 100000.0,
-                    (random.genDouble() - 0.5) * 100000.0);
+        star.location = Vector3((random.genDouble() - 0.5) * 100000.0, (random.genDouble() * 0.5) * 100000.0,
+                                (random.genDouble() - 0.5) * 100000.0);
         if (star.location.getNorm() < 30000.0) {
             i--;
             continue;

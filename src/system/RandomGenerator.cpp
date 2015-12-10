@@ -4,11 +4,11 @@
 #include <random>
 
 static RandomGenerator _RandomGeneratorDefault;
-RandomGenerator& paysages::system::RandomGeneratorDefault = _RandomGeneratorDefault;
+RandomGenerator &paysages::system::RandomGeneratorDefault = _RandomGeneratorDefault;
 
 class RandomGenerator::RandomGeneratorPrivate {
   public:
-    RandomGeneratorPrivate(unsigned int seed): generator(seed) {
+    RandomGeneratorPrivate(unsigned int seed) : generator(seed) {
     }
 
     std::default_random_engine generator;
@@ -27,12 +27,10 @@ RandomGenerator::RandomGenerator(RandomGenerator::Seed seed) {
     data = new RandomGeneratorPrivate(seed);
 }
 
-RandomGenerator::~RandomGenerator()
-{
+RandomGenerator::~RandomGenerator() {
     delete data;
 }
 
-double RandomGenerator::genDouble()
-{
+double RandomGenerator::genDouble() {
     return data->distribution_double(data->generator);
 }

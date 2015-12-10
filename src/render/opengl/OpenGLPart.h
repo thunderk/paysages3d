@@ -26,6 +26,9 @@ class OPENGLSHARED_EXPORT OpenGLPart {
     // Do the rendering
     virtual void render() = 0;
 
+    // Free opengl resources generated in context (like textures...)
+    virtual void destroy();
+
     // Interrupt the rendering
     virtual void interrupt();
 
@@ -45,6 +48,8 @@ class OPENGLSHARED_EXPORT OpenGLPart {
      * The returned array's ownership remains in this object. It will taks care of the destruction.
      */
     OpenGLVertexArray *createVertexArray(bool has_uv, bool strip);
+
+    OpenGLFunctions *getFunctions();
 
     // Access to the main scenery renderer
     OpenGLRenderer *renderer;

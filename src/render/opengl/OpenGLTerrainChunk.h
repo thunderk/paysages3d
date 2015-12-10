@@ -29,6 +29,13 @@ class OPENGLSHARED_EXPORT OpenGLTerrainChunk {
     }
 
     /**
+     * Release any allocated resource in the opengl context.
+     *
+     * Must be called in the opengl rendering thread, and before the destructor is called.
+     */
+    void destroy(OpenGLFunctions *functions);
+
+    /**
      * Fill *vertices* with a quick initial set of vertices, that can be augmented later using *augmentVertices*.
      */
     void setFirstStepVertices();

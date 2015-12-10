@@ -17,6 +17,13 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
     void addFragmentSource(const std::string &path);
 
     /**
+     * Release any allocated resource in the opengl context.
+     *
+     * Must be called in the opengl rendering thread, and before the destructor is called.
+     */
+    void destroy(OpenGLFunctions *functions);
+
+    /**
      * Draw a VertexArray object.
      *
      * This will bind the program (compile it if needed), set the uniform variables, and

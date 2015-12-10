@@ -33,6 +33,13 @@ class OpenGLVariable {
 
     void apply(OpenGLShaderProgram *program, int &texture_unit);
 
+    /**
+     * Release any allocated resource in the opengl context.
+     *
+     * Must be called in the opengl rendering thread, and before the destructor is called.
+     */
+    void destroy(OpenGLFunctions *functions);
+
     void set(const Texture2D *texture, bool repeat = false, bool color = true);
     void set(const QImage &texture, bool repeat = false, bool color = true);
     void set(const Texture3D *texture, bool repeat = false, bool color = true);

@@ -41,6 +41,11 @@ void OpenGLView::paint() {
         return;
     }
 
+    if (renderer->isStopped()) {
+        emit stopped();
+        return;
+    }
+
     if (not initialized or not renderer) {
         renderer->initialize();
         initialized = true;
