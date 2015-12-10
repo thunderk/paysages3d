@@ -36,7 +36,7 @@ class DEFINITIONSHARED_EXPORT WaterDefinition : public DefinitionNode, public De
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff);
 
     typedef enum { WATER_PRESET_LAKE, WATER_PRESET_SEA } WaterPreset;
-    void applyPreset(WaterPreset preset);
+    void applyPreset(WaterPreset preset, RandomGenerator &random = RandomGeneratorDefault);
 
   public:
     double transparency;

@@ -1,6 +1,5 @@
 #include "Scenery.h"
 
-#include <ctime>
 #include <map>
 
 #include "PackStream.h"
@@ -11,6 +10,7 @@
 #include "TexturesDefinition.h"
 #include "WaterDefinition.h"
 #include "Logs.h"
+#include "RandomGenerator.h"
 
 static const double APP_HEADER = 19866544632.125;
 static const int DATA_VERSION = 1;
@@ -93,24 +93,25 @@ Scenery *Scenery::getScenery() {
     return this;
 }
 
-void Scenery::autoPreset(int seed) {
-    if (!seed) {
-        seed = time(NULL);
-    }
-    srand(seed);
-
-    terrain->applyPreset(TerrainDefinition::TERRAIN_PRESET_STANDARD);
-    textures->applyPreset(TexturesDefinition::TEXTURES_PRESET_FULL);
-    atmosphere->applyPreset(AtmosphereDefinition::ATMOSPHERE_PRESET_CLEAR_DAY);
-    water->applyPreset(WaterDefinition::WATER_PRESET_LAKE);
-    clouds->applyPreset(CloudsDefinition::CLOUDS_PRESET_PARTLY_CLOUDY);
+void Scenery::autoPreset(RandomGenerator &random) {
+    terrain->applyPreset(TerrainDefinition::TERRAIN_PRESET_STANDARD, random);
+    textures->applyPreset(TexturesDefinition::TEXTURES_PRESET_FULL, random);
+    atmosphere->applyPreset(AtmosphereDefinition::ATMOSPHERE_PRESET_CLEAR_DAY, random);
+    water->applyPreset(WaterDefinition::WATER_PRESET_LAKE, random);
+    clouds->applyPreset(CloudsDefinition::CLOUDS_PRESET_PARTLY_CLOUDY, random);
 
     camera->setLocation(VECTOR_ZERO);
     camera->setTarget(VECTOR_NORTH);
 
     validate();
 
-    Logs::debug() << "[Definition] New scenery generated from seed " << seed << std::endl;
+    Logs::debug() << "[Definition] New scenery generated from seed " << random.getSeed() << std::endl;
+}
+
+void Scenery::autoPreset(unsigned int seed)
+{
+    RandomGenerator random(seed);
+    autoPreset(random);
 }
 
 void Scenery::setAtmosphere(AtmosphereDefinition *atmosphere) {

@@ -42,11 +42,11 @@ void NoiseState::copy(NoiseState *destination) const {
     destination->level_offsets = level_offsets;
 }
 
-void NoiseState::randomizeOffsets() {
+void NoiseState::randomizeOffsets(RandomGenerator &random) {
     for (auto &level_offset : level_offsets) {
-        level_offset.x = RandomGenerator::random();
-        level_offset.y = RandomGenerator::random();
-        level_offset.z = RandomGenerator::random();
+        level_offset.x = random.genDouble();
+        level_offset.y = random.genDouble();
+        level_offset.z = random.genDouble();
     }
 }
 

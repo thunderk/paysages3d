@@ -29,6 +29,9 @@ class Mutex;
 class Semaphore;
 class PictureWriter;
 class Time;
+class RandomGenerator;
+
+extern RandomGenerator& RandomGeneratorDefault;
 }
 }
 using namespace paysages::system;

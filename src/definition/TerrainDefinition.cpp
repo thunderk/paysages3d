@@ -113,11 +113,11 @@ unsigned long TerrainDefinition::getMemoryStats() {
     return height_map->getMemoryStats();
 }
 
-void TerrainDefinition::applyPreset(TerrainPreset preset) {
+void TerrainDefinition::applyPreset(TerrainPreset preset, RandomGenerator &random) {
     int resolution = 8;
     switch (preset) {
     case TERRAIN_PRESET_STANDARD:
-        _height_noise->randomizeOffsets();
+        _height_noise->randomizeOffsets(random);
         _height_noise->clearLevels();
         _height_noise->addLevelSimple(pow(2.0, resolution + 1), -1.0, 1.0);
         _height_noise->addLevelsSimple(resolution - 2, pow(2.0, resolution - 1), -0.7, 0.7, 0.5);

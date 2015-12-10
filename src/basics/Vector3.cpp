@@ -19,7 +19,6 @@ Vector3::Vector3(const VectorSpherical &v)
 Vector3::Vector3(double x, double y, double z) : x(x), y(y), z(z) {
 }
 
-
 void Vector3::save(PackStream *stream) const {
     stream->write(&x);
     stream->write(&y);
@@ -115,10 +114,10 @@ Vector3 Vector3::midPointTo(const Vector3 &other) const {
     return Vector3((other.x + x) * 0.5, (other.y + y) * 0.5, (other.z + z) * 0.5);
 }
 
-Vector3 Vector3::randomInSphere(double radius, bool only_surface) {
+Vector3 Vector3::randomInSphere(double radius, bool only_surface, RandomGenerator &random) {
     // TODO More uniform spatial repartition
     //  The current randomization clusters result near the center and at the poles
-    VectorSpherical vec = {only_surface ? radius : RandomGenerator::random() * radius,
-                           (RandomGenerator::random() - 0.5) * M_PI, RandomGenerator::random() * M_2PI};
+    VectorSpherical vec = {only_surface ? radius : random.genDouble() * radius,
+                           (random.genDouble() - 0.5) * M_PI, random.genDouble() * M_2PI};
     return Vector3(vec);
 }

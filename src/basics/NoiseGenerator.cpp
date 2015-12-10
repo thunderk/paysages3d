@@ -135,8 +135,8 @@ void NoiseGenerator::setState(const NoiseState &state) {
     state.copy(&this->state);
 }
 
-void NoiseGenerator::randomizeOffsets() {
-    state.randomizeOffsets();
+void NoiseGenerator::randomizeOffsets(RandomGenerator &random) {
+    state.randomizeOffsets(random);
 }
 
 NoiseGenerator::NoiseFunction NoiseGenerator::getFunction() {

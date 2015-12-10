@@ -17,6 +17,7 @@
 #include "LightFilter.h"
 #include "GodRaysSampler.h"
 #include "Rasterizer.h"
+#include "RandomGenerator.h"
 
 #include <sstream>
 
@@ -39,8 +40,8 @@ static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string 
 
 static void testGroundShadowQuality() {
     Scenery scenery;
-    srand(5);
-    scenery.getTerrain()->applyPreset(TerrainDefinition::TERRAIN_PRESET_STANDARD);
+    RandomGenerator random(5);
+    scenery.getTerrain()->applyPreset(TerrainDefinition::TERRAIN_PRESET_STANDARD, random);
     scenery.getTerrain()->propWaterHeight()->setValue(-0.5);
     scenery.getWater()->propReflection()->setValue(0.0);
     scenery.getWater()->material->base->r = 0.0;
@@ -49,7 +50,7 @@ static void testGroundShadowQuality() {
     scenery.getWater()->material->reflection = 0.0;
     scenery.getWater()->foam_coverage = 0.0;
     scenery.getWater()->transparency = 0.0;
-    scenery.getAtmosphere()->applyPreset(AtmosphereDefinition::ATMOSPHERE_PRESET_CLEAR_SUNSET);
+    scenery.getAtmosphere()->applyPreset(AtmosphereDefinition::ATMOSPHERE_PRESET_CLEAR_SUNSET, random);
     scenery.getAtmosphere()->setDayTime(16, 45);
     scenery.getTextures()->clear();
     TextureLayerDefinition texture(NULL, "test");

@@ -34,7 +34,8 @@ class DEFINITIONSHARED_EXPORT Scenery : public DefinitionNode {
 
     virtual Scenery *getScenery() override;
 
-    void autoPreset(int seed = 0);
+    void autoPreset(RandomGenerator &random = RandomGeneratorDefault);
+    void autoPreset(unsigned int seed);
 
     void setAtmosphere(AtmosphereDefinition *atmosphere);
     inline AtmosphereDefinition *getAtmosphere() const {

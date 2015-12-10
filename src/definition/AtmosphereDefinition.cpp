@@ -100,7 +100,7 @@ void AtmosphereDefinition::getHMS(int *hour, int *minute, int *second) const {
     *second = value - *minute * 60.0;
 }
 
-void AtmosphereDefinition::applyPreset(AtmospherePreset preset) {
+void AtmosphereDefinition::applyPreset(AtmospherePreset preset, RandomGenerator &random) {
     sun_color.r = 1.0;
     sun_color.g = 0.95;
     sun_color.b = 0.9;
@@ -142,28 +142,28 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset) {
         ;
     }
 
-    generateStars(2000);
+    generateStars(2000, random);
 
     validate();
 }
 
-void AtmosphereDefinition::generateStars(int count) {
+void AtmosphereDefinition::generateStars(int count, RandomGenerator &random) {
     stars.clear();
 
     for (int i = 0; i < count; ++i) {
         Star star;
 
         star.location =
-            Vector3((RandomGenerator::random() - 0.5) * 100000.0, (RandomGenerator::random() * 0.5) * 100000.0,
-                    (RandomGenerator::random() - 0.5) * 100000.0);
+            Vector3((random.genDouble() - 0.5) * 100000.0, (random.genDouble() * 0.5) * 100000.0,
+                    (random.genDouble() - 0.5) * 100000.0);
         if (star.location.getNorm() < 30000.0) {
             i--;
             continue;
         }
-        double brillance = RandomGenerator::random() * 0.05 + 0.1;
-        star.col = Color(brillance + RandomGenerator::random() * 0.03, brillance + RandomGenerator::random() * 0.03,
-                         brillance + RandomGenerator::random() * 0.03, 1.0);
-        star.radius = 30.0 + RandomGenerator::random() * 20.0;
+        double brillance = random.genDouble() * 0.05 + 0.1;
+        star.col = Color(brillance + random.genDouble() * 0.03, brillance + random.genDouble() * 0.03,
+                         brillance + random.genDouble() * 0.03, 1.0);
+        star.radius = 30.0 + random.genDouble() * 20.0;
 
         stars.push_back(star);
     }
