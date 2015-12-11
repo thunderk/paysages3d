@@ -4,7 +4,7 @@
 #include "OpenGLShaderProgram.h"
 #include "OpenGLVertexArray.h"
 
-OpenGLPart::OpenGLPart(OpenGLRenderer *renderer) : renderer(renderer) {
+OpenGLPart::OpenGLPart(OpenGLRenderer *renderer, const string &name) : renderer(renderer), name(name) {
 }
 
 OpenGLPart::~OpenGLPart() {
@@ -28,6 +28,12 @@ void OpenGLPart::destroy() {
 }
 
 void OpenGLPart::interrupt() {
+}
+
+void OpenGLPart::pause() {
+}
+
+void OpenGLPart::resume() {
 }
 
 OpenGLShaderProgram *OpenGLPart::createShader(const string &name) {

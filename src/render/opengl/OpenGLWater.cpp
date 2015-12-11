@@ -13,7 +13,7 @@
 #include "FloatDiff.h"
 #include "IntNode.h"
 
-OpenGLWater::OpenGLWater(OpenGLRenderer *renderer) : OpenGLPart(renderer) {
+OpenGLWater::OpenGLWater(OpenGLRenderer *renderer) : OpenGLPart(renderer, "water") {
     enabled = true;
 
     program = createShader("water");

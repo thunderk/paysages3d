@@ -5,6 +5,8 @@
 
 #include "SoftwareRenderer.h"
 
+#include <vector>
+
 class QMatrix4x4;
 
 namespace paysages {
@@ -135,6 +137,8 @@ class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
     OpenGLSkybox *skybox;
     OpenGLWater *water;
     OpenGLTerrain *terrain;
+
+    vector<OpenGLPart *> parts;
 };
 }
 }

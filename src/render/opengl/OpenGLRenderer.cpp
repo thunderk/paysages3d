@@ -38,23 +38,22 @@ OpenGLRenderer::OpenGLRenderer(Scenery *scenery) : SoftwareRenderer(scenery) {
     shared_state->set("viewDistance", 300.0);
     shared_state->set("exposure", 1.2);
 
-    skybox = new OpenGLSkybox(this);
-    water = new OpenGLWater(this);
-    terrain = new OpenGLTerrain(this);
+    parts.push_back(skybox = new OpenGLSkybox(this));
+    parts.push_back(water = new OpenGLWater(this));
+    parts.push_back(terrain = new OpenGLTerrain(this));
 }
 
 OpenGLRenderer::~OpenGLRenderer() {
-    terrain->interrupt();
-    water->interrupt();
-    skybox->interrupt();
+    for (auto part : parts) {
+        part->interrupt();
+    }
 
     delete mouse_projected;
-
     delete view_matrix;
 
-    delete skybox;
-    delete water;
-    delete terrain;
+    for (auto part : parts) {
+        delete part;
+    }
 
     delete functions;
     delete shared_state;
@@ -70,11 +69,11 @@ void OpenGLRenderer::checkForErrors(const string &domain) {
 void OpenGLRenderer::destroy() {
     shared_state->destroy(functions);
 
-    skybox->destroy();
-    terrain->destroy();
-    water->destroy();
+    for (auto part : parts) {
+        part->destroy();
+    }
 
-    checkForErrors("stopping");
+    checkForErrors("destroy");
 }
 
 void OpenGLRenderer::initialize() {
@@ -92,14 +91,10 @@ void OpenGLRenderer::initialize() {
         getLightingManager()->setSpecularity(false);
         getGodRaysSampler()->setEnabled(false);
 
-        skybox->initialize();
-        skybox->updateScenery();
-
-        water->initialize();
-        water->updateScenery();
-
-        terrain->initialize();
-        terrain->updateScenery();
+        for (auto part : parts) {
+            part->initialize();
+            part->updateScenery();
+        }
 
         cameraChangeEvent(render_camera);
 
@@ -168,14 +163,10 @@ void OpenGLRenderer::paint(bool clear) {
             functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
-        skybox->render();
-        checkForErrors("skybox");
-
-        terrain->render();
-        checkForErrors("terrain");
-
-        water->render();
-        checkForErrors("water");
+        for (auto part : parts) {
+            part->render();
+            checkForErrors(part->getName());
+        }
 
         if (mouse_tracking) {
             updateMouseProjection();
@@ -193,22 +184,30 @@ bool OpenGLRenderer::stop() {
 
 void OpenGLRenderer::reset() {
     if (ready) {
-        skybox->updateScenery();
-        water->updateScenery();
-        terrain->updateScenery();
+        for (auto part : parts) {
+            part->updateScenery();
+        }
 
         cameraChangeEvent(render_camera);
     }
 }
 
 void OpenGLRenderer::pause() {
-    paused = true;
-    terrain->pause();
+    if (not paused) {
+        paused = true;
+        for (auto part : parts) {
+            part->pause();
+        }
+    }
 }
 
 void OpenGLRenderer::resume() {
-    paused = false;
-    terrain->resume();
+    if (paused) {
+        for (auto part : parts) {
+            part->resume();
+        }
+        paused = false;
+    }
 }
 
 void OpenGLRenderer::setMouseLocation(int x, int y) {

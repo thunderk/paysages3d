@@ -32,7 +32,7 @@ class ChunkMaintenanceThreads : public ParallelPool {
     OpenGLTerrain *terrain;
 };
 
-OpenGLTerrain::OpenGLTerrain(OpenGLRenderer *renderer) : OpenGLPart(renderer) {
+OpenGLTerrain::OpenGLTerrain(OpenGLRenderer *renderer) : OpenGLPart(renderer, "terrain") {
     work = new ChunkMaintenanceThreads(this);
     paused = false;
 

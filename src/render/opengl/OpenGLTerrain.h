@@ -24,8 +24,8 @@ class OPENGLSHARED_EXPORT OpenGLTerrain : public OpenGLPart, public DefinitionWa
     virtual void interrupt() override;
     virtual void destroy() override;
 
-    void pause();
-    void resume();
+    virtual void pause() override;
+    virtual void resume() override;
     inline bool isPaused() const {
         return paused;
     }

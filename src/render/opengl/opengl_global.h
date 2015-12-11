@@ -11,8 +11,8 @@
 
 namespace paysages {
 namespace opengl {
-class WidgetExplorer;
 class OpenGLRenderer;
+class OpenGLPart;
 class OpenGLShaderProgram;
 class OpenGLSharedState;
 class OpenGLVariable;

@@ -11,7 +11,7 @@
 #include "AtmosphereModelBruneton.h"
 #include "FloatNode.h"
 
-OpenGLSkybox::OpenGLSkybox(OpenGLRenderer *renderer) : OpenGLPart(renderer) {
+OpenGLSkybox::OpenGLSkybox(OpenGLRenderer *renderer) : OpenGLPart(renderer, "skybox") {
     program = createShader("skybox");
     program->addVertexSource("skybox");
     program->addFragmentSource("atmosphere");

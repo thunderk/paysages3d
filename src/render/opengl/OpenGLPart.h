@@ -14,7 +14,7 @@ namespace opengl {
  */
 class OPENGLSHARED_EXPORT OpenGLPart {
   public:
-    OpenGLPart(OpenGLRenderer *renderer);
+    OpenGLPart(OpenGLRenderer *renderer, const string &name);
     virtual ~OpenGLPart();
 
     // Initialize the part rendering (create shaders, prepare static textures...)
@@ -32,7 +32,17 @@ class OPENGLSHARED_EXPORT OpenGLPart {
     // Interrupt the rendering
     virtual void interrupt();
 
+    // Temporarily pause the background working
+    virtual void pause();
+
+    // Resume the background working
+    virtual void resume();
+
     void updateScenery(bool onlyCommon = false);
+
+    inline const string &getName() const {
+        return name;
+    }
 
   protected:
     /**
@@ -55,6 +65,7 @@ class OPENGLSHARED_EXPORT OpenGLPart {
     OpenGLRenderer *renderer;
 
   private:
+    string name;
     map<string, OpenGLShaderProgram *> shaders;
     vector<OpenGLVertexArray *> arrays;
 };
