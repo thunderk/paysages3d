@@ -10,6 +10,11 @@
 #include "AtmosphereRenderer.h"
 #include "AtmosphereModelBruneton.h"
 #include "FloatNode.h"
+#include "Logs.h"
+
+static const std::string path_daytime = "/atmosphere/daytime";
+static const std::string path_humidity = "/atmosphere/humidity";
+static const std::string path_sun_radius = "/atmosphere/sun_radius";
 
 OpenGLSkybox::OpenGLSkybox(OpenGLRenderer *renderer) : OpenGLPart(renderer, "skybox") {
     program = createShader("skybox");
@@ -50,12 +55,15 @@ OpenGLSkybox::~OpenGLSkybox() {
 
 void OpenGLSkybox::initialize() {
     // Watch for definition changes
-    renderer->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this, true);
-    renderer->getScenery()->getAtmosphere()->propHumidity()->addWatcher(this, true);
-    renderer->getScenery()->getAtmosphere()->propSunRadius()->addWatcher(this, true);
+    Scenery *scenery = renderer->getScenery();
+    startWatching(scenery, path_daytime);
+    startWatching(scenery, path_humidity);
+    startWatching(scenery, path_sun_radius);
 }
 
 void OpenGLSkybox::update() {
+    Logs::debug() << "[OpenGL] Updating atmosphere textures" << endl;
+
     SoftwareBrunetonAtmosphereRenderer *bruneton =
         (SoftwareBrunetonAtmosphereRenderer *)renderer->getAtmosphereRenderer();
     renderer->getSharedState()->set("transmittanceTexture", bruneton->getModel()->getTextureTransmittance());
@@ -67,19 +75,20 @@ void OpenGLSkybox::render() {
 }
 
 void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
-    if (node->getPath() == "/atmosphere/daytime") {
+    OpenGLSharedState *state = renderer->getSharedState();
+    AtmosphereDefinition *newdef = renderer->getScenery()->getAtmosphere();
+
+    if (node->getPath() == path_daytime) {
         Vector3 sun_direction = renderer->getAtmosphereRenderer()->getSunDirection(false);
-        renderer->getSharedState()->set("sunDirection", sun_direction);
+        state->set("sunDirection", sun_direction);
 
-        Color sun_color = renderer->getScenery()->getAtmosphere()->sun_color;
-        renderer->getSharedState()->set("sunColor", sun_color);
+        Color sun_color = newdef->sun_color;
+        state->set("sunColor", sun_color);
 
-        renderer->getSharedState()->set("dayTime", renderer->getScenery()->getAtmosphere()->propDayTime()->getValue());
-    } else if (node->getPath() == "/atmosphere/humidity") {
-        renderer->getSharedState()->set("atmosphereHumidity",
-                                        renderer->getScenery()->getAtmosphere()->propHumidity()->getValue());
-    } else if (node->getPath() == "/atmosphere/sun_radius") {
-        renderer->getSharedState()->set("sunRadius",
-                                        renderer->getScenery()->getAtmosphere()->propSunRadius()->getValue());
+        state->set("dayTime", newdef->propDayTime()->getValue());
+    } else if (node->getPath() == path_humidity) {
+        state->set("atmosphereHumidity", newdef->propHumidity()->getValue());
+    } else if (node->getPath() == path_sun_radius) {
+        state->set("sunRadius", newdef->propSunRadius()->getValue());
     }
 }
