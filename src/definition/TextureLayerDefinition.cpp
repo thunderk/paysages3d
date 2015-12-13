@@ -8,7 +8,7 @@
 #include "TerrainDefinition.h"
 #include "Color.h"
 
-TextureLayerDefinition::TextureLayerDefinition(DefinitionNode *parent, const std::string &name)
+TextureLayerDefinition::TextureLayerDefinition(DefinitionNode *parent, const string &name)
     : DefinitionNode(parent, name, "texturelayer") {
     terrain_zone = new Zone;
     _displacement_noise = new NoiseGenerator;

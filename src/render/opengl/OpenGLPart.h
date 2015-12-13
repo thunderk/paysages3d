@@ -14,7 +14,7 @@ namespace opengl {
  */
 class OPENGLSHARED_EXPORT OpenGLPart {
   public:
-    OpenGLPart(OpenGLRenderer *renderer);
+    OpenGLPart(OpenGLRenderer *renderer, const string &name);
     virtual ~OpenGLPart();
 
     // Initialize the part rendering (create shaders, prepare static textures...)
@@ -26,8 +26,17 @@ class OPENGLSHARED_EXPORT OpenGLPart {
     // Do the rendering
     virtual void render() = 0;
 
+    // Free opengl resources generated in context (like textures...)
+    virtual void destroy();
+
     // Interrupt the rendering
     virtual void interrupt();
+
+    // Temporarily pause the background working
+    virtual void pause();
+
+    // Resume the background working
+    virtual void resume();
 
     void updateScenery(bool onlyCommon = false);
 
@@ -41,13 +50,17 @@ class OPENGLSHARED_EXPORT OpenGLPart {
      */
     OpenGLFunctions *getOpenGlFunctions() const;
 
+    inline const string &getName() const {
+        return name;
+    }
+
   protected:
     /**
      * Create a shader program.
      *
      * The returned shader's ownership remains in this object. It will taks care of the destruction.
      */
-    OpenGLShaderProgram *createShader(const std::string &name);
+    OpenGLShaderProgram *createShader(const string &name);
 
     /**
      * Create a vertex array.
@@ -56,12 +69,15 @@ class OPENGLSHARED_EXPORT OpenGLPart {
      */
     OpenGLVertexArray *createVertexArray(bool has_uv, bool strip);
 
+    OpenGLFunctions *getFunctions();
+
     // Access to the main scenery renderer
     OpenGLRenderer *renderer;
 
   private:
-    std::map<std::string, OpenGLShaderProgram *> shaders;
-    std::vector<OpenGLVertexArray *> arrays;
+    string name;
+    map<string, OpenGLShaderProgram *> shaders;
+    vector<OpenGLVertexArray *> arrays;
 };
 }
 }

@@ -32,8 +32,8 @@
 
 void startRender(SoftwareCanvasRenderer *renderer, const char *outputpath);
 
-static std::string getFileName(const std::string &name, int iteration = -1) {
-    std::ostringstream stream;
+static string getFileName(const string &name, int iteration = -1) {
+    ostringstream stream;
 
     stream << "pic_test_" << name;
     if (iteration >= 0) {
@@ -47,7 +47,7 @@ static std::string getFileName(const std::string &name, int iteration = -1) {
     return stream.str();
 }
 
-static void startTestRender(SoftwareCanvasRenderer *renderer, const std::string &name, int iteration = -1) {
+static void startTestRender(SoftwareCanvasRenderer *renderer, const string &name, int iteration = -1) {
     startRender(renderer, getFileName(name, iteration).data());
 }
 
@@ -298,8 +298,8 @@ static void testVegetationModels() {
 
 static void testOpenGLVegetationImpostor() {
     for (int i = 0; i < 4; i++) {
-        std::string filename = getFileName("opengl_vegetation_impostor", i);
-        std::cout << "Rendering " << filename << "..." << std::endl;
+        string filename = getFileName("opengl_vegetation_impostor", i);
+        cout << "Rendering " << filename << "..." << endl;
 
         Scenery scenery;
         scenery.autoPreset(i);

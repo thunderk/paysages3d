@@ -35,7 +35,7 @@ class SYSTEMSHARED_EXPORT ParallelPool {
     bool running;
 
   private:
-    std::vector<Thread *> threads;
+    vector<Thread *> threads;
 };
 }
 }

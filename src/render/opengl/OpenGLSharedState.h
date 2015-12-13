@@ -11,61 +11,68 @@ class QImage;
 namespace paysages {
 namespace opengl {
 
-/*!
- * \brief OpenGL variables that can be shared between shaders.
+/**
+ * OpenGL variables that can be shared between shaders.
  */
 class OPENGLSHARED_EXPORT OpenGLSharedState {
   public:
     OpenGLSharedState();
     ~OpenGLSharedState();
 
-    /*!
-     * \brief Apply the stored variables to the bound program.
+    /**
+     * Apply the stored variables to the bound program.
      */
     void apply(OpenGLShaderProgram *program, int &texture_unit);
 
-    /*!
-     * \brief Get or create a variable in the state.
+    /**
+     * Release any allocated resource in the opengl context.
+     *
+     * Must be called in the opengl rendering thread, and before the destructor is called.
      */
-    OpenGLVariable *get(const std::string &name);
+    void destroy(OpenGLFunctions *functions);
+
+    /**
+     * Get or create a variable in the state.
+     */
+    OpenGLVariable *get(const string &name);
 
     // Shortcuts
-    inline void setInt(const std::string &name, int value) {
+    inline void setInt(const string &name, int value) {
         get(name)->set(value);
     }
-    inline void set(const std::string &name, float value) {
+    inline void set(const string &name, float value) {
         get(name)->set(value);
     }
-    inline void set(const std::string &name, const Texture2D *texture, bool repeat = false, bool color = true) {
+    inline void set(const string &name, const Texture2D *texture, bool repeat = false, bool color = true) {
         get(name)->set(texture, repeat, color);
     }
-    inline void set(const std::string &name, const QImage &texture, bool repeat = false, bool color = true) {
+    inline void set(const string &name, const QImage &texture, bool repeat = false, bool color = true) {
         get(name)->set(texture, repeat, color);
     }
-    inline void set(const std::string &name, const Texture3D *texture, bool repeat = false, bool color = true) {
+    inline void set(const string &name, const Texture3D *texture, bool repeat = false, bool color = true) {
         get(name)->set(texture, repeat, color);
     }
-    inline void set(const std::string &name, const Texture4D *texture, bool repeat = false, bool color = true) {
+    inline void set(const string &name, const Texture4D *texture, bool repeat = false, bool color = true) {
         get(name)->set(texture, repeat, color);
     }
-    inline void set(const std::string &name, const Vector3 &vector) {
+    inline void set(const string &name, const Vector3 &vector) {
         get(name)->set(vector);
     }
-    inline void set(const std::string &name, const QVector3D &vector) {
+    inline void set(const string &name, const QVector3D &vector) {
         get(name)->set(vector);
     }
-    inline void set(const std::string &name, const Matrix4 &matrix) {
+    inline void set(const string &name, const Matrix4 &matrix) {
         get(name)->set(matrix);
     }
-    inline void set(const std::string &name, const QMatrix4x4 &matrix) {
+    inline void set(const string &name, const QMatrix4x4 &matrix) {
         get(name)->set(matrix);
     }
-    inline void set(const std::string &name, const Color &color) {
+    inline void set(const string &name, const Color &color) {
         get(name)->set(color);
     }
 
   private:
-    std::map<std::string, OpenGLVariable *> variables;
+    map<string, OpenGLVariable *> variables;
 };
 }
 }

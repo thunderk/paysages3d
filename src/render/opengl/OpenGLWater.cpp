@@ -12,8 +12,13 @@
 #include "FloatNode.h"
 #include "FloatDiff.h"
 #include "IntNode.h"
+#include "Logs.h"
 
-OpenGLWater::OpenGLWater(OpenGLRenderer *renderer) : OpenGLPart(renderer) {
+static const string path_height = "/terrain/water_height";
+static const string path_reflection = "/water/reflection";
+static const string path_model = "/water/model";
+
+OpenGLWater::OpenGLWater(OpenGLRenderer *renderer) : OpenGLPart(renderer, "water") {
     enabled = true;
 
     program = createShader("water");
@@ -38,19 +43,23 @@ OpenGLWater::~OpenGLWater() {
 
 void OpenGLWater::initialize() {
     // Watch for definition changes
-    renderer->getScenery()->getTerrain()->propWaterHeight()->addWatcher(this, true);
-    renderer->getScenery()->getWater()->propReflection()->addWatcher(this, true);
-    renderer->getScenery()->getWater()->propModel()->addWatcher(this, false);
+    Scenery *scenery = renderer->getScenery();
+    startWatching(scenery, path_height);
+    startWatching(scenery, path_reflection);
+    startWatching(scenery, path_model, false);
 }
 
 void OpenGLWater::update() {
-    WaterDefinition *water = renderer->getScenery()->getWater();
-    renderer->getSharedState()->set("waterMaterialColor", *water->material->base);
-    renderer->getSharedState()->set("waterMaterialReflection", water->material->reflection);
-    renderer->getSharedState()->set("waterMaterialShininess", water->material->shininess);
-    renderer->getSharedState()->set("waterMaterialHardness", water->material->hardness);
+    OpenGLSharedState *state = renderer->getSharedState();
 
-    renderer->getSharedState()->set("simplexSampler", NoiseFunctionSimplex::getNormalTexture(), true, true);
+    WaterDefinition *water = renderer->getScenery()->getWater();
+    state->set("waterMaterialColor", *water->material->base);
+    state->set("waterMaterialReflection", water->material->reflection);
+    state->set("waterMaterialShininess", water->material->shininess);
+    state->set("waterMaterialHardness", water->material->hardness);
+
+    Logs::debug() << "[OpenGL] Updating simplex texture" << endl;
+    state->set("simplexSampler", NoiseFunctionSimplex::getNormalTexture(), true, true);
 }
 
 void OpenGLWater::render() {
@@ -60,12 +69,13 @@ void OpenGLWater::render() {
 }
 
 void OpenGLWater::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
-    if (node->getPath() == "/terrain/water_height") {
-        renderer->getSharedState()->set("waterOffset", renderer->getScenery()->getTerrain()->getWaterOffset());
-    } else if (node->getPath() == "/water/reflection") {
-        renderer->getSharedState()->set("waterReflection",
-                                        renderer->getScenery()->getWater()->propReflection()->getValue());
-    } else if (node->getPath() == "/water/model") {
+    OpenGLSharedState *state = renderer->getSharedState();
+
+    if (node->getPath() == path_height) {
+        state->set("waterOffset", renderer->getScenery()->getTerrain()->getWaterOffset());
+    } else if (node->getPath() == path_reflection) {
+        state->set("waterReflection", renderer->getScenery()->getWater()->propReflection()->getValue());
+    } else if (node->getPath() == path_model) {
         update();
     }
 }

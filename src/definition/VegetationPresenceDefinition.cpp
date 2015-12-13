@@ -17,7 +17,7 @@ VegetationPresenceDefinition::VegetationPresenceDefinition(VegetationLayerDefini
     interval = new FloatNode(this, "interval", 0.1);
 }
 
-bool VegetationPresenceDefinition::collectInstances(std::vector<VegetationInstance> *result,
+bool VegetationPresenceDefinition::collectInstances(vector<VegetationInstance> *result,
                                                     const VegetationModelDefinition &model, double xmin, double zmin,
                                                     double xmax, double zmax, bool outcomers) const {
     if (outcomers) {

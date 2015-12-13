@@ -15,7 +15,7 @@ class SOFTWARESHARED_EXPORT AtmosphereModelBruneton : public LightSource {
 
     AtmosphereResult getSkyColor(Vector3 eye, const Vector3 &direction, const Vector3 &sun_position, const Color &base);
     AtmosphereResult applyAerialPerspective(Vector3 location, const Color &base);
-    virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const override;
+    virtual bool getLightsAt(vector<LightComponent> &result, const Vector3 &location) const override;
 
     /* Functions to get access to internal textures (for opengl shaders) */
     Texture2D *getTextureTransmittance() const;

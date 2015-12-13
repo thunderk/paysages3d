@@ -2,7 +2,7 @@
 
 #include <QImage>
 
-bool PictureWriter::save(const std::string &filepath, int width, int height) {
+bool PictureWriter::save(const string &filepath, int width, int height) {
     QImage result(width, height, QImage::Format_ARGB32);
 
     for (int y = 0; y < height; y++) {

@@ -71,7 +71,8 @@ class BASICSSHARED_EXPORT Vector3 {
      *
      * If *only_surface* is true, produce a vector with *radius* as length.
      */
-    static Vector3 randomInSphere(double radius = 1.0, bool only_surface = false, RandomGenerator &random = RandomGeneratorDefault);
+    static Vector3 randomInSphere(double radius = 1.0, bool only_surface = false,
+                                  RandomGenerator &random = RandomGeneratorDefault);
 
   public:
     // TODO Make private

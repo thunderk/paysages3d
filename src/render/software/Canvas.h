@@ -46,10 +46,10 @@ class SOFTWARESHARED_EXPORT Canvas {
      *
      * Returns true if the save was successful.
      */
-    bool saveToDisk(const std::string &filepath, const ColorProfile &profile, int antialias) const;
+    bool saveToDisk(const string &filepath, const ColorProfile &profile, int antialias) const;
 
   private:
-    std::vector<CanvasPortion *> portions;
+    vector<CanvasPortion *> portions;
     int horizontal_portion_count;
     int vertical_portion_count;
     int width;

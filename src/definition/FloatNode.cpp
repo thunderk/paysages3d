@@ -6,12 +6,12 @@
 #include <sstream>
 #include <cassert>
 
-FloatNode::FloatNode(DefinitionNode *parent, const std::string &name, double value)
+FloatNode::FloatNode(DefinitionNode *parent, const string &name, double value)
     : DefinitionNode(parent, name, "float"), value(value) {
 }
 
-std::string FloatNode::toString(int indent) const {
-    std::ostringstream stream;
+string FloatNode::toString(int indent) const {
+    ostringstream stream;
 
     stream << DefinitionNode::toString(indent) << " " << value;
 
@@ -30,7 +30,7 @@ void FloatNode::copy(DefinitionNode *destination) const {
     if (destination->getTypeName() == getTypeName()) {
         ((FloatNode *)destination)->value = value;
     } else {
-        Logs::error() << "Can't copy from " << getTypeName() << " to " << destination->getTypeName() << std::endl;
+        Logs::error() << "Can't copy from " << getTypeName() << " to " << destination->getTypeName() << endl;
     }
 }
 
@@ -42,7 +42,7 @@ const FloatDiff *FloatNode::produceDiff(double new_value) const {
     return new FloatDiff(this, value, new_value);
 }
 
-void FloatNode::generateInitDiffs(std::vector<const DefinitionDiff *> *diffs) const {
+void FloatNode::generateInitDiffs(vector<const DefinitionDiff *> *diffs) const {
     diffs->push_back(produceDiff(value));
 }
 
@@ -61,7 +61,7 @@ bool FloatNode::applyDiff(const DefinitionDiff *diff, bool backward) {
         value = next;
         return true;
     } else {
-        Logs::error() << "Can't apply float diff " << previous << " => " << next << " to " << getName() << std::endl;
+        Logs::error() << "Can't apply float diff " << previous << " => " << next << " to " << getName() << endl;
         return false;
     }
 }

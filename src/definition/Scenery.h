@@ -29,8 +29,8 @@ class DEFINITIONSHARED_EXPORT Scenery : public DefinitionNode {
 
     virtual void validate() override;
 
-    FileOperationResult saveGlobal(const std::string &filepath) const;
-    FileOperationResult loadGlobal(const std::string &filepath);
+    FileOperationResult saveGlobal(const string &filepath) const;
+    FileOperationResult loadGlobal(const string &filepath);
 
     virtual const Scenery *getScenery() const override;
 

@@ -10,11 +10,18 @@ namespace opengl {
 
 class OPENGLSHARED_EXPORT OpenGLShaderProgram {
   public:
-    OpenGLShaderProgram(const std::string &name, OpenGLRenderer *renderer);
+    OpenGLShaderProgram(const string &name, OpenGLRenderer *renderer);
     ~OpenGLShaderProgram();
 
-    void addVertexSource(const std::string &path);
-    void addFragmentSource(const std::string &path);
+    void addVertexSource(const string &path);
+    void addFragmentSource(const string &path);
+
+    /**
+     * Release any allocated resource in the opengl context.
+     *
+     * Must be called in the opengl rendering thread, and before the destructor is called.
+     */
+    void destroy(OpenGLFunctions *functions);
 
     /**
      * Draw a VertexArray object.
@@ -51,14 +58,14 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
 
     OpenGLRenderer *renderer;
 
-    std::string name;
+    string name;
     QOpenGLShaderProgram *program;
     OpenGLFunctions *functions;
 
     OpenGLSharedState *state;
 
-    std::string source_vertex;
-    std::string source_fragment;
+    string source_vertex;
+    string source_fragment;
 };
 }
 }

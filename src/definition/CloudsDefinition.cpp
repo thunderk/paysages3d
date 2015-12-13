@@ -2,7 +2,7 @@
 
 #include "CloudLayerDefinition.h"
 
-static DefinitionNode *_layerConstructor(Layers *parent, const std::string &name) {
+static DefinitionNode *_layerConstructor(Layers *parent, const string &name) {
     return new CloudLayerDefinition(parent, name);
 }
 

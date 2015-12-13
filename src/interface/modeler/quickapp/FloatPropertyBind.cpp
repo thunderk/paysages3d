@@ -15,7 +15,7 @@ FloatPropertyBind::FloatPropertyBind(MainModelerWindow *window, const QString &o
         connect(item, SIGNAL(changed(double)), this, SLOT(propertyChanged(double)));
     } else {
         item = NULL;
-        Logs::error() << "Can't find object :" << object_name.toStdString() << std::endl;
+        Logs::error() << "Can't find object :" << object_name.toStdString() << endl;
     }
 }
 

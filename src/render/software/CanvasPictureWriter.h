@@ -31,7 +31,7 @@ class SOFTWARESHARED_EXPORT CanvasPictureWriter : public PictureWriter {
      *
      * Returns true if saving was successful.
      */
-    bool saveCanvas(const std::string &filepath);
+    bool saveCanvas(const string &filepath);
 
   protected:
     virtual unsigned int getPixel(int x, int y) override;

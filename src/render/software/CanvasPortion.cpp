@@ -18,13 +18,13 @@
     assert(pixels != NULL)
 
 // Keep track of created files to erase them at program exit
-static std::vector<std::string> _files;
+static vector<string> _files;
 static void clean_all_files() {
     for (auto &filepath : _files) {
         FileSystem::removeFile(filepath);
     }
 }
-static int _atexit = std::atexit(clean_all_files);
+static int _atexit = atexit(clean_all_files);
 
 CanvasPortion::CanvasPortion(int index, CanvasPreview *preview) : index(index), preview(preview) {
     width = 1;
@@ -86,8 +86,7 @@ void CanvasPortion::discardPixels(bool save) {
 void CanvasPortion::saveToDisk() {
     if (pixels) {
         auto pid = System::getProcessId();
-        filepath =
-            FileSystem::getTempFile("paysages_portion_" + std::to_string(index) + "_" + std::to_string(pid) + ".dat");
+        filepath = FileSystem::getTempFile("paysages_portion_" + to_string(index) + "_" + to_string(pid) + ".dat");
         PackStream stream;
         stream.bindToFile(filepath, true);
         stream.write(&width);

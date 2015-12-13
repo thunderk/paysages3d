@@ -3,7 +3,7 @@
 #include "VegetationLayerDefinition.h"
 #include "VegetationModelDefinition.h"
 
-static DefinitionNode *_layer_constructor(Layers *parent, const std::string &name) {
+static DefinitionNode *_layer_constructor(Layers *parent, const string &name) {
     return new VegetationLayerDefinition(parent, name);
 }
 

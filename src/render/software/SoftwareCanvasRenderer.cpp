@@ -132,7 +132,7 @@ const Rasterizer &SoftwareCanvasRenderer::getRasterizer(int client_id) const {
     return *(rasterizers[client_id]);
 }
 
-bool SoftwareCanvasRenderer::saveToDisk(const std::string &filepath) const {
+bool SoftwareCanvasRenderer::saveToDisk(const string &filepath) const {
     return getCanvas()->saveToDisk(filepath, *getCanvas()->getPreview()->getToneMapping(), samples);
 }
 

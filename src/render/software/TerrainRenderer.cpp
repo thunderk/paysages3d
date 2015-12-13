@@ -196,7 +196,7 @@ void TerrainRenderer::estimateMinMaxHeight(double x1, double z1, double x2, doub
     // TODO Apply max slope
     // TODO Estimate displacement
 
-    std::pair<double, double> minmax = std::minmax(y1, y2);
-    *ymin = minmax.first;
-    *ymax = minmax.second;
+    pair<double, double> limits = minmax(y1, y2);
+    *ymin = limits.first;
+    *ymax = limits.second;
 }

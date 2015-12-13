@@ -25,7 +25,7 @@ class DEFINITIONSHARED_EXPORT VegetationPresenceDefinition : public DefinitionNo
      * The location vector set in collected instances is based on raw terrain height, without displacement.
      * It's the renderer role to apply the correct displacement.
      */
-    bool collectInstances(std::vector<VegetationInstance> *result, const VegetationModelDefinition &model, double xmin,
+    bool collectInstances(vector<VegetationInstance> *result, const VegetationModelDefinition &model, double xmin,
                           double zmin, double xmax, double zmax, bool outcomers = true) const;
 
     double getMaxHeight() const;

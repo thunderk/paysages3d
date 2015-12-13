@@ -13,7 +13,7 @@ typedef struct {
     double rely;
 } PixelCall;
 
-std::vector<PixelCall> calls;
+vector<PixelCall> calls;
 
 class MockOverlayRasterizer : public OverlayRasterizer {
   public:

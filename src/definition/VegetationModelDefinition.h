@@ -27,13 +27,13 @@ class DEFINITIONSHARED_EXPORT VegetationModelDefinition : public DefinitionNode 
         return *foliage_material;
     }
 
-    inline const std::vector<CappedCylinder> &getSolidVolumes() const {
+    inline const vector<CappedCylinder> &getSolidVolumes() const {
         return solid_volumes;
     }
-    inline const std::vector<Sphere> &getFoliageGroups() const {
+    inline const vector<Sphere> &getFoliageGroups() const {
         return foliage_groups;
     }
-    inline const std::vector<Disk> &getFoliageItems() const {
+    inline const vector<Disk> &getFoliageItems() const {
         return foliage_items;
     }
 
@@ -50,9 +50,9 @@ class DEFINITIONSHARED_EXPORT VegetationModelDefinition : public DefinitionNode 
   private:
     SurfaceMaterial *solid_material;
     SurfaceMaterial *foliage_material;
-    std::vector<CappedCylinder> solid_volumes;
-    std::vector<Sphere> foliage_groups;
-    std::vector<Disk> foliage_items;
+    vector<CappedCylinder> solid_volumes;
+    vector<Sphere> foliage_groups;
+    vector<Disk> foliage_items;
 };
 }
 }

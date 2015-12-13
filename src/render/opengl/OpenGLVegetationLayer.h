@@ -26,13 +26,13 @@ class OPENGLSHARED_EXPORT OpenGLVegetationLayer {
      * The array is not checked for already present instances.
      */
     virtual void produceInstancesInArea(double xmin, double xmax, double zmin, double zmax,
-                                        std::vector<OpenGLVegetationInstance *> *instances) const;
+                                        vector<OpenGLVegetationInstance *> *instances) const;
 
     /**
      * Remove instances outside of a given area.
      */
     virtual void removeInstancesOutsideArea(double xmin, double xmax, double zmin, double zmax,
-                                            std::vector<OpenGLVegetationInstance *> *instances) const;
+                                            vector<OpenGLVegetationInstance *> *instances) const;
 
     /**
      * Perform maintenance tasks that can be perform in a thread.
@@ -70,7 +70,7 @@ class OPENGLSHARED_EXPORT OpenGLVegetationLayer {
     double zmax;
     double range;
     bool own_instances;
-    std::vector<OpenGLVegetationInstance *> instances;
+    vector<OpenGLVegetationInstance *> instances;
     Mutex *lock_instances;
     OpenGLVegetationImpostor *impostor;
     Vector3 *camera_location;

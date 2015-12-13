@@ -6,7 +6,8 @@
 #include "OpenGLVertexArray.h"
 #include "Vector3.h"
 
-static void checkVertex(const OpenGLVertexArray *array, int index, const Vector3 &expected_location, double expected_u, double expected_v) {
+static void checkVertex(const OpenGLVertexArray *array, int index, const Vector3 &expected_location, double expected_u,
+                        double expected_v) {
     Vector3 location;
     double u, v;
 

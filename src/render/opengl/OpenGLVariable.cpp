@@ -17,7 +17,7 @@
 #include "Texture3D.h"
 #include "Texture4D.h"
 
-OpenGLVariable::OpenGLVariable(const std::string &name) : name(name) {
+OpenGLVariable::OpenGLVariable(const string &name) : name(name) {
     type = TYPE_NONE;
     texture_toupload = false;
     texture_id = 0;
@@ -35,7 +35,7 @@ OpenGLVariable::~OpenGLVariable() {
     delete[] value_texture_data;
 
     if (texture_id) {
-        Logs::warning() << "[OpenGL] Texture ID not freed " << texture_id << std::endl;
+        Logs::warning() << "[OpenGL] Texture ID not freed " << texture_id << endl;
     }
 }
 
@@ -82,6 +82,13 @@ void OpenGLVariable::apply(OpenGLShaderProgram *program, int &texture_unit) {
     }
 }
 
+void OpenGLVariable::destroy(OpenGLFunctions *functions) {
+    if (texture_id) {
+        functions->glDeleteTextures(1, &texture_id);
+        texture_id = 0;
+    }
+}
+
 void OpenGLVariable::set(const Texture2D *texture, bool repeat, bool color) {
     assert(type == TYPE_NONE or type == TYPE_TEXTURE_2D);
 
@@ -114,8 +121,7 @@ void OpenGLVariable::set(const Texture2D *texture, bool repeat, bool color) {
     texture_color = color;
 }
 
-void OpenGLVariable::set(const QImage &texture, bool repeat, bool color)
-{
+void OpenGLVariable::set(const QImage &texture, bool repeat, bool color) {
     assert(type == TYPE_NONE or type == TYPE_TEXTURE_2D);
 
     type = TYPE_TEXTURE_2D;
@@ -282,8 +288,10 @@ void OpenGLVariable::uploadTexture(OpenGLRenderer *renderer) {
     int dest_format = texture_color ? GL_RGBA : GL_RED;
 
     if (type == TYPE_TEXTURE_2D) {
-        functions->glTexImage2D(GL_TEXTURE_2D, 0, dest_format, texture_size_x, texture_size_y, 0, GL_RGBA, GL_FLOAT, value_texture_data);
+        functions->glTexImage2D(GL_TEXTURE_2D, 0, dest_format, texture_size_x, texture_size_y, 0, GL_RGBA, GL_FLOAT,
+                                value_texture_data);
     } else {
-        functions->glTexImage3D(GL_TEXTURE_3D, 0, dest_format, texture_size_x, texture_size_y, texture_size_z, 0, GL_RGBA, GL_FLOAT, value_texture_data);
+        functions->glTexImage3D(GL_TEXTURE_3D, 0, dest_format, texture_size_x, texture_size_y, texture_size_z, 0,
+                                GL_RGBA, GL_FLOAT, value_texture_data);
     }
 }

@@ -29,8 +29,8 @@ OpenGLVegetationLayer::~OpenGLVegetationLayer() {
 }
 
 void OpenGLVegetationLayer::produceInstancesInArea(double xmin, double xmax, double zmin, double zmax,
-                                                   std::vector<OpenGLVegetationInstance *> *instances) const {
-    std::vector<VegetationInstance> result;
+                                                   vector<OpenGLVegetationInstance *> *instances) const {
+    vector<VegetationInstance> result;
     definition->getPresence()->collectInstances(&result, *definition->getModel(), xmin, zmin, xmax, zmax, false);
     for (auto raw_instance : result) {
         instances->push_back(new OpenGLVegetationInstance(raw_instance));
@@ -46,7 +46,7 @@ static bool compareInstances(OpenGLVegetationInstance *instance1, OpenGLVegetati
 }
 
 void OpenGLVegetationLayer::removeInstancesOutsideArea(double xmin, double xmax, double zmin, double zmax,
-                                                       std::vector<OpenGLVegetationInstance *> *instances) const {
+                                                       vector<OpenGLVegetationInstance *> *instances) const {
     for (auto &instance : *instances) {
         Vector3 base = instance->getBase();
         if (base.x < xmin or base.x >= xmax or base.z < zmin or base.z >= zmax) {
@@ -56,7 +56,7 @@ void OpenGLVegetationLayer::removeInstancesOutsideArea(double xmin, double xmax,
             instance = NULL;
         }
     }
-    instances->erase(std::remove_if(instances->begin(), instances->end(), isNull), instances->end());
+    instances->erase(remove_if(instances->begin(), instances->end(), isNull), instances->end());
 }
 
 void OpenGLVegetationLayer::threadedUpdate() {
@@ -71,7 +71,7 @@ void OpenGLVegetationLayer::threadedUpdate() {
         newzmax = camera_location->z + range;
 
         // Prepare instances where area grew
-        std::vector<OpenGLVegetationInstance *> new_instances;
+        vector<OpenGLVegetationInstance *> new_instances;
         if (newxmin < xmin) {
             produceInstancesInArea(newxmin, xmin, newzmin, newzmax, &new_instances);
         }
@@ -96,7 +96,7 @@ void OpenGLVegetationLayer::threadedUpdate() {
         for (auto instance : instances) {
             instance->setDistance(instance->getBase().sub(*camera_location).getNorm());
         }
-        std::sort(instances.begin(), instances.end(), compareInstances);
+        sort(instances.begin(), instances.end(), compareInstances);
         lock_instances->release();
 
         // Update impostor texture

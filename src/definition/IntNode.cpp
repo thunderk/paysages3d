@@ -6,12 +6,12 @@
 #include <sstream>
 #include <cassert>
 
-IntNode::IntNode(DefinitionNode *parent, const std::string &name, int value)
+IntNode::IntNode(DefinitionNode *parent, const string &name, int value)
     : DefinitionNode(parent, name, "int"), value(value) {
 }
 
-std::string IntNode::toString(int indent) const {
-    std::ostringstream stream;
+string IntNode::toString(int indent) const {
+    ostringstream stream;
 
     stream << DefinitionNode::toString(indent) << " " << value;
 
@@ -30,7 +30,7 @@ void IntNode::copy(DefinitionNode *destination) const {
     if (destination->getTypeName() == getTypeName()) {
         ((IntNode *)destination)->value = value;
     } else {
-        Logs::error() << "Can't copy from " << getTypeName() << " to " << destination->getTypeName() << std::endl;
+        Logs::error() << "Can't copy from " << getTypeName() << " to " << destination->getTypeName() << endl;
     }
 }
 
@@ -42,7 +42,7 @@ const IntDiff *IntNode::produceDiff(int new_value) const {
     return new IntDiff(this, value, new_value);
 }
 
-void IntNode::generateInitDiffs(std::vector<const DefinitionDiff *> *diffs) const {
+void IntNode::generateInitDiffs(vector<const DefinitionDiff *> *diffs) const {
     diffs->push_back(produceDiff(value));
 }
 
@@ -61,7 +61,7 @@ bool IntNode::applyDiff(const DefinitionDiff *diff, bool backward) {
         value = next;
         return true;
     } else {
-        Logs::error() << "Can't apply int diff " << previous << " => " << next << " to " << getName() << std::endl;
+        Logs::error() << "Can't apply int diff " << previous << " => " << next << " to " << getName() << endl;
         return false;
     }
 }

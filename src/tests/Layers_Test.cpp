@@ -6,11 +6,11 @@
 #include "IntNode.h"
 #include "DefinitionDiff.h"
 
-static DefinitionNode *_construc1(Layers *, const std::string &name) {
+static DefinitionNode *_construc1(Layers *, const string &name) {
     return new DefinitionNode(NULL, name);
 }
 
-static DefinitionNode *_construc2(Layers *parent, const std::string &name) {
+static DefinitionNode *_construc2(Layers *parent, const string &name) {
     DefinitionNode *result = new DefinitionNode(parent, name);
     return result;
 }
@@ -104,7 +104,7 @@ TEST(Layers, saveLoad) {
     EXPECT_EQ("second", layers2.getLayer(1)->getName());
 }
 
-static void checkLayerChild(const Layers &layers, int layer, const std::string &name, int value) {
+static void checkLayerChild(const Layers &layers, int layer, const string &name, int value) {
     ASSERT_EQ(1, layers.getLayerCount());
     ASSERT_TRUE(layers.getLayer(layer)->findByPath(name));
     ASSERT_EQ("int", layers.getLayer(layer)->findByPath(name)->getTypeName());
@@ -113,13 +113,13 @@ static void checkLayerChild(const Layers &layers, int layer, const std::string &
 
 class TestLayer : public DefinitionNode {
   public:
-    TestLayer(Layers *parent, const std::string &name) : DefinitionNode(parent, name) {
+    TestLayer(Layers *parent, const string &name) : DefinitionNode(parent, name) {
         val = new IntNode(this, "val", 5);
     }
     IntNode *val;
 };
 
-static DefinitionNode *_construc3(Layers *parent, const std::string &name) {
+static DefinitionNode *_construc3(Layers *parent, const string &name) {
     return new TestLayer(parent, name);
 }
 
@@ -174,7 +174,7 @@ TEST(Layers, undoRedo) {
 TEST(Layers, generateInitDiffs) {
     Layers layers(NULL, "layers", _construc1);
 
-    std::vector<const DefinitionDiff *> diffs;
+    vector<const DefinitionDiff *> diffs;
     layers.generateInitDiffs(&diffs);
     EXPECT_EQ(0, (int)diffs.size());
 

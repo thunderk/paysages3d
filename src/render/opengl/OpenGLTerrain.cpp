@@ -32,7 +32,7 @@ class ChunkMaintenanceThreads : public ParallelPool {
     OpenGLTerrain *terrain;
 };
 
-OpenGLTerrain::OpenGLTerrain(OpenGLRenderer *renderer) : OpenGLPart(renderer) {
+OpenGLTerrain::OpenGLTerrain(OpenGLRenderer *renderer) : OpenGLPart(renderer, "terrain") {
     work = new ChunkMaintenanceThreads(this);
     paused = false;
 
@@ -62,7 +62,7 @@ void OpenGLTerrain::initialize() {
     for (int i = 0; i < chunks; i++) {
         for (int j = 0; j < chunks; j++) {
             OpenGLTerrainChunk *chunk = new OpenGLTerrainChunk(renderer, start + chunksize * (double)i,
-                                                                   start + chunksize * (double)j, chunksize, chunks);
+                                                               start + chunksize * (double)j, chunksize, chunks);
             _chunks.append(chunk);
             _updateQueue.append(chunk);
         }
@@ -91,6 +91,13 @@ void OpenGLTerrain::render() {
 void OpenGLTerrain::interrupt() {
     for (auto &chunk : _chunks) {
         chunk->askInterrupt();
+    }
+}
+
+void OpenGLTerrain::destroy() {
+    OpenGLFunctions *functions = getFunctions();
+    for (auto &chunk : _chunks) {
+        chunk->destroy(functions);
     }
 }
 

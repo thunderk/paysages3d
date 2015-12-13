@@ -53,7 +53,7 @@ class SOFTWARESHARED_EXPORT FluidMediumManager {
 
   private:
     SoftwareRenderer *renderer;
-    std::vector<FluidMediumInterface *> media;
+    vector<FluidMediumInterface *> media;
 };
 }
 }

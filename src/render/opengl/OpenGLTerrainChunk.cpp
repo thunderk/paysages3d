@@ -146,14 +146,14 @@ void OpenGLTerrainChunk::updatePriority(CameraDefinition *camera) {
     _lock_data->release();
 
     // Update wanted LOD
-    if (distance_to_camera < 60.0) {
+    if (distance_to_camera < 100.0) {
         _texture_wanted_size = _texture_max_size;
-    } else if (distance_to_camera < 140.0) {
+    } else if (distance_to_camera < 200.0) {
         _texture_wanted_size = _texture_max_size / 4;
-    } else if (distance_to_camera < 300.0) {
+    } else if (distance_to_camera < 400.0) {
         _texture_wanted_size = _texture_max_size / 8;
     } else {
-        _texture_wanted_size = 8;
+        _texture_wanted_size = _texture_max_size / 16;
     }
 
     // Update priority
@@ -195,6 +195,11 @@ void OpenGLTerrainChunk::askResume() {
     interrupt = false;
 }
 
+void OpenGLTerrainChunk::destroy(OpenGLFunctions *functions) {
+    vertices->destroy(functions);
+    glstate->destroy(functions);
+}
+
 void OpenGLTerrainChunk::setFirstStepVertices() {
     OpenGLVertexArray next(true);
     next.setVertexCount(6);
@@ -210,6 +215,9 @@ void OpenGLTerrainChunk::augmentVertices() {
     // TODO Re-use existing vertices from previous level when possible
     double quad_size = _size / (double)next_vertices_level;
     for (int iz = 0; iz < next_vertices_level; iz++) {
+        if (interrupt or _reset_topology) {
+            return;
+        }
         for (int ix = 0; ix < next_vertices_level; ix++) {
             fillVerticesFromSquare(&next, (iz * next_vertices_level + ix) * 6, _startx + quad_size * (double)ix,
                                    _startz + quad_size * (double)iz, quad_size);

@@ -51,12 +51,12 @@ class OPENGLSHARED_EXPORT OpenGLVegetation : public OpenGLPart, public Definitio
      *
      * This will not hold a lock on them, but increment a reference counter to not delete them while in use.
      */
-    void acquireLayers(std::vector<OpenGLVegetationLayer *> &layers);
+    void acquireLayers(vector<OpenGLVegetationLayer *> &layers);
 
     /**
      * Release the layers acquired by acquireLayers.
      */
-    void releaseLayers(const std::vector<OpenGLVegetationLayer *> &layers);
+    void releaseLayers(const vector<OpenGLVegetationLayer *> &layers);
 
     /**
      * Find a rendering layer, by the matching definition layer.
@@ -79,7 +79,7 @@ class OPENGLSHARED_EXPORT OpenGLVegetation : public OpenGLPart, public Definitio
   private:
     OpenGLShaderProgram *program;
     bool enabled;
-    std::vector<OpenGLVegetationLayer *> layers;
+    vector<OpenGLVegetationLayer *> layers;
     Mutex *layers_lock;
     VegetationUpdater *updater;
 };

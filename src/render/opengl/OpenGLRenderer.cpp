@@ -20,6 +20,8 @@ OpenGLRenderer::OpenGLRenderer(Scenery *scenery) : SoftwareRenderer(scenery) {
     ready = false;
     paused = false;
     displayed = false;
+    stopping = false;
+    stopped = false;
     vp_width = 1;
     vp_height = 1;
 
@@ -38,26 +40,23 @@ OpenGLRenderer::OpenGLRenderer(Scenery *scenery) : SoftwareRenderer(scenery) {
     shared_state->set("viewDistance", 300.0);
     shared_state->set("exposure", 1.2);
 
-    skybox = new OpenGLSkybox(this);
-    water = new OpenGLWater(this);
-    terrain = new OpenGLTerrain(this);
-    vegetation = new OpenGLVegetation(this);
+    parts.push_back(skybox = new OpenGLSkybox(this));
+    parts.push_back(water = new OpenGLWater(this));
+    parts.push_back(terrain = new OpenGLTerrain(this));
+    parts.push_back(vegetation = new OpenGLVegetation(this));
 }
 
 OpenGLRenderer::~OpenGLRenderer() {
-    vegetation->interrupt();
-    terrain->interrupt();
-    water->interrupt();
-    skybox->interrupt();
+    for (auto part : parts) {
+        part->interrupt();
+    }
 
     delete mouse_projected;
-
     delete view_matrix;
 
-    delete skybox;
-    delete water;
-    delete terrain;
-    delete vegetation;
+    for (auto part : parts) {
+        delete part;
+    }
 
     delete functions;
     delete shared_state;
@@ -72,11 +71,21 @@ void OpenGLRenderer::prepare() {
     getVegetationRenderer()->setEnabled(false);
 }
 
-void OpenGLRenderer::checkForErrors(const std::string &domain) {
+void OpenGLRenderer::checkForErrors(const string &domain) {
     int error_code;
     while ((error_code = functions->glGetError()) != GL_NO_ERROR) {
-        Logs::warning() << "[OpenGL] Error in " << domain << " : " << error_code << std::endl;
+        Logs::warning() << "[OpenGL] Error in " << domain << " : " << error_code << endl;
     }
+}
+
+void OpenGLRenderer::destroy() {
+    shared_state->destroy(functions);
+
+    for (auto part : parts) {
+        part->destroy();
+    }
+
+    checkForErrors("destroy");
 }
 
 void OpenGLRenderer::initialize() {
@@ -84,30 +93,23 @@ void OpenGLRenderer::initialize() {
 
     if (init) {
         Logs::debug() << "[OpenGL] renderer started (version " << functions->glGetString(GL_VERSION)
-                      << ", glsl version " << functions->glGetString(GL_SHADING_LANGUAGE_VERSION) << ")" << std::endl;
+                      << ", glsl version " << functions->glGetString(GL_SHADING_LANGUAGE_VERSION) << ")" << endl;
 
         prepareOpenGLState();
 
         prepare();
 
-        skybox->initialize();
-        skybox->updateScenery();
-
-        water->initialize();
-        water->updateScenery();
-
-        terrain->initialize();
-        terrain->updateScenery();
-
-        vegetation->initialize();
-        vegetation->updateScenery();
+        for (auto part : parts) {
+            part->initialize();
+            part->updateScenery();
+        }
 
         cameraChangeEvent(render_camera);
 
         checkForErrors("initialize");
         ready = true;
     } else {
-        Logs::error() << "[OpenGL] Failed to initialize api bindings" << std::endl;
+        Logs::error() << "[OpenGL] Failed to initialize api bindings" << endl;
     }
 }
 
@@ -159,23 +161,21 @@ void OpenGLRenderer::resize(int width, int height) {
 }
 
 void OpenGLRenderer::paint(bool clear) {
-    if (ready and not paused) {
+    if (stopping) {
+        if (not stopped) {
+            destroy();
+            stopped = true;
+        }
+    } else if (ready and not paused) {
         checkForErrors("before_paint");
         if (clear) {
             functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
-        skybox->render();
-        checkForErrors("skybox");
-
-        terrain->render();
-        checkForErrors("terrain");
-
-        water->render();
-        checkForErrors("water");
-
-        vegetation->render();
-        checkForErrors("vegetation");
+        for (auto part : parts) {
+            part->render();
+            checkForErrors(part->getName());
+        }
 
         if (mouse_tracking) {
             updateMouseProjection();
@@ -186,25 +186,37 @@ void OpenGLRenderer::paint(bool clear) {
     }
 }
 
+bool OpenGLRenderer::stop() {
+    stopping = true;
+    return stopped;
+}
+
 void OpenGLRenderer::reset() {
     if (ready) {
-        skybox->updateScenery();
-        water->updateScenery();
-        terrain->updateScenery();
-        vegetation->updateScenery();
+        for (auto part : parts) {
+            part->updateScenery();
+        }
 
         cameraChangeEvent(render_camera);
     }
 }
 
 void OpenGLRenderer::pause() {
-    paused = true;
-    terrain->pause();
+    if (not paused) {
+        paused = true;
+        for (auto part : parts) {
+            part->pause();
+        }
+    }
 }
 
 void OpenGLRenderer::resume() {
-    paused = false;
-    terrain->resume();
+    if (paused) {
+        for (auto part : parts) {
+            part->resume();
+        }
+        paused = false;
+    }
 }
 
 void OpenGLRenderer::setMouseLocation(int x, int y) {

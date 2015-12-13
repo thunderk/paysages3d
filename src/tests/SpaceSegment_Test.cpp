@@ -5,7 +5,7 @@
 
 class CollectGridIterator : public SpaceGridIterator {
   public:
-    std::vector<Vector3> locations;
+    vector<Vector3> locations;
 
   protected:
     virtual bool onCell(int x, int y, int z) override {

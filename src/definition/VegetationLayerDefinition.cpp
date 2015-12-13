@@ -3,7 +3,7 @@
 #include "VegetationModelDefinition.h"
 #include "VegetationPresenceDefinition.h"
 
-VegetationLayerDefinition::VegetationLayerDefinition(DefinitionNode *parent, const std::string &name)
+VegetationLayerDefinition::VegetationLayerDefinition(DefinitionNode *parent, const string &name)
     : DefinitionNode(parent, name, "vegetationlayer") {
     model = new VegetationModelDefinition(this);
     presence = new VegetationPresenceDefinition(this);

@@ -18,20 +18,20 @@ class SYSTEMSHARED_EXPORT DataFile {
      *
      * Return the absolute data path, or an empty string if not found.
      */
-    static std::string findFile(const std::string &relpath);
+    static string findFile(const string &relpath);
 
     /**
      * Find a data directory.
      *
      * Return the absolute data path, or an empty string if not found.
      */
-    static std::string findDir(const std::string &relpath);
+    static string findDir(const string &relpath);
 
   private:
     static bool tryDataDir(const QDir &dir);
-    static std::string locateDataDir();
-    static std::string initDataDir();
-    static std::string dataDir;
+    static string locateDataDir();
+    static string initDataDir();
+    static string dataDir;
 };
 }
 }

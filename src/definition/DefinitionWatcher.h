@@ -19,6 +19,12 @@ class DEFINITIONSHARED_EXPORT DefinitionWatcher {
      * Abstract method called when a node changed.
      */
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) = 0;
+
+  protected:
+    /**
+     * Start watching a path in a definition tree.
+     */
+    void startWatching(const DefinitionNode *root, const string &path, bool init_diff = true);
 };
 }
 }

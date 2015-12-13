@@ -105,7 +105,7 @@ static inline double randomizeValue(RandomGenerator &random, double base, double
     return base * (min_factor + random.genDouble() * (max_factor - min_factor));
 }
 
-static void addBranchRecurse(RandomGenerator &random, std::vector<CappedCylinder> &branches, const Vector3 &base,
+static void addBranchRecurse(RandomGenerator &random, vector<CappedCylinder> &branches, const Vector3 &base,
                              const Vector3 &direction, double radius, double length) {
     branches.push_back(CappedCylinder(base, direction, radius, length));
 

@@ -13,17 +13,17 @@ class SYSTEMSHARED_EXPORT FileSystem {
      *
      * filename must not contain directory separators.
      */
-    static std::string getTempFile(const std::string &filename);
+    static string getTempFile(const string &filename);
 
     /**
      * Returns true if the given path points to a file.
      */
-    static bool isFile(const std::string &filepath);
+    static bool isFile(const string &filepath);
 
     /**
      * Remove a file by its absolute path.
      */
-    static bool removeFile(const std::string &filepath);
+    static bool removeFile(const string &filepath);
 };
 }
 }

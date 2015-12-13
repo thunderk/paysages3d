@@ -20,7 +20,7 @@ class SOFTWARESHARED_EXPORT LightSource {
      *
      * Returns true if lights were added to *result*.
      */
-    virtual bool getLightsAt(std::vector<LightComponent> &result, const Vector3 &location) const = 0;
+    virtual bool getLightsAt(vector<LightComponent> &result, const Vector3 &location) const = 0;
 };
 }
 }

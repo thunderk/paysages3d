@@ -89,7 +89,7 @@ class SOFTWARESHARED_EXPORT CanvasPortion {
     int yoffset;
     CanvasPixel *pixels;
     CanvasPreview *preview;
-    std::string filepath;
+    string filepath;
 };
 }
 }

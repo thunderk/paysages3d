@@ -15,7 +15,13 @@ void OpenGLSharedState::apply(OpenGLShaderProgram *program, int &texture_unit) {
     }
 }
 
-OpenGLVariable *OpenGLSharedState::get(const std::string &name) {
+void OpenGLSharedState::destroy(OpenGLFunctions *functions) {
+    for (const auto &pair : variables) {
+        pair.second->destroy(functions);
+    }
+}
+
+OpenGLVariable *OpenGLSharedState::get(const string &name) {
     OpenGLVariable *&var = variables[name];
     if (var == NULL) {
         var = new OpenGLVariable(name);

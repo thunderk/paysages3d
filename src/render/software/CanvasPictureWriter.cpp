@@ -37,7 +37,7 @@ void CanvasPictureWriter::setColorProfile(const ColorProfile &profile) {
     profile.copy(this->profile);
 }
 
-bool CanvasPictureWriter::saveCanvas(const std::string &filepath) {
+bool CanvasPictureWriter::saveCanvas(const string &filepath) {
     return save(filepath, width, height);
 }
 

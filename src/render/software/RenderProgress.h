@@ -58,7 +58,7 @@ class SOFTWARESHARED_EXPORT RenderProgress {
     double prev_est_done;
     double prev_est_speed;
 
-    std::stack<RenderSub> subs;
+    stack<RenderSub> subs;
 };
 }
 }

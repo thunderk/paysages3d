@@ -3,7 +3,7 @@
 #include "Logs.h"
 #include <QDir>
 
-std::string DataFile::findFile(const std::string &relpath) {
+string DataFile::findFile(const string &relpath) {
     if (dataDir.empty()) {
         dataDir = initDataDir();
     }
@@ -16,16 +16,16 @@ std::string DataFile::findFile(const std::string &relpath) {
     }
 }
 
-std::string DataFile::findDir(const std::string &relpath) {
+string DataFile::findDir(const string &relpath) {
     return findFile(relpath);
 }
 
 bool DataFile::tryDataDir(const QDir &dir) {
-    Logs::debug() << "[System] Try data dir " << dir.absolutePath().toStdString() << std::endl;
+    Logs::debug() << "[System] Try data dir " << dir.absolutePath().toStdString() << endl;
     return dir.exists("data/.paysages_data");
 }
 
-std::string DataFile::locateDataDir() {
+string DataFile::locateDataDir() {
     QDir dir = QDir::current();
     int i = 0;
 
@@ -47,16 +47,16 @@ std::string DataFile::locateDataDir() {
     return "";
 }
 
-std::string DataFile::initDataDir() {
-    std::string parent = locateDataDir();
+string DataFile::initDataDir() {
+    string parent = locateDataDir();
     if (parent.empty()) {
-        Logs::warning() << "[System] Data files not found" << std::endl;
+        Logs::warning() << "[System] Data files not found" << endl;
         return parent;
     } else {
-        std::string result = QDir(QString::fromStdString(parent)).absoluteFilePath("data").toStdString();
-        Logs::debug() << "[System] Data files found : " << result << std::endl;
+        string result = QDir(QString::fromStdString(parent)).absoluteFilePath("data").toStdString();
+        Logs::debug() << "[System] Data files found : " << result << endl;
         return result;
     }
 }
 
-std::string DataFile::dataDir;
+string DataFile::dataDir;

@@ -4,7 +4,7 @@
 #include "Logs.h"
 #include "LayersDiff.h"
 
-Layers::Layers(DefinitionNode *parent, const std::string &name, LayerConstructor layer_constructor)
+Layers::Layers(DefinitionNode *parent, const string &name, LayerConstructor layer_constructor)
     : DefinitionNode(parent, name, "layers" + name), layer_constructor(layer_constructor) {
     max_layer_count = 100;
     null_layer = layer_constructor(this, "#NULL#");
@@ -69,7 +69,7 @@ DefinitionNode *Layers::getLayer(int position) const {
         return layers[position];
     } else {
         Logs::warning() << "Asked for a undefined layer " << position << " on a total of " << (int)layers.size()
-                        << std::endl;
+                        << endl;
         return null_layer;
     }
 }
@@ -81,12 +81,12 @@ bool Layers::applyDiff(const DefinitionDiff *diff, bool backward) {
 
     if ((not backward and op == LayersDiff::LAYER_ADDED) or (backward and op == LayersDiff::LAYER_REMOVED)) {
         if (layer_count >= max_layer_count) {
-            Logs::warning() << "Add layer ignored because limit of " << max_layer_count << " reached" << std::endl;
+            Logs::warning() << "Add layer ignored because limit of " << max_layer_count << " reached" << endl;
             return false;
         } else {
             int position = layer_diff->getLayer1();
             if (position < 0 or position > layer_count) {
-                Logs::error() << "Add layer ignored because requested position was incorrect" << std::endl;
+                Logs::error() << "Add layer ignored because requested position was incorrect" << endl;
                 return false;
             } else {
                 DefinitionNode *layer = layer_constructor(this, "temp");
@@ -104,7 +104,7 @@ bool Layers::applyDiff(const DefinitionDiff *diff, bool backward) {
         int position = layer_diff->getLayer1();
         if (position < 0 or position >= layer_count) {
             Logs::warning() << "Removing unknown layer " << position << " on " << layer_count << " from '" << getName()
-                            << "'" << std::endl;
+                            << "'" << endl;
             return false;
         } else {
             DefinitionNode *removed = layers[position];
@@ -117,7 +117,7 @@ bool Layers::applyDiff(const DefinitionDiff *diff, bool backward) {
     return false;
 }
 
-void Layers::generateInitDiffs(std::vector<const DefinitionDiff *> *diffs) const {
+void Layers::generateInitDiffs(vector<const DefinitionDiff *> *diffs) const {
     int i = 0;
     for (auto layer : layers) {
         auto diff = new LayersDiff(this, LayersDiff::LAYER_ADDED, i++);
@@ -132,7 +132,7 @@ void Layers::addLayer(const DefinitionNode &tocopy) {
     addDiff(diff);
 }
 
-void Layers::addLayer(const std::string &name) {
+void Layers::addLayer(const string &name) {
     auto layer = layer_constructor(this, name);
     addLayer(*layer);
     delete layer;

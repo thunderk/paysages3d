@@ -152,7 +152,7 @@ class Texture2DWriter : public PictureWriter {
     const Texture2D *tex;
 };
 
-void Texture2D::saveToFile(const std::string &filepath) const {
+void Texture2D::saveToFile(const string &filepath) const {
     Texture2DWriter writer(this);
     writer.save(filepath, xsize, ysize);
 }

@@ -5,7 +5,7 @@
 #include "LightFilter.h"
 
 class FakeLightSource : public LightSource {
-    virtual bool getLightsAt(std::vector<LightComponent> &, const Vector3 &) const override {
+    virtual bool getLightsAt(vector<LightComponent> &, const Vector3 &) const override {
         return false;
     }
 };

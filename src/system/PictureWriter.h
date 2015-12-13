@@ -11,7 +11,7 @@ class SYSTEMSHARED_EXPORT PictureWriter {
     /**
      * @brief Start saving the picture in a file.
      */
-    bool save(const std::string &filepath, int width, int height);
+    bool save(const string &filepath, int width, int height);
 
   protected:
     /**

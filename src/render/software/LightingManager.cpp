@@ -38,14 +38,14 @@ void LightingManager::clearSources() {
 }
 
 void LightingManager::registerSource(LightSource *source) {
-    if (std::find(sources.begin(), sources.end(), source) == sources.end()) {
+    if (find(sources.begin(), sources.end(), source) == sources.end()) {
         sources.push_back(source);
     }
 }
 
 void LightingManager::unregisterSource(LightSource *source) {
-    if (std::find(sources.begin(), sources.end(), source) != sources.end()) {
-        sources.erase(std::find(sources.begin(), sources.end(), source));
+    if (find(sources.begin(), sources.end(), source) != sources.end()) {
+        sources.erase(find(sources.begin(), sources.end(), source));
     }
 }
 
@@ -54,14 +54,14 @@ void LightingManager::clearFilters() {
 }
 
 void LightingManager::registerFilter(LightFilter *filter) {
-    if (std::find(filters.begin(), filters.end(), filter) == filters.end()) {
+    if (find(filters.begin(), filters.end(), filter) == filters.end()) {
         filters.push_back(filter);
     }
 }
 
 void LightingManager::unregisterFilter(LightFilter *filter) {
-    if (std::find(filters.begin(), filters.end(), filter) != filters.end()) {
-        filters.erase(std::find(filters.begin(), filters.end(), filter));
+    if (find(filters.begin(), filters.end(), filter) != filters.end()) {
+        filters.erase(find(filters.begin(), filters.end(), filter));
     }
 }
 
@@ -165,7 +165,7 @@ void LightingManager::fillStatus(LightStatus &status, const Vector3 &location) c
         status.pushComponent(light);
     }
     for (auto source : sources) {
-        std::vector<LightComponent> lights;
+        vector<LightComponent> lights;
         if (source->getLightsAt(lights, location)) {
             for (auto &light : lights) {
                 status.pushComponent(light);

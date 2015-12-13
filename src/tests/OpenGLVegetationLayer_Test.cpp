@@ -17,7 +17,7 @@ class FakeLayerRenderer : public OpenGLVegetationLayer {
         }
     }
     virtual void produceInstancesInArea(double xmin, double xmax, double zmin, double zmax,
-                                        std::vector<OpenGLVegetationInstance *> *instances) const override {
+                                        vector<OpenGLVegetationInstance *> *instances) const override {
         for (auto instance : static_instances) {
             Vector3 location = instance->getBase();
             if (location.x >= xmin and location.z >= zmin and location.x < xmax and location.z < zmax) {
@@ -25,7 +25,7 @@ class FakeLayerRenderer : public OpenGLVegetationLayer {
             }
         }
     }
-    std::vector<OpenGLVegetationInstance *> static_instances;
+    vector<OpenGLVegetationInstance *> static_instances;
 };
 
 TEST(OpenGLVegetationLayer, threadedUpdate) {

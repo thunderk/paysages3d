@@ -110,7 +110,7 @@ RayCastingResult VegetationRenderer::getBoundResult(const SpaceSegment &segment,
     for (int i = 0; i < n; i++) {
         VegetationLayerDefinition *layer = vegetation->getVegetationLayer(i);
 
-        std::vector<VegetationInstance> instances;
+        vector<VegetationInstance> instances;
         layer->getPresence()->collectInstances(&instances, *layer->getModel(), x, z, x + xsize, z + zsize);
 
         for (auto &instance : instances) {

@@ -19,6 +19,9 @@ class OpenGLView : public QQuickItem {
     void handleResize();
     void handleSceneGraphReady();
 
+signals:
+    void stopped();
+
   protected:
     virtual void wheelEvent(QWheelEvent *event) override;
     virtual void mousePressEvent(QMouseEvent *event) override;

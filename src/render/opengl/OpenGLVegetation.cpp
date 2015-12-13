@@ -25,7 +25,7 @@ class paysages::opengl::VegetationUpdater : public Thread {
   protected:
     virtual void run() override {
         while (not interrupted) {
-            std::vector<OpenGLVegetationLayer *> layers;
+            vector<OpenGLVegetationLayer *> layers;
             vegetation->acquireLayers(layers);
             for (auto layer : layers) {
                 layer->threadedUpdate();
@@ -40,7 +40,7 @@ class paysages::opengl::VegetationUpdater : public Thread {
     OpenGLVegetation *vegetation;
 };
 
-OpenGLVegetation::OpenGLVegetation(OpenGLRenderer *renderer) : OpenGLPart(renderer) {
+OpenGLVegetation::OpenGLVegetation(OpenGLRenderer *renderer) : OpenGLPart(renderer, "vegetation") {
     layers_lock = new Mutex();
     updater = new VegetationUpdater(this);
     enabled = true;
@@ -79,7 +79,7 @@ void OpenGLVegetation::update() {
 
 void OpenGLVegetation::render() {
     if (enabled) {
-        std::vector<OpenGLVegetationLayer *> layers;
+        vector<OpenGLVegetationLayer *> layers;
         acquireLayers(layers);
         for (auto layer : layers) {
             layer->render();
@@ -99,7 +99,7 @@ Scenery *OpenGLVegetation::getScenery() const {
 }
 
 void OpenGLVegetation::cameraChanged(const CameraDefinition *camera) {
-    std::vector<OpenGLVegetationLayer *> layers;
+    vector<OpenGLVegetationLayer *> layers;
     acquireLayers(layers);
     for (auto layer : layers) {
         layer->setCamera(camera);
@@ -107,7 +107,7 @@ void OpenGLVegetation::cameraChanged(const CameraDefinition *camera) {
     releaseLayers(layers);
 }
 
-void OpenGLVegetation::acquireLayers(std::vector<OpenGLVegetationLayer *> &layers) {
+void OpenGLVegetation::acquireLayers(vector<OpenGLVegetationLayer *> &layers) {
     layers_lock->acquire();
 
     for (auto layer : this->layers) {
@@ -118,7 +118,7 @@ void OpenGLVegetation::acquireLayers(std::vector<OpenGLVegetationLayer *> &layer
     layers_lock->release();
 }
 
-void OpenGLVegetation::releaseLayers(const std::vector<OpenGLVegetationLayer *> &layers) {
+void OpenGLVegetation::releaseLayers(const vector<OpenGLVegetationLayer *> &layers) {
     // TODO Reference count
 }
 
