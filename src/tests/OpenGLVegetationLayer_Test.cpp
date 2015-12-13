@@ -28,7 +28,7 @@ class FakeLayerRenderer : public OpenGLVegetationLayer {
     vector<OpenGLVegetationInstance *> static_instances;
 };
 
-TEST(OpenGLVegetationLayer, threadedUpdate) {
+TEST(OpenGLVegetationLayer, updateInstances) {
     CameraDefinition camera;
     VegetationLayerDefinition definition(NULL, "test");
     FakeLayerRenderer rendering(&definition);
@@ -36,32 +36,32 @@ TEST(OpenGLVegetationLayer, threadedUpdate) {
 
     EXPECT_EQ(0, rendering.getInstanceCount());
 
-    rendering.threadedUpdate();
+    rendering.updateInstances();
     EXPECT_EQ(0, rendering.getInstanceCount());
 
     rendering.static_instances.push_back(
         new OpenGLVegetationInstance(VegetationInstance(model, Vector3(0.0, 0.0, 0.0))));
     rendering.reset();
-    rendering.threadedUpdate();
+    rendering.updateInstances();
     EXPECT_EQ(1, rendering.getInstanceCount());
 
     camera.setLocation(Vector3(-5.0, 0.0, 0.0));
     rendering.setCamera(&camera);
-    rendering.threadedUpdate();
+    rendering.updateInstances();
     EXPECT_EQ(1, rendering.getInstanceCount());
 
     camera.setLocation(Vector3(-11.0, 0.0, 0.0));
     rendering.setCamera(&camera);
-    rendering.threadedUpdate();
+    rendering.updateInstances();
     EXPECT_EQ(0, rendering.getInstanceCount());
 
     camera.setLocation(Vector3(0.0, 0.0, 5.0));
     rendering.setCamera(&camera);
-    rendering.threadedUpdate();
+    rendering.updateInstances();
     EXPECT_EQ(1, rendering.getInstanceCount());
 
     camera.setLocation(Vector3(0.0, 0.0, 15.0));
     rendering.setCamera(&camera);
-    rendering.threadedUpdate();
+    rendering.updateInstances();
     EXPECT_EQ(0, rendering.getInstanceCount());
 }

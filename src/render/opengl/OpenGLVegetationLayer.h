@@ -35,6 +35,20 @@ class OPENGLSHARED_EXPORT OpenGLVegetationLayer {
                                             vector<OpenGLVegetationInstance *> *instances) const;
 
     /**
+     * Update the instances list.
+     *
+     * This should be called when the camera has moved enough to make a change.
+     */
+    void updateInstances();
+
+    /**
+     * Update the impostor textures.
+     *
+     * This should be called when the camera has moved enough to make a change.
+     */
+    void updateImpostor();
+
+    /**
      * Perform maintenance tasks that can be perform in a thread.
      *
      * This will be called from a thread separate from the main GUI thread,

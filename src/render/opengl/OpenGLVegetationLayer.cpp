@@ -59,49 +59,55 @@ void OpenGLVegetationLayer::removeInstancesOutsideArea(double xmin, double xmax,
     instances->erase(remove_if(instances->begin(), instances->end(), isNull), instances->end());
 }
 
+void OpenGLVegetationLayer::updateInstances() {
+    // Compute new area around camera
+    double newxmin, newxmax, newzmin, newzmax;
+    newxmin = camera_location->x - range;
+    newxmax = camera_location->x + range;
+    newzmin = camera_location->z - range;
+    newzmax = camera_location->z + range;
+
+    // Prepare instances where area grew
+    vector<OpenGLVegetationInstance *> new_instances;
+    if (newxmin < xmin) {
+        produceInstancesInArea(newxmin, xmin, newzmin, newzmax, &new_instances);
+    }
+    if (newxmax > xmax) {
+        produceInstancesInArea(xmax, newxmax, newzmin, newzmax, &new_instances);
+    }
+    if (newzmin < zmin) {
+        produceInstancesInArea(xmin, xmax, newzmin, zmin, &new_instances);
+    }
+    if (newzmax > zmax) {
+        produceInstancesInArea(xmin, xmax, zmax, newzmax, &new_instances);
+    }
+
+    // Apply the changes
+    lock_instances->acquire();
+    xmin = newxmin;
+    xmax = newxmax;
+    zmin = newzmin;
+    zmax = newzmax;
+    removeInstancesOutsideArea(xmin, xmax, zmin, zmax, &instances);
+    instances.insert(instances.end(), new_instances.begin(), new_instances.end());
+    for (auto instance : instances) {
+        instance->setDistance(instance->getBase().sub(*camera_location).getNorm());
+    }
+    sort(instances.begin(), instances.end(), compareInstances);
+    lock_instances->release();
+}
+
+void OpenGLVegetationLayer::updateImpostor() {
+    bool interrupted = false;
+    impostor->prepareTexture(*definition->getModel(), *parent->getScenery(), &interrupted);
+}
+
 void OpenGLVegetationLayer::threadedUpdate() {
     if (camera_changed) {
         camera_changed = false;
 
-        // Compute new area around camera
-        double newxmin, newxmax, newzmin, newzmax;
-        newxmin = camera_location->x - range;
-        newxmax = camera_location->x + range;
-        newzmin = camera_location->z - range;
-        newzmax = camera_location->z + range;
-
-        // Prepare instances where area grew
-        vector<OpenGLVegetationInstance *> new_instances;
-        if (newxmin < xmin) {
-            produceInstancesInArea(newxmin, xmin, newzmin, newzmax, &new_instances);
-        }
-        if (newxmax > xmax) {
-            produceInstancesInArea(xmax, newxmax, newzmin, newzmax, &new_instances);
-        }
-        if (newzmin < zmin) {
-            produceInstancesInArea(xmin, xmax, newzmin, zmin, &new_instances);
-        }
-        if (newzmax > zmax) {
-            produceInstancesInArea(xmin, xmax, zmax, newzmax, &new_instances);
-        }
-
-        // Apply the changes
-        lock_instances->acquire();
-        xmin = newxmin;
-        xmax = newxmax;
-        zmin = newzmin;
-        zmax = newzmax;
-        removeInstancesOutsideArea(xmin, xmax, zmin, zmax, &instances);
-        instances.insert(instances.end(), new_instances.begin(), new_instances.end());
-        for (auto instance : instances) {
-            instance->setDistance(instance->getBase().sub(*camera_location).getNorm());
-        }
-        sort(instances.begin(), instances.end(), compareInstances);
-        lock_instances->release();
-
-        // Update impostor texture
-        bool interrupted = false;
-        impostor->prepareTexture(*definition->getModel(), *parent->getScenery(), &interrupted);
+        updateInstances();
+        updateImpostor();
     }
 }
 
