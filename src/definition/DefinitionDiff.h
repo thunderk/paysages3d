@@ -14,6 +14,7 @@ namespace definition {
 class DEFINITIONSHARED_EXPORT DefinitionDiff {
   public:
     DefinitionDiff(const DefinitionNode *node);
+    DefinitionDiff(const DefinitionDiff *other);
     virtual ~DefinitionDiff();
 
     inline const string &getTypeName() const {
@@ -22,6 +23,13 @@ class DEFINITIONSHARED_EXPORT DefinitionDiff {
     inline const string &getPath() const {
         return path;
     }
+
+    /**
+     * Abstract method to build a reversed diff (used for undoing).
+     *
+     * This diff is allocated and should be freed by the caller.
+     */
+    virtual DefinitionDiff *newReversed() const = 0;
 
   private:
     string type_name;

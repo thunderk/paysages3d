@@ -14,6 +14,7 @@ class DEFINITIONSHARED_EXPORT LayersDiff : public DefinitionDiff {
 
   public:
     LayersDiff(const Layers *layers, LayersDiffOp op, int layer1);
+    LayersDiff(const LayersDiff *other, LayersDiffOp op, int layer1);
     virtual ~LayersDiff();
 
     inline LayersDiffOp getOp() const {
@@ -32,6 +33,8 @@ class DEFINITIONSHARED_EXPORT LayersDiff : public DefinitionDiff {
      * Restore the saved layer into a node.
      */
     void restoreSavedLayer(DefinitionNode *dest) const;
+
+    virtual DefinitionDiff *newReversed() const override;
 
   private:
     // Operation to apply

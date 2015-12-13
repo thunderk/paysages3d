@@ -2,6 +2,7 @@
 
 #include "IntNode.h"
 #include "IntDiff.h"
+#include "FloatDiff.h"
 #include "PackStream.h"
 
 TEST(IntNode, toString) {
@@ -64,7 +65,7 @@ TEST(IntNode, applyDiff) {
     IntNode node(NULL, "test", 1);
     IntDiff diff(&node, 1, 2);
     DefinitionNode onode(NULL, "test", "badtype");
-    DefinitionDiff odiff(&onode);
+    FloatDiff odiff(&onode, 1.0, 2.0);
     bool result;
 
     EXPECT_DOUBLE_EQ(1, node.getValue());

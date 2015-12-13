@@ -1,6 +1,7 @@
 #include "DiffManager.h"
 
 #include <algorithm>
+#include <memory>
 #include "DefinitionNode.h"
 #include "DefinitionDiff.h"
 #include "DefinitionWatcher.h"
@@ -57,8 +58,8 @@ void DiffManager::undo() {
             node->applyDiff(diff, true);
 
             for (auto watcher : watchers[node]) {
-                // FIXME Reverse diff
-                watcher->nodeChanged(node, diff);
+                unique_ptr<DefinitionDiff> reversed(diff->newReversed());
+                watcher->nodeChanged(node, reversed.get());
             }
         } else {
             Logs::error("Definition") << "Can't find node to undo diff : " << diff->getPath() << endl;

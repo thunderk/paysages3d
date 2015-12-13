@@ -14,6 +14,7 @@ namespace definition {
 class DEFINITIONSHARED_EXPORT FloatDiff : public DefinitionDiff {
   public:
     FloatDiff(const DefinitionNode *node, double oldvalue, double newvalue);
+    FloatDiff(const FloatDiff *other, double oldvalue, double newvalue);
 
     inline double getOldValue() const {
         return oldvalue;
@@ -21,6 +22,8 @@ class DEFINITIONSHARED_EXPORT FloatDiff : public DefinitionDiff {
     inline double getNewValue() const {
         return newvalue;
     }
+
+    virtual DefinitionDiff *newReversed() const override;
 
   private:
     double oldvalue;
