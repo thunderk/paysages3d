@@ -18,7 +18,17 @@ class DEFINITIONSHARED_EXPORT DefinitionWatcher {
     /**
      * Abstract method called when a node changed.
      */
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) = 0;
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff);
+
+    /**
+     * Abstract convenience to receive integer node changes.
+     */
+    virtual void intNodeChanged(const string &path, int new_value, int old_value);
+
+    /**
+     * Abstract convenience to receive float node changes.
+     */
+    virtual void floatNodeChanged(const string &path, double new_value, double old_value);
 
   protected:
     /**

@@ -32,6 +32,18 @@ class DEFINITIONSHARED_EXPORT Scenery : public DefinitionNode {
     FileOperationResult saveGlobal(const string &filepath) const;
     FileOperationResult loadGlobal(const string &filepath);
 
+    /**
+     * Undo the last scenery change.
+     */
+    void undo();
+    /**
+     * Redo the last scenery change.
+     */
+    void redo();
+
+    void set(const string &path, const int &value);
+    void set(const string &path, const double &value);
+
     virtual const Scenery *getScenery() const override;
 
     void autoPreset(RandomGenerator &random = RandomGeneratorDefault);

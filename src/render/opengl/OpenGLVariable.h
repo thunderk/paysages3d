@@ -53,6 +53,13 @@ class OpenGLVariable {
     void set(const QMatrix4x4 &matrix);
     void set(const Color &color);
 
+    inline int getIntValue() const {
+        return value_int;
+    }
+    inline float getFloatValue() const {
+        return value_float;
+    }
+
   protected:
     void uploadTexture(OpenGLRenderer *renderer);
 

@@ -19,6 +19,7 @@ class OPENGLSHARED_EXPORT OpenGLSkybox : public OpenGLPart, public DefinitionWat
     virtual void render() override;
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
+    virtual void floatNodeChanged(const string &path, double new_value, double old_value) override;
 
   private:
     OpenGLShaderProgram *program;

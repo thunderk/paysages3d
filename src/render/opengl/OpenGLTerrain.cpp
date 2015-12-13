@@ -1,5 +1,6 @@
 #include "OpenGLTerrain.h"
 
+#include <algorithm>
 #include <vector>
 #include "OpenGLFunctions.h"
 #include "OpenGLRenderer.h"

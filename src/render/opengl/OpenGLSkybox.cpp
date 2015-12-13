@@ -74,7 +74,7 @@ void OpenGLSkybox::render() {
     program->draw(vertices);
 }
 
-void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
+void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) {
     OpenGLSharedState *state = renderer->getSharedState();
     AtmosphereDefinition *newdef = renderer->getScenery()->getAtmosphere();
 
@@ -86,9 +86,18 @@ void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff 
         state->set("sunColor", sun_color);
 
         state->set("dayTime", newdef->propDayTime()->getValue());
-    } else if (node->getPath() == path_humidity) {
-        state->set("atmosphereHumidity", newdef->propHumidity()->getValue());
-    } else if (node->getPath() == path_sun_radius) {
-        state->set("sunRadius", newdef->propSunRadius()->getValue());
+    }
+
+    DefinitionWatcher::nodeChanged(node, diff);
+}
+
+void OpenGLSkybox::floatNodeChanged(const string &path, double new_value, double)
+{
+    OpenGLSharedState *state = renderer->getSharedState();
+
+    if (path == path_humidity) {
+        state->set("atmosphereHumidity", new_value);
+    } else if (path == path_sun_radius) {
+        state->set("sunRadius", new_value);
     }
 }

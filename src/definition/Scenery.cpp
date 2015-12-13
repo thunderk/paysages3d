@@ -10,8 +10,11 @@
 #include "TexturesDefinition.h"
 #include "VegetationDefinition.h"
 #include "WaterDefinition.h"
+#include "DiffManager.h"
 #include "Logs.h"
 #include "RandomGenerator.h"
+#include "IntNode.h"
+#include "FloatNode.h"
 
 static const double APP_HEADER = 19866544632.125;
 static const int DATA_VERSION = 1;
@@ -89,6 +92,41 @@ Scenery::FileOperationResult Scenery::loadGlobal(const string &filepath) {
 
     Logs::debug() << "[Definition] Scenery loaded from file: " << filepath << endl;
     return FILE_OPERATION_OK;
+}
+
+void Scenery::undo() {
+    DiffManager *diffs = getDiffManager();
+    if (diffs) {
+        diffs->undo();
+    }
+}
+
+void Scenery::redo() {
+    DiffManager *diffs = getDiffManager();
+    if (diffs) {
+        diffs->redo();
+    }
+}
+
+#define NODE_SETTER(_path_, _nodetype_, _nodeclass_, _value_)                                                          \
+    DefinitionNode *node = findByPath(_path_);                                                                         \
+    if (node) {                                                                                                        \
+        if (node->getTypeName() == _nodetype_) {                                                                       \
+            _nodeclass_ *tnode = (_nodeclass_ *)node;                                                                  \
+            tnode->setValue(_value_);                                                                                  \
+        } else {                                                                                                       \
+            Logs::warning() << "[Definition] Node " << path << " of wrong type for value " << value << endl;           \
+        }                                                                                                              \
+    } else {                                                                                                           \
+        Logs::warning() << "[Definition] Can't find node " << path << " to set to " << value << endl;                  \
+    }
+
+void Scenery::set(const string &path, const int &value) {
+    NODE_SETTER(path, "int", IntNode, value)
+}
+
+void Scenery::set(const string &path, const double &value) {
+    NODE_SETTER(path, "float", FloatNode, value)
 }
 
 const Scenery *Scenery::getScenery() const {

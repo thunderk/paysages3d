@@ -35,6 +35,11 @@
     ASSERT_DOUBLE_EQ(_vec_.y, _y_);                                                                                    \
     ASSERT_DOUBLE_EQ(_vec_.z, _z_)
 
+#define EXPECT_GLVARIABLE_FLOAT(_expected_, _state_, _name_)                                                           \
+    EXPECT_NEAR(_expected_, (_state_)->get(_name_)->getFloatValue(), 0.000001)
+#define ASSERT_GLVARIABLE_FLOAT(_expected_, _state_, _name_)                                                           \
+    ASSERT_NEAR(_expected_, (_state_)->get(_name_)->getFloatValue(), 0.000001)
+
 class BaseTestCase : public ::testing::Test {};
 
 #endif // BASETESTCASE_H

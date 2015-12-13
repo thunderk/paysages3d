@@ -30,7 +30,7 @@ void FloatNode::copy(DefinitionNode *destination) const {
     if (destination->getTypeName() == getTypeName()) {
         ((FloatNode *)destination)->value = value;
     } else {
-        Logs::error() << "Can't copy from " << getTypeName() << " to " << destination->getTypeName() << endl;
+        Logs::error() << "[Definition] Can't copy from " << getTypeName() << " to " << destination->getTypeName() << endl;
     }
 }
 
@@ -61,7 +61,7 @@ bool FloatNode::applyDiff(const DefinitionDiff *diff, bool backward) {
         value = next;
         return true;
     } else {
-        Logs::error() << "Can't apply float diff " << previous << " => " << next << " to " << getName() << endl;
+        Logs::error() << "[Definition] Can't apply float diff " << previous << " => " << next << " to " << getName() << endl;
         return false;
     }
 }
