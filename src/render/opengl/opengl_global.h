@@ -20,6 +20,10 @@ class OpenGLVertexArray;
 class OpenGLSkybox;
 class OpenGLWater;
 class OpenGLTerrain;
+class OpenGLVegetation;
+class OpenGLVegetationLayer;
+class OpenGLVegetationInstance;
+class OpenGLVegetationImpostor;
 class OpenGLTerrainChunk;
 template <typename Vertex> class VertexArray;
 }

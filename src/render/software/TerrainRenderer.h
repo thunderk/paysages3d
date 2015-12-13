@@ -32,6 +32,11 @@ class SOFTWARESHARED_EXPORT TerrainRenderer : public LightFilter {
     virtual Color getFinalColor(const Vector3 &location, double precision);
     virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override;
 
+    /**
+     * Estimate a probable range of altitudes, given a rectangle area.
+     */
+    void estimateMinMaxHeight(double x1, double z1, double x2, double z2, double *ymin, double *ymax);
+
   private:
     SoftwareRenderer *parent;
     TerrainRayWalker *walker_ray;

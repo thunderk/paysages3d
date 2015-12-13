@@ -27,6 +27,7 @@ class BASICSSHARED_EXPORT Color {
 
     void mask(const Color &mask);
     double normalize();
+    Color normalized();
     double getValue() const;
     double getPower() const;
     void limitPower(double max_power);

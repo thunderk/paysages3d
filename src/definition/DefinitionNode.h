@@ -31,7 +31,7 @@ class DEFINITIONSHARED_EXPORT DefinitionNode {
         return type_name;
     }
 
-    virtual Scenery *getScenery();
+    virtual const Scenery *getScenery() const;
 
     inline const DefinitionNode *getParent() const {
         return parent;

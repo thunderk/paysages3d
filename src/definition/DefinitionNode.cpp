@@ -45,7 +45,7 @@ void DefinitionNode::setName(const string &name) {
     this->name = name;
 }
 
-Scenery *DefinitionNode::getScenery() {
+const Scenery *DefinitionNode::getScenery() const {
     if (parent) {
         return parent->getScenery();
     } else {

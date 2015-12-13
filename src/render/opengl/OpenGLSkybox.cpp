@@ -12,9 +12,9 @@
 #include "FloatNode.h"
 #include "Logs.h"
 
-static const std::string path_daytime = "/atmosphere/daytime";
-static const std::string path_humidity = "/atmosphere/humidity";
-static const std::string path_sun_radius = "/atmosphere/sun_radius";
+static const string path_daytime = "/atmosphere/daytime";
+static const string path_humidity = "/atmosphere/humidity";
+static const string path_sun_radius = "/atmosphere/sun_radius";
 
 OpenGLSkybox::OpenGLSkybox(OpenGLRenderer *renderer) : OpenGLPart(renderer, "skybox") {
     program = createShader("skybox");

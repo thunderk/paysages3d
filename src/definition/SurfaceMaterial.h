@@ -10,6 +10,7 @@ class DEFINITIONSHARED_EXPORT SurfaceMaterial {
   public:
     SurfaceMaterial();
     SurfaceMaterial(const Color &color);
+    SurfaceMaterial(const SurfaceMaterial &other);
     ~SurfaceMaterial();
 
     static const SurfaceMaterial &getDefault();

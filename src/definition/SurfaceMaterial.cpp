@@ -16,6 +16,10 @@ SurfaceMaterial::SurfaceMaterial(const Color &color) {
     receive_shadows = 1.0;
 }
 
+SurfaceMaterial::SurfaceMaterial(const SurfaceMaterial &other) : SurfaceMaterial(COLOR_BLACK) {
+    other.copy(this);
+}
+
 SurfaceMaterial::~SurfaceMaterial() {
     delete base;
 }

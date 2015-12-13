@@ -11,5 +11,7 @@
         <file>fadeout.frag</file>
         <file>noise.frag</file>
         <file>ui.frag</file>
+        <file>vegetation.vert</file>
+        <file>vegetation.frag</file>
     </qresource>
 </RCC>

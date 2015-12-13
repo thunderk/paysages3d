@@ -3,6 +3,7 @@
 #include <cmath>
 #include <climits>
 #include "SpaceGridIterator.h"
+using namespace std;
 
 SpaceSegment::SpaceSegment(const Vector3 &start, const Vector3 &end) : start(start), end(end) {
 }
@@ -38,6 +39,41 @@ bool SpaceSegment::intersectYInterval(double ymin, double ymax) {
         }
     }
 
+    return true;
+}
+
+bool SpaceSegment::intersectBoundingBox(const SpaceSegment &bbox) const {
+    Vector3 dir = getDirection();
+    // r.dir is unit direction vector of ray
+    double dfx = 1.0 / dir.x;
+    double dfy = 1.0 / dir.y;
+    double dfz = 1.0 / dir.z;
+    // lb is the corner of AABB with minimal coordinates - left bottom, rt is maximal corner
+    // r.org is origin of ray
+    double t1 = (bbox.start.x - start.x) * dfx;
+    double t2 = (bbox.end.x - start.x) * dfx;
+    double t3 = (bbox.start.y - start.y) * dfy;
+    double t4 = (bbox.end.y - start.y) * dfy;
+    double t5 = (bbox.start.z - start.z) * dfz;
+    double t6 = (bbox.end.z - start.z) * dfz;
+
+    double tmin = max(max(min(t1, t2), min(t3, t4)), min(t5, t6));
+    double tmax = min(min(max(t1, t2), max(t3, t4)), max(t5, t6));
+
+    // if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behing us
+    // double t;
+    if (tmax < 0.0) {
+        // t = tmax;
+        return false;
+    }
+
+    // if tmin > tmax, ray doesn't intersect AABB
+    if (tmin > tmax) {
+        // t = tmax;
+        return false;
+    }
+
+    // t = tmin;
     return true;
 }
 

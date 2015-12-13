@@ -24,7 +24,7 @@ class DEFINITIONSHARED_EXPORT DefinitionWatcher {
     /**
      * Start watching a path in a definition tree.
      */
-    void startWatching(const DefinitionNode *root, const std::string &path, bool init_diff = true);
+    void startWatching(const DefinitionNode *root, const string &path, bool init_diff = true);
 };
 }
 }

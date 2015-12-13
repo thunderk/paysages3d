@@ -34,21 +34,22 @@ class SOFTWARESHARED_EXPORT SoftwareCanvasRenderer : public SoftwareRenderer {
     }
 
     inline Rasterizer *getSkyRasterizer() const {
-        return rasterizers[0];
+        return rasterizer_sky;
     }
     inline Rasterizer *getWaterRasterizer() const {
-        return rasterizers[1];
+        return rasterizer_water;
     }
     inline Rasterizer *getTerrainRasterizer() const {
-        return rasterizers[2];
+        return rasterizer_terrain;
+    }
+    inline Rasterizer *getVegetationRasterizer() const {
+        return rasterizer_vegetation;
     }
 
     virtual void setQuality(double factor) override;
 
     /**
      * Clear the rasterizers list, and put a single one.
-     *
-     * The renderer takes ownership of the rasterizer.
      */
     void setSoloRasterizer(Rasterizer *rasterizer);
 
@@ -112,7 +113,13 @@ class SOFTWARESHARED_EXPORT SoftwareCanvasRenderer : public SoftwareRenderer {
 
     Canvas *canvas;
     int samples;
+
     vector<Rasterizer *> rasterizers;
+    Rasterizer *rasterizer_sky;
+    Rasterizer *rasterizer_water;
+    Rasterizer *rasterizer_terrain;
+    Rasterizer *rasterizer_vegetation;
+
     bool started;
     bool finished;
     bool interrupted;

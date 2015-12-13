@@ -6,6 +6,7 @@
 #include "TerrainRasterizer.h"
 #include "WaterRasterizer.h"
 #include "SkyRasterizer.h"
+#include "VegetationRasterizer.h"
 #include "CameraDefinition.h"
 #include "ParallelWork.h"
 #include "CanvasPortion.h"
@@ -25,9 +26,11 @@ SoftwareCanvasRenderer::SoftwareCanvasRenderer(Scenery *scenery) : SoftwareRende
 
     postprocess_enabled = true;
 
-    rasterizers.push_back(new SkyRasterizer(this, progress, RASTERIZER_CLIENT_SKY));
-    rasterizers.push_back(new WaterRasterizer(this, progress, RASTERIZER_CLIENT_WATER));
-    rasterizers.push_back(new TerrainRasterizer(this, progress, RASTERIZER_CLIENT_TERRAIN));
+    rasterizers.push_back(rasterizer_sky = new SkyRasterizer(this, progress, RASTERIZER_CLIENT_SKY));
+    rasterizers.push_back(rasterizer_water = new WaterRasterizer(this, progress, RASTERIZER_CLIENT_WATER));
+    rasterizers.push_back(rasterizer_terrain = new TerrainRasterizer(this, progress, RASTERIZER_CLIENT_TERRAIN));
+    rasterizers.push_back(rasterizer_vegetation =
+                              new VegetationRasterizer(this, progress, RASTERIZER_CLIENT_VEGETATION));
 
     current_work = NULL;
 }
@@ -36,9 +39,10 @@ SoftwareCanvasRenderer::~SoftwareCanvasRenderer() {
     delete canvas;
     delete progress;
 
-    for (auto &rasterizer : rasterizers) {
-        delete rasterizer;
-    }
+    delete rasterizer_sky;
+    delete rasterizer_water;
+    delete rasterizer_terrain;
+    delete rasterizer_vegetation;
 }
 
 void SoftwareCanvasRenderer::setQuality(double factor) {
@@ -50,9 +54,6 @@ void SoftwareCanvasRenderer::setQuality(double factor) {
 }
 
 void SoftwareCanvasRenderer::setSoloRasterizer(Rasterizer *rasterizer) {
-    for (auto &rast : rasterizers) {
-        delete rast;
-    }
     rasterizers.clear();
     rasterizers.push_back(rasterizer);
 }

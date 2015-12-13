@@ -61,6 +61,9 @@ class SOFTWARESHARED_EXPORT SoftwareRenderer {
     inline WaterRenderer *getWaterRenderer() const {
         return water_renderer;
     }
+    inline VegetationRenderer *getVegetationRenderer() const {
+        return vegetation_renderer;
+    }
 
     inline NightSky *getNightSky() const {
         return nightsky_renderer;
@@ -95,6 +98,7 @@ class SOFTWARESHARED_EXPORT SoftwareRenderer {
     TexturesRenderer *textures_renderer;
     WaterRenderer *water_renderer;
     NightSky *nightsky_renderer;
+    VegetationRenderer *vegetation_renderer;
 };
 }
 }

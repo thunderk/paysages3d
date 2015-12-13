@@ -16,11 +16,13 @@ OpenGLShaderProgram::OpenGLShaderProgram(const string &name, OpenGLRenderer *ren
     : renderer(renderer), name(name) {
     program = new QOpenGLShaderProgram();
     functions = renderer->getOpenGlFunctions();
+    state = new OpenGLSharedState();
     compiled = false;
 }
 
 OpenGLShaderProgram::~OpenGLShaderProgram() {
     delete program;
+    delete state;
 }
 
 void OpenGLShaderProgram::addVertexSource(const string &path) {
@@ -87,9 +89,9 @@ void OpenGLShaderProgram::release() {
     program->release();
 }
 
-void OpenGLShaderProgram::draw(OpenGLVertexArray *vertices, OpenGLSharedState *state) {
+void OpenGLShaderProgram::draw(OpenGLVertexArray *vertices, OpenGLSharedState *state, int start, int count) {
     if (bind(state)) {
-        vertices->render(functions);
+        vertices->render(functions, start, count);
 
         release();
     }

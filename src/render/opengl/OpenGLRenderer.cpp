@@ -6,7 +6,9 @@
 #include "OpenGLSkybox.h"
 #include "OpenGLWater.h"
 #include "OpenGLTerrain.h"
+#include "OpenGLVegetation.h"
 #include "CloudsRenderer.h"
+#include "VegetationRenderer.h"
 #include "Color.h"
 #include "Scenery.h"
 #include "LightingManager.h"
@@ -41,6 +43,7 @@ OpenGLRenderer::OpenGLRenderer(Scenery *scenery) : SoftwareRenderer(scenery) {
     parts.push_back(skybox = new OpenGLSkybox(this));
     parts.push_back(water = new OpenGLWater(this));
     parts.push_back(terrain = new OpenGLTerrain(this));
+    parts.push_back(vegetation = new OpenGLVegetation(this));
 }
 
 OpenGLRenderer::~OpenGLRenderer() {
@@ -57,6 +60,15 @@ OpenGLRenderer::~OpenGLRenderer() {
 
     delete functions;
     delete shared_state;
+}
+
+void OpenGLRenderer::prepare() {
+    SoftwareRenderer::prepare();
+
+    getCloudsRenderer()->setEnabled(false);
+    getLightingManager()->setSpecularity(false);
+    getGodRaysSampler()->setEnabled(false);
+    getVegetationRenderer()->setEnabled(false);
 }
 
 void OpenGLRenderer::checkForErrors(const string &domain) {
@@ -77,19 +89,15 @@ void OpenGLRenderer::destroy() {
 }
 
 void OpenGLRenderer::initialize() {
-    ready = functions->initializeOpenGLFunctions();
+    bool init = functions->initializeOpenGLFunctions();
 
-    if (ready) {
+    if (init) {
         Logs::debug() << "[OpenGL] renderer started (version " << functions->glGetString(GL_VERSION)
                       << ", glsl version " << functions->glGetString(GL_SHADING_LANGUAGE_VERSION) << ")" << endl;
 
         prepareOpenGLState();
 
         prepare();
-
-        getCloudsRenderer()->setEnabled(false);
-        getLightingManager()->setSpecularity(false);
-        getGodRaysSampler()->setEnabled(false);
 
         for (auto part : parts) {
             part->initialize();
@@ -99,6 +107,7 @@ void OpenGLRenderer::initialize() {
         cameraChangeEvent(render_camera);
 
         checkForErrors("initialize");
+        ready = true;
     } else {
         Logs::error() << "[OpenGL] Failed to initialize api bindings" << endl;
     }
@@ -111,7 +120,7 @@ void OpenGLRenderer::prepareOpenGLState(bool clear) {
         functions->glEnable(GL_CULL_FACE);
 
         functions->glDepthFunc(GL_LESS);
-        functions->glDepthMask(1);
+        functions->glDepthMask(GL_TRUE);
         functions->glEnable(GL_DEPTH_TEST);
 
         functions->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -241,6 +250,9 @@ void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera) {
     // Set in shaders
     shared_state->set("cameraLocation", location);
     shared_state->set("viewMatrix", *view_matrix);
+
+    // Broadcast to parts
+    vegetation->cameraChanged(camera);
 }
 
 double OpenGLRenderer::getPrecision(const Vector3 &) {

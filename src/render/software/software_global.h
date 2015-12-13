@@ -34,6 +34,7 @@ class TexturesRenderer;
 class WaterRenderer;
 
 class Rasterizer;
+class OverlayRasterizer;
 class SkyRasterizer;
 class TerrainRasterizer;
 
@@ -52,6 +53,9 @@ class TerrainRayWalker;
 
 class GodRaysSampler;
 class GodRaysResult;
+class VegetationResult;
+class VegetationRenderer;
+class VegetationModelRenderer;
 
 class Canvas;
 class CanvasPortion;

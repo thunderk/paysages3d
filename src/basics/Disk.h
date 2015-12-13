@@ -13,7 +13,7 @@ namespace basics {
  */
 class BASICSSHARED_EXPORT Disk : public InfinitePlane {
   public:
-    Disk();
+    Disk() = default;
     Disk(const Vector3 &point, const Vector3 &normal, double radius);
 
     inline double getRadius() const {

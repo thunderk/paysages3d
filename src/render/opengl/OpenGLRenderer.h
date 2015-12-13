@@ -29,6 +29,9 @@ class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
     inline OpenGLTerrain *getTerrain() const {
         return terrain;
     }
+    inline OpenGLVegetation *getVegetation() const {
+        return vegetation;
+    }
     inline bool isDisplayed() const {
         return displayed;
     }
@@ -38,6 +41,8 @@ class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
     inline bool isStopped() const {
         return stopped;
     }
+
+    virtual void prepare() override;
 
     /**
      * Check for errors in OpenGL context.
@@ -137,6 +142,7 @@ class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
     OpenGLSkybox *skybox;
     OpenGLWater *water;
     OpenGLTerrain *terrain;
+    OpenGLVegetation *vegetation;
 
     vector<OpenGLPart *> parts;
 };

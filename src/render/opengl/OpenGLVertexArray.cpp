@@ -45,7 +45,7 @@ void OpenGLVertexArray::destroy(OpenGLFunctions *functions) {
     }
 }
 
-void OpenGLVertexArray::render(OpenGLFunctions *functions) {
+void OpenGLVertexArray::render(OpenGLFunctions *functions, int start, int count) {
     if (changed) {
         changed = false;
         update(functions);
@@ -53,7 +53,7 @@ void OpenGLVertexArray::render(OpenGLFunctions *functions) {
 
     if (vertexcount and vao) {
         functions->glBindVertexArray(vao);
-        functions->glDrawArrays(draw_mode, 0, vertexcount);
+        functions->glDrawArrays(draw_mode, start, count < 0 ? vertexcount : count);
         functions->glBindVertexArray(0);
     }
 }

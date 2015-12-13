@@ -34,7 +34,7 @@ class OpenGLVertexArray {
      *
      * A shader program must be bound (and uniforms defined) when calling this.
      */
-    void render(OpenGLFunctions *functions);
+    void render(OpenGLFunctions *functions, int start=0, int count=-1);
 
     /**
      * Set the vertex total count.

@@ -32,7 +32,7 @@ class DEFINITIONSHARED_EXPORT Scenery : public DefinitionNode {
     FileOperationResult saveGlobal(const string &filepath) const;
     FileOperationResult loadGlobal(const string &filepath);
 
-    virtual Scenery *getScenery() override;
+    virtual const Scenery *getScenery() const override;
 
     void autoPreset(RandomGenerator &random = RandomGeneratorDefault);
     void autoPreset(unsigned int seed);
@@ -67,6 +67,12 @@ class DEFINITIONSHARED_EXPORT Scenery : public DefinitionNode {
     }
     void getTextures(TexturesDefinition *textures);
 
+    void setVegetation(VegetationDefinition *Vegetation);
+    inline VegetationDefinition *getVegetation() const {
+        return vegetation;
+    }
+    void getVegetation(VegetationDefinition *Vegetation);
+
     void setWater(WaterDefinition *water);
     inline WaterDefinition *getWater() const {
         return water;
@@ -81,6 +87,7 @@ class DEFINITIONSHARED_EXPORT Scenery : public DefinitionNode {
     CloudsDefinition *clouds;
     TerrainDefinition *terrain;
     TexturesDefinition *textures;
+    VegetationDefinition *vegetation;
     WaterDefinition *water;
 };
 }

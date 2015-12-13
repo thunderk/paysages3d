@@ -8,6 +8,7 @@
 #include "CloudsDefinition.h"
 #include "TerrainDefinition.h"
 #include "TexturesDefinition.h"
+#include "VegetationDefinition.h"
 #include "WaterDefinition.h"
 #include "Logs.h"
 #include "RandomGenerator.h"
@@ -22,6 +23,7 @@ Scenery::Scenery() : DefinitionNode(NULL, "scenery", "scenery") {
     terrain = new TerrainDefinition(this);
     textures = new TexturesDefinition(this);
     water = new WaterDefinition(this);
+    vegetation = new VegetationDefinition(this);
 }
 
 void Scenery::validate() {
@@ -89,7 +91,7 @@ Scenery::FileOperationResult Scenery::loadGlobal(const string &filepath) {
     return FILE_OPERATION_OK;
 }
 
-Scenery *Scenery::getScenery() {
+const Scenery *Scenery::getScenery() const {
     return this;
 }
 
@@ -99,6 +101,7 @@ void Scenery::autoPreset(RandomGenerator &random) {
     atmosphere->applyPreset(AtmosphereDefinition::ATMOSPHERE_PRESET_CLEAR_DAY, random);
     water->applyPreset(WaterDefinition::WATER_PRESET_LAKE, random);
     clouds->applyPreset(CloudsDefinition::CLOUDS_PRESET_PARTLY_CLOUDY, random);
+    vegetation->applyPreset(VegetationDefinition::VEGETATION_PRESET_TEMPERATE, random);
 
     camera->setLocation(VECTOR_ZERO);
     camera->setTarget(VECTOR_NORTH);
@@ -152,6 +155,14 @@ void Scenery::setTextures(TexturesDefinition *textures) {
 
 void Scenery::getTextures(TexturesDefinition *textures) {
     this->textures->copy(textures);
+}
+
+void Scenery::setVegetation(VegetationDefinition *vegetation) {
+    vegetation->copy(this->vegetation);
+}
+
+void Scenery::getVegetation(VegetationDefinition *vegetation) {
+    this->vegetation->copy(vegetation);
 }
 
 void Scenery::setWater(WaterDefinition *water) {

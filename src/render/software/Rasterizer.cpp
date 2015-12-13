@@ -38,6 +38,7 @@ Rasterizer::Rasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int
 
     interrupted = false;
     backface_culling = false;
+    perspective_correction = true;
     triangle_count = 0;
     auto_cut_limit = 0.01;
 
@@ -52,7 +53,8 @@ void Rasterizer::interrupt() {
     interrupted = true;
 }
 
-void Rasterizer::setQuality(double) {
+void Rasterizer::setQuality(double quality) {
+    this->perspective_correction = (quality > 0.4);
 }
 
 void Rasterizer::setColor(const Color &color) {
@@ -61,6 +63,10 @@ void Rasterizer::setColor(const Color &color) {
 
 void Rasterizer::setBackFaceCulling(bool cull) {
     this->backface_culling = cull;
+}
+
+void Rasterizer::setPerspectiveCorrection(bool active) {
+    this->perspective_correction = active;
 }
 
 void Rasterizer::setAutoCutLimit(double limit) {
@@ -227,21 +233,32 @@ void Rasterizer::scanGetDiff(ScanPoint *v1, ScanPoint *v2, ScanPoint *result) {
 
 void Rasterizer::scanInterpolate(CameraDefinition *camera, ScanPoint *v1, ScanPoint *diff, double value,
                                  ScanPoint *result) {
-    Vector3 vec1(v1->pixel.x, v1->pixel.y, v1->pixel.z);
-    Vector3 vecdiff(diff->pixel.x, diff->pixel.y, diff->pixel.z);
-    double v1depth = 1.0 / camera->getRealDepth(vec1);
-    double v2depth = 1.0 / camera->getRealDepth(vec1.add(vecdiff));
-    double factor = 1.0 / ((1.0 - value) * v1depth + value * v2depth);
-
     result->pixel.x = v1->pixel.x + diff->pixel.x * value;
     result->pixel.y = v1->pixel.y + diff->pixel.y * value;
     result->pixel.z = v1->pixel.z + diff->pixel.z * value;
-    result->location.x =
-        ((1.0 - value) * (v1->location.x * v1depth) + value * (v1->location.x + diff->location.x) * v2depth) * factor;
-    result->location.y =
-        ((1.0 - value) * (v1->location.y * v1depth) + value * (v1->location.y + diff->location.y) * v2depth) * factor;
-    result->location.z =
-        ((1.0 - value) * (v1->location.z * v1depth) + value * (v1->location.z + diff->location.z) * v2depth) * factor;
+
+    if (perspective_correction) {
+        Vector3 vec1(v1->pixel.x, v1->pixel.y, v1->pixel.z);
+        Vector3 vecdiff(diff->pixel.x, diff->pixel.y, diff->pixel.z);
+        double v1depth = 1.0 / camera->getRealDepth(vec1);
+        double v2depth = 1.0 / camera->getRealDepth(vec1.add(vecdiff));
+        double factor = 1.0 / ((1.0 - value) * v1depth + value * v2depth);
+
+        result->location.x =
+            ((1.0 - value) * (v1->location.x * v1depth) + value * (v1->location.x + diff->location.x) * v2depth) *
+            factor;
+        result->location.y =
+            ((1.0 - value) * (v1->location.y * v1depth) + value * (v1->location.y + diff->location.y) * v2depth) *
+            factor;
+        result->location.z =
+            ((1.0 - value) * (v1->location.z * v1depth) + value * (v1->location.z + diff->location.z) * v2depth) *
+            factor;
+    } else {
+        result->location.x = v1->location.x + diff->location.x * value;
+        result->location.y = v1->location.y + diff->location.y * value;
+        result->location.z = v1->location.z + diff->location.z * value;
+    }
+
     result->client = v1->client;
     result->front_facing = v1->front_facing;
 }

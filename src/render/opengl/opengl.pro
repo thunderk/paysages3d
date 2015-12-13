@@ -55,3 +55,7 @@ RESOURCES += \
 OTHER_FILES += \
     shaders/*.frag \
     shaders/*.vert
+
+DISTFILES += \
+    shaders/vegetation.frag \
+    shaders/vegetation.vert

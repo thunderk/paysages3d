@@ -132,6 +132,12 @@ double Color::normalize() {
     return max;*/
 }
 
+Color Color::normalized() {
+    Color col = *this;
+    col.normalize();
+    return col;
+}
+
 double Color::getValue() const {
     double max;
 

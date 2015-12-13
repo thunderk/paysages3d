@@ -17,13 +17,22 @@
 #include "LightFilter.h"
 #include "GodRaysSampler.h"
 #include "Rasterizer.h"
+#include "SpaceSegment.h"
+#include "OverlayRasterizer.h"
+#include "VegetationModelDefinition.h"
+#include "VegetationInstance.h"
+#include "VegetationRenderer.h"
+#include "RayCastingResult.h"
+#include "OpenGLVegetationImpostor.h"
+#include "Texture2D.h"
 #include "RandomGenerator.h"
 
 #include <sstream>
+#include <iostream>
 
 void startRender(SoftwareCanvasRenderer *renderer, const char *outputpath);
 
-static void startTestRender(SoftwareCanvasRenderer *renderer, const string &name, int iteration = -1) {
+static string getFileName(const string &name, int iteration = -1) {
     ostringstream stream;
 
     stream << "pic_test_" << name;
@@ -35,7 +44,11 @@ static void startTestRender(SoftwareCanvasRenderer *renderer, const string &name
     }
     stream << ".png";
 
-    startRender(renderer, stream.str().data());
+    return stream.str();
+}
+
+static void startTestRender(SoftwareCanvasRenderer *renderer, const string &name, int iteration = -1) {
+    startRender(renderer, getFileName(name, iteration).data());
 }
 
 static void testGroundShadowQuality() {
@@ -99,11 +112,11 @@ static void testCloudQuality() {
 
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(600, 800);
-    SkyRasterizer *rasterizer = new SkyRasterizer(&renderer, renderer.getProgressHelper(), 0);
-    renderer.setSoloRasterizer(rasterizer);
+    SkyRasterizer rasterizer(&renderer, renderer.getProgressHelper(), 0);
+    renderer.setSoloRasterizer(&rasterizer);
     for (int i = 0; i < 6; i++) {
         renderer.setQuality((double)i / 5.0);
-        rasterizer->setQuality(0.2);
+        rasterizer.setQuality(0.2);
         startTestRender(&renderer, "cloud_quality", i);
     }
 }
@@ -146,8 +159,8 @@ static void testGodRays() {
 
     TestRenderer renderer(&scenery);
     renderer.setSize(500, 300);
-    SkyRasterizer *rasterizer = new SkyRasterizer(&renderer, renderer.getProgressHelper(), 0);
-    renderer.setSoloRasterizer(rasterizer);
+    SkyRasterizer rasterizer(&renderer, renderer.getProgressHelper(), 0);
+    renderer.setSoloRasterizer(&rasterizer);
     TestLightFilter filter;
     renderer.getLightingManager()->clearFilters();
     renderer.getLightingManager()->registerFilter(&filter);
@@ -155,7 +168,7 @@ static void testGodRays() {
     // quality
     for (int i = 0; i < 6; i++) {
         renderer.setQuality((double)i / 5.0);
-        rasterizer->setQuality(0.2);
+        rasterizer.setQuality(0.2);
         startTestRender(&renderer, "god_rays_quality", i);
     }
     renderer.setQuality(0.5);
@@ -231,6 +244,76 @@ static void testSunNearHorizon() {
     }
 }
 
+static void testVegetationModels() {
+    class InstanceRenderer : public SoftwareCanvasRenderer, public OverlayRasterizer, public LightFilter {
+      public:
+        InstanceRenderer(Scenery *scenery, const VegetationModelDefinition &model)
+            : SoftwareCanvasRenderer(scenery), OverlayRasterizer(this, this->getProgressHelper()),
+              instance(model, VECTOR_ZERO), vegetation(renderer->getVegetationRenderer()) {
+        }
+        virtual void prepare() override {
+            SoftwareCanvasRenderer::prepare();
+
+            getLightingManager()->clearFilters();
+            getLightingManager()->registerFilter(this);
+            // TODO Add filter for vegetation instance (for self shadows)
+        }
+        virtual Color applyMediumTraversal(const Vector3 &, const Color &color) override {
+            return color;
+        }
+        virtual Color processPixel(int, int, double relx, double rely) const override {
+            relx *= 0.75;
+            rely *= 0.75;
+            SpaceSegment segment(Vector3(relx, rely + 0.5, 5.0), Vector3(relx, rely + 0.5, -5.0));
+            RayCastingResult result = vegetation->renderInstance(segment, instance, false, true);
+            return result.hit ? result.hit_color : Color(0.6, 0.7, 0.9);
+        }
+        virtual bool applyLightFilter(LightComponent &light, const Vector3 &at) override {
+            SpaceSegment segment(at, at.add(light.direction.scale(-5.0)));
+            RayCastingResult result = vegetation->renderInstance(segment, instance, true, true);
+            return not result.hit;
+        }
+        VegetationInstance instance;
+        VegetationRenderer *vegetation;
+    };
+
+    Scenery scenery;
+    scenery.autoPreset(1);
+    scenery.getClouds()->clear();
+    scenery.getCamera()->setTarget(VECTOR_ZERO);
+    scenery.getCamera()->setLocation(Vector3(0.0, 0.0, 5.0));
+    int width = 800;
+    int height = 800;
+
+    for (int i = 0; i < 10; i++) {
+        // TODO Make random sequence repeatable
+        VegetationModelDefinition model(NULL);
+        InstanceRenderer renderer(&scenery, model);
+        renderer.setSize(width, height);
+        renderer.setSoloRasterizer(&renderer);
+
+        startTestRender(&renderer, "vegetation_model_basic", i);
+    }
+}
+
+static void testOpenGLVegetationImpostor() {
+    for (int i = 0; i < 4; i++) {
+        string filename = getFileName("opengl_vegetation_impostor", i);
+        cout << "Rendering " << filename << "..." << endl;
+
+        Scenery scenery;
+        scenery.autoPreset(i);
+
+        OpenGLVegetationImpostor impostor(128);
+        VegetationModelDefinition model(NULL);
+
+        bool interrupted = false;
+        impostor.prepareTexture(model, scenery, &interrupted);
+
+        impostor.getTexture()->saveToFile(filename);
+    }
+}
+
 void runTestSuite() {
     testGroundShadowQuality();
     testRasterizationQuality();
@@ -239,4 +322,6 @@ void runTestSuite() {
     testNearFrustum();
     testCloudsNearGround();
     testSunNearHorizon();
+    testVegetationModels();
+    testOpenGLVegetationImpostor();
 }

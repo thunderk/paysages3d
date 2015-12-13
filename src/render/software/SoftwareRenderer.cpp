@@ -10,6 +10,7 @@
 #include "CloudsDefinition.h"
 #include "TerrainRenderer.h"
 #include "TexturesRenderer.h"
+#include "VegetationRenderer.h"
 #include "WaterRenderer.h"
 #include "SkyRasterizer.h"
 #include "TerrainRasterizer.h"
@@ -32,6 +33,7 @@ SoftwareRenderer::SoftwareRenderer(Scenery *scenery) : scenery(scenery) {
     clouds_renderer = new CloudsRenderer(this);
     terrain_renderer = new TerrainRenderer(this);
     textures_renderer = new TexturesRenderer(this);
+    vegetation_renderer = new VegetationRenderer(this);
     water_renderer = new WaterRenderer(this);
 
     nightsky_renderer = new NightSky(this);
@@ -42,6 +44,7 @@ SoftwareRenderer::SoftwareRenderer(Scenery *scenery) : scenery(scenery) {
 
     lighting->registerFilter(water_renderer);
     lighting->registerFilter(terrain_renderer);
+    lighting->registerFilter(vegetation_renderer);
     lighting->registerFilter(clouds_renderer);
     lighting->registerSource(atmosphere_renderer);
 
@@ -61,6 +64,7 @@ SoftwareRenderer::~SoftwareRenderer() {
     delete clouds_renderer;
     delete terrain_renderer;
     delete textures_renderer;
+    delete vegetation_renderer;
     delete water_renderer;
 }
 

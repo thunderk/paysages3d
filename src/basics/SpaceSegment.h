@@ -48,6 +48,11 @@ class BASICSSHARED_EXPORT SpaceSegment {
     bool intersectYInterval(double ymin, double ymax);
 
     /**
+     * Return true if the segment intersects a bounding box, represented by another segment (crossing diagonal).
+     */
+    bool intersectBoundingBox(const SpaceSegment &bbox) const;
+
+    /**
      * Return a version of this segment, projected on a X plane.
      */
     SpaceSegment projectedOnXPlane(double x = 0.0) const;

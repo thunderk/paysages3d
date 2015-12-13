@@ -14,9 +14,9 @@
 #include "IntNode.h"
 #include "Logs.h"
 
-static const std::string path_height = "/terrain/water_height";
-static const std::string path_reflection = "/water/reflection";
-static const std::string path_model = "/water/model";
+static const string path_height = "/terrain/water_height";
+static const string path_reflection = "/water/reflection";
+static const string path_model = "/water/model";
 
 OpenGLWater::OpenGLWater(OpenGLRenderer *renderer) : OpenGLPart(renderer, "water") {
     enabled = true;

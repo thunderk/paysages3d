@@ -1,5 +1,6 @@
 #include "TerrainRenderer.h"
 
+#include <algorithm>
 #include "SoftwareRenderer.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"
@@ -184,4 +185,18 @@ bool TerrainRenderer::applyLightFilter(LightComponent &light, const Vector3 &at)
         // No hit, leave light alone
         return true;
     }
+}
+
+void TerrainRenderer::estimateMinMaxHeight(double x1, double z1, double x2, double z2, double *ymin, double *ymax) {
+    double y1 = getHeight(x1, z1, true);
+    double y2 = getHeight(x2, z2, true);
+
+    // TODO Add quality factor
+    // TODO Use all 4 corners
+    // TODO Apply max slope
+    // TODO Estimate displacement
+
+    pair<double, double> limits = minmax(y1, y2);
+    *ymin = limits.first;
+    *ymax = limits.second;
 }

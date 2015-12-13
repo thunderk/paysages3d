@@ -3,41 +3,44 @@
 #include "Vector3.h"
 #include "PackStream.h"
 
-CappedCylinder::CappedCylinder() {
-}
-
 CappedCylinder::CappedCylinder(const Vector3 &base, const Vector3 &direction, double radius, double length)
-    : InfiniteCylinder(InfiniteRay(base, direction), radius), length(length) {
+    : InfiniteCylinder(InfiniteRay(base, direction), radius), length(length),
+      container(base.add(direction.scale(length * 0.5)), length * 0.5) {
 }
 
-int CappedCylinder::checkRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection,
-                                         Vector3 *second_intersection) const {
-    // TODO Apply the caps
-    int count = InfiniteCylinder::checkRayIntersection(ray, first_intersection, second_intersection);
-
-    if (count == 0) {
+int CappedCylinder::findRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection,
+                                        Vector3 *second_intersection) const {
+    if (not container.checkRayIntersection(ray)) {
+        // We don't hit the containing sphere at all
         return 0;
-    } else if (count == 2) {
-        if (checkPointProjection(first_intersection)) {
-            if (checkPointProjection(second_intersection)) {
-                return 2;
+    } else {
+        // TODO Apply the caps
+        int count = InfiniteCylinder::findRayIntersection(ray, first_intersection, second_intersection);
+
+        if (count == 0) {
+            return 0;
+        } else if (count == 2) {
+            if (checkPointProjection(first_intersection)) {
+                if (checkPointProjection(second_intersection)) {
+                    return 2;
+                } else {
+                    return 1;
+                }
             } else {
-                return 1;
+                if (checkPointProjection(second_intersection)) {
+                    *first_intersection = *second_intersection;
+                    return 1;
+                } else {
+                    return 0;
+                }
             }
         } else {
-            if (checkPointProjection(second_intersection)) {
-                *first_intersection = *second_intersection;
+            // count == 1
+            if (checkPointProjection(first_intersection)) {
                 return 1;
             } else {
                 return 0;
             }
-        }
-    } else // count == 1
-    {
-        if (checkPointProjection(first_intersection)) {
-            return 1;
-        } else {
-            return 0;
         }
     }
 }
