@@ -24,8 +24,8 @@ PackStream::PackStream(const PackStream *other) {
     file = NULL;
     buffer = new QByteArray();
     if (other->file) {
-        Logs::error() << "Try to read from a substream bound to a file: " << other->file->fileName().toStdString()
-                      << endl;
+        Logs::error("System") << "Try to read from a substream bound to a file: "
+                              << other->file->fileName().toStdString() << endl;
         stream = new QDataStream(buffer, QIODevice::ReadOnly);
     } else {
         stream = new QDataStream(other->buffer, QIODevice::ReadOnly);
@@ -86,8 +86,8 @@ void PackStream::write(const string &value) {
 
 void PackStream::writeFromBuffer(const PackStream &other, bool prepend_size) {
     if (other.file) {
-        Logs::error() << "Try to write from a substream bound to a file: " << other.file->fileName().toStdString()
-                      << endl;
+        Logs::error("System") << "Try to write from a substream bound to a file: "
+                              << other.file->fileName().toStdString() << endl;
     } else {
         if (prepend_size) {
             int buffer_size = (int)other.buffer->size();
@@ -99,7 +99,8 @@ void PackStream::writeFromBuffer(const PackStream &other, bool prepend_size) {
 
 string PackStream::getBuffer() {
     if (file) {
-        Logs::error() << "Try to get buffer on a stream bound to a file: " << file->fileName().toStdString() << endl;
+        Logs::error("System") << "Try to get buffer on a stream bound to a file: " << file->fileName().toStdString()
+                              << endl;
         return "";
     } else {
         return buffer->toStdString();

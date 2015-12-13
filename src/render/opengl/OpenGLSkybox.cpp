@@ -62,7 +62,7 @@ void OpenGLSkybox::initialize() {
 }
 
 void OpenGLSkybox::update() {
-    Logs::debug() << "[OpenGL] Updating atmosphere textures" << endl;
+    Logs::debug("OpenGL") << "Updating atmosphere textures" << endl;
 
     SoftwareBrunetonAtmosphereRenderer *bruneton =
         (SoftwareBrunetonAtmosphereRenderer *)renderer->getAtmosphereRenderer();
@@ -91,8 +91,7 @@ void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff 
     DefinitionWatcher::nodeChanged(node, diff);
 }
 
-void OpenGLSkybox::floatNodeChanged(const string &path, double new_value, double)
-{
+void OpenGLSkybox::floatNodeChanged(const string &path, double new_value, double) {
     OpenGLSharedState *state = renderer->getSharedState();
 
     if (path == path_humidity) {

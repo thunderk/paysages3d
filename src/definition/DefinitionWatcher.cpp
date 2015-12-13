@@ -31,6 +31,6 @@ void DefinitionWatcher::startWatching(const DefinitionNode *root, const string &
     if (node) {
         node->addWatcher(this, init_diff);
     } else {
-        Logs::warning() << "[Definition] Node not found for watching : " << path << endl;
+        Logs::warning("Definition") << "Node not found for watching : " << path << endl;
     }
 }

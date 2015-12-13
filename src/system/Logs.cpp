@@ -25,12 +25,12 @@ typedef basic_onullstream<char> onullstream;
 static onullstream NULL_STREAM;
 static bool enabled = true;
 
-ostream &Logs::debug() {
+ostream &Logs::debug(const string &logger) {
 #ifdef NDEBUG
     return NULL_STREAM;
 #else
     if (enabled) {
-        cout << "DEBUG - ";
+        cout << "DEBUG [" << logger << "] ";
         return cout;
     } else {
         return NULL_STREAM;
@@ -38,26 +38,26 @@ ostream &Logs::debug() {
 #endif
 }
 
-ostream &Logs::warning() {
+ostream &Logs::warning(const string &logger) {
     if (enabled) {
-        cerr << "WARN - ";
+        cerr << "WARN [" << logger << "] ";
         return cerr;
     } else {
         return NULL_STREAM;
     }
 }
 
-ostream &Logs::error() {
+ostream &Logs::error(const string &logger) {
     if (enabled) {
-        cerr << "ERROR - ";
+        cerr << "ERROR [" << logger << "] ";
         return cerr;
     } else {
         return NULL_STREAM;
     }
 }
 
-void Logs::debugTimestamp(const string &message) {
-    debug() << Time::getRelativeTimeMs() << " - " << message << endl;
+void Logs::debugTimestamp(const string &logger, const string &message) {
+    debug(logger) << Time::getRelativeTimeMs() << " - " << message << endl;
 }
 
 void Logs::disable() {

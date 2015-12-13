@@ -35,7 +35,7 @@ OpenGLVariable::~OpenGLVariable() {
     delete[] value_texture_data;
 
     if (texture_id) {
-        Logs::warning() << "[OpenGL] Texture ID not freed " << texture_id << endl;
+        Logs::warning("OpenGL") << "Texture ID not freed " << texture_id << endl;
     }
 }
 

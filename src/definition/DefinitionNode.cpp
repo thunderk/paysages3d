@@ -110,8 +110,8 @@ bool DefinitionNode::applyDiff(const DefinitionDiff *diff, bool) {
     if (diff->getTypeName() == type_name) {
         return true;
     } else {
-        Logs::error() << "[Definition] Can't apply " << diff->getTypeName() << " diff to " << getName() << " "
-                      << type_name << " node" << endl;
+        Logs::error("Definition") << "Can't apply " << diff->getTypeName() << " diff to " << getName() << " "
+                                  << type_name << " node" << endl;
         return false;
     }
 }
@@ -155,8 +155,8 @@ void DefinitionNode::save(PackStream *stream) const {
             child->save(stream);
         } else {
             // Child size not known, write it to a temporary stream to know it
-            Logs::debug() << "[Definition] Unknown size for child " << child->name
-                          << ", unefficient writing to temporary stream" << endl;
+            Logs::debug("Definition") << "Unknown size for child " << child->name
+                                      << ", unefficient writing to temporary stream" << endl;
             PackStream substream;
             child->save(&substream);
             stream->writeFromBuffer(substream, true);
@@ -183,7 +183,7 @@ void DefinitionNode::load(PackStream *stream) {
             // TODO Ask subclass if it can instanciate a child
             // Else skip length of unknown child
             stream->skipBytes(child_size);
-            Logs::warning() << "[Definition] Skipped unknown child '" << child_name << "'" << endl;
+            Logs::warning("Definition") << "Skipped unknown child '" << child_name << "'" << endl;
         }
     }
 }
@@ -196,13 +196,13 @@ void DefinitionNode::copy(DefinitionNode *destination) const {
             if (dest_child) {
                 child->copy(dest_child);
             } else {
-                Logs::warning() << "[Definition] Can't copy to child " << child->name << " of "
-                                << destination->getTypeName() << endl;
+                Logs::warning("Definition") << "Can't copy to child " << child->name << " of "
+                                            << destination->getTypeName() << endl;
             }
         }
     } else {
-        Logs::error() << "[Definition] Can't copy from " << getTypeName() << " to " << destination->getTypeName()
-                      << endl;
+        Logs::error("Definition") << "Can't copy from " << getTypeName() << " to " << destination->getTypeName()
+                                  << endl;
     }
 }
 
@@ -226,8 +226,8 @@ void DefinitionNode::removeChild(DefinitionNode *child) {
         child->parent = NULL;
         children.erase(it);
     } else {
-        Logs::warning() << "[Definition] Trying to remove not found child '" << child->name << "' from '" << name << "'"
-                        << endl;
+        Logs::warning("Definition") << "Trying to remove not found child '" << child->name << "' from '" << name << "'"
+                                    << endl;
     }
 }
 

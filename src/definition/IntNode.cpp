@@ -30,7 +30,8 @@ void IntNode::copy(DefinitionNode *destination) const {
     if (destination->getTypeName() == getTypeName()) {
         ((IntNode *)destination)->value = value;
     } else {
-        Logs::error() << "[Definition] Can't copy from " << getTypeName() << " to " << destination->getTypeName() << endl;
+        Logs::error("Definition") << "Can't copy from " << getTypeName() << " to " << destination->getTypeName()
+                                  << endl;
     }
 }
 
@@ -61,7 +62,8 @@ bool IntNode::applyDiff(const DefinitionDiff *diff, bool backward) {
         value = next;
         return true;
     } else {
-        Logs::error() << "[Definition] Can't apply int diff " << previous << " => " << next << " to " << getName() << endl;
+        Logs::error("Definition") << "Can't apply int diff " << previous << " => " << next << " to " << getName()
+                                  << endl;
         return false;
     }
 }

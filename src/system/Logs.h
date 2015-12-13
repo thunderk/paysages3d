@@ -13,12 +13,12 @@ namespace system {
  */
 class SYSTEMSHARED_EXPORT Logs {
   public:
-    static ostream &debug();
-    static ostream &warning();
-    static ostream &error();
+    static ostream &debug(const string &logger);
+    static ostream &warning(const string &logger);
+    static ostream &error(const string &logger);
 
     // Log a timestamp on the debug output
-    static void debugTimestamp(const string &message);
+    static void debugTimestamp(const string &logger, const string &message);
 
     // Disable all logs from now on
     static void disable();

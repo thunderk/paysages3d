@@ -68,8 +68,8 @@ DefinitionNode *Layers::getLayer(int position) const {
     if (position >= 0 and position < (int)layers.size()) {
         return layers[position];
     } else {
-        Logs::warning() << "Asked for a undefined layer " << position << " on a total of " << (int)layers.size()
-                        << endl;
+        Logs::warning("Definition") << "Asked for a undefined layer " << position << " on a total of "
+                                    << (int)layers.size() << endl;
         return null_layer;
     }
 }
@@ -81,12 +81,13 @@ bool Layers::applyDiff(const DefinitionDiff *diff, bool backward) {
 
     if ((not backward and op == LayersDiff::LAYER_ADDED) or (backward and op == LayersDiff::LAYER_REMOVED)) {
         if (layer_count >= max_layer_count) {
-            Logs::warning() << "Add layer ignored because limit of " << max_layer_count << " reached" << endl;
+            Logs::warning("Definition") << "Add layer ignored because limit of " << max_layer_count << " reached"
+                                        << endl;
             return false;
         } else {
             int position = layer_diff->getLayer1();
             if (position < 0 or position > layer_count) {
-                Logs::error() << "Add layer ignored because requested position was incorrect" << endl;
+                Logs::error("Definition") << "Add layer ignored because requested position was incorrect" << endl;
                 return false;
             } else {
                 DefinitionNode *layer = layer_constructor(this, "temp");
@@ -103,8 +104,8 @@ bool Layers::applyDiff(const DefinitionDiff *diff, bool backward) {
     } else if ((not backward and op == LayersDiff::LAYER_REMOVED) or (backward and op == LayersDiff::LAYER_ADDED)) {
         int position = layer_diff->getLayer1();
         if (position < 0 or position >= layer_count) {
-            Logs::warning() << "Removing unknown layer " << position << " on " << layer_count << " from '" << getName()
-                            << "'" << endl;
+            Logs::warning("Definition") << "Removing unknown layer " << position << " on " << layer_count << " from '"
+                                        << getName() << "'" << endl;
             return false;
         } else {
             DefinitionNode *removed = layers[position];

@@ -13,7 +13,7 @@ IntPropertyBind::IntPropertyBind(MainModelerWindow *window, const QString &objec
         connect(item, SIGNAL(changed(int)), this, SLOT(propertyChanged(int)));
     } else {
         item = NULL;
-        Logs::error() << "Can't find object :" << object_name.toStdString() << endl;
+        Logs::error("UI") << "Can't find object :" << object_name.toStdString() << endl;
     }
 }
 

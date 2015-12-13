@@ -52,7 +52,7 @@ Scenery::FileOperationResult Scenery::saveGlobal(const string &filepath) const {
     stream.write(&version_header);
     stream.write(&app_header);
 
-    Logs::debug() << "[Definition] Scenery saved to file: " << filepath << endl;
+    Logs::debug("Definition") << "Scenery saved to file: " << filepath << endl;
     return FILE_OPERATION_OK;
 }
 
@@ -90,7 +90,7 @@ Scenery::FileOperationResult Scenery::loadGlobal(const string &filepath) {
         return FILE_OPERATION_APP_MISMATCH;
     }
 
-    Logs::debug() << "[Definition] Scenery loaded from file: " << filepath << endl;
+    Logs::debug("Definition") << "Scenery loaded from file: " << filepath << endl;
     return FILE_OPERATION_OK;
 }
 
@@ -115,10 +115,10 @@ void Scenery::redo() {
             _nodeclass_ *tnode = (_nodeclass_ *)node;                                                                  \
             tnode->setValue(_value_);                                                                                  \
         } else {                                                                                                       \
-            Logs::warning() << "[Definition] Node " << path << " of wrong type for value " << value << endl;           \
+            Logs::warning("Definition") << "Node " << path << " of wrong type for value " << value << endl;            \
         }                                                                                                              \
     } else {                                                                                                           \
-        Logs::warning() << "[Definition] Can't find node " << path << " to set to " << value << endl;                  \
+        Logs::warning("Definition") << "Can't find node " << path << " to set to " << value << endl;                   \
     }
 
 void Scenery::set(const string &path, const int &value) {
@@ -146,7 +146,7 @@ void Scenery::autoPreset(RandomGenerator &random) {
 
     validate();
 
-    Logs::debug() << "[Definition] New scenery generated from seed " << random.getSeed() << endl;
+    Logs::debug("Definition") << "New scenery generated from seed " << random.getSeed() << endl;
 }
 
 void Scenery::autoPreset(unsigned int seed) {

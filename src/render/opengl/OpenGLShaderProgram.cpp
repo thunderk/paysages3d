@@ -30,7 +30,7 @@ void OpenGLShaderProgram::addVertexSource(const string &path) {
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         source_vertex += QString(file.readAll()).toStdString();
     } else {
-        Logs::error() << "[OpenGL] Can't open vertex file " << file.fileName().toStdString() << endl;
+        Logs::error("OpenGL") << "Can't open vertex file " << file.fileName().toStdString() << endl;
     }
 }
 
@@ -39,7 +39,7 @@ void OpenGLShaderProgram::addFragmentSource(const string &path) {
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         source_fragment += QString(file.readAll()).toStdString();
     } else {
-        Logs::error() << "[OpenGL] Can't open fragment file " << file.fileName().toStdString() << endl;
+        Logs::error("OpenGL") << "Can't open fragment file " << file.fileName().toStdString() << endl;
     }
 }
 
@@ -57,13 +57,13 @@ void OpenGLShaderProgram::compile() {
     program->bindAttributeLocation("uv", 1);
 
     if (not program->link()) {
-        Logs::warning() << "[OpenGL] Error while compiling shader " << name << endl
-                        << program->log().toStdString() << endl;
+        Logs::warning("OpenGL") << "Error while compiling shader " << name << endl
+                                << program->log().toStdString() << endl;
     } else if (program->log().length() > 0) {
-        Logs::debug() << "[OpenGL] Shader " << name << " compilation output:" << endl
-                      << program->log().toStdString() << endl;
+        Logs::debug("OpenGL") << "Shader " << name << " compilation output:" << endl
+                              << program->log().toStdString() << endl;
     } else {
-        Logs::debug() << "[OpenGL] Shader " << name << " compiled" << endl;
+        Logs::debug("OpenGL") << "Shader " << name << " compiled" << endl;
     }
 }
 

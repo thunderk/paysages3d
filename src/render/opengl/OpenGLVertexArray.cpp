@@ -23,7 +23,7 @@ OpenGLVertexArray::OpenGLVertexArray(bool has_uv, bool strip) : has_uv(has_uv) {
 
 OpenGLVertexArray::~OpenGLVertexArray() {
     if (vao || vbo_vertex || vbo_uv) {
-        Logs::warning() << "[OpenGL] VertexArray not freed in OpenGL state before destructor called" << endl;
+        Logs::warning("OpenGL") << "VertexArray not freed in OpenGL state before destructor called" << endl;
     }
 
     free(array_vertex);
@@ -79,7 +79,7 @@ void OpenGLVertexArray::set(int index, const Vector3 &location, double u, double
         array_uv[index * 2 + 1] = v;
         changed = true;
     } else {
-        Logs::error() << "[OpenGL] Setting vertex data outside of array bounds" << endl;
+        Logs::error("OpenGL") << "Setting vertex data outside of array bounds" << endl;
     }
 }
 
@@ -91,7 +91,7 @@ void OpenGLVertexArray::get(int index, Vector3 *location, double *u, double *v) 
         *u = array_uv[index * 2];
         *v = array_uv[index * 2 + 1];
     } else {
-        Logs::error() << "[OpenGL] Getting vertex data outside of array bounds" << endl;
+        Logs::error("OpenGL") << "Getting vertex data outside of array bounds" << endl;
     }
 }
 

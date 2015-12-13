@@ -72,7 +72,7 @@ void RenderProgress::exitSub() {
 
 void RenderProgress::end() {
     if (subs.size() > 0) {
-        Logs::error() << subs.size() << " progress subs remaining at the end of render" << endl;
+        Logs::error("Software") << subs.size() << " progress subs remaining at the end of render" << endl;
     }
 
     end_time = Time::getRelativeTimeMs();

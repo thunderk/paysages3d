@@ -74,7 +74,7 @@ void MainModelerWindow::setQmlProperty(const QString &objectName, const QString 
     if (item) {
         item->setProperty(propertyName.toLocal8Bit(), value);
     } else {
-        Logs::error() << "QML object not found :" << objectName.toStdString() << endl;
+        Logs::error("UI") << "QML object not found :" << objectName.toStdString() << endl;
     }
 }
 
@@ -84,7 +84,7 @@ void MainModelerWindow::connectQmlSignal(const QString &objectName, const char *
     if (item) {
         connect(item, signal, receiver, method);
     } else {
-        Logs::error() << "QML object not found :" << objectName.toStdString() << endl;
+        Logs::error("UI") << "QML object not found :" << objectName.toStdString() << endl;
     }
 }
 
@@ -137,8 +137,8 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event) {
         } else if (event->key() == Qt::Key_F6) {
             render_process->showPreviousRender();
         } else if (event->key() == Qt::Key_F12) {
-            Logs::warning() << "Current scenery dump:" << endl
-                            << scenery->toString() << endl;
+            Logs::warning("UI") << "Current scenery dump:" << endl
+                                << scenery->toString() << endl;
         } else if (event->key() == Qt::Key_N) {
             if (event->modifiers() & Qt::ControlModifier) {
                 newFile();

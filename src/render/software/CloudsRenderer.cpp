@@ -100,7 +100,7 @@ BaseCloudLayerRenderer *CloudsRenderer::getLayerRenderer(unsigned int layer) {
     if (layer < layer_renderers.size()) {
         return layer_renderers[layer];
     } else {
-        Logs::warning() << "Asked for unknown layer renderer " << layer << endl;
+        Logs::warning("Software.Clouds") << "Asked for unknown layer renderer " << layer << endl;
         return fake_renderer;
     }
 }
@@ -109,7 +109,7 @@ BaseCloudsModel *CloudsRenderer::getLayerModel(unsigned int layer) {
     if (layer < layer_models.size()) {
         return layer_models[layer];
     } else {
-        Logs::warning() << "Asked for unknown layer model" << layer << endl;
+        Logs::warning("Software.Clouds") << "Asked for unknown layer model" << layer << endl;
         return fake_model;
     }
 }
@@ -121,7 +121,7 @@ void CloudsRenderer::setLayerModel(unsigned int layer, BaseCloudsModel *model, b
         }
         layer_models[layer] = model;
     } else {
-        Logs::warning() << "Asked to set an unknown layer model" << layer << endl;
+        Logs::warning("Software.Clouds") << "Asked to set an unknown layer model" << layer << endl;
         delete model;
     }
 }

@@ -61,7 +61,7 @@ void DiffManager::undo() {
                 watcher->nodeChanged(node, diff);
             }
         } else {
-            Logs::error() << "Can't find node to undo diff : " << diff->getPath() << endl;
+            Logs::error("Definition") << "Can't find node to undo diff : " << diff->getPath() << endl;
         }
     }
 }
@@ -81,7 +81,7 @@ void DiffManager::redo() {
                 watcher->nodeChanged(node, diff);
             }
         } else {
-            Logs::error() << "Can't find node to redo diff : " << diff->getPath() << endl;
+            Logs::error("Definition") << "Can't find node to redo diff : " << diff->getPath() << endl;
         }
     }
 }

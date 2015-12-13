@@ -31,7 +31,8 @@ void NoiseNode::copy(DefinitionNode *destination) const {
     if (destination->getTypeName() == getTypeName()) {
         noise->copy(((NoiseNode *)destination)->noise);
     } else {
-        Logs::error() << "[Definition] Can't copy from " << getTypeName() << " to " << destination->getTypeName() << endl;
+        Logs::error("Definition") << "Can't copy from " << getTypeName() << " to " << destination->getTypeName()
+                                  << endl;
     }
 }
 

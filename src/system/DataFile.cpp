@@ -21,7 +21,7 @@ string DataFile::findDir(const string &relpath) {
 }
 
 bool DataFile::tryDataDir(const QDir &dir) {
-    Logs::debug() << "[System] Try data dir " << dir.absolutePath().toStdString() << endl;
+    Logs::debug("System") << "Try data dir " << dir.absolutePath().toStdString() << endl;
     return dir.exists("data/.paysages_data");
 }
 
@@ -50,11 +50,11 @@ string DataFile::locateDataDir() {
 string DataFile::initDataDir() {
     string parent = locateDataDir();
     if (parent.empty()) {
-        Logs::warning() << "[System] Data files not found" << endl;
+        Logs::warning("System") << "Data files not found" << endl;
         return parent;
     } else {
         string result = QDir(QString::fromStdString(parent)).absoluteFilePath("data").toStdString();
-        Logs::debug() << "[System] Data files found : " << result << endl;
+        Logs::debug("System") << "Data files found : " << result << endl;
         return result;
     }
 }

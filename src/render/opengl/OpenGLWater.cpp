@@ -58,7 +58,7 @@ void OpenGLWater::update() {
     state->set("waterMaterialShininess", water->material->shininess);
     state->set("waterMaterialHardness", water->material->hardness);
 
-    Logs::debug() << "[OpenGL] Updating simplex texture" << endl;
+    Logs::debug("OpenGL") << "Updating simplex texture" << endl;
     state->set("simplexSampler", NoiseFunctionSimplex::getNormalTexture(), true, true);
 }
 
