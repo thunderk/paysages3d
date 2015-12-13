@@ -31,7 +31,7 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
      *
      * *state* is optional and may add ponctual variables to the global state.
      */
-    void draw(OpenGLVertexArray *vertices, OpenGLSharedState *state = NULL, int start=0, int count=-1);
+    void draw(OpenGLVertexArray *vertices, OpenGLSharedState *state = NULL, int start = 0, int count = -1);
 
     inline QOpenGLShaderProgram *getProgram() const {
         return program;

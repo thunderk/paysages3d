@@ -6,12 +6,10 @@
 #include "OpenGLPart.h"
 #include "DefinitionWatcher.h"
 
-#include <QVector>
-#include <QList>
-#include <QMutex>
-
 namespace paysages {
 namespace opengl {
+
+class OpenGLTerrainPV;
 
 class OPENGLSHARED_EXPORT OpenGLTerrain : public OpenGLPart, public DefinitionWatcher {
   public:
@@ -45,9 +43,7 @@ class OPENGLSHARED_EXPORT OpenGLTerrain : public OpenGLPart, public DefinitionWa
     ParallelPool *work;
     bool paused;
 
-    QVector<OpenGLTerrainChunk *> _chunks;
-    QList<OpenGLTerrainChunk *> _updateQueue;
-    QMutex _lock_chunks;
+    OpenGLTerrainPV *pv;
 };
 }
 }

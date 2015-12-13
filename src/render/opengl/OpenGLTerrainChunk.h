@@ -24,6 +24,9 @@ class OPENGLSHARED_EXPORT OpenGLTerrainChunk {
     inline int getVerticesLevel() const {
         return vertices_level;
     }
+    inline double getPriority() const {
+        return priority;
+    }
     inline const OpenGLVertexArray *getVertices() const {
         return vertices;
     }
@@ -57,10 +60,10 @@ class OPENGLSHARED_EXPORT OpenGLTerrainChunk {
      */
     void fillVerticesFromSquare(OpenGLVertexArray *array, int index_offset, double x, double z, double size);
 
-    double priority;
-
   private:
     Vector3 getCenter();
+
+    double priority;
 
     double _startx;
     double _startz;

@@ -1,10 +1,12 @@
 #include "OpenGLTerrain.h"
 
+#include <vector>
 #include "OpenGLFunctions.h"
 #include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
 #include "ParallelPool.h"
 #include "Thread.h"
+#include "Mutex.h"
 #include "OpenGLTerrainChunk.h"
 #include "WaterRenderer.h"
 #include "CameraDefinition.h"
@@ -32,7 +34,22 @@ class ChunkMaintenanceThreads : public ParallelPool {
     OpenGLTerrain *terrain;
 };
 
+class OpenGLTerrainChunkCmp {
+  public:
+    bool operator()(const OpenGLTerrainChunk *lhs, const OpenGLTerrainChunk *rhs) const {
+        return lhs->getPriority() < rhs->getPriority();
+    }
+};
+
+class paysages::opengl::OpenGLTerrainPV {
+  public:
+    Mutex lock;
+    vector<OpenGLTerrainChunk *> chunks;
+    vector<OpenGLTerrainChunk *> queue;
+};
+
 OpenGLTerrain::OpenGLTerrain(OpenGLRenderer *renderer) : OpenGLPart(renderer, "terrain") {
+    pv = new OpenGLTerrainPV();
     work = new ChunkMaintenanceThreads(this);
     paused = false;
 
@@ -48,9 +65,11 @@ OpenGLTerrain::OpenGLTerrain(OpenGLRenderer *renderer) : OpenGLPart(renderer, "t
 OpenGLTerrain::~OpenGLTerrain() {
     delete work;
 
-    for (int i = 0; i < _chunks.count(); i++) {
-        delete _chunks[i];
+    for (auto chunk : pv->chunks) {
+        delete chunk;
     }
+
+    delete pv;
 }
 
 void OpenGLTerrain::initialize() {
@@ -63,8 +82,8 @@ void OpenGLTerrain::initialize() {
         for (int j = 0; j < chunks; j++) {
             OpenGLTerrainChunk *chunk = new OpenGLTerrainChunk(renderer, start + chunksize * (double)i,
                                                                start + chunksize * (double)j, chunksize, chunks);
-            _chunks.append(chunk);
-            _updateQueue.append(chunk);
+            pv->chunks.push_back(chunk);
+            pv->queue.push_back(chunk);
         }
     }
 
@@ -77,26 +96,26 @@ void OpenGLTerrain::initialize() {
 }
 
 void OpenGLTerrain::update() {
-    for (auto &chunk : _chunks) {
+    for (auto &chunk : pv->chunks) {
         chunk->askReset(true, true);
     }
 }
 
 void OpenGLTerrain::render() {
-    for (int i = 0; i < _chunks.count(); i++) {
-        _chunks[i]->render(program);
+    for (auto chunk : pv->chunks) {
+        chunk->render(program);
     }
 }
 
 void OpenGLTerrain::interrupt() {
-    for (auto &chunk : _chunks) {
+    for (auto chunk : pv->chunks) {
         chunk->askInterrupt();
     }
 }
 
 void OpenGLTerrain::destroy() {
     OpenGLFunctions *functions = getFunctions();
-    for (auto &chunk : _chunks) {
+    for (auto &chunk : pv->chunks) {
         chunk->destroy(functions);
     }
 }
@@ -107,44 +126,44 @@ void OpenGLTerrain::pause() {
 }
 
 void OpenGLTerrain::resume() {
-    for (auto &chunk : _chunks) {
+    for (auto &chunk : pv->chunks) {
         chunk->askResume();
     }
     paused = false;
 }
 
 void OpenGLTerrain::resetTextures() {
-    for (auto &chunk : _chunks) {
+    for (auto &chunk : pv->chunks) {
         chunk->askReset(false, true);
     }
-}
-
-static bool _cmpChunks(const OpenGLTerrainChunk *c1, const OpenGLTerrainChunk *c2) {
-    return c1->priority > c2->priority;
 }
 
 void OpenGLTerrain::performChunksMaintenance() {
     CameraDefinition *camera = renderer->getScenery()->getCamera();
     OpenGLTerrainChunk *chunk;
 
-    _lock_chunks.lock();
-    if (_updateQueue.count() > 0) {
-        chunk = _updateQueue.takeFirst();
-        _lock_chunks.unlock();
+    pv->lock.acquire();
+    for (auto &chunk : pv->chunks) {
+        chunk->updatePriority(camera);
+    }
+
+    if (pv->queue.size() > 0) {
+        sort(pv->queue.begin(), pv->queue.end(), OpenGLTerrainChunkCmp());
+
+        chunk = pv->queue.back();
+        pv->queue.pop_back();
     } else {
-        _lock_chunks.unlock();
-        return;
+        chunk = NULL;
     }
+    pv->lock.release();
 
-    chunk->maintain();
+    if (chunk) {
+        chunk->maintain();
 
-    _lock_chunks.lock();
-    _updateQueue.append(chunk);
-    for (int i = 0; i < _chunks.count(); i++) {
-        _chunks[i]->updatePriority(camera);
+        pv->lock.acquire();
+        pv->queue.push_back(chunk);
+        pv->lock.release();
     }
-    qSort(_updateQueue.begin(), _updateQueue.end(), _cmpChunks);
-    _lock_chunks.unlock();
 }
 
 void OpenGLTerrain::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
