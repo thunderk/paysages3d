@@ -202,7 +202,7 @@ void Rasterizer::pushDisplacedTriangle(CanvasPortion *canvas, const Vector3 &v1,
         Vector3 ovm2 = ov2.midPointTo(ov3);
         Vector3 ovm3 = ov3.midPointTo(ov1);
         pushDisplacedTriangle(canvas, v1, vm1, vm3, ov1, ovm1, ovm3);
-        pushDisplacedTriangle(canvas, v2, vm1, vm2, ov2, ovm1, ovm2);
+        pushDisplacedTriangle(canvas, v2, vm2, vm1, ov2, ovm2, ovm1);
         pushDisplacedTriangle(canvas, v3, vm3, vm2, ov3, ovm3, ovm2);
         pushDisplacedTriangle(canvas, vm1, vm2, vm3, ovm1, ovm2, ovm3);
     }
