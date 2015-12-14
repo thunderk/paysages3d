@@ -21,8 +21,7 @@ class OPENGLSHARED_EXPORT OpenGLVegetationImpostor {
     /**
      * Render a single instance using this impostor.
      */
-    void render(OpenGLShaderProgram *program, const OpenGLVegetationInstance *instance, int instance_index,
-                const Vector3 &camera_location);
+    void render(OpenGLShaderProgram *program, const OpenGLVegetationInstance *instance, const Vector3 &camera_location);
 
     /**
      * Prepare the texture grid for a given model.

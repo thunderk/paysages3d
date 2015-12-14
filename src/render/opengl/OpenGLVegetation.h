@@ -6,7 +6,7 @@
 #include "OpenGLPart.h"
 #include "DefinitionWatcher.h"
 
-#include <map>
+#include <vector>
 
 namespace paysages {
 namespace opengl {

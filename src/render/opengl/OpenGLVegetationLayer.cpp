@@ -115,9 +115,8 @@ void OpenGLVegetationLayer::render() {
     lock_instances->acquire();
 
     // TODO Instanced rendering
-    int index = 0;
     for (auto instance : instances) {
-        impostor->render(parent->getProgram(), instance, index++, *camera_location);
+        impostor->render(parent->getProgram(), instance, *camera_location);
     }
 
     lock_instances->release();

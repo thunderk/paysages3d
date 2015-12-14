@@ -53,14 +53,13 @@ OpenGLVegetationImpostor::~OpenGLVegetationImpostor() {
 }
 
 void OpenGLVegetationImpostor::render(OpenGLShaderProgram *program, const OpenGLVegetationInstance *instance,
-                                      int instance_index, const Vector3 &camera_location) {
-    if (instance_index == 0 or texture_changed) {
+                                      const Vector3 &camera_location) {
+    if (texture_changed) {
         texture_changed = false;
         state->set("impostorTexture", texture);
     }
 
     int index = getIndex(camera_location, instance->getBase());
-    state->setInt("index", index);
     state->set("offset", instance->getBase());
     state->set("size", 2.0 * instance->getSize());
     program->draw(vertices, state, index * 4, 4);
@@ -142,7 +141,7 @@ void OpenGLVegetationImpostor::setVertex(int i, float u, float v) {
             Matrix4 rotation = matrixForIndex(index);
 
             Vector3 vertex = rotation.multPoint(Vector3(1.0, u, -(v - 0.5)));
-            vertices->set(index * 4 + i, vertex, u, v);
+            vertices->set(index * 4 + i, vertex, (u + (double)px) / (double)parts, (v + (double)py) / (double)parts);
         }
     }
 }
