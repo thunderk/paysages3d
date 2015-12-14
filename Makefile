@@ -49,13 +49,13 @@ else
 endif
 
 run:build
-	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/modeler/quickapp/paysages-modeler $(ARGS)
+	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/modeler/paysages-modeler $(ARGS)
 
 run_cli:build
 	LD_LIBRARY_PATH=$(LIBRARY_PATH) ${RUNNER} ${BUILDPATH}/interface/commandline/paysages-cli $(ARGS)
 
 profile:build
-	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g ${BUILDPATH}/interface/modeler/quickapp/paysages-modeler $(ARGS)
+	LD_LIBRARY_PATH=${LIBRARY_PATH} perf record -g ${BUILDPATH}/interface/modeler/paysages-modeler $(ARGS)
 	perf report -g
 
 profile_cli:build
@@ -64,7 +64,7 @@ profile_cli:build
 
 gltrace:build
 	rm -f *.trace
-	LD_PRELOAD="$(wildcard /usr/lib/x86_64-linux-gnu/apitrace/wrappers/glxtrace.so /usr/local/lib/x86_64-linux-gnu/apitrace/wrappers/glxtrace.so)" LD_LIBRARY_PATH=$(LIBRARY_PATH) ${BUILDPATH}/interface/modeler/quickapp/paysages-modeler $(ARGS)
+	LD_PRELOAD="$(wildcard /usr/lib/x86_64-linux-gnu/apitrace/wrappers/glxtrace.so /usr/local/lib/x86_64-linux-gnu/apitrace/wrappers/glxtrace.so)" LD_LIBRARY_PATH=$(LIBRARY_PATH) ${BUILDPATH}/interface/modeler/paysages-modeler $(ARGS)
 	qapitrace paysages-modeler.trace
 
 package:build
@@ -78,7 +78,7 @@ package:build
 	cp $(BUILDPATH)/render/software/libpaysages_render_software.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/render/preview/libpaysages_render_preview.so* paysages3d-linux/lib/
 	cp $(BUILDPATH)/render/opengl/libpaysages_render_opengl.so* paysages3d-linux/lib/
-	cp $(BUILDPATH)/interface/modeler/quickapp/paysages-modeler paysages3d-linux/lib/
+	cp $(BUILDPATH)/interface/modeler/paysages-modeler paysages3d-linux/lib/
 	chmod +x paysages3d-linux/lib/paysages-modeler
 	cp -r data paysages3d-linux/
 	cp dist/paysages3d.sh paysages3d-linux/

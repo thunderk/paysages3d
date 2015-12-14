@@ -16,20 +16,20 @@ It is written in C++ 11, using Qt 5.4 as only external dependency.
 
 ### Using QtSDK (All platforms)
 
-Download and install the latest [QtSDK](http://qt-project.org/downloads).
+Download and install the latest [QtSDK](http://qt.io/download).
 
 Launch QtCreator, open the project file *src/paysages.pro* and build it.
 
-To run the program, choose the *quickapp* target.
+To run the program, choose the *modeler* target.
 To run the unit tests, choose the *tests* target.
 
 ### Using a packaged Qt (Linux)
 
-You need at least the 5.4 packaged version of Qt, with qMake and QtCore, QtGui and QtOpengl modules.
+You need at least the 5.4 packaged version of Qt, with qMake and QtCore, QtQuick and QtOpengl modules.
 
 On Ubuntu/Mint:
 
-    sudo apt-get install qt5-qmake libqt5core5a libqt5gui5 libqt5widgets5 libqt5opengl5-dev
+    sudo apt-get install qt5-qmake libqt5core5a libqt5quick5 libqt5qml5 libqt5opengl5-dev
 
 Then to build and run the software:
 
@@ -49,5 +49,5 @@ The source code is subject to the terms of the [Mozilla Public License, v. 2.0](
 
 * [Michaël Lemaire](http://thunderk.net) - Main developer
 * [Eric Bruneton and Fabrice Neyet](http://www-evasion.imag.fr/Membres/Eric.Bruneton/) - Publication and source code from *Precomputed Atmospheric Scattering (2008)*
-* [Qt](http://qt-project.org/) - Base framework
-* [GoogleTest](https://code.google.com/p/googletest/) - Used for unit testing
+* [Qt](http://qt.io/) - Base framework
+* [GoogleTest](https://github.com/google/googletest/) - Used for unit testing
