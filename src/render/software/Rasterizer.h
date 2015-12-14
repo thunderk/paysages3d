@@ -19,7 +19,7 @@ typedef struct RenderScanlines RenderScanlines;
  */
 class SOFTWARESHARED_EXPORT Rasterizer {
   public:
-    Rasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id, const Color &color);
+    Rasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id, const Color &color);
     virtual ~Rasterizer();
 
     inline SoftwareRenderer *getRenderer() const {

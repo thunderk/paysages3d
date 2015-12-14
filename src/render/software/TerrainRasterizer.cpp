@@ -12,8 +12,8 @@
 #include "CanvasFragment.h"
 #include "RenderProgress.h"
 
-TerrainRasterizer::TerrainRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id)
-    : Rasterizer(renderer, progress, client_id, Color(1.0, 0.9, 0.9)) {
+TerrainRasterizer::TerrainRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id)
+    : Rasterizer(renderer, progress, client_id, Color(1.0, 0.7, 0.7)) {
     setBackFaceCulling(true);
     yoffset = 0.0;
 }

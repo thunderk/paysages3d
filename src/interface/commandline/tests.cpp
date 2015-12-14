@@ -203,9 +203,15 @@ static void testNearFrustum() {
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(400, 300);
     renderer.setQuality(0.1);
+    renderer.enablePostprocess(false);
+    startTestRender(&renderer, "near_frustum_good_raw");
+    renderer.enablePostprocess(true);
     startTestRender(&renderer, "near_frustum_good");
 
     renderer.getWaterRasterizer()->setAutoCutLimit(1000.0);
+    renderer.enablePostprocess(false);
+    startTestRender(&renderer, "near_frustum_bad_raw");
+    renderer.enablePostprocess(true);
     startTestRender(&renderer, "near_frustum_bad");
 }
 

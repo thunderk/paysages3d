@@ -21,7 +21,7 @@ struct paysages::software::ScanPoint {
         double y;
         double z;
     } location;
-    int client;
+    unsigned short client;
     bool front_facing;
 };
 
@@ -32,7 +32,7 @@ struct paysages::software::RenderScanlines {
     int right;
 };
 
-Rasterizer::Rasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id, const Color &color)
+Rasterizer::Rasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id, const Color &color)
     : renderer(renderer), progress(progress), client_id(client_id) {
     this->color = new Color(color);
 

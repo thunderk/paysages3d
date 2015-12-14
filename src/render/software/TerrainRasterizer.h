@@ -20,7 +20,7 @@ class SOFTWARESHARED_EXPORT TerrainRasterizer : public Rasterizer {
     } TerrainChunkInfo;
 
   public:
-    TerrainRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id);
+    TerrainRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id);
 
     /**
      * Set the rasterization quality.

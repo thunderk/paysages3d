@@ -37,6 +37,7 @@ class Rasterizer;
 class OverlayRasterizer;
 class SkyRasterizer;
 class TerrainRasterizer;
+class VegetationRasterizer;
 
 class LightingManager;
 class LightStatus;

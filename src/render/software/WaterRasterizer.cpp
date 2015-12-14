@@ -6,8 +6,8 @@
 #include "CanvasFragment.h"
 #include "RenderProgress.h"
 
-WaterRasterizer::WaterRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id)
-    : Rasterizer(renderer, progress, client_id, Color(0.9, 0.95, 1.0)) {
+WaterRasterizer::WaterRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id)
+    : Rasterizer(renderer, progress, client_id, Color(0.7, 0.85, 1.0)) {
 }
 
 static inline Vector3 _getFirstPassVertex(SoftwareRenderer *renderer, double x, double z) {

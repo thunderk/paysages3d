@@ -1,18 +1,37 @@
 #include "VegetationRasterizer.h"
 
 #include <cassert>
-
+#include "Scenery.h"
 #include "CanvasFragment.h"
 #include "Color.h"
 #include "SpaceSegment.h"
 #include "SoftwareRenderer.h"
+#include "VegetationDefinition.h"
 #include "VegetationRenderer.h"
 #include "RayCastingResult.h"
 
-VegetationRasterizer::VegetationRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id)
+VegetationRasterizer::VegetationRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id)
     : TerrainRasterizer(renderer, progress, client_id) {
     setYOffset(0.5);
-    setColor(Color(0.8, 1.0, 0.8, 0.5));
+    setColor(Color(0.7, 1.0, 0.7, 0.5));
+}
+
+bool VegetationRasterizer::isUseful() const {
+    return renderer->getScenery()->getVegetation()->getMaxHeight() > 0.0;
+}
+
+int VegetationRasterizer::prepareRasterization() {
+    if (isUseful()) {
+        return TerrainRasterizer::prepareRasterization();
+    } else {
+        return 0;
+    }
+}
+
+void VegetationRasterizer::rasterizeToCanvas(CanvasPortion *canvas) {
+    if (isUseful()) {
+        TerrainRasterizer::rasterizeToCanvas(canvas);
+    }
 }
 
 Color VegetationRasterizer::shadeFragment(const CanvasFragment &fragment, const CanvasFragment *previous) const {

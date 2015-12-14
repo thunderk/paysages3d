@@ -10,7 +10,7 @@ namespace software {
 
 class WaterRasterizer : public Rasterizer {
   public:
-    WaterRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id);
+    WaterRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id);
 
     void rasterizeQuad(CanvasPortion *canvas, double x, double z, double size);
 

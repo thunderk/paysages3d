@@ -10,7 +10,7 @@ namespace software {
 
 class SOFTWARESHARED_EXPORT SkyRasterizer : public Rasterizer {
   public:
-    SkyRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, int client_id);
+    SkyRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id);
 
     virtual int prepareRasterization() override;
     virtual void rasterizeToCanvas(CanvasPortion *canvas) override;
