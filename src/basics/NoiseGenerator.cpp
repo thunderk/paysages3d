@@ -164,7 +164,6 @@ void NoiseGenerator::setFunctionParams(NoiseFunctionAlgorithm algorithm, double 
 void NoiseGenerator::forceValue(double value) {
     clearLevels();
     height_offset = value;
-    addLevelSimple(1.0, 0.0, 0.0); /* FIXME Should not be needed */
 }
 
 void NoiseGenerator::getRange(double *minvalue, double *maxvalue) const {
