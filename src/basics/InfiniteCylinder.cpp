@@ -9,6 +9,9 @@ InfiniteCylinder::InfiniteCylinder(const InfiniteRay &axis, double radius) : axi
     validate();
 }
 
+InfiniteCylinder::~InfiniteCylinder() {
+}
+
 int InfiniteCylinder::findRayIntersection(const InfiniteRay &ray, Vector3 *first_intersection,
                                           Vector3 *second_intersection) const {
     /*

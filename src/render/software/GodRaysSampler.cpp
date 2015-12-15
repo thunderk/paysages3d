@@ -1,5 +1,7 @@
 #include "GodRaysSampler.h"
 
+#include <cmath>
+#include <algorithm>
 #include "GodRaysDefinition.h"
 #include "AtmosphereDefinition.h"
 #include "SoftwareRenderer.h"
@@ -13,7 +15,6 @@
 #include "TerrainDefinition.h"
 #include "CloudsRenderer.h"
 #include "Interpolation.h"
-#include <cmath>
 
 GodRaysSampler::GodRaysSampler() {
     enabled = true;
@@ -48,16 +49,14 @@ void GodRaysSampler::prepare(SoftwareRenderer *renderer) {
 void GodRaysSampler::reset() {
     *bounds = SpaceSegment(Vector3(camera_location->x - max_length, low_altitude, camera_location->z - max_length),
                            Vector3(camera_location->x + max_length, high_altitude, camera_location->z + max_length));
-    samples_x = round(bounds->getXDiff() / sampling_step) + 1;
-    samples_y = round(bounds->getYDiff() / sampling_step) + 1;
-    samples_z = round(bounds->getZDiff() / sampling_step) + 1;
+    samples_x = round_to_int(bounds->getXDiff() / sampling_step) + 1;
+    samples_y = round_to_int(bounds->getYDiff() / sampling_step) + 1;
+    samples_z = round_to_int(bounds->getZDiff() / sampling_step) + 1;
 
-    long n = samples_x * samples_y * samples_z;
+    auto n = to_size(samples_x * samples_y * samples_z);
     delete[] data;
     data = new double[n];
-    for (long i = 0; i < n; i++) {
-        data[i] = -1.0;
-    }
+    fill_n(data, n, -1.0);
 }
 
 void GodRaysSampler::setEnabled(bool enabled) {
@@ -110,9 +109,9 @@ double GodRaysSampler::getCachedLight(const Vector3 &location) {
     double y = location.y - bounds->getStart().y;
     double z = location.z - bounds->getStart().z;
 
-    int ix = (int)floor(x / sampling_step);
-    int iy = (int)floor(y / sampling_step);
-    int iz = (int)floor(z / sampling_step);
+    int ix = floor_to_int(x / sampling_step);
+    int iy = floor_to_int(y / sampling_step);
+    int iz = floor_to_int(z / sampling_step);
 
     // Check cache limits
     if (ix < 0 || ix >= samples_x - 1 || iy < 0 || iy >= samples_y - 1 || iz < 0 || iz >= samples_z - 1) {
@@ -171,8 +170,8 @@ inline double GodRaysSampler::getCache(int x, int y, int z) {
     double *cache = data + z * samples_x * samples_y + y * samples_x + x;
     if (*cache < 0.0) {
         Vector3 location =
-            Vector3(bounds->getStart().x + sampling_step * (double)x, bounds->getStart().y + sampling_step * (double)y,
-                    bounds->getStart().z + sampling_step * (double)z);
+            Vector3(bounds->getStart().x + sampling_step * to_double(x), bounds->getStart().y + sampling_step * to_double(y),
+                    bounds->getStart().z + sampling_step * to_double(z));
         double unfiltered_power = getRawLight(location, false).getPower();
         if (unfiltered_power == 0.0) {
             *cache = 1.0;

@@ -2,7 +2,8 @@
 #define MUTEX_H
 
 #include "system_global.h"
-#include <QMutex>
+
+#include <mutex>
 
 namespace paysages {
 namespace system {
@@ -10,7 +11,7 @@ namespace system {
 /*!
  * \brief System mutex
  */
-class SYSTEMSHARED_EXPORT Mutex : private QMutex {
+class SYSTEMSHARED_EXPORT Mutex : private mutex {
   public:
     /*!
      * \brief Create a new mutex
@@ -18,10 +19,10 @@ class SYSTEMSHARED_EXPORT Mutex : private QMutex {
     Mutex();
 
     inline void acquire() {
-        QMutex::lock();
+        mutex::lock();
     }
     inline void release() {
-        QMutex::unlock();
+        mutex::unlock();
     }
 };
 }

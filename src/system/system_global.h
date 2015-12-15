@@ -31,11 +31,18 @@ class PictureWriter;
 class Time;
 class RandomGenerator;
 
-extern RandomGenerator &RandomGeneratorDefault;
+extern SYSTEMSHARED_EXPORT RandomGenerator &RandomGeneratorDefault;
 }
 }
 using namespace paysages::system;
 
 using namespace std;
+
+// Some useful casts
+#define to_double(_x_) (static_cast<double>(_x_))
+#define round_to_int(_x_) (static_cast<int>(round(_x_)))
+#define floor_to_int(_x_) (static_cast<int>(floor(_x_)))
+#define ceil_to_int(_x_) (static_cast<int>(ceil(_x_)))
+#define to_size(_x_) (static_cast<unsigned long>(_x_))
 
 #endif // SYSTEM_GLOBAL_H

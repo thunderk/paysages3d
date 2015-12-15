@@ -25,7 +25,6 @@ class OpenGLVegetationLayer;
 class OpenGLVegetationInstance;
 class OpenGLVegetationImpostor;
 class OpenGLTerrainChunk;
-template <typename Vertex> class VertexArray;
 }
 }
 using namespace paysages::opengl;

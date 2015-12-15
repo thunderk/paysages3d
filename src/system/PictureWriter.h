@@ -8,6 +8,9 @@ namespace system {
 
 class SYSTEMSHARED_EXPORT PictureWriter {
   public:
+    PictureWriter();
+    virtual ~PictureWriter();
+
     /**
      * @brief Start saving the picture in a file.
      */

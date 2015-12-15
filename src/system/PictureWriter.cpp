@@ -2,6 +2,12 @@
 
 #include <QImage>
 
+PictureWriter::PictureWriter() {
+}
+
+PictureWriter::~PictureWriter() {
+}
+
 bool PictureWriter::save(const string &filepath, int width, int height) {
     QImage result(width, height, QImage::Format_ARGB32);
 

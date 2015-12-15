@@ -15,6 +15,7 @@ class BASICSSHARED_EXPORT InfiniteCylinder {
   public:
     InfiniteCylinder() = default;
     InfiniteCylinder(const InfiniteRay &axis, double radius);
+    virtual ~InfiniteCylinder();
 
     inline const InfiniteRay &getAxis() const {
         return axis;
