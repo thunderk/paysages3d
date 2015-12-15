@@ -91,8 +91,7 @@ DefinitionNode *DefinitionNode::findByPath(const string &path) const {
     } else {
         size_t seppos = path.find("/");
         string child_name = (seppos == string::npos) ? path : path.substr(0, seppos);
-        DefinitionNode *child =
-            ((DefinitionNode *)this)->findChildByName(child_name); // FIXME findChildByName should be const
+        DefinitionNode *child = findChildByName(child_name);
         if (child) {
             if (seppos == string::npos) {
                 return child;
@@ -231,7 +230,7 @@ void DefinitionNode::removeChild(DefinitionNode *child) {
     }
 }
 
-DefinitionNode *DefinitionNode::findChildByName(const string name) {
+DefinitionNode *DefinitionNode::findChildByName(const string &name) const {
     for (auto child : children) {
         if (child->name == name) {
             return child;

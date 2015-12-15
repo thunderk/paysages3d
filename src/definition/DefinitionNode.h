@@ -98,7 +98,7 @@ class DEFINITIONSHARED_EXPORT DefinitionNode {
   protected:
     void addChild(DefinitionNode *child);
     void removeChild(DefinitionNode *child);
-    virtual DefinitionNode *findChildByName(const string name);
+    virtual DefinitionNode *findChildByName(const string &name) const;
 
     /**
      * Get the size in bytes this child will consume when serialized to a stream.
