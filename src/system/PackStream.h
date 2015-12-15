@@ -3,9 +3,7 @@
 
 #include "system_global.h"
 
-class QFile;
-class QDataStream;
-class QByteArray;
+#include <memory>
 
 namespace paysages {
 namespace system {
@@ -16,19 +14,18 @@ namespace system {
 class SYSTEMSHARED_EXPORT PackStream {
   public:
     PackStream();
-    ~PackStream();
-
     /**
      * Open a reading stream for another stream.
      *
      * The other stream must not have been bound to a file (still a memory buffer).
      */
     PackStream(const PackStream *other);
-
     /**
      * Open a reading stream on a buffer content.
      */
     PackStream(const string &buffer_content);
+
+    ~PackStream();
 
     bool bindToFile(const string &filepath, bool write = false);
 
@@ -61,9 +58,8 @@ class SYSTEMSHARED_EXPORT PackStream {
     void skipBytes(int bytes);
 
   private:
-    QFile *file;
-    QByteArray *buffer;
-    QDataStream *stream;
+    class pimpl;
+    unique_ptr<pimpl> pv;
 };
 }
 }
