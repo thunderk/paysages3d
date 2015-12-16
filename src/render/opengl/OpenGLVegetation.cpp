@@ -50,15 +50,15 @@ OpenGLVegetation::OpenGLVegetation(OpenGLRenderer *renderer) : OpenGLPart(render
 }
 
 OpenGLVegetation::~OpenGLVegetation() {
-    for (auto layer : layers) {
-        delete layer;
-    }
-    layers.clear();
+    updater->interrupt();
+    delete updater;
 
     delete layers_lock;
 
-    updater->interrupt();
-    delete updater;
+    for (auto &layer: layers) {
+        delete layer;
+    }
+    layers.clear();
 }
 
 void OpenGLVegetation::initialize() {

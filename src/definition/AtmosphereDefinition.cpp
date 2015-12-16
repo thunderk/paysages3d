@@ -13,6 +13,7 @@ AtmosphereDefinition::AtmosphereDefinition(DefinitionNode *parent)
     daytime = new FloatNode(this, "daytime");
     humidity = new FloatNode(this, "humidity");
     sun_radius = new FloatNode(this, "sun_radius");
+    sun_color = COLOR_RED;
 }
 
 AtmosphereDefinition::~AtmosphereDefinition() {
