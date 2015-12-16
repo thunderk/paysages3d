@@ -169,9 +169,9 @@ Color GodRaysSampler::apply(const Color &raw, const Color &atmosphered, const Ve
 inline double GodRaysSampler::getCache(int x, int y, int z) {
     double *cache = data + z * samples_x * samples_y + y * samples_x + x;
     if (*cache < 0.0) {
-        Vector3 location =
-            Vector3(bounds->getStart().x + sampling_step * to_double(x), bounds->getStart().y + sampling_step * to_double(y),
-                    bounds->getStart().z + sampling_step * to_double(z));
+        Vector3 location = Vector3(bounds->getStart().x + sampling_step * to_double(x),
+                                   bounds->getStart().y + sampling_step * to_double(y),
+                                   bounds->getStart().z + sampling_step * to_double(z));
         double unfiltered_power = getRawLight(location, false).getPower();
         if (unfiltered_power == 0.0) {
             *cache = 1.0;

@@ -55,7 +55,7 @@ OpenGLVegetation::~OpenGLVegetation() {
 
     delete layers_lock;
 
-    for (auto &layer: layers) {
+    for (auto &layer : layers) {
         delete layer;
     }
     layers.clear();

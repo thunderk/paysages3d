@@ -10,7 +10,8 @@
 #include "VegetationRenderer.h"
 #include "RayCastingResult.h"
 
-VegetationRasterizer::VegetationRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id)
+VegetationRasterizer::VegetationRasterizer(SoftwareRenderer *renderer, RenderProgress *progress,
+                                           unsigned short client_id)
     : TerrainRasterizer(renderer, progress, client_id) {
     setYOffset(0.5);
     setColor(Color(0.7, 1.0, 0.7, 0.5));

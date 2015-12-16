@@ -32,7 +32,8 @@ struct paysages::software::RenderScanlines {
     int right;
 };
 
-Rasterizer::Rasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id, const Color &color)
+Rasterizer::Rasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id,
+                       const Color &color)
     : renderer(renderer), progress(progress), client_id(client_id) {
     this->color = new Color(color);
 

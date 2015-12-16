@@ -19,4 +19,3 @@ TEST(VegetationRasterizer, isUseful) {
 
     EXPECT_TRUE(rast.isUseful());
 }
-
