@@ -32,6 +32,9 @@ class DEFINITIONSHARED_EXPORT WaterDefinition : public DefinitionNode, public De
     inline FloatNode *propZOffset() const {
         return zoffset;
     }
+    inline ColorNode *propDepthColor() const {
+        return depth_color;
+    }
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff);
 
@@ -41,7 +44,6 @@ class DEFINITIONSHARED_EXPORT WaterDefinition : public DefinitionNode, public De
   public:
     double transparency;
     SurfaceMaterial *material;
-    Color *depth_color;
     double transparency_depth;
     double lighting_depth;
 
@@ -60,6 +62,7 @@ class DEFINITIONSHARED_EXPORT WaterDefinition : public DefinitionNode, public De
     FloatNode *reflection;
     FloatNode *xoffset;
     FloatNode *zoffset;
+    ColorNode *depth_color;
 };
 }
 }

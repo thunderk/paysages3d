@@ -1,21 +1,22 @@
-#ifndef INTNODE_H
-#define INTNODE_H
+#ifndef COLORNODE_H
+#define COLORNODE_H
 
 #include "definition_global.h"
 
 #include "DefinitionNode.h"
+#include "Color.h"
 
 namespace paysages {
 namespace definition {
 
 /**
- * Node with a single integer value, for the definition tree.
+ * Node with a single color value, for the definition tree.
  */
-class DEFINITIONSHARED_EXPORT IntNode : public DefinitionNode {
+class DEFINITIONSHARED_EXPORT ColorNode : public DefinitionNode {
   public:
-    IntNode(DefinitionNode *parent, const string &name, int value = 0);
+    ColorNode(DefinitionNode *parent, const string &name, const Color &value = COLOR_TRANSPARENT);
 
-    inline int getValue() const {
+    inline const Color &getValue() const {
         return value;
     }
 
@@ -25,19 +26,19 @@ class DEFINITIONSHARED_EXPORT IntNode : public DefinitionNode {
     virtual void copy(DefinitionNode *destination) const override;
 
     /**
-     * Change the int value stored.
+     * Change the color value stored.
      *
      * The DiffManager is used as intermediary, so that the change may not happen immediately.
      */
-    void setValue(int new_value);
-    const IntDiff *produceDiff(int new_value) const;
+    void setValue(const Color &value);
+    const ColorDiff *produceDiff(const Color &value) const;
     virtual void generateInitDiffs(vector<const DefinitionDiff *> *diffs) const override;
     virtual bool applyDiff(const DefinitionDiff *diff, bool backward = false) override;
 
   private:
-    int value;
+    Color value;
 };
 }
 }
 
-#endif // INTNODE_H
+#endif // COLORNODE_H

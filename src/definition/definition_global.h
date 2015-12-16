@@ -18,6 +18,8 @@ class FloatDiff;
 class IntNode;
 class IntDiff;
 class NoiseNode;
+class ColorNode;
+class ColorDiff;
 class DiffManager;
 class DefinitionWatcher;
 class Scenery;

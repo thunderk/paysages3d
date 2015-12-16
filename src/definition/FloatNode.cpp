@@ -27,8 +27,8 @@ void FloatNode::load(PackStream *stream) {
 }
 
 void FloatNode::copy(DefinitionNode *destination) const {
-    if (destination->getTypeName() == getTypeName()) {
-        ((FloatNode *)destination)->value = value;
+    if (auto tdest = dynamic_cast<FloatNode *>(destination)) {
+        tdest->value = value;
     } else {
         Logs::error("Definition") << "Can't copy from " << getTypeName() << " to " << destination->getTypeName()
                                   << endl;
@@ -53,17 +53,22 @@ bool FloatNode::applyDiff(const DefinitionDiff *diff, bool backward) {
     }
 
     assert(diff->getTypeName() == "float");
-    const FloatDiff *float_diff = (const FloatDiff *)diff;
+    auto float_diff = dynamic_cast<const FloatDiff *>(diff);
 
-    double previous = backward ? float_diff->getNewValue() : float_diff->getOldValue();
-    double next = backward ? float_diff->getOldValue() : float_diff->getNewValue();
+    if (float_diff) {
+        double previous = backward ? float_diff->getNewValue() : float_diff->getOldValue();
+        double next = backward ? float_diff->getOldValue() : float_diff->getNewValue();
 
-    if (value == previous) {
-        value = next;
-        return true;
+        if (value == previous) {
+            value = next;
+            return true;
+        } else {
+            Logs::error("Definition") << "Can't apply float diff " << previous << " => " << next << " to " << getName()
+                                      << endl;
+            return false;
+        }
     } else {
-        Logs::error("Definition") << "Can't apply float diff " << previous << " => " << next << " to " << getName()
-                                  << endl;
+        Logs::error("Could not cast DefinitionDiff to IntDiff");
         return false;
     }
 }

@@ -249,6 +249,7 @@ void DefinitionNode::addDiff(const DefinitionDiff *diff) {
     if (root && root->diffs) {
         root->diffs->addDiff(this, diff);
     } else {
+        // TODO Apply diff ?
         delete diff;
     }
 }

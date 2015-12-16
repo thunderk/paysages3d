@@ -35,7 +35,12 @@ class BASICSSHARED_EXPORT Color {
     Color add(const Color &other) const;
     Color lerp(const Color &other, double f) const;
 
+    inline bool operator==(const Color &other) const {
+        return r == other.r and g == other.g and b == other.b and a == other.a;
+    }
+
   public:
+    // TODO Make private
     double r;
     double g;
     double b;
@@ -51,12 +56,5 @@ BASICSSHARED_EXPORT extern const Color COLOR_WHITE;
 BASICSSHARED_EXPORT extern const Color COLOR_GREY;
 }
 }
-
-// Inlining
-#if PAYSAGES_USE_INLINING
-#ifndef COLOR_INLINE_CPP
-#include "Color.inline.cpp"
-#endif
-#endif
 
 #endif // COLOR_H

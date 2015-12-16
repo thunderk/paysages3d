@@ -31,7 +31,7 @@ class DEFINITIONSHARED_EXPORT FloatNode : public DefinitionNode {
      */
     void setValue(double new_value);
     const FloatDiff *produceDiff(double new_value) const;
-    void generateInitDiffs(vector<const DefinitionDiff *> *diffs) const;
+    virtual void generateInitDiffs(vector<const DefinitionDiff *> *diffs) const override;
     virtual bool applyDiff(const DefinitionDiff *diff, bool backward = false) override;
 
     void addValue(double added);

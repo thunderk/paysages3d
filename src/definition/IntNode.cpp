@@ -27,8 +27,8 @@ void IntNode::load(PackStream *stream) {
 }
 
 void IntNode::copy(DefinitionNode *destination) const {
-    if (destination->getTypeName() == getTypeName()) {
-        ((IntNode *)destination)->value = value;
+    if (auto tdest = dynamic_cast<IntNode *>(destination)) {
+        tdest->value = value;
     } else {
         Logs::error("Definition") << "Can't copy from " << getTypeName() << " to " << destination->getTypeName()
                                   << endl;
@@ -53,17 +53,22 @@ bool IntNode::applyDiff(const DefinitionDiff *diff, bool backward) {
     }
 
     assert(diff->getTypeName() == "int");
-    const IntDiff *int_diff = (const IntDiff *)diff;
+    auto int_diff = dynamic_cast<const IntDiff *>(diff);
 
-    double previous = backward ? int_diff->getNewValue() : int_diff->getOldValue();
-    double next = backward ? int_diff->getOldValue() : int_diff->getNewValue();
+    if (int_diff) {
+        int previous = backward ? int_diff->getNewValue() : int_diff->getOldValue();
+        int next = backward ? int_diff->getOldValue() : int_diff->getNewValue();
 
-    if (value == previous) {
-        value = next;
-        return true;
+        if (value == previous) {
+            value = next;
+            return true;
+        } else {
+            Logs::error("Definition") << "Can't apply int diff " << previous << " => " << next << " to " << getName()
+                                      << endl;
+            return false;
+        }
     } else {
-        Logs::error("Definition") << "Can't apply int diff " << previous << " => " << next << " to " << getName()
-                                  << endl;
+        Logs::error("Could not cast DefinitionDiff to IntDiff");
         return false;
     }
 }

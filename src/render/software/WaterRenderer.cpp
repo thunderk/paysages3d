@@ -10,6 +10,7 @@
 #include "SurfaceMaterial.h"
 #include "NoiseFunctionSimplex.h"
 #include "FloatNode.h"
+#include "ColorNode.h"
 #include "RayCastingResult.h"
 
 WaterRenderer::WaterRenderer(SoftwareRenderer *parent) : parent(parent) {
@@ -178,7 +179,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z) {
     if (definition->transparency == 0.0) {
         result.refracted = COLOR_BLACK;
     } else {
-        Color depth_color = *definition->depth_color;
+        Color depth_color = definition->propDepthColor()->getValue();
         refracted = parent->rayWalking(location, _refractRay(look_direction, normal), 1, 0, 1, 1);
         depth = location.sub(refracted.hit_location).getNorm();
         depth_color.limitPower(refracted.hit_color.getPower());

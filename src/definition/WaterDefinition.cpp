@@ -2,19 +2,19 @@
 
 #include "PackStream.h"
 #include "NoiseState.h"
-#include "Color.h"
 #include "SurfaceMaterial.h"
 #include "IntNode.h"
 #include "FloatNode.h"
+#include "ColorNode.h"
 
 WaterDefinition::WaterDefinition(DefinitionNode *parent) : DefinitionNode(parent, "water", "water") {
     model = new IntNode(this, "model", -1);
     reflection = new FloatNode(this, "reflection");
     xoffset = new FloatNode(this, "xoffset");
     zoffset = new FloatNode(this, "zoffset");
+    depth_color = new ColorNode(this, "depth_color");
 
     material = new SurfaceMaterial;
-    depth_color = new Color;
     foam_material = new SurfaceMaterial;
     noise_state = new NoiseState();
 
@@ -32,7 +32,6 @@ WaterDefinition::WaterDefinition(DefinitionNode *parent) : DefinitionNode(parent
 
 WaterDefinition::~WaterDefinition() {
     delete material;
-    delete depth_color;
     delete foam_material;
     delete noise_state;
 }
@@ -41,7 +40,6 @@ void WaterDefinition::save(PackStream *stream) const {
     DefinitionNode::save(stream);
 
     material->save(stream);
-    depth_color->save(stream);
     stream->write(&transparency_depth);
     stream->write(&transparency);
     stream->write(&lighting_depth);
@@ -61,7 +59,6 @@ void WaterDefinition::load(PackStream *stream) {
     DefinitionNode::load(stream);
 
     material->load(stream);
-    depth_color->load(stream);
     stream->read(&transparency_depth);
     stream->read(&transparency);
     stream->read(&lighting_depth);
@@ -84,7 +81,6 @@ void WaterDefinition::copy(DefinitionNode *_destination) const {
 
     WaterDefinition *destination = (WaterDefinition *)_destination;
     *destination->material = *material;
-    *destination->depth_color = *depth_color;
     destination->transparency_depth = transparency_depth;
     destination->transparency = transparency;
     destination->lighting_depth = lighting_depth;
@@ -100,7 +96,6 @@ void WaterDefinition::copy(DefinitionNode *_destination) const {
 void WaterDefinition::validate() {
     DefinitionNode::validate();
 
-    depth_color->a = 1.0;
     material->base->a = 1.0;
     material->reflection = 1.0;
     material->shininess = 16.0;
@@ -116,17 +111,13 @@ void WaterDefinition::validate() {
 
 void WaterDefinition::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
     if (node == model) {
-        noise_state->randomizeOffsets();
-
         switch (model->getValue()) {
         case 1:
             transparency = 0.3;
             reflection->setValue(0.07);
             transparency_depth = 3.0;
             material->setColor(0.05, 0.18, 0.2, 1.0);
-            depth_color->r = 0.0;
-            depth_color->g = 0.18;
-            depth_color->b = 0.15;
+            depth_color->setValue(Color(0.0, 0.18, 0.15));
             lighting_depth = 4.0;
             scaling = 1.5;
             waves_height = 1.0;
@@ -140,9 +131,7 @@ void WaterDefinition::nodeChanged(const DefinitionNode *node, const DefinitionDi
             reflection->setValue(0.2);
             transparency_depth = 4.0;
             material->setColor(0.08, 0.15, 0.2, 1.0);
-            depth_color->r = 0.0;
-            depth_color->g = 0.1;
-            depth_color->b = 0.1;
+            depth_color->setValue(Color(0.0, 0.1, 0.1));
             lighting_depth = 6.0;
             scaling = 1.0;
             waves_height = 0.8;
@@ -155,6 +144,8 @@ void WaterDefinition::nodeChanged(const DefinitionNode *node, const DefinitionDi
 }
 
 void WaterDefinition::applyPreset(WaterPreset preset, RandomGenerator &random) {
+    noise_state->randomizeOffsets(random);
+
     if (preset == WATER_PRESET_LAKE) {
         model->setValue(0);
     } else if (preset == WATER_PRESET_SEA) {
