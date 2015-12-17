@@ -68,6 +68,7 @@ void OpenGLSkybox::update() {
         (SoftwareBrunetonAtmosphereRenderer *)renderer->getAtmosphereRenderer();
     renderer->getSharedState()->set("transmittanceTexture", bruneton->getModel()->getTextureTransmittance());
     renderer->getSharedState()->set("inscatterTexture", bruneton->getModel()->getTextureInscatter());
+    renderer->getSharedState()->set("irradianceTexture", bruneton->getModel()->getTextureIrradiance());
 }
 
 void OpenGLSkybox::render() {

@@ -32,6 +32,7 @@ uniform float sunRadius;
 in vec3 unprojected;
 
 uniform sampler2D transmittanceTexture;
+uniform sampler2D irradianceTexture;
 uniform sampler3D inscatterTexture;
 
 vec4 texture4D(sampler3D tex, float r, float mu, float muS, float nu)
@@ -96,6 +97,17 @@ vec4 _sunTransmittance(vec3 v, vec3 s, float r, float mu, float radius)
     transmittance.b *= isun;
     transmittance.a = 1.0;
     return transmittance; /* Eq (9) */
+}
+
+void _getIrradianceUV(float r, float muS, out float uMuS, out float uR) {
+    uR = (r - Rg) / (Rt - Rg);
+    uMuS = (muS + 0.2) / (1.0 + 0.2);
+}
+
+vec4 _irradiance(float r, float muS) {
+    float u, v;
+    _getIrradianceUV(r, muS, u, v);
+    return texture(irradianceTexture, vec2(u, v));
 }
 
 float phaseFunctionR(float mu) {
@@ -327,6 +339,9 @@ vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float reflection, flo
             }
         }
     }
+
+    /* global irradiance from sky */
+    result += dot(vec3(0.0, -1.0, 0.0), normal) * _irradiance(r0, muS);
 
     return result;
 }
