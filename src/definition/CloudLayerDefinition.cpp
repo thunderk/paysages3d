@@ -35,7 +35,7 @@ CloudLayerDefinition *CloudLayerDefinition::newCopy(DefinitionNode *parent) cons
 void CloudLayerDefinition::save(PackStream *stream) const {
     DefinitionNode::save(stream);
 
-    int clouds_type = (int)type;
+    int clouds_type = static_cast<int>(type);
 
     stream->write(&clouds_type);
     stream->write(&altitude);
@@ -51,7 +51,7 @@ void CloudLayerDefinition::load(PackStream *stream) {
     int clouds_type;
 
     stream->read(&clouds_type);
-    type = (CloudsType)clouds_type;
+    type = static_cast<CloudsType>(clouds_type);
     stream->read(&altitude);
     stream->read(&scaling);
     stream->read(&coverage);

@@ -47,8 +47,8 @@ Color Texture2D::getNearest(double dx, double dy) const {
     if (dy > 1.0)
         dy = 1.0;
 
-    int ix = (int)(dx * (double)(this->xsize - 1));
-    int iy = (int)(dy * (double)(this->ysize - 1));
+    int ix = trunc_to_int(dx * to_double(this->xsize - 1));
+    int iy = trunc_to_int(dy * to_double(this->ysize - 1));
 
     assert(ix >= 0 && ix < this->xsize);
     assert(iy >= 0 && iy < this->ysize);
@@ -66,20 +66,20 @@ Color Texture2D::getLinear(double dx, double dy) const {
     if (dy > 1.0)
         dy = 1.0;
 
-    dx *= (double)(this->xsize - 1);
-    dy *= (double)(this->ysize - 1);
+    dx *= to_double(this->xsize - 1);
+    dy *= to_double(this->ysize - 1);
 
-    int ix = (int)floor(dx);
+    int ix = floor_to_int(dx);
     if (ix == this->xsize - 1) {
         ix--;
     }
-    int iy = (int)floor(dy);
+    int iy = floor_to_int(dy);
     if (iy == this->ysize - 1) {
         iy--;
     }
 
-    dx -= (double)ix;
-    dy -= (double)iy;
+    dx -= to_double(ix);
+    dy -= to_double(iy);
 
     Color *data = this->data + iy * this->xsize + ix;
 

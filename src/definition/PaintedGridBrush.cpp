@@ -11,10 +11,10 @@ PaintedGridBrush::PaintedGridBrush(double hard_radius, double smoothed_size, dou
 void PaintedGridBrush::getArea(double x, double y, int *xstart, int *ystart, int *xend, int *yend) const {
     double s = smoothed_size + hard_radius;
 
-    *xstart = (int)floor(x - s);
-    *xend = (int)ceil(x + s);
-    *ystart = (int)floor(y - s);
-    *yend = (int)ceil(y + s);
+    *xstart = floor_to_int(x - s);
+    *xend = ceil_to_int(x + s);
+    *ystart = floor_to_int(y - s);
+    *yend = ceil_to_int(y + s);
 }
 
 double PaintedGridBrush::getInfluence(double dx, double dy) const {

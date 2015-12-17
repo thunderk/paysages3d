@@ -142,7 +142,7 @@ int DefinitionNode::getWatcherCount() const {
 }
 
 void DefinitionNode::save(PackStream *stream) const {
-    int children_count = (int)children.size();
+    int children_count = static_cast<int>(children.size());
     stream->write(&children_count);
 
     for (auto child : children) {

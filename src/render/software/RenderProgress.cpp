@@ -7,7 +7,7 @@
 RenderProgress::RenderProgress(int count) {
     lock = new Mutex();
     global = 0.0;
-    step = 1.0 / (double)count;
+    step = 1.0 / to_double(count);
     start_time = 0;
     end_time = 0;
     reset();
@@ -37,7 +37,7 @@ void RenderProgress::reset() {
 void RenderProgress::add(int value) {
     lock->acquire();
 
-    global += step * (double)value;
+    global += step * to_double(value);
 
     lock->release();
 }
@@ -52,7 +52,7 @@ void RenderProgress::enterSub(int count) {
     lock->acquire();
 
     subs.push(sub);
-    step /= (double)count;
+    step /= to_double(count);
 
     lock->release();
 }
@@ -88,7 +88,7 @@ unsigned long RenderProgress::getDuration() const {
 
 unsigned long RenderProgress::estimateRemainingTime() {
     unsigned long spent = getDuration();
-    double speed = (global - prev_est_done) / (double)(spent - prev_est_spent);
+    double speed = (global - prev_est_done) / to_double(spent - prev_est_spent);
 
     prev_est_speed = prev_est_speed ? (prev_est_speed * 0.8 + speed * 0.2) : speed;
     if (spent - prev_est_spent > 5000) {

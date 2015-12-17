@@ -97,7 +97,7 @@ static double _F4;
 static double _G4;
 
 static inline int _fastfloor(double x) {
-    int xi = (int)x;
+    int xi = trunc_to_int(x);
     return x < xi ? xi - 1 : xi;
 }
 
@@ -487,7 +487,7 @@ const Texture2D *NoiseFunctionSimplex::getValueTexture() {
 
         for (int x = 0; x < width; x++) {
             for (int z = 0; z < height; z++) {
-                double val = noiseSimplexGet2DValue((double)x, (double)z);
+                double val = noiseSimplexGet2DValue(to_double(x), to_double(z));
                 _valueTexture->setPixel(x, z, Color(val, val, val));
             }
         }
@@ -507,9 +507,9 @@ const Texture2D *NoiseFunctionSimplex::getNormalTexture() {
 
         for (int x = 0; x < width; x++) {
             for (int z = 0; z < height; z++) {
-                double vcenter = noiseSimplexGet2DValue(0.01 * (double)x, 0.01 * (double)z);
-                double vsouth = noiseSimplexGet2DValue(0.01 * (double)x, 0.01 * (double)z + 0.001);
-                double veast = noiseSimplexGet2DValue(0.01 * (double)x + 0.001, 0.01 * (double)z);
+                double vcenter = noiseSimplexGet2DValue(0.01 * to_double(x), 0.01 * to_double(z));
+                double vsouth = noiseSimplexGet2DValue(0.01 * to_double(x), 0.01 * to_double(z) + 0.001);
+                double veast = noiseSimplexGet2DValue(0.01 * to_double(x) + 0.001, 0.01 * to_double(z));
 
                 Vector3 normal = Geometry::getNormalFromTriangle(Vector3(0.0, vcenter, 0.0), Vector3(0.0, vsouth, 0.01),
                                                                  Vector3(0.01, veast, 0.0));

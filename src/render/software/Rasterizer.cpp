@@ -82,8 +82,8 @@ bool Rasterizer::pushProjectedTriangle(CanvasPortion *canvas, const Vector3 &pix
                                        const Vector3 &pixel3, const Vector3 &location1, const Vector3 &location2,
                                        const Vector3 &location3) {
     ScanPoint point1, point2, point3;
-    double limit_width = (double)(canvas->getWidth() - 1);
-    double limit_height = (double)(canvas->getHeight() - 1);
+    double limit_width = to_double(canvas->getWidth() - 1);
+    double limit_height = to_double(canvas->getHeight() - 1);
 
     Vector3 canvas_offset(canvas->getXOffset(), canvas->getYOffset(), 0.0);
     Vector3 dpixel1 = pixel1.sub(canvas_offset);
@@ -265,8 +265,8 @@ void Rasterizer::scanInterpolate(CameraDefinition *camera, ScanPoint *v1, ScanPo
 }
 
 void Rasterizer::pushScanPoint(CanvasPortion *canvas, RenderScanlines *scanlines, ScanPoint *point) {
-    point->x = (int)floor(point->pixel.x);
-    point->y = (int)floor(point->pixel.y);
+    point->x = floor_to_int(point->pixel.x);
+    point->y = floor_to_int(point->pixel.y);
 
     if (point->x < 0 || point->x >= canvas->getWidth()) {
         // Point outside scanline range
@@ -332,7 +332,7 @@ void Rasterizer::pushScanLineEdge(CanvasPortion *canvas, RenderScanlines *scanli
         dx = point2->pixel.x - point1->pixel.x;
         scanGetDiff(point1, point2, &diff);
         for (curx = startx; curx <= endx; curx++) {
-            fx = (double)curx + 0.5;
+            fx = to_double(curx) + 0.5;
             if (fx < point1->pixel.x) {
                 fx = point1->pixel.x;
             } else if (fx > point2->pixel.x) {
@@ -341,7 +341,7 @@ void Rasterizer::pushScanLineEdge(CanvasPortion *canvas, RenderScanlines *scanli
             fx = fx - point1->pixel.x;
             scanInterpolate(renderer->render_camera, point1, &diff, fx / dx, &point);
 
-            /*point.pixel.x = (double)curx;*/
+            /*point.pixel.x = to_double(curx);*/
 
             pushScanPoint(canvas, scanlines, &point);
         }
@@ -382,7 +382,7 @@ void Rasterizer::renderScanLines(CanvasPortion *canvas, RenderScanlines *scanlin
                     // Down and up are the same
                     current = down;
                 } else {
-                    fy = (double)cury + 0.5;
+                    fy = to_double(cury) + 0.5;
                     if (fy < down.pixel.y) {
                         fy = down.pixel.y;
                     } else if (fy > up.pixel.y) {

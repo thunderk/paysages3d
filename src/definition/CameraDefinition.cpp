@@ -179,8 +179,8 @@ void CameraDefinition::rotateRoll(double value) {
 }
 
 void CameraDefinition::setRenderSize(int width, int height) {
-    this->width = (double)width;
-    this->height = (double)height;
+    this->width = to_double(width);
+    this->height = to_double(height);
     perspective.xratio = this->width / this->height;
 
     validate();
@@ -236,7 +236,7 @@ int CameraDefinition::isProjectedBoxInView(const BoundingBox &box) const {
         double dx = box.xmax - box.xmin;
         double dy = box.ymax - box.ymin;
 
-        return (int)ceil(dx) * (int)ceil(dy);
+        return ceil_to_int(dx) * ceil_to_int(dy);
     } else {
         return 0;
     }

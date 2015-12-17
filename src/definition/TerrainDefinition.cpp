@@ -74,7 +74,7 @@ double TerrainDefinition::getGridHeight(int x, int z, bool with_painting) {
     double h;
 
     if (!with_painting || !has_painting || !height_map->getGridValue(x, z, &h)) {
-        h = _height_noise->get2DTotal((double)x, (double)z);
+        h = _height_noise->get2DTotal(to_double(x), to_double(z));
     }
 
     return h;

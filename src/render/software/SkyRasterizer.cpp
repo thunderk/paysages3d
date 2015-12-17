@@ -29,8 +29,8 @@ void SkyRasterizer::rasterizeToCanvas(CanvasPortion *canvas) {
     Vector3 vertex1, vertex2, vertex3, vertex4;
     Vector3 camera_location, direction;
 
-    step_i = M_PI * 2.0 / (double)res_i;
-    step_j = M_PI / (double)res_j;
+    step_i = M_PI * 2.0 / to_double(res_i);
+    step_j = M_PI / to_double(res_j);
 
     camera_location = renderer->getCameraLocation(VECTOR_ZERO);
 
@@ -39,10 +39,10 @@ void SkyRasterizer::rasterizeToCanvas(CanvasPortion *canvas) {
             return;
         }
 
-        current_j = (double)(j - res_j / 2) * step_j;
+        current_j = to_double(j - res_j / 2) * step_j;
 
         for (i = 0; i < res_i; i++) {
-            current_i = (double)i * step_i;
+            current_i = to_double(i) * step_i;
 
             direction.x = SPHERE_SIZE * cos(current_i) * cos(current_j);
             direction.y = SPHERE_SIZE * sin(current_j);

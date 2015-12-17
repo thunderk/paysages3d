@@ -38,8 +38,8 @@ bool PaintedGrid::getInterpolatedValue(double x, double y, double *result) const
     int xlow;
     int ylow;
 
-    xlow = floor(x);
-    ylow = floor(y);
+    xlow = floor_to_int(x);
+    ylow = floor_to_int(y);
 
     int hit = 0;
     for (ix = xlow - 1; ix <= xlow + 2 && !hit; ix++) {
@@ -62,7 +62,7 @@ bool PaintedGrid::getInterpolatedValue(double x, double y, double *result) const
             }
         }
 
-        *result = Interpolation::bicubic(stencil, x - (double)xlow, y - (double)ylow);
+        *result = Interpolation::bicubic(stencil, x - to_double(xlow), y - to_double(ylow));
     }
 
     return hit;
@@ -121,9 +121,9 @@ void PaintedGrid::applyBrush(const PaintedGridBrush &brush, double x, double y, 
     double dx, dy, influence;
 
     for (ix = xstart; ix <= xend; ix++) {
-        dx = (double)ix;
+        dx = to_double(ix);
         for (iy = ystart; iy <= yend; iy++) {
-            dy = (double)iy;
+            dy = to_double(iy);
 
             influence = brush.getInfluence(x - dx, y - dy);
 

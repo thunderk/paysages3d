@@ -40,6 +40,7 @@ using namespace std;
 
 // Some useful casts
 #define to_double(_x_) (static_cast<double>(_x_))
+#define trunc_to_int(_x_) (static_cast<int>(_x_))
 #define round_to_int(_x_) (static_cast<int>(round(_x_)))
 #define floor_to_int(_x_) (static_cast<int>(floor(_x_)))
 #define ceil_to_int(_x_) (static_cast<int>(ceil(_x_)))

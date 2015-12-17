@@ -30,7 +30,7 @@ NoiseGenerator::~NoiseGenerator() {
 void NoiseGenerator::save(PackStream *stream) const {
     int x;
 
-    x = (int)function.algorithm;
+    x = static_cast<int>(function.algorithm);
     stream->write(&x);
     stream->write(&function.ridge_factor);
     stream->write(&function.curve_factor);
@@ -53,7 +53,7 @@ void NoiseGenerator::load(PackStream *stream) {
     int x;
 
     stream->read(&x);
-    function.algorithm = (NoiseFunctionAlgorithm)x;
+    function.algorithm = static_cast<NoiseFunctionAlgorithm>(x);
     stream->read(&function.ridge_factor);
     stream->read(&function.curve_factor);
 

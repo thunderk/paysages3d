@@ -23,9 +23,9 @@ static inline Matrix4 matrixForIndex(int index) {
     if (index == 0) {
         return Matrix4::newRotateZ(M_PI_2);
     } else if (index < 6) {
-        return Matrix4::newRotateY(M_2PI * (double)(index - 1) * 0.2).mult(Matrix4::newRotateZ(M_PI_4));
+        return Matrix4::newRotateY(M_2PI * to_double(index - 1) * 0.2).mult(Matrix4::newRotateZ(M_PI_4));
     } else {
-        return Matrix4::newRotateY(M_2PI * (double)(index - 6) * 0.1);
+        return Matrix4::newRotateY(M_2PI * to_double(index - 6) * 0.1);
     }
 }
 
@@ -92,9 +92,9 @@ void OpenGLVegetationImpostor::prepareTexture(const VegetationModelDefinition &m
             int starty = py * partsize;
 
             for (int x = 0; x < partsize; x++) {
-                double dx = (double)x / (double)partsize;
+                double dx = to_double(x) / to_double(partsize);
                 for (int y = 0; y < partsize; y++) {
-                    double dy = (double)y / (double)partsize;
+                    double dy = to_double(y) / to_double(partsize);
 
                     Vector3 near(5.0, dy - 0.5, -(dx - 0.5));
                     Vector3 far(-5.0, dy - 0.5, -(dx - 0.5));
@@ -122,10 +122,10 @@ int OpenGLVegetationImpostor::getIndex(const Vector3 &camera, const Vector3 &ins
         double angle = diff.phi / M_2PI;
         if (diff.theta > 0.4) {
             angle = (angle >= 0.9) ? 0.0 : (angle + 0.1);
-            return 1 + (int)(5.0 * angle);
+            return 1 + trunc_to_int(5.0 * angle);
         } else {
             angle = (angle >= 0.95) ? 0.0 : (angle + 0.05);
-            return 6 + (int)(10.0 * angle);
+            return 6 + trunc_to_int(10.0 * angle);
         }
     }
 
@@ -141,7 +141,7 @@ void OpenGLVegetationImpostor::setVertex(int i, float u, float v) {
             Matrix4 rotation = matrixForIndex(index);
 
             Vector3 vertex = rotation.multPoint(Vector3(1.0, u, -(v - 0.5)));
-            vertices->set(index * 4 + i, vertex, (u + (double)px) / (double)parts, (v + (double)py) / (double)parts);
+            vertices->set(index * 4 + i, vertex, (u + to_double(px)) / to_double(parts), (v + to_double(py)) / to_double(parts));
         }
     }
 }

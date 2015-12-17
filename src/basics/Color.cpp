@@ -53,23 +53,23 @@ unsigned int Color::to32BitABGR() const {
 }
 
 Color Color::from32BitRGBA(unsigned int col) {
-    return Color(((double)(col & 0x000000FF)) / 255.0, ((double)((col & 0x0000FF00) >> 8)) / 255.0,
-                 ((double)((col & 0x00FF0000) >> 16)) / 255.0, ((double)((col & 0xFF000000) >> 24)) / 255.0);
+    return Color((to_double(col & 0x000000FF)) / 255.0, (to_double((col & 0x0000FF00) >> 8)) / 255.0,
+                 (to_double((col & 0x00FF0000) >> 16)) / 255.0, (to_double((col & 0xFF000000) >> 24)) / 255.0);
 }
 
 Color Color::from32BitBGRA(unsigned int col) {
-    return Color(((double)(col & 0x000000FF)) / 255.0, ((double)((col & 0x0000FF00) >> 8)) / 255.0,
-                 ((double)((col & 0x00FF0000) >> 16)) / 255.0, ((double)((col & 0xFF000000) >> 24)) / 255.0);
+    return Color((to_double(col & 0x000000FF)) / 255.0, (to_double((col & 0x0000FF00) >> 8)) / 255.0,
+                 (to_double((col & 0x00FF0000) >> 16)) / 255.0, (to_double((col & 0xFF000000) >> 24)) / 255.0);
 }
 
 Color Color::from32BitARGB(unsigned int col) {
-    return Color(((double)(col & 0x000000FF)) / 255.0, ((double)((col & 0x0000FF00) >> 8)) / 255.0,
-                 ((double)((col & 0x00FF0000) >> 16)) / 255.0, ((double)((col & 0xFF000000) >> 24)) / 255.0);
+    return Color((to_double(col & 0x000000FF)) / 255.0, (to_double((col & 0x0000FF00) >> 8)) / 255.0,
+                 (to_double((col & 0x00FF0000) >> 16)) / 255.0, (to_double((col & 0xFF000000) >> 24)) / 255.0);
 }
 
 Color Color::from32BitABGR(unsigned int col) {
-    return Color(((double)(col & 0x000000FF)) / 255.0, ((double)((col & 0x0000FF00) >> 8)) / 255.0,
-                 ((double)((col & 0x00FF0000) >> 16)) / 255.0, ((double)((col & 0xFF000000) >> 24)) / 255.0);
+    return Color((to_double(col & 0x000000FF)) / 255.0, (to_double((col & 0x0000FF00) >> 8)) / 255.0,
+                 (to_double((col & 0x00FF0000) >> 16)) / 255.0, (to_double((col & 0xFF000000) >> 24)) / 255.0);
 }
 
 void Color::mask(const Color &mask) {

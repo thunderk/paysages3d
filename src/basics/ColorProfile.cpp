@@ -53,13 +53,13 @@ void ColorProfile::setToneMapping(ToneMappingOperator tonemapper, double exposur
 }
 
 void ColorProfile::save(PackStream *stream) const {
-    int imapper = (int)mapper;
+    int imapper = trunc_to_int(mapper);
     stream->write(&imapper);
     stream->write(&exposure);
 }
 
 void ColorProfile::load(PackStream *stream) {
-    int imapper = (int)mapper;
+    int imapper = trunc_to_int(mapper);
     stream->read(&imapper);
     stream->read(&exposure);
 

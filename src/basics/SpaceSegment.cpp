@@ -99,18 +99,18 @@ bool SpaceSegment::iterateOnGrid(SpaceGridIterator &delegate) {
     int stepX = diff.x < 0.0 ? -1 : 1;
     int stepY = diff.y < 0.0 ? -1 : 1;
     int stepZ = diff.z < 0.0 ? -1 : 1;
-    int X = (int)floor(start.x);
-    int Y = (int)floor(start.y);
-    int Z = (int)floor(start.z);
-    int limitX = (int)floor(end.x) + stepX;
-    int limitY = (int)floor(end.y) + stepY;
-    int limitZ = (int)floor(end.z) + stepZ;
+    int X = floor_to_int(start.x);
+    int Y = floor_to_int(start.y);
+    int Z = floor_to_int(start.z);
+    int limitX = floor_to_int(end.x) + stepX;
+    int limitY = floor_to_int(end.y) + stepY;
+    int limitZ = floor_to_int(end.z) + stepZ;
     double tDeltaX = diff.x == 0.0 ? 0.0 : 1.0 / fabs(diff.x);
     double tDeltaY = diff.y == 0.0 ? 0.0 : 1.0 / fabs(diff.y);
     double tDeltaZ = diff.z == 0.0 ? 0.0 : 1.0 / fabs(diff.z);
-    double tMaxX = diff.x == 0.0 ? INFINITY : ((double)(X + (stepX > 0 ? 1 : 0)) - start.x) / diff.x;
-    double tMaxY = diff.y == 0.0 ? INFINITY : ((double)(Y + (stepY > 0 ? 1 : 0)) - start.y) / diff.y;
-    double tMaxZ = diff.z == 0.0 ? INFINITY : ((double)(Z + (stepZ > 0 ? 1 : 0)) - start.z) / diff.z;
+    double tMaxX = diff.x == 0.0 ? INFINITY : (to_double(X + (stepX > 0 ? 1 : 0)) - start.x) / diff.x;
+    double tMaxY = diff.y == 0.0 ? INFINITY : (to_double(Y + (stepY > 0 ? 1 : 0)) - start.y) / diff.y;
+    double tMaxZ = diff.z == 0.0 ? INFINITY : (to_double(Z + (stepZ > 0 ? 1 : 0)) - start.z) / diff.z;
 
     do {
         if (not delegate.onCell(X, Y, Z)) {

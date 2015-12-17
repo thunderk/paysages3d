@@ -80,7 +80,7 @@ void OpenGLView::wheelEvent(QWheelEvent *event) {
     }
 
     double factor = getSpeedFactor(event);
-    window->getCamera()->processZoom(0.01 * factor * (double)event->angleDelta().y());
+    window->getCamera()->processZoom(0.01 * factor * to_double(event->angleDelta().y()));
 }
 
 void OpenGLView::mousePressEvent(QMouseEvent *event) {

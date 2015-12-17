@@ -115,7 +115,7 @@ static void addBranchRecurse(RandomGenerator &random, vector<CappedCylinder> &br
         Vector3 new_direction = pivot1.multPoint(direction);
         for (int i = 0; i < split_count; i++) {
             Matrix4 pivot2 =
-                Matrix4::newRotateAxis(randomizeValue(random, M_PI * 2.0 / (double)split_count, 0.9, 1.1), direction);
+                Matrix4::newRotateAxis(randomizeValue(random, M_PI * 2.0 / to_double(split_count), 0.9, 1.1), direction);
             new_direction = pivot2.multPoint(new_direction);
 
             Vector3 new_base = base.add(direction.scale(randomizeValue(random, length, 0.4, 1.0)));

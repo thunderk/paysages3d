@@ -102,7 +102,7 @@ void SoftwareRenderer::setQuality(double quality) {
     godrays->setQuality(quality);
 
     // TEMP compat with old code
-    render_quality = (int)(quality * 9.0) + 1;
+    render_quality = trunc_to_int(quality * 9.0) + 1;
 }
 
 Color SoftwareRenderer::applyLightingToSurface(const Vector3 &location, const Vector3 &normal,
@@ -147,7 +147,7 @@ double SoftwareRenderer::getPrecision(const Vector3 &location) {
     projected.x += 1.0;
     // projected.y += 1.0;
 
-    return render_camera->unproject(projected).sub(location).getNorm(); // / (double)render_quality;
+    return render_camera->unproject(projected).sub(location).getNorm(); // / to_double(render_quality);
 }
 
 Vector3 SoftwareRenderer::projectPoint(const Vector3 &point) {

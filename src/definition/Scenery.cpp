@@ -37,8 +37,8 @@ void Scenery::validate() {
 
 Scenery::FileOperationResult Scenery::saveGlobal(const string &filepath) const {
     PackStream stream;
-    double app_header = (double)APP_HEADER;
-    double version_header = (double)DATA_VERSION;
+    double app_header = to_double(APP_HEADER);
+    double version_header = to_double(DATA_VERSION);
 
     if (not stream.bindToFile(filepath, true)) {
         return FILE_OPERATION_IOERROR;

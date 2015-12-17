@@ -55,9 +55,9 @@ Color Texture3D::getNearest(double dx, double dy, double dz) const {
     if (dz > 1.0)
         dz = 1.0;
 
-    int ix = (int)(dx * (double)(this->xsize - 1));
-    int iy = (int)(dy * (double)(this->ysize - 1));
-    int iz = (int)(dz * (double)(this->zsize - 1));
+    int ix = trunc_to_int(dx * to_double(this->xsize - 1));
+    int iy = trunc_to_int(dy * to_double(this->ysize - 1));
+    int iz = trunc_to_int(dz * to_double(this->zsize - 1));
 
     assert(ix >= 0 && ix < this->xsize);
     assert(iy >= 0 && iy < this->ysize);
@@ -80,26 +80,26 @@ Color Texture3D::getLinear(double dx, double dy, double dz) const {
     if (dz > 1.0)
         dz = 1.0;
 
-    dx *= (double)(this->xsize - 1);
-    dy *= (double)(this->ysize - 1);
-    dz *= (double)(this->zsize - 1);
+    dx *= to_double(this->xsize - 1);
+    dy *= to_double(this->ysize - 1);
+    dz *= to_double(this->zsize - 1);
 
-    int ix = (int)floor(dx);
+    int ix = floor_to_int(dx);
     if (ix == this->xsize - 1) {
         ix--;
     }
-    int iy = (int)floor(dy);
+    int iy = floor_to_int(dy);
     if (iy == this->ysize - 1) {
         iy--;
     }
-    int iz = (int)floor(dz);
+    int iz = floor_to_int(dz);
     if (iz == this->zsize - 1) {
         iz--;
     }
 
-    dx -= (double)ix;
-    dy -= (double)iy;
-    dz -= (double)iz;
+    dx -= to_double(ix);
+    dy -= to_double(iy);
+    dz -= to_double(iz);
 
     Color *data = this->data + iz * this->xsize * this->ysize + iy * this->xsize + ix;
 

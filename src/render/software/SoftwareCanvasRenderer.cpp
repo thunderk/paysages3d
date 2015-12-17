@@ -65,7 +65,7 @@ double SoftwareCanvasRenderer::getProgress() const {
 void SoftwareCanvasRenderer::setConfig(const RenderConfig &config) {
     if (not started) {
         setSize(config.width, config.height, config.antialias);
-        setQuality((double)(config.quality - 1) / 9.0);
+        setQuality(to_double(config.quality - 1) / 9.0);
     }
 }
 

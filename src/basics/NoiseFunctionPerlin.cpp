@@ -30,9 +30,9 @@ static double g1[B + B + 2];
 
 #define setup(i, b0, b1, r0, r1)                                                                                       \
     t = vec[i] + N;                                                                                                    \
-    b0 = ((int)t) & BM;                                                                                                \
+    b0 = trunc_to_int(t) & BM;                                                                                                \
     b1 = (b0 + 1) & BM;                                                                                                \
-    r0 = t - (int)t;                                                                                                   \
+    r0 = t - trunc_to_int(t);                                                                                                   \
     r1 = r0 - 1.;
 
 double noisePerlinGet1DValue(double x) {
@@ -165,14 +165,14 @@ static int noisePerlinInit(void) {
     for (i = 0; i < B; i++) {
         p[i] = i;
 
-        g1[i] = (double)((rand() % (B + B)) - B) / B;
+        g1[i] = to_double((rand() % (B + B)) - B) / B;
 
         for (j = 0; j < 2; j++)
-            g2[i][j] = (double)((rand() % (B + B)) - B) / B;
+            g2[i][j] = to_double((rand() % (B + B)) - B) / B;
         _normalize2(g2[i]);
 
         for (j = 0; j < 3; j++)
-            g3[i][j] = (double)((rand() % (B + B)) - B) / B;
+            g3[i][j] = to_double((rand() % (B + B)) - B) / B;
         _normalize3(g3[i]);
     }
 

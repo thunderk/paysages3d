@@ -37,12 +37,12 @@ void TerrainRasterizer::tessellateChunk(CanvasPortion *canvas, TerrainChunkInfo 
 
     double startx = chunk->point_nw.x;
     double startz = chunk->point_nw.z;
-    double size = (chunk->point_ne.x - chunk->point_nw.x) / (double)detail;
+    double size = (chunk->point_ne.x - chunk->point_nw.x) / to_double(detail);
     int i, j;
 
     for (i = 0; i < detail; i++) {
         for (j = 0; j < detail; j++) {
-            renderQuad(canvas, startx + (double)i * size, startz + (double)j * size, size, water_height);
+            renderQuad(canvas, startx + to_double(i) * size, startz + to_double(j) * size, size, water_height);
         }
         progress->add(detail);
     }
@@ -127,7 +127,7 @@ void TerrainRasterizer::getChunk(SoftwareRenderer *renderer, TerrainRasterizer::
 
     int coverage = renderer->render_camera->isUnprojectedBoxInView(box);
     if (coverage > 0) {
-        chunk->detail_hint = (int)ceil(sqrt((double)coverage) * detail_factor);
+        chunk->detail_hint = ceil_to_int(sqrt(to_double(coverage)) * detail_factor);
         if (chunk->detail_hint > max_chunk_detail) {
             chunk->detail_hint = max_chunk_detail;
         }
@@ -201,7 +201,7 @@ int TerrainRasterizer::performTessellation(CanvasPortion *canvas, bool displaced
             }
         }
 
-        if (radius_int > 20.0 && chunk_count % 64 == 0 && (double)chunk_factor < radius_int / 20.0) {
+        if (radius_int > 20.0 && chunk_count % 64 == 0 && to_double(chunk_factor) < radius_int / 20.0) {
             chunk_count /= 2;
             chunk_factor *= 2;
         }

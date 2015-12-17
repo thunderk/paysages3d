@@ -17,7 +17,7 @@ TEST(PackStream, All) {
         data_i = i;
         stream->write(&data_i);
 
-        data_d = (double)i;
+        data_d = to_double(i);
         stream->write(&data_d);
 
         data_s = "Testing string 0123 (accentué) !";
@@ -35,7 +35,7 @@ TEST(PackStream, All) {
         ASSERT_EQ(i, data_i);
 
         stream->read(&data_d);
-        ASSERT_DOUBLE_EQ((double)i, data_d);
+        ASSERT_DOUBLE_EQ(to_double(i), data_d);
 
         stream->read(buffer, 100);
         ASSERT_STREQ("Testing string 0123 (accentué) !", buffer);

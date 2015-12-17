@@ -16,8 +16,8 @@ int OverlayRasterizer::prepareRasterization() {
 }
 
 void OverlayRasterizer::rasterizeToCanvas(CanvasPortion *canvas) {
-    double width = (double)renderer->render_camera->getWidth();
-    double height = (double)renderer->render_camera->getHeight();
+    double width = to_double(renderer->render_camera->getWidth());
+    double height = to_double(renderer->render_camera->getHeight());
     Vector3 topleft = renderer->unprojectPoint(Vector3(height, 0.0, 1.0));
     Vector3 bottomleft = renderer->unprojectPoint(Vector3(0.0, 0.0, 1.0));
     Vector3 topright = renderer->unprojectPoint(Vector3(height, width, 1.0));
@@ -27,8 +27,8 @@ void OverlayRasterizer::rasterizeToCanvas(CanvasPortion *canvas) {
 }
 
 Color OverlayRasterizer::shadeFragment(const CanvasFragment &fragment, const CanvasFragment *) const {
-    double width = (double)renderer->render_camera->getWidth() - 1.0;
-    double height = (double)renderer->render_camera->getHeight() - 1.0;
+    double width = to_double(renderer->render_camera->getWidth() - 1.0);
+    double height = to_double(renderer->render_camera->getHeight() - 1.0);
     double relx;
     double rely;
     double x = floor(fragment.getPixel().x);
@@ -42,5 +42,5 @@ Color OverlayRasterizer::shadeFragment(const CanvasFragment &fragment, const Can
         rely = 2.0 * ((y - (height - width) * 0.5) / height - 0.5);
     }
 
-    return processPixel((int)x, (int)y, relx, rely);
+    return processPixel(trunc_to_int(x), trunc_to_int(y), relx, rely);
 }

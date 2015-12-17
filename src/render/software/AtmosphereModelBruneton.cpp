@@ -179,13 +179,13 @@ static Color _texture4D(Texture4D *tex, double r, double mu, double muS, double 
     double rho = sqrt(r * r - Rg * Rg);
     double rmu = r * mu;
     double delta = rmu * rmu - r * r + Rg * Rg;
-    Color cst = (rmu < 0.0 && delta > 0.0) ? vec4(1.0, 0.0, 0.0, 0.5 - 0.5 / (double)(RES_MU))
-                                           : vec4(-1.0, H * H, H, 0.5 + 0.5 / (double)(RES_MU));
-    double uR = 0.5 / (double)(RES_R) + rho / H * (1.0 - 1.0 / (double)(RES_R));
-    double uMu = cst.a + (rmu * cst.r + sqrt(delta + cst.g)) / (rho + cst.b) * (0.5 - 1.0 / (double)(RES_MU));
+    Color cst = (rmu < 0.0 && delta > 0.0) ? vec4(1.0, 0.0, 0.0, 0.5 - 0.5 / to_double(RES_MU))
+                                           : vec4(-1.0, H * H, H, 0.5 + 0.5 / to_double(RES_MU));
+    double uR = 0.5 / to_double(RES_R) + rho / H * (1.0 - 1.0 / to_double(RES_R));
+    double uMu = cst.a + (rmu * cst.r + sqrt(delta + cst.g)) / (rho + cst.b) * (0.5 - 1.0 / to_double(RES_MU));
     double uMuS =
-        0.5 / (double)(RES_MU_S) +
-        (atan(max(muS, -0.1975) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / (double)(RES_MU_S));
+        0.5 / to_double(RES_MU_S) +
+        (atan(max(muS, -0.1975) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / to_double(RES_MU_S));
 
     return tex->getLinear(uMu, uMuS, nu, uR);
 }
@@ -311,9 +311,9 @@ static void _texCoordToMuMuSNu(double x, double y, double z, double r, Color dhd
                                double *nu) {
     double d;
 
-    x /= (double)RES_MU;
-    y /= (double)RES_MU_S;
-    z /= (double)RES_NU;
+    x /= to_double(RES_MU);
+    y /= to_double(RES_MU_S);
+    z /= to_double(RES_NU);
 
     if (x < 0.5) {
         d = 1.0 - x / 0.5;
@@ -349,11 +349,11 @@ static void _getTransmittanceRMu(double x, double y, double *r, double *muS) {
 
 static double _opticalDepthTransmittance(double H, double r, double mu) {
     double result = 0.0;
-    double dx = _limit(r, mu) / (double)TRANSMITTANCE_INTEGRAL_SAMPLES;
+    double dx = _limit(r, mu) / to_double(TRANSMITTANCE_INTEGRAL_SAMPLES);
     double yi = exp(-(r - Rg) / H);
     int i;
     for (i = 1; i <= TRANSMITTANCE_INTEGRAL_SAMPLES; ++i) {
-        double xj = (double)i * dx;
+        double xj = to_double(i) * dx;
         double yj = exp(-(sqrt(r * r + xj * xj + 2.0 * xj * r * mu) - Rg) / H);
         result += (yi + yj) / 2.0 * dx;
         yi = yj;
@@ -367,7 +367,7 @@ static void _precomputeTransmittanceTexture() {
     for (x = 0; x < TRANSMITTANCE_W; x++) {
         for (y = 0; y < TRANSMITTANCE_H; y++) {
             double r, muS;
-            _getTransmittanceRMu((double)(x + 0.5) / TRANSMITTANCE_W, (double)(y + 0.5) / TRANSMITTANCE_H, &r, &muS);
+            _getTransmittanceRMu(to_double(x + 0.5) / TRANSMITTANCE_W, to_double(y + 0.5) / TRANSMITTANCE_H, &r, &muS);
             double depth1 = _opticalDepthTransmittance(HR, r, muS);
             double depth2 = _opticalDepthTransmittance(HM, r, muS);
             Color trans;
@@ -390,7 +390,7 @@ static void _precomputeIrrDeltaETexture(Texture2D *destination) {
         for (y = 0; y < SKY_H; y++) {
             double r, muS;
             Color trans, irr;
-            _getIrradianceRMuS((double)x / SKY_W, (double)y / SKY_H, &r, &muS);
+            _getIrradianceRMuS(to_double(x) / SKY_W, to_double(y) / SKY_H, &r, &muS);
             trans = _transmittance(r, muS);
 
             irr.r = trans.r * max(muS, 0.0);
@@ -446,13 +446,13 @@ static void _integrand1(double r, double mu, double muS, double nu, double t, Co
 static void _inscatter1(double r, double mu, double muS, double nu, Color *ray, Color *mie) {
     ray->r = ray->g = ray->b = 0.0;
     mie->r = mie->g = mie->b = 0.0;
-    double dx = _limit(r, mu) / (double)(INSCATTER_INTEGRAL_SAMPLES);
+    double dx = _limit(r, mu) / to_double(INSCATTER_INTEGRAL_SAMPLES);
     Color rayi;
     Color miei;
     _integrand1(r, mu, muS, nu, 0.0, &rayi, &miei);
     int i;
     for (i = 1; i <= INSCATTER_INTEGRAL_SAMPLES; ++i) {
-        double xj = (double)(i)*dx;
+        double xj = to_double(i)*dx;
         Color rayj;
         Color miej;
         _integrand1(r, mu, muS, nu, xj, &rayj, &miej);
@@ -492,7 +492,7 @@ static int _inscatter1Worker(ParallelWork *, int layer, void *data) {
                 Color ray = COLOR_BLACK;
                 Color mie = COLOR_BLACK;
                 double mu, muS, nu;
-                _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
+                _texCoordToMuMuSNu(to_double(x), to_double(y), to_double(z), r, dhdH, &mu, &muS, &nu);
                 _inscatter1(r, mu, muS, nu, &ray, &mie);
                 /* store separately Rayleigh and Mie contributions, WITHOUT the phase function factor
                  * (cf "Angular precision") */
@@ -510,8 +510,8 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
                          Texture4D *deltaSM) {
     Color raymie = COLOR_BLACK;
 
-    double dphi = M_PI / (double)(INSCATTER_SPHERICAL_INTEGRAL_SAMPLES);
-    double dtheta = M_PI / (double)(INSCATTER_SPHERICAL_INTEGRAL_SAMPLES);
+    double dphi = M_PI / to_double(INSCATTER_SPHERICAL_INTEGRAL_SAMPLES);
+    double dtheta = M_PI / to_double(INSCATTER_SPHERICAL_INTEGRAL_SAMPLES);
 
     r = clamp(r, Rg, Rt);
     mu = clamp(mu, -1.0, 1.0);
@@ -528,7 +528,7 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
     /* integral over 4.PI around x with two nested loops over w directions (theta,phi) -- Eq (7) */
     int itheta;
     for (itheta = 0; itheta < INSCATTER_SPHERICAL_INTEGRAL_SAMPLES; ++itheta) {
-        double theta = ((double)(itheta) + 0.5) * dtheta;
+        double theta = (to_double(itheta) + 0.5) * dtheta;
         double ctheta = cos(theta);
 
         double greflectance = 0.0;
@@ -544,7 +544,7 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
 
         int iphi;
         for (iphi = 0; iphi < 2 * INSCATTER_SPHERICAL_INTEGRAL_SAMPLES; ++iphi) {
-            double phi = ((double)(iphi) + 0.5) * dphi;
+            double phi = (to_double(iphi) + 0.5) * dphi;
             double dw = dtheta * dphi * sin(theta);
             Vector3 w = vec3(cos(phi) * sin(theta), sin(phi) * sin(theta), ctheta);
 
@@ -619,7 +619,7 @@ static int _jWorker(ParallelWork *, int layer, void *data) {
             for (z = 0; z < RES_NU; z++) {
                 Color raymie;
                 double mu, muS, nu;
-                _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
+                _texCoordToMuMuSNu(to_double(x), to_double(y), to_double(z), r, dhdH, &mu, &muS, &nu);
                 raymie = _inscatterS(r, mu, muS, nu, params->first, params->deltaE, params->deltaSR, params->deltaSM);
                 params->result->setPixel(x, y, z, layer, raymie);
             }
@@ -632,22 +632,22 @@ static int _jWorker(ParallelWork *, int layer, void *data) {
 
 void _irradianceNProg(Texture2D *destination, Texture4D *deltaSR, Texture4D *deltaSM, int first) {
     int x, y;
-    double dphi = M_PI / (double)(IRRADIANCE_INTEGRAL_SAMPLES);
-    double dtheta = M_PI / (double)(IRRADIANCE_INTEGRAL_SAMPLES);
+    double dphi = M_PI / to_double(IRRADIANCE_INTEGRAL_SAMPLES);
+    double dtheta = M_PI / to_double(IRRADIANCE_INTEGRAL_SAMPLES);
     for (x = 0; x < SKY_W; x++) {
         for (y = 0; y < SKY_H; y++) {
             double r, muS;
             int iphi;
-            _getIrradianceRMuS((double)x / SKY_W, (double)y / SKY_H, &r, &muS);
+            _getIrradianceRMuS(to_double(x) / SKY_W, to_double(y) / SKY_H, &r, &muS);
             Vector3 s = vec3(max(sqrt(1.0 - muS * muS), 0.0), 0.0, muS);
 
             Color result = COLOR_BLACK;
             /* integral over 2.PI around x with two nested loops over w directions (theta,phi) -- Eq (15) */
             for (iphi = 0; iphi < 2 * IRRADIANCE_INTEGRAL_SAMPLES; ++iphi) {
-                double phi = ((double)(iphi) + 0.5) * dphi;
+                double phi = (to_double(iphi) + 0.5) * dphi;
                 int itheta;
                 for (itheta = 0; itheta < IRRADIANCE_INTEGRAL_SAMPLES / 2; ++itheta) {
-                    double theta = ((double)(itheta) + 0.5) * dtheta;
+                    double theta = (to_double(itheta) + 0.5) * dtheta;
                     double dw = dtheta * dphi * sin(theta);
                     Vector3 w = vec3(cos(phi) * sin(theta), sin(phi) * sin(theta), cos(theta));
                     double nu = s.dotProduct(w);
@@ -698,11 +698,11 @@ static Color _integrand2(Texture4D *deltaJ, double r, double mu, double muS, dou
 
 static Color _inscatterN(Texture4D *deltaJ, double r, double mu, double muS, double nu) {
     Color raymie = COLOR_BLACK;
-    double dx = _limit(r, mu) / (double)(INSCATTER_INTEGRAL_SAMPLES);
+    double dx = _limit(r, mu) / to_double(INSCATTER_INTEGRAL_SAMPLES);
     Color raymiei = _integrand2(deltaJ, r, mu, muS, nu, 0.0);
     int i;
     for (i = 1; i <= INSCATTER_INTEGRAL_SAMPLES; ++i) {
-        double xj = (double)(i)*dx;
+        double xj = to_double(i)*dx;
         Color raymiej = _integrand2(deltaJ, r, mu, muS, nu, xj);
         raymie.r += (raymiei.r + raymiej.r) / 2.0 * dx;
         raymie.g += (raymiei.g + raymiej.g) / 2.0 * dx;
@@ -724,7 +724,7 @@ static int _inscatterNWorker(ParallelWork *, int layer, void *data) {
         for (y = 0; y < RES_MU_S; y++) {
             for (z = 0; z < RES_NU; z++) {
                 double mu, muS, nu;
-                _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
+                _texCoordToMuMuSNu(to_double(x), to_double(y), to_double(z), r, dhdH, &mu, &muS, &nu);
                 params->destination->setPixel(x, y, z, layer, _inscatterN(params->deltaJ, r, mu, muS, nu));
             }
         }
@@ -751,7 +751,7 @@ static int _copyInscatterNWorker(ParallelWork *, int layer, void *data) {
         for (y = 0; y < RES_MU_S; y++) {
             for (z = 0; z < RES_NU; z++) {
                 double mu, muS, nu;
-                _texCoordToMuMuSNu((double)x, (double)y, (double)z, r, dhdH, &mu, &muS, &nu);
+                _texCoordToMuMuSNu(to_double(x), to_double(y), to_double(z), r, dhdH, &mu, &muS, &nu);
                 Color col1 = params->source->getPixel(x, y, z, layer);
                 Color col2 = params->destination->getPixel(x, y, z, layer);
                 col2.r += col1.r / _phaseFunctionR(nu);

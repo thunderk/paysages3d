@@ -84,7 +84,7 @@ int WaterRasterizer::performTessellation(CanvasPortion *canvas) {
             progress->add(chunk_count - 1);
         }
 
-        if (radius_int > 20.0 && chunk_count % 64 == 0 && (double)chunk_factor < radius_int / 20.0) {
+        if (radius_int > 20.0 && chunk_count % 64 == 0 && to_double(chunk_factor) < radius_int / 20.0) {
             chunk_count /= 2;
             chunk_factor *= 2;
         }

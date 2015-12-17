@@ -77,12 +77,12 @@ void OpenGLTerrain::initialize() {
     // Add terrain chunks
     int chunks = 12;
     double size = 800.0;
-    double chunksize = size / (double)chunks;
+    double chunksize = size / to_double(chunks);
     double start = -size / 2.0;
     for (int i = 0; i < chunks; i++) {
         for (int j = 0; j < chunks; j++) {
-            OpenGLTerrainChunk *chunk = new OpenGLTerrainChunk(renderer, start + chunksize * (double)i,
-                                                               start + chunksize * (double)j, chunksize, chunks);
+            OpenGLTerrainChunk *chunk = new OpenGLTerrainChunk(renderer, start + chunksize * to_double(i),
+                                                               start + chunksize * to_double(j), chunksize, chunks);
             pv->chunks.push_back(chunk);
             pv->queue.push_back(chunk);
         }

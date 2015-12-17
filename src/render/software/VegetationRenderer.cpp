@@ -29,7 +29,7 @@ class VegetationGridIterator : public SpaceGridIterator {
     }
 
     virtual bool onCell(int x, int, int z) override {
-        result = renderer->getBoundResult(segment, (double)x, (double)z, only_hit);
+        result = renderer->getBoundResult(segment, to_double(x), to_double(z), only_hit);
         return not result.hit;
     }
 

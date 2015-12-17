@@ -84,7 +84,7 @@ static void testGroundShadowQuality() {
     renderer.setQuality(0.2);
     for (int i = 0; i < 6; i++) {
         // TODO keep same rasterization across renders
-        renderer.getTerrainRenderer()->setQuality((double)i / 5.0);
+        renderer.getTerrainRenderer()->setQuality(to_double(i) / 5.0);
         startTestRender(&renderer, "ground_shadow_quality", i);
     }
 }
@@ -97,7 +97,7 @@ static void testRasterizationQuality() {
     renderer.setSize(800, 600);
     renderer.enablePostprocess(false);
     for (int i = 0; i < 6; i++) {
-        renderer.setQuality((double)i / 5.0);
+        renderer.setQuality(to_double(i) / 5.0);
         startTestRender(&renderer, "rasterization_quality", i);
     }
 }
@@ -115,7 +115,7 @@ static void testCloudQuality() {
     SkyRasterizer rasterizer(&renderer, renderer.getProgressHelper(), 0);
     renderer.setSoloRasterizer(&rasterizer);
     for (int i = 0; i < 6; i++) {
-        renderer.setQuality((double)i / 5.0);
+        renderer.setQuality(to_double(i) / 5.0);
         rasterizer.setQuality(0.2);
         startTestRender(&renderer, "cloud_quality", i);
     }
@@ -167,7 +167,7 @@ static void testGodRays() {
 
     // quality
     for (int i = 0; i < 6; i++) {
-        renderer.setQuality((double)i / 5.0);
+        renderer.setQuality(to_double(i) / 5.0);
         rasterizer.setQuality(0.2);
         startTestRender(&renderer, "god_rays_quality", i);
     }
@@ -175,21 +175,21 @@ static void testGodRays() {
 
     // penetration
     for (int i = 0; i < 3; i++) {
-        scenery.getAtmosphere()->childGodRays()->propPenetration()->setValue(0.01 + 0.02 * (double)i);
+        scenery.getAtmosphere()->childGodRays()->propPenetration()->setValue(0.01 + 0.02 * to_double(i));
         startTestRender(&renderer, "god_rays_penetration", i);
     }
 
     // resistance
     scenery.getAtmosphere()->childGodRays()->propPenetration()->setValue(0.01);
     for (int i = 0; i < 3; i++) {
-        scenery.getAtmosphere()->childGodRays()->propResistance()->setValue(0.1 + 0.1 * (double)i);
+        scenery.getAtmosphere()->childGodRays()->propResistance()->setValue(0.1 + 0.1 * to_double(i));
         startTestRender(&renderer, "god_rays_resistance", i);
     }
 
     // boost
     scenery.getAtmosphere()->childGodRays()->propResistance()->setValue(0.3);
     for (int i = 0; i < 3; i++) {
-        scenery.getAtmosphere()->childGodRays()->propBoost()->setValue(2.0 + 4.0 * (double)i);
+        scenery.getAtmosphere()->childGodRays()->propBoost()->setValue(2.0 + 4.0 * to_double(i));
         startTestRender(&renderer, "god_rays_boost", i);
     }
 }
@@ -245,7 +245,7 @@ static void testSunNearHorizon() {
     renderer.setQuality(0.3);
 
     for (int i = 0; i <= 20; i++) {
-        scenery.getAtmosphere()->propDayTime()->setValue(0.24 + 0.001 * (double)i);
+        scenery.getAtmosphere()->propDayTime()->setValue(0.24 + 0.001 * to_double(i));
         startTestRender(&renderer, "sun_near_horizon", i);
     }
 }

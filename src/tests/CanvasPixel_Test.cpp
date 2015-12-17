@@ -10,13 +10,13 @@ TEST(CanvasPixel, MaxFragments) {
 
     // Overflow max fragment count with transparent fragments
     for (int i = 0; i < MAX_FRAGMENTS_PER_PIXEL * 2; i++) {
-        pixel.pushFragment(CanvasFragment(true, Vector3(0.0, 0.0, (double)i), Vector3(), 0, false));
+        pixel.pushFragment(CanvasFragment(true, Vector3(0.0, 0.0, to_double(i)), Vector3(), 0, false));
     }
 
     ASSERT_EQ(MAX_FRAGMENTS_PER_PIXEL, pixel.getFragmentCount());
     EXPECT_DOUBLE_EQ(pixel.getFragment(0).getZ(), 0.0);
     EXPECT_EQ(pixel.getFragment(0).getOpaque(), true);
-    EXPECT_DOUBLE_EQ(pixel.getFragment(MAX_FRAGMENTS_PER_PIXEL - 1).getZ(), (double)(MAX_FRAGMENTS_PER_PIXEL * 2 - 1));
+    EXPECT_DOUBLE_EQ(pixel.getFragment(MAX_FRAGMENTS_PER_PIXEL - 1).getZ(), to_double(MAX_FRAGMENTS_PER_PIXEL * 2 - 1));
     EXPECT_EQ(pixel.getFragment(MAX_FRAGMENTS_PER_PIXEL - 1).getOpaque(), false);
 }
 

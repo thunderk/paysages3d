@@ -59,8 +59,8 @@ void CanvasPreview::setSize(int real_width, int real_height, int preview_width, 
     dirty_up = -1;
 
     scaled = (real_width != preview_height or real_height != preview_height);
-    factor_x = (double)preview_width / (double)real_width;
-    factor_y = (double)preview_height / (double)real_height;
+    factor_x = to_double(preview_width) / to_double(real_width);
+    factor_y = to_double(preview_height) / to_double(real_height);
     factor = factor_x * factor_y;
 
     lock->release();

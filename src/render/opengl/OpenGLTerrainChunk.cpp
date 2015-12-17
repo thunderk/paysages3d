@@ -35,7 +35,7 @@ OpenGLTerrainChunk::OpenGLTerrainChunk(OpenGLRenderer *renderer, double x, doubl
     _startx = x;
     _startz = z;
     _size = size;
-    _overall_step = size * (double)nbchunks;
+    _overall_step = size * to_double(nbchunks);
 
     distance_to_camera = 0.0;
 
@@ -91,12 +91,12 @@ bool OpenGLTerrainChunk::maintain() {
         int new_texture_size = _texture_current_size ? _texture_current_size * 2 : 1;
         QImage *new_image = new QImage(_texture->scaled(new_texture_size + 1, new_texture_size + 1,
                                                         Qt::IgnoreAspectRatio, Qt::FastTransformation));
-        double factor = _size / (double)new_texture_size;
+        double factor = _size / to_double(new_texture_size);
         for (int j = 0; j <= new_texture_size; j++) {
             for (int i = 0; i <= new_texture_size; i++) {
                 if (_texture_current_size <= 1 || i % 2 != 0 || j % 2 != 0) {
-                    double x = _startx + factor * (double)i;
-                    double z = _startz + factor * (double)j;
+                    double x = _startx + factor * to_double(i);
+                    double z = _startz + factor * to_double(j);
                     Color color = _renderer->getTexturesRenderer()->applyToTerrain(x, z).final_color;
                     color.normalize();
                     new_image->setPixel(i, j, color.to32BitRGBA());
@@ -159,7 +159,7 @@ void OpenGLTerrainChunk::updatePriority(CameraDefinition *camera) {
     // Update priority
     if (_reset_topology || _reset_texture || (_texture_max_size > 1 && _texture_current_size <= 1) ||
         vertices_level < 8) {
-        priority = 1000.0 - (double)vertices_level;
+        priority = 1000.0 - to_double(vertices_level);
     } else if (_texture_current_size == _texture_wanted_size) {
         priority = -1000.0;
     } else {
@@ -213,14 +213,14 @@ void OpenGLTerrainChunk::augmentVertices() {
     int next_vertices_level = vertices_level * 2;
 
     // TODO Re-use existing vertices from previous level when possible
-    double quad_size = _size / (double)next_vertices_level;
+    double quad_size = _size / to_double(next_vertices_level);
     for (int iz = 0; iz < next_vertices_level; iz++) {
         if (interrupt or _reset_topology) {
             return;
         }
         for (int ix = 0; ix < next_vertices_level; ix++) {
-            fillVerticesFromSquare(&next, (iz * next_vertices_level + ix) * 6, _startx + quad_size * (double)ix,
-                                   _startz + quad_size * (double)iz, quad_size);
+            fillVerticesFromSquare(&next, (iz * next_vertices_level + ix) * 6, _startx + quad_size * to_double(ix),
+                                   _startz + quad_size * to_double(iz), quad_size);
         }
     }
 

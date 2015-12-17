@@ -15,12 +15,12 @@ Layers::~Layers() {
 }
 
 void Layers::save(PackStream *stream) const {
-    int layer_count = (int)layers.size();
+    int layer_count = static_cast<int>(layers.size());
     stream->write(&layer_count);
 
-    for (int i = 0; i < layer_count; i++) {
-        stream->write(layers[i]->getName());
-        layers[i]->save(stream);
+    for (auto &layer: layers) {
+        stream->write(layer->getName());
+        layer->save(stream);
     }
 }
 
