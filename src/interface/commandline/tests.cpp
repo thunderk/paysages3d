@@ -255,7 +255,7 @@ static void testAtmosphereBruneton() {
                 return result.final;
             } else {
                 auto result = renderer->getAtmosphereRenderer()->applyAerialPerspective(
-                    Vector3(-relx * 400.0, (rely + 1.0) * 20.0 - 10.0, 0.0), COLOR_BLACK);
+                    Vector3(-relx * 400.0, (rely + 1.0) * 20.0, 0.0), COLOR_BLACK);
                 return result.final;
             }
         }

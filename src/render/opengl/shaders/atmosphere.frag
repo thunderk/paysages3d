@@ -246,7 +246,8 @@ vec3 applyWeatherEffects(float distance, vec3 base, vec3 _attenuation, vec3 _ins
 
 vec4 applyAerialPerspective(vec4 base)
 {
-    vec3 x = vec3(0.0, Rg + WORKAROUND_OFFSET + cameraLocation.y * WORLD_SCALING, 0.0);
+    vec3 location = vec3(unprojected.x, max(unprojected.y, 0.0), unprojected.z);
+    vec3 x = vec3(0.0, Rg + WORKAROUND_OFFSET + max(cameraLocation.y, 0.0) * WORLD_SCALING, 0.0);
     vec3 v = normalize(unprojected - cameraLocation);
     vec3 s = normalize(sunDirection * SUN_DISTANCE_SCALED - x);
 
@@ -285,7 +286,7 @@ vec4 getSkyColor(vec3 location, vec3 direction)
 
 vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float reflection, float shininess, float hardness)
 {
-    float r0 = Rg + WORKAROUND_OFFSET + location.y * WORLD_SCALING;
+    float r0 = Rg + WORKAROUND_OFFSET + max(location.y, 0.0) * WORLD_SCALING;
     vec3 sun_position = sunDirection * SUN_DISTANCE;
     float muS = dot(vec3(0.0, 1.0, 0.0), normalize(sun_position - vec3(0.0, r0, 0.0)));
 
