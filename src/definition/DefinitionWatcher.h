@@ -20,6 +20,12 @@ class DEFINITIONSHARED_EXPORT DefinitionWatcher {
      */
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff);
 
+  protected:
+    /**
+     * Start watching a path in a definition tree.
+     */
+    void startWatching(const DefinitionNode *root, const string &path, bool init_diff = true);
+
     /**
      * Abstract convenience to receive integer node changes.
      */
@@ -29,12 +35,6 @@ class DEFINITIONSHARED_EXPORT DefinitionWatcher {
      * Abstract convenience to receive float node changes.
      */
     virtual void floatNodeChanged(const string &path, double new_value, double old_value);
-
-  protected:
-    /**
-     * Start watching a path in a definition tree.
-     */
-    void startWatching(const DefinitionNode *root, const string &path, bool init_diff = true);
 };
 }
 }

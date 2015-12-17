@@ -18,10 +18,10 @@ int OverlayRasterizer::prepareRasterization() {
 void OverlayRasterizer::rasterizeToCanvas(CanvasPortion *canvas) {
     double width = to_double(renderer->render_camera->getWidth());
     double height = to_double(renderer->render_camera->getHeight());
-    Vector3 topleft = renderer->unprojectPoint(Vector3(height, 0.0, 1.0));
-    Vector3 bottomleft = renderer->unprojectPoint(Vector3(0.0, 0.0, 1.0));
-    Vector3 topright = renderer->unprojectPoint(Vector3(height, width, 1.0));
-    Vector3 bottomright = renderer->unprojectPoint(Vector3(0.0, width, 1.0));
+    Vector3 topleft = renderer->unprojectPoint(Vector3(0.0, height, 1.0001));
+    Vector3 bottomleft = renderer->unprojectPoint(Vector3(0.0, 0.0, 1.0001));
+    Vector3 topright = renderer->unprojectPoint(Vector3(width, height, 1.0001));
+    Vector3 bottomright = renderer->unprojectPoint(Vector3(width, 0.0, 1.0001));
 
     pushQuad(canvas, topleft, bottomleft, bottomright, topright);
 }

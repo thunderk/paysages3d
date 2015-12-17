@@ -4,6 +4,7 @@
 #include "AtmosphereDefinition.h"
 #include "CameraDefinition.h"
 #include "TimeManager.h"
+#include "Logs.h"
 
 #include <cstring>
 
@@ -125,6 +126,8 @@ int main(int argc, char **argv) {
     } else {
         scenery->autoPreset();
     }
+
+    Logs::debug("CommandLine") << "Rendered scenery :" << endl << scenery->toString() << endl;
 
     TimeManager time;
     time.setWind(conf_wind_x, conf_wind_z);

@@ -4,6 +4,8 @@
 #include "CameraDefinition.h"
 #include "TerrainDefinition.h"
 #include "AtmosphereDefinition.h"
+#include "AtmosphereRenderer.h"
+#include "AtmosphereResult.h"
 #include "TexturesDefinition.h"
 #include "GodRaysDefinition.h"
 #include "TextureLayerDefinition.h"
@@ -231,22 +233,41 @@ static void testCloudsNearGround() {
     startTestRender(&renderer, "clouds_near_ground", 2);
 }
 
-static void testSunNearHorizon() {
+static void testAtmosphereBruneton() {
     Scenery scenery;
-    scenery.autoPreset(28);
-    scenery.getCamera()->setLocation(VECTOR_ZERO);
-    scenery.getCamera()->setTarget(VECTOR_EAST);
-    scenery.getClouds()->clear();
-    scenery.getTextures()->applyPreset(TexturesDefinition::TEXTURES_PRESET_CANYON);
-    scenery.getTerrain()->propWaterHeight()->setValue(-1.0);
+    scenery.getAtmosphere()->applyPreset(AtmosphereDefinition::ATMOSPHERE_PRESET_CLEAR_DAY);
+    scenery.getCamera()->setTarget(Vector3(10.0, 1.0, 0.0));
+    scenery.getCamera()->setLocation(Vector3(0.0, 1.0, 0.0));
 
     SoftwareCanvasRenderer renderer(&scenery);
-    renderer.setSize(400, 300);
-    renderer.setQuality(0.3);
+    renderer.setSize(800, 400);
+    renderer.getGodRaysSampler()->setEnabled(false);
 
-    for (int i = 0; i <= 20; i++) {
-        scenery.getAtmosphere()->propDayTime()->setValue(0.24 + 0.001 * to_double(i));
-        startTestRender(&renderer, "sun_near_horizon", i);
+    class TestRasterizer : public OverlayRasterizer {
+      public:
+        TestRasterizer(SoftwareCanvasRenderer *renderer)
+            : OverlayRasterizer(renderer, renderer->getProgressHelper()), renderer(renderer) {
+        }
+        virtual Color processPixel(int, int, double relx, double rely) const override {
+            if (rely > 0.0) {
+                Vector3 dir = (relx < 0.0) ? Vector3(1.0, rely, relx + 1.0) : Vector3(-1.0, rely, relx - 1.0);
+                auto result = renderer->getAtmosphereRenderer()->getSkyColor(dir);
+                return result.final;
+            } else {
+                auto result = renderer->getAtmosphereRenderer()->applyAerialPerspective(
+                    Vector3(-relx * 400.0, (rely + 1.0) * 20.0 - 10.0, 0.0), COLOR_BLACK);
+                return result.final;
+            }
+        }
+        SoftwareCanvasRenderer *renderer;
+    };
+    TestRasterizer rasterizer(&renderer);
+    renderer.setSoloRasterizer(&rasterizer);
+
+    for (int i = 0; i <= 60; i++) {
+        double daytime = (i < 40) ? (0.24 + 0.0005 * to_double(i)) : (0.26 + 0.005 * to_double(i - 40));
+        scenery.getAtmosphere()->propDayTime()->setValue(daytime);
+        startTestRender(&renderer, "atmosphere_bruneton", i);
     }
 }
 
@@ -327,7 +348,7 @@ void runTestSuite() {
     testGodRays();
     testNearFrustum();
     testCloudsNearGround();
-    testSunNearHorizon();
+    testAtmosphereBruneton();
     testVegetationModels();
     testOpenGLVegetationImpostor();
 }
