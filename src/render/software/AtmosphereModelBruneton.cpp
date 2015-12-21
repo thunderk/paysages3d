@@ -26,19 +26,19 @@
 #include "FloatNode.h"
 
 /* Factor to convert software units to kilometers */
-// TODO This is copied in AtmosphereRenderer
-#define SPHERE_SIZE 20000.0
-#define WORLD_SCALING 0.05
+#define WORLD_SCALING 0.03
 #define SUN_DISTANCE 149597870.0
 #define SUN_DISTANCE_SCALED (SUN_DISTANCE / WORLD_SCALING)
-#define WORKAROUND_OFFSET 0.2
+#define WORKAROUND_OFFSET 0.1
+
+// TODO This is copied in AtmosphereRenderer
+#define SPHERE_SIZE 20000.0
 
 /*********************** Constants ***********************/
 
 static const double Rg = 6360.0;
 static const double Rt = 6420.0;
 static const double RL = 6421.0;
-static const double exposure = 0.4;
 static const double ISun = 100.0;
 static const double AVERAGE_GROUND_REFLECTANCE = 0.1;
 
@@ -47,14 +47,14 @@ static const double AVERAGE_GROUND_REFLECTANCE = 0.1;
 #define RES_MU_S 32
 #define RES_R 32
 #define RES_NU 8
-#define SKY_W 64
-#define SKY_H 16
-#define TRANSMITTANCE_W 256
-#define TRANSMITTANCE_H 64
+#define SKY_W 256
+#define SKY_H 64
+#define TRANSMITTANCE_W 512
+#define TRANSMITTANCE_H 128
 #define TRANSMITTANCE_INTEGRAL_SAMPLES 500
-#define INSCATTER_INTEGRAL_SAMPLES 50
-#define IRRADIANCE_INTEGRAL_SAMPLES 32
-#define INSCATTER_SPHERICAL_INTEGRAL_SAMPLES 16
+#define INSCATTER_INTEGRAL_SAMPLES 100
+#define IRRADIANCE_INTEGRAL_SAMPLES 64
+#define INSCATTER_SPHERICAL_INTEGRAL_SAMPLES 32
 #else
 #define RES_MU 64
 #define RES_MU_S 16
@@ -79,16 +79,17 @@ static const double HR = 8.0;
 static const Color betaR = {5.8e-3, 1.35e-2, 3.31e-2, 1.0};
 
 /* Mie */
+// TODO Use the good ones, determined by weather definition
 /* DEFAULT */
-static const double HM = 1.2;
+/*static const double HM = 1.2;
 static const Vector3 betaMSca = {4e-3, 4e-3, 4e-3};
 static const Vector3 betaMEx = {4e-3 / 0.9, 4e-3 / 0.9, 4e-3 / 0.9};
-static const double mieG = 0.8;
+static const double mieG = 0.8;*/
 /* CLEAR SKY */
-/*static const double HM = 1.2;
+static const double HM = 1.2;
 static const Vector3 betaMSca = {20e-3, 20e-3, 20e-3};
 static const Vector3 betaMEx = {20e-3 / 0.9, 20e-3 / 0.9, 20e-3 / 0.9};
-static const double mieG = 0.76;*/
+static const double mieG = 0.76;
 /* PARTLY CLOUDY */
 /*static const double HM = 3.0;
 static const Vector3 betaMSca = {3e-3, 3e-3, 3e-3};
@@ -809,14 +810,14 @@ static Color _getInscatterColor(Vector3 *_x, double *_t, Vector3 v, Vector3 s, d
             double muS0 = x0.dotProduct(s) / r0;
             /* avoids imprecision problems in transmittance computations based on textures */
             *attenuation = _analyticTransmittance(r, mu, t);
-            if (r0 > Rg + 0.001) {
+            if (r0 > Rg + 0.01) {
                 /* computes S[L]-T(x,x0)S[L]|x0 */
                 Color attmod = {attenuation->x, attenuation->y, attenuation->z, attenuation->x};
                 Color samp = _texture4D(_inscatterTexture, r0, mu0, muS0, nu);
                 inscatter = _applyInscatter(inscatter, attmod, samp);
                 /* avoids imprecision problems near horizon by interpolating between two points above and below horizon
                  */
-                const double EPS = 0.02;
+                const double EPS = 0.004;
                 double muHoriz = -sqrt(1.0 - (Rg / r) * (Rg / r));
                 if (fabs(mu - muHoriz) < EPS) {
                     double a = ((mu - muHoriz) + EPS) / (2.0 * EPS);
@@ -899,7 +900,7 @@ static void _saveCache2D(Texture2D *tex, const char *tag, int order) {
     CacheFile cache("atmo-br", "cache", tag, xsize, ysize, 0, 0, order);
     if (cache.isWritable()) {
         PackStream stream;
-        stream.bindToFile(cache.getPath());
+        stream.bindToFile(cache.getPath(), true);
         tex->save(&stream);
     }
 }
@@ -937,7 +938,7 @@ static void _saveCache4D(Texture4D *tex, const char *tag, int order) {
     CacheFile cache("atmo-br", "cache", tag, xsize, ysize, zsize, wsize, order);
     if (cache.isWritable()) {
         PackStream stream;
-        stream.bindToFile(cache.getPath());
+        stream.bindToFile(cache.getPath(), true);
         tex->save(&stream);
     }
 }
@@ -1109,6 +1110,11 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
     Vector3 x = {0.0, Rg + WORKAROUND_OFFSET + eye.y * WORLD_SCALING, 0.0};
     Vector3 v = direction.normalize();
     Vector3 s = sun_position.sub(x).normalize();
+
+    if (v.y > s.y) {
+        v.y = s.y;
+        v.normalize();
+    }
 
     if (v.y == 0.0) {
         v.y = -0.000001;

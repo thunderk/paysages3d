@@ -6,12 +6,12 @@ const float AVERAGE_GROUND_REFLECTANCE = 0.1;
 const float HR = 8.0;
 const vec3 betaR = vec3(5.8e-3, 1.35e-2, 3.31e-2);
 const float HM = 1.2;
-const vec3 betaMSca = vec3(4e-3);
-const vec3 betaMEx = vec3(4e-3 / 0.9);
-const float mieG = 0.8;
-const float WORKAROUND_OFFSET = 0.2;
+const vec3 betaMSca = vec3(20e-3, 20e-3, 20e-3);
+const vec3 betaMEx = vec3(20e-3 / 0.9, 20e-3 / 0.9, 20e-3 / 0.9);
+const float mieG = 0.76;
+const float WORKAROUND_OFFSET = 0.1;
 const float SPHERE_SIZE = 20000.0;
-const float WORLD_SCALING = 0.05;
+const float WORLD_SCALING = 0.03;
 const float SUN_DISTANCE = 149597870.0;
 const float SUN_DISTANCE_SCALED = (SUN_DISTANCE / WORLD_SCALING);
 const float M_PI = 3.141592657;
@@ -162,11 +162,11 @@ vec3 _getInscatterColor(inout vec3 x, inout float t, vec3 v, vec3 s, out float r
             float muS0 = dot(x0, s) / r0;
             // avoids imprecision problems in transmittance computations based on textures
             attenuation = analyticTransmittance(r, mu, t);
-            if (r0 > Rg + 0.001) {
+            if (r0 > Rg + 0.01) {
                 // computes S[L]-T(x,x0)S[L]|x0
                 inscatter = max(inscatter - attenuation.rgbr * texture4D(inscatterTexture, r0, mu0, muS0, nu), 0.0);
                 // avoids imprecision problems near horizon by interpolating between two points above and below horizon
-                const float EPS = 0.02;
+                const float EPS = 0.004;
                 float muHoriz = -sqrt(1.0 - (Rg / r) * (Rg / r));
                 if (abs(mu - muHoriz) < EPS) {
                     float a = ((mu - muHoriz) + EPS) / (2.0 * EPS);
@@ -263,6 +263,10 @@ vec4 applyAerialPerspective(vec4 base)
     vec3 v = normalize(unprojected - cameraLocation);
     vec3 s = normalize(sunDirection * SUN_DISTANCE_SCALED - x);
 
+    if (v.y > s.y - 0.01) {
+        v.y = s.y - 0.01;
+        v = normalize(v);
+    }
     if (v.y == 0.0)
     {
         v.y = -0.000001;
