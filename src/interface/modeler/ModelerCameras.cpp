@@ -73,9 +73,10 @@ void ModelerCameras::endTool() {
 }
 
 void ModelerCameras::timerEvent(QTimerEvent *) {
-    current->transitionToAnother(active, 0.5);
-    parent->getScenery()->keepCameraAboveGround(current);
-    parent->getRenderer()->setCamera(current);
+    if (current->transitionToAnother(active, 0.5)) {
+        parent->getScenery()->keepCameraAboveGround(current);
+        parent->getRenderer()->setCamera(current);
+    }
 }
 
 void ModelerCameras::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {

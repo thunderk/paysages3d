@@ -3,16 +3,14 @@
 
 #include "basics_global.h"
 
-#ifdef QT_GUI_LIB
-#include <QMatrix4x4>
-#endif
-
 namespace paysages {
 namespace basics {
 
 class BASICSSHARED_EXPORT Matrix4 {
   public:
     Matrix4(bool identity = true);
+    Matrix4(double a, double b, double c, double d, double e, double f, double g, double h, double i, double j,
+            double k, double l, double m, double n, double o, double p);
 
     void save(PackStream *stream) const;
     void load(PackStream *stream);
@@ -36,11 +34,54 @@ class BASICSSHARED_EXPORT Matrix4 {
 
     double getDeterminant() const;
 
-#ifdef QT_GUI_LIB
-    inline QMatrix4x4 toQMatrix() const {
-        return QMatrix4x4(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p);
+    inline double getA() const {
+        return a;
     }
-#endif
+    inline double getB() const {
+        return b;
+    }
+    inline double getC() const {
+        return c;
+    }
+    inline double getD() const {
+        return d;
+    }
+    inline double getE() const {
+        return e;
+    }
+    inline double getF() const {
+        return f;
+    }
+    inline double getG() const {
+        return g;
+    }
+    inline double getH() const {
+        return h;
+    }
+    inline double getI() const {
+        return i;
+    }
+    inline double getJ() const {
+        return j;
+    }
+    inline double getK() const {
+        return k;
+    }
+    inline double getL() const {
+        return l;
+    }
+    inline double getM() const {
+        return m;
+    }
+    inline double getN() const {
+        return n;
+    }
+    inline double getO() const {
+        return o;
+    }
+    inline double getP() const {
+        return p;
+    }
 
   private:
     double a;

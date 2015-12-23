@@ -9,7 +9,7 @@ OpenGLSharedState::~OpenGLSharedState() {
     }
 }
 
-void OpenGLSharedState::apply(OpenGLShaderProgram *program, int &texture_unit) {
+void OpenGLSharedState::apply(OpenGLShaderProgram *program, unsigned int &texture_unit) {
     for (const auto &pair : variables) {
         pair.second->apply(program, texture_unit);
     }

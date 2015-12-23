@@ -10,6 +10,11 @@ Matrix4::Matrix4(bool identity) {
     a = f = k = p = (identity ? 1.0 : 0.0);
 }
 
+Matrix4::Matrix4(double a, double b, double c, double d, double e, double f, double g, double h, double i, double j,
+                 double k, double l, double m, double n, double o, double p)
+    : a(a), b(b), c(c), d(d), e(e), f(f), g(g), h(h), i(i), j(j), k(k), l(l), m(m), n(n), o(o), p(p) {
+}
+
 void Matrix4::save(PackStream *stream) const {
     stream->write(&a);
     stream->write(&b);
@@ -221,7 +226,7 @@ Matrix4 Matrix4::newLookAt(const Vector3 &eye, const Vector3 &at, const Vector3 
 
 Matrix4 Matrix4::newPerspective(double fov_y, double aspect, double near, double far) {
     Matrix4 result;
-    double fo = 1 / tan(fov_y / 2.0);
+    double fo = 1.0 / tan(fov_y / 2.0);
     result.a = fo / aspect;
     result.f = fo;
     result.k = (far + near) / (near - far);

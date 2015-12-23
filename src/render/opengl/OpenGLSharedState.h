@@ -6,8 +6,6 @@
 #include <map>
 #include "OpenGLVariable.h"
 
-class QImage;
-
 namespace paysages {
 namespace opengl {
 
@@ -22,7 +20,7 @@ class OPENGLSHARED_EXPORT OpenGLSharedState {
     /**
      * Apply the stored variables to the bound program.
      */
-    void apply(OpenGLShaderProgram *program, int &texture_unit);
+    void apply(OpenGLShaderProgram *program, unsigned int &texture_unit);
 
     /**
      * Release any allocated resource in the opengl context.
@@ -58,13 +56,7 @@ class OPENGLSHARED_EXPORT OpenGLSharedState {
     inline void set(const string &name, const Vector3 &vector) {
         get(name)->set(vector);
     }
-    inline void set(const string &name, const QVector3D &vector) {
-        get(name)->set(vector);
-    }
     inline void set(const string &name, const Matrix4 &matrix) {
-        get(name)->set(matrix);
-    }
-    inline void set(const string &name, const QMatrix4x4 &matrix) {
         get(name)->set(matrix);
     }
     inline void set(const string &name, const Color &color) {

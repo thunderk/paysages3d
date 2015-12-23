@@ -33,6 +33,20 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
      */
     void draw(OpenGLVertexArray *vertices, OpenGLSharedState *state = NULL, int start = 0, int count = -1);
 
+    /**
+     * Check if the program is currently bound to OpenGL context.
+     *
+     * This does not really check the OpenGL context, just check we are between bind() and release() calls.
+     */
+    inline bool isBound() const {
+        return bound;
+    }
+
+    /**
+     * Get the OpenGL ID for this program.
+     */
+    unsigned int getId() const;
+
     inline QOpenGLShaderProgram *getProgram() const {
         return program;
     }
@@ -55,6 +69,7 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
     void compile();
 
     bool compiled;
+    bool bound;
 
     OpenGLRenderer *renderer;
 

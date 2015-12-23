@@ -3,9 +3,8 @@
 
 #include "opengl_global.h"
 
-class QColor;
-class QVector3D;
-class QMatrix4x4;
+#include <memory>
+
 class QImage;
 
 namespace paysages {
@@ -14,7 +13,7 @@ namespace opengl {
 /*!
  * \brief OpenGL variable that can be bound to a uniform for shaders.
  */
-class OpenGLVariable {
+class OpenGLVariable final {
   public:
     typedef enum {
         TYPE_NONE,
@@ -32,7 +31,14 @@ class OpenGLVariable {
     OpenGLVariable(const string &name);
     ~OpenGLVariable();
 
-    void apply(OpenGLShaderProgram *program, int &texture_unit);
+    /**
+     * Apply the variable to the bound shader program.
+     *
+     * *texture_unit* will be used and updated accordingly.
+     *
+     * This must be called from the rendering thread, with the shader program bound.
+     */
+    void apply(OpenGLShaderProgram *program, unsigned int &texture_unit);
 
     /**
      * Release any allocated resource in the opengl context.
@@ -48,39 +54,18 @@ class OpenGLVariable {
     void set(int value);
     void set(float value);
     void set(const Vector3 &vector);
-    void set(const QVector3D &vector);
     void set(const Matrix4 &matrix);
-    void set(const QMatrix4x4 &matrix);
     void set(const Color &color);
 
-    inline int getIntValue() const {
-        return value_int;
-    }
-    inline float getFloatValue() const {
-        return value_float;
-    }
+    int getIntValue() const;
+    float getFloatValue() const;
 
   protected:
-    void uploadTexture(OpenGLRenderer *renderer);
+    void uploadTexture(OpenGLFunctions *renderer);
 
   private:
-    string name;
-    OpenGLVariableType type;
-
-    int value_int;
-    float value_float;
-    QColor *value_color;
-    QVector3D *value_vector3;
-    QMatrix4x4 *value_matrix4;
-    float *value_texture_data;
-
-    int texture_size_x;
-    int texture_size_y;
-    int texture_size_z;
-    bool texture_toupload;
-    bool texture_repeat;
-    bool texture_color;
-    unsigned int texture_id;
+    class pimpl;
+    unique_ptr<pimpl> impl;
 };
 }
 }

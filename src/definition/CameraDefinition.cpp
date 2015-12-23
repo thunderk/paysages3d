@@ -249,6 +249,7 @@ bool CameraDefinition::transitionToAnother(const CameraDefinition *wanted, doubl
     dy = wanted->location.y - location.y;
     dz = wanted->location.z - location.z;
     dr = wanted->direction.r - direction.r;
+    // TODO pi-modulo nearest
     dphi = wanted->direction.phi - direction.phi;
     dtheta = wanted->direction.theta - direction.theta;
     droll = wanted->roll - roll;

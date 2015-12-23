@@ -18,6 +18,7 @@ OpenGLShaderProgram::OpenGLShaderProgram(const string &name, OpenGLRenderer *ren
     functions = renderer->getOpenGlFunctions();
     state = new OpenGLSharedState();
     compiled = false;
+    bound = false;
 }
 
 OpenGLShaderProgram::~OpenGLShaderProgram() {
@@ -28,7 +29,7 @@ OpenGLShaderProgram::~OpenGLShaderProgram() {
 void OpenGLShaderProgram::addVertexSource(const string &path) {
     QFile file(QString(":/shaders/%1.vert").arg(QString::fromStdString(path)));
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        source_vertex += QString(file.readAll()).toStdString();
+        source_vertex += QString(file.readAll()).toStdString() + "\n";
     } else {
         Logs::error("OpenGL") << "Can't open vertex file " << file.fileName().toStdString() << endl;
     }
@@ -37,7 +38,7 @@ void OpenGLShaderProgram::addVertexSource(const string &path) {
 void OpenGLShaderProgram::addFragmentSource(const string &path) {
     QFile file(QString(":/shaders/%1.frag").arg(QString::fromStdString(path)));
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        source_fragment += QString(file.readAll()).toStdString();
+        source_fragment += QString(file.readAll()).toStdString() + "\n";
     } else {
         Logs::error("OpenGL") << "Can't open fragment file " << file.fileName().toStdString() << endl;
     }
@@ -74,11 +75,14 @@ bool OpenGLShaderProgram::bind(OpenGLSharedState *state) {
     }
 
     if (program->bind()) {
-        int texture_unit = 0;
+        bound = true;
+
+        unsigned int texture_unit = 0;
         renderer->getSharedState()->apply(this, texture_unit);
         if (state) {
             state->apply(this, texture_unit);
         }
+
         return true;
     } else {
         return false;
@@ -86,6 +90,7 @@ bool OpenGLShaderProgram::bind(OpenGLSharedState *state) {
 }
 
 void OpenGLShaderProgram::release() {
+    bound = false;
     program->release();
 }
 
@@ -95,4 +100,8 @@ void OpenGLShaderProgram::draw(OpenGLVertexArray *vertices, OpenGLSharedState *s
 
         release();
     }
+}
+
+unsigned int OpenGLShaderProgram::getId() const {
+    return program->programId();
 }
