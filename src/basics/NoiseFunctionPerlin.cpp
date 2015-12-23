@@ -30,9 +30,9 @@ static double g1[B + B + 2];
 
 #define setup(i, b0, b1, r0, r1)                                                                                       \
     t = vec[i] + N;                                                                                                    \
-    b0 = trunc_to_int(t) & BM;                                                                                                \
+    b0 = trunc_to_int(t) & BM;                                                                                         \
     b1 = (b0 + 1) & BM;                                                                                                \
-    r0 = t - trunc_to_int(t);                                                                                                   \
+    r0 = t - trunc_to_int(t);                                                                                          \
     r1 = r0 - 1.;
 
 double noisePerlinGet1DValue(double x) {

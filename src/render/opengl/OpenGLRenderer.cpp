@@ -252,7 +252,9 @@ void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera) {
     // Set in shaders
     shared_state->set("cameraLocation", location);
     float *matdata = view_matrix->transposed().data();
-    shared_state->set("viewMatrix", Matrix4(matdata[0], matdata[1], matdata[2], matdata[3], matdata[4], matdata[5], matdata[6], matdata[7], matdata[8], matdata[9], matdata[10], matdata[11], matdata[12], matdata[13], matdata[14], matdata[15]));
+    shared_state->set("viewMatrix", Matrix4(matdata[0], matdata[1], matdata[2], matdata[3], matdata[4], matdata[5],
+                                            matdata[6], matdata[7], matdata[8], matdata[9], matdata[10], matdata[11],
+                                            matdata[12], matdata[13], matdata[14], matdata[15]));
 
     // Broadcast to parts
     vegetation->cameraChanged(camera);
@@ -270,7 +272,8 @@ void OpenGLRenderer::updateMouseProjection() {
     GLfloat z;
     functions->glReadPixels(mouse_x, mouse_y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
 
-    QVector4D located(to_float(mouse_x / render_camera->getWidth()), to_float(mouse_y / render_camera->getHeight()), z, 1.0);
+    QVector4D located(to_float(mouse_x / render_camera->getWidth()), to_float(mouse_y / render_camera->getHeight()), z,
+                      1.0);
     QVector4D unprojected = view_matrix->inverted() * 2.0 * (located - QVector4D(0.5, 0.5, 0.5, 0.5));
     *mouse_projected = Vector3(unprojected.x() / unprojected.w(), unprojected.y() / unprojected.w(),
                                unprojected.z() / unprojected.w());

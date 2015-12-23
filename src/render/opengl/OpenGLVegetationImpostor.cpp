@@ -141,7 +141,8 @@ void OpenGLVegetationImpostor::setVertex(int i, float u, float v) {
             Matrix4 rotation = matrixForIndex(index);
 
             Vector3 vertex = rotation.multPoint(Vector3(1.0, u, -(v - 0.5)));
-            vertices->set(index * 4 + i, vertex, (u + to_double(px)) / to_double(parts), (v + to_double(py)) / to_double(parts));
+            vertices->set(index * 4 + i, vertex, (u + to_double(px)) / to_double(parts),
+                          (v + to_double(py)) / to_double(parts));
         }
     }
 }

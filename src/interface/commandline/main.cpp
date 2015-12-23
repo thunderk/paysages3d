@@ -127,7 +127,8 @@ int main(int argc, char **argv) {
         scenery->autoPreset();
     }
 
-    Logs::debug("CommandLine") << "Rendered scenery :" << endl << scenery->toString() << endl;
+    Logs::debug("CommandLine") << "Rendered scenery :" << endl
+                               << scenery->toString() << endl;
 
     TimeManager time;
     time.setWind(conf_wind_x, conf_wind_z);

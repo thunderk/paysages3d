@@ -453,7 +453,7 @@ static void _inscatter1(double r, double mu, double muS, double nu, Color *ray, 
     _integrand1(r, mu, muS, nu, 0.0, &rayi, &miei);
     int i;
     for (i = 1; i <= INSCATTER_INTEGRAL_SAMPLES; ++i) {
-        double xj = to_double(i)*dx;
+        double xj = to_double(i) * dx;
         Color rayj;
         Color miej;
         _integrand1(r, mu, muS, nu, xj, &rayj, &miej);
@@ -703,7 +703,7 @@ static Color _inscatterN(Texture4D *deltaJ, double r, double mu, double muS, dou
     Color raymiei = _integrand2(deltaJ, r, mu, muS, nu, 0.0);
     int i;
     for (i = 1; i <= INSCATTER_INTEGRAL_SAMPLES; ++i) {
-        double xj = to_double(i)*dx;
+        double xj = to_double(i) * dx;
         Color raymiej = _integrand2(deltaJ, r, mu, muS, nu, xj);
         raymie.r += (raymiei.r + raymiej.r) / 2.0 * dx;
         raymie.g += (raymiei.g + raymiej.g) / 2.0 * dx;
