@@ -8,7 +8,6 @@
 #include "Scenery.h"
 #include "WaterDefinition.h"
 #include "SurfaceMaterial.h"
-#include "NoiseFunctionSimplex.h"
 #include "FloatNode.h"
 #include "FloatDiff.h"
 #include "IntNode.h"
@@ -58,8 +57,7 @@ void OpenGLWater::update() {
     state->set("waterMaterialShininess", water->material->shininess);
     state->set("waterMaterialHardness", water->material->hardness);
 
-    Logs::debug("OpenGL") << "Updating simplex texture" << endl;
-    state->set("simplexSampler", NoiseFunctionSimplex::getNormalTexture(), true, true);
+    state->set("waterNoise", renderer->getWaterRenderer()->getNoise());
 }
 
 void OpenGLWater::render() {

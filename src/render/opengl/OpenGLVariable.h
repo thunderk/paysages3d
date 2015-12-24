@@ -15,19 +15,6 @@ namespace opengl {
  */
 class OpenGLVariable final {
   public:
-    typedef enum {
-        TYPE_NONE,
-        TYPE_TEXTURE_2D,
-        TYPE_TEXTURE_3D,
-        TYPE_TEXTURE_4D,
-        TYPE_INTEGER,
-        TYPE_FLOAT,
-        TYPE_VECTOR3,
-        TYPE_MATRIX4,
-        TYPE_COLOR
-    } OpenGLVariableType;
-
-  public:
     OpenGLVariable(const string &name);
     ~OpenGLVariable();
 
@@ -53,12 +40,14 @@ class OpenGLVariable final {
     void set(const Texture4D *texture, bool repeat = false, bool color = true);
     void set(int value);
     void set(float value);
+    void set(const FractalNoise &noise);
     void set(const Vector3 &vector);
     void set(const Matrix4 &matrix);
     void set(const Color &color);
 
     int getIntValue() const;
     float getFloatValue() const;
+    float getFloatArrayValue(unsigned int index) const;
 
   protected:
     void uploadTexture(OpenGLFunctions *renderer);

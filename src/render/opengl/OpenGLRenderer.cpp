@@ -16,6 +16,7 @@
 #include "GodRaysSampler.h"
 #include "Logs.h"
 #include "Vector3.h"
+#include "NoiseFunctionSimplex.h"
 
 OpenGLRenderer::OpenGLRenderer(Scenery *scenery) : SoftwareRenderer(scenery) {
     ready = false;
@@ -104,6 +105,9 @@ void OpenGLRenderer::initialize() {
             part->initialize();
             part->updateScenery();
         }
+
+        // Common state values
+        shared_state->set("simplexSampler", NoiseFunctionSimplex::getNormalTexture(), true, true);
 
         cameraChangeEvent(render_camera);
 

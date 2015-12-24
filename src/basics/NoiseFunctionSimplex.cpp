@@ -507,6 +507,7 @@ const Texture2D *NoiseFunctionSimplex::getNormalTexture() {
 
         for (int x = 0; x < width; x++) {
             for (int z = 0; z < height; z++) {
+                // TODO Make texture tileable
                 double vcenter = noiseSimplexGet2DValue(0.01 * to_double(x), 0.01 * to_double(z));
                 double vsouth = noiseSimplexGet2DValue(0.01 * to_double(x), 0.01 * to_double(z) + 0.001);
                 double veast = noiseSimplexGet2DValue(0.01 * to_double(x) + 0.001, 0.01 * to_double(z));

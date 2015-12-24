@@ -16,6 +16,19 @@ class BASICSSHARED_EXPORT FractalNoise {
     FractalNoise();
     virtual ~FractalNoise();
 
+    inline double getScaling() const {
+        return scaling;
+    }
+    inline double getHeight() const {
+        return height;
+    }
+    inline double getStepScaling() const {
+        return step_scaling;
+    }
+    inline double getStepHeight() const {
+        return step_height;
+    }
+
     void setScaling(double scaling, double height = 1.0);
     void setStep(double scaling_factor, double height_factor = 1.0);
     void setSlope(double slope_factor);

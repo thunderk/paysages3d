@@ -27,6 +27,10 @@ class SOFTWARESHARED_EXPORT WaterRenderer : public LightFilter {
     WaterRenderer(SoftwareRenderer *parent);
     virtual ~WaterRenderer();
 
+    inline const FractalNoise &getNoise() const {
+        return *noise;
+    }
+
     virtual void update();
 
     virtual HeightInfo getHeightInfo();

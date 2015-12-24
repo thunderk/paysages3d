@@ -13,6 +13,7 @@
 #include "Texture2D.h"
 #include "Texture3D.h"
 #include "Texture4D.h"
+#include "FractalNoise.h"
 
 typedef enum {
     TYPE_NONE,
@@ -23,6 +24,7 @@ typedef enum {
     TYPE_FLOAT,
     TYPE_VECTOR3,
     TYPE_MATRIX4,
+    TYPE_NOISE,
     TYPE_COLOR
 } OpenGLVariableType;
 
@@ -103,6 +105,9 @@ void OpenGLVariable::apply(OpenGLShaderProgram *program, unsigned int &texture_u
             functions->glBindTexture(GL_TEXTURE_3D, impl->texture_id);
             functions->glUniform1i(loc, static_cast<int>(texture_unit));
             texture_unit++;
+            break;
+        case TYPE_NOISE:
+            functions->glUniform1fv(loc, impl->value_int, impl->value_array_float.get());
             break;
         case TYPE_NONE:
             break;
@@ -242,6 +247,19 @@ void OpenGLVariable::set(float value) {
     impl->value_float = value;
 }
 
+void OpenGLVariable::set(const FractalNoise &noise) {
+    impl->type = TYPE_NOISE;
+
+    impl->value_int = 4;
+
+    float *data = new float[4];
+    data[0] = to_float(noise.getScaling());
+    data[1] = to_float(noise.getHeight());
+    data[2] = to_float(noise.getStepScaling());
+    data[3] = to_float(noise.getStepHeight());
+    impl->value_array_float = unique_ptr<float[]>(data);
+}
+
 void OpenGLVariable::set(const Vector3 &vector) {
     impl->type = TYPE_VECTOR3;
     impl->value_vector3 = make_unique<Vector3>(vector);
@@ -282,6 +300,10 @@ int OpenGLVariable::getIntValue() const {
 
 float OpenGLVariable::getFloatValue() const {
     return impl->value_float;
+}
+
+float OpenGLVariable::getFloatArrayValue(unsigned int index) const {
+    return impl->value_array_float[index];
 }
 
 void OpenGLVariable::uploadTexture(OpenGLFunctions *functions) {

@@ -62,6 +62,9 @@ class OPENGLSHARED_EXPORT OpenGLSharedState {
     inline void set(const string &name, const Color &color) {
         get(name)->set(color);
     }
+    inline void set(const string &name, const FractalNoise &noise) {
+        get(name)->set(noise);
+    }
 
   private:
     map<string, OpenGLVariable *> variables;

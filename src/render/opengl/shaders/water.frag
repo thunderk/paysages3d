@@ -3,11 +3,13 @@ uniform float waterMaterialReflection;
 uniform float waterMaterialShininess;
 uniform float waterMaterialHardness;
 uniform float waterReflection;
+uniform float[4] waterNoise;
 out vec4 final_color;
 
 void main(void)
 {
-    vec3 normal = noiseNormal2d(unprojected.xz, 0.001);
+    // TODO Increased detail near camera
+    vec3 normal = noiseNormal2d(waterNoise, unprojected.xz, 0.00001);
 
     final_color = applyLighting(unprojected, normal, waterMaterialColor, waterMaterialReflection, waterMaterialShininess, waterMaterialHardness);
 
