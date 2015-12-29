@@ -3,6 +3,8 @@
 
 #include "opengl_global.h"
 
+#include <string>
+
 class QOpenGLShaderProgram;
 
 namespace paysages {

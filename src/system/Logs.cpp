@@ -25,18 +25,20 @@ typedef basic_onullstream<char> onullstream;
 static onullstream NULL_STREAM;
 static bool enabled = true;
 
-ostream &Logs::debug(const string &logger) {
 #ifdef NDEBUG
+ostream &Logs::debug(const string &) {
     return NULL_STREAM;
+}
 #else
+ostream &Logs::debug(const string &logger) {
     if (enabled) {
         cout << "DEBUG [" << logger << "] ";
         return cout;
     } else {
         return NULL_STREAM;
     }
-#endif
 }
+#endif
 
 ostream &Logs::warning(const string &logger) {
     if (enabled) {

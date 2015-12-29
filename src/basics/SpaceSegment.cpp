@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <climits>
+#include <algorithm>
 #include "SpaceGridIterator.h"
 using namespace std;
 

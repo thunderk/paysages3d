@@ -62,8 +62,8 @@ void ModelerCameras::startSunTool() {
     current->copy(tool);
     active = tool;
 
-    // FIXME
-    // parent->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this, true);
+    startWatching(parent->getScenery(), "/atmosphere/sun/phi");
+    startWatching(parent->getScenery(), "/atmosphere/sun/theta");
 }
 
 void ModelerCameras::endTool() {
@@ -81,7 +81,7 @@ void ModelerCameras::timerEvent(QTimerEvent *) {
 }
 
 void ModelerCameras::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
-    if (node->getPath() == "/atmosphere/daytime" && tool_mode == TOOL_SUN) {
+    if (node->getPath().find("/atmosphere/sun/") == 0 and tool_mode == TOOL_SUN) {
         Vector3 direction = parent->getRenderer()->getAtmosphereRenderer()->getSunDirection();
         tool->setTarget(tool->getLocation().add(direction));
     }

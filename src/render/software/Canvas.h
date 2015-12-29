@@ -3,6 +3,7 @@
 
 #include "software_global.h"
 
+#include <string>
 #include <vector>
 
 namespace paysages {

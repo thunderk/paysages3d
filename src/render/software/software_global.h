@@ -4,9 +4,9 @@
 #include "definition_global.h"
 
 #if defined(SOFTWARE_LIBRARY)
-#define SOFTWARESHARED_EXPORT Q_DECL_EXPORT
+#define SOFTWARESHARED_EXPORT DECL_EXPORT
 #else
-#define SOFTWARESHARED_EXPORT Q_DECL_IMPORT
+#define SOFTWARESHARED_EXPORT DECL_IMPORT
 #endif
 
 namespace paysages {

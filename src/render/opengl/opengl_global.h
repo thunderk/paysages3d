@@ -4,9 +4,9 @@
 #include "software_global.h"
 
 #if defined(OPENGL_LIBRARY)
-#define OPENGLSHARED_EXPORT Q_DECL_EXPORT
+#define OPENGLSHARED_EXPORT DECL_EXPORT
 #else
-#define OPENGLSHARED_EXPORT Q_DECL_IMPORT
+#define OPENGLSHARED_EXPORT DECL_IMPORT
 #endif
 
 namespace paysages {

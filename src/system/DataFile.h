@@ -3,6 +3,8 @@
 
 #include "system_global.h"
 
+#include <string>
+
 class QDir;
 
 namespace paysages {

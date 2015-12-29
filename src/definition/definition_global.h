@@ -4,9 +4,9 @@
 #include "basics_global.h"
 
 #if defined(DEFINITION_LIBRARY)
-#define DEFINITIONSHARED_EXPORT Q_DECL_EXPORT
+#define DEFINITIONSHARED_EXPORT DECL_EXPORT
 #else
-#define DEFINITIONSHARED_EXPORT Q_DECL_IMPORT
+#define DEFINITIONSHARED_EXPORT DECL_IMPORT
 #endif
 
 namespace paysages {

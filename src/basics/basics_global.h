@@ -4,9 +4,9 @@
 #include "system_global.h"
 
 #if defined(BASICS_LIBRARY)
-#define BASICSSHARED_EXPORT Q_DECL_EXPORT
+#define BASICSSHARED_EXPORT DECL_EXPORT
 #else
-#define BASICSSHARED_EXPORT Q_DECL_IMPORT
+#define BASICSSHARED_EXPORT DECL_IMPORT
 #endif
 
 namespace paysages {
@@ -33,6 +33,7 @@ class InfinitePlane;
 }
 using namespace paysages::basics;
 
+// Some useful constants
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif

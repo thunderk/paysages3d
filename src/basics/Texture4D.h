@@ -3,6 +3,8 @@
 
 #include "basics_global.h"
 
+#include <string>
+
 namespace paysages {
 namespace basics {
 

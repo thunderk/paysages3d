@@ -5,6 +5,7 @@
 
 #include "SoftwareRenderer.h"
 
+#include <string>
 #include <vector>
 
 class QMatrix4x4;
