@@ -53,5 +53,9 @@
         <file>images/icon_render_final.png</file>
         <file>images/icon_cancel.png</file>
         <file>images/icon_sun_radius.png</file>
+        <file>images/bg_phi_coord.png</file>
+        <file>WidgetSphericalCoords.qml</file>
+        <file>images/bg_theta_coord.png</file>
+        <file>WidgetDayTime.qml</file>
     </qresource>
 </RCC>

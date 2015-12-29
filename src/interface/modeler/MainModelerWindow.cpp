@@ -60,39 +60,39 @@ MainModelerWindow::~MainModelerWindow() {
     delete scenery;
 }
 
-QObject *MainModelerWindow::findQmlObject(const QString &objectName) {
+QObject *MainModelerWindow::findQmlObject(const string &objectName) {
     if (objectName == "ui" || objectName == "root") {
         return rootObject();
     } else {
-        return rootObject()->findChild<QObject *>(objectName);
+        return rootObject()->findChild<QObject *>(QString::fromStdString(objectName));
     }
 }
 
-void MainModelerWindow::setQmlProperty(const QString &objectName, const QString &propertyName, const QVariant &value) {
+void MainModelerWindow::setQmlProperty(const string &objectName, const string &propertyName, const QVariant &value) {
     QObject *item = findQmlObject(objectName);
     if (item) {
-        item->setProperty(propertyName.toLocal8Bit(), value);
+        item->setProperty(propertyName.c_str(), value);
     } else {
-        Logs::error("UI") << "QML object not found :" << objectName.toStdString() << endl;
+        Logs::error("UI") << "QML object not found :" << objectName << endl;
     }
 }
 
-void MainModelerWindow::connectQmlSignal(const QString &objectName, const char *signal, const QObject *receiver,
+void MainModelerWindow::connectQmlSignal(const string &objectName, const char *signal, const QObject *receiver,
                                          const char *method) {
     QObject *item = findQmlObject(objectName);
     if (item) {
         connect(item, signal, receiver, method);
     } else {
-        Logs::error("UI") << "QML object not found :" << objectName.toStdString() << endl;
+        Logs::error("UI") << "QML object not found :" << objectName << endl;
     }
 }
 
-QString MainModelerWindow::getState() const {
-    return rootObject()->property("state").toString();
+string MainModelerWindow::getState() const {
+    return rootObject()->property("state").toString().toStdString();
 }
 
-void MainModelerWindow::setState(const QString &stateName) {
-    rootObject()->setProperty("state", stateName);
+void MainModelerWindow::setState(const string &stateName) {
+    rootObject()->setProperty("state", QString::fromStdString(stateName));
 }
 
 void MainModelerWindow::newFile() {

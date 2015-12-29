@@ -17,16 +17,16 @@ namespace modeler {
 class IntPropertyBind : public QObject, public DefinitionWatcher {
     Q_OBJECT
   public:
-    IntPropertyBind(MainModelerWindow *window, const QString &object_name, const QString &property_name, IntNode *node);
+    IntPropertyBind(MainModelerWindow *window, const string &object_name, const string &property_name, IntNode *node);
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
 
   private slots:
-    void propertyChanged(int value);
+    void propertyChanged();
 
   private:
     IntNode *node;
-    QString property;
+    string property;
     QObject *item;
 };
 }

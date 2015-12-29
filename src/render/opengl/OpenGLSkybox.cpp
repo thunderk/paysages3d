@@ -12,9 +12,10 @@
 #include "FloatNode.h"
 #include "Logs.h"
 
-static const string path_daytime = "/atmosphere/daytime";
 static const string path_humidity = "/atmosphere/humidity";
-static const string path_sun_radius = "/atmosphere/sun_radius";
+static const string path_sun_phi = "/atmosphere/sun/phi";
+static const string path_sun_theta = "/atmosphere/sun/theta";
+static const string path_sun_radius = "/atmosphere/sun/radius";
 
 OpenGLSkybox::OpenGLSkybox(OpenGLRenderer *renderer) : OpenGLPart(renderer, "skybox") {
     program = createShader("skybox");
@@ -56,9 +57,10 @@ OpenGLSkybox::~OpenGLSkybox() {
 void OpenGLSkybox::initialize() {
     // Watch for definition changes
     Scenery *scenery = renderer->getScenery();
-    startWatching(scenery, path_daytime);
-    startWatching(scenery, path_humidity);
+    startWatching(scenery, path_sun_phi);
+    startWatching(scenery, path_sun_theta);
     startWatching(scenery, path_sun_radius);
+    startWatching(scenery, path_humidity);
 }
 
 void OpenGLSkybox::update() {
@@ -79,14 +81,14 @@ void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff 
     OpenGLSharedState *state = renderer->getSharedState();
     AtmosphereDefinition *newdef = renderer->getScenery()->getAtmosphere();
 
-    if (node->getPath() == path_daytime) {
+    if (node->getPath() == path_sun_phi or node->getPath() == path_sun_theta) {
         Vector3 sun_direction = renderer->getAtmosphereRenderer()->getSunDirection(false);
         state->set("sunDirection", sun_direction);
 
         Color sun_color = newdef->sun_color;
         state->set("sunColor", sun_color);
 
-        state->set("dayTime", newdef->propDayTime()->getValue());
+        state->set("dayTime", newdef->getDaytime());
     }
 
     DefinitionWatcher::nodeChanged(node, diff);

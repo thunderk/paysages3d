@@ -4,27 +4,30 @@
 #include "IntNode.h"
 #include "Logs.h"
 
-IntPropertyBind::IntPropertyBind(MainModelerWindow *window, const QString &object_name, const QString &property_name,
+IntPropertyBind::IntPropertyBind(MainModelerWindow *window, const string &object_name, const string &property_name,
                                  IntNode *node)
     : QObject(window), node(node), property(property_name) {
     item = window->findQmlObject(object_name);
     if (item) {
         node->addWatcher(this, true);
-        connect(item, SIGNAL(changed(int)), this, SLOT(propertyChanged(int)));
+        string signal_name("2" + property_name + "Changed()");
+        connect(item, signal_name.c_str(), this, SLOT(propertyChanged()));
     } else {
         item = NULL;
-        Logs::error("UI") << "Can't find object :" << object_name.toStdString() << endl;
+        Logs::error("UI") << "Can't find object :" << object_name << endl;
     }
 }
 
 void IntPropertyBind::nodeChanged(const DefinitionNode *, const DefinitionDiff *) {
     if (item) {
-        item->setProperty(property.toLocal8Bit(), node->getValue());
+        item->setProperty(property.c_str(), node->getValue());
     }
 }
 
-void IntPropertyBind::propertyChanged(int value) {
-    if (value != node->getValue()) {
+void IntPropertyBind::propertyChanged() {
+    bool ok;
+    int value = item->property(property.c_str()).toInt(&ok);
+    if (ok and value != node->getValue()) {
         node->setValue(value);
     }
 }

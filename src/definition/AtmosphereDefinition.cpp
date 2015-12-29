@@ -5,18 +5,16 @@
 #include "RandomGenerator.h"
 #include "FloatNode.h"
 #include "GodRaysDefinition.h"
+#include "CelestialBodyDefinition.h"
 
 AtmosphereDefinition::AtmosphereDefinition(DefinitionNode *parent)
     : DefinitionNode(parent, "atmosphere", "atmosphere") {
     model = ATMOSPHERE_MODEL_DISABLED;
     godrays = new GodRaysDefinition(this);
-    daytime = new FloatNode(this, "daytime");
+    sun = new CelestialBodyDefinition(this, "sun");
+    moon = new CelestialBodyDefinition(this, "moon");
     humidity = new FloatNode(this, "humidity");
-    sun_radius = new FloatNode(this, "sun_radius");
     sun_color = COLOR_RED;
-}
-
-AtmosphereDefinition::~AtmosphereDefinition() {
 }
 
 void AtmosphereDefinition::save(PackStream *stream) const {
@@ -25,9 +23,6 @@ void AtmosphereDefinition::save(PackStream *stream) const {
     stream->write((int *)&model);
     sun_color.save(stream);
     stream->write(&dome_lighting);
-    stream->write(&moon_radius);
-    stream->write(&moon_theta);
-    stream->write(&moon_phi);
 
     int star_count = stars.size();
     stream->write(&star_count);
@@ -44,9 +39,6 @@ void AtmosphereDefinition::load(PackStream *stream) {
     stream->read((int *)&model);
     sun_color.load(stream);
     stream->read(&dome_lighting);
-    stream->read(&moon_radius);
-    stream->read(&moon_theta);
-    stream->read(&moon_phi);
 
     int star_count;
     stream->read(&star_count);
@@ -66,39 +58,41 @@ void AtmosphereDefinition::load(PackStream *stream) {
 void AtmosphereDefinition::copy(DefinitionNode *_destination) const {
     DefinitionNode::copy(_destination);
 
-    AtmosphereDefinition *destination = (AtmosphereDefinition *)_destination;
+    AtmosphereDefinition *destination = static_cast<AtmosphereDefinition *>(_destination);
+    if (destination) {
+        destination->model = model;
+        destination->sun_color = sun_color;
+        destination->dome_lighting = dome_lighting;
+        destination->stars = stars;
 
-    destination->model = model;
-    destination->sun_color = sun_color;
-    destination->dome_lighting = dome_lighting;
-    destination->moon_radius = moon_radius;
-    destination->moon_theta = moon_theta;
-    destination->moon_phi = moon_phi;
-    destination->stars = stars;
-
-    destination->validate();
+        destination->validate();
+    }
 }
 
 void AtmosphereDefinition::setDayTime(double value) {
-    daytime->setValue(value);
+    sun->propTheta()->setValue((value + 0.75) * M_2PI);
 }
 
 void AtmosphereDefinition::setDayTime(int hour, int minute, int second) {
     setDayTime(to_double(hour) / 24.0 + to_double(minute) / 1440.0 + to_double(second) / 86400.0);
 }
 
-void AtmosphereDefinition::getHMS(int *hour, int *minute, int *second) const {
-    double value = daytime->getValue();
+double AtmosphereDefinition::getDaytime() const {
+    double value = (sun->propTheta()->getValue() / M_2PI) - 0.75;
     if (value >= 0.0) {
         value = fmod(value, 1.0);
     } else {
         value = 1.0 - fmod(-value, 1.0);
     }
-    value *= 86400.0;
-    *hour = value / 3600.0;
-    value -= 3600.0 * *hour;
-    *minute = value / 60.0;
-    *second = value - *minute * 60.0;
+    return value;
+}
+
+void AtmosphereDefinition::getHMS(int *hour, int *minute, int *second) const {
+    double value = getDaytime() * 86400.0;
+    *hour = round_to_int(value / 3600.0);
+    value -= 3600.0 * to_double(*hour);
+    *minute = round_to_int(value / 60.0);
+    *second = round_to_int(value - to_double(*minute) * 60.0);
 }
 
 void AtmosphereDefinition::applyPreset(AtmospherePreset preset, RandomGenerator &random) {
@@ -106,10 +100,10 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset, RandomGenerator 
     sun_color.g = 0.95;
     sun_color.b = 0.9;
     sun_color.a = 1.0;
-    sun_radius->setValue(0.8);
-    moon_radius = 1.0;
-    moon_theta = 0.3;
-    moon_phi = 0.5;
+    sun->propRadius()->setValue(1.0);
+    moon->propRadius()->setValue(1.0);
+    moon->propPhi()->setValue(0.5);
+    moon->propTheta()->setValue(0.3);
 
     model = ATMOSPHERE_MODEL_BRUNETON;
 
@@ -139,8 +133,6 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset, RandomGenerator 
         humidity->setValue(0.9);
         dome_lighting = 0.05;
         break;
-    default:
-        ;
     }
 
     generateStars(2000, random);

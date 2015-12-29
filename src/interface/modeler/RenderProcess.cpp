@@ -149,7 +149,7 @@ void RenderProcess::stopRender() {
         renderer->interrupt();
     } else {
         destination->hide();
-        window->setState(window->rootObject()->property("previous_state").toString());
+        window->setState(window->rootObject()->property("previous_state").toString().toStdString());
     }
 }
 

@@ -10,6 +10,7 @@
 #include "LightStatus.h"
 #include "Scenery.h"
 #include "NightSky.h"
+#include "CelestialBodyDefinition.h"
 #include "FloatNode.h"
 
 /* Factor to convert software units to kilometers */
@@ -40,7 +41,7 @@ static inline void _applyWeatherEffects(AtmosphereDefinition *definition, Atmosp
     }
     distancefactor = (distance > max_distance ? max_distance : distance) / max_distance;
     /* TODO Get day lighting from model */
-    dayfactor = _getDayFactor(definition->propDayTime()->getValue());
+    dayfactor = _getDayFactor(definition->getDaytime());
 
     /* Fog masking */
     if (humidity > 0.3) {
@@ -87,9 +88,7 @@ AtmosphereResult BaseAtmosphereRenderer::getSkyColor(const Vector3 &) {
 }
 
 Vector3 BaseAtmosphereRenderer::getSunDirection(bool) const {
-    AtmosphereDefinition *atmosphere = getDefinition();
-    double sun_angle = (atmosphere->propDayTime()->getValue() + 0.75) * M_PI * 2.0;
-    return Vector3(cos(sun_angle), sin(sun_angle), 0.0);
+    return getDefinition()->childSun()->getDirection();
 }
 
 bool BaseAtmosphereRenderer::getLightsAt(vector<LightComponent> &, const Vector3 &) const {

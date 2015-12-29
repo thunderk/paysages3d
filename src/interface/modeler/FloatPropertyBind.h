@@ -17,17 +17,17 @@ namespace modeler {
 class FloatPropertyBind : public QObject, public DefinitionWatcher {
     Q_OBJECT
   public:
-    FloatPropertyBind(MainModelerWindow *window, const QString &object_name, const QString &property_name,
+    FloatPropertyBind(MainModelerWindow *window, const string &object_name, const string &property_name,
                       FloatNode *node);
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
 
   private slots:
-    void propertyChanged(double value);
+    void propertyChanged();
 
   private:
     FloatNode *node;
-    QString property;
+    string property;
     QObject *item;
 };
 }

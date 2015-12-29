@@ -3,18 +3,14 @@
 
 #include "modeler_global.h"
 
+#include "BaseModelerTool.h"
+
 namespace paysages {
 namespace modeler {
 
-class AtmosphereModeler {
+class AtmosphereModeler : protected BaseModelerTool {
   public:
     AtmosphereModeler(MainModelerWindow *main);
-    ~AtmosphereModeler();
-
-  private:
-    FloatPropertyBind *prop_daytime;
-    FloatPropertyBind *prop_humidity;
-    FloatPropertyBind *prop_sun_radius;
 };
 }
 }

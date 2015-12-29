@@ -270,7 +270,7 @@ static void testAtmosphereBruneton() {
 
     for (int i = 0; i <= 60; i++) {
         double daytime = (i < 40) ? (0.24 + 0.0005 * to_double(i)) : (0.26 + 0.005 * to_double(i - 40));
-        scenery.getAtmosphere()->propDayTime()->setValue(daytime);
+        scenery.getAtmosphere()->setDayTime(daytime);
         startTestRender(&renderer, "atmosphere_bruneton", i);
     }
 }

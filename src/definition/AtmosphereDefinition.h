@@ -31,7 +31,6 @@ class DEFINITIONSHARED_EXPORT AtmosphereDefinition : public DefinitionNode {
 
   public:
     AtmosphereDefinition(DefinitionNode *parent);
-    virtual ~AtmosphereDefinition();
 
     virtual void save(PackStream *stream) const override;
     virtual void load(PackStream *stream) override;
@@ -41,14 +40,14 @@ class DEFINITIONSHARED_EXPORT AtmosphereDefinition : public DefinitionNode {
     inline GodRaysDefinition *childGodRays() const {
         return godrays;
     }
-    inline FloatNode *propDayTime() const {
-        return daytime;
+    inline CelestialBodyDefinition *childSun() const {
+        return sun;
+    }
+    inline CelestialBodyDefinition *childMoon() const {
+        return moon;
     }
     inline FloatNode *propHumidity() const {
         return humidity;
-    }
-    inline FloatNode *propSunRadius() const {
-        return sun_radius;
     }
 
     /**
@@ -59,6 +58,10 @@ class DEFINITIONSHARED_EXPORT AtmosphereDefinition : public DefinitionNode {
      * Set the daytime from hour/minute/second info.
      */
     void setDayTime(int hour, int minute = 0, int second = 0);
+    /**
+     * Get the daytime info, in 0.0-1.0 value.
+     */
+    double getDaytime() const;
     /**
      * Get the daytime info, in hour/minute/second.
      */
@@ -73,17 +76,13 @@ class DEFINITIONSHARED_EXPORT AtmosphereDefinition : public DefinitionNode {
     Color sun_color;
     double dome_lighting;
 
-    double moon_radius;
-    double moon_theta;
-    double moon_phi;
-
     vector<Star> stars;
 
   private:
     GodRaysDefinition *godrays;
+    CelestialBodyDefinition *sun;
+    CelestialBodyDefinition *moon;
     FloatNode *humidity;
-    FloatNode *daytime;
-    FloatNode *sun_radius;
 };
 }
 }

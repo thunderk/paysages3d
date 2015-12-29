@@ -10,6 +10,8 @@ namespace modeler {
 class MainModelerWindow;
 class OpenGLView;
 
+class BaseModelerTool;
+
 class AtmosphereModeler;
 class WaterModeler;
 

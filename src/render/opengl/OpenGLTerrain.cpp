@@ -9,12 +9,7 @@
 #include "Thread.h"
 #include "Mutex.h"
 #include "OpenGLTerrainChunk.h"
-#include "WaterRenderer.h"
-#include "CameraDefinition.h"
-#include "AtmosphereDefinition.h"
 #include "Scenery.h"
-#include "FloatNode.h"
-#include "FloatDiff.h"
 
 class ChunkMaintenanceThreads : public ParallelPool {
   public:
@@ -92,8 +87,11 @@ void OpenGLTerrain::initialize() {
     work->start();
 
     // Watch for definition changes
-    renderer->getScenery()->getTerrain()->propWaterHeight()->addWatcher(this);
-    renderer->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this);
+    startWatching(renderer->getScenery(), "/terrain/water_height");
+    startWatching(renderer->getScenery(), "/atmosphere/sun/phi");
+    startWatching(renderer->getScenery(), "/atmosphere/sun/theta");
+    startWatching(renderer->getScenery(), "/atmosphere/moon/phi");
+    startWatching(renderer->getScenery(), "/atmosphere/moon/theta");
 }
 
 void OpenGLTerrain::update() {
@@ -170,7 +168,7 @@ void OpenGLTerrain::performChunksMaintenance() {
 void OpenGLTerrain::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
     if (node->getPath() == "/terrain/water_height") {
         resetTextures();
-    } else if (node->getPath() == "/atmosphere/daytime") {
+    } else if (node->getPath().find("/atmosphere") == 0) {
         resetTextures();
     }
 }

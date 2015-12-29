@@ -8,7 +8,6 @@ BasePanel {
     property alias items: container.children
     property int value: -1
     width: items[0].width + 10
-    signal changed(int value)
 
     ExclusiveGroup {
         id: exclusive_item
@@ -30,7 +29,6 @@ BasePanel {
                 exclusive_item.current = null;
             }
         }
-        changed(value);
     }
 
     onItemsChanged: {

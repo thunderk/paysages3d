@@ -32,6 +32,7 @@ class LayersDiff;
 class CloudsDefinition;
 class CloudLayerDefinition;
 class AtmosphereDefinition;
+class CelestialBodyDefinition;
 class GodRaysDefinition;
 class TexturesDefinition;
 class TextureLayerDefinition;

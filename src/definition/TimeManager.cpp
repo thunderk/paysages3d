@@ -14,7 +14,7 @@ TimeManager::TimeManager() {
 
 void TimeManager::moveForward(Scenery *scenery, double amount) {
     // Move the sun
-    scenery->getAtmosphere()->setDayTime(scenery->getAtmosphere()->propDayTime()->getValue() + amount);
+    scenery->getAtmosphere()->setDayTime(scenery->getAtmosphere()->getDaytime() + amount);
 
     // Move the clouds
     int n = scenery->getClouds()->getLayerCount();

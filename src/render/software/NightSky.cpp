@@ -10,6 +10,8 @@
 #include "SurfaceMaterial.h"
 #include "LightComponent.h"
 #include "LightStatus.h"
+#include "CelestialBodyDefinition.h"
+#include "FloatNode.h"
 
 #define WORLD_SCALING 0.05
 #define MOON_DISTANCE 384403.0
@@ -56,11 +58,10 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction) {
     }
 
     // Get moon
-    VectorSpherical moon_location_s = {MOON_DISTANCE_SCALED, atmosphere->moon_theta, -atmosphere->moon_phi};
-    Vector3 moon_position(moon_location_s);
-    Vector3 moon_direction = moon_position.normalize();
+    Vector3 moon_direction = atmosphere->childMoon()->getDirection();
+    Vector3 moon_position = moon_direction.scale(MOON_DISTANCE_SCALED);
     if (moon_direction.dotProduct(direction) >= 0) {
-        double moon_radius = MOON_RADIUS_SCALED * 5.0 * atmosphere->moon_radius;
+        double moon_radius = MOON_RADIUS_SCALED * 5.0 * atmosphere->childMoon()->propRadius()->getValue();
         Vector3 hit1, hit2;
         int hits = Geometry::rayIntersectSphere(location, direction, moon_position, moon_radius, &hit1, &hit2);
         if (hits > 1) {
@@ -87,10 +88,9 @@ bool NightSky::getLightsAt(vector<LightComponent> &result, const Vector3 &) cons
     LightComponent moon, sky;
 
     AtmosphereDefinition *atmosphere = renderer->getScenery()->getAtmosphere();
-    VectorSpherical moon_location_s = {MOON_DISTANCE_SCALED, atmosphere->moon_theta, -atmosphere->moon_phi};
 
     moon.color = Color(0.03, 0.03, 0.03); // TODO take moon phase into account
-    moon.direction = Vector3(moon_location_s).normalize().scale(-1.0);
+    moon.direction = atmosphere->childMoon()->getDirection().scale(-1.0);
     moon.reflection = 0.2;
     moon.altered = 1;
 

@@ -14,12 +14,12 @@ class MainModelerWindow : public QQuickView {
     MainModelerWindow();
     virtual ~MainModelerWindow();
 
-    QObject *findQmlObject(const QString &objectName);
-    void setQmlProperty(const QString &objectName, const QString &propertyName, const QVariant &value);
-    void connectQmlSignal(const QString &objectName, const char *signal, const QObject *receiver, const char *method);
+    QObject *findQmlObject(const string &objectName);
+    void setQmlProperty(const string &objectName, const string &propertyName, const QVariant &value);
+    void connectQmlSignal(const string &objectName, const char *signal, const QObject *receiver, const char *method);
 
-    QString getState() const;
-    void setState(const QString &stateName);
+    string getState() const;
+    void setState(const string &stateName);
 
     inline Scenery *getScenery() const {
         return scenery;

@@ -18,6 +18,7 @@
 #include "AtmosphereResult.h"
 #include "SoftwareRenderer.h"
 #include "WaterRenderer.h"
+#include "CelestialBodyDefinition.h"
 #include "LightComponent.h"
 #include "LightStatus.h"
 #include "Texture2D.h"
@@ -1079,7 +1080,7 @@ AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3
     AtmosphereResult result;
     Vector3 attenuation;
     Color sunColor =
-        _sunColor(v, s, r, mu, parent->getScenery()->getAtmosphere()->propSunRadius()->getValue()); /* L0 */
+        _sunColor(v, s, r, mu, parent->getScenery()->getAtmosphere()->childSun()->propRadius()->getValue()); /* L0 */
 
     /*result.base.r = base.r + sunColor.r;
     result.base.g = base.g + sunColor.g;

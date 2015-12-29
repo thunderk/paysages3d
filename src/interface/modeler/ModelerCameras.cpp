@@ -62,7 +62,8 @@ void ModelerCameras::startSunTool() {
     current->copy(tool);
     active = tool;
 
-    parent->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this, true);
+    // FIXME
+    // parent->getScenery()->getAtmosphere()->propDayTime()->addWatcher(this, true);
 }
 
 void ModelerCameras::endTool() {
