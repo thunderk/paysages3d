@@ -106,7 +106,7 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset, RandomGenerator 
     sun_color.g = 0.95;
     sun_color.b = 0.9;
     sun_color.a = 1.0;
-    sun_radius->setValue(0.5);
+    sun_radius->setValue(0.8);
     moon_radius = 1.0;
     moon_theta = 0.3;
     moon_phi = 0.5;

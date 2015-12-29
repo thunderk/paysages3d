@@ -90,7 +90,7 @@ vec4 _sunTransmittance(vec3 v, vec3 s, float r, float mu, float radius)
 {
     vec4 transmittance = r <= Rt ? _transmittanceWithShadow(r, mu) : vec4(1.0); /* T(x,xo) */
     float d = _limit(r, mu);
-    radius *= (1.0 + 25.0 * d / Rt); /* Inflating due to lens effect near horizon */
+    radius *= (1.0 + 15.0 * d / Rt); /* Inflating due to lens effect near horizon */
     float isun = step(cos(radius * M_PI / 180.0), dot(v, s)) * ISun; /* Lsun */
     transmittance.r *= isun;
     transmittance.g *= isun;
