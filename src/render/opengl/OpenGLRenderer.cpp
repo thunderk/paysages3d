@@ -1,6 +1,7 @@
 #include "OpenGLRenderer.h"
 
 #include <QMatrix4x4>
+#include "Maths.h"
 #include "OpenGLFunctions.h"
 #include "CameraDefinition.h"
 #include "OpenGLSharedState.h"
@@ -249,7 +250,8 @@ void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera) {
 
     QMatrix4x4 projection;
     projection.setToIdentity();
-    projection.perspective(perspective.yfov * 180.0 / M_PI, perspective.xratio, perspective.znear, perspective.zfar);
+    projection.perspective(perspective.yfov * 180.0 / Maths::PI, perspective.xratio, perspective.znear,
+                           perspective.zfar);
 
     *view_matrix = projection *transform;
 

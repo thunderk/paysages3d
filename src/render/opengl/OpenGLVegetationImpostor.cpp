@@ -1,6 +1,7 @@
 #include "OpenGLVegetationImpostor.h"
 
 #include <cassert>
+#include "Maths.h"
 #include "OpenGLShaderProgram.h"
 #include "OpenGLSharedState.h"
 #include "OpenGLVertexArray.h"
@@ -21,11 +22,11 @@
 // Get the rotation matrix for an impostor grid index
 static inline Matrix4 matrixForIndex(int index) {
     if (index == 0) {
-        return Matrix4::newRotateZ(M_PI_2);
+        return Matrix4::newRotateZ(Maths::PI_2);
     } else if (index < 6) {
-        return Matrix4::newRotateY(M_2PI * to_double(index - 1) * 0.2).mult(Matrix4::newRotateZ(M_PI_4));
+        return Matrix4::newRotateY(Maths::TWOPI * to_double(index - 1) * 0.2).mult(Matrix4::newRotateZ(Maths::PI_4));
     } else {
-        return Matrix4::newRotateY(M_2PI * to_double(index - 6) * 0.1);
+        return Matrix4::newRotateY(Maths::TWOPI * to_double(index - 6) * 0.1);
     }
 }
 
@@ -119,7 +120,7 @@ int OpenGLVegetationImpostor::getIndex(const Vector3 &camera, const Vector3 &ins
     if (diff.theta > 1.0) {
         return 0;
     } else {
-        double angle = diff.phi / M_2PI;
+        double angle = diff.phi / Maths::TWOPI;
         if (diff.theta > 0.4) {
             angle = (angle >= 0.9) ? 0.0 : (angle + 0.1);
             return 1 + trunc_to_int(5.0 * angle);

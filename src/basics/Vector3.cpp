@@ -1,6 +1,7 @@
 #include "Vector3.h"
 
 #include <cmath>
+#include "Maths.h"
 #include "PackStream.h"
 #include "RandomGenerator.h"
 
@@ -80,9 +81,9 @@ static inline double _euclidGet2DAngle(double x, double y) {
         if (y == 0.0) {
             return 0.0;
         } else if (y < 0.0) {
-            return 3.0 * M_PI_2;
+            return 3.0 * Maths::PI_2;
         } else {
-            return M_PI_2;
+            return Maths::PI_2;
         }
     }
 
@@ -92,9 +93,9 @@ static inline double _euclidGet2DAngle(double x, double y) {
 
     ret = asin(ny);
     if (nx < 0.0) {
-        ret = M_PI - ret;
+        ret = Maths::PI - ret;
     }
-    return ret < 0.0 ? ret + 2.0 * M_PI : ret;
+    return ret < 0.0 ? ret + 2.0 * Maths::PI : ret;
 }
 
 VectorSpherical Vector3::toSpherical() const {
@@ -103,7 +104,7 @@ VectorSpherical Vector3::toSpherical() const {
     result.phi = _euclidGet2DAngle(x, -z);
     result.theta = _euclidGet2DAngle(sqrt(x * x + z * z), y);
     if (y < 0.0) {
-        result.theta -= 2.0 * M_PI;
+        result.theta -= 2.0 * Maths::PI;
     }
     result.r = getNorm();
 
@@ -117,7 +118,7 @@ Vector3 Vector3::midPointTo(const Vector3 &other) const {
 Vector3 Vector3::randomInSphere(double radius, bool only_surface, RandomGenerator &random) {
     // TODO More uniform spatial repartition
     //  The current randomization clusters result near the center and at the poles
-    VectorSpherical vec = {only_surface ? radius : random.genDouble() * radius, (random.genDouble() - 0.5) * M_PI,
-                           random.genDouble() * M_2PI};
+    VectorSpherical vec = {only_surface ? radius : random.genDouble() * radius, (random.genDouble() - 0.5) * Maths::PI,
+                           random.genDouble() * Maths::TWOPI};
     return Vector3(vec);
 }

@@ -1,6 +1,7 @@
 #include "BaseTestCase.h"
 
 #include <cmath>
+#include "Maths.h"
 #include "SoftwareRenderer.h"
 #include "CloudLayerDefinition.h"
 #include "NoiseGenerator.h"
@@ -186,7 +187,7 @@ TEST(Clouds, WalkingBoundaries)
 
 static double _getLayerDensitySinX(Renderer*, CloudLayerDefinition*, Vector3 location)
 {
-    double density = sin(location.x * (2.0 * M_PI));
+    double density = sin(location.x * (2.0 * Maths::PI));
     return (density > 0.0) ? density : 0.0;
 }
 

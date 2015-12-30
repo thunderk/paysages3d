@@ -1,6 +1,7 @@
 #include "AtmosphereDefinition.h"
 
 #include <cmath>
+#include "Maths.h"
 #include "PackStream.h"
 #include "RandomGenerator.h"
 #include "FloatNode.h"
@@ -70,7 +71,7 @@ void AtmosphereDefinition::copy(DefinitionNode *_destination) const {
 }
 
 void AtmosphereDefinition::setDayTime(double value) {
-    sun->propTheta()->setValue((value + 0.75) * M_2PI);
+    sun->propTheta()->setValue((value + 0.75) * Maths::TWOPI);
 }
 
 void AtmosphereDefinition::setDayTime(int hour, int minute, int second) {
@@ -78,7 +79,7 @@ void AtmosphereDefinition::setDayTime(int hour, int minute, int second) {
 }
 
 double AtmosphereDefinition::getDaytime() const {
-    double value = (sun->propTheta()->getValue() / M_2PI) - 0.75;
+    double value = (sun->propTheta()->getValue() / Maths::TWOPI) - 0.75;
     if (value >= 0.0) {
         value = fmod(value, 1.0);
     } else {

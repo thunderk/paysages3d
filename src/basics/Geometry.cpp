@@ -1,6 +1,7 @@
 #include "Geometry.h"
 
 #include <cmath>
+#include "Maths.h"
 #include "Vector3.h"
 
 double Geometry::get2DAngle(double x, double y) {
@@ -10,9 +11,9 @@ double Geometry::get2DAngle(double x, double y) {
         if (y == 0.0) {
             return 0.0;
         } else if (y < 0.0) {
-            return 3.0 * M_PI_2;
+            return 3.0 * Maths::PI_2;
         } else {
-            return M_PI_2;
+            return Maths::PI_2;
         }
     }
 
@@ -22,9 +23,9 @@ double Geometry::get2DAngle(double x, double y) {
 
     ret = asin(ny);
     if (nx < 0.0) {
-        ret = M_PI - ret;
+        ret = Maths::PI - ret;
     }
-    return ret < 0.0 ? ret + 2.0 * M_PI : ret;
+    return ret < 0.0 ? ret + 2.0 * Maths::PI : ret;
 }
 
 Vector3 Geometry::getNormalFromTriangle(const Vector3 &center, const Vector3 &bottom, const Vector3 &right) {

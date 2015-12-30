@@ -1,6 +1,7 @@
 #include "BaseTestCase.h"
 
 #include <cmath>
+#include "Maths.h"
 #include "NoiseGenerator.h"
 #include "TerrainDefinition.h"
 #include "TerrainHeightMap.h"
@@ -8,7 +9,7 @@
 #include "FloatNode.h"
 
 /* Noise sin period is defined at 20.0 */
-#define X_FACTOR (M_PI / 10.0)
+#define X_FACTOR (Maths::PI / 10.0)
 
 static double _noise1dMock(double x) {
     return sin(x * X_FACTOR) * 0.5 + 0.5;

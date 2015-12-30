@@ -9,6 +9,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
+#include "Maths.h"
 #include "System.h"
 #include "ParallelWork.h"
 #include "PackStream.h"
@@ -196,13 +197,13 @@ static Color _texture4D(Texture4D *tex, double r, double mu, double muS, double 
 
 /* Rayleigh phase function */
 static double _phaseFunctionR(double mu) {
-    return (3.0 / (16.0 * M_PI)) * (1.0 + mu * mu);
+    return (3.0 / (16.0 * Maths::PI)) * (1.0 + mu * mu);
 }
 
 /* Mie phase function */
 static double _phaseFunctionM(double mu) {
-    return 1.5 * 1.0 / (4.0 * M_PI) * (1.0 - mieG * mieG) * pow(1.0 + (mieG * mieG) - 2.0 * mieG * mu, -3.0 / 2.0) *
-           (1.0 + mu * mu) / (2.0 + mieG * mieG);
+    return 1.5 * 1.0 / (4.0 * Maths::PI) * (1.0 - mieG * mieG) *
+           pow(1.0 + (mieG * mieG) - 2.0 * mieG * mu, -3.0 / 2.0) * (1.0 + mu * mu) / (2.0 + mieG * mieG);
 }
 
 /* approximated single Mie scattering (cf. approximate Cm in paragraph "Angular precision") */
@@ -512,8 +513,8 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
                          Texture4D *deltaSM) {
     Color raymie = COLOR_BLACK;
 
-    double dphi = M_PI / to_double(INSCATTER_SPHERICAL_INTEGRAL_SAMPLES);
-    double dtheta = M_PI / to_double(INSCATTER_SPHERICAL_INTEGRAL_SAMPLES);
+    double dphi = Maths::PI / to_double(INSCATTER_SPHERICAL_INTEGRAL_SAMPLES);
+    double dtheta = Maths::PI / to_double(INSCATTER_SPHERICAL_INTEGRAL_SAMPLES);
 
     r = clamp(r, Rg, Rt);
     mu = clamp(mu, -1.0, 1.0);
@@ -539,7 +540,7 @@ static Color _inscatterS(double r, double mu, double muS, double nu, int first, 
         if (ctheta < cthetamin) {
             /* if ground visible in direction w
              * compute transparency gtransp between x and ground */
-            greflectance = AVERAGE_GROUND_REFLECTANCE / M_PI;
+            greflectance = AVERAGE_GROUND_REFLECTANCE / Maths::PI;
             dground = -r * ctheta - sqrt(r * r * (ctheta * ctheta - 1.0) + Rg * Rg);
             gtransp = _transmittance3(Rg, -(r * ctheta + dground) / Rg, dground);
         }
@@ -634,8 +635,8 @@ static int _jWorker(ParallelWork *, int layer, void *data) {
 
 void _irradianceNProg(Texture2D *destination, Texture4D *deltaSR, Texture4D *deltaSM, int first) {
     int x, y;
-    double dphi = M_PI / to_double(IRRADIANCE_INTEGRAL_SAMPLES);
-    double dtheta = M_PI / to_double(IRRADIANCE_INTEGRAL_SAMPLES);
+    double dphi = Maths::PI / to_double(IRRADIANCE_INTEGRAL_SAMPLES);
+    double dtheta = Maths::PI / to_double(IRRADIANCE_INTEGRAL_SAMPLES);
     for (x = 0; x < SKY_W; x++) {
         for (y = 0; y < SKY_H; y++) {
             double r, muS;
@@ -868,7 +869,7 @@ static Color _sunColor(Vector3 v, Vector3 s, double r, double mu, double radius)
     Color transmittance = r <= Rt ? _transmittanceWithShadow(r, mu) : COLOR_WHITE; /* T(x,xo) */
     double d = _limit(r, mu);
     radius *= (1.0 + 15.0 * d / Rt); /* Inflating due to lens effect near horizon */
-    double isun = step(cos(radius * M_PI / 180.0), v.dotProduct(s)) * ISun; /* Lsun */
+    double isun = step(cos(radius * Maths::PI / 180.0), v.dotProduct(s)) * ISun; /* Lsun */
     transmittance.r *= isun;
     transmittance.g *= isun;
     transmittance.b *= isun;

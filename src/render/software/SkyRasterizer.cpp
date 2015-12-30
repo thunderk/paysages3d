@@ -1,6 +1,7 @@
 #include "SkyRasterizer.h"
 
 #include <cmath>
+#include "Maths.h"
 #include "Vector3.h"
 #include "Color.h"
 #include "SoftwareRenderer.h"
@@ -29,8 +30,8 @@ void SkyRasterizer::rasterizeToCanvas(CanvasPortion *canvas) {
     Vector3 vertex1, vertex2, vertex3, vertex4;
     Vector3 camera_location, direction;
 
-    step_i = M_PI * 2.0 / to_double(res_i);
-    step_j = M_PI / to_double(res_j);
+    step_i = Maths::PI * 2.0 / to_double(res_i);
+    step_j = Maths::PI / to_double(res_j);
 
     camera_location = renderer->getCameraLocation(VECTOR_ZERO);
 
