@@ -74,7 +74,7 @@ void AtmosphereDefinition::setDayTime(double value) {
 }
 
 void AtmosphereDefinition::setDayTime(int hour, int minute, int second) {
-    setDayTime(to_double(hour) / 24.0 + to_double(minute) / 1440.0 + to_double(second) / 86400.0);
+    setDayTime(to_double(hour) / 24.0 + to_double(minute) / 1440.0 + (to_double(second) + 0.1) / 86400.0);
 }
 
 double AtmosphereDefinition::getDaytime() const {

@@ -11,6 +11,11 @@ static void check_daytime(const AtmosphereDefinition &atmo, int expected_hour, i
     EXPECT_EQ(expected_second, second);
 }
 
+static void check_auto_daytime(AtmosphereDefinition &atmo, int hour, int minute=0, int second=0) {
+    atmo.setDayTime(hour, minute, second);
+    check_daytime(atmo, hour, minute, second);
+}
+
 TEST(AtmosphereDefinition, setDayTime) {
     AtmosphereDefinition atmo(NULL);
 
@@ -34,4 +39,8 @@ TEST(AtmosphereDefinition, setDayTime) {
 
     atmo.setDayTime(1.5);
     check_daytime(atmo, 12);
+
+    check_auto_daytime(atmo, 15);
+    check_auto_daytime(atmo, 15, 12);
+    check_auto_daytime(atmo, 15, 18, 7);
 }
