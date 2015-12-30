@@ -1,12 +1,15 @@
-#ifndef TIME_H
-#define TIME_H
+#ifndef TIMING_H
+#define TIMING_H
 
 #include "system_global.h"
 
 namespace paysages {
 namespace system {
 
-class SYSTEMSHARED_EXPORT Time {
+/**
+ * Timing tools.
+ */
+class SYSTEMSHARED_EXPORT Timing {
   public:
     /**
      * Get a timestamp in milliseconds.

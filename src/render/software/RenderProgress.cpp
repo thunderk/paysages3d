@@ -1,7 +1,7 @@
 #include "RenderProgress.h"
 
 #include "Mutex.h"
-#include "Time.h"
+#include "Timing.h"
 #include "Logs.h"
 
 RenderProgress::RenderProgress(int count) {
@@ -25,7 +25,7 @@ void RenderProgress::reset() {
         subs.pop();
     }
 
-    start_time = Time::getRelativeTimeMs();
+    start_time = Timing::getRelativeTimeMs();
 
     prev_est_spent = 0;
     prev_est_done = 0.0;
@@ -75,14 +75,14 @@ void RenderProgress::end() {
         Logs::error("Software") << subs.size() << " progress subs remaining at the end of render" << endl;
     }
 
-    end_time = Time::getRelativeTimeMs();
+    end_time = Timing::getRelativeTimeMs();
 }
 
 unsigned long RenderProgress::getDuration() const {
     if (end_time) {
         return end_time - start_time;
     } else {
-        return Time::getRelativeTimeMs() - start_time;
+        return Timing::getRelativeTimeMs() - start_time;
     }
 }
 

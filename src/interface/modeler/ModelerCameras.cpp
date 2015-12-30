@@ -7,7 +7,7 @@
 #include "AtmosphereDefinition.h"
 #include "FloatNode.h"
 #include "AtmosphereRenderer.h"
-#include "Time.h"
+#include "Timing.h"
 
 ModelerCameras::ModelerCameras(MainModelerWindow *parent) : QObject(parent), parent(parent) {
     render = new CameraDefinition();
@@ -69,7 +69,7 @@ void ModelerCameras::startSunTool(unsigned long duration) {
         active = tool;
     }
 
-    tool_auto_end = duration ? (Time::getRelativeTimeMs() + duration) : 0;
+    tool_auto_end = duration ? (Timing::getRelativeTimeMs() + duration) : 0;
 }
 
 void ModelerCameras::endTool() {
@@ -84,7 +84,7 @@ void ModelerCameras::timerEvent(QTimerEvent *) {
         parent->getScenery()->keepCameraAboveGround(current);
         parent->getRenderer()->setCamera(current);
     }
-    if (tool_auto_end > 0 and Time::getRelativeTimeMs() >= tool_auto_end) {
+    if (tool_auto_end > 0 and Timing::getRelativeTimeMs() >= tool_auto_end) {
         endTool();
     }
 }

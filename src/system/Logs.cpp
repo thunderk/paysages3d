@@ -1,6 +1,6 @@
 #include "Logs.h"
 
-#include "Time.h"
+#include "Timing.h"
 
 #include <streambuf>
 #include <ostream>
@@ -59,7 +59,7 @@ ostream &Logs::error(const string &logger) {
 }
 
 void Logs::debugTimestamp(const string &logger, const string &message) {
-    debug(logger) << Time::getRelativeTimeMs() << " - " << message << endl;
+    debug(logger) << Timing::getRelativeTimeMs() << " - " << message << endl;
 }
 
 void Logs::disable() {

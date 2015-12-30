@@ -26,7 +26,7 @@ class Thread;
 class Mutex;
 class Semaphore;
 class PictureWriter;
-class Time;
+class Timing;
 class RandomGenerator;
 
 extern SYSTEMSHARED_EXPORT RandomGenerator &RandomGeneratorDefault;
