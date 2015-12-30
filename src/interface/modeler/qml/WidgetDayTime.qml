@@ -4,10 +4,11 @@ Grid {
     id: clock
 
     property real value
+    property real modvalue: value - Math.floor(value)
 
-    property int hour: value * 86400 / 3600
-    property int minute: (value * 86400 - 3600 * hour) / 60
-    property int second: value * 86400 - 3600 * hour - 60 * minute
+    property int hour: Math.floor(86400.0 * modvalue / 3600.0)
+    property int minute: Math.floor((86400.0 * modvalue - 3600.0 * hour) / 60.0)
+    property int second: Math.floor(86400.0 * modvalue - 3600.0 * hour - 60.0 * minute)
     rows: 3
     columns: 5
     rowSpacing: 4
@@ -16,21 +17,21 @@ Grid {
         width: 20
         height: 10
         source: "images/arrow_up.png"
-        onClicked: value += 1.0 / 24.0
+        onClicked: value = modvalue + 1.0 / 24.0
     }
     Item {width: 1; height: 1}
     ClickableImage {
         width: 20
         height: 10
         source: "images/arrow_up.png"
-        onClicked: value += 1.0 / 1440.0
+        onClicked: value = modvalue + 1.0 / 1440.0
     }
     Item {width: 1; height: 1}
     ClickableImage {
         width: 20
         height: 10
         source: "images/arrow_up.png"
-        onClicked: value += 1.0 / 86400.0
+        onClicked: value = modvalue + 1.0 / 86400.0
     }
 
     Text {
@@ -58,20 +59,20 @@ Grid {
         width: 20
         height: 10
         source: "images/arrow_down.png"
-        onClicked: value -= 1.0 / 24.0
+        onClicked: value = modvalue - 1.0 / 24.0
     }
     Item {width: 1; height: 1}
     ClickableImage {
         width: 20
         height: 10
         source: "images/arrow_down.png"
-        onClicked: value -= 1.0 / 1440.0
+        onClicked: value = modvalue - 1.0 / 1440.0
     }
     Item {width: 1; height: 1}
     ClickableImage {
         width: 20
         height: 10
         source: "images/arrow_down.png"
-        onClicked: value -= 1.0 / 86400.0
+        onClicked: value = modvalue - 1.0 / 86400.0
     }
 }

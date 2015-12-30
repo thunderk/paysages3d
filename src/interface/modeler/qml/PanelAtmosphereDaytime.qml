@@ -1,7 +1,8 @@
 import QtQuick 2.0
 
 BasePanel {
-    width: 200
+    width: 320
+    title: tool_daytime.hovertext
 
     Column {
         anchors.centerIn: parent
@@ -9,7 +10,7 @@ BasePanel {
         spacing: 30
 
         Text {
-            text: "Sun location in the sky"
+            text: qsTr("Sun location in the sky")
             anchors.horizontalCenter: parent.horizontalCenter
         }
 
@@ -19,10 +20,11 @@ BasePanel {
             anchors.horizontalCenter: parent.horizontalCenter
             icon: "images/icon_atmosphere_day.png"
             width: parent.width
+            onThetaChanged: atmosphere_daytime.value = (atmosphere_sun_direction.theta / (Math.PI * 2.0)) - 0.75
         }
 
         Text {
-            text: "Time of day"
+            text: qsTr("Time of day")
             anchors.horizontalCenter: parent.horizontalCenter
         }
 
@@ -34,7 +36,7 @@ BasePanel {
         }
 
         Text {
-            text: "Moon location in the sky"
+            text: qsTr("Moon location in the sky")
             anchors.horizontalCenter: parent.horizontalCenter
         }
 

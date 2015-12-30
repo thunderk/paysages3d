@@ -11,7 +11,7 @@ BaseSection {
             id: tool_daytime
             checked: true
             picture: "images/icon_atmosphere_daytime.png"
-            hovertext: qsTr("Change the time of day")
+            hovertext: qsTr("Control the sun and moon")
         }
 
         ToolbarButton {
