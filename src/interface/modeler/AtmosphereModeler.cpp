@@ -6,7 +6,7 @@
 #include "DefinitionNode.h"
 #include "ModelerCameras.h"
 
-AtmosphereModeler::AtmosphereModeler(MainModelerWindow *main) : BaseModelerTool(main) {
+AtmosphereModeler::AtmosphereModeler(MainModelerWindow *ui) : BaseModelerTool(ui) {
     addFloatBinding("atmosphere_humidity", "value", "/atmosphere/humidity");
     addFloatBinding("atmosphere_sun_direction", "phi", "/atmosphere/sun/phi", true);
     addFloatBinding("atmosphere_sun_direction", "theta", "/atmosphere/sun/theta", true);
@@ -15,7 +15,7 @@ AtmosphereModeler::AtmosphereModeler(MainModelerWindow *main) : BaseModelerTool(
     addFloatBinding("atmosphere_moon_direction", "theta", "/atmosphere/moon/theta", true);
     // addFloatBinding("atmosphere_moon_radius", "value", "/atmosphere/moon/radius");
 
-    main->setQmlProperty("atmosphere_daytime", "value", main->getScenery()->getAtmosphere()->getDaytime());
+    ui->setQmlProperty("atmosphere_daytime", "value", ui->getScenery()->getAtmosphere()->getDaytime());
 }
 
 void AtmosphereModeler::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {

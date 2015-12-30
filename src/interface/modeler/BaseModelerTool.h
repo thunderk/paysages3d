@@ -12,7 +12,7 @@ namespace modeler {
 
 class BaseModelerTool : public DefinitionWatcher {
   public:
-    BaseModelerTool(MainModelerWindow *window);
+    BaseModelerTool(MainModelerWindow *ui);
     virtual ~BaseModelerTool();
 
     /**
@@ -31,14 +31,14 @@ class BaseModelerTool : public DefinitionWatcher {
 
   protected:
     inline MainModelerWindow *getWindow() const {
-        return window;
+        return ui;
     }
 
   private:
     class pimpl;
     unique_ptr<pimpl> impl;
 
-    MainModelerWindow *window;
+    MainModelerWindow *ui;
 };
 }
 }

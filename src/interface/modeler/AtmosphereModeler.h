@@ -10,7 +10,7 @@ namespace modeler {
 
 class AtmosphereModeler : protected BaseModelerTool {
   public:
-    AtmosphereModeler(MainModelerWindow *window);
+    AtmosphereModeler(MainModelerWindow *ui);
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
 };

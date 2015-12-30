@@ -14,19 +14,19 @@ class BaseModelerTool::pimpl {
     vector<unique_ptr<FloatPropertyBind>> float_bindings;
 };
 
-BaseModelerTool::BaseModelerTool(MainModelerWindow *main) : impl(new pimpl), window(main) {
+BaseModelerTool::BaseModelerTool(MainModelerWindow *ui) : impl(new pimpl), ui(ui) {
 }
 
 BaseModelerTool::~BaseModelerTool() {
 }
 
 void BaseModelerTool::addIntBinding(const string &object, const string &property, const string &path, bool monitor) {
-    auto node = static_cast<IntNode *>(window->getScenery()->findByPath(path));
+    auto node = static_cast<IntNode *>(ui->getScenery()->findByPath(path));
     if (node) {
-        impl->int_bindings.push_back(make_unique<IntPropertyBind>(window, object, property, node));
+        impl->int_bindings.push_back(make_unique<IntPropertyBind>(ui, object, property, node));
 
         if (monitor) {
-            startWatching(window->getScenery(), path, false);
+            startWatching(ui->getScenery(), path, false);
         }
     } else {
         Logs::error("UI") << "Can't find int node for binding : " << path << endl;
@@ -34,12 +34,12 @@ void BaseModelerTool::addIntBinding(const string &object, const string &property
 }
 
 void BaseModelerTool::addFloatBinding(const string &object, const string &property, const string &path, bool monitor) {
-    auto node = static_cast<FloatNode *>(window->getScenery()->findByPath(path));
+    auto node = static_cast<FloatNode *>(ui->getScenery()->findByPath(path));
     if (node) {
-        impl->float_bindings.push_back(make_unique<FloatPropertyBind>(window, object, property, node));
+        impl->float_bindings.push_back(make_unique<FloatPropertyBind>(ui, object, property, node));
 
         if (monitor) {
-            startWatching(window->getScenery(), path, false);
+            startWatching(ui->getScenery(), path, false);
         }
     } else {
         Logs::error("UI") << "Can't find float node for binding : " << path << endl;
