@@ -42,3 +42,20 @@ TEST(CameraDefinition, getRealDepth) {
     point = cam.project(Vector3(12.5, 12.0, 58.0));
     ASSERT_DOUBLE_EQ(cam.getRealDepth(point), 12.5);
 }
+
+TEST(CameraDefinition, transitionToAnother) {
+    CameraDefinition cur;
+    CameraDefinition dest;
+
+    cur.setLocationCoords(0.0, 0.0, 0.0);
+    cur.setTargetCoords(1.0, 0.0, 0.0);
+
+    dest.setLocationCoords(2.0, 1.0, 8.0);
+    dest.setTargetCoords(2.0, 1.0, 9.0);
+
+    bool result = cur.transitionToAnother(&dest, 0.5);
+    EXPECT_TRUE(result);
+
+    EXPECT_VECTOR3_COORDS(cur.getLocation(), 1.0, 0.5, 4.0);
+    EXPECT_VECTOR3_COORDS(cur.getTarget(), 1.70710678118654746, 0.5, 4.70710678118654746);
+}

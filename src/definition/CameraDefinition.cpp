@@ -1,6 +1,7 @@
 #include "CameraDefinition.h"
 
 #include <cmath>
+#include "Maths.h"
 #include "PackStream.h"
 #include "BoundingBox.h"
 
@@ -249,10 +250,9 @@ bool CameraDefinition::transitionToAnother(const CameraDefinition *wanted, doubl
     dy = wanted->location.y - location.y;
     dz = wanted->location.z - location.z;
     dr = wanted->direction.r - direction.r;
-    // TODO pi-modulo nearest
-    dphi = wanted->direction.phi - direction.phi;
-    dtheta = wanted->direction.theta - direction.theta;
-    droll = wanted->roll - roll;
+    dphi = Maths::modInRange(wanted->direction.phi - direction.phi, -Maths::PI, Maths::PI);
+    dtheta = Maths::modInRange(wanted->direction.theta - direction.theta, -Maths::PI, Maths::PI);
+    droll = Maths::modInRange(wanted->roll - roll, -Maths::PI, Maths::PI);
 
     if (fabs(dx) < 0.000001 && fabs(dy) < 0.000001 && fabs(dz) < 0.000001 && fabs(dr) < 0.000001 &&
         fabs(dphi) < 0.000001 && fabs(dtheta) < 0.000001 && fabs(droll) < 0.000001) {
