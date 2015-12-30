@@ -8,14 +8,17 @@
 DefinitionWatcher::DefinitionWatcher() {
 }
 
+DefinitionWatcher::~DefinitionWatcher() {
+}
+
 void DefinitionWatcher::nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) {
     string type_name = node->getTypeName();
 
     if (type_name == "int") {
-        IntDiff *int_diff = (IntDiff *)diff;
+        auto int_diff = static_cast<const IntDiff *>(diff);
         intNodeChanged(node->getPath(), int_diff->getNewValue(), int_diff->getOldValue());
     } else if (type_name == "float") {
-        FloatDiff *float_diff = (FloatDiff *)diff;
+        auto float_diff = static_cast<const FloatDiff *>(diff);
         floatNodeChanged(node->getPath(), float_diff->getNewValue(), float_diff->getOldValue());
     }
 }

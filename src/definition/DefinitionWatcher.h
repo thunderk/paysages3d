@@ -16,6 +16,7 @@ namespace definition {
 class DEFINITIONSHARED_EXPORT DefinitionWatcher {
   public:
     DefinitionWatcher();
+    virtual ~DefinitionWatcher();
 
     /**
      * Abstract method called when a node changed.

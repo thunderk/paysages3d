@@ -7,6 +7,7 @@
 #include "AtmosphereDefinition.h"
 #include "FloatNode.h"
 #include "AtmosphereRenderer.h"
+#include "Time.h"
 
 ModelerCameras::ModelerCameras(MainModelerWindow *parent) : QObject(parent), parent(parent) {
     render = new CameraDefinition();
@@ -20,6 +21,10 @@ ModelerCameras::ModelerCameras(MainModelerWindow *parent) : QObject(parent), par
     // Watch GUI choice
     parent->connectQmlSignal("camera_choice", SIGNAL(stateChanged(QString)), this, SLOT(changeActiveCamera(QString)));
     parent->connectQmlSignal("ui", SIGNAL(mainToolChanged(QString)), this, SLOT(toolChanged(QString)));
+
+    // Watch definition changes
+    startWatching(parent->getScenery(), "/atmosphere/sun/phi");
+    startWatching(parent->getScenery(), "/atmosphere/sun/theta");
 
     // Validate to apply initial camera to scenery
     validate();
@@ -55,15 +60,16 @@ void ModelerCameras::processPanning(double xvalue, double yvalue) {
     validate();
 }
 
-void ModelerCameras::startSunTool() {
-    tool_mode = TOOL_SUN;
+void ModelerCameras::startSunTool(unsigned long duration) {
+    if (tool_mode != TOOL_SUN) {
+        tool_mode = TOOL_SUN;
 
-    previous = active;
-    current->copy(tool);
-    active = tool;
+        previous = active;
+        current->copy(tool);
+        active = tool;
+    }
 
-    startWatching(parent->getScenery(), "/atmosphere/sun/phi");
-    startWatching(parent->getScenery(), "/atmosphere/sun/theta");
+    tool_auto_end = duration ? (Time::getRelativeTimeMs() + duration) : 0;
 }
 
 void ModelerCameras::endTool() {
@@ -77,6 +83,9 @@ void ModelerCameras::timerEvent(QTimerEvent *) {
     if (current->transitionToAnother(active, 0.5)) {
         parent->getScenery()->keepCameraAboveGround(current);
         parent->getRenderer()->setCamera(current);
+    }
+    if (tool_auto_end > 0 and Time::getRelativeTimeMs() >= tool_auto_end) {
+        endTool();
     }
 }
 

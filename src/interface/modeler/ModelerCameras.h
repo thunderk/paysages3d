@@ -36,8 +36,11 @@ class ModelerCameras : public QObject, public DefinitionWatcher {
 
     /**
      * Start a sun tool, the camera will follow the sun.
+     *
+     * *duration* is the duration in milliseconds before calling endTool() automatically (0 to disable to wait for
+     *manual call).
      */
-    void startSunTool();
+    void startSunTool(unsigned long duration = 0);
 
     /**
      * End the tool mode.
@@ -45,7 +48,7 @@ class ModelerCameras : public QObject, public DefinitionWatcher {
     void endTool();
 
   protected:
-    void timerEvent(QTimerEvent *event);
+    virtual void timerEvent(QTimerEvent *event) override;
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
 
@@ -69,6 +72,7 @@ class ModelerCameras : public QObject, public DefinitionWatcher {
 
     typedef enum { TOOL_NONE, TOOL_SUN } CameraToolMode;
     CameraToolMode tool_mode;
+    unsigned long tool_auto_end;
 };
 }
 }
