@@ -35,9 +35,9 @@ MainModelerWindow::MainModelerWindow() {
     setResizeMode(QQuickView::SizeRootObjectToView);
     setSource(QUrl("qrc:///main.qml"));
 
-    cameras = new ModelerCameras(this);
     atmosphere = new AtmosphereModeler(this);
     water = new WaterModeler(this);
+    cameras = new ModelerCameras(this);
 
     render_process = new RenderProcess(this, render_preview_provider);
 
