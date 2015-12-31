@@ -1,7 +1,7 @@
-in highp vec3 vertex;
-in highp vec2 uv;
-uniform highp mat4 viewMatrix;
-uniform highp vec3 offset;
+in vec3 vertex;
+in vec2 uv;
+uniform mat4 viewMatrix;
+uniform vec3 offset;
 uniform float size;
 out vec3 unprojected;
 out vec2 texcoord;

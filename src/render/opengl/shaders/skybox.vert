@@ -1,5 +1,5 @@
-in highp vec4 vertex;
-uniform highp mat4 viewMatrix;
+in vec4 vertex;
+uniform mat4 viewMatrix;
 uniform vec3 cameraLocation;
 out vec3 unprojected;
 

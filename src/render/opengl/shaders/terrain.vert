@@ -1,6 +1,6 @@
-in highp vec4 vertex;
-in highp vec2 uv;
-uniform highp mat4 viewMatrix;
+in vec4 vertex;
+in vec2 uv;
+uniform mat4 viewMatrix;
 out vec3 unprojected;
 out vec2 texcoord;
 uniform float waterOffset;
