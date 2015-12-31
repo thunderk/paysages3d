@@ -71,7 +71,6 @@ static void testGroundShadowQuality() {
     TextureLayerDefinition texture(NULL, "test");
     texture.displacement_height = 0.3;
     texture.displacement_scaling = 2.0;
-    texture.displacement_offset = 0.0;
     texture.material->setColor(0.6, 0.55, 0.57, 1.0);
     texture.material->reflection = 0.006;
     texture.material->shininess = 6.0;

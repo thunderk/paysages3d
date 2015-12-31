@@ -31,8 +31,6 @@ class BASICSSHARED_EXPORT FractalNoise {
 
     void setScaling(double scaling, double height = 1.0);
     void setStep(double scaling_factor, double height_factor = 1.0);
-    void setSlope(double slope_factor);
-    void setRidge(double ridge_factor);
     void setState(const NoiseState &state);
 
     double get1d(double detail, double x) const;
@@ -50,8 +48,6 @@ class BASICSSHARED_EXPORT FractalNoise {
     double height;
     double step_scaling;
     double step_height;
-    double slope;
-    double ridge;
 };
 }
 }

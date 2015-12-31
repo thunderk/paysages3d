@@ -5,8 +5,6 @@ FractalNoise::FractalNoise() {
     height = 1.0;
     step_scaling = 2.0;
     step_height = 0.5;
-    slope = 0.0;
-    ridge = 0.0;
 }
 
 FractalNoise::~FractalNoise() {
@@ -22,14 +20,6 @@ void FractalNoise::setStep(double scaling_factor, double height_factor) {
     this->step_height = scaling_factor * height_factor;
 }
 
-void FractalNoise::setSlope(double slope_factor) {
-    this->slope = slope_factor;
-}
-
-void FractalNoise::setRidge(double ridge_factor) {
-    this->ridge = ridge_factor;
-}
-
 void FractalNoise::setState(const NoiseState &state) {
     state.copy(&this->state);
 }
@@ -38,8 +28,8 @@ double FractalNoise::get1d(double detail, double x) const {
     double current_scaling = scaling;
     double current_height = height;
     double result = 0.0;
-    int state_level_count = state.level_offsets.size();
-    int i = 0;
+    auto state_level_count = state.level_offsets.size();
+    decltype(state_level_count) i = 0;
 
     while (current_height >= detail) {
         const NoiseState::NoiseOffset &offset = state.level_offsets[i];
@@ -62,8 +52,8 @@ double FractalNoise::get2d(double detail, double x, double y) const {
     double current_scaling = scaling;
     double current_height = height;
     double result = 0.0;
-    int state_level_count = state.level_offsets.size();
-    int i = 0;
+    auto state_level_count = state.level_offsets.size();
+    decltype(state_level_count) i = 0;
 
     while (current_height >= detail) {
         const NoiseState::NoiseOffset &offset = state.level_offsets[i];
@@ -86,8 +76,8 @@ double FractalNoise::get3d(double detail, double x, double y, double z) const {
     double current_scaling = scaling;
     double current_height = height;
     double result = 0.0;
-    int state_level_count = state.level_offsets.size();
-    int i = 0;
+    auto state_level_count = state.level_offsets.size();
+    decltype(state_level_count) i = 0;
 
     while (current_height >= detail) {
         const NoiseState::NoiseOffset &offset = state.level_offsets[i];

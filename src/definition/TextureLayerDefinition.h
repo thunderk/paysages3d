@@ -35,16 +35,10 @@ class DEFINITIONSHARED_EXPORT TextureLayerDefinition : public DefinitionNode {
     Zone *terrain_zone;
     double displacement_scaling;
     double displacement_height;
-    double displacement_offset;
-    /*double detail_scaling;
-    double detail_height;*/
     SurfaceMaterial *material;
-    /*double cancel_displacement_factor;
-    TexturesMergeMode merge_mode;*/
 
     NoiseGenerator *_displacement_noise;
     NoiseGenerator *_detail_noise;
-    /*Curve* _local_slope_condition;*/
 };
 }
 }

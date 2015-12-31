@@ -1,6 +1,7 @@
 Technlology Preview 2 :
 - Rewrite UI in QtQuick, with full-window OpenGL editor.
 - Streamline the definition system, with undo and events.
+- Switch all noise generators to FractalNoise, and restore detail-based fractal levels.
 - Implement copy-on-write on definitions (to avoid copying whole heightmaps for instance).
 - Add clouds to OpenGL with 3d textures.
 - Refactor medium traversal to unify clouds, atmosphere and god rays.
