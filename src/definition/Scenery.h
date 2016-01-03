@@ -9,7 +9,7 @@ namespace paysages {
 namespace definition {
 
 /**
- * @brief Global scenery management
+ * Global scenery management
  *
  * This class contains the whole scenery definition.
  */

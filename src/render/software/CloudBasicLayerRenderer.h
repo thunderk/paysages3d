@@ -10,8 +10,8 @@ typedef struct CloudSegment CloudSegment;
 namespace paysages {
 namespace software {
 
-/*!
- * \brief Basic cloud layer renderer.
+/**
+ * Basic cloud layer renderer.
  *
  * This renderer simply iters through the cloud layer, collecting cloud segments.
  * It does not account for local density variations.

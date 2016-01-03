@@ -25,9 +25,9 @@ class SOFTWARESHARED_EXPORT TerrainRasterizer : public Rasterizer {
     /**
      * Set the rasterization quality.
      *
-     * @param base_chunk_size Size of chunks near the camera
-     * @param detail_factor Precision factor of a chunk's tessellation, depending on screen coverage
-     * @param max_chunk_detail Maximal tessellation of chunks
+     * base_chunk_size - Size of chunks near the camera
+     * detail_factor - Precision factor of a chunk's tessellation, depending on screen coverage
+     * max_chunk_detail - Maximal tessellation of chunks
      */
     void setQuality(double base_chunk_size, double detail_factor, int max_chunk_detail);
     virtual void setQuality(double factor) override;

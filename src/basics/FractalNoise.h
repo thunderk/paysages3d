@@ -8,8 +8,8 @@
 namespace paysages {
 namespace basics {
 
-/*!
- * \brief Fractal noise generator, based on a sum of simple noise functions.
+/**
+ * Fractal noise generator, based on a sum of simple noise functions.
  */
 class BASICSSHARED_EXPORT FractalNoise {
   public:
@@ -39,6 +39,11 @@ class BASICSSHARED_EXPORT FractalNoise {
 
     virtual double getBase1d(double x) const;
     virtual double getBase2d(double x, double y) const;
+    /**
+     * Base 3d noise function, returning (as much as possible) a value in the [0.5, 0.5] range.
+     *
+     * Other dimension noise (1d and 2d) can be provided, or this one will be used to simulate them.
+     */
     virtual double getBase3d(double x, double y, double z) const = 0;
 
   private:

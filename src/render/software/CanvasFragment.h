@@ -10,7 +10,7 @@ namespace paysages {
 namespace software {
 
 /**
- * @brief Representation of world coordinates projected in a canvas pixel.
+ * Representation of world coordinates projected in a canvas pixel.
  */
 class SOFTWARESHARED_EXPORT CanvasFragment {
   public:

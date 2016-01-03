@@ -8,8 +8,8 @@
 namespace paysages {
 namespace software {
 
-/*!
- * \brief Ray walker to find intersections with terrain.
+/**
+ * Ray walker to find intersections with terrain.
  *
  * This walker can be used to find a hard intersection between
  * a ray and the terrain (e.g. for raytracing), or a soft intersection
@@ -28,30 +28,31 @@ class SOFTWARESHARED_EXPORT TerrainRayWalker {
     /**
      * Set the walker quality.
      *
-     * @param displacement_safety Safety factor (around 1.0) to detect when displacement textures need to be applied
-     * @param minimal_step Minimal length of a walking step
-     * @param maximal_step Maximal length of a walking step
-     * @param step_factor Precision factor of steps, depending on terrain proximity
-     * @param max_distance Maximal distance allowed to travel before considering an escape
-     * @param escape_step Angle step when allowing an escape angle
+     * displacement_safety - Safety factor (around 1.0) to detect when displacement textures need to be applied
+     * minimal_step - Minimal length of a walking step
+     * maximal_step - Maximal length of a walking step
+     * step_factor - Precision factor of steps, depending on terrain proximity
+     * max_distance - Maximal distance allowed to travel before considering an escape
+     * escape_step - Angle step when allowing an escape angle
      */
     void setQuality(double displacement_safety, double minimal_step, double maximal_step, double step_factor,
                     double max_distance, double escape_step);
     void setQuality(double factor);
 
-    /*!
-     * \brief Update the walker internal data, from the renderer and scenery.
+    /**
+     * Update the walker internal data, from the renderer and scenery.
      */
     void update();
 
-    /*!
-     * \brief Start the walking process to find intersection
+    /**
+     * Start the walking process to find intersection
      *
-     * \param start Point of origin of the ray
-     * \param direction Ray direction (normalized vector)
-     * \param escape_angle Maximal angle allowed to escape the terrain on hit (mainly for shadows computing)
-     * \param result Object to store the results info
-     * \return true if there was a hit
+     * start - Point of origin of the ray
+     * direction - Ray direction (normalized vector)
+     * escape_angle - Maximal angle allowed to escape the terrain on hit (mainly for shadows computing)
+     * result - Object to store the results info
+     *
+     * Returns true if there was a hit.
      */
     bool startWalking(const Vector3 &start, Vector3 direction, double escape_angle, TerrainHitResult &result);
 

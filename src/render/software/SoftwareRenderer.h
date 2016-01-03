@@ -6,8 +6,8 @@
 namespace paysages {
 namespace software {
 
-/*!
- * \brief This class renders a defined scenery in sotware mode (using only standard CPU computations).
+/**
+ * This class renders a defined scenery in sotware mode (using only standard CPU computations).
  */
 class SOFTWARESHARED_EXPORT SoftwareRenderer {
 
@@ -25,15 +25,15 @@ class SOFTWARESHARED_EXPORT SoftwareRenderer {
     virtual Vector3 projectPoint(const Vector3 &point);
     virtual Vector3 unprojectPoint(const Vector3 &point);
 
-    /*!
-     * \brief Prepare the renderer sub-systems.
+    /**
+     * Prepare the renderer sub-systems.
      *
      * This will clear the caches and connect elements together.
      * After this call, don't update the scenery when renderer is in use.
      */
     virtual void prepare();
 
-    /*!
+    /**
      * Set the global quality control factor.
      *
      * Values between 0.0 and 1.0 are standard quality (1.0 is considered a "very good" production quality value).

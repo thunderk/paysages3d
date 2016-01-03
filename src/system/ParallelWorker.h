@@ -7,7 +7,7 @@ namespace paysages {
 namespace system {
 
 /**
- * @brief Worker that can be used by the ParallelWork object to perform tasks in several threads.
+ * Worker that can be used by the ParallelWork object to perform tasks in several threads.
  */
 class SYSTEMSHARED_EXPORT ParallelWorker {
   public:

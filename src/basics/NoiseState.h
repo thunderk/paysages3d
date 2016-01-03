@@ -8,7 +8,7 @@
 namespace paysages {
 namespace basics {
 
-/*!
+/**
  * Fractal noise state, that can be saved to a file.
  *
  * This state contains the noise offsets for noise layers.

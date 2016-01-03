@@ -11,7 +11,7 @@ namespace paysages {
 namespace software {
 
 /**
- * @brief Light status at a given point.
+ * Light status at a given point.
  *
  * The light status is the combination of all LightComponent received at a given location.
  */

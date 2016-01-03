@@ -7,12 +7,12 @@ namespace paysages {
 namespace software {
 
 /**
- * @brief Interface for rendering parts that can alter light.
+ * Interface for rendering parts that can alter light.
  */
 class SOFTWARESHARED_EXPORT LightFilter {
   public:
     /**
-     * @brief Apply filtering on a light component.
+     * Apply filtering on a light component.
      *
      * This will alter the component and return if the component is still
      * useful.

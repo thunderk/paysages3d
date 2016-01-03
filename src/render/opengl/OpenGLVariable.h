@@ -10,8 +10,8 @@ class QImage;
 namespace paysages {
 namespace opengl {
 
-/*!
- * \brief OpenGL variable that can be bound to a uniform for shaders.
+/**
+ * OpenGL variable that can be bound to a uniform for shaders.
  */
 class OpenGLVariable final {
   public:

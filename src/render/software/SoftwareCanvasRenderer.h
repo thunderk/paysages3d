@@ -12,7 +12,7 @@ namespace paysages {
 namespace software {
 
 /**
- * @brief Software rendering inside a Canvas surface.
+ * Software rendering inside a Canvas surface.
  *
  * This class launches the rasterization process into canvas portions and
  * redirects post processing to the software renderer.
@@ -70,19 +70,19 @@ class SOFTWARESHARED_EXPORT SoftwareCanvasRenderer : public SoftwareRenderer {
     void enablePostprocess(bool enabled);
 
     /**
-     * @brief Set the rendering size in pixels.
+     * Set the rendering size in pixels.
      *
      * Set 'samples' to something bigger than 1 to allow for the multi-sampling of pixels.
      */
     void setSize(int width, int height, int samples = 1);
 
     /**
-     * @brief Start the two-pass render process.
+     * Start the two-pass render process.
      */
     void render();
 
     /**
-     * @brief Interrupt the render process.
+     * Interrupt the render process.
      */
     void interrupt();
 
@@ -100,12 +100,12 @@ class SOFTWARESHARED_EXPORT SoftwareCanvasRenderer : public SoftwareRenderer {
 
   protected:
     /**
-     * @brief Rasterize the scenery into a canvas portion.
+     * Rasterize the scenery into a canvas portion.
      */
     void rasterize(CanvasPortion *portion);
 
     /**
-     * @brief Apply pixel shader to fragments stored in the CanvasPortion.
+     * Apply pixel shader to fragments stored in the CanvasPortion.
      */
     void applyPixelShader(CanvasPortion *portion);
 

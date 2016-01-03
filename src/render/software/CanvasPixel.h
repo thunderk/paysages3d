@@ -11,7 +11,7 @@ namespace paysages {
 namespace software {
 
 /**
- * @brief One pixel of a Canvas.
+ * One pixel of a Canvas.
  *
  * A pixel stores superimposed fragments (CanvasFragment), sorted by their distance to camera.
  */

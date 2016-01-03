@@ -8,13 +8,13 @@
 namespace paysages {
 namespace system {
 
-/*!
- * \brief System mutex
+/**
+ * System mutex
  */
 class SYSTEMSHARED_EXPORT Mutex : private mutex {
   public:
-    /*!
-     * \brief Create a new mutex
+    /**
+     * Create a new mutex
      */
     Mutex();
 

@@ -43,7 +43,7 @@ class SYSTEMSHARED_EXPORT ParallelWork {
     /**
      * Start working on the units.
      *
-     * @param threads Number of threads to spaws, -1 for an optimal number.
+     * threads - Number of threads to spaws, -1 for an optimal number.
      */
     int perform(int thread_count = -1);
 

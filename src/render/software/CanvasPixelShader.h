@@ -9,7 +9,7 @@ namespace paysages {
 namespace software {
 
 /**
- * @brief Parallel worker that can work on canvas portion to resolve pixel colors.
+ * Parallel worker that can work on canvas portion to resolve pixel colors.
  *
  * This is used after the rasterization phase to compute pixel colors from the fragments stored in them.
  *

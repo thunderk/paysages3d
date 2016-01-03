@@ -11,7 +11,7 @@ namespace definition {
 typedef DefinitionNode *(*LayerConstructor)(Layers *parent, const string &name);
 
 /**
- * @brief Layers of definitions, ideally all of the same type.
+ * Layers of definitions, ideally all of the same type.
  */
 class DEFINITIONSHARED_EXPORT Layers : public DefinitionNode {
   public:

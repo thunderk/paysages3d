@@ -15,7 +15,7 @@ typedef struct ScanPoint ScanPoint;
 typedef struct RenderScanlines RenderScanlines;
 
 /**
- * @brief Base abstract class for scenery pieces that can be rasterized to polygons.
+ * Base abstract class for scenery pieces that can be rasterized to polygons.
  */
 class SOFTWARESHARED_EXPORT Rasterizer {
   public:

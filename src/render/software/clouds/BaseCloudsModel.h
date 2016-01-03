@@ -8,8 +8,8 @@
 namespace paysages {
 namespace software {
 
-/*!
- * \brief Abstract class for all cloud models (cirrus, cumulus...).
+/**
+ * Abstract class for all cloud models (cirrus, cumulus...).
  */
 class SOFTWARESHARED_EXPORT BaseCloudsModel {
   public:

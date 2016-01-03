@@ -10,7 +10,7 @@ namespace paysages {
 namespace software {
 
 /**
- * @brief One component of a LightStatus.
+ * One component of a LightStatus.
  *
  * A light component represents the amount of light received at a point from a given direction.
  */

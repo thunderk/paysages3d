@@ -8,8 +8,8 @@
 namespace paysages {
 namespace system {
 
-/*!
- * \brief Data (de)serialization in files or streams.
+/**
+ * Data (de)serialization in files or streams.
  */
 class SYSTEMSHARED_EXPORT PackStream {
   public:

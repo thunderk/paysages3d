@@ -10,7 +10,7 @@ namespace paysages {
 namespace software {
 
 /**
- * @brief Graphics area to draw and do compositing.
+ * Graphics area to draw and do compositing.
  *
  * Software rendering is done in portions of Canvas (in CanvasPortion class).
  * This splitting in portions allows to keep memory consumption low.

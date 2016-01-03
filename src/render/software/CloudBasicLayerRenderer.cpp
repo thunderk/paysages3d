@@ -30,18 +30,19 @@ static inline double _getDistanceToBorder(BaseCloudsModel *model, const Vector3 
 /**
  * Go through the cloud layer to find segments (parts of the lookup that are inside the cloud).
  *
- * @param definition The cloud layer
- * @param renderer The renderer environment
- * @param start Start position of the lookup (already optimized)
- * @param direction Normalized direction of the lookup
- * @param detail Level of noise detail required
- * @param max_segments Maximum number of segments to collect
- * @param max_inside_length Maximum length to spend inside the cloud
- * @param max_total_length Maximum lookup length
- * @param inside_length Resulting length inside cloud (sum of all segments length)
- * @param total_length Resulting lookup length
- * @param out_segments Allocated space to fill found segments
- * @return Number of segments found
+ * definition - The cloud layer
+ * renderer - The renderer environment
+ * start - Start position of the lookup (already optimized)
+ * direction - Normalized direction of the lookup
+ * detail - Level of noise detail required
+ * max_segments - Maximum number of segments to collect
+ * max_inside_length - Maximum length to spend inside the cloud
+ * max_total_length - Maximum lookup length
+ * inside_length - Resulting length inside cloud (sum of all segments length)
+ * total_length - Resulting lookup length
+ * out_segments - Allocated space to fill found segments
+ *
+ * Returns the number of segments found.
  */
 int CloudBasicLayerRenderer::findSegments(BaseCloudsModel *model, const Vector3 &start, const Vector3 &direction,
                                           int max_segments, double max_inside_length, double max_total_length,

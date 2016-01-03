@@ -8,22 +8,23 @@
 namespace paysages {
 namespace software {
 
-/*!
- * \brief Night sky renderer.
+/**
+ * Night sky renderer.
  */
 class SOFTWARESHARED_EXPORT NightSky : public LightSource {
   public:
     NightSky(SoftwareRenderer *renderer);
     virtual ~NightSky();
 
-    /*!
-     * \brief Update the night sky renderer, when the scenery or parent renderer changed.
+    /**
+     * Update the night sky renderer, when the scenery or parent renderer changed.
      */
     void update();
 
-    /*!
-     * \brief Get the color of the night sky at a given direction.
-     * \param altitude Altitude above water level, in coordinate units (not kilometers).
+    /**
+     * Get the color of the night sky at a given direction.
+     *
+     * *altitude* is above water level, in coordinate units (not kilometers).
      */
     virtual const Color getColor(double altitude, const Vector3 &direction);
 

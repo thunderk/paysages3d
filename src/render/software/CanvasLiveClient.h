@@ -7,7 +7,7 @@ namespace paysages {
 namespace software {
 
 /**
- * @brief Abstract class to receive live modifications from canvas preview.
+ * Abstract class to receive live modifications from canvas preview.
  */
 class SOFTWARESHARED_EXPORT CanvasLiveClient {
   public:

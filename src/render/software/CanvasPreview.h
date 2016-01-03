@@ -7,7 +7,7 @@ namespace paysages {
 namespace software {
 
 /**
- * @brief Smaller preview of a Canvas rendering, that can be watched live.
+ * Smaller preview of a Canvas rendering, that can be watched live.
  */
 class SOFTWARESHARED_EXPORT CanvasPreview {
   public:

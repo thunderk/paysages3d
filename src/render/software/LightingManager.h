@@ -11,7 +11,7 @@ namespace paysages {
 namespace software {
 
 /**
- * @brief Global lighting manager.
+ * Global lighting manager.
  *
  * This manager handles the lights, light filters and final light rendering.
  *

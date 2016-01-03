@@ -6,8 +6,8 @@
 namespace paysages {
 namespace system {
 
-/*!
- * \brief Access to system info
+/**
+ * Access to system info
  */
 class SYSTEMSHARED_EXPORT System {
   public:
