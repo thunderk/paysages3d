@@ -16,6 +16,10 @@ class BASICSSHARED_EXPORT FractalNoise {
     FractalNoise();
     virtual ~FractalNoise();
 
+    virtual void save(PackStream *stream) const;
+    virtual void load(PackStream *stream);
+    virtual void copy(FractalNoise *destination) const;
+
     inline double getScaling() const {
         return scaling;
     }

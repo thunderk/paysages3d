@@ -1,5 +1,7 @@
 #include "FractalNoise.h"
 
+#include "PackStream.h"
+
 FractalNoise::FractalNoise() {
     scaling = 1.0;
     height = 1.0;
@@ -8,6 +10,33 @@ FractalNoise::FractalNoise() {
 }
 
 FractalNoise::~FractalNoise() {
+}
+
+void FractalNoise::save(PackStream *stream) const
+{
+    stream->write(&scaling);
+    stream->write(&height);
+    stream->write(&step_scaling);
+    stream->write(&step_height);
+    state.save(stream);
+}
+
+void FractalNoise::load(PackStream *stream)
+{
+    stream->read(&scaling);
+    stream->read(&height);
+    stream->read(&step_scaling);
+    stream->read(&step_height);
+    state.load(stream);
+}
+
+void FractalNoise::copy(FractalNoise *destination) const
+{
+    destination->scaling = scaling;
+    destination->height = height;
+    destination->step_scaling = step_scaling;
+    destination->step_height = step_height;
+    state.copy(&destination->state);
 }
 
 void FractalNoise::setScaling(double scaling, double height) {

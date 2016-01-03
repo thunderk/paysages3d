@@ -1,22 +1,14 @@
 #include "NoiseNode.h"
 
-#include "NoiseGenerator.h"
+#include "NoiseFunctionSimplex.h"
 #include "Logs.h"
 
-NoiseNode::NoiseNode(DefinitionNode *parent) : DefinitionNode(parent, "noise") {
-    noise = new NoiseGenerator();
+NoiseNode::NoiseNode(DefinitionNode *parent, const string &name) : DefinitionNode(parent, name) {
+    noise = new NoiseFunctionSimplex();
 }
 
 NoiseNode::~NoiseNode() {
     delete noise;
-}
-
-void NoiseNode::setLevels(int levels, double min_value, double max_value) {
-    noise->clearLevels();
-    noise->addLevelsSimple(levels, 1.0, -1.0, 1.0, 0.5);
-    noise->normalizeAmplitude(min_value, max_value, false);
-    noise->randomizeOffsets();
-    noise->validate();
 }
 
 void NoiseNode::save(PackStream *stream) const {
@@ -29,13 +21,18 @@ void NoiseNode::load(PackStream *stream) {
 
 void NoiseNode::copy(DefinitionNode *destination) const {
     if (destination->getTypeName() == getTypeName()) {
-        noise->copy(((NoiseNode *)destination)->noise);
+        auto tdestination = static_cast<NoiseNode *>(destination);
+        if (tdestination) {
+            noise->copy(tdestination->noise);
+        }
     } else {
         Logs::error("Definition") << "Can't copy from " << getTypeName() << " to " << destination->getTypeName()
                                   << endl;
     }
 }
 
-void NoiseNode::validate() {
-    noise->validate();
+string NoiseNode::toString(int indent) const {
+    return DefinitionNode::toString(indent) + " - scaling: " + to_string(noise->getScaling()) + " step " +
+           to_string(noise->getStepScaling()) + " - height: " + to_string(noise->getHeight()) + " step " +
+           to_string(noise->getStepScaling());
 }
