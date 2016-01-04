@@ -31,6 +31,10 @@ class DEFINITIONSHARED_EXPORT TextureLayerDefinition : public DefinitionNode {
 
     void applyPreset(TextureLayerPreset preset, RandomGenerator &random = RandomGeneratorDefault);
 
+    inline NoiseNode *propDetailNoise() const {
+        return detail_noise;
+    }
+
   public:
     Zone *terrain_zone;
     double displacement_scaling;
@@ -38,7 +42,9 @@ class DEFINITIONSHARED_EXPORT TextureLayerDefinition : public DefinitionNode {
     SurfaceMaterial *material;
 
     NoiseGenerator *_displacement_noise;
-    NoiseGenerator *_detail_noise;
+
+  private:
+    NoiseNode *detail_noise;
 };
 }
 }

@@ -16,9 +16,19 @@ class DEFINITIONSHARED_EXPORT NoiseNode : public DefinitionNode {
     NoiseNode(DefinitionNode *parent, const string &name = "noise");
     virtual ~NoiseNode();
 
-    inline const FractalNoise *getGenerator() {
+    inline const FractalNoise *getGenerator() const {
         return noise;
     }
+
+    /**
+     * Randomize the noise (only the noise, not its configuration).
+     */
+    void randomize(RandomGenerator &random);
+
+    /**
+     * Set the noise configuration.
+     */
+    void setConfig(double scaling, double step_scaling = 0.5, double height = 1.0, double step_height = 0.5);
 
   protected:
     virtual void save(PackStream *stream) const override;

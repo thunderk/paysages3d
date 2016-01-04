@@ -7,22 +7,24 @@
 #include "Scenery.h"
 #include "TerrainDefinition.h"
 #include "Color.h"
+#include "NoiseNode.h"
 
 TextureLayerDefinition::TextureLayerDefinition(DefinitionNode *parent, const string &name)
     : DefinitionNode(parent, name, "texturelayer") {
     terrain_zone = new Zone;
     _displacement_noise = new NoiseGenerator;
-    _detail_noise = new NoiseGenerator;
     material = new SurfaceMaterial;
 
     displacement_height = 0.0;
     displacement_scaling = 1.0;
+
+    detail_noise = new NoiseNode(this, "detail");
+    detail_noise->setConfig(0.01);
 }
 
 TextureLayerDefinition::~TextureLayerDefinition() {
     delete terrain_zone;
     delete _displacement_noise;
-    delete _detail_noise;
     delete material;
 }
 
@@ -37,11 +39,6 @@ void TextureLayerDefinition::validate() {
     _displacement_noise->addLevelsSimple(9, 1.0, -1.0, 1.0, 0.0);
     _displacement_noise->normalizeAmplitude(-1.0, 1.0, 0);
     _displacement_noise->validate();
-
-    _detail_noise->clearLevels();
-    _detail_noise->addLevelsSimple(7, 0.01, -1.0, 1.0, 0.0);
-    _detail_noise->normalizeAmplitude(-0.008, 0.008, 0);
-    _detail_noise->validate();
 
     material->validate();
 
@@ -65,7 +62,6 @@ void TextureLayerDefinition::copy(DefinitionNode *destination) const {
         *tex_destination->material = *material;
 
         _displacement_noise->copy(tex_destination->_displacement_noise);
-        _detail_noise->copy(tex_destination->_detail_noise);
     }
 }
 
@@ -78,7 +74,6 @@ void TextureLayerDefinition::save(PackStream *stream) const {
     material->save(stream);
 
     _displacement_noise->save(stream);
-    _detail_noise->save(stream);
 }
 
 void TextureLayerDefinition::load(PackStream *stream) {
@@ -90,12 +85,11 @@ void TextureLayerDefinition::load(PackStream *stream) {
     material->load(stream);
 
     _displacement_noise->load(stream);
-    _detail_noise->load(stream);
 }
 
 void TextureLayerDefinition::applyPreset(TextureLayerPreset preset, RandomGenerator &random) {
     _displacement_noise->randomizeOffsets(random);
-    _detail_noise->randomizeOffsets(random);
+    detail_noise->randomize(random);
 
     terrain_zone->clear();
 

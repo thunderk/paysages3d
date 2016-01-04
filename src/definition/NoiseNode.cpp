@@ -11,6 +11,15 @@ NoiseNode::~NoiseNode() {
     delete noise;
 }
 
+void NoiseNode::randomize(RandomGenerator &random) {
+    noise->randomize(random);
+}
+
+void NoiseNode::setConfig(double scaling, double step_scaling, double height, double step_height) {
+    noise->setScaling(scaling, height);
+    noise->setStep(step_scaling, step_height);
+}
+
 void NoiseNode::save(PackStream *stream) const {
     noise->save(stream);
 }

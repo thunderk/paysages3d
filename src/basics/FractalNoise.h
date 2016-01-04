@@ -33,6 +33,11 @@ class BASICSSHARED_EXPORT FractalNoise {
         return step_height;
     }
 
+    /**
+     * Randomize the noise (only the noise values, not its configuration).
+     */
+    void randomize(RandomGenerator &random);
+
     void setScaling(double scaling, double height = 1.0);
     void setStep(double scaling_factor, double height_factor = 1.0);
     void setState(const NoiseState &state);

@@ -35,7 +35,7 @@ class SOFTWARESHARED_EXPORT TexturesRenderer {
 
     virtual double getMaximalDisplacement(TexturesDefinition *textures);
     virtual double getLayerBasePresence(TextureLayerDefinition *layer, const TerrainRenderer::TerrainResult &terrain);
-    virtual double getTriplanarNoise(NoiseGenerator *noise, const Vector3 &location, const Vector3 &normal);
+    virtual double getTriplanarNoise(const FractalNoise *noise, const Vector3 &location, const Vector3 &normal);
 
     virtual Vector3 displaceTerrain(const TerrainRenderer::TerrainResult &terrain);
     virtual double getBasePresence(int layer, const TerrainRenderer::TerrainResult &terrain);
