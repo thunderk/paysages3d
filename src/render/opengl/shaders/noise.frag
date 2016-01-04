@@ -10,8 +10,8 @@ vec3 noiseNormal2d(float[4] data, vec2 location, float detail)
     while (height > detail)
     {
         // TODO offsets
-        // TODO parametrized texture scaling (0.01)
-        normal += texture(simplexSampler, location * 0.01 * scaling).xyz;
+        // TODO parametrized texture scaling
+        normal += texture(simplexSampler, location * scaling / 15.0).xyz - vec3(0.5);
         scaling *= step_scaling;
         height *= step_height;
     }

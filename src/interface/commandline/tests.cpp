@@ -27,7 +27,10 @@
 #include "RayCastingResult.h"
 #include "OpenGLVegetationImpostor.h"
 #include "Texture2D.h"
+#include "NoiseNode.h"
+#include "FractalNoise.h"
 #include "RandomGenerator.h"
+#include "NoiseFunctionSimplex.h"
 
 #include <sstream>
 #include <iostream>
@@ -51,6 +54,18 @@ static string getFileName(const string &name, int iteration = -1) {
 
 static void startTestRender(SoftwareCanvasRenderer *renderer, const string &name, int iteration = -1) {
     startRender(renderer, getFileName(name, iteration).data());
+}
+
+static void testNoise() {
+    NoiseFunctionSimplex noise;
+
+    string filename = getFileName("noise_simplex_cache_value");
+    cout << "Rendering " << filename << "..." << endl;
+    noise.getValueTexture()->saveToFile(filename);
+
+    filename = getFileName("noise_simplex_cache_normal");
+    cout << "Rendering " << filename << "..." << endl;
+    noise.getNormalTexture()->saveToFile(filename);
 }
 
 static void testGroundShadowQuality() {
@@ -345,13 +360,14 @@ static void testOpenGLVegetationImpostor() {
 }
 
 void runTestSuite() {
-    testGroundShadowQuality();
-    testRasterizationQuality();
-    testCloudQuality();
-    testGodRays();
-    testNearFrustum();
-    testCloudsNearGround();
     testAtmosphereBruneton();
-    testVegetationModels();
+    testCloudQuality();
+    testCloudsNearGround();
+    testGodRays();
+    testGroundShadowQuality();
+    testNearFrustum();
+    testNoise();
     testOpenGLVegetationImpostor();
+    testRasterizationQuality();
+    testVegetationModels();
 }

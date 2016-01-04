@@ -476,18 +476,22 @@ double NoiseFunctionSimplex::getBase3d(double x, double y, double z) const {
     return noiseSimplexGet3DValue(x, y, z) - 0.5;
 }
 
+static constexpr double TEXTURE_SCALING = 15.0;
 static Texture2D *_valueTexture = NULL;
 
 const Texture2D *NoiseFunctionSimplex::getValueTexture() {
     if (!_valueTexture) {
-        const int width = 1024;
-        const int height = 1024;
+        const int width = 2048;
+        const int height = 2048;
 
         _valueTexture = new Texture2D(width, height);
 
         for (int x = 0; x < width; x++) {
             for (int z = 0; z < height; z++) {
-                double val = noiseSimplexGet2DValue(to_double(x), to_double(z)) - 0.5;
+                // TODO Make texture tileable
+                double dx = to_double(x) / to_double(width);
+                double dz = to_double(z) / to_double(height);
+                double val = noiseSimplexGet2DValue(TEXTURE_SCALING * dx, TEXTURE_SCALING * dz);
                 _valueTexture->setPixel(x, z, Color(val, val, val));
             }
         }
@@ -500,22 +504,27 @@ static Texture2D *_normalTexture = NULL;
 
 const Texture2D *NoiseFunctionSimplex::getNormalTexture() {
     if (!_normalTexture) {
-        const int width = 1024;
-        const int height = 1024;
+        const int width = 2048;
+        const int height = 2048;
 
         _normalTexture = new Texture2D(width, height);
+
+        double scale = TEXTURE_SCALING;
+        double offset = scale * 0.1;
 
         for (int x = 0; x < width; x++) {
             for (int z = 0; z < height; z++) {
                 // TODO Make texture tileable
-                double vcenter = noiseSimplexGet2DValue(0.01 * to_double(x), 0.01 * to_double(z)) - 0.5;
-                double vsouth = noiseSimplexGet2DValue(0.01 * to_double(x), 0.01 * to_double(z) + 0.001) - 0.5;
-                double veast = noiseSimplexGet2DValue(0.01 * to_double(x) + 0.001, 0.01 * to_double(z)) - 0.5;
+                double dx = to_double(x) / to_double(width);
+                double dz = to_double(z) / to_double(height);
+                double vcenter = noiseSimplexGet2DValue(scale * dx, scale * dz) - 0.5;
+                double vsouth = noiseSimplexGet2DValue(scale * dx, scale * dz + offset) - 0.5;
+                double veast = noiseSimplexGet2DValue(scale * dx + offset, scale * dz) - 0.5;
 
-                Vector3 normal = Geometry::getNormalFromTriangle(Vector3(0.0, vcenter, 0.0), Vector3(0.0, vsouth, 0.01),
-                                                                 Vector3(0.01, veast, 0.0));
+                Vector3 normal = Geometry::getNormalFromTriangle(
+                    Vector3(0.0, vcenter, 0.0), Vector3(0.0, vsouth, offset), Vector3(offset, veast, 0.0));
 
-                _normalTexture->setPixel(x, z, Color(normal.x, normal.y, normal.z));
+                _normalTexture->setPixel(x, z, Color(normal.x + 0.5, normal.y + 0.5, normal.z + 0.5));
             }
         }
     }
