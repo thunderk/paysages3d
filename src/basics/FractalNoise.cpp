@@ -110,7 +110,7 @@ double FractalNoise::get3d(double detail, double x, double y, double z) const {
     decltype(state_level_count) i = 0;
 
     while (current_height >= detail) {
-        const NoiseState::NoiseOffset &offset = state.level_offsets[i];
+        auto offset = state.level_offsets[i];
 
         result +=
             getBase3d(offset.x + x * current_scaling, offset.y + y * current_scaling, offset.z + z * current_scaling) *

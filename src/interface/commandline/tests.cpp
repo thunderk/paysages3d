@@ -32,6 +32,7 @@
 #include "RandomGenerator.h"
 #include "NoiseFunctionSimplex.h"
 
+#include <cmath>
 #include <sstream>
 #include <iostream>
 
@@ -66,6 +67,22 @@ static void testNoise() {
     filename = getFileName("noise_simplex_cache_normal");
     cout << "Rendering " << filename << "..." << endl;
     noise.getNormalTexture()->saveToFile(filename);
+
+    const int size = 1024;
+    const double scale = 0.01;
+    Texture2D pic(size, size);
+    for (int i = 0; i < 10; i++) {
+        filename = getFileName("noise_simplex_compo", i);
+        cout << "Rendering " << filename << "..." << endl;
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                double val =
+                    noise.get2d(pow(0.5, to_double(i)), to_double(x) * scale, to_double(y) * scale) * 0.5 + 0.5;
+                pic.setPixel(x, y, Color(val, val, val));
+            }
+        }
+        pic.saveToFile(filename);
+    }
 }
 
 static void testGroundShadowQuality() {

@@ -49,8 +49,6 @@ void TexturesDefinition::applyPreset(TexturesPreset preset, RandomGenerator &ran
         layer.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_SNOW, random);
         layer.setName("Snow");
         addLayer(layer);
-    } else if (preset == TEXTURES_PRESET_CANYON) {
-        /* TODO */
     }
 }
 

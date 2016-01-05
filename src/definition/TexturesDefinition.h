@@ -19,8 +19,7 @@ class DEFINITIONSHARED_EXPORT TexturesDefinition : public Layers {
     typedef enum {
         TEXTURES_PRESET_FULL,
         TEXTURES_PRESET_IRELAND,
-        TEXTURES_PRESET_ALPS,
-        TEXTURES_PRESET_CANYON
+        TEXTURES_PRESET_ALPS
     } TexturesPreset;
     void applyPreset(TexturesPreset preset, RandomGenerator &random = RandomGeneratorDefault);
 

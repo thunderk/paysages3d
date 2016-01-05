@@ -28,7 +28,7 @@ class DEFINITIONSHARED_EXPORT NoiseNode : public DefinitionNode {
     /**
      * Set the noise configuration.
      */
-    void setConfig(double scaling, double step_scaling = 0.5, double height = 1.0, double step_height = 0.5);
+    void setConfig(double scaling, double height = 1.0, double step_scaling = 0.5, double step_height = 1.0);
 
   protected:
     virtual void save(PackStream *stream) const override;

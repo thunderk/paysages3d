@@ -15,7 +15,7 @@ void NoiseNode::randomize(RandomGenerator &random) {
     noise->randomize(random);
 }
 
-void NoiseNode::setConfig(double scaling, double step_scaling, double height, double step_height) {
+void NoiseNode::setConfig(double scaling, double height, double step_scaling, double step_height) {
     noise->setScaling(scaling, height);
     noise->setStep(step_scaling, step_height);
 }
