@@ -21,7 +21,7 @@ class OPENGLSHARED_EXPORT OpenGLVegetationLayer {
     }
 
     /**
-     * Collect instances in a given area, and add them to the array *instances*.
+     * Collect instances in a given area, and add them to the array 'instances'.
      *
      * The array is not checked for already present instances.
      */

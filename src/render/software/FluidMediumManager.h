@@ -38,7 +38,7 @@ class SOFTWARESHARED_EXPORT FluidMediumManager {
     void registerMedium(FluidMediumInterface *medium);
 
     /**
-     * Apply complete medium traversal between *location* and *eye*, to the base *color*.
+     * Apply complete medium traversal between 'location' and 'eye', to the base 'color'.
      *
      * Returns the light received by eye, transformed by medium traversal.
      */

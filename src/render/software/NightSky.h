@@ -24,7 +24,7 @@ class SOFTWARESHARED_EXPORT NightSky : public LightSource {
     /**
      * Get the color of the night sky at a given direction.
      *
-     * *altitude* is above water level, in coordinate units (not kilometers).
+     * 'altitude' is above water level, in coordinate units (not kilometers).
      */
     virtual const Color getColor(double altitude, const Vector3 &direction);
 

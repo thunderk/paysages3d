@@ -31,7 +31,7 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
      * This will bind the program (compile it if needed), set the uniform variables, and
      * ask the array object to bind its VAO and render itself.
      *
-     * *state* is optional and may add ponctual variables to the global state.
+     * 'state' is optional and may add ponctual variables to the global state.
      */
     void draw(OpenGLVertexArray *vertices, OpenGLSharedState *state = NULL, int start = 0, int count = -1);
 

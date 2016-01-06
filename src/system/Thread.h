@@ -19,8 +19,8 @@ class SYSTEMSHARED_EXPORT Thread : private QThread {
      *
      * The thread is not started automatically. A call to method start() needs to be done.
      *
-     * Either the *function* argument should be provided (with the function to call from the
-     * thread), or the *run* method overridden.
+     * Either the 'function' argument should be provided (with the function to call from the
+     * thread), or the 'run' method overridden.
      */
     Thread(ThreadFunction function = 0);
 

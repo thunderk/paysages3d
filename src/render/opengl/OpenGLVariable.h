@@ -21,7 +21,7 @@ class OpenGLVariable final {
     /**
      * Apply the variable to the bound shader program.
      *
-     * *texture_unit* will be used and updated accordingly.
+     * 'texture_unit' will be used and updated accordingly.
      *
      * This must be called from the rendering thread, with the shader program bound.
      */

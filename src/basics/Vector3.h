@@ -60,7 +60,7 @@ class BASICSSHARED_EXPORT Vector3 {
     Vector3 crossProduct(const Vector3 &other) const;
 
     /**
-     * Get the mid-point of the segment between *this* point and *other*.
+     * Get the mid-point of the segment between 'this' point and 'other'.
      */
     Vector3 midPointTo(const Vector3 &other) const;
 
@@ -69,7 +69,7 @@ class BASICSSHARED_EXPORT Vector3 {
     /**
      * Produce a random vector in a sphere domain.
      *
-     * If *only_surface* is true, produce a vector with *radius* as length.
+     * If 'only_surface' is true, produce a vector with 'radius' as length.
      */
     static Vector3 randomInSphere(double radius = 1.0, bool only_surface = false,
                                   RandomGenerator &random = RandomGeneratorDefault);

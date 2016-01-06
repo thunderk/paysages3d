@@ -18,7 +18,7 @@ class DEFINITIONSHARED_EXPORT VegetationPresenceDefinition : public DefinitionNo
     /**
      * Collect instances in a rectangle area.
      *
-     * If *outcomers* is true, the rectangle area will be expanded to included potential instances that does not
+     * If 'outcomers' is true, the rectangle area will be expanded to included potential instances that does not
      *originate
      * in the area, but may have leaves in it.
      *

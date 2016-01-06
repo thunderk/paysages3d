@@ -39,24 +39,24 @@ class OPENGLSHARED_EXPORT OpenGLTerrainChunk {
     void destroy(OpenGLFunctions *functions);
 
     /**
-     * Fill *vertices* with a quick initial set of vertices, that can be augmented later using *augmentVertices*.
+     * Fill 'vertices' with a quick initial set of vertices, that can be augmented later using 'augmentVertices'.
      */
     void setFirstStepVertices();
 
     /**
-     * Improve the level of detail of tessellated vertices in *vertices*.
+     * Improve the level of detail of tessellated vertices in 'vertices'.
      *
      * This will double the existing resolution.
      */
     void augmentVertices();
 
     /**
-     * Update *vertices* using *source*.
+     * Update 'vertices' using 'source'.
      */
     void updateVertices(const OpenGLVertexArray &source, int vertice_level);
 
     /**
-     * Set a square (two triangles) in *vertices_next*.
+     * Set a square (two triangles) in 'vertices_next'.
      */
     void fillVerticesFromSquare(OpenGLVertexArray *array, int index_offset, double x, double z, double size);
 

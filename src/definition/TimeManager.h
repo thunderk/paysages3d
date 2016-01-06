@@ -14,7 +14,7 @@ class DEFINITIONSHARED_EXPORT TimeManager {
     TimeManager();
 
     /**
-     * Alter a scenery to simulate the passing of *amount* of time.
+     * Alter a scenery to simulate the passing of 'amount' of time.
      *
      * A 1.0 amount is a full day.
      */

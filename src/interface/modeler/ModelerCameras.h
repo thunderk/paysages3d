@@ -37,7 +37,7 @@ class ModelerCameras : public QObject, public DefinitionWatcher {
     /**
      * Start a sun tool, the camera will follow the sun.
      *
-     * *duration* is the duration in milliseconds before calling endTool() automatically (0 to disable to wait for
+     * 'duration' is the duration in milliseconds before calling endTool() automatically (0 to disable to wait for
      *manual call).
      */
     void startSunTool(unsigned long duration = 0);

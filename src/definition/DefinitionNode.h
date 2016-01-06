@@ -69,7 +69,7 @@ class DEFINITIONSHARED_EXPORT DefinitionNode {
      *
      * All internal node modifications should be done using this method, to be reversible.
      *
-     * If *backward* is true, the diff will be reversed, instead of applied.
+     * If 'backward' is true, the diff will be reversed, instead of applied.
      *
      * Return true if the diff could be applied.
      */
@@ -87,7 +87,7 @@ class DEFINITIONSHARED_EXPORT DefinitionNode {
      *
      * The watcher will receive DefinitionDiff objects when this node changes.
      *
-     * If *init_diff* is set to true, a first diff (or several) will be be pushed immediately to initialize the state.
+     * If 'init_diff' is set to true, a first diff (or several) will be be pushed immediately to initialize the state.
      */
     void addWatcher(DefinitionWatcher *watcher, bool init_diff = false);
 
@@ -114,7 +114,7 @@ class DEFINITIONSHARED_EXPORT DefinitionNode {
      *
      * The manager will take immediate ownership of the diff, handling its freeing.
      *
-     * The manager will decide if the diff should be committed and will call *applyDiff* if needed.
+     * The manager will decide if the diff should be committed and will call 'applyDiff' if needed.
      */
     void addDiff(const DefinitionDiff *diff);
 

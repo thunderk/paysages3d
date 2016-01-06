@@ -69,7 +69,7 @@ class OPENGLSHARED_EXPORT OpenGLVegetation : public OpenGLPart, public Definitio
     void setEnabled(bool enabled);
 
     /**
-     * Update the *layers* member from the scenery.
+     * Update the 'layers' member from the scenery.
      *
      * This will create missing layers, and mark extraneous ones for deletion.
      * This will not update existing layers (they should update themselves by watching their definition).

@@ -25,9 +25,9 @@ class SOFTWARESHARED_EXPORT VegetationRenderer : public LightFilter {
     /**
      * Perform ray casting on a single instance.
      *
-     * If *only_hit* is true, only care about hitting or not, do not compute the color.
+     * If 'only_hit' is true, only care about hitting or not, do not compute the color.
      *
-     * If *displaced* is true, *instance* is considered on already displaced terrain, else, terrain displacement is
+     * If 'displaced' is true, 'instance' is considered on already displaced terrain, else, terrain displacement is
      *applied.
      */
     RayCastingResult renderInstance(const SpaceSegment &segment, const VegetationInstance &instance,

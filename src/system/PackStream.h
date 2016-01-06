@@ -39,7 +39,7 @@ class SYSTEMSHARED_EXPORT PackStream {
      *
      * The other stream must not have been bound to a file (still a memory buffer).
      *
-     * If *prepend_size* is true, an integer will be written on front with the number of bytes written.
+     * If 'prepend_size' is true, an integer will be written on front with the number of bytes written.
      */
     void writeFromBuffer(const PackStream &other, bool prepend_size = false);
 

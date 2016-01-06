@@ -177,7 +177,7 @@ void OpenGLTerrainChunk::render(OpenGLShaderProgram *program) {
     }
     _lock_data->release();
 
-    // FIXME Should update *vertices* inside lock
+    // FIXME Should update 'vertices' inside lock
     program->draw(vertices, glstate);
 }
 

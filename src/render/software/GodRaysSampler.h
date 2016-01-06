@@ -94,8 +94,8 @@ class SOFTWARESHARED_EXPORT GodRaysSampler {
     /**
      * Apply the god rays effect to a location.
      *
-     * *raw* is the shaded color, without atmospheric effects.
-     * *atmosphered* is the shaded color, with atmospheric effects applied.
+     * 'raw' is the shaded color, without atmospheric effects.
+     * 'atmosphered' is the shaded color, with atmospheric effects applied.
      */
     Color apply(const Color &raw, const Color &atmosphered, const Vector3 &location);
 

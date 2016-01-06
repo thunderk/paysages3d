@@ -48,7 +48,7 @@ class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
     /**
      * Check for errors in OpenGL context.
      *
-     * Will write the error on standard error output, with the *domain* specified.
+     * Will write the error on standard error output, with the 'domain' specified.
      */
     void checkForErrors(const string &domain);
 

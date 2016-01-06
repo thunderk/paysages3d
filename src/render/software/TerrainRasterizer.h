@@ -57,7 +57,7 @@ class SOFTWARESHARED_EXPORT TerrainRasterizer : public Rasterizer {
      *
      * Return the number of quads that has been pushed.
      *
-     * *canvas* may be NULL to only simulate the tessellation.
+     * 'canvas' may be NULL to only simulate the tessellation.
      */
     int performTessellation(CanvasPortion *canvas, bool displaced);
 

@@ -18,14 +18,14 @@ class BaseModelerTool : public DefinitionWatcher {
     /**
      * Add an automated two-way binding between a QML int property and a scenery IntNode.
      *
-     * If *monitor* is true, this tool will also receive the node changes, via the DefinitionWatcher mechanism.
+     * If 'monitor' is true, this tool will also receive the node changes, via the DefinitionWatcher mechanism.
      */
     void addIntBinding(const string &object, const string &property, const string &path, bool monitor = false);
 
     /**
      * Add an automated two-way binding between a QML int property and a scenery IntNode.
      *
-     * If *monitor* is true, this tool will also receive the node changes, via the DefinitionWatcher mechanism.
+     * If 'monitor' is true, this tool will also receive the node changes, via the DefinitionWatcher mechanism.
      */
     void addFloatBinding(const string &object, const string &property, const string &path, bool monitor = false);
 
