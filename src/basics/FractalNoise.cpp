@@ -1,6 +1,8 @@
 #include "FractalNoise.h"
 
+#include <cmath>
 #include "PackStream.h"
+#include "Vector3.h"
 
 FractalNoise::FractalNoise() {
     scaling = 1.0;
@@ -126,6 +128,22 @@ double FractalNoise::get3d(double detail, double x, double y, double z) const {
     }
 
     return result;
+}
+
+double FractalNoise::getTriplanar(double detail, const Vector3 &location, const Vector3 &normal) const {
+    double noiseXY = get2d(detail, location.x, location.y);
+    double noiseXZ = get2d(detail, location.x, location.z);
+    double noiseYZ = get2d(detail, location.y, location.z);
+
+    double mXY = fabs(normal.z);
+    double mXZ = fabs(normal.y);
+    double mYZ = fabs(normal.x);
+    double total = 1.0 / (mXY + mXZ + mYZ);
+    mXY *= total;
+    mXZ *= total;
+    mYZ *= total;
+
+    return noiseXY * mXY + noiseXZ * mXZ + noiseYZ * mYZ;
 }
 
 void FractalNoise::estimateRange(double *min, double *max) const {

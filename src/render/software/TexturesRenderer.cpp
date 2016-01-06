@@ -27,25 +27,6 @@ double TexturesRenderer::getLayerBasePresence(TextureLayerDefinition *layer,
     return layer->terrain_zone->getValue(terrain.location, terrain.normal);
 }
 
-/*
- * Get triplanar noise value, depending on the normal direction.
- */
-double TexturesRenderer::getTriplanarNoise(const FractalNoise *noise, const Vector3 &location, const Vector3 &normal, double detail) {
-    double noiseXY = noise->get2d(detail, location.x, location.y);
-    double noiseXZ = noise->get2d(detail, location.x, location.z);
-    double noiseYZ = noise->get2d(detail, location.y, location.z);
-
-    double mXY = fabs(normal.z);
-    double mXZ = fabs(normal.y);
-    double mYZ = fabs(normal.x);
-    double total = 1.0 / (mXY + mXZ + mYZ);
-    mXY *= total;
-    mXZ *= total;
-    mYZ *= total;
-
-    return noiseXY * mXY + noiseXZ * mXZ + noiseYZ * mYZ;
-}
-
 double TexturesRenderer::getMaximalDisplacement(TexturesDefinition *textures) {
     int i, n;
     double disp = 0.0;
@@ -82,7 +63,6 @@ static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south) {
 
 static Vector3 _getDetailNormal(SoftwareRenderer *renderer, Vector3 base_location, Vector3 base_normal,
                                 TextureLayerDefinition *layer, double precision) {
-    TexturesRenderer *textures = renderer->getTexturesRenderer();
     Vector3 result;
 
     /* Find guiding vectors in the appoximated local plane */
@@ -102,21 +82,20 @@ static Vector3 _getDetailNormal(SoftwareRenderer *renderer, Vector3 base_locatio
     double detail = precision;
     double offset = precision * 0.1;
 
-    center =
-        base_location.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, base_location, base_normal, detail)));
+    center = base_location.add(base_normal.scale(detail_noise->getTriplanar(detail, base_location, base_normal)));
 
     east = base_location.add(dx.scale(offset));
-    east = east.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, east, base_normal, detail)));
+    east = east.add(base_normal.scale(detail_noise->getTriplanar(detail, east, base_normal)));
 
     south = base_location.add(dy.scale(offset));
-    south = south.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, south, base_normal, detail)));
+    south = south.add(base_normal.scale(detail_noise->getTriplanar(detail, south, base_normal)));
 
     if (renderer->render_quality > 6) {
         west = base_location.add(dx.scale(-offset));
-        west = west.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, west, base_normal, detail)));
+        west = west.add(base_normal.scale(detail_noise->getTriplanar(detail, west, base_normal)));
 
         north = base_location.add(dy.scale(-offset));
-        north = north.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, north, base_normal, detail)));
+        north = north.add(base_normal.scale(detail_noise->getTriplanar(detail, north, base_normal)));
 
         result = _getNormal4(center, north, east, south, west);
     } else {
@@ -141,7 +120,7 @@ Vector3 TexturesRenderer::displaceTerrain(const TerrainRenderer::TerrainResult &
         if (layer->hasDisplacement()) {
             double presence = getLayerBasePresence(layer, terrain);
             auto noise = layer->propDisplacementNoise()->getGenerator();
-            offset += getTriplanarNoise(noise, terrain.location, terrain.normal, 0.001) * presence;
+            offset += noise->getTriplanar(0.001, terrain.location, terrain.normal) * presence;
         }
     }
 

@@ -47,6 +47,13 @@ class BASICSSHARED_EXPORT FractalNoise {
     double get3d(double detail, double x, double y, double z) const;
 
     /**
+     * Get the triplanar noise value, according to a normal vector at a given location.
+     *
+     * Triplanar noise avoids stretching effects while applying a noise to texture a non-planar surface.
+     */
+    double getTriplanar(double detail, const Vector3 &location, const Vector3 &normal) const;
+
+    /**
      * Estimate the range of values this generator will yield with a very small detail value.
      */
     void estimateRange(double *min, double *max) const;
