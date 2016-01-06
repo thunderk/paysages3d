@@ -147,7 +147,7 @@ double SoftwareRenderer::getPrecision(const Vector3 &location) {
     projected.x += 1.0;
     // projected.y += 1.0;
 
-    return render_camera->unproject(projected).sub(location).getNorm(); // / to_double(render_quality);
+    return render_camera->unproject(projected).sub(location).getNorm() * 0.1 / to_double(render_quality);
 }
 
 Vector3 SoftwareRenderer::projectPoint(const Vector3 &point) {

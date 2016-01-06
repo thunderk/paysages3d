@@ -31,19 +31,29 @@ class DEFINITIONSHARED_EXPORT TextureLayerDefinition : public DefinitionNode {
 
     void applyPreset(TextureLayerPreset preset, RandomGenerator &random = RandomGeneratorDefault);
 
+    inline NoiseNode *propDisplacementNoise() const {
+        return displacement_noise;
+    }
     inline NoiseNode *propDetailNoise() const {
         return detail_noise;
     }
 
+    /**
+     * Return true if the texture applies a displacement noise on terrain.
+     */
+    bool hasDisplacement() const;
+
+    /**
+     * Get the maximal (positive or negative) displacement this layer may apply on terrain.
+     */
+    double getMaximalDisplacement() const;
+
   public:
     Zone *terrain_zone;
-    double displacement_scaling;
-    double displacement_height;
     SurfaceMaterial *material;
 
-    NoiseGenerator *_displacement_noise;
-
   private:
+    NoiseNode *displacement_noise;
     NoiseNode *detail_noise;
 };
 }

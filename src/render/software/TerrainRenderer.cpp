@@ -62,7 +62,7 @@ static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south) {
 
 TerrainRenderer::TerrainResult TerrainRenderer::getResult(double x, double z, bool with_painting, bool with_textures) {
     TerrainResult result;
-    double detail = 0.001; /* TODO */
+    double offset = 0.001;
 
     /* Normal */
     Vector3 center, north, east, south, west;
@@ -71,21 +71,21 @@ TerrainRenderer::TerrainResult TerrainRenderer::getResult(double x, double z, bo
     center.z = z;
     center.y = getHeight(center.x, center.z, with_painting);
 
-    east.x = x + detail;
+    east.x = x + offset;
     east.z = z;
     east.y = getHeight(east.x, east.z, with_painting);
 
     south.x = x;
-    south.z = z + detail;
+    south.z = z + offset;
     south.y = getHeight(south.x, south.z, with_painting);
 
     if (parent->render_quality > 6) {
-        west.x = x - detail;
+        west.x = x - offset;
         west.z = z;
         west.y = getHeight(west.x, west.z, with_painting);
 
         north.x = x;
-        north.z = z - detail;
+        north.z = z - offset;
         north.y = getHeight(north.x, north.z, with_painting);
 
         result.normal = _getNormal4(center, north, east, south, west);
@@ -110,23 +110,20 @@ TerrainRenderer::TerrainResult TerrainRenderer::getResult(double x, double z, bo
             north = parent->getTexturesRenderer()->displaceTerrain(getResult(north.x, north.z, with_painting, 0));
 
             result.normal = _getNormal4(center, north, east, south, west);
-        } else if (parent->render_quality > 2) {
+        } else {
             /* Use 3 points on displaced terrain */
             east = parent->getTexturesRenderer()->displaceTerrain(getResult(east.x, east.z, with_painting, 0));
             south = parent->getTexturesRenderer()->displaceTerrain(getResult(south.x, south.z, with_painting, 0));
 
             result.normal = _getNormal2(center, east, south);
-        } else {
-            /* TODO Use texture noise directly, as if terrain was a plane */
         }
     }
 
     return result;
 }
 
-Color TerrainRenderer::getFinalColor(const Vector3 &location, double) {
-    /* TODO Restore precision control */
-    TexturesRenderer::TexturesResult textures = parent->getTexturesRenderer()->applyToTerrain(location.x, location.z);
+Color TerrainRenderer::getFinalColor(const Vector3 &location, double precision) {
+    TexturesRenderer::TexturesResult textures = parent->getTexturesRenderer()->applyToTerrain(location.x, location.z, precision);
     return parent->applyMediumTraversal(textures.final_location, textures.final_color);
 }
 

@@ -56,7 +56,7 @@ double TexturesDefinition::getMaximalDisplacement() {
     double result = 0.0;
     int n = getLayerCount();
     for (int i = 0; i < n; i++) {
-        result += getTextureLayer(i)->displacement_height;
+        result += getTextureLayer(i)->getMaximalDisplacement();
     }
     return result;
 }

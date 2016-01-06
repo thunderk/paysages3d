@@ -31,6 +31,7 @@
 #include "FractalNoise.h"
 #include "RandomGenerator.h"
 #include "NoiseFunctionSimplex.h"
+#include "Zone.h"
 
 #include <cmath>
 #include <sstream>
@@ -101,16 +102,11 @@ static void testGroundShadowQuality() {
     scenery.getAtmosphere()->setDayTime(16, 45);
     scenery.getTextures()->clear();
     TextureLayerDefinition texture(NULL, "test");
-    texture.displacement_height = 0.3;
-    texture.displacement_scaling = 2.0;
-    texture.material->setColor(0.6, 0.55, 0.57, 1.0);
-    texture.material->reflection = 0.006;
-    texture.material->shininess = 6.0;
-    texture.validate();
+    texture.applyPreset(TextureLayerDefinition::TEXTURES_LAYER_PRESET_ROCK);
+    texture.terrain_zone->clear();
     scenery.getTextures()->addLayer(texture);
     scenery.getCamera()->setLocation(Vector3(10.0, 10.0, -10.0));
     scenery.getCamera()->setTarget(VECTOR_ZERO);
-    scenery.validate();
 
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(400, 300);
@@ -376,6 +372,41 @@ static void testOpenGLVegetationImpostor() {
     }
 }
 
+static void testTextures() {
+    Scenery scenery;
+    scenery.autoPreset(162);
+    scenery.getAtmosphere()->setDayTime(10);
+    scenery.getClouds()->clear();
+    scenery.getTerrain()->propWaterHeight()->setValue(-1.0);
+    scenery.getCamera()->setLocationCoords(0.0, 20.0, 0.0);
+    scenery.getCamera()->setTargetCoords(0.0, 0.0, -20.0);
+
+    SoftwareCanvasRenderer renderer(&scenery);
+    renderer.setSize(600, 600);
+    renderer.setQuality(0.5);
+
+    // TODO Customize terrain function
+
+    for (int i = 0; i < 5; i++) {
+        TextureLayerDefinition layer(NULL, "test");
+        layer.applyPreset(static_cast<TextureLayerDefinition::TextureLayerPreset>(i));
+        layer.terrain_zone->clear();
+        scenery.getTextures()->clear();
+        scenery.getTextures()->addLayer(layer);
+        startTestRender(&renderer, "texture", i * 2);
+
+        layer.propDetailNoise()->setConfig(0.0);
+        scenery.getTextures()->clear();
+        scenery.getTextures()->addLayer(layer);
+        startTestRender(&renderer, "texture", i * 2 + 1);
+    }
+
+    for (int i = 0; i < 4; i++) {
+        scenery.getTextures()->applyPreset(static_cast<TexturesDefinition::TexturesPreset>(i));
+        startTestRender(&renderer, "texture_comp", i);
+    }
+}
+
 void runTestSuite() {
     testAtmosphereBruneton();
     testCloudQuality();
@@ -386,5 +417,6 @@ void runTestSuite() {
     testNoise();
     testOpenGLVegetationImpostor();
     testRasterizationQuality();
+    testTextures();
     testVegetationModels();
 }

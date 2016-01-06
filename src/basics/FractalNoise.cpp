@@ -128,6 +128,12 @@ double FractalNoise::get3d(double detail, double x, double y, double z) const {
     return result;
 }
 
+void FractalNoise::estimateRange(double *min, double *max) const {
+    // TODO Better estimate
+    *max = height;
+    *min = -*max;
+}
+
 double FractalNoise::getBase1d(double x) const {
     return getBase2d(x, 0.0);
 }

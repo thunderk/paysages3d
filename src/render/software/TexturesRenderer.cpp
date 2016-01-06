@@ -30,27 +30,10 @@ double TexturesRenderer::getLayerBasePresence(TextureLayerDefinition *layer,
 /*
  * Get triplanar noise value, depending on the normal direction.
  */
-double TexturesRenderer::getTriplanarNoise(const FractalNoise *noise, const Vector3 &location, const Vector3 &normal) {
-    // TODO Detail control
-    double noiseXY = noise->get2d(0.001, location.x, location.y);
-    double noiseXZ = noise->get2d(0.001, location.x, location.z);
-    double noiseYZ = noise->get2d(0.001, location.y, location.z);
-
-    double mXY = fabs(normal.z);
-    double mXZ = fabs(normal.y);
-    double mYZ = fabs(normal.x);
-    double total = 1.0 / (mXY + mXZ + mYZ);
-    mXY *= total;
-    mXZ *= total;
-    mYZ *= total;
-
-    return noiseXY * mXY + noiseXZ * mXZ + noiseYZ * mYZ;
-}
-
-static double _compatGetTriplanarNoise(NoiseGenerator *noise, const Vector3 &location, const Vector3 &normal) {
-    double noiseXY = noise->get2DTotal(location.x, location.y);
-    double noiseXZ = noise->get2DTotal(location.x, location.z);
-    double noiseYZ = noise->get2DTotal(location.y, location.z);
+double TexturesRenderer::getTriplanarNoise(const FractalNoise *noise, const Vector3 &location, const Vector3 &normal, double detail) {
+    double noiseXY = noise->get2d(detail, location.x, location.y);
+    double noiseXZ = noise->get2d(detail, location.x, location.z);
+    double noiseYZ = noise->get2d(detail, location.y, location.z);
 
     double mXY = fabs(normal.z);
     double mXZ = fabs(normal.y);
@@ -69,9 +52,9 @@ double TexturesRenderer::getMaximalDisplacement(TexturesDefinition *textures) {
     n = textures->getLayerCount();
     for (i = 0; i < n; i++) {
         TextureLayerDefinition *layer = textures->getTextureLayer(i);
-
-        if (layer->displacement_height > 0.0) {
-            disp += layer->displacement_height;
+        double layer_disp = layer->getMaximalDisplacement();
+        if (layer_disp > 0.0) {
+            disp += layer_disp;
         }
     }
     return disp;
@@ -98,10 +81,9 @@ static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south) {
 }
 
 static Vector3 _getDetailNormal(SoftwareRenderer *renderer, Vector3 base_location, Vector3 base_normal,
-                                TextureLayerDefinition *layer) {
+                                TextureLayerDefinition *layer, double precision) {
     TexturesRenderer *textures = renderer->getTexturesRenderer();
     Vector3 result;
-    double offset = 0.01;
 
     /* Find guiding vectors in the appoximated local plane */
     Vector3 dx, dy;
@@ -117,22 +99,24 @@ static Vector3 _getDetailNormal(SoftwareRenderer *renderer, Vector3 base_locatio
     /* Apply detail noise locally */
     Vector3 center, north, east, south, west;
     auto detail_noise = layer->propDetailNoise()->getGenerator();
+    double detail = precision;
+    double offset = precision * 0.1;
 
     center =
-        base_location.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, base_location, base_normal)));
+        base_location.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, base_location, base_normal, detail)));
 
     east = base_location.add(dx.scale(offset));
-    east = east.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, east, base_normal)));
+    east = east.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, east, base_normal, detail)));
 
     south = base_location.add(dy.scale(offset));
-    south = south.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, south, base_normal)));
+    south = south.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, south, base_normal, detail)));
 
     if (renderer->render_quality > 6) {
         west = base_location.add(dx.scale(-offset));
-        west = west.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, west, base_normal)));
+        west = west.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, west, base_normal, detail)));
 
         north = base_location.add(dy.scale(-offset));
-        north = north.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, north, base_normal)));
+        north = north.add(base_normal.scale(textures->getTriplanarNoise(detail_noise, north, base_normal, detail)));
 
         result = _getNormal4(center, north, east, south, west);
     } else {
@@ -154,13 +138,10 @@ Vector3 TexturesRenderer::displaceTerrain(const TerrainRenderer::TerrainResult &
     for (i = 0; i < n; i++) {
         TextureLayerDefinition *layer = textures->getTextureLayer(i);
 
-        if (layer->displacement_height > 0.0) {
+        if (layer->hasDisplacement()) {
             double presence = getLayerBasePresence(layer, terrain);
-            Vector3 location = {terrain.location.x / layer->displacement_scaling,
-                                terrain.location.y / layer->displacement_scaling,
-                                terrain.location.z / layer->displacement_scaling};
-            offset += _compatGetTriplanarNoise(layer->_displacement_noise, location, terrain.normal) * presence *
-                      layer->displacement_height;
+            auto noise = layer->propDisplacementNoise()->getGenerator();
+            offset += getTriplanarNoise(noise, terrain.location, terrain.normal, 0.001) * presence;
         }
     }
 
@@ -172,12 +153,14 @@ double TexturesRenderer::getBasePresence(int layer, const TerrainRenderer::Terra
     return getLayerBasePresence(layerdef, terrain);
 }
 
-TexturesRenderer::TexturesResult TexturesRenderer::applyToTerrain(double x, double z) {
+TexturesRenderer::TexturesResult TexturesRenderer::applyToTerrain(double x, double z, double precision) {
     TexturesDefinition *textures = parent->getScenery()->getTextures();
     TexturesResult result;
 
     // Displacement
-    TerrainRenderer::TerrainResult terrain = parent->getTerrainRenderer()->getResult(x, z, 1, 1);
+    // FIXME
+    TerrainRenderer::TerrainResult raw_terrain = parent->getTerrainRenderer()->getResult(x, z, true, false);
+    TerrainRenderer::TerrainResult terrain = parent->getTerrainRenderer()->getResult(x, z, true, true);
 
     // TODO Displaced textures had their presence already computed before, store that result and use it
 
@@ -188,7 +171,7 @@ TexturesRenderer::TexturesResult TexturesRenderer::applyToTerrain(double x, doub
         TexturesLayerResult &layer = result.layers[i];
 
         layer.definition = textures->getTextureLayer(i);
-        layer.presence = getBasePresence(i, terrain);
+        layer.presence = getBasePresence(i, raw_terrain);
         if (layer.presence > 0.9999) {
             start = i;
         }
@@ -205,7 +188,7 @@ TexturesRenderer::TexturesResult TexturesRenderer::applyToTerrain(double x, doub
         TexturesLayerResult &layer = result.layers[i];
 
         if (layer.presence > 0.0) {
-            Vector3 normal = _getDetailNormal(parent, terrain.location, terrain.normal, layer.definition);
+            Vector3 normal = _getDetailNormal(parent, terrain.location, terrain.normal, layer.definition, precision);
             Vector3 location(x, terrain.location.y, z);
             layer.color = parent->applyLightingToSurface(location, normal, *layer.definition->material);
             layer.color.a = layer.presence;

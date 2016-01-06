@@ -1,22 +1,22 @@
 #include "TextureLayerDefinition.h"
 
+#include <algorithm>
 #include "Zone.h"
-#include "NoiseGenerator.h"
 #include "SurfaceMaterial.h"
 #include "PackStream.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"
 #include "Color.h"
+#include "FractalNoise.h"
 #include "NoiseNode.h"
 
 TextureLayerDefinition::TextureLayerDefinition(DefinitionNode *parent, const string &name)
     : DefinitionNode(parent, name, "texturelayer") {
     terrain_zone = new Zone;
-    _displacement_noise = new NoiseGenerator;
     material = new SurfaceMaterial;
 
-    displacement_height = 0.0;
-    displacement_scaling = 1.0;
+    displacement_noise = new NoiseNode(this, "displacement");
+    displacement_noise->setConfig(0.0);
 
     detail_noise = new NoiseNode(this, "detail");
     detail_noise->setConfig(0.01);
@@ -24,21 +24,11 @@ TextureLayerDefinition::TextureLayerDefinition(DefinitionNode *parent, const str
 
 TextureLayerDefinition::~TextureLayerDefinition() {
     delete terrain_zone;
-    delete _displacement_noise;
     delete material;
 }
 
 void TextureLayerDefinition::validate() {
     DefinitionNode::validate();
-
-    if (displacement_scaling < 0.000001) {
-        displacement_scaling = 0.000001;
-    }
-
-    _displacement_noise->clearLevels();
-    _displacement_noise->addLevelsSimple(9, 1.0, -1.0, 1.0, 0.0);
-    _displacement_noise->normalizeAmplitude(-1.0, 1.0, 0);
-    _displacement_noise->validate();
 
     material->validate();
 
@@ -57,11 +47,7 @@ void TextureLayerDefinition::copy(DefinitionNode *destination) const {
     if (auto tex_destination = static_cast<TextureLayerDefinition *>(destination)) {
         terrain_zone->copy(tex_destination->terrain_zone);
 
-        tex_destination->displacement_scaling = displacement_scaling;
-        tex_destination->displacement_height = displacement_height;
         *tex_destination->material = *material;
-
-        _displacement_noise->copy(tex_destination->_displacement_noise);
     }
 }
 
@@ -69,42 +55,34 @@ void TextureLayerDefinition::save(PackStream *stream) const {
     DefinitionNode::save(stream);
 
     terrain_zone->save(stream);
-    stream->write(&displacement_scaling);
-    stream->write(&displacement_height);
     material->save(stream);
-
-    _displacement_noise->save(stream);
 }
 
 void TextureLayerDefinition::load(PackStream *stream) {
     DefinitionNode::load(stream);
 
     terrain_zone->load(stream);
-    stream->read(&displacement_scaling);
-    stream->read(&displacement_height);
     material->load(stream);
-
-    _displacement_noise->load(stream);
 }
 
 void TextureLayerDefinition::applyPreset(TextureLayerPreset preset, RandomGenerator &random) {
-    _displacement_noise->randomizeOffsets(random);
+    displacement_noise->randomize(random);
     detail_noise->randomize(random);
 
     terrain_zone->clear();
 
     switch (preset) {
     case TEXTURES_LAYER_PRESET_MUD:
-        displacement_height = 0.02;
-        displacement_scaling = 3.0;
+        displacement_noise->setConfig(0.05, 0.1, 0.3);
+        detail_noise->setConfig(0.01, 0.03);
         material->setColor(0.015, 0.014, 0.014, 1.0);
         material->reflection = 0.003;
         material->shininess = 4.0;
         break;
     case TEXTURES_LAYER_PRESET_ROCK:
         terrain_zone->addHeightRangeQuick(1.0, 0.6, 0.7, 1.0, 1.0);
-        displacement_height = 0.3;
-        displacement_scaling = 2.0;
+        displacement_noise->setConfig(1.0, 0.3, 0.5, 0.85);
+        detail_noise->setConfig(0.02, 0.04);
         material->setColor(0.6, 0.55, 0.57, 1.0);
         material->reflection = 0.006;
         material->shininess = 6.0;
@@ -112,8 +90,8 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset, RandomGenera
     case TEXTURES_LAYER_PRESET_GRASS:
         terrain_zone->addHeightRangeQuick(1.0, 0.45, 0.5, 0.8, 1.0);
         terrain_zone->addSlopeRangeQuick(1.0, 0.0, 0.0, 0.05, 0.4);
-        displacement_height = 0.0;
-        displacement_scaling = 1.0;
+        displacement_noise->setConfig(0.4, 0.05);
+        detail_noise->setConfig(0.01, 0.1);
         material->setColor(0.12, 0.19, 0.035, 1.0);
         material->reflection = 0.001;
         material->shininess = 4.0;
@@ -121,8 +99,8 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset, RandomGenera
     case TEXTURES_LAYER_PRESET_SAND:
         terrain_zone->addHeightRangeQuick(1.0, 0.495, 0.505, 0.56, 0.63);
         terrain_zone->addSlopeRangeQuick(1.0, 0.0, 0.0, 0.1, 0.4);
-        displacement_height = 0.05;
-        displacement_scaling = 5.0;
+        displacement_noise->setConfig(0.04, 0.1, 0.5, 0.3);
+        detail_noise->setConfig(0.004, 0.08);
         material->setColor(1.2, 1.1, 0.9, 1.0);
         material->reflection = 0.008;
         material->shininess = 1.0;
@@ -130,8 +108,8 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset, RandomGenera
     case TEXTURES_LAYER_PRESET_SNOW:
         terrain_zone->addHeightRangeQuick(1.0, 0.77, 0.85, 1.0, 1.0);
         terrain_zone->addSlopeRangeQuick(1.0, 0.0, 0.0, 0.2, 1.0);
-        displacement_height = 0.1;
-        displacement_scaling = 1.0;
+        displacement_noise->setConfig(0.4, 0.07);
+        detail_noise->setConfig(0.01, 0.03);
         material->setColor(5.0, 5.0, 5.0, 1.0);
         material->reflection = 0.02;
         material->shininess = 0.6;
@@ -139,4 +117,14 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset, RandomGenera
     }
 
     validate();
+}
+
+bool TextureLayerDefinition::hasDisplacement() const {
+    return displacement_noise->getGenerator()->getHeight() > 0.0;
+}
+
+double TextureLayerDefinition::getMaximalDisplacement() const {
+    double neg, pos;
+    displacement_noise->getGenerator()->estimateRange(&neg, &pos);
+    return max(fabs(neg), fabs(pos));
 }

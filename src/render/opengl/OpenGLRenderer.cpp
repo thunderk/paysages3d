@@ -267,7 +267,7 @@ void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera) {
 }
 
 double OpenGLRenderer::getPrecision(const Vector3 &) {
-    return 0.0000001;
+    return 0.001;
 }
 
 Color OpenGLRenderer::applyMediumTraversal(const Vector3 &, const Color &color) {
