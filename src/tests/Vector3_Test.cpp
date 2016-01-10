@@ -20,3 +20,11 @@ TEST(Vector3, randomInSphere) {
     v = Vector3::randomInSphere(0.5, true);
     EXPECT_DOUBLE_EQ(v.getNorm(), 0.5);
 }
+
+TEST(Vector3, getNormal3) {
+    EXPECT_VECTOR3_COORDS(VECTOR_ZERO.getNormal3(VECTOR_SOUTH, VECTOR_EAST), 0.0, 1.0, 0.0);
+}
+
+TEST(Vector3, getNormal5) {
+    EXPECT_VECTOR3_COORDS(VECTOR_ZERO.getNormal5(VECTOR_SOUTH, VECTOR_NORTH, VECTOR_EAST, VECTOR_WEST), 0.0, 1.0, 0.0);
+}

@@ -1,33 +1,33 @@
 #include "TexturesRenderer.h"
 
+#include <cassert>
 #include <cmath>
 #include "Scenery.h"
 #include "SoftwareRenderer.h"
 #include "TextureLayerDefinition.h"
 #include "TexturesDefinition.h"
 #include "Zone.h"
+#include "LightingManager.h"
 #include "NoiseNode.h"
 #include "FractalNoise.h"
 #include "NoiseGenerator.h"
 
-TexturesRenderer::TexturesRenderer(SoftwareRenderer *parent) : parent(parent) {
+TexturesRenderer::TexturesRenderer() {
+    setQualityFactor(0.5);
 }
 
 TexturesRenderer::~TexturesRenderer() {
 }
 
-void TexturesRenderer::update() {
+void TexturesRenderer::setQuality(bool normal5) {
+    quality_normal5 = normal5;
 }
 
-/*
- * Get the base presence factor of a layer, not accounting for other layers.
- */
-double TexturesRenderer::getLayerBasePresence(TextureLayerDefinition *layer,
-                                              const TerrainRenderer::TerrainResult &terrain) {
-    return layer->terrain_zone->getValue(terrain.location, terrain.normal);
+void TexturesRenderer::setQualityFactor(double factor) {
+    setQuality(factor > 0.6);
 }
 
-double TexturesRenderer::getMaximalDisplacement(TexturesDefinition *textures) {
+double TexturesRenderer::getMaximalDisplacement(TexturesDefinition *textures) const {
     int i, n;
     double disp = 0.0;
     n = textures->getLayerCount();
@@ -41,28 +41,8 @@ double TexturesRenderer::getMaximalDisplacement(TexturesDefinition *textures) {
     return disp;
 }
 
-static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, Vector3 south, Vector3 west) {
-    Vector3 dnorth, deast, dsouth, dwest, normal;
-
-    dnorth = north.sub(center);
-    deast = east.sub(center);
-    dsouth = south.sub(center);
-    dwest = west.sub(center);
-
-    normal = deast.crossProduct(dnorth);
-    normal = normal.add(dsouth.crossProduct(deast));
-    normal = normal.add(dwest.crossProduct(dsouth));
-    normal = normal.add(dnorth.crossProduct(dwest));
-
-    return normal.normalize();
-}
-
-static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south) {
-    return south.sub(center).crossProduct(east.sub(center)).normalize();
-}
-
-static Vector3 _getDetailNormal(SoftwareRenderer *renderer, Vector3 base_location, Vector3 base_normal,
-                                TextureLayerDefinition *layer, double precision) {
+static Vector3 _getDetailNormal(Vector3 base_location, Vector3 base_normal, TextureLayerDefinition *layer,
+                                double precision, bool normal5) {
     Vector3 result;
 
     /* Find guiding vectors in the appoximated local plane */
@@ -90,16 +70,16 @@ static Vector3 _getDetailNormal(SoftwareRenderer *renderer, Vector3 base_locatio
     south = base_location.add(dy.scale(offset));
     south = south.add(base_normal.scale(detail_noise->getTriplanar(detail, south, base_normal)));
 
-    if (renderer->render_quality > 6) {
+    if (normal5) {
         west = base_location.add(dx.scale(-offset));
         west = west.add(base_normal.scale(detail_noise->getTriplanar(detail, west, base_normal)));
 
         north = base_location.add(dy.scale(-offset));
         north = north.add(base_normal.scale(detail_noise->getTriplanar(detail, north, base_normal)));
 
-        result = _getNormal4(center, north, east, south, west);
+        result = center.getNormal5(south, north, east, west);
     } else {
-        result = _getNormal2(center, east, south);
+        result = center.getNormal3(south, east);
     }
 
     if (result.dotProduct(base_normal) < 0.0) {
@@ -108,8 +88,24 @@ static Vector3 _getDetailNormal(SoftwareRenderer *renderer, Vector3 base_locatio
     return result;
 }
 
-Vector3 TexturesRenderer::displaceTerrain(const TerrainRenderer::TerrainResult &terrain) {
-    TexturesDefinition *textures = parent->getScenery()->getTextures();
+static inline double _getLayerPresence(TextureLayerDefinition *layer, const Vector3 &location, const Vector3 &normal) {
+    return layer->terrain_zone->getValue(location, normal);
+}
+
+static inline double _getLayerDisplacement(TextureLayerDefinition *layer, const Vector3 &location,
+                                           const Vector3 &normal, double presence) {
+    auto noise = layer->propDisplacementNoise()->getGenerator();
+    return noise->getTriplanar(0.001, location, normal) * presence;
+}
+
+static inline double _getLayerDisplacement(TextureLayerDefinition *layer, const Vector3 &location,
+                                           const Vector3 &normal) {
+    double presence = _getLayerPresence(layer, location, normal);
+    return _getLayerDisplacement(layer, location, normal, presence);
+}
+
+Vector3 TexturesRenderer::displaceTerrain(const TexturesDefinition *textures, const Vector3 &location,
+                                          const Vector3 &normal) const {
     double offset = 0.0;
     int i, n;
 
@@ -118,64 +114,68 @@ Vector3 TexturesRenderer::displaceTerrain(const TerrainRenderer::TerrainResult &
         TextureLayerDefinition *layer = textures->getTextureLayer(i);
 
         if (layer->hasDisplacement()) {
-            double presence = getLayerBasePresence(layer, terrain);
-            auto noise = layer->propDisplacementNoise()->getGenerator();
-            offset += noise->getTriplanar(0.001, terrain.location, terrain.normal) * presence;
+            offset += _getLayerDisplacement(layer, location, normal);
         }
     }
 
-    return terrain.location.add(terrain.normal.normalize().scale(offset));
+    return location.add(normal.scale(offset));
 }
 
-double TexturesRenderer::getBasePresence(int layer, const TerrainRenderer::TerrainResult &terrain) {
-    TextureLayerDefinition *layerdef = parent->getScenery()->getTextures()->getTextureLayer(layer);
-    return getLayerBasePresence(layerdef, terrain);
-}
-
-TexturesRenderer::TexturesResult TexturesRenderer::applyToTerrain(double x, double z, double precision) {
-    TexturesDefinition *textures = parent->getScenery()->getTextures();
-    TexturesResult result;
-
-    // Displacement
-    // FIXME
-    TerrainRenderer::TerrainResult raw_terrain = parent->getTerrainRenderer()->getResult(x, z, true, false);
-    TerrainRenderer::TerrainResult terrain = parent->getTerrainRenderer()->getResult(x, z, true, true);
-
-    // TODO Displaced textures had their presence already computed before, store that result and use it
-
-    // Find presence of each layer
+vector<double> TexturesRenderer::getLayersPresence(const TexturesDefinition *textures, const Vector3 &location,
+                                                   const Vector3 &normal) const {
     int n = textures->getLayerCount();
-    int start = 0;
+    vector<double> result;
     for (int i = 0; i < n; i++) {
-        TexturesLayerResult &layer = result.layers[i];
+        TextureLayerDefinition *layer = textures->getTextureLayer(i);
+        double presence = _getLayerPresence(layer, location, normal);
+        result.push_back(presence);
+    }
+    return result;
+}
 
-        layer.definition = textures->getTextureLayer(i);
-        layer.presence = getBasePresence(i, raw_terrain);
-        if (layer.presence > 0.9999) {
-            start = i;
+vector<Vector3> TexturesRenderer::getLayersDisplacement(const TexturesDefinition *textures, const Vector3 &location,
+                                                        const Vector3 &normal, const vector<double> &presence) const {
+    int n = textures->getLayerCount();
+    assert(presence.size() == to_size(n));
+    vector<Vector3> result;
+    Vector3 displaced = location;
+    for (int i = 0; i < n; i++) {
+        double layer_presence = presence[i];
+        if (layer_presence > 0.0) {
+            TextureLayerDefinition *layer = textures->getTextureLayer(i);
+            double displacement = _getLayerDisplacement(layer, location, normal, layer_presence);
+            displaced = displaced.add(normal.scale(displacement * layer_presence));
+        }
+        result.push_back(displaced);
+    }
+    return result;
+}
+
+Color TexturesRenderer::getFinalComposition(const TexturesDefinition *textures, LightingManager *lighting,
+                                            const vector<double> &presence, const vector<Vector3> &location,
+                                            const vector<Vector3> &normal, double precision, const Vector3 &eye) const {
+    int n = textures->getLayerCount();
+    assert(presence.size() == to_size(n));
+    assert(location.size() == to_size(n));
+    assert(normal.size() == to_size(n));
+    Color result = COLOR_BLACK;
+    // TODO share the same lighting status (no need to recompute shadows)
+    int i;
+    for (i = n - 1; i > 0; i--) {
+        // Start at the top-most covering layer (layers underneath are only important for displacement, not color)
+        if (presence[i] > 0.99999) {
+            break;
         }
     }
-    result.layer_count = n;
-
-    result.base_location = terrain.location;
-    result.base_normal = terrain.normal;
-    result.final_location = terrain.location;
-    result.final_color = COLOR_GREEN;
-
-    // Compute and merge colors of visible layers
-    for (int i = start; i < n; i++) {
-        TexturesLayerResult &layer = result.layers[i];
-
-        if (layer.presence > 0.0) {
-            Vector3 normal = _getDetailNormal(parent, terrain.location, terrain.normal, layer.definition, precision);
-            Vector3 location(x, terrain.location.y, z);
-            layer.color = parent->applyLightingToSurface(location, normal, *layer.definition->material);
-            layer.color.a = layer.presence;
-            result.final_color.mask(layer.color);
-        } else {
-            layer.color = COLOR_TRANSPARENT;
+    for (i = 0; i < n; i++) {
+        double layer_presence = presence[i];
+        if (layer_presence > 0.0) {
+            TextureLayerDefinition *layer = textures->getTextureLayer(i);
+            auto detail_normal = _getDetailNormal(location[i], normal[i], layer, precision, quality_normal5);
+            Color layer_color = lighting->apply(eye, location[i], detail_normal, *layer->material);
+            layer_color.a *= layer_presence;
+            result.mask(layer_color);
         }
     }
-
     return result;
 }

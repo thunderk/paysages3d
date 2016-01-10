@@ -5,6 +5,7 @@
 #include "Scenery.h"
 #include "TerrainDefinition.h"
 #include "TexturesRenderer.h"
+#include "TexturesDefinition.h"
 #include "LightComponent.h"
 #include "TerrainRayWalker.h"
 #include "RayCastingResult.h"
@@ -40,27 +41,7 @@ double TerrainRenderer::getHeight(double x, double z, bool with_painting, bool w
     return parent->getScenery()->getTerrain()->getInterpolatedHeight(x, z, true, with_painting, water_offset);
 }
 
-static inline Vector3 _getNormal4(Vector3 center, Vector3 north, Vector3 east, Vector3 south, Vector3 west) {
-    Vector3 dnorth, deast, dsouth, dwest, normal;
-
-    dnorth = north.sub(center);
-    deast = east.sub(center);
-    dsouth = south.sub(center);
-    dwest = west.sub(center);
-
-    normal = deast.crossProduct(dnorth);
-    normal = normal.add(dsouth.crossProduct(deast));
-    normal = normal.add(dwest.crossProduct(dsouth));
-    normal = normal.add(dnorth.crossProduct(dwest));
-
-    return normal.normalize();
-}
-
-static inline Vector3 _getNormal2(Vector3 center, Vector3 east, Vector3 south) {
-    return south.sub(center).crossProduct(east.sub(center)).normalize();
-}
-
-TerrainRenderer::TerrainResult TerrainRenderer::getResult(double x, double z, bool with_painting, bool with_textures) {
+TerrainRenderer::TerrainResult TerrainRenderer::getResult(double x, double z, bool with_painting) {
     TerrainResult result;
     double offset = 0.001;
 
@@ -88,43 +69,65 @@ TerrainRenderer::TerrainResult TerrainRenderer::getResult(double x, double z, bo
         north.z = z - offset;
         north.y = getHeight(north.x, north.z, with_painting);
 
-        result.normal = _getNormal4(center, north, east, south, west);
+        result.normal = center.getNormal5(south, north, east, west);
     } else {
-        result.normal = _getNormal2(center, east, south);
+        result.normal = center.getNormal3(south, east);
     }
 
     /* Location */
     result.location = center;
 
-    /* Texture displacement */
-    if (with_textures) {
-        center = parent->getTexturesRenderer()->displaceTerrain(result);
-        result.location = center;
-
-        /* Recompute normal */
-        if (parent->render_quality > 6) {
-            /* Use 5 points on displaced terrain */
-            east = parent->getTexturesRenderer()->displaceTerrain(getResult(east.x, east.z, with_painting, 0));
-            south = parent->getTexturesRenderer()->displaceTerrain(getResult(south.x, south.z, with_painting, 0));
-            west = parent->getTexturesRenderer()->displaceTerrain(getResult(west.x, west.z, with_painting, 0));
-            north = parent->getTexturesRenderer()->displaceTerrain(getResult(north.x, north.z, with_painting, 0));
-
-            result.normal = _getNormal4(center, north, east, south, west);
-        } else {
-            /* Use 3 points on displaced terrain */
-            east = parent->getTexturesRenderer()->displaceTerrain(getResult(east.x, east.z, with_painting, 0));
-            south = parent->getTexturesRenderer()->displaceTerrain(getResult(south.x, south.z, with_painting, 0));
-
-            result.normal = _getNormal2(center, east, south);
-        }
-    }
-
     return result;
 }
 
-Color TerrainRenderer::getFinalColor(const Vector3 &location, double precision) {
-    TexturesRenderer::TexturesResult textures = parent->getTexturesRenderer()->applyToTerrain(location.x, location.z, precision);
-    return parent->applyMediumTraversal(textures.final_location, textures.final_color);
+Vector3 TerrainRenderer::getDisplaced(double x, double z, bool with_painting) {
+    auto terrain = getResult(x, z, with_painting);
+    auto textures = parent->getScenery()->getTextures();
+    return parent->getTexturesRenderer()->displaceTerrain(textures, terrain.location, terrain.normal);
+}
+
+static inline pair<vector<double>, vector<Vector3>> _getTexturesInfo(TerrainRenderer *terrain_renderer,
+                                                                     TexturesRenderer *textures_renderer, double x,
+                                                                     double z,
+                                                                     TexturesDefinition *textures_definition) {
+    auto terrain = terrain_renderer->getResult(x, z, true);
+    auto presence = textures_renderer->getLayersPresence(textures_definition, terrain.location, terrain.normal);
+    auto displaced =
+        textures_renderer->getLayersDisplacement(textures_definition, terrain.location, terrain.normal, presence);
+    return pair<vector<double>, vector<Vector3>>(presence, displaced);
+}
+
+Color TerrainRenderer::getFinalColor(double x, double z, double precision) {
+    auto textures_renderer = parent->getTexturesRenderer();
+    auto textures_definition = parent->getScenery()->getTextures();
+
+    if (textures_definition->getLayerCount() == 0) {
+        return COLOR_BLACK;
+    } else {
+        auto current = _getTexturesInfo(this, textures_renderer, x, z, textures_definition);
+        auto top_location = current.second.back();
+
+        vector<Vector3> normal;
+        int i = 0;
+        // TODO Use getNormal5 on high-quality renders
+        double offset = 0.0001;
+        auto east = _getTexturesInfo(this, textures_renderer, x + offset, z, textures_definition);
+        auto south = _getTexturesInfo(this, textures_renderer, x, z + offset, textures_definition);
+        for (auto layer_presence : current.first) {
+            if (layer_presence > 0.0) {
+                normal.push_back(current.second[i].getNormal3(south.second[i], east.second[i]));
+            } else {
+                normal.push_back(VECTOR_ZERO);
+            }
+            i++;
+        }
+
+        auto color = textures_renderer->getFinalComposition(textures_definition, parent->getLightingManager(),
+                                                            current.first, current.second, normal, precision,
+                                                            parent->getCameraLocation(top_location));
+
+        return parent->applyMediumTraversal(top_location, color);
+    }
 }
 
 RayCastingResult TerrainRenderer::castRay(const Vector3 &start, const Vector3 &direction) {
@@ -133,7 +136,8 @@ RayCastingResult TerrainRenderer::castRay(const Vector3 &start, const Vector3 &d
     if (walker_ray->startWalking(start, direction.normalize(), 0.0, walk_result)) {
         result.hit = true;
         result.hit_location = walk_result.hit_location;
-        result.hit_color = getFinalColor(walk_result.hit_location, parent->getPrecision(walk_result.hit_location));
+        result.hit_color = getFinalColor(walk_result.hit_location.x, walk_result.hit_location.z,
+                                         parent->getPrecision(walk_result.hit_location));
     } else {
         result.hit = false;
     }

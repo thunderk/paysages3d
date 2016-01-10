@@ -111,6 +111,24 @@ VectorSpherical Vector3::toSpherical() const {
     return result;
 }
 
+Vector3 Vector3::getNormal3(const Vector3 &posx, const Vector3 &posy) const {
+    return posx.sub(*this).crossProduct(posy.sub(*this)).normalize();
+}
+
+Vector3 Vector3::getNormal5(const Vector3 &posx, const Vector3 &negx, const Vector3 &posy, const Vector3 &negy) const {
+    Vector3 dnegx = negx.sub(*this);
+    Vector3 dposy = posy.sub(*this);
+    Vector3 dposx = posx.sub(*this);
+    Vector3 dnegy = negy.sub(*this);
+
+    Vector3 normal = dposy.crossProduct(dnegx);
+    normal = normal.add(dposx.crossProduct(dposy));
+    normal = normal.add(dnegy.crossProduct(dposx));
+    normal = normal.add(dnegx.crossProduct(dnegy));
+
+    return normal.normalize();
+}
+
 Vector3 Vector3::midPointTo(const Vector3 &other) const {
     return Vector3((other.x + x) * 0.5, (other.y + y) * 0.5, (other.z + z) * 0.5);
 }

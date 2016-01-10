@@ -3,45 +3,66 @@
 
 #include "software_global.h"
 
-#include "TerrainRenderer.h"
-
-#define TEXTURES_MAX_LAYERS 50
+#include <vector>
 
 namespace paysages {
 namespace software {
 
 class SOFTWARESHARED_EXPORT TexturesRenderer {
   public:
-    typedef struct {
-        TextureLayerDefinition *definition;
-        double presence;
-        Color color;
-    } TexturesLayerResult;
-
-    typedef struct {
-        Vector3 base_location;
-        Vector3 base_normal;
-        int layer_count;
-        TexturesLayerResult layers[TEXTURES_MAX_LAYERS];
-        Vector3 final_location;
-        Color final_color;
-    } TexturesResult;
-
-  public:
-    TexturesRenderer(SoftwareRenderer *parent);
+    TexturesRenderer();
     virtual ~TexturesRenderer();
 
-    virtual void update();
+    /**
+     * Set the quality parameters.
+     *
+     * "normal5" can be set to true to use balanced 5 points instead of unbalanced 3 points for normal computations.
+     */
+    void setQuality(bool normal5);
 
-    virtual double getMaximalDisplacement(TexturesDefinition *textures);
-    virtual double getLayerBasePresence(TextureLayerDefinition *layer, const TerrainRenderer::TerrainResult &terrain);
+    /**
+     * Set an automated quality factor.
+     */
+    void setQualityFactor(double factor);
 
-    virtual Vector3 displaceTerrain(const TerrainRenderer::TerrainResult &terrain);
-    virtual double getBasePresence(int layer, const TerrainRenderer::TerrainResult &terrain);
-    virtual TexturesResult applyToTerrain(double x, double z, double precision);
+    /**
+     * Get the maximal displacement offset all combined textures can make.
+     */
+    double getMaximalDisplacement(TexturesDefinition *textures) const;
+
+    /**
+     * Get the fully displaced terrain location (applying all textures).
+     */
+    Vector3 displaceTerrain(const TexturesDefinition *textures, const Vector3 &location, const Vector3 &normal) const;
+
+    /**
+     * Get the presence of each texture layer at a given terrain location.
+     */
+    vector<double> getLayersPresence(const TexturesDefinition *textures, const Vector3 &location,
+                                     const Vector3 &normal) const;
+
+    /**
+     * Get the displaced location of each texture layer at a given terrain location.
+     *
+     * 'presence' is the result of 'getLayersPresence'.
+     */
+    vector<Vector3> getLayersDisplacement(const TexturesDefinition *textures, const Vector3 &location,
+                                          const Vector3 &normal, const vector<double> &presence) const;
+
+    /**
+     * Get the final lighted texture composition.
+     *
+     * 'presence' is the result of 'getLayersPresence'.
+     * 'location' is the result of 'getLayersDisplacement'.
+     * 'normal' is the normal vector (taking only displacement into account, not detail) at each texture's 'location'.
+     * 'precision' is the level of detail needed for the composition (minimal height of the detail noise).
+     */
+    Color getFinalComposition(const TexturesDefinition *textures, LightingManager *lighting,
+                              const vector<double> &presence, const vector<Vector3> &location,
+                              const vector<Vector3> &normal, double precision, const Vector3 &eye) const;
 
   private:
-    SoftwareRenderer *parent;
+    bool quality_normal5;
 };
 }
 }

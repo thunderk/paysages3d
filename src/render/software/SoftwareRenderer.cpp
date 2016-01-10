@@ -32,7 +32,7 @@ SoftwareRenderer::SoftwareRenderer(Scenery *scenery) : scenery(scenery) {
     atmosphere_renderer = new BaseAtmosphereRenderer(this);
     clouds_renderer = new CloudsRenderer(this);
     terrain_renderer = new TerrainRenderer(this);
-    textures_renderer = new TexturesRenderer(this);
+    textures_renderer = new TexturesRenderer();
     vegetation_renderer = new VegetationRenderer(this);
     water_renderer = new WaterRenderer(this);
 
@@ -86,7 +86,6 @@ void SoftwareRenderer::prepare() {
     clouds_renderer->update();
     terrain_renderer->update();
     water_renderer->update();
-    textures_renderer->update();
 
     nightsky_renderer->update();
 

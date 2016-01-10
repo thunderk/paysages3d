@@ -50,8 +50,9 @@ static inline Vector3 _getShiftAxis(const Vector3 &direction) {
 
 bool TerrainRayWalker::startWalking(const Vector3 &start, Vector3 direction, double escape_angle,
                                     TerrainHitResult &result) {
-    TerrainRenderer *terrain_renderer = renderer->getTerrainRenderer();
-    TexturesRenderer *textures_renderer = renderer->getTexturesRenderer();
+    auto terrain_renderer = renderer->getTerrainRenderer();
+    auto textures_renderer = renderer->getTexturesRenderer();
+    auto textures_definition = renderer->getScenery()->getTextures();
     TerrainRenderer::TerrainResult terrain_result;
     Vector3 cursor, displaced;
     double diff;
@@ -75,7 +76,7 @@ bool TerrainRayWalker::startWalking(const Vector3 &start, Vector3 direction, dou
         cursor = previous_cursor.add(direction.scale(step_length));
 
         // Get the terrain info at end (without textures displacement)
-        terrain_result = terrain_renderer->getResult(cursor.x, cursor.z, true, false);
+        terrain_result = terrain_renderer->getResult(cursor.x, cursor.z, true);
         diff = cursor.y - terrain_result.location.y;
 
         // If we are very under the terrain, consider a hit
@@ -85,7 +86,8 @@ bool TerrainRayWalker::startWalking(const Vector3 &start, Vector3 direction, dou
 
         // If we are close enough to the terrain, apply displacement
         else if (diff < displacement_base * displacement_safety) {
-            displaced = textures_renderer->displaceTerrain(terrain_result);
+            displaced =
+                textures_renderer->displaceTerrain(textures_definition, terrain_result.location, terrain_result.normal);
             diff = cursor.y - displaced.y;
             hit = diff < 0.0;
         }

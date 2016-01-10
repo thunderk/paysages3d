@@ -9,6 +9,7 @@
 #include "ColorProfile.h"
 #include "CameraDefinition.h"
 #include "OpenGLRenderer.h"
+#include "TerrainRenderer.h"
 #include "TexturesRenderer.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"
@@ -97,7 +98,7 @@ bool OpenGLTerrainChunk::maintain() {
                 if (_texture_current_size <= 1 || i % 2 != 0 || j % 2 != 0) {
                     double x = _startx + factor * to_double(i);
                     double z = _startz + factor * to_double(j);
-                    Color color = _renderer->getTexturesRenderer()->applyToTerrain(x, z, 0.001).final_color;
+                    Color color = _renderer->getTerrainRenderer()->getFinalColor(x, z, 0.001);
                     new_image->setPixel(i, j, Color(color.r * 0.2, color.g * 0.2, color.b * 0.2).normalized().to32BitRGBA());
                 }
             }

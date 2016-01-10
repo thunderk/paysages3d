@@ -55,9 +55,10 @@ RayCastingResult VegetationRenderer::renderInstance(const SpaceSegment &segment,
                                                     bool only_hit, bool displaced) {
     if (!displaced) {
         // Recursive call on displaced instance
-        const Vector3 &base = instance.getBase();
-        TerrainRenderer::TerrainResult terrain = parent->getTerrainRenderer()->getResult(base.x, base.z, true, true);
-        VegetationInstance displaced_instance = instance.displace(terrain.location, terrain.normal);
+        auto base = instance.getBase();
+        auto terrain = parent->getTerrainRenderer()->getResult(base.x, base.z, true);
+        auto displaced = parent->getTerrainRenderer()->getDisplaced(base.x, base.z, true);
+        auto displaced_instance = instance.displace(displaced, terrain.normal);
         return renderInstance(segment, displaced_instance, only_hit, true);
     }
 

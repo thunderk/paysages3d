@@ -59,7 +59,7 @@ class SOFTWARESHARED_EXPORT TerrainRasterizer : public Rasterizer {
      *
      * 'canvas' may be NULL to only simulate the tessellation.
      */
-    int performTessellation(CanvasPortion *canvas, bool displaced);
+    int performTessellation(CanvasPortion *canvas);
 
     /**
      * Tessellate a terrain chunk, pushing the quads in the render area.
@@ -69,7 +69,7 @@ class SOFTWARESHARED_EXPORT TerrainRasterizer : public Rasterizer {
     void renderQuad(CanvasPortion *canvas, double x, double z, double size, double water_height);
 
     void getChunk(SoftwareRenderer *renderer, TerrainRasterizer::TerrainChunkInfo *chunk, double x, double z,
-                  double size, int displaced);
+                  double size);
 
   private:
     double yoffset;

@@ -64,7 +64,23 @@ class BASICSSHARED_EXPORT Vector3 {
      */
     Vector3 midPointTo(const Vector3 &other) const;
 
+    /**
+     * Get the spherical coordinates corresponding to this vector.
+     */
     VectorSpherical toSpherical() const;
+
+    /**
+     * Get a normal vector, using "posx-this" as X axis and "posy-this" as Y axis, to produce the normal along the Z
+     * axis.
+     */
+    Vector3 getNormal3(const Vector3 &posx, const Vector3 &posy) const;
+
+    /**
+     * Same as "getNormal3", but using also negative axis for more precision.
+     *
+     * As the 4 vectors used may not be in the same place, an average is done.
+     */
+    Vector3 getNormal5(const Vector3 &posx, const Vector3 &negx, const Vector3 &posy, const Vector3 &negy) const;
 
     /**
      * Produce a random vector in a sphere domain.
