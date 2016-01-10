@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <algorithm>
 #include "CloudLayerDefinition.h"
 #include "SoftwareRenderer.h"
 #include "NoiseGenerator.h"
@@ -63,12 +64,9 @@ int CloudBasicLayerRenderer::findSegments(BaseCloudsModel *model, const Vector3 
     model->getAltitudeRange(&ymin, &ymax);
 
     model->getDetailRange(&min_step, &max_step);
-    render_precision = max_step - quality * (max_step - min_step);
-    if (render_precision > max_total_length / 10.0) {
-        render_precision = max_total_length / 10.0;
-    } else if (render_precision < max_total_length / 2000.0) {
-        render_precision = max_total_length / 2000.0;
-    }
+
+    double distance = parent->getCameraLocation(start).sub(start).getNorm();
+    render_precision = min_step + (max_step - min_step) * min(distance / (quality + 0.1), 100.0) * 0.01;
 
     segment_count = 0;
     current_total_length = 0.0;
@@ -121,6 +119,8 @@ int CloudBasicLayerRenderer::findSegments(BaseCloudsModel *model, const Vector3 
                 step = direction.scale((noise_distance > -render_precision) ? render_precision : -noise_distance);
             }
         }
+
+        render_precision *= 1.0 + 0.001 / (quality + 0.1);
     } while (inside || (walker.y >= ymin - 0.001 && walker.y <= ymax + 0.001 &&
                         current_total_length < max_total_length && current_inside_length < max_inside_length));
 
@@ -134,7 +134,7 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
     double max_length, total_length, inside_length;
     Vector3 start, end, direction;
     Color result, col;
-    CloudSegment segments[20];
+    CloudSegment segments[30];
 
     start = eye;
     end = location;
@@ -149,25 +149,18 @@ Color CloudBasicLayerRenderer::getColor(BaseCloudsModel *model, const Vector3 &e
 
     double ymin, ymax;
     model->getAltitudeRange(&ymin, &ymax);
-    double transparency_depth = (ymax - ymin) * 0.5;
+    double transparency_depth = (ymax - ymin);
 
-    segment_count = findSegments(model, start, direction, 20, transparency_depth, max_length, &inside_length,
+    SurfaceMaterial material(COLOR_WHITE.scaled(5.0));
+    material.hardness = 1.0;
+    material.reflection = 0.0;
+    material.shininess = 0.0;
+    material.validate();
+
+    segment_count = findSegments(model, start, direction, 30, transparency_depth, max_length, &inside_length,
                                  &total_length, segments);
     for (i = segment_count - 1; i >= 0; i--) {
-        SurfaceMaterial material(COLOR_WHITE);
-        material.hardness = 0.25;
-        material.reflection = 0.0;
-        material.shininess = 0.0;
-        material.validate();
-
-        col = parent->applyLightingToSurface(segments[i].start, parent->getAtmosphereRenderer()->getSunDirection(),
-                                             material);
-
-        // Boost highly lighted area
-        double boost = 1.0 + (col.getPower() * col.getPower());
-        col.r *= boost;
-        col.g *= boost;
-        col.b *= boost;
+        col = parent->applyLightingToSurface(segments[i].start, VECTOR_UP, material);
 
         col.a = (segments[i].length >= transparency_depth) ? 1.0 : (segments[i].length / transparency_depth);
         result.mask(col);
@@ -197,7 +190,7 @@ bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent 
                                          const Vector3 &location) {
     Vector3 start, end, direction;
     double inside_depth, total_depth, factor;
-    CloudSegment segments[20];
+    CloudSegment segments[30];
 
     start = location;
     direction = light->direction.scale(-1.0);
@@ -208,8 +201,8 @@ bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent 
 
     double ymin, ymax;
     model->getAltitudeRange(&ymin, &ymax);
-    double light_traversal = (ymax - ymin) * 1.2;
-    findSegments(model, start, direction, 20, light_traversal, end.sub(start).getNorm(), &inside_depth, &total_depth,
+    double light_traversal = (ymax - ymin) * 0.8 * light->color.getPower();
+    findSegments(model, start, direction, 30, light_traversal, end.sub(start).getNorm(), &inside_depth, &total_depth,
                  segments);
 
     if (light_traversal < 0.0001) {
@@ -223,7 +216,7 @@ bool CloudBasicLayerRenderer::alterLight(BaseCloudsModel *model, LightComponent 
         }
     }
 
-    double miminum_light = 0.3;
+    double miminum_light = 0.01 * light->color.getPower();
     factor = 1.0 - (1.0 - miminum_light) * factor;
 
     light->color.r *= factor;

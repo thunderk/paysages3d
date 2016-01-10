@@ -167,6 +167,16 @@ void Color::limitPower(double max_power) {
     }
 }
 
+void Color::scale(double factor) {
+    r *= factor;
+    g *= factor;
+    b *= factor;
+}
+
+Color Color::scaled(double factor) const {
+    return Color(r * factor, g * factor, b * factor, a);
+}
+
 Color Color::add(const Color &other) const {
     return Color(r + other.r, g + other.g, b + other.b, a);
 }

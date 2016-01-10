@@ -80,7 +80,7 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset, RandomGenera
         material->shininess = 4.0;
         break;
     case TEXTURES_LAYER_PRESET_ROCK:
-        terrain_zone->addHeightRangeQuick(1.0, 0.6, 0.7, 1.0, 1.0);
+        terrain_zone->addHeightRangeQuick(1.0, 0.55, 0.7, 0.9, 1.0);
         displacement_noise->setConfig(1.0, 0.3, 0.5, 0.85);
         detail_noise->setConfig(0.02, 0.04);
         material->setColor(0.6, 0.55, 0.57, 1.0);

@@ -97,6 +97,7 @@ void SoftwareRenderer::prepare() {
 
 void SoftwareRenderer::setQuality(double quality) {
     terrain_renderer->setQuality(quality);
+    textures_renderer->setQuality(quality);
     clouds_renderer->setQuality(quality);
     godrays->setQuality(quality);
 

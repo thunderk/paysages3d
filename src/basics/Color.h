@@ -32,6 +32,15 @@ class BASICSSHARED_EXPORT Color {
     double getPower() const;
     void limitPower(double max_power);
 
+    /**
+     * Scale the RGB components by a factor.
+     */
+    void scale(double factor);
+    /**
+     * Return a copy, with RGB components scaled by a factor.
+     */
+    Color scaled(double factor) const;
+
     Color add(const Color &other) const;
     Color lerp(const Color &other, double f) const;
 
