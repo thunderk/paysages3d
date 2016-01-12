@@ -99,7 +99,8 @@ bool OpenGLTerrainChunk::maintain() {
                     double x = _startx + factor * to_double(i);
                     double z = _startz + factor * to_double(j);
                     Color color = _renderer->getTerrainRenderer()->getFinalColor(x, z, 0.001);
-                    new_image->setPixel(i, j, Color(color.r * 0.2, color.g * 0.2, color.b * 0.2).normalized().to32BitRGBA());
+                    new_image->setPixel(i, j,
+                                        Color(color.r * 0.2, color.g * 0.2, color.b * 0.2).normalized().to32BitRGBA());
                 }
             }
 

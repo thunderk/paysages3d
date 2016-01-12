@@ -16,11 +16,7 @@ class DEFINITIONSHARED_EXPORT TexturesDefinition : public Layers {
         return (TextureLayerDefinition *)getLayer(position);
     }
 
-    typedef enum {
-        TEXTURES_PRESET_FULL,
-        TEXTURES_PRESET_IRELAND,
-        TEXTURES_PRESET_ALPS
-    } TexturesPreset;
+    typedef enum { TEXTURES_PRESET_FULL, TEXTURES_PRESET_IRELAND, TEXTURES_PRESET_ALPS } TexturesPreset;
     void applyPreset(TexturesPreset preset, RandomGenerator &random = RandomGeneratorDefault);
 
     double getMaximalDisplacement();
