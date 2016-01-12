@@ -517,14 +517,14 @@ const Texture2D *NoiseFunctionSimplex::getNormalTexture() {
                 // TODO Make texture tileable
                 double dx = to_double(x) / to_double(width);
                 double dz = to_double(z) / to_double(height);
-                double vcenter = noiseSimplexGet2DValue(scale * dx, scale * dz) - 0.5;
-                double vsouth = noiseSimplexGet2DValue(scale * dx, scale * dz + offset) - 0.5;
-                double veast = noiseSimplexGet2DValue(scale * dx + offset, scale * dz) - 0.5;
+                double vcenter = noiseSimplexGet2DValue(scale * dx, scale * dz);
+                double vsouth = noiseSimplexGet2DValue(scale * dx, scale * dz + offset);
+                double veast = noiseSimplexGet2DValue(scale * dx + offset, scale * dz);
 
                 Vector3 normal = Geometry::getNormalFromTriangle(
                     Vector3(0.0, vcenter, 0.0), Vector3(0.0, vsouth, offset), Vector3(offset, veast, 0.0));
 
-                _normalTexture->setPixel(x, z, Color(normal.x + 0.5, normal.y + 0.5, normal.z + 0.5));
+                _normalTexture->setPixel(x, z, Color(normal.x * 0.5 + 0.5, normal.y * 0.5 + 0.5, normal.z * 0.5 + 0.5));
             }
         }
     }
