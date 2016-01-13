@@ -7,7 +7,7 @@ uniform float[4] waterNoise;
 out vec4 final_color;
 
 float getDetail(vec3 location) {
-    return max(min(pow(length(location - cameraLocation) * 0.002, 2.0), 0.01), 0.000001);
+    return max(min(pow(length(location - cameraLocation) * 0.001, 2.0), 0.01), 0.00002);
 }
 
 void main(void)
