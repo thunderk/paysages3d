@@ -32,9 +32,8 @@ void TextureLayerDefinition::validate() {
 
     material->validate();
 
-    /* Update zone height range */
-    const Scenery *scenery = getScenery();
-    if (scenery) {
+    // Update zone height range
+    if (auto scenery = getScenery()) {
         TerrainDefinition *terrain = scenery->getTerrain();
         HeightInfo height_info = terrain->getHeightInfo();
         terrain_zone->setRelativeHeight(height_info.min_height, height_info.base_height, height_info.max_height);
@@ -80,15 +79,15 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset, RandomGenera
         material->shininess = 4.0;
         break;
     case TEXTURES_LAYER_PRESET_ROCK:
-        terrain_zone->addHeightRangeQuick(1.0, 0.55, 0.7, 0.9, 1.0);
-        displacement_noise->setConfig(1.0, 0.3, 0.5, 0.85);
+        terrain_zone->addHeightRangeQuick(1.0, 0.6, 0.7, 0.87, 0.95);
+        displacement_noise->setConfig(1.0, 0.4, 0.5, 0.85);
         detail_noise->setConfig(0.02, 0.04);
         material->setColor(0.6, 0.55, 0.57, 1.0);
         material->reflection = 0.006;
         material->shininess = 6.0;
         break;
     case TEXTURES_LAYER_PRESET_GRASS:
-        terrain_zone->addHeightRangeQuick(1.0, 0.45, 0.5, 0.8, 1.0);
+        terrain_zone->addHeightRangeQuick(1.0, 0.45, 0.5, 0.7, 0.9);
         terrain_zone->addSlopeRangeQuick(1.0, 0.0, 0.0, 0.05, 0.4);
         displacement_noise->setConfig(0.4, 0.05);
         detail_noise->setConfig(0.01, 0.1);
@@ -98,7 +97,7 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset, RandomGenera
         break;
     case TEXTURES_LAYER_PRESET_SAND:
         terrain_zone->addHeightRangeQuick(1.0, 0.495, 0.505, 0.56, 0.63);
-        terrain_zone->addSlopeRangeQuick(1.0, 0.0, 0.0, 0.1, 0.4);
+        terrain_zone->addSlopeRangeQuick(1.0, 0.0, 0.0, 0.05, 0.3);
         displacement_noise->setConfig(0.04, 0.1, 0.5, 0.3);
         detail_noise->setConfig(0.004, 0.08);
         material->setColor(1.2, 1.1, 0.9, 1.0);
@@ -106,8 +105,8 @@ void TextureLayerDefinition::applyPreset(TextureLayerPreset preset, RandomGenera
         material->shininess = 1.0;
         break;
     case TEXTURES_LAYER_PRESET_SNOW:
-        terrain_zone->addHeightRangeQuick(1.0, 0.77, 0.85, 1.0, 1.0);
-        terrain_zone->addSlopeRangeQuick(1.0, 0.0, 0.0, 0.2, 1.0);
+        terrain_zone->addHeightRangeQuick(1.0, 0.87, 0.95, 10.0, 100.0);
+        terrain_zone->addSlopeRangeQuick(1.0, 0.0, 0.0, 0.1, 1.0);
         displacement_noise->setConfig(0.4, 0.07);
         detail_noise->setConfig(0.01, 0.03);
         material->setColor(5.0, 5.0, 5.0, 1.0);

@@ -38,7 +38,7 @@ void TerrainRenderer::setQuality(double factor) {
 }
 
 double TerrainRenderer::getHeight(double x, double z, bool with_painting, bool water_offset) {
-    return parent->getScenery()->getTerrain()->getInterpolatedHeight(x, z, true, with_painting, water_offset);
+    return parent->getScenery()->getTerrain()->getInterpolatedHeight(x, z, with_painting, water_offset);
 }
 
 TerrainRenderer::TerrainResult TerrainRenderer::getResult(double x, double z, bool with_painting) {

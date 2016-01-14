@@ -204,3 +204,27 @@ TEST(FractalNoise, Noise3d) {
     ASSERT_EQ(2, noise.calls);
     EXPECT_DOUBLE_EQ(3.2 + 3.25, result);
 }
+
+TEST(FractalNoise, estimateRange) {
+    TestFractalNoise noise(0.8);
+    noise.setScaling(1.0, 1.0);
+    noise.setStep(0.1);
+
+    double min, max;
+
+    noise.estimateRange(&min, &max, 10.0);
+    EXPECT_DOUBLE_EQ(0.0, min);
+    EXPECT_DOUBLE_EQ(0.0, max);
+
+    noise.estimateRange(&min, &max, 0.5);
+    EXPECT_DOUBLE_EQ(-0.5, min);
+    EXPECT_DOUBLE_EQ(0.5, max);
+
+    noise.estimateRange(&min, &max, 0.05);
+    EXPECT_DOUBLE_EQ(-0.55, min);
+    EXPECT_DOUBLE_EQ(0.55, max);
+
+    noise.estimateRange(&min, &max, 0.005);
+    EXPECT_DOUBLE_EQ(-0.555, min);
+    EXPECT_DOUBLE_EQ(0.555, max);
+}

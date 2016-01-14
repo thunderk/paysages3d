@@ -10,10 +10,10 @@ namespace {
 class ConstantFractalNoise : public FractalNoise {
   public:
     ConstantFractalNoise(double value) : value(value) {
-        // The noise will yield its value at first iteration, then its height will collapse to 0
-        setScaling(1.0, 0.0);
+        // The noise will yield its value at first iteration, then will collapse to 0
+        setStep(0.0);
     }
-    virtual double getBase3d(double, double, double) const {
+    virtual double getBase3d(double, double, double) const override {
         return value;
     }
 

@@ -3,6 +3,7 @@
 
 #include "basics_global.h"
 
+#include <string>
 #include "NoiseState.h"
 
 namespace paysages {
@@ -56,7 +57,7 @@ class BASICSSHARED_EXPORT FractalNoise {
     /**
      * Estimate the range of values this generator will yield with a very small detail value.
      */
-    void estimateRange(double *min, double *max) const;
+    void estimateRange(double *min, double *max, double detail=0.000001) const;
 
     virtual double getBase1d(double x) const;
     virtual double getBase2d(double x, double y) const;
@@ -66,6 +67,11 @@ class BASICSSHARED_EXPORT FractalNoise {
      * Other dimension noise (1d and 2d) can be provided, or this one will be used to simulate them.
      */
     virtual double getBase3d(double x, double y, double z) const = 0;
+
+    /**
+     * Test the noise distribution, and return the report.
+     */
+    string checkDistribution();
 
   private:
     NoiseState state;

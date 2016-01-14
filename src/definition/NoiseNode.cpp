@@ -20,6 +20,11 @@ void NoiseNode::setConfig(double scaling, double height, double step_scaling, do
     noise->setStep(step_scaling, step_height);
 }
 
+void NoiseNode::forceSetGenerator(FractalNoise *noise) {
+    delete this->noise;
+    this->noise = noise;
+}
+
 void NoiseNode::save(PackStream *stream) const {
     noise->save(stream);
 }
@@ -43,5 +48,5 @@ void NoiseNode::copy(DefinitionNode *destination) const {
 string NoiseNode::toString(int indent) const {
     return DefinitionNode::toString(indent) + " - scaling: " + to_string(noise->getScaling()) + " step " +
            to_string(noise->getStepScaling()) + " - height: " + to_string(noise->getHeight()) + " step " +
-           to_string(noise->getStepScaling());
+           to_string(noise->getStepHeight());
 }

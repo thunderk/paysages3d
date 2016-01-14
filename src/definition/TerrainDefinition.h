@@ -28,9 +28,12 @@ class DEFINITIONSHARED_EXPORT TerrainDefinition : public DefinitionNode {
     inline FloatNode *propWaterHeight() const {
         return water_height;
     }
+    inline NoiseNode *propHeightNoise() const {
+        return height_noise;
+    }
 
     double getGridHeight(int x, int z, bool with_painting);
-    double getInterpolatedHeight(double x, double z, bool scaled, bool with_painting, bool water_offset = true);
+    double getInterpolatedHeight(double x, double z, bool with_painting, bool water_offset = true);
     double getWaterOffset() const;
     unsigned long getMemoryStats();
     HeightInfo getHeightInfo();
@@ -40,19 +43,17 @@ class DEFINITIONSHARED_EXPORT TerrainDefinition : public DefinitionNode {
     void applyPreset(TerrainPreset preset, RandomGenerator &random = RandomGeneratorDefault);
 
   public:
-    double height;
     double shadow_smoothing;
 
     TerrainHeightMap *height_map;
     bool has_painting;
 
-    double _detail;
-    NoiseGenerator *_height_noise;
     double _min_height;
     double _max_height;
 
   private:
     FloatNode *water_height;
+    NoiseNode *height_noise;
 };
 }
 }

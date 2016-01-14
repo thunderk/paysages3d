@@ -1,8 +1,11 @@
 #include "FractalNoise.h"
 
+#include <cassert>
 #include <cmath>
+#include <sstream>
 #include "PackStream.h"
 #include "Vector3.h"
+#include "RandomGenerator.h"
 
 FractalNoise::FractalNoise() {
     scaling = 1.0;
@@ -50,6 +53,11 @@ void FractalNoise::setScaling(double scaling, double height) {
 void FractalNoise::setStep(double scaling_factor, double height_factor) {
     this->step_scaling = scaling_factor < 0.00000001 ? 0.0 : 1.0 / scaling_factor;
     this->step_height = scaling_factor * height_factor;
+
+    // Ensure height will converge to 0
+    if (this->step_height >= 0.99) {
+        this->step_height = 0.99;
+    }
 }
 
 void FractalNoise::setState(const NoiseState &state) {
@@ -64,7 +72,7 @@ double FractalNoise::get1d(double detail, double x) const {
     decltype(state_level_count) i = 0;
 
     while (current_height >= detail) {
-        const NoiseState::NoiseOffset &offset = state.level_offsets[i];
+        auto offset = state.level_offsets[i];
 
         result += getBase1d(offset.x + x * current_scaling) * current_height;
 
@@ -88,7 +96,7 @@ double FractalNoise::get2d(double detail, double x, double y) const {
     decltype(state_level_count) i = 0;
 
     while (current_height >= detail) {
-        const NoiseState::NoiseOffset &offset = state.level_offsets[i];
+        auto offset = state.level_offsets[i];
 
         result += getBase2d(offset.x + x * current_scaling, offset.y + y * current_scaling) * current_height;
 
@@ -146,10 +154,16 @@ double FractalNoise::getTriplanar(double detail, const Vector3 &location, const 
     return noiseXY * mXY + noiseXZ * mXZ + noiseYZ * mYZ;
 }
 
-void FractalNoise::estimateRange(double *min, double *max) const {
-    // TODO Better estimate
-    *max = height;
-    *min = -*max;
+void FractalNoise::estimateRange(double *min, double *max, double detail) const {
+    *min = 0.0;
+    *max = 0.0;
+
+    double current_height = height;
+    while (current_height >= detail) {
+        *min += -0.5 * current_height;
+        *max += 0.5 * current_height;
+        current_height *= step_height;
+    }
 }
 
 double FractalNoise::getBase1d(double x) const {
@@ -158,4 +172,49 @@ double FractalNoise::getBase1d(double x) const {
 
 double FractalNoise::getBase2d(double x, double y) const {
     return getBase3d(x, y, 0.0);
+}
+
+string FractalNoise::checkDistribution() {
+    stringstream result;
+
+    double val, min, max, mean;
+    RandomGenerator random;
+
+    int samples = 10000000;
+    double factor = 1.0 / to_double(samples);
+
+    min = 0.0;
+    max = 0.0;
+    mean = 0.0;
+    for (int i = 0; i < samples; i++) {
+        val = getBase1d((random.genDouble() - 0.5) * 10.0);
+        min = std::min(val, min);
+        max = std::max(val, max);
+        mean += val * factor;
+    }
+    result << "1d : min=" << min << " max=" << max << " mean=" << mean << endl;
+
+    min = 0.0;
+    max = 0.0;
+    mean = 0.0;
+    for (int i = 0; i < samples; i++) {
+        val = getBase2d((random.genDouble() - 0.5) * 10.0, (random.genDouble() - 0.5) * 10.0);
+        min = std::min(val, min);
+        max = std::max(val, max);
+        mean += val * factor;
+    }
+    result << "2d : min=" << min << " max=" << max << " mean=" << mean << endl;
+
+    min = 0.0;
+    max = 0.0;
+    mean = 0.0;
+    for (int i = 0; i < samples; i++) {
+        val = getBase3d((random.genDouble() - 0.5) * 10.0, (random.genDouble() - 0.5) * 10.0, (random.genDouble() - 0.5) * 10.0);
+        min = std::min(val, min);
+        max = std::max(val, max);
+        mean += val * factor;
+    }
+    result << "3d : min=" << min << " max=" << max << " mean=" << mean << endl;
+
+    return result.str();
 }

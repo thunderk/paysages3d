@@ -59,7 +59,13 @@ static void startTestRender(SoftwareCanvasRenderer *renderer, const string &name
 }
 
 static void testNoise() {
+    // TODO Test all noise functions similarly
+
     NoiseFunctionSimplex noise;
+
+    cout << "Testing simplex distribution..." << endl;
+    auto report = noise.checkDistribution();
+    cout << report;
 
     string filename = getFileName("noise_simplex_cache_value");
     cout << "Rendering " << filename << "..." << endl;
@@ -136,7 +142,7 @@ static void testCloudQuality() {
     scenery.autoPreset(3);
     scenery.getCamera()->setLocation(Vector3(5.0, 5.0, 5.0));
     scenery.getCamera()->setTarget(Vector3(8.0, 7.25, 8.0));
-    scenery.getTerrain()->height = 0.0;
+    scenery.getTerrain()->propHeightNoise()->setConfig(0.0);
     scenery.getTerrain()->validate();
 
     SoftwareCanvasRenderer renderer(&scenery);
@@ -182,7 +188,7 @@ static void testGodRays() {
     scenery.getAtmosphere()->setDayTime(12);
     scenery.getCamera()->setLocation(Vector3(0.0, 1.0, -50.0));
     scenery.getCamera()->setTarget(Vector3(0.0, 15.0, 0.0));
-    scenery.getTerrain()->height = 0.0;
+    scenery.getTerrain()->propHeightNoise()->setConfig(0.0);
     scenery.getTerrain()->validate();
     scenery.getClouds()->clear();
 
@@ -408,15 +414,15 @@ static void testTextures() {
 }
 
 void runTestSuite() {
-    testAtmosphereBruneton();
-    testCloudQuality();
-    testCloudsNearGround();
-    testGodRays();
-    testGroundShadowQuality();
-    testNearFrustum();
     testNoise();
+    testTextures();
+    testGodRays();
+    testNearFrustum();
+    testCloudsNearGround();
+    testVegetationModels();
     testOpenGLVegetationImpostor();
     testRasterizationQuality();
-    testTextures();
-    testVegetationModels();
+    testGroundShadowQuality();
+    testCloudQuality();
+    testAtmosphereBruneton();
 }

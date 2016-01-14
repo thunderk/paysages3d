@@ -1,6 +1,5 @@
 #include "Zone.h"
 
-#include <cstring>
 #include "Curve.h"
 #include "PackStream.h"
 #include "Vector3.h"
@@ -39,15 +38,15 @@ void Zone::load(PackStream *stream) {
 }
 
 void Zone::copy(DefinitionNode *_destination) const {
-    Zone *destination = (Zone *)_destination;
+    if (auto destination = static_cast<Zone *>(_destination)) {
+        destination->absolute_height = absolute_height;
+        destination->relative_height_min = relative_height_min;
+        destination->relative_height_middle = relative_height_middle;
+        destination->relative_height_max = relative_height_max;
 
-    destination->absolute_height = absolute_height;
-    destination->relative_height_min = relative_height_min;
-    destination->relative_height_middle = relative_height_middle;
-    destination->relative_height_max = relative_height_max;
-
-    value_by_height->copy(destination->value_by_height);
-    value_by_slope->copy(destination->value_by_slope);
+        value_by_height->copy(destination->value_by_height);
+        value_by_slope->copy(destination->value_by_slope);
+    }
 }
 
 void Zone::clear() {

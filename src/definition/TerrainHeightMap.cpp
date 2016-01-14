@@ -20,29 +20,29 @@ double TerrainHeightMap::getInitialValue(double x, double y) const {
 
 void TerrainHeightMap::brushElevation(const PaintedGridBrush &brush, double x, double y, double value, bool commit) {
     PaintedGridBrushRaiseLower sbrush(brush);
-    applyBrush(sbrush, x, y, value / terrain->height, commit);
+    applyBrush(sbrush, x, y, value, commit);
 }
 
 void TerrainHeightMap::brushFlatten(const PaintedGridBrush &brush, double x, double y, double height, double force,
                                     bool commit) {
     PaintedGridBrushFlatten sbrush(brush, height);
-    applyBrush(sbrush, x, y, force / terrain->height, commit);
+    applyBrush(sbrush, x, y, force, commit);
 }
 
 void TerrainHeightMap::brushSmooth(const PaintedGridBrush &brush, double x, double y, double value, bool commit) {
     PaintedGridBrushSmooth sbrush(brush);
-    applyBrush(sbrush, x, y, value / terrain->height, commit);
+    applyBrush(sbrush, x, y, value, commit);
 }
 
 void TerrainHeightMap::brushAddNoise(const PaintedGridBrush &brush, double x, double y, NoiseGenerator *generator,
                                      double value, bool commit) {
     PaintedGridBrushAddNoise sbrush(brush, generator);
-    applyBrush(sbrush, x, y, value / terrain->height, commit);
+    applyBrush(sbrush, x, y, value, commit);
 }
 
 void TerrainHeightMap::brushReset(const PaintedGridBrush &brush, double x, double y, double value, bool commit) {
     PaintedGridBrushReset sbrush(brush);
-    applyBrush(sbrush, x, y, value / terrain->height, commit);
+    applyBrush(sbrush, x, y, value, commit);
 }
 
 void TerrainHeightMap::clearPainting() {

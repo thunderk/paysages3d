@@ -30,6 +30,15 @@ class DEFINITIONSHARED_EXPORT NoiseNode : public DefinitionNode {
      */
     void setConfig(double scaling, double height = 1.0, double step_scaling = 0.5, double step_height = 1.0);
 
+    /**
+     * Force the noise generator to use.
+     *
+     * This should only be needed in testing, and is not thread-safe.
+     *
+     * The node will take ownership of the generator and will take care of its destruction.
+     */
+    void forceSetGenerator(FractalNoise *noise);
+
   protected:
     virtual void save(PackStream *stream) const override;
     virtual void load(PackStream *stream) override;

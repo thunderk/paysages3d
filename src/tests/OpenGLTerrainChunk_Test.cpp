@@ -4,6 +4,9 @@
 #include "Scenery.h"
 #include "OpenGLRenderer.h"
 #include "OpenGLVertexArray.h"
+#include "TerrainDefinition.h"
+#include "NoiseNode.h"
+#include "TestToolNoise.h"
 #include "Vector3.h"
 
 static void checkVertex(const OpenGLVertexArray *array, int index, const Vector3 &expected_location, double expected_u,
@@ -20,6 +23,7 @@ static void checkVertex(const OpenGLVertexArray *array, int index, const Vector3
 
 TEST(OpenGLTerrainChunk, setFirstStepVertices) {
     Scenery scenery;
+    scenery.getTerrain()->propHeightNoise()->forceSetGenerator(new ConstantFractalNoise(0.0));
     OpenGLRenderer renderer(&scenery);
     OpenGLTerrainChunk chunk(&renderer, 0.0, 0.0, 1.0, 1);
 
@@ -40,6 +44,7 @@ TEST(OpenGLTerrainChunk, setFirstStepVertices) {
 
 TEST(OpenGLTerrainChunk, augmentVertices) {
     Scenery scenery;
+    scenery.getTerrain()->propHeightNoise()->forceSetGenerator(new ConstantFractalNoise(0.0));
     OpenGLRenderer renderer(&scenery);
     OpenGLTerrainChunk chunk(&renderer, 0.0, 0.0, 1.0, 1);
 
