@@ -8,6 +8,8 @@
 #include "GodRaysDefinition.h"
 #include "CelestialBodyDefinition.h"
 
+#define WORLD_SCALING 0.05
+
 AtmosphereDefinition::AtmosphereDefinition(DefinitionNode *parent)
     : DefinitionNode(parent, "atmosphere", "atmosphere") {
     model = ATMOSPHERE_MODEL_DISABLED;
@@ -102,7 +104,9 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset, RandomGenerator 
     sun_color.b = 0.9;
     sun_color.a = 1.0;
     sun->propRadius()->setValue(1.0);
-    moon->propRadius()->setValue(1.0);
+    sun->propDistance()->setValue(149597870.0 / WORLD_SCALING);
+    moon->propDistance()->setValue(384403.0 / WORLD_SCALING);
+    moon->propRadius()->setValue(1737.4 / WORLD_SCALING);
     moon->propPhi()->setValue(0.5);
     moon->propTheta()->setValue(0.3);
 

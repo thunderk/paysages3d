@@ -107,12 +107,12 @@ void SoftwareRenderer::setQuality(double quality) {
 
 Color SoftwareRenderer::applyLightingToSurface(const Vector3 &location, const Vector3 &normal,
                                                const SurfaceMaterial &material) {
-    return lighting->apply(getCameraLocation(location), location, normal, material);
+    return lighting->apply(getCameraLocation(), location, normal, material);
 }
 
 Color SoftwareRenderer::applyMediumTraversal(const Vector3 &location, const Color &color) {
     Color result = atmosphere_renderer->applyAerialPerspective(location, color).final;
-    result = clouds_renderer->getColor(getCameraLocation(location), location, result);
+    result = clouds_renderer->getColor(getCameraLocation(), location, result);
     return result;
 }
 
@@ -132,11 +132,11 @@ RayCastingResult SoftwareRenderer::rayWalking(const Vector3 &location, const Vec
     return result;
 }
 
-Vector3 SoftwareRenderer::getCameraLocation(const Vector3 &) {
+Vector3 SoftwareRenderer::getCameraLocation() {
     return render_camera->getLocation();
 }
 
-Vector3 SoftwareRenderer::getCameraDirection(const Vector3 &) {
+Vector3 SoftwareRenderer::getCameraDirection() {
     return render_camera->getDirectionNormalized();
 }
 

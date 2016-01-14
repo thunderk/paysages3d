@@ -24,6 +24,7 @@
 #include "VegetationModelDefinition.h"
 #include "VegetationInstance.h"
 #include "VegetationRenderer.h"
+#include "CelestialBodyDefinition.h"
 #include "RayCastingResult.h"
 #include "OpenGLVegetationImpostor.h"
 #include "Texture2D.h"
@@ -413,10 +414,33 @@ static void testTextures() {
     }
 }
 
+static void testMoonRendering() {
+    Scenery scenery;
+    scenery.autoPreset(8);
+    scenery.getClouds()->clear();
+    scenery.getCamera()->setLocation(VECTOR_ZERO);
+    scenery.getCamera()->setTarget(scenery.getAtmosphere()->childMoon()->getLocation());
+    scenery.getCamera()->setFov(0.1);
+
+    SoftwareCanvasRenderer renderer(&scenery);
+    renderer.setSize(600, 600);
+    renderer.setQuality(0.1);
+    renderer.getGodRaysSampler()->setEnabled(false);
+    /*SkyRasterizer rasterizer(&renderer, renderer.getProgressHelper(), 0);
+    renderer.setSoloRasterizer(&rasterizer);*/
+
+    scenery.getAtmosphere()->setDayTime(17, 30);
+    startTestRender(&renderer, "moon", 0);
+
+    scenery.getAtmosphere()->setDayTime(23);
+    startTestRender(&renderer, "moon", 1);
+}
+
 void runTestSuite() {
     testNoise();
     testTextures();
     testGodRays();
+    testMoonRendering();
     testNearFrustum();
     testCloudsNearGround();
     testVegetationModels();

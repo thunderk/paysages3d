@@ -66,8 +66,7 @@ double TerrainDefinition::getGridHeight(int x, int z, bool with_painting) {
     return h;
 }
 
-double TerrainDefinition::getInterpolatedHeight(double x, double z, bool with_painting,
-                                                bool water_offset) {
+double TerrainDefinition::getInterpolatedHeight(double x, double z, bool with_painting, bool water_offset) {
     double h;
 
     if (!with_painting || !has_painting || !height_map->getInterpolatedValue(x, z, &h)) {

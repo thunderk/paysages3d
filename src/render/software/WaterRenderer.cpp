@@ -166,7 +166,7 @@ WaterRenderer::WaterResult WaterRenderer::getResult(double x, double z) {
     }
 
     normal = _getNormal(definition, noise, location, detail);
-    look_direction = location.sub(parent->getCameraLocation(location)).normalize();
+    look_direction = location.sub(parent->getCameraLocation()).normalize();
 
     /* Reflection */
     if (reflection == 0.0) {

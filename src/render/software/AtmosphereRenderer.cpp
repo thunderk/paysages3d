@@ -87,8 +87,9 @@ AtmosphereResult BaseAtmosphereRenderer::getSkyColor(const Vector3 &) {
     return result;
 }
 
-Vector3 BaseAtmosphereRenderer::getSunDirection(bool) const {
-    return getDefinition()->childSun()->getDirection();
+Vector3 BaseAtmosphereRenderer::getSunDirection() const {
+    auto sun_location = getDefinition()->childSun()->getLocation();
+    return sun_location.sub(parent->getCameraLocation()).normalize();
 }
 
 bool BaseAtmosphereRenderer::getLightsAt(vector<LightComponent> &, const Vector3 &) const {
@@ -137,7 +138,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &
     Color base;
 
     definition = getDefinition();
-    camera_location = parent->getCameraLocation(VECTOR_ZERO);
+    camera_location = parent->getCameraLocation();
 
     sun_direction = getSunDirection();
     Vector3 direction_norm = direction.normalize();

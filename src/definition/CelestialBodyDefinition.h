@@ -12,6 +12,9 @@ class DEFINITIONSHARED_EXPORT CelestialBodyDefinition : public DefinitionNode {
   public:
     CelestialBodyDefinition(DefinitionNode *parent, const string &name);
 
+    inline FloatNode *propDistance() const {
+        return distance;
+    }
     inline FloatNode *propPhi() const {
         return phi;
     }
@@ -23,11 +26,15 @@ class DEFINITIONSHARED_EXPORT CelestialBodyDefinition : public DefinitionNode {
     }
 
     /**
-     * Get the normalized direction toward the celestial body (from the center of the earth).
+     * Get the location of the celestial body.
+     *
+     * If "over_water" is true, the location is given in standard coordinates with y=0.0 as water,
+     * otherwise in regard to the earth center.
      */
-    Vector3 getDirection() const;
+    Vector3 getLocation(bool over_water = true) const;
 
   private:
+    FloatNode *distance;
     FloatNode *phi;
     FloatNode *theta;
     FloatNode *radius;

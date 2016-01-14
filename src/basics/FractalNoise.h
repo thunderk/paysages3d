@@ -57,7 +57,7 @@ class BASICSSHARED_EXPORT FractalNoise {
     /**
      * Estimate the range of values this generator will yield with a very small detail value.
      */
-    void estimateRange(double *min, double *max, double detail=0.000001) const;
+    void estimateRange(double *min, double *max, double detail = 0.000001) const;
 
     virtual double getBase1d(double x) const;
     virtual double getBase2d(double x, double y) const;

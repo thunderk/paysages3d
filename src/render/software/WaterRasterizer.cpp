@@ -53,7 +53,7 @@ void WaterRasterizer::setQuality(double factor) {
 
 int WaterRasterizer::performTessellation(CanvasPortion *canvas) {
     int chunk_factor, chunk_count, i, result;
-    Vector3 cam = renderer->getCameraLocation(VECTOR_ZERO);
+    Vector3 cam = renderer->getCameraLocation();
     double radius_int, radius_ext, chunk_size;
 
     result = 0;

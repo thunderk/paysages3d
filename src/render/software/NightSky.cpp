@@ -13,12 +13,6 @@
 #include "CelestialBodyDefinition.h"
 #include "FloatNode.h"
 
-#define WORLD_SCALING 0.05
-#define MOON_DISTANCE 384403.0
-#define MOON_DISTANCE_SCALED (MOON_DISTANCE / WORLD_SCALING)
-#define MOON_RADIUS 1737.4
-#define MOON_RADIUS_SCALED (MOON_RADIUS / WORLD_SCALING)
-
 NightSky::NightSky(SoftwareRenderer *renderer) : renderer(renderer) {
 }
 
@@ -58,10 +52,11 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction) {
     }
 
     // Get moon
-    Vector3 moon_direction = atmosphere->childMoon()->getDirection();
-    Vector3 moon_position = moon_direction.scale(MOON_DISTANCE_SCALED);
+    Vector3 moon_position = atmosphere->childMoon()->getLocation();
+    Vector3 moon_direction = moon_position.sub(renderer->getCameraLocation()).normalize();
     if (moon_direction.dotProduct(direction) >= 0) {
-        double moon_radius = MOON_RADIUS_SCALED * 5.0 * atmosphere->childMoon()->propRadius()->getValue();
+        // TODO Why need the multiplier ?
+        double moon_radius = atmosphere->childMoon()->propRadius()->getValue() * 5.0;
         Vector3 hit1, hit2;
         int hits = Geometry::rayIntersectSphere(location, direction, moon_position, moon_radius, &hit1, &hit2);
         if (hits > 1) {
@@ -84,13 +79,13 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction) {
     return result;
 }
 
-bool NightSky::getLightsAt(vector<LightComponent> &result, const Vector3 &) const {
+bool NightSky::getLightsAt(vector<LightComponent> &result, const Vector3 &loc) const {
     LightComponent moon, sky;
 
     AtmosphereDefinition *atmosphere = renderer->getScenery()->getAtmosphere();
 
     moon.color = Color(0.03, 0.03, 0.03); // TODO take moon phase into account
-    moon.direction = atmosphere->childMoon()->getDirection().scale(-1.0);
+    moon.direction = loc.sub(atmosphere->childMoon()->getLocation()).normalize();
     moon.reflection = 0.2;
     moon.altered = 1;
 

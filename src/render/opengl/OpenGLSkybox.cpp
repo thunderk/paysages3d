@@ -82,7 +82,7 @@ void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff 
     AtmosphereDefinition *newdef = renderer->getScenery()->getAtmosphere();
 
     if (node->getPath() == path_sun_phi or node->getPath() == path_sun_theta) {
-        Vector3 sun_direction = renderer->getAtmosphereRenderer()->getSunDirection(false);
+        Vector3 sun_direction = renderer->getAtmosphereRenderer()->getSunDirection();
         state->set("sunDirection", sun_direction);
 
         Color sun_color = newdef->sun_color;

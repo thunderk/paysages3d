@@ -209,7 +209,8 @@ string FractalNoise::checkDistribution() {
     max = 0.0;
     mean = 0.0;
     for (int i = 0; i < samples; i++) {
-        val = getBase3d((random.genDouble() - 0.5) * 10.0, (random.genDouble() - 0.5) * 10.0, (random.genDouble() - 0.5) * 10.0);
+        val = getBase3d((random.genDouble() - 0.5) * 10.0, (random.genDouble() - 0.5) * 10.0,
+                        (random.genDouble() - 0.5) * 10.0);
         min = std::min(val, min);
         max = std::max(val, max);
         mean += val * factor;

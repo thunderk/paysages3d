@@ -135,7 +135,7 @@ void TerrainRasterizer::getChunk(SoftwareRenderer *renderer, TerrainRasterizer::
 int TerrainRasterizer::performTessellation(CanvasPortion *canvas) {
     TerrainChunkInfo chunk;
     int chunk_factor, chunk_count, i, result;
-    Vector3 cam = renderer->getCameraLocation(VECTOR_ZERO);
+    Vector3 cam = renderer->getCameraLocation();
     double radius_int, radius_ext;
     double chunk_size;
 

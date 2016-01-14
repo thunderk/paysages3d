@@ -38,7 +38,7 @@ GodRaysSampler::~GodRaysSampler() {
 }
 
 void GodRaysSampler::prepare(SoftwareRenderer *renderer) {
-    setCameraLocation(renderer->getCameraLocation(VECTOR_ZERO));
+    setCameraLocation(renderer->getCameraLocation());
     setLighting(renderer->getLightingManager());
     setAltitudes(renderer->getScenery()->getTerrain()->getHeightInfo().min_height,
                  renderer->getCloudsRenderer()->getHighestAltitude());

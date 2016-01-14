@@ -33,7 +33,7 @@ void SkyRasterizer::rasterizeToCanvas(CanvasPortion *canvas) {
     step_i = Maths::PI * 2.0 / to_double(res_i);
     step_j = Maths::PI / to_double(res_j);
 
-    camera_location = renderer->getCameraLocation(VECTOR_ZERO);
+    camera_location = renderer->getCameraLocation();
 
     for (j = 0; j < res_j; j++) {
         if (interrupted) {
@@ -77,7 +77,7 @@ Color SkyRasterizer::shadeFragment(const CanvasFragment &fragment, const CanvasF
     Vector3 camera_location, direction;
     Color result;
 
-    camera_location = renderer->getCameraLocation(location);
+    camera_location = renderer->getCameraLocation();
     direction = location.sub(camera_location);
 
     // TODO Don't compute sky color if it's fully covered by clouds

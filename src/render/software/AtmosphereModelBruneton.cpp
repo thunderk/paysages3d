@@ -1097,7 +1097,7 @@ AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3
 }
 
 AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 location, const Color &base) const {
-    Vector3 eye = parent->getCameraLocation(location);
+    Vector3 eye = parent->getCameraLocation();
     eye.y = max(eye.y, 0.0);
     location.y = max(location.y, 0.0);
     Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(SUN_DISTANCE);
@@ -1105,7 +1105,7 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
     Vector3 direction = location.sub(eye).scale(WORLD_SCALING);
     double t = direction.getNorm();
     if (t < 0.000001) {
-        direction = parent->getCameraDirection(location).scale(0.001 * WORLD_SCALING);
+        direction = parent->getCameraDirection().scale(0.001 * WORLD_SCALING);
         t = direction.getNorm();
     }
 

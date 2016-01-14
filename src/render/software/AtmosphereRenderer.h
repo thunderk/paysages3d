@@ -16,7 +16,7 @@ class BaseAtmosphereRenderer : public LightSource {
 
     virtual AtmosphereResult applyAerialPerspective(const Vector3 &location, const Color &base);
     virtual AtmosphereResult getSkyColor(const Vector3 &direction);
-    virtual Vector3 getSunDirection(bool cache = true) const;
+    virtual Vector3 getSunDirection() const;
 
     virtual bool getLightsAt(vector<LightComponent> &result, const Vector3 &location) const override;
 

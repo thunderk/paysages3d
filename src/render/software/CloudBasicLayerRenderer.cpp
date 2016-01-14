@@ -65,7 +65,7 @@ int CloudBasicLayerRenderer::findSegments(BaseCloudsModel *model, const Vector3 
 
     model->getDetailRange(&min_step, &max_step);
 
-    double distance = parent->getCameraLocation(start).sub(start).getNorm();
+    double distance = parent->getCameraLocation().sub(start).getNorm();
     render_precision = min_step + (max_step - min_step) * min(distance / (quality + 0.1), 100.0) * 0.01;
 
     segment_count = 0;

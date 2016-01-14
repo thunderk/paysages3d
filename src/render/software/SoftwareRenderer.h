@@ -19,8 +19,8 @@ class SOFTWARESHARED_EXPORT SoftwareRenderer {
     int render_quality;
     CameraDefinition *render_camera;
 
-    virtual Vector3 getCameraLocation(const Vector3 &target);
-    virtual Vector3 getCameraDirection(const Vector3 &target);
+    virtual Vector3 getCameraLocation();
+    virtual Vector3 getCameraDirection();
     virtual double getPrecision(const Vector3 &location);
     virtual Vector3 projectPoint(const Vector3 &point);
     virtual Vector3 unprojectPoint(const Vector3 &point);

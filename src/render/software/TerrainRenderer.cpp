@@ -122,9 +122,9 @@ Color TerrainRenderer::getFinalColor(double x, double z, double precision) {
             i++;
         }
 
-        auto color = textures_renderer->getFinalComposition(textures_definition, parent->getLightingManager(),
-                                                            current.first, current.second, normal, precision,
-                                                            parent->getCameraLocation(top_location));
+        auto color =
+            textures_renderer->getFinalComposition(textures_definition, parent->getLightingManager(), current.first,
+                                                   current.second, normal, precision, parent->getCameraLocation());
 
         return parent->applyMediumTraversal(top_location, color);
     }
