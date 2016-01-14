@@ -13,13 +13,6 @@
 #include "CelestialBodyDefinition.h"
 #include "FloatNode.h"
 
-/* Factor to convert software units to kilometers */
-#define WORLD_SCALING 0.05
-#define SUN_DISTANCE 149597870.0
-#define SUN_DISTANCE_SCALED (SUN_DISTANCE / WORLD_SCALING)
-#define SUN_RADIUS 6.955e5
-#define SUN_RADIUS_SCALED (SUN_RADIUS / WORLD_SCALING)
-
 static inline double _getDayFactor(double daytime) {
     daytime = 1.0 - fabs(0.5 - daytime) / 0.5;
     return daytime < 0.45 ? 0.0 : sqrt((daytime - 0.45) / 0.55);
@@ -142,7 +135,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &
 
     sun_direction = getSunDirection();
     Vector3 direction_norm = direction.normalize();
-    sun_position = sun_direction.scale(SUN_DISTANCE_SCALED);
+    sun_position = sun_direction.scale(Scenery::SUN_DISTANCE_SCALED);
 
     base = COLOR_BLACK;
 
@@ -177,7 +170,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &
 
     // Get scattering
     AtmosphereResult result;
-    Vector3 location = camera_location.add(direction_norm.scale(6421.0));
+    Vector3 location = camera_location.add(direction_norm.scale(Scenery::FAR_LIMIT_SCALED));
     switch (definition->model) {
     case AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON:
         result = model->getSkyColor(camera_location, direction_norm, sun_position, base);

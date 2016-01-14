@@ -1,6 +1,7 @@
 #include "WaterRasterizer.h"
 
 #include <cmath>
+#include "Scenery.h"
 #include "SoftwareRenderer.h"
 #include "WaterRenderer.h"
 #include "CanvasFragment.h"
@@ -66,7 +67,7 @@ int WaterRasterizer::performTessellation(CanvasPortion *canvas) {
     double cx = cam.x - fmod(cam.x, base_chunk_size);
     double cz = cam.z - fmod(cam.x, base_chunk_size);
 
-    while (radius_int < 20000.0) {
+    while (radius_int < Scenery::FAR_LIMIT_SCALED) {
         if (interrupted) {
             return result;
         }

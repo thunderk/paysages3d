@@ -149,7 +149,7 @@ int TerrainRasterizer::performTessellation(CanvasPortion *canvas) {
     double cx = cam.x - fmod(cam.x, base_chunk_size);
     double cz = cam.z - fmod(cam.x, base_chunk_size);
 
-    while (radius_int < 20000.0) {
+    while (radius_int < Scenery::FAR_LIMIT_SCALED) {
         for (i = 0; i < chunk_count - 1; i++) {
             getChunk(renderer, &chunk, cx - radius_ext + chunk_size * i, cz - radius_ext, chunk_size);
             if (chunk.detail_hint > 0) {

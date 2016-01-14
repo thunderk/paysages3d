@@ -10,10 +10,11 @@ const vec3 betaMSca = vec3(20e-3, 20e-3, 20e-3);
 const vec3 betaMEx = vec3(20e-3 / 0.9, 20e-3 / 0.9, 20e-3 / 0.9);
 const float mieG = 0.76;
 const float WORKAROUND_OFFSET = 0.1;
-const float SPHERE_SIZE = 20000.0;
-const float WORLD_SCALING = 0.03;
+const float FAR_LIMIT_SCALED = 20000.0;
+const float UNIT_TO_KM = 0.05;
+const float KM_TO_UNIT = 20.0;
 const float SUN_DISTANCE = 149597870.0;
-const float SUN_DISTANCE_SCALED = (SUN_DISTANCE / WORLD_SCALING);
+const float SUN_DISTANCE_SCALED = (SUN_DISTANCE * KM_TO_UNIT);
 const float M_PI = 3.141592657;
 
 const int RES_MU = 128;
@@ -259,7 +260,7 @@ vec3 applyWeatherEffects(float distance, vec3 base, vec3 _attenuation, vec3 _ins
 vec4 applyAerialPerspective(vec4 base)
 {
     vec3 location = vec3(unprojected.x, max(unprojected.y, 0.0), unprojected.z);
-    vec3 x = vec3(0.0, Rg + WORKAROUND_OFFSET + max(cameraLocation.y, 0.0) * WORLD_SCALING, 0.0);
+    vec3 x = vec3(0.0, Rg + WORKAROUND_OFFSET + max(cameraLocation.y, 0.0) * UNIT_TO_KM, 0.0);
     vec3 v = normalize(unprojected - cameraLocation);
     vec3 s = normalize(sunDirection * SUN_DISTANCE_SCALED - x);
 
@@ -274,7 +275,7 @@ vec4 applyAerialPerspective(vec4 base)
 
     float r = length(x);
     float mu = dot(x, v) / r;
-    float t = length(unprojected - cameraLocation) * WORLD_SCALING;
+    float t = length(unprojected - cameraLocation) * UNIT_TO_KM;
 
     vec3 attenuation;
     vec3 inscattering = _getInscatterColor(x, t, v, s, r, mu, attenuation);
@@ -284,7 +285,7 @@ vec4 applyAerialPerspective(vec4 base)
 
 vec4 getSkyColor(vec3 location, vec3 direction)
 {
-    vec3 x = vec3(0.0, Rg + location.y * WORLD_SCALING, 0.0);
+    vec3 x = vec3(0.0, Rg + location.y * UNIT_TO_KM, 0.0);
     vec3 v = normalize(direction);
     vec3 s = normalize(sunDirection * SUN_DISTANCE_SCALED - x);
 
@@ -297,12 +298,12 @@ vec4 getSkyColor(vec3 location, vec3 direction)
     vec3 inscattering = _getInscatterColor(x, t, v, s, r, mu, attenuation);
 
     vec3 nightsky = vec3(0.01, 0.012, 0.03);
-    return vec4(applyWeatherEffects(SPHERE_SIZE, nightsky + sunTransmittance.rgb, vec3(1), inscattering), 1.0);
+    return vec4(applyWeatherEffects(FAR_LIMIT_SCALED, nightsky + sunTransmittance.rgb, vec3(1), inscattering), 1.0);
 }
 
 vec4 applyLighting(vec3 location, vec3 normal, vec4 color, float reflection, float shininess, float hardness)
 {
-    float r0 = Rg + WORKAROUND_OFFSET + max(location.y, 0.0) * WORLD_SCALING;
+    float r0 = Rg + WORKAROUND_OFFSET + max(location.y, 0.0) * UNIT_TO_KM;
     vec3 sun_position = sunDirection * SUN_DISTANCE;
     float muS = dot(vec3(0.0, 1.0, 0.0), normalize(sun_position - vec3(0.0, r0, 0.0)));
 

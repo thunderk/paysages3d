@@ -24,6 +24,25 @@ class DEFINITIONSHARED_EXPORT Scenery : public DefinitionNode {
 
     typedef void (*SceneryCustomDataCallback)(PackStream *stream, void *data);
 
+    /**
+     * Conversion factor between scenery units and kilometers.
+     *
+     * 1km == 20.0 units
+     */
+    static constexpr double KM_TO_UNIT = 20.0;
+    static constexpr double UNIT_TO_KM = 1.0 / KM_TO_UNIT;
+
+    static constexpr double EARTH_RADIUS = 6360.0;
+    static constexpr double EARTH_RADIUS_SCALED = EARTH_RADIUS * KM_TO_UNIT;
+
+    static constexpr double SUN_DISTANCE = 149597870.0;
+    static constexpr double SUN_DISTANCE_SCALED = SUN_DISTANCE * KM_TO_UNIT;
+
+    static constexpr double SUN_RADIUS = 6.955e5;
+    static constexpr double SUN_RADIUS_SCALED = EARTH_RADIUS * KM_TO_UNIT;
+
+    static constexpr double FAR_LIMIT_SCALED = 20000.0;
+
   public:
     Scenery();
 

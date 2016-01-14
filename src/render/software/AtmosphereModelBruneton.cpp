@@ -27,22 +27,15 @@
 #include "CacheFile.h"
 #include "FloatNode.h"
 
-/* Factor to convert software units to kilometers */
-#define WORLD_SCALING 0.03
-#define SUN_DISTANCE 149597870.0
-#define SUN_DISTANCE_SCALED (SUN_DISTANCE / WORLD_SCALING)
 #define WORKAROUND_OFFSET 0.1
-
-// TODO This is copied in AtmosphereRenderer
-#define SPHERE_SIZE 20000.0
 
 /*********************** Constants ***********************/
 
-static const double Rg = 6360.0;
-static const double Rt = 6420.0;
-static const double RL = 6421.0;
-static const double ISun = 100.0;
-static const double AVERAGE_GROUND_REFLECTANCE = 0.1;
+static constexpr double Rg = Scenery::EARTH_RADIUS;
+static constexpr double Rt = Rg + 60.0;
+static constexpr double RL = Rt + 1.0;
+static constexpr double ISun = 100.0;
+static constexpr double AVERAGE_GROUND_REFLECTANCE = 0.1;
 
 #if 1
 #define RES_MU 128
@@ -1070,7 +1063,7 @@ AtmosphereModelBruneton::~AtmosphereModelBruneton() {
 
 AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3 &direction,
                                                       const Vector3 &sun_position, const Color &base) const {
-    Vector3 x = {0.0, Rg + eye.y * WORLD_SCALING, 0.0};
+    Vector3 x = {0.0, Rg + eye.y * Scenery::UNIT_TO_KM, 0.0};
     Vector3 v = direction.normalize();
     Vector3 s = sun_position.sub(x).normalize();
 
@@ -1089,7 +1082,7 @@ AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3
     result.base = base.add(sunColor);
     result.inscattering = _getInscatterColor(&x, &t, v, s, &r, &mu, &attenuation); /* S[L]-T(x,xs)S[l]|xs */
     /* TODO Use atmosphere attenuation */
-    result.distance = SPHERE_SIZE;
+    result.distance = Scenery::FAR_LIMIT_SCALED;
 
     result.updateFinal();
 
@@ -1100,16 +1093,16 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
     Vector3 eye = parent->getCameraLocation();
     eye.y = max(eye.y, 0.0);
     location.y = max(location.y, 0.0);
-    Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(SUN_DISTANCE);
+    Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(Scenery::SUN_DISTANCE);
 
-    Vector3 direction = location.sub(eye).scale(WORLD_SCALING);
+    Vector3 direction = location.sub(eye).scale(Scenery::UNIT_TO_KM);
     double t = direction.getNorm();
     if (t < 0.000001) {
-        direction = parent->getCameraDirection().scale(0.001 * WORLD_SCALING);
+        direction = parent->getCameraDirection().scale(0.001 * Scenery::UNIT_TO_KM);
         t = direction.getNorm();
     }
 
-    Vector3 x = {0.0, Rg + WORKAROUND_OFFSET + eye.y * WORLD_SCALING, 0.0};
+    Vector3 x = {0.0, Rg + WORKAROUND_OFFSET + eye.y * Scenery::UNIT_TO_KM, 0.0};
     Vector3 v = direction.normalize();
     Vector3 s = sun_position.sub(x).normalize();
 
@@ -1133,7 +1126,7 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
     result.attenuation.r = attenuation.x;
     result.attenuation.g = attenuation.y;
     result.attenuation.b = attenuation.z;
-    result.distance = t / WORLD_SCALING;
+    result.distance = t * Scenery::KM_TO_UNIT;
 
     result.updateFinal();
 
@@ -1144,11 +1137,11 @@ bool AtmosphereModelBruneton::getLightsAt(vector<LightComponent> &result, const 
     LightComponent sun, irradiance;
     double muS;
 
-    double altitude = max(location.y * WORLD_SCALING, 0.0);
+    double altitude = max(location.y * Scenery::UNIT_TO_KM, 0.0);
 
     double r0 = Rg + WORKAROUND_OFFSET + altitude;
     Vector3 up = {0.0, 1.0, 0.0};
-    Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(SUN_DISTANCE);
+    Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(Scenery::SUN_DISTANCE);
     Vector3 x = {0.0, r0, 0.0};
     Vector3 s = sun_position.sub(x).normalize();
 

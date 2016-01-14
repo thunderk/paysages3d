@@ -1,6 +1,7 @@
 #include "SkyRasterizer.h"
 
 #include <cmath>
+#include "Scenery.h"
 #include "Maths.h"
 #include "Vector3.h"
 #include "Color.h"
@@ -12,8 +13,6 @@
 #include "CanvasFragment.h"
 #include "RenderProgress.h"
 #include "GodRaysSampler.h"
-
-#define SPHERE_SIZE 20000.0
 
 SkyRasterizer::SkyRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id)
     : Rasterizer(renderer, progress, client_id, Color(0.7, 0.7, 1.0)) {
@@ -29,6 +28,7 @@ void SkyRasterizer::rasterizeToCanvas(CanvasPortion *canvas) {
     double current_i, current_j;
     Vector3 vertex1, vertex2, vertex3, vertex4;
     Vector3 camera_location, direction;
+    constexpr double limit = Scenery::FAR_LIMIT_SCALED;
 
     step_i = Maths::PI * 2.0 / to_double(res_i);
     step_j = Maths::PI / to_double(res_j);
@@ -45,24 +45,24 @@ void SkyRasterizer::rasterizeToCanvas(CanvasPortion *canvas) {
         for (i = 0; i < res_i; i++) {
             current_i = to_double(i) * step_i;
 
-            direction.x = SPHERE_SIZE * cos(current_i) * cos(current_j);
-            direction.y = SPHERE_SIZE * sin(current_j);
-            direction.z = SPHERE_SIZE * sin(current_i) * cos(current_j);
+            direction.x = limit * cos(current_i) * cos(current_j);
+            direction.y = limit * sin(current_j);
+            direction.z = limit * sin(current_i) * cos(current_j);
             vertex1 = camera_location.add(direction);
 
-            direction.x = SPHERE_SIZE * cos(current_i + step_i) * cos(current_j);
-            direction.y = SPHERE_SIZE * sin(current_j);
-            direction.z = SPHERE_SIZE * sin(current_i + step_i) * cos(current_j);
+            direction.x = limit * cos(current_i + step_i) * cos(current_j);
+            direction.y = limit * sin(current_j);
+            direction.z = limit * sin(current_i + step_i) * cos(current_j);
             vertex2 = camera_location.add(direction);
 
-            direction.x = SPHERE_SIZE * cos(current_i + step_i) * cos(current_j + step_j);
-            direction.y = SPHERE_SIZE * sin(current_j + step_j);
-            direction.z = SPHERE_SIZE * sin(current_i + step_i) * cos(current_j + step_j);
+            direction.x = limit * cos(current_i + step_i) * cos(current_j + step_j);
+            direction.y = limit * sin(current_j + step_j);
+            direction.z = limit * sin(current_i + step_i) * cos(current_j + step_j);
             vertex3 = camera_location.add(direction);
 
-            direction.x = SPHERE_SIZE * cos(current_i) * cos(current_j + step_j);
-            direction.y = SPHERE_SIZE * sin(current_j + step_j);
-            direction.z = SPHERE_SIZE * sin(current_i) * cos(current_j + step_j);
+            direction.x = limit * cos(current_i) * cos(current_j + step_j);
+            direction.y = limit * sin(current_j + step_j);
+            direction.z = limit * sin(current_i) * cos(current_j + step_j);
             vertex4 = camera_location.add(direction);
 
             // TODO Triangles at poles

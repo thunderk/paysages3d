@@ -2,13 +2,12 @@
 
 #include <cmath>
 #include "Maths.h"
+#include "Scenery.h"
 #include "PackStream.h"
 #include "RandomGenerator.h"
 #include "FloatNode.h"
 #include "GodRaysDefinition.h"
 #include "CelestialBodyDefinition.h"
-
-#define WORLD_SCALING 0.05
 
 AtmosphereDefinition::AtmosphereDefinition(DefinitionNode *parent)
     : DefinitionNode(parent, "atmosphere", "atmosphere") {
@@ -104,9 +103,9 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset, RandomGenerator 
     sun_color.b = 0.9;
     sun_color.a = 1.0;
     sun->propRadius()->setValue(1.0);
-    sun->propDistance()->setValue(149597870.0 / WORLD_SCALING);
-    moon->propDistance()->setValue(384403.0 / WORLD_SCALING);
-    moon->propRadius()->setValue(1737.4 / WORLD_SCALING);
+    sun->propDistance()->setValue(Scenery::SUN_DISTANCE_SCALED);
+    moon->propDistance()->setValue(384403.0 * Scenery::KM_TO_UNIT);
+    moon->propRadius()->setValue(1737.4 * Scenery::KM_TO_UNIT);
     moon->propPhi()->setValue(0.5);
     moon->propTheta()->setValue(0.3);
 

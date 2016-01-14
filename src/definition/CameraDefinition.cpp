@@ -1,6 +1,7 @@
 #include "CameraDefinition.h"
 
 #include <cmath>
+#include "Scenery.h"
 #include "Maths.h"
 #include "PackStream.h"
 #include "BoundingBox.h"
@@ -19,7 +20,7 @@ CameraDefinition::CameraDefinition(DefinitionNode *parent) : DefinitionNode(pare
     perspective.yfov = 1.0;
     perspective.xratio = 1.0;
     perspective.znear = 0.5;
-    perspective.zfar = 20000.0;
+    perspective.zfar = Scenery::FAR_LIMIT_SCALED;
 
     validate();
 }

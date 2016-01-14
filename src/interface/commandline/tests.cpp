@@ -429,11 +429,18 @@ static void testMoonRendering() {
     /*SkyRasterizer rasterizer(&renderer, renderer.getProgressHelper(), 0);
     renderer.setSoloRasterizer(&rasterizer);*/
 
+    // During the day
     scenery.getAtmosphere()->setDayTime(17, 30);
     startTestRender(&renderer, "moon", 0);
 
+    // At night
     scenery.getAtmosphere()->setDayTime(23);
     startTestRender(&renderer, "moon", 1);
+
+    // Eclipse
+    scenery.getAtmosphere()->childSun()->propPhi()->setValue(scenery.getAtmosphere()->childMoon()->propPhi()->getValue());
+    scenery.getAtmosphere()->childSun()->propTheta()->setValue(scenery.getAtmosphere()->childMoon()->propTheta()->getValue());
+    startTestRender(&renderer, "moon", 2);
 }
 
 void runTestSuite() {
