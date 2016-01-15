@@ -55,8 +55,7 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction) {
     Vector3 moon_position = atmosphere->childMoon()->getLocation();
     Vector3 moon_direction = moon_position.sub(renderer->getCameraLocation()).normalize();
     if (moon_direction.dotProduct(direction) >= 0) {
-        // TODO Why need the multiplier ?
-        double moon_radius = atmosphere->childMoon()->propRadius()->getValue() * 5.0;
+        double moon_radius = atmosphere->childMoon()->propRadius()->getValue();
         Vector3 hit1, hit2;
         int hits = Geometry::rayIntersectSphere(location, direction, moon_position, moon_radius, &hit1, &hit2);
         if (hits > 1) {

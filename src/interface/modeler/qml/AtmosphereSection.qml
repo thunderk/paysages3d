@@ -44,7 +44,7 @@ BaseSection {
         id: panel_sun_radius
         anchors.left: toolbar.right
         minimumValue: 0
-        maximumValue: 3
+        maximumValue: 30000000
         enabled: false
         objectName: "atmosphere_sun_radius"
     }

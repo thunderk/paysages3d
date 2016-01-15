@@ -5,6 +5,7 @@
 #include "OpenGLShaderProgram.h"
 #include "OpenGLSharedState.h"
 #include "OpenGLVertexArray.h"
+#include "CelestialBodyDefinition.h"
 #include "Scenery.h"
 #include "AtmosphereDefinition.h"
 #include "AtmosphereRenderer.h"
@@ -82,7 +83,7 @@ void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff 
     AtmosphereDefinition *newdef = renderer->getScenery()->getAtmosphere();
 
     if (node->getPath() == path_sun_phi or node->getPath() == path_sun_theta) {
-        Vector3 sun_direction = renderer->getAtmosphereRenderer()->getSunDirection();
+        Vector3 sun_direction = newdef->childSun()->getGlobalDirection();
         state->set("sunDirection", sun_direction);
 
         Color sun_color = newdef->sun_color;
@@ -100,6 +101,6 @@ void OpenGLSkybox::floatNodeChanged(const string &path, double new_value, double
     if (path == path_humidity) {
         state->set("atmosphereHumidity", new_value);
     } else if (path == path_sun_radius) {
-        state->set("sunRadius", new_value);
+        state->set("sunRadius", renderer->getScenery()->getAtmosphere()->childSun()->getAngularRadius());
     }
 }

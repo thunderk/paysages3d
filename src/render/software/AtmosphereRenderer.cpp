@@ -80,6 +80,10 @@ AtmosphereResult BaseAtmosphereRenderer::getSkyColor(const Vector3 &) {
     return result;
 }
 
+Vector3 BaseAtmosphereRenderer::getSunLocation() const {
+    return getDefinition()->childSun()->getLocation();
+}
+
 Vector3 BaseAtmosphereRenderer::getSunDirection() const {
     auto sun_location = getDefinition()->childSun()->getLocation();
     return sun_location.sub(parent->getCameraLocation()).normalize();
@@ -127,15 +131,14 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(cons
 
 AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &direction) {
     AtmosphereDefinition *definition;
-    Vector3 sun_direction, sun_position, camera_location;
+    Vector3 sun_position, camera_location;
     Color base;
 
     definition = getDefinition();
     camera_location = parent->getCameraLocation();
 
-    sun_direction = getSunDirection();
     Vector3 direction_norm = direction.normalize();
-    sun_position = sun_direction.scale(Scenery::SUN_DISTANCE_SCALED);
+    sun_position = getSunLocation();
 
     base = COLOR_BLACK;
 
@@ -145,7 +148,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &
     // Get sun shape
     /*if (v3Dot(sun_direction, direction) >= 0)
     {
-        double sun_radius = definition->sun_radius * SUN_RADIUS_SCALED * 5.0; // FIXME Why should we multiply by 5 ?
+        double sun_radius = definition->sun_radius * SUN_RADIUS_SCALED;
         Vector3 hit1, hit2;
         int hits = euclidRayIntersectSphere(camera_location, direction, sun_position, sun_radius, &hit1, &hit2);
         if (hits > 1)

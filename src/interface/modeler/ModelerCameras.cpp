@@ -91,8 +91,7 @@ void ModelerCameras::timerEvent(QTimerEvent *) {
 
 void ModelerCameras::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
     if (node->getPath().find("/atmosphere/sun/") == 0 and tool_mode == TOOL_SUN) {
-        Vector3 direction = parent->getRenderer()->getAtmosphereRenderer()->getSunDirection();
-        tool->setTarget(tool->getLocation().add(direction));
+        tool->setTarget(parent->getRenderer()->getAtmosphereRenderer()->getSunLocation());
     }
 }
 

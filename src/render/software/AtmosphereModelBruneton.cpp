@@ -861,8 +861,8 @@ static Color _getInscatterColor(Vector3 *_x, double *_t, Vector3 v, Vector3 s, d
 static Color _sunColor(Vector3 v, Vector3 s, double r, double mu, double radius) {
     Color transmittance = r <= Rt ? _transmittanceWithShadow(r, mu) : COLOR_WHITE; /* T(x,xo) */
     double d = _limit(r, mu);
-    radius *= (1.0 + 15.0 * d / Rt); /* Inflating due to lens effect near horizon */
-    double isun = step(cos(radius * Maths::PI / 180.0), v.dotProduct(s)) * ISun; /* Lsun */
+    radius *= (1.0 + 15.0 * d / Rt);                         /* Inflating due to lens effect near horizon */
+    double isun = step(cos(radius), v.dotProduct(s)) * ISun; /* Lsun */
     transmittance.r *= isun;
     transmittance.g *= isun;
     transmittance.b *= isun;
@@ -1063,6 +1063,7 @@ AtmosphereModelBruneton::~AtmosphereModelBruneton() {
 
 AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3 &direction,
                                                       const Vector3 &sun_position, const Color &base) const {
+    auto definition = parent->getScenery()->getAtmosphere();
     Vector3 x = {0.0, Rg + eye.y * Scenery::UNIT_TO_KM, 0.0};
     Vector3 v = direction.normalize();
     Vector3 s = sun_position.sub(x).normalize();
@@ -1073,8 +1074,7 @@ AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3
 
     AtmosphereResult result;
     Vector3 attenuation;
-    Color sunColor =
-        _sunColor(v, s, r, mu, parent->getScenery()->getAtmosphere()->childSun()->propRadius()->getValue()); /* L0 */
+    Color sunColor = _sunColor(v, s, r, mu, definition->childSun()->getAngularRadius()); /* L0 */
 
     /*result.base.r = base.r + sunColor.r;
     result.base.g = base.g + sunColor.g;
@@ -1090,10 +1090,11 @@ AtmosphereResult AtmosphereModelBruneton::getSkyColor(Vector3 eye, const Vector3
 }
 
 AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 location, const Color &base) const {
+    auto definition = parent->getScenery()->getAtmosphere();
     Vector3 eye = parent->getCameraLocation();
     eye.y = max(eye.y, 0.0);
     location.y = max(location.y, 0.0);
-    Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(Scenery::SUN_DISTANCE);
+    Vector3 sun_position = definition->childSun()->getLocation(false).scale(Scenery::UNIT_TO_KM);
 
     Vector3 direction = location.sub(eye).scale(Scenery::UNIT_TO_KM);
     double t = direction.getNorm();
@@ -1134,6 +1135,7 @@ AtmosphereResult AtmosphereModelBruneton::applyAerialPerspective(Vector3 locatio
 }
 
 bool AtmosphereModelBruneton::getLightsAt(vector<LightComponent> &result, const Vector3 &location) const {
+    auto definition = parent->getScenery()->getAtmosphere();
     LightComponent sun, irradiance;
     double muS;
 
@@ -1141,13 +1143,13 @@ bool AtmosphereModelBruneton::getLightsAt(vector<LightComponent> &result, const 
 
     double r0 = Rg + WORKAROUND_OFFSET + altitude;
     Vector3 up = {0.0, 1.0, 0.0};
-    Vector3 sun_position = parent->getAtmosphereRenderer()->getSunDirection().scale(Scenery::SUN_DISTANCE);
+    Vector3 sun_position = definition->childSun()->getLocation(false).scale(Scenery::UNIT_TO_KM);
     Vector3 x = {0.0, r0, 0.0};
     Vector3 s = sun_position.sub(x).normalize();
 
     muS = up.dotProduct(s);
     if (altitude > RL) {
-        sun.color = parent->getScenery()->getAtmosphere()->sun_color;
+        sun.color = definition->sun_color;
     } else {
         sun.color = _transmittanceWithShadow(r0, muS);
     }

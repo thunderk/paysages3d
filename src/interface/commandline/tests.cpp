@@ -414,13 +414,12 @@ static void testTextures() {
     }
 }
 
-static void testMoonRendering() {
+static void testCelestialBodies() {
     Scenery scenery;
     scenery.autoPreset(8);
+    scenery.getTerrain()->propHeightNoise()->setConfig(0.0);
     scenery.getClouds()->clear();
     scenery.getCamera()->setLocation(VECTOR_ZERO);
-    scenery.getCamera()->setTarget(scenery.getAtmosphere()->childMoon()->getLocation());
-    scenery.getCamera()->setFov(0.1);
 
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(600, 600);
@@ -429,25 +428,40 @@ static void testMoonRendering() {
     /*SkyRasterizer rasterizer(&renderer, renderer.getProgressHelper(), 0);
     renderer.setSoloRasterizer(&rasterizer);*/
 
-    // During the day
+    scenery.getCamera()->setTarget(scenery.getAtmosphere()->childMoon()->getLocation());
+    scenery.getCamera()->setFov(0.02);
+
     scenery.getAtmosphere()->setDayTime(17, 30);
-    startTestRender(&renderer, "moon", 0);
+    startTestRender(&renderer, "celestial_bodies_moon_day");
 
-    // At night
     scenery.getAtmosphere()->setDayTime(23);
-    startTestRender(&renderer, "moon", 1);
+    startTestRender(&renderer, "celestial_bodies_moon_night");
 
-    // Eclipse
-    scenery.getAtmosphere()->childSun()->propPhi()->setValue(scenery.getAtmosphere()->childMoon()->propPhi()->getValue());
-    scenery.getAtmosphere()->childSun()->propTheta()->setValue(scenery.getAtmosphere()->childMoon()->propTheta()->getValue());
-    startTestRender(&renderer, "moon", 2);
+    scenery.getCamera()->setFov(0.2);
+
+    scenery.getAtmosphere()->setDayTime(6);
+    scenery.getCamera()->setTarget(scenery.getAtmosphere()->childSun()->getLocation());
+    startTestRender(&renderer, "celestial_bodies_sun_horizon");
+
+    scenery.getAtmosphere()->setDayTime(6, 30);
+    scenery.getCamera()->setTarget(scenery.getAtmosphere()->childSun()->getLocation());
+    startTestRender(&renderer, "celestial_bodies_sun_rising");
+
+    scenery.getAtmosphere()->setDayTime(11);
+    scenery.getCamera()->setFov(0.1);
+
+    scenery.getAtmosphere()->childSun()->propPhi()->setValue(
+        scenery.getAtmosphere()->childMoon()->propPhi()->getValue());
+    scenery.getAtmosphere()->childSun()->propTheta()->setValue(
+        scenery.getAtmosphere()->childMoon()->propTheta()->getValue());
+    startTestRender(&renderer, "celestial_bodies_solar_eclipse");
 }
 
 void runTestSuite() {
     testNoise();
     testTextures();
     testGodRays();
-    testMoonRendering();
+    testCelestialBodies();
     testNearFrustum();
     testCloudsNearGround();
     testVegetationModels();

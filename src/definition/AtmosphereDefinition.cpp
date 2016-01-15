@@ -102,8 +102,8 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset, RandomGenerator 
     sun_color.g = 0.95;
     sun_color.b = 0.9;
     sun_color.a = 1.0;
-    sun->propRadius()->setValue(1.0);
     sun->propDistance()->setValue(Scenery::SUN_DISTANCE_SCALED);
+    sun->propRadius()->setValue(Scenery::SUN_RADIUS_SCALED);
     moon->propDistance()->setValue(384403.0 * Scenery::KM_TO_UNIT);
     moon->propRadius()->setValue(1737.4 * Scenery::KM_TO_UNIT);
     moon->propPhi()->setValue(0.5);

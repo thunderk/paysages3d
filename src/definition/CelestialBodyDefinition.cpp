@@ -1,5 +1,6 @@
 #include "CelestialBodyDefinition.h"
 
+#include <cmath>
 #include "Vector3.h"
 #include "FloatNode.h"
 #include "Scenery.h"
@@ -12,6 +13,11 @@ CelestialBodyDefinition::CelestialBodyDefinition(DefinitionNode *parent, const s
     radius = new FloatNode(this, "radius");
 }
 
+Vector3 CelestialBodyDefinition::getGlobalDirection() const {
+    VectorSpherical spc = {1.0, theta->getValue(), -phi->getValue()};
+    return Vector3(spc);
+}
+
 Vector3 CelestialBodyDefinition::getLocation(bool over_water) const {
     VectorSpherical spc = {distance->getValue(), theta->getValue(), -phi->getValue()};
     if (over_water) {
@@ -19,4 +25,8 @@ Vector3 CelestialBodyDefinition::getLocation(bool over_water) const {
     } else {
         return Vector3(spc);
     }
+}
+
+double CelestialBodyDefinition::getAngularRadius() const {
+    return 2.0 * atan(radius->getValue() / distance->getValue());
 }

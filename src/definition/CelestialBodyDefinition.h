@@ -26,12 +26,22 @@ class DEFINITIONSHARED_EXPORT CelestialBodyDefinition : public DefinitionNode {
     }
 
     /**
+     * Get the normalized direction of the celestial body, from the center of the earth.
+     */
+    Vector3 getGlobalDirection() const;
+
+    /**
      * Get the location of the celestial body.
      *
      * If "over_water" is true, the location is given in standard coordinates with y=0.0 as water,
      * otherwise in regard to the earth center.
      */
     Vector3 getLocation(bool over_water = true) const;
+
+    /**
+     * Get the angular radius, when viewed from earth.
+     */
+    double getAngularRadius() const;
 
   private:
     FloatNode *distance;
