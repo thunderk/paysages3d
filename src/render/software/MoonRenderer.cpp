@@ -1,19 +1,22 @@
 #include "MoonRenderer.h"
 
+#include <cmath>
 #include "CelestialBodyDefinition.h"
 #include "Color.h"
 #include "LightingManager.h"
 #include "Geometry.h"
 #include "SurfaceMaterial.h"
 #include "FloatNode.h"
+#include "NoiseFunctionSimplex.h"
 
 class MoonRenderer::pimpl {
   public:
-    pimpl() : definition(NULL, "moon"), material(Color(3.0, 3.0, 3.0)) {
-        // TODO Put material in scenery
+    pimpl() : definition(NULL, "moon") {
+        // TODO Put noise in scenery
+        noise.setScaling(0.2);
     }
     CelestialBodyDefinition definition;
-    SurfaceMaterial material;
+    NoiseFunctionSimplex noise;
 };
 
 MoonRenderer::MoonRenderer(CelestialBodyDefinition *moon_node) : impl(new pimpl()) {
@@ -57,7 +60,25 @@ Color MoonRenderer::getColor(const Vector3 &eye, const Vector3 &direction, Light
             double dist = hit2.sub(hit1).getNorm() / moon_radius;
             auto nearest = (hit1.sub(eye).getNorm() > hit2.sub(eye).getNorm()) ? hit2 : hit1;
 
-            auto moon_color = lighting->apply(eye, nearest, nearest.sub(moon_location).normalize(), impl->material);
+            auto p1 = nearest.sub(moon_location).normalize();
+            auto coords = p1.toSpherical();
+
+            double precision = 0.00001;
+            coords.phi += precision;
+            auto p2 = Vector3(coords);
+            p2 = p2.scale(1.0 - precision * fabs(impl->noise.get3d(0.01, p2.x, p2.y, p2.z)));
+
+            coords.phi -= precision;
+            coords.theta += precision;
+            auto p3 = Vector3(coords);
+            p3 = p3.scale(1.0 - precision * fabs(impl->noise.get3d(0.01, p3.x, p3.y, p3.z)));
+
+            auto normal = p1.getNormal3(p2, p3);
+
+            double gradient = 2.3 + 8.0 * impl->noise.get3d(0.01, 0.3 * p1.x + 12.0, 0.3 * p1.y - 4.8, -0.3 * p1.z + 7.4);
+            SurfaceMaterial material(Color(gradient, gradient, gradient));
+
+            auto moon_color = lighting->apply(eye, nearest, normal, material);
             if (dist <= 0.05) {
                 moon_color.a *= 1.0 - dist / 0.05;
             }

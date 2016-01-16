@@ -20,6 +20,7 @@ class Color;
 class NoiseGenerator;
 class NoiseState;
 class FractalNoise;
+class NoiseFunctionSimplex;
 class Curve;
 class ColorProfile;
 class Texture2D;
