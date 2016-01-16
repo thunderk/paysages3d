@@ -16,6 +16,7 @@
 #include "TerrainRasterizer.h"
 #include "WaterRasterizer.h"
 #include "NightSky.h"
+#include "MoonRenderer.h"
 #include "LightStatus.h"
 #include "LightingManager.h"
 #include "GodRaysSampler.h"
@@ -37,6 +38,7 @@ SoftwareRenderer::SoftwareRenderer(Scenery *scenery) : scenery(scenery) {
     water_renderer = new WaterRenderer(this);
 
     nightsky_renderer = new NightSky(this);
+    moon_renderer = new MoonRenderer(scenery->getAtmosphere()->childMoon());
 
     fluid_medium = new FluidMediumManager(this);
     lighting = new LightingManager();
@@ -47,6 +49,7 @@ SoftwareRenderer::SoftwareRenderer(Scenery *scenery) : scenery(scenery) {
     lighting->registerFilter(vegetation_renderer);
     lighting->registerFilter(clouds_renderer);
     lighting->registerSource(atmosphere_renderer);
+    lighting->registerSource(moon_renderer);
 
     setQuality(0.5);
 }
@@ -59,6 +62,7 @@ SoftwareRenderer::~SoftwareRenderer() {
     delete godrays;
 
     delete nightsky_renderer;
+    delete moon_renderer;
 
     delete atmosphere_renderer;
     delete clouds_renderer;

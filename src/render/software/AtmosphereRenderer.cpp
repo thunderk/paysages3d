@@ -10,6 +10,7 @@
 #include "LightStatus.h"
 #include "Scenery.h"
 #include "NightSky.h"
+#include "MoonRenderer.h"
 #include "CelestialBodyDefinition.h"
 #include "FloatNode.h"
 
@@ -171,6 +172,9 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &
         }
     }*/
 
+    // Get the moon
+    base.mask(parent->getMoonRenderer().getColor(camera_location, direction_norm, parent->getLightingManager()));
+
     // Get scattering
     AtmosphereResult result;
     Vector3 location = camera_location.add(direction_norm.scale(Scenery::FAR_LIMIT_SCALED));
@@ -194,6 +198,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::getSkyColor(const Vector3 &
 bool SoftwareBrunetonAtmosphereRenderer::getLightsAt(vector<LightComponent> &result, const Vector3 &location) const {
     bool changed = false;
     changed |= model->getLightsAt(result, location);
+    // FIXME Should be registered on its own
     changed |= parent->getNightSky()->getLightsAt(result, location);
     return changed;
 }

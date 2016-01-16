@@ -49,6 +49,7 @@ class RayCastingManager;
 class RayCastingResult;
 
 class NightSky;
+class MoonRenderer;
 
 class TerrainRayWalker;
 

@@ -68,6 +68,9 @@ class SOFTWARESHARED_EXPORT SoftwareRenderer {
     inline NightSky *getNightSky() const {
         return nightsky_renderer;
     }
+    inline const MoonRenderer &getMoonRenderer() const {
+        return *moon_renderer;
+    }
 
     inline FluidMediumManager *getFluidMediumManager() const {
         return fluid_medium;
@@ -98,6 +101,7 @@ class SOFTWARESHARED_EXPORT SoftwareRenderer {
     TexturesRenderer *textures_renderer;
     WaterRenderer *water_renderer;
     NightSky *nightsky_renderer;
+    MoonRenderer *moon_renderer;
     VegetationRenderer *vegetation_renderer;
 };
 }
