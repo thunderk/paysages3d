@@ -89,7 +89,7 @@ void ModelerCameras::timerEvent(QTimerEvent *) {
     }
 }
 
-void ModelerCameras::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
+void ModelerCameras::nodeChanged(const DefinitionNode *node, const DefinitionDiff *, const DefinitionNode *) {
     if (node->getPath().find("/atmosphere/sun/") == 0 and tool_mode == TOOL_SUN) {
         tool->setTarget(parent->getRenderer()->getAtmosphereRenderer()->getSunLocation());
     }

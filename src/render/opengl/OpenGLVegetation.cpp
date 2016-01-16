@@ -88,7 +88,7 @@ void OpenGLVegetation::render() {
     }
 }
 
-void OpenGLVegetation::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
+void OpenGLVegetation::nodeChanged(const DefinitionNode *node, const DefinitionDiff *, const DefinitionNode *) {
     if (node->getPath() == "/vegetation") {
         updateLayers();
     }

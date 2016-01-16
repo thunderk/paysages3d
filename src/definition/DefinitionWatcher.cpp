@@ -9,9 +9,10 @@ DefinitionWatcher::DefinitionWatcher() {
 }
 
 DefinitionWatcher::~DefinitionWatcher() {
+    // FIXME watcher is not removed from the diff manager !
 }
 
-void DefinitionWatcher::nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) {
+void DefinitionWatcher::nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *) {
     string type_name = node->getTypeName();
 
     if (type_name == "int") {

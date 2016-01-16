@@ -109,7 +109,7 @@ void WaterDefinition::validate() {
     foam_material->validate();
 }
 
-void WaterDefinition::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
+void WaterDefinition::nodeChanged(const DefinitionNode *node, const DefinitionDiff *, const DefinitionNode *) {
     if (node == model) {
         switch (model->getValue()) {
         case 1:

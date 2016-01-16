@@ -1,5 +1,6 @@
 #include "BaseTestCase.h"
 
+#include "TestToolDefinition.h"
 #include "DiffManager.h"
 #include "DefinitionNode.h"
 #include "DefinitionWatcher.h"
@@ -118,7 +119,7 @@ class TestWatcher : public DefinitionWatcher {
         calls = 0;
     }
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override {
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *) override {
         EXPECT_EQ(expected_node, node);
         ASSERT_EQ("float", diff->getTypeName());
         const FloatDiff *float_diff = (const FloatDiff *)diff;
@@ -153,4 +154,29 @@ TEST(DiffManager, addWatcherWithInitDiffs) {
 
     node.addWatcher(&watcher, true);
     EXPECT_EQ(1, watcher.calls);
+}
+
+TEST(DiffManager, publishToWatcher) {
+    DefinitionNode root(NULL, "root");
+    FloatNode node(&root, "node", 1.3);
+    RecordingDefinitionWatcher watcher;
+
+    EXPECT_EQ(0u, watcher.changes.size());
+
+    root.addWatcher(&watcher, true);
+    ASSERT_EQ(1u, watcher.changes.size());
+    EXPECT_EQ(&root, watcher.changes[0].node);
+    EXPECT_EQ(&root, watcher.changes[0].parent);
+
+    node.addWatcher(&watcher, true);
+    ASSERT_EQ(2u, watcher.changes.size());
+    EXPECT_EQ(&node, watcher.changes[1].node);
+    EXPECT_EQ(&node, watcher.changes[1].parent);
+
+    node.setValue(2.3);
+    ASSERT_EQ(4u, watcher.changes.size());
+    EXPECT_EQ(&node, watcher.changes[2].node);
+    EXPECT_EQ(&node, watcher.changes[2].parent);
+    EXPECT_EQ(&node, watcher.changes[3].node);
+    EXPECT_EQ(&root, watcher.changes[3].parent);
 }

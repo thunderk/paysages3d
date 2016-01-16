@@ -35,7 +35,7 @@ class OPENGLSHARED_EXPORT OpenGLTerrain : public OpenGLPart, public DefinitionWa
 
     void performChunksMaintenance();
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *) override;
 
   private:
     OpenGLShaderProgram *program;

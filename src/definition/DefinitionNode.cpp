@@ -9,6 +9,20 @@
 #include <cassert>
 #include <algorithm>
 
+// Diff for abstract nodes
+class DefinitionNodeDiff : public DefinitionDiff {
+  public:
+    DefinitionNodeDiff(const DefinitionNode *node) : DefinitionDiff(node) {
+    }
+
+    DefinitionNodeDiff(const DefinitionDiff *diff) : DefinitionDiff(diff) {
+    }
+
+    virtual DefinitionDiff *newReversed() const override {
+        return new DefinitionNodeDiff(this);
+    }
+};
+
 DefinitionNode::DefinitionNode(DefinitionNode *parent, const string &name, const string &type_name)
     : parent(parent), type_name(type_name), name(name) {
     if (parent) {
@@ -115,7 +129,9 @@ bool DefinitionNode::applyDiff(const DefinitionDiff *diff, bool) {
     }
 }
 
-void DefinitionNode::generateInitDiffs(vector<const DefinitionDiff *> *) const {
+void DefinitionNode::generateInitDiffs(vector<const DefinitionDiff *> *diffs) const {
+    diffs->push_back(new DefinitionNodeDiff(this));
+    // TODO add children diffs in cascade ?
 }
 
 void DefinitionNode::addWatcher(DefinitionWatcher *watcher, bool init_diff) {
@@ -125,7 +141,7 @@ void DefinitionNode::addWatcher(DefinitionWatcher *watcher, bool init_diff) {
             generateInitDiffs(&diffs);
 
             for (auto diff : diffs) {
-                watcher->nodeChanged(this, diff);
+                watcher->nodeChanged(this, diff, this);
                 delete diff;
             }
         }

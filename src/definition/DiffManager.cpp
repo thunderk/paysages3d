@@ -39,11 +39,10 @@ void DiffManager::addDiff(DefinitionNode *node, const DefinitionDiff *diff) {
     diffs.push_back(diff);
 
     // TODO Delayed commit (with merge of consecutive diffs)
-    node->applyDiff(diff);
 
-    for (auto watcher : watchers[node]) {
-        watcher->nodeChanged(node, diff);
-    }
+    Logs::debug("Definition") << "Node changed : " << node->getPath() << endl;
+    node->applyDiff(diff);
+    publishToWatchers(node, diff);
 }
 
 void DiffManager::undo() {
@@ -55,12 +54,12 @@ void DiffManager::undo() {
         if (node) {
             undone++;
 
-            node->applyDiff(diff, true);
+            unique_ptr<DefinitionDiff> reversed(diff->newReversed());
 
-            for (auto watcher : watchers[node]) {
-                unique_ptr<DefinitionDiff> reversed(diff->newReversed());
-                watcher->nodeChanged(node, reversed.get());
-            }
+            Logs::debug("Definition") << "Node undo : " << node->getPath() << endl;
+            // TODO use reversed ?
+            node->applyDiff(diff, true);
+            publishToWatchers(node, reversed.get());
         } else {
             Logs::error("Definition") << "Can't find node to undo diff : " << diff->getPath() << endl;
         }
@@ -76,13 +75,22 @@ void DiffManager::redo() {
         if (node) {
             undone--;
 
+            Logs::debug("Definition") << "Node redo : " << node->getPath() << endl;
             node->applyDiff(diff);
-
-            for (auto watcher : watchers[node]) {
-                watcher->nodeChanged(node, diff);
-            }
+            publishToWatchers(node, diff);
         } else {
             Logs::error("Definition") << "Can't find node to redo diff : " << diff->getPath() << endl;
         }
     }
+}
+
+void DiffManager::publishToWatchers(const DefinitionNode *node, const DefinitionDiff *diff) {
+    // TODO Parent node signaling should be aggregated (to not receive many nodeChanged calls)
+    const DefinitionNode *cnode = node;
+    do {
+        for (auto watcher : watchers[cnode]) {
+            watcher->nodeChanged(node, diff, cnode);
+        }
+        cnode = cnode->getParent();
+    } while (cnode);
 }

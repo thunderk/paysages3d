@@ -19,7 +19,7 @@ class IntPropertyBind : public QObject, public DefinitionWatcher {
   public:
     IntPropertyBind(MainModelerWindow *window, const string &object_name, const string &property_name, IntNode *node);
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *parent) override;
 
   private slots:
     void propertyChanged();

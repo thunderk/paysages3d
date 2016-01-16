@@ -18,7 +18,7 @@ AtmosphereModeler::AtmosphereModeler(MainModelerWindow *ui) : BaseModelerTool(ui
     ui->setQmlProperty("atmosphere_daytime", "value", ui->getScenery()->getAtmosphere()->getDaytime());
 }
 
-void AtmosphereModeler::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
+void AtmosphereModeler::nodeChanged(const DefinitionNode *node, const DefinitionDiff *, const DefinitionNode *) {
     if (node->getPath().find("/atmosphere/sun/") == 0) {
         getWindow()->getCamera()->startSunTool(1000);
     }

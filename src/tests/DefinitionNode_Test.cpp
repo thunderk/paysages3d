@@ -26,7 +26,7 @@ TEST(DefinitionNode, getPath) {
 }
 
 class FakeWatcher : public DefinitionWatcher {
-    virtual void nodeChanged(const DefinitionNode *, const DefinitionDiff *) override {
+    virtual void nodeChanged(const DefinitionNode *, const DefinitionDiff *, const DefinitionNode *) override {
     }
 };
 

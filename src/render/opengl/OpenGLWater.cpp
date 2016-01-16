@@ -66,7 +66,7 @@ void OpenGLWater::render() {
     }
 }
 
-void OpenGLWater::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
+void OpenGLWater::nodeChanged(const DefinitionNode *node, const DefinitionDiff *, const DefinitionNode *) {
     OpenGLSharedState *state = renderer->getSharedState();
 
     if (node->getPath() == path_height) {

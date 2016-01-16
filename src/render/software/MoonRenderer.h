@@ -19,7 +19,7 @@ class SOFTWARESHARED_EXPORT MoonRenderer : public DefinitionWatcher, public Ligh
     MoonRenderer(CelestialBodyDefinition *moon_node);
     virtual ~MoonRenderer();
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *parent) override;
     virtual bool getLightsAt(vector<LightComponent> &result, const Vector3 &location) const override;
 
     /**

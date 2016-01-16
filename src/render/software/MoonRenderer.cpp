@@ -18,17 +18,13 @@ class MoonRenderer::pimpl {
 
 MoonRenderer::MoonRenderer(CelestialBodyDefinition *moon_node) : impl(new pimpl()) {
     startWatching(moon_node->getRoot(), moon_node->getPath());
-
-    // FIXME should not be needed because the above watcher should watch the whole node
-    //   and call nodeChanged
-    moon_node->copy(&impl->definition);
 }
 
 MoonRenderer::~MoonRenderer() {
 }
 
-void MoonRenderer::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
-    if (auto moon_node = static_cast<const CelestialBodyDefinition *>(node)) {
+void MoonRenderer::nodeChanged(const DefinitionNode *, const DefinitionDiff *, const DefinitionNode *parent) {
+    if (auto moon_node = static_cast<const CelestialBodyDefinition *>(parent)) {
         moon_node->copy(&impl->definition);
     }
 }

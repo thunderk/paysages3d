@@ -20,8 +20,10 @@ class DEFINITIONSHARED_EXPORT DefinitionWatcher {
 
     /**
      * Abstract method called when a node changed.
+     *
+     * *parent* is the node that is watched (useful if *node* is a sub-node).
      */
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff);
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *parent);
 
   protected:
     /**

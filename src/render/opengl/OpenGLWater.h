@@ -18,7 +18,7 @@ class OPENGLSHARED_EXPORT OpenGLWater : public OpenGLPart, public DefinitionWatc
     virtual void update() override;
     virtual void render() override;
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *parent) override;
 
     /**
      * Enable or disable the water surface rendering.

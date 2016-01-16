@@ -18,7 +18,7 @@ IntPropertyBind::IntPropertyBind(MainModelerWindow *window, const string &object
     }
 }
 
-void IntPropertyBind::nodeChanged(const DefinitionNode *, const DefinitionDiff *) {
+void IntPropertyBind::nodeChanged(const DefinitionNode *, const DefinitionDiff *, const DefinitionNode *) {
     if (item) {
         item->setProperty(property.c_str(), node->getValue());
     }

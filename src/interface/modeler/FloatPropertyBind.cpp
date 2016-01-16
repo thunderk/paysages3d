@@ -20,7 +20,7 @@ FloatPropertyBind::FloatPropertyBind(MainModelerWindow *window, const string &ob
     }
 }
 
-void FloatPropertyBind::nodeChanged(const DefinitionNode *, const DefinitionDiff *) {
+void FloatPropertyBind::nodeChanged(const DefinitionNode *, const DefinitionDiff *, const DefinitionNode *) {
     if (item) {
         item->setProperty(property.c_str(), node->getValue());
     }

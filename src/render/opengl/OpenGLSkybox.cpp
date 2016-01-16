@@ -78,7 +78,7 @@ void OpenGLSkybox::render() {
     program->draw(vertices);
 }
 
-void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) {
+void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *parent) {
     OpenGLSharedState *state = renderer->getSharedState();
     AtmosphereDefinition *newdef = renderer->getScenery()->getAtmosphere();
 
@@ -92,7 +92,7 @@ void OpenGLSkybox::nodeChanged(const DefinitionNode *node, const DefinitionDiff 
         state->set("dayTime", newdef->getDaytime());
     }
 
-    DefinitionWatcher::nodeChanged(node, diff);
+    DefinitionWatcher::nodeChanged(node, diff, parent);
 }
 
 void OpenGLSkybox::floatNodeChanged(const string &path, double new_value, double) {

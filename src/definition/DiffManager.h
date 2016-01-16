@@ -53,6 +53,15 @@ class DEFINITIONSHARED_EXPORT DiffManager {
      */
     void redo();
 
+protected:
+    /**
+     * Publish a diff to the registered watchers.
+     *
+     * The diff will be published to the watcher of the node, and to the watchers of all
+     * parents, up to the definition tree root.
+     */
+    void publishToWatchers(const DefinitionNode *node, const DefinitionDiff *diff);
+
   private:
     DefinitionNode *tree;
     int undone;

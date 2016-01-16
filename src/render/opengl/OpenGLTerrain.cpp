@@ -165,7 +165,7 @@ void OpenGLTerrain::performChunksMaintenance() {
     }
 }
 
-void OpenGLTerrain::nodeChanged(const DefinitionNode *node, const DefinitionDiff *) {
+void OpenGLTerrain::nodeChanged(const DefinitionNode *node, const DefinitionDiff *, const DefinitionNode *) {
     if (node->getPath() == "/terrain/water_height") {
         resetTextures();
     } else if (node->getPath().find("/atmosphere") == 0) {

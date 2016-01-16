@@ -32,7 +32,7 @@ class OPENGLSHARED_EXPORT OpenGLVegetation : public OpenGLPart, public Definitio
     virtual void update() override;
     virtual void render() override;
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff) override;
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *parent) override;
 
     /**
      * Get the currently rendered scenery.
