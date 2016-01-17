@@ -1159,7 +1159,7 @@ bool AtmosphereModelBruneton::getLightsAt(vector<LightComponent> &result, const 
 
     result.push_back(sun);
 
-    irradiance.color = _irradiance(_irradianceTexture, r0, muS);
+    irradiance.color = _irradiance(_irradianceTexture, r0, muS).scaled(1.0 - min(location.y / Scenery::ATMOSPHERE_WIDTH_SCALED, 1.0));
     irradiance.direction = VECTOR_DOWN;
     irradiance.reflection = 0.0;
     irradiance.altered = 0;

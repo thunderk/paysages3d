@@ -1,5 +1,6 @@
 #include "NightSky.h"
 
+#include <algorithm>
 #include "Color.h"
 #include "Vector3.h"
 #include "Geometry.h"
@@ -54,10 +55,10 @@ const Color NightSky::getColor(double altitude, const Vector3 &direction) {
     return result;
 }
 
-bool NightSky::getLightsAt(vector<LightComponent> &result, const Vector3 &) const {
+bool NightSky::getLightsAt(vector<LightComponent> &result, const Vector3 &location) const {
     LightComponent sky;
 
-    sky.color = Color(0.01, 0.012, 0.03);
+    sky.color = Color(0.01, 0.012, 0.03).scaled(1.0 - min(location.y / Scenery::ATMOSPHERE_WIDTH_SCALED, 1.0));
     sky.direction = VECTOR_DOWN;
     sky.reflection = 0.0;
     sky.altered = 0;

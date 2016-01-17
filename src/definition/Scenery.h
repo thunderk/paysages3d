@@ -41,6 +41,9 @@ class DEFINITIONSHARED_EXPORT Scenery : public DefinitionNode {
     static constexpr double SUN_RADIUS = 6.955e5;
     static constexpr double SUN_RADIUS_SCALED = SUN_RADIUS * KM_TO_UNIT;
 
+    static constexpr double ATMOSPHERE_WIDTH = 61.0;
+    static constexpr double ATMOSPHERE_WIDTH_SCALED = ATMOSPHERE_WIDTH * KM_TO_UNIT;
+
     static constexpr double FAR_LIMIT_SCALED = 20000.0;
 
   public:
