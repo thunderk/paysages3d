@@ -3,8 +3,7 @@
 
 #include "definition_global.h"
 
-#include <map>
-#include <vector>
+#include <memory>
 
 namespace paysages {
 namespace definition {
@@ -22,9 +21,7 @@ class DEFINITIONSHARED_EXPORT DiffManager {
     /**
      * Get the total number of diff stored.
      */
-    inline int getDiffCount(int include_undone = true) {
-        return include_undone ? diffs.size() : diffs.size() - undone;
-    }
+    unsigned long getDiffCount(int include_undone = true) const;
 
     /**
      * Add a watcher for a specific node.
@@ -36,7 +33,7 @@ class DEFINITIONSHARED_EXPORT DiffManager {
     /**
      * Get the number of watchers registered for a given node.
      */
-    int getWatcherCount(const DefinitionNode *node);
+    unsigned long getWatcherCount(const DefinitionNode *node);
 
     /**
      * Add a new diff of a node to the change flow.
@@ -63,10 +60,8 @@ class DEFINITIONSHARED_EXPORT DiffManager {
     void publishToWatchers(const DefinitionNode *node, const DefinitionDiff *diff);
 
   private:
-    DefinitionNode *tree;
-    int undone;
-    vector<const DefinitionDiff *> diffs;
-    map<const DefinitionNode *, vector<DefinitionWatcher *>> watchers;
+    class pimpl;
+    unique_ptr<pimpl> impl;
 };
 }
 }

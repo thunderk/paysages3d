@@ -32,6 +32,13 @@ class DEFINITIONSHARED_EXPORT DefinitionWatcher {
     void startWatching(const DefinitionNode *root, const string &path, bool init_diff = true);
 
     /**
+     * Start watching a node.
+     *
+     * Overloaded for convenience.
+     */
+    void startWatching(const DefinitionNode *node, bool init_diff = true);
+
+    /**
      * Abstract convenience to receive integer node changes.
      */
     virtual void intNodeChanged(const string &path, int new_value, int old_value);

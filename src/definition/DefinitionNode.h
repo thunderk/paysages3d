@@ -43,7 +43,7 @@ class DEFINITIONSHARED_EXPORT DefinitionNode {
     inline DiffManager *getDiffManager() const {
         return diffs;
     }
-    inline int getChildrenCount() const {
+    inline unsigned long getChildrenCount() const {
         return children.size();
     }
 
@@ -94,7 +94,7 @@ class DEFINITIONSHARED_EXPORT DefinitionNode {
     /**
      * Get the current number of watchers.
      */
-    int getWatcherCount() const;
+    unsigned long getWatcherCount() const;
 
   protected:
     void addChild(DefinitionNode *child);

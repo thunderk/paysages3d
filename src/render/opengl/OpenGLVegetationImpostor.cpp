@@ -67,7 +67,8 @@ void OpenGLVegetationImpostor::render(OpenGLShaderProgram *program, const OpenGL
 }
 
 void OpenGLVegetationImpostor::prepareTexture(const VegetationModelDefinition &model, const Scenery &environment,
-                                              bool *interrupt) {
+                                              bool *) {
+    // TODO interrupt
     Scenery scenery;
     environment.getAtmosphere()->copy(scenery.getAtmosphere());
     SoftwareRenderer renderer(&scenery);

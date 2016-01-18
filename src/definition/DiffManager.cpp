@@ -1,42 +1,59 @@
 #include "DiffManager.h"
 
 #include <algorithm>
-#include <memory>
+#include <map>
+#include <vector>
 #include "DefinitionNode.h"
 #include "DefinitionDiff.h"
 #include "DefinitionWatcher.h"
 #include "Logs.h"
 
-DiffManager::DiffManager(DefinitionNode *tree) : tree(tree) {
-    undone = 0;
+class DiffManager::pimpl {
+  public:
+    pimpl(DefinitionNode *tree) : tree(tree), undone(0) {
+    }
+
+    DefinitionNode *tree;
+    unsigned long undone;
+    vector<const DefinitionDiff *> diffs;
+    map<const DefinitionNode *, vector<DefinitionWatcher *>> watchers;
+};
+
+DiffManager::DiffManager(DefinitionNode *tree) : impl(new pimpl(tree)) {
 }
 
 DiffManager::~DiffManager() {
-    for (auto diff : diffs) {
+    // TODO smart pointers
+    for (auto diff : impl->diffs) {
         delete diff;
     }
-    diffs.clear();
+    impl->diffs.clear();
+}
+
+unsigned long DiffManager::getDiffCount(int include_undone) const {
+    return include_undone ? impl->diffs.size() : impl->diffs.size() - impl->undone;
 }
 
 void DiffManager::addWatcher(const DefinitionNode *node, DefinitionWatcher *watcher) {
-    if (find(watchers[node].begin(), watchers[node].end(), watcher) == watchers[node].end()) {
-        watchers[node].push_back(watcher);
+    auto &watchers = impl->watchers[node];
+    if (find(watchers.begin(), watchers.end(), watcher) == watchers.end()) {
+        watchers.push_back(watcher);
     }
 }
 
-int DiffManager::getWatcherCount(const DefinitionNode *node) {
-    return watchers[node].size();
+unsigned long DiffManager::getWatcherCount(const DefinitionNode *node) {
+    return impl->watchers[node].size();
 }
 
 void DiffManager::addDiff(DefinitionNode *node, const DefinitionDiff *diff) {
-    while (undone > 0) {
+    while (impl->undone > 0) {
         // truncate diffs ahead
-        delete diffs.back();
-        diffs.pop_back();
-        undone--;
+        delete impl->diffs.back();
+        impl->diffs.pop_back();
+        impl->undone--;
     }
 
-    diffs.push_back(diff);
+    impl->diffs.push_back(diff);
 
     // TODO Delayed commit (with merge of consecutive diffs)
 
@@ -46,13 +63,13 @@ void DiffManager::addDiff(DefinitionNode *node, const DefinitionDiff *diff) {
 }
 
 void DiffManager::undo() {
-    if (undone < (int)diffs.size()) {
-        const DefinitionDiff *diff = diffs[diffs.size() - undone - 1];
+    if (impl->undone < impl->diffs.size()) {
+        const DefinitionDiff *diff = impl->diffs[impl->diffs.size() - impl->undone - 1];
 
         // Obtain the node by path and reverse apply diff on it
-        DefinitionNode *node = tree->findByPath(diff->getPath());
+        DefinitionNode *node = impl->tree->findByPath(diff->getPath());
         if (node) {
-            undone++;
+            impl->undone++;
 
             unique_ptr<DefinitionDiff> reversed(diff->newReversed());
 
@@ -67,13 +84,13 @@ void DiffManager::undo() {
 }
 
 void DiffManager::redo() {
-    if (undone > 0) {
-        const DefinitionDiff *diff = diffs[diffs.size() - undone];
+    if (impl->undone > 0) {
+        const DefinitionDiff *diff = impl->diffs[impl->diffs.size() - impl->undone];
 
         // Obtain the node by path and re-apply diff on it
-        DefinitionNode *node = tree->findByPath(diff->getPath());
+        DefinitionNode *node = impl->tree->findByPath(diff->getPath());
         if (node) {
-            undone--;
+            impl->undone--;
 
             Logs::debug("Definition") << "Node redo : " << node->getPath() << endl;
             node->applyDiff(diff);
@@ -88,7 +105,7 @@ void DiffManager::publishToWatchers(const DefinitionNode *node, const Definition
     // TODO Parent node signaling should be aggregated (to not receive many nodeChanged calls)
     const DefinitionNode *cnode = node;
     do {
-        for (auto watcher : watchers[cnode]) {
+        for (auto watcher : impl->watchers[cnode]) {
             watcher->nodeChanged(node, diff, cnode);
         }
         cnode = cnode->getParent();

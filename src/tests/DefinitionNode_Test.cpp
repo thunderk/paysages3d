@@ -25,20 +25,20 @@ TEST(DefinitionNode, getPath) {
     EXPECT_EQ("/branch/leaf", leaf.getPath());
 }
 
-class FakeWatcher : public DefinitionWatcher {
-    virtual void nodeChanged(const DefinitionNode *, const DefinitionDiff *, const DefinitionNode *) override {
-    }
-};
-
 TEST(DefinitionNode, addWatcher) {
+    class FakeWatcher : public DefinitionWatcher {
+        virtual void nodeChanged(const DefinitionNode *, const DefinitionDiff *, const DefinitionNode *) override {
+        }
+    };
+
     DefinitionNode root(NULL, "root");
     FakeWatcher watcher;
 
-    EXPECT_EQ(0, root.getWatcherCount());
+    EXPECT_EQ(0u, root.getWatcherCount());
     root.addWatcher(&watcher);
-    EXPECT_EQ(1, root.getWatcherCount());
+    EXPECT_EQ(1u, root.getWatcherCount());
     root.addWatcher(&watcher);
-    EXPECT_EQ(1, root.getWatcherCount());
+    EXPECT_EQ(1u, root.getWatcherCount());
 }
 
 TEST(DefinitionNode, findByPath) {
@@ -65,15 +65,15 @@ TEST(DefinitionNode, attachDetach) {
 
     EXPECT_EQ(root, child1->getParent());
     EXPECT_EQ(root, child2->getParent());
-    EXPECT_EQ(2, root->getChildrenCount());
+    EXPECT_EQ(2u, root->getChildrenCount());
 
     delete child1;
 
-    EXPECT_EQ(1, root->getChildrenCount());
+    EXPECT_EQ(1u, root->getChildrenCount());
 
     delete child2;
 
-    EXPECT_EQ(0, root->getChildrenCount());
+    EXPECT_EQ(0u, root->getChildrenCount());
 
     delete root;
 }

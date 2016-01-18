@@ -149,7 +149,7 @@ void DefinitionNode::addWatcher(DefinitionWatcher *watcher, bool init_diff) {
     }
 }
 
-int DefinitionNode::getWatcherCount() const {
+unsigned long DefinitionNode::getWatcherCount() const {
     if (root && root->diffs) {
         return root->diffs->getWatcherCount(this);
     } else {
@@ -265,7 +265,8 @@ void DefinitionNode::addDiff(const DefinitionDiff *diff) {
     if (root && root->diffs) {
         root->diffs->addDiff(this, diff);
     } else {
-        // TODO Apply diff ?
+        // No diff manager available, apply it directly and delete it
+        applyDiff(diff);
         delete diff;
     }
 }

@@ -127,25 +127,25 @@ TEST(Layers, undoRedo) {
     Layers layers(NULL, "layers", _construc3);
 
     EXPECT_EQ(0, layers.getLayerCount());
-    EXPECT_EQ(0, layers.getDiffManager()->getDiffCount());
+    EXPECT_EQ(0u, layers.getDiffManager()->getDiffCount());
 
     layers.addLayer("testlayer");
 
     ASSERT_EQ(1, layers.getLayerCount());
 
-    TestLayer *layer = (TestLayer *)layers.getLayer(0);
+    auto layer = static_cast<TestLayer *>(layers.getLayer(0));
 
-    EXPECT_EQ(1, layers.getDiffManager()->getDiffCount());
+    EXPECT_EQ(1u, layers.getDiffManager()->getDiffCount());
     checkLayerChild(layers, 0, "val", 5);
 
     layer->val->setValue(8);
 
-    EXPECT_EQ(2, layers.getDiffManager()->getDiffCount());
+    EXPECT_EQ(2u, layers.getDiffManager()->getDiffCount());
     checkLayerChild(layers, 0, "val", 8);
 
     layers.removeLayer(0);
 
-    EXPECT_EQ(3, layers.getDiffManager()->getDiffCount());
+    EXPECT_EQ(3u, layers.getDiffManager()->getDiffCount());
     EXPECT_EQ(0, layers.getLayerCount());
 
     // Start undoing
@@ -156,7 +156,7 @@ TEST(Layers, undoRedo) {
     layers.getDiffManager()->undo();
     EXPECT_EQ(0, layers.getLayerCount());
 
-    EXPECT_EQ(3, layers.getDiffManager()->getDiffCount());
+    EXPECT_EQ(3u, layers.getDiffManager()->getDiffCount());
 
     // Start redoing
     layers.getDiffManager()->redo();
@@ -166,7 +166,7 @@ TEST(Layers, undoRedo) {
     layers.getDiffManager()->redo();
     EXPECT_EQ(0, layers.getLayerCount());
 
-    EXPECT_EQ(3, layers.getDiffManager()->getDiffCount());
+    EXPECT_EQ(3u, layers.getDiffManager()->getDiffCount());
 
     // TODO Test swapping
 }

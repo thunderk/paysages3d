@@ -118,7 +118,7 @@ void OpenGLVegetation::acquireLayers(vector<OpenGLVegetationLayer *> &layers) {
     layers_lock->release();
 }
 
-void OpenGLVegetation::releaseLayers(const vector<OpenGLVegetationLayer *> &layers) {
+void OpenGLVegetation::releaseLayers(const vector<OpenGLVegetationLayer *> &) {
     // TODO Reference count
 }
 
