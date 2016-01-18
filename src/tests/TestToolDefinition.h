@@ -14,10 +14,11 @@ class RecordingDefinitionWatcher : public DefinitionWatcher {
     RecordingDefinitionWatcher() {
     }
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *parent) override {
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff,
+                             const DefinitionNode *parent) override {
         RecordedChange change;
         change.node = node;
-        change.diff = diff;  // FIXME Referenced diff may get deleted by the diff manager
+        change.diff = diff; // FIXME Referenced diff may get deleted by the diff manager
         change.parent = parent;
         changes.push_back(change);
     }
@@ -30,6 +31,5 @@ class RecordingDefinitionWatcher : public DefinitionWatcher {
     vector<RecordedChange> changes;
 };
 }
-
 
 #endif // TESTTOOLDEFINITION_H

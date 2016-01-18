@@ -860,7 +860,7 @@ static Color _getInscatterColor(Vector3 *_x, double *_t, Vector3 v, Vector3 s, d
 /* direct sun light for ray x+tv, when sun in direction s (=L0) */
 static Color _sunColor(Vector3 v, Vector3 s, double r, double mu, double radius) {
     Color transmittance = r <= Rt ? _transmittanceWithShadow(r, mu) : COLOR_WHITE; /* T(x,xo) */
-    double isun = step(cos(radius), v.dotProduct(s)) * ISun; /* Lsun */
+    double isun = step(cos(radius), v.dotProduct(s)) * ISun;                       /* Lsun */
     transmittance.r *= isun;
     transmittance.g *= isun;
     transmittance.b *= isun;
@@ -1157,7 +1157,8 @@ bool AtmosphereModelBruneton::getLightsAt(vector<LightComponent> &result, const 
 
     result.push_back(sun);
 
-    irradiance.color = _irradiance(_irradianceTexture, r0, muS).scaled(1.0 - min(location.y / Scenery::ATMOSPHERE_WIDTH_SCALED, 1.0));
+    irradiance.color =
+        _irradiance(_irradianceTexture, r0, muS).scaled(1.0 - min(location.y / Scenery::ATMOSPHERE_WIDTH_SCALED, 1.0));
     irradiance.direction = VECTOR_DOWN;
     irradiance.reflection = 0.0;
     irradiance.altered = 0;

@@ -36,7 +36,8 @@ class DEFINITIONSHARED_EXPORT WaterDefinition : public DefinitionNode, public De
         return depth_color;
     }
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *parent) override;
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff,
+                             const DefinitionNode *parent) override;
 
     typedef enum { WATER_PRESET_LAKE, WATER_PRESET_SEA } WaterPreset;
     void applyPreset(WaterPreset preset, RandomGenerator &random = RandomGeneratorDefault);

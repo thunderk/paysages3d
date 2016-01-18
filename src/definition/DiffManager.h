@@ -53,7 +53,7 @@ class DEFINITIONSHARED_EXPORT DiffManager {
      */
     void redo();
 
-protected:
+  protected:
     /**
      * Publish a diff to the registered watchers.
      *

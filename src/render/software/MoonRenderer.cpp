@@ -75,7 +75,8 @@ Color MoonRenderer::getColor(const Vector3 &eye, const Vector3 &direction, Light
 
             auto normal = p1.getNormal3(p2, p3);
 
-            double gradient = 2.3 + 8.0 * impl->noise.get3d(0.01, 0.3 * p1.x + 12.0, 0.3 * p1.y - 4.8, -0.3 * p1.z + 7.4);
+            double gradient =
+                2.3 + 8.0 * impl->noise.get3d(0.01, 0.3 * p1.x + 12.0, 0.3 * p1.y - 4.8, -0.3 * p1.z + 7.4);
             SurfaceMaterial material(Color(gradient, gradient, gradient));
 
             auto moon_color = lighting->apply(eye, nearest, normal, material);

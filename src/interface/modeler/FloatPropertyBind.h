@@ -20,7 +20,8 @@ class FloatPropertyBind : public QObject, public DefinitionWatcher {
     FloatPropertyBind(MainModelerWindow *window, const string &object_name, const string &property_name,
                       FloatNode *node);
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *parent) override;
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff,
+                             const DefinitionNode *parent) override;
 
   private slots:
     void propertyChanged();

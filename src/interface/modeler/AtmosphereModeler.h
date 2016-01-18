@@ -12,7 +12,8 @@ class AtmosphereModeler : protected BaseModelerTool {
   public:
     AtmosphereModeler(MainModelerWindow *ui);
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *parent) override;
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff,
+                             const DefinitionNode *parent) override;
 };
 }
 }

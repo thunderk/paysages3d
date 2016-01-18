@@ -50,7 +50,8 @@ class ModelerCameras : public QObject, public DefinitionWatcher {
   protected:
     virtual void timerEvent(QTimerEvent *event) override;
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff, const DefinitionNode *parent) override;
+    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff,
+                             const DefinitionNode *parent) override;
 
     /**
      * Validate current camera, pushing it to rendered scenery if needed.
