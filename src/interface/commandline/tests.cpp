@@ -437,8 +437,6 @@ static void testCelestialBodies() {
     scenery.getAtmosphere()->setDayTime(23);
     startTestRender(&renderer, "celestial_bodies_moon_night");
 
-    scenery.getCamera()->setFov(0.2);
-
     scenery.getAtmosphere()->setDayTime(6);
     scenery.getCamera()->setTarget(scenery.getAtmosphere()->childSun()->getLocation());
     startTestRender(&renderer, "celestial_bodies_sun_horizon");
@@ -448,7 +446,6 @@ static void testCelestialBodies() {
     startTestRender(&renderer, "celestial_bodies_sun_rising");
 
     scenery.getAtmosphere()->setDayTime(11);
-    scenery.getCamera()->setFov(0.1);
 
     scenery.getAtmosphere()->childSun()->propPhi()->setValue(
         scenery.getAtmosphere()->childMoon()->propPhi()->getValue());
