@@ -4,6 +4,7 @@
 #include "Vector3.h"
 #include "FloatNode.h"
 #include "Scenery.h"
+#include "NoiseNode.h"
 
 CelestialBodyDefinition::CelestialBodyDefinition(DefinitionNode *parent, const string &name)
     : DefinitionNode(parent, name) {
@@ -11,6 +12,7 @@ CelestialBodyDefinition::CelestialBodyDefinition(DefinitionNode *parent, const s
     phi = new FloatNode(this, "phi");
     theta = new FloatNode(this, "theta");
     radius = new FloatNode(this, "radius");
+    noise = new NoiseNode(this, "noise");
 }
 
 Vector3 CelestialBodyDefinition::getGlobalDirection() const {

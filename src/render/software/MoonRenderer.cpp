@@ -7,16 +7,14 @@
 #include "Geometry.h"
 #include "SurfaceMaterial.h"
 #include "FloatNode.h"
-#include "NoiseFunctionSimplex.h"
+#include "FractalNoise.h"
+#include "NoiseNode.h"
 
 class MoonRenderer::pimpl {
   public:
     pimpl() : definition(NULL, "moon") {
-        // TODO Put noise in scenery
-        noise.setScaling(0.2);
     }
     CelestialBodyDefinition definition;
-    NoiseFunctionSimplex noise;
 };
 
 MoonRenderer::MoonRenderer(CelestialBodyDefinition *moon_node) : DefinitionWatcher("MoonRenderer"), impl(new pimpl()) {
@@ -35,7 +33,7 @@ void MoonRenderer::nodeChanged(const DefinitionNode *, const DefinitionDiff *, c
 bool MoonRenderer::getLightsAt(vector<LightComponent> &result, const Vector3 &location) const {
     LightComponent light;
 
-    // TODO Don't add if its contribution is negligible
+    // TODO Don't add if its contribution is negligible or below horizon
     // TODO Take moon phase into account
 
     light.color = Color(0.03, 0.03, 0.03);
@@ -63,21 +61,23 @@ Color MoonRenderer::getColor(const Vector3 &eye, const Vector3 &direction, Light
             auto p1 = nearest.sub(moon_location).normalize();
             auto coords = p1.toSpherical();
 
+            auto noise = impl->definition.propNoise()->getGenerator();
+
             double precision = 0.00001;
             coords.phi += precision;
             auto p2 = Vector3(coords);
-            p2 = p2.scale(1.0 - precision * fabs(impl->noise.get3d(0.01, p2.x, p2.y, p2.z)));
+            p2 = p2.scale(1.0 - precision * fabs(noise->get3d(0.01, p2.x, p2.y, p2.z)));
 
             coords.phi -= precision;
             coords.theta += precision;
             auto p3 = Vector3(coords);
-            p3 = p3.scale(1.0 - precision * fabs(impl->noise.get3d(0.01, p3.x, p3.y, p3.z)));
+            p3 = p3.scale(1.0 - precision * fabs(noise->get3d(0.01, p3.x, p3.y, p3.z)));
 
             auto normal = p1.getNormal3(p2, p3);
 
-            double gradient =
-                2.3 + 8.0 * impl->noise.get3d(0.01, 0.3 * p1.x + 12.0, 0.3 * p1.y - 4.8, -0.3 * p1.z + 7.4);
+            double gradient = 2.0 + 10.0 * noise->get3d(0.01, 0.3 * p1.x + 12.0, 0.3 * p1.y - 4.8, -0.3 * p1.z + 7.4);
             SurfaceMaterial material(Color(gradient, gradient, gradient));
+            material.hardness = 0.3;
 
             auto moon_color = lighting->apply(eye, nearest, normal, material);
             if (dist <= 0.05) {

@@ -6,6 +6,7 @@
 #include "PackStream.h"
 #include "RandomGenerator.h"
 #include "FloatNode.h"
+#include "NoiseNode.h"
 #include "GodRaysDefinition.h"
 #include "CelestialBodyDefinition.h"
 
@@ -108,6 +109,7 @@ void AtmosphereDefinition::applyPreset(AtmospherePreset preset, RandomGenerator 
     moon->propRadius()->setValue(1737.4 * Scenery::KM_TO_UNIT);
     moon->propPhi()->setValue(0.5);
     moon->propTheta()->setValue(0.3);
+    moon->propNoise()->setConfig(0.4, 0.2, 0.8, 1.1);
 
     model = ATMOSPHERE_MODEL_BRUNETON;
 

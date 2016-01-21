@@ -24,6 +24,9 @@ class DEFINITIONSHARED_EXPORT CelestialBodyDefinition : public DefinitionNode {
     inline FloatNode *propRadius() const {
         return radius;
     }
+    inline NoiseNode *propNoise() const {
+        return noise;
+    }
 
     /**
      * Get the normalized direction of the celestial body, from the center of the earth.
@@ -48,6 +51,7 @@ class DEFINITIONSHARED_EXPORT CelestialBodyDefinition : public DefinitionNode {
     FloatNode *phi;
     FloatNode *theta;
     FloatNode *radius;
+    NoiseNode *noise;
 };
 }
 }
