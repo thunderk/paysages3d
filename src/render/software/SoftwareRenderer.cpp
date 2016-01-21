@@ -55,6 +55,8 @@ SoftwareRenderer::SoftwareRenderer(Scenery *scenery) : scenery(scenery) {
 }
 
 SoftwareRenderer::~SoftwareRenderer() {
+    moon_renderer->unregister();
+
     delete render_camera;
 
     delete fluid_medium;

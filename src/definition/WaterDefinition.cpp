@@ -26,8 +26,6 @@ WaterDefinition::WaterDefinition(DefinitionNode *parent) : DefinitionNode(parent
     detail_height = 0.0;
     turbulence = 0.0;
     foam_coverage = 0.0;
-
-    model->addWatcher(this, true);
 }
 
 WaterDefinition::~WaterDefinition() {
@@ -79,18 +77,19 @@ void WaterDefinition::load(PackStream *stream) {
 void WaterDefinition::copy(DefinitionNode *_destination) const {
     DefinitionNode::copy(_destination);
 
-    WaterDefinition *destination = (WaterDefinition *)_destination;
-    *destination->material = *material;
-    destination->transparency_depth = transparency_depth;
-    destination->transparency = transparency;
-    destination->lighting_depth = lighting_depth;
-    destination->scaling = scaling;
-    destination->waves_height = waves_height;
-    destination->detail_height = detail_height;
-    destination->turbulence = turbulence;
-    destination->foam_coverage = foam_coverage;
-    *destination->foam_material = *foam_material;
-    noise_state->copy(destination->noise_state);
+    if (auto destination = static_cast<WaterDefinition *>(_destination)) {
+        *destination->material = *material;
+        destination->transparency_depth = transparency_depth;
+        destination->transparency = transparency;
+        destination->lighting_depth = lighting_depth;
+        destination->scaling = scaling;
+        destination->waves_height = waves_height;
+        destination->detail_height = detail_height;
+        destination->turbulence = turbulence;
+        destination->foam_coverage = foam_coverage;
+        *destination->foam_material = *foam_material;
+        noise_state->copy(destination->noise_state);
+    }
 }
 
 void WaterDefinition::validate() {
@@ -109,8 +108,18 @@ void WaterDefinition::validate() {
     foam_material->validate();
 }
 
-void WaterDefinition::nodeChanged(const DefinitionNode *node, const DefinitionDiff *, const DefinitionNode *) {
-    if (node == model) {
+void WaterDefinition::applyPreset(WaterPreset preset, RandomGenerator &random) {
+    noise_state->randomizeOffsets(random);
+
+    if (preset == WATER_PRESET_LAKE) {
+        model->setValue(0);
+    } else if (preset == WATER_PRESET_SEA) {
+        model->setValue(1);
+    }
+}
+
+void WaterDefinition::onChildChanged(int, const string &relpath) {
+    if (relpath == "model") {
         switch (model->getValue()) {
         case 1:
             transparency = 0.3;
@@ -140,15 +149,5 @@ void WaterDefinition::nodeChanged(const DefinitionNode *node, const DefinitionDi
             foam_coverage = 0.15;
             break;
         }
-    }
-}
-
-void WaterDefinition::applyPreset(WaterPreset preset, RandomGenerator &random) {
-    noise_state->randomizeOffsets(random);
-
-    if (preset == WATER_PRESET_LAKE) {
-        model->setValue(0);
-    } else if (preset == WATER_PRESET_SEA) {
-        model->setValue(1);
     }
 }

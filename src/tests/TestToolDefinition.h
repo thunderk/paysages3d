@@ -11,7 +11,7 @@ namespace {
  */
 class RecordingDefinitionWatcher : public DefinitionWatcher {
   public:
-    RecordingDefinitionWatcher() {
+    RecordingDefinitionWatcher() : DefinitionWatcher("RecordingDefinitionWatcher") {
     }
 
     virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff,
@@ -21,6 +21,10 @@ class RecordingDefinitionWatcher : public DefinitionWatcher {
         change.diff = diff; // FIXME Referenced diff may get deleted by the diff manager
         change.parent = parent;
         changes.push_back(change);
+    }
+
+    virtual void start(DefinitionNode *node, bool init_diffs = true) {
+        startWatching(node, init_diffs);
     }
 
     typedef struct {

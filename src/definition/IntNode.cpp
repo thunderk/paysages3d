@@ -61,6 +61,7 @@ bool IntNode::applyDiff(const DefinitionDiff *diff, bool backward) {
 
         if (value == previous) {
             value = next;
+            tellChanged();
             return true;
         } else {
             Logs::error("Definition") << "Can't apply int diff " << previous << " => " << next << " to " << getName()

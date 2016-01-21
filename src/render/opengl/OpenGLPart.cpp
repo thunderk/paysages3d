@@ -4,7 +4,8 @@
 #include "OpenGLShaderProgram.h"
 #include "OpenGLVertexArray.h"
 
-OpenGLPart::OpenGLPart(OpenGLRenderer *renderer, const string &name) : renderer(renderer), name(name) {
+OpenGLPart::OpenGLPart(OpenGLRenderer *renderer, const string &name)
+    : DefinitionWatcher("OpenGLPart/" + name), renderer(renderer), name(name) {
 }
 
 OpenGLPart::~OpenGLPart() {
@@ -25,6 +26,7 @@ void OpenGLPart::destroy() {
     for (auto array : arrays) {
         array->destroy(functions);
     }
+    unregister();
 }
 
 void OpenGLPart::interrupt() {

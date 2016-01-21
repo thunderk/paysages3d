@@ -43,9 +43,9 @@ OpenGLWater::~OpenGLWater() {
 void OpenGLWater::initialize() {
     // Watch for definition changes
     Scenery *scenery = renderer->getScenery();
-    startWatching(scenery, path_height);
-    startWatching(scenery, path_reflection);
-    startWatching(scenery, path_model, false);
+    startWatchingPath(scenery, path_height);
+    startWatchingPath(scenery, path_reflection);
+    startWatchingPath(scenery, path_model, false);
 }
 
 void OpenGLWater::update() {

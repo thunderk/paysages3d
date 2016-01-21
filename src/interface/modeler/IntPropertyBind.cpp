@@ -6,10 +6,11 @@
 
 IntPropertyBind::IntPropertyBind(MainModelerWindow *window, const string &object_name, const string &property_name,
                                  IntNode *node)
-    : QObject(window), node(node), property(property_name) {
+    : QObject(window), DefinitionWatcher("IntPropertyBind " + object_name + "." + property_name), node(node),
+      property(property_name) {
     item = window->findQmlObject(object_name);
     if (item) {
-        node->addWatcher(this, true);
+        startWatching(node);
         string signal_name("2" + property_name + "Changed()");
         connect(item, signal_name.c_str(), this, SLOT(propertyChanged()));
     } else {

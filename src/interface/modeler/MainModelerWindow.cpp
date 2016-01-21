@@ -49,6 +49,11 @@ MainModelerWindow::MainModelerWindow() {
 }
 
 MainModelerWindow::~MainModelerWindow() {
+    // TODO Should be done automatically for all tools
+    cameras->unregister();
+    atmosphere->destroy();
+    water->destroy();
+
     delete atmosphere;
     delete water;
     delete cameras;

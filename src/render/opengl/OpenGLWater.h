@@ -4,12 +4,11 @@
 #include "opengl_global.h"
 
 #include "OpenGLPart.h"
-#include "DefinitionWatcher.h"
 
 namespace paysages {
 namespace opengl {
 
-class OPENGLSHARED_EXPORT OpenGLWater : public OpenGLPart, public DefinitionWatcher {
+class OPENGLSHARED_EXPORT OpenGLWater : public OpenGLPart {
   public:
     OpenGLWater(OpenGLRenderer *renderer);
     virtual ~OpenGLWater();

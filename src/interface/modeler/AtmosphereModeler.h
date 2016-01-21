@@ -8,7 +8,7 @@
 namespace paysages {
 namespace modeler {
 
-class AtmosphereModeler : protected BaseModelerTool {
+class AtmosphereModeler : public BaseModelerTool {
   public:
     AtmosphereModeler(MainModelerWindow *ui);
 

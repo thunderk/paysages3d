@@ -82,24 +82,25 @@ class DEFINITIONSHARED_EXPORT DefinitionNode {
      */
     virtual void generateInitDiffs(vector<const DefinitionDiff *> *diffs) const;
 
-    /**
-     * Add a watcher over this node.
-     *
-     * The watcher will receive DefinitionDiff objects when this node changes.
-     *
-     * If 'init_diff' is set to true, a first diff (or several) will be be pushed immediately to initialize the state.
-     */
-    void addWatcher(DefinitionWatcher *watcher, bool init_diff = false);
-
-    /**
-     * Get the current number of watchers.
-     */
-    unsigned long getWatcherCount() const;
-
   protected:
     void addChild(DefinitionNode *child);
     void removeChild(DefinitionNode *child);
     virtual DefinitionNode *findChildByName(const string &name) const;
+
+    /**
+     * The subclass should call this method when the direct value of the node (not a child node) changed.
+     */
+    void tellChanged();
+
+    /**
+     * Called when a child changed in the definition tree.
+     *
+     * The base implementation propagates the event up the definition tree.
+     *
+     * "depth" is the depth level the node is in (0 for a direct child, 1 for a grandchild...).
+     * "relpath" is the relative path of the changed node.
+     */
+    virtual void onChildChanged(int depth, const string &relpath);
 
     /**
      * Get the size in bytes this child will consume when serialized to a stream.

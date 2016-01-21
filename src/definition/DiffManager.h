@@ -31,6 +31,11 @@ class DEFINITIONSHARED_EXPORT DiffManager {
     void addWatcher(const DefinitionNode *node, DefinitionWatcher *watcher);
 
     /**
+     * Remove a watcher from all nodes.
+     */
+    void removeWatcher(DefinitionWatcher *watcher);
+
+    /**
      * Get the number of watchers registered for a given node.
      */
     unsigned long getWatcherCount(const DefinitionNode *node);

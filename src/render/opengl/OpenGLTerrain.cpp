@@ -117,6 +117,7 @@ void OpenGLTerrain::destroy() {
     for (auto &chunk : pv->chunks) {
         chunk->destroy(functions);
     }
+    OpenGLPart::destroy();
 }
 
 void OpenGLTerrain::pause() {

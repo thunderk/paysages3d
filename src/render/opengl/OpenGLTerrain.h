@@ -4,14 +4,13 @@
 #include "opengl_global.h"
 
 #include "OpenGLPart.h"
-#include "DefinitionWatcher.h"
 
 namespace paysages {
 namespace opengl {
 
 class OpenGLTerrainPV;
 
-class OPENGLSHARED_EXPORT OpenGLTerrain : public OpenGLPart, public DefinitionWatcher {
+class OPENGLSHARED_EXPORT OpenGLTerrain : public OpenGLPart {
   public:
     OpenGLTerrain(OpenGLRenderer *renderer);
     virtual ~OpenGLTerrain();

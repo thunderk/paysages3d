@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <map>
 #include <vector>
+#include <mutex>
 #include "DefinitionNode.h"
 #include "DefinitionDiff.h"
 #include "DefinitionWatcher.h"
@@ -13,6 +14,7 @@ class DiffManager::pimpl {
     pimpl(DefinitionNode *tree) : tree(tree), undone(0) {
     }
 
+    recursive_mutex lock;
     DefinitionNode *tree;
     unsigned long undone;
     vector<const DefinitionDiff *> diffs;
@@ -35,10 +37,21 @@ unsigned long DiffManager::getDiffCount(int include_undone) const {
 }
 
 void DiffManager::addWatcher(const DefinitionNode *node, DefinitionWatcher *watcher) {
+    impl->lock.lock();
     auto &watchers = impl->watchers[node];
     if (find(watchers.begin(), watchers.end(), watcher) == watchers.end()) {
         watchers.push_back(watcher);
     }
+    impl->lock.unlock();
+}
+
+void DiffManager::removeWatcher(DefinitionWatcher *watcher) {
+    impl->lock.lock();
+    for (auto &item : impl->watchers) {
+        auto &node_watchers = item.second;
+        node_watchers.erase(remove(node_watchers.begin(), node_watchers.end(), watcher), node_watchers.end());
+    }
+    impl->lock.unlock();
 }
 
 unsigned long DiffManager::getWatcherCount(const DefinitionNode *node) {
@@ -102,12 +115,16 @@ void DiffManager::redo() {
 }
 
 void DiffManager::publishToWatchers(const DefinitionNode *node, const DefinitionDiff *diff) {
-    // TODO Parent node signaling should be aggregated (to not receive many nodeChanged calls)
+    impl->lock.lock();
+
     const DefinitionNode *cnode = node;
     do {
         for (auto watcher : impl->watchers[cnode]) {
             watcher->nodeChanged(node, diff, cnode);
         }
+        // TODO Parent node signaling should be aggregated (to not receive many nodeChanged calls)
         cnode = cnode->getParent();
     } while (cnode);
+
+    impl->lock.unlock();
 }

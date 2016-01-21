@@ -19,8 +19,8 @@ class MoonRenderer::pimpl {
     NoiseFunctionSimplex noise;
 };
 
-MoonRenderer::MoonRenderer(CelestialBodyDefinition *moon_node) : impl(new pimpl()) {
-    startWatching(moon_node->getRoot(), moon_node->getPath());
+MoonRenderer::MoonRenderer(CelestialBodyDefinition *moon_node) : DefinitionWatcher("MoonRenderer"), impl(new pimpl()) {
+    startWatchingPath(moon_node->getRoot(), moon_node->getPath());
 }
 
 MoonRenderer::~MoonRenderer() {

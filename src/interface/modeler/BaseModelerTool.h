@@ -10,10 +10,15 @@
 namespace paysages {
 namespace modeler {
 
-class BaseModelerTool : public DefinitionWatcher {
+class BaseModelerTool : protected DefinitionWatcher {
   public:
     BaseModelerTool(MainModelerWindow *ui);
     virtual ~BaseModelerTool();
+
+    /**
+     * Call before destructor, to allow for proper release of resources.
+     */
+    virtual void destroy();
 
     /**
      * Add an automated two-way binding between a QML int property and a scenery IntNode.

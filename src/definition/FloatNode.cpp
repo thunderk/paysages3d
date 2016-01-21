@@ -61,6 +61,7 @@ bool FloatNode::applyDiff(const DefinitionDiff *diff, bool backward) {
 
         if (value == previous) {
             value = next;
+            tellChanged();
             return true;
         } else {
             Logs::error("Definition") << "Can't apply float diff " << previous << " => " << next << " to " << getName()

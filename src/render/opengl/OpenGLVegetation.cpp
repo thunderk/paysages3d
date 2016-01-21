@@ -46,7 +46,7 @@ OpenGLVegetation::OpenGLVegetation(OpenGLRenderer *renderer) : OpenGLPart(render
     enabled = true;
 
     // Watch scenery changes
-    renderer->getScenery()->getVegetation()->addWatcher(this, true);
+    startWatching(renderer->getScenery()->getVegetation());
 }
 
 OpenGLVegetation::~OpenGLVegetation() {

@@ -58,10 +58,10 @@ OpenGLSkybox::~OpenGLSkybox() {
 void OpenGLSkybox::initialize() {
     // Watch for definition changes
     Scenery *scenery = renderer->getScenery();
-    startWatching(scenery, path_sun_phi);
-    startWatching(scenery, path_sun_theta);
-    startWatching(scenery, path_sun_radius);
-    startWatching(scenery, path_humidity);
+    startWatchingPath(scenery, path_sun_phi);
+    startWatchingPath(scenery, path_sun_theta);
+    startWatchingPath(scenery, path_sun_radius);
+    startWatchingPath(scenery, path_humidity);
 }
 
 void OpenGLSkybox::update() {

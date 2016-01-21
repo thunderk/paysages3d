@@ -4,6 +4,7 @@
 #include "definition_global.h"
 
 #include <string>
+#include <set>
 
 namespace paysages {
 namespace definition {
@@ -15,8 +16,18 @@ namespace definition {
  */
 class DEFINITIONSHARED_EXPORT DefinitionWatcher {
   public:
-    DefinitionWatcher();
+    DefinitionWatcher(const string &name);
     virtual ~DefinitionWatcher();
+
+    /**
+     * Unregister from all watched nodes.
+     *
+     * This MUST be called before destructor.
+     *
+     * A watcher should also make sure it is not unregistered as a direct result of a nodeChanged call,
+     * or this may cause a deadlock.
+     */
+    void unregister();
 
     /**
      * Abstract method called when a node changed.
@@ -29,12 +40,10 @@ class DEFINITIONSHARED_EXPORT DefinitionWatcher {
     /**
      * Start watching a path in a definition tree.
      */
-    void startWatching(const DefinitionNode *root, const string &path, bool init_diff = true);
+    void startWatchingPath(const DefinitionNode *root, const string &path, bool init_diff = true);
 
     /**
      * Start watching a node.
-     *
-     * Overloaded for convenience.
      */
     void startWatching(const DefinitionNode *node, bool init_diff = true);
 
@@ -47,6 +56,10 @@ class DEFINITIONSHARED_EXPORT DefinitionWatcher {
      * Abstract convenience to receive float node changes.
      */
     virtual void floatNodeChanged(const string &path, double new_value, double old_value);
+
+  private:
+    string name;
+    set<DiffManager *> registered_to;
 };
 }
 }

@@ -32,6 +32,6 @@ void VegetationDefinition::applyPreset(VegetationPreset preset, RandomGenerator 
     if (preset == VEGETATION_PRESET_TEMPERATE) {
         layer.applyPreset(VegetationLayerDefinition::VEGETATION_BASIC_TREES, random);
         layer.setName("Basic tree");
-        //addLayer(layer);
+        // addLayer(layer);
     }
 }

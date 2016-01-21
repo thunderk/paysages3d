@@ -3,6 +3,8 @@
 
 #include "opengl_global.h"
 
+#include "DefinitionWatcher.h"
+
 #include <map>
 #include <vector>
 
@@ -12,7 +14,7 @@ namespace opengl {
 /**
  * Class that can be inherited by scenery parts, to use OpenGL features.
  */
-class OPENGLSHARED_EXPORT OpenGLPart {
+class OPENGLSHARED_EXPORT OpenGLPart : protected DefinitionWatcher {
   public:
     OpenGLPart(OpenGLRenderer *renderer, const string &name);
     virtual ~OpenGLPart();

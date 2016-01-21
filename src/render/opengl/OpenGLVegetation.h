@@ -4,7 +4,6 @@
 #include "opengl_global.h"
 
 #include "OpenGLPart.h"
-#include "DefinitionWatcher.h"
 
 #include <vector>
 
@@ -13,7 +12,7 @@ namespace opengl {
 
 class VegetationUpdater;
 
-class OPENGLSHARED_EXPORT OpenGLVegetation : public OpenGLPart, public DefinitionWatcher {
+class OPENGLSHARED_EXPORT OpenGLVegetation : public OpenGLPart {
   public:
     OpenGLVegetation(OpenGLRenderer *renderer);
     virtual ~OpenGLVegetation();

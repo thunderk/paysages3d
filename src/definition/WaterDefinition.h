@@ -9,7 +9,7 @@
 namespace paysages {
 namespace definition {
 
-class DEFINITIONSHARED_EXPORT WaterDefinition : public DefinitionNode, public DefinitionWatcher {
+class DEFINITIONSHARED_EXPORT WaterDefinition : public DefinitionNode {
   public:
     WaterDefinition(DefinitionNode *parent);
     virtual ~WaterDefinition();
@@ -36,11 +36,11 @@ class DEFINITIONSHARED_EXPORT WaterDefinition : public DefinitionNode, public De
         return depth_color;
     }
 
-    virtual void nodeChanged(const DefinitionNode *node, const DefinitionDiff *diff,
-                             const DefinitionNode *parent) override;
-
     typedef enum { WATER_PRESET_LAKE, WATER_PRESET_SEA } WaterPreset;
     void applyPreset(WaterPreset preset, RandomGenerator &random = RandomGeneratorDefault);
+
+  protected:
+    virtual void onChildChanged(int depth, const string &relpath) override;
 
   public:
     double transparency;

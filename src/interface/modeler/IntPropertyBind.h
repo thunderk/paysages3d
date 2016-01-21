@@ -27,8 +27,8 @@ class IntPropertyBind : public QObject, public DefinitionWatcher {
 
   private:
     IntNode *node;
-    string property;
     QObject *item;
+    string property;
 };
 }
 }

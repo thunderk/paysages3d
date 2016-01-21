@@ -134,29 +134,6 @@ void DefinitionNode::generateInitDiffs(vector<const DefinitionDiff *> *diffs) co
     // TODO add children diffs in cascade ?
 }
 
-void DefinitionNode::addWatcher(DefinitionWatcher *watcher, bool init_diff) {
-    if (root && root->diffs) {
-        if (init_diff) {
-            vector<const DefinitionDiff *> diffs;
-            generateInitDiffs(&diffs);
-
-            for (auto diff : diffs) {
-                watcher->nodeChanged(this, diff, this);
-                delete diff;
-            }
-        }
-        root->diffs->addWatcher(this, watcher);
-    }
-}
-
-unsigned long DefinitionNode::getWatcherCount() const {
-    if (root && root->diffs) {
-        return root->diffs->getWatcherCount(this);
-    } else {
-        return 0;
-    }
-}
-
 void DefinitionNode::save(PackStream *stream) const {
     int children_count = static_cast<int>(children.size());
     stream->write(&children_count);
@@ -222,6 +199,7 @@ void DefinitionNode::copy(DefinitionNode *destination) const {
 }
 
 void DefinitionNode::validate() {
+    // TODO This should be deprecated in favor of onChildChange
     for (auto child : children) {
         child->validate();
     }
@@ -253,6 +231,18 @@ DefinitionNode *DefinitionNode::findChildByName(const string &name) const {
         }
     }
     return NULL;
+}
+
+void DefinitionNode::tellChanged() {
+    if (parent) {
+        parent->onChildChanged(0, name);
+    }
+}
+
+void DefinitionNode::onChildChanged(int depth, const string &relpath) {
+    if (parent) {
+        parent->onChildChanged(depth + 1, name + "/" + relpath);
+    }
 }
 
 int DefinitionNode::getStreamSize() const {

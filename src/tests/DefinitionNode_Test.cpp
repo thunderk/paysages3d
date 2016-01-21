@@ -1,6 +1,7 @@
 #include "BaseTestCase.h"
 
 #include "DefinitionNode.h"
+#include "IntNode.h"
 #include "FloatNode.h"
 #include "PackStream.h"
 #include "DefinitionWatcher.h"
@@ -23,22 +24,6 @@ TEST(DefinitionNode, getPath) {
     EXPECT_EQ("/", root.getPath());
     EXPECT_EQ("/branch", branch.getPath());
     EXPECT_EQ("/branch/leaf", leaf.getPath());
-}
-
-TEST(DefinitionNode, addWatcher) {
-    class FakeWatcher : public DefinitionWatcher {
-        virtual void nodeChanged(const DefinitionNode *, const DefinitionDiff *, const DefinitionNode *) override {
-        }
-    };
-
-    DefinitionNode root(NULL, "root");
-    FakeWatcher watcher;
-
-    EXPECT_EQ(0u, root.getWatcherCount());
-    root.addWatcher(&watcher);
-    EXPECT_EQ(1u, root.getWatcherCount());
-    root.addWatcher(&watcher);
-    EXPECT_EQ(1u, root.getWatcherCount());
 }
 
 TEST(DefinitionNode, findByPath) {
@@ -131,4 +116,31 @@ TEST(DefinitionNode, saveLoadCopy) {
 
     delete before;
     delete after;
+}
+
+TEST(DefinitionNode, onChildChange) {
+    class CapturingNode : public DefinitionNode {
+      public:
+        CapturingNode(DefinitionNode *parent, const string &name) : DefinitionNode(parent, name) {
+        }
+        virtual void onChildChanged(int depth, const string &relpath) override {
+            changes.push_back(pair<int, string>(depth, relpath));
+            DefinitionNode::onChildChanged(depth, relpath);
+        }
+        vector<pair<int, string>> changes;
+    };
+
+    CapturingNode root(NULL, "root");
+    CapturingNode branch(&root, "branch");
+    IntNode leaf(&branch, "leaf");
+
+    leaf.setValue(5.0);
+
+    ASSERT_EQ(1u, root.changes.size());
+    EXPECT_EQ(1, root.changes[0].first);
+    EXPECT_EQ("branch/leaf", root.changes[0].second);
+
+    ASSERT_EQ(1u, branch.changes.size());
+    EXPECT_EQ(0, branch.changes[0].first);
+    EXPECT_EQ("leaf", branch.changes[0].second);
 }

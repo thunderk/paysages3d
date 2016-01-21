@@ -9,7 +9,8 @@
 #include "AtmosphereRenderer.h"
 #include "Timing.h"
 
-ModelerCameras::ModelerCameras(MainModelerWindow *parent) : QObject(parent), parent(parent) {
+ModelerCameras::ModelerCameras(MainModelerWindow *parent)
+    : QObject(parent), DefinitionWatcher("ModelerCameras"), parent(parent) {
     render = new CameraDefinition();
     topdown = new CameraDefinition();
     current = new CameraDefinition();

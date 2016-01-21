@@ -14,10 +14,21 @@ class BaseModelerTool::pimpl {
     vector<unique_ptr<FloatPropertyBind>> float_bindings;
 };
 
-BaseModelerTool::BaseModelerTool(MainModelerWindow *ui) : impl(new pimpl), ui(ui) {
+BaseModelerTool::BaseModelerTool(MainModelerWindow *ui)
+    : DefinitionWatcher("BaseModelerTool"), impl(new pimpl), ui(ui) {
 }
 
 BaseModelerTool::~BaseModelerTool() {
+}
+
+void BaseModelerTool::destroy() {
+    for (auto &binding : impl->int_bindings) {
+        binding->unregister();
+    }
+    for (auto &binding : impl->float_bindings) {
+        binding->unregister();
+    }
+    unregister();
 }
 
 void BaseModelerTool::addIntBinding(const string &object, const string &property, const string &path, bool monitor) {
@@ -26,7 +37,7 @@ void BaseModelerTool::addIntBinding(const string &object, const string &property
         impl->int_bindings.push_back(make_unique<IntPropertyBind>(ui, object, property, node));
 
         if (monitor) {
-            startWatching(ui->getScenery(), path, false);
+            startWatchingPath(ui->getScenery(), path, false);
         }
     } else {
         Logs::error("UI") << "Can't find int node for binding : " << path << endl;
@@ -39,7 +50,7 @@ void BaseModelerTool::addFloatBinding(const string &object, const string &proper
         impl->float_bindings.push_back(make_unique<FloatPropertyBind>(ui, object, property, node));
 
         if (monitor) {
-            startWatching(ui->getScenery(), path, false);
+            startWatchingPath(ui->getScenery(), path, false);
         }
     } else {
         Logs::error("UI") << "Can't find float node for binding : " << path << endl;
