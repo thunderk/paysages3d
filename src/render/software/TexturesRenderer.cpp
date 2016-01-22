@@ -8,6 +8,7 @@
 #include "TexturesDefinition.h"
 #include "Zone.h"
 #include "LightingManager.h"
+#include "LightStatus.h"
 #include "NoiseNode.h"
 #include "FractalNoise.h"
 #include "NoiseGenerator.h"
@@ -154,28 +155,38 @@ vector<Vector3> TexturesRenderer::getLayersDisplacement(const TexturesDefinition
 Color TexturesRenderer::getFinalComposition(const TexturesDefinition *textures, LightingManager *lighting,
                                             const vector<double> &presence, const vector<Vector3> &location,
                                             const vector<Vector3> &normal, double precision, const Vector3 &eye) const {
-    int n = textures->getLayerCount();
+    unsigned int n = textures->getLayerCount();
     assert(presence.size() == to_size(n));
     assert(location.size() == to_size(n));
     assert(normal.size() == to_size(n));
     Color result = COLOR_BLACK;
-    // TODO share the same lighting status (no need to recompute shadows)
-    int i;
+
+    // Start at the top-most covering layer (layers underneath are only important for displacement, not color)
+    unsigned int i;
+    unsigned int ipos = 0;
     for (i = n - 1; i > 0; i--) {
-        // Start at the top-most covering layer (layers underneath are only important for displacement, not color)
-        if (presence[i] > 0.99999) {
+        if (presence[i] > 0.1 and ipos == 0) {
+            ipos = i;
+        } else if (presence[i] > 0.99999) {
             break;
         }
     }
-    for (i = 0; i < n; i++) {
+
+    // Prepare the lighing status
+    LightStatus status(lighting, location[ipos], eye);
+    lighting->fillStatus(status, location[ipos]);
+
+    // Iterate on each layer
+    while (i < n) {
         double layer_presence = presence[i];
         if (layer_presence > 0.0) {
             TextureLayerDefinition *layer = textures->getTextureLayer(i);
             auto detail_normal = _getDetailNormal(location[i], normal[i], layer, precision, quality_normal5);
-            Color layer_color = lighting->apply(eye, location[i], detail_normal, *layer->material);
+            Color layer_color = status.apply(detail_normal, *layer->material);
             layer_color.a *= layer_presence;
             result.mask(layer_color);
         }
+        i++;
     }
     return result;
 }
