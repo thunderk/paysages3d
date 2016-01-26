@@ -13,12 +13,12 @@ typedef struct {
     double rely;
 } PixelCall;
 
-vector<PixelCall> calls;
+static vector<PixelCall> calls;
 
+namespace {
 class MockOverlayRasterizer : public OverlayRasterizer {
   public:
-    MockOverlayRasterizer(SoftwareCanvasRenderer *renderer)
-        : OverlayRasterizer(renderer, renderer->getProgressHelper()) {
+    MockOverlayRasterizer(SoftwareCanvasRenderer *renderer) : OverlayRasterizer(renderer) {
     }
 
     virtual Color processPixel(int x, int y, double relx, double rely) const override {
@@ -27,6 +27,7 @@ class MockOverlayRasterizer : public OverlayRasterizer {
         return COLOR_BLUE;
     }
 };
+}
 
 void checkCall(const PixelCall &call, int x, int y, double relx, double rely) {
     EXPECT_EQ(x, call.x);
@@ -45,7 +46,7 @@ TEST(OverlayRasterizer, pixelProcessing) {
     renderer.setSoloRasterizer(&rasterizer);
     renderer.render();
 
-    ASSERT_EQ(12, (int)calls.size());
+    ASSERT_EQ(12u, calls.size());
     checkCall(calls[0], 0, 0, -1.5, -1.0);
     checkCall(calls[1], 0, 2, -1.5, 1.0);
     checkCall(calls[2], 2, 0, 0.5, -1.0);

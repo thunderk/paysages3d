@@ -82,6 +82,8 @@ class SOFTWARESHARED_EXPORT SoftwareRenderer {
         return godrays;
     }
 
+    void setAerialPerspectiveEnabled(bool enabled);
+
     virtual Color applyLightingToSurface(const Vector3 &location, const Vector3 &normal,
                                          const SurfaceMaterial &material);
     virtual Color applyMediumTraversal(const Vector3 &location, const Color &color);
@@ -90,6 +92,8 @@ class SOFTWARESHARED_EXPORT SoftwareRenderer {
 
   private:
     Scenery *scenery;
+
+    bool aerial_perspective;
 
     FluidMediumManager *fluid_medium;
     LightingManager *lighting;

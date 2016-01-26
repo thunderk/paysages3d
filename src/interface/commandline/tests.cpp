@@ -1,6 +1,7 @@
 #include "SoftwareCanvasRenderer.h"
 #include "TerrainRenderer.h"
 #include "Scenery.h"
+#include "Maths.h"
 #include "CameraDefinition.h"
 #include "TerrainDefinition.h"
 #include "AtmosphereDefinition.h"
@@ -24,6 +25,9 @@
 #include "VegetationModelDefinition.h"
 #include "VegetationInstance.h"
 #include "VegetationRenderer.h"
+#include "CloudsRenderer.h"
+#include "CloudLayerDefinition.h"
+#include "clouds/BaseCloudsModel.h"
 #include "CelestialBodyDefinition.h"
 #include "RayCastingResult.h"
 #include "OpenGLVegetationImpostor.h"
@@ -283,8 +287,7 @@ static void testAtmosphereBruneton() {
 
     class TestRasterizer : public OverlayRasterizer {
       public:
-        TestRasterizer(SoftwareCanvasRenderer *renderer)
-            : OverlayRasterizer(renderer, renderer->getProgressHelper()), renderer(renderer) {
+        TestRasterizer(SoftwareCanvasRenderer *renderer) : OverlayRasterizer(renderer), renderer(renderer) {
         }
         virtual Color processPixel(int, int, double relx, double rely) const override {
             if (rely > 0.0) {
@@ -313,8 +316,8 @@ static void testVegetationModels() {
     class InstanceRenderer : public SoftwareCanvasRenderer, public OverlayRasterizer, public LightFilter {
       public:
         InstanceRenderer(Scenery *scenery, const VegetationModelDefinition &model)
-            : SoftwareCanvasRenderer(scenery), OverlayRasterizer(this, this->getProgressHelper()),
-              instance(model, VECTOR_ZERO), vegetation(renderer->getVegetationRenderer()) {
+            : SoftwareCanvasRenderer(scenery), OverlayRasterizer(this), instance(model, VECTOR_ZERO),
+              vegetation(renderer->getVegetationRenderer()) {
         }
         virtual void prepare() override {
             SoftwareCanvasRenderer::prepare();
@@ -454,12 +457,78 @@ static void testCelestialBodies() {
     startTestRender(&renderer, "celestial_bodies_solar_eclipse");
 }
 
+static void testCloudsLighting() {
+    class FakeModel : public BaseCloudsModel {
+      public:
+        FakeModel(CloudLayerDefinition *layer, double scale) : BaseCloudsModel(layer), scale(scale) {
+        }
+        virtual void getAltitudeRange(double *min_altitude, double *max_altitude) const override {
+            *min_altitude = -scale;
+            *max_altitude = scale;
+        }
+        virtual void getDetailRange(double *min_step, double *max_step) const override {
+            *min_step = *max_step = scale * 0.01;
+        }
+        virtual double getDensity(const Vector3 &location) const override {
+            return Maths::smoothstep(0.0, 0.2, 1.0 - location.getNorm() / scale);
+        }
+        double scale;
+    };
+
+    class FakeRasterizer : public OverlayRasterizer {
+      public:
+        FakeRasterizer(SoftwareCanvasRenderer *renderer, double scale) : OverlayRasterizer(renderer), scale(scale) {
+        }
+        virtual Color processPixel(int, int, double relx, double rely) const override {
+            auto cloud_renderer = renderer->getCloudsRenderer();
+            auto atmo_renderer = renderer->getAtmosphereRenderer();
+            return cloud_renderer->getColor(Vector3(relx * scale * 1.2, rely * scale * 1.2, scale),
+                                            Vector3(relx * scale * 1.2, rely * scale * 1.2, -scale),
+                                            atmo_renderer->getSkyColor(Vector3(relx, rely, 1.0).normalize()).final);
+        }
+        virtual int prepareRasterization() override {
+            auto model = new FakeModel(renderer->getScenery()->getClouds()->getCloudLayer(0), scale);
+            renderer->getCloudsRenderer()->setLayerModel(0, model);
+            renderer->getCloudsRenderer()->setQuality(0.9);
+            renderer->getLightingManager()->clearFilters();
+            renderer->getLightingManager()->registerFilter(renderer->getCloudsRenderer());
+            return OverlayRasterizer::prepareRasterization();
+        }
+        double scale;
+        FakeModel *model;
+    };
+
+    Scenery scenery;
+    scenery.autoPreset(1);
+    scenery.getCamera()->setTarget(VECTOR_ZERO);
+    scenery.getCamera()->setLocation(Vector3(0.0, 0.0, 5.0));
+
+    CloudLayerDefinition layer(NULL, "test");
+    scenery.getClouds()->clear();
+    scenery.getClouds()->addLayer(layer);
+
+    SoftwareCanvasRenderer renderer(&scenery);
+    FakeRasterizer rasterizer(&renderer, 10.0);
+    renderer.setSize(800, 800);
+    renderer.setSoloRasterizer(&rasterizer);
+    renderer.getGodRaysSampler()->setEnabled(false);
+    renderer.setAerialPerspectiveEnabled(false);
+
+    scenery.getAtmosphere()->setDayTime(10);
+    startTestRender(&renderer, "clouds_lighting_day");
+    scenery.getAtmosphere()->setDayTime(6, 30);
+    startTestRender(&renderer, "clouds_lighting_dusk");
+    scenery.getAtmosphere()->setDayTime(3);
+    startTestRender(&renderer, "clouds_lighting_night");
+}
+
 void runTestSuite() {
     testNoise();
     testTextures();
     testGodRays();
     testCelestialBodies();
     testNearFrustum();
+    testCloudsLighting();
     testCloudsNearGround();
     testVegetationModels();
     testOpenGLVegetationImpostor();

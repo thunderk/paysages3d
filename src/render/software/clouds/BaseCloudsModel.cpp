@@ -25,6 +25,7 @@ void BaseCloudsModel::getDetailRange(double *min_step, double *max_step) const {
 }
 
 double BaseCloudsModel::getProbability(const Vector3 &, double) const {
+    // FIXME not used !
     return 1.0;
 }
 
@@ -33,9 +34,11 @@ double BaseCloudsModel::getDensity(const Vector3 &) const {
 }
 
 Color BaseCloudsModel::filterLight(const Color &light, double, double) const {
+    // FIXME not used !
     return light;
 }
 
 Color BaseCloudsModel::applyLightExit(const Color &light, const Vector3 &, const Vector3 &) const {
+    // FIXME not used !
     return light;
 }

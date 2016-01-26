@@ -40,9 +40,11 @@ SoftwareRenderer::SoftwareRenderer(Scenery *scenery) : scenery(scenery) {
     nightsky_renderer = new NightSky(this);
     moon_renderer = new MoonRenderer(scenery->getAtmosphere()->childMoon());
 
-    fluid_medium = new FluidMediumManager(this);
+    fluid_medium = new FluidMediumManager(this); // TODO Not used yet
     lighting = new LightingManager();
     godrays = new GodRaysSampler();
+
+    aerial_perspective = true;
 
     lighting->registerFilter(water_renderer);
     lighting->registerFilter(terrain_renderer);
@@ -111,15 +113,23 @@ void SoftwareRenderer::setQuality(double quality) {
     render_quality = trunc_to_int(quality * 9.0) + 1;
 }
 
+void SoftwareRenderer::setAerialPerspectiveEnabled(bool enabled) {
+    aerial_perspective = enabled;
+}
+
 Color SoftwareRenderer::applyLightingToSurface(const Vector3 &location, const Vector3 &normal,
                                                const SurfaceMaterial &material) {
     return lighting->apply(getCameraLocation(), location, normal, material);
 }
 
 Color SoftwareRenderer::applyMediumTraversal(const Vector3 &location, const Color &color) {
-    Color result = atmosphere_renderer->applyAerialPerspective(location, color).final;
-    result = clouds_renderer->getColor(getCameraLocation(), location, result);
-    return result;
+    if (aerial_perspective) {
+        Color result = atmosphere_renderer->applyAerialPerspective(location, color).final;
+        result = clouds_renderer->getColor(getCameraLocation(), location, result);
+        return result;
+    } else {
+        return color;
+    }
 }
 
 RayCastingResult SoftwareRenderer::rayWalking(const Vector3 &location, const Vector3 &direction, int, int, int, int) {
