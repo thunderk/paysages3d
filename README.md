@@ -5,7 +5,7 @@
 
 ## About
 
-[Paysages 3D](http://www.paysages3d.com) is a work-in-progress landscape generator, modeler and renderer software.
+[Paysages 3D](http://thunderk.net/paysages3d/) is a work-in-progress landscape generator, modeler and renderer software.
 
 It is written in C++ 11, using Qt 5.4 as only external dependency.
 
