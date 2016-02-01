@@ -525,29 +525,36 @@ static void testCloudModels() {
     Scenery scenery;
     scenery.autoPreset(1);
     scenery.getTerrain()->propHeightNoise()->setConfig(0.0);
+    scenery.getCamera()->setLocation(Vector3(0.0, 1.0, 0.0));
+    scenery.getCamera()->setTarget(Vector3(0.0, 2.0, -1.0));
+    scenery.getCamera()->setFov(Maths::PI_2);
 
-    CloudLayerDefinition layer(NULL, "test");
-    layer.altitude = 1.0;
+    NoiseState state;
+    scenery.getClouds()->getCloudLayer(0)->getNoiseState().copy(&state);
+
     scenery.getClouds()->clear();
-    scenery.getClouds()->addLayer(layer);
+    scenery.getClouds()->addLayer("test");
+    auto layer = scenery.getClouds()->getCloudLayer(0);
+    state.copy(&layer->noise_state);
 
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(800, 600);
     renderer.getGodRaysSampler()->setEnabled(false);
+    renderer.setQuality(0.5);
 
-    for (int i = CloudLayerDefinition::STRATOCUMULUS; i < CloudLayerDefinition::_COUNT; i++) {
-        // FIXME Test all
-        layer.type = static_cast<CloudLayerDefinition::CloudsType>(i);
-        layer.validate();
+    for (int i = 0; i < CloudLayerDefinition::_COUNT; i++) {
+        layer->type = static_cast<CloudLayerDefinition::CloudsType>(i);
+        layer->validate();
         renderer.getCloudsRenderer()->update();
-        auto model = renderer.getCloudsRenderer()->getLayerModel(0);
-        double minalt, maxalt;
-        model->getAltitudeRange(&minalt, &maxalt);
-        double offset = 8.0;
-        scenery.getCamera()->setLocation(Vector3(0.0, minalt - offset, 0.0));
-        scenery.getCamera()->setTarget(Vector3(0.0, minalt, offset));
 
-        startTestRender(&renderer, "clouds_model", i);
+        layer->coverage = 0.2;
+        startTestRender(&renderer, "clouds_model", i * 4);
+        layer->coverage = 0.5;
+        startTestRender(&renderer, "clouds_model", i * 4 + 1);
+        layer->coverage = 0.8;
+        startTestRender(&renderer, "clouds_model", i * 4 + 2);
+        layer->coverage = 1.0;
+        startTestRender(&renderer, "clouds_model", i * 4 + 3);
     }
 }
 
