@@ -119,9 +119,14 @@ double GodRaysSampler::getCachedLight(const Vector3 &location) {
     }
 
     // Hit cache
-    double p[8] = {getCache(ix, iy, iz), getCache(ix + 1, iy, iz), getCache(ix + 1, iy + 1, iz),
-                   getCache(ix, iy + 1, iz), getCache(ix, iy, iz + 1), getCache(ix + 1, iy, iz + 1),
-                   getCache(ix + 1, iy + 1, iz + 1), getCache(ix, iy + 1, iz + 1)};
+    double p[8] = {getCache(ix, iy, iz),
+                   getCache(ix + 1, iy, iz),
+                   getCache(ix + 1, iy + 1, iz),
+                   getCache(ix, iy + 1, iz),
+                   getCache(ix, iy, iz + 1),
+                   getCache(ix + 1, iy, iz + 1),
+                   getCache(ix + 1, iy + 1, iz + 1),
+                   getCache(ix, iy + 1, iz + 1)};
     return Interpolation::trilinear(p, (x - sampling_step * double(ix)) / sampling_step,
                                     (y - sampling_step * double(iy)) / sampling_step,
                                     (z - sampling_step * double(iz)) / sampling_step);

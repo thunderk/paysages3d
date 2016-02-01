@@ -16,7 +16,7 @@ class CloudModelCirrus : public BaseCloudsModel {
     virtual void update() override;
 
     virtual void getAltitudeRange(double *min_altitude, double *max_altitude) const override;
-    virtual double getDensity(const Vector3 &location) const override;
+    virtual double getDensity(const Vector3 &location, double precision) const override;
 
   private:
     NoiseGenerator *noise;

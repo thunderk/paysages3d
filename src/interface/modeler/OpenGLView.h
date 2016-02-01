@@ -19,7 +19,7 @@ class OpenGLView : public QQuickItem {
     void handleResize();
     void handleSceneGraphReady();
 
-signals:
+  signals:
     void stopped();
 
   protected:

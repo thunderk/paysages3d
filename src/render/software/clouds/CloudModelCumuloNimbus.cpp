@@ -37,7 +37,7 @@ void CloudModelCumuloNimbus::getAltitudeRange(double *min_altitude, double *max_
     *max_altitude = *min_altitude + 50.0 + 50.0 * layer->scaling;
 }
 
-double CloudModelCumuloNimbus::getDensity(const Vector3 &location) const {
+double CloudModelCumuloNimbus::getDensity(const Vector3 &location, double) const {
     double val;
     double min_altitude, max_altitude;
     double noise_scaling = 60.0 * layer->scaling;

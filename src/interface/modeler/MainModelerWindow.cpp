@@ -141,8 +141,7 @@ void MainModelerWindow::keyReleaseEvent(QKeyEvent *event) {
         } else if (event->key() == Qt::Key_F6) {
             render_process->showPreviousRender();
         } else if (event->key() == Qt::Key_F12) {
-            Logs::warning("UI") << "Current scenery dump:" << endl
-                                << scenery->toString() << endl;
+            Logs::warning("UI") << "Current scenery dump:" << endl << scenery->toString() << endl;
         } else if (event->key() == Qt::Key_N) {
             if (event->modifiers() & Qt::ControlModifier) {
                 newFile();

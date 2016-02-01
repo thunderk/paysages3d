@@ -37,7 +37,7 @@ void CloudModelStratoCumulus::getAltitudeRange(double *min_altitude, double *max
     *max_altitude = *min_altitude + 11.0 * layer->scaling;
 }
 
-double CloudModelStratoCumulus::getDensity(const Vector3 &location) const {
+double CloudModelStratoCumulus::getDensity(const Vector3 &location, double precision) const {
     double val;
     double min_altitude, max_altitude;
     double noise_scaling = 30.0 * layer->scaling;
@@ -55,7 +55,7 @@ double CloudModelStratoCumulus::getDensity(const Vector3 &location) const {
         // layer->scaling);
         double coverage = layer->coverage;
 
-        val = 0.5 * noise->get3DTotal(x, y, z);
+        val = 0.5 * noise->get3DDetail(x, y, z, precision);
         return val - 0.9 + coverage;
     }
 }

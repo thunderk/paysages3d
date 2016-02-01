@@ -29,7 +29,7 @@ double BaseCloudsModel::getProbability(const Vector3 &, double) const {
     return 1.0;
 }
 
-double BaseCloudsModel::getDensity(const Vector3 &) const {
+double BaseCloudsModel::getDensity(const Vector3 &, double) const {
     return 0.0;
 }
 

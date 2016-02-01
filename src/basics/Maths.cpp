@@ -22,3 +22,12 @@ double Maths::smoothstep(double edge0, double edge1, double x) {
     x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
     return x * x * (3.0 - 2.0 * x);
 }
+
+double Maths::zeroPoint(double segment_length, double edge0, double edge1) {
+    double diff = edge1 - edge0;
+    if (diff == 0.0) {
+        return 0.0;
+    } else {
+        return -edge0 * segment_length / diff;
+    }
+}

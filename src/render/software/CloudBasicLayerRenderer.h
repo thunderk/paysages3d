@@ -27,7 +27,7 @@ class SOFTWARESHARED_EXPORT CloudBasicLayerRenderer : public BaseCloudLayerRende
   private:
     int findSegments(BaseCloudsModel *model, const Vector3 &start, const Vector3 &direction, int max_segments,
                      double max_inside_length, double max_total_length, double *inside_length, double *total_length,
-                     CloudSegment *out_segments);
+                     CloudSegment *out_segments, double base_detail);
 };
 }
 }

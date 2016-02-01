@@ -30,7 +30,7 @@ void CloudModelCirrus::getAltitudeRange(double *min_altitude, double *max_altitu
     *max_altitude = *min_altitude + 20.0 * layer->scaling;
 }
 
-double CloudModelCirrus::getDensity(const Vector3 &location) const {
+double CloudModelCirrus::getDensity(const Vector3 &location, double) const {
     double val;
     double min_altitude, max_altitude;
     double noise_scaling = 30.0 * layer->scaling;

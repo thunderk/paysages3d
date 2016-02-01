@@ -45,7 +45,8 @@ class DEFINITIONSHARED_EXPORT CloudLayerDefinition : public DefinitionNode {
         CUMULONIMBUS,
         CIRROCUMULUS,
         CIRROSTRATUS,
-        CIRRUS
+        CIRRUS,
+        _COUNT
     } CloudsType;
 
   public:

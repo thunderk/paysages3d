@@ -253,7 +253,7 @@ void OpenGLRenderer::cameraChangeEvent(CameraDefinition *camera) {
     projection.perspective(perspective.yfov * 180.0 / Maths::PI, perspective.xratio, perspective.znear,
                            perspective.zfar);
 
-    *view_matrix = projection *transform;
+    *view_matrix = projection * transform;
 
     // Set in shaders
     shared_state->set("cameraLocation", location);

@@ -21,7 +21,7 @@ class SOFTWARESHARED_EXPORT BaseCloudsModel {
     virtual void getAltitudeRange(double *min_altitude, double *max_altitude) const;
     virtual void getDetailRange(double *min_step, double *max_step) const;
     virtual double getProbability(const Vector3 &location, double radius) const;
-    virtual double getDensity(const Vector3 &location) const;
+    virtual double getDensity(const Vector3 &location, double precision) const;
     virtual Color filterLight(const Color &light, double length, double density) const;
     virtual Color applyLightExit(const Color &light, const Vector3 &light_direction,
                                  const Vector3 &direction_to_eye) const;

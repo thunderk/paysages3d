@@ -85,6 +85,7 @@ void CloudsRenderer::update() {
         case CloudLayerDefinition::ALTOSTRATUS:
         case CloudLayerDefinition::CIRROCUMULUS:
         case CloudLayerDefinition::CIRROSTRATUS:
+        case CloudLayerDefinition::_COUNT:
             model = new BaseCloudsModel(layer);
             break;
         }

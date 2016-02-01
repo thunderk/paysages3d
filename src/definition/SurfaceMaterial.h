@@ -25,11 +25,10 @@ class DEFINITIONSHARED_EXPORT SurfaceMaterial {
   public:
     Color *base;
 
+    double ambient;
     double hardness;
     double reflection;
     double shininess;
-
-    double receive_shadows;
 };
 }
 }

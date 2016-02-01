@@ -266,8 +266,8 @@ static Color _transmittance3(double r, double mu, double d) {
 }
 
 static void _getIrradianceRMuS(double x, double y, double *r, double *muS) {
-    *r = Rg + y *(Rt - Rg);
-    *muS = -0.2 + x *(1.0 + 0.2);
+    *r = Rg + y * (Rt - Rg);
+    *muS = -0.2 + x * (1.0 + 0.2);
 }
 
 /* nearest intersection of ray r,mu with ground or top atmosphere boundary

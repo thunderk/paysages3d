@@ -10,10 +10,10 @@ SurfaceMaterial::SurfaceMaterial() : SurfaceMaterial(COLOR_BLACK) {
 
 SurfaceMaterial::SurfaceMaterial(const Color &color) {
     base = new Color(color);
+    ambient = 0.0;
     hardness = 0.5;
     reflection = 0.0;
     shininess = 0.0;
-    receive_shadows = 1.0;
 }
 
 SurfaceMaterial::SurfaceMaterial(const SurfaceMaterial &other) : SurfaceMaterial(COLOR_BLACK) {
@@ -38,29 +38,27 @@ void SurfaceMaterial::setColor(double r, double g, double b, double a) {
 void SurfaceMaterial::save(PackStream *stream) const {
     base->save(stream);
 
+    stream->write(&ambient);
     stream->write(&hardness);
     stream->write(&reflection);
     stream->write(&shininess);
-
-    stream->write(&receive_shadows);
 }
 
 void SurfaceMaterial::load(PackStream *stream) {
     base->load(stream);
 
+    stream->read(&ambient);
     stream->read(&hardness);
     stream->read(&reflection);
     stream->read(&shininess);
-
-    stream->read(&receive_shadows);
 }
 
 void SurfaceMaterial::copy(SurfaceMaterial *destination) const {
     *destination->base = *base;
+    destination->ambient = ambient;
     destination->hardness = hardness;
     destination->reflection = reflection;
     destination->shininess = shininess;
-    destination->receive_shadows = receive_shadows;
     destination->validate();
 }
 

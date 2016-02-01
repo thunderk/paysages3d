@@ -128,11 +128,11 @@ void RenderProcess::startQuickRender() {
 }
 
 void RenderProcess::startMediumRender() {
-    startRender(window->getScenery(), RenderConfig(800, 450, 1, 5));
+    startRender(window->getScenery(), RenderConfig(800, 450, 1, 7));
 }
 
 void RenderProcess::startFinalRender() {
-    startRender(window->getScenery(), RenderConfig(1920, 1080, 4, 8));
+    startRender(window->getScenery(), RenderConfig(1920, 1080, 4, 10));
 }
 
 void RenderProcess::showPreviousRender() {

@@ -33,6 +33,7 @@ SoftwareCanvasRenderer::SoftwareCanvasRenderer(Scenery *scenery) : SoftwareRende
                               new VegetationRasterizer(this, progress, RASTERIZER_CLIENT_VEGETATION));
 
     current_work = NULL;
+    setQuality(0.5);
 }
 
 SoftwareCanvasRenderer::~SoftwareCanvasRenderer() {

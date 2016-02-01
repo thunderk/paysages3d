@@ -8,7 +8,7 @@ class PropertyBind : public QObject {
   public:
     explicit PropertyBind(QObject *parent = 0);
 
-signals:
+  signals:
 
   public slots:
 };

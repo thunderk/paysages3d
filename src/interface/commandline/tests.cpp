@@ -152,6 +152,7 @@ static void testCloudQuality() {
 
     SoftwareCanvasRenderer renderer(&scenery);
     renderer.setSize(600, 800);
+    renderer.getGodRaysSampler()->setEnabled(false);
     SkyRasterizer rasterizer(&renderer, renderer.getProgressHelper(), 0);
     renderer.setSoloRasterizer(&rasterizer);
     for (int i = 0; i < 6; i++) {
@@ -463,14 +464,11 @@ static void testCloudsLighting() {
         FakeModel(CloudLayerDefinition *layer, double scale) : BaseCloudsModel(layer), scale(scale) {
         }
         virtual void getAltitudeRange(double *min_altitude, double *max_altitude) const override {
-            *min_altitude = -scale;
-            *max_altitude = scale;
+            *min_altitude = 10.0 - scale;
+            *max_altitude = 10.0 + scale;
         }
-        virtual void getDetailRange(double *min_step, double *max_step) const override {
-            *min_step = *max_step = scale * 0.01;
-        }
-        virtual double getDensity(const Vector3 &location) const override {
-            return Maths::smoothstep(0.0, 0.2, 1.0 - location.getNorm() / scale);
+        virtual double getDensity(const Vector3 &location, double) const override {
+            return 1.0 - location.sub(Vector3(0.0, 10.0, 0.0)).getNorm() / scale;
         }
         double scale;
     };
@@ -482,8 +480,8 @@ static void testCloudsLighting() {
         virtual Color processPixel(int, int, double relx, double rely) const override {
             auto cloud_renderer = renderer->getCloudsRenderer();
             auto atmo_renderer = renderer->getAtmosphereRenderer();
-            return cloud_renderer->getColor(Vector3(relx * scale * 1.2, rely * scale * 1.2, scale),
-                                            Vector3(relx * scale * 1.2, rely * scale * 1.2, -scale),
+            return cloud_renderer->getColor(Vector3(relx * scale * 1.2, 10.0 + rely * scale * 1.2, scale),
+                                            Vector3(relx * scale * 1.2, 10.0 + rely * scale * 1.2, -scale),
                                             atmo_renderer->getSkyColor(Vector3(relx, rely, 1.0).normalize()).final);
         }
         virtual int prepareRasterization() override {
@@ -500,15 +498,16 @@ static void testCloudsLighting() {
 
     Scenery scenery;
     scenery.autoPreset(1);
+    scenery.getTerrain()->propHeightNoise()->setConfig(0.0);
     scenery.getCamera()->setTarget(VECTOR_ZERO);
-    scenery.getCamera()->setLocation(Vector3(0.0, 0.0, 5.0));
+    scenery.getCamera()->setLocation(Vector3(0.0, 10.0, 11.0));
 
     CloudLayerDefinition layer(NULL, "test");
     scenery.getClouds()->clear();
     scenery.getClouds()->addLayer(layer);
 
     SoftwareCanvasRenderer renderer(&scenery);
-    FakeRasterizer rasterizer(&renderer, 10.0);
+    FakeRasterizer rasterizer(&renderer, 5.0);
     renderer.setSize(800, 800);
     renderer.setSoloRasterizer(&rasterizer);
     renderer.getGodRaysSampler()->setEnabled(false);
@@ -520,6 +519,36 @@ static void testCloudsLighting() {
     startTestRender(&renderer, "clouds_lighting_dusk");
     scenery.getAtmosphere()->setDayTime(3);
     startTestRender(&renderer, "clouds_lighting_night");
+}
+
+static void testCloudModels() {
+    Scenery scenery;
+    scenery.autoPreset(1);
+    scenery.getTerrain()->propHeightNoise()->setConfig(0.0);
+
+    CloudLayerDefinition layer(NULL, "test");
+    layer.altitude = 1.0;
+    scenery.getClouds()->clear();
+    scenery.getClouds()->addLayer(layer);
+
+    SoftwareCanvasRenderer renderer(&scenery);
+    renderer.setSize(800, 600);
+    renderer.getGodRaysSampler()->setEnabled(false);
+
+    for (int i = CloudLayerDefinition::STRATOCUMULUS; i < CloudLayerDefinition::_COUNT; i++) {
+        // FIXME Test all
+        layer.type = static_cast<CloudLayerDefinition::CloudsType>(i);
+        layer.validate();
+        renderer.getCloudsRenderer()->update();
+        auto model = renderer.getCloudsRenderer()->getLayerModel(0);
+        double minalt, maxalt;
+        model->getAltitudeRange(&minalt, &maxalt);
+        double offset = 8.0;
+        scenery.getCamera()->setLocation(Vector3(0.0, minalt - offset, 0.0));
+        scenery.getCamera()->setTarget(Vector3(0.0, minalt, offset));
+
+        startTestRender(&renderer, "clouds_model", i);
+    }
 }
 
 void runTestSuite() {

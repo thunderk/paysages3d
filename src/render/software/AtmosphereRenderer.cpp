@@ -117,8 +117,7 @@ AtmosphereResult SoftwareBrunetonAtmosphereRenderer::applyAerialPerspective(cons
     case AtmosphereDefinition::ATMOSPHERE_MODEL_BRUNETON:
         result = model->applyAerialPerspective(location, base);
         break;
-    default:
-        ;
+    default:;
     }
 
     // Apply god rays ponderation
