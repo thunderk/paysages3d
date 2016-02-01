@@ -116,6 +116,7 @@ void SoftwareCanvasRenderer::render() {
     progress->exitSub();
     progress->end();
     finished = true;
+    started = false;
 }
 
 void SoftwareCanvasRenderer::interrupt() {

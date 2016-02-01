@@ -551,13 +551,38 @@ static void testCloudModels() {
     }
 }
 
+static void testCanvasAliasing() {
+    class FakeRasterizer : public OverlayRasterizer {
+      public:
+        FakeRasterizer(SoftwareCanvasRenderer *renderer) : OverlayRasterizer(renderer) {
+        }
+        virtual Color processPixel(int x, int y, double relx, double rely) const override {
+            double d = sqrt(relx * relx + rely * rely);
+            double s = relx * 0.5 + rely;
+            return (x == y or x / 2 == y or y / 2 == x or (d > 0.8 and d < 0.9) or fabs(s) < 0.1) ? COLOR_BLACK : COLOR_WHITE.scaled(5.0);
+        }
+    };
+
+    Scenery scenery;
+    SoftwareCanvasRenderer renderer(&scenery);
+    FakeRasterizer rasterizer(&renderer);
+    renderer.setSoloRasterizer(&rasterizer);
+
+    for (int i = 0; i < 6; i++) {
+        renderer.setSize(400, 400, i + 1);
+        startTestRender(&renderer, "canvas_aliasing", i);
+    }
+}
+
 void runTestSuite() {
     testNoise();
+    testCanvasAliasing();
     testTextures();
     testGodRays();
     testCelestialBodies();
     testNearFrustum();
     testCloudsLighting();
+    testCloudModels();
     testCloudsNearGround();
     testVegetationModels();
     testOpenGLVegetationImpostor();
