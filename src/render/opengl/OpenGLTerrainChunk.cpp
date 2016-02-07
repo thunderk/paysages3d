@@ -10,7 +10,6 @@
 #include "CameraDefinition.h"
 #include "OpenGLRenderer.h"
 #include "TerrainRenderer.h"
-#include "TexturesRenderer.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"
 #include "Texture2D.h"
@@ -81,7 +80,6 @@ bool OpenGLTerrainChunk::maintain() {
         } else {
             setFirstStepVertices();
         }
-        return true;
     } else if (vertices_level < 64) {
         augmentVertices();
         subchanged = true;
@@ -241,10 +239,11 @@ void OpenGLTerrainChunk::updateVertices(const OpenGLVertexArray &source, int ver
 
 void OpenGLTerrainChunk::fillVerticesFromSquare(OpenGLVertexArray *array, int index_offset, double x, double z,
                                                 double size) {
-    Vector3 c1(x, _renderer->getTerrainRenderer()->getHeight(x, z, true, false), z);
-    Vector3 c2(x, _renderer->getTerrainRenderer()->getHeight(x, z + size, true, false), z + size);
-    Vector3 c3(x + size, _renderer->getTerrainRenderer()->getHeight(x + size, z + size, true, false), z + size);
-    Vector3 c4(x + size, _renderer->getTerrainRenderer()->getHeight(x + size, z, true, false), z);
+    Vector3 water_offset = Vector3(0.0, _renderer->getScenery()->getTerrain()->getWaterOffset(), 0.0);
+    Vector3 c1 = _renderer->getTerrainRenderer()->getDisplaced(x, z, true).sub(water_offset);
+    Vector3 c2 = _renderer->getTerrainRenderer()->getDisplaced(x, z + size, true).sub(water_offset);
+    Vector3 c3 = _renderer->getTerrainRenderer()->getDisplaced(x + size, z + size, true).sub(water_offset);
+    Vector3 c4 = _renderer->getTerrainRenderer()->getDisplaced(x + size, z, true).sub(water_offset);
 
     double u = (x - _startx) / _size;
     double v = (z - _startz) / _size;
