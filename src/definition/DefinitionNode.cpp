@@ -27,8 +27,8 @@ DefinitionNode::DefinitionNode(DefinitionNode *parent, const string &name, const
     : parent(parent), type_name(type_name), name(name) {
     if (parent) {
         root = parent->root;
-        parent->addChild(this);
         diffs = NULL;
+        parent->addChild(this);
     } else {
         root = this;
         diffs = new DiffManager(this);
@@ -207,9 +207,11 @@ void DefinitionNode::validate() {
 
 void DefinitionNode::addChild(DefinitionNode *child) {
     if (find(children.begin(), children.end(), child) == children.end()) {
+        if (child->parent != this) {
+            child->parent = this;
+            child->setRoot(root);
+        }
         children.push_back(child);
-        child->parent = this;
-        child->root = this->root;
     }
 }
 
@@ -258,5 +260,17 @@ void DefinitionNode::addDiff(const DefinitionDiff *diff) {
         // No diff manager available, apply it directly and delete it
         applyDiff(diff);
         delete diff;
+    }
+}
+
+void DefinitionNode::setRoot(DefinitionNode *root)
+{
+    this->root = root;
+    if (diffs) {
+        delete diffs;
+        diffs = NULL;
+    }
+    for (auto &child: children) {
+        child->setRoot(root);
     }
 }

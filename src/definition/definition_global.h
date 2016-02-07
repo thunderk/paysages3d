@@ -25,6 +25,7 @@ class DefinitionWatcher;
 class Scenery;
 class CameraDefinition;
 class SurfaceMaterial;
+class MaterialNode;
 class Zone;
 class WaterDefinition;
 class Layers;

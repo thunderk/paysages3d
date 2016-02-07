@@ -90,7 +90,7 @@ bool Layers::applyDiff(const DefinitionDiff *diff, bool backward) {
                 Logs::error("Definition") << "Add layer ignored because requested position was incorrect" << endl;
                 return false;
             } else {
-                DefinitionNode *layer = layer_constructor(this, "temp");
+                DefinitionNode *layer = layer_constructor(NULL, "temp");
                 layer_diff->restoreSavedLayer(layer);
                 if (position == layer_count) {
                     layers.push_back(layer);
@@ -134,7 +134,7 @@ void Layers::addLayer(const DefinitionNode &tocopy) {
 }
 
 void Layers::addLayer(const string &name) {
-    auto layer = layer_constructor(this, name);
+    auto layer = layer_constructor(NULL, name);
     addLayer(*layer);
     delete layer;
 }

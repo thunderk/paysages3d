@@ -120,6 +120,9 @@ class DEFINITIONSHARED_EXPORT DefinitionNode {
     void addDiff(const DefinitionDiff *diff);
 
   private:
+    void setRoot(DefinitionNode *root);
+
+  private:
     DefinitionNode *parent;
     DefinitionNode *root;
     DiffManager *diffs;

@@ -5,6 +5,7 @@
 
 NoiseNode::NoiseNode(DefinitionNode *parent, const string &name) : DefinitionNode(parent, name) {
     noise = new NoiseFunctionSimplex();
+    noise->setScaling(0.0);
 }
 
 NoiseNode::~NoiseNode() {

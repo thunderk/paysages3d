@@ -23,12 +23,14 @@ void FloatNode::save(PackStream *stream) const {
 }
 
 void FloatNode::load(PackStream *stream) {
-    stream->read(&value);
+    double val;
+    stream->read(&val);
+    setValue(val);
 }
 
 void FloatNode::copy(DefinitionNode *destination) const {
     if (auto tdest = dynamic_cast<FloatNode *>(destination)) {
-        tdest->value = value;
+        tdest->setValue(value);
     } else {
         Logs::error("Definition") << "Can't copy from " << getTypeName() << " to " << destination->getTypeName()
                                   << endl;

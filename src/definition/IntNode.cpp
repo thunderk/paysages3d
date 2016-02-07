@@ -23,12 +23,14 @@ void IntNode::save(PackStream *stream) const {
 }
 
 void IntNode::load(PackStream *stream) {
-    stream->read(&value);
+    int val;
+    stream->read(&val);
+    setValue(val);
 }
 
 void IntNode::copy(DefinitionNode *destination) const {
     if (auto tdest = dynamic_cast<IntNode *>(destination)) {
-        tdest->value = value;
+        tdest->setValue(value);
     } else {
         Logs::error("Definition") << "Can't copy from " << getTypeName() << " to " << destination->getTypeName()
                                   << endl;

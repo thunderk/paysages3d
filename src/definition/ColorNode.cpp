@@ -24,12 +24,14 @@ void ColorNode::save(PackStream *stream) const {
 }
 
 void ColorNode::load(PackStream *stream) {
-    value.load(stream);
+    Color val;
+    val.load(stream);
+    setValue(val);
 }
 
 void ColorNode::copy(DefinitionNode *destination) const {
     if (auto tdest = dynamic_cast<ColorNode *>(destination)) {
-        tdest->value = value;
+        tdest->setValue(value);
     } else {
         Logs::error("Definition") << "Can't copy from " << getTypeName() << " to " << destination->getTypeName()
                                   << endl;
@@ -62,6 +64,7 @@ bool ColorNode::applyDiff(const DefinitionDiff *diff, bool backward) {
 
         if (value == previous) {
             value = next;
+            tellChanged();
             return true;
         } else {
             Logs::error("Definition") << "Can't apply color diff" << endl;
