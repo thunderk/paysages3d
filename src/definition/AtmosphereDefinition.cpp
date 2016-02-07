@@ -61,8 +61,7 @@ void AtmosphereDefinition::load(PackStream *stream) {
 void AtmosphereDefinition::copy(DefinitionNode *_destination) const {
     DefinitionNode::copy(_destination);
 
-    AtmosphereDefinition *destination = static_cast<AtmosphereDefinition *>(_destination);
-    if (destination) {
+    if (auto destination = dynamic_cast<AtmosphereDefinition *>(_destination)) {
         destination->model = model;
         destination->sun_color = sun_color;
         destination->dome_lighting = dome_lighting;

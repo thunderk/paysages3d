@@ -77,7 +77,7 @@ void WaterDefinition::load(PackStream *stream) {
 void WaterDefinition::copy(DefinitionNode *_destination) const {
     DefinitionNode::copy(_destination);
 
-    if (auto destination = static_cast<WaterDefinition *>(_destination)) {
+    if (auto destination = dynamic_cast<WaterDefinition *>(_destination)) {
         *destination->material = *material;
         destination->transparency_depth = transparency_depth;
         destination->transparency = transparency;

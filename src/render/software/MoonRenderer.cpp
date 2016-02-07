@@ -25,7 +25,7 @@ MoonRenderer::~MoonRenderer() {
 }
 
 void MoonRenderer::nodeChanged(const DefinitionNode *, const DefinitionDiff *, const DefinitionNode *parent) {
-    if (auto moon_node = static_cast<const CelestialBodyDefinition *>(parent)) {
+    if (auto moon_node = dynamic_cast<const CelestialBodyDefinition *>(parent)) {
         moon_node->copy(&impl->definition);
     }
 }

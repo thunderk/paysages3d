@@ -43,7 +43,7 @@ void TextureLayerDefinition::validate() {
 void TextureLayerDefinition::copy(DefinitionNode *destination) const {
     DefinitionNode::copy(destination);
 
-    if (auto tex_destination = static_cast<TextureLayerDefinition *>(destination)) {
+    if (auto tex_destination = dynamic_cast<TextureLayerDefinition *>(destination)) {
         terrain_zone->copy(tex_destination->terrain_zone);
 
         *tex_destination->material = *material;

@@ -32,8 +32,7 @@ void BaseModelerTool::destroy() {
 }
 
 void BaseModelerTool::addIntBinding(const string &object, const string &property, const string &path, bool monitor) {
-    auto node = static_cast<IntNode *>(ui->getScenery()->findByPath(path));
-    if (node) {
+    if (auto node = dynamic_cast<IntNode *>(ui->getScenery()->findByPath(path))) {
         impl->int_bindings.push_back(make_unique<IntPropertyBind>(ui, object, property, node));
 
         if (monitor) {
@@ -45,8 +44,7 @@ void BaseModelerTool::addIntBinding(const string &object, const string &property
 }
 
 void BaseModelerTool::addFloatBinding(const string &object, const string &property, const string &path, bool monitor) {
-    auto node = static_cast<FloatNode *>(ui->getScenery()->findByPath(path));
-    if (node) {
+    if (auto node = dynamic_cast<FloatNode *>(ui->getScenery()->findByPath(path))) {
         impl->float_bindings.push_back(make_unique<FloatPropertyBind>(ui, object, property, node));
 
         if (monitor) {

@@ -38,7 +38,7 @@ void Zone::load(PackStream *stream) {
 }
 
 void Zone::copy(DefinitionNode *_destination) const {
-    if (auto destination = static_cast<Zone *>(_destination)) {
+    if (auto destination = dynamic_cast<Zone *>(_destination)) {
         destination->absolute_height = absolute_height;
         destination->relative_height_min = relative_height_min;
         destination->relative_height_middle = relative_height_middle;

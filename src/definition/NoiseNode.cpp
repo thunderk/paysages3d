@@ -35,8 +35,7 @@ void NoiseNode::load(PackStream *stream) {
 
 void NoiseNode::copy(DefinitionNode *destination) const {
     if (destination->getTypeName() == getTypeName()) {
-        auto tdestination = static_cast<NoiseNode *>(destination);
-        if (tdestination) {
+        if (auto tdestination = dynamic_cast<NoiseNode *>(destination)) {
             noise->copy(tdestination->noise);
         }
     } else {

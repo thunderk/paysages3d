@@ -33,7 +33,7 @@ void TerrainDefinition::validate() {
 }
 
 void TerrainDefinition::copy(DefinitionNode *_destination) const {
-    if (auto destination = static_cast<TerrainDefinition *>(_destination)) {
+    if (auto destination = dynamic_cast<TerrainDefinition *>(_destination)) {
         destination->shadow_smoothing = shadow_smoothing;
 
         height_map->copy(destination->height_map);
