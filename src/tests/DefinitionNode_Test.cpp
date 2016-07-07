@@ -1,5 +1,6 @@
 #include "BaseTestCase.h"
 
+#include "System.h"
 #include "DefinitionNode.h"
 #include "IntNode.h"
 #include "FloatNode.h"
@@ -77,7 +78,7 @@ TEST(DefinitionNode, saveLoadCopy) {
     new FloatNode(before, "before3", 6.7);
 
     stream = new PackStream();
-    stream->bindToFile("/tmp/test_paysages_pack", true);
+    stream->bindToFile(TMP_DIRECTORY "test_paysages_pack", true);
     before->save(stream);
     stream->write(&check_in);
     delete stream;
@@ -91,7 +92,7 @@ TEST(DefinitionNode, saveLoadCopy) {
     FloatNode *after4 = new FloatNode(after, "before4");
 
     stream = new PackStream();
-    stream->bindToFile("/tmp/test_paysages_pack");
+    stream->bindToFile(TMP_DIRECTORY "test_paysages_pack");
     after->load(stream);
     stream->read(&check_out);
     delete stream;

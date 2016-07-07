@@ -13,7 +13,7 @@ namespace opengl {
 /**
  * OpenGL variable that can be bound to a uniform for shaders.
  */
-class OpenGLVariable final {
+class OPENGLSHARED_EXPORT OpenGLVariable final {
   public:
     OpenGLVariable(const string &name);
     ~OpenGLVariable();

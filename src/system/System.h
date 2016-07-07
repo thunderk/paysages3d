@@ -24,4 +24,10 @@ class SYSTEMSHARED_EXPORT System {
 }
 }
 
+#ifdef PLATFORM_WIN
+#define TMP_DIRECTORY "c:/temp/"
+#else
+#define TMP_DIRECTORY "/tmp/"
+#endif
+
 #endif // SYSTEM_H

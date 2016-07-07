@@ -26,4 +26,5 @@ ui_*.h
 /config.vim
 /callgrind.out.*
 *.p3d
+/build-paysages-*/
 

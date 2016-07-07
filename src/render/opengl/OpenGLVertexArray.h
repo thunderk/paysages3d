@@ -11,7 +11,7 @@ namespace opengl {
  *
  * This will handle VAOs and VBOs automatically.
  */
-class OpenGLVertexArray {
+class OPENGLSHARED_EXPORT OpenGLVertexArray {
   public:
     OpenGLVertexArray(bool has_uv, bool strip = false);
     ~OpenGLVertexArray();

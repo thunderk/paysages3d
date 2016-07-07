@@ -1,5 +1,6 @@
 #include "BaseTestCase.h"
 
+#include "System.h"
 #include "Layers.h"
 #include "PackStream.h"
 #include "DiffManager.h"
@@ -88,14 +89,14 @@ TEST(Layers, saveLoad) {
     ASSERT_EQ(2, layers1.getLayerCount());
 
     stream = new PackStream();
-    stream->bindToFile("/tmp/test_paysages_pack", true);
+    stream->bindToFile(TMP_DIRECTORY "test_paysages_pack", true);
     layers1.save(stream);
     delete stream;
 
     Layers layers2(NULL, "test", _construc1);
 
     stream = new PackStream();
-    stream->bindToFile("/tmp/test_paysages_pack");
+    stream->bindToFile(TMP_DIRECTORY "test_paysages_pack");
     layers2.load(stream);
     delete stream;
 

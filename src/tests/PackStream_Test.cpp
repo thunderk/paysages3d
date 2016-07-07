@@ -1,5 +1,6 @@
 #include "BaseTestCase.h"
 
+#include "System.h"
 #include "PackStream.h"
 
 TEST(PackStream, All) {
@@ -12,7 +13,7 @@ TEST(PackStream, All) {
 
     /* Writing to pack */
     stream = new PackStream();
-    stream->bindToFile("/tmp/test_paysages_pack", true);
+    stream->bindToFile(TMP_DIRECTORY "test_paysages_pack", true);
     for (i = 0; i < 5; i++) {
         data_i = i;
         stream->write(&data_i);
@@ -29,7 +30,7 @@ TEST(PackStream, All) {
 
     /* Reading from pack */
     stream = new PackStream();
-    stream->bindToFile("/tmp/test_paysages_pack");
+    stream->bindToFile(TMP_DIRECTORY "test_paysages_pack");
     for (i = 0; i < 5; i++) {
         stream->read(&data_i);
         ASSERT_EQ(i, data_i);
@@ -53,7 +54,7 @@ TEST(PackStream, Skip) {
     double d1 = 1.1, d2 = 2.2;
 
     stream = new PackStream();
-    stream->bindToFile("/tmp/test_paysages_pack", true);
+    stream->bindToFile(TMP_DIRECTORY "test_paysages_pack", true);
 
     stream->write(&i1);
     stream->write(&i2);
@@ -67,21 +68,21 @@ TEST(PackStream, Skip) {
     double resd;
 
     stream = new PackStream();
-    stream->bindToFile("/tmp/test_paysages_pack");
+    stream->bindToFile(TMP_DIRECTORY "test_paysages_pack");
     stream->skip(i1, 1);
     stream->read(&resi);
     EXPECT_EQ(2, resi);
     delete stream;
 
     stream = new PackStream();
-    stream->bindToFile("/tmp/test_paysages_pack");
+    stream->bindToFile(TMP_DIRECTORY "test_paysages_pack");
     stream->skip(i1, 2);
     stream->read(&resd);
     EXPECT_DOUBLE_EQ(1.1, resd);
     delete stream;
 
     stream = new PackStream();
-    stream->bindToFile("/tmp/test_paysages_pack");
+    stream->bindToFile(TMP_DIRECTORY "test_paysages_pack");
     stream->skip(i1, 2);
     stream->skip(d1, 2);
     stream->read(&resi);

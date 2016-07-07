@@ -1,12 +1,14 @@
 #ifndef SYSTEM_GLOBAL_H
 #define SYSTEM_GLOBAL_H
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_WIN32)
 #define DECL_EXPORT __declspec(dllexport)
 #define DECL_IMPORT __declspec(dllimport)
+#define PLATFORM_WIN 1
 #else
 #define DECL_EXPORT __attribute__((visibility("default")))
 #define DECL_IMPORT __attribute__((visibility("default")))
+#define PLATFORM_UNIX 1
 #endif
 
 #if defined(SYSTEM_LIBRARY)
