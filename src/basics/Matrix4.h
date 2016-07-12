@@ -1,5 +1,4 @@
-#ifndef MATRIX4_H
-#define MATRIX4_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -103,5 +102,3 @@ class BASICSSHARED_EXPORT Matrix4 {
 };
 }
 }
-
-#endif // MATRIX4_H

@@ -1,5 +1,4 @@
-#ifndef INTERPOLATION_H
-#define INTERPOLATION_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -23,5 +22,3 @@ class BASICSSHARED_EXPORT Interpolation {
 };
 }
 }
-
-#endif // INTERPOLATION_H

@@ -1,5 +1,4 @@
-#ifndef DATAFILE_H
-#define DATAFILE_H
+#pragma once
 
 #include "system_global.h"
 
@@ -37,5 +36,3 @@ class SYSTEMSHARED_EXPORT DataFile {
 };
 }
 }
-
-#endif // DATAFILE_H

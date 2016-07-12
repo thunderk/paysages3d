@@ -1,5 +1,4 @@
-#ifndef TERRAINDEFINITION_H
-#define TERRAINDEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -57,5 +56,3 @@ class DEFINITIONSHARED_EXPORT TerrainDefinition : public DefinitionNode {
 };
 }
 }
-
-#endif // TERRAINDEFINITION_H

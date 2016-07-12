@@ -1,5 +1,4 @@
-#ifndef OPENGLSKYBOX_H
-#define OPENGLSKYBOX_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -27,5 +26,3 @@ class OPENGLSHARED_EXPORT OpenGLSkybox : public OpenGLPart {
 };
 }
 }
-
-#endif // OPENGLSKYBOX_H

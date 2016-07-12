@@ -1,5 +1,4 @@
-#ifndef OPENGLVEGETATIONINSTANCE_H
-#define OPENGLVEGETATIONINSTANCE_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -39,5 +38,3 @@ class OPENGLSHARED_EXPORT OpenGLVegetationInstance {
 };
 }
 }
-
-#endif // OPENGLVEGETATIONINSTANCE_H

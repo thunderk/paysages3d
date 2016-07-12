@@ -1,5 +1,4 @@
-#ifndef OPENGLWATER_H
-#define OPENGLWATER_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -32,5 +31,3 @@ class OPENGLSHARED_EXPORT OpenGLWater : public OpenGLPart {
 };
 }
 }
-
-#endif // OPENGLWATER_H

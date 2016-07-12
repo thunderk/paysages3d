@@ -1,5 +1,4 @@
-#ifndef CLOUDSDEFINITION_H
-#define CLOUDSDEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -21,5 +20,3 @@ class DEFINITIONSHARED_EXPORT CloudsDefinition : public Layers {
 };
 }
 }
-
-#endif // CLOUDSDEFINITION_H

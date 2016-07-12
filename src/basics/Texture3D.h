@@ -1,5 +1,4 @@
-#ifndef TEXTURE3D_H
-#define TEXTURE3D_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -33,5 +32,3 @@ class BASICSSHARED_EXPORT Texture3D {
 };
 }
 }
-
-#endif // TEXTURE3D_H

@@ -1,5 +1,4 @@
-#ifndef LIGHTSTATUS_H
-#define LIGHTSTATUS_H
+#pragma once
 
 #include "software_global.h"
 
@@ -52,5 +51,3 @@ class SOFTWARESHARED_EXPORT LightStatus {
 };
 }
 }
-
-#endif // LIGHTSTATUS_H

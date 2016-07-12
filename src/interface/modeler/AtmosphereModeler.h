@@ -1,5 +1,4 @@
-#ifndef ATMOSPHEREMODELER_H
-#define ATMOSPHEREMODELER_H
+#pragma once
 
 #include "modeler_global.h"
 
@@ -17,5 +16,3 @@ class AtmosphereModeler : public BaseModelerTool {
 };
 }
 }
-
-#endif // ATMOSPHEREMODELER_H

@@ -1,5 +1,4 @@
-#ifndef SURFACEMATERIAL_H
-#define SURFACEMATERIAL_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -32,5 +31,3 @@ class DEFINITIONSHARED_EXPORT SurfaceMaterial {
 };
 }
 }
-
-#endif // SURFACEMATERIAL_H

@@ -1,5 +1,4 @@
-#ifndef MEMORY_H
-#define MEMORY_H
+#pragma once
 
 #include "system_global.h"
 
@@ -12,5 +11,3 @@ class SYSTEMSHARED_EXPORT Memory {
 };
 }
 }
-
-#endif // MEMORY_H

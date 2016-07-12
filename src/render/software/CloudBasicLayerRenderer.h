@@ -1,5 +1,4 @@
-#ifndef CLOUDBASICLAYERRENDERER_H
-#define CLOUDBASICLAYERRENDERER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -31,5 +30,3 @@ class SOFTWARESHARED_EXPORT CloudBasicLayerRenderer : public BaseCloudLayerRende
 };
 }
 }
-
-#endif // CLOUDBASICLAYERRENDERER_H

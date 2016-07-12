@@ -1,5 +1,4 @@
-#ifndef LIGHTINGMANAGER_H
-#define LIGHTINGMANAGER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -108,5 +107,3 @@ class SOFTWARESHARED_EXPORT LightingManager {
 };
 }
 }
-
-#endif // LIGHTINGMANAGER_H

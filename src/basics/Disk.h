@@ -1,5 +1,4 @@
-#ifndef DISK_H
-#define DISK_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -38,5 +37,3 @@ class BASICSSHARED_EXPORT Disk : public InfinitePlane {
 };
 }
 }
-
-#endif // DISK_H

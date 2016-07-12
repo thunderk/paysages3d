@@ -1,5 +1,4 @@
-#ifndef FLOATDIFF_H
-#define FLOATDIFF_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -31,5 +30,3 @@ class DEFINITIONSHARED_EXPORT FloatDiff : public DefinitionDiff {
 };
 }
 }
-
-#endif // FLOATDIFF_H

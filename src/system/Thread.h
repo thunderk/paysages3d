@@ -1,5 +1,4 @@
-#ifndef THREAD_H
-#define THREAD_H
+#pragma once
 
 #include "system_global.h"
 #include <QThread>
@@ -63,5 +62,3 @@ class SYSTEMSHARED_EXPORT Thread : private QThread {
 };
 }
 }
-
-#endif // THREAD_H

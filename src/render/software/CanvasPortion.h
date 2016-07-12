@@ -1,5 +1,4 @@
-#ifndef CANVASPORTION_H
-#define CANVASPORTION_H
+#pragma once
 
 #include "software_global.h"
 
@@ -95,5 +94,3 @@ class SOFTWARESHARED_EXPORT CanvasPortion {
 };
 }
 }
-
-#endif // CANVASPORTION_H

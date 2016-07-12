@@ -1,5 +1,4 @@
-#ifndef BASECLOUDSMODEL_H
-#define BASECLOUDSMODEL_H
+#pragma once
 
 #include "../software_global.h"
 
@@ -35,5 +34,3 @@ class SOFTWARESHARED_EXPORT BaseCloudsModel {
 };
 }
 }
-
-#endif // BASECLOUDSMODEL_H

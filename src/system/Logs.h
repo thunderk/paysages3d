@@ -1,5 +1,4 @@
-#ifndef LOGS_H
-#define LOGS_H
+#pragma once
 
 #include "system_global.h"
 
@@ -25,5 +24,3 @@ class SYSTEMSHARED_EXPORT Logs {
 };
 }
 }
-
-#endif // LOGS_H

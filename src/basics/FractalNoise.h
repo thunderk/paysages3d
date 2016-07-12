@@ -1,5 +1,4 @@
-#ifndef FRACTALNOISE_H
-#define FRACTALNOISE_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -83,5 +82,3 @@ class BASICSSHARED_EXPORT FractalNoise {
 };
 }
 }
-
-#endif // FRACTALNOISE_H

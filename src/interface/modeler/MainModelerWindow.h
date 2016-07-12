@@ -1,5 +1,4 @@
-#ifndef MAINMODELERWINDOW_H
-#define MAINMODELERWINDOW_H
+#pragma once
 
 #include "modeler_global.h"
 
@@ -57,5 +56,3 @@ class MainModelerWindow : public QQuickView {
 };
 }
 }
-
-#endif // MAINMODELERWINDOW_H

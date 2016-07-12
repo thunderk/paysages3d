@@ -1,5 +1,4 @@
-#ifndef BASICS_GLOBAL_H
-#define BASICS_GLOBAL_H
+#pragma once
 
 #include "system_global.h"
 
@@ -33,5 +32,3 @@ class InfinitePlane;
 }
 }
 using namespace paysages::basics;
-
-#endif // BASICS_GLOBAL_H

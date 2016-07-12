@@ -1,5 +1,4 @@
-#ifndef NOISEFUNCTIONSIMPLEX_H
-#define NOISEFUNCTIONSIMPLEX_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -23,5 +22,3 @@ double noiseSimplexGet1DValue(double x);
 double noiseSimplexGet2DValue(double x, double y);
 double noiseSimplexGet3DValue(double x, double y, double z);
 double noiseSimplexGet4DValue(double x, double y, double z, double w);
-
-#endif // NOISEFUNCTIONSIMPLEX_H

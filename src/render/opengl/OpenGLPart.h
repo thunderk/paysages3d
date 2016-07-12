@@ -1,5 +1,4 @@
-#ifndef OPENGLPART_H
-#define OPENGLPART_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -83,5 +82,3 @@ class OPENGLSHARED_EXPORT OpenGLPart : protected DefinitionWatcher {
 };
 }
 }
-
-#endif // OPENGLPART_H

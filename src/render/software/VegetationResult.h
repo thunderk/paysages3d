@@ -1,5 +1,4 @@
-#ifndef VEGETATIONRESULT_H
-#define VEGETATIONRESULT_H
+#pragma once
 
 #include "software_global.h"
 
@@ -38,5 +37,3 @@ class SOFTWARESHARED_EXPORT VegetationResult {
 };
 }
 }
-
-#endif // VEGETATIONRESULT_H

@@ -1,5 +1,4 @@
-#ifndef PAINTEDGRIDDATA_H
-#define PAINTEDGRIDDATA_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -48,5 +47,3 @@ class PaintedGridData {
 };
 }
 }
-
-#endif // PAINTEDGRIDDATA_H

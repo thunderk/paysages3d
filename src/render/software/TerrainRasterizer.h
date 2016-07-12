@@ -1,5 +1,4 @@
-#ifndef TERRAINRASTERIZER_H
-#define TERRAINRASTERIZER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -81,5 +80,3 @@ class SOFTWARESHARED_EXPORT TerrainRasterizer : public Rasterizer {
 };
 }
 }
-
-#endif // TERRAINRASTERIZER_H

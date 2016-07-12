@@ -1,5 +1,4 @@
-#ifndef VEGETATIONPRESENCEDEFINITION_H
-#define VEGETATIONPRESENCEDEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -36,5 +35,3 @@ class DEFINITIONSHARED_EXPORT VegetationPresenceDefinition : public DefinitionNo
 };
 }
 }
-
-#endif // VEGETATIONPRESENCEDEFINITION_H

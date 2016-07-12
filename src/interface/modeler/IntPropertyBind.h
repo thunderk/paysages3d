@@ -1,5 +1,4 @@
-#ifndef INTPROPERTYBIND_H
-#define INTPROPERTYBIND_H
+#pragma once
 
 #include "modeler_global.h"
 
@@ -32,4 +31,3 @@ class IntPropertyBind : public QObject, public DefinitionWatcher {
 };
 }
 }
-#endif // INTPROPERTYBIND_H

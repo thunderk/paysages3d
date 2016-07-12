@@ -1,5 +1,4 @@
-#ifndef VEGETATIONMODELDEFINITION_H
-#define VEGETATIONMODELDEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -56,5 +55,3 @@ class DEFINITIONSHARED_EXPORT VegetationModelDefinition : public DefinitionNode 
 };
 }
 }
-
-#endif // VEGETATIONMODELDEFINITION_H

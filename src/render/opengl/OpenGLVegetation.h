@@ -1,5 +1,4 @@
-#ifndef OPENGLVEGETATION_H
-#define OPENGLVEGETATION_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -85,5 +84,3 @@ class OPENGLSHARED_EXPORT OpenGLVegetation : public OpenGLPart {
 };
 }
 }
-
-#endif // OPENGLVEGETATION_H

@@ -1,5 +1,4 @@
-#ifndef RAYCASTINGRESULT_H
-#define RAYCASTINGRESULT_H
+#pragma once
 
 #include "software_global.h"
 
@@ -19,5 +18,3 @@ class SOFTWARESHARED_EXPORT RayCastingResult {
 };
 }
 }
-
-#endif // RAYCASTINGRESULT_H

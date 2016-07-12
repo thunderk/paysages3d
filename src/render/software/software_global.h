@@ -1,5 +1,4 @@
-#ifndef SOFTWARE_GLOBAL_H
-#define SOFTWARE_GLOBAL_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -71,5 +70,3 @@ class CanvasPictureWriter;
 }
 
 using namespace paysages::software;
-
-#endif // SOFTWARE_GLOBAL_H

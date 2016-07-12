@@ -1,5 +1,4 @@
-#ifndef TEXTURESRENDERER_H
-#define TEXTURESRENDERER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -66,5 +65,3 @@ class SOFTWARESHARED_EXPORT TexturesRenderer {
 };
 }
 }
-
-#endif // TEXTURESRENDERER_H

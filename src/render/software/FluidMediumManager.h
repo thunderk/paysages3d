@@ -1,5 +1,4 @@
-#ifndef FLUIDMEDIUMMANAGER_H
-#define FLUIDMEDIUMMANAGER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -55,5 +54,3 @@ class SOFTWARESHARED_EXPORT FluidMediumManager {
 };
 }
 }
-
-#endif // FLUIDMEDIUMTRAVERSAL_H

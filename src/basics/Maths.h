@@ -1,5 +1,4 @@
-#ifndef MATHS_H
-#define MATHS_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -40,5 +39,3 @@ class BASICSSHARED_EXPORT Maths {
 };
 }
 }
-
-#endif // MATHS_H

@@ -1,5 +1,4 @@
-#ifndef CACHEFILE_H
-#define CACHEFILE_H
+#pragma once
 
 #include "system_global.h"
 
@@ -22,5 +21,3 @@ class SYSTEMSHARED_EXPORT CacheFile {
 };
 }
 }
-
-#endif // CACHEFILE_H

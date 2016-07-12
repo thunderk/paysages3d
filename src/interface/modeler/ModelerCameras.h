@@ -1,5 +1,4 @@
-#ifndef MODELERCAMERAS_H
-#define MODELERCAMERAS_H
+#pragma once
 
 #include "modeler_global.h"
 
@@ -77,5 +76,3 @@ class ModelerCameras : public QObject, public DefinitionWatcher {
 };
 }
 }
-
-#endif // MODELERCAMERAS_H

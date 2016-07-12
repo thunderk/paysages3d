@@ -1,5 +1,4 @@
-#ifndef TEXTURE2D_H
-#define TEXTURE2D_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -32,5 +31,3 @@ class BASICSSHARED_EXPORT Texture2D {
 };
 }
 }
-
-#endif // TEXTURE2D_H

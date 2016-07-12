@@ -1,5 +1,4 @@
-#ifndef NIGHTSKY_H
-#define NIGHTSKY_H
+#pragma once
 
 #include "software_global.h"
 
@@ -35,5 +34,3 @@ class SOFTWARESHARED_EXPORT NightSky : public LightSource {
 };
 }
 }
-
-#endif // NIGHTSKY_H

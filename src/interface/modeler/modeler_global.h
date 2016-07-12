@@ -1,5 +1,4 @@
-#ifndef MODELER_GLOBAL_H
-#define MODELER_GLOBAL_H
+#pragma once
 
 #include "definition_global.h"
 #include "software_global.h"
@@ -26,5 +25,3 @@ class IntPropertyBind;
 }
 
 using namespace paysages::modeler;
-
-#endif // MODELER_GLOBAL_H

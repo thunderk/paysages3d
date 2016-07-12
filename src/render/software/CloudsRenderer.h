@@ -1,5 +1,4 @@
-#ifndef CLOUDSRENDERER_H
-#define CLOUDSRENDERER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -88,5 +87,3 @@ class SOFTWARESHARED_EXPORT CloudsRenderer : public LightFilter {
 };
 }
 }
-
-#endif // CLOUDSRENDERER_H

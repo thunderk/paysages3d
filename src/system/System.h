@@ -1,5 +1,4 @@
-#ifndef SYSTEM_H
-#define SYSTEM_H
+#pragma once
 
 #include "system_global.h"
 
@@ -29,5 +28,3 @@ class SYSTEMSHARED_EXPORT System {
 #else
 #define TMP_DIRECTORY "/tmp/"
 #endif
-
-#endif // SYSTEM_H

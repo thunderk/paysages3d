@@ -1,5 +1,4 @@
-#ifndef LAYERSDIFF_H
-#define LAYERSDIFF_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -46,5 +45,3 @@ class DEFINITIONSHARED_EXPORT LayersDiff : public DefinitionDiff {
 };
 }
 }
-
-#endif // LAYERSDIFF_H

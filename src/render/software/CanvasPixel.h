@@ -1,5 +1,4 @@
-#ifndef CANVASPIXEL_H
-#define CANVASPIXEL_H
+#pragma once
 
 #include "software_global.h"
 
@@ -42,5 +41,3 @@ class SOFTWARESHARED_EXPORT CanvasPixel {
 };
 }
 }
-
-#endif // CANVASPIXEL_H

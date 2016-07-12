@@ -1,5 +1,4 @@
-#ifndef OPENGL_GLOBAL_H
-#define OPENGL_GLOBAL_H
+#pragma once
 
 #include "software_global.h"
 
@@ -34,5 +33,3 @@ using namespace paysages::opengl;
 #define OPENGL_MAJOR_VERSION 3
 #define OPENGL_MINOR_VERSION 3
 class OpenGLFunctions;
-
-#endif // OPENGL_GLOBAL_H

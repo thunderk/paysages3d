@@ -1,5 +1,4 @@
-#ifndef OPENGLSHAREDSTATE_H
-#define OPENGLSHAREDSTATE_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -71,5 +70,3 @@ class OPENGLSHARED_EXPORT OpenGLSharedState {
 };
 }
 }
-
-#endif // OPENGLSHAREDSTATE_H

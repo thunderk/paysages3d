@@ -1,5 +1,4 @@
-#ifndef NOISESTATE_H
-#define NOISESTATE_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -42,5 +41,3 @@ class BASICSSHARED_EXPORT NoiseState {
 };
 }
 }
-
-#endif // NOISESTATE_H

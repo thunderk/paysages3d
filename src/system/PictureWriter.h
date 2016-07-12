@@ -1,5 +1,4 @@
-#ifndef PICTUREWRITER_H
-#define PICTUREWRITER_H
+#pragma once
 
 #include "system_global.h"
 
@@ -26,5 +25,3 @@ class SYSTEMSHARED_EXPORT PictureWriter {
 };
 }
 }
-
-#endif // PICTUREWRITER_H

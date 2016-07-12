@@ -1,5 +1,4 @@
-#ifndef TEXTURESDEFINITION_H
-#define TEXTURESDEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -23,5 +22,3 @@ class DEFINITIONSHARED_EXPORT TexturesDefinition : public Layers {
 };
 }
 }
-
-#endif // TEXTURESDEFINITION_H

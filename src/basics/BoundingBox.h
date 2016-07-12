@@ -1,5 +1,4 @@
-#ifndef BOUNDINGBOX_H
-#define BOUNDINGBOX_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -24,5 +23,3 @@ class BASICSSHARED_EXPORT BoundingBox {
 };
 }
 }
-
-#endif // BOUNDINGBOX_H

@@ -1,5 +1,4 @@
-#ifndef DEFINITIONNODE_H
-#define DEFINITIONNODE_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -132,5 +131,3 @@ class DEFINITIONSHARED_EXPORT DefinitionNode {
 };
 }
 }
-
-#endif // DEFINITIONNODE_H

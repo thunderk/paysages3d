@@ -1,5 +1,4 @@
-#ifndef SPACEGRIDITERATOR_H
-#define SPACEGRIDITERATOR_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -24,5 +23,3 @@ class BASICSSHARED_EXPORT SpaceGridIterator {
 };
 }
 }
-
-#endif // SPACEGRIDITERATOR_H

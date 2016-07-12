@@ -1,5 +1,4 @@
-#ifndef CANVASPICTUREWRITER_H
-#define CANVASPICTUREWRITER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -52,5 +51,3 @@ class SOFTWARESHARED_EXPORT CanvasPictureWriter : public PictureWriter {
 };
 }
 }
-
-#endif // CANVASPICTUREWRITER_H

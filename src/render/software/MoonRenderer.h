@@ -1,5 +1,4 @@
-#ifndef MOONRENDERER_H
-#define MOONRENDERER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -36,5 +35,3 @@ class SOFTWARESHARED_EXPORT MoonRenderer : public DefinitionWatcher, public Ligh
 };
 }
 }
-
-#endif // MOONRENDERER_H

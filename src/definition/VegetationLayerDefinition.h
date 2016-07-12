@@ -1,5 +1,4 @@
-#ifndef VEGETATIONLAYERDEFINITION_H
-#define VEGETATIONLAYERDEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -40,5 +39,3 @@ class DEFINITIONSHARED_EXPORT VegetationLayerDefinition : public DefinitionNode 
 };
 }
 }
-
-#endif // VEGETATIONLAYERDEFINITION_H

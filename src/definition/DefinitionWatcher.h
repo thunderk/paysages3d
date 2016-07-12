@@ -1,5 +1,4 @@
-#ifndef DEFINITIONWATCHER_H
-#define DEFINITIONWATCHER_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -63,5 +62,3 @@ class DEFINITIONSHARED_EXPORT DefinitionWatcher {
 };
 }
 }
-
-#endif // DEFINITIONWATCHER_H

@@ -1,5 +1,4 @@
-#ifndef FLOATNODE_H
-#define FLOATNODE_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -41,5 +40,3 @@ class DEFINITIONSHARED_EXPORT FloatNode : public DefinitionNode {
 };
 }
 }
-
-#endif // FLOATNODE_H

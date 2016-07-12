@@ -1,5 +1,4 @@
-#ifndef TERRAINRENDERER_H
-#define TERRAINRENDERER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -53,5 +52,3 @@ class SOFTWARESHARED_EXPORT TerrainRenderer : public LightFilter {
 };
 }
 }
-
-#endif // TERRAINRENDERER_H

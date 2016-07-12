@@ -1,5 +1,4 @@
-#ifndef ATMOSPHERERESULT_H
-#define ATMOSPHERERESULT_H
+#pragma once
 
 #include "software_global.h"
 
@@ -22,5 +21,3 @@ class SOFTWARESHARED_EXPORT AtmosphereResult {
 };
 }
 }
-
-#endif // ATMOSPHERERESULT_H

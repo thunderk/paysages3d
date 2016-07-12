@@ -1,5 +1,4 @@
-#ifndef OPENGLVERTEXARRAY_H
-#define OPENGLVERTEXARRAY_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -90,5 +89,3 @@ class OPENGLSHARED_EXPORT OpenGLVertexArray {
 };
 }
 }
-
-#endif // OPENGLVERTEXARRAY_H

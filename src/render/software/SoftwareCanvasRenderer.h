@@ -1,5 +1,4 @@
-#ifndef SOFTWARECANVASRENDERER_H
-#define SOFTWARECANVASRENDERER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -131,5 +130,3 @@ class SOFTWARESHARED_EXPORT SoftwareCanvasRenderer : public SoftwareRenderer {
 };
 }
 }
-
-#endif // SOFTWARECANVASRENDERER_H

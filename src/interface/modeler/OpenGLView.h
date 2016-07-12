@@ -1,5 +1,4 @@
-#ifndef OPENGLVIEW_H
-#define OPENGLVIEW_H
+#pragma once
 
 #include "modeler_global.h"
 
@@ -46,5 +45,3 @@ class OpenGLView : public QQuickItem {
 };
 }
 }
-
-#endif // OPENGLVIEW_H

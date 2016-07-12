@@ -1,5 +1,4 @@
-#ifndef MATERIALNODE_H
-#define MATERIALNODE_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -59,5 +58,3 @@ class DEFINITIONSHARED_EXPORT MaterialNode : public DefinitionNode {
 };
 }
 }
-
-#endif // MATERIALNODE_H

@@ -1,5 +1,4 @@
-#ifndef ZONE_H
-#define ZONE_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -44,5 +43,3 @@ class DEFINITIONSHARED_EXPORT Zone : public DefinitionNode {
 };
 }
 }
-
-#endif // ZONE_H

@@ -1,5 +1,4 @@
-#ifndef CURVE_H
-#define CURVE_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -43,5 +42,3 @@ class BASICSSHARED_EXPORT Curve {
 };
 }
 }
-
-#endif // CURVE_H

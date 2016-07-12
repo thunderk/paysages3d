@@ -1,5 +1,4 @@
-#ifndef COLORDIFF_H
-#define COLORDIFF_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -32,5 +31,3 @@ class DEFINITIONSHARED_EXPORT ColorDiff : public DefinitionDiff {
 };
 }
 }
-
-#endif // COLORDIFF_H

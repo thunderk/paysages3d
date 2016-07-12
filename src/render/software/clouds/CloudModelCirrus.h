@@ -1,5 +1,4 @@
-#ifndef CLOUDMODELCIRRUS_H
-#define CLOUDMODELCIRRUS_H
+#pragma once
 
 #include "../software_global.h"
 
@@ -23,5 +22,3 @@ class CloudModelCirrus : public BaseCloudsModel {
 };
 }
 }
-
-#endif // CLOUDMODELCIRRUS_H

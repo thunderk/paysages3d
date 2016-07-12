@@ -1,5 +1,4 @@
-#ifndef OPENGLVEGETATIONLAYER_H
-#define OPENGLVEGETATIONLAYER_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -92,5 +91,3 @@ class OPENGLSHARED_EXPORT OpenGLVegetationLayer {
 };
 }
 }
-
-#endif // OPENGLVEGETATIONLAYER_H

@@ -1,5 +1,4 @@
-#ifndef OPENGLSHADERPROGRAM_H
-#define OPENGLSHADERPROGRAM_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -86,5 +85,3 @@ class OPENGLSHARED_EXPORT OpenGLShaderProgram {
 };
 }
 }
-
-#endif // OPENGLSHADERPROGRAM_H

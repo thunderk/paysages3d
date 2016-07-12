@@ -1,5 +1,4 @@
-#ifndef CLOUDLAYERDEFINITION_H
-#define CLOUDLAYERDEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -62,5 +61,3 @@ class DEFINITIONSHARED_EXPORT CloudLayerDefinition : public DefinitionNode {
 };
 }
 }
-
-#endif // CLOUDLAYERDEFINITION_H

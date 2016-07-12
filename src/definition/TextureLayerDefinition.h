@@ -1,5 +1,4 @@
-#ifndef TEXTURELAYERDEFINITION_H
-#define TEXTURELAYERDEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -58,5 +57,3 @@ class DEFINITIONSHARED_EXPORT TextureLayerDefinition : public DefinitionNode {
 };
 }
 }
-
-#endif // TEXTURELAYERDEFINITION_H

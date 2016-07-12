@@ -1,5 +1,4 @@
-#ifndef ATMOSPHERERENDERER_H
-#define ATMOSPHERERENDERER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -45,5 +44,3 @@ class SoftwareBrunetonAtmosphereRenderer : public BaseAtmosphereRenderer {
 };
 }
 }
-
-#endif // ATMOSPHERERENDERER_H

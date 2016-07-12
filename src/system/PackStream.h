@@ -1,5 +1,4 @@
-#ifndef PACKSTREAM_H
-#define PACKSTREAM_H
+#pragma once
 
 #include "system_global.h"
 
@@ -63,5 +62,3 @@ class SYSTEMSHARED_EXPORT PackStream {
 };
 }
 }
-
-#endif // PACKSTREAM_H

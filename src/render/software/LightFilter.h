@@ -1,5 +1,4 @@
-#ifndef LIGHTFILTER_H
-#define LIGHTFILTER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -21,5 +20,3 @@ class SOFTWARESHARED_EXPORT LightFilter {
 };
 }
 }
-
-#endif // LIGHTFILTER_H

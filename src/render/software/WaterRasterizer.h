@@ -1,5 +1,4 @@
-#ifndef WATERRASTERIZER_H
-#define WATERRASTERIZER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -29,5 +28,3 @@ class WaterRasterizer : public Rasterizer {
 };
 }
 }
-
-#endif // WATERRASTERIZER_H

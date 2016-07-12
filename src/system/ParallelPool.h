@@ -1,5 +1,4 @@
-#ifndef PARALLELPOOL_H
-#define PARALLELPOOL_H
+#pragma once
 
 #include "system_global.h"
 
@@ -39,5 +38,3 @@ class SYSTEMSHARED_EXPORT ParallelPool {
 };
 }
 }
-
-#endif // PARALLELPOOL_H

@@ -1,5 +1,4 @@
-#ifndef LIGHTSOURCE_H
-#define LIGHTSOURCE_H
+#pragma once
 
 #include "software_global.h"
 
@@ -24,5 +23,3 @@ class SOFTWARESHARED_EXPORT LightSource {
 };
 }
 }
-
-#endif // LIGHTSOURCE_H

@@ -1,5 +1,4 @@
-#ifndef PAINTEDGRID_H
-#define PAINTEDGRID_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -89,5 +88,3 @@ class DEFINITIONSHARED_EXPORT PaintedGrid : public DefinitionNode {
 };
 }
 }
-
-#endif // PAINTEDGRID_H

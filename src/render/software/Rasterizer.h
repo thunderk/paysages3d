@@ -1,5 +1,4 @@
-#ifndef RASTERIZER_H
-#define RASTERIZER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -102,5 +101,3 @@ class SOFTWARESHARED_EXPORT Rasterizer {
 };
 }
 }
-
-#endif // RASTERIZER_H

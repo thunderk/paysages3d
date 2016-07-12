@@ -1,5 +1,4 @@
-#ifndef SOFTWARERENDERER_H
-#define SOFTWARERENDERER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -110,5 +109,3 @@ class SOFTWARESHARED_EXPORT SoftwareRenderer {
 };
 }
 }
-
-#endif // SOFTWARERENDERER_H

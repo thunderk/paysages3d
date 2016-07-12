@@ -1,5 +1,4 @@
-#ifndef OPENGLVARIABLE_H
-#define OPENGLVARIABLE_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -58,5 +57,3 @@ class OPENGLSHARED_EXPORT OpenGLVariable final {
 };
 }
 }
-
-#endif // OPENGLVARIABLE_H

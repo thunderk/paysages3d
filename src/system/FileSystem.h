@@ -1,5 +1,4 @@
-#ifndef FILESYSTEM_H
-#define FILESYSTEM_H
+#pragma once
 
 #include "system_global.h"
 
@@ -29,5 +28,3 @@ class SYSTEMSHARED_EXPORT FileSystem {
 };
 }
 }
-
-#endif // FILESYSTEM_H

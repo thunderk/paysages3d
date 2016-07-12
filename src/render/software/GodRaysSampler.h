@@ -1,5 +1,4 @@
-#ifndef GODRAYSSAMPLER_H
-#define GODRAYSSAMPLER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -126,5 +125,3 @@ class SOFTWARESHARED_EXPORT GodRaysSampler {
 };
 }
 }
-
-#endif // GODRAYSSAMPLER_H

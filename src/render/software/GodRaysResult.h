@@ -1,5 +1,4 @@
-#ifndef GODRAYSRESULT_H
-#define GODRAYSRESULT_H
+#pragma once
 
 #include "software_global.h"
 
@@ -34,5 +33,3 @@ class SOFTWARESHARED_EXPORT GodRaysResult {
 };
 }
 }
-
-#endif // GODRAYSRESULT_H

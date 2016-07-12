@@ -1,5 +1,4 @@
-#ifndef INTDIFF_H
-#define INTDIFF_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -31,5 +30,3 @@ class DEFINITIONSHARED_EXPORT IntDiff : public DefinitionDiff {
 };
 }
 }
-
-#endif // INTDIFF_H

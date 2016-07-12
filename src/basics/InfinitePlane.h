@@ -1,5 +1,4 @@
-#ifndef INFINITEPLANE_H
-#define INFINITEPLANE_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -41,5 +40,3 @@ class BASICSSHARED_EXPORT InfinitePlane {
 };
 }
 }
-
-#endif // INFINITEPLANE_H

@@ -1,5 +1,4 @@
-#ifndef MUTEX_H
-#define MUTEX_H
+#pragma once
 
 #include "system_global.h"
 
@@ -27,5 +26,3 @@ class SYSTEMSHARED_EXPORT Mutex : private mutex {
 };
 }
 }
-
-#endif // MUTEX_H

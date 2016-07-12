@@ -1,5 +1,4 @@
-#ifndef WATERDEFINITION_H
-#define WATERDEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -67,5 +66,3 @@ class DEFINITIONSHARED_EXPORT WaterDefinition : public DefinitionNode {
 };
 }
 }
-
-#endif // WATERDEFINITION_H

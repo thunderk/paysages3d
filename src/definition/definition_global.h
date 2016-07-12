@@ -1,5 +1,4 @@
-#ifndef DEFINITION_GLOBAL_H
-#define DEFINITION_GLOBAL_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -56,5 +55,3 @@ class TimeManager;
 }
 }
 using namespace paysages::definition;
-
-#endif // DEFINITION_GLOBAL_H

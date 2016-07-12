@@ -1,5 +1,4 @@
-#ifndef NOISENODE_H
-#define NOISENODE_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -50,5 +49,3 @@ class DEFINITIONSHARED_EXPORT NoiseNode : public DefinitionNode {
 };
 }
 }
-
-#endif // NOISENODE_H

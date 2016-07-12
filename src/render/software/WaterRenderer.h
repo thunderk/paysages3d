@@ -1,5 +1,4 @@
-#ifndef WATERRENDERER_H
-#define WATERRENDERER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -44,5 +43,3 @@ class SOFTWARESHARED_EXPORT WaterRenderer : public LightFilter {
 };
 }
 }
-
-#endif // WATERRENDERER_H

@@ -1,5 +1,4 @@
-#ifndef CANVASFRAGMENT_H
-#define CANVASFRAGMENT_H
+#pragma once
 
 #include "software_global.h"
 
@@ -52,5 +51,3 @@ class SOFTWARESHARED_EXPORT CanvasFragment {
 };
 }
 }
-
-#endif // CANVASFRAGMENT_H

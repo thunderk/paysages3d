@@ -1,5 +1,4 @@
-#ifndef SYSTEM_GLOBAL_H
-#define SYSTEM_GLOBAL_H
+#pragma once
 
 #if defined(__MINGW32__) || defined(_WIN32)
 #define DECL_EXPORT __declspec(dllexport)
@@ -46,5 +45,3 @@ using namespace std;
 #define floor_to_int(_x_) (static_cast<int>(floor(_x_)))
 #define ceil_to_int(_x_) (static_cast<int>(ceil(_x_)))
 #define to_size(_x_) (static_cast<unsigned long>(_x_))
-
-#endif // SYSTEM_GLOBAL_H

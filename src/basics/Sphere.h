@@ -1,5 +1,4 @@
-#ifndef SPHERE_H
-#define SPHERE_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -47,5 +46,3 @@ class BASICSSHARED_EXPORT Sphere {
 };
 }
 }
-
-#endif // SPHERE_H

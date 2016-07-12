@@ -1,5 +1,4 @@
-#ifndef PROPERTYBIND_H
-#define PROPERTYBIND_H
+#pragma once
 
 #include <QObject>
 
@@ -12,5 +11,3 @@ class PropertyBind : public QObject {
 
   public slots:
 };
-
-#endif // PROPERTYBIND_H

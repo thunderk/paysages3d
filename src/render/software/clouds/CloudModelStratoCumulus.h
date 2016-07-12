@@ -1,5 +1,4 @@
-#ifndef CLOUDMODELSTRATOCUMULUS_H
-#define CLOUDMODELSTRATOCUMULUS_H
+#pragma once
 
 #include "../software_global.h"
 
@@ -23,5 +22,3 @@ class CloudModelStratoCumulus : public BaseCloudsModel {
 };
 }
 }
-
-#endif // CLOUDMODELSTRATOCUMULUS_H

@@ -1,5 +1,4 @@
-#ifndef CANVAS_H
-#define CANVAS_H
+#pragma once
 
 #include "software_global.h"
 
@@ -60,5 +59,3 @@ class SOFTWARESHARED_EXPORT Canvas {
 };
 }
 }
-
-#endif // CANVAS_H

@@ -1,5 +1,4 @@
-#ifndef WATERMODELER_H
-#define WATERMODELER_H
+#pragma once
 
 #include "modeler_global.h"
 
@@ -19,5 +18,3 @@ class WaterModeler : public QObject, public BaseModelerTool {
 };
 }
 }
-
-#endif // WATERMODELER_H

@@ -1,5 +1,4 @@
-#ifndef DEFINITIONDIFF_H
-#define DEFINITIONDIFF_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -39,5 +38,3 @@ class DEFINITIONSHARED_EXPORT DefinitionDiff {
 };
 }
 }
-
-#endif // DEFINITIONDIFF_H

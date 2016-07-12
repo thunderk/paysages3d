@@ -1,5 +1,4 @@
-#ifndef INFINITECYLINDER_H
-#define INFINITECYLINDER_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -52,5 +51,3 @@ class BASICSSHARED_EXPORT InfiniteCylinder {
 };
 }
 }
-
-#endif // INFINITECYLINDER_H

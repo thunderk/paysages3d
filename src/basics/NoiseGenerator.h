@@ -1,5 +1,4 @@
-#ifndef NOISEGENERATOR_H
-#define NOISEGENERATOR_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -90,5 +89,3 @@ class BASICSSHARED_EXPORT NoiseGenerator {
 };
 }
 }
-
-#endif // NOISEGENERATOR_H

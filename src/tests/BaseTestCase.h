@@ -1,5 +1,4 @@
-#ifndef BASETESTCASE_H
-#define BASETESTCASE_H
+#pragma once
 
 #include "gtest/gtest.h"
 
@@ -41,5 +40,3 @@
     ASSERT_NEAR(_expected_, (_state_)->get(_name_)->getFloatValue(), 0.000001)
 
 class BaseTestCase : public ::testing::Test {};
-
-#endif // BASETESTCASE_H

@@ -1,5 +1,4 @@
-#ifndef VECTOR3_H
-#define VECTOR3_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -106,5 +105,3 @@ BASICSSHARED_EXPORT extern const Vector3 VECTOR_EAST;
 BASICSSHARED_EXPORT extern const Vector3 VECTOR_WEST;
 }
 }
-
-#endif // VECTOR3_H

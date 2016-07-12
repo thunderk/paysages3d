@@ -1,5 +1,4 @@
-#ifndef OPENGLTERRAINCHUNK_H
-#define OPENGLTERRAINCHUNK_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -93,5 +92,3 @@ class OPENGLSHARED_EXPORT OpenGLTerrainChunk {
 };
 }
 }
-
-#endif // OPENGLTERRAINCHUNK_H

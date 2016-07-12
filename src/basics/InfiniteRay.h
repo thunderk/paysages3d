@@ -1,5 +1,4 @@
-#ifndef INFINITERAY_H
-#define INFINITERAY_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -41,5 +40,3 @@ class BASICSSHARED_EXPORT InfiniteRay {
 };
 }
 }
-
-#endif // INFINITERAY_H

@@ -1,5 +1,4 @@
-#ifndef GODRAYSDEFINITION_H
-#define GODRAYSDEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -29,5 +28,3 @@ class DEFINITIONSHARED_EXPORT GodRaysDefinition : public DefinitionNode {
 };
 }
 }
-
-#endif // GODRAYSDEFINITION_H

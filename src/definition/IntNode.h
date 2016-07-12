@@ -1,5 +1,4 @@
-#ifndef INTNODE_H
-#define INTNODE_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -39,5 +38,3 @@ class DEFINITIONSHARED_EXPORT IntNode : public DefinitionNode {
 };
 }
 }
-
-#endif // INTNODE_H

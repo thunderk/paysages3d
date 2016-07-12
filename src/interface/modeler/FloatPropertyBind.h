@@ -1,5 +1,4 @@
-#ifndef FLOATPROPERTYBIND_H
-#define FLOATPROPERTYBIND_H
+#pragma once
 
 #include "modeler_global.h"
 
@@ -33,5 +32,3 @@ class FloatPropertyBind : public QObject, public DefinitionWatcher {
 };
 }
 }
-
-#endif // FLOATPROPERTYBIND_H

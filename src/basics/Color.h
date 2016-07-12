@@ -1,5 +1,4 @@
-#ifndef COLOR_H
-#define COLOR_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -65,5 +64,3 @@ BASICSSHARED_EXPORT extern const Color COLOR_WHITE;
 BASICSSHARED_EXPORT extern const Color COLOR_GREY;
 }
 }
-
-#endif // COLOR_H

@@ -1,5 +1,4 @@
-#ifndef DIFFMANAGER_H
-#define DIFFMANAGER_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -70,5 +69,3 @@ class DEFINITIONSHARED_EXPORT DiffManager {
 };
 }
 }
-
-#endif // DIFFMANAGER_H

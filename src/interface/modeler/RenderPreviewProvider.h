@@ -1,5 +1,4 @@
-#ifndef RENDERPREVIEWPROVIDER_H
-#define RENDERPREVIEWPROVIDER_H
+#pragma once
 
 #include "modeler_global.h"
 
@@ -52,5 +51,3 @@ class RenderPreviewProvider : public QQuickImageProvider, public CanvasLiveClien
 };
 }
 }
-
-#endif // RENDERPREVIEWPROVIDER_H

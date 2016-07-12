@@ -1,5 +1,4 @@
-#ifndef ATMOSPHEREDEFINITION_H
-#define ATMOSPHEREDEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -86,5 +85,3 @@ class DEFINITIONSHARED_EXPORT AtmosphereDefinition : public DefinitionNode {
 };
 }
 }
-
-#endif // ATMOSPHEREDEFINITION_H

@@ -1,5 +1,4 @@
-#ifndef ATMOSPHEREMODELBRUNETON_H
-#define ATMOSPHEREMODELBRUNETON_H
+#pragma once
 
 #include "software_global.h"
 
@@ -28,5 +27,3 @@ class SOFTWARESHARED_EXPORT AtmosphereModelBruneton : public LightSource {
 };
 }
 }
-
-#endif // ATMOSPHEREMODELBRUNETON_H

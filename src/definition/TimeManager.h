@@ -1,5 +1,4 @@
-#ifndef TIMEMANAGER_H
-#define TIMEMANAGER_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -31,5 +30,3 @@ class DEFINITIONSHARED_EXPORT TimeManager {
 };
 }
 }
-
-#endif // TIMEMANAGER_H

@@ -1,5 +1,4 @@
-#ifndef LAYERS_H
-#define LAYERS_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -73,5 +72,3 @@ class DEFINITIONSHARED_EXPORT Layers : public DefinitionNode {
 };
 }
 }
-
-#endif // LAYERS_H

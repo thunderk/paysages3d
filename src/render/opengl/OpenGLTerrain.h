@@ -1,5 +1,4 @@
-#ifndef OPENGLTERRAIN_H
-#define OPENGLTERRAIN_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -46,5 +45,3 @@ class OPENGLSHARED_EXPORT OpenGLTerrain : public OpenGLPart {
 };
 }
 }
-
-#endif // OPENGLTERRAIN_H

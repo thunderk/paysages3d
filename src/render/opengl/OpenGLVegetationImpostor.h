@@ -1,5 +1,4 @@
-#ifndef OPENGLVEGETATIONIMPOSTOR_H
-#define OPENGLVEGETATIONIMPOSTOR_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -45,5 +44,3 @@ class OPENGLSHARED_EXPORT OpenGLVegetationImpostor {
 };
 }
 }
-
-#endif // OPENGLVEGETATIONIMPOSTOR_H

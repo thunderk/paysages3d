@@ -1,5 +1,4 @@
-#ifndef CLOUDMODELALTOCUMULUS_H
-#define CLOUDMODELALTOCUMULUS_H
+#pragma once
 
 #include "../software_global.h"
 
@@ -23,5 +22,3 @@ class CloudModelAltoCumulus : public BaseCloudsModel {
 };
 }
 }
-
-#endif // CLOUDMODELALTOCUMULUS_H

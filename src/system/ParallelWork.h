@@ -1,5 +1,4 @@
-#ifndef PARALLELWORK_H
-#define PARALLELWORK_H
+#pragma once
 
 #include "system_global.h"
 
@@ -73,5 +72,3 @@ class SYSTEMSHARED_EXPORT ParallelWork {
 };
 }
 }
-
-#endif // PARALLELWORK_H

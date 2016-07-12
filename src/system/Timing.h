@@ -1,5 +1,4 @@
-#ifndef TIMING_H
-#define TIMING_H
+#pragma once
 
 #include "system_global.h"
 
@@ -18,5 +17,3 @@ class SYSTEMSHARED_EXPORT Timing {
 };
 }
 }
-
-#endif // TIME_H

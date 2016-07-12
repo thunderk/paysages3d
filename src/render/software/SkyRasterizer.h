@@ -1,5 +1,4 @@
-#ifndef SKYRASTERIZER_H
-#define SKYRASTERIZER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -25,5 +24,3 @@ class SOFTWARESHARED_EXPORT SkyRasterizer : public Rasterizer {
 };
 }
 }
-
-#endif // SKYRASTERIZER_H

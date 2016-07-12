@@ -1,5 +1,4 @@
-#ifndef RENDERCONFIG_H
-#define RENDERCONFIG_H
+#pragma once
 
 #include "software_global.h"
 
@@ -17,5 +16,3 @@ class SOFTWARESHARED_EXPORT RenderConfig {
 };
 }
 }
-
-#endif // RENDERCONFIG_H

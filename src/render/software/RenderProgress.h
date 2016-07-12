@@ -1,5 +1,4 @@
-#ifndef RENDERPROGRESS_H
-#define RENDERPROGRESS_H
+#pragma once
 
 #include "software_global.h"
 
@@ -62,5 +61,3 @@ class SOFTWARESHARED_EXPORT RenderProgress {
 };
 }
 }
-
-#endif // RENDERPROGRESS_H

@@ -1,5 +1,4 @@
-#ifndef CAPPEDCYLINDER_H
-#define CAPPEDCYLINDER_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -42,5 +41,3 @@ class BASICSSHARED_EXPORT CappedCylinder : public InfiniteCylinder {
 };
 }
 }
-
-#endif // CAPPEDCYLINDER_H

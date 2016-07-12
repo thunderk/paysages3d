@@ -1,5 +1,4 @@
-#ifndef CANVASPIXELSHADER_H
-#define CANVASPIXELSHADER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -33,5 +32,3 @@ class CanvasPixelShader : public ParallelWorker {
 };
 }
 }
-
-#endif // CANVASPIXELSHADER_H

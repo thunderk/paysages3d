@@ -1,5 +1,4 @@
-#ifndef TEXTURE4D_H
-#define TEXTURE4D_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -34,5 +33,3 @@ class BASICSSHARED_EXPORT Texture4D {
 };
 }
 }
-
-#endif // TEXTURE4D_H

@@ -1,5 +1,4 @@
-#ifndef SEMAPHORE_H
-#define SEMAPHORE_H
+#pragma once
 
 #include "system_global.h"
 
@@ -21,5 +20,3 @@ class Semaphore : private QSemaphore {
 };
 }
 }
-
-#endif // SEMAPHORE_H

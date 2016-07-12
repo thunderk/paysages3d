@@ -1,5 +1,4 @@
-#ifndef VEGETATIONRASTERIZER_H
-#define VEGETATIONRASTERIZER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -23,5 +22,3 @@ class SOFTWARESHARED_EXPORT VegetationRasterizer : public TerrainRasterizer {
 };
 }
 }
-
-#endif // VEGETATIONRASTERIZER_H

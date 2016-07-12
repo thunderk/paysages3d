@@ -1,5 +1,4 @@
-#ifndef CANVASLIVECLIENT_H
-#define CANVASLIVECLIENT_H
+#pragma once
 
 #include "software_global.h"
 
@@ -19,5 +18,3 @@ class SOFTWARESHARED_EXPORT CanvasLiveClient {
 };
 }
 }
-
-#endif // CANVASLIVECLIENT_H

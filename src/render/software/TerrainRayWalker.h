@@ -1,5 +1,4 @@
-#ifndef TERRAINRAYWALKER_H
-#define TERRAINRAYWALKER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -72,5 +71,3 @@ class SOFTWARESHARED_EXPORT TerrainRayWalker {
 };
 }
 }
-
-#endif // TERRAINRAYWALKER_H

@@ -1,5 +1,4 @@
-#ifndef VEGETATIONMODELRENDERER_H
-#define VEGETATIONMODELRENDERER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -38,5 +37,3 @@ class SOFTWARESHARED_EXPORT VegetationModelRenderer : public LightFilter {
 };
 }
 }
-
-#endif // VEGETATIONMODELRENDERER_H

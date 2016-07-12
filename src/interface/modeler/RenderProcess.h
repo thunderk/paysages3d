@@ -1,5 +1,4 @@
-#ifndef RENDERPROCESS_H
-#define RENDERPROCESS_H
+#pragma once
 
 #include "modeler_global.h"
 
@@ -73,5 +72,3 @@ class RenderProcess : public QObject {
 };
 }
 }
-
-#endif // RENDERPROCESS_H

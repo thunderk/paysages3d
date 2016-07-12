@@ -1,5 +1,4 @@
-#ifndef FLUIDMEDIUMINTERFACE_H
-#define FLUIDMEDIUMINTERFACE_H
+#pragma once
 
 #include "software_global.h"
 
@@ -19,5 +18,3 @@ class SOFTWARESHARED_EXPORT FluidMediumInterface {
 };
 }
 }
-
-#endif // FLUIDMEDIUMINTERFACE_H

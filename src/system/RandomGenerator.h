@@ -1,5 +1,4 @@
-#ifndef RANDOMGENERATOR_H
-#define RANDOMGENERATOR_H
+#pragma once
 
 #include "system_global.h"
 
@@ -30,5 +29,3 @@ class SYSTEMSHARED_EXPORT RandomGenerator {
 };
 }
 }
-
-#endif // RANDOMGENERATOR_H

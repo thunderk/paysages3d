@@ -1,5 +1,4 @@
-#ifndef BASECLOUDLAYERRENDERER_H
-#define BASECLOUDLAYERRENDERER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -24,5 +23,3 @@ class BaseCloudLayerRenderer {
 };
 }
 }
-
-#endif // BASECLOUDLAYERRENDERER_H

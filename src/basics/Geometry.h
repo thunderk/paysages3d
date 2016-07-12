@@ -1,5 +1,4 @@
-#ifndef GEOMETRY_H
-#define GEOMETRY_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -16,5 +15,3 @@ class BASICSSHARED_EXPORT Geometry {
 };
 }
 }
-
-#endif // GEOMETRY_H

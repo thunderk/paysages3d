@@ -1,5 +1,4 @@
-#ifndef SCENERY_H
-#define SCENERY_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -126,5 +125,3 @@ class DEFINITIONSHARED_EXPORT Scenery : public DefinitionNode {
 };
 }
 }
-
-#endif // SCENERY_H

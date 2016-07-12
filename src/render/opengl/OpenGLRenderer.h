@@ -1,5 +1,4 @@
-#ifndef OPENGLRENDERER_H
-#define OPENGLRENDERER_H
+#pragma once
 
 #include "opengl_global.h"
 
@@ -149,5 +148,3 @@ class OPENGLSHARED_EXPORT OpenGLRenderer : public SoftwareRenderer {
 };
 }
 }
-
-#endif // OPENGLRENDERER_H

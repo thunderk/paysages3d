@@ -1,5 +1,4 @@
-#ifndef CELESTIALBODYDEFINITION_H
-#define CELESTIALBODYDEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -55,5 +54,3 @@ class DEFINITIONSHARED_EXPORT CelestialBodyDefinition : public DefinitionNode {
 };
 }
 }
-
-#endif // CELESTIALBODYDEFINITION_H

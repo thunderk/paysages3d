@@ -1,5 +1,4 @@
-#ifndef BASEMODELERTOOL_H
-#define BASEMODELERTOOL_H
+#pragma once
 
 #include "modeler_global.h"
 
@@ -47,5 +46,3 @@ class BaseModelerTool : protected DefinitionWatcher {
 };
 }
 }
-
-#endif // BASEMODELERTOOL_H

@@ -1,5 +1,4 @@
-#ifndef LIGHTCOMPONENT_H
-#define LIGHTCOMPONENT_H
+#pragma once
 
 #include "software_global.h"
 
@@ -26,5 +25,3 @@ class SOFTWARESHARED_EXPORT LightComponent {
 };
 }
 }
-
-#endif // LIGHTCOMPONENT_H

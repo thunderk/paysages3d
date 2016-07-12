@@ -1,5 +1,4 @@
-#ifndef RAYCASTINGMANAGER_H
-#define RAYCASTINGMANAGER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -15,5 +14,3 @@ class SOFTWARESHARED_EXPORT RayCastingManager {
 };
 }
 }
-
-#endif // RAYCASTINGMANAGER_H

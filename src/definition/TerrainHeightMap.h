@@ -1,5 +1,4 @@
-#ifndef TERRAINHEIGHTMAP_H
-#define TERRAINHEIGHTMAP_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -36,5 +35,3 @@ class DEFINITIONSHARED_EXPORT TerrainHeightMap : public PaintedGrid {
 };
 }
 }
-
-#endif // TERRAINHEIGHTMAP_H

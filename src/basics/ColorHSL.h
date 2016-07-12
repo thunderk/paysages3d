@@ -1,5 +1,4 @@
-#ifndef COLORHSL_H
-#define COLORHSL_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -14,5 +13,3 @@ BASICSSHARED_EXPORT Color colorFromHSL(const ColorHSL &col);
 BASICSSHARED_EXPORT ColorHSL colorToHSL(const Color &col);
 
 BASICSSHARED_EXPORT ColorHSL colorHSLFromValues(double h, double s, double l, double a);
-
-#endif // COLORHSL_H

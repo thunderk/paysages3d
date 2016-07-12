@@ -1,5 +1,4 @@
-#ifndef CLOUDMODELCUMULONIMBUS_H
-#define CLOUDMODELCUMULONIMBUS_H
+#pragma once
 
 #include "../software_global.h"
 
@@ -23,5 +22,3 @@ class CloudModelCumuloNimbus : public BaseCloudsModel {
 };
 }
 }
-
-#endif // CLOUDMODELCUMULONIMBUS_H

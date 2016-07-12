@@ -1,5 +1,4 @@
-#ifndef CAMERADEFINITION_H
-#define CAMERADEFINITION_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -112,5 +111,3 @@ class DEFINITIONSHARED_EXPORT CameraDefinition : public DefinitionNode {
 };
 }
 }
-
-#endif // CAMERADEFINITION_H

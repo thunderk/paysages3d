@@ -1,5 +1,4 @@
-#ifndef SPACESEGMENT_H
-#define SPACESEGMENT_H
+#pragma once
 
 #include "basics_global.h"
 
@@ -89,5 +88,3 @@ class BASICSSHARED_EXPORT SpaceSegment {
 };
 }
 }
-
-#endif // SPACESEGMENT_H

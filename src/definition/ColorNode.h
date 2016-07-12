@@ -1,5 +1,4 @@
-#ifndef COLORNODE_H
-#define COLORNODE_H
+#pragma once
 
 #include "definition_global.h"
 
@@ -40,5 +39,3 @@ class DEFINITIONSHARED_EXPORT ColorNode : public DefinitionNode {
 };
 }
 }
-
-#endif // COLORNODE_H

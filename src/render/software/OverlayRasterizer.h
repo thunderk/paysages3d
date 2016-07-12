@@ -1,5 +1,4 @@
-#ifndef OVERLAYRASTERIZER_H
-#define OVERLAYRASTERIZER_H
+#pragma once
 
 #include "software_global.h"
 
@@ -31,5 +30,3 @@ class SOFTWARESHARED_EXPORT OverlayRasterizer : public Rasterizer {
 };
 }
 }
-
-#endif // OVERLAYRASTERIZER_H
