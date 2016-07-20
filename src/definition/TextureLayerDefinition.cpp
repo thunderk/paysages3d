@@ -1,5 +1,6 @@
 #include "TextureLayerDefinition.h"
 
+#include <cmath>
 #include <algorithm>
 #include "Zone.h"
 #include "SurfaceMaterial.h"
