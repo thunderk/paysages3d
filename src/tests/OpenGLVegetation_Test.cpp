@@ -1,10 +1,10 @@
-#include "BaseTestCase.h"
 #include "OpenGLVegetation.h"
+#include "BaseTestCase.h"
 
+#include "OpenGLRenderer.h"
 #include "Scenery.h"
 #include "VegetationDefinition.h"
 #include "VegetationLayerDefinition.h"
-#include "OpenGLRenderer.h"
 
 TEST(OpenGLVegetation, updateLayers) {
     Scenery scenery;

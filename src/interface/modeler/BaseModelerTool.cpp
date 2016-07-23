@@ -1,12 +1,12 @@
 #include "BaseModelerTool.h"
 
-#include "MainModelerWindow.h"
-#include "Scenery.h"
-#include "IntNode.h"
-#include "IntPropertyBind.h"
 #include "FloatNode.h"
 #include "FloatPropertyBind.h"
+#include "IntNode.h"
+#include "IntPropertyBind.h"
 #include "Logs.h"
+#include "MainModelerWindow.h"
+#include "Scenery.h"
 
 class BaseModelerTool::pimpl {
   public:

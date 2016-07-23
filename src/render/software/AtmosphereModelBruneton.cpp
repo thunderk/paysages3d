@@ -5,27 +5,27 @@
  * http://evasion.inrialpes.fr/~Eric.Bruneton/
  */
 
+#include "AtmosphereDefinition.h"
+#include "AtmosphereRenderer.h"
+#include "AtmosphereResult.h"
+#include "CacheFile.h"
+#include "CelestialBodyDefinition.h"
+#include "FloatNode.h"
+#include "LightComponent.h"
+#include "LightStatus.h"
+#include "Maths.h"
+#include "PackStream.h"
+#include "ParallelWork.h"
+#include "Scenery.h"
+#include "SoftwareRenderer.h"
+#include "System.h"
+#include "Texture2D.h"
+#include "Texture4D.h"
+#include "WaterRenderer.h"
 #include <cassert>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
-#include "Maths.h"
-#include "System.h"
-#include "ParallelWork.h"
-#include "PackStream.h"
-#include "Scenery.h"
-#include "AtmosphereDefinition.h"
-#include "AtmosphereRenderer.h"
-#include "AtmosphereResult.h"
-#include "SoftwareRenderer.h"
-#include "WaterRenderer.h"
-#include "CelestialBodyDefinition.h"
-#include "LightComponent.h"
-#include "LightStatus.h"
-#include "Texture2D.h"
-#include "Texture4D.h"
-#include "CacheFile.h"
-#include "FloatNode.h"
 
 #define WORKAROUND_OFFSET 0.1
 

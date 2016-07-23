@@ -1,8 +1,8 @@
 #include "FloatPropertyBind.h"
 
-#include "MainModelerWindow.h"
 #include "FloatNode.h"
 #include "Logs.h"
+#include "MainModelerWindow.h"
 
 #include <cmath>
 

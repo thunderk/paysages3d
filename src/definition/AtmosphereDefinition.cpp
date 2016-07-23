@@ -1,14 +1,14 @@
 #include "AtmosphereDefinition.h"
 
-#include <cmath>
+#include "CelestialBodyDefinition.h"
+#include "FloatNode.h"
+#include "GodRaysDefinition.h"
 #include "Maths.h"
-#include "Scenery.h"
+#include "NoiseNode.h"
 #include "PackStream.h"
 #include "RandomGenerator.h"
-#include "FloatNode.h"
-#include "NoiseNode.h"
-#include "GodRaysDefinition.h"
-#include "CelestialBodyDefinition.h"
+#include "Scenery.h"
+#include <cmath>
 
 AtmosphereDefinition::AtmosphereDefinition(DefinitionNode *parent)
     : DefinitionNode(parent, "atmosphere", "atmosphere") {

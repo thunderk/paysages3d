@@ -1,8 +1,8 @@
 #include "Geometry.h"
 
-#include <cmath>
 #include "Maths.h"
 #include "Vector3.h"
+#include <cmath>
 
 double Geometry::get2DAngle(double x, double y) {
     double nx, ny, d, ret;

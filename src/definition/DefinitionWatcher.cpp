@@ -1,9 +1,9 @@
 #include "DefinitionWatcher.h"
 
-#include "IntDiff.h"
-#include "FloatDiff.h"
 #include "DefinitionNode.h"
 #include "DiffManager.h"
+#include "FloatDiff.h"
+#include "IntDiff.h"
 #include "Logs.h"
 
 DefinitionWatcher::DefinitionWatcher(const string &name) : name(name) {

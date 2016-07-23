@@ -6,8 +6,8 @@
 
 #include "CanvasPixel.h"
 #include "CanvasPreview.h"
-#include "PackStream.h"
 #include "FileSystem.h"
+#include "PackStream.h"
 #include "System.h"
 
 #define CHECK_COORDINATES()                                                                                            \

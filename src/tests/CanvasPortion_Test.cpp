@@ -1,7 +1,7 @@
 #include "BaseTestCase.h"
 
-#include "CanvasPortion.h"
 #include "CanvasFragment.h"
+#include "CanvasPortion.h"
 
 TEST(CanvasPortion, setSize) {
     CanvasPortion portion;

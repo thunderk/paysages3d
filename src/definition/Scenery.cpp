@@ -2,19 +2,19 @@
 
 #include <map>
 
-#include "PackStream.h"
 #include "AtmosphereDefinition.h"
 #include "CameraDefinition.h"
 #include "CloudsDefinition.h"
+#include "DiffManager.h"
+#include "FloatNode.h"
+#include "IntNode.h"
+#include "Logs.h"
+#include "PackStream.h"
+#include "RandomGenerator.h"
 #include "TerrainDefinition.h"
 #include "TexturesDefinition.h"
 #include "VegetationDefinition.h"
 #include "WaterDefinition.h"
-#include "DiffManager.h"
-#include "Logs.h"
-#include "RandomGenerator.h"
-#include "IntNode.h"
-#include "FloatNode.h"
 
 static const double APP_HEADER = 19866544632.125;
 static const int DATA_VERSION = 1;

@@ -1,8 +1,8 @@
 #include "FluidMediumManager.h"
 
-#include "SoftwareRenderer.h"
-#include "FluidMediumInterface.h"
 #include "Color.h"
+#include "FluidMediumInterface.h"
+#include "SoftwareRenderer.h"
 
 FluidMediumManager::FluidMediumManager(SoftwareRenderer *renderer) : renderer(renderer) {
 }

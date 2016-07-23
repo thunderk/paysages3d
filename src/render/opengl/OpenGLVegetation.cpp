@@ -1,11 +1,11 @@
 #include "OpenGLVegetation.h"
 
+#include "Mutex.h"
 #include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
 #include "OpenGLVegetationLayer.h"
-#include "Thread.h"
-#include "Mutex.h"
 #include "Scenery.h"
+#include "Thread.h"
 #include "VegetationDefinition.h"
 #include "VegetationLayerDefinition.h"
 

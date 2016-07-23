@@ -1,17 +1,17 @@
 #include "WaterRenderer.h"
 
-#include <cmath>
+#include "ColorNode.h"
+#include "FloatNode.h"
+#include "LightComponent.h"
+#include "NoiseFunctionSimplex.h"
+#include "NoiseGenerator.h"
+#include "RayCastingResult.h"
+#include "Scenery.h"
 #include "SoftwareRenderer.h"
+#include "SurfaceMaterial.h"
 #include "TerrainRenderer.h"
 #include "WaterDefinition.h"
-#include "NoiseGenerator.h"
-#include "LightComponent.h"
-#include "Scenery.h"
-#include "SurfaceMaterial.h"
-#include "NoiseFunctionSimplex.h"
-#include "FloatNode.h"
-#include "ColorNode.h"
-#include "RayCastingResult.h"
+#include <cmath>
 
 WaterRenderer::WaterRenderer(SoftwareRenderer *parent) : parent(parent) {
     noise = new NoiseFunctionSimplex();

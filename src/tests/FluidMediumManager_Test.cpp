@@ -1,10 +1,10 @@
 #include "BaseTestCase.h"
 
-#include "SpaceSegment.h"
+#include "FluidMediumInterface.h"
+#include "FluidMediumManager.h"
 #include "Scenery.h"
 #include "SoftwareRenderer.h"
-#include "FluidMediumManager.h"
-#include "FluidMediumInterface.h"
+#include "SpaceSegment.h"
 
 class FluidMediumManager_Test : public BaseTestCase {
   protected:

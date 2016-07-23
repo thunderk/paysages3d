@@ -1,23 +1,23 @@
 #include "OpenGLVegetationImpostor.h"
 
-#include <cassert>
+#include "AtmosphereDefinition.h"
+#include "CameraDefinition.h"
+#include "GodRaysSampler.h"
+#include "LightingManager.h"
 #include "Maths.h"
+#include "Matrix4.h"
 #include "OpenGLShaderProgram.h"
 #include "OpenGLSharedState.h"
-#include "OpenGLVertexArray.h"
 #include "OpenGLVegetationInstance.h"
-#include "Texture2D.h"
-#include "SoftwareRenderer.h"
-#include "Scenery.h"
-#include "AtmosphereDefinition.h"
-#include "GodRaysSampler.h"
-#include "VegetationRenderer.h"
-#include "VegetationInstance.h"
+#include "OpenGLVertexArray.h"
 #include "RayCastingResult.h"
+#include "Scenery.h"
+#include "SoftwareRenderer.h"
 #include "SpaceSegment.h"
-#include "Matrix4.h"
-#include "LightingManager.h"
-#include "CameraDefinition.h"
+#include "Texture2D.h"
+#include "VegetationInstance.h"
+#include "VegetationRenderer.h"
+#include <cassert>
 
 // Get the rotation matrix for an impostor grid index
 static inline Matrix4 matrixForIndex(int index) {

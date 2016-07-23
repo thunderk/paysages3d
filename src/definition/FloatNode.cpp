@@ -1,10 +1,10 @@
 #include "FloatNode.h"
 
-#include "PackStream.h"
 #include "FloatDiff.h"
 #include "Logs.h"
-#include <sstream>
+#include "PackStream.h"
 #include <cassert>
+#include <sstream>
 
 FloatNode::FloatNode(DefinitionNode *parent, const string &name, double value)
     : DefinitionNode(parent, name, "float"), value(value) {

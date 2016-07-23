@@ -1,7 +1,7 @@
 #include "OpenGLShaderProgram.h"
 
-#include <QOpenGLShaderProgram>
-#include <QDir>
+#include "Color.h"
+#include "Logs.h"
 #include "OpenGLFunctions.h"
 #include "OpenGLRenderer.h"
 #include "OpenGLSharedState.h"
@@ -9,8 +9,8 @@
 #include "Texture2D.h"
 #include "Texture3D.h"
 #include "Texture4D.h"
-#include "Color.h"
-#include "Logs.h"
+#include <QDir>
+#include <QOpenGLShaderProgram>
 
 OpenGLShaderProgram::OpenGLShaderProgram(const string &name, OpenGLRenderer *renderer)
     : renderer(renderer), name(name) {

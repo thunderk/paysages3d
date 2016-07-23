@@ -1,12 +1,12 @@
 #include "TerrainDefinition.h"
 
-#include <cmath>
-#include "TerrainHeightMap.h"
-#include "NoiseGenerator.h"
-#include "PackStream.h"
 #include "FloatNode.h"
-#include "NoiseNode.h"
 #include "FractalNoise.h"
+#include "NoiseGenerator.h"
+#include "NoiseNode.h"
+#include "PackStream.h"
+#include "TerrainHeightMap.h"
+#include <cmath>
 
 TerrainDefinition::TerrainDefinition(DefinitionNode *parent) : DefinitionNode(parent, "terrain", "terrain") {
     shadow_smoothing = 0.0;

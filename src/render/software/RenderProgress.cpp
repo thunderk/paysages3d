@@ -1,8 +1,8 @@
 #include "RenderProgress.h"
 
+#include "Logs.h"
 #include "Mutex.h"
 #include "Timing.h"
-#include "Logs.h"
 
 RenderProgress::RenderProgress(int count) {
     lock = new Mutex();

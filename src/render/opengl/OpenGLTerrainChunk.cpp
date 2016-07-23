@@ -1,20 +1,20 @@
 #include "OpenGLTerrainChunk.h"
 
-#include <cmath>
-#include <cassert>
-#include <QImage>
-#include "OpenGLShaderProgram.h"
-#include "OpenGLVertexArray.h"
-#include "OpenGLSharedState.h"
-#include "ColorProfile.h"
 #include "CameraDefinition.h"
+#include "ColorProfile.h"
+#include "Logs.h"
+#include "Mutex.h"
 #include "OpenGLRenderer.h"
-#include "TerrainRenderer.h"
+#include "OpenGLShaderProgram.h"
+#include "OpenGLSharedState.h"
+#include "OpenGLVertexArray.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"
+#include "TerrainRenderer.h"
 #include "Texture2D.h"
-#include "Mutex.h"
-#include "Logs.h"
+#include <QImage>
+#include <cassert>
+#include <cmath>
 
 OpenGLTerrainChunk::OpenGLTerrainChunk(OpenGLRenderer *renderer, double x, double z, double size, int nbchunks)
     : _renderer(renderer) {

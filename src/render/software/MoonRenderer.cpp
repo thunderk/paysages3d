@@ -1,14 +1,14 @@
 #include "MoonRenderer.h"
 
-#include <cmath>
 #include "CelestialBodyDefinition.h"
 #include "Color.h"
-#include "LightingManager.h"
-#include "Geometry.h"
-#include "SurfaceMaterial.h"
 #include "FloatNode.h"
 #include "FractalNoise.h"
+#include "Geometry.h"
+#include "LightingManager.h"
 #include "NoiseNode.h"
+#include "SurfaceMaterial.h"
+#include <cmath>
 
 class MoonRenderer::pimpl {
   public:

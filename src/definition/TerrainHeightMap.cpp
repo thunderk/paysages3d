@@ -1,7 +1,7 @@
 #include "TerrainHeightMap.h"
 
-#include "TerrainDefinition.h"
 #include "PaintedGridBrush.h"
+#include "TerrainDefinition.h"
 
 TerrainHeightMap::TerrainHeightMap(TerrainDefinition *terrain) : PaintedGrid(terrain), terrain(terrain) {
 }

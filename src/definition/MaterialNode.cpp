@@ -2,9 +2,9 @@
 
 #include "ColorNode.h"
 #include "FloatNode.h"
+#include "FractalNoise.h"
 #include "NoiseNode.h"
 #include "SurfaceMaterial.h"
-#include "FractalNoise.h"
 
 MaterialNode::MaterialNode(DefinitionNode *parent, const string &name) : DefinitionNode(parent, name, "material") {
     material = make_unique<SurfaceMaterial>();

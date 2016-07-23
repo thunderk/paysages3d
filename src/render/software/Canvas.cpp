@@ -2,9 +2,9 @@
 
 #include <cassert>
 
+#include "CanvasPictureWriter.h"
 #include "CanvasPortion.h"
 #include "CanvasPreview.h"
-#include "CanvasPictureWriter.h"
 
 #define CUTTER_SIZE 800
 

@@ -1,7 +1,7 @@
 #include "Curve.h"
 
-#include <cstring>
 #include "PackStream.h"
+#include <cstring>
 
 const int MAX_NB_POINTS = 30;
 

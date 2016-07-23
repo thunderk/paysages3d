@@ -1,8 +1,8 @@
-#include "BaseTestCase.h"
 #include "VegetationRasterizer.h"
+#include "BaseTestCase.h"
 
-#include "SoftwareCanvasRenderer.h"
 #include "Scenery.h"
+#include "SoftwareCanvasRenderer.h"
 #include "VegetationDefinition.h"
 #include "VegetationLayerDefinition.h"
 

@@ -2,8 +2,8 @@
 
 #include "modeler_global.h"
 
-#include <QObject>
 #include "DefinitionWatcher.h"
+#include <QObject>
 
 namespace paysages {
 namespace modeler {

@@ -1,23 +1,23 @@
 #include "OpenGLRenderer.h"
 
-#include <QMatrix4x4>
-#include "Maths.h"
-#include "OpenGLFunctions.h"
 #include "CameraDefinition.h"
+#include "CloudsRenderer.h"
+#include "Color.h"
+#include "GodRaysSampler.h"
+#include "LightingManager.h"
+#include "Logs.h"
+#include "Maths.h"
+#include "NoiseFunctionSimplex.h"
+#include "OpenGLFunctions.h"
 #include "OpenGLSharedState.h"
 #include "OpenGLSkybox.h"
-#include "OpenGLWater.h"
 #include "OpenGLTerrain.h"
 #include "OpenGLVegetation.h"
-#include "CloudsRenderer.h"
-#include "VegetationRenderer.h"
-#include "Color.h"
+#include "OpenGLWater.h"
 #include "Scenery.h"
-#include "LightingManager.h"
-#include "GodRaysSampler.h"
-#include "Logs.h"
 #include "Vector3.h"
-#include "NoiseFunctionSimplex.h"
+#include "VegetationRenderer.h"
+#include <QMatrix4x4>
 
 OpenGLRenderer::OpenGLRenderer(Scenery *scenery) : SoftwareRenderer(scenery) {
     ready = false;

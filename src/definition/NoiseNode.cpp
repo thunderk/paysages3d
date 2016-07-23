@@ -1,7 +1,7 @@
 #include "NoiseNode.h"
 
-#include "NoiseFunctionSimplex.h"
 #include "Logs.h"
+#include "NoiseFunctionSimplex.h"
 
 NoiseNode::NoiseNode(DefinitionNode *parent, const string &name) : DefinitionNode(parent, name) {
     noise = new NoiseFunctionSimplex();

@@ -1,18 +1,18 @@
 #include "NightSky.h"
 
-#include <algorithm>
-#include "Color.h"
-#include "Vector3.h"
-#include "Geometry.h"
-#include "SoftwareRenderer.h"
-#include "Scenery.h"
 #include "AtmosphereDefinition.h"
 #include "AtmosphereRenderer.h"
-#include "SurfaceMaterial.h"
+#include "CelestialBodyDefinition.h"
+#include "Color.h"
+#include "FloatNode.h"
+#include "Geometry.h"
 #include "LightComponent.h"
 #include "LightStatus.h"
-#include "CelestialBodyDefinition.h"
-#include "FloatNode.h"
+#include "Scenery.h"
+#include "SoftwareRenderer.h"
+#include "SurfaceMaterial.h"
+#include "Vector3.h"
+#include <algorithm>
 
 NightSky::NightSky(SoftwareRenderer *renderer) : renderer(renderer) {
 }

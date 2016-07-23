@@ -1,7 +1,7 @@
 #include "BaseTestCase.h"
 
-#include "SpaceSegment.h"
 #include "SpaceGridIterator.h"
+#include "SpaceSegment.h"
 
 class CollectGridIterator : public SpaceGridIterator {
   public:

@@ -1,5 +1,5 @@
-#include "BaseTestCase.h"
 #include "DefinitionWatcher.h"
+#include "BaseTestCase.h"
 
 #include "IntNode.h"
 

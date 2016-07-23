@@ -1,7 +1,7 @@
 #include "BaseTestCase.h"
 
-#include "Zone.h"
 #include "Vector3.h"
+#include "Zone.h"
 
 class Zone_Test : public BaseTestCase {
   protected:

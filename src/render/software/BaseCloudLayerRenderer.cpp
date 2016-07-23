@@ -1,7 +1,7 @@
 #include "BaseCloudLayerRenderer.h"
 
-#include "clouds/BaseCloudsModel.h"
 #include "Vector3.h"
+#include "clouds/BaseCloudsModel.h"
 
 BaseCloudLayerRenderer::BaseCloudLayerRenderer(SoftwareRenderer *parent) : parent(parent) {
     setQuality(0.5);

@@ -1,8 +1,8 @@
 #include "Layers.h"
 
-#include "PackStream.h"
-#include "Logs.h"
 #include "LayersDiff.h"
+#include "Logs.h"
+#include "PackStream.h"
 
 Layers::Layers(DefinitionNode *parent, const string &name, LayerConstructor layer_constructor)
     : DefinitionNode(parent, name, "layers" + name), layer_constructor(layer_constructor) {

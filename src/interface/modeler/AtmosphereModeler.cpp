@@ -1,10 +1,10 @@
 #include "AtmosphereModeler.h"
 
-#include "MainModelerWindow.h"
-#include "Scenery.h"
 #include "AtmosphereDefinition.h"
 #include "DefinitionNode.h"
+#include "MainModelerWindow.h"
 #include "ModelerCameras.h"
+#include "Scenery.h"
 
 AtmosphereModeler::AtmosphereModeler(MainModelerWindow *ui) : BaseModelerTool(ui) {
     addFloatBinding("atmosphere_humidity", "value", "/atmosphere/humidity");

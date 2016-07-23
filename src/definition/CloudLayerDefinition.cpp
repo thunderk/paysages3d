@@ -1,10 +1,10 @@
 #include "CloudLayerDefinition.h"
 
 #include "Curve.h"
-#include "NoiseGenerator.h"
-#include "SurfaceMaterial.h"
-#include "PackStream.h"
 #include "FloatNode.h"
+#include "NoiseGenerator.h"
+#include "PackStream.h"
+#include "SurfaceMaterial.h"
 
 CloudLayerDefinition::CloudLayerDefinition(DefinitionNode *parent, const string &name)
     : DefinitionNode(parent, name, "cloudlayer") {

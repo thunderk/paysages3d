@@ -1,8 +1,8 @@
-#include "BaseTestCase.h"
 #include "LightingManager.h"
+#include "BaseTestCase.h"
 
-#include "LightSource.h"
 #include "LightFilter.h"
+#include "LightSource.h"
 
 class FakeLightSource : public LightSource {
     virtual bool getLightsAt(vector<LightComponent> &, const Vector3 &) const override {

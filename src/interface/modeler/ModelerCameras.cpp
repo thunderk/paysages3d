@@ -1,12 +1,12 @@
 #include "ModelerCameras.h"
 
+#include "AtmosphereDefinition.h"
+#include "AtmosphereRenderer.h"
+#include "CameraDefinition.h"
+#include "FloatNode.h"
 #include "MainModelerWindow.h"
 #include "OpenGLRenderer.h"
 #include "Scenery.h"
-#include "CameraDefinition.h"
-#include "AtmosphereDefinition.h"
-#include "FloatNode.h"
-#include "AtmosphereRenderer.h"
 #include "Timing.h"
 
 ModelerCameras::ModelerCameras(MainModelerWindow *parent)

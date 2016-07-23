@@ -1,15 +1,15 @@
 #include "OpenGLVegetationLayer.h"
 
-#include <algorithm>
-#include "Vector3.h"
 #include "CameraDefinition.h"
 #include "Mutex.h"
 #include "OpenGLFunctions.h"
 #include "OpenGLVegetation.h"
-#include "OpenGLVegetationInstance.h"
 #include "OpenGLVegetationImpostor.h"
+#include "OpenGLVegetationInstance.h"
+#include "Vector3.h"
 #include "VegetationLayerDefinition.h"
 #include "VegetationPresenceDefinition.h"
+#include <algorithm>
 
 OpenGLVegetationLayer::OpenGLVegetationLayer(OpenGLVegetation *parent, VegetationLayerDefinition *definition,
                                              bool own_instances)

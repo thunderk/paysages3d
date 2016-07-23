@@ -1,14 +1,14 @@
 #include "VegetationPresenceDefinition.h"
 
-#include <cmath>
+#include "FloatNode.h"
+#include "FractalNoise.h"
+#include "NoiseNode.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"
+#include "VegetationInstance.h"
 #include "VegetationLayerDefinition.h"
 #include "VegetationModelDefinition.h"
-#include "VegetationInstance.h"
-#include "FloatNode.h"
-#include "NoiseNode.h"
-#include "FractalNoise.h"
+#include <cmath>
 
 VegetationPresenceDefinition::VegetationPresenceDefinition(VegetationLayerDefinition *parent)
     : DefinitionNode(parent, "presence") {

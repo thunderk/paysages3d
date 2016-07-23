@@ -1,8 +1,8 @@
 #include "BaseTestCase.h"
 
-#include "IntNode.h"
-#include "IntDiff.h"
 #include "FloatDiff.h"
+#include "IntDiff.h"
+#include "IntNode.h"
 #include "PackStream.h"
 
 TEST(IntNode, toString) {

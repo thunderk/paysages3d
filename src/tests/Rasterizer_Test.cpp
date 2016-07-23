@@ -1,12 +1,12 @@
-#include "BaseTestCase.h"
 #include "Rasterizer.h"
+#include "BaseTestCase.h"
 
-#include "SoftwareRenderer.h"
-#include "Scenery.h"
-#include "Vector3.h"
 #include "CameraDefinition.h"
-#include "Color.h"
 #include "CanvasPortion.h"
+#include "Color.h"
+#include "Scenery.h"
+#include "SoftwareRenderer.h"
+#include "Vector3.h"
 
 class FakeRasterizer : public Rasterizer {
   public:

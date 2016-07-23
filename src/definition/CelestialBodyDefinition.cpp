@@ -1,10 +1,10 @@
 #include "CelestialBodyDefinition.h"
 
-#include <cmath>
-#include "Vector3.h"
 #include "FloatNode.h"
-#include "Scenery.h"
 #include "NoiseNode.h"
+#include "Scenery.h"
+#include "Vector3.h"
+#include <cmath>
 
 CelestialBodyDefinition::CelestialBodyDefinition(DefinitionNode *parent, const string &name)
     : DefinitionNode(parent, name) {

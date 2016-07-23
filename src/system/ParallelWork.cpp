@@ -1,10 +1,10 @@
 #include "ParallelWork.h"
 
-#include "Thread.h"
-#include "System.h"
-#include "Semaphore.h"
 #include "Mutex.h"
 #include "ParallelWorker.h"
+#include "Semaphore.h"
+#include "System.h"
+#include "Thread.h"
 #include <cassert>
 
 /**

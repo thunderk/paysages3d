@@ -4,9 +4,9 @@
 
 #include "LightFilter.h"
 
+#include "Color.h"
 #include "TerrainDefinition.h"
 #include "Vector3.h"
-#include "Color.h"
 
 namespace paysages {
 namespace software {

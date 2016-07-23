@@ -1,13 +1,13 @@
 #include "WaterModeler.h"
 
+#include "FloatPropertyBind.h"
+#include "IntPropertyBind.h"
 #include "MainModelerWindow.h"
+#include "OpenGLRenderer.h"
+#include "OpenGLWater.h"
 #include "Scenery.h"
 #include "TerrainDefinition.h"
 #include "WaterDefinition.h"
-#include "FloatPropertyBind.h"
-#include "IntPropertyBind.h"
-#include "OpenGLRenderer.h"
-#include "OpenGLWater.h"
 
 WaterModeler::WaterModeler(MainModelerWindow *ui) : BaseModelerTool(ui) {
     QObject *toggle_water = ui->findQmlObject("camera_toggle_water");

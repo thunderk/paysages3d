@@ -1,8 +1,8 @@
 #include "CloudModelCumuloNimbus.h"
 
+#include "CloudLayerDefinition.h"
 #include "NoiseGenerator.h"
 #include "Vector3.h"
-#include "CloudLayerDefinition.h"
 
 CloudModelCumuloNimbus::CloudModelCumuloNimbus(CloudLayerDefinition *layer) : BaseCloudsModel(layer) {
     noise = new NoiseGenerator();

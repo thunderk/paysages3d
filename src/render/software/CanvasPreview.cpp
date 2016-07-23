@@ -1,9 +1,9 @@
 #include "CanvasPreview.h"
 
-#include "Color.h"
 #include "CanvasLiveClient.h"
-#include "Mutex.h"
+#include "Color.h"
 #include "ColorProfile.h"
+#include "Mutex.h"
 
 #include <cassert>
 

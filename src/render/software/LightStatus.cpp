@@ -1,8 +1,8 @@
 #include "LightStatus.h"
 
-#include "LightingManager.h"
-#include "LightComponent.h"
 #include "Color.h"
+#include "LightComponent.h"
+#include "LightingManager.h"
 #include "SurfaceMaterial.h"
 
 LightStatus::LightStatus(LightingManager *manager, const Vector3 &location, const Vector3 &eye, bool filtered) {

@@ -1,14 +1,14 @@
 #include "LightingManager.h"
 
-#include <cmath>
-#include <algorithm>
-#include "LightFilter.h"
-#include "LightComponent.h"
-#include "LightStatus.h"
-#include "LightSource.h"
 #include "Color.h"
-#include "SurfaceMaterial.h"
+#include "LightComponent.h"
+#include "LightFilter.h"
+#include "LightSource.h"
+#include "LightStatus.h"
 #include "Logs.h"
+#include "SurfaceMaterial.h"
+#include <algorithm>
+#include <cmath>
 
 LightingManager::LightingManager() {
     specularity = true;

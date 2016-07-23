@@ -1,17 +1,17 @@
 #include "RenderProcess.h"
 
-#include <QSize>
-#include <QTime>
-#include <QQuickItem>
-#include "MainModelerWindow.h"
-#include "SoftwareCanvasRenderer.h"
-#include "RenderPreviewProvider.h"
-#include "RenderConfig.h"
-#include "RenderProgress.h"
-#include "Thread.h"
 #include "Canvas.h"
 #include "CanvasPreview.h"
+#include "MainModelerWindow.h"
 #include "OpenGLRenderer.h"
+#include "RenderConfig.h"
+#include "RenderPreviewProvider.h"
+#include "RenderProgress.h"
+#include "SoftwareCanvasRenderer.h"
+#include "Thread.h"
+#include <QQuickItem>
+#include <QSize>
+#include <QTime>
 
 class RenderThread : public Thread {
   public:

@@ -2,8 +2,8 @@
 
 #include "opengl_global.h"
 
-#include <map>
 #include "OpenGLVariable.h"
+#include <map>
 
 namespace paysages {
 namespace opengl {

@@ -1,17 +1,17 @@
 #include "OpenGLSkybox.h"
 
-#include <cmath>
+#include "AtmosphereDefinition.h"
+#include "AtmosphereModelBruneton.h"
+#include "AtmosphereRenderer.h"
+#include "CelestialBodyDefinition.h"
+#include "FloatNode.h"
+#include "Logs.h"
 #include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
 #include "OpenGLSharedState.h"
 #include "OpenGLVertexArray.h"
-#include "CelestialBodyDefinition.h"
 #include "Scenery.h"
-#include "AtmosphereDefinition.h"
-#include "AtmosphereRenderer.h"
-#include "AtmosphereModelBruneton.h"
-#include "FloatNode.h"
-#include "Logs.h"
+#include <cmath>
 
 static const string path_humidity = "/atmosphere/humidity";
 static const string path_sun_phi = "/atmosphere/sun/phi";

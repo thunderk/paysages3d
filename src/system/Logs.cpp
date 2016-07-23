@@ -2,8 +2,8 @@
 
 #include "Timing.h"
 
-#include <streambuf>
 #include <ostream>
+#include <streambuf>
 
 template <class cT, class traits = char_traits<cT>> class basic_nullbuf : public basic_streambuf<cT, traits> {
     typename traits::int_type overflow(typename traits::int_type c) {

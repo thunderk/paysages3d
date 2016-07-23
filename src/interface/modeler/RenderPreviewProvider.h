@@ -2,8 +2,8 @@
 
 #include "modeler_global.h"
 
-#include <QQuickImageProvider>
 #include "CanvasLiveClient.h"
+#include <QQuickImageProvider>
 
 namespace paysages {
 namespace modeler {

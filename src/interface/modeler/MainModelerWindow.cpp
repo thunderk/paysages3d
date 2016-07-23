@@ -1,18 +1,18 @@
 #include "MainModelerWindow.h"
 
-#include "Logs.h"
-#include "OpenGLView.h"
-#include "Scenery.h"
-#include "OpenGLRenderer.h"
 #include "AtmosphereModeler.h"
-#include "WaterModeler.h"
+#include "Logs.h"
 #include "ModelerCameras.h"
+#include "OpenGLRenderer.h"
+#include "OpenGLView.h"
+#include "RenderConfig.h"
 #include "RenderPreviewProvider.h"
 #include "RenderProcess.h"
-#include "RenderConfig.h"
+#include "Scenery.h"
+#include "WaterModeler.h"
 
-#include <QQmlEngine>
 #include <QGuiApplication>
+#include <QQmlEngine>
 
 MainModelerWindow::MainModelerWindow() {
     QSurfaceFormat new_format = format();

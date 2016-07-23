@@ -1,5 +1,5 @@
-#include "BaseTestCase.h"
 #include "Vector3.h"
+#include "BaseTestCase.h"
 
 TEST(Vector3, midPointTo) {
     Vector3 v1(1.0, 2.0, 8.0);

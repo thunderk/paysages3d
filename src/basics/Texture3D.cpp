@@ -1,10 +1,10 @@
 #include "Texture3D.h"
 
-#include <cassert>
-#include <cmath>
 #include "Color.h"
 #include "PackStream.h"
 #include "PictureWriter.h"
+#include <cassert>
+#include <cmath>
 
 Texture3D::Texture3D(int xsize, int ysize, int zsize) {
     assert(xsize > 0 && ysize > 0 && zsize > 0);

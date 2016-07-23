@@ -1,9 +1,9 @@
 #include "Vector3.h"
 
-#include <cmath>
 #include "Maths.h"
 #include "PackStream.h"
 #include "RandomGenerator.h"
+#include <cmath>
 
 const Vector3 paysages::basics::VECTOR_ZERO(0.0, 0.0, 0.0);
 const Vector3 paysages::basics::VECTOR_DOWN(0.0, -1.0, 0.0);

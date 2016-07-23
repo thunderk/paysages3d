@@ -1,5 +1,5 @@
-#include "Thread.h"
 #include "SoftwareCanvasRenderer.h"
+#include "Thread.h"
 
 class RenderThread : public Thread {
   public:

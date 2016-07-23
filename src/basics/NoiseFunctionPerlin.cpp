@@ -6,8 +6,8 @@
  * Based on Ken Perlin implementation.
  */
 
-#include <cstdlib>
 #include <cmath>
+#include <cstdlib>
 
 NoiseFunctionPerlin::NoiseFunctionPerlin() {
 }

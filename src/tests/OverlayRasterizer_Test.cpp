@@ -1,10 +1,10 @@
-#include "BaseTestCase.h"
 #include "OverlayRasterizer.h"
+#include "BaseTestCase.h"
 
-#include <vector>
+#include "Color.h"
 #include "Scenery.h"
 #include "SoftwareCanvasRenderer.h"
-#include "Color.h"
+#include <vector>
 
 typedef struct {
     int x;

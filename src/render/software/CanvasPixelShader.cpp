@@ -1,12 +1,12 @@
 #include "CanvasPixelShader.h"
 
-#include "Color.h"
-#include "SoftwareCanvasRenderer.h"
-#include "CanvasPortion.h"
-#include "CanvasPixel.h"
 #include "CanvasFragment.h"
+#include "CanvasPixel.h"
+#include "CanvasPortion.h"
+#include "Color.h"
 #include "Rasterizer.h"
 #include "RenderProgress.h"
+#include "SoftwareCanvasRenderer.h"
 
 CanvasPixelShader::CanvasPixelShader(const SoftwareCanvasRenderer &renderer, CanvasPortion *portion,
                                      RenderProgress *progress, int chunk_size, int sub_chunk_size, int chunks_x,

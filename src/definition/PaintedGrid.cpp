@@ -1,11 +1,11 @@
 #include "PaintedGrid.h"
 
+#include "Interpolation.h"
+#include "Memory.h"
+#include "PaintedGridBrush.h"
+#include "PaintedGridData.h"
 #include <cassert>
 #include <cmath>
-#include "Memory.h"
-#include "Interpolation.h"
-#include "PaintedGridData.h"
-#include "PaintedGridBrush.h"
 
 PaintedGrid::PaintedGrid(DefinitionNode *parent) : DefinitionNode(parent, "grid", "grid") {
     merged_data = new PaintedGridData;

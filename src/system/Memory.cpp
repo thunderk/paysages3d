@@ -1,8 +1,8 @@
 #include "Memory.h"
 
+#include <cassert>
 #include <cstdlib>
 #include <cstring>
-#include <cassert>
 
 void *Memory::naiveArrayInsert(void **array, unsigned long item_size, int item_count, int location) {
     char **barray = (char **)array;

@@ -1,8 +1,8 @@
 #include "LayersDiff.h"
 
-#include "PackStream.h"
 #include "Layers.h"
 #include "Logs.h"
+#include "PackStream.h"
 
 LayersDiff::LayersDiff(const Layers *layers, LayersDiffOp op, int layer1)
     : DefinitionDiff(layers), op(op), layer1(layer1), saved(NULL) {

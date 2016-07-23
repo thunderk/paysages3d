@@ -1,7 +1,7 @@
 #include "BaseTestCase.h"
 
-#include <QtCore/QDebug>
 #include "Logs.h"
+#include <QtCore/QDebug>
 
 void noMessageOutput(QtMsgType, const QMessageLogContext &, const QString &) {
 }

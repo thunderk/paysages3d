@@ -1,18 +1,18 @@
 #include "SkyRasterizer.h"
 
-#include <cmath>
-#include "Scenery.h"
-#include "Maths.h"
-#include "Vector3.h"
-#include "Color.h"
-#include "SoftwareRenderer.h"
 #include "AtmosphereRenderer.h"
 #include "AtmosphereResult.h"
-#include "CloudsRenderer.h"
-#include "Rasterizer.h"
 #include "CanvasFragment.h"
-#include "RenderProgress.h"
+#include "CloudsRenderer.h"
+#include "Color.h"
 #include "GodRaysSampler.h"
+#include "Maths.h"
+#include "Rasterizer.h"
+#include "RenderProgress.h"
+#include "Scenery.h"
+#include "SoftwareRenderer.h"
+#include "Vector3.h"
+#include <cmath>
 
 SkyRasterizer::SkyRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id)
     : Rasterizer(renderer, progress, client_id, Color(0.7, 0.7, 1.0)) {

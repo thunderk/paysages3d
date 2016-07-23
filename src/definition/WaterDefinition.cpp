@@ -1,11 +1,11 @@
 #include "WaterDefinition.h"
 
-#include "PackStream.h"
-#include "NoiseState.h"
-#include "SurfaceMaterial.h"
-#include "IntNode.h"
-#include "FloatNode.h"
 #include "ColorNode.h"
+#include "FloatNode.h"
+#include "IntNode.h"
+#include "NoiseState.h"
+#include "PackStream.h"
+#include "SurfaceMaterial.h"
 
 WaterDefinition::WaterDefinition(DefinitionNode *parent) : DefinitionNode(parent, "water", "water") {
     model = new IntNode(this, "model", -1);

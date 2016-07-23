@@ -1,10 +1,10 @@
 #include "Texture4D.h"
 
-#include <cassert>
-#include <cmath>
 #include "Color.h"
 #include "PackStream.h"
 #include "PictureWriter.h"
+#include <cassert>
+#include <cmath>
 
 Texture4D::Texture4D(int xsize, int ysize, int zsize, int wsize) {
     assert(xsize > 0 && ysize > 0 && zsize > 0 && wsize > 0);

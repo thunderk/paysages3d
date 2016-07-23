@@ -1,9 +1,9 @@
 #include "ColorNode.h"
 
-#include <cassert>
-#include <sstream>
 #include "ColorDiff.h"
 #include "Logs.h"
+#include <cassert>
+#include <sstream>
 
 // TODO Could be made into a template
 

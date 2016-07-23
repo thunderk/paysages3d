@@ -1,11 +1,11 @@
 #include "WaterRasterizer.h"
 
-#include <cmath>
+#include "CanvasFragment.h"
+#include "RenderProgress.h"
 #include "Scenery.h"
 #include "SoftwareRenderer.h"
 #include "WaterRenderer.h"
-#include "CanvasFragment.h"
-#include "RenderProgress.h"
+#include <cmath>
 
 WaterRasterizer::WaterRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id)
     : Rasterizer(renderer, progress, client_id, Color(0.7, 0.85, 1.0)) {

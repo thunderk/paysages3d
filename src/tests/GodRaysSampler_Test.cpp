@@ -1,14 +1,14 @@
-#include "BaseTestCase.h"
 #include "GodRaysSampler.h"
+#include "BaseTestCase.h"
 
-#include <cmath>
+#include "Color.h"
+#include "LightComponent.h"
+#include "LightFilter.h"
+#include "LightSource.h"
+#include "LightingManager.h"
 #include "SpaceSegment.h"
 #include "Vector3.h"
-#include "LightingManager.h"
-#include "LightSource.h"
-#include "LightFilter.h"
-#include "LightComponent.h"
-#include "Color.h"
+#include <cmath>
 
 TEST(GodRaysSampler, getBounds) {
     GodRaysSampler sampler;

@@ -1,10 +1,10 @@
 #include "CameraDefinition.h"
 
-#include <cmath>
-#include "Scenery.h"
+#include "BoundingBox.h"
 #include "Maths.h"
 #include "PackStream.h"
-#include "BoundingBox.h"
+#include "Scenery.h"
+#include <cmath>
 
 CameraDefinition::CameraDefinition(DefinitionNode *parent) : DefinitionNode(parent, "camera", "camera") {
     location.x = 0.0;

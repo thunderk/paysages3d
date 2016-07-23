@@ -1,13 +1,13 @@
 #include "DiffManager.h"
 
-#include <algorithm>
-#include <map>
-#include <vector>
-#include <mutex>
-#include "DefinitionNode.h"
 #include "DefinitionDiff.h"
+#include "DefinitionNode.h"
 #include "DefinitionWatcher.h"
 #include "Logs.h"
+#include <algorithm>
+#include <map>
+#include <mutex>
+#include <vector>
 
 class DiffManager::pimpl {
   public:

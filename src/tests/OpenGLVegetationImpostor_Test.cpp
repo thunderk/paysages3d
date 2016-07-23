@@ -1,5 +1,5 @@
-#include "BaseTestCase.h"
 #include "OpenGLVegetationImpostor.h"
+#include "BaseTestCase.h"
 
 #include "Vector3.h"
 

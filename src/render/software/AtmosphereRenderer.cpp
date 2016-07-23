@@ -1,18 +1,18 @@
 #include "AtmosphereRenderer.h"
 
-#include <cmath>
-#include "SoftwareRenderer.h"
 #include "AtmosphereDefinition.h"
 #include "AtmosphereModelBruneton.h"
 #include "AtmosphereResult.h"
+#include "CelestialBodyDefinition.h"
+#include "FloatNode.h"
 #include "GodRaysSampler.h"
 #include "LightComponent.h"
 #include "LightStatus.h"
-#include "Scenery.h"
-#include "NightSky.h"
 #include "MoonRenderer.h"
-#include "CelestialBodyDefinition.h"
-#include "FloatNode.h"
+#include "NightSky.h"
+#include "Scenery.h"
+#include "SoftwareRenderer.h"
+#include <cmath>
 
 static inline double _getDayFactor(double daytime) {
     daytime = 1.0 - fabs(0.5 - daytime) / 0.5;

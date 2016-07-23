@@ -1,9 +1,9 @@
 #include "SpaceSegment.h"
 
-#include <cmath>
-#include <climits>
-#include <algorithm>
 #include "SpaceGridIterator.h"
+#include <algorithm>
+#include <climits>
+#include <cmath>
 using namespace std;
 
 SpaceSegment::SpaceSegment(const Vector3 &start, const Vector3 &end) : start(start), end(end) {

@@ -1,9 +1,9 @@
 #include "BaseTestCase.h"
 
-#include <cmath>
-#include "Maths.h"
 #include "Geometry.h"
+#include "Maths.h"
 #include "Vector3.h"
+#include <cmath>
 
 /*static inline int _Vector3_cmp(Vector3 v1, Vector3 v2)
 {

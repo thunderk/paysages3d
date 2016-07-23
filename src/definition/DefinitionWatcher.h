@@ -2,8 +2,8 @@
 
 #include "definition_global.h"
 
-#include <string>
 #include <set>
+#include <string>
 
 namespace paysages {
 namespace definition {

@@ -1,10 +1,10 @@
 #include "PackStream.h"
 
 #include "Logs.h"
-#include <QFile>
-#include <QDataStream>
-#include <QString>
 #include <QByteArray>
+#include <QDataStream>
+#include <QFile>
+#include <QString>
 
 class PackStream::pimpl {
   public:

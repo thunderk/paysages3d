@@ -2,8 +2,8 @@
 
 #include "definition_global.h"
 
-#include "DefinitionDiff.h"
 #include "Color.h"
+#include "DefinitionDiff.h"
 
 namespace paysages {
 namespace definition {

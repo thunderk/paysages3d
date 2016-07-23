@@ -1,20 +1,20 @@
 #include "GodRaysSampler.h"
 
-#include <cmath>
-#include <algorithm>
-#include "GodRaysDefinition.h"
 #include "AtmosphereDefinition.h"
-#include "SoftwareRenderer.h"
-#include "Vector3.h"
-#include "SpaceSegment.h"
-#include "GodRaysResult.h"
-#include "LightingManager.h"
-#include "FloatNode.h"
-#include "LightStatus.h"
-#include "Scenery.h"
-#include "TerrainDefinition.h"
 #include "CloudsRenderer.h"
+#include "FloatNode.h"
+#include "GodRaysDefinition.h"
+#include "GodRaysResult.h"
 #include "Interpolation.h"
+#include "LightStatus.h"
+#include "LightingManager.h"
+#include "Scenery.h"
+#include "SoftwareRenderer.h"
+#include "SpaceSegment.h"
+#include "TerrainDefinition.h"
+#include "Vector3.h"
+#include <algorithm>
+#include <cmath>
 
 GodRaysSampler::GodRaysSampler() {
     enabled = true;

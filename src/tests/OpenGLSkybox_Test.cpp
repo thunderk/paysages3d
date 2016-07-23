@@ -1,9 +1,9 @@
-#include "BaseTestCase.h"
 #include "OpenGLSkybox.h"
+#include "BaseTestCase.h"
 
-#include "Scenery.h"
-#include "OpenGLSharedState.h"
 #include "OpenGLRenderer.h"
+#include "OpenGLSharedState.h"
+#include "Scenery.h"
 
 TEST(OpenGLSkybox, glvariable_atmosphereHumidity) {
     Scenery scenery;

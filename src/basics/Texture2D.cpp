@@ -1,10 +1,10 @@
 #include "Texture2D.h"
 
-#include <cassert>
-#include <cmath>
 #include "Color.h"
 #include "PackStream.h"
 #include "PictureWriter.h"
+#include <cassert>
+#include <cmath>
 
 Texture2D::Texture2D(int xsize, int ysize) {
     assert(xsize > 0 && ysize > 0);

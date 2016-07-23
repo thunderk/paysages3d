@@ -1,5 +1,5 @@
-#include "BaseTestCase.h"
 #include "Maths.h"
+#include "BaseTestCase.h"
 
 TEST(Maths, modInRange) {
     EXPECT_DOUBLE_EQ(0.7, Maths::modInRange(-0.3, 0.0, 1.0));

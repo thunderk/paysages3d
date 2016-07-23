@@ -1,7 +1,7 @@
 #include "BaseTestCase.h"
 
-#include "InfiniteRay.h"
 #include "Disk.h"
+#include "InfiniteRay.h"
 
 TEST(Disk, checkRayIntersection) {
     Disk disk(VECTOR_UP, VECTOR_UP, 0.8);

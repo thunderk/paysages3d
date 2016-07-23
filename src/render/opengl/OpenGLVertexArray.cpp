@@ -1,7 +1,7 @@
 #include "OpenGLVertexArray.h"
 
-#include "OpenGLFunctions.h"
 #include "Logs.h"
+#include "OpenGLFunctions.h"
 #include "Vector3.h"
 
 OpenGLVertexArray::OpenGLVertexArray(bool has_uv, bool strip) : has_uv(has_uv) {

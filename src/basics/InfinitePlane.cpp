@@ -1,8 +1,8 @@
 #include "InfinitePlane.h"
 
-#include <cmath>
-#include "PackStream.h"
 #include "InfiniteRay.h"
+#include "PackStream.h"
+#include <cmath>
 
 InfinitePlane::InfinitePlane() {
 }

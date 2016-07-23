@@ -1,7 +1,7 @@
 #include "PaintedGridData.h"
 
-#include <cstring>
 #include "PackStream.h"
+#include <cstring>
 
 PaintedGridData::PaintedGridData() {
     rows_count = 0;

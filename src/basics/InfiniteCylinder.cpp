@@ -1,7 +1,7 @@
 #include "InfiniteCylinder.h"
 
-#include <cmath>
 #include "PackStream.h"
+#include <cmath>
 
 #define EPS 1E-8
 

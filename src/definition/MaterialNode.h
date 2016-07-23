@@ -17,7 +17,8 @@ class DEFINITIONSHARED_EXPORT MaterialNode : public DefinitionNode {
 
     const SurfaceMaterial &getSurfaceMaterial() const;
     void setSurfaceMaterial(const SurfaceMaterial &material);
-    void setSurfaceMaterial(const Color &color, double reflection, double shininess, double hardness=0.5, double ambient=0.5);
+    void setSurfaceMaterial(const Color &color, double reflection, double shininess, double hardness = 0.5,
+                            double ambient = 0.5);
 
     bool hasBump() const;
     const FractalNoise *getBumpGenerator() const;

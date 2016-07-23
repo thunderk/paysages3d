@@ -1,9 +1,9 @@
-#include "BaseTestCase.h"
 #include "TexturesRenderer.h"
+#include "BaseTestCase.h"
 
-#include "Vector3.h"
-#include "TexturesDefinition.h"
 #include "TextureLayerDefinition.h"
+#include "TexturesDefinition.h"
+#include "Vector3.h"
 #include "Zone.h"
 
 TEST(TexturesRenderer, getLayersPresence) {

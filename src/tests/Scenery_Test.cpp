@@ -1,11 +1,11 @@
 #include "BaseTestCase.h"
 
-#include "System.h"
-#include "Scenery.h"
-#include "Logs.h"
-#include "TerrainDefinition.h"
 #include "AtmosphereDefinition.h"
 #include "FloatNode.h"
+#include "Logs.h"
+#include "Scenery.h"
+#include "System.h"
+#include "TerrainDefinition.h"
 
 TEST(Scenery, saveGlobal) {
     Scenery scenery1;

@@ -1,17 +1,17 @@
 #include "OpenGLWater.h"
 
+#include "FloatDiff.h"
+#include "FloatNode.h"
+#include "IntNode.h"
+#include "Logs.h"
 #include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
 #include "OpenGLSharedState.h"
 #include "OpenGLVertexArray.h"
-#include "WaterRenderer.h"
 #include "Scenery.h"
-#include "WaterDefinition.h"
 #include "SurfaceMaterial.h"
-#include "FloatNode.h"
-#include "FloatDiff.h"
-#include "IntNode.h"
-#include "Logs.h"
+#include "WaterDefinition.h"
+#include "WaterRenderer.h"
 
 static const string path_height = "/terrain/water_height";
 static const string path_reflection = "/water/reflection";

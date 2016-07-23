@@ -2,11 +2,11 @@
 
 #include "definition_global.h"
 
-#include <vector>
-#include "DefinitionNode.h"
-#include "Sphere.h"
 #include "CappedCylinder.h"
+#include "DefinitionNode.h"
 #include "Disk.h"
+#include "Sphere.h"
+#include <vector>
 
 namespace paysages {
 namespace definition {

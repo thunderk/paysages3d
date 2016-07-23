@@ -32,21 +32,21 @@
  * Author: Eric Bruneton
  */
 
-#include <vector>
-#include <string>
-#include <iostream>
-#include <fstream>
 #include <cmath>
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include <GL/glew.h>
 #include <GL/glut.h>
 
 #include "tiffio.h"
 
-#include "vec3.h"
-#include "mat4.h"
 #include "Main.h"
+#include "mat4.h"
+#include "vec3.h"
 
 using namespace std;
 
@@ -679,11 +679,11 @@ void idleFunc() {
     glutPostRedisplay();
 }
 
-#include "Texture2D.h"
-#include "Texture4D.h"
 #include "Color.h"
 #include "Logs.h"
 #include "PackStream.h"
+#include "Texture2D.h"
+#include "Texture4D.h"
 void dumpTextures() {
     PackStream stream;
     int x, y, z, w;

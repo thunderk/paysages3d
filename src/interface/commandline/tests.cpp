@@ -1,46 +1,46 @@
-#include "SoftwareCanvasRenderer.h"
-#include "TerrainRenderer.h"
-#include "Scenery.h"
-#include "Maths.h"
-#include "CameraDefinition.h"
-#include "TerrainDefinition.h"
 #include "AtmosphereDefinition.h"
 #include "AtmosphereRenderer.h"
 #include "AtmosphereResult.h"
-#include "TexturesDefinition.h"
-#include "GodRaysDefinition.h"
-#include "TextureLayerDefinition.h"
-#include "WaterDefinition.h"
-#include "SurfaceMaterial.h"
-#include "FloatNode.h"
-#include "SkyRasterizer.h"
-#include "CloudsDefinition.h"
-#include "LightComponent.h"
-#include "LightingManager.h"
-#include "LightFilter.h"
-#include "GodRaysSampler.h"
-#include "Rasterizer.h"
-#include "SpaceSegment.h"
-#include "OverlayRasterizer.h"
-#include "VegetationModelDefinition.h"
-#include "VegetationInstance.h"
-#include "VegetationRenderer.h"
-#include "CloudsRenderer.h"
-#include "CloudLayerDefinition.h"
-#include "clouds/BaseCloudsModel.h"
+#include "CameraDefinition.h"
 #include "CelestialBodyDefinition.h"
-#include "RayCastingResult.h"
-#include "OpenGLVegetationImpostor.h"
-#include "Texture2D.h"
-#include "NoiseNode.h"
+#include "CloudLayerDefinition.h"
+#include "CloudsDefinition.h"
+#include "CloudsRenderer.h"
+#include "FloatNode.h"
 #include "FractalNoise.h"
-#include "RandomGenerator.h"
+#include "GodRaysDefinition.h"
+#include "GodRaysSampler.h"
+#include "LightComponent.h"
+#include "LightFilter.h"
+#include "LightingManager.h"
+#include "Maths.h"
 #include "NoiseFunctionSimplex.h"
+#include "NoiseNode.h"
+#include "OpenGLVegetationImpostor.h"
+#include "OverlayRasterizer.h"
+#include "RandomGenerator.h"
+#include "Rasterizer.h"
+#include "RayCastingResult.h"
+#include "Scenery.h"
+#include "SkyRasterizer.h"
+#include "SoftwareCanvasRenderer.h"
+#include "SpaceSegment.h"
+#include "SurfaceMaterial.h"
+#include "TerrainDefinition.h"
+#include "TerrainRenderer.h"
+#include "Texture2D.h"
+#include "TextureLayerDefinition.h"
+#include "TexturesDefinition.h"
+#include "VegetationInstance.h"
+#include "VegetationModelDefinition.h"
+#include "VegetationRenderer.h"
+#include "WaterDefinition.h"
 #include "Zone.h"
+#include "clouds/BaseCloudsModel.h"
 
 #include <cmath>
-#include <sstream>
 #include <iostream>
+#include <sstream>
 
 void startRender(SoftwareCanvasRenderer *renderer, const char *outputpath);
 
@@ -566,7 +566,9 @@ static void testCanvasAliasing() {
         virtual Color processPixel(int x, int y, double relx, double rely) const override {
             double d = sqrt(relx * relx + rely * rely);
             double s = relx * 0.5 + rely;
-            return (x == y or x / 2 == y or y / 2 == x or (d > 0.8 and d < 0.9) or fabs(s) < 0.1) ? COLOR_BLACK : COLOR_WHITE.scaled(5.0);
+            return (x == y or x / 2 == y or y / 2 == x or (d > 0.8 and d < 0.9) or fabs(s) < 0.1)
+                       ? COLOR_BLACK
+                       : COLOR_WHITE.scaled(5.0);
         }
     };
 

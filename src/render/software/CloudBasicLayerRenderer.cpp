@@ -1,20 +1,20 @@
 #include "CloudBasicLayerRenderer.h"
 
-#include <cassert>
-#include <cmath>
-#include <algorithm>
-#include "CloudLayerDefinition.h"
-#include "SoftwareRenderer.h"
-#include "NoiseGenerator.h"
-#include "Curve.h"
 #include "AtmosphereRenderer.h"
 #include "AtmosphereResult.h"
+#include "CloudLayerDefinition.h"
+#include "Curve.h"
+#include "FloatNode.h"
 #include "LightComponent.h"
-#include "clouds/BaseCloudsModel.h"
-#include "SurfaceMaterial.h"
 #include "Logs.h"
 #include "Maths.h"
-#include "FloatNode.h"
+#include "NoiseGenerator.h"
+#include "SoftwareRenderer.h"
+#include "SurfaceMaterial.h"
+#include "clouds/BaseCloudsModel.h"
+#include <algorithm>
+#include <cassert>
+#include <cmath>
 
 struct CloudSegment {
     Vector3 start;

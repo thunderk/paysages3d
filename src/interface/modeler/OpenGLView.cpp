@@ -1,10 +1,10 @@
 #include "OpenGLView.h"
 
-#include <QQuickWindow>
-#include <QHoverEvent>
 #include "MainModelerWindow.h"
-#include "OpenGLRenderer.h"
 #include "ModelerCameras.h"
+#include "OpenGLRenderer.h"
+#include <QHoverEvent>
+#include <QQuickWindow>
 
 OpenGLView::OpenGLView(QQuickItem *parent) : QQuickItem(parent) {
     initialized = false;

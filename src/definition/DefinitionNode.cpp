@@ -1,13 +1,13 @@
 #include "DefinitionNode.h"
 
+#include "DefinitionDiff.h"
+#include "DefinitionWatcher.h"
+#include "DiffManager.h"
 #include "Logs.h"
 #include "PackStream.h"
-#include "DefinitionWatcher.h"
-#include "DefinitionDiff.h"
-#include "DiffManager.h"
 
-#include <cassert>
 #include <algorithm>
+#include <cassert>
 
 // Diff for abstract nodes
 class DefinitionNodeDiff : public DefinitionDiff {
@@ -263,14 +263,13 @@ void DefinitionNode::addDiff(const DefinitionDiff *diff) {
     }
 }
 
-void DefinitionNode::setRoot(DefinitionNode *root)
-{
+void DefinitionNode::setRoot(DefinitionNode *root) {
     this->root = root;
     if (diffs) {
         delete diffs;
         diffs = NULL;
     }
-    for (auto &child: children) {
+    for (auto &child : children) {
         child->setRoot(root);
     }
 }

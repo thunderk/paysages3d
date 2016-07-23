@@ -1,8 +1,8 @@
 #include "Sphere.h"
 
-#include <cmath>
-#include "PackStream.h"
 #include "InfiniteRay.h"
+#include "PackStream.h"
+#include <cmath>
 
 Sphere::Sphere(const Vector3 &center, double radius) : center(center), radius(radius) {
     radius2 = radius * radius;

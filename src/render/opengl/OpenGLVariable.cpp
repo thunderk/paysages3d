@@ -1,19 +1,19 @@
 #include "OpenGLVariable.h"
 
-#include <cassert>
-#include <QOpenGLShaderProgram>
-#include <QImage>
+#include "Color.h"
+#include "FractalNoise.h"
 #include "Logs.h"
+#include "Matrix4.h"
 #include "OpenGLFunctions.h"
 #include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
-#include "Vector3.h"
-#include "Matrix4.h"
-#include "Color.h"
 #include "Texture2D.h"
 #include "Texture3D.h"
 #include "Texture4D.h"
-#include "FractalNoise.h"
+#include "Vector3.h"
+#include <QImage>
+#include <QOpenGLShaderProgram>
+#include <cassert>
 
 typedef enum {
     TYPE_NONE,

@@ -1,7 +1,7 @@
 #include "BaseTestCase.h"
 
-#include "ColorNode.h"
 #include "ColorDiff.h"
+#include "ColorNode.h"
 #include "IntDiff.h"
 #include "PackStream.h"
 

@@ -2,8 +2,8 @@
 
 #include "basics_global.h"
 
-#include <string>
 #include "NoiseState.h"
+#include <string>
 
 namespace paysages {
 namespace basics {

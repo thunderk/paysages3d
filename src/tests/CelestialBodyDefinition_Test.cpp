@@ -1,5 +1,5 @@
-#include "BaseTestCase.h"
 #include "CelestialBodyDefinition.h"
+#include "BaseTestCase.h"
 
 #include "FloatNode.h"
 

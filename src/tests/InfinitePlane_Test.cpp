@@ -1,7 +1,7 @@
 #include "BaseTestCase.h"
 
-#include "InfiniteRay.h"
 #include "InfinitePlane.h"
+#include "InfiniteRay.h"
 
 TEST(InfinitePlane, checkRayIntersection) {
     InfinitePlane plane(VECTOR_UP, VECTOR_UP);

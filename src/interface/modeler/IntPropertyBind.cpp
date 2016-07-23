@@ -1,8 +1,8 @@
 #include "IntPropertyBind.h"
 
-#include "MainModelerWindow.h"
 #include "IntNode.h"
 #include "Logs.h"
+#include "MainModelerWindow.h"
 
 IntPropertyBind::IntPropertyBind(MainModelerWindow *window, const string &object_name, const string &property_name,
                                  IntNode *node)

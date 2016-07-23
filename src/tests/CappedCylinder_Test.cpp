@@ -1,7 +1,7 @@
 #include "BaseTestCase.h"
 
-#include <cmath>
 #include "CappedCylinder.h"
+#include <cmath>
 
 TEST(CappedCylinder, findRayIntersection) {
     CappedCylinder cylinder(VECTOR_DOWN, VECTOR_UP, 1.0, 2.0);

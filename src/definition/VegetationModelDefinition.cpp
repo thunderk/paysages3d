@@ -1,12 +1,12 @@
 #include "VegetationModelDefinition.h"
 
-#include "Maths.h"
-#include "VegetationDefinition.h"
-#include "RandomGenerator.h"
-#include "Matrix4.h"
-#include "SurfaceMaterial.h"
 #include "Color.h"
+#include "Maths.h"
+#include "Matrix4.h"
 #include "PackStream.h"
+#include "RandomGenerator.h"
+#include "SurfaceMaterial.h"
+#include "VegetationDefinition.h"
 
 VegetationModelDefinition::VegetationModelDefinition(DefinitionNode *parent) : DefinitionNode(parent, "model") {
     solid_material = new SurfaceMaterial(Color(0.2, 0.15, 0.15));

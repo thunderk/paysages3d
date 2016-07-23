@@ -1,10 +1,10 @@
 #include "IntNode.h"
 
-#include "PackStream.h"
 #include "IntDiff.h"
 #include "Logs.h"
-#include <sstream>
+#include "PackStream.h"
 #include <cassert>
+#include <sstream>
 
 IntNode::IntNode(DefinitionNode *parent, const string &name, int value)
     : DefinitionNode(parent, name, "int"), value(value) {

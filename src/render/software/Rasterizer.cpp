@@ -1,12 +1,12 @@
 #include "Rasterizer.h"
 
-#include <cmath>
-#include "SoftwareRenderer.h"
 #include "CameraDefinition.h"
-#include "CanvasPortion.h"
 #include "CanvasFragment.h"
-#include "Vector3.h"
+#include "CanvasPortion.h"
 #include "RenderProgress.h"
+#include "SoftwareRenderer.h"
+#include "Vector3.h"
+#include <cmath>
 
 struct paysages::software::ScanPoint {
     int x;

@@ -1,11 +1,11 @@
 #include "BaseTestCase.h"
 
-#include "TestToolDefinition.h"
-#include "DiffManager.h"
 #include "DefinitionNode.h"
 #include "DefinitionWatcher.h"
+#include "DiffManager.h"
 #include "FloatDiff.h"
 #include "FloatNode.h"
+#include "TestToolDefinition.h"
 
 TEST(DiffManager, undoRedo) {
     DefinitionNode root(NULL, "root");

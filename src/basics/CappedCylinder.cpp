@@ -1,7 +1,7 @@
 #include "CappedCylinder.h"
 
-#include "Vector3.h"
 #include "PackStream.h"
+#include "Vector3.h"
 
 CappedCylinder::CappedCylinder(const Vector3 &base, const Vector3 &direction, double radius, double length)
     : InfiniteCylinder(InfiniteRay(base, direction), radius), length(length),

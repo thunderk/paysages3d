@@ -6,13 +6,13 @@
  * Based on Stefan Gustavson implementation.
  */
 
-#include <cstdlib>
-#include <cmath>
-#include <cstring>
-#include "Texture2D.h"
 #include "Color.h"
 #include "Geometry.h"
+#include "Texture2D.h"
 #include "Vector3.h"
+#include <cmath>
+#include <cstdlib>
+#include <cstring>
 
 typedef struct {
     double x;

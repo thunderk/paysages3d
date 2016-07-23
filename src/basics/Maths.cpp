@@ -1,7 +1,7 @@
 #include "Maths.h"
 
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 
 double Maths::modInRange(double value, double min, double max) {
     double size = max - min;

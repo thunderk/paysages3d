@@ -1,19 +1,19 @@
 #include "VegetationRenderer.h"
 
-#include "VegetationModelRenderer.h"
+#include "LightComponent.h"
 #include "RayCastingResult.h"
+#include "Scenery.h"
+#include "SoftwareRenderer.h"
 #include "SpaceGridIterator.h"
 #include "SpaceSegment.h"
-#include "VegetationInstance.h"
-#include "SoftwareRenderer.h"
-#include "Scenery.h"
 #include "TerrainRenderer.h"
 #include "VegetationDefinition.h"
-#include "VegetationLayerDefinition.h"
-#include "VegetationPresenceDefinition.h"
 #include "VegetationInstance.h"
+#include "VegetationInstance.h"
+#include "VegetationLayerDefinition.h"
+#include "VegetationModelRenderer.h"
+#include "VegetationPresenceDefinition.h"
 #include "VegetationResult.h"
-#include "LightComponent.h"
 
 /**
  * Grid iterator to collect instances of a layer, in small squares.

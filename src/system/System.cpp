@@ -1,7 +1,7 @@
 #include "System.h"
 
-#include <QThread>
 #include <QCoreApplication>
+#include <QThread>
 
 static int core_count = -1;
 

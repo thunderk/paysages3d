@@ -2,9 +2,9 @@
 
 #include "NoiseFunctionPerlin.h"
 #include "NoiseFunctionSimplex.h"
+#include "NoiseState.h"
 #include "PackStream.h"
 #include "RandomGenerator.h"
-#include "NoiseState.h"
 #include <cmath>
 #include <cstdlib>
 #include <cstring>

@@ -1,15 +1,15 @@
 #include "TextureLayerDefinition.h"
 
-#include <cmath>
-#include <algorithm>
-#include "Zone.h"
-#include "SurfaceMaterial.h"
-#include "PackStream.h"
-#include "Scenery.h"
-#include "TerrainDefinition.h"
 #include "Color.h"
 #include "FractalNoise.h"
 #include "NoiseNode.h"
+#include "PackStream.h"
+#include "Scenery.h"
+#include "SurfaceMaterial.h"
+#include "TerrainDefinition.h"
+#include "Zone.h"
+#include <algorithm>
+#include <cmath>
 
 TextureLayerDefinition::TextureLayerDefinition(DefinitionNode *parent, const string &name)
     : DefinitionNode(parent, name, "texturelayer") {

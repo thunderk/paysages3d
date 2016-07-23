@@ -1,8 +1,8 @@
 #include "Color.h"
 
-#include <cmath>
-#include <cassert>
 #include "PackStream.h"
+#include <cassert>
+#include <cmath>
 
 const Color paysages::basics::COLOR_TRANSPARENT = {0.0, 0.0, 0.0, 0.0};
 const Color paysages::basics::COLOR_BLACK = {0.0, 0.0, 0.0, 1.0};

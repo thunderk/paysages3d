@@ -1,7 +1,7 @@
 #include "BaseTestCase.h"
 
-#include "System.h"
 #include "PackStream.h"
+#include "System.h"
 
 TEST(PackStream, All) {
     PackStream *stream;

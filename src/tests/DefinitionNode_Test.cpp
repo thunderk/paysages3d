@@ -1,11 +1,11 @@
 #include "BaseTestCase.h"
 
-#include "System.h"
 #include "DefinitionNode.h"
-#include "IntNode.h"
-#include "FloatNode.h"
-#include "PackStream.h"
 #include "DefinitionWatcher.h"
+#include "FloatNode.h"
+#include "IntNode.h"
+#include "PackStream.h"
+#include "System.h"
 
 TEST(DefinitionNode, toString) {
     DefinitionNode root(NULL, "root");

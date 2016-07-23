@@ -1,14 +1,14 @@
 #include "TerrainRenderer.h"
 
-#include <algorithm>
-#include "SoftwareRenderer.h"
-#include "Scenery.h"
-#include "TerrainDefinition.h"
-#include "TexturesRenderer.h"
-#include "TexturesDefinition.h"
 #include "LightComponent.h"
-#include "TerrainRayWalker.h"
 #include "RayCastingResult.h"
+#include "Scenery.h"
+#include "SoftwareRenderer.h"
+#include "TerrainDefinition.h"
+#include "TerrainRayWalker.h"
+#include "TexturesDefinition.h"
+#include "TexturesRenderer.h"
+#include <algorithm>
 
 TerrainRenderer::TerrainRenderer(SoftwareRenderer *parent) : parent(parent) {
     walker_ray = new TerrainRayWalker(parent);

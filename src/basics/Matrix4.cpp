@@ -1,8 +1,8 @@
 #include "Matrix4.h"
 
-#include <cmath>
 #include "PackStream.h"
 #include "Vector3.h"
+#include <cmath>
 
 Matrix4::Matrix4(bool identity) {
     b = c = d = e = g = h = 0.0;

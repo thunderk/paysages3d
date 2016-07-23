@@ -1,7 +1,7 @@
 #include "BaseTestCase.h"
 
-#include "FloatNode.h"
 #include "FloatDiff.h"
+#include "FloatNode.h"
 #include "IntDiff.h"
 #include "PackStream.h"
 

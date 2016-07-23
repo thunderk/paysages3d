@@ -1,14 +1,14 @@
 #include "VegetationRasterizer.h"
 
-#include <cassert>
-#include "Scenery.h"
 #include "CanvasFragment.h"
 #include "Color.h"
-#include "SpaceSegment.h"
+#include "RayCastingResult.h"
+#include "Scenery.h"
 #include "SoftwareRenderer.h"
+#include "SpaceSegment.h"
 #include "VegetationDefinition.h"
 #include "VegetationRenderer.h"
-#include "RayCastingResult.h"
+#include <cassert>
 
 VegetationRasterizer::VegetationRasterizer(SoftwareRenderer *renderer, RenderProgress *progress,
                                            unsigned short client_id)

@@ -1,10 +1,10 @@
 #include "TimeManager.h"
 
-#include "Scenery.h"
 #include "AtmosphereDefinition.h"
-#include "FloatNode.h"
-#include "CloudsDefinition.h"
 #include "CloudLayerDefinition.h"
+#include "CloudsDefinition.h"
+#include "FloatNode.h"
+#include "Scenery.h"
 #include "WaterDefinition.h"
 
 TimeManager::TimeManager() {

@@ -1,13 +1,13 @@
 #include "TerrainRayWalker.h"
 
-#include <cmath>
-#include "SoftwareRenderer.h"
-#include "Scenery.h"
-#include "TerrainDefinition.h"
-#include "TexturesDefinition.h"
-#include "TerrainRenderer.h"
-#include "TexturesRenderer.h"
 #include "Matrix4.h"
+#include "Scenery.h"
+#include "SoftwareRenderer.h"
+#include "TerrainDefinition.h"
+#include "TerrainRenderer.h"
+#include "TexturesDefinition.h"
+#include "TexturesRenderer.h"
+#include <cmath>
 
 TerrainRayWalker::TerrainRayWalker(SoftwareRenderer *renderer) : renderer(renderer) {
     setQuality(0.5);

@@ -2,8 +2,8 @@
 
 #include "software_global.h"
 
-#include "Vector3.h"
 #include "SurfaceMaterial.h"
+#include "Vector3.h"
 
 namespace paysages {
 namespace software {

@@ -1,11 +1,11 @@
-#include "BaseTestCase.h"
 #include "OpenGLVegetationLayer.h"
+#include "BaseTestCase.h"
 
+#include "CameraDefinition.h"
+#include "OpenGLVegetationInstance.h"
+#include "VegetationInstance.h"
 #include "VegetationLayerDefinition.h"
 #include "VegetationModelDefinition.h"
-#include "VegetationInstance.h"
-#include "OpenGLVegetationInstance.h"
-#include "CameraDefinition.h"
 
 class FakeLayerRenderer : public OpenGLVegetationLayer {
   public:

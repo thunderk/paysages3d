@@ -1,11 +1,11 @@
 #include "FractalNoise.h"
 
+#include "PackStream.h"
+#include "RandomGenerator.h"
+#include "Vector3.h"
 #include <cassert>
 #include <cmath>
 #include <sstream>
-#include "PackStream.h"
-#include "Vector3.h"
-#include "RandomGenerator.h"
 
 FractalNoise::FractalNoise() {
     scaling = 1.0;

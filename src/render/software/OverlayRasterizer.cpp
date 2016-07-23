@@ -1,10 +1,10 @@
 #include "OverlayRasterizer.h"
 
-#include <cmath>
-#include "Color.h"
-#include "SoftwareCanvasRenderer.h"
 #include "CameraDefinition.h"
 #include "CanvasFragment.h"
+#include "Color.h"
+#include "SoftwareCanvasRenderer.h"
+#include <cmath>
 
 OverlayRasterizer::OverlayRasterizer(SoftwareCanvasRenderer *renderer)
     : Rasterizer(renderer, renderer->getProgressHelper(), 0, COLOR_WHITE) {

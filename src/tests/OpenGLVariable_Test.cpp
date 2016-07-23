@@ -1,5 +1,5 @@
-#include "BaseTestCase.h"
 #include "OpenGLVariable.h"
+#include "BaseTestCase.h"
 
 #include "NoiseFunctionSimplex.h"
 

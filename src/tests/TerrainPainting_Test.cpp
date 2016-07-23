@@ -1,13 +1,13 @@
 #include "BaseTestCase.h"
 
-#include <cmath>
+#include "FloatNode.h"
 #include "Maths.h"
 #include "NoiseNode.h"
-#include "TestToolNoise.h"
+#include "PaintedGridBrush.h"
 #include "TerrainDefinition.h"
 #include "TerrainHeightMap.h"
-#include "PaintedGridBrush.h"
-#include "FloatNode.h"
+#include "TestToolNoise.h"
+#include <cmath>
 
 // Noise sin period is defined at 20.0
 static constexpr double X_FACTOR = Maths::PI / 10.0;

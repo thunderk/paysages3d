@@ -1,7 +1,7 @@
 #include "SurfaceMaterial.h"
 
-#include "PackStream.h"
 #include "Color.h"
+#include "PackStream.h"
 
 static SurfaceMaterial DEFAULT;
 

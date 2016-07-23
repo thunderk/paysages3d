@@ -1,11 +1,11 @@
 #include "BaseTestCase.h"
 
-#include "System.h"
-#include "Layers.h"
-#include "PackStream.h"
+#include "DefinitionDiff.h"
 #include "DiffManager.h"
 #include "IntNode.h"
-#include "DefinitionDiff.h"
+#include "Layers.h"
+#include "PackStream.h"
+#include "System.h"
 
 static DefinitionNode *_construc1(Layers *, const string &name) {
     return new DefinitionNode(NULL, name);

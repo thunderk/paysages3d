@@ -1,8 +1,8 @@
 #include "PaintedGridBrush.h"
 
-#include <cmath>
 #include "NoiseGenerator.h"
 #include "PaintedGrid.h"
+#include <cmath>
 
 PaintedGridBrush::PaintedGridBrush(double hard_radius, double smoothed_size, double total_radius)
     : hard_radius(hard_radius), smoothed_size(smoothed_size), total_radius(total_radius) {

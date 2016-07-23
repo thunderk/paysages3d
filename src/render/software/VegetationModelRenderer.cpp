@@ -1,12 +1,12 @@
 #include "VegetationModelRenderer.h"
 
 #include "Color.h"
-#include "SurfaceMaterial.h"
-#include "SpaceSegment.h"
-#include "InfiniteRay.h"
 #include "Disk.h"
-#include "SoftwareRenderer.h"
+#include "InfiniteRay.h"
 #include "LightComponent.h"
+#include "SoftwareRenderer.h"
+#include "SpaceSegment.h"
+#include "SurfaceMaterial.h"
 #include "VegetationModelDefinition.h"
 #include "VegetationResult.h"
 

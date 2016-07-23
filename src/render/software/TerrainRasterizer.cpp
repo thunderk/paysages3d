@@ -1,16 +1,16 @@
 #include "TerrainRasterizer.h"
 
-#include <cmath>
-#include "SoftwareRenderer.h"
 #include "BoundingBox.h"
 #include "CameraDefinition.h"
-#include "TerrainRenderer.h"
-#include "WaterRenderer.h"
-#include "TexturesRenderer.h"
-#include "Scenery.h"
-#include "CanvasPortion.h"
 #include "CanvasFragment.h"
+#include "CanvasPortion.h"
 #include "RenderProgress.h"
+#include "Scenery.h"
+#include "SoftwareRenderer.h"
+#include "TerrainRenderer.h"
+#include "TexturesRenderer.h"
+#include "WaterRenderer.h"
+#include <cmath>
 
 TerrainRasterizer::TerrainRasterizer(SoftwareRenderer *renderer, RenderProgress *progress, unsigned short client_id)
     : Rasterizer(renderer, progress, client_id, Color(1.0, 0.7, 0.7)) {

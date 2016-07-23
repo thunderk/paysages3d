@@ -1,17 +1,17 @@
 #include "TexturesRenderer.h"
 
-#include <cassert>
-#include <cmath>
+#include "FractalNoise.h"
+#include "LightStatus.h"
+#include "LightingManager.h"
+#include "NoiseGenerator.h"
+#include "NoiseNode.h"
 #include "Scenery.h"
 #include "SoftwareRenderer.h"
 #include "TextureLayerDefinition.h"
 #include "TexturesDefinition.h"
 #include "Zone.h"
-#include "LightingManager.h"
-#include "LightStatus.h"
-#include "NoiseNode.h"
-#include "FractalNoise.h"
-#include "NoiseGenerator.h"
+#include <cassert>
+#include <cmath>
 
 TexturesRenderer::TexturesRenderer() {
     setQualityFactor(0.5);

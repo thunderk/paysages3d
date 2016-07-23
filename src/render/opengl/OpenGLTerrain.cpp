@@ -1,15 +1,15 @@
 #include "OpenGLTerrain.h"
 
-#include <algorithm>
-#include <vector>
+#include "Mutex.h"
 #include "OpenGLFunctions.h"
 #include "OpenGLRenderer.h"
 #include "OpenGLShaderProgram.h"
-#include "ParallelPool.h"
-#include "Thread.h"
-#include "Mutex.h"
 #include "OpenGLTerrainChunk.h"
+#include "ParallelPool.h"
 #include "Scenery.h"
+#include "Thread.h"
+#include <algorithm>
+#include <vector>
 
 class ChunkMaintenanceThreads : public ParallelPool {
   public:

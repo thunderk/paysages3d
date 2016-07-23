@@ -1,7 +1,7 @@
 #include "BaseTestCase.h"
 
-#include "InfiniteRay.h"
 #include "InfiniteCylinder.h"
+#include "InfiniteRay.h"
 #include <cmath>
 
 TEST(InfiniteCylinder, findRayIntersection) {

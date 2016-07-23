@@ -4,8 +4,8 @@
 
 #include "DefinitionNode.h"
 
-#include "Vector3.h"
 #include "Color.h"
+#include "Vector3.h"
 
 namespace paysages {
 namespace definition {
